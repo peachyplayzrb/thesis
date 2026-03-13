@@ -1,0 +1,29 @@
+﻿# Thesis Timeline
+
+## Milestones
+- M1 (2026-03-13 to 2026-03-20): Planning baseline finalized
+	- Populate backlog, implementation plan, and chapter readiness checklist.
+	- Confirm evaluation protocol and reproducibility evidence format.
+- M2 (2026-03-21 to 2026-04-05): Data ingestion and alignment working
+	- Implement one ingestion path for listening history import.
+	- Implement ISRC-first alignment with fallback metadata matching.
+	- Log unmatched track rate and alignment diagnostics.
+- M3 (2026-04-06 to 2026-04-20): Deterministic profile and scoring implemented
+	- Build deterministic user profile construction.
+	- Implement candidate filtering and deterministic similarity scoring.
+	- Add score contribution breakdown outputs.
+- M4 (2026-04-21 to 2026-05-05): Playlist assembly and controllability layer complete
+	- Implement playlist-level rule checks (diversity, coherence, ordering).
+	- Add configurable rule parameters and run-level config capture.
+	- Validate deterministic behavior across repeated runs.
+- M5 (2026-05-06 to 2026-05-20): Evaluation evidence complete
+	- Run reproducibility checks and parameter sensitivity tests.
+	- Record transparency/inspectability artifacts and known limitations.
+	- Consolidate claim-evidence mapping for report chapters.
+- M6 (2026-05-21 to 2026-06-10): Writing and submission hardening
+	- Finalize chapter drafts, references, and formatting compliance.
+	- Complete final quality-control passes and viva/demo preparation.
+
+## Notes
+- Dates are a working baseline for execution control and can be refined against official module deadlines.
+- Scope remains locked to the MVP boundary in `00_admin/thesis_state.md` and `00_admin/Artefact_MVP_definition.md`.
