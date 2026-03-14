@@ -5,6 +5,18 @@
 - P1: Strongly recommended quality improvement.
 - P2: Optional stretch item if time permits.
 
+## Handoff Snapshot (2026-03-15)
+- Collaboration repo: `https://github.com/TimothySpiteri/thesis` (private).
+- Primary branch: `main`.
+- Latest synced commit at handoff prep: `4d422b0516cb2d6d866ee4cd8470a0715397f992`.
+- Locked operating constraints: keep title/RQ/scope/methodology aligned with `00_admin/thesis_state.md` and use change proposals for protected changes.
+- Current implementation status: ingestion and alignment baseline complete (`BL-001` to `BL-003`).
+- Recommended immediate next work order:
+	1. `BL-004` deterministic user preference profile generator.
+	2. `BL-005` candidate retrieval and feature filtering.
+	3. `BL-006` deterministic scoring with per-track score decomposition.
+- Evidence-first reminder: for each completed backlog item, write the expected evidence artifact and link it in the matching file listed in the backlog table.
+
 ## Items
 | ID | Priority | Status | Task | Evidence Output |
 | --- | --- | --- | --- | --- |
