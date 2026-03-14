@@ -46,6 +46,8 @@ Existing recommender literature strongly addresses accuracy and increasingly add
 - P-061 adds direct playlist-generation survey and evaluation-design evidence, including popularity-effect cautions.
 - P-062 adds large-scale music benchmark challenge context for baseline/protocol-aware interpretation.
 - P-063 adds historical large-scale music dataset context support (secondary, task-transfer bounded).
+- P-064 adds direct music-domain deterministic metric-comparison evidence (Euclidean vs cosine) in playlist generation context.
+- P-065 adds playlist-coherence evidence showing distance-definition-dependent objective behavior in user-curated playlists.
 
 ## Challenging Evidence
 - Existing explainable and hybrid recommender work may partially cover some proposed mechanisms.
@@ -84,6 +86,7 @@ aligned
 - Added newest local-file ingestion (P-055 to P-058) and linked evidence to evaluation-rigor and comparator-context claims.
 - Added APC benchmark bundle ingestion (P-059 to P-060) and linked challenge/method-composition evidence into Chapter 2 and QC maps.
 - Added playlist-evaluation and benchmark-context extensions (P-061 to P-063) with bounded transfer notes.
+- Added metric-evidence strengthening ingestion (P-064 to P-065) and synchronized Chapter 2 and QC bounded-limitation wording.
 
 ## Research Gap Implications (For Design)
 - Prioritize faithful explanation generation from actual scoring traces.
@@ -95,7 +98,7 @@ aligned
 - Run a focused external search for music-domain ISRC/metadata alignment reliability and ambiguity/error-rate studies (still under-supported).
 - Seek one additional recommender pipeline logging/schema source for triangulation (gap improved by P-052 Elliot framework).
 - Compare deterministic alignment design against one neural matching baseline in a requirement-trade-off table (inspectability vs performance complexity).
-- Add one music-domain study that compares similarity metrics under playlist-generation objectives.
+- Add one additional multi-dataset music-domain study that isolates deterministic similarity-function effects under playlist-objective ranking metrics.
 - Add one independent third-party study using Music4All (or comparable corpus) for recommendation benchmarking to strengthen external dataset-choice validation.
 
 ## Last Reviewed
@@ -159,3 +162,5 @@ aligned
 - P-061 `bonnin_automated_2015` (adds playlist-generation survey/evaluation-design and popularity-effect evidence)
 - P-062 `mcfee_million_2012` (adds large-scale benchmark protocol/baseline interpretation context)
 - P-063 `bertin_mahieux_million_2011` (adds historical large-scale dataset context support with bounded transfer)
+- P-064 `furini_social_2024` (adds direct Euclidean-vs-cosine comparison evidence in music playlist generation)
+- P-065 `schweiger_impact_2025` (adds distance-definition-dependent coherence evidence in user-curated playlists)

@@ -172,12 +172,12 @@
 
 ## C-CLM-016
 - Claim: Similarity-metric choice materially affects recommender behavior, so metric selection must be explicit and justified in deterministic scoring pipelines.
-- Source: P-025 (`fkih_similarity_2022`)
-- Exact support summary: Review and experiments compare similarity measures and show non-trivial performance differences across settings.
+- Source: P-025 (`fkih_similarity_2022`), P-061 (`bonnin_automated_2015`), P-059 (`zamani_analysis_2019`), P-064 (`furini_social_2024`), P-065 (`schweiger_impact_2025`)
+- Exact support summary: Similarity-measure evidence shows metric-dependent behavior changes; playlist-generation/APC analyses show protocol and metric sensitivity; and newly ingested music-domain studies add direct metric-comparison and distance-definition-dependent coherence evidence in playlist settings.
 - Confidence: medium
 - Theme: similarity_measures
-- Used in chapter: Chapter 3, Chapter 5
-- Needs stronger citation?: yes (add one music-domain metric comparison if available)
+- Used in chapter: Chapter 2, Chapter 3, Chapter 5
+- Needs stronger citation?: maybe (add broader multi-dataset studies isolating deterministic similarity-function effects across multiple playlist-objective metrics)
 - Conflicting sources?: none identified in current set
 
 ## C-CLM-017

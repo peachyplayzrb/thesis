@@ -3,7 +3,7 @@
 ## Status
 - Date: 2026-03-14
 - Scope checked: Chapter 2 draft (`08_writing/chapter2.md`), Chapter 3 draft (`08_writing/chapter3.md`), Chapter 5 draft (`08_writing/chapter5.md`)
-- Bibliography source: `08_writing/references.bib` (synchronized from legacy pack plus P-029 to P-034 additions)
+- Bibliography source: `08_writing/references.bib` (synchronized with legacy pack and subsequent vetted additions, including P-064 and P-065)
 
 ## Claim-Level Checks
 | Claim ID | Chapter 2 claim summary | Evidence keys used | Support level | Risk / note |
@@ -12,7 +12,7 @@
 | CIT-002 | Explanation goals can conflict and must be evaluated explicitly | `tintarev_evaluating_2012` | high | Single primary source but strong direct fit.
 | CIT-003 | User control effects in music RS are user-dependent | `jin_effects_2020`, `andjelkovic_moodplay_2019` | medium | More replication evidence would strengthen generalizability.
 | CIT-004 | Music recommendation has sequence/context challenges beyond item ranking | `schedl_current_2018`, `deldjoo_content-driven_2024`, `neto_algorithmic_2023`, `schedl_investigating_2017`, `shakespeare_reframing_2025` | high | No material risk.
-| CIT-005 | Similarity judgments in music have agreement limits | `flexer_problem_2016`, `siedenburg_modeling_2017` | medium-high | Add one playlist-objective metric-comparison source if available.
+| CIT-005 | Similarity judgments in music have agreement limits and require metric-sensitive interpretation | `flexer_problem_2016`, `siedenburg_modeling_2017`, `bonnin_automated_2015`, `zamani_analysis_2019`, `schweiger_impact_2025`, `furini_social_2024` | medium-high | Playlist-objective support now includes direct music-domain metric evidence; limitation remains on broad deterministic similarity-function isolation studies across multiple ranking objectives.
 | CIT-006 | Feature-based content approaches support interpretable design | `deldjoo_content-driven_2024`, `bogdanov_semantic_2013` | medium-high | Ensure chapter wording avoids claiming superior accuracy.
 | CIT-007 | Hybrid/neural approaches are strong comparators but more complex | `he_neural_2017`, `cano_hybrid_2017`, `liu_multimodal_2025` | medium-high | Keep claim as trade-off framing, not universal rule.
 | CIT-008 | Alignment should use staged entity-resolution pipeline | `allam_improved_2018`, `papadakis_blocking_2021`, `elmagarmid_duplicate_2007`, `binette_almost_2022`, `barlaug_neural_2021` | medium-high | Evidence base is stronger but still largely cross-domain rather than music-benchmark specific.
@@ -31,7 +31,7 @@
 
 ## Residual Gaps To Monitor
 - Add at least one music-specific alignment reliability source if found (still open despite stronger cross-domain ER support).
-- Keep one bounded limitation note on direct playlist-objective metric-comparison evidence in deterministic settings.
+- Keep one bounded limitation note on deterministic similarity-function isolation evidence under playlist objectives.
 - Preserve the existing Music4All task-transfer caveat (third-party support exists but is not playlist-task-equivalent evidence).
 - Keep POI-domain evaluation survey evidence (`sanchez_pointofinterest_2022`) explicitly marked as transfer support, not music-core evidence.
 - Preserve distinction between evidence statements and thesis interpretation in final edits.
@@ -44,11 +44,11 @@
 - Action V-ACT-004: verify Chapter 2 wording keeps deterministic approach as goal-aligned design choice, not universal performance claim.
 - Action progress (2026-03-14): V-ACT-004 completed via wording reinforcement in `08_writing/chapter2.md`.
 - Action progress (2026-03-14): V-ACT-001 explicitly bounded in `08_writing/chapter2.md` Section 2.5 (cross-domain ER support with music-specific uncertainty statement).
-- Action progress (2026-03-14): V-ACT-002 partially closed using `fkih_similarity_2022` + `siedenburg_modeling_2017`; direct playlist-objective metric-comparison evidence remains a bounded limitation.
+- Action progress (2026-03-14): V-ACT-002 further strengthened using newly ingested `furini_social_2024` and `schweiger_impact_2025` alongside existing `fkih_similarity_2022`, `siedenburg_modeling_2017`, `bonnin_automated_2015`, and `zamani_analysis_2019`; bounded limitation remains narrowed to limited broad isolation evidence for deterministic similarity-function effects across multiple playlist objectives.
 - Action progress (2026-03-14): V-ACT-003 closed to comparator-context level by adding independent third-party Music4All benchmark usage support via `ru_improving_2023` in `08_writing/chapter2.md` Section 2.3.
 - Freeze gate status: `freeze_ready_with_bounded_limitation`.
 - Freeze disposition (2026-03-14): Chapter 2 is approved for freeze because V-ACT-001, V-ACT-003, and V-ACT-004 are closed, and V-ACT-002 is explicitly bounded in chapter text and QC logs.
-- Accepted bounded limitation: no strong direct playlist-objective metric-comparison study in the current source set; this remains logged for future strengthening and does not block Chapter 2 freeze.
+- Accepted bounded limitation: the current set now includes initial direct music-domain metric-comparison evidence, but still lacks broad multi-dataset studies that isolate deterministic similarity-function effects across multiple playlist-objective metrics; this remains logged for future strengthening and does not block Chapter 2 freeze.
 
 ## Chapter 3 Citation Risk Notes
 - Alignment pipeline claims are currently supported by entity-resolution surveys/method papers (`allam_improved_2018`, `papadakis_blocking_2021`, `barlaug_neural_2021`) and should be presented as cross-domain support with music-specific uncertainty.
