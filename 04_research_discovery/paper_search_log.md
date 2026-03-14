@@ -1,2 +1,30 @@
 ﻿# Paper Search Log
 
+DOCUMENT STATUS: active
+CONFIDENCE: medium
+ROLE: execution log for evidence acquisition
+LAST_UPDATED: 2026-03-13
+
+## Log Schema
+| date | search_id | priority | query | source_db | top_hits_checked | selected_for_ingestion | reason_for_selection_or_rejection | linked_gap |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+
+## Planned Searches Queue
+| date | search_id | priority | query | source_db | top_hits_checked | selected_for_ingestion | reason_for_selection_or_rejection | linked_gap |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 2026-03-13 | S-000 | P0 | local upload audit: 10_resources/papers | local repository + Crossref DOI verification | 16 | 6 ingested and verified | Verified and processed with DOI metadata: Binette2022 (10.1126/sciadv.abi8021), Elmagarmid2007 (10.1109/TKDE.2007.250581), FerrariDacrema2021 (10.1145/3434185), Herlocker2004 (10.1145/963770.963772), Kowald2021 (10.1140/epjds/s13688-021-00268-9), Zhu2022 (10.1145/3477495.3531723). Deferred: Dular2024 (non-music, non-RS), Ostermann2023 (dataset not used in current scope), Werneck2021 (POI domain transfer risk). Already indexed before audit: Allam2018, Papadakis2021, Barlaug2021, Beel2016, Bellogin2021, Cavenaghi2023, Deldjoo2024. | music-domain alignment reliability; reproducibility/accountability; evaluation framing |
+| 2026-03-13 | S-001 | P0 | music metadata entity resolution ISRC benchmark | OpenAlex + Crossref (no-library-access pass) | 57 | 0 safe ingest | Query results were noisy (many non-music/non-peer-reviewed or weak-fit items). No high-confidence music-domain ISRC reliability benchmark identified from open-index pass. Next action: run Scopus/IEEE/ACM with field filters (title/abstract contains ISRC OR MusicBrainz OR Discogs + record linkage/entity resolution). | music-domain alignment reliability |
+| 2026-03-13 | S-002 | P0 | track matching across music catalogs ISRC title artist | OpenAlex + Crossref (no-library-access pass) | 57 | 0 safe ingest | Candidate pool dominated by off-topic matches and metadata records. No defensible direct source selected without full database filtering and/or full-text screening. Next action: library-assisted targeted retrieval with venue/year/subject constraints. | music-domain alignment reliability |
+| 2026-03-13 | S-003 | P1 | music recommendation similarity metric comparison playlist | Google Scholar + SpringerLink | 0 | pending | pending | music-domain similarity metric evidence |
+| 2026-03-13 | S-004 | P1 | recommender system experiment logging schema reproducibility | ACM DL + IEEE Xplore | 0 | pending | pending | observability/logging instrumentation |
+| 2026-03-13 | S-005 | P2 | recommender systems ablation study best practices | Google Scholar | 0 | pending | pending | comparator/ablation evaluation framing |
+| 2026-03-13 | S-006 | P1 | local Music4All bundle quality triage (`10_resources/papers/music4all`) | local repository (peer-reviewed venue screen + thesis protocol mapping) | 16 | 9 ingested and processed (`keep`/`support`) | Keep: Music4All dataset paper, MusicLIME, CAMCMusic. Support: Ru2023, Moysis2023, Kang2025, ZhuMuQ2025, Knox2021, Pandeya2021. Exclude/defer from core evidence: Nurraharjo2022, Wang2023, Doh2024, Revathy2022, SaiKiranReddy2024, Gemilang2025, plus any off-task/non-core items. Added paper notes (P-041..P-049), claim/QC mappings, chapter citations, and RQ alignment log update. | music-domain evidence strengthening; explainability/control context |
+| 2026-03-13 | S-007 | P1 | local new-bundle triage (`10_resources/papers/new`) | local repository (venue/relevance + protocol mapping) | 9 | 5 ingested and processed (`keep`/`support`) | Ingested: Schedl2017, Siedenburg2017, Anelli2021 (Elliot), Betello2025, Shakespeare2025. Already indexed duplicates: Bellogin2021, Kowald2021. Excluded/deferred: Scarratt2023 (context-task mismatch), Askin2017 (cultural market framing, low direct architecture utility). | observability/logging instrumentation; music-domain similarity evidence; diversity/evaluation framing |
+| 2026-03-13 | S-008 | P1 | user-added check papers in `10_resources/papers` | local repository + metadata verification pass | 2 | 0 safe ingest | Checked: (1) Discogs-VI file resolved to arXiv preprint `2410.17400v1` (not peer-reviewed journal/conference version in current verification pass), (2) MetaMIDI paper metadata/venue could not be reliably verified in Crossref/OpenAlex from available filename/title strings. User-confirmed weird-named files are duplicates and ignored. | music-domain alignment reliability |
+| 2026-03-13 | S-009 | P1 | newest local-file triage (`10_resources/papers`: `3370082.pdf`, `3510409.pdf`, `3629170.pdf`, `Self-Supervised_Learning_for_Recommender_Systems_A_Survey.pdf`) | local repository + Crossref DOI verification | 4 | 4 ingested and processed (`keep`/`support`) | Verified and ingested with DOI metadata: Jannach2019 (10.1145/3370082), Sanchez2022 (10.1145/3510409), Bauer2024 (10.1145/3629170), Yu2024 (10.1109/TKDE.2023.3282907). Mapped as evaluation-rigor and comparator-context evidence with explicit domain/scope caveats. | evaluation protocol rigor; comparator framing |
+| 2026-03-14 | S-010 | P1 | commit-scope hygiene pass for newly added local PDFs (`10_resources/papers`) | local repository + prior triage decisions (S-000/S-006/S-007) | 11 | 7 staged (`keep`/`support`), 4 intentionally removed (deferred) | Staged vetted keep/support set for commit: Zhu2022 (BARS), Sotirou2025 (MusicLIME), ZhuMuQ2025, Schedl2017, Siedenburg2017, Shakespeare2025, Yu2024 SSL survey PDF. Intentionally removed deferred files from workspace before commit to preserve protocol alignment: Werneck2021 (POI transfer risk), Wang2023, SaiKiranReddy2024, Scarratt2023. Added `.gitattributes` rule (`*.pdf binary`) to prevent noisy text diffs for PDFs. | evidence-governance hygiene; reproducibility/accountability |
+
+## Notes
+- After each search batch, update `top_hits_checked` and decision rationale.
+- Any selected source must be added to `03_literature/source_index.csv` and processed as `P-###`.
+
