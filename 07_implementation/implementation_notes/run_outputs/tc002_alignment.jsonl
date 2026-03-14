@@ -1,0 +1,2 @@
+{"event_id": "f62f3469fbb660fd", "ingest_run_id": "TC001-RUN1", "m4a_track_id": "M4A-0001", "matched_isrc": "USUG11904298", "match_method": "isrc", "track_name": "blinding lights", "artist_name": "the weeknd", "row_quality_flag": "ok"}
+{"event_id": "7af7efb7854fd559", "ingest_run_id": "TC001-RUN1", "m4a_track_id": "M4A-0002", "matched_isrc": "GBAYE0300723", "match_method": "metadata", "track_name": "numb", "artist_name": "linkin park", "row_quality_flag": "missing_isrc"}
