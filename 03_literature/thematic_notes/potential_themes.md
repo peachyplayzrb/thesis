@@ -14,6 +14,9 @@ SOURCE: ingested Chapter 3 sheet + legacy literature extraction
 - cross_source_track_alignment
 - observability_and_reproducibility
 - feature_based_music_similarity
+- dataset_foundation
+- benchmarking_and_protocol_rigor
+- multimodal_comparator_context
 
 ## Theme Activation Rule
 Create a dedicated theme file only when at least 3 papers can be mapped.
@@ -24,3 +27,5 @@ Create a dedicated theme file only when at least 3 papers can be mapped.
 - `deterministic_systems.md`
 - `evaluation_of_explainable_systems.md`
 - `music_recommenders.md`
+- `dataset_foundation.md`
+- `benchmarking_and_protocol_rigor.md`
