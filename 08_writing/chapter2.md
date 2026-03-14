@@ -1,2 +1,103 @@
-﻿# Chapter 2
+# Chapter 2: Literature Review
 
+## 2.1 Foundations and Scope Positioning
+Recommender systems are a standard response to information overload in large item catalogs [@adomavicius_toward_2005; @lu_recommender_2015; @roy_systematic_2022]. The dominant method families remain content-based, collaborative, and hybrid approaches [@adomavicius_toward_2005; @cano_hybrid_2017]. This taxonomy is useful for structuring alternatives, but the literature also shows that method family labels alone do not determine suitability. In practice, performance and practical value depend on data conditions, objective choice, protocol choices, and deployment constraints [@roy_systematic_2022; @jannach_measuring_2019].
+
+Content-based methods estimate preference from item attributes and are often practical when user-linkage information is limited [@lu_recommender_2015; @deldjoo_content-driven_2024]. Collaborative methods leverage interaction structure and can produce strong predictive outcomes in large ecosystems, but can reduce direct transparency when latent representations dominate [@adomavicius_toward_2005; @zhang_explainable_2020]. Hybrid methods are widely used because they can combine complementary signal types [@cano_hybrid_2017; @he_neural_2017]. Evidence from these strands supports trade-off reasoning, not a universal model-family ranking.
+
+Evaluation research further complicates simplistic model selection: recommender claims are sensitive to preprocessing, protocol design, and metric choice [@herlocker_evaluating_2004; @ferrari_dacrema_troubling_2021; @anelli_elliot_2021]. A model that performs strongly under one benchmark setup may not be best aligned with a constrained engineering project that prioritizes interpretability and replayability. In this thesis, the target is therefore not leaderboard optimization. The target is a transparent, controllable, and observable playlist pipeline that can be inspected and replayed under BSc-feasible conditions.
+
+Interpretation for this thesis follows directly: method choice should be objective-aligned rather than benchmark-maximizing in isolation [@roy_systematic_2022; @jannach_measuring_2019]. Because transparency, controllability, and reproducibility are central quality goals, deterministic and inspectable design choices are prioritized over complexity-maximizing alternatives that may weaken direct interpretability [@zhang_explainable_2020; @tintarev_survey_2007]. This is a scope-constrained engineering position, not an algorithmic-superiority claim.
+
+Implication for Chapter 3: architecture choices are framed against transparency, controllability, and reproducibility objectives rather than benchmark performance alone.
+
+## 2.2 Transparency, Explainability, and Controllability
+Explainable recommender research consistently argues that predictive accuracy is an incomplete success criterion when users must understand, trust, or scrutinize recommendations [@tintarev_survey_2007; @tintarev_evaluating_2012; @zhang_explainable_2020; @bauer_exploring_2024]. Evidence indicates that a system can perform well numerically while still failing to communicate recommendation rationale effectively. For this thesis, transparency is therefore not auxiliary presentation; it is a core quality objective.
+
+Explanation-evaluation literature also shows that explanation quality is multidimensional and goal-dependent [@tintarev_evaluating_2012]. Goals such as persuasion, trust support, scrutability, and decision effectiveness can conflict. A format that improves perceived satisfaction may not improve decision quality. This matters methodologically: explanation design should be evaluated against declared aims, not treated as a generic feature that is always beneficial.
+
+The distinction between post-hoc explanations and transparency-by-design mechanisms is central [@zhang_explainable_2020]. Post-hoc narratives can improve communication but may be weakly coupled to real scoring logic. Mechanism-linked explanations expose the same signals used in ranking decisions and therefore support stronger auditability. Given the thesis emphasis on deterministic inspectability, explanation outputs should remain coupled to score contributors, rule adjustments, and feature-level inputs.
+
+Interface research adds an additional constraint: explanation quality depends not only on internal fidelity but also on user comprehension [@tsai_explaining_2018; @balog_transparent_2019; @knijnenburg_explaining_2012]. A fully faithful explanation can still fail if it is unreadable for non-expert users. The design challenge is therefore dual: preserve mechanism fidelity while presenting information in a form that supports practical use.
+
+Controllability studies in music recommendation indicate that user influence mechanisms can be beneficial, but effects vary across user groups and contexts [@jin_effects_2020; @andjelkovic_moodplay_2019]. Evidence here supports design direction rather than universal behavioral law. Interpretation for this thesis is intentionally bounded: controls should be explicit, limited, and measurable, with outcomes reported conditionally rather than generalized across all users.
+
+Operationally, controllability is treated as an engineering property that requires a measurable mapping from parameter change to system behavior. If parameter changes do not produce traceable scoring or assembly effects, controllability is nominal rather than substantive. This directly motivates sensitivity-oriented evaluation and control-state trace logging.
+
+Evaluation methodology should combine process-oriented and outcome-oriented evidence [@tintarev_evaluating_2012; @nauta_anecdotal_2023]. Process evidence asks whether explanations are faithful to actual mechanism behavior and whether control changes propagate through intermediate computations. Outcome evidence asks whether recommendation outputs change in interpretable ways under controlled parameter variation. For a BSc-scoped artefact, this does not require large-scale user experiments, but it does require explicit reporting of control settings, intermediate effects, and resulting playlist differences.
+
+Taken together, the literature supports a clear design principle: explanation and control should be engineered as pipeline properties with explicit verification logic, while claims about user impact remain cautious and scope-bounded.
+
+Methodological implication: the design exposes explicit user controls and evaluates parameter sensitivity rather than assuming one fixed control strategy for all users.
+
+## 2.3 Music Recommenders and Playlist-Specific Challenges
+Music recommendation introduces domain constraints that are not fully captured by generic top-N recommendation formulations [@schedl_current_2018; @deldjoo_content-driven_2024]. Listening is often sessional, contextual, and sequence-sensitive. Users evaluate not only individual tracks but also transitions, progression, and overall listening flow. Evidence therefore supports treating playlist quality as partly a sequence-design problem, not only an item-ranking problem [@neto_algorithmic_2023; @gatzioura_hybrid_2019].
+
+Playlist studies show non-trivial interactions among ordering, coherence, and diversity [@ferraro_automatic_2018; @vall_feature-combination_2019; @zamani_analysis_2019]. Increasing coherence may improve continuity but reduce novelty; increasing diversity may improve novelty but weaken perceived flow. Challenge analyses and team-level method reports further indicate that continuation quality depends on how candidate generation, title handling, and rank-fusion components are composed under a fixed protocol [@zamani_analysis_2019; @teinemaa_composition_2018]. For this thesis, that trade-off justifies explicit playlist-level assembly constraints and diagnostics instead of assuming ranking quality alone is sufficient.
+
+Earlier playlist-generation synthesis also warns that evaluation outcomes can be heavily influenced by protocol design and popularity effects, which reinforces the need for multi-metric and process-aware interpretation in this chapter [@bonnin_automated_2015]. More broadly, large-scale music recommendation challenge work shows the same methodological point: baseline setup and benchmark design materially shape reported gains [@mcfee_million_2012].
+
+Context dependence further limits direct transfer from non-music recommender findings [@schedl_current_2018]. Mood, activity, social setting, and temporal context can materially shift what users perceive as suitable recommendations. Within single-user deterministic scope, this implies two practical constraints: personalization signals should be explicit and replayable, and context coverage should be reported as partial rather than complete.
+
+The canonical corpus choice is also literature-supported. Music4All provides a multi-signal MIR resource (metadata, tags, lyrics, audio) suitable for reproducible content-driven experimentation [@pegoraro_santana_music4all_2020]. Independent third-party usage further supports corpus defensibility in benchmark-oriented research settings, even where tasks are not identical to playlist generation [@ru_improving_2023]. The claim here is practical suitability under scope, not strict task equivalence.
+
+At a representation level, music recommendation research repeatedly identifies a semantic gap between low-level computable signals and human musical interpretation [@bogdanov_semantic_2013; @deldjoo_content-driven_2024]. Similarity judgments are useful but not fully objective. This is reinforced by constrained inter-rater agreement in music similarity studies [@flexer_problem_2016; @siedenburg_modeling_2017]. Interpretation for this thesis is therefore bounded: deterministic similarity is a transparent decision-support mechanism, not a claim about objective musical truth.
+
+This bounded interpretation directly affects evaluation language. Where similarity judgments are partly subjective, output-quality claims should avoid universal phrasing and instead combine metric outcomes with process-level transparency evidence, including score composition, rule-path effects, and replay diagnostics.
+
+Design implication: playlist assembly is treated as a distinct stage with explicit sequence/diversity constraints, while similarity scores are interpreted as decision-support signals rather than ground truth.
+
+## 2.4 Feature-Based and Deterministic Design Rationale
+Content-driven, feature-aware recommendation remains a strong option in music contexts where interpretability is a design requirement [@deldjoo_content-driven_2024; @bogdanov_semantic_2013]. Feature-level scoring enables explicit reporting of why tracks are selected, which attributes contributed, and how rule adjustments changed outcomes. This is directly aligned with thesis goals centered on inspectability and controllability.
+
+Deterministic design is not treated as a universal quality maximizer. Its primary value in this thesis is engineering clarity: fixed inputs, explicit transformation steps, and replayable outputs support traceability of both behavior and evaluation claims [@tintarev_survey_2007; @zhang_explainable_2020]. It also simplifies sensitivity analysis because output changes can be attributed to explicit parameter variation rather than hidden stochastic effects.
+
+Comparator context remains essential. Hybrid and neural recommenders frequently report strong predictive outcomes and should not be dismissed [@he_neural_2017; @cano_hybrid_2017; @liu_multimodal_2025; @yu_self_supervised_2024]. Recent music-domain multimodal work similarly demonstrates competitive results in specialized tasks [@ru_improving_2023; @moysis_music_2023; @zhu_muq_2025]. The relevant trade-off is that these approaches typically increase model and explanation complexity, which can reduce direct inspectability unless additional interpretability infrastructure is introduced.
+
+The thesis position is therefore conditional and scope-bound: deterministic feature-based scoring is selected because it best matches transparency, controllability, and reproducibility requirements under BSc constraints, not because it is universally superior in recommendation accuracy. This distinction is central to claim discipline.
+
+Metric and feature sensitivity is a second critical issue. Similarity-measure research shows that metric choice can materially alter ranking behavior [@fkih_similarity_2022]. Music-similarity studies further indicate that no single metric consistently captures all perceptual dimensions [@siedenburg_modeling_2017; @flexer_problem_2016]. This evidence implies that metric selection, normalization, and feature weighting should be explicit design decisions with documented rationale rather than hidden implementation defaults.
+
+The current source set supports sensitivity reasoning but remains limited on direct playlist-objective metric-comparison evidence. This is treated explicitly as a bounded limitation rather than ignored. The chapter therefore advances with cautious interpretation while preserving the gap for later strengthening.
+
+Feature-engineering literature also supports semantically meaningful descriptors as a bridge between computational representation and user-facing interpretation [@bogdanov_semantic_2013; @deldjoo_content-driven_2024]. For this thesis, that supports a profile-and-score approach where preference representation and candidate comparison remain interpretable at feature level, improving explanation fidelity.
+
+Deterministic design also strengthens evaluation governance: replayable outputs under fixed configuration improve auditability and reduce ambiguity when interpreting result changes.
+
+Architecture implication: scoring metric and feature-weight choices are made explicit, score-component traces are exposed, and planned sensitivity checks are carried into the evaluation design.
+
+## 2.5 Alignment Reliability and Reproducibility Evidence
+Cross-source track alignment is a prerequisite for this pipeline because user-history records and candidate-corpus records originate from different systems. Entity-resolution literature strongly supports staged pipelines combining blocking, candidate generation, and final matching rather than one-step fuzzy matching [@elmagarmid_duplicate_2007; @allam_improved_2018; @papadakis_blocking_2021]. This staged pattern improves both computational feasibility and linkage quality by reducing candidate space before expensive matching operations.
+
+Within thesis scope, ISRC-first matching with metadata fallback is consistent with this staged strategy. Exact identifier matching can provide high precision when identifiers are present and clean, while fallback matching can recover additional links when identifiers are missing or inconsistent. This does not guarantee perfect linkage, but it provides a methodologically grounded and inspectable approach.
+
+Neural entity-matching methods can improve difficult cases in noisy schemas [@barlaug_neural_2021]. However, they usually increase implementation and explanation complexity. For this MVP, the complexity-inspectability trade-off favors deterministic staged matching, with unmatched cases explicitly logged rather than absorbed by opaque matching heuristics.
+
+Evidence strength must remain bounded: most entity-resolution evidence cited here is cross-domain and does not fully establish music-specific ISRC reliability benchmarks [@papadakis_blocking_2021; @allam_improved_2018]. The chapter therefore treats alignment claims as methodologically grounded but uncertainty-bounded, avoiding overstatement.
+
+Reproducibility literature in recommender systems identifies a parallel risk: weak protocol and configuration reporting undermines accountability and claim credibility [@beel_towards_2016; @bellogin_improving_2021; @cavenaghi_systematic_2023; @ferrari_dacrema_troubling_2021; @zhu_bars_2022]. Framework-oriented studies similarly show that benchmark comparability depends on explicit protocol reporting rather than metric values alone [@anelli_elliot_2021; @bauer_exploring_2024].
+
+For this thesis, reproducibility is therefore a governance requirement, not merely implementation hygiene. Run-level configuration capture, deterministic replay capability, and versioned processing steps are necessary to make recommendations inspectable and critique-ready.
+
+Recent explainability work in music models (for example MusicLIME) reinforces the same principle at model-analysis level: explanation should expose contribution structure rather than only aggregated outcomes [@sotirou_musiclime_2025]. Although this thesis does not implement deep multimodal explainers, the design implication remains the same: explanation artifacts should remain coupled to actual mechanism-level behavior.
+
+Transition implication: Chapter 3 specifies staged alignment diagnostics, unmatched-rate reporting, fallback-path accounting, and run-level configuration logging so that alignment uncertainty and replayability remain inspectable.
+
+## 2.6 Literature Gap and Chapter Conclusion
+Across recommender and music-RS literature, model-centric performance improvement is well represented, including explanation techniques and hybrid/neural architectures. Less developed, in the current source set, is end-to-end guidance for engineering one coherent pipeline that simultaneously satisfies deterministic inspectability, explicit user controllability, practical cross-source alignment, and reproducibility-oriented accountability.
+
+This gap is especially relevant for projects that are not pursuing novel model invention but still need defensible engineering knowledge. The contribution in this thesis is therefore framed as design-consideration evidence: how to structure a transparent and controllable playlist pipeline under realistic constraints, how to justify trade-offs, and how to evaluate behavior in an auditable way.
+
+Within this scope, the literature converges on a consistent synthesis: method selection is strongest when objective-aligned rather than benchmark-driven in isolation; transparency claims are more defensible when explanation outputs remain tied to mechanism-level signals; music recommendation requires explicit handling of playlist-level sequencing and diversity/coherence constraints; deterministic feature-based scoring is defensible for inspectability and replayability while hybrid/neural systems remain important comparator context; cross-source alignment is best framed as a staged, diagnosable process with explicit uncertainty reporting; and reproducibility controls function as evidence-quality requirements rather than optional implementation polish.
+
+Residual limitations also remain explicit. Direct playlist-objective metric-comparison evidence in the current source set is limited, and music-specific alignment benchmark evidence is less comprehensive than cross-domain ER evidence. These constraints do not invalidate the chapter argument under current thesis scope, but they do bound generalization strength.
+
+Overall, Chapter 2 establishes a coherent basis for the locked research question by linking evidence to concrete design implications while keeping interpretation discipline explicit. It supports progression into design and implementation chapters without scope drift.
+
+The literature-to-design bridge remains operational in Chapter 3 by mapping each major architecture mechanism to supporting arguments developed here, particularly around explanation fidelity, controllability, staged alignment, and reproducibility controls.
+
+Interpretation boundaries for later chapters are equally clear: if the artefact performs well on transparency, controllability, and reproducibility criteria, the defensible claim is scope-specific viability of the chosen deterministic strategy, not universal superiority over hybrid or neural systems. If alignment diagnostics show unmatched or uncertain cases, that should be reported as expected bounded behavior under current evidence conditions.
+
+In summary, the literature is used here as decision support for engineering design under explicit constraints. The chapter justifies requirements, documents trade-offs, and sets responsible claim boundaries so that subsequent chapters can argue strongly without overstating what current evidence permits.
+
+Chapter transition: subsequent chapters evaluate the artefact against transparency, controllability, reproducibility, and rule-compliance criteria rather than state-of-the-art accuracy competition.
