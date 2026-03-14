@@ -8,9 +8,9 @@
 ## Items
 | ID | Priority | Status | Task | Evidence Output |
 | --- | --- | --- | --- | --- |
-| BL-001 | P0 | todo | Define ingestion schema for one platform export path | `06_data_and_sources/schema_notes.md` update + sample input/output mapping |
-| BL-002 | P0 | todo | Implement ingestion parser and validation checks | Parser module + validation log examples |
-| BL-003 | P0 | todo | Implement ISRC-first track alignment with fallback matching | Match report with matched/unmatched counts |
+| BL-001 | P0 | done | Define ingestion schema for one platform export path | `06_data_and_sources/schema_notes.md` update + sample input/output mapping |
+| BL-002 | P0 | done | Implement ingestion parser and validation checks | Parser module + validation log examples |
+| BL-003 | P0 | done | Implement ISRC-first track alignment with fallback matching | Match report with matched/unmatched counts |
 | BL-004 | P0 | todo | Build deterministic user preference profile generator | Profile artifact for at least one test user |
 | BL-005 | P0 | todo | Implement candidate retrieval and feature filtering | Candidate set diagnostics per run |
 | BL-006 | P0 | todo | Implement deterministic scoring function with weighted components | Score breakdown table per track |
@@ -28,5 +28,7 @@
 - None.
 
 ## Done
-- None.
+- BL-001: ingestion schema drafted and linked to normalized output fields.
+- BL-002: parser implemented and validated via `TC-001` with reproducibility check.
+- BL-003: ISRC-first alignment with metadata fallback implemented and validated via `TC-002`.
 

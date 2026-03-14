@@ -69,3 +69,16 @@ affected_files:
 - 01_requirements/ambiguity_flags.md
 urgency: high
 status: open
+
+id: MQ-007
+date: 2026-03-14
+topic: Evidence acceptability for alignment claims
+question: For literature support in this module, is cross-domain entity-resolution evidence acceptable as primary support for music track-alignment design, provided music-specific uncertainty is explicitly stated?
+why_it_matters: Determines whether Chapter 2 and Chapter 3 alignment rationale is assessment-safe or requires additional music-domain benchmark evidence before freeze.
+affected_files:
+- 08_writing/chapter2.md
+- 08_writing/chapter3.md
+- 09_quality_control/citation_checks.md
+- 03_literature/literature_gap_tracker.md
+urgency: medium
+status: open

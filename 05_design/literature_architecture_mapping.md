@@ -5,7 +5,7 @@ CONFIDENCE: medium
 ROLE: architecture justification and traceability
 SCOPE BASIS: `00_admin/Artefact_MVP_definition.md`
 EVALUATION BASIS: `00_admin/evaluation_plan.md`
-LITERATURE BASIS: P-001..P-034
+LITERATURE BASIS: P-001..P-049
 
 ## 1) Architecture Layer Review Against Locked MVP
 
@@ -37,7 +37,7 @@ LITERATURE BASIS: P-001..P-034
 
 ### Layer 2: Data Ingestion Layer
 - Literature theme: music_recommender_challenges
-- Supporting papers: P-005, P-006, P-011, P-012, P-013, P-019
+- Supporting papers: P-005, P-006, P-011, P-012, P-013, P-019, P-041
 - Design requirement: collect practical user-preference signals for pipeline input
 - System mechanism: one selected ingestion path plus manual seed/influence support
 
@@ -49,13 +49,13 @@ LITERATURE BASIS: P-001..P-034
 
 ### Layer 4: Preference Modelling Layer
 - Literature theme: feature_based_preference_representation (candidate)
-- Supporting papers: P-007, P-015, P-018, P-019, P-020, P-026, P-006, P-005
+- Supporting papers: P-007, P-015, P-018, P-019, P-020, P-026, P-006, P-005, P-043
 - Design requirement: build interpretable user profile for deterministic ranking
 - System mechanism: aggregate matched-track features plus influence tracks
 
 ### Layer 5: Candidate Dataset Layer
 - Literature theme: music_recommenders, evaluation_challenges
-- Supporting papers: P-006, P-008, P-009, P-018, P-024, P-028, P-005
+- Supporting papers: P-006, P-008, P-009, P-018, P-024, P-028, P-005, P-041
 - Design requirement: constrain candidate space for feasible deterministic evaluation
 - System mechanism: fixed canonical corpus (Music4All) and filtered candidate subset
 
@@ -79,21 +79,27 @@ LITERATURE BASIS: P-001..P-034
 
 ### Layer 9: Output and Explanation Layer
 - Literature theme: explainable_recommenders, transparency_and_scrutability
-- Supporting papers: P-001, P-002, P-003
+- Supporting papers: P-001, P-002, P-003, P-042
 - Design requirement: expose understandable reasons linked to actual ranking process
 - System mechanism: per-track score contribution and rule-adjustment explanation output
 
 ### Layer 10: Observability and Audit Layer
 - Literature theme: evaluation_of_explainable_systems (partial)
-- Supporting papers: P-032, P-033, P-034, P-010, P-021, P-022, P-023, P-001, P-003
+- Supporting papers: P-032, P-033, P-034, P-037, P-040, P-010, P-021, P-022, P-023, P-001, P-003, P-046
 - Design requirement: make internal decisions inspectable and testable
 - System mechanism: run logs for input, alignment, scoring configuration, and outputs
 
 ### Layer 11: Configuration and Execution Layer
 - Literature theme: evaluation_of_explainable_systems (partial)
-- Supporting papers: P-032, P-033, P-034, P-003, P-010, P-011, P-013, P-024, P-009 (method and reproducibility support)
+- Supporting papers: P-032, P-033, P-034, P-037, P-040, P-003, P-010, P-011, P-013, P-024, P-009 (method and reproducibility support)
 - Design requirement: deterministic replay and parameter-effect testing
 - System mechanism: explicit configuration profiles and repeatable execution controls
+
+### Comparator Context (Out of Core MVP)
+- Literature theme: multimodal_and_hybrid_tradeoff
+- Supporting papers: P-044, P-045, P-047, P-048, P-049
+- Design requirement: acknowledge stronger-complex methods without expanding MVP scope
+- System mechanism: include comparator discussion in evaluation framing, not core implementation
 
 ## 3) Weak Justification Flags (Needs Additional Literature Support)
 1. Track Alignment Layer
@@ -103,8 +109,8 @@ LITERATURE BASIS: P-001..P-034
 
 ## 4) Updated Support Strength Snapshot
 - User Interaction Layer: medium-high
-- Data Ingestion Layer: medium
-- Track Alignment Layer: medium-low
+- Data Ingestion Layer: medium-high
+- Track Alignment Layer: medium
 - Preference Modelling Layer: medium-high
 - Candidate Dataset Layer: high
 - Feature Processing Layer: medium-high
@@ -118,3 +124,4 @@ LITERATURE BASIS: P-001..P-034
 - One direct music-domain study on ISRC/metadata alignment reliability and ambiguity/error handling.
 - One recommender-system observability/logging practice paper with concrete schema or instrumentation guidance.
 - One cross-platform music identity-resolution evaluation paper (for Spotify-like metadata fields).
+- One independent third-party recommender study that uses Music4All (or equivalent) to strengthen external corpus-choice validation.
