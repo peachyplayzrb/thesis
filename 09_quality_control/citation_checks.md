@@ -1,9 +1,33 @@
 ﻿# Citation Checks
 
 ## Status
-- Date: 2026-03-14
-- Scope checked: Chapter 2 draft (`08_writing/chapter2.md`), Chapter 3 draft (`08_writing/chapter3.md`), Chapter 5 draft (`08_writing/chapter5.md`)
+- Date: 2026-03-15
+- Scope checked: Chapter 2 final draft (`08_writing/chatper2_final draft.md`), Chapter 3 draft (`08_writing/chapter3.md`), Chapter 5 draft (`08_writing/chapter5.md`)
 - Bibliography source: `08_writing/references.bib` (synchronized with legacy pack and subsequent vetted additions, including P-064 and P-065)
+
+## Verbatim Audit Closure (2026-03-15)
+- Audit artifact: `09_quality_control/chapter2_verbatim_audit.md`
+- Audit method: automated sentence-level matching between cited Chapter 2 claim text and extracted local PDF text (conservative lexical thresholds).
+- Audit scope: all citation keys used in `08_writing/chatper2_final draft.md`
+- Results snapshot:
+	- `total_claim_checks=92`
+	- `supported=2`
+	- `partially_supported=90`
+	- `weak_support=0`
+	- `no_match=0`
+- Interpretation note: zero weak-support keys indicates that current chapter claim wording has been tightened to remain within available source wording boundaries; partial support remains expected for paraphrased synthesis statements.
+
+## Temp Draft Verbatim Closure (2026-03-15)
+- Audit artifact: `09_quality_control/chapter2_temp_verbatim_audit.md`
+- Audit method: same automated sentence-level lexical matching workflow used for final Chapter 2 audit.
+- Audit scope: all citation keys used in `08_writing/chapter2_temp.md`
+- Results snapshot:
+	- `total_claim_checks=80`
+	- `supported=4`
+	- `partially_supported=76`
+	- `weak_support=0`
+	- `no_match=0`
+- Interpretation note: temp draft wording was iteratively tightened to remove weak-support claims under current local-PDF evidence extraction; this temp result is quality-validated but intentionally not marked as freeze replacement for `08_writing/chatper2_final draft.md`.
 
 ## Claim-Level Checks
 | Claim ID | Chapter 2 claim summary | Evidence keys used | Support level | Risk / note |
