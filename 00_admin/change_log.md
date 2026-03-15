@@ -3,15 +3,17 @@
 Use schema from `00_admin/operating_protocol.md`.
 
 ## C-001
+
+## C-006
 - date: 2026-03-15
-- proposed_by: user
+- proposed_by: AI + user
 - status: accepted
-- change_summary: Refine the research question and contribution framing to emphasize the artefact-based focus on transparency, controllability, and observability.
-- reason: The thesis is artefact-based and the controlled wording should reflect the intended engineering contribution more directly while preserving scope discipline.
-- evidence_basis: Existing scope lock and artefact MVP definition already include observability, deterministic methods, and artefact evaluation as core qualities.
-- affected_components: `00_admin/thesis_state.md`, `02_foundation/current_title_and_rq.md`, `02_foundation/contribution_statement.md`
-- impact_assessment: Low structural risk. The change sharpens wording without expanding beyond the locked MVP scope, but downstream chapter wording should be checked for exact RQ alignment.
-- approval_record: Approved explicitly by the user in chat on 2026-03-15.
+- change_summary: Create `08_writing/chapter2_draft_v9.md` from the prior Chapter 2 wording and retain `08_writing/chapter2_draft_v10.md` as the humanized variant.
+- reason: User requested archival of the older draft text in a separate v9 file while keeping the revised human-style v10 draft.
+- evidence_basis: User-provided full Chapter 2 old-version text in chat and the existing edited state of `08_writing/chapter2_draft_v10.md`.
+- affected_components: `08_writing/chapter2_draft_v9.md`, `08_writing/chapter2_draft_v10.md`, `00_admin/change_log.md`
+- impact_assessment: Medium-positive. Preserves draft lineage and improves traceability between old and revised chapter variants.
+- approval_record: Requested and confirmed by user in chat on 2026-03-15.
 
 ## C-002
 - date: 2026-03-15
