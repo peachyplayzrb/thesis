@@ -6,7 +6,7 @@
 Engineering an Automated, Transparent, and Controllable Playlist Generation Pipeline Using Cross-Source Music Preference Data
 
 - Current research question:
-What are the design considerations for engineering an automated, transparent, and controllable playlist generation pipeline using cross-source music preference data?
+What design considerations shape the engineering of a transparent, controllable, and observable automated playlist generation pipeline using cross-source music preference data?
 
 - Current objectives:
 1. Design an automated pipeline that generates playlists from user listening histories.
@@ -22,16 +22,17 @@ What are the design considerations for engineering an automated, transparent, an
 A deterministic single-user playlist generation pipeline with one practical ingestion path, ISRC-first track alignment, deterministic feature-based scoring, configurable playlist assembly rules, transparent score explanations, and reproducible run logging.
 
 - Current methodology position:
-Design Science Research with an iterative literature -> requirements -> design -> implementation -> evaluation flow. Contribution focus is engineering/design evidence for transparent and controllable recommendation pipelines, not ML model novelty.
+Design Science Research with an iterative literature -> requirements -> design -> implementation -> evaluation flow. Contribution focus is engineering/design evidence for transparent, controllable, and observable recommendation pipelines, not ML model novelty.
 
 - Current system scope:
-Locked MVP scope: single-user, content-based, deterministic playlist pipeline with transparency and controllability as mandatory qualities. Multi-adapter expansion, deep models, and large-scale user studies are out of scope for the core artefact.
+Locked MVP scope: single-user, content-based, deterministic playlist pipeline with transparency, controllability, and observability as mandatory qualities. Multi-adapter expansion, deep models, and large-scale user studies are out of scope for the core artefact.
 
 - Current evaluation direction:
 Evaluation focuses on BSc-feasible artefact testing aligned to module expectations:
 • reproducibility (same input/config => same output)
 • transparency/inspectability (score contributions and rule adjustments)
 • controllability (parameter sensitivity effects on outcomes)
+• observability (run logging, diagnostics, and traceable execution context)
 • playlist rule compliance and critical evaluation of limitations
 
 - Current data scope:
@@ -53,10 +54,10 @@ The system uses the Music4All / Music4All-Onion dataset as the primary candidate
 ## Update Control
 
 - Last updated:
-2026-03-13
+2026-03-15
 
 - Reason for last update:
-Scope stabilization pass after university requirement ingestion: locked MVP artefact boundary, evaluation strategy, and methodology flow for assessment-feasible delivery.
+Approved wording refinement to align the research question and contribution framing with the artefact-based thesis emphasis on transparency, controllability, and observability.
 
 ## Locked Definitions
 - Artefact scope lock: `00_admin/Artefact_MVP_definition.md`
