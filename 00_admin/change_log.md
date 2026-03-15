@@ -58,3 +58,14 @@ Use schema from `00_admin/operating_protocol.md`.
 - affected_components: `08_writing/chapter2.md`, `08_writing/chapter2_temp2.md`, `08_writing/chapter2_draft_locked_2026-03-15.md`, `00_admin/change_log.md`, `09_quality_control/rq_alignment_checks.md`, `09_quality_control/chapter_readiness_checks.md`, `09_quality_control/citation_checks.md`, `08_writing/chapter2_plan.md`
 - impact_assessment: High-positive. Establishes a single canonical Chapter 2 draft with locked snapshot and consistent project-control audit trail.
 - approval_record: Requested and confirmed by user in chat on 2026-03-15.
+
+## C-007
+- date: 2026-03-15
+- proposed_by: user + AI
+- status: accepted
+- change_summary: Lock Chapter 2 final draft by syncing `08_writing/chapter2_draft_locked_2026-03-15.md` to `08_writing/chapter2_draft_v11.md` and record finalization in project logs.
+- reason: User requested commit-ready final draft lock for supervisor submission.
+- evidence_basis: User-approved edits in `08_writing/chapter2_draft_v11.md`, citation verification pass, and dated lockfile sync.
+- affected_components: `08_writing/chapter2_draft_v11.md`, `08_writing/chapter2_draft_locked_2026-03-15.md`, `00_admin/change_log.md`
+- impact_assessment: High-positive. Establishes a dated frozen copy aligned with the approved final draft and improves submission traceability.
+- approval_record: Requested and confirmed by user in chat on 2026-03-15.
