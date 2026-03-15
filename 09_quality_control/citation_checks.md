@@ -2,25 +2,25 @@
 
 ## Status
 - Date: 2026-03-15
-- Scope checked: Chapter 2 final draft (`08_writing/chatper2_final draft.md`), Chapter 3 draft (`08_writing/chapter3.md`), Chapter 5 draft (`08_writing/chapter5.md`)
+- Scope checked: Chapter 2 final draft (`08_writing/chapter2_draft_v11.md` and synced `08_writing/chapter2.md`), Chapter 3 draft (`08_writing/chapter3.md`), Chapter 5 draft (`08_writing/chapter5.md`)
 - Bibliography source: `08_writing/references.bib` (synchronized with legacy pack and subsequent vetted additions, including P-064 and P-065)
 
 ## Chapter 2 Canonical Sync Note (2026-03-15)
-- Canonical working Chapter 2 is now `08_writing/chapter2.md`, synchronized from the latest approved `08_writing/chapter2_temp2.md` text.
+- Canonical working Chapter 2 is now `08_writing/chapter2.md`, synchronized from `08_writing/chapter2_draft_v11.md`.
 - Locked snapshot for this state: `08_writing/chapter2_draft_locked_2026-03-15.md`.
 - Citation keys introduced/retained in this sync are present in `08_writing/references.bib` (no unresolved key additions detected during this pass).
 
-## Verbatim Audit Closure (2026-03-15)
+## Verbatim Audit Status (2026-03-15)
 - Audit artifact: `09_quality_control/chapter2_verbatim_audit.md`
 - Audit method: automated sentence-level matching between cited Chapter 2 claim text and extracted local PDF text (conservative lexical thresholds).
-- Audit scope: all citation keys used in `08_writing/chatper2_final draft.md`
+- Audit scope: active Chapter 2 file `08_writing/chapter2_draft_v11.md`
 - Results snapshot:
-	- `total_claim_checks=92`
+	- `total_claim_checks=46`
 	- `supported=2`
-	- `partially_supported=90`
-	- `weak_support=0`
+	- `partially_supported=20`
+	- `weak_support=24`
 	- `no_match=0`
-- Interpretation note: zero weak-support keys indicates that current chapter claim wording has been tightened to remain within available source wording boundaries; partial support remains expected for paraphrased synthesis statements.
+- Interpretation note: parser support for author-year citations is now active and producing claim extraction for v11. Remaining closure risk is evidence-strength (`weak_support=24`), so Chapter 2 wording still needs targeted hardening if a strict zero-weak gate is retained.
 
 ## Temp Draft Verbatim Closure (2026-03-15)
 - Audit artifact: `09_quality_control/chapter2_temp_verbatim_audit.md`
@@ -32,7 +32,7 @@
 	- `partially_supported=76`
 	- `weak_support=0`
 	- `no_match=0`
-- Interpretation note: temp draft wording was iteratively tightened to remove weak-support claims under current local-PDF evidence extraction; this temp result is quality-validated but intentionally not marked as freeze replacement for `08_writing/chatper2_final draft.md`.
+- Interpretation note: temp draft wording was iteratively tightened to remove weak-support claims under current local-PDF evidence extraction; this temp result is quality-validated but intentionally not marked as freeze replacement for `08_writing/chapter2_draft_v11.md`.
 
 ## Claim-Level Checks
 | Claim ID | Chapter 2 claim summary | Evidence keys used | Support level | Risk / note |

@@ -69,3 +69,25 @@ Use schema from `00_admin/operating_protocol.md`.
 - affected_components: `08_writing/chapter2_draft_v11.md`, `08_writing/chapter2_draft_locked_2026-03-15.md`, `00_admin/change_log.md`
 - impact_assessment: High-positive. Establishes a dated frozen copy aligned with the approved final draft and improves submission traceability.
 - approval_record: Requested and confirmed by user in chat on 2026-03-15.
+
+## C-008
+- date: 2026-03-15
+- proposed_by: user + AI
+- status: accepted
+- change_summary: Re-synchronize canonical `08_writing/chapter2.md` to `08_writing/chapter2_draft_v11.md`, rerun verbatim audit on v11, and update QC/governance logs to reflect current parser limitation.
+- reason: Thesis currency check found that canonical Chapter 2 content diverged from the latest locked v11 draft and that the current verbatim audit parser did not extract claims from author-year citation style.
+- evidence_basis: SHA256 hash parity between `08_writing/chapter2.md` and `08_writing/chapter2_draft_v11.md`; regenerated `09_quality_control/chapter2_verbatim_audit.md` on v11 (`total_claim_checks=0`) with parser-note confirmation.
+- affected_components: `08_writing/chapter2.md`, `09_quality_control/chapter2_verbatim_audit.md`, `09_quality_control/chapter_readiness_checks.md`, `09_quality_control/citation_checks.md`, `09_quality_control/run_ch2_verbatim_audit.py`, `00_admin/unresolved_issues.md`, `00_admin/change_log.md`
+- impact_assessment: Medium-positive. Restores single-source Chapter 2 consistency and improves audit honesty by surfacing the tooling-format mismatch as an explicit open issue.
+- approval_record: Requested by user via thesis up-to-date check in chat on 2026-03-15.
+
+## C-009
+- date: 2026-03-15
+- proposed_by: user + AI
+- status: accepted
+- change_summary: Extend Chapter 2 verbatim-audit parser to support author-year citations and rerun audit on `08_writing/chapter2_draft_v11.md`.
+- reason: Close the parser-format blocker that produced `total_claim_checks=0` and restore meaningful claim-level citation verification for the active Chapter 2 style.
+- evidence_basis: Updated `09_quality_control/run_ch2_verbatim_audit.py` (author-year citation extraction and source-index key mapping), regenerated `09_quality_control/chapter2_verbatim_audit.md` (`total_claim_checks=46`, `weak_support=24`).
+- affected_components: `09_quality_control/run_ch2_verbatim_audit.py`, `09_quality_control/chapter2_verbatim_audit.md`, `09_quality_control/citation_checks.md`, `09_quality_control/chapter_readiness_checks.md`, `00_admin/unresolved_issues.md`, `00_admin/change_log.md`
+- impact_assessment: Medium-positive. Removes tooling blind spot and clarifies that remaining Chapter 2 closure risk is now evidence-strength hardening, not parser failure.
+- approval_record: Requested by user via thesis up-to-date continuation in chat on 2026-03-15.

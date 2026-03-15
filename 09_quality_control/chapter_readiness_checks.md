@@ -13,8 +13,8 @@
 - [x] Citations support claims and are checked in `09_quality_control/citation_checks.md`.
 - [x] Contradictory findings and limitations are acknowledged.
 - [x] Freeze-ready status confirmed with one bounded limitation logged in `09_quality_control/citation_checks.md`.
-- [x] Final draft synchronized in `08_writing/chatper2_final draft.md` (target length range met).
-- [x] Full cited-paper verbatim claim audit completed in `09_quality_control/chapter2_verbatim_audit.md` with `weak_support=0` for current Chapter 2 wording.
+- [x] Final draft synchronized in `08_writing/chapter2_draft_v11.md` and mirrored to canonical `08_writing/chapter2.md`.
+- [ ] Full cited-paper verbatim claim audit now runs on current Chapter 2 (`total_claim_checks=46`), but closure is pending because `weak_support=24` in `09_quality_control/chapter2_verbatim_audit.md`.
 - [x] Temp refinement cycle completed in `08_writing/chapter2_temp.md` with iterative rechecks and `weak_support=0` in `09_quality_control/chapter2_temp_verbatim_audit.md`.
 - [x] Canonical Chapter 2 draft synchronized to `08_writing/chapter2.md` with lock snapshot in `08_writing/chapter2_draft_locked_2026-03-15.md`.
 
@@ -54,4 +54,7 @@ Submission sweep blockers (2026-03-14): no explicit professionalism companion dr
 Progress note (2026-03-15): Chapter 2 finalization pass completed in `08_writing/chatper2_final draft.md` with claim-level hardening and automated verbatim evidence audit synchronization (`09_quality_control/chapter2_verbatim_audit.md`, `09_quality_control/citation_checks.md`).
 Progress note (2026-03-15): Non-freeze temp-cycle validation completed in `08_writing/chapter2_temp.md`; iterative hardening and reruns closed with `weak_support=0` in `09_quality_control/chapter2_temp_verbatim_audit.md`.
 Progress note (2026-03-15): Project-wide sync completed; latest approved `08_writing/chapter2_temp2.md` content promoted to `08_writing/chapter2.md` and snapshotted as `08_writing/chapter2_draft_locked_2026-03-15.md`.
+Progress note (2026-03-15): Canonical Chapter 2 was re-synchronized to `08_writing/chapter2_draft_v11.md` and lockfile hash parity was confirmed with `08_writing/chapter2_draft_locked_2026-03-15.md`.
+Progress note (2026-03-15): Verbatim audit parser was extended for author-year citations and now produces claim-level output on `08_writing/chapter2_draft_v11.md`.
+Open blocker note (2026-03-15): current Chapter 2 verbatim audit still reports `weak_support=24`; wording hardening is required before this check can be marked complete.
 

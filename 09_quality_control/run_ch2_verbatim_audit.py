@@ -1,6 +1,7 @@
 import csv
 import re
 import argparse
+import unicodedata
 from pathlib import Path
 from collections import defaultdict
 from multiprocessing import get_context
@@ -8,7 +9,7 @@ from pypdf import PdfReader
 from rapidfuzz import fuzz
 
 ROOT = Path(r"c:\Users\Timothy\Desktop\thesis-main\thesis-main")
-CHAPTER = ROOT / "08_writing" / "chatper2_final draft.md"
+CHAPTER = ROOT / "08_writing" / "chapter2.md"
 INDEX = ROOT / "03_literature" / "source_index.csv"
 REF_BIB = ROOT / "08_writing" / "references.bib"
 OUT_MD = ROOT / "09_quality_control" / "chapter2_verbatim_audit.md"
@@ -23,6 +24,16 @@ def normalize(s: str) -> str:
     s = s.lower()
     s = re.sub(r"[^a-z0-9\s]", " ", s)
     s = re.sub(r"\s+", " ", s).strip()
+    return s
+
+
+def fold_ascii(s: str) -> str:
+    return unicodedata.normalize("NFKD", s).encode("ascii", "ignore").decode("ascii")
+
+
+def norm_name_token(s: str) -> str:
+    s = fold_ascii(s).lower()
+    s = re.sub(r"[^a-z0-9]", "", s)
     return s
 
 
@@ -41,8 +52,54 @@ def split_sentences(text: str):
     return out
 
 
-def extract_claim_units(md_text: str):
+def first_author_surname(authors_field: str) -> str:
+    if not authors_field:
+        return ""
+    first = authors_field.split(";")[0].strip()
+    # Handles either "Surname" or "Surname, Given" style.
+    first = first.split(",")[0].strip()
+    return norm_name_token(first)
+
+
+def build_author_year_key_map(index_rows):
+    out = defaultdict(list)
+    for r in index_rows:
+        key = r.get("citation_key", "").strip()
+        if not key:
+            continue
+        year = str(r.get("year", "")).strip()
+        surname = first_author_surname(r.get("authors", ""))
+        if not year or not surname:
+            continue
+        out[(surname, year)].append(key)
+    return out
+
+
+def extract_author_year_keys(sentence: str, author_year_key_map):
+    keys = set()
+
+    for group in re.findall(r"\(([^()]{3,260})\)", sentence):
+        if not re.search(r"\b\d{4}\b", group):
+            continue
+        for chunk in group.split(";"):
+            m = re.search(
+                r"([A-Za-zÀ-ÖØ-öø-ÿ'`.-]+)(?:\s+et\s+al\.)?(?:\s+and\s+[A-Za-zÀ-ÖØ-öø-ÿ'`.-]+)?\s*,\s*(\d{4})",
+                chunk,
+                re.IGNORECASE,
+            )
+            if not m:
+                continue
+            surname = norm_name_token(m.group(1))
+            year = m.group(2)
+            for k in author_year_key_map.get((surname, year), []):
+                keys.add(k)
+
+    return sorted(keys)
+
+
+def extract_claim_units(md_text: str, author_year_key_map):
     # Capture sentence-level claim units around citation groups [@k1; @k2]
+    # and author-year patterns (Surname et al., YYYY; Surname and Surname, YYYY).
     lines = md_text.splitlines()
     blocks = []
     buf = []
@@ -63,14 +120,18 @@ def extract_claim_units(md_text: str):
         # split into sentences for finer matching
         for sent in split_sentences(block):
             cites = cite_pat.findall(sent)
-            if not cites:
-                continue
             keys = []
-            for group in cites:
-                for item in group.split(";"):
-                    k = item.strip().lstrip("@")
-                    if k:
-                        keys.append(k)
+            if cites:
+                for group in cites:
+                    for item in group.split(";"):
+                        k = item.strip().lstrip("@")
+                        if k:
+                            keys.append(k)
+            else:
+                keys.extend(extract_author_year_keys(sent, author_year_key_map))
+
+            if not keys:
+                continue
             clean_sent = cite_pat.sub("", sent).strip()
             clean_sent = re.sub(r"\s+", " ", clean_sent)
             if clean_sent:
@@ -284,8 +345,9 @@ def main():
     out_path = Path(args.out)
 
     md_text = chapter_path.read_text(encoding="utf-8")
-    claims = extract_claim_units(md_text)
     index_rows = load_index(INDEX)
+    author_year_key_map = build_author_year_key_map(index_rows)
+    claims = extract_claim_units(md_text, author_year_key_map)
     index_by_key = {r["citation_key"]: r for r in index_rows}
     pdfs = find_all_pdfs()
     key_to_pdf = map_keys_to_pdfs(index_rows, pdfs)
@@ -314,6 +376,8 @@ def main():
     lines.append("")
     lines.append(f"Scope: sentence-level claim checks in `{chapter_path}` against extracted text from mapped local PDFs.")
     lines.append("Method note: automated lexical matching (RapidFuzz token-set ratio) with manual thresholding.")
+    if not claims:
+        lines.append("Parser note: 0 claim units were detected after citation parsing for key-based and author-year styles; manual spot checks are required.")
     lines.append("")
 
     summary = {"supported": 0, "partially_supported": 0, "weak_support": 0, "no_match": 0}
