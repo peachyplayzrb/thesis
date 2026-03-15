@@ -5,6 +5,11 @@
 - Scope checked: Chapter 2 final draft (`08_writing/chatper2_final draft.md`), Chapter 3 draft (`08_writing/chapter3.md`), Chapter 5 draft (`08_writing/chapter5.md`)
 - Bibliography source: `08_writing/references.bib` (synchronized with legacy pack and subsequent vetted additions, including P-064 and P-065)
 
+## Chapter 2 Canonical Sync Note (2026-03-15)
+- Canonical working Chapter 2 is now `08_writing/chapter2.md`, synchronized from the latest approved `08_writing/chapter2_temp2.md` text.
+- Locked snapshot for this state: `08_writing/chapter2_draft_locked_2026-03-15.md`.
+- Citation keys introduced/retained in this sync are present in `08_writing/references.bib` (no unresolved key additions detected during this pass).
+
 ## Verbatim Audit Closure (2026-03-15)
 - Audit artifact: `09_quality_control/chapter2_verbatim_audit.md`
 - Audit method: automated sentence-level matching between cited Chapter 2 claim text and extracted local PDF text (conservative lexical thresholds).

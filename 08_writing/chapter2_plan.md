@@ -123,3 +123,8 @@ Step 5: Freeze gate check (final)
 - Completed: created separate working variant `08_writing/chapter2_temp.md` for additional evidence-discipline hardening.
 - Completed: repeated rerun/recheck loop until `09_quality_control/chapter2_temp_verbatim_audit.md` reported `weak_support=0`.
 - Constraint honored: temp version is intentionally not frozen as replacement for `08_writing/chatper2_final draft.md`.
+
+## 14) Canonical Draft Lock Update (2026-03-15)
+- Completed: latest approved Chapter 2 text consolidated in `08_writing/chapter2_temp2.md` and promoted to canonical `08_writing/chapter2.md`.
+- Completed: dated lock snapshot created as `08_writing/chapter2_draft_locked_2026-03-15.md` for auditability and rollback safety.
+- Completed: project-control synchronization recorded in `00_admin/change_log.md`, `09_quality_control/rq_alignment_checks.md`, `09_quality_control/chapter_readiness_checks.md`, and `09_quality_control/citation_checks.md`.

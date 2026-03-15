@@ -45,3 +45,14 @@ Use schema from `00_admin/operating_protocol.md`.
 - affected_components: `08_writing/chapter2_temp.md`, `09_quality_control/chapter2_temp_verbatim_audit.md`, `09_quality_control/run_ch2_verbatim_audit.py`, `09_quality_control/citation_checks.md`, `09_quality_control/chapter_readiness_checks.md`, `09_quality_control/rq_alignment_checks.md`, `08_writing/chapter2_plan.md`, `00_admin/change_log.md`
 - impact_assessment: High-positive for evidence discipline. Produces a verified zero-weak temp draft while preserving non-freeze intent for this branch of Chapter 2 work.
 - approval_record: Requested and confirmed by user in chat on 2026-03-15.
+
+## C-005
+- date: 2026-03-15
+- proposed_by: AI + user
+- status: accepted
+- change_summary: Promote `08_writing/chapter2_temp2.md` to canonical Chapter 2 draft, create dated locked snapshot, and synchronize project control logs.
+- reason: User requested project-wide readiness closure with a locked current Chapter 2 version and up-to-date governance trace.
+- evidence_basis: User-approved iterative revisions in `08_writing/chapter2_temp2.md`, repository status review, and synchronized QC/admin updates completed in this run.
+- affected_components: `08_writing/chapter2.md`, `08_writing/chapter2_temp2.md`, `08_writing/chapter2_draft_locked_2026-03-15.md`, `00_admin/change_log.md`, `09_quality_control/rq_alignment_checks.md`, `09_quality_control/chapter_readiness_checks.md`, `09_quality_control/citation_checks.md`, `08_writing/chapter2_plan.md`
+- impact_assessment: High-positive. Establishes a single canonical Chapter 2 draft with locked snapshot and consistent project-control audit trail.
+- approval_record: Requested and confirmed by user in chat on 2026-03-15.
