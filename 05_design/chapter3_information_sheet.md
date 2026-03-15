@@ -10,7 +10,7 @@ System Design and Architecture
 Engineering an Automated, Transparent, and Controllable Playlist Generation Pipeline Using Cross-Source Music Preference Data
 
 ## Research Question
-What are the design considerations for engineering an automated, transparent, and controllable playlist generation pipeline using cross-source music preference data?
+What design considerations shape the engineering of a transparent, controllable, and observable automated playlist generation pipeline using cross-source music preference data?
 
 ## Purpose of Chapter 3
 Chapter 3 explains how the proposed system is designed and why it is designed that way.
@@ -19,7 +19,7 @@ It translates literature insights into a concrete architecture and does not repo
 ## Design Methodology
 - Design science orientation.
 - Iterative flow: literature findings -> engineering requirements -> system architecture -> automated pipeline.
-- Focus on interpretability, controllability, and inspectability rather than ML leaderboard performance.
+- Focus on interpretability, controllability, observability, and inspectability rather than ML leaderboard performance.
 
 ## Literature-Driven Requirement Traceability (Seed)
 - Opaque recommendation logic -> inspectable process -> deterministic scoring with score traces.
@@ -86,6 +86,7 @@ It translates literature insights into a concrete architecture and does not repo
 - Decision logic is inspectable.
 - Explanations are faithful to scoring logic.
 - User controls influence results.
+- Run behavior is observable through structured diagnostics and logs.
 - Runs can be reproduced from saved configuration.
 
 ## Assumptions and Limitations

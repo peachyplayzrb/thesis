@@ -12,7 +12,7 @@ Produce a high-quality Chapter 2 that:
 - is ready for Chapter 3 and evaluation alignment.
 
 Locked RQ reference:
-What are the design considerations for engineering an automated, transparent, and controllable playlist generation pipeline using cross-source music preference data?
+What design considerations shape the engineering of a transparent, controllable, and observable automated playlist generation pipeline using cross-source music preference data?
 
 ## 2) Viability Verdict To Respect
 Source: `09_quality_control/rq_alignment_checks.md` (RQC-004)
@@ -28,7 +28,7 @@ The literature supports a deterministic, inspectable, and controllable music pla
 - Establish recommender families and trade-offs.
 - Justify goal-aligned method selection (not universal best-model claim).
 
-2. Transparency, explainability, and controllability
+2. Transparency, explainability, controllability, and observability
 - Distinguish post-hoc vs transparency-by-design.
 - State explanation-evaluation trade-offs and user-variability in control effects.
 

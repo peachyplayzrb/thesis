@@ -3,11 +3,11 @@
 DOCUMENT STATUS: active
 CONFIDENCE: medium
 ROLE: recurring validation log for research-question/title alignment
-LAST_UPDATED: 2026-03-14
+LAST_UPDATED: 2026-03-15
 
 ## Current Locked Reference
 - Title: Engineering an Automated, Transparent, and Controllable Playlist Generation Pipeline Using Cross-Source Music Preference Data
-- Research question: What are the design considerations for engineering an automated, transparent, and controllable playlist generation pipeline using cross-source music preference data?
+- Research question: What design considerations shape the engineering of a transparent, controllable, and observable automated playlist generation pipeline using cross-source music preference data?
 - Source of truth: `00_admin/thesis_state.md`
 
 ## Check Rules
@@ -26,6 +26,7 @@ LAST_UPDATED: 2026-03-14
 | 2026-03-14 | RQC-006 | Final Chapter 2 freeze-readiness pass | `08_writing/chapter2.md`, `09_quality_control/citation_checks.md`, `09_quality_control/chapter_readiness_checks.md`, `00_admin/thesis_state.md` | aligned | Chapter 2 remains fully aligned with locked title/RQ/scope and is freeze-ready with one accepted bounded evidence limitation. | Proceed with Chapter 3/4 continuity while retaining the bounded metric-comparison limitation note in QC artifacts. | AI |
 | 2026-03-14 | RQC-007 | Targeted V-ACT-002 strengthening pass | `08_writing/chapter2.md`, `09_quality_control/citation_checks.md`, `09_quality_control/claim_evidence_map.md`, `00_admin/thesis_state.md` | aligned | Playlist-objective metric-sensitivity support was strengthened using APC and playlist-evaluation evidence while preserving bounded wording on deterministic similarity-function isolation. | Keep freeze status as `freeze_ready_with_bounded_limitation`; continue Chapter 4 execution with narrowed limitation tracked in QC logs. | AI |
 | 2026-03-14 | RQC-008 | Post-ingestion pass for Furini 2024 and Schweiger 2025 | `08_writing/chapter2.md`, `03_literature/paper_notes/P-064_furini_social_2024.md`, `03_literature/paper_notes/P-065_schweiger_impact_2025.md`, `09_quality_control/citation_checks.md`, `09_quality_control/claim_evidence_map.md`, `00_admin/thesis_state.md` | aligned | New music-domain metric evidence further strengthens V-ACT-002, while residual limitation remains bounded to limited broad deterministic-metric isolation evidence across playlist objectives. | Keep freeze status as `freeze_ready_with_bounded_limitation`; proceed to Chapter 4 evidence execution. | AI |
+| 2026-03-15 | RQC-009 | Terminology and RQ wording synchronization pass across foundation/design/writing artifacts | `00_admin/thesis_state.md`, `02_foundation/current_title_and_rq.md`, `05_design/chapter3_information_sheet.md`, `08_writing/chapter2.md`, `08_writing/chapter3.md`, `08_writing/chapter5.md`, `09_quality_control/rq_alignment_checks.md` | aligned | RQ wording and transparency/controllability/observability framing are now synchronized in active thesis artifacts, with evaluation matrix scaffolding added for Chapter 4 continuity. | Proceed to final Chapter 2/3 drafting and implementation using `00_admin/evaluation_plan.md` EP-1 matrix and `07_implementation/test_notes.md` TC-003..TC-010 pack. | AI |
 
 ## Current Risk Notes
 - Residual risk remains on music-specific alignment benchmark evidence (cross-domain ER support is strong but not fully music-specific).

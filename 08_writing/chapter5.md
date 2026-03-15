@@ -1,7 +1,7 @@
 ﻿# Chapter 5
 
 ## 5.1 Evaluation Interpretation and Comparator Framing
-Evaluation results in this thesis are interpreted as evidence for design-goal alignment (transparency, controllability, and reproducibility), not as claims of universal recommendation superiority. This interpretation follows literature showing that practical value and scientific validity depend on explicit objective-metric alignment and clear reporting of protocol assumptions [@jannach_measuring_2019; @bauer_exploring_2024; @anelli_elliot_2021; @ferrari_dacrema_troubling_2021].
+Evaluation results in this thesis are interpreted as evidence for design-goal alignment (transparency, controllability, observability, and reproducibility), not as claims of universal recommendation superiority. This interpretation follows literature showing that practical value and scientific validity depend on explicit objective-metric alignment and clear reporting of protocol assumptions [@jannach_measuring_2019; @bauer_exploring_2024; @anelli_elliot_2021; @ferrari_dacrema_troubling_2021].
 
 Accordingly, complex hybrid and self-supervised recommender families are treated as comparator context that motivates careful scope positioning rather than direct implementation requirements for this locked MVP artefact [@liu_multimodal_2025; @yu_self_supervised_2024].
 
@@ -9,9 +9,9 @@ Accordingly, complex hybrid and self-supervised recommender families are treated
 The contribution claim is scoped to deterministic pipeline engineering under explicit transparency and observability constraints. Any discussion of performance trade-offs is framed as conditional on objectives, data conditions, and protocol choices, consistent with the chapter-level citation risk controls.
 
 ## 5.3 Findings in Relation to the Research Question
-The research question asks for design considerations for engineering an automated, transparent, and controllable playlist generation pipeline using cross-source music preference data. Based on the literature synthesis and current implementation evidence, the key design considerations are:
+The research question asks what design considerations shape the engineering of a transparent, controllable, and observable automated playlist generation pipeline using cross-source music preference data. Based on the literature synthesis and current implementation evidence, the key design considerations are:
 
-1. Goal-aligned method selection over model-family absolutism. Method choice should be driven by target qualities (inspectability, controllability, reproducibility) rather than assumed universal superiority of any single recommender family [@roy_systematic_2022; @jannach_measuring_2019].
+1. Goal-aligned method selection over model-family absolutism. Method choice should be driven by target qualities (inspectability, controllability, observability, reproducibility) rather than assumed universal superiority of any single recommender family [@roy_systematic_2022; @jannach_measuring_2019].
 2. Staged cross-source alignment with explicit uncertainty handling. ISRC-first matching with metadata fallback is a practical and inspectable design, but unmatched/ambiguous cases must be surfaced as first-class outputs [@papadakis_blocking_2021; @allam_improved_2018].
 3. Deterministic scoring and rule-based assembly for traceability. Explicit feature contributions and rule effects make explanation outputs and debugging behavior auditable in ways that opaque pipelines do not [@zhang_explainable_2020; @tintarev_survey_2007].
 4. Evaluation protocol discipline as part of system design. Reproducibility and interpretation quality depend on logging, configuration traceability, and clear metric-objective alignment [@beel_towards_2016; @bauer_exploring_2024; @anelli_elliot_2021].
@@ -39,5 +39,5 @@ Future work should extend this artefact in ways that preserve traceability while
 4. Add at least one comparator pipeline (for example a lightweight hybrid baseline) with protocol-matched evaluation to improve trade-off analysis without scope inflation.
 5. Expand from one ingestion adapter to additional adapters only after MVP evidence is complete, so comparability and reproducibility are maintained.
 
-Collectively, these steps would strengthen external validity and comparative depth while keeping the thesis contribution centered on transparent, controllable engineering design.
+Collectively, these steps would strengthen external validity and comparative depth while keeping the thesis contribution centered on transparent, controllable, and observable engineering design.
 

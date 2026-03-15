@@ -12,7 +12,7 @@ Second, users need practical influence over recommendation behavior. Prior work 
 
 Third, playlist generation requires constraints beyond item-level relevance because sequence and collection-level quality matter [@schedl_current_2018; @gatzioura_hybrid_2019; @neto_algorithmic_2023].
 
-Fourth, reproducibility and auditability must be engineered as system properties through explicit configuration capture and run-level logging [@beel_towards_2016; @bellogin_improving_2021; @cavenaghi_systematic_2023].
+Fourth, observability, reproducibility, and auditability must be engineered as system properties through explicit configuration capture and run-level logging [@beel_towards_2016; @bellogin_improving_2021; @cavenaghi_systematic_2023].
 
 Finally, canonical corpus choice should remain evidence-backed: Music4All is a documented multi-signal dataset suitable for content-driven music experimentation, which supports its use as the thesis candidate-track corpus [@pegoraro_santana_music4all_2020].
 
@@ -82,12 +82,12 @@ Table 3.1 documents this section-level handoff mapping from Chapter 2 consequenc
 
 | Chapter 2 source | Chapter 2 design consequence | Chapter 3 design commitment |
 | --- | --- | --- |
-| Section 2.1 (Foundations and scope positioning) | Architecture choices should be justified against transparency, controllability, and reproducibility objectives instead of benchmark-only framing. | The architecture rationale in Sections 3.2 to 3.8 is written as objective-aligned engineering justification under locked MVP constraints.
+| Section 2.1 (Foundations and scope positioning) | Architecture choices should be justified against transparency, controllability, observability, and reproducibility objectives instead of benchmark-only framing. | The architecture rationale in Sections 3.2 to 3.8 is written as objective-aligned engineering justification under locked MVP constraints.
 | Section 2.2 (Transparency, explainability, controllability) | Expose explicit user controls and evaluate sensitivity rather than assuming a universal control strategy. | Section 3.2 defines controllability requirements and Section 3.8 defines configuration-based parameter control to support sensitivity testing.
 | Section 2.3 (Music and playlist challenges) | Keep playlist assembly as a distinct stage and treat similarity as decision support, not ground truth. | Section 3.6 separates playlist assembly from item scoring and encodes explicit playlist-level constraints.
 | Section 2.4 (Deterministic design rationale) | Make metric and feature-weight choices explicit and include sensitivity checks. | Sections 3.5 and 3.6 use explicit deterministic feature-based scoring and document parameterization for later sensitivity evaluation.
 | Section 2.5 (Alignment reliability and reproducibility) | Add staged alignment diagnostics, unmatched-rate reporting, and run-level config logging. | Sections 3.4 and 3.7 define staged alignment, unmatched-track reporting, and run-level observability artifacts.
-| Section 2.6 (Gap and chapter conclusion) | Evaluate artefact quality against transparency, controllability, reproducibility, and rule compliance rather than SOTA competition. | Sections 3.1 and 3.7 frame Chapter 4 evaluation around governance and inspectability criteria aligned with the locked evaluation direction.
+| Section 2.6 (Gap and chapter conclusion) | Evaluate artefact quality against transparency, controllability, observability, reproducibility, and rule compliance rather than SOTA competition. | Sections 3.1 and 3.7 frame Chapter 4 evaluation around governance and inspectability criteria aligned with the locked evaluation direction.
 
 This handoff mapping keeps the Chapter 2 conclusions operational and prevents drift between literature interpretation and architecture specification.
 

@@ -200,3 +200,128 @@ Use these templates for consistent evidence capture across reproducibility, cont
 - `notes`:
 	- Track whether unmatched behavior stays within accepted MVP limitation bounds.
 
+## Chapter 4 Execution Pack (From Evaluation Matrix EP-1)
+
+Use these as the next priority run set. Keep artifacts under `07_implementation/implementation_notes/run_outputs/`.
+
+## Test Case TC-003: Deterministic Replay (EP-REPRO-001)
+
+- Purpose: Validate deterministic replay under fixed inputs and configuration.
+- Inputs:
+	- fixed normalized events artifact
+	- fixed influence tracks artifact
+	- fixed config profile (`config_hash` recorded)
+- Procedure:
+	1. Run pipeline three times with identical artifacts/config.
+	2. Record ranked and playlist output hashes for each run.
+	3. Compare run1/run2/run3 hashes.
+- Expected:
+	- all ranked hashes identical
+	- all playlist hashes identical
+- Pass criteria:
+	- `ranked_output_hash_match=True`
+	- `playlist_output_hash_match=True`
+
+## Test Case TC-004: Explanation Fidelity Reconstruction (EP-EXPL-001)
+
+- Purpose: Verify explanation payload is faithful to score traces.
+- Inputs:
+	- one completed run with score traces and explanation payloads
+	- 5 sampled recommended tracks
+- Procedure:
+	1. Reconstruct final score from stored components for each sampled track.
+	2. Compare reconstructed and reported final scores.
+	3. Check mandatory explanation fields are present.
+- Expected:
+	- reconstruction error within tolerance
+	- no missing mandatory fields
+- Pass criteria:
+	- `final_score_reconstructable=True`
+	- `reconstruction_error <= defined_tolerance`
+
+## Test Case TC-005: Influence Track Sensitivity (EP-CTRL-001)
+
+- Purpose: Validate controllability through influence tracks.
+- Baseline:
+	- run with no additional influence tracks
+- Variant:
+	- run with defined influence-track set
+- Procedure:
+	1. Keep all non-target parameters fixed.
+	2. Compare top-k overlap and rank shifts.
+	3. Trace shifts to profile and score components.
+- Pass criteria:
+	- non-trivial, interpretable rank or composition shift
+	- mechanism-level explanation available in traces
+
+## Test Case TC-006: Feature Weight Sensitivity (EP-CTRL-002)
+
+- Purpose: Validate controllability through feature-weight changes.
+- Baseline:
+	- default feature-weight profile
+- Variants:
+	- increase one selected feature weight
+	- decrease same feature weight
+- Procedure:
+	1. Hold all other parameters fixed.
+	2. Compare score-component deltas and rank shifts.
+	3. Confirm direction matches expected feature emphasis.
+- Pass criteria:
+	- observed score/rank effects are directionally consistent
+	- effects are traceable in score components
+
+## Test Case TC-007: Candidate Threshold Sensitivity (EP-CTRL-003)
+
+- Purpose: Validate controllability at candidate-generation stage.
+- Variants:
+	- stricter threshold
+	- looser threshold
+- Procedure:
+	1. Compare candidate pool size across variants.
+	2. Compare final playlist overlap with baseline.
+	3. Check output changes remain interpretable.
+- Pass criteria:
+	- candidate pool size changes with threshold direction
+	- downstream changes are explainable from diagnostics
+
+## Test Case TC-008: Playlist Rule Compliance (EP-RULE-001 / EP-RULE-002)
+
+- Purpose: Validate playlist assembly constraints.
+- Controls tested:
+	- playlist length target
+	- artist repetition limit
+- Procedure:
+	1. Run baseline and rule-variant configurations.
+	2. Inspect rule logs and final playlists.
+	3. Record any rule violations.
+- Pass criteria:
+	- actual length equals configured target
+	- artist repeats do not exceed limit
+	- if violated, explicit violation diagnostics exist
+
+## Test Case TC-009: Observability Completeness (EP-OBS-001)
+
+- Purpose: Validate required run-log schema completeness.
+- Procedure:
+	1. Execute one end-to-end run.
+	2. Verify presence of required sections:
+		- run metadata
+		- run config
+		- ingestion/alignment diagnostics
+		- scoring traces
+		- assembly diagnostics
+		- final outputs
+- Pass criteria:
+	- all required sections present and linked by `run_id`
+
+## Test Case TC-010: Alignment Path Visibility (EP-ALIGN-001)
+
+- Purpose: Validate ISRC-first/fallback/unmatched reporting quality.
+- Procedure:
+	1. Execute alignment with mixed ISRC availability sample.
+	2. Record `matched_isrc`, `matched_fallback`, and `unmatched_count`.
+	3. Record unmatched reason categories.
+- Pass criteria:
+	- all match-path counts reported
+	- unmatched reasons recorded for all unmatched entries
+

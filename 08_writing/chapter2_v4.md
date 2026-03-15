@@ -53,7 +53,7 @@ A related issue is the semantic gap between low-level computable features and hi
 
 Dataset choice is part of the same design logic. Music4All is defensible as a canonical corpus because it offers multi-signal resources suitable for reproducible content-driven experimentation [@pegoraro_santana_music4all_2020], with independent usage in related benchmark-informed work [@ru_improving_2023]. The claim remains scoped to thesis suitability, not universal dataset optimality.
 
-These domain findings motivate the next step of the narrative funnel: explicit feature-based representations that support transparent scoring and controllable playlist generation.
+These domain findings motivate the next step of the narrative funnel: explicit feature-based representations that support transparent scoring and controllable, observable playlist generation.
 
 ## 2.6 Feature-Based Representation and Deterministic Pipeline Rationale
 Feature-based representations are central to this thesis because they keep recommendation signals inspectable. In content-driven music settings, tracks can be represented through structured descriptors derived from metadata and audio features [@bogdanov_semantic_2013; @deldjoo_content-driven_2024]. This enables recommendation behavior to be analyzed as explicit relationships in feature space rather than opaque latent interactions.

@@ -82,9 +82,58 @@ Evaluation evidence should be stored in reproducible, cross-referenced artifacts
 - Supporting summaries: reproducibility tables, sensitivity tables, and rule-compliance tables in this chapter
 - Quality-control linkage: update `09_quality_control/claim_evidence_map.md` and `09_quality_control/chapter_readiness_checks.md` after final result integration
 
-## 4.7 Limits and Interpretation Discipline
+## 4.7 Control-To-Metric Results Matrix
+
+This section reports outcomes for the execution matrix defined in `00_admin/evaluation_plan.md` (Table EP-1).
+
+Table 4.3 is used to summarize pass/fail outcomes and key evidence links.
+
+| EP test ID | Related test note ID | Status | Key metric summary | Evidence artifact(s) | Interpretation note |
+| --- | --- | --- | --- | --- | --- |
+| `EP-REPRO-001` | `TC-003` | `pending` | `ranked_hash_match=`, `playlist_hash_match=` | run hash logs | |
+| `EP-EXPL-001` | `TC-004` | `pending` | `reconstruction_error=`, `fields_complete=` | score traces + explanation payloads | |
+| `EP-CTRL-001` | `TC-005` | `pending` | `top_k_overlap_delta=`, `rank_shift=` | baseline/variant outputs | |
+| `EP-CTRL-002` | `TC-006` | `pending` | `component_delta=`, `rank_shift=` | config diff + score traces | |
+| `EP-CTRL-003` | `TC-007` | `pending` | `candidate_pool_delta=`, `playlist_overlap=` | candidate diagnostics + outputs | |
+| `EP-RULE-001` | `TC-008` | `pending` | `length_target=`, `length_actual=` | playlist output + rule logs | |
+| `EP-RULE-002` | `TC-008` | `pending` | `max_artist_repeats=` | playlist output + rule logs | |
+| `EP-OBS-001` | `TC-009` | `pending` | `required_sections_present=` | run log bundle | |
+| `EP-ALIGN-001` | `TC-010` | `pending` | `matched_isrc=`, `matched_fallback=`, `unmatched_rate=` | alignment summary | |
+
+## 4.8 Reproducibility and Observability Results
+
+Table 4.4 should summarize reproducibility/observability-specific outcomes.
+
+| Check | Baseline run | Repeat run(s) | Result | Notes |
+| --- | --- | --- | --- | --- |
+| Ranked output identity | `pending` | `pending` | `pending` | |
+| Playlist output identity | `pending` | `pending` | `pending` | |
+| Run schema completeness | `pending` | `pending` | `pending` | |
+| Alignment diagnostics completeness | `pending` | `pending` | `pending` | |
+
+## 4.9 Controllability and Rule-Compliance Results
+
+Table 4.5 should summarize parameter-sensitivity and assembly-rule outcomes.
+
+| Control under test | Baseline value | Variant value | Observed effect | Directionally consistent | Status |
+| --- | --- | --- | --- | --- | --- |
+| Influence tracks | `pending` | `pending` | `pending` | `pending` | `pending` |
+| Feature weight | `pending` | `pending` | `pending` | `pending` | `pending` |
+| Candidate threshold | `pending` | `pending` | `pending` | `pending` | `pending` |
+| Playlist length rule | `pending` | `pending` | `pending` | `pending` | `pending` |
+| Artist repetition rule | `pending` | `pending` | `pending` | `pending` | `pending` |
+
+## 4.10 Explanation Fidelity Results
+
+Table 4.6 should summarize explanation-fidelity verification.
+
+| Sampled track count | Reconstructable scores | Missing explanation fields | Max reconstruction error | Status |
+| --- | --- | --- | --- | --- |
+| `pending` | `pending` | `pending` | `pending` | `pending` |
+
+## 4.11 Limits and Interpretation Discipline
 Results in this chapter should be interpreted as design-evidence for a scoped deterministic pipeline, not as universal recommender superiority claims. Any weak or mixed outcomes (for example high unmatched rate or unstable sensitivity behavior) should be explicitly documented and carried into Chapter 5 limitations.
 
-## 4.8 Chapter Summary
+## 4.12 Chapter Summary
 Chapter 4 operationalizes the Chapter 3 design into a transparent evaluation workflow centered on reproducibility, inspectability, controllability, and playlist-rule compliance. This preserves continuity with Chapter 2 literature consequences and prepares evidence-grounded interpretation for Chapter 5.
 
