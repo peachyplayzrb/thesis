@@ -91,3 +91,36 @@ Use schema from `00_admin/operating_protocol.md`.
 - affected_components: `09_quality_control/run_ch2_verbatim_audit.py`, `09_quality_control/chapter2_verbatim_audit.md`, `09_quality_control/citation_checks.md`, `09_quality_control/chapter_readiness_checks.md`, `00_admin/unresolved_issues.md`, `00_admin/change_log.md`
 - impact_assessment: Medium-positive. Removes tooling blind spot and clarifies that remaining Chapter 2 closure risk is now evidence-strength hardening, not parser failure.
 - approval_record: Requested by user via thesis up-to-date continuation in chat on 2026-03-15.
+
+## C-010
+- date: 2026-03-16
+- proposed_by: user + AI
+- status: accepted
+- change_summary: Define and approve a full revised thesis document structure plan covering front matter, Chapters 1-5, references, appendices, and chapter-level evaluation/validity expectations.
+- reason: User requested a complete revised plan to lock document structure before continued chapter drafting.
+- evidence_basis: User-provided draft structure plan and accepted revised full plan issued in chat on 2026-03-16.
+- affected_components: `00_admin/change_log.md`
+- impact_assessment: Medium-positive. Improves structural clarity, chapter boundary control, and evaluation defensibility for remaining writing work.
+- approval_record: Requested and confirmed by user in chat on 2026-03-16.
+
+## C-011
+- date: 2026-03-17
+- proposed_by: user + AI
+- status: accepted
+- change_summary: Update Abstract wording in `08_writing/thesis_master_draft_merged.md` with user-directed revisions: grammar/typo cleanup, terminology consistency to Music4All dataset, revised DSR phrasing, and replacement of the abstract findings placeholder with short draft bullet points describing what Chapter 4 results will report.
+- reason: User requested iterative abstract refinement in-session, specifically asking for grammar fixes, retention of draft-like wording style, and a small bullet-point placeholder describing planned findings content.
+- evidence_basis: In-session user prompts and accepted edits to the active abstract text in `08_writing/thesis_master_draft_merged.md`.
+- affected_components: `08_writing/thesis_master_draft_merged.md`, `00_admin/change_log.md`
+- impact_assessment: Medium-positive. Improves abstract readability and preserves scope-accurate contribution framing while keeping draft-stage placeholders explicit.
+- approval_record: Requested and confirmed by user in chat on 2026-03-17.
+
+## C-012
+- date: 2026-03-17
+- proposed_by: user + AI
+- status: proposed
+- change_summary: Replace the temporary abstract draft-bullets block with final 2 to 3 sentence Chapter 4 findings text once implementation and evaluation tables are populated.
+- reason: Current abstract includes provisional bullet placeholders that are useful during drafting but should be replaced by final evidence-backed findings before submission.
+- evidence_basis: Existing draft bullets in `08_writing/thesis_master_draft_merged.md` and the planned Chapter 4 results contract in `00_admin/evaluation_plan.md`.
+- affected_components: `08_writing/thesis_master_draft_merged.md`, `00_admin/change_log.md`
+- impact_assessment: Medium-positive. Preserves draft workflow now while creating an explicit cleanup checkpoint for submission readiness.
+- approval_record: Proposed in-session on 2026-03-17 after user confirmation to log a pending follow-up.
