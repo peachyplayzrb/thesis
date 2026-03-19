@@ -95,6 +95,33 @@ impacted_files:
 review_date:
 2026-04-10
 
+id: D-005
+date: 2026-03-19
+status: accepted
+
+context:
+Implementing the full pipeline (BL-004 through BL-012) depends only on having pre-aligned track data in the format that BL-002/BL-003 would produce. Real ingestion and alignment code (BL-001, BL-002, BL-003) adds implementation risk and work upfront without unblocking the core pipeline sooner.
+
+decision:
+Start pipeline implementation using synthetic pre-aligned data assets. Defer real ingestion parser (BL-001, BL-002) and real alignment implementation (BL-003) to a later pass after the core pipeline is proven end-to-end with synthetic data.
+
+alternatives_considered:
+- Implement ingestion first as originally planned (BL-001 -> BL-002 -> BL-003 -> BL-004+)
+- Use leftover test asset stubs from pre-restart as a base
+
+rationale:
+Synthetic pre-aligned data unblocks preference profiling, scoring, assembly, and evaluation work immediately. Ingestion is an independent adapter concern that can be slotted back in once the core pipeline is stable. This reduces risk of getting blocked on input format edge cases before any pipeline behavior can be tested.
+
+evidence_basis:
+n/a — pragmatic delivery decision.
+
+impacted_files:
+- 07_implementation/backlog.md
+- 07_implementation/implementation_plan.md
+
+review_date:
+none
+
 id: D-004
 date: 2026-03-13
 status: accepted

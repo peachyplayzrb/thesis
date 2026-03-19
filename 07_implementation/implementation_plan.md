@@ -6,10 +6,17 @@
 - Produce evidence artifacts during implementation, not after it.
 
 ## Phases
-1. Phase A: Ingestion and data alignment
-- Define and validate one ingestion path.
-- Implement ISRC-first matching and fallback metadata logic.
+1. Phase A: Synthetic data bootstrap and core pipeline development
+- Create synthetic pre-aligned data assets (BL-016): a hand-crafted aligned JSONL and a candidate stub CSV that match the schemas defined in `06_data_and_sources/schema_notes.md`.
+- Use these assets to drive BL-004 through BL-012 without real ingestion.
+- Real ingestion and alignment (BL-001, BL-002, BL-003) are deferred to Phase A-Real (see below).
+- Rationale: unblocks core pipeline implementation immediately; see decision_log.md D-005.
+
+1a. Phase A-Real: Ingestion and data alignment (deferred)
+- Define and validate one real ingestion path (BL-001, BL-002).
+- Implement ISRC-first matching and fallback metadata logic (BL-003).
 - Output alignment diagnostics and unmatched-track reporting.
+- Resume after the core pipeline (Phases B–D) is proven end-to-end on synthetic data.
 
 2. Phase B: Deterministic preference and candidate scoring
 - Construct deterministic preference profile from imported history and influence tracks.

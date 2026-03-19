@@ -11,18 +11,27 @@
 - Latest synced commit at handoff prep: `4d422b0516cb2d6d866ee4cd8470a0715397f992`.
 - Locked operating constraints: keep title/RQ/scope/methodology aligned with `00_admin/thesis_state.md` and use change proposals for protected changes.
 - Current implementation status: clean restart as of 2026-03-19. All items reset to todo.
+- Strategy update (2026-03-19, D-005): start with synthetic pre-aligned data. BL-001, BL-002, BL-003 deferred until after the core pipeline is proven end-to-end. See decision_log.md D-005.
 - Recommended immediate next work order:
-	1. `BL-001` ingestion schema definition.
-	2. `BL-002` ingestion parser implementation.
-	3. `BL-003` ISRC-first track alignment.
+	1. `BL-016` create synthetic pre-aligned data assets.
+	2. `BL-004` deterministic preference profile generator.
+	3. `BL-005` candidate retrieval and feature filtering.
+	4. `BL-006` deterministic scoring function.
+	5. `BL-007` rule-based playlist assembly.
+	6. `BL-008` transparency outputs.
+	7. `BL-009` observability logging.
+	8. `BL-010` reproducibility tests.
+	9. `BL-011` controllability tests.
+	10. `BL-012` document limitations.
+	11. `BL-001`, `BL-002`, `BL-003` real ingestion + alignment (deferred, resume after core pipeline is stable).
 - Evidence-first reminder: for each completed backlog item, write the expected evidence artifact and link it in the matching file listed in the backlog table.
 
 ## Items
 | ID | Priority | Status | Task | Evidence Output |
 | --- | --- | --- | --- | --- |
-| BL-001 | P0 | todo | Define ingestion schema for one platform export path | `06_data_and_sources/schema_notes.md` update + sample input/output mapping |
-| BL-002 | P0 | todo | Implement ingestion parser and validation checks | Parser module + validation log examples |
-| BL-003 | P0 | todo | Implement ISRC-first track alignment with fallback matching | Match report with matched/unmatched counts |
+| BL-001 | P0 | deferred | Define ingestion schema for one platform export path | `06_data_and_sources/schema_notes.md` update + sample input/output mapping |
+| BL-002 | P0 | deferred | Implement ingestion parser and validation checks | Parser module + validation log examples |
+| BL-003 | P0 | deferred | Implement ISRC-first track alignment with fallback matching | Match report with matched/unmatched counts |
 | BL-004 | P0 | todo | Build deterministic user preference profile generator | Profile artifact for at least one test user |
 | BL-005 | P0 | todo | Implement candidate retrieval and feature filtering | Candidate set diagnostics per run |
 | BL-006 | P0 | todo | Implement deterministic scoring function with weighted components | Score breakdown table per track |
@@ -35,6 +44,7 @@
 | BL-013 | P1 | todo | Add lightweight CLI or script entrypoint for repeatable runs | Run command documentation |
 | BL-014 | P1 | todo | Create automated sanity checks for input schema and deterministic output hashes | Scripted check results |
 | BL-015 | P2 | todo | Add second ingestion adapter scaffold (out of core scope) | Backlog-only design note |
+| BL-016 | P0 | todo | Create synthetic pre-aligned data assets for core pipeline development | `07_implementation/implementation_notes/test_assets/` — synthetic aligned JSONL + Music4All candidate stub CSV |
 
 ## In Progress
 - None.
