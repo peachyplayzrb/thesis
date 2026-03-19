@@ -9,6 +9,11 @@
 
 - UI-003 (2026-03-19): Thesis-wide citation verification and literature leverage pass not yet fully tracked in repository control files.
 	- impact: Risk of citation overreach, underused evidence from available PDFs, and missed opportunities to strengthen Chapters 2 to 5 before submission hardening.
+	- progress_update_2026-03-19:
+		1. Governance tracking created and logged (`C-013`) with active timeline work package (`WP-CITE-001`).
+		2. Initial PDF claim-validation and extracted-evidence artifacts committed under `10_resources/papers/_extracted/` and `10_resources/papers/_extracted_claim_check/`.
+		3. Chapter 2 master draft and related writing artifacts committed for traceability.
+		4. Remaining work centers on full completion of the UI-003 action list and final synthesis report.
 	- next_action: Execute the following thesis-wide work package using local PDFs in `10_resources/papers/` and chapter claims in active drafts.
 		1. Build claim-citation matrix from Chapter 2 and extend mapping to Chapters 3 to 5 where literature-backed claims appear.
 		2. Verify each claim against the cited PDF and record verdicts: supported, partially_supported, weak_support, or mismatch.

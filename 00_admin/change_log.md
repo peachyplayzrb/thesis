@@ -135,3 +135,14 @@ Use schema from `00_admin/operating_protocol.md`.
 - affected_components: `00_admin/unresolved_issues.md`, `00_admin/change_log.md`
 - impact_assessment: High-positive. Improves governance traceability, closes planning ambiguity, and creates an auditable execution path for citation hardening and chapter-strength uplift.
 - approval_record: Requested and confirmed by user in chat on 2026-03-19.
+
+## C-014
+- date: 2026-03-19
+- proposed_by: user + AI
+- status: accepted
+- change_summary: Perform chat-closure repository hygiene: commit governance updates, citation-evidence extraction artifacts, and remaining thesis writing/document files in separate traceable commits; leave only one transient Office lock file uncommitted, then commit-all on user request.
+- reason: User requested all chat work to be logged/tracked and committed before closing the chat.
+- evidence_basis: Commits `71305fa`, `1fe4cfd`, and `c091c10`; extracted evidence files under `10_resources/papers/_extracted/` and `10_resources/papers/_extracted_claim_check/`; updated Chapter 2 master draft and thesis writing artifacts.
+- affected_components: `00_admin/change_log.md`, `00_admin/unresolved_issues.md`, `08_writing/thesis_master_draft_merged.md`, `08_writing/chapter2_plan.md`, `08_writing/chapter3.md`, `08_writing/chapter3_v2.md`, `08_writing/chapter3_plan.md`, `08_writing/thesis_document_template_aligned.md`, `08_writing/Thesis.docx`, `10_resources/papers/_extracted/*`, `10_resources/papers/_extracted_claim_check/*`, `10_resources/papers/rp/files/578/*`, `01_requirements/university_documents/*`
+- impact_assessment: High-positive. Preserves full auditability of this chat’s work and minimizes closure risk from untracked artifacts.
+- approval_record: Explicitly requested by user in chat on 2026-03-19 ("commit everything...log everything...").
