@@ -3,6 +3,15 @@
 Use schema from `00_admin/operating_protocol.md`.
 
 ## C-001
+- date: 2026-03-12
+- proposed_by: AI + user
+- status: accepted
+- change_summary: Initial repository and thesis environment setup; folder structure created, Git repository initialized on inner thesis-main folder, working branch `setup/initial-work` created, and AI operating protocol established.
+- reason: Foundational setup required before any thesis work could be tracked or executed.
+- evidence_basis: Repo memory note in `/memories/repo/setup.md`; initial commit history.
+- affected_components: All top-level thesis folders; `00_admin/operating_protocol.md`
+- impact_assessment: High-positive. Established the traceable environment all subsequent work depends on.
+- approval_record: Implicitly approved by project initiation on 2026-03-12.
 
 ## C-006
 - date: 2026-03-15
@@ -146,3 +155,13 @@ Use schema from `00_admin/operating_protocol.md`.
 - affected_components: `00_admin/change_log.md`, `00_admin/unresolved_issues.md`, `08_writing/thesis_master_draft_merged.md`, `08_writing/chapter2_plan.md`, `08_writing/chapter3.md`, `08_writing/chapter3_v2.md`, `08_writing/chapter3_plan.md`, `08_writing/thesis_document_template_aligned.md`, `08_writing/Thesis.docx`, `10_resources/papers/_extracted/*`, `10_resources/papers/_extracted_claim_check/*`, `10_resources/papers/rp/files/578/*`, `01_requirements/university_documents/*`
 - impact_assessment: High-positive. Preserves full auditability of this chat’s work and minimizes closure risk from untracked artifacts.
 - approval_record: Explicitly requested by user in chat on 2026-03-19 ("commit everything...log everything...").
+## C-015
+- date: 2026-03-19
+- proposed_by: AI + user
+- status: accepted
+- change_summary: Audit and repair all logging gaps before starting Phase B implementation. Filled in EXP-001 and EXP-002 in `experiment_log.md` for completed BL-001/002/003 work. Reconstructed missing body for C-001 in change log. Populated `dataset_registry.md` with Music4All entry, feature column schema, and access notes.
+- reason: User requested confirmation that the environment automatically logs and tracks decisions. Audit found three concrete gaps: empty experiment log, empty C-001, and blank dataset registry. All fixed before implementation continues.
+- evidence_basis: BL-001/002/003 done status in backlog; TC-001/TC-002 pass records in `test_notes.md`; repo memory setup note; D-001 dataset decision.
+- affected_components: `07_implementation/experiment_log.md`, `00_admin/change_log.md`, `06_data_and_sources/dataset_registry.md`
+- impact_assessment: Medium-positive. Closes logging debt before Phase B begins and ensures all completed work is traceable from this point forward.
+- approval_record: Requested and confirmed by user in chat on 2026-03-19.

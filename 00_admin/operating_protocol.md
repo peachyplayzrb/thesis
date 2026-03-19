@@ -179,3 +179,33 @@ All other folders remain inactive unless a concrete need is logged.
 - Literature evidence takes priority over early design assumptions.
 - Architecture may evolve as literature and implementation evidence matures.
 - If architecture, literature themes, and claimed gap conflict, log the conflict and propose options; do not force agreement.
+
+## 13) Implementation Logging Rules
+
+These rules apply whenever implementation work is in progress (Phase A onward).
+
+### Per backlog item
+Every backlog item that moves to `in-progress` or `done` requires:
+1. An `EXP-XXX` entry in `07_implementation/experiment_log.md` — created with `status: planned` before coding starts, updated to `pass` or `fail` after the run.
+2. A backlog row status update in `07_implementation/backlog.md`.
+3. A `C-###` entry in `00_admin/change_log.md` covering the affected files and reason.
+
+### Per design decision
+Any implementation-time choice (algorithm selection, schema field definition, threshold value, scoring weight, assembly rule) must produce a `D-###` entry in `00_admin/decision_log.md` with full rationale and alternatives considered.
+
+### Evidence artifacts
+Each completed `EXP-XXX` entry must link to at least one concrete output artifact (e.g. a JSONL, JSON, CSV, or log file under `07_implementation/implementation_notes/run_outputs/`). No backlog item is `done` without a linked artifact.
+
+### Reproducibility check
+Every implementation run must include a deterministic repeat run (same inputs + config → same outputs). The result (`yes`/`no` + hash comparison if applicable) must be recorded in the `EXP-XXX` entry.
+
+## 14) Session Start Checklist
+
+At the start of every session (or on any "make sure everything is logged" prompt), the AI must:
+1. Read `00_admin/thesis_state.md` — verify title/RQ/scope unchanged.
+2. Read `07_implementation/backlog.md` — note current item statuses.
+3. Read `07_implementation/experiment_log.md` — check every `done` backlog item has an `EXP-XXX` entry. Create any that are missing.
+4. Read `00_admin/change_log.md` — confirm highest `C-###` and fix any stub/empty entries.
+5. Read `00_admin/decision_log.md` — confirm highest `D-###`.
+6. Read `00_admin/unresolved_issues.md` — flag any open blockers.
+7. Report findings and fixes before starting work.
