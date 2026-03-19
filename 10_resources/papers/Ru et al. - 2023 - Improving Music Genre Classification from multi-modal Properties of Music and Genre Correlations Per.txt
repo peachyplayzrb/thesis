@@ -1,0 +1,463 @@
+IMPROVING MUSIC GENRE CLASSIFICA TION FROM MULTI-MODAL PROPERTIES OF
+MUSIC AND GENRE CORRELATIONS PERSPECTIVE
+Ganghui Ru‡, Xulong Zhang‡, Jianzong Wang∗, Ning Cheng, Jing Xiao
+Ping An Technology (Shenzhen) Co., Ltd., China
+ABSTRACT
+Music genre classification has been widely studied in past
+few years for its various applications in music information
+retrieval. Previous works tend to perform unsatisfactorily,
+since those methods only use audio content or jointly use au-
+dio content and lyrics content inefficiently. In addition, as
+genres normally co-occur in a music track, it is desirable to
+capture and model the genre correlations to improve the per-
+formance of multi-label music genre classification. To solve
+these issues, we present a novel multi-modal method lever-
+aging audio-lyrics contrastive loss and two symmetric cross-
+modal attention, to align and fuse features from audio and
+lyrics. Furthermore, based on the nature of the multi-label
+classification, a genre correlations extraction module is pre-
+sented to capture and model potential genre correlations. Ex-
+tensive experiments demonstrate that our proposed method
+significantly surpasses other multi-label music genre classi-
+fication methods and achieves state-of-the-art result on Mu-
+sic4All dataset.
+Index Terms — music genre classification, multi-label,
+multi-modal, symmetric cross-modal attention, contrastive
+loss
+1. INTRODUCTION
+With the growing prosperity of digital music market, how to
+correctly classify music genres has become an urgent prob-
+lem. In various tasks of music information retrieval (MIR),
+music genre classification (MGC) is one of the oldest and
+most important tasks, and has become a research hotspot due
+to its wide application prospects. However, since the com-
+plex nature and diverse expressions of music tracks, music
+usually has more than one genre category, characterizing a
+multi-label classification problem. Compared with conven-
+tional MGC task, multi-label MGC is more challenging due
+to the combinatorial nature of the output space.
+Early studies [1, 2] on MGC task were based on digital
+signal processing and traditional machine learning methods,
+which use some hand-crafted features as inputs. Limited by
+the ability of representation, it is difficult for these methods
+‡These authors contributed equally to this work.
+∗Corresponding author: Jianzong Wang, jzwang@188.com.
+to extract deep and abstract information. Recently, meth-
+ods based on deep learning gradually become mainstream,
+showing great potential. Some studies [3, 4, 5] contributed
+to MGC task using CNN or RNN. These methods usually
+used single information (uni-modal) such as audio or lyrics,
+thus leading to prone to performance bottlenecks. With the
+rapid development of computing resources, many MIR tasks
+have evolved from uni-modal to multi-modal. Some studies
+[6, 7, 8] utilized both audio content and text content of a
+music track for music genre classification. Especially, [9]
+proposed a multi-modal method with the hierarchical cross-
+attention network for music emotion recognition. In [10],
+Vatolkin et al. analyzed the impact of six different modalities
+on the MGC task, including audio signals, lyric texts, album
+cover images, audio semantic tags, playlist co-occurrences,
+and symbolic MIDI representations. Although the methods
+mentioned above have achieved certain success by simple
+fusion of multi-modal features, they ignore that features
+from different modalities are inherently heterogeneous and
+misaligned. To address this issue, we propose a novel multi-
+modal method leveraging audio-lyrics contrastive loss and
+two symmetric cross-modal attention, to align and fuse the
+features from audio and lyrics.
+In order to improve the performance of multi-label MGC,
+in addition to using the multi-modality nature of music, we
+can also start from the nature of the multi-label problem. To
+address the multi-label classification problem, the easiest way
+is to treat each genre individually. However, this approach is
+inherently limited because it ignores the potential genre corre-
+lations which can be approximated as co-occurrence and mu-
+tual exclusion. As this correlation is essentially a topological
+structure, we design a genre correlations extraction module to
+capture and model it.
+This paper has the following main contributions: 1) we
+propose a novel multi-modal approach leveraging audio-
+lyrics contrastive loss and two symmetric cross-modal atten-
+tion, to align and fuse the features from audio and lyrics; 2)
+based on the nature of the multi-label classification problem,
+we design a genre correlations extraction module which can
+capture and model the potential genre correlations. 3) our
+proposed method significantly surpasses the previous meth-
+ods and achieves state-of-the-art performance on Music4All
+dataset.
+ICASSP 2023 - 2023 IEEE International Conference on Acoustics, Speech and Signal Processing (ICASSP) | 978-1-7281-6327-7/23/$31.00 ©2023 IEEE | DOI: 10.1109/ICASSP49357.2023.10097241
+Authorized licensed use limited to: University of Wolverhampton. Downloaded on March 13,2026 at 04:29:40 UTC from IEEE Xplore.  Restrictions apply. 
+
+audio
+lyrics
+audio
+encoder
+lyrics
+encoder
+A-L loss Flatten
+FC
+...
+Multi-label loss
+Music representation learning moduleMulti-modal fusion module
+audio  
+cross-modal 
+attention 
+lyrics  
+corss-modal 
+attention 
+Q
+K
+K
+V
+V
+Q
+Genre correlations extraction module
+...
+genre embedding
+n x d n x n
+&
+......
+...
+correlation matrix
+......
+...
+...
+n 
+GCN ...
+Fig. 1. Architectures of our proposed model, which consists of three modules: music representation learning module, multi-
+modal fusion module, and genre correlations extraction module.
+2. METHOD
+As illustrated in Figure 1, our model consists of three main
+modules: music representation learning module, multi-modal
+fusion module, and genre correlations extraction module.
+The music representation learning module extracts features
+from audio and lyrics modalities respectively. Furthermore,
+an audio-lyrics contrastive loss (A-L loss) is applied to align
+features obtained from different modalities before sending
+them into the multi-modal fusion module. The multi-modal
+fusion module is composed of two symmetrical mechanisms
+and efficiently fuses different features. The genre correlations
+extraction module starts from the nature of the multi-label
+problem and uses a graph convolution network (GCN) to
+model potential correlations between genres. Finally, a clas-
+sifier takes the dot-product of the fused feature representation
+and the embeddings of genre categories as input to predict
+genres.
+2.1. Music Representation Learning Module
+The music representation learning module consists of an
+audio encoder and a lyrics encoder, which takes audio and
+lyrics as input and outputs corresponding features respec-
+tively. According to the pre-processing procedure adopted in
+[11], the audio is cropped to 30 seconds and preprocessed to
+a Mel-spectrogram with 22050HZ sampling rate, 512 hop-
+size, and 128 Mel-filters. Compared with waveform audio,
+Mel-spectrogram has two advantages: 1) it is designed based
+on the theory of human aural perception and instrument fre-
+quency range; 2) it can significantly reduce the amount of
+data that the network needs to process.
+Considering the powerful feature extraction capabilities
+of convolutional neural networks, we refer to [9] to develop
+the audio encoder that consists of five convolutional blocks,
+whose input is the preprocessed Mel-spectrogram and output
+is the abstract audio features.
+As we all know, BERT model [12] has a strong ability to
+extract text information, which has been confirmed in many
+NLP tasks. Therefore, BERT model is used as the lyrics en-
+coder and its structure is not changed or improved. Consider-
+ing that BERT model requires a large amount of text corpus
+for training, we directly use the pre-trained BERT model and
+freeze its parameters.
+2.2. Multi-modal Fusion Module
+It is crucial to effectively fuse features from different modal-
+ities in multi-modal approaches. Since it is difficult for
+methods based on concatenation or element addition to make
+the information interaction between different modalities,
+we design a novel multi-modal fusion module which con-
+sists of two symmetric cross-modal attention to effectively
+fuse multi-modal features. The cross-modal attention is an
+extended application of self-attention [13] on multi-modal
+tasks, which emphasizes important parts of features by com-
+puting similarity between different features. The calculation
+Authorized licensed use limited to: University of Wolverhampton. Downloaded on March 13,2026 at 04:29:40 UTC from IEEE Xplore.  Restrictions apply. 
+
+formula of cross-modal attention is:
+Attention(Qα, Kβ, Vβ) = sof tmax(
+QαK T
+β√
+d
+)Vβ (1)
+where α and β denote different modalities. Considering that
+both audio and lyrics contribute significantly to genre clas-
+sification, our proposed two symmetric cross-modal atten-
+tion consists of audio cross-modal attention and lyrics cross-
+modal attention. In audio cross-modal attention, Query is ob-
+tained from audio feature, and both Key and Value are ob-
+tained from lyrics feature. It is the opposite in lyrics cross-
+modal attention.
+2.3. Genre Correlations Extraction Module
+How to effectively capture and model the correlations be-
+tween genres to improve the classification performance is es-
+pecially important for multi-label MGC task. Considering
+that this correlation is essentially a topological structure, we
+design a graph convolution network [14] which is well suited
+to handle discrete topological data to model the genre correla-
+tions. The graph convolution network takes a set of nodes and
+the corresponding adjacency matrix as inputs, and outputs the
+updated nodes. A pre-trained BERT [12] model is used to
+encode genre names as semantic embedding and treat them
+as genre node features. The correlation matrix is obtained by
+calculating the co-occurrence conditional probability, and its
+calculation formula is:
+A(1)
+ij = P (Lj|Li) = N (LiLj)
+N (Lj) (2)
+where N (Lj) is the number of occurrences of genre j, and
+N (LiLj) denotes the concurring times of genre i and genre
+j. However, this statistical conditional probability is deter-
+mined by the distribution of samples in the training set, which
+can be influenced significantly by noise and class imbalance.
+Genre names have inherent textual information because they
+are summed up based on musical and cultural understand-
+ings. Therefore, we utilise the similarity matrix to alleviate
+the shortcomings of the co-occurrence conditional probabil-
+ity matrix. The similarity matrix is obtained by computing
+the cosine similarity between node features, which represents
+the proximity of genre names in the semantic space. The cal-
+culation formula of similarity matrix is as follows:
+A(2)
+ij = cos(Fi, Fj) = Fi ∗ Fj
+||Fi||2 · ||Fj||2
+(3)
+where Fi and Fj denote the feature of node i and node j, and
+cos(·) is the cosine similarity function. The correlation matrix
+is then defined as A = 1
+2 (A(1) + A(2)).
+2.4. Contrastive Audio-lyrics Alignment
+In MGC task, existing multi-modal methods directly fuse
+features obtained from different modalities without consider-
+ing the alignment between these modalities. However, These
+methods lead to less satisfactory fusion because they ignore
+that features from different modalities are inherently hetero-
+geneous and misaligned. To address this issue, we propose an
+audio-lyrics contrastive loss to align features obtained from
+different modalities. Specifically, given the embedding of au-
+dio and lyrics, we optimize a similarity function s(·) between
+audio A and lyrics L:
+s(A, L) = ga(Ea) · gl(El) (4)
+where ga(·) and gl(·) are linear projection layers which
+transform the embedding Ea and El to a low-dimensional
+space. Following [15, 16, 17], for each input audio-lyrics pair
+⟨Ai, Li⟩, the audio-lyrics contrastive loss is composed of two
+symmetric terms, audio-to-lyrics term:
+LA→L = − log exp(s(Ai, Li)/τ )PB
+j=1 exp(s(Ai, Lj)/τ )
+(5)
+and lyrics-to-audio term:
+LL→A = − log exp(s(Li, Ai)/τ )PB
+j=1 exp(s(Li, Aj)/τ )
+(6)
+where B is the batch size and τ is a adaptive parame-
+ter. The audio-lyrics contrastive loss is then defined as
+LA−L = 1
+2 (LA→L + LL→A).
+To enable the whole model to be trained end-to-end, we
+also adopted the commonly used BCE loss as the multi-label
+loss. The final training loss is the weighted sum of LA−L and
+LBCE , which can be defined as:
+L = λLA−L + (1 − λ)LBCE (7)
+where λ is a hyperparameter that is used to balanceLA−L and
+LBCE .
+3. EXPERIMENTS
+3.1. Experimental Setup
+We use Music4All dataset [18] to train and test our model.
+Considering that Music4All dataset is noisy and contains mul-
+tiple languages in music lyrics, we filtered out music tracks
+with missing information or non-English lyrics in our exper-
+iment. 43650 samples with 87 genre categories are finally
+selected and are split into 3 subsets with approximately 70%,
+10%, and 20% samples respectively. In the experiment, we
+set the learning rate to 0.0001 and decays by half every 50
+epochs, and set the batch size to 16. Following [11, 18], ac-
+curacy and F-measure are adopted to evaluate our proposed
+model.
+Authorized licensed use limited to: University of Wolverhampton. Downloaded on March 13,2026 at 04:29:40 UTC from IEEE Xplore.  Restrictions apply. 
+
+Table 1. Comparison with other multi-modal methods on
+Music4All dataset.
+Method Accuracy F-measure
+Santana’s model [18] 0.354 0.419
+Pandeya’s model [11] 0.387 0.442
+Our proposed model 0.456 0.534
+Table 2. Ablation studies on three components. A-L loss,
+SCMA, and GCEM denote audio-lyrics contrastive loss, two
+symmetric cross-modal attention, and genre correlations ex-
+traction module respectively.
+A-L loss SCMA GCEM Accuracy F-measure
+0.372 0.438
+✓ 0.396 0.475
+✓ 0.408 0.491
+✓ 0.403 0.487
+✓ ✓ 0.425 0.513
+✓ ✓ 0.419 0.508
+✓ ✓ 0.437 0.515
+✓ ✓ ✓ 0.456 0.534
+3.2. Results and Analysis
+In order to compare fairly with other multi-label MGC meth-
+ods, we reproduced Pandeya’s model [11] and Santana’s
+model [18] on the filtered dataset with the same experimen-
+tal settings. The comparison results with other multi-modal
+methods are shown in Table 1. Our model achieves 0.456 in
+accuracy and 0.534 in F-measure, which significantly outper-
+forms previous models by a large margin. Santana’s model
+achieves the worst results because it only used audio informa-
+tion, which indicates that multi-modal information is crucial
+for improving the classification performance of multi-label
+MGC methods. Pandeya’s model uses both audio informa-
+tion and lyrics information as input and shows the state-of-art
+performance in multi-label MGC task. However, this method
+does not achieve substantial performance gains (only from
+0.354 to 0.387) in accuracy. This is mainly because it simply
+concatenates the features from different modalities, and does
+not consider the differences between modalities.
+3.3. Ablation Study
+1) three key components: We conducted a set of ablation
+experiments to evaluate three key components: audio-lyrics
+contrastive loss (A-L loss), symmetric cross-modal attention
+(SCMA), and genre correlations extraction module (GCEM).
+Table 2 reports the ablation results. We find that the
+baseline model without any components shows the worst
+performance, only achieving 0.372 in accuracy and 0.438
+in F-measure. In contrast, no matter which component is
+added, the performance of the model increases accordingly,
+indicating that all three components contribute to the model’s
+(a) accuracy
+ (b) F-measure
+Fig. 2. The accuracy and F-measure of our proposed model
+when using different λ. The horizontal and vertical coordi-
+nates represent the value of λ and the performance of the
+model, respectively.
+performance. Interestingly, we observe that adding A-L loss
+or SCMA achieves 0.396 or 0.408 in accuracy respectively,
+which both surpass the baseline model. This implies that
+both feature alignment and effective fusion strategies help to
+eliminate disparity. In addition, it is notable that additional
+GCEM brings considerable improvement in the relevant abla-
+tion experiments, justifying the exploration of the correlation
+between genres. In all ablation experiments, we find that
+the most complete model achieves the best results, indicating
+that the three components can be combined flexibly without
+conflict.
+2) different λ in training loss: Figure 2 shows the perfor-
+mance of our proposed model when using different λ in Eq.
+7. We find that with the change of λ, both accuracy and F-
+measure increased first and then decreased, and achieved the
+maximum value when λ=0.3. This demonstrates that proper
+A-L loss can help improve the performance of classification.
+It is notable that the model fails to converge when λ=1.0,
+which shows that the multi-label loss is crucial to the con-
+vergence of the model.
+4. CONCLUSION
+In this paper, we improve multi-label music genre classifica-
+tion from multi-modal properties of music and genre corre-
+lations perspective and have presented a novel multi-modal
+method leveraging audio-lyrics contrastive loss and two sym-
+metric cross-modal attention, to align and fuse features from
+audio and lyrics. Furthermore, a graph convolution network
+is proposed to capture and model potential genre correlations.
+Extensive experiments demonstrate that our proposed method
+significantly surpasses other multi-label MGC methods and
+achieves state-of-the-art result on Music4All dataset.
+5. ACKNOWLEDGEMENT
+Supported by the Key Research and Development Program
+of Guangdong Province (grant No. 2021B0101400003) and
+Corresponding author is Jianzong Wang (jzwang@188.com).
+Authorized licensed use limited to: University of Wolverhampton. Downloaded on March 13,2026 at 04:29:40 UTC from IEEE Xplore.  Restrictions apply. 
+
+6. REFERENCES
+[1] Michael I. Mandel and Daniel P. W. Ellis, “Song-level
+features and support vector machines for music classifi-
+cation,” in International Society for Music Information
+Retrieval Conference, 2005.
+[2] James Bergstra, Norman Casagrande, Dumitru Erhan,
+Douglas Eck, and Bal´azs K´egl, “Aggregate features and
+adaboost for music classification,” Machine learning,
+vol. 65, no. 2, pp. 473–484, 2006.
+[3] Chia-Hung Yeh, Wen-Yu Tseng, Chia-Yen Chen, Yu-
+Dun Lin, Yi-Ren Tsai, Hsuan-I Bi, Yu-Ching Lin, and
+Ho-Yi Lin, “Popular music representation: chorus de-
+tection & emotion recognition,” Multimedia tools and
+applications, vol. 73, no. 3, pp. 2103–2128, 2014.
+[4] Nikki Pelchat and Craig M Gelowitz, “Neural network
+music genre classification,” Canadian Journal of Elec-
+trical and Computer Engineering , vol. 43, no. 3, pp.
+170–173, 2020.
+[5] Zain Nasrullah and Yue Zhao, “Music artist classi-
+fication with convolutional recurrent neural networks,”
+in 2019 International Joint Conference on Neural Net-
+works (IJCNN). IEEE, 2019, pp. 1–8.
+[6] Sergio Oramas, Francesco Barbieri, Oriol Nieto Ca-
+ballero, and Xavier Serra, “Multimodal deep learn-
+ing for music genre classification,” Transactions of the
+International Society for Music Information Retrieval.
+2018; 1 (1): 4-21., 2018.
+[7] Rafael B Mangolin, Rodolfo M Pereira, Alceu S Britto,
+Carlos N Silla, Val´eria D Feltrim, Diego Bertolini, and
+Yandre MG Costa, “A multimodal approach for multi-
+label movie genre classification,” Multimedia Tools and
+Applications, pp. 1–26, 2020.
+[8] Wanglei Shi and Shuang Feng, “Research on music
+emotion classification based on lyrics and audio,” in
+2018 IEEE 3rd Advanced Information Technology, Elec-
+tronic and Automation Control Conference (IAEAC) .
+IEEE, 2018, pp. 1154–1159.
+[9] Jiahao Zhao, Ganghui Ru, Yi Yu, Yulun Wu,
+Dichucheng Li, and Wei Li, “Multimodal music emo-
+tion recognition with hierarchical cross-modal attention
+network,” in 2022 IEEE International Conference on
+Multimedia and Expo (ICME). IEEE, 2022, pp. 1–6.
+[10] Igor Vatolkin and Cory McKay, “Multi-objective in-
+vestigation of six feature source types for multi-modal
+music classification,” Transactions of the International
+Society for Music Information Retrieval , vol. 5, no. 1,
+2022.
+[11] Yagya Raj Pandeya, Jie You, Bhuwan Bhattarai, and
+Joonwhoan Lee, “Multi-modal, multi-task and multi-
+label for music genre classification and emotion regres-
+sion,” in 2021 International Conference on Information
+and Communication Technology Convergence (ICTC) .
+IEEE, 2021, pp. 1042–1045.
+[12] Jacob Devlin, Ming-Wei Chang, Kenton Lee, and
+Kristina Toutanova, “Bert: Pre-training of deep bidirec-
+tional transformers for language understanding,” arXiv
+preprint arXiv:1810.04805, 2018.
+[13] Ashish Vaswani, Noam Shazeer, Niki Parmar, Jakob
+Uszkoreit, Llion Jones, Aidan N Gomez, Lukasz Kaiser,
+and Illia Polosukhin, “Attention is all you need,” Ad-
+vances in neural information processing systems , vol.
+30, 2017.
+[14] Thomas Kipf and Max Welling, “Semi-supervised clas-
+sification with graph convolutional networks,” ArXiv,
+vol. abs/1609.02907, 2016.
+[15] Pin Jiang and Yahong Han, “Reasoning with heteroge-
+neous graph alignment for video question answering,”
+in Proceedings of the AAAI Conference on Artificial In-
+telligence, 2020, vol. 34, pp. 11109–11116.
+[16] Alec Radford, Jong Wook Kim, Chris Hallacy, Aditya
+Ramesh, Gabriel Goh, Sandhini Agarwal, Girish Sas-
+try, Amanda Askell, Pamela Mishkin, Jack Clark, et al.,
+“Learning transferable visual models from natural lan-
+guage supervision,” inInternational Conference on Ma-
+chine Learning. PMLR, 2021, pp. 8748–8763.
+[17] Dongxu Li, Junnan Li, Hongdong Li, Juan Carlos
+Niebles, and Steven CH Hoi, “Align and prompt: Video-
+and-language pre-training with entity prompts,” in Pro-
+ceedings of the IEEE/CVF Conference on Computer Vi-
+sion and Pattern Recognition, 2022, pp. 4953–4963.
+[18] Igor Andr ´e Pegoraro Santana, Fabio Pinhelli, Juliano
+Donini, Leonardo Catharin, Rafael Biazus Mangolin,
+Val´eria Delisandra Feltrim, Marcos Aur´elio Domingues,
+et al., “Music4all: A new music database and its appli-
+cations,” in 2020 International Conference on Systems,
+Signals and Image Processing (IWSSIP) . IEEE, 2020,
+pp. 399–404.
+Authorized licensed use limited to: University of Wolverhampton. Downloaded on March 13,2026 at 04:29:40 UTC from IEEE Xplore.  Restrictions apply. 
