@@ -24,6 +24,13 @@
 	- Finalize chapter drafts, references, and formatting compliance.
 	- Complete final quality-control passes and viva/demo preparation.
 
+## Immediate Work Package (Active)
+- WP-CITE-001 (2026-03-19 to 2026-03-24): Thesis-wide citation hardening and literature leverage pass
+	- Build claim-citation matrix from Chapter 2 and extend to Chapters 3 to 5 where literature-backed claims are made.
+	- Verify each claim against cited PDFs in `10_resources/papers/` and classify support strength.
+	- Extract high-value findings, limitations, and trade-off evidence for chapter strengthening.
+	- Produce citation replacement recommendations and chapter-targeted hardening notes.
+
 ## Notes
 - Dates are a working baseline for execution control and can be refined against official module deadlines.
 - Scope remains locked to the MVP boundary in `00_admin/thesis_state.md` and `00_admin/Artefact_MVP_definition.md`.

@@ -124,3 +124,14 @@ Use schema from `00_admin/operating_protocol.md`.
 - affected_components: `08_writing/thesis_master_draft_merged.md`, `00_admin/change_log.md`
 - impact_assessment: Medium-positive. Preserves draft workflow now while creating an explicit cleanup checkpoint for submission readiness.
 - approval_record: Proposed in-session on 2026-03-17 after user confirmation to log a pending follow-up.
+
+## C-013
+- date: 2026-03-19
+- proposed_by: user + AI
+- status: accepted
+- change_summary: Register a thesis-wide work package for full PDF-based citation verification and literature evidence extraction, and track it as an active unresolved issue with concrete execution steps and due window.
+- reason: User requested the todo to exist in the thesis environment itself (not chat-only) and requested logging of all required tracking actions.
+- evidence_basis: Active Chapter 2 citation-risk findings, accessible local paper corpus in `10_resources/papers/`, and need to maximize literature-backed quality and defendability across the thesis.
+- affected_components: `00_admin/unresolved_issues.md`, `00_admin/change_log.md`
+- impact_assessment: High-positive. Improves governance traceability, closes planning ambiguity, and creates an auditable execution path for citation hardening and chapter-strength uplift.
+- approval_record: Requested and confirmed by user in chat on 2026-03-19.
