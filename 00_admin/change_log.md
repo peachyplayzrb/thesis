@@ -165,3 +165,14 @@ Use schema from `00_admin/operating_protocol.md`.
 - affected_components: `07_implementation/experiment_log.md`, `00_admin/change_log.md`, `06_data_and_sources/dataset_registry.md`
 - impact_assessment: Medium-positive. Closes logging debt before Phase B begins and ensures all completed work is traceable from this point forward.
 - approval_record: Requested and confirmed by user in chat on 2026-03-19.
+
+## C-016
+- date: 2026-03-19
+- proposed_by: AI + user
+- status: accepted
+- change_summary: Full session logging and environment hardening. Three work items completed: (1) environment health check confirming BL-001/002/003 done and both scripts (ingest_history_parser.py, align_tracks.py) running cleanly on Python 3.12.6; (2) logging gap audit and repair — EXP-001 and EXP-002 filled in experiment_log.md, C-001 stub reconstructed, dataset_registry.md populated with Music4All feature schema and access notes; (3) session-start checklist and implementation logging rules added to .github/copilot-instructions.md and 00_admin/operating_protocol.md (sections 13 and 14) so that any future "make sure everything is logged" prompt triggers an automatic 7-step audit before work begins.
+- reason: User requested (a) confirmation that the environment logs and tracks everything automatically, (b) a foolproof rule so that a single prompt in any future chat triggers full logging enforcement.
+- evidence_basis: Environment health check run outputs in 07_implementation/implementation_notes/run_outputs/; backlog and test_notes confirming BL-001/002/003 pass; committed state at 947e8d9.
+- affected_components: .github/copilot-instructions.md, 00_admin/operating_protocol.md, 00_admin/change_log.md, 07_implementation/experiment_log.md, 06_data_and_sources/dataset_registry.md
+- impact_assessment: High-positive. Environment is now self-auditing on session start. All completed implementation work has traceable experiment log entries. Dataset registry is populated. Protocol sections 13 and 14 enforce logging going forward.
+- approval_record: Requested and confirmed by user in chat on 2026-03-19.
