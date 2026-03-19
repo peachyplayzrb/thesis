@@ -23,30 +23,36 @@ Source: `09_quality_control/rq_alignment_checks.md` (RQC-004)
 ## 3) Chapter 2 Core Argument (One Sentence)
 The literature supports a deterministic, inspectable, and controllable music playlist pipeline as a goal-aligned engineering choice under thesis constraints, while acknowledging that hybrid/neural methods can outperform on some metrics at the cost of complexity and reduced inspectability.
 
-## 4) Section Blueprint (Use As Writing Skeleton)
-1. Foundations and scope positioning
-- Establish recommender families and trade-offs.
-- Justify goal-aligned method selection (not universal best-model claim).
+## 4) Section Blueprint (Aligned To Current Chapter 2)
+Use this exact structure from `08_writing/chapter2.md`:
 
-2. Transparency, explainability, controllability, and observability
-- Distinguish post-hoc vs transparency-by-design.
-- State explanation-evaluation trade-offs and user-variability in control effects.
+2.1 Foundations, Scope, and Thesis Positioning
+- Position the thesis as engineering/design contribution, not benchmark-model novelty.
+- Set contribution framing around transparency, controllability, observability, and reproducibility.
 
-3. Music and playlist-specific challenges
-- Cover sequence, context, diversity/coherence, and subjective similarity limits.
-- Anchor data-boundary rationale for Music4All corpus choice.
+2.2 Core Recommendation Paradigms and Their Trade-offs
+- Compare content-based, collaborative, and hybrid families with trade-off discipline.
+- Keep feature/metric/weighting choices explicit and reviewable.
 
-4. Deterministic design rationale with comparator context
-- Justify deterministic inspectability and replayability benefits.
-- Position neural/hybrid work as comparator context, not rejected strawman.
+2.3 Transparency, Explainability, Controllability, Observability, and Evaluation
+- Define terms clearly and separate mechanism-linked explanation from post-hoc rationalization.
+- Establish process-plus-outcome evaluation framing used later in Chapter 4.
 
-5. Alignment reliability and reproducibility
-- Present staged entity-resolution rationale (ISRC-first plus fallback matching).
-- Emphasize reproducibility/accountability literature and protocol rigor.
+2.4 Preference Evidence, Profile Construction, and Candidate Shaping
+- Treat profile construction and candidate shaping as first-class design choices.
+- Link influence controls and candidate thresholds to controllability/auditability claims.
 
-6. Literature gap and chapter conclusion
-- Define the gap as system-level integration guidance under transparency/control/observability constraints.
-- End with explicit design implications feeding Chapter 3.
+2.5 Music Recommendation and Playlist-Specific Challenges
+- Cover sequence/coherence/diversity trade-offs and subjective-similarity limits.
+- Bound claims about feature proxies and listener intent.
+
+2.6 Deterministic Feature-Based Design Rationale with Comparator Context
+- Justify deterministic design as scope- and objective-aligned.
+- Keep neural/hybrid methods in comparator context without strawman framing.
+
+2.7 Cross-Source Alignment Reliability, Reproducibility Governance, and Synthesis
+- Present staged alignment rationale and run-level governance expectations.
+- Close with integrated synthesis that defines the Chapter 3 handoff.
 
 ## 5) Evidence Targets (Must-Hit)
 Mapped to viability actions in `09_quality_control/citation_checks.md`:
@@ -64,14 +70,14 @@ If a target cannot be fully closed, add explicit limitation wording and cross-re
 - Keep deep/hybrid comparators present as trade-off context.
 
 ## 7) Literature-to-Design Traceability Output
-For each Chapter 2 section, end with 1 short "design consequence" sentence that points forward to Chapter 3 architecture decisions.
+For each Chapter 2 section (2.1 to 2.7), end with 1 short "design consequence" sentence that points forward to Chapter 3 architecture decisions.
 
 Minimum forward links:
 - transparency literature -> score-trace and explanation fidelity mechanisms
 - controllability literature -> influence controls and parameter sensitivity
 - playlist literature -> assembly-stage constraints and ordering logic
 - alignment literature -> staged matching pipeline
-- reproducibility literature -> run-level config and logging controls
+- reproducibility and synthesis literature -> run-level config/logging controls plus explicit Chapter 3 handoff criteria
 
 ## 8) Execution Plan (Fast, Practical)
 Step 1: Stabilize structure (same day)
