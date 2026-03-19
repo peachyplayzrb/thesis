@@ -28,27 +28,9 @@
 - Validation summary metrics are emitted and internally consistent.
 
 ### Actual Result
-- Status: pass
-- Run evidence:
-	- `07_implementation/implementation_notes/run_outputs/tc001_normalized_events.jsonl`
-	- `07_implementation/implementation_notes/run_outputs/tc001_summary.json`
-	- `07_implementation/implementation_notes/run_outputs/tc001_normalized_events_repeat.jsonl`
-	- `07_implementation/implementation_notes/run_outputs/tc001_summary_repeat.json`
-- Observed metrics:
-	- `rows_total=5`
-	- `rows_valid=2`
-	- `rows_invalid=3`
-	- `rows_missing_isrc=2`
-- Notes:
-	- Missing ISRC rows are retained and flagged as expected.
-	- Invalid timestamp and invalid/missing core field behavior is flagged as expected.
-
-## Reproducibility Log Stub
-- `run_id`: `TC001-RUN1`
-- `input_hash`: `925340dcd29e7a254ba3a4755d67f0ea582cd9641de7d67f67c69fcd20a77fe6`
-- `config_hash`: `manual-mvp-config-v1` (CLI args: parser, source platform, run id, fixed input)
-- `output_hash`: `77be60a9e4d483f90f2d71724da9cada0498215010da193bc278aadc6d247eb3`
-- `deterministic_repeat_match`: `True`
+- Status: pending (implementation deleted 2026-03-19 for clean restart; prior run logged in `experiment_log.md` EXP-001)
+- Run evidence: n/a
+- Observed metrics: n/a
 
 ## Test Case TC-002: ISRC-First Alignment With Metadata Fallback
 
@@ -74,24 +56,9 @@
 - Deterministic repeat run yields same `alignment_output_hash`.
 
 ### Actual Result
-- Status: pass
-- Run evidence:
-	- `07_implementation/implementation_notes/run_outputs/tc002_alignment.jsonl`
-	- `07_implementation/implementation_notes/run_outputs/tc002_summary.json`
-	- `07_implementation/implementation_notes/run_outputs/tc002_alignment_repeat.jsonl`
-	- `07_implementation/implementation_notes/run_outputs/tc002_summary_repeat.json`
-- Observed metrics:
-	- `rows_total=5`
-	- `rows_considered=2`
-	- `rows_skipped_invalid=3`
-	- `matched_total=2`
-	- `matched_isrc=1`
-	- `matched_fallback=1`
-	- `unmatched=0`
-	- `match_rate=1.0`
-- Reproducibility:
-	- `alignment_output_hash=4edd70d71f2996d446301a2914d8467c51d15e5d07bd168fd714494104394418`
-	- `repeat_alignment_hash_match=True`
+- Status: pending (implementation deleted 2026-03-19 for clean restart; prior run logged in `experiment_log.md` EXP-002)
+- Run evidence: n/a
+- Observed metrics: n/a
 
 ## Reusable Evaluation Templates (Chapter 4)
 

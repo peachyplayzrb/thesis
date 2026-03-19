@@ -10,19 +10,19 @@
 - Primary branch: `main`.
 - Latest synced commit at handoff prep: `4d422b0516cb2d6d866ee4cd8470a0715397f992`.
 - Locked operating constraints: keep title/RQ/scope/methodology aligned with `00_admin/thesis_state.md` and use change proposals for protected changes.
-- Current implementation status: ingestion and alignment baseline complete (`BL-001` to `BL-003`).
+- Current implementation status: clean restart as of 2026-03-19. All items reset to todo.
 - Recommended immediate next work order:
-	1. `BL-004` deterministic user preference profile generator.
-	2. `BL-005` candidate retrieval and feature filtering.
-	3. `BL-006` deterministic scoring with per-track score decomposition.
+	1. `BL-001` ingestion schema definition.
+	2. `BL-002` ingestion parser implementation.
+	3. `BL-003` ISRC-first track alignment.
 - Evidence-first reminder: for each completed backlog item, write the expected evidence artifact and link it in the matching file listed in the backlog table.
 
 ## Items
 | ID | Priority | Status | Task | Evidence Output |
 | --- | --- | --- | --- | --- |
-| BL-001 | P0 | done | Define ingestion schema for one platform export path | `06_data_and_sources/schema_notes.md` update + sample input/output mapping |
-| BL-002 | P0 | done | Implement ingestion parser and validation checks | Parser module + validation log examples |
-| BL-003 | P0 | done | Implement ISRC-first track alignment with fallback matching | Match report with matched/unmatched counts |
+| BL-001 | P0 | todo | Define ingestion schema for one platform export path | `06_data_and_sources/schema_notes.md` update + sample input/output mapping |
+| BL-002 | P0 | todo | Implement ingestion parser and validation checks | Parser module + validation log examples |
+| BL-003 | P0 | todo | Implement ISRC-first track alignment with fallback matching | Match report with matched/unmatched counts |
 | BL-004 | P0 | todo | Build deterministic user preference profile generator | Profile artifact for at least one test user |
 | BL-005 | P0 | todo | Implement candidate retrieval and feature filtering | Candidate set diagnostics per run |
 | BL-006 | P0 | todo | Implement deterministic scoring function with weighted components | Score breakdown table per track |
@@ -40,7 +40,5 @@
 - None.
 
 ## Done
-- BL-001: ingestion schema drafted and linked to normalized output fields.
-- BL-002: parser implemented and validated via `TC-001` with reproducibility check.
-- BL-003: ISRC-first alignment with metadata fallback implemented and validated via `TC-002`.
+- None. (Phase A work completed and logged in `experiment_log.md` EXP-001/EXP-002; deleted on 2026-03-19 for clean restart.)
 

@@ -1,6 +1,0 @@
-track_name,artist_name,album_name,isrc,played_at,ms_played,platform
-Blinding Lights,The Weeknd,After Hours,USUG11904298,2025-11-21 23:16:02,184000,spotify_export
-Numb,Linkin Park,Meteora,,2025-11-22T10:30:00Z,186000,spotify_export
-Bad Timestamp Song,Example Artist,Example Album,USABC12000001,not-a-date,120000,spotify_export
-Missing Artist,,Unknown Album,USZZZ2500001,2025-11-23 08:15:20,200000,spotify_export
-Negative Duration,Some Artist,Test Album,USAAA2500001,2025-11-24 09:00:00,-100,spotify_export

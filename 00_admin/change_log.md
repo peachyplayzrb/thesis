@@ -80,6 +80,17 @@ Use schema from `00_admin/operating_protocol.md`.
 - approval_record: Requested and confirmed by user in chat on 2026-03-15.
 
 ## C-008
+- date: 2026-03-13
+- proposed_by: Timothy + AI
+- status: accepted
+- change_summary: Phase A implementation (BL-001, BL-002, BL-003) completed. Ingestion schema defined, deterministic CSV parser implemented and validated (TC-001), and ISRC-first track alignment with metadata fallback implemented and validated (TC-002). All Phase A artifacts subsequently deleted on 2026-03-19 to allow a clean restart of implementation.
+- reason: Phase A build and test runs completed with passing results. User requested a full clean restart of implementation on 2026-03-19 before continuing to Phase B.
+- evidence_basis: Experiment log `EXP-001` (ingestion parser, TC-001 pass) and `EXP-002` (alignment, TC-002 pass) in `07_implementation/experiment_log.md`; test results recorded in `07_implementation/test_notes.md`.
+- affected_components: `07_implementation/implementation_notes/ingestion/ingest_history_parser.py`, `07_implementation/implementation_notes/alignment/align_tracks.py`, `07_implementation/implementation_notes/run_outputs/` (8 output files), `07_implementation/implementation_notes/test_assets/sample_listening_history.csv`, `07_implementation/implementation_notes/test_assets/sample_music4all_candidates.csv`, `07_implementation/backlog.md`, `07_implementation/test_notes.md`
+- impact_assessment: Neutral. Prior Phase A work is fully logged in experiment_log.md and test_notes.md. Clean state restores all backlog items to todo and removes code/output artifacts so implementation can restart.
+- approval_record: Requested and confirmed by user in chat on 2026-03-19.
+
+## C-008
 - date: 2026-03-15
 - proposed_by: user + AI
 - status: accepted
