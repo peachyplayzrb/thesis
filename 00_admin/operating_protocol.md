@@ -178,6 +178,19 @@ All other folders remain inactive unless a concrete need is logged.
 - Early design documents are hypotheses, not truth.
 - Literature evidence takes priority over early design assumptions.
 - Architecture may evolve as literature and implementation evidence matures.
+
+## 13) Chat Session Logging Rule
+During any AI-assisted chat session:
+- Any decision, dataset finding, design clarification, or confirmed fact must be logged to the relevant file before the session ends.
+- If new information contradicts or supersedes an existing entry (e.g. in `dataset_registry.md`, `decision_log.md`, `assumptions.md`), the existing entry must be updated in the same response, not left stale.
+- Logging targets by information type:
+  - Dataset acquisition / file confirmations → `06_data_and_sources/dataset_registry.md`
+  - Implementation runs or plans → `07_implementation/experiment_log.md`
+  - Design decisions → `00_admin/decision_log.md`
+  - Scope changes → `00_admin/change_log.md` + `00_admin/thesis_state.md`
+  - Mentor questions or follow-ups → `00_admin/mentor_question_log.md`
+- AI applies this rule automatically — no explicit "log this" instruction required per message.
+
 - If architecture, literature themes, and claimed gap conflict, log the conflict and propose options; do not force agreement.
 
 ## 13) Implementation Logging Rules

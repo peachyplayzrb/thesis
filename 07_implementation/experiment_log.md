@@ -284,7 +284,64 @@ Do NOT download: audio files (.mp3), id_incp/id_resnet/id_vgg19 (video features)
 - 2026-03-19: Candidate source check completed for `https://github.com/zerodevelops/music4all` — rejected as base dataset source. Repository is a React/Tailwind Shazam API application (`src/`, `package.json`, `vite.config.js`) and does not host the official Music4All base metadata corpus.
 - 2026-03-19: Base Music4All record remains inaccessible for the user; continue with Onion-only execution path as per D-006.
 - 2026-03-19: New next todo created: `BL-017` build Onion-only canonical dataset layer (track_id joins + curated feature schema + quality checks) before BL-004.
+- 2026-03-19: Alternative corpus proposal logged for review (`D-008`, `UI-004`, `BL-018`): evaluate `MSD subset + Last.fm tags + MusicBrainz mapping` before making further irreversible canonical-layer implementation choices.
+- 2026-03-19: Feasibility review completed for `BL-018`. Verdict: do not switch to MSD subset. Keep Music4All-Onion as the active MVP corpus, and treat blocked base-Music4All access as a non-blocking limitation rather than a reason to replace Onion.
 - 2026-03-19: Base dataset download still pending.
 - end: (update when files confirmed present at `10_resources/datasets/music4all/`)
+
+## EXP-003
+- date: 2026-03-19
+- backlog_link: `BL-018`
+- owner: Timothy + AI
+- status: pass
+- related_test_id: n/a
+
+### Objective
+- Execute a bounded feasibility review comparing the active Music4All-Onion corpus path against the proposed `MSD subset + Last.fm Tag Dataset + MusicBrainz mapping` alternative before further canonical-layer implementation proceeds.
+
+### Scope Check
+- In-scope confirmation: yes, this directly resolves a P0 planning blocker before BL-017.
+- Protected items affected? yes
+- If yes, which files: corpus-related governance and planning files only; `00_admin/thesis_state.md` intentionally left unchanged because the review did not approve a corpus switch.
+
+### Inputs
+- source_data: `06_data_and_sources/dataset_registry.md`; `07_implementation/experiment_log.md` EXP-DA-001; user-provided dataset construction sheet
+- config_or_parameters: review criteria = access, complexity, feature coverage, alignment support, candidate-pool adequacy, thesis-change cost
+- code_or_script_path: n/a — document review only
+- dependency assumptions: previously audited Onion files and current thesis-state constraints remain accurate
+
+### Expected Evidence
+- primary_output_artifact: `07_implementation/implementation_notes/data_layer/candidate_corpus_feasibility_review_2026-03-19.md`
+- secondary_output_artifacts: synchronized governance updates in `decision_log.md`, `change_log.md`, `unresolved_issues.md`, `dataset_registry.md`, and `backlog.md`
+- success_condition: produce a documented keep/switch/fallback recommendation and remove corpus ambiguity before BL-017
+
+### Run Record
+- command_or_execution_method: structured document comparison and governance sync in-repo
+- run_id: `BL018-REVIEW-2026-03-19`
+- start_state_summary: active corpus ambiguity existed because base Music4All was blocked and MSD-based replacement was under consideration
+- end_state_summary: review completed; recommendation issued; MSD switch rejected; Onion-only retained as active MVP path
+
+### Results
+- outcome_summary: The review found that the unusable part of the original plan is the base-Music4All dependency, not the Onion dataset. Onion-only already provides enough interpretable data for MVP implementation with less rework and less thesis churn than a switch to the MSD subset path.
+- key_metrics: `recommended_option=keep_onion_only`, `switch_to_msd=no`, `protected_state_rewrite_required=no`
+- deterministic_repeat_checked: yes
+- output_paths:
+  - `07_implementation/implementation_notes/data_layer/candidate_corpus_feasibility_review_2026-03-19.md`
+  - `00_admin/decision_log.md`
+  - `06_data_and_sources/dataset_registry.md`
+
+### Issues And Limits
+- failures_or_anomalies: none
+- likely_cause: n/a
+- bounded_mvp_limitation_or_bug: Onion-only weakens the original base-dependent metadata and ISRC parity assumptions; these remain explicit limitations for later writing and evaluation.
+
+### Thesis Traceability
+- chapter4_relevance: justifies why the implemented corpus path differs from the earlier combined base-plus-Onion assumption
+- chapter5_relevance: supports limitation discussion about blocked external data dependencies and corpus trade-offs
+- quality_control_files_to_update: `08_writing/chapter3.md`, `08_writing/chapter5.md` when corpus wording is refreshed
+
+### Next Action
+- immediate_follow_up: proceed to `BL-017` and build the Onion-only canonical dataset layer
+- backlog_status_recommendation: mark `BL-018` done
 
 

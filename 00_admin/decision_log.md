@@ -220,3 +220,73 @@ impacted_files:
 
 review_date:
 none
+
+id: D-008
+date: 2026-03-19
+status: rejected
+
+context:
+The current accepted candidate corpus is Music4All / Music4All-Onion, but base metadata access remains problematic and the user is considering a switch to a more directly documented integrated corpus built from the Million Song Dataset subset, Last.fm tags, and MusicBrainz mappings.
+
+decision:
+Do not change the canonical MVP candidate corpus to the integrated `MSD subset + Last.fm Tag Dataset + MusicBrainz mapping` option. Keep the active implementation path on Music4All-Onion and treat the MSD-based construction as a reviewed fallback only.
+
+alternatives_considered:
+- Keep the current Music4All-Onion execution path and continue BL-017 immediately
+- Request or wait for base Music4All metadata access
+- Use a hybrid approach where Music4All-Onion remains primary and MSD-based data is only a contingency source
+
+rationale:
+The proposed MSD-based construction is attractive because it is well known in MIR research, has explicit join structure through `track_id`, and aligns cleanly with transparency goals through named metadata, tags, and external identifiers. After review, it is not the better MVP choice in this repository state. It would shrink the active corpus from the current Onion-scale path to a 10,000-track subset, replace the already-audited Onion extraction path with fresh HDF5 extraction work, and still does not clearly improve the current ISRC-first alignment design. The real blocker is the unusable base-Music4All dependency, not Onion itself. For the MVP, the correct simplification is to keep Onion-only, not to switch corpus.
+
+evidence_basis:
+- `06_data_and_sources/dataset_registry.md` (DS-001 current accepted corpus; DS-002 proposed alternative)
+- `07_implementation/experiment_log.md` (EXP-DA-001 Music4All-Onion acquisition and current blocker context)
+- `07_implementation/implementation_notes/data_layer/candidate_corpus_feasibility_review_2026-03-19.md`
+- user-provided dataset construction sheet dated 2026-03-19
+
+impacted_files:
+- `06_data_and_sources/dataset_registry.md`
+- `07_implementation/backlog.md`
+- `07_implementation/implementation_plan.md`
+- `00_admin/unresolved_issues.md`
+- `00_admin/thesis_state.md`
+- `02_foundation/objectives.md`
+- `08_writing/chapter2.md`
+- `08_writing/chapter3.md`
+
+review_date:
+none
+
+id: D-009
+date: 2026-03-19
+status: accepted
+
+context:
+The user wants to keep implementation moving with Music4All-Onion now, but also preserve the MSD + Last.fm + MusicBrainz dataset idea as a future option instead of losing the planning work.
+
+decision:
+Defer alternative corpus data-engineering work for the `MSD subset + Last.fm Tag Dataset + MusicBrainz mapping` path to future work. Save the information sheet in-repo for reference and continue with the Onion-only execution path for the current MVP.
+
+alternatives_considered:
+- Switch to the MSD-based path immediately
+- Delete the MSD planning material after rejecting the switch
+- Keep discussing the alternative informally without storing a durable artifact
+
+rationale:
+This preserves useful planning work without creating current implementation drag. The thesis keeps momentum by staying on the already-audited Onion-only path, while the alternative corpus idea remains available if later evidence shows a need to reopen dataset engineering. Saving the information sheet also improves traceability because the future option is documented in a stable repository location rather than only in chat history.
+
+evidence_basis:
+- `06_data_and_sources/ds_002_msd_information_sheet.md`
+- `06_data_and_sources/dataset_registry.md`
+- `07_implementation/implementation_notes/data_layer/candidate_corpus_feasibility_review_2026-03-19.md`
+- user instruction in chat on 2026-03-19 to leave this data engineering for later and save the information sheet for future reference
+
+impacted_files:
+- `06_data_and_sources/ds_002_msd_information_sheet.md`
+- `06_data_and_sources/dataset_registry.md`
+- `07_implementation/backlog.md`
+- `00_admin/change_log.md`
+
+review_date:
+none

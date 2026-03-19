@@ -187,3 +187,47 @@ Use schema from `00_admin/operating_protocol.md`.
 - affected_components: .github/copilot-instructions.md, 00_admin/operating_protocol.md, 00_admin/change_log.md, 07_implementation/experiment_log.md, 06_data_and_sources/dataset_registry.md
 - impact_assessment: High-positive. Environment is now self-auditing on session start. All completed implementation work has traceable experiment log entries. Dataset registry is populated. Protocol sections 13 and 14 enforce logging going forward.
 - approval_record: Requested and confirmed by user in chat on 2026-03-19.
+
+## C-017
+- date: 2026-03-19
+- proposed_by: user + AI
+- status: accepted
+- change_summary: Open a formal change review for replacing the current Music4All / Music4All-Onion candidate corpus with an integrated `Million Song Dataset subset + Last.fm Tag Dataset + MusicBrainz mapping` dataset, and update implementation planning so corpus comparison happens before more canonical-layer work is committed.
+- reason: User is actively considering a dataset switch and requested that everything requiring traceability be logged and planned before further implementation continues.
+- evidence_basis: Current accepted dataset choice and Onion fallback path in `00_admin/decision_log.md` (`D-001`, `D-006`, `D-007`); user-provided dataset construction sheet dated 2026-03-19; current implementation dependency on corpus choice in `07_implementation/backlog.md`.
+- affected_components: `00_admin/decision_log.md`, `00_admin/unresolved_issues.md`, `06_data_and_sources/dataset_registry.md`, `07_implementation/backlog.md`, `07_implementation/implementation_plan.md`, `07_implementation/experiment_log.md`
+- impact_assessment: Medium-to-high. Positive if it avoids continued dependence on blocked base metadata and yields a simpler documented corpus; negative if it causes late-stage scope drift, weaker cross-source matching, or rework in objectives/writing. Thesis state is intentionally not changed until the review is resolved.
+- approval_record: Requested in chat on 2026-03-19 after user asked for full logging and planning for a possible dataset change.
+
+## C-018
+- date: 2026-03-19
+- proposed_by: user + AI
+- status: accepted
+- change_summary: Log that base Music4All is not usable in the current environment, record that the original base-plus-Onion combined plan is redundant for MVP execution, complete BL-018 corpus feasibility review, and keep Music4All-Onion as the active corpus while rejecting the MSD-subset switch.
+- reason: User explicitly asked to log the unusable base-Music4All path and to execute the corpus-comparison review immediately.
+- evidence_basis: `07_implementation/implementation_notes/data_layer/candidate_corpus_feasibility_review_2026-03-19.md`; `07_implementation/experiment_log.md` EXP-DA-001; `06_data_and_sources/dataset_registry.md`; `00_admin/decision_log.md` D-008.
+- affected_components: `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/unresolved_issues.md`, `06_data_and_sources/dataset_registry.md`, `07_implementation/backlog.md`, `07_implementation/implementation_plan.md`, `07_implementation/experiment_log.md`, `07_implementation/implementation_notes/data_layer/candidate_corpus_feasibility_review_2026-03-19.md`
+- impact_assessment: High-positive. Removes corpus-planning ambiguity, avoids avoidable rework, and clarifies that the blocked dependency is base Music4All rather than the Onion corpus itself.
+- approval_record: Requested by user in chat on 2026-03-19 ("log that i cant use music4all base so music4all onion might be reduntant. then do no1.")
+
+## C-019
+- date: 2026-03-19
+- proposed_by: user + AI
+- status: accepted
+- change_summary: Save the MSD-based dataset construction sheet as a future-reference artifact, defer that data-engineering path to later work, and reaffirm Music4All-Onion as the current implementation path.
+- reason: User wants to postpone alternative corpus engineering for now, keep the idea tracked for future use, and continue with Onion-only implementation.
+- evidence_basis: `06_data_and_sources/ds_002_msd_information_sheet.md`; `00_admin/decision_log.md` D-009; `06_data_and_sources/dataset_registry.md` DS-002 notes.
+- affected_components: `06_data_and_sources/ds_002_msd_information_sheet.md`, `06_data_and_sources/dataset_registry.md`, `07_implementation/backlog.md`, `00_admin/decision_log.md`, `00_admin/change_log.md`
+- impact_assessment: Medium-positive. Preserves future design work without destabilizing the current MVP path.
+- approval_record: Requested by user in chat on 2026-03-19.
+
+## C-020
+- date: 2026-03-19
+- proposed_by: user + AI
+- status: accepted
+- change_summary: Perform session-closure repository hygiene by committing the governance, planning, and evidence artifacts from this dataset-decision session while keeping raw local dataset payloads out of version control.
+- reason: User requested that everything needing logging be logged and that commit-worthy work be committed before starting a new chat.
+- evidence_basis: Current working-tree audit; `00_admin/decision_log.md` (`D-008`, `D-009`); `07_implementation/implementation_notes/data_layer/candidate_corpus_feasibility_review_2026-03-19.md`; `.gitignore` dataset exclusion rule.
+- affected_components: `.gitignore`, `00_admin/change_log.md`, `00_admin/decision_log.md`, `00_admin/unresolved_issues.md`, `06_data_and_sources/dataset_registry.md`, `06_data_and_sources/ds_002_msd_information_sheet.md`, `07_implementation/backlog.md`, `07_implementation/experiment_log.md`, `07_implementation/implementation_plan.md`, `07_implementation/implementation_notes/data_layer/candidate_corpus_feasibility_review_2026-03-19.md`
+- impact_assessment: High-positive. Preserves an auditable session snapshot without polluting the repository with large local dataset binaries.
+- approval_record: Requested by user in chat on 2026-03-19.

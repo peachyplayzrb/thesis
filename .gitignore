@@ -23,3 +23,6 @@ Thumbs.db
 # Logs and local runtime artifacts
 *.log
 *.tmp
+
+# Local dataset payloads kept outside version control
+10_resources/datasets/

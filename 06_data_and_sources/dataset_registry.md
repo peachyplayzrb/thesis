@@ -19,7 +19,8 @@ Music4All-Onion covers 109,269 tracks and 252,984,396 listening records from 119
 
 ### Access Status Update (2026-03-19)
 - Base Music4All record is currently inaccessible in the user environment.
-- Active fallback: proceed with Onion-only canonical data layer using `track_id` as the join key and defer base-metadata-dependent enrichments.
+- Operational interpretation: the original `base + Onion` combined plan is redundant for the MVP while base access remains blocked.
+- Active path: proceed with Onion-only canonical data layer using `track_id` as the join key and defer base-metadata-dependent enrichments.
 - Next required implementation todo: `BL-017` in `07_implementation/backlog.md`.
 
 ### Extraction Strategy
@@ -159,4 +160,66 @@ From `id_genres_tf-idf.tsv.bz2`:
 - The 4-row stub at `07_implementation/implementation_notes/test_assets/sample_music4all_candidates.csv` is a synthetic test asset only.
 - **This dataset must be available before BL-004 (preference profile) can run on real data.**
 - File selection rationale: all skipped files are either opaque high-dimensional vectors incompatible with the transparency and controllability design requirements, or visual/textual features irrelevant to the audio-based pipeline.
+
+### Change Review Note (2026-03-19)
+- DS-001 remains the accepted baseline.
+- The review of `DS-002` is complete. Result: keep DS-001 active for MVP execution.
+- Do not wait for base Music4All before proceeding. Treat base-only fields as optional future enrichments.
+
+## DS-002: MSD Subset + Last.fm Tags + MusicBrainz Mapping
+
+- decision_log_ref: `D-008`
+- status: future reference / reviewed fallback only — not accepted as replacement corpus
+- date_registered: 2026-03-19
+- last_updated: 2026-03-19
+
+### Description
+Integrated dataset strategy built from three linked research assets:
+- Million Song Dataset subset (10,000 songs) for core metadata and audio descriptors
+- Last.fm tag dataset for semantic annotations
+- MusicBrainz mapping for external identifiers and cross-source linking
+
+The intent is to create a smaller but more explicitly documented candidate corpus with deterministic joins through `track_id` and clearer control over the final schema.
+
+Reference artifact:
+- `06_data_and_sources/ds_002_msd_information_sheet.md`
+
+### Proposed Sources
+- Million Song Dataset: http://millionsongdataset.com/
+- Last.fm tags for MSD: http://millionsongdataset.com/lastfm/
+- MusicBrainz mapping from MSD additional datasets
+
+### Proposed Final Fields
+| Field | Role |
+| --- | --- |
+| `track_id` | canonical key |
+| `artist_name` | metadata / fallback matching |
+| `title` | metadata / fallback matching |
+| `year` | metadata feature |
+| `duration` | metadata feature |
+| `tempo` | transparent audio feature |
+| `loudness` | transparent audio feature |
+| `key` | transparent audio feature |
+| `mode` | transparent audio feature |
+| `tags` | semantic explanation and similarity signal |
+| `mbid` | external identifier / enrichment aid |
+
+### Strengths
+- Clean three-source integration story that is easy to explain in Chapter 3.
+- Direct use of well-known MIR research assets.
+- Human-readable features and tags fit transparency and explanation goals.
+- Lower schema breadth may reduce implementation sprawl.
+
+### Risks And Open Questions
+- The described plan uses the MSD subset (10,000 songs), which is much smaller than the current Music4All-Onion path and may reduce candidate diversity.
+- The proposed field list is narrower than the current Onion-first plan and removes several already-inspected features now available locally.
+- Spotify alignment may weaken because the current thesis plan is ISRC-first, while the proposed sheet lists ISRC only on the Spotify side and not as a confirmed corpus field.
+- MSD extraction requires `.h5` parsing work and join validation that has not yet been implemented in this repository.
+- A corpus switch would require synchronized updates across thesis-state, objectives, assumptions, limitations, and active chapter drafts.
+
+### Review Gate
+- Review completed on 2026-03-19.
+- Outcome: DS-002 is retained as a documented fallback option only.
+- Reason: the main blocker is unusable base-Music4All access, but Music4All-Onion already provides enough interpretable data to support MVP implementation with less rework than a corpus switch.
+- Current handling decision: preserve this option as future work and do not spend active MVP implementation time on it now.
 
