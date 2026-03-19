@@ -13,17 +13,18 @@
 - Current implementation status: clean restart as of 2026-03-19. All items reset to todo.
 - Strategy update (2026-03-19, D-005): start with synthetic pre-aligned data. BL-001, BL-002, BL-003 deferred until after the core pipeline is proven end-to-end. See decision_log.md D-005.
 - Recommended immediate next work order:
-	1. `BL-016` create synthetic pre-aligned data assets.
-	2. `BL-004` deterministic preference profile generator.
-	3. `BL-005` candidate retrieval and feature filtering.
-	4. `BL-006` deterministic scoring function.
-	5. `BL-007` rule-based playlist assembly.
-	6. `BL-008` transparency outputs.
-	7. `BL-009` observability logging.
-	8. `BL-010` reproducibility tests.
-	9. `BL-011` controllability tests.
-	10. `BL-012` document limitations.
-	11. `BL-001`, `BL-002`, `BL-003` real ingestion + alignment (deferred, resume after core pipeline is stable).
+	1. `BL-017` build Onion-only canonical dataset layer (new blocker-resolving step).
+	2. `BL-016` create synthetic pre-aligned data assets.
+	3. `BL-004` deterministic preference profile generator.
+	4. `BL-005` candidate retrieval and feature filtering.
+	5. `BL-006` deterministic scoring function.
+	6. `BL-007` rule-based playlist assembly.
+	7. `BL-008` transparency outputs.
+	8. `BL-009` observability logging.
+	9. `BL-010` reproducibility tests.
+	10. `BL-011` controllability tests.
+	11. `BL-012` document limitations.
+	12. `BL-001`, `BL-002`, `BL-003` real ingestion + alignment (deferred, resume after core pipeline is stable).
 - Evidence-first reminder: for each completed backlog item, write the expected evidence artifact and link it in the matching file listed in the backlog table.
 
 ## Items
@@ -45,6 +46,7 @@
 | BL-014 | P1 | todo | Create automated sanity checks for input schema and deterministic output hashes | Scripted check results |
 | BL-015 | P2 | todo | Add second ingestion adapter scaffold (out of core scope) | Backlog-only design note |
 | BL-016 | P0 | todo | Create synthetic pre-aligned data assets for core pipeline development | `07_implementation/implementation_notes/test_assets/` — synthetic aligned JSONL + Music4All candidate stub CSV |
+| BL-017 | P0 | todo | Build Onion-only canonical dataset layer (track_id join + curated feature schema + data quality checks) | `07_implementation/implementation_notes/data_layer/` outputs: canonical track table, join-coverage report, selected-column manifest |
 
 ## In Progress
 - None.

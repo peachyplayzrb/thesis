@@ -230,3 +230,61 @@ Copy the block below for each new run.
 - immediate_follow_up: run deterministic repeat check and record hash or equivalent equality check
 - backlog_status_recommendation: keep `BL-004` in progress until repeatable artifact exists
 
+---
+
+## EXP-DA-001 — Music4All-Onion Dataset Acquisition
+- date: 2026-03-19
+- backlog_link: DS-001 (dataset_registry.md)
+- owner: Timothy
+- status: in-progress (download started 2026-03-19)
+
+### Objective
+- Download the Music4All-Onion dataset (Moscati et al., 2022, RecSys) and the Music4All base dataset (Santana et al., 2020, ICMR) from Zenodo and place them at `10_resources/datasets/music4all/`.
+
+### Confirmed Sources
+- Music4All-Onion: zenodo.org/records/15394646 — use latest version (v2). Download in progress as of 2026-03-19.
+- Music4All base: separate Zenodo record by Santana et al. — needed for track metadata and Spotify-derived features.
+- Music4All A+A (Artist and Album): NOT required — no album/artist-level feature use in current pipeline design.
+
+### Files to Download (minimal set)
+From Music4All-Onion:
+- `userid_trackid_timestamp.tsv.bz2` — 252,984,396 listening records, 119,140 users, 56,512 tracks
+- `userid_trackid_count.tsv.bz2` — interaction counts (lighter, 50M entries)
+- `id_essentia.tsv.bz2` — spectral, rhythm, tonal Essentia features
+
+From Music4All base:
+- Base metadata file (track_name, artist_name, ISRC, tempo, energy, valence, danceability, loudness, acousticness, instrumentalness)
+
+Do NOT download: audio files (.mp3), id_incp/id_resnet/id_vgg19 (video features), or the full set of BLF/compare/emobase feature files — these are not needed for the thesis pipeline.
+
+### Dataset Scale (confirmed from README)
+- Tracks: 109,269
+- Users: 119,140
+- Listening records: 252,984,396
+
+### Notes
+- A Zenodo account may be required for gated access.
+- Column names in Essentia file differ from Spotify-style names in DS-001 schema — mapping required before BL-004/BL-006.
+
+### Status Update
+- 2026-03-19: Onion ZIP downloaded at `10_resources/datasets/15394646.zip`.
+- 2026-03-19: Extraction strategy updated: do not fully extract the archive yet; inspect in-place and selectively extract only chosen files after schema confirmation.
+- 2026-03-19: In-place schema inspection completed for `id_essentia`, `id_lyrics_sentiment_functionals`, `id_tags_dict`, `id_genres_tf-idf`, `userid_trackid_count`, `userid_trackid_timestamp`, `id_gems`, `id_musicnn`, `id_bert`, `id_maest`, and `id_jukebox`.
+- 2026-03-19: Confirmed extract-first set: `userid_trackid_count`, `id_essentia`, `id_lyrics_sentiment_functionals`, `id_tags_dict`, `id_genres_tf-idf` plus base Music4All metadata when acquired.
+- 2026-03-19: Confirmed skip set from actual schemas: `id_bert`, `id_maest`, `id_jukebox`, BLF family, ComParE family, emobase family, I-vector family, MFCC family, chroma, video embeddings, lyrics tf-idf/word2vec, `id_tags_tf-idf`, `id_vad_bow`, `processed_lyrics.tar.gz`.
+- 2026-03-19: Hold for later inspection only: `userid_trackid_timestamp`, `id_gems`, `id_musicnn`.
+- 2026-03-19: Target folders created for selective extraction: `10_resources/datasets/music4all_onion/selected/`, `10_resources/datasets/music4all_onion/inspect_later/`, and `10_resources/datasets/music4all_base/`.
+- 2026-03-19: Planned first extraction set: `userid_trackid_count.tsv.bz2`, `id_essentia.tsv.bz2`, `id_lyrics_sentiment_functionals.tsv.bz2`, `id_tags_dict.tsv.bz2`, `id_genres_tf-idf.tsv.bz2`.
+- 2026-03-19: Full archive audit completed for 46 files. Machine-readable audit written to `tmp_onion_audit.json`.
+- 2026-03-19: Selected extraction completed at `10_resources/datasets/music4all_onion/selected/` for `userid_trackid_count.tsv.bz2`, `id_essentia.tsv.bz2`, `id_lyrics_sentiment_functionals.tsv.bz2`, `id_tags_dict.tsv.bz2`, `id_genres_tf-idf.tsv.bz2`.
+- 2026-03-19: Secondary extraction completed at `10_resources/datasets/music4all_onion/inspect_later/` for `userid_trackid_timestamp.tsv.bz2`, `id_gems.tsv.bz2`, `id_musicnn.tsv.bz2`.
+- 2026-03-19: Extracted-file summary written to `tmp_onion_selected_summary.json`.
+- 2026-03-19: Final checked decision after schema review: mainline-use files are `userid_trackid_count`, `id_essentia`, `id_lyrics_sentiment_functionals`, `id_tags_dict`, `id_genres_tf-idf`; deferred-use file is `userid_trackid_timestamp`; reviewed-but-skip files include `id_gems`, `id_musicnn`, `id_bert`, `id_maest`, `id_jukebox`, all BLF, ComParE, emobase, I-vector, MFCC, chroma, video, lyrics tf-idf/word2vec, tags tf-idf, VAD, and processed lyrics.
+- 2026-03-19: Base dataset retrieval guidance prepared. Automated Zenodo fetch from this environment was blocked, so manual retrieval path is: search Zenodo for `Music4All Santana` or `Music4All dataset`, open the separate base record by Santana et al. (2020), download the metadata/features file only, and place it under `10_resources/datasets/music4all_base/`.
+- 2026-03-19: Candidate source check completed for `https://github.com/zerodevelops/music4all` — rejected as base dataset source. Repository is a React/Tailwind Shazam API application (`src/`, `package.json`, `vite.config.js`) and does not host the official Music4All base metadata corpus.
+- 2026-03-19: Base Music4All record remains inaccessible for the user; continue with Onion-only execution path as per D-006.
+- 2026-03-19: New next todo created: `BL-017` build Onion-only canonical dataset layer (track_id joins + curated feature schema + quality checks) before BL-004.
+- 2026-03-19: Base dataset download still pending.
+- end: (update when files confirmed present at `10_resources/datasets/music4all/`)
+
+

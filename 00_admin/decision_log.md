@@ -29,6 +29,37 @@ impacted_files:
 review_date:
 none
 
+id: D-007
+date: 2026-03-19
+status: accepted
+
+context:
+Base Music4All metadata access is currently blocked in the user environment. Pipeline progress should not pause while waiting for external access changes.
+
+decision:
+Implement a canonical Onion-only dataset layer as the immediate next engineering step. Build a track_id-joined dataset from selected Onion files with a curated, interpretable feature subset and explicit data-quality checks.
+
+alternatives_considered:
+- Pause implementation until base metadata becomes accessible
+- Switch to a new dataset midstream
+- Continue coding against ad-hoc per-file inputs with no canonical layer
+
+rationale:
+The canonical layer unblocks BL-004 through BL-009 using already verified assets and preserves deterministic, transparent behavior by centralizing schema, joins, and quality checks in one reproducible step.
+
+evidence_basis:
+- `07_implementation/experiment_log.md` (EXP-DA-001 access blocker and Onion extraction records)
+- `06_data_and_sources/dataset_registry.md` (use/skip file decisions and first-pass columns)
+
+impacted_files:
+- `07_implementation/backlog.md` (BL-017)
+- `07_implementation/implementation_plan.md`
+- `06_data_and_sources/dataset_registry.md`
+- `07_implementation/experiment_log.md`
+
+review_date:
+none
+
 id: D-002
 date: 2026-03-13
 status: accepted
@@ -157,3 +188,35 @@ impacted_files:
 
 review_date:
 2026-04-10
+
+id: D-006
+date: 2026-03-19
+status: accepted
+
+context:
+Base Music4All metadata access appears request-gated (email/contact workflow). User preference is to avoid requesting gated access and continue progress with currently available assets.
+
+decision:
+Adopt an Onion-only execution path for MVP implementation and evaluation. Use track_id-centric joins across available Onion files (`userid_trackid_count`, optional `userid_trackid_timestamp`, `id_essentia`, `id_lyrics_sentiment_functionals`, `id_tags_dict`, `id_genres_tf-idf`) and defer base-metadata-dependent enhancements (track_name/artist_name/ISRC and Spotify-style feature parity) to optional future work.
+
+alternatives_considered:
+- Pause implementation until base dataset access is approved
+- Request access to base dataset now and continue in parallel
+- Replace data source entirely with a different public dataset
+
+rationale:
+Onion data already supports deterministic, transparent, and controllable pipeline behavior using interpretable features (BPM/danceability/loudness, lyrics sentiment, tags, genres) plus listening events. This avoids external dependency delay and preserves thesis delivery momentum while keeping limitations explicit.
+
+evidence_basis:
+- `07_implementation/experiment_log.md` (EXP-DA-001 archive audit and extraction records)
+- `06_data_and_sources/dataset_registry.md` (checked use/skip classifications)
+
+impacted_files:
+- `06_data_and_sources/dataset_registry.md`
+- `07_implementation/experiment_log.md`
+- `07_implementation/implementation_plan.md`
+- `08_writing/chapter3.md`
+- `08_writing/chapter5.md`
+
+review_date:
+none
