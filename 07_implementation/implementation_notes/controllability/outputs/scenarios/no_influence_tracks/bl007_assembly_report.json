@@ -1,0 +1,33 @@
+{
+  "run_id": "BL011-NO_INFLUENCE_TRACKS-BL007-20260320-235345-259873",
+  "task": "BL-007",
+  "scenario_id": "no_influence_tracks",
+  "config": {
+    "target_size": 10,
+    "min_score_threshold": 0.35,
+    "max_per_genre": 4,
+    "max_consecutive": 2
+  },
+  "counts": {
+    "candidates_evaluated": 47,
+    "tracks_included": 10,
+    "tracks_excluded": 37
+  },
+  "rule_hits": {
+    "R1_score_threshold": 0,
+    "R2_genre_cap": 7,
+    "R3_consecutive_run": 5,
+    "R4_length_cap": 25
+  },
+  "playlist_genre_mix": {
+    "alternative rock": 1,
+    "folk": 2,
+    "indie pop": 2,
+    "indie rock": 4,
+    "pop": 1
+  },
+  "playlist_score_range": {
+    "max": 0.741196,
+    "min": 0.486935
+  }
+}

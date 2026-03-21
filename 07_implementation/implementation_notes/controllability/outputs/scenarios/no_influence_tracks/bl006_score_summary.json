@@ -1,0 +1,126 @@
+{
+  "run_id": "BL011-NO_INFLUENCE_TRACKS-BL006-20260320-235345-259873",
+  "task": "BL-006",
+  "scenario_id": "no_influence_tracks",
+  "config": {
+    "numeric_thresholds": {
+      "rhythm.bpm": 20.0,
+      "rhythm.danceability": 0.4,
+      "lowlevel.loudness_ebu128.integrated": 6.0,
+      "V_mean": 0.8,
+      "A_mean": 0.9,
+      "D_mean": 0.8
+    },
+    "component_weights": {
+      "rhythm.bpm": 0.1,
+      "rhythm.danceability": 0.1,
+      "lowlevel.loudness_ebu128.integrated": 0.08,
+      "V_mean": 0.12,
+      "A_mean": 0.08,
+      "D_mean": 0.08,
+      "lead_genre": 0.12,
+      "genre_overlap": 0.16,
+      "tag_overlap": 0.16
+    },
+    "weight_override_component": null,
+    "raw_override_value": null
+  },
+  "counts": {
+    "candidates_scored": 47,
+    "score_max": 0.741196,
+    "score_min": 0.161785
+  },
+  "top_candidates": [
+    {
+      "rank": 1,
+      "track_id": "jPv1Tj4Mgo4l2Oue",
+      "lead_genre": "indie rock",
+      "final_score": 0.741196,
+      "matched_genres": "indie rock|rock",
+      "matched_tags": "indie rock|rock|indie|alternative|alternative rock"
+    },
+    {
+      "rank": 2,
+      "track_id": "POdgTSLBnoFJaj2x",
+      "lead_genre": "indie rock",
+      "final_score": 0.719758,
+      "matched_genres": "indie rock|rock",
+      "matched_tags": "indie rock|indie|rock|alternative|alternative rock"
+    },
+    {
+      "rank": 3,
+      "track_id": "PvGcoMH6vGWBaoXh",
+      "lead_genre": "indie rock",
+      "final_score": 0.648397,
+      "matched_genres": "indie rock|rock",
+      "matched_tags": "indie|rock|alternative|alternative rock"
+    },
+    {
+      "rank": 4,
+      "track_id": "hn1Z3OcZ4HM3hcIi",
+      "lead_genre": "indie rock",
+      "final_score": 0.647532,
+      "matched_genres": "indie rock|rock",
+      "matched_tags": "indie rock|indie|rock|alternative|alternative rock"
+    },
+    {
+      "rank": 5,
+      "track_id": "1XZP3bEawLbWfSkM",
+      "lead_genre": "indie rock",
+      "final_score": 0.640671,
+      "matched_genres": "indie rock|alternative rock|rock",
+      "matched_tags": "indie rock|indie|rock|alternative|alternative rock"
+    },
+    {
+      "rank": 6,
+      "track_id": "nlgMHNZ0qCS2vdmV",
+      "lead_genre": "indie rock",
+      "final_score": 0.64047,
+      "matched_genres": "indie rock|rock",
+      "matched_tags": "indie|alternative|rock|alternative rock|pop"
+    },
+    {
+      "rank": 7,
+      "track_id": "j8qrlsfqWAPqzqD9",
+      "lead_genre": "indie rock",
+      "final_score": 0.640292,
+      "matched_genres": "indie rock|rock",
+      "matched_tags": "indie|indie rock|alternative|rock|alternative rock"
+    },
+    {
+      "rank": 8,
+      "track_id": "yUa5uu5wFCGwl2PK",
+      "lead_genre": "indie pop",
+      "final_score": 0.617834,
+      "matched_genres": "indie pop|indie rock|electronic",
+      "matched_tags": "indie|indie pop|electronic|indie rock|alternative|rock"
+    },
+    {
+      "rank": 9,
+      "track_id": "xr1HkbplUycZcEZX",
+      "lead_genre": "indie rock",
+      "final_score": 0.604422,
+      "matched_genres": "indie rock|rock",
+      "matched_tags": "indie rock|indie|rock|alternative"
+    },
+    {
+      "rank": 10,
+      "track_id": "KxryDZFfi0mkMMiM",
+      "lead_genre": "alternative rock",
+      "final_score": 0.593906,
+      "matched_genres": "alternative rock|rock",
+      "matched_tags": "alternative rock|rock|alternative|indie|indie rock"
+    }
+  ],
+  "mean_component_contributions": {
+    "rhythm.bpm": 0.02548,
+    "rhythm.danceability": 0.046359,
+    "lowlevel.loudness_ebu128.integrated": 0.027529,
+    "V_mean": 0.069502,
+    "A_mean": 0.060663,
+    "D_mean": 0.060695,
+    "lead_genre": 0.058207,
+    "genre_overlap": 0.041135,
+    "tag_overlap": 0.078432
+  }
+}

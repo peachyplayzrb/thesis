@@ -1,0 +1,1018 @@
+{
+  "run_id": "BL008-EXPLAIN-20260320-233938-418090",
+  "generated_at_utc": "2026-03-20T23:39:38Z",
+  "elapsed_seconds": 0.001,
+  "playlist_track_count": 10,
+  "explanations": [
+    {
+      "playlist_position": 1,
+      "track_id": "jPv1Tj4Mgo4l2Oue",
+      "lead_genre": "indie rock",
+      "final_score": 0.724318,
+      "score_rank": 1,
+      "why_selected": "Selected at playlist position 1 (score 0.7243) because it strongly matches the preference profile on Lead genre match, Valence, Tag overlap. Lead genre is 'indie rock'.",
+      "top_score_contributors": [
+        {
+          "component": "lead_genre",
+          "label": "Lead genre match",
+          "weight": 0.12,
+          "similarity": 1.0,
+          "contribution": 0.12
+        },
+        {
+          "component": "V_mean",
+          "label": "Valence",
+          "weight": 0.12,
+          "similarity": 0.972885,
+          "contribution": 0.116746
+        },
+        {
+          "component": "tag_overlap",
+          "label": "Tag overlap",
+          "weight": 0.16,
+          "similarity": 0.71644,
+          "contribution": 0.11463
+        }
+      ],
+      "score_breakdown": [
+        {
+          "component": "bpm",
+          "label": "BPM (tempo)",
+          "weight": 0.1,
+          "similarity": 0.871775,
+          "contribution": 0.087178
+        },
+        {
+          "component": "danceability",
+          "label": "Danceability",
+          "weight": 0.1,
+          "similarity": 0.763441,
+          "contribution": 0.076344
+        },
+        {
+          "component": "loudness",
+          "label": "Loudness",
+          "weight": 0.08,
+          "similarity": 0.638824,
+          "contribution": 0.051106
+        },
+        {
+          "component": "V_mean",
+          "label": "Valence",
+          "weight": 0.12,
+          "similarity": 0.972885,
+          "contribution": 0.116746
+        },
+        {
+          "component": "A_mean",
+          "label": "Arousal",
+          "weight": 0.08,
+          "similarity": 0.404281,
+          "contribution": 0.032342
+        },
+        {
+          "component": "D_mean",
+          "label": "Dominance",
+          "weight": 0.08,
+          "similarity": 0.877224,
+          "contribution": 0.070178
+        },
+        {
+          "component": "lead_genre",
+          "label": "Lead genre match",
+          "weight": 0.12,
+          "similarity": 1.0,
+          "contribution": 0.12
+        },
+        {
+          "component": "genre_overlap",
+          "label": "Genre overlap",
+          "weight": 0.16,
+          "similarity": 0.34871,
+          "contribution": 0.055794
+        },
+        {
+          "component": "tag_overlap",
+          "label": "Tag overlap",
+          "weight": 0.16,
+          "similarity": 0.71644,
+          "contribution": 0.11463
+        }
+      ],
+      "assembly_context": {
+        "decision": "included",
+        "admission_rule": "Admitted on first evaluation",
+        "genre_at_position": "indie rock"
+      }
+    },
+    {
+      "playlist_position": 2,
+      "track_id": "POdgTSLBnoFJaj2x",
+      "lead_genre": "indie rock",
+      "final_score": 0.702439,
+      "score_rank": 2,
+      "why_selected": "Selected at playlist position 2 (score 0.7024) because it strongly matches the preference profile on Lead genre match, Tag overlap, BPM (tempo). Lead genre is 'indie rock'.",
+      "top_score_contributors": [
+        {
+          "component": "lead_genre",
+          "label": "Lead genre match",
+          "weight": 0.12,
+          "similarity": 1.0,
+          "contribution": 0.12
+        },
+        {
+          "component": "tag_overlap",
+          "label": "Tag overlap",
+          "weight": 0.16,
+          "similarity": 0.71644,
+          "contribution": 0.11463
+        },
+        {
+          "component": "bpm",
+          "label": "BPM (tempo)",
+          "weight": 0.1,
+          "similarity": 0.987497,
+          "contribution": 0.09875
+        }
+      ],
+      "score_breakdown": [
+        {
+          "component": "bpm",
+          "label": "BPM (tempo)",
+          "weight": 0.1,
+          "similarity": 0.987497,
+          "contribution": 0.09875
+        },
+        {
+          "component": "danceability",
+          "label": "Danceability",
+          "weight": 0.1,
+          "similarity": 0.414608,
+          "contribution": 0.041461
+        },
+        {
+          "component": "loudness",
+          "label": "Loudness",
+          "weight": 0.08,
+          "similarity": 0.925032,
+          "contribution": 0.074003
+        },
+        {
+          "component": "V_mean",
+          "label": "Valence",
+          "weight": 0.12,
+          "similarity": 0.630416,
+          "contribution": 0.07565
+        },
+        {
+          "component": "A_mean",
+          "label": "Arousal",
+          "weight": 0.08,
+          "similarity": 0.711174,
+          "contribution": 0.056894
+        },
+        {
+          "component": "D_mean",
+          "label": "Dominance",
+          "weight": 0.08,
+          "similarity": 0.815714,
+          "contribution": 0.065257
+        },
+        {
+          "component": "lead_genre",
+          "label": "Lead genre match",
+          "weight": 0.12,
+          "similarity": 1.0,
+          "contribution": 0.12
+        },
+        {
+          "component": "genre_overlap",
+          "label": "Genre overlap",
+          "weight": 0.16,
+          "similarity": 0.34871,
+          "contribution": 0.055794
+        },
+        {
+          "component": "tag_overlap",
+          "label": "Tag overlap",
+          "weight": 0.16,
+          "similarity": 0.71644,
+          "contribution": 0.11463
+        }
+      ],
+      "assembly_context": {
+        "decision": "included",
+        "admission_rule": "Admitted on first evaluation",
+        "genre_at_position": "indie rock"
+      }
+    },
+    {
+      "playlist_position": 3,
+      "track_id": "yUa5uu5wFCGwl2PK",
+      "lead_genre": "indie pop",
+      "final_score": 0.643423,
+      "score_rank": 7,
+      "why_selected": "Selected at playlist position 3 (score 0.6434) because it strongly matches the preference profile on Tag overlap, Danceability, Valence. Lead genre is 'indie pop'.",
+      "top_score_contributors": [
+        {
+          "component": "tag_overlap",
+          "label": "Tag overlap",
+          "weight": 0.16,
+          "similarity": 0.726808,
+          "contribution": 0.116289
+        },
+        {
+          "component": "danceability",
+          "label": "Danceability",
+          "weight": 0.1,
+          "similarity": 0.96916,
+          "contribution": 0.096916
+        },
+        {
+          "component": "V_mean",
+          "label": "Valence",
+          "weight": 0.12,
+          "similarity": 0.679165,
+          "contribution": 0.0815
+        }
+      ],
+      "score_breakdown": [
+        {
+          "component": "bpm",
+          "label": "BPM (tempo)",
+          "weight": 0.1,
+          "similarity": 0.610898,
+          "contribution": 0.06109
+        },
+        {
+          "component": "danceability",
+          "label": "Danceability",
+          "weight": 0.1,
+          "similarity": 0.96916,
+          "contribution": 0.096916
+        },
+        {
+          "component": "loudness",
+          "label": "Loudness",
+          "weight": 0.08,
+          "similarity": 0.0,
+          "contribution": 0.0
+        },
+        {
+          "component": "V_mean",
+          "label": "Valence",
+          "weight": 0.12,
+          "similarity": 0.679165,
+          "contribution": 0.0815
+        },
+        {
+          "component": "A_mean",
+          "label": "Arousal",
+          "weight": 0.08,
+          "similarity": 0.708429,
+          "contribution": 0.056674
+        },
+        {
+          "component": "D_mean",
+          "label": "Dominance",
+          "weight": 0.08,
+          "similarity": 0.95507,
+          "contribution": 0.076406
+        },
+        {
+          "component": "lead_genre",
+          "label": "Lead genre match",
+          "weight": 0.12,
+          "similarity": 0.67165,
+          "contribution": 0.080598
+        },
+        {
+          "component": "genre_overlap",
+          "label": "Genre overlap",
+          "weight": 0.16,
+          "similarity": 0.462188,
+          "contribution": 0.07395
+        },
+        {
+          "component": "tag_overlap",
+          "label": "Tag overlap",
+          "weight": 0.16,
+          "similarity": 0.726808,
+          "contribution": 0.116289
+        }
+      ],
+      "assembly_context": {
+        "decision": "included",
+        "admission_rule": "Admitted on first evaluation",
+        "genre_at_position": "indie pop"
+      }
+    },
+    {
+      "playlist_position": 4,
+      "track_id": "j8qrlsfqWAPqzqD9",
+      "lead_genre": "indie rock",
+      "final_score": 0.631517,
+      "score_rank": 8,
+      "why_selected": "Selected at playlist position 4 (score 0.6315) because it strongly matches the preference profile on Lead genre match, Tag overlap, Valence. Lead genre is 'indie rock'.",
+      "top_score_contributors": [
+        {
+          "component": "lead_genre",
+          "label": "Lead genre match",
+          "weight": 0.12,
+          "similarity": 1.0,
+          "contribution": 0.12
+        },
+        {
+          "component": "tag_overlap",
+          "label": "Tag overlap",
+          "weight": 0.16,
+          "similarity": 0.71644,
+          "contribution": 0.11463
+        },
+        {
+          "component": "V_mean",
+          "label": "Valence",
+          "weight": 0.12,
+          "similarity": 0.782714,
+          "contribution": 0.093926
+        }
+      ],
+      "score_breakdown": [
+        {
+          "component": "bpm",
+          "label": "BPM (tempo)",
+          "weight": 0.1,
+          "similarity": 0.15703,
+          "contribution": 0.015703
+        },
+        {
+          "component": "danceability",
+          "label": "Danceability",
+          "weight": 0.1,
+          "similarity": 0.563537,
+          "contribution": 0.056354
+        },
+        {
+          "component": "loudness",
+          "label": "Loudness",
+          "weight": 0.08,
+          "similarity": 0.583284,
+          "contribution": 0.046663
+        },
+        {
+          "component": "V_mean",
+          "label": "Valence",
+          "weight": 0.12,
+          "similarity": 0.782714,
+          "contribution": 0.093926
+        },
+        {
+          "component": "A_mean",
+          "label": "Arousal",
+          "weight": 0.08,
+          "similarity": 0.61364,
+          "contribution": 0.049091
+        },
+        {
+          "component": "D_mean",
+          "label": "Dominance",
+          "weight": 0.08,
+          "similarity": 0.991944,
+          "contribution": 0.079356
+        },
+        {
+          "component": "lead_genre",
+          "label": "Lead genre match",
+          "weight": 0.12,
+          "similarity": 1.0,
+          "contribution": 0.12
+        },
+        {
+          "component": "genre_overlap",
+          "label": "Genre overlap",
+          "weight": 0.16,
+          "similarity": 0.34871,
+          "contribution": 0.055794
+        },
+        {
+          "component": "tag_overlap",
+          "label": "Tag overlap",
+          "weight": 0.16,
+          "similarity": 0.71644,
+          "contribution": 0.11463
+        }
+      ],
+      "assembly_context": {
+        "decision": "included",
+        "admission_rule": "Admitted on first evaluation",
+        "genre_at_position": "indie rock"
+      }
+    },
+    {
+      "playlist_position": 5,
+      "track_id": "8keAhBJumHlc8qe9",
+      "lead_genre": "indie rock",
+      "final_score": 0.606053,
+      "score_rank": 9,
+      "why_selected": "Selected at playlist position 5 (score 0.6061) because it strongly matches the preference profile on Lead genre match, Tag overlap, Valence. Lead genre is 'indie rock'.",
+      "top_score_contributors": [
+        {
+          "component": "lead_genre",
+          "label": "Lead genre match",
+          "weight": 0.12,
+          "similarity": 1.0,
+          "contribution": 0.12
+        },
+        {
+          "component": "tag_overlap",
+          "label": "Tag overlap",
+          "weight": 0.16,
+          "similarity": 0.64214,
+          "contribution": 0.102742
+        },
+        {
+          "component": "V_mean",
+          "label": "Valence",
+          "weight": 0.12,
+          "similarity": 0.763599,
+          "contribution": 0.091632
+        }
+      ],
+      "score_breakdown": [
+        {
+          "component": "bpm",
+          "label": "BPM (tempo)",
+          "weight": 0.1,
+          "similarity": 0.0,
+          "contribution": 0.0
+        },
+        {
+          "component": "danceability",
+          "label": "Danceability",
+          "weight": 0.1,
+          "similarity": 0.745093,
+          "contribution": 0.074509
+        },
+        {
+          "component": "loudness",
+          "label": "Loudness",
+          "weight": 0.08,
+          "similarity": 0.036913,
+          "contribution": 0.002953
+        },
+        {
+          "component": "V_mean",
+          "label": "Valence",
+          "weight": 0.12,
+          "similarity": 0.763599,
+          "contribution": 0.091632
+        },
+        {
+          "component": "A_mean",
+          "label": "Arousal",
+          "weight": 0.08,
+          "similarity": 0.798142,
+          "contribution": 0.063851
+        },
+        {
+          "component": "D_mean",
+          "label": "Dominance",
+          "weight": 0.08,
+          "similarity": 0.934002,
+          "contribution": 0.07472
+        },
+        {
+          "component": "lead_genre",
+          "label": "Lead genre match",
+          "weight": 0.12,
+          "similarity": 1.0,
+          "contribution": 0.12
+        },
+        {
+          "component": "genre_overlap",
+          "label": "Genre overlap",
+          "weight": 0.16,
+          "similarity": 0.472789,
+          "contribution": 0.075646
+        },
+        {
+          "component": "tag_overlap",
+          "label": "Tag overlap",
+          "weight": 0.16,
+          "similarity": 0.64214,
+          "contribution": 0.102742
+        }
+      ],
+      "assembly_context": {
+        "decision": "included",
+        "admission_rule": "Admitted on first evaluation",
+        "genre_at_position": "indie rock"
+      }
+    },
+    {
+      "playlist_position": 6,
+      "track_id": "Nyb0YqqyaSvWThIG",
+      "lead_genre": "indie pop",
+      "final_score": 0.592793,
+      "score_rank": 11,
+      "why_selected": "Selected at playlist position 6 (score 0.5928) because it strongly matches the preference profile on Tag overlap, Valence, Lead genre match. Lead genre is 'indie pop'.",
+      "top_score_contributors": [
+        {
+          "component": "tag_overlap",
+          "label": "Tag overlap",
+          "weight": 0.16,
+          "similarity": 0.835911,
+          "contribution": 0.133746
+        },
+        {
+          "component": "V_mean",
+          "label": "Valence",
+          "weight": 0.12,
+          "similarity": 0.967714,
+          "contribution": 0.116126
+        },
+        {
+          "component": "lead_genre",
+          "label": "Lead genre match",
+          "weight": 0.12,
+          "similarity": 0.67165,
+          "contribution": 0.080598
+        }
+      ],
+      "score_breakdown": [
+        {
+          "component": "bpm",
+          "label": "BPM (tempo)",
+          "weight": 0.1,
+          "similarity": 0.0,
+          "contribution": 0.0
+        },
+        {
+          "component": "danceability",
+          "label": "Danceability",
+          "weight": 0.1,
+          "similarity": 0.0,
+          "contribution": 0.0
+        },
+        {
+          "component": "loudness",
+          "label": "Loudness",
+          "weight": 0.08,
+          "similarity": 0.697898,
+          "contribution": 0.055832
+        },
+        {
+          "component": "V_mean",
+          "label": "Valence",
+          "weight": 0.12,
+          "similarity": 0.967714,
+          "contribution": 0.116126
+        },
+        {
+          "component": "A_mean",
+          "label": "Arousal",
+          "weight": 0.08,
+          "similarity": 0.753128,
+          "contribution": 0.06025
+        },
+        {
+          "component": "D_mean",
+          "label": "Dominance",
+          "weight": 0.08,
+          "similarity": 0.903633,
+          "contribution": 0.072291
+        },
+        {
+          "component": "lead_genre",
+          "label": "Lead genre match",
+          "weight": 0.12,
+          "similarity": 0.67165,
+          "contribution": 0.080598
+        },
+        {
+          "component": "genre_overlap",
+          "label": "Genre overlap",
+          "weight": 0.16,
+          "similarity": 0.462188,
+          "contribution": 0.07395
+        },
+        {
+          "component": "tag_overlap",
+          "label": "Tag overlap",
+          "weight": 0.16,
+          "similarity": 0.835911,
+          "contribution": 0.133746
+        }
+      ],
+      "assembly_context": {
+        "decision": "included",
+        "admission_rule": "Admitted on first evaluation",
+        "genre_at_position": "indie pop"
+      }
+    },
+    {
+      "playlist_position": 7,
+      "track_id": "0X9aluHlz6iKWBMR",
+      "lead_genre": "alternative rock",
+      "final_score": 0.559544,
+      "score_rank": 13,
+      "why_selected": "Selected at playlist position 7 (score 0.5595) because it strongly matches the preference profile on Valence, Lead genre match, Arousal. Lead genre is 'alternative rock'.",
+      "top_score_contributors": [
+        {
+          "component": "V_mean",
+          "label": "Valence",
+          "weight": 0.12,
+          "similarity": 0.918617,
+          "contribution": 0.110234
+        },
+        {
+          "component": "lead_genre",
+          "label": "Lead genre match",
+          "weight": 0.12,
+          "similarity": 0.897489,
+          "contribution": 0.107699
+        },
+        {
+          "component": "A_mean",
+          "label": "Arousal",
+          "weight": 0.08,
+          "similarity": 0.954068,
+          "contribution": 0.076325
+        }
+      ],
+      "score_breakdown": [
+        {
+          "component": "bpm",
+          "label": "BPM (tempo)",
+          "weight": 0.1,
+          "similarity": 0.0,
+          "contribution": 0.0
+        },
+        {
+          "component": "danceability",
+          "label": "Danceability",
+          "weight": 0.1,
+          "similarity": 0.482983,
+          "contribution": 0.048298
+        },
+        {
+          "component": "loudness",
+          "label": "Loudness",
+          "weight": 0.08,
+          "similarity": 0.27287,
+          "contribution": 0.02183
+        },
+        {
+          "component": "V_mean",
+          "label": "Valence",
+          "weight": 0.12,
+          "similarity": 0.918617,
+          "contribution": 0.110234
+        },
+        {
+          "component": "A_mean",
+          "label": "Arousal",
+          "weight": 0.08,
+          "similarity": 0.954068,
+          "contribution": 0.076325
+        },
+        {
+          "component": "D_mean",
+          "label": "Dominance",
+          "weight": 0.08,
+          "similarity": 0.940427,
+          "contribution": 0.075234
+        },
+        {
+          "component": "lead_genre",
+          "label": "Lead genre match",
+          "weight": 0.12,
+          "similarity": 0.897489,
+          "contribution": 0.107699
+        },
+        {
+          "component": "genre_overlap",
+          "label": "Genre overlap",
+          "weight": 0.16,
+          "similarity": 0.278681,
+          "contribution": 0.044589
+        },
+        {
+          "component": "tag_overlap",
+          "label": "Tag overlap",
+          "weight": 0.16,
+          "similarity": 0.470844,
+          "contribution": 0.075335
+        }
+      ],
+      "assembly_context": {
+        "decision": "included",
+        "admission_rule": "Admitted on first evaluation",
+        "genre_at_position": "alternative rock"
+      }
+    },
+    {
+      "playlist_position": 8,
+      "track_id": "ql2191d6uNCVM932",
+      "lead_genre": "alternative rock",
+      "final_score": 0.548263,
+      "score_rank": 15,
+      "why_selected": "Selected at playlist position 8 (score 0.5483) because it strongly matches the preference profile on Lead genre match, Tag overlap, Valence. Lead genre is 'alternative rock'.",
+      "top_score_contributors": [
+        {
+          "component": "lead_genre",
+          "label": "Lead genre match",
+          "weight": 0.12,
+          "similarity": 0.897489,
+          "contribution": 0.107699
+        },
+        {
+          "component": "tag_overlap",
+          "label": "Tag overlap",
+          "weight": 0.16,
+          "similarity": 0.64214,
+          "contribution": 0.102742
+        },
+        {
+          "component": "V_mean",
+          "label": "Valence",
+          "weight": 0.12,
+          "similarity": 0.629907,
+          "contribution": 0.075589
+        }
+      ],
+      "score_breakdown": [
+        {
+          "component": "bpm",
+          "label": "BPM (tempo)",
+          "weight": 0.1,
+          "similarity": 0.0,
+          "contribution": 0.0
+        },
+        {
+          "component": "danceability",
+          "label": "Danceability",
+          "weight": 0.1,
+          "similarity": 0.636136,
+          "contribution": 0.063614
+        },
+        {
+          "component": "loudness",
+          "label": "Loudness",
+          "weight": 0.08,
+          "similarity": 0.52088,
+          "contribution": 0.04167
+        },
+        {
+          "component": "V_mean",
+          "label": "Valence",
+          "weight": 0.12,
+          "similarity": 0.629907,
+          "contribution": 0.075589
+        },
+        {
+          "component": "A_mean",
+          "label": "Arousal",
+          "weight": 0.08,
+          "similarity": 0.629803,
+          "contribution": 0.050384
+        },
+        {
+          "component": "D_mean",
+          "label": "Dominance",
+          "weight": 0.08,
+          "similarity": 0.774694,
+          "contribution": 0.061976
+        },
+        {
+          "component": "lead_genre",
+          "label": "Lead genre match",
+          "weight": 0.12,
+          "similarity": 0.897489,
+          "contribution": 0.107699
+        },
+        {
+          "component": "genre_overlap",
+          "label": "Genre overlap",
+          "weight": 0.16,
+          "similarity": 0.278681,
+          "contribution": 0.044589
+        },
+        {
+          "component": "tag_overlap",
+          "label": "Tag overlap",
+          "weight": 0.16,
+          "similarity": 0.64214,
+          "contribution": 0.102742
+        }
+      ],
+      "assembly_context": {
+        "decision": "included",
+        "admission_rule": "Admitted on first evaluation",
+        "genre_at_position": "alternative rock"
+      }
+    },
+    {
+      "playlist_position": 9,
+      "track_id": "9ZtfD8gBZXonrJKX",
+      "lead_genre": "pop",
+      "final_score": 0.51886,
+      "score_rank": 18,
+      "why_selected": "Selected at playlist position 9 (score 0.5189) because it strongly matches the preference profile on Valence, Loudness, Arousal. Lead genre is 'pop'.",
+      "top_score_contributors": [
+        {
+          "component": "V_mean",
+          "label": "Valence",
+          "weight": 0.12,
+          "similarity": 0.798899,
+          "contribution": 0.095868
+        },
+        {
+          "component": "loudness",
+          "label": "Loudness",
+          "weight": 0.08,
+          "similarity": 0.98933,
+          "contribution": 0.079146
+        },
+        {
+          "component": "A_mean",
+          "label": "Arousal",
+          "weight": 0.08,
+          "similarity": 0.968262,
+          "contribution": 0.077461
+        }
+      ],
+      "score_breakdown": [
+        {
+          "component": "bpm",
+          "label": "BPM (tempo)",
+          "weight": 0.1,
+          "similarity": 0.651349,
+          "contribution": 0.065135
+        },
+        {
+          "component": "danceability",
+          "label": "Danceability",
+          "weight": 0.1,
+          "similarity": 0.525562,
+          "contribution": 0.052556
+        },
+        {
+          "component": "loudness",
+          "label": "Loudness",
+          "weight": 0.08,
+          "similarity": 0.98933,
+          "contribution": 0.079146
+        },
+        {
+          "component": "V_mean",
+          "label": "Valence",
+          "weight": 0.12,
+          "similarity": 0.798899,
+          "contribution": 0.095868
+        },
+        {
+          "component": "A_mean",
+          "label": "Arousal",
+          "weight": 0.08,
+          "similarity": 0.968262,
+          "contribution": 0.077461
+        },
+        {
+          "component": "D_mean",
+          "label": "Dominance",
+          "weight": 0.08,
+          "similarity": 0.845016,
+          "contribution": 0.067601
+        },
+        {
+          "component": "lead_genre",
+          "label": "Lead genre match",
+          "weight": 0.12,
+          "similarity": 0.306301,
+          "contribution": 0.036756
+        },
+        {
+          "component": "genre_overlap",
+          "label": "Genre overlap",
+          "weight": 0.16,
+          "similarity": 0.132668,
+          "contribution": 0.021227
+        },
+        {
+          "component": "tag_overlap",
+          "label": "Tag overlap",
+          "weight": 0.16,
+          "similarity": 0.144435,
+          "contribution": 0.02311
+        }
+      ],
+      "assembly_context": {
+        "decision": "included",
+        "admission_rule": "Admitted on first evaluation",
+        "genre_at_position": "pop"
+      }
+    },
+    {
+      "playlist_position": 10,
+      "track_id": "PZEgbQhTHMMrKRLv",
+      "lead_genre": "folk",
+      "final_score": 0.510916,
+      "score_rank": 19,
+      "why_selected": "Selected at playlist position 10 (score 0.5109) because it strongly matches the preference profile on Valence, BPM (tempo), Dominance. Lead genre is 'folk'.",
+      "top_score_contributors": [
+        {
+          "component": "V_mean",
+          "label": "Valence",
+          "weight": 0.12,
+          "similarity": 0.936749,
+          "contribution": 0.11241
+        },
+        {
+          "component": "bpm",
+          "label": "BPM (tempo)",
+          "weight": 0.1,
+          "similarity": 0.818617,
+          "contribution": 0.081862
+        },
+        {
+          "component": "D_mean",
+          "label": "Dominance",
+          "weight": 0.08,
+          "similarity": 0.99829,
+          "contribution": 0.079863
+        }
+      ],
+      "score_breakdown": [
+        {
+          "component": "bpm",
+          "label": "BPM (tempo)",
+          "weight": 0.1,
+          "similarity": 0.818617,
+          "contribution": 0.081862
+        },
+        {
+          "component": "danceability",
+          "label": "Danceability",
+          "weight": 0.1,
+          "similarity": 0.50848,
+          "contribution": 0.050848
+        },
+        {
+          "component": "loudness",
+          "label": "Loudness",
+          "weight": 0.08,
+          "similarity": 0.02364,
+          "contribution": 0.001891
+        },
+        {
+          "component": "V_mean",
+          "label": "Valence",
+          "weight": 0.12,
+          "similarity": 0.936749,
+          "contribution": 0.11241
+        },
+        {
+          "component": "A_mean",
+          "label": "Arousal",
+          "weight": 0.08,
+          "similarity": 0.91705,
+          "contribution": 0.073364
+        },
+        {
+          "component": "D_mean",
+          "label": "Dominance",
+          "weight": 0.08,
+          "similarity": 0.99829,
+          "contribution": 0.079863
+        },
+        {
+          "component": "lead_genre",
+          "label": "Lead genre match",
+          "weight": 0.12,
+          "similarity": 0.0,
+          "contribution": 0.0
+        },
+        {
+          "component": "genre_overlap",
+          "label": "Genre overlap",
+          "weight": 0.16,
+          "similarity": 0.194107,
+          "contribution": 0.031057
+        },
+        {
+          "component": "tag_overlap",
+          "label": "Tag overlap",
+          "weight": 0.16,
+          "similarity": 0.497633,
+          "contribution": 0.079621
+        }
+      ],
+      "assembly_context": {
+        "decision": "included",
+        "admission_rule": "Admitted on first evaluation",
+        "genre_at_position": "folk"
+      }
+    }
+  ]
+}

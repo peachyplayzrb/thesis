@@ -1,0 +1,61 @@
+track_id,is_seed_track,lead_genre,semantic_score,lead_genre_match,genre_overlap_count,tag_overlap_count,numeric_pass_count,bpm_distance,danceability_distance,loudness_distance,V_mean_distance,A_mean_distance,D_mean_distance,decision,decision_reason
+0ng9VQtWuSjd0arq,1,indie rock,3,1,2,6,6,18.608701,0.231047,2.418017,0.195352,0.115525,0.515686,reject,reject: seed track excluded from retrieval output
+lJKIbZNzpS6IsNgh,1,indie pop,3,1,1,5,6,10.256864,0.409839,4.064711,0.013912,0.893258,0.150049,reject,reject: seed track excluded from retrieval output
+yfm7RER1PWTqgjIp,1,electronic,3,1,2,6,4,32.844713,0.158458,8.489836,0.091652,0.056408,0.086797,reject,reject: seed track excluded from retrieval output
+io7RYSOjKB4YpBKy,1,trip hop,3,1,2,1,6,19.773264,0.010948,3.622974,0.024732,0.591672,0.00126,reject,reject: seed track excluded from retrieval output
+L4lGOjfg9lTLXh3U,1,alternative rock,3,1,3,3,5,38.311308,0.213365,0.551426,0.330671,0.331748,0.491132,reject,reject: seed track excluded from retrieval output
+zp4zYVjiH2Tm3gTM,1,pop,3,1,1,3,6,2.263918,0.245578,6.797329,0.417052,0.211626,0.354087,reject,reject: seed track excluded from retrieval output
+lZDk11KaRskQqhWf,1,indie rock,3,1,2,6,5,29.168062,0.198834,0.597212,0.445975,0.028258,0.057953,reject,reject: seed track excluded from retrieval output
+wQ4RdMXUKj1ry4p6,1,indie rock,3,1,1,7,5,25.124677,0.168882,5.098114,0.448654,0.242149,0.078352,reject,reject: seed track excluded from retrieval output
+cDf6FcmbzmqAMZXB,1,indie pop,3,1,2,5,5,33.817957,0.261774,5.020171,0.360437,0.211562,0.350652,reject,reject: seed track excluded from retrieval output
+KxryDZFfi0mkMMiM,1,alternative rock,3,1,2,5,6,2.573637,0.264436,0.913415,0.175115,0.002922,0.206688,reject,reject: seed track excluded from retrieval output
+o2LcK38b4mFLa55g,1,alternative rock,3,1,2,5,6,18.431165,0.328312,1.264304,0.190718,0.083895,0.504701,reject,reject: seed track excluded from retrieval output
+axdv4kGugNPl0G69,0,alternative rock,3,1,2,4,5,10.089033,0.867046,7.064411,0.715247,0.097104,0.125165,keep,"keep: semantic_score=3, numeric_pass_count=5"
+Nyb0YqqyaSvWThIG,0,indie pop,3,1,3,7,5,21.10594,0.989452,1.812609,0.025829,0.222185,0.077094,keep,"keep: semantic_score=3, numeric_pass_count=5"
+hn1Z3OcZ4HM3hcIi,0,indie rock,3,1,2,5,6,5.619898,0.14896,5.817344,0.186385,0.128228,0.125924,keep,"keep: semantic_score=3, numeric_pass_count=6"
+X4fkzkyHslEut5Tc,0,indie rock,3,1,2,5,6,19.63104,0.147847,5.318879,0.640824,0.21038,0.427816,keep,"keep: semantic_score=3, numeric_pass_count=6"
+9EERk7bPIn9HNBvE,0,pop,3,1,1,2,3,25.949106,0.539657,0.089377,1.185683,0.621755,0.59774,keep,"keep: semantic_score=3, numeric_pass_count=3"
+CiLFjUJvYWGmyr2d,0,indie rock,3,1,2,5,6,14.582842,0.276186,4.671439,0.246914,0.234102,0.044395,keep,"keep: semantic_score=3, numeric_pass_count=6"
+8keAhBJumHlc8qe9,0,indie rock,3,1,3,4,5,38.502165,0.101963,5.77852,0.189121,0.181672,0.052799,keep,"keep: semantic_score=3, numeric_pass_count=5"
+IYI6RFvYIFFg9Mi7,0,trip hop,3,1,2,2,5,10.256182,0.258409,2.527337,1.439936,0.406955,0.398044,keep,"keep: semantic_score=3, numeric_pass_count=5"
+jmq9rFLdkgwkaqyV,0,electronic,3,1,2,4,4,30.941286,0.080795,9.656626,0.515734,0.390756,0.352511,keep,"keep: semantic_score=3, numeric_pass_count=4"
+POdgTSLBnoFJaj2x,0,indie rock,3,1,2,5,6,0.250067,0.234157,0.449807,0.295667,0.259944,0.147429,keep,"keep: semantic_score=3, numeric_pass_count=6"
+nlgMHNZ0qCS2vdmV,0,indie rock,3,1,2,5,5,37.841749,0.072682,1.20386,0.177067,0.132863,0.366447,keep,"keep: semantic_score=3, numeric_pass_count=5"
+9CHzAeSHv9tWaIXW,0,electronic,3,1,1,3,6,2.113775,0.049647,3.013341,0.59682,0.078204,0.230794,keep,"keep: semantic_score=3, numeric_pass_count=6"
+APCOA8vqweV4WMee,0,electronic,3,1,1,2,5,34.257414,0.096204,4.399584,0.394382,0.279108,0.285623,keep,"keep: semantic_score=3, numeric_pass_count=5"
+0X9aluHlz6iKWBMR,0,alternative rock,3,1,2,4,5,27.714747,0.206807,4.362779,0.065106,0.041338,0.047658,keep,"keep: semantic_score=3, numeric_pass_count=5"
+j8qrlsfqWAPqzqD9,0,indie rock,3,1,2,5,6,16.8594,0.174585,2.500297,0.173829,0.347724,0.006445,keep,"keep: semantic_score=3, numeric_pass_count=6"
+QhQahljQAwJIBXvA,0,electronic,3,1,2,3,6,9.15621,0.235501,6.022462,0.442975,0.0753,0.295299,keep,"keep: semantic_score=3, numeric_pass_count=6"
+PvGcoMH6vGWBaoXh,0,indie rock,3,1,2,4,6,18.761469,0.00908,1.389116,0.126642,0.087163,0.280161,keep,"keep: semantic_score=3, numeric_pass_count=6"
+9ZtfD8gBZXonrJKX,0,pop,3,1,1,2,6,6.97302,0.189775,0.064021,0.160881,0.028564,0.123987,keep,"keep: semantic_score=3, numeric_pass_count=6"
+xr1HkbplUycZcEZX,0,indie rock,3,1,2,4,6,5.854365,0.231883,5.675832,0.182921,0.125589,0.309757,keep,"keep: semantic_score=3, numeric_pass_count=6"
+yKSK3z6kBv2YJfjx,0,indie rock,3,1,2,5,5,28.101733,0.158403,3.471978,0.433404,0.162409,0.268981,keep,"keep: semantic_score=3, numeric_pass_count=5"
+1XZP3bEawLbWfSkM,0,indie rock,3,1,3,5,6,11.84952,0.227095,3.561784,0.16477,0.094368,0.095838,keep,"keep: semantic_score=3, numeric_pass_count=6"
+SezvoI7y9p6mDvB3,0,pop,3,1,2,5,6,19.708311,0.165395,5.578649,0.018829,0.196724,0.087805,keep,"keep: semantic_score=3, numeric_pass_count=6"
+yUa5uu5wFCGwl2PK,0,indie pop,3,1,3,6,6,7.782038,0.012336,6.317108,0.256668,0.262414,0.035944,keep,"keep: semantic_score=3, numeric_pass_count=6"
+ZroyniZj5TmQTEeg,0,pop,3,1,2,5,6,17.930392,0.112545,6.453432,0.520023,0.136328,0.280113,keep,"keep: semantic_score=3, numeric_pass_count=6"
+WMPyZbE6EvI5f4wF,0,pop,3,1,1,1,3,43.861112,0.943098,7.84272,0.806759,0.613915,0.21835,keep,"keep: semantic_score=3, numeric_pass_count=3"
+zs8HfoDBJLYAtDrU,0,pop,3,1,1,4,6,24.335306,0.421688,6.743954,0.54966,0.119533,0.219909,keep,"keep: semantic_score=3, numeric_pass_count=6"
+P3KEx5uCaRSiG2x2,0,indie rock,3,1,2,4,5,32.652631,0.286587,6.679082,0.448458,0.254807,0.155638,keep,"keep: semantic_score=3, numeric_pass_count=5"
+UD0DWvRMwWe8Swiw,0,indie rock,3,1,2,6,5,28.02775,0.35031,5.039477,0.157415,0.50978,0.118542,keep,"keep: semantic_score=3, numeric_pass_count=5"
+9z2L8uD3GjNoXSRs,0,pop,3,1,1,1,5,40.306971,0.263098,2.09537,0.481894,0.033376,0.247975,keep,"keep: semantic_score=3, numeric_pass_count=5"
+X4ws3hW4yKZyFPi6,0,indie pop,3,1,2,5,6,18.881739,0.114208,6.664755,0.362594,0.224546,0.155555,keep,"keep: semantic_score=3, numeric_pass_count=6"
+B7SJXdcP0HhDMyfm,0,indie rock,3,1,1,3,5,43.77519,0.25507,2.911013,0.109123,0.547149,0.079701,keep,"keep: semantic_score=3, numeric_pass_count=5"
+ez35sBpNVUuM6emD,0,indie rock,3,1,1,5,5,43.656812,0.145826,6.665086,0.100809,0.363033,0.18251,keep,"keep: semantic_score=3, numeric_pass_count=5"
+jPv1Tj4Mgo4l2Oue,0,indie rock,3,1,2,5,6,2.564504,0.094623,2.167057,0.021692,0.536147,0.098221,keep,"keep: semantic_score=3, numeric_pass_count=6"
+ql2191d6uNCVM932,0,alternative rock,3,1,2,4,5,60.363661,0.145546,2.874719,0.296074,0.333178,0.180245,keep,"keep: semantic_score=3, numeric_pass_count=5"
+JdKYM8BZEjL8VmSe,0,pop punk,2,0,1,4,5,54.423399,0.175021,4.71256,0.094894,0.119095,0.198884,keep,"keep: semantic_score=2, numeric_pass_count=5"
+9CLTmq6Ps7WVseF2,0,hard rock,2,0,1,1,5,33.829756,0.428964,2.545278,0.896171,0.218703,0.330177,keep,"keep: semantic_score=2, numeric_pass_count=5"
+PZEgbQhTHMMrKRLv,0,folk,2,0,1,5,6,3.627665,0.196608,5.858162,0.050601,0.074655,0.001368,keep,"keep: semantic_score=2, numeric_pass_count=6"
+eNKt8Nt4qTpVT935,0,hard rock,2,0,1,1,5,41.888987,0.401849,2.544617,0.487663,0.024458,0.060496,keep,"keep: semantic_score=2, numeric_pass_count=5"
+VUwJpQjeH7lOujed,0,hard rock,2,0,1,1,6,2.309217,0.025481,1.574076,0.747662,0.670744,0.325618,keep,"keep: semantic_score=2, numeric_pass_count=6"
+BbjwoLBQtBZL1YfK,0,hip hop,1,0,0,1,6,13.932703,0.059168,0.936275,0.036409,0.143581,0.345945,reject,"reject: semantic_score=1, numeric_pass_count=6 below keep threshold"
+GB9LkV8pTLXCCvX6,0,folk,2,0,1,5,6,13.597597,0.072247,3.230041,0.439354,0.024779,0.007127,keep,"keep: semantic_score=2, numeric_pass_count=6"
+zFFaxVMVqVtQMaRB,0,hard rock,2,0,1,1,6,3.073397,0.136646,0.703271,0.464438,0.028618,0.169919,keep,"keep: semantic_score=2, numeric_pass_count=6"
+t69cOklpskwuIzkN,0,hard rock,2,0,1,1,5,15.053373,0.751861,4.735231,0.049453,0.016917,0.048419,keep,"keep: semantic_score=2, numeric_pass_count=5"
+itO50SbHqR6xiK3t,0,hip hop,2,0,1,3,5,47.159941,0.182479,5.399083,0.433972,0.368196,0.003632,keep,"keep: semantic_score=2, numeric_pass_count=5"
+kxCREUSVw4v3sL4R,0,hard rock,1,0,0,1,4,25.540888,0.128834,8.0771,0.22579,0.082625,0.126918,reject,"reject: semantic_score=1, numeric_pass_count=4 below keep threshold"
+vKFHcHKZg3pclkXm,0,country,0,0,0,0,6,6.61793,0.246012,1.272111,0.505975,1.0941,0.5471,reject,"reject: semantic_score=0, numeric_pass_count=6 below keep threshold"
+TYoYVKiQpzhvcatl,0,hip hop,1,0,0,1,5,5.584872,0.74239,0.460143,0.433044,0.187297,0.265569,reject,"reject: semantic_score=1, numeric_pass_count=5 below keep threshold"
+VjL805nl0oHFzqSt,0,hard rock,2,0,1,1,4,26.573271,0.659374,5.258467,0.118829,0.063339,0.047299,keep,"keep: semantic_score=2, numeric_pass_count=4"
+QJidJKvG8eJcobww,0,folk,1,0,0,2,5,43.656843,0.044711,5.932204,0.467012,0.143339,0.399574,reject,"reject: semantic_score=1, numeric_pass_count=5 below keep threshold"

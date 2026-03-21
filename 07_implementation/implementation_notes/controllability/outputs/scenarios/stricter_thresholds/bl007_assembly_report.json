@@ -1,0 +1,33 @@
+{
+  "run_id": "BL011-STRICTER_THRESHOLDS-BL007-20260320-235345-296380",
+  "task": "BL-007",
+  "scenario_id": "stricter_thresholds",
+  "config": {
+    "target_size": 10,
+    "min_score_threshold": 0.35,
+    "max_per_genre": 4,
+    "max_consecutive": 2
+  },
+  "counts": {
+    "candidates_evaluated": 40,
+    "tracks_included": 10,
+    "tracks_excluded": 30
+  },
+  "rule_hits": {
+    "R1_score_threshold": 0,
+    "R2_genre_cap": 5,
+    "R3_consecutive_run": 4,
+    "R4_length_cap": 21
+  },
+  "playlist_genre_mix": {
+    "alternative rock": 2,
+    "folk": 1,
+    "indie pop": 2,
+    "indie rock": 4,
+    "pop": 1
+  },
+  "playlist_score_range": {
+    "max": 0.724318,
+    "min": 0.510916
+  }
+}

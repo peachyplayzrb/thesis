@@ -1,0 +1,93 @@
+{
+  "run_id": "BL004-PROFILE-20260320-233937-625219",
+  "task": "BL-004",
+  "user_id": "synthetic_user_001",
+  "matched_seed_count": 11,
+  "total_effective_weight": 16.0276,
+  "dominant_lead_genres": [
+    {
+      "label": "indie rock",
+      "weight": 4.5488
+    },
+    {
+      "label": "alternative rock",
+      "weight": 4.0825
+    },
+    {
+      "label": "indie pop",
+      "weight": 3.0552
+    },
+    {
+      "label": "electronic",
+      "weight": 1.4957
+    },
+    {
+      "label": "trip hop",
+      "weight": 1.4521
+    }
+  ],
+  "dominant_tags": [
+    {
+      "label": "indie",
+      "weight": 915.5389
+    },
+    {
+      "label": "alternative",
+      "weight": 743.4579
+    },
+    {
+      "label": "rock",
+      "weight": 733.035
+    },
+    {
+      "label": "pop",
+      "weight": 478.9434
+    },
+    {
+      "label": "alternative rock",
+      "weight": 426.8445
+    }
+  ],
+  "dominant_genres": [
+    {
+      "label": "indie rock",
+      "weight": 10.721713
+    },
+    {
+      "label": "indie pop",
+      "weight": 10.169745
+    },
+    {
+      "label": "rock",
+      "weight": 8.539655
+    },
+    {
+      "label": "pop",
+      "weight": 7.328026
+    },
+    {
+      "label": "alternative rock",
+      "weight": 6.853586
+    }
+  ],
+  "feature_centers": {
+    "rhythm.bpm": 117.84215,
+    "rhythm.danceability": 1.190363,
+    "lowlevel.loudness_ebu128.integrated": -15.322141,
+    "lowlevel.spectral_energy.mean": 0.041164,
+    "tonal.key_edma.strength": 0.677007,
+    "V_mean": 5.741829,
+    "A_mean": 4.278339,
+    "D_mean": 5.371368
+  },
+  "artifact_paths": {
+    "profile_path": "C:\\Users\\Timothy\\Desktop\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\profile\\outputs\\bl004_preference_profile.json",
+    "seed_trace_path": "C:\\Users\\Timothy\\Desktop\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\profile\\outputs\\bl004_seed_trace.csv"
+  },
+  "input_hashes": {
+    "aligned_events_path": "C:\\Users\\Timothy\\Desktop\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\test_assets\\bl016_synthetic_aligned_events.jsonl",
+    "aligned_events_sha256": "f22c31f512cb9dc1708858419923c46e8d65895cb582bfe019f869cf34333771",
+    "candidate_stub_path": "C:\\Users\\Timothy\\Desktop\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\test_assets\\bl016_candidate_stub.csv",
+    "candidate_stub_sha256": "66505924a3bc9a627122310b6c4108bd397f4dd3e5ff9924991977a4c9574678"
+  }
+}

@@ -1,0 +1,195 @@
+{
+  "task": "BL-017",
+  "selected_files": {
+    "user_track_counts": "userid_trackid_count.tsv.bz2",
+    "essentia": "id_essentia.tsv.bz2",
+    "lyrics": "id_lyrics_sentiment_functionals.tsv.bz2",
+    "tags": "id_tags_dict.tsv.bz2",
+    "genres": "id_genres_tf-idf.tsv.bz2"
+  },
+  "column_manifest": [
+    {
+      "output_column": "track_id",
+      "source_file": "multiple",
+      "source_column": "id or track_id",
+      "type": "string"
+    },
+    {
+      "output_column": "listener_rows",
+      "source_file": "userid_trackid_count.tsv.bz2",
+      "source_column": "count of (user_id, track_id) rows",
+      "type": "integer"
+    },
+    {
+      "output_column": "playcount_sum",
+      "source_file": "userid_trackid_count.tsv.bz2",
+      "source_column": "sum(count)",
+      "type": "integer"
+    },
+    {
+      "output_column": "lowlevel.average_loudness",
+      "source_file": "id_essentia.tsv.bz2",
+      "source_column": "lowlevel.average_loudness",
+      "type": "float"
+    },
+    {
+      "output_column": "lowlevel.loudness_ebu128.integrated",
+      "source_file": "id_essentia.tsv.bz2",
+      "source_column": "lowlevel.loudness_ebu128.integrated",
+      "type": "float"
+    },
+    {
+      "output_column": "rhythm.danceability",
+      "source_file": "id_essentia.tsv.bz2",
+      "source_column": "rhythm.danceability",
+      "type": "float"
+    },
+    {
+      "output_column": "rhythm.bpm",
+      "source_file": "id_essentia.tsv.bz2",
+      "source_column": "rhythm.bpm",
+      "type": "float"
+    },
+    {
+      "output_column": "rhythm.onset_rate",
+      "source_file": "id_essentia.tsv.bz2",
+      "source_column": "rhythm.onset_rate",
+      "type": "float"
+    },
+    {
+      "output_column": "rhythm.beats_count",
+      "source_file": "id_essentia.tsv.bz2",
+      "source_column": "rhythm.beats_count",
+      "type": "float"
+    },
+    {
+      "output_column": "rhythm.beats_loudness.mean",
+      "source_file": "id_essentia.tsv.bz2",
+      "source_column": "rhythm.beats_loudness.mean",
+      "type": "float"
+    },
+    {
+      "output_column": "lowlevel.spectral_energy.mean",
+      "source_file": "id_essentia.tsv.bz2",
+      "source_column": "lowlevel.spectral_energy.mean",
+      "type": "float"
+    },
+    {
+      "output_column": "lowlevel.spectral_centroid.mean",
+      "source_file": "id_essentia.tsv.bz2",
+      "source_column": "lowlevel.spectral_centroid.mean",
+      "type": "float"
+    },
+    {
+      "output_column": "lowlevel.spectral_complexity.mean",
+      "source_file": "id_essentia.tsv.bz2",
+      "source_column": "lowlevel.spectral_complexity.mean",
+      "type": "float"
+    },
+    {
+      "output_column": "tonal.chords_changes_rate",
+      "source_file": "id_essentia.tsv.bz2",
+      "source_column": "tonal.chords_changes_rate",
+      "type": "float"
+    },
+    {
+      "output_column": "tonal.key_edma.strength",
+      "source_file": "id_essentia.tsv.bz2",
+      "source_column": "tonal.key_edma.strength",
+      "type": "float"
+    },
+    {
+      "output_column": "tonal.key_krumhansl.strength",
+      "source_file": "id_essentia.tsv.bz2",
+      "source_column": "tonal.key_krumhansl.strength",
+      "type": "float"
+    },
+    {
+      "output_column": "tonal.key_temperley.strength",
+      "source_file": "id_essentia.tsv.bz2",
+      "source_column": "tonal.key_temperley.strength",
+      "type": "float"
+    },
+    {
+      "output_column": "V_mean",
+      "source_file": "id_lyrics_sentiment_functionals.tsv.bz2",
+      "source_column": "V_mean",
+      "type": "float"
+    },
+    {
+      "output_column": "A_mean",
+      "source_file": "id_lyrics_sentiment_functionals.tsv.bz2",
+      "source_column": "A_mean",
+      "type": "float"
+    },
+    {
+      "output_column": "D_mean",
+      "source_file": "id_lyrics_sentiment_functionals.tsv.bz2",
+      "source_column": "D_mean",
+      "type": "float"
+    },
+    {
+      "output_column": "P_mean",
+      "source_file": "id_lyrics_sentiment_functionals.tsv.bz2",
+      "source_column": "P_mean",
+      "type": "float"
+    },
+    {
+      "output_column": "V_std",
+      "source_file": "id_lyrics_sentiment_functionals.tsv.bz2",
+      "source_column": "V_std",
+      "type": "float"
+    },
+    {
+      "output_column": "A_std",
+      "source_file": "id_lyrics_sentiment_functionals.tsv.bz2",
+      "source_column": "A_std",
+      "type": "float"
+    },
+    {
+      "output_column": "D_std",
+      "source_file": "id_lyrics_sentiment_functionals.tsv.bz2",
+      "source_column": "D_std",
+      "type": "float"
+    }
+  ],
+  "essentia_columns": [
+    "lowlevel.average_loudness",
+    "lowlevel.loudness_ebu128.integrated",
+    "rhythm.danceability",
+    "rhythm.bpm",
+    "rhythm.onset_rate",
+    "rhythm.beats_count",
+    "rhythm.beats_loudness.mean",
+    "lowlevel.spectral_energy.mean",
+    "lowlevel.spectral_centroid.mean",
+    "lowlevel.spectral_complexity.mean",
+    "tonal.chords_changes_rate",
+    "tonal.key_edma.strength",
+    "tonal.key_krumhansl.strength",
+    "tonal.key_temperley.strength"
+  ],
+  "lyrics_columns": [
+    "V_mean",
+    "A_mean",
+    "D_mean",
+    "P_mean",
+    "V_std",
+    "A_std",
+    "D_std"
+  ],
+  "derived_columns": [
+    {
+      "output_column": "top_tags_json",
+      "rule": "top 10 tags sorted by descending weight"
+    },
+    {
+      "output_column": "top_genres_json",
+      "rule": "top 8 non-zero genres sorted by descending score"
+    },
+    {
+      "output_column": "has_*",
+      "rule": "binary per-source availability flags"
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "run_id": "BL007-ASSEMBLE-20260320-233938-350723",
+  "generated_at_utc": "2026-03-20T23:39:38Z",
+  "elapsed_seconds": 0.001,
+  "config": {
+    "target_size": 10,
+    "min_score_threshold": 0.35,
+    "max_per_genre": 4,
+    "max_consecutive": 2
+  },
+  "counts": {
+    "candidates_evaluated": 42,
+    "tracks_included": 10,
+    "tracks_excluded": 32
+  },
+  "rule_hits": {
+    "R3_consecutive_run": 4,
+    "R2_genre_cap": 5,
+    "R4_length_cap": 23
+  },
+  "playlist_genre_mix": {
+    "indie rock": 4,
+    "indie pop": 2,
+    "alternative rock": 2,
+    "pop": 1,
+    "folk": 1
+  },
+  "playlist_score_range": {
+    "max": 0.724318,
+    "min": 0.510916
+  },
+  "input_artifact_hashes": {
+    "bl006_scored_candidates.csv": "BF9AB8A4FE27596276F8B1868FC1246BCA4B04B6315DFBB6FEF673DDF53E1AA2"
+  },
+  "output_artifact_hashes": {
+    "bl007_playlist.json": "40F06177AB2D72D1CB81E4DE590EA890D3AE59C84796E2763A4A08D480696318",
+    "bl007_assembly_trace.csv": "9F432BC31CCF158909F2488A2D3A85EB073E76FB562F924A1C51324B66C32193"
+  }
+}

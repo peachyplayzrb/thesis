@@ -1,0 +1,69 @@
+{
+  "task": "BL-019",
+  "dataset_strategy": "DS-002",
+  "source_paths": {
+    "metadata_db": "C:\\Users\\Timothy\\Desktop\\thesis-main\\thesis-main\\06_data_and_sources\\track_metadata.db",
+    "msd_tar": "C:\\Users\\Timothy\\Desktop\\thesis-main\\thesis-main\\06_data_and_sources\\millionsongsubset.tar.gz",
+    "lastfm_zip": "C:\\Users\\Timothy\\Desktop\\thesis-main\\thesis-main\\06_data_and_sources\\lastfm_subset.zip",
+    "musicbrainz_enrichment_mode": "artist_mbid via MSD metadata sources"
+  },
+  "source_hashes_sha256": {
+    "metadata_db": "a29aff0bca1ccac8a9ba699ba6f4d41509a64ced6d6dcfd5573567244db375b4",
+    "msd_tar": "2591a85c097a5d4ca6590f7496bdbf724e7fa5d36f79c8fcdf031219445a77b7",
+    "lastfm_zip": "fdf41ed3741ea736947e870abadc65f91681768f362204454e428d0bf0cd6d5b"
+  },
+  "source_contracts": {
+    "canonical_track_universe": "MSD subset HDF5 files (.h5) from millionsongsubset.tar.gz",
+    "join_mode": "intersection \u2014 only tracks present in all three sources are included",
+    "h5_member_count": 10000,
+    "observed_h5_member_count": 10000,
+    "metadata_db_row_count": 1000000,
+    "lastfm_json_count": 9330
+  },
+  "join_policy": {
+    "primary_join_key": "track_id",
+    "join_mode": "intersection \u2014 tracks missing SQLite metadata or Last.fm tags are excluded",
+    "metadata_priority": "track_metadata.db first, MSD HDF5 metadata fallback",
+    "musicbrainz_handling": "artist_mbid optional enrichment only",
+    "spotify_alignment_note": "metadata-first on normalized title + artist with duration/release tie-breaks; corpus-side ISRC not assumed"
+  },
+  "dataset_schema": [
+    "track_id",
+    "artist_name",
+    "title",
+    "release",
+    "year",
+    "duration",
+    "tempo",
+    "loudness",
+    "key",
+    "mode",
+    "tags_json",
+    "tag_count",
+    "artist_mbid",
+    "song_id",
+    "has_msd",
+    "has_lastfm",
+    "has_musicbrainz"
+  ],
+  "quality_gate_thresholds": {
+    "min_row_count": 8000,
+    "min_metadata_coverage": 1.0,
+    "min_lastfm_coverage": 1.0,
+    "min_musicbrainz_coverage": 0.0,
+    "max_duration_null_rate": 0.01,
+    "max_tempo_null_rate": 0.01,
+    "max_loudness_null_rate": 0.01,
+    "max_key_null_rate": 0.01,
+    "max_mode_null_rate": 0.01
+  },
+  "output_paths": {
+    "dataset": "C:\\Users\\Timothy\\Desktop\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\data_layer\\outputs\\bl019_ds002_integrated_candidate_dataset.csv",
+    "quality_checks": "C:\\Users\\Timothy\\Desktop\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\data_layer\\outputs\\bl019_ds002_quality_checks.csv",
+    "report": "C:\\Users\\Timothy\\Desktop\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\data_layer\\outputs\\bl019_ds002_integration_report.json"
+  },
+  "output_hashes_sha256": {
+    "bl019_ds002_integrated_candidate_dataset.csv": "b9c729a2b0fc1ab9e533ca5126402f4aff7c2b1ee8357a16e773a7837ad40b9f",
+    "bl019_ds002_quality_checks.csv": "e5600eb881788e7565ef95c343b0c418e525e362340bc8065c03f836af066540"
+  }
+}

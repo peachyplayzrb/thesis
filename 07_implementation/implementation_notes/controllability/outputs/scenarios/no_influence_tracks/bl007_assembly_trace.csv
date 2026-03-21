@@ -1,0 +1,48 @@
+score_rank,track_id,lead_genre,final_score,decision,playlist_position,exclusion_reason
+1,jPv1Tj4Mgo4l2Oue,indie rock,0.741196,included,1,
+2,POdgTSLBnoFJaj2x,indie rock,0.719758,included,2,
+3,PvGcoMH6vGWBaoXh,indie rock,0.648397,excluded,,consecutive_genre_run
+4,hn1Z3OcZ4HM3hcIi,indie rock,0.647532,excluded,,consecutive_genre_run
+5,1XZP3bEawLbWfSkM,indie rock,0.640671,excluded,,consecutive_genre_run
+6,nlgMHNZ0qCS2vdmV,indie rock,0.64047,excluded,,consecutive_genre_run
+7,j8qrlsfqWAPqzqD9,indie rock,0.640292,excluded,,consecutive_genre_run
+8,yUa5uu5wFCGwl2PK,indie pop,0.617834,included,3,
+9,xr1HkbplUycZcEZX,indie rock,0.604422,included,4,
+10,KxryDZFfi0mkMMiM,alternative rock,0.593906,included,5,
+11,8keAhBJumHlc8qe9,indie rock,0.587562,included,6,
+12,Nyb0YqqyaSvWThIG,indie pop,0.582128,included,7,
+13,CiLFjUJvYWGmyr2d,indie rock,0.581372,excluded,,genre_cap_exceeded
+14,ez35sBpNVUuM6emD,indie rock,0.566557,excluded,,genre_cap_exceeded
+15,yKSK3z6kBv2YJfjx,indie rock,0.561334,excluded,,genre_cap_exceeded
+16,UD0DWvRMwWe8Swiw,indie rock,0.547135,excluded,,genre_cap_exceeded
+17,B7SJXdcP0HhDMyfm,indie rock,0.515706,excluded,,genre_cap_exceeded
+18,PZEgbQhTHMMrKRLv,folk,0.508231,included,8,
+19,9ZtfD8gBZXonrJKX,pop,0.500642,included,9,
+20,X4fkzkyHslEut5Tc,indie rock,0.497153,excluded,,genre_cap_exceeded
+21,P3KEx5uCaRSiG2x2,indie rock,0.49555,excluded,,genre_cap_exceeded
+22,GB9LkV8pTLXCCvX6,folk,0.486935,included,10,
+23,SezvoI7y9p6mDvB3,pop,0.485323,excluded,,length_cap_reached
+24,o2LcK38b4mFLa55g,alternative rock,0.471394,excluded,,length_cap_reached
+25,9CHzAeSHv9tWaIXW,electronic,0.466496,excluded,,length_cap_reached
+26,0X9aluHlz6iKWBMR,alternative rock,0.46313,excluded,,length_cap_reached
+27,ql2191d6uNCVM932,alternative rock,0.454844,excluded,,length_cap_reached
+28,zFFaxVMVqVtQMaRB,hard rock,0.448745,excluded,,length_cap_reached
+29,QhQahljQAwJIBXvA,electronic,0.429182,excluded,,length_cap_reached
+30,X4ws3hW4yKZyFPi6,indie pop,0.428675,excluded,,length_cap_reached
+31,cDf6FcmbzmqAMZXB,indie pop,0.401197,excluded,,length_cap_reached
+32,ZroyniZj5TmQTEeg,pop,0.395761,excluded,,length_cap_reached
+33,JdKYM8BZEjL8VmSe,pop punk,0.388909,excluded,,length_cap_reached
+34,axdv4kGugNPl0G69,alternative rock,0.375245,excluded,,length_cap_reached
+35,VUwJpQjeH7lOujed,hard rock,0.372256,excluded,,length_cap_reached
+36,jmq9rFLdkgwkaqyV,electronic,0.368117,excluded,,length_cap_reached
+37,t69cOklpskwuIzkN,hard rock,0.34825,excluded,,length_cap_reached
+38,9z2L8uD3GjNoXSRs,pop,0.338837,excluded,,length_cap_reached
+39,IYI6RFvYIFFg9Mi7,trip hop,0.330628,excluded,,length_cap_reached
+40,APCOA8vqweV4WMee,electronic,0.321614,excluded,,length_cap_reached
+41,itO50SbHqR6xiK3t,hip hop,0.31742,excluded,,length_cap_reached
+42,zs8HfoDBJLYAtDrU,pop,0.310177,excluded,,length_cap_reached
+43,VjL805nl0oHFzqSt,hard rock,0.307873,excluded,,length_cap_reached
+44,eNKt8Nt4qTpVT935,hard rock,0.294116,excluded,,length_cap_reached
+45,9CLTmq6Ps7WVseF2,hard rock,0.19603,excluded,,length_cap_reached
+46,9EERk7bPIn9HNBvE,pop,0.195253,excluded,,length_cap_reached
+47,WMPyZbE6EvI5f4wF,pop,0.161785,excluded,,length_cap_reached

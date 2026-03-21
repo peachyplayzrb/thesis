@@ -1,0 +1,70 @@
+{
+  "run_metadata": {
+    "task": "BL-017",
+    "generated_at_utc": "2026-03-19T04:53:22Z",
+    "elapsed_seconds": 243.692,
+    "selected_dir": "10_resources\\datasets\\music4all_onion\\selected",
+    "output_dir": "07_implementation\\implementation_notes\\data_layer\\outputs",
+    "top_tags": 10,
+    "top_genres": 8,
+    "max_user_track_rows": null,
+    "max_track_rows_per_file": null
+  },
+  "source_track_counts": {
+    "user_track_counts": 56512,
+    "essentia": 109180,
+    "lyrics": 109269,
+    "tags": 108286,
+    "genres": 109269
+  },
+  "track_id_universe_count": 109269,
+  "join_intersections": {
+    "all_sources": 56106,
+    "counts_and_essentia": 56463,
+    "counts_and_lyrics": 56512,
+    "counts_and_tags": 56155,
+    "counts_and_genres": 56512
+  },
+  "availability_counts": {
+    "has_user_track_counts": 56512,
+    "has_essentia": 109180,
+    "has_lyrics": 109269,
+    "has_tags": 108286,
+    "has_genres": 109269
+  },
+  "missingness": {
+    "essentia": {
+      "lowlevel.average_loudness": 0,
+      "lowlevel.loudness_ebu128.integrated": 0,
+      "rhythm.danceability": 0,
+      "rhythm.bpm": 0,
+      "rhythm.onset_rate": 0,
+      "rhythm.beats_count": 0,
+      "rhythm.beats_loudness.mean": 0,
+      "lowlevel.spectral_energy.mean": 0,
+      "lowlevel.spectral_centroid.mean": 0,
+      "lowlevel.spectral_complexity.mean": 0,
+      "tonal.chords_changes_rate": 0,
+      "tonal.key_edma.strength": 0,
+      "tonal.key_krumhansl.strength": 0,
+      "tonal.key_temperley.strength": 0
+    },
+    "lyrics": {
+      "V_mean": 0,
+      "A_mean": 0,
+      "D_mean": 0,
+      "P_mean": 0,
+      "V_std": 0,
+      "A_std": 0,
+      "D_std": 0
+    }
+  },
+  "output_files": {
+    "canonical_track_table": "07_implementation\\implementation_notes\\data_layer\\outputs\\onion_canonical_track_table.csv"
+  },
+  "output_hashes_sha256": {
+    "onion_canonical_track_table.csv": "cc8601d49f078226ac55636c2788386179f39bb2ad8474f094bdad4b813ee22a",
+    "onion_join_coverage_report.json": "a59d81f10f6e2bc46d4eea9abd413c6ca0822e45b800169e831c01f9bbb161a7",
+    "onion_selected_column_manifest.json": "814a8e27fcea77e92743077f4e3521b69e59f966df993464e3c095d20a177bd3"
+  }
+}

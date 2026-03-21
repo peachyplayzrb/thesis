@@ -1,0 +1,35 @@
+{
+  "run_id": "BL011-BASELINE-BL004-20260320-235345-236865",
+  "scenario_id": "baseline",
+  "matched_seed_count": 11,
+  "total_effective_weight": 16.0276,
+  "dominant_lead_genres": [
+    "indie rock",
+    "alternative rock",
+    "indie pop",
+    "electronic",
+    "trip hop"
+  ],
+  "dominant_tags": [
+    "indie",
+    "alternative",
+    "rock",
+    "pop",
+    "alternative rock"
+  ],
+  "dominant_genres": [
+    "indie rock",
+    "indie pop",
+    "rock",
+    "pop",
+    "alternative rock"
+  ],
+  "feature_centers": {
+    "rhythm.bpm": 117.84215,
+    "rhythm.danceability": 1.190363,
+    "lowlevel.loudness_ebu128.integrated": -15.322141,
+    "V_mean": 5.741829,
+    "A_mean": 4.278339,
+    "D_mean": 5.371368
+  }
+}

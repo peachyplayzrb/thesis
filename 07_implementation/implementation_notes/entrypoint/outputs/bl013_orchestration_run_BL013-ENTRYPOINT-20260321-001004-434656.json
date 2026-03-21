@@ -1,0 +1,111 @@
+{
+  "run_id": "BL013-ENTRYPOINT-20260321-001004-434656",
+  "task": "BL-013",
+  "generated_at_utc": "2026-03-21T00:10:04Z",
+  "overall_status": "pass",
+  "continue_on_error": false,
+  "python_executable": "C:\\Program Files\\Python312\\python.exe",
+  "requested_stage_order": [
+    "BL-004",
+    "BL-005",
+    "BL-006",
+    "BL-007",
+    "BL-008",
+    "BL-009"
+  ],
+  "executed_stage_count": 6,
+  "failed_stage_count": 0,
+  "elapsed_seconds": 0.469,
+  "stage_results": [
+    {
+      "stage_id": "BL-004",
+      "script_path": "07_implementation/implementation_notes/profile/build_bl004_preference_profile.py",
+      "command": [
+        "C:\\Program Files\\Python312\\python.exe",
+        "C:\\Users\\Timothy\\Desktop\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\profile\\build_bl004_preference_profile.py"
+      ],
+      "return_code": 0,
+      "status": "pass",
+      "elapsed_seconds": 0.058,
+      "stdout": "BL-004 preference profile created.\nprofile=C:\\Users\\Timothy\\Desktop\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\profile\\outputs\\bl004_preference_profile.json\nsummary=C:\\Users\\Timothy\\Desktop\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\profile\\outputs\\bl004_profile_summary.json\nseed_trace=C:\\Users\\Timothy\\Desktop\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\profile\\outputs\\bl004_seed_trace.csv",
+      "stderr": ""
+    },
+    {
+      "stage_id": "BL-005",
+      "script_path": "07_implementation/implementation_notes/retrieval/build_bl005_candidate_filter.py",
+      "command": [
+        "C:\\Program Files\\Python312\\python.exe",
+        "C:\\Users\\Timothy\\Desktop\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\retrieval\\build_bl005_candidate_filter.py"
+      ],
+      "return_code": 0,
+      "status": "pass",
+      "elapsed_seconds": 0.083,
+      "stdout": "BL-005 candidate filtering complete.\nfiltered_candidates=C:\\Users\\Timothy\\Desktop\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\retrieval\\outputs\\bl005_filtered_candidates.csv\ndecisions=C:\\Users\\Timothy\\Desktop\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\retrieval\\outputs\\bl005_candidate_decisions.csv\ndiagnostics=C:\\Users\\Timothy\\Desktop\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\retrieval\\outputs\\bl005_candidate_diagnostics.json",
+      "stderr": ""
+    },
+    {
+      "stage_id": "BL-006",
+      "script_path": "07_implementation/implementation_notes/scoring/build_bl006_scored_candidates.py",
+      "command": [
+        "C:\\Program Files\\Python312\\python.exe",
+        "C:\\Users\\Timothy\\Desktop\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\scoring\\build_bl006_scored_candidates.py"
+      ],
+      "return_code": 0,
+      "status": "pass",
+      "elapsed_seconds": 0.083,
+      "stdout": "BL-006 candidate scoring complete.\nscored_candidates=C:\\Users\\Timothy\\Desktop\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\scoring\\outputs\\bl006_scored_candidates.csv\nscore_summary=C:\\Users\\Timothy\\Desktop\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\scoring\\outputs\\bl006_score_summary.json",
+      "stderr": ""
+    },
+    {
+      "stage_id": "BL-007",
+      "script_path": "07_implementation/implementation_notes/playlist/build_bl007_playlist.py",
+      "command": [
+        "C:\\Program Files\\Python312\\python.exe",
+        "C:\\Users\\Timothy\\Desktop\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\playlist\\build_bl007_playlist.py"
+      ],
+      "return_code": 0,
+      "status": "pass",
+      "elapsed_seconds": 0.063,
+      "stdout": "BL-007 playlist assembly complete.  Playlist: 10/10 tracks\nRun ID : BL007-ASSEMBLE-20260321-001004-706194\nGenre mix : {'indie rock': 4, 'indie pop': 2, 'alternative rock': 2, 'pop': 1, 'folk': 1}",
+      "stderr": ""
+    },
+    {
+      "stage_id": "BL-008",
+      "script_path": "07_implementation/implementation_notes/transparency/build_bl008_explanation_payloads.py",
+      "command": [
+        "C:\\Program Files\\Python312\\python.exe",
+        "C:\\Users\\Timothy\\Desktop\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\transparency\\build_bl008_explanation_payloads.py"
+      ],
+      "return_code": 0,
+      "status": "pass",
+      "elapsed_seconds": 0.064,
+      "stdout": "BL-008 explanation payloads complete. Tracks explained: 10\nRun ID: BL008-EXPLAIN-20260321-001004-770188\n  pos= 1  jPv1Tj4Mgo4l2Oue  top=Lead genre match\n  pos= 2  POdgTSLBnoFJaj2x  top=Lead genre match\n  pos= 3  yUa5uu5wFCGwl2PK  top=Tag overlap\n  pos= 4  j8qrlsfqWAPqzqD9  top=Lead genre match\n  pos= 5  8keAhBJumHlc8qe9  top=Lead genre match\n  pos= 6  Nyb0YqqyaSvWThIG  top=Tag overlap\n  pos= 7  0X9aluHlz6iKWBMR  top=Valence\n  pos= 8  ql2191d6uNCVM932  top=Lead genre match\n  pos= 9  9ZtfD8gBZXonrJKX  top=Valence\n  pos=10  PZEgbQhTHMMrKRLv  top=Valence",
+      "stderr": ""
+    },
+    {
+      "stage_id": "BL-009",
+      "script_path": "07_implementation/implementation_notes/observability/build_bl009_observability_log.py",
+      "command": [
+        "C:\\Program Files\\Python312\\python.exe",
+        "C:\\Users\\Timothy\\Desktop\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\observability\\build_bl009_observability_log.py"
+      ],
+      "return_code": 0,
+      "status": "pass",
+      "elapsed_seconds": 0.118,
+      "stdout": "BL-009 observability logging complete.\nrun_log=C:\\Users\\Timothy\\Desktop\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\observability\\outputs\\bl009_run_observability_log.json\nrun_index=C:\\Users\\Timothy\\Desktop\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\observability\\outputs\\bl009_run_index.csv\nrun_id=BL009-OBSERVE-20260321-001004-867704",
+      "stderr": ""
+    }
+  ],
+  "stable_artifact_hashes": {
+    "bl004_seed_trace": "C47D4FBC6F0D9CCDD33699AF2D62AA37368FE335883FFCE96CEACC1D0DA55584",
+    "bl005_filtered_candidates": "4C7341830731A285DBA71A7FDD34C983AD77A459B040A993A90880AA8F0971E1",
+    "bl005_candidate_decisions": "F814C1EBED4E145B4AD94BCE37D9DA42BBD9399A08187DFB8D515BC7FA1D49D0",
+    "bl006_scored_candidates": "BF9AB8A4FE27596276F8B1868FC1246BCA4B04B6315DFBB6FEF673DDF53E1AA2",
+    "bl007_assembly_trace": "9F432BC31CCF158909F2488A2D3A85EB073E76FB562F924A1C51324B66C32193"
+  },
+  "missing_stable_artifacts": [],
+  "notes": {
+    "purpose": "Lightweight wrapper to run existing BL-004..BL-009 scripts in one command.",
+    "repeatability_check_guidance": "Compare stable_artifact_hashes between repeated runs under unchanged inputs/config."
+  }
+}

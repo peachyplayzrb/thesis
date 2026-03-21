@@ -1,0 +1,198 @@
+{
+  "run_id": "BL004-PROFILE-20260320-233938-114198",
+  "task": "BL-004",
+  "generated_at_utc": "2026-03-20T23:39:38Z",
+  "user_id": "synthetic_user_001",
+  "input_artifacts": {
+    "aligned_events_path": "C:\\Users\\Timothy\\Desktop\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\test_assets\\bl016_synthetic_aligned_events.jsonl",
+    "aligned_events_sha256": "f22c31f512cb9dc1708858419923c46e8d65895cb582bfe019f869cf34333771",
+    "candidate_stub_path": "C:\\Users\\Timothy\\Desktop\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\test_assets\\bl016_candidate_stub.csv",
+    "candidate_stub_sha256": "66505924a3bc9a627122310b6c4108bd397f4dd3e5ff9924991977a4c9574678"
+  },
+  "config": {
+    "effective_weight_rule": "effective_weight = preference_weight",
+    "numeric_feature_columns": [
+      "lowlevel.average_loudness",
+      "lowlevel.loudness_ebu128.integrated",
+      "rhythm.danceability",
+      "rhythm.bpm",
+      "rhythm.onset_rate",
+      "rhythm.beats_count",
+      "rhythm.beats_loudness.mean",
+      "lowlevel.spectral_energy.mean",
+      "lowlevel.spectral_centroid.mean",
+      "lowlevel.spectral_complexity.mean",
+      "tonal.chords_changes_rate",
+      "tonal.key_edma.strength",
+      "tonal.key_krumhansl.strength",
+      "tonal.key_temperley.strength",
+      "V_mean",
+      "A_mean",
+      "D_mean",
+      "P_mean",
+      "V_std",
+      "A_std",
+      "D_std"
+    ],
+    "top_tag_limit": 10,
+    "top_genre_limit": 10,
+    "top_lead_genre_limit": 10,
+    "aggregation_rules": {
+      "numeric": "weighted mean over matched seeds",
+      "tags": "sum(preference_weight * tag_weight)",
+      "genres": "sum(preference_weight * genre_score)",
+      "lead_genres": "sum(preference_weight)"
+    }
+  },
+  "diagnostics": {
+    "events_total": 11,
+    "matched_seed_count": 11,
+    "missing_seed_count": 0,
+    "missing_track_ids": [],
+    "candidate_rows_total": 60,
+    "total_effective_weight": 16.0276,
+    "elapsed_seconds": 0.001
+  },
+  "seed_summary": {
+    "counts_by_interaction_type": {
+      "history": 8,
+      "influence": 3
+    },
+    "weight_by_interaction_type": {
+      "history": 11.9776,
+      "influence": 4.05
+    },
+    "interaction_count_sum_by_interaction_type": {
+      "history": 1301945,
+      "influence": 46797
+    },
+    "seed_trace_path": "C:\\Users\\Timothy\\Desktop\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\profile\\outputs\\bl004_seed_trace.csv"
+  },
+  "numeric_feature_profile": {
+    "lowlevel.average_loudness": 0.910836,
+    "lowlevel.loudness_ebu128.integrated": -15.322141,
+    "rhythm.danceability": 1.190363,
+    "rhythm.bpm": 117.84215,
+    "rhythm.onset_rate": 3.656946,
+    "rhythm.beats_count": 58.138573,
+    "rhythm.beats_loudness.mean": 0.054882,
+    "lowlevel.spectral_energy.mean": 0.041164,
+    "lowlevel.spectral_centroid.mean": 1098.959047,
+    "lowlevel.spectral_complexity.mean": 18.211184,
+    "tonal.chords_changes_rate": 0.061326,
+    "tonal.key_edma.strength": 0.677007,
+    "tonal.key_krumhansl.strength": 0.680892,
+    "tonal.key_temperley.strength": 0.688476,
+    "V_mean": 5.741829,
+    "A_mean": 4.278339,
+    "D_mean": 5.371368,
+    "P_mean": 0.070704,
+    "V_std": 1.317147,
+    "A_std": 0.973427,
+    "D_std": 0.911383
+  },
+  "semantic_profile": {
+    "top_tags": [
+      {
+        "label": "indie",
+        "weight": 915.5389
+      },
+      {
+        "label": "alternative",
+        "weight": 743.4579
+      },
+      {
+        "label": "rock",
+        "weight": 733.035
+      },
+      {
+        "label": "pop",
+        "weight": 478.9434
+      },
+      {
+        "label": "alternative rock",
+        "weight": 426.8445
+      },
+      {
+        "label": "indie rock",
+        "weight": 326.1647
+      },
+      {
+        "label": "indie pop",
+        "weight": 308.7735
+      },
+      {
+        "label": "electronic",
+        "weight": 163.5811
+      },
+      {
+        "label": "female vocalists",
+        "weight": 155.0982
+      },
+      {
+        "label": "imagine dragons",
+        "weight": 138.378
+      }
+    ],
+    "top_genres": [
+      {
+        "label": "indie rock",
+        "weight": 10.721713
+      },
+      {
+        "label": "indie pop",
+        "weight": 10.169745
+      },
+      {
+        "label": "rock",
+        "weight": 8.539655
+      },
+      {
+        "label": "pop",
+        "weight": 7.328026
+      },
+      {
+        "label": "alternative rock",
+        "weight": 6.853586
+      },
+      {
+        "label": "trip hop",
+        "weight": 5.460021
+      },
+      {
+        "label": "electronic",
+        "weight": 4.637955
+      },
+      {
+        "label": "grunge",
+        "weight": 1.525316
+      }
+    ],
+    "top_lead_genres": [
+      {
+        "label": "indie rock",
+        "weight": 4.5488
+      },
+      {
+        "label": "alternative rock",
+        "weight": 4.0825
+      },
+      {
+        "label": "indie pop",
+        "weight": 3.0552
+      },
+      {
+        "label": "electronic",
+        "weight": 1.4957
+      },
+      {
+        "label": "trip hop",
+        "weight": 1.4521
+      },
+      {
+        "label": "pop",
+        "weight": 1.3933
+      }
+    ]
+  }
+}

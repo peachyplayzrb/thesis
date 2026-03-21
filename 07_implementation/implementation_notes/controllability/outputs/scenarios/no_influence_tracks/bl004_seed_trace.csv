@@ -1,0 +1,9 @@
+event_id,track_id,interaction_type,signal_source,seed_rank,interaction_count,preference_weight,effective_weight,lead_genre,top_tag,candidate_playcount_sum,candidate_listener_rows
+syn_evt_001,0ng9VQtWuSjd0arq,history,synthetic_history,1,233427,1.8,1.8,indie rock,indie,233427,19296
+syn_evt_002,lJKIbZNzpS6IsNgh,history,synthetic_history,2,211291,1.7052,1.7052,indie pop,indie,211291,23422
+syn_evt_003,yfm7RER1PWTqgjIp,history,synthetic_history,3,162397,1.4957,1.4957,electronic,pop,162397,15253
+syn_evt_004,io7RYSOjKB4YpBKy,history,synthetic_history,4,152211,1.4521,1.4521,trip hop,electronic,152211,20680
+syn_evt_005,L4lGOjfg9lTLXh3U,history,synthetic_history,5,135960,1.3825,1.3825,alternative rock,rock,135960,17443
+syn_evt_006,zp4zYVjiH2Tm3gTM,history,synthetic_history,6,138503,1.3933,1.3933,pop,pop,138503,10362
+syn_evt_007,lZDk11KaRskQqhWf,history,synthetic_history,7,134517,1.3763,1.3763,indie rock,rock,134517,13753
+syn_evt_008,wQ4RdMXUKj1ry4p6,history,synthetic_history,8,133639,1.3725,1.3725,indie rock,alternative,133639,12986
