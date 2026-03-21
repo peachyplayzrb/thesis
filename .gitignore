@@ -26,3 +26,8 @@ Thumbs.db
 
 # Local dataset payloads kept outside version control
 10_resources/datasets/
+
+# Local temporary probes and run-status scratch files
+tmp_bl019_*.json
+tmp_bl019_*.txt
+tmp_terminal_probe.txt
