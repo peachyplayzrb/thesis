@@ -2058,86 +2058,71 @@ Do NOT download: audio files (.mp3), id_incp/id_resnet/id_vgg19 (video features)
 - backlog_status_recommendation: no backlog item status change; environment readiness improved for upcoming work.
 
 
-
 ## EXP-021
 - date: 2026-03-21
-- backlog_link: BL-002
+- backlog_link: BL-019 (full-corpus follow-up planning)
 - owner: Peach + AI
 - status: pass
-- related_test_id: `TC-SPOTIFY-API-001`
+- related_test_id: `TC-DATASET-002` (planning/evidence only)
 
 ### Objective
-- Complete a successful end-to-end live Spotify API ingestion run using the hardened `export_spotify_max_dataset.py` script with SQLite caching, resolving all blockers from EXP-018 and EXP-019.
+- Produce a precise, source-backed acquisition checklist that states exactly which files are required to move from the current 10K subset DS-002 path to full-scale MSD + Last.fm inputs.
 
 ### Scope Check
-- In-scope confirmation: yes, real Spotify listening-history ingestion for DS-002 alignment input.
+- In-scope confirmation: yes, this is DS-002 data-layer planning and source-readiness documentation for a future full-corpus build.
 - Protected items affected? no
 
 ### Inputs
 - source_data:
-  - Spotify Web API (live authenticated account)
+  - `07_implementation/implementation_notes/data_layer/build_bl019_ds002_dataset.py`
+  - `07_implementation/implementation_notes/data_layer/outputs/bl019_ds002_dataset_manifest.json`
+  - `07_implementation/implementation_notes/data_layer/outputs/bl019_ds002_integration_report.json`
 - config_or_parameters:
-  - run_id: `SPOTIFY-EXPORT-20260321-192533-881299`
-  - redirect_uri: `http://127.0.0.1:8001/spotify/auth/callback`
-  - scopes: `user-top-read user-library-read playlist-read-private playlist-read-collaborative user-read-private`
-  - token_cache: `outputs/spotify_api_export/spotify_token_cache.json`
-  - cache_db: `outputs/spotify_api_export/spotify_resilience_cache.sqlite`
+  - current DS-002 path uses `millionsongsubset.tar.gz` + `lastfm_subset.zip`
+  - target path requires full MSD core + full Last.fm train/test assets
 - code_or_script_path:
-  - `07_implementation/implementation_notes/ingestion/export_spotify_max_dataset.py`
-  - `07_implementation/spotify_resilience.py`
-- dependency assumptions: valid Spotify app credentials in `spotify_env_template.ps1`; `.venv` Python environment active.
+  - `07_implementation/implementation_notes/data_layer/full_dataset_acquisition_checklist_2026-03-21.md`
+- dependency assumptions: official MSD and Last.fm endpoints remain reachable; enough local storage is available for full data.
 
 ### Expected Evidence
-- primary_output_artifact: `spotify_top_tracks_flat.csv` (long-term top tracks, primary DS-002 alignment input)
+- primary_output_artifact: `07_implementation/implementation_notes/data_layer/full_dataset_acquisition_checklist_2026-03-21.md`
 - secondary_output_artifacts:
-  - `spotify_saved_tracks_flat.csv`
-  - `spotify_playlists_flat.csv`
-  - `spotify_playlist_items_flat.csv`
-  - `spotify_export_run_summary.json`
-  - `spotify_resilience_cache.sqlite`
-- success_condition: OAuth succeeds with all requested scopes; non-zero track counts for all endpoint families; run summary JSON with SHA256 artifact hashes produced.
+  - `00_admin/change_log.md` (C-062)
+  - this experiment entry
+- success_condition: checklist clearly separates required vs optional downloads, includes official URLs, and defines validation and logging steps.
 
 ### Run Record
 - command_or_execution_method:
-  - `.\.venv\Scripts\python.exe 07_implementation\implementation_notes\ingestion\export_spotify_max_dataset.py`
-- run_id: `SPOTIFY-EXPORT-20260321-192533-881299`
-- start_state_summary: credentials fixed in `spotify_env_template.ps1` (C-059); stale token cache cleared; 403 playlist skip fix applied (C-060); SQLite cache empty at run start.
-- end_state_summary: all endpoints fetched successfully; one playlist skipped (403 Forbidden — inaccessible); all output artifacts written with SHA256 hashes; SQLite cache populated (18 MB) for fast reruns.
+  - inspect current DS-002 implementation and manifests
+  - review official MSD/Last.fm pages for full-scale download paths
+  - compile actionable acquisition checklist and save in repository
+- run_id: `DATASET-ACQ-PLAN-20260321`
+- start_state_summary: user asked for an immediate full-download list; current repo state confirmed subset-only DS-002 inputs.
+- end_state_summary: checklist created with exact full-source links, pre-checks, required files, optional acceleration files, validation checks, and required governance updates.
 
 ### Results
-- outcome_summary: pass — full Spotify listening history ingested for DS-002 alignment.
+- outcome_summary: pass - actionable download plan documented and ready for execution in a later session.
 - key_metrics:
-  - `top_tracks_long_term=5104`
-  - `top_tracks_medium_term=3021`
-  - `top_tracks_short_term=598`
-  - `saved_tracks=170`
-  - `playlists=4`
-  - `playlist_items=31`
-  - `elapsed_seconds=46.711`
-  - `cache_enabled=true`
-  - `sqlite_cache_bytes=18481152`
-  - `api_calls_logged=2`
-- deterministic_repeat_checked: yes (second run used cache hits for all top-track and saved-track pages; completed in seconds)
+  - `msd_required_assets=1` (full core dataset via official distribution path)
+  - `lastfm_required_assets=2` (`lastfm_train.zip`, `lastfm_test.zip`)
+  - `lastfm_optional_acceleration_assets=2` (`lastfm_tags.db`, `lastfm_similars.db`)
+  - `planning_artifacts_created=1`
+- deterministic_repeat_checked: no
 - output_paths:
-  - `07_implementation/implementation_notes/ingestion/outputs/spotify_api_export/spotify_top_tracks_flat.csv` (SHA256: 009994C6...)
-  - `07_implementation/implementation_notes/ingestion/outputs/spotify_api_export/spotify_saved_tracks_flat.csv` (SHA256: BD3B04C9...)
-  - `07_implementation/implementation_notes/ingestion/outputs/spotify_api_export/spotify_playlists_flat.csv`
-  - `07_implementation/implementation_notes/ingestion/outputs/spotify_api_export/spotify_playlist_items_flat.csv`
-  - `07_implementation/implementation_notes/ingestion/outputs/spotify_api_export/spotify_export_run_summary.json`
+  - `07_implementation/implementation_notes/data_layer/full_dataset_acquisition_checklist_2026-03-21.md`
 
 ### Issues And Limits
-- failures_or_anomalies:
-  1. Initial run failed with missing-credentials error — root cause: `spotify_env_template.ps1` used bare `VAR = "value"` format instead of `$env:VAR = "value"` format; fixed in C-059.
-  2. Second run failed with `HTTP 400` — root cause: stale token cache from a prior session attempted to refresh against wrong credentials; resolved by deleting token cache.
-  3. Third run failed with `RuntimeError: Spotify API error 403` on playlist `/39rRww1hqREuCEzM5NQW3i/items` — root cause: inaccessible followed playlist; resolved by 403 skip-and-continue fix in C-060.
-- likely_cause: see above per issue.
-- bounded_mvp_limitation_or_bug: one playlist skipped due to 403 (not a data loss — inaccessible content); Spotify `top tracks` reflects algorithmic listening history, not full streaming history.
+- failures_or_anomalies: none in planning phase.
+- likely_cause: n/a
+- bounded_mvp_limitation_or_bug: full dataset acquisition itself has not yet been executed; storage/network/time constraints remain to be validated at execution time.
 
 ### Thesis Traceability
-- chapter4_relevance: provides the primary user-listening-history input (5,104 long-term top tracks) for DS-002 candidate corpus alignment and preference profiling in BL-004.
-- chapter5_relevance: demonstrates end-to-end pipeline data acquisition with documented resilience patterns (caching, graceful 403 handling, retry backoff).
-- quality_control_files_to_update: `07_implementation/test_notes.md` (TC-SPOTIFY-API-001 updated to pass), `00_admin/change_log.md` (C-059, C-060, C-061).
+- chapter4_relevance: documents data acquisition controls and reproducible evidence path for scaling corpus size beyond the 10K subset.
+- chapter5_relevance: supports discussion of practical deployment limits (storage, transfer time, and dataset governance) in a controlled engineering workflow.
+- quality_control_files_to_update: `00_admin/change_log.md`, `06_data_and_sources/dataset_registry.md` (after download execution), `07_implementation/test_notes.md` (after first full build run).
 
 ### Next Action
-- immediate_follow_up: proceed to DS-002 alignment — match 5,104 Spotify top tracks against `bl019_ds002_integrated_candidate_dataset.csv` using metadata-first strategy (D-016).
-- backlog_status_recommendation: BL-002 remains done; live run evidence now complete.
+- immediate_follow_up: execute checklist downloads and capture actual file sizes/paths and integrity checks, then run a full-corpus BL-019 builder variant.
+- backlog_status_recommendation: keep BL-019 current status unchanged for subset build; open a new implementation task for full-corpus DS-002 expansion when downloads complete.
+
+

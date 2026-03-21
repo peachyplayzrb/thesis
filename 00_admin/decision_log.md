@@ -657,3 +657,23 @@ impacted_files:
 
 review_date:
 none
+
+---
+
+id: D-020
+date: 2026-03-21
+status: accepted
+context: Full MSD core is inaccessible locally (~280 GB download / ~493 GB AWS snapshot). MusicBrainz provides identifier enrichment via ISRC but does NOT supply audio features (tempo, loudness, key, mode), so it cannot substitute for the MSD core. Full Last.fm (lastfm_train.zip + lastfm_test.zip, 943 K matched tracks) is technically downloadable but integrating it into a new larger corpus build adds significant engineering cost before the thesis deadline. Music4All-Onion (109,269 tracks, zenodo.org/records/15394646) is the preferred larger candidate corpus but requires access approval from the dataset authors.
+decision: Defer full-corpus enrichment (MusicBrainz core dump + full Last.fm integration + MusicBrainz ISRC-bridge layer) as a future improvement. Keep DS-002 (9,330-track MSD subset + Last.fm subset + track_metadata.db join) as the active candidate corpus for current implementation. Pursue Music4All access via a direct email to the dataset authors and raise corpus size as a discussion point with the supervisor at the next meeting.
+alternatives_considered:
+- Immediately build MusicBrainz + full Last.fm enrichment path (rejected: engineering cost outweighs benefit before deadline; DS-002 is sufficient for MVP demonstration)
+- Wait for full MSD access before proceeding (rejected: access path is unclear and timeline uncertain)
+- Switch corpus exclusively to Music4All-Onion (rejected: access not yet confirmed; Onion-only baseline retained as DS-001 fallback)
+rationale: Current DS-002 is quality-gated, deterministic, and sufficient to demonstrate the core thesis pipeline. Corpus scaling does not alter system architecture — it is a data-plane input change only. The ISRC bridge via Spotify ingestion is already in place for future enrichment. Music4All-Onion at 109,269 tracks is the preferred upgrade path if access can be obtained; the supervisor may have guidance on institutional access channels.
+evidence_basis: Session research 2026-03-21; full_dataset_acquisition_checklist_2026-03-21.md; MusicBrainz schema review; ISRC bridge analysis; DS-002 build confirmed at 9,330 tracks.
+impacted_files:
+- 00_admin/decision_log.md
+- 00_admin/change_log.md (C-063)
+- 00_admin/mentor_question_log.md (MQ-008)
+- 07_implementation/implementation_notes/data_layer/full_dataset_acquisition_checklist_2026-03-21.md
+review_date: none

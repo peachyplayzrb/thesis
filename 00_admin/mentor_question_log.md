@@ -82,3 +82,17 @@ affected_files:
 - 03_literature/literature_gap_tracker.md
 urgency: medium
 status: open
+
+---
+
+id: MQ-008
+date: 2026-03-21
+topic: Candidate corpus size and Music4All access
+question: The current candidate corpus (DS-002) has 9,330 tracks from the MSD 10 K subset + Last.fm subset join. The full MSD core is inaccessible locally and full Last.fm integration was deferred as a future improvement. Is DS-002 corpus size sufficient for a convincing and well-marked thesis demonstration? Does the department or institution have existing access to the Music4All-Onion dataset (109,269 tracks, zenodo.org/records/15394646) that could be shared, or is a direct email to the dataset authors the correct route?
+why_it_matters: Determines whether corpus size is a marking risk and whether Music4All access can be obtained faster through institutional channels rather than a cold email to the dataset authors (which may have a slower or uncertain response time).
+affected_files:
+- 06_data_and_sources/dataset_registry.md
+- 07_implementation/implementation_notes/data_layer/full_dataset_acquisition_checklist_2026-03-21.md
+- 00_admin/decision_log.md (D-020)
+urgency: medium
+status: open

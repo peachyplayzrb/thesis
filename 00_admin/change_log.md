@@ -673,3 +673,24 @@ Use schema from `00_admin/operating_protocol.md`.
 - affected_components: `07_implementation/implementation_notes/ingestion/outputs/spotify_api_export/` (all export artifacts), `07_implementation/implementation_notes/ingestion/outputs/spotify_api_export/spotify_resilience_cache.sqlite`
 - impact_assessment: High-positive. Completes the Spotify listening-history ingestion step; 5,104 long-term top tracks are the primary input for DS-002 candidate corpus alignment.
 - approval_record: Requested by user in chat on 2026-03-21 ("log everything from this chat").
+
+## C-062
+- date: 2026-03-21
+- proposed_by: user + AI
+- status: accepted
+- change_summary: Create a full-scale dataset acquisition checklist specifying exactly what to download for full MSD and full Last.fm before executing the large-corpus migration.
+- reason: User requested a concrete "what to download" list now and asked for all planning actions to be logged for traceability.
+- evidence_basis: Official MSD and Last.fm source documentation reviewed (`http://millionsongdataset.com/`, `http://millionsongdataset.com/pages/getting-dataset/`, `http://millionsongdataset.com/lastfm/`) and checklist artifact created at `07_implementation/implementation_notes/data_layer/full_dataset_acquisition_checklist_2026-03-21.md`.
+- affected_components: `00_admin/change_log.md`, `07_implementation/implementation_notes/data_layer/full_dataset_acquisition_checklist_2026-03-21.md`, `07_implementation/experiment_log.md`
+- impact_assessment: High-positive. Removes ambiguity about full-dataset acquisition prerequisites and creates a reproducible handoff artifact for the upcoming full-corpus build phase.
+- approval_record: Requested by user in chat on 2026-03-21.
+## C-063
+- date: 2026-03-21
+- proposed_by: user + AI
+- status: accepted
+- change_summary: Record strategic decision to defer full-corpus enrichment as a future improvement, pursue Music4All-Onion access via email to dataset authors, and raise corpus size as a supervisor question at the next meeting (MQ-008).
+- reason: Full MSD core is inaccessible locally. MusicBrainz can bridge identifiers via ISRC but does not provide audio features (tempo, loudness, key, mode), so it cannot substitute for the MSD core. Full Last.fm integration is technically possible but adds engineering cost without altering thesis architecture. Current DS-002 (9,330 tracks) is quality-gated and sufficient for MVP demonstration. Music4All-Onion (109,269 tracks) is the preferred larger corpus if access can be confirmed.
+- evidence_basis: D-020; MQ-008; full_dataset_acquisition_checklist_2026-03-21.md; MusicBrainz schema research; ISRC bridge analysis (Spotify ingestion already captures ISRC field).
+- affected_components: 00_admin/decision_log.md (D-020), 00_admin/mentor_question_log.md (MQ-008), 00_admin/music4all_access_email_draft_2026-03-21.md (created)
+- impact_assessment: Low-risk deferral. MVP pipeline is unaffected. Two parallel access tracks opened (Music4All author email + supervisor channel) that may unlock a larger corpus before submission deadline.
+- approval_record: Requested by user in chat on 2026-03-21.
