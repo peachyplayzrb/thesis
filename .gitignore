@@ -34,3 +34,19 @@ tmp_terminal_probe.txt
 
 # Local OAuth token cache (Spotify ingestion)
 07_implementation/implementation_notes/ingestion/outputs/spotify_api_export/spotify_token_cache.json
+
+# Spotify credentials file
+spotify_env_template.ps1
+
+# Spotify credentials env files (any bare env file)
+07_implementation/implementation_notes/ingestion/env
+
+# Spotify API export — large binary cache and large raw JSON exports
+07_implementation/implementation_notes/ingestion/outputs/spotify_api_export/spotify_resilience_cache.sqlite
+07_implementation/implementation_notes/ingestion/outputs/spotify_api_export/spotify_top_tracks_by_range.json
+07_implementation/implementation_notes/ingestion/outputs/spotify_api_export/spotify_saved_tracks.json
+07_implementation/implementation_notes/ingestion/outputs/spotify_api_export/spotify_playlist_items_flat.jsonl
+07_implementation/implementation_notes/ingestion/outputs/spotify_api_export/spotify_rate_limit_block.json
+
+# Old script reference copy (archived locally, not for version control)
+10_resources/old_script/

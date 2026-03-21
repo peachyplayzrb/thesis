@@ -18,9 +18,8 @@
 - Environment update (2026-03-21): repo-local Python setup is now standardized via `requirements.txt` and one-command bootstrap under `07_implementation/setup/`.
 - Recommended immediate next work order:
 	1. `BL-014` create automated sanity checks for schema and deterministic output hashes.
-	2. Retry blocked Spotify API export path after cooldown window (`UI-007`).
-	3. Re-enter `BL-003` real alignment implementation once ingestion artifacts are complete.
-	4. Maintain writing evidence hardening for `UI-002` and `UI-003` in parallel.
+	2. `BL-003` real alignment implementation — match 5,104 Spotify top tracks against DS-002 candidate corpus using metadata-first strategy (D-016).
+	3. Maintain writing evidence hardening for `UI-002` and `UI-003` in parallel.
 - Evidence-first reminder: for each completed backlog item, write the expected evidence artifact and link it in the matching file listed in the backlog table.
 
 ## Items
@@ -50,7 +49,7 @@
 - (nothing currently in progress)
 
 ## Done
-- `BL-002` completed on 2026-03-21. Deterministic parser implemented and validated on Spotify-style sample export (`rows_total=7`, `rows_valid=4`, `rows_invalid=3`) with artifacts in `07_implementation/implementation_notes/run_outputs/`; Spotify Web API max-export ingestion script added at `07_implementation/implementation_notes/ingestion/export_spotify_max_dataset.py` with runbook `07_implementation/implementation_notes/ingestion/spotify_api_ingestion_runbook.md`.
+- `BL-002` completed on 2026-03-21. Deterministic parser implemented and validated on Spotify-style sample export (`rows_total=7`, `rows_valid=4`, `rows_invalid=3`) with artifacts in `07_implementation/implementation_notes/run_outputs/`; Spotify Web API max-export ingestion script added at `07_implementation/implementation_notes/ingestion/export_spotify_max_dataset.py` with runbook `07_implementation/implementation_notes/ingestion/spotify_api_ingestion_runbook.md`. Live authenticated run completed 2026-03-21 (run_id=`SPOTIFY-EXPORT-20260321-192533-881299`): `top_tracks_long_term=5104`, `saved_tracks=170`, `playlists=4`, `playlist_items=31`; artifacts in `07_implementation/implementation_notes/ingestion/outputs/spotify_api_export/`; evidence in `EXP-021` and `TC-SPOTIFY-API-001`.
 - `BL-001` completed on 2026-03-21. Ingestion schema path locked to Spotify Extended Streaming History CSV with explicit raw-to-normalized field mapping and sample input/output mapping artifacts in `06_data_and_sources/schema_notes.md` and `07_implementation/implementation_notes/ingestion/bl001_spotify_input_output_mapping.md`.
 - `BL-019` completed on 2026-03-21. DS-002 intersection dataset built (9330 tracks, all quality gates pass, determinism confirmed across two runs). Artifacts at `07_implementation/implementation_notes/data_layer/outputs/`. Evidence in `EXP-016` and `TC-DATASET-001`.
 - `BL-013` completed on 2026-03-21. Lightweight pipeline entrypoint implemented at `07_implementation/implementation_notes/entrypoint/run_bl013_pipeline_entrypoint.py` with run command documentation in `07_implementation/implementation_notes/entrypoint/bl013_run_command.md`; execution evidence and repeatability checks recorded in `07_implementation/experiment_log.md` (`EXP-015`) and `07_implementation/test_notes.md` (`TC-CLI-001`).

@@ -954,3 +954,23 @@ Use these as the next priority run set. Keep artifacts under `07_implementation/
 	- `retry_at_utc=2026-03-22T02:40:32Z`
 	- block report artifact: `07_implementation/implementation_notes/ingestion/outputs/spotify_api_export/spotify_rate_limit_block.json`
 
+### Updated Result (2026-03-21) — Status: pass
+- All blockers resolved and full end-to-end live run completed successfully.
+- Fixes applied before passing run:
+	1. `spotify_env_template.ps1` reformatted with `$env:` prefix so credentials load correctly (C-059)
+	2. Stale token cache cleared to force fresh OAuth flow
+	3. 403 Forbidden crash on inaccessible playlists fixed (skip-and-continue pattern, C-060)
+- Final run_id: `SPOTIFY-EXPORT-20260321-192533-881299`
+- Observed metrics:
+	- top_tracks_long_term: 5,104
+	- top_tracks_medium_term: 3,021
+	- top_tracks_short_term: 598
+	- saved_tracks: 170
+	- playlists: 4
+	- playlist_items: 31 (one playlist skipped with 403)
+	- elapsed_seconds: 46.711
+	- cache_enabled: true
+	- SQLite cache size: 18 MB (populated for fast reruns)
+- Output artifacts verified with SHA256 in `spotify_export_run_summary.json`
+- All pass criteria met: OAuth succeeded with full scopes; non-zero results for all endpoint families; run summary JSON and request log JSONL both present.
+

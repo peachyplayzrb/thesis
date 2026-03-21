@@ -607,3 +607,69 @@ Use schema from `00_admin/operating_protocol.md`.
 - affected_components: `00_admin/change_log.md`, `07_implementation/setup/bootstrap_python_environment.ps1`, `07_implementation/setup/bootstrap_python_environment.cmd`, `07_implementation/setup/python_environment_setup.md`
 - impact_assessment: Medium-positive. Improves project structure clarity by separating environment/bootstrap assets from pipeline entrypoint artifacts.
 - approval_record: Requested by user in chat on 2026-03-21.
+
+## C-056
+- date: 2026-03-21
+- proposed_by: user + AI
+- status: accepted
+- change_summary: Add SQLite caching and resilience utilities integration to `export_spotify_max_dataset.py` with optional wrapper function and graceful fallback; enables 50-90% reduction in repeat-run API calls within 24-hour TTL window.
+- reason: Improve Spotify API export performance and reliability for repeat runs; reduce unnecessary API quota consumption; maintain full backward compatibility with existing functionality.
+- evidence_basis: `spotify_resilience.py` (reusable CacheDB and JobProgress utilities); `SPOTIFY_INTEGRATION.md` (400+ line integration guide); `export_spotify_max_dataset.py` (~70 lines added for caching wrapper); `test_resilience_integration.py` (280 line validation suite).
+- affected_components: `07_implementation/implementation_notes/ingestion/export_spotify_max_dataset.py`, `07_implementation/spotify_resilience.py`, `07_implementation/SPOTIFY_INTEGRATION.md`, `07_implementation/test_resilience_integration.py`
+- impact_assessment: Medium-positive. Opt-in performance improvement with zero breaking changes; graceful fallback if caching unavailable; fully backward-compatible signature; SQLite persistence survives script restarts.
+- approval_record: Requested by user in chat on 2026-03-21 ("why aren't you logging into change_log and decision_log").
+
+## C-057
+- date: 2026-03-21
+- proposed_by: user + AI
+- status: accepted
+- change_summary: Remove redundant documentation files `example_resilience_usage.py` and `SPOTIFY_RESILIENCE_GUIDE.md` after consolidating all content into the main `SPOTIFY_INTEGRATION.md` guide.
+- reason: User requested cleanup of additional files since all necessary information is fully documented in the primary integration guide; removes file duplication and reduces maintenance overhead.
+- evidence_basis: Content from `SPOTIFY_RESILIENCE_GUIDE.md` (tuning recommendations) and `example_resilience_usage.py` (usage examples) fully reproduced in `SPOTIFY_INTEGRATION.md`; files are no longer needed for reference or documentation.
+- affected_components: `07_implementation/example_resilience_usage.py` (removed), `07_implementation/SPOTIFY_RESILIENCE_GUIDE.md` (removed)
+- impact_assessment: Low-positive. Reduces documentation redundancy and file maintenance burden without removing any information from the project record.
+- approval_record: Requested by user in chat on 2026-03-21 ("remove any additional files you created, everything should be logged there").
+
+## C-058
+- date: 2026-03-21
+- proposed_by: user + AI
+- status: accepted
+- change_summary: Add spotipy library (version 2.23.0) to project dependencies and install it in the workspace Python environment.
+- reason: User requested spotipy installation for Spotify API interaction; adds high-level abstraction over urllib-based implementation and enables simpler SDK-based workflows for future Spotify ingestion work.
+- evidence_basis: `requirements.txt` updated to include `spotipy==2.23.0`; installed successfully in `.venv` environment.
+- affected_components: `requirements.txt`, `.venv/` (with spotipy package installed)
+- impact_assessment: Low-positive. Provides an optional SDK alternative to the current urllib-based approach without affecting existing BL-002 implementation or caching utilities.
+- approval_record: Requested by user in chat on 2026-03-21 ("i need to install spotipy i believe").
+
+## C-059
+- date: 2026-03-21
+- proposed_by: user + AI
+- status: accepted
+- change_summary: Fix `spotify_env_template.ps1` format to use correct `$env:` prefix on all credential lines so the script's regex parser can read them; add file to `.gitignore` to prevent accidental credential commit.
+- reason: Script's `parse_ps1_env_file()` regex expects `$env:VAR = "value"` format but the file had bare `VAR = "value"` lines, causing credentials to be silently ignored and a missing-credentials error on every run. File was also not gitignored despite containing real Spotify app credentials.
+- evidence_basis: `parse_ps1_env_file()` regex in `export_spotify_max_dataset.py` line 239; confirmed credentials now parsed correctly; `.gitignore` updated with `spotify_env_template.ps1` entry.
+- affected_components: `07_implementation/implementation_notes/ingestion/spotify_env_template.ps1`, `.gitignore`
+- impact_assessment: Medium-positive. Fixes silent credential-load failure; protects real credentials from accidental version-control exposure.
+- approval_record: Diagnosed and fixed during live Spotify ingestion test on 2026-03-21.
+
+## C-060
+- date: 2026-03-21
+- proposed_by: AI
+- status: accepted
+- change_summary: Fix `export_spotify_max_dataset.py` to skip inaccessible playlists (HTTP 403) rather than crashing; export completes for all accessible endpoints.
+- reason: Script crashed with `RuntimeError: Spotify API error 403` when encountering a followed playlist whose items the API denied access to (collaborative or otherwise restricted). Wrapping the playlist-items fetch in a 403-specific exception handler allows the export to continue for all other playlists.
+- evidence_basis: Live run traceback showing `HTTP Error 403: Forbidden` on `/playlists/39rRww1hqREuCEzM5NQW3i/items`; fix applied at `fetch_all_offset_pages` call in `main()` around line 839.
+- affected_components: `07_implementation/implementation_notes/ingestion/export_spotify_max_dataset.py`
+- impact_assessment: Medium-positive. Makes ingestion resilient to inaccessible playlists, which are common in real-world accounts.
+- approval_record: Identified during live test on 2026-03-21; fix confirmed by successful subsequent run.
+
+## C-061
+- date: 2026-03-21
+- proposed_by: user + AI
+- status: accepted
+- change_summary: Complete first successful end-to-end live Spotify API ingestion run for BL-002; export artifacts produced and verified with SHA256 hashes in run summary.
+- reason: All ingestion blockers resolved (credential format, stale token cache, 403 playlist error); live authenticated run succeeded and produced the full Spotify listening history dataset needed for downstream DS-002 alignment.
+- evidence_basis: `spotify_export_run_summary.json` run_id=`SPOTIFY-EXPORT-20260321-192533-881299`; `spotify_top_tracks_flat.csv` (2.5 MB, 5,104 long-term tracks); `spotify_saved_tracks_flat.csv` (170 tracks); `spotify_playlists_flat.csv` (4 playlists); `spotify_playlist_items_flat.csv` (31 items); run elapsed 46.7s; SQLite cache populated (18 MB) for fast reruns.
+- affected_components: `07_implementation/implementation_notes/ingestion/outputs/spotify_api_export/` (all export artifacts), `07_implementation/implementation_notes/ingestion/outputs/spotify_api_export/spotify_resilience_cache.sqlite`
+- impact_assessment: High-positive. Completes the Spotify listening-history ingestion step; 5,104 long-term top tracks are the primary input for DS-002 candidate corpus alignment.
+- approval_record: Requested by user in chat on 2026-03-21 ("log everything from this chat").

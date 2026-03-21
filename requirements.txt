@@ -1,3 +1,4 @@
 h5py==3.16.0
 pypdf==6.9.1
 rapidfuzz==3.14.3
+spotipy==2.23.0

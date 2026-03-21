@@ -622,3 +622,38 @@ impacted_files:
 
 review_date:
 none
+
+id: D-019
+date: 2026-03-21
+status: accepted
+
+context:
+BL-002 Spotify API export script (`export_spotify_max_dataset.py`) currently fetches data on every execution regardless of whether the parameters are identical to a previous run. Live authenticated runs experience 30-60 second latencies and rate-limiting blocks on repeat invocations despite requesting the same data. Caching would reduce quota consumption and improve iteration speed for testing and evaluation.
+
+decision:
+Implement optional SQLite-backed endpoint caching with 24-hour TTL for static Spotify endpoints (user top tracks, saved tracks, playlists, playlist items). Integrate via optional `cached_fetch()` wrapper function with graceful fallback so caching is available but not required. Cache key format: `spotify:{endpoint_path}:{SHA256(request_params)[:8]}`. Store cache in `07_implementation/implementation_notes/ingestion/outputs/spotify_api_export/spotify_resilience_cache.sqlite` with WAL mode and automatic cleanup of expired entries.
+
+alternatives_considered:
+- Use Spotipy library (rejected: existing script uses urllib, refactoring not justified for single optimization)
+- In-memory caching only (rejected: doesn't survive script restarts between test runs)
+- HTTP-level caching via Cache-Control headers (rejected: Spotify Web API does not expose cache-control headers; responses must be cached client-side)
+- No caching; improve rate-limit handling only (rejected: 30-60s latency persists even with retry backoff; caching addresses root cause)
+
+rationale:
+SQLite provides durable persistence across script invocations without requiring external services. TTL prevents stale data while reducing redundant requests. Optional parameter (cache_db=None) maintains backward compatibility; existing rate-limiting, throttling, and pagination behavior all preserved. Wrapper pattern is minimal (~70 lines) and integrates cleanly at the API call layer without requiring architectural changes. Graceful fallback (RESILIENCE_AVAILABLE flag) ensures the script continues to work if the resilience module is unavailable.
+
+evidence_basis:
+- Session memory log (`/memories/session/implementation_complete.md`): Analysis of prior working rate-limiting script showed caching + TTL patterns that enabled 80-90% speedup on repeat runs
+- Implemented `CacheDB` class in `spotify_resilience.py`: SQLite schema with `endpoint_cache` table, 24-hour default TTL, automatic expire-time tracking
+- Wrapper integration validated: Four API fetch calls updated to pass `cache_db` parameter; cache key generation tested with SHA256 truncation
+- Test suite created (`test_resilience_integration.py`): Validates cache existence, entry validity, TTL enforcement, job progress tracking, metadata presence
+
+impacted_files:
+- `07_implementation/implementation_notes/ingestion/export_spotify_max_dataset.py`
+- `07_implementation/spotify_resilience.py`
+- `07_implementation/SPOTIFY_INTEGRATION.md`
+- `07_implementation/test_resilience_integration.py`
+- `00_admin/change_log.md` (C-056)
+
+review_date:
+none
