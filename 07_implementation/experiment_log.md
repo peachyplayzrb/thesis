@@ -1835,4 +1835,148 @@ Do NOT download: audio files (.mp3), id_incp/id_resnet/id_vgg19 (video features)
 - immediate_follow_up: start next chat from branch `setup/initial-work` at commit `095621d`
 - backlog_status_recommendation: no backlog status change
 
+---
+
+## EXP-018
+- date: 2026-03-21
+- backlog_link: `BL-002`
+- owner: Timothy + AI
+- status: bounded-risk
+- related_test_id: `TC-SPOTIFY-API-001`
+
+### Objective
+- Implement a Spotify Web API ingestion exporter that captures top tracks, saved tracks, playlists, and playlist items with full pagination, OAuth authorization-code flow, and structured run logging.
+
+### Scope Check
+- In-scope confirmation: yes, this extends the selected Spotify ingestion path for BL-001/BL-002.
+- Protected items affected? no
+
+### Inputs
+- source_data: Spotify user account API data via OAuth scopes.
+- config_or_parameters:
+  - scopes: `user-top-read user-library-read playlist-read-private playlist-read-collaborative user-read-private`
+  - redirect URI: `http://127.0.0.1:8001/spotify/auth/callback`
+  - pagination: `limit=50` with offset traversal for all supported endpoints
+  - retry policy: HTTP 429 retry-after and transient network retries
+- code_or_script_path:
+  - `07_implementation/implementation_notes/ingestion/export_spotify_max_dataset.py`
+  - `07_implementation/implementation_notes/ingestion/spotify_api_ingestion_runbook.md`
+  - `07_implementation/implementation_notes/ingestion/spotify_env_template.ps1`
+- dependency assumptions: Python stdlib only; user must complete local browser OAuth consent.
+
+### Expected Evidence
+- primary_output_artifact: `spotify_export_run_summary.json`
+- secondary_output_artifacts:
+  - top tracks (three ranges), saved tracks, playlists, playlist items
+  - request log (`spotify_request_log.jsonl`)
+  - local token cache for refresh reuse
+- success_condition: authenticated run exports all endpoint families and records artifact hashes in summary.
+
+### Run Record
+- command_or_execution_method:
+  - `python -m py_compile 07_implementation/implementation_notes/ingestion/export_spotify_max_dataset.py`
+  - `python 07_implementation/implementation_notes/ingestion/export_spotify_max_dataset.py --help`
+- run_id: `SPOTIFY-EXPORT-IMPLEMENT-20260321`
+- start_state_summary: BL-002 parser existed; no Spotify API bulk-ingestion exporter in repo.
+- end_state_summary: exporter implemented and validated for syntax/CLI; interactive authenticated run still pending local OAuth browser approval.
+
+### Results
+- outcome_summary: implementation complete, non-interactive validation pass, end-to-end authenticated export pending interactive authorization step.
+- key_metrics:
+  - `py_compile=pass`
+  - `cli_help=pass`
+  - `script_errors=0`
+  - `authenticated_export_run=not_executed_in_this_session`
+- deterministic_repeat_checked: no
+- output_paths:
+  - `07_implementation/implementation_notes/ingestion/export_spotify_max_dataset.py`
+  - `07_implementation/implementation_notes/ingestion/spotify_api_ingestion_runbook.md`
+  - `07_implementation/implementation_notes/ingestion/spotify_env_template.ps1`
+
+### Issues And Limits
+- failures_or_anomalies: none in script validation.
+- likely_cause: n/a
+- bounded_mvp_limitation_or_bug: authenticated run requires local interactive browser consent, so final dataset artifacts were not generated in this non-interactive tool session.
+
+### Thesis Traceability
+- chapter4_relevance: adds implementation evidence for practical cross-source ingestion via Spotify API with explicit endpoint and scope traceability.
+- chapter5_relevance: supports discussion of operational limits for OAuth-dependent ingestion workflows.
+- quality_control_files_to_update: `07_implementation/test_notes.md`, `00_admin/change_log.md`, `00_admin/decision_log.md`.
+
+### Next Action
+- immediate_follow_up: run authenticated export locally using the runbook and record produced artifact hashes.
+- backlog_status_recommendation: mark `BL-002` done with bounded-risk note until first authenticated export evidence is captured.
+
+---
+
+## EXP-019
+- date: 2026-03-21
+- backlog_link: `BL-002`
+- owner: Timothy + AI
+- status: bounded-risk
+- related_test_id: `TC-SPOTIFY-API-001`
+
+### Objective
+- Execute an authenticated Spotify API ingestion export using conservative batching and proactive throttling, and capture reproducible blocker evidence if provider-side limits prevent completion.
+
+### Scope Check
+- In-scope confirmation: yes, this is the first full authenticated run attempt of the BL-002 Spotify API exporter.
+- Protected items affected? no
+
+### Inputs
+- source_data: Spotify user API endpoints `/me`, `/me/top/tracks`, `/me/tracks`, `/me/playlists`, `/playlists/{id}/items`.
+- config_or_parameters:
+  - `batch_size_top_tracks=25`
+  - `batch_size_saved_tracks=25`
+  - `batch_size_playlists=25`
+  - `batch_size_playlist_items=25`
+  - `batch_pause_ms=500`
+  - `min_request_interval_ms=700`
+  - `max_requests_per_minute=60`
+  - `max_retries=10`
+  - `max_retry_after_seconds=120`
+- code_or_script_path: `07_implementation/implementation_notes/ingestion/export_spotify_max_dataset.py`
+- dependency assumptions: valid Spotify OAuth token cache available.
+
+### Expected Evidence
+- primary_output_artifact: `07_implementation/implementation_notes/ingestion/outputs/spotify_api_export/spotify_export_run_summary.json`
+- secondary_output_artifacts:
+  - exported endpoint files under `07_implementation/implementation_notes/ingestion/outputs/spotify_api_export/`
+  - request log and token cache
+- success_condition: one authenticated run completes with non-empty endpoint outputs and summary hashes.
+
+### Run Record
+- command_or_execution_method: `python 07_implementation/implementation_notes/ingestion/export_spotify_max_dataset.py --max-retry-after-seconds 120 --batch-size-top-tracks 25 --batch-size-saved-tracks 25 --batch-size-playlists 25 --batch-size-playlist-items 25 --batch-pause-ms 500 --min-request-interval-ms 700 --max-requests-per-minute 60 --max-retries 10`
+- run_id: `SPOTIFY-EXPORT-20260321-030550-407798`
+- start_state_summary: authenticated token present; exporter configured for conservative request cadence.
+- end_state_summary: run blocked on initial `/me` request by a provider-side cooldown window; block-report artifact written.
+
+### Results
+- outcome_summary: authenticated run did not complete due to extended Spotify rate-limit cooldown (`HTTP 429`) exceeding the configured fail-fast threshold.
+- key_metrics:
+  - `path=/me`
+  - `retry_after_seconds=84882`
+  - `max_retry_after_seconds=120`
+  - `status=blocked_by_rate_limit`
+  - `retry_at_utc=2026-03-22T02:40:32Z`
+  - `block_report_written=yes`
+- deterministic_repeat_checked: no
+- output_paths:
+  - `07_implementation/implementation_notes/ingestion/outputs/spotify_api_export/spotify_rate_limit_block.json`
+  - `07_implementation/implementation_notes/ingestion/outputs/spotify_api_export/spotify_token_cache.json`
+
+### Issues And Limits
+- failures_or_anomalies: provider-side long cooldown returned in `Retry-After` header despite conservative local request policy.
+- likely_cause: Spotify app/token-level throttle window active from prior request bursts.
+- bounded_mvp_limitation_or_bug: until cooldown expires (or credentials rotate), live API export artifacts cannot be produced in this environment.
+
+### Thesis Traceability
+- chapter4_relevance: documents real operational constraints in API-driven ingestion and the observability of external throttling behavior.
+- chapter5_relevance: supports limitation analysis for third-party API dependency risk.
+- quality_control_files_to_update: `07_implementation/test_notes.md`, `00_admin/unresolved_issues.md`, `00_admin/change_log.md`, `00_admin/decision_log.md`.
+
+### Next Action
+- immediate_follow_up: retry at or after `2026-03-22T02:40:32Z` or rotate Spotify app credentials and re-authenticate.
+- backlog_status_recommendation: keep `BL-002` done, with live-run evidence marked bounded-risk until a completed export summary artifact is captured.
+
 

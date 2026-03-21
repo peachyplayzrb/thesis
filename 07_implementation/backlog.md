@@ -5,34 +5,28 @@
 - P1: Strongly recommended quality improvement.
 - P2: Optional stretch item if time permits.
 
-## Handoff Snapshot (2026-03-15)
+## Handoff Snapshot (2026-03-21)
 - Collaboration repo: `https://github.com/TimothySpiteri/thesis` (private).
-- Primary branch: `main`.
-- Latest synced commit at handoff prep: `4d422b0516cb2d6d866ee4cd8470a0715397f992`.
+- Primary working branch: `setup/initial-work`.
+- Current local head at handoff prep: `93f6369624a55f33d544737aaea9c9f5b3152eb5`.
 - Locked operating constraints: keep title/RQ/scope/methodology aligned with `00_admin/thesis_state.md` and use change proposals for protected changes.
-- Current implementation status: clean restart as of 2026-03-19. All items reset to todo.
+- Current implementation status: all P0 items except `BL-003` are done. `BL-014` is the next practical implementation item.
 - Strategy update (2026-03-19, D-005): start with synthetic pre-aligned data. BL-001, BL-002, BL-003 deferred until after the core pipeline is proven end-to-end. See decision_log.md D-005.
 - Strategy update (2026-03-21, D-015): activate the DS-002 corpus strategy (`MSD subset + Last.fm tags + MusicBrainz mapping`) as the current BL-019 implementation path.
+- Ingestion update (2026-03-21): BL-001 schema is now locked to Spotify Extended Streaming History CSV as the selected single-adapter MVP path.
+- Ingestion update (2026-03-21): BL-002 parser is implemented and a Spotify Web API max-export ingestion script now collects top tracks, saved tracks, playlists, and playlist items with OAuth + pagination.
 - Recommended immediate next work order:
-	1. `BL-017` build the Onion-only canonical dataset layer.
-	2. `BL-016` create synthetic pre-aligned data assets.
-	3. `BL-004` deterministic preference profile generator.
-	4. `BL-005` candidate retrieval and feature filtering.
-	5. `BL-006` deterministic scoring function.
-	6. `BL-007` rule-based playlist assembly.
-	7. `BL-008` transparency outputs.
-	8. `BL-009` observability logging.
-	9. `BL-010` reproducibility tests.
-	10. `BL-011` controllability tests.
-	11. `BL-012` document limitations.
-	12. `BL-001`, `BL-002`, `BL-003` real ingestion + alignment (deferred, resume after core pipeline is stable).
+	1. `BL-014` create automated sanity checks for schema and deterministic output hashes.
+	2. Retry blocked Spotify API export path after cooldown window (`UI-007`).
+	3. Re-enter `BL-003` real alignment implementation once ingestion artifacts are complete.
+	4. Maintain writing evidence hardening for `UI-002` and `UI-003` in parallel.
 - Evidence-first reminder: for each completed backlog item, write the expected evidence artifact and link it in the matching file listed in the backlog table.
 
 ## Items
 | ID | Priority | Status | Task | Evidence Output |
 | --- | --- | --- | --- | --- |
-| BL-001 | P0 | deferred | Define ingestion schema for one platform export path | `06_data_and_sources/schema_notes.md` update + sample input/output mapping |
-| BL-002 | P0 | deferred | Implement ingestion parser and validation checks | Parser module + validation log examples |
+| BL-001 | P0 | done | Define ingestion schema for one platform export path | `06_data_and_sources/schema_notes.md` Spotify mapping section + `07_implementation/implementation_notes/ingestion/bl001_spotify_input_output_mapping.md` |
+| BL-002 | P0 | done | Implement ingestion parser and validation checks | `07_implementation/implementation_notes/ingestion/ingest_history_parser.py` + `07_implementation/implementation_notes/ingestion/export_spotify_max_dataset.py` + run outputs/logs |
 | BL-003 | P0 | deferred | Implement ISRC-first track alignment with fallback matching | Match report with matched/unmatched counts |
 | BL-004 | P0 | done | Build deterministic user preference profile generator | Profile artifact for at least one test user |
 | BL-005 | P0 | done | Implement candidate retrieval and feature filtering | Candidate set diagnostics per run |
@@ -55,6 +49,8 @@
 - (nothing currently in progress)
 
 ## Done
+- `BL-002` completed on 2026-03-21. Deterministic parser implemented and validated on Spotify-style sample export (`rows_total=7`, `rows_valid=4`, `rows_invalid=3`) with artifacts in `07_implementation/implementation_notes/run_outputs/`; Spotify Web API max-export ingestion script added at `07_implementation/implementation_notes/ingestion/export_spotify_max_dataset.py` with runbook `07_implementation/implementation_notes/ingestion/spotify_api_ingestion_runbook.md`.
+- `BL-001` completed on 2026-03-21. Ingestion schema path locked to Spotify Extended Streaming History CSV with explicit raw-to-normalized field mapping and sample input/output mapping artifacts in `06_data_and_sources/schema_notes.md` and `07_implementation/implementation_notes/ingestion/bl001_spotify_input_output_mapping.md`.
 - `BL-019` completed on 2026-03-21. DS-002 intersection dataset built (9330 tracks, all quality gates pass, determinism confirmed across two runs). Artifacts at `07_implementation/implementation_notes/data_layer/outputs/`. Evidence in `EXP-016` and `TC-DATASET-001`.
 - `BL-013` completed on 2026-03-21. Lightweight pipeline entrypoint implemented at `07_implementation/implementation_notes/entrypoint/run_bl013_pipeline_entrypoint.py` with run command documentation in `07_implementation/implementation_notes/entrypoint/bl013_run_command.md`; execution evidence and repeatability checks recorded in `07_implementation/experiment_log.md` (`EXP-015`) and `07_implementation/test_notes.md` (`TC-CLI-001`).
 - `BL-012` completed on 2026-03-21. Limitation and failure-mode synthesis documented in `02_foundation/limitations.md` and integrated into `08_writing/chapter5.md` (Sections 5.4 and 5.5), with implementation evidence logged in `07_implementation/experiment_log.md` (`EXP-014`) and `07_implementation/test_notes.md` (`TC-LIMIT-001`).

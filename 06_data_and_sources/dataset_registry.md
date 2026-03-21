@@ -252,3 +252,11 @@ Reference artifact:
 - Experiment log: `07_implementation/experiment_log.md` (EXP-016)
 - Test note: `07_implementation/test_notes.md` (TC-DATASET-001)
 
+### Spotify Ingestion Status (2026-03-21)
+- BL-002 Spotify API exporter implementation is complete, but live authenticated export is currently blocked by provider-side long cooldown (`HTTP 429`) at endpoint `/me`.
+- Latest observed cooldown evidence:
+	- `retry_after_seconds=84882`
+	- `retry_at_utc=2026-03-22T02:40:32Z`
+	- blocker artifact: `07_implementation/implementation_notes/ingestion/outputs/spotify_api_export/spotify_rate_limit_block.json`
+- Operational handling: fail fast when cooldown exceeds threshold (`--max-retry-after-seconds`) and retry after cooldown expiry or with rotated app credentials.
+

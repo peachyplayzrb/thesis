@@ -1,22 +1,25 @@
 ﻿# Schema Notes
 
-## BL-001 Ingestion Schema (MVP Draft)
+## BL-001 Ingestion Schema (Spotify MVP)
 
 ### Scope
-- One practical ingestion path for exported listening history.
+- One practical ingestion path for exported listening history from Spotify Extended Streaming History CSV.
 - Normalized output supports downstream deterministic alignment using ISRC when available and metadata fallback when the active corpus does not expose candidate-side ISRC.
 
-### Input File Assumption (Raw)
+### Input File Assumption (Raw Spotify Export)
 - Format: CSV
 - One row per listening event.
 - Raw columns expected from source export:
-	- `track_name`
-	- `artist_name`
-	- `album_name` (optional)
-	- `isrc` (optional but preferred)
-	- `played_at` (timestamp)
-	- `ms_played` (milliseconds)
+	- `master_metadata_track_name` (required)
+	- `master_metadata_album_artist_name` (required)
+	- `master_metadata_album_album_name` (optional)
+	- `ts` (required timestamp)
+	- `ms_played` (required milliseconds)
 	- `platform` (optional)
+	- `spotify_track_uri` (optional provenance field)
+	- `reason_start`, `reason_end`, `shuffle`, `skipped` (optional diagnostics fields, not required for BL-001 output schema)
+- Optional enrichment:
+	- `isrc` may be injected from a supplementary lookup step after Spotify export; if unavailable, rows remain valid with `missing_isrc`.
 
 ### Normalized Event Schema (Output)
 | Field | Type | Required | Description |
@@ -32,6 +35,17 @@
 | `ingest_run_id` | string | yes | Run-level ID linking all rows in one ingest. |
 | `row_quality_flag` | string | yes | `ok`, `missing_isrc`, `missing_core_field`, `invalid_timestamp`, etc. |
 
+### Raw To Normalized Field Mapping (Spotify)
+| Raw Spotify Field | Normalized Field | Rule |
+| --- | --- | --- |
+| `master_metadata_track_name` | `track_name` | Trim, collapse spaces, lowercase for deterministic matching. |
+| `master_metadata_album_artist_name` | `artist_name` | Trim, collapse spaces, lowercase for deterministic matching. |
+| `master_metadata_album_album_name` | `album_name` | Trim, collapse spaces, lowercase (optional). |
+| `ts` | `played_at` | Parse as ISO timestamp and convert to UTC `YYYY-MM-DDTHH:MM:SSZ`. |
+| `ms_played` | `ms_played` | Parse integer, require `>= 0`. |
+| `platform` | `source_platform` | Use raw value when present, else default to `spotify_export_csv`. |
+| `(supplementary lookup) isrc` | `isrc` | Uppercase and validate ISRC regex, else empty. |
+
 ### Validation Rules (MVP)
 - Hard fail row if any core field is missing: `track_name`, `artist_name`, `played_at`, `ms_played`.
 - Soft warning if `isrc` is missing; row remains usable for fallback matching.
@@ -41,15 +55,15 @@
 ### Example Mapping
 | Raw Input | Normalized Output |
 | --- | --- |
-| `track_name=Blinding Lights` | `track_name=blinding lights` (normalized casing strategy to be finalized) |
-| `artist_name=The Weeknd` | `artist_name=the weeknd` |
+| `master_metadata_track_name=Blinding Lights` | `track_name=blinding lights` |
+| `master_metadata_album_artist_name=The Weeknd` | `artist_name=the weeknd` |
+| `master_metadata_album_album_name=After Hours` | `album_name=after hours` |
 | `isrc=USUG11904298` | `isrc=USUG11904298` |
-| `played_at=2025-11-21 23:16:02` | `played_at=2025-11-21T23:16:02Z` |
+| `ts=2025-11-21T23:16:02Z` | `played_at=2025-11-21T23:16:02Z` |
 | `ms_played=184000` | `ms_played=184000` |
+| `platform=Spotify Android` | `source_platform=spotify android` |
 
 ### Open Decisions
-- Confirm canonical text normalization rule (lowercase vs preserve display form + normalized shadow columns).
-- Confirm exact `source_platform` value taxonomy.
 - Confirm whether partial listens below threshold are excluded at ingestion or later profiling stage.
 
 ## BL-003 Alignment Output Schema (MVP Draft)

@@ -31,3 +31,6 @@ Thumbs.db
 tmp_bl019_*.json
 tmp_bl019_*.txt
 tmp_terminal_probe.txt
+
+# Local OAuth token cache (Spotify ingestion)
+07_implementation/implementation_notes/ingestion/outputs/spotify_api_export/spotify_token_cache.json

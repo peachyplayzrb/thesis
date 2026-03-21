@@ -495,3 +495,47 @@ Use schema from `00_admin/operating_protocol.md`.
 - affected_components: `00_admin/change_log.md`, `.gitignore`, `06_data_and_sources/MSongsDB-master.zip`, `06_data_and_sources/lastfm_subset.zip`, `06_data_and_sources/millionsongsubset.tar.gz`, `06_data_and_sources/track_metadata.db`, `06_data_and_sources/unique_artists.txt`, `06_data_and_sources/unique_tracks.txt`, `07_implementation/implementation_notes/**`
 - impact_assessment: High-positive. Produces a clean handoff state with uploaded source/data artefacts, reproducible commit history in logical parts, and reduced future repository noise from temporary probe artifacts.
 - approval_record: Requested by user in chat on 2026-03-21 ("commit those, and put in my git ignore anytthing else", "log everything before i switch to a new chat").
+
+## C-046
+- date: 2026-03-21
+- proposed_by: user + AI
+- status: accepted
+- change_summary: Implement a Spotify Web API maximum-ingestion exporter for BL-002 (top tracks, saved tracks, playlists, playlist items) with OAuth authorization-code flow, pagination, retry/rate-limit handling, flattened exports, request logs, and run-summary hashing; synchronize backlog/test/experiment/decision records accordingly.
+- reason: User requested: "build a script that gets the maximum from my spotify (top tracks, saved tracks, playlists) ... and implement and log everything."
+- evidence_basis: `07_implementation/implementation_notes/ingestion/export_spotify_max_dataset.py`; `07_implementation/implementation_notes/ingestion/spotify_api_ingestion_runbook.md`; `07_implementation/implementation_notes/ingestion/spotify_env_template.ps1`; `07_implementation/experiment_log.md` (`EXP-018`); `07_implementation/test_notes.md` (`TC-SPOTIFY-API-001`).
+- affected_components: `00_admin/change_log.md`, `00_admin/decision_log.md`, `07_implementation/backlog.md`, `07_implementation/experiment_log.md`, `07_implementation/test_notes.md`, `07_implementation/implementation_notes/ingestion/export_spotify_max_dataset.py`, `07_implementation/implementation_notes/ingestion/spotify_api_ingestion_runbook.md`, `07_implementation/implementation_notes/ingestion/spotify_env_template.ps1`, `.gitignore`
+- impact_assessment: High-positive. Establishes a practical, auditable Spotify API ingestion path with broader coverage than sample CSV parsing alone, while preserving deterministic artifact logging and credential hygiene controls.
+- approval_record: Requested by user in chat on 2026-03-21.
+
+## C-047
+- date: 2026-03-21
+- proposed_by: user + AI
+- status: accepted
+- change_summary: Harden Spotify API ingestion against provider throttling by adding endpoint-specific batch controls, proactive request-rate throttling, visible 429 telemetry, and fail-fast cooldown handling that writes a structured blocker artifact (`spotify_rate_limit_block.json`).
+- reason: Live authenticated runs repeatedly hit long Spotify `Retry-After` cooldown windows and user requested robust rate-limit and batching behavior.
+- evidence_basis: `07_implementation/implementation_notes/ingestion/export_spotify_max_dataset.py` updates (`--batch-size-*`, `--batch-pause-ms`, `--min-request-interval-ms`, `--max-requests-per-minute`, `--max-retry-after-seconds`); blocked run artifact `07_implementation/implementation_notes/ingestion/outputs/spotify_api_export/spotify_rate_limit_block.json`; `07_implementation/experiment_log.md` (`EXP-019`); `07_implementation/test_notes.md` (`TC-SPOTIFY-API-001`).
+- affected_components: `00_admin/change_log.md`, `00_admin/decision_log.md`, `00_admin/unresolved_issues.md`, `06_data_and_sources/dataset_registry.md`, `07_implementation/experiment_log.md`, `07_implementation/test_notes.md`, `07_implementation/implementation_notes/ingestion/export_spotify_max_dataset.py`, `07_implementation/implementation_notes/ingestion/spotify_api_ingestion_runbook.md`
+- impact_assessment: Medium-positive. Improves operational resilience and observability under external API throttling, though full export remains temporarily blocked by provider cooldown.
+- approval_record: Requested by user in chat on 2026-03-21.
+
+## C-048
+- date: 2026-03-21
+- proposed_by: user + AI
+- status: accepted
+- change_summary: Create collaborator handoff continuity package so a friend can use chat with the same workflow, including a start playbook, reusable prompt shortcuts, and synchronized backlog/protocol updates.
+- reason: User requested that project handoff preserves the same chat behavior and that all relevant governance files are up to date.
+- evidence_basis: `00_admin/handoff_friend_chat_playbook.md`; `.github/prompts/session-start-check.prompt.md`; `.github/prompts/log-everything.prompt.md`; `.github/copilot-instructions.md` collaborator mode section; updated handoff snapshot in `07_implementation/backlog.md`; protocol update in `00_admin/operating_protocol.md` section 15.
+- affected_components: `00_admin/change_log.md`, `00_admin/handoff_friend_chat_playbook.md`, `.github/copilot-instructions.md`, `.github/prompts/session-start-check.prompt.md`, `.github/prompts/log-everything.prompt.md`, `07_implementation/backlog.md`, `00_admin/operating_protocol.md`
+- impact_assessment: High-positive. Reduces onboarding ambiguity, preserves existing logging discipline across collaborators, and makes start/end chat procedures repeatable.
+- approval_record: Requested by user in chat on 2026-03-21.
+
+## C-049
+- date: 2026-03-21
+- proposed_by: user + AI
+- status: accepted
+- change_summary: Harden collaborator automation so session-start checks and session-close logging run by default without requiring manual trigger prompts; add root `AGENTS.md` fallback instructions for cross-environment consistency.
+- reason: User requested that handoff behavior be automatic for collaborator sessions in the same way as the original workflow.
+- evidence_basis: updated `.github/copilot-instructions.md` (automatic collaborator start/close behavior), updated `00_admin/handoff_friend_chat_playbook.md` (automatic start/close wording), and new root `AGENTS.md` with mirrored automatic checklist rules.
+- affected_components: `00_admin/change_log.md`, `.github/copilot-instructions.md`, `00_admin/handoff_friend_chat_playbook.md`, `AGENTS.md`
+- impact_assessment: High-positive. Reduces reliance on collaborator memory/prompts and improves instruction reliability across VS Code chat environments.
+- approval_record: Requested by user in chat on 2026-03-21.

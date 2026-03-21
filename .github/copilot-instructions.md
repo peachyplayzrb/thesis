@@ -13,6 +13,32 @@ At the start of every chat session — or whenever the user says anything like "
 
 This checklist must run before any implementation, writing, or research work begins in the session.
 
+## Collaborator Handoff Mode
+If a collaborator is taking over this repo, enforce the same workflow used by the original owner:
+- Run the session-start checklist automatically on the first task message in every new chat.
+- Use the same checklist and logging strictness as the original workflow.
+- Keep implementation updates synchronized across backlog, experiment, decision, change, and unresolved-issues files.
+- If a request is ambiguous, resolve ambiguity without skipping governance updates.
+- Before ending chat, run a full logging-completeness pass and report any gaps fixed.
+
+## Session Close Rule
+At the end of every chat session where any file updates, run activity, or governance changes occurred:
+1. Verify backlog, experiment, change, decision, and unresolved-issues synchronization.
+2. Apply any missing updates directly.
+3. Report the closure status and remaining blockers.
+
+Do this automatically without requiring the user to type "log everything".
+
+## Recommended Prompt Shortcuts
+Collaborators should use these prompts to stay consistent:
+- `run /session-start-check`
+- `log everything`
+- `continue BL-XXX and log everything`
+
+Prompt files:
+- `.github/prompts/session-start-check.prompt.md`
+- `.github/prompts/log-everything.prompt.md`
+
 ## Implementation Session Rule
 During any implementation session:
 - Before writing code for a backlog item, create an `EXP-XXX` entry in `07_implementation/experiment_log.md` with `status: planned`.

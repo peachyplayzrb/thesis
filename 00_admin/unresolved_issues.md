@@ -1,6 +1,18 @@
 ﻿# Unresolved Issues
 ## Active
 
+- UI-007 (2026-03-21): Spotify API ingestion currently blocked by provider-side long cooldown (`HTTP 429`) on `/me` despite conservative batching/throttling settings.
+	- impact: Live BL-002 Spotify export artifacts (top tracks, saved tracks, playlists, playlist items) cannot be completed until cooldown expires or credentials rotate.
+	- observed_evidence:
+		- `retry_after_seconds=84882`
+		- `retry_at_utc=2026-03-22T02:40:32Z`
+		- blocker artifact: `07_implementation/implementation_notes/ingestion/outputs/spotify_api_export/spotify_rate_limit_block.json`
+	- next_action:
+		1. Retry after `retry_at_utc` with current conservative run flags.
+		2. If cooldown persists, rotate to a new Spotify app `client_id/client_secret`, remove token cache, and run with `--force-auth`.
+	- owner: AI + user
+	- status: open
+
 - UI-002 (2026-03-15): Active Chapter 2 verbatim audit reports `weak_support=24` on `08_writing/chapter2_draft_v11.md` (`total_claim_checks=46` in `09_quality_control/chapter2_verbatim_audit.md`).
 	- next_action: Perform targeted sentence-level wording hardening for weak-support claims, then rerun audit until `weak_support=0` or approve a bounded non-zero threshold.
 	- owner: AI + user

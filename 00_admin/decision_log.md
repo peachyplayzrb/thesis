@@ -29,6 +29,79 @@ impacted_files:
 review_date:
 none
 
+id: D-018
+date: 2026-03-21
+status: accepted
+
+context:
+Authenticated Spotify API export attempts for BL-002 reached OAuth success but failed at the first `/me` request with very large `Retry-After` values (~23+ hours). A naive wait strategy would hold the process for many hours and produce poor operator visibility.
+
+decision:
+Treat extreme Spotify `Retry-After` windows as explicit cooldown blockers. Add a fail-fast threshold (`--max-retry-after-seconds`), print clear blocked-state messages, and write a machine-readable blocker artifact (`spotify_rate_limit_block.json`) containing `retry_after_seconds` and `retry_at_utc`.
+
+alternatives_considered:
+- Always sleep for full `Retry-After` regardless of duration
+- Ignore `Retry-After` and continue aggressive retries
+- Remove fail-fast and rely on manual Ctrl+C interruption
+- Treat any 429 as immediate hard failure without cooldown metadata
+
+rationale:
+Fail-fast with explicit cooldown reporting preserves operational clarity, avoids multi-hour terminal hangs, and creates concrete evidence for implementation traceability. It also keeps the pipeline resilient for normal short 429 windows while surfacing provider-side long cooldowns as bounded external blockers.
+
+evidence_basis:
+- `07_implementation/implementation_notes/ingestion/export_spotify_max_dataset.py`
+- `07_implementation/implementation_notes/ingestion/outputs/spotify_api_export/spotify_rate_limit_block.json`
+- `07_implementation/experiment_log.md` (`EXP-019`)
+- terminal evidence: `/me` returned `retry_after_seconds=84882`
+
+impacted_files:
+- `00_admin/decision_log.md`
+- `00_admin/change_log.md`
+- `00_admin/unresolved_issues.md`
+- `07_implementation/experiment_log.md`
+- `07_implementation/test_notes.md`
+- `07_implementation/implementation_notes/ingestion/export_spotify_max_dataset.py`
+
+review_date:
+none
+
+id: D-017
+date: 2026-03-21
+status: accepted
+
+context:
+BL-001 selected Spotify as the ingestion adapter path. The user requested a maximum practical pull from Spotify account data (top tracks, saved tracks, playlists) using the official Web API and full implementation logging.
+
+decision:
+Implement Spotify ingestion with Authorization Code flow and the following endpoint set: `/me/top/tracks` (all three time ranges), `/me/tracks`, `/me/playlists`, and `/playlists/{id}/items`. Use requested scopes `user-top-read`, `user-library-read`, `playlist-read-private`, `playlist-read-collaborative`, and `user-read-private`. Export both raw and flattened artifacts plus request-level logs and run-summary hashes.
+
+alternatives_considered:
+- Keep CSV-only ingestion and do not add API export ingestion
+- Pull only top tracks and skip saved tracks/playlists
+- Use ad-hoc single-page endpoint requests without pagination, retry, or request logs
+- Hardcode credentials directly in repository files
+
+rationale:
+This endpoint set gives the broadest user-preference coverage while staying within the selected Spotify ingestion scope and official documented OAuth permissions. Full pagination and request logs improve reproducibility and observability. Avoiding hardcoded secrets preserves operational safety and repository hygiene.
+
+evidence_basis:
+- Spotify Web API docs: Authorization Code flow, Get User's Top Items, Get User's Saved Tracks, Get Current User's Playlists, Get Playlist Items
+- `07_implementation/implementation_notes/ingestion/export_spotify_max_dataset.py`
+- `07_implementation/implementation_notes/ingestion/spotify_api_ingestion_runbook.md`
+- `07_implementation/experiment_log.md` (`EXP-018`)
+
+impacted_files:
+- `00_admin/decision_log.md`
+- `00_admin/change_log.md`
+- `07_implementation/backlog.md`
+- `07_implementation/experiment_log.md`
+- `07_implementation/test_notes.md`
+- `07_implementation/implementation_notes/ingestion/export_spotify_max_dataset.py`
+- `07_implementation/implementation_notes/ingestion/spotify_api_ingestion_runbook.md`
+
+review_date:
+none
+
 id: D-015
 date: 2026-03-21
 status: accepted

@@ -222,3 +222,19 @@ At the start of every session (or on any "make sure everything is logged" prompt
 5. Read `00_admin/decision_log.md` — confirm highest `D-###`.
 6. Read `00_admin/unresolved_issues.md` — flag any open blockers.
 7. Report findings and fixes before starting work.
+
+## 15) Collaborator Handoff Continuity
+
+When a collaborator takes over this repository, they must follow the same AI workflow and logging strictness already established.
+
+Required startup artifacts:
+1. `00_admin/handoff_friend_chat_playbook.md`
+2. `.github/copilot-instructions.md`
+3. `.github/prompts/session-start-check.prompt.md`
+4. `.github/prompts/log-everything.prompt.md`
+
+Required collaborator start action:
+- In a new chat, run the session-start prompt workflow before any implementation or writing updates.
+
+Required collaborator close action:
+- Before ending chat, run a full logging-completeness pass and update backlog/experiment/change/decision/unresolved-issues files where needed.

@@ -9,8 +9,8 @@
 ### Inputs
 - Dataset/sample: `sample_listening_history.csv` (to be added under implementation test assets).
 - Config assumptions:
-	- Required fields: `track_name`, `artist_name`, `played_at`, `ms_played`
-	- Optional field: `isrc`
+	- Required raw Spotify fields: `master_metadata_track_name`, `master_metadata_album_artist_name`, `ts`, `ms_played`
+	- Optional raw fields: `master_metadata_album_album_name`, `platform`, `isrc` (if enriched)
 
 ### Expected Output
 - Every valid row has all normalized required fields populated.
@@ -28,9 +28,21 @@
 - Validation summary metrics are emitted and internally consistent.
 
 ### Actual Result
-- Status: pending (implementation deleted 2026-03-19 for clean restart; prior run logged in `experiment_log.md` EXP-001)
-- Run evidence: n/a
-- Observed metrics: n/a
+- Status: pass
+- Run evidence: `07_implementation/implementation_notes/ingestion/ingest_history_parser.py` + `07_implementation/implementation_notes/run_outputs/tc001_validation_summary.json`
+- Observed metrics:
+	- `ingest_run_id=BL002-INGEST-C87E2315871F`
+	- `rows_total=7`
+	- `rows_valid=4`
+	- `rows_invalid=3`
+	- `rows_missing_isrc=1`
+	- `rows_by_quality_flag.ok=3`
+	- `rows_by_quality_flag.missing_isrc=1`
+	- `rows_by_quality_flag.missing_core_field=1`
+	- `rows_by_quality_flag.invalid_timestamp=1`
+	- `rows_by_quality_flag.invalid_ms_played=1`
+	- `sha256.normalized_events=5BEF104D3350EBCADDA71D3EC08D9A06C3A9071E757474146950E87D18771B28`
+	- `sha256.invalid_rows=53C3F73E31FFE78058B242A44EE802F4CE09EDEC77CCE8EFDF87D86982B527EC`
 
 ## Test Case TC-002: ISRC-First Alignment With Metadata Fallback
 
@@ -865,4 +877,45 @@ Use these as the next priority run set. Keep artifacts under `07_implementation/
 	- `stable_hash_match.bl007_assembly_trace=yes`
 	- `sha256.run_summary_1=56585FF293F39C088F0700ACA5B7573E4CF37A9399FBA0B04D24E34F127B1DD2`
 	- `sha256.run_summary_2=E98D5B905546B3D31CC23A5E1E99BB40487FD4DAE36AD5E668F76730811B5CB7`
+
+## Test Case TC-SPOTIFY-API-001: Spotify Web API Maximum Ingestion Export
+
+- Date: 2026-03-21
+- Backlog link: `BL-002`
+- Purpose: Verify that the Spotify API ingestion exporter covers top tracks, saved tracks, playlists, and playlist items with OAuth, pagination, and request logging.
+
+### Inputs
+- Export script:
+	- `07_implementation/implementation_notes/ingestion/export_spotify_max_dataset.py`
+- Runbook:
+	- `07_implementation/implementation_notes/ingestion/spotify_api_ingestion_runbook.md`
+- Config:
+	- scopes: `user-top-read user-library-read playlist-read-private playlist-read-collaborative user-read-private`
+	- redirect URI: `http://127.0.0.1:8001/spotify/auth/callback`
+
+### Expected Output
+- OAuth authorization succeeds with requested scopes.
+- Export artifacts are produced under `07_implementation/implementation_notes/ingestion/outputs/spotify_api_export/`.
+- Summary includes endpoint counts and artifact hashes.
+
+### Pass Criteria
+- one successful end-to-end authenticated run
+- non-zero results for at least one endpoint family
+- run summary JSON and request log JSONL both present
+
+### Actual Result
+- Status: bounded-risk
+- Run evidence:
+	- `python -m py_compile 07_implementation/implementation_notes/ingestion/export_spotify_max_dataset.py` (pass)
+	- `python 07_implementation/implementation_notes/ingestion/export_spotify_max_dataset.py --help` (pass)
+	- `python 07_implementation/implementation_notes/ingestion/export_spotify_max_dataset.py --max-retry-after-seconds 120 --batch-size-top-tracks 25 --batch-size-saved-tracks 25 --batch-size-playlists 25 --batch-size-playlist-items 25 --batch-pause-ms 500 --min-request-interval-ms 700 --max-requests-per-minute 60 --max-retries 10` (authenticated run, blocked by provider cooldown)
+- Observed metrics:
+	- script syntax validation: pass
+	- CLI contract validation: pass
+	- authenticated API execution: blocked by `HTTP 429`
+	- `path=/me`
+	- `retry_after_seconds=84882`
+	- `max_retry_after_seconds=120`
+	- `retry_at_utc=2026-03-22T02:40:32Z`
+	- block report artifact: `07_implementation/implementation_notes/ingestion/outputs/spotify_api_export/spotify_rate_limit_block.json`
 
