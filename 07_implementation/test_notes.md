@@ -749,6 +749,41 @@ Use these as the next priority run set. Keep artifacts under `07_implementation/
 	- all match-path counts reported
 	- unmatched reasons recorded for all unmatched entries
 
+## Test Case TC-ENV-001: Python Environment Bootstrap Validation
+
+- Date: 2026-03-21
+- Backlog link: environment bootstrap / session closure
+- Purpose: Verify that a new machine can create and reuse a repo-local Python environment using the tracked bootstrap assets.
+
+### Inputs
+- Requirements file:
+	- `requirements.txt`
+- Bootstrap assets:
+	- `07_implementation/setup/bootstrap_python_environment.ps1`
+	- `07_implementation/setup/bootstrap_python_environment.cmd`
+	- `07_implementation/setup/python_environment_setup.md`
+
+### Expected Output
+- `.venv` exists under repository root.
+- Required packages install in `.venv`.
+- The bootstrap command completes from repo root without manual path edits.
+- Import verification for `h5py`, `pypdf`, and `rapidfuzz` succeeds.
+
+### Pass Criteria
+- `workspace_python_type=venv`
+- `required_imports_verified=yes`
+- `bootstrap_command_verified=yes`
+
+### Actual Result
+- Status: pass
+- Run evidence: `experiment_log.md` `EXP-020`
+- Observed metrics:
+	- `workspace_python_type=venv`
+	- `workspace_python_version=3.14.3`
+	- `pip_version=26.0.1`
+	- `required_imports_verified=yes`
+	- `bootstrap_command_verified=yes`
+
 ## Test Case TC-LIMIT-001: Limitation And Failure-Mode Traceability (BL-012)
 
 - Date: 2026-03-21

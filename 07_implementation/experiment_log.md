@@ -1979,4 +1979,82 @@ Do NOT download: audio files (.mp3), id_incp/id_resnet/id_vgg19 (video features)
 - immediate_follow_up: retry at or after `2026-03-22T02:40:32Z` or rotate Spotify app credentials and re-authenticate.
 - backlog_status_recommendation: keep `BL-002` done, with live-run evidence marked bounded-risk until a completed export summary artifact is captured.
 
+---
+
+## EXP-020
+- date: 2026-03-21
+- backlog_link: environment bootstrap / session closure
+- owner: Peach + AI
+- status: pass
+- related_test_id: `TC-ENV-001`
+
+### Objective
+- Prepare the new machine for continued thesis work by standardizing Python dependencies, isolating them in a repo-local virtual environment, and adding a repeatable one-command setup path for future machines.
+
+### Scope Check
+- In-scope confirmation: yes, this is repository execution-environment hardening and session-closure readiness work.
+- Protected items affected? no
+
+### Inputs
+- source_data:
+  - current repository Python scripts under `07_implementation/` and `09_quality_control/`
+  - newly installed local Python runtime on the machine
+- config_or_parameters:
+  - repo-local virtual environment path: `.venv/`
+  - pinned packages: `h5py==3.16.0`, `pypdf==6.9.1`, `rapidfuzz==3.14.3`
+  - bootstrap entrypoint: `07_implementation/setup/bootstrap_python_environment.cmd`
+- code_or_script_path:
+  - `requirements.txt`
+  - `07_implementation/setup/bootstrap_python_environment.ps1`
+  - `07_implementation/setup/bootstrap_python_environment.cmd`
+  - `07_implementation/setup/python_environment_setup.md`
+- dependency assumptions: Windows PowerShell available; Python 3.14.3 available locally.
+
+### Expected Evidence
+- primary_output_artifact: working repo-local Python environment at `.venv/`
+- secondary_output_artifacts:
+  - `requirements.txt`
+  - setup bootstrap scripts and runbook under `07_implementation/setup/`
+  - successful import verification for required packages
+- success_condition: local `.venv` exists, pinned packages install successfully, workspace interpreter points at `.venv`, and bootstrap command validates cleanly.
+
+### Run Record
+- command_or_execution_method:
+  - configure workspace Python environment to the newly installed interpreter
+  - install `h5py`, `pypdf`, and `rapidfuzz`
+  - create `.venv` and install pinned requirements
+  - run `07_implementation/setup/bootstrap_python_environment.cmd`
+- run_id: `ENV-BOOTSTRAP-20260321`
+- start_state_summary: new machine had Python newly installed, but repo-local environment/bootstrap assets did not exist and required packages were absent.
+- end_state_summary: `.venv` created and selected as workspace interpreter; pinned packages installed; bootstrap command completes successfully from repo root.
+
+### Results
+- outcome_summary: pass — machine is ready for repository Python work with a reproducible local environment bootstrap path.
+- key_metrics:
+  - `workspace_python_type=venv`
+  - `workspace_python_version=3.14.3`
+  - `pip_version=26.0.1`
+  - `required_imports_verified=yes`
+  - `bootstrap_command_verified=yes`
+- deterministic_repeat_checked: no
+- output_paths:
+  - `requirements.txt`
+  - `07_implementation/setup/bootstrap_python_environment.ps1`
+  - `07_implementation/setup/bootstrap_python_environment.cmd`
+  - `07_implementation/setup/python_environment_setup.md`
+
+### Issues And Limits
+- failures_or_anomalies: initial direct `.ps1` invocation was blocked by local PowerShell execution policy; resolved by introducing a `.cmd` wrapper with `-ExecutionPolicy Bypass`. A repo-root path bug in the first script draft was also corrected before final verification.
+- likely_cause: standard Windows execution-policy restrictions and an initial directory traversal mistake in bootstrap path resolution.
+- bounded_mvp_limitation_or_bug: `.venv/` remains intentionally local-only and is not versioned, so each machine must still run the bootstrap command once.
+
+### Thesis Traceability
+- chapter4_relevance: supports reproducibility and implementation-governance claims by documenting a repeatable environment setup path.
+- chapter5_relevance: provides concrete evidence for practical engineering controls that reduce environment drift and onboarding friction.
+- quality_control_files_to_update: `07_implementation/test_notes.md`, `07_implementation/backlog.md`, `00_admin/change_log.md`.
+
+### Next Action
+- immediate_follow_up: proceed to `BL-014` using the repo-local `.venv` as the default interpreter.
+- backlog_status_recommendation: no backlog item status change; environment readiness improved for upcoming work.
+
 

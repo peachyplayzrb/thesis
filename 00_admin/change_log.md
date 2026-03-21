@@ -539,3 +539,71 @@ Use schema from `00_admin/operating_protocol.md`.
 - affected_components: `00_admin/change_log.md`, `.github/copilot-instructions.md`, `00_admin/handoff_friend_chat_playbook.md`, `AGENTS.md`
 - impact_assessment: High-positive. Reduces reliance on collaborator memory/prompts and improves instruction reliability across VS Code chat environments.
 - approval_record: Requested by user in chat on 2026-03-21.
+
+## C-050
+- date: 2026-03-21
+- proposed_by: user + AI
+- status: accepted
+- change_summary: Execute AGENTS session-start takeover checklist and confirm governance consistency before further implementation work.
+- reason: User requested "do no1" (session-start checklist) and asked to keep all updates logged while deferring Spotify unblock work.
+- evidence_basis: Reviewed `00_admin/thesis_state.md`, `07_implementation/backlog.md`, `07_implementation/experiment_log.md`, `00_admin/change_log.md`, `00_admin/decision_log.md`, and `00_admin/unresolved_issues.md`; verified local branch/remote parity at `setup/initial-work` commit `93b7a4f97e7713a0ffab78e8f6839420be275f95`.
+- affected_components: `00_admin/change_log.md`
+- impact_assessment: Medium-positive. Confirms handoff continuity and reduces risk of starting implementation from stale or inconsistent project control state.
+- approval_record: Requested by user in chat on 2026-03-21.
+
+## C-051
+- date: 2026-03-21
+- proposed_by: user + AI
+- status: accepted
+- change_summary: Log that two literature resource-pack PDFs were not able to be extracted and mark them as explicit missing-input risk for citation-hardening work.
+- reason: User requested that the two specific files be logged as not extractable.
+- evidence_basis: Working tree paths flagged in current repository state:
+	- `10_resources/previous_drafts/lit_review_resource_pack/files/381/Adomavicius and Tuzhilin - 2005 - Toward the next generation of recommender systems a survey of the state-of-the-art and possible ext.pdf`
+	- `10_resources/previous_drafts/lit_review_resource_pack/files/391/Tintarev and Masthoff - 2012 - Evaluating the effectiveness of explanations for recommender systems Methodological issues and empi.pdf`
+- affected_components: `00_admin/change_log.md`, `00_admin/unresolved_issues.md`
+- impact_assessment: Medium-negative near term for literature evidence completeness; positive for governance transparency because the extraction gap is now explicit and trackable.
+- approval_record: Requested by user in chat on 2026-03-21.
+
+## C-052
+- date: 2026-03-21
+- proposed_by: user + AI
+- status: accepted
+- change_summary: Prepare the new machine for thesis implementation by installing the repo's required Python packages and adding a minimal `requirements.txt` for repeatable setup.
+- reason: User installed Python on the new system and requested installation of anything else needed plus logging of the setup work.
+- evidence_basis: Workspace Python environment configured successfully (`system`, Python `3.14.3`); installed packages verified in environment details: `h5py==3.16.0`, `pypdf==6.9.1`, `rapidfuzz==3.14.3`; dependency declarations recorded in `requirements.txt`.
+- affected_components: `00_admin/change_log.md`, `requirements.txt`
+- impact_assessment: High-positive. Brings the new machine to a workable baseline for current implementation and quality-control scripts while reducing future setup ambiguity.
+- approval_record: Requested by user in chat on 2026-03-21.
+
+## C-053
+- date: 2026-03-21
+- proposed_by: user + AI
+- status: accepted
+- change_summary: Create a repo-local `.venv`, install pinned dependencies into it, and switch the workspace interpreter from system Python to the local virtual environment.
+- reason: User requested setup option no. 1 so the project runs in an isolated environment on the new machine.
+- evidence_basis: Local environment created at `.venv/`; package install in `.venv` completed for `h5py==3.16.0`, `pypdf==6.9.1`, and `rapidfuzz==3.14.3`; direct import verification returned `venv imports ok`; workspace Python environment updated to `c:\Users\peach\Desktop\thesis-main (3)\thesis-main\thesis-main\.venv\Scripts\python.exe`.
+- affected_components: `00_admin/change_log.md`, `.venv/`
+- impact_assessment: High-positive. Improves dependency isolation, reduces environment drift risk, and makes subsequent thesis implementation work more reproducible on this machine.
+- approval_record: Requested by user in chat on 2026-03-21.
+
+## C-054
+- date: 2026-03-21
+- proposed_by: user + AI
+- status: accepted
+- change_summary: Add a one-command Windows bootstrap script and a short runbook for repeatable Python environment setup on future machines.
+- reason: User selected setup option no. 2 to make future machine setup simpler and less error-prone.
+- evidence_basis: New tracked bootstrap script `07_implementation/setup/bootstrap_python_environment.ps1`; Windows-friendly wrapper `07_implementation/setup/bootstrap_python_environment.cmd`; new runbook `07_implementation/setup/python_environment_setup.md`; setup remains pinned to `requirements.txt`.
+- affected_components: `00_admin/change_log.md`, `07_implementation/setup/bootstrap_python_environment.ps1`, `07_implementation/setup/bootstrap_python_environment.cmd`, `07_implementation/setup/python_environment_setup.md`
+- impact_assessment: High-positive. Reduces onboarding/setup ambiguity and gives future collaborators a single repeatable environment-setup command.
+- approval_record: Requested by user in chat on 2026-03-21.
+
+## C-055
+- date: 2026-03-21
+- proposed_by: user + AI
+- status: accepted
+- change_summary: Reorganize Python environment setup assets into a dedicated `07_implementation/setup/` area instead of keeping them under `implementation_notes/entrypoint`.
+- reason: User approved the cleanup pass to keep environment/bootstrap assets in a clearer implementation-level setup location.
+- evidence_basis: Setup files relocated to `07_implementation/setup/` and path references updated to the new location.
+- affected_components: `00_admin/change_log.md`, `07_implementation/setup/bootstrap_python_environment.ps1`, `07_implementation/setup/bootstrap_python_environment.cmd`, `07_implementation/setup/python_environment_setup.md`
+- impact_assessment: Medium-positive. Improves project structure clarity by separating environment/bootstrap assets from pipeline entrypoint artifacts.
+- approval_record: Requested by user in chat on 2026-03-21.

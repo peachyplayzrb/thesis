@@ -15,6 +15,7 @@
 - Strategy update (2026-03-21, D-015): activate the DS-002 corpus strategy (`MSD subset + Last.fm tags + MusicBrainz mapping`) as the current BL-019 implementation path.
 - Ingestion update (2026-03-21): BL-001 schema is now locked to Spotify Extended Streaming History CSV as the selected single-adapter MVP path.
 - Ingestion update (2026-03-21): BL-002 parser is implemented and a Spotify Web API max-export ingestion script now collects top tracks, saved tracks, playlists, and playlist items with OAuth + pagination.
+- Environment update (2026-03-21): repo-local Python setup is now standardized via `requirements.txt` and one-command bootstrap under `07_implementation/setup/`.
 - Recommended immediate next work order:
 	1. `BL-014` create automated sanity checks for schema and deterministic output hashes.
 	2. Retry blocked Spotify API export path after cooldown window (`UI-007`).
@@ -67,3 +68,4 @@
 - `BL-018` completed on 2026-03-19. Historical recommendation at that time was to keep Music4All-Onion as active and treat the MSD-based option as fallback; this was later superseded for active BL-019 planning by decision `D-015` on 2026-03-21.
 - Phase A work was previously completed and logged in `experiment_log.md` `EXP-001` and `EXP-002`, then deleted on 2026-03-19 for clean restart.
 
+ 
