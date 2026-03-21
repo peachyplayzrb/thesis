@@ -1,5 +1,5 @@
 # Music4All Dataset Access Request — Email Draft
-<!-- Created: 2026-03-21 | Status: ready to send -->
+<!-- Created: 2026-03-21 | Status: SENT 2026-03-21 -->
 
 ---
 

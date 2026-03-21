@@ -694,3 +694,14 @@ Use schema from `00_admin/operating_protocol.md`.
 - affected_components: 00_admin/decision_log.md (D-020), 00_admin/mentor_question_log.md (MQ-008), 00_admin/music4all_access_email_draft_2026-03-21.md (created)
 - impact_assessment: Low-risk deferral. MVP pipeline is unaffected. Two parallel access tracks opened (Music4All author email + supervisor channel) that may unlock a larger corpus before submission deadline.
 - approval_record: Requested by user in chat on 2026-03-21.
+
+## C-064
+- date: 2026-03-21
+- proposed_by: user
+- status: accepted
+- change_summary: Music4All dataset access email sent to dataset authors on 2026-03-21.
+- reason: User confirmed email was dispatched. Status in music4all_access_email_draft_2026-03-21.md updated from 'ready to send' to 'SENT 2026-03-21'. Awaiting response from Music4All/Music4All-Onion authors regarding access to the 109,269-track dataset.
+- evidence_basis: User confirmation in chat on 2026-03-21. Email draft at 00_admin/music4all_access_email_draft_2026-03-21.md.
+- affected_components: 00_admin/music4all_access_email_draft_2026-03-21.md, 00_admin/change_log.md (C-064)
+- impact_assessment: Action taken on D-020 access track 1 (email authors). Track 2 (supervisor question MQ-008) still open for next meeting.
+- approval_record: User confirmed send on 2026-03-21.
