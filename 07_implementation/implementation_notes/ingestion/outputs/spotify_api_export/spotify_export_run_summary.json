@@ -1,0 +1,104 @@
+{
+  "task": "BL-002-spotify-api-export",
+  "run_id": "SPOTIFY-EXPORT-20260321-192533-881299",
+  "generated_at_utc": "2026-03-21T19:26:20Z",
+  "oauth": {
+    "redirect_uri": "http://127.0.0.1:8001/spotify/auth/callback",
+    "scopes_requested": [
+      "user-top-read",
+      "user-library-read",
+      "playlist-read-private",
+      "playlist-read-collaborative",
+      "user-read-private"
+    ],
+    "scope_granted": [
+      "playlist-read-private",
+      "playlist-read-collaborative",
+      "user-library-read",
+      "user-top-read",
+      "user-read-private"
+    ]
+  },
+  "account_profile": {
+    "spotify_user_id": "21zsn42xecjhogne4kghyw5hq",
+    "country": "MT",
+    "product": "premium"
+  },
+  "counts": {
+    "top_tracks_short_term": 598,
+    "top_tracks_medium_term": 3021,
+    "top_tracks_long_term": 5104,
+    "saved_tracks": 170,
+    "playlists": 4,
+    "playlist_items": 31,
+    "api_calls_logged": 2
+  },
+  "elapsed_seconds": 46.711,
+  "resilience": {
+    "cache_enabled": true,
+    "cache_db_path": "07_implementation/implementation_notes/ingestion/outputs/spotify_api_export/spotify_resilience_cache.sqlite",
+    "cache_note": "SQLite cache with 24-hour TTL for static endpoints; enables fast re-runs"
+  },
+  "artifacts": {
+    "spotify_profile.json": {
+      "path": "07_implementation/implementation_notes/ingestion/outputs/spotify_api_export/spotify_profile.json",
+      "sha256": "942EA798EDA891DF73CAE810EDE03189E2AD181C321540B53F9D8898D6CF21D1",
+      "bytes": 1737
+    },
+    "spotify_top_tracks_by_range.json": {
+      "path": "07_implementation/implementation_notes/ingestion/outputs/spotify_api_export/spotify_top_tracks_by_range.json",
+      "sha256": "3A88DF4BBD3AB9507361E5C7A8F0477A2E788FB82CE392653652025A6F56C713",
+      "bytes": 26816335
+    },
+    "spotify_top_tracks_flat.csv": {
+      "path": "07_implementation/implementation_notes/ingestion/outputs/spotify_api_export/spotify_top_tracks_flat.csv",
+      "sha256": "009994C647271F68F4D3DF49316E371AE4DCC78D4C4C3716CDFDA256B0B90F22",
+      "bytes": 2571512
+    },
+    "spotify_saved_tracks.json": {
+      "path": "07_implementation/implementation_notes/ingestion/outputs/spotify_api_export/spotify_saved_tracks.json",
+      "sha256": "AC317F3BF7BDA07BE0102BC9D9D4C0728A6FE7C34F5B134F7C289C4CA90D6B72",
+      "bytes": 531969
+    },
+    "spotify_saved_tracks_flat.csv": {
+      "path": "07_implementation/implementation_notes/ingestion/outputs/spotify_api_export/spotify_saved_tracks_flat.csv",
+      "sha256": "BD3B04C9895285FB41FC71B29622368905C1EA35C840511518817639D1E25561",
+      "bytes": 50937
+    },
+    "spotify_playlists.json": {
+      "path": "07_implementation/implementation_notes/ingestion/outputs/spotify_api_export/spotify_playlists.json",
+      "sha256": "4801E0EE1A02A285D5ECECF76BCB2979F359FA6A69758EF3CAADEDEEAC15B4E3",
+      "bytes": 5802
+    },
+    "spotify_playlists_flat.csv": {
+      "path": "07_implementation/implementation_notes/ingestion/outputs/spotify_api_export/spotify_playlists_flat.csv",
+      "sha256": "05187872895416465FECB753DE54E7C4339B18AEBE4CD395B00EFA967E862BE0",
+      "bytes": 682
+    },
+    "spotify_playlist_items_flat.jsonl": {
+      "path": "07_implementation/implementation_notes/ingestion/outputs/spotify_api_export/spotify_playlist_items_flat.jsonl",
+      "sha256": "B3DEB75610982AC853878E3524FED189974396B4D00D63BD8E135606AD156111",
+      "bytes": 13073
+    },
+    "spotify_playlist_items_flat.csv": {
+      "path": "07_implementation/implementation_notes/ingestion/outputs/spotify_api_export/spotify_playlist_items_flat.csv",
+      "sha256": "37FE25E5BA22CC7165D988D411F60615807C2FA26ABE7459BF7D3A48B22B0615",
+      "bytes": 3656
+    },
+    "spotify_request_log.jsonl": {
+      "path": "07_implementation/implementation_notes/ingestion/outputs/spotify_api_export/spotify_request_log.jsonl",
+      "sha256": "8E1467AA4229F2E30A30F59642468FD3834C713BDD65A9A82594FA02F423F1BE",
+      "bytes": 397
+    }
+  },
+  "notes": {
+    "api_reference_basis": [
+      "Authorization Code Flow tutorial",
+      "Get User's Top Items",
+      "Get User's Saved Tracks",
+      "Get Current User's Playlists",
+      "Get Playlist Items"
+    ],
+    "policy_note": "Use data for personal ingestion and thesis analysis; do not redistribute Spotify content."
+  }
+}
