@@ -20,6 +20,14 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
+# Spotify resilience utilities: caching, job tracking, rate-limit safety
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+try:
+    from spotify_resilience import CacheDB, JobProgress
+    RESILIENCE_AVAILABLE = True
+except ImportError:
+    RESILIENCE_AVAILABLE = False
+
 
 ACCOUNTS_BASE_URL = "https://accounts.spotify.com"
 API_BASE_URL = "https://api.spotify.com/v1"
@@ -534,7 +542,61 @@ class SpotifyApiClient:
         self._last_request_epoch = now
 
 
-def fetch_all_offset_pages(client: SpotifyApiClient, path: str, base_params: Dict[str, Any], limit: int) -> List[Dict[str, Any]]:
+# -------------------------
+# Caching wrapper for api_get (optional resilience integration)
+# -------------------------
+def cached_api_get(
+    client: SpotifyApiClient,
+    cache_db: Optional[CacheDB],
+    path: str,
+    params: Dict[str, Any],
+    ttl_seconds: int = 86400,  # 24 hours default
+) -> Dict[str, Any]:
+    """
+    Wrap client.api_get() with optional SQLite caching.
+    If cache_db is None, bypasses caching entirely.
+    """
+    if cache_db is None:
+        # No caching available; call directly
+        return client.api_get(path=path, params=params)
+
+    # Generate cache key from path + params (sorted for consistency)
+    params_str = json.dumps(params, sort_keys=True, separators=(",", ":"))
+    params_hash = hashlib.sha256(params_str.encode("utf-8")).hexdigest()[:8]
+    cache_key = f"spotify:{path}:{params_hash}"
+
+    # Try cache first
+    cached = cache_db.cache_get(cache_key)
+    if cached is not None:
+        print(
+            f"[cache_hit] path={path} offset={params.get('offset', 0)} cache_key={cache_key}",
+            flush=True,
+        )
+        return cached
+
+    # Cache miss: call API and cache result
+    try:
+        data = client.api_get(path=path, params=params)
+        cache_db.cache_set(cache_key, data, ttl_seconds=ttl_seconds, status=200, err=None)
+        print(
+            f"[cache_set] path={path} offset={params.get('offset', 0)} cache_key={cache_key}",
+            flush=True,
+        )
+        return data
+    except Exception as e:
+        # Cache errors too, so we don't hammer failed endpoints
+        error_payload = {"error": str(e), "status": "exception"}
+        cache_db.cache_set(cache_key, error_payload, ttl_seconds=3600, status=0, err=str(e))
+        raise
+
+
+def fetch_all_offset_pages(
+    client: SpotifyApiClient,
+    cache_db: Optional[CacheDB],
+    path: str,
+    base_params: Dict[str, Any],
+    limit: int,
+) -> List[Dict[str, Any]]:
     items: List[Dict[str, Any]] = []
     offset = 0
     page_index = 0
@@ -544,7 +606,7 @@ def fetch_all_offset_pages(client: SpotifyApiClient, path: str, base_params: Dic
         params = dict(base_params)
         params["limit"] = limit
         params["offset"] = offset
-        page = client.api_get(path=path, params=params)
+        page = cached_api_get(client=client, cache_db=cache_db, path=path, params=params)
         page_items = page.get("items", [])
         if not isinstance(page_items, list):
             raise RuntimeError(f"Expected list items for {path}")
@@ -646,6 +708,18 @@ def main() -> None:
     save_token_cache(token_cache_path, token_payload)
     client = SpotifyApiClient(args=args, token_payload=token_payload)
 
+    # Initialize resilience utilities (cache + job progress)
+    cache_db: Optional[CacheDB] = None
+    job_progress: Optional[JobProgress] = None
+    cache_db_path = output_dir / "spotify_resilience_cache.sqlite"
+    
+    if RESILIENCE_AVAILABLE:
+        print("[resilience] initializing SQLite cache and job progress", flush=True)
+        cache_db = CacheDB(str(cache_db_path))
+        job_progress = JobProgress(str(cache_db_path))
+    else:
+        print("[resilience] spotify_resilience module not available; caching disabled", flush=True)
+
     run_started = time.time()
     run_id = f"SPOTIFY-EXPORT-{datetime.now(timezone.utc).strftime('%Y%m%d-%H%M%S-%f')}"
     print(f"[run] run_id={run_id}", flush=True)
@@ -700,6 +774,7 @@ def main() -> None:
         print(f"[top_tracks] fetching time_range={time_range}", flush=True)
         tracks = fetch_all_offset_pages(
             client=client,
+            cache_db=cache_db,
             path="/me/top/tracks",
             base_params={"time_range": time_range},
             limit=args.batch_size_top_tracks,
@@ -713,6 +788,7 @@ def main() -> None:
 
     saved_track_items = fetch_all_offset_pages(
         client=client,
+        cache_db=cache_db,
         path="/me/tracks",
         base_params={},
         limit=args.batch_size_saved_tracks,
@@ -730,6 +806,7 @@ def main() -> None:
 
     playlists = fetch_all_offset_pages(
         client=client,
+        cache_db=cache_db,
         path="/me/playlists",
         base_params={},
         limit=args.batch_size_playlists,
@@ -759,12 +836,19 @@ def main() -> None:
         if not playlist_id:
             continue
 
-        items = fetch_all_offset_pages(
-            client=client,
-            path=f"/playlists/{playlist_id}/items",
-            base_params={"additional_types": "track"},
-            limit=args.batch_size_playlist_items,
-        )
+        try:
+            items = fetch_all_offset_pages(
+                client=client,
+                cache_db=cache_db,
+                path=f"/playlists/{playlist_id}/items",
+                base_params={"additional_types": "track"},
+                limit=args.batch_size_playlist_items,
+            )
+        except RuntimeError as _playlist_err:
+            if "403" in str(_playlist_err):
+                print(f"[playlist_items] playlist_id={playlist_id} SKIPPED (403 Forbidden — not accessible)", flush=True)
+                continue
+            raise
         print(f"[playlist_items] playlist_id={playlist_id} items={len(items)}", flush=True)
 
         for position, item in enumerate(items, start=1):
@@ -928,6 +1012,11 @@ def main() -> None:
         },
         "counts": endpoint_counts,
         "elapsed_seconds": elapsed_seconds,
+        "resilience": {
+            "cache_enabled": RESILIENCE_AVAILABLE and cache_db is not None,
+            "cache_db_path": str(cache_db_path.relative_to(root)).replace("\\", "/") if cache_db is not None else None,
+            "cache_note": "SQLite cache with 24-hour TTL for static endpoints; enables fast re-runs",
+        },
         "artifacts": {
             name: {
                 "path": str(path.relative_to(root)).replace("\\", "/"),
