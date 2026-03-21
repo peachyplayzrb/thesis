@@ -1,0 +1,214 @@
+from __future__ import annotations
+
+import argparse
+import hashlib
+import json
+import subprocess
+import sys
+import time
+from datetime import datetime, timezone
+from pathlib import Path
+
+
+STAGES = {
+    "BL-004": "07_implementation/implementation_notes/profile/build_bl004_preference_profile.py",
+    "BL-005": "07_implementation/implementation_notes/retrieval/build_bl005_candidate_filter.py",
+    "BL-006": "07_implementation/implementation_notes/scoring/build_bl006_scored_candidates.py",
+    "BL-007": "07_implementation/implementation_notes/playlist/build_bl007_playlist.py",
+    "BL-008": "07_implementation/implementation_notes/transparency/build_bl008_explanation_payloads.py",
+    "BL-009": "07_implementation/implementation_notes/observability/build_bl009_observability_log.py",
+}
+
+DEFAULT_STAGE_ORDER = ["BL-004", "BL-005", "BL-006", "BL-007", "BL-008", "BL-009"]
+
+# Hash these deterministic files to support repeatability checks for BL-013 runs.
+STABLE_ARTIFACTS = {
+    "bl004_seed_trace": "07_implementation/implementation_notes/profile/outputs/bl004_seed_trace.csv",
+    "bl005_filtered_candidates": "07_implementation/implementation_notes/retrieval/outputs/bl005_filtered_candidates.csv",
+    "bl005_candidate_decisions": "07_implementation/implementation_notes/retrieval/outputs/bl005_candidate_decisions.csv",
+    "bl006_scored_candidates": "07_implementation/implementation_notes/scoring/outputs/bl006_scored_candidates.csv",
+    "bl007_assembly_trace": "07_implementation/implementation_notes/playlist/outputs/bl007_assembly_trace.csv",
+}
+
+
+def repo_root() -> Path:
+    return Path(__file__).resolve().parents[3]
+
+
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(
+        description=(
+            "BL-013 lightweight orchestrator for bootstrap pipeline stages BL-004 to BL-009."
+        )
+    )
+    parser.add_argument(
+        "--stages",
+        nargs="+",
+        default=DEFAULT_STAGE_ORDER,
+        help="Ordered stage IDs to run (default: BL-004 BL-005 BL-006 BL-007 BL-008 BL-009)",
+    )
+    parser.add_argument(
+        "--continue-on-error",
+        action="store_true",
+        help="Continue executing remaining stages after a failure.",
+    )
+    parser.add_argument(
+        "--python",
+        default=sys.executable,
+        help="Python executable used to run stage scripts.",
+    )
+    parser.add_argument(
+        "--output-dir",
+        default="07_implementation/implementation_notes/entrypoint/outputs",
+        help="Directory for BL-013 orchestration run summaries.",
+    )
+    parser.add_argument(
+        "--summary-prefix",
+        default="bl013_orchestration_run",
+        help="Filename prefix for summary JSON artifacts.",
+    )
+    return parser.parse_args()
+
+
+def validate_stage_order(stage_ids: list[str]) -> list[str]:
+    normalized: list[str] = []
+    for stage_id in stage_ids:
+        token = stage_id.strip().upper()
+        if token not in STAGES:
+            valid = ", ".join(DEFAULT_STAGE_ORDER)
+            raise ValueError(f"Unsupported stage '{stage_id}'. Valid values: {valid}")
+        normalized.append(token)
+    return normalized
+
+
+def sha256_of_file(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest().upper()
+
+
+def compute_stable_artifact_hashes(root: Path) -> tuple[dict[str, str], list[str]]:
+    hashes: dict[str, str] = {}
+    missing: list[str] = []
+
+    for alias, relative_path in STABLE_ARTIFACTS.items():
+        artifact_path = root / relative_path
+        if not artifact_path.exists():
+            missing.append(relative_path)
+            continue
+        hashes[alias] = sha256_of_file(artifact_path)
+
+    return hashes, missing
+
+
+def run_stage(python_executable: str, stage_id: str, script_path: Path, root: Path) -> dict[str, object]:
+    command = [python_executable, str(script_path)]
+    started = time.time()
+    process = subprocess.run(
+        command,
+        cwd=str(root),
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    elapsed = round(time.time() - started, 3)
+
+    return {
+        "stage_id": stage_id,
+        "script_path": script_path.relative_to(root).as_posix(),
+        "command": command,
+        "return_code": process.returncode,
+        "status": "pass" if process.returncode == 0 else "fail",
+        "elapsed_seconds": elapsed,
+        "stdout": process.stdout.strip(),
+        "stderr": process.stderr.strip(),
+    }
+
+
+def main() -> None:
+    args = parse_args()
+    root = repo_root()
+
+    stage_order = validate_stage_order(args.stages)
+    output_dir = root / args.output_dir
+    output_dir.mkdir(parents=True, exist_ok=True)
+
+    run_id = f"BL013-ENTRYPOINT-{datetime.now(timezone.utc).strftime('%Y%m%d-%H%M%S-%f')}"
+    generated_at_utc = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+
+    stage_results: list[dict[str, object]] = []
+    pipeline_started = time.time()
+
+    for stage_id in stage_order:
+        script_relpath = STAGES[stage_id]
+        script_path = root / script_relpath
+        if not script_path.exists():
+            stage_results.append(
+                {
+                    "stage_id": stage_id,
+                    "script_path": script_relpath,
+                    "command": [args.python, script_relpath],
+                    "return_code": 127,
+                    "status": "fail",
+                    "elapsed_seconds": 0.0,
+                    "stdout": "",
+                    "stderr": f"Missing stage script: {script_relpath}",
+                }
+            )
+            if not args.continue_on_error:
+                break
+            continue
+
+        result = run_stage(args.python, stage_id, script_path, root)
+        stage_results.append(result)
+
+        if result["status"] == "fail" and not args.continue_on_error:
+            break
+
+    elapsed_pipeline = round(time.time() - pipeline_started, 3)
+    failed = [item for item in stage_results if item["status"] == "fail"]
+    overall_status = "pass" if not failed and len(stage_results) == len(stage_order) else "fail"
+
+    stable_hashes, missing_stable = compute_stable_artifact_hashes(root)
+
+    summary = {
+        "run_id": run_id,
+        "task": "BL-013",
+        "generated_at_utc": generated_at_utc,
+        "overall_status": overall_status,
+        "continue_on_error": bool(args.continue_on_error),
+        "python_executable": args.python,
+        "requested_stage_order": stage_order,
+        "executed_stage_count": len(stage_results),
+        "failed_stage_count": len(failed),
+        "elapsed_seconds": elapsed_pipeline,
+        "stage_results": stage_results,
+        "stable_artifact_hashes": stable_hashes,
+        "missing_stable_artifacts": missing_stable,
+        "notes": {
+            "purpose": "Lightweight wrapper to run existing BL-004..BL-009 scripts in one command.",
+            "repeatability_check_guidance": "Compare stable_artifact_hashes between repeated runs under unchanged inputs/config.",
+        },
+    }
+
+    summary_path = output_dir / f"{args.summary_prefix}_{run_id}.json"
+    summary_path.write_text(json.dumps(summary, indent=2, ensure_ascii=True), encoding="utf-8")
+
+    latest_path = output_dir / f"{args.summary_prefix}_latest.json"
+    latest_path.write_text(json.dumps(summary, indent=2, ensure_ascii=True), encoding="utf-8")
+
+    print(f"BL-013 orchestration complete: status={overall_status}")
+    print(f"run_id={run_id}")
+    print(f"summary={summary_path}")
+    print(f"latest={latest_path}")
+
+    if failed:
+        for item in failed:
+            print(f"failed_stage={item['stage_id']} return_code={item['return_code']}")
+        raise SystemExit(1)
+
+
+if __name__ == "__main__":
+    main()
