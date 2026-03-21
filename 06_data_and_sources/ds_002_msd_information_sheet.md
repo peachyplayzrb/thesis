@@ -85,20 +85,20 @@ Role in System:
 Source: MSD Additional Datasets
 
 Purpose:
-Links tracks to external identifiers (MusicBrainz IDs).
+Provides artist-level MusicBrainz identifiers through currently confirmed MSD metadata sources, with track-level recording enrichment left as future work.
 
 Key Variables:
 
 - `track_id`
 - `artist_name`
 - `title`
-- `mbid` (MusicBrainz ID)
+- `artist_mbid` (artist-level MusicBrainz ID)
 
 Role in System:
 
-- Supports cross-source alignment
-- Enables future enrichment
-- Assists in matching Spotify data to dataset
+- Supports artist-level enrichment and traceability
+- Keeps a bridge open for future MusicBrainz recording-level enrichment
+- Does not by itself provide exact Spotify track matching
 
 ---
 
@@ -120,7 +120,7 @@ mode
 
 tags (aggregated list)
 
-mbid (optional)
+artist_mbid (optional)
 ```
 
 ---
@@ -138,8 +138,8 @@ mbid (optional)
 
 ### Step 3 - Add MusicBrainz Mapping
 
-- Join mapping file on `track_id`
-- Attach MBID where available
+- Attach `artist_mbid` where available from confirmed MSD metadata sources
+- Treat track-level MusicBrainz recording enrichment as optional future work
 
 ### Step 4 - Clean and Normalize
 
@@ -158,12 +158,15 @@ Available fields:
 - `track name`
 - `artist name`
 - `ISRC` (when available)
+- `album name`
+- `duration_ms`
 
 Matching Strategy:
 
 ```
-Primary: ISRC matching
-Fallback: artist + title matching
+Current DS-002 MVP: normalized artist + title matching
+Tie-break: duration and release/album checks
+Future enhancement: ISRC-first only if corpus-side ISRC enrichment is added
 ```
 
 Matching Outcomes:
@@ -196,6 +199,7 @@ The dataset supports three feature types.
 - `artist`
 - `title`
 - `year`
+- `release`
 
 ---
 

@@ -2,8 +2,8 @@
 
 ## DS-001: Music4All / Music4All-Onion
 
-- decision_log_ref: `D-001`
-- status: accepted — primary candidate corpus
+- decision_log_ref: `D-001`, `D-015`
+- status: fallback baseline only — previously primary, now superseded for active BL-019 planning
 - date_registered: 2026-03-12
 - last_updated: 2026-03-19
 
@@ -166,12 +166,17 @@ From `id_genres_tf-idf.tsv.bz2`:
 - The review of `DS-002` is complete. Result: keep DS-001 active for MVP execution.
 - Do not wait for base Music4All before proceeding. Treat base-only fields as optional future enrichments.
 
+### Status Update (2026-03-21)
+- DS-001 is no longer the active corpus-planning path for BL-019.
+- Keep DS-001 artifacts as historical baseline evidence and fallback reference only.
+- Active planning strategy is now DS-002 per `D-015`.
+
 ## DS-002: MSD Subset + Last.fm Tags + MusicBrainz Mapping
 
-- decision_log_ref: `D-008`
-- status: future reference / reviewed fallback only — not accepted as replacement corpus
+- decision_log_ref: `D-008`, `D-015`, `D-016`
+- status: complete — BL-019 dataset built and verified (9330 tracks, all quality gates pass, two-run determinism confirmed)
 - date_registered: 2026-03-19
-- last_updated: 2026-03-19
+- last_updated: 2026-03-21
 
 ### Description
 Integrated dataset strategy built from three linked research assets:
@@ -184,17 +189,30 @@ The intent is to create a smaller but more explicitly documented candidate corpu
 Reference artifact:
 - `06_data_and_sources/ds_002_msd_information_sheet.md`
 
-### Proposed Sources
+### Confirmed Local Sources (2026-03-21 inspection)
 - Million Song Dataset: http://millionsongdataset.com/
 - Last.fm tags for MSD: http://millionsongdataset.com/lastfm/
-- MusicBrainz mapping from MSD additional datasets
+- Local files confirmed in-repo:
+	- `06_data_and_sources/track_metadata.db`
+	- `06_data_and_sources/millionsongsubset.tar.gz`
+	- `06_data_and_sources/lastfm_subset.zip`
+	- `06_data_and_sources/unique_tracks.txt`
+	- `06_data_and_sources/unique_artists.txt`
 
-### Proposed Final Fields
+### Confirmed Field Availability (2026-03-21 inspection)
+- `track_metadata.db` (`songs` table): `track_id`, `title`, `artist_name`, `artist_mbid`, `duration`, `year`, plus related metadata fields.
+- MSD HDF5 `analysis/songs`: `track_id`, `tempo`, `loudness`, `key`, `mode`, `duration`.
+- MSD HDF5 `metadata/songs`: `artist_name`, `title`, `release`, `artist_mbid`, `song_id`.
+- Last.fm subset JSON: `track_id`, `artist`, `title`, `tags`, `similars`, `timestamp`.
+- MusicBrainz-related helper data currently confirms `artist_mbid`, not a clean track-level MusicBrainz recording identifier.
+
+### Current Working Final Fields
 | Field | Role |
 | --- | --- |
 | `track_id` | canonical key |
 | `artist_name` | metadata / fallback matching |
 | `title` | metadata / fallback matching |
+| `release` | metadata tie-break / traceability |
 | `year` | metadata feature |
 | `duration` | metadata feature |
 | `tempo` | transparent audio feature |
@@ -202,7 +220,7 @@ Reference artifact:
 | `key` | transparent audio feature |
 | `mode` | transparent audio feature |
 | `tags` | semantic explanation and similarity signal |
-| `mbid` | external identifier / enrichment aid |
+| `artist_mbid` | artist-level external identifier / optional enrichment |
 
 ### Strengths
 - Clean three-source integration story that is easy to explain in Chapter 3.
@@ -213,13 +231,24 @@ Reference artifact:
 ### Risks And Open Questions
 - The described plan uses the MSD subset (10,000 songs), which is much smaller than the current Music4All-Onion path and may reduce candidate diversity.
 - The proposed field list is narrower than the current Onion-first plan and removes several already-inspected features now available locally.
-- Spotify alignment may weaken because the current thesis plan is ISRC-first, while the proposed sheet lists ISRC only on the Spotify side and not as a confirmed corpus field.
-- MSD extraction requires `.h5` parsing work and join validation that has not yet been implemented in this repository.
+- Spotify alignment cannot currently use ISRC as the primary DS-002 match key because the inspected candidate assets do not expose a confirmed corpus-side track-level ISRC field.
+- MusicBrainz enrichment currently resolves only to `artist_mbid`; exact track-level MusicBrainz matching remains an open future enhancement rather than an available MVP field.
+- MSD extraction is now technically available in the environment (`h5py` installed), but BL-019 still needs explicit implementation and join validation.
 - A corpus switch would require synchronized updates across thesis-state, objectives, assumptions, limitations, and active chapter drafts.
 
 ### Review Gate
-- Review completed on 2026-03-19.
-- Outcome: DS-002 is retained as a documented fallback option only.
-- Reason: the main blocker is unusable base-Music4All access, but Music4All-Onion already provides enough interpretable data to support MVP implementation with less rework than a corpus switch.
-- Current handling decision: preserve this option as future work and do not spend active MVP implementation time on it now.
+- Review update completed on 2026-03-21.
+- Outcome: DS-002 is activated as the current BL-019 planning and implementation path.
+- Reason: user-selected strategy update and alignment with explicit deterministic integration workflow requirements.
+- Current handling decision: implement DS-002 joins and quality-gated dataset build as the active track; use metadata-first Spotify matching with duration/release tie-breaks and retain DS-001 as fallback baseline.
+
+### Build Completion Record (2026-03-21)
+- Builder script: `07_implementation/implementation_notes/data_layer/build_bl019_ds002_dataset.py`
+- Join mode: intersection — only tracks present in all three sources (HDF5 ∩ SQLite ∩ Last.fm)
+- Output rows: 9330 (670 of 10000 HDF5 tracks excluded — no Last.fm match)
+- All quality gates: pass
+- Determinism: confirmed (two identical runs, matching SHA256)
+- Dataset SHA256: `b9c729a2b0fc1ab9e533ca5126402f4aff7c2b1ee8357a16e773a7837ad40b9f`
+- Experiment log: `07_implementation/experiment_log.md` (EXP-016)
+- Test note: `07_implementation/test_notes.md` (TC-DATASET-001)
 

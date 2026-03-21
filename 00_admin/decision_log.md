@@ -29,6 +29,228 @@ impacted_files:
 review_date:
 none
 
+id: D-015
+date: 2026-03-21
+status: accepted
+
+context:
+The user requested updating the active plan to use the DS-002 dataset strategy documented in `06_data_and_sources/ds_002_msd_information_sheet.md`. Current BL-019 planning text was still scoped to Onion canonical refresh.
+
+decision:
+Adopt DS-002 (`MSD subset + Last.fm tags + MusicBrainz mapping`) as the active BL-019 dataset-build strategy. Retarget BL-019 planning, implementation-plan guidance, and experiment planning to deterministic cross-source integration on `track_id` with explicit quality gates.
+
+alternatives_considered:
+- Keep Onion-only canonical refresh as BL-019 active path
+- Keep DS-002 as fallback-only reference without changing active plan
+- Run both corpus strategies in parallel during BL-019
+
+rationale:
+This aligns implementation planning directly with the user-selected dataset strategy while preserving traceable, deterministic, and inspectable workflow requirements. A single active corpus strategy also reduces planning ambiguity and governance drift.
+
+evidence_basis:
+- `06_data_and_sources/ds_002_msd_information_sheet.md`
+- `07_implementation/backlog.md` (`BL-019` updated planning scope)
+- `07_implementation/implementation_plan.md` (corpus note and BL-019 addendum update)
+- `07_implementation/experiment_log.md` (`EXP-016` retargeted plan)
+
+impacted_files:
+- `00_admin/decision_log.md`
+- `07_implementation/backlog.md`
+- `07_implementation/implementation_plan.md`
+- `07_implementation/experiment_log.md`
+- `06_data_and_sources/dataset_registry.md`
+
+review_date:
+none
+
+id: D-010
+date: 2026-03-21
+status: accepted
+
+context:
+BL-009 required a run-level observability layer for the current bootstrap pipeline. The pipeline already depended on BL-017 through BL-008 artifacts, while BL-001 to BL-003 remained intentionally deferred under the bootstrap strategy. The user requested that BL-009 be implemented and logged fully.
+
+decision:
+Represent BL-009 observability with two artifacts: one canonical JSON run log and one flat CSV run index. Derive `dataset_version` from hashes of the bootstrap data components, derive `pipeline_version` from hashes of the participating stage scripts, and record BL-001 to BL-003 explicitly as `deferred_bootstrap_mode` placeholders rather than fabricating live ingestion or alignment telemetry.
+
+alternatives_considered:
+- Create separate per-stage observability files without a canonical consolidated log
+- Store observability details only in `experiment_log.md` without machine-readable outputs
+- Treat BL-001 to BL-003 as if they had executed and emit pseudo-runtime diagnostics
+- Record only human-readable notes without artifact hashes or version identifiers
+
+rationale:
+One canonical JSON log keeps the bootstrap run state in a single auditable location and avoids fragmented traceability. A one-row CSV index supports fast lookup and future replay checks without reopening the full JSON. Hash-derived dataset and pipeline versions create a concrete bridge to BL-010 reproducibility work. Explicit deferred-stage placeholders are more defensible than invented telemetry because they preserve honesty about the current MVP execution path.
+
+evidence_basis:
+- `05_design/observability_design.md`
+- `00_admin/decision_log.md` (`D-005` bootstrap-first strategy)
+- upstream artifacts from `07_implementation/implementation_notes/data_layer/outputs/`, `07_implementation/implementation_notes/test_assets/`, `07_implementation/implementation_notes/profile/outputs/`, `07_implementation/implementation_notes/retrieval/outputs/`, `07_implementation/implementation_notes/scoring/outputs/`, `07_implementation/implementation_notes/playlist/outputs/`, and `07_implementation/implementation_notes/transparency/outputs/`
+- generated BL-009 artifacts in `07_implementation/implementation_notes/observability/outputs/`
+
+impacted_files:
+- `06_data_and_sources/schema_notes.md`
+- `07_implementation/backlog.md`
+- `07_implementation/experiment_log.md`
+- `07_implementation/test_notes.md`
+- `07_implementation/implementation_notes/observability/build_bl009_observability_log.py`
+- `07_implementation/implementation_notes/observability/outputs/bl009_run_observability_log.json`
+- `07_implementation/implementation_notes/observability/outputs/bl009_run_index.csv`
+
+review_date:
+none
+
+id: D-011
+date: 2026-03-21
+status: accepted
+
+context:
+BL-010 required deterministic replay evidence for the bootstrap pipeline. Raw BL-007, BL-008, and BL-009 JSON artifacts embed per-run identifiers, timestamps, elapsed time, and upstream run linkage, which makes raw file hashes vary even when the recommendation content is unchanged. The initial BL-010 replay also exposed run-id collisions under second-level precision.
+
+decision:
+Evaluate BL-010 reproducibility with stable content fingerprints instead of raw downstream file hashes for the timestamped BL-007 to BL-009 artifacts. Keep raw-hash variation recorded as expected metadata volatility, and increase BL-004 to BL-009 run-id precision to microseconds so rapid replay runs remain uniquely identifiable.
+
+alternatives_considered:
+- Compare raw file hashes only and treat any difference as a reproducibility failure
+- Remove run ids and timestamps from the production-stage artifacts themselves
+- Limit BL-010 to BL-006 ranked output only and ignore playlist, explanation, and observability layers
+- Keep second-resolution run ids and accept collisions during fast replay tests
+
+rationale:
+Raw hash equality is too strict for audit-oriented JSON artifacts that intentionally preserve run-specific metadata. Stable fingerprints let BL-010 test semantic determinism without discarding useful observability fields from the actual outputs. Recording the raw-hash variation separately preserves transparency about what changed and why. Raising run-id precision fixes a genuine auditability defect because replayed runs must remain distinguishable even when they execute within the same second.
+
+evidence_basis:
+- `00_admin/evaluation_plan.md` (`EP-REPRO-001`)
+- `05_design/observability_design.md`
+- `07_implementation/implementation_notes/reproducibility/outputs/bl010_reproducibility_report.json`
+- `07_implementation/implementation_notes/reproducibility/outputs/bl010_reproducibility_run_matrix.csv`
+- `07_implementation/experiment_log.md` (`EXP-012`)
+
+impacted_files:
+- `07_implementation/implementation_notes/profile/build_bl004_preference_profile.py`
+- `07_implementation/implementation_notes/retrieval/build_bl005_candidate_filter.py`
+- `07_implementation/implementation_notes/scoring/build_bl006_scored_candidates.py`
+- `07_implementation/implementation_notes/playlist/build_bl007_playlist.py`
+- `07_implementation/implementation_notes/transparency/build_bl008_explanation_payloads.py`
+- `07_implementation/implementation_notes/observability/build_bl009_observability_log.py`
+- `07_implementation/implementation_notes/reproducibility/run_bl010_reproducibility_check.py`
+- `07_implementation/experiment_log.md`
+- `07_implementation/test_notes.md`
+- `07_implementation/backlog.md`
+
+review_date:
+none
+
+id: D-012
+date: 2026-03-21
+status: accepted
+
+context:
+BL-011 required controllability evidence aligned to `EP-CTRL-001`, `EP-CTRL-002`, and `EP-CTRL-003`. The stage scripts were intentionally hardcoded for the locked MVP, so BL-011 needed a way to vary one control at a time without mutating the canonical implementation outputs or breaking the BL-010 reproducibility baseline.
+
+decision:
+Implement BL-011 as a dedicated scenario runner that reproduces the BL-004 to BL-007 logic in an isolated evaluation harness and archives five scenarios: the BL-010 fixed baseline, `no_influence_tracks`, `valence_weight_up`, `stricter_thresholds`, and `looser_thresholds`. Use stable stage hashes for the internal repeat check, exclude volatile run identifiers from the profile fingerprint, and evaluate threshold sensitivity primarily at the candidate-pool and ranking layers when the final playlist remains unchanged.
+
+alternatives_considered:
+- Patch all production stage scripts to accept external configuration and scenario-specific output directories before running BL-011
+- Evaluate only one variant per control surface and skip strict/loose paired threshold scenarios
+- Treat unchanged final playlist membership as a failed threshold-control result even when candidate-pool and rank changes are visible
+- Reuse raw per-run metadata in the BL-011 repeat check and accept false instability findings
+
+rationale:
+An isolated runner keeps BL-011 evaluation traceable without destabilizing the canonical stage outputs used elsewhere in the thesis. The five-scenario design covers the three required control families while preserving one-factor-at-a-time interpretation. Stable hash comparison for repeat checks follows the same methodological lesson established in BL-010: deterministic evaluation should measure semantic content rather than volatile run metadata. Treating threshold sensitivity at the candidate and ranking layers as valid evidence is defensible because the control operates before playlist assembly and the synthetic bootstrap pool can mute later-stage playlist changes.
+
+evidence_basis:
+- `00_admin/evaluation_plan.md` (`EP-CTRL-001`, `EP-CTRL-002`, `EP-CTRL-003`)
+- `05_design/controllability_design.md`
+- `07_implementation/implementation_notes/reproducibility/outputs/bl010_reproducibility_config_snapshot.json`
+- `07_implementation/implementation_notes/controllability/outputs/bl011_controllability_report.json`
+- `07_implementation/implementation_notes/controllability/outputs/bl011_controllability_run_matrix.csv`
+- `07_implementation/experiment_log.md` (`EXP-013`)
+
+impacted_files:
+- `07_implementation/implementation_notes/controllability/run_bl011_controllability_check.py`
+- `07_implementation/implementation_notes/controllability/outputs/`
+- `07_implementation/experiment_log.md`
+- `07_implementation/test_notes.md`
+- `07_implementation/backlog.md`
+
+review_date:
+none
+
+id: D-013
+date: 2026-03-21
+status: accepted
+
+context:
+BL-013 requires a lightweight repeatable entrypoint for the already implemented bootstrap pipeline. Existing stage scripts are independent and currently executed manually. The user requested end-to-end planning, implementation, and full logging.
+
+decision:
+Implement BL-013 as a thin Python orchestration runner that invokes the existing BL-004 through BL-009 stage scripts in deterministic order, supports optional stage subset execution, and emits a run summary plus explicit run-command documentation.
+
+alternatives_considered:
+- Leave execution as six separate manual commands without an orchestrator
+- Rewrite stage scripts into one monolithic pipeline module
+- Add only a shell script wrapper without structured JSON run output
+
+rationale:
+A thin orchestrator improves repeatability with minimal risk because it reuses already validated stage implementations instead of altering their internal logic. Optional stage selection keeps it practical for partial reruns, and a structured run summary preserves auditability for implementation evidence extraction.
+
+evidence_basis:
+- `07_implementation/backlog.md` (`BL-013`)
+- `07_implementation/implementation_notes/profile/build_bl004_preference_profile.py`
+- `07_implementation/implementation_notes/retrieval/build_bl005_candidate_filter.py`
+- `07_implementation/implementation_notes/scoring/build_bl006_scored_candidates.py`
+- `07_implementation/implementation_notes/playlist/build_bl007_playlist.py`
+- `07_implementation/implementation_notes/transparency/build_bl008_explanation_payloads.py`
+- `07_implementation/implementation_notes/observability/build_bl009_observability_log.py`
+
+impacted_files:
+- `07_implementation/implementation_notes/entrypoint/run_bl013_pipeline_entrypoint.py`
+- `07_implementation/implementation_notes/entrypoint/bl013_run_command.md`
+- `07_implementation/implementation_notes/entrypoint/outputs/`
+- `07_implementation/backlog.md`
+- `07_implementation/experiment_log.md`
+- `07_implementation/test_notes.md`
+- `00_admin/change_log.md`
+
+review_date:
+none
+
+id: D-014
+date: 2026-03-21
+status: accepted
+
+context:
+BL-019 was previously a deferred placeholder for alternative corpus engineering. The current need is to define a practical, repeatable dataset-build workflow for the active Onion MVP path so data refreshes are deterministic and quality-gated before downstream reruns.
+
+decision:
+Reframe BL-019 as an active dataset-build planning item for the Onion canonical layer. The workflow will produce a canonical refresh report, dataset manifest, and explicit quality-gate checks, and will require a two-run deterministic repeat check before BL-019 can be closed.
+
+alternatives_considered:
+- Keep BL-019 as deferred future-work with no active plan
+- Execute ad-hoc manual refreshes without manifest or quality gates
+- Reopen the MSD/Last.fm/MusicBrainz alternative path as the primary BL-019 objective
+
+rationale:
+The active MVP path is Onion-only. A deterministic refresh workflow with manifest and quality gates improves reproducibility and auditability without changing thesis scope. Keeping the alternative corpus path deferred avoids unnecessary scope expansion.
+
+evidence_basis:
+- `07_implementation/backlog.md` (`BL-019` activation)
+- `07_implementation/experiment_log.md` (`EXP-016` planned)
+- `07_implementation/implementation_notes/data_layer/outputs/onion_canonical_track_table.csv`
+- `07_implementation/implementation_notes/data_layer/outputs/onion_join_coverage_report.json`
+- `07_implementation/implementation_notes/data_layer/outputs/onion_selected_column_manifest.json`
+
+impacted_files:
+- `00_admin/decision_log.md`
+- `07_implementation/backlog.md`
+- `07_implementation/experiment_log.md`
+- `07_implementation/implementation_plan.md`
+
+review_date:
+none
+
 id: D-007
 date: 2026-03-19
 status: accepted
@@ -287,6 +509,43 @@ impacted_files:
 - `06_data_and_sources/dataset_registry.md`
 - `07_implementation/backlog.md`
 - `00_admin/change_log.md`
+
+review_date:
+none
+
+id: D-016
+date: 2026-03-21
+status: accepted
+
+context:
+Active BL-019 planning now uses DS-002, and local source inspection confirmed the actual fields available from `track_metadata.db`, `millionsongsubset.tar.gz`, `lastfm_subset.zip`, Spotify `Get Track`, and the current MusicBrainz-related helper files. The inspected DS-002 candidate data exposes `track_id`, metadata fields, audio-analysis fields, tags, and `artist_mbid`, but does not expose a confirmed corpus-side track-level ISRC field or track-level MusicBrainz recording ID.
+
+decision:
+For the current DS-002 MVP path, build the candidate corpus around `track_id` and treat Spotify-to-corpus alignment as metadata-first using normalized `(track_name/title, artist_name)` with duration and release as tie-break helpers. Use MSD HDF5 extraction for `tempo`, `loudness`, `key`, `mode`, and `duration`. Retain `artist_mbid` only as optional enrichment. Do not assume ISRC-first or track-level MusicBrainz matching for DS-002 unless a later enrichment step adds a confirmed corpus-side track identifier layer.
+
+alternatives_considered:
+- Continue documenting DS-002 as if corpus-side ISRC matching were already available
+- Treat artist-level MusicBrainz IDs as sufficient for exact track matching
+- Drop HDF5 extraction and keep DS-002 limited to metadata plus tags only
+- Add a new mandatory MusicBrainz recording-enrichment phase before any BL-019 implementation work
+
+rationale:
+This keeps the DS-002 plan aligned with the data actually present in the repository instead of with an idealized schema. Metadata-first matching is defensible because Spotify `Get Track` exposes `name`, `artists`, `album`, `duration_ms`, and `external_ids.isrc`, while the inspected DS-002 candidate assets reliably expose title/artist/duration and audio-analysis fields but not a confirmed candidate-side ISRC. Using HDF5 extraction preserves the planned transparent audio features without forcing a premature external enrichment dependency. Restricting MusicBrainz usage to `artist_mbid` avoids overstating exact-match capability.
+
+evidence_basis:
+- local inspection of `06_data_and_sources/track_metadata.db` (`songs` schema includes `track_id`, `title`, `artist_name`, `artist_mbid`, `duration`, `year`)
+- local inspection of `06_data_and_sources/millionsongsubset.tar.gz` (`analysis/songs` includes `tempo`, `loudness`, `key`, `mode`, `duration`, `track_id`)
+- local inspection of `06_data_and_sources/lastfm_subset.zip` (JSON records include `track_id`, `artist`, `title`, `tags`, `similars`, `timestamp`)
+- local inspection of `06_data_and_sources/unique_artists.txt` and `06_data_and_sources/unique_tracks.txt`
+- Spotify Web API `Get Track` reference (`external_ids.isrc`, `name`, `artists`, `album.name`, `duration_ms`)
+
+impacted_files:
+- `00_admin/decision_log.md`
+- `00_admin/change_log.md`
+- `06_data_and_sources/dataset_registry.md`
+- `06_data_and_sources/ds_002_msd_information_sheet.md`
+- `06_data_and_sources/schema_notes.md`
+- `07_implementation/experiment_log.md`
 
 review_date:
 none

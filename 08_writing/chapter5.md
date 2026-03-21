@@ -17,25 +17,27 @@ The research question asks what design considerations shape the engineering of a
 4. Evaluation protocol discipline as part of system design. Reproducibility and interpretation quality depend on logging, configuration traceability, and clear metric-objective alignment [@beel_towards_2016; @bauer_exploring_2024; @anelli_elliot_2021].
 5. Comparator-awareness without scope drift. Hybrid and self-supervised systems are relevant context for trade-off discussion, but not required for validating this locked MVP contribution [@liu_multimodal_2025; @yu_self_supervised_2024].
 
-Current implementation tests (ingestion schema validation and ISRC-first alignment with deterministic-repeat checks) provide early support for feasibility of considerations 2 and 4. Full end-to-end evidence for candidate generation, deterministic scoring, playlist assembly, and controllability outcomes remains pending and is required for complete RQ closure.
+Current implementation evidence now includes deterministic replay checks (BL-010) and controllability sensitivity tests (BL-011) on the full bootstrap pipeline from BL-004 to BL-009. This supports consideration 4 directly and gives practical evidence for considerations 1 and 3 under the locked MVP setup.
 
 ## 5.4 Limitations
-This thesis has several explicit limitations that constrain interpretation of results.
+This thesis has explicit limits that bound how the results should be interpreted.
 
-1. Scope limitation: The artefact is single-user, content-based, and deterministic by design, so findings are not generalized to collaborative, deep, or large-scale production recommenders.
-2. Data alignment limitation: Some imported tracks may not align reliably to the canonical corpus; current support is strongest for staged ER methods in general, with weaker music-specific benchmark evidence.
-3. Evaluation-stage limitation: At present, implemented and tested evidence is concentrated on ingestion and alignment; complete empirical validation of scoring, assembly, and controllability is not yet finalized.
-4. Comparator limitation: No implemented deep/hybrid baseline is included in MVP, so comparisons against modern high-capacity models remain literature-grounded rather than experimentally demonstrated in this artefact.
-5. External-validity limitation: Evaluation is BSc-feasible and does not include large-scale user studies or long-horizon behavioral outcomes.
+1. Bootstrap-data limitation: BL-011 confirmed controllability at candidate and ranking layers, but threshold variants did not change final playlist membership under the current synthetic pool.
+2. Reproducibility interpretation limitation: BL-010 showed semantic replay determinism, while some raw JSON hashes still varied because those artifacts include per-run metadata by design.
+3. Corpus-feature limitation: recommendation behavior is constrained by the available Music4All-Onion feature space and candidate composition.
+4. Scope limitation: the artefact is single-user and deterministic, so findings are not generalized to collaborative or adaptive multi-user systems.
+5. Comparator limitation: no implemented deep or hybrid baseline is included in the MVP, so that comparison remains literature-grounded.
+6. Bootstrap-mode limitation: BL-001 to BL-003 are deferred, so current findings are strongest for downstream pipeline stages with pre-aligned synthetic input.
+7. External-validity limitation: evaluation remains BSc-feasible and does not include long-horizon user studies.
 
-These limitations do not invalidate the contribution, but they bound it to system-design guidance under transparent deterministic constraints.
+These limitations do not invalidate the contribution, but they bound it to design evidence for transparent deterministic recommender engineering under a constrained evaluation setting.
 
 ## 5.5 Future Work
 Future work should extend this artefact in ways that preserve traceability while strengthening evidence.
 
-1. Complete the remaining P0 implementation and evaluation backlog items (`BL-004` to `BL-012`) to produce full end-to-end design evidence.
+1. Re-enable BL-001 to BL-003 on real exports and re-run BL-010 and BL-011 to compare bootstrap and real-ingestion behavior.
 2. Add a focused music-domain alignment reliability benchmark study (for example ISRC/metadata ambiguity and error-rate analysis) to reduce current evidence risk.
-3. Execute structured controllability experiments (parameter-sensitivity matrix) and integrate outcomes into run-level observability logs.
+3. Expand controllability experiments beyond OFAT by testing interaction effects between control surfaces while keeping auditability.
 4. Add at least one comparator pipeline (for example a lightweight hybrid baseline) with protocol-matched evaluation to improve trade-off analysis without scope inflation.
 5. Expand from one ingestion adapter to additional adapters only after MVP evidence is complete, so comparability and reproducibility are maintained.
 
