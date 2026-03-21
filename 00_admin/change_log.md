@@ -484,3 +484,14 @@ Use schema from `00_admin/operating_protocol.md`.
 - affected_components: `00_admin/change_log.md`, `00_admin/thesis_state.md`, `06_data_and_sources/dataset_registry.md`, `07_implementation/backlog.md`, `07_implementation/experiment_log.md`, `07_implementation/test_notes.md`
 - impact_assessment: High-positive. DS-002 candidate corpus is now a verified, reproducible artefact ready for downstream ingestion and alignment stages.
 - approval_record: Requested by user in chat on 2026-03-21.
+
+## C-045
+- date: 2026-03-21
+- proposed_by: user + AI
+- status: accepted
+- change_summary: Execute pre-chat-switch repository closure: perform system check, split and push implementation/docs/data commits, upload DS-002 source payload files via Git LFS, and harden `.gitignore` with local BL-019 temporary probe patterns.
+- reason: User requested a full closure pass before switching to a new chat, including committing pending work and confirming what is and is not uploaded.
+- evidence_basis: branch `setup/initial-work` head commit `095621d`; preceding split commits `0b41b40`, `c82955d`, `b29423e`; remote head parity confirmed for `origin/setup/initial-work`; LFS objects present for `06_data_and_sources/*.zip`, `06_data_and_sources/*.tar.gz`, and `06_data_and_sources/*.db`.
+- affected_components: `00_admin/change_log.md`, `.gitignore`, `06_data_and_sources/MSongsDB-master.zip`, `06_data_and_sources/lastfm_subset.zip`, `06_data_and_sources/millionsongsubset.tar.gz`, `06_data_and_sources/track_metadata.db`, `06_data_and_sources/unique_artists.txt`, `06_data_and_sources/unique_tracks.txt`, `07_implementation/implementation_notes/**`
+- impact_assessment: High-positive. Produces a clean handoff state with uploaded source/data artefacts, reproducible commit history in logical parts, and reduced future repository noise from temporary probe artifacts.
+- approval_record: Requested by user in chat on 2026-03-21 ("commit those, and put in my git ignore anytthing else", "log everything before i switch to a new chat").

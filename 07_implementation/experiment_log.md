@@ -1765,4 +1765,74 @@ Do NOT download: audio files (.mp3), id_incp/id_resnet/id_vgg19 (video features)
 - immediate_follow_up: none — BL-019 complete. Dataset is ready for downstream pipeline stages.
 - backlog_status_recommendation: mark `BL-019` done.
 
+---
+
+## EXP-017
+- date: 2026-03-21
+- backlog_link: repository closure / session handoff
+- owner: Timothy + AI
+- status: pass
+- related_test_id: n/a
+
+### Objective
+- Finalize repository state before chat handoff: commit pending work in logical parts, upload DS-002 source payload files, and reduce recurrence of local temp-file noise.
+
+### Scope Check
+- In-scope confirmation: yes, governance-compliant session closure and evidence preservation.
+- Protected items affected? no
+
+### Inputs
+- source_data:
+  - current branch state and pending working-tree files
+  - DS-002 local source payloads under `06_data_and_sources/`
+- config_or_parameters:
+  - split-commit strategy (docs -> code -> generated outputs -> source payload closure)
+  - Git LFS tracking for large data payloads: `06_data_and_sources/*.zip`, `06_data_and_sources/*.tar.gz`, `06_data_and_sources/*.db`
+  - local temp ignore rules: `tmp_bl019_*.json`, `tmp_bl019_*.txt`, `tmp_terminal_probe.txt`
+- code_or_script_path: git CLI operations only
+- dependency assumptions: remote `origin` reachable; Git LFS installed and configured
+
+### Expected Evidence
+- primary_output_artifact: remote branch parity at latest closure commit
+- secondary_output_artifacts:
+  - logical commit sequence for this session
+  - `.gitignore` update for temp BL-019 probe artifacts
+  - LFS object presence for large DS-002 files
+- success_condition: latest local commit is pushed; remote head equals local head; large DS-002 source files tracked via LFS
+
+### Run Record
+- command_or_execution_method: git status/audit, staged split commits, LFS track+commit rewrite for large files, push+remote-head verification
+- run_id: `SESSION-CLOSE-20260321`
+- start_state_summary: mixed docs/code/data changes and untracked DS-002 source payloads; large files exceeded normal GitHub push limits
+- end_state_summary: branch synchronized; DS-002 source payloads uploaded via LFS; temp BL-019 probe patterns added to `.gitignore`
+
+### Results
+- outcome_summary: pass — repository closure and upload completed
+- key_metrics:
+  - final_head: `095621d`
+  - split_commits_created: 4 (`0b41b40`, `c82955d`, `b29423e`, `095621d`)
+  - LFS_uploaded_objects: 4
+  - remote_head_match: yes (`origin/setup/initial-work` == `095621d`)
+- deterministic_repeat_checked: n/a
+- output_paths:
+  - `06_data_and_sources/MSongsDB-master.zip`
+  - `06_data_and_sources/lastfm_subset.zip`
+  - `06_data_and_sources/millionsongsubset.tar.gz`
+  - `06_data_and_sources/track_metadata.db`
+  - `.gitignore`
+
+### Issues And Limits
+- failures_or_anomalies: initial non-LFS push path for large source files did not complete remote update; resolved by converting those payloads to Git LFS tracking and re-pushing
+- likely_cause: payload size beyond practical normal Git transfer constraints
+- bounded_mvp_limitation_or_bug: local temporary status/probe files remain intentionally ignored and not part of thesis artefact history
+
+### Thesis Traceability
+- chapter4_relevance: preserves reproducibility and provenance continuity by ensuring run artefacts and source payload context are available in versioned history
+- chapter5_relevance: supports implementation-risk discussion around data operations and repository governance controls
+- quality_control_files_to_update: `00_admin/change_log.md`
+
+### Next Action
+- immediate_follow_up: start next chat from branch `setup/initial-work` at commit `095621d`
+- backlog_status_recommendation: no backlog status change
+
 
