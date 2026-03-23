@@ -14,7 +14,7 @@ This problem is addressed within a bounded MVP scope:
 
 - single-user recommendation context
 - deterministic, content-based methods rather than machine-learning model novelty
-- Music4All / Music4All-Onion as the candidate track corpus
+- DS-002 (MSD subset + Last.fm tags) as the candidate track corpus
 - one practical ingestion path with ISRC-first alignment
 - explicit rule-based scoring and playlist assembly with inspectable run logs
 
