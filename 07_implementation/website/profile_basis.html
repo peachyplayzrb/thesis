@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Playlist Generator - Profile Basis</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="page page-profile">
+    <section class="card main-card">
+      <h1>Profile Basis</h1>
+      <p class="subtitle">Review imported endpoint groups and exclude whole endpoints or specific tracks. If no local selection exists, this page loads your existing Spotify export artifacts automatically.</p>
+
+      <form id="profile-form" class="form">
+        <div id="imported-groups" class="group-stack"></div>
+
+        <button id="save-profile-btn" type="submit">Save Exclusion Choices</button>
+      </form>
+
+      <p id="profile-status" class="status" aria-live="polite">Load imported groups, then set exclusions.</p>
+
+      <div class="next-step">
+        <a class="button-link" href="import.html">Back To Import Options</a>
+      </div>
+    </section>
+  </main>
+
+  <script src="profile_basis.js"></script>
+</body>
+</html>

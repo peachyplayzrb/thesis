@@ -17,8 +17,8 @@ Interpretation outputs:
 ## 1) Extracted System Layers and Components
 1. User Interaction: source selection, import actions, influence track input, parameter controls.
 2. Data Ingestion: platform adapters, metadata extraction, history capture.
-3. Track Alignment: ISRC-first matcher, metadata fallback matcher, unmatched handling.
-4. Preference Modelling: profile builder from matched tracks plus influence tracks.
+3. Preference Signal Construction: metadata normalization, semantic enrichment (Last.fm tags), unmatched handling.
+4. Preference Modelling: profile builder from enriched user history plus influence tracks.
 5. Candidate Generation: candidate pool retrieval, thresholding/filtering strategy.
 6. Feature Processing: feature selection, normalization, missing-value handling, weight prep.
 7. Deterministic Scoring: similarity function and explicit adjustment rules.
@@ -29,14 +29,14 @@ Interpretation outputs:
 
 ## 2) Assumptions Made By Current Architecture
 - Deterministic scoring can provide useful recommendation quality for the thesis scope.
-- Cross-source alignment quality is sufficient with ISRC + metadata fallback.
-- Music4All feature coverage is adequate for preference modelling and scoring.
+- Cross-source preference extraction quality is sufficient with metadata normalization plus semantic enrichment fallback.
+- DS-002 feature coverage is adequate for candidate-side scoring and controllability tests.
 - Single-user scope is acceptable for thesis contribution claims.
 - Explanations derived from deterministic scoring will be understandable and useful.
 
 ## 3) Design Elements Requiring Literature Justification
 - Why deterministic similarity scoring is preferred for transparency goals.
-- Why ISRC-first hierarchical matching is valid and what failure rates are acceptable.
+- Why metadata-first semantic enrichment is valid under external API deprecation and what failure/coverage rates are acceptable.
 - Why selected feature set supports user-perceived relevance and controllability.
 - Why chosen playlist assembly constraints improve coherence/diversity.
 - Why observability logs chosen are sufficient for inspectability and reproducibility.
@@ -51,6 +51,7 @@ Interpretation outputs:
 
 ## 5) Architecture Risks and Weaknesses
 - Data loss risk: unmatched imported tracks can bias preference profile.
+- External dependency risk: public tag APIs may return sparse tags or transient failures for some tracks.
 - Semantic gap risk: feature similarity may not reflect perceived playlist fit.
 - Control overload risk: too many user parameters may reduce usability.
 - Rule brittleness risk: hard constraints may produce repetitive or rigid playlists.

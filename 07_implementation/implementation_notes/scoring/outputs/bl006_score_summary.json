@@ -1,134 +1,141 @@
 {
-  "run_id": "BL006-SCORE-20260321-001004-639679",
+  "run_id": "BL006-SCORE-20260322-021939-117790",
   "task": "BL-006",
-  "generated_at_utc": "2026-03-21T00:10:04Z",
+  "generated_at_utc": "2026-03-22T02:19:39Z",
   "input_artifacts": {
-    "profile_path": "C:\\Users\\Timothy\\Desktop\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\profile\\outputs\\bl004_preference_profile.json",
-    "profile_sha256": "df932e29786d19ec8010ce9db2ea33622401d6c8defb74eb966ffc70f9e078b2",
-    "filtered_candidates_path": "C:\\Users\\Timothy\\Desktop\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\retrieval\\outputs\\bl005_filtered_candidates.csv",
-    "filtered_candidates_sha256": "4c7341830731a285dba71a7fdd34c983ad77a459b040a993a90880aa8f0971e1"
+    "profile_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\profile\\outputs\\bl004_preference_profile.json",
+    "profile_sha256": "400019a4194327f20c690be76f971850d5c1c368eb1ec4f350d4398268a86545",
+    "filtered_candidates_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\retrieval\\outputs\\bl005_filtered_candidates.csv",
+    "filtered_candidates_sha256": "3a476cf88476c01681725e7584cab82a9a4bbde727c6bbaadf759d066ea7185b"
   },
   "config": {
     "numeric_thresholds": {
-      "rhythm.bpm": 20.0,
-      "rhythm.danceability": 0.4,
-      "lowlevel.loudness_ebu128.integrated": 6.0,
-      "V_mean": 0.8,
-      "A_mean": 0.9,
-      "D_mean": 0.8
+      "tempo": 20.0,
+      "loudness": 6.0,
+      "key": 2.0,
+      "mode": 0.5
     },
-    "component_weights": {
-      "rhythm.bpm": 0.1,
-      "rhythm.danceability": 0.1,
-      "lowlevel.loudness_ebu128.integrated": 0.08,
-      "V_mean": 0.12,
-      "A_mean": 0.08,
-      "D_mean": 0.08,
-      "lead_genre": 0.12,
-      "genre_overlap": 0.16,
-      "tag_overlap": 0.16
+    "base_component_weights": {
+      "tempo": 0.18,
+      "loudness": 0.12,
+      "key": 0.1,
+      "mode": 0.05,
+      "lead_genre": 0.2,
+      "genre_overlap": 0.17,
+      "tag_overlap": 0.18
     },
+    "active_component_weights": {
+      "lead_genre": 0.363636,
+      "genre_overlap": 0.309091,
+      "tag_overlap": 0.327273
+    },
+    "inactive_components": [
+      "key",
+      "loudness",
+      "mode",
+      "tempo"
+    ],
     "lead_genre_normalization": "candidate lead genre weight divided by max profile lead-genre weight",
     "genre_overlap_normalization": "sum overlapping profile genre weights / sum top profile genre weights",
     "tag_overlap_normalization": "sum overlapping profile tag weights / sum top profile tag weights"
   },
   "counts": {
-    "candidates_scored": 42
+    "candidates_scored": 1740
   },
   "score_statistics": {
-    "max_score": 0.724318,
-    "min_score": 0.20486,
-    "mean_score": 0.490817,
-    "median_score": 0.501178
+    "max_score": 0.770977,
+    "min_score": 0.012159,
+    "mean_score": 0.214394,
+    "median_score": 0.182508
   },
   "top_candidates": [
     {
       "rank": 1,
-      "track_id": "jPv1Tj4Mgo4l2Oue",
-      "lead_genre": "indie rock",
-      "final_score": 0.724318,
-      "matched_genres": "indie rock|rock",
-      "matched_tags": "indie rock|rock|indie|alternative|alternative rock"
+      "track_id": "TRBFMTO128F9322AE7",
+      "lead_genre": "classic rock",
+      "final_score": 0.770977,
+      "matched_genres": "classic rock|rock|80s|hard rock|pop|progressive rock",
+      "matched_tags": "classic rock|rock|80s|hard rock|pop|progressive rock"
     },
     {
       "rank": 2,
-      "track_id": "POdgTSLBnoFJaj2x",
-      "lead_genre": "indie rock",
-      "final_score": 0.702439,
-      "matched_genres": "indie rock|rock",
-      "matched_tags": "indie rock|indie|rock|alternative|alternative rock"
+      "track_id": "TRAOPRI12903C9FC25",
+      "lead_genre": "classic rock",
+      "final_score": 0.752611,
+      "matched_genres": "classic rock|rock|pop|80s|progressive rock",
+      "matched_tags": "classic rock|rock|singer-songwriter|pop|80s|progressive rock"
     },
     {
       "rank": 3,
-      "track_id": "PvGcoMH6vGWBaoXh",
-      "lead_genre": "indie rock",
-      "final_score": 0.669177,
-      "matched_genres": "indie rock|rock",
-      "matched_tags": "indie|rock|alternative|alternative rock"
+      "track_id": "TRARYCL128F1456224",
+      "lead_genre": "classic rock",
+      "final_score": 0.740033,
+      "matched_genres": "classic rock|progressive rock|rock|pop|80s",
+      "matched_tags": "classic rock|progressive rock|rock|pop|80s"
     },
     {
       "rank": 4,
-      "track_id": "1XZP3bEawLbWfSkM",
-      "lead_genre": "indie rock",
-      "final_score": 0.664076,
-      "matched_genres": "indie rock|alternative rock|rock",
-      "matched_tags": "indie rock|indie|rock|alternative|alternative rock"
+      "track_id": "TRBGRIP128F147FCA6",
+      "lead_genre": "pop",
+      "final_score": 0.722814,
+      "matched_genres": "pop|80s|rock|classic rock|hard rock|new wave|progressive rock",
+      "matched_tags": "pop|80s|rock|singer-songwriter|classic rock|hard rock|new wave|progressive rock"
     },
     {
       "rank": 5,
-      "track_id": "hn1Z3OcZ4HM3hcIi",
-      "lead_genre": "indie rock",
-      "final_score": 0.655572,
-      "matched_genres": "indie rock|rock",
-      "matched_tags": "indie rock|indie|rock|alternative|alternative rock"
+      "track_id": "TRACNAS128F14567C6",
+      "lead_genre": "classic rock",
+      "final_score": 0.718082,
+      "matched_genres": "classic rock|rock|80s|hard rock|pop",
+      "matched_tags": "classic rock|rock|80s|singer-songwriter|hard rock|pop"
     },
     {
       "rank": 6,
-      "track_id": "nlgMHNZ0qCS2vdmV",
-      "lead_genre": "indie rock",
-      "final_score": 0.646756,
-      "matched_genres": "indie rock|rock",
-      "matched_tags": "indie|alternative|rock|alternative rock|pop"
+      "track_id": "TRAADLN128F14832E9",
+      "lead_genre": "classic rock",
+      "final_score": 0.705504,
+      "matched_genres": "classic rock|rock|hard rock|pop|80s",
+      "matched_tags": "classic rock|rock|hard rock|pop|80s"
     },
     {
       "rank": 7,
-      "track_id": "yUa5uu5wFCGwl2PK",
-      "lead_genre": "indie pop",
-      "final_score": 0.643423,
-      "matched_genres": "indie pop|indie rock|electronic",
-      "matched_tags": "indie|indie pop|electronic|indie rock|alternative|rock"
+      "track_id": "TRAZISI128E078EE2F",
+      "lead_genre": "classic rock",
+      "final_score": 0.705504,
+      "matched_genres": "classic rock|hard rock|rock|80s|pop",
+      "matched_tags": "classic rock|hard rock|rock|80s|pop"
     },
     {
       "rank": 8,
-      "track_id": "j8qrlsfqWAPqzqD9",
-      "lead_genre": "indie rock",
-      "final_score": 0.631517,
-      "matched_genres": "indie rock|rock",
-      "matched_tags": "indie|indie rock|alternative|rock|alternative rock"
+      "track_id": "TRACTUH128F92C93A3",
+      "lead_genre": "classic rock",
+      "final_score": 0.674561,
+      "matched_genres": "classic rock|80s|rock|pop",
+      "matched_tags": "classic rock|80s|rock|pop"
     },
     {
       "rank": 9,
-      "track_id": "8keAhBJumHlc8qe9",
-      "lead_genre": "indie rock",
-      "final_score": 0.606053,
-      "matched_genres": "indie rock|rock|alternative rock",
-      "matched_tags": "rock|indie|alternative|alternative rock"
+      "track_id": "TRAHDJL128F9305B80",
+      "lead_genre": "classic rock",
+      "final_score": 0.658452,
+      "matched_genres": "classic rock|rock|hard rock|pop",
+      "matched_tags": "classic rock|rock|singer-songwriter|hard rock|pop"
     },
     {
       "rank": 10,
-      "track_id": "xr1HkbplUycZcEZX",
-      "lead_genre": "indie rock",
-      "final_score": 0.602369,
-      "matched_genres": "indie rock|rock",
-      "matched_tags": "indie rock|indie|rock|alternative"
+      "track_id": "TRAPNDJ128F427AB8A",
+      "lead_genre": "classic rock",
+      "final_score": 0.658452,
+      "matched_genres": "classic rock|rock|hard rock|pop",
+      "matched_tags": "classic rock|rock|singer-songwriter|hard rock|pop"
     }
   ],
-  "elapsed_seconds": 0.003,
+  "elapsed_seconds": 0.113,
   "output_files": {
-    "scored_candidates_path": "C:\\Users\\Timothy\\Desktop\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\scoring\\outputs\\bl006_scored_candidates.csv"
+    "scored_candidates_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\scoring\\outputs\\bl006_scored_candidates.csv"
   },
   "output_hashes_sha256": {
-    "bl006_scored_candidates.csv": "bf9ab8a4fe27596276f8b1868fc1246bca4b04b6315dfbb6fef673ddf53e1aa2"
+    "bl006_scored_candidates.csv": "3faeb6d42a423f87150b640fd3b751761398ceeb1e65c685ae0f6126a0ce2545"
   },
   "summary_hash_note": "summary file hash collected separately in experiment logging to avoid recursive self-reference"
 }

@@ -677,3 +677,117 @@ impacted_files:
 - 00_admin/mentor_question_log.md (MQ-008)
 - 07_implementation/implementation_notes/data_layer/full_dataset_acquisition_checklist_2026-03-21.md
 review_date: none
+
+---
+
+id: D-022
+date: 2026-03-21
+status: accepted
+context: BL-003 had already been pivoted to Last.fm tag enrichment (D-021), but live execution quality checks showed two practical issues: (1) many mainstream tracks were cached as `no_tags`, and (2) long-running enrichment provided limited real-time feedback. Spot checks suggested that a single `track.getTopTags` call path was too brittle for metadata variants and that stale `no_tags` cache entries from earlier logic were suppressing retries.
+decision: Upgrade BL-003 enrichment to a layered lookup strategy and explicit cache migration behavior. New lookup order: `track.getTopTags` on normalized variants -> `track.search` correction then `track.getTopTags` -> `artist.getTopTags` fallback. Introduce `CACHE_SCHEMA_VERSION` and refresh behavior so older cache entries are not blindly trusted after lookup logic changes. Emit frequent, flushed progress lines (`processed/tagged/no-tags/errors/cache`) during runtime to improve operator observability.
+alternatives_considered:
+- Keep existing cache and single lookup method (rejected: preserves known false `no_tags` outcomes and weak run visibility)
+- Disable cache entirely for reruns (rejected: excessive runtime/API load; does not solve lookup brittleness)
+- Stop BL-020 until a different corpus arrives (rejected: blocks current progress; fallback can be made robust now)
+rationale: The immediate execution risk was not only API sparsity but lookup fragility and stale cache reuse. A layered lookup plus cache versioning improves recall on real tracks while retaining deterministic, auditable behavior. Progress output is necessary for long-run operational confidence and faster troubleshooting.
+evidence_basis: Updated `bl003_align_spotify_api_to_ds002.py`; compile/error checks pass; direct function-level probes on representative tracks return tags via fallback sources (`artist.getTopTags` for previously failing cases); user-observed run progress output now visible.
+impacted_files:
+- `00_admin/decision_log.md`
+- `00_admin/change_log.md` (C-067)
+- `07_implementation/implementation_notes/alignment/bl003_align_spotify_api_to_ds002.py`
+- `07_implementation/experiment_log.md` (EXP-023)
+- `07_implementation/test_notes.md` (TC-BL020-002)
+- `00_admin/thesis_state.md`
+- `02_foundation/limitations.md`
+- `05_design/architecture.md`
+- `05_design/system_architecture.md`
+- `08_writing/chapter5.md`
+review_date: none
+
+---
+
+id: D-021
+date: 2026-03-21
+status: accepted
+context: Real Spotify Web API export data became available for BL-020 (`SPOTIFY-EXPORT-20260321-192533-881299`: 5104 long-term top tracks, 3021 medium-term, 598 short-term, 170 saved tracks, 31 playlist items). Initial BL-003 fuzzy alignment against DS-002 was implemented and executed, but manual inspection showed the resulting matches were false positives because DS-002 does not contain the user's dominant artists and repertoire (for example Steve Winwood, ABBA main catalogue, Rush, Tracy Chapman, and Beatles main catalogue). At the same time, Spotify audio-feature endpoints were confirmed deprecated, so the prior plan to derive user-side tempo/loudness/key/mode from Spotify is no longer viable.
+decision: For BL-020, replace DS-002 fuzzy alignment with Last.fm top-tag enrichment on imported Spotify tracks, and permit a semantic-only execution mode for BL-004 through BL-008 where user-side numeric audio features are absent. In semantic-only mode, BL-004 builds tags and lead-genre signals from Last.fm-enriched Spotify seeds, BL-005 filters DS-002 candidates primarily by semantic overlap, BL-006 disables missing numeric components and renormalizes active weights, and BL-008 reads the active scoring weights from the run summary. Do not persist the user-supplied Last.fm shared secret in the repository.
+alternatives_considered:
+- Keep DS-002 fuzzy alignment as the active BL-003 path (rejected: observed false positives invalidate seed evidence)
+- Continue assuming Spotify Web API can provide audio features for user tracks (rejected: endpoint deprecated; no longer dependable for thesis evidence)
+- Pause BL-020 until Music4All or a larger corpus becomes available (rejected: blocks progress; semantic/tag path yields a feasible interim evidence track)
+rationale: The root problem is corpus mismatch, not fuzzy-threshold tuning. Last.fm tags provide a viable, non-deprecated semantic bridge from real Spotify listening data into the DS-002 candidate corpus, and the downstream scoring pipeline can still produce auditable evidence if numeric user-side components are explicitly disabled and the remaining weights are renormalized. This keeps BL-020 moving while preserving traceability about the limitation.
+evidence_basis: `07_implementation/implementation_notes/ingestion/outputs/spotify_api_export/spotify_export_run_summary.json`; `07_implementation/implementation_notes/ingestion/outputs/bl020_alignment_report.json` (old DS-002 fuzzy report); `07_implementation/implementation_notes/ingestion/outputs/bl020_aligned_events.jsonl` (false-positive fuzzy events); `07_implementation/implementation_notes/ingestion/outputs/bl020_lastfm_tag_cache.json` (partial Last.fm run); code updates in BL-003/004/005/006/008; `07_implementation/experiment_log.md` (`EXP-022`); `07_implementation/test_notes.md` (`TC-BL020-001`).
+impacted_files:
+- `00_admin/decision_log.md`
+- `00_admin/change_log.md` (C-066)
+- `07_implementation/backlog.md`
+- `07_implementation/implementation_notes/alignment/bl003_align_spotify_api_to_ds002.py`
+- `07_implementation/implementation_notes/profile/build_bl004_preference_profile.py`
+- `07_implementation/implementation_notes/retrieval/build_bl005_candidate_filter.py`
+- `07_implementation/implementation_notes/scoring/build_bl006_scored_candidates.py`
+- `07_implementation/implementation_notes/transparency/build_bl008_explanation_payloads.py`
+- `07_implementation/experiment_log.md`
+- `07_implementation/test_notes.md`
+review_date: none
+
+---
+
+id: D-023
+date: 2026-03-21
+status: accepted
+context: BL-020 real-data execution highlighted that profile-build runtime and API load are strongly affected by which Spotify data sources are ingested (for example top tracks vs saved tracks). The user proposed adding an explicit UI control so a user can choose the profile input scope before ingestion/profile construction.
+decision: Add a deferred design requirement for a user-selectable Spotify profile-source scope control, with per-source on/off selection and bounded limits. Initial target controls include top tracks (short/medium/long term), saved tracks, and optional playlist-derived tracks. Implementation is intentionally deferred; this decision only records and aligns planning/design artifacts.
+alternatives_considered:
+- Keep fixed full-ingestion behavior for all users (rejected: weaker controllability and slower runtime for users who only want a subset)
+- Remove source-level choice and tune only downstream scoring controls (rejected: does not address ingestion-time cost and upstream profile-shaping intent)
+- Implement UI immediately during active BL-020 reruns (rejected: risks destabilizing current evidence run; deferred implementation is safer)
+rationale: Source-scope selection is a high-leverage controllability surface that affects both execution efficiency and profile semantics. Deferring implementation preserves current BL-020 stability while still making the planned enhancement explicit and auditable.
+evidence_basis: User request in chat on 2026-03-21; existing controllability requirements in `05_design/controllability_design.md`; ongoing BL-020 runtime pressure observed during enrichment/profile reruns.
+impacted_files:
+- `00_admin/decision_log.md`
+- `00_admin/change_log.md` (C-068)
+- `07_implementation/backlog.md` (new deferred item)
+- `00_admin/thesis_state.md`
+- `05_design/controllability_design.md`
+review_date: none
+
+---
+
+id: D-024
+date: 2026-03-22
+status: accepted
+context: BL-003 Last.fm enrichment is long-running over 5592 unique tracks and may be interrupted intentionally. A live run showed progress output through ~395/5592 before `KeyboardInterrupt` during network read, leaving uncertainty about immediate downstream usability when stopping early.
+decision: Treat BL-003 as checkpointable. On interruption, flush cache and write partial aligned-events/report artifacts instead of exiting with traceback-only state. For immediate downstream testing, allow a cache-derived partial events build path and run BL-004 against that partial artifact.
+alternatives_considered:
+- Require full BL-003 completion before any downstream stage can run
+- Continue with traceback-on-interrupt behavior and rely only on cache snapshots
+- Manually craft ad-hoc partial JSONL files each time interruption is needed
+rationale: Checkpointable interruption preserves operator control, reduces wasted runtime, and improves evidence continuity. A deterministic cache-to-partial conversion path allows controlled BL-004/BL-005/BL-006 dry runs while full enrichment continues later.
+evidence_basis: `07_implementation/implementation_notes/alignment/bl003_align_spotify_api_to_ds002.py`; `07_implementation/implementation_notes/alignment/build_bl003_partial_from_cache.py`; partial report `07_implementation/implementation_notes/ingestion/outputs/bl020_alignment_report_partial_from_cache.json` (`tracks_with_cache=398`, `tagged_with_lastfm=375`); BL-004 summary `07_implementation/implementation_notes/profile/outputs/bl004_profile_summary.json` (`matched_seed_count=398`).
+impacted_files:
+- `00_admin/decision_log.md`
+- `00_admin/change_log.md` (C-069)
+- `07_implementation/implementation_notes/alignment/bl003_align_spotify_api_to_ds002.py`
+- `07_implementation/implementation_notes/alignment/build_bl003_partial_from_cache.py`
+- `07_implementation/experiment_log.md`
+- `07_implementation/test_notes.md`
+review_date: none
+
+---
+
+id: D-025
+date: 2026-03-22
+status: accepted
+context: User requested that the current DS-002/semantic ingestion path be retained as a fallback even if Music4All or Music4All-Onion becomes available. Prior discussion confirmed that corpus coverage can vary and that deterministic behavior should be preserved under low-match scenarios.
+decision: Record a deferred architecture enhancement to add deterministic corpus-path switching. Planned behavior: attempt preferred Music4All(-Onion) alignment path when available; if alignment coverage fails defined thresholds, automatically switch to the current DS-002 semantic fallback path and log the selected path in run metadata.
+alternatives_considered:
+- Hard switch to Music4All(-Onion) with no fallback (rejected: high fragility under low coverage)
+- Keep DS-002 only and never attempt Music4All(-Onion) integration (rejected: loses potential coverage/feature uplift)
+- Manual operator-only path choice per run (rejected: weaker reproducibility and higher human error risk)
+rationale: Deterministic fallback switching preserves robustness and reproducibility while allowing controlled adoption of larger corpora. This supports thesis goals for transparency, controllability, and observability by making path selection explicit and measurable.
+evidence_basis: user request in chat on 2026-03-22; existing DS-002 execution path and documented coverage sensitivity in BL-020 notes.
+impacted_files:
+- `00_admin/decision_log.md`
+- `00_admin/change_log.md`
+- `07_implementation/backlog.md` (`BL-022`)
+review_date: none

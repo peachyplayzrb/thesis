@@ -12,13 +12,12 @@ PROFILE_TOP_LEAD_GENRE_LIMIT = 6
 PROFILE_TOP_TAG_LIMIT = 10
 PROFILE_TOP_GENRE_LIMIT = 8
 
+# DS-002 numeric features and tolerances
 NUMERIC_THRESHOLDS = {
-    "rhythm.bpm": 20.0,
-    "rhythm.danceability": 0.4,
-    "lowlevel.loudness_ebu128.integrated": 6.0,
-    "V_mean": 0.8,
-    "A_mean": 0.9,
-    "D_mean": 0.8,
+    "tempo":    20.0,   # BPM tolerance
+    "loudness": 6.0,    # dB tolerance
+    "key":      2.0,    # semitones (circular distance)
+    "mode":     0.5,    # 0=minor/1=major: 0.5 forces exact match
 }
 
 
@@ -82,7 +81,10 @@ def main() -> None:
     root = repo_root()
     profile_path = root / "07_implementation" / "implementation_notes" / "profile" / "outputs" / "bl004_preference_profile.json"
     seed_trace_path = root / "07_implementation" / "implementation_notes" / "profile" / "outputs" / "bl004_seed_trace.csv"
-    candidate_path = root / "07_implementation" / "implementation_notes" / "test_assets" / "bl016_candidate_stub.csv"
+    candidate_path = (
+        root / "07_implementation" / "implementation_notes"
+        / "data_layer" / "outputs" / "bl019_ds002_integrated_candidate_dataset.csv"
+    )
     output_dir = root / "07_implementation" / "implementation_notes" / "retrieval" / "outputs"
     output_dir.mkdir(parents=True, exist_ok=True)
 
@@ -95,6 +97,7 @@ def main() -> None:
     top_tags = {item["label"] for item in profile["semantic_profile"]["top_tags"][:PROFILE_TOP_TAG_LIMIT]}
     top_genres = {item["label"] for item in profile["semantic_profile"]["top_genres"][:PROFILE_TOP_GENRE_LIMIT]}
     numeric_centers = {key: float(value) for key, value in profile["numeric_feature_profile"].items() if key in NUMERIC_THRESHOLDS}
+    numeric_features_enabled = bool(numeric_centers)
 
     decisions: list[dict[str, object]] = []
     kept_rows: list[dict[str, str]] = []
@@ -117,11 +120,12 @@ def main() -> None:
         track_id = row["track_id"]
         is_seed_track = track_id in seed_track_ids
 
+        # DS-002 uses tags_json (covers both tag and genre signal)
         lead_genre = ""
-        candidate_genres = parse_list(row.get("top_genres_json", ""), "genre")
-        if candidate_genres:
-            lead_genre = candidate_genres[0]
-        candidate_tags = parse_list(row.get("top_tags_json", ""), "tag")
+        candidate_tags = parse_list(row.get("tags_json", ""), "tag")
+        if candidate_tags:
+            lead_genre = candidate_tags[0]   # top tag acts as lead genre
+        candidate_genres = candidate_tags    # same list for genre overlap
 
         lead_genre_match = lead_genre in top_lead_genres if lead_genre else False
         genre_overlap = len(top_genres.intersection(candidate_genres))
@@ -146,7 +150,16 @@ def main() -> None:
             if value is None:
                 numeric_distances[column] = None
                 continue
-            distance = abs(value - numeric_centers[column])
+            center = numeric_centers.get(column)
+            if center is None:
+                numeric_distances[column] = None
+                continue
+            # Circular distance for key (0-11 semitone wheel)
+            if column == "key":
+                raw_diff = abs(value - center)
+                distance = min(raw_diff, 12.0 - raw_diff)
+            else:
+                distance = abs(value - center)
             numeric_distances[column] = round(distance, 6)
             if distance <= threshold:
                 numeric_pass_count += 1
@@ -154,7 +167,10 @@ def main() -> None:
 
         kept = False
         if not is_seed_track:
-            kept = ((semantic_score >= 2 and numeric_pass_count >= 4) or (semantic_score == 3 and numeric_pass_count >= 3))
+            if numeric_features_enabled:
+                kept = (tag_overlap > 0) or (numeric_pass_count >= 2)
+            else:
+                kept = semantic_score >= 1
 
         if is_seed_track:
             decision_counts["seed_excluded"] += 1
@@ -172,12 +188,10 @@ def main() -> None:
             "genre_overlap_count": genre_overlap,
             "tag_overlap_count": tag_overlap,
             "numeric_pass_count": numeric_pass_count,
-            "bpm_distance": numeric_distances["rhythm.bpm"],
-            "danceability_distance": numeric_distances["rhythm.danceability"],
-            "loudness_distance": numeric_distances["lowlevel.loudness_ebu128.integrated"],
-            "V_mean_distance": numeric_distances["V_mean"],
-            "A_mean_distance": numeric_distances["A_mean"],
-            "D_mean_distance": numeric_distances["D_mean"],
+            "tempo_distance":    numeric_distances.get("tempo"),
+            "loudness_distance": numeric_distances.get("loudness"),
+            "key_distance":      numeric_distances.get("key"),
+            "mode_distance":     numeric_distances.get("mode"),
             "decision": "keep" if kept else "reject",
             "decision_reason": decision_reason(is_seed_track, semantic_score, numeric_pass_count, kept),
         }
@@ -214,7 +228,12 @@ def main() -> None:
             "top_tag_limit": PROFILE_TOP_TAG_LIMIT,
             "top_genre_limit": PROFILE_TOP_GENRE_LIMIT,
             "numeric_thresholds": NUMERIC_THRESHOLDS,
-            "keep_rule": "keep if not seed and ((semantic_score >= 2 and numeric_pass_count >= 4) or (semantic_score == 3 and numeric_pass_count >= 3))",
+            "numeric_features_enabled": numeric_features_enabled,
+            "keep_rule": (
+                "keep if not seed and ((tag_overlap > 0) or (numeric_pass_count >= 2))"
+                if numeric_features_enabled
+                else "keep if not seed and semantic_score >= 1"
+            ),
         },
         "counts": {
             "candidate_rows_total": len(candidate_rows),

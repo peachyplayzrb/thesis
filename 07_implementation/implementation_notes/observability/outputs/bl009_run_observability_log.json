@@ -1,13 +1,13 @@
 {
   "run_metadata": {
-    "run_id": "BL009-OBSERVE-20260321-001004-867704",
+    "run_id": "BL009-OBSERVE-20260322-023314-347594",
     "task": "BL-009",
-    "generated_at_utc": "2026-03-21T00:10:04Z",
-    "elapsed_seconds": 0.05,
+    "generated_at_utc": "2026-03-22T02:33:14Z",
+    "elapsed_seconds": 0.065,
     "observability_scope": "artifact-level deterministic audit log",
     "bootstrap_mode": true,
     "dataset_version": "2648A3237AA62F9E4C667C93178D482A5ACCDA0461299472E4FC1697786A993B",
-    "pipeline_version": "E622A5784035EAEA845636DFA9C9991A8096D39ECCE18D9DBFA071832158FCB8",
+    "pipeline_version": "A20B7C5ED2240A350EF14F8A89A1A58B5620379A3F52CDA30B15E9D19B95161F",
     "dataset_component_hashes": {
       "07_implementation/implementation_notes/data_layer/outputs/onion_join_coverage_report.json": "071A76D683921BE4FC08F58D28E5F0421C57BA517878D2FF899D7FFB852DC9BF",
       "07_implementation/implementation_notes/test_assets/bl016_asset_manifest.json": "8D7BF7193777681DA9D9CD476EC2FE6D23B3541E29347F854413FD87ACF266EC",
@@ -17,19 +17,19 @@
     "pipeline_script_hashes": {
       "07_implementation/implementation_notes/data_layer/build_onion_canonical_layer.py": "A32CE842F2CAA37F87F31F4756BF517048467422372479495BE74EAC22404F63",
       "07_implementation/implementation_notes/test_assets/build_bl016_synthetic_assets.py": "FB5C7728B0E286EFB7BEC05ED400E8277A1BA448D82EF40BE6BC086768A8D63C",
-      "07_implementation/implementation_notes/profile/build_bl004_preference_profile.py": "A47790F391A0E1BED5877FA13013A2CE775E1D968E339E2C3433D29A89CAF1DB",
-      "07_implementation/implementation_notes/retrieval/build_bl005_candidate_filter.py": "CE1B459BFB329C29CDD8DB7B1CDFDA58EC8427EBD112462A2CFF1DCB8FFAD18B",
-      "07_implementation/implementation_notes/scoring/build_bl006_scored_candidates.py": "6F3FCE68461E0A21F840F2912C7AC43D54213E3BC54EE6333119094A34B9D7D4",
+      "07_implementation/implementation_notes/profile/build_bl004_preference_profile.py": "5F7DF259D0B87A384AE2BAB622572E67CDB5415014E17F8D4AA0341425A30B70",
+      "07_implementation/implementation_notes/retrieval/build_bl005_candidate_filter.py": "AEEEF230B6209C30F3FA43E7B42D130F493D43BBD63BB1679B3E770E4CAE5785",
+      "07_implementation/implementation_notes/scoring/build_bl006_scored_candidates.py": "C44B9177859F4E471432E49DAC8A26D2B4927912CD0CFB618C9D768493E6FF50",
       "07_implementation/implementation_notes/playlist/build_bl007_playlist.py": "30F1DB047B3F5E07BED3646C80ACD2EACD7BC98A3D696B04D30B52BC1379430A",
-      "07_implementation/implementation_notes/transparency/build_bl008_explanation_payloads.py": "DE393F4139D4E926ADF4D3656F77297CB9C198D42D28D57927F5B23F4EF35F06",
+      "07_implementation/implementation_notes/transparency/build_bl008_explanation_payloads.py": "30D1939C6DC6A8F926DBAB34CB603ACACD077356E11AB83990D764F1B542F2DD",
       "07_implementation/implementation_notes/observability/build_bl009_observability_log.py": "14D7BC576DBA5EFD578B7AF3C5CF0E1C0796D62094CDFFD14A4BBF972A91CBFD"
     },
     "upstream_stage_run_ids": {
-      "BL-004": "BL004-PROFILE-20260321-001004-483664",
-      "BL-005": "BL005-FILTER-20260321-001004-550169",
-      "BL-006": "BL006-SCORE-20260321-001004-639679",
-      "BL-007": "BL007-ASSEMBLE-20260321-001004-706194",
-      "BL-008": "BL008-EXPLAIN-20260321-001004-770188"
+      "BL-004": "BL004-PROFILE-20260322-020511-252947",
+      "BL-005": "BL005-FILTER-20260322-021107-181373",
+      "BL-006": "BL006-SCORE-20260322-021939-117790",
+      "BL-007": "BL007-ASSEMBLE-20260322-022410-790211",
+      "BL-008": "BL008-EXPLAIN-20260322-022820-871202"
     }
   },
   "run_config": {
@@ -73,34 +73,13 @@
     },
     "profile": {
       "effective_weight_rule": "effective_weight = preference_weight",
-      "numeric_feature_columns": [
-        "lowlevel.average_loudness",
-        "lowlevel.loudness_ebu128.integrated",
-        "rhythm.danceability",
-        "rhythm.bpm",
-        "rhythm.onset_rate",
-        "rhythm.beats_count",
-        "rhythm.beats_loudness.mean",
-        "lowlevel.spectral_energy.mean",
-        "lowlevel.spectral_centroid.mean",
-        "lowlevel.spectral_complexity.mean",
-        "tonal.chords_changes_rate",
-        "tonal.key_edma.strength",
-        "tonal.key_krumhansl.strength",
-        "tonal.key_temperley.strength",
-        "V_mean",
-        "A_mean",
-        "D_mean",
-        "P_mean",
-        "V_std",
-        "A_std",
-        "D_std"
-      ],
+      "numeric_feature_columns": [],
+      "profile_mode": "semantic_only_lastfm",
       "top_tag_limit": 10,
       "top_genre_limit": 10,
       "top_lead_genre_limit": 10,
       "aggregation_rules": {
-        "numeric": "weighted mean over matched seeds",
+        "numeric": "disabled; Spotify audio-feature endpoints are deprecated",
         "tags": "sum(preference_weight * tag_weight)",
         "genres": "sum(preference_weight * genre_score)",
         "lead_genres": "sum(preference_weight)"
@@ -111,35 +90,41 @@
       "top_tag_limit": 10,
       "top_genre_limit": 8,
       "numeric_thresholds": {
-        "rhythm.bpm": 20.0,
-        "rhythm.danceability": 0.4,
-        "lowlevel.loudness_ebu128.integrated": 6.0,
-        "V_mean": 0.8,
-        "A_mean": 0.9,
-        "D_mean": 0.8
+        "tempo": 20.0,
+        "loudness": 6.0,
+        "key": 2.0,
+        "mode": 0.5
       },
-      "keep_rule": "keep if not seed and ((semantic_score >= 2 and numeric_pass_count >= 4) or (semantic_score == 3 and numeric_pass_count >= 3))"
+      "numeric_features_enabled": false,
+      "keep_rule": "keep if not seed and semantic_score >= 1"
     },
     "scoring": {
       "numeric_thresholds": {
-        "rhythm.bpm": 20.0,
-        "rhythm.danceability": 0.4,
-        "lowlevel.loudness_ebu128.integrated": 6.0,
-        "V_mean": 0.8,
-        "A_mean": 0.9,
-        "D_mean": 0.8
+        "tempo": 20.0,
+        "loudness": 6.0,
+        "key": 2.0,
+        "mode": 0.5
       },
-      "component_weights": {
-        "rhythm.bpm": 0.1,
-        "rhythm.danceability": 0.1,
-        "lowlevel.loudness_ebu128.integrated": 0.08,
-        "V_mean": 0.12,
-        "A_mean": 0.08,
-        "D_mean": 0.08,
-        "lead_genre": 0.12,
-        "genre_overlap": 0.16,
-        "tag_overlap": 0.16
+      "base_component_weights": {
+        "tempo": 0.18,
+        "loudness": 0.12,
+        "key": 0.1,
+        "mode": 0.05,
+        "lead_genre": 0.2,
+        "genre_overlap": 0.17,
+        "tag_overlap": 0.18
       },
+      "active_component_weights": {
+        "lead_genre": 0.363636,
+        "genre_overlap": 0.309091,
+        "tag_overlap": 0.327273
+      },
+      "inactive_components": [
+        "key",
+        "loudness",
+        "mode",
+        "tempo"
+      ],
       "lead_genre_normalization": "candidate lead genre weight divided by max profile lead-genre weight",
       "genre_overlap_normalization": "sum overlapping profile genre weights / sum top profile genre weights",
       "tag_overlap_normalization": "sum overlapping profile tag weights / sum top profile tag weights"
@@ -153,9 +138,9 @@
     "transparency": {
       "playlist_track_count": 10,
       "top_contributor_distribution": {
-        "Lead genre match": 5,
-        "Tag overlap": 2,
-        "Valence": 3
+        "Lead genre match": 6,
+        "Tag overlap": 3,
+        "Genre overlap": 1
       },
       "explanation_payload_rule": "top 3 contributors by weighted contribution; sentence derived from top contributors and playlist position"
     }
@@ -228,366 +213,351 @@
     },
     "profile": {
       "task": "BL-004",
-      "run_id": "BL004-PROFILE-20260321-001004-483664",
-      "user_id": "synthetic_user_001",
+      "run_id": "BL004-PROFILE-20260322-020511-252947",
+      "user_id": "21zsn42xecjhogne4kghyw5hq",
       "diagnostics": {
-        "events_total": 11,
-        "matched_seed_count": 11,
+        "events_total": 5592,
+        "matched_seed_count": 5592,
         "missing_seed_count": 0,
         "missing_track_ids": [],
-        "candidate_rows_total": 60,
-        "total_effective_weight": 16.0276,
-        "elapsed_seconds": 0.002
+        "candidate_rows_total": 0,
+        "total_effective_weight": 6712.96146,
+        "elapsed_seconds": 0.083
       },
       "seed_summary": {
         "counts_by_interaction_type": {
-          "history": 8,
-          "influence": 3
+          "history": 5592,
+          "influence": 0
         },
         "weight_by_interaction_type": {
-          "history": 11.9776,
-          "influence": 4.05
+          "history": 6712.96146,
+          "influence": 0.0
         },
         "interaction_count_sum_by_interaction_type": {
-          "history": 1301945,
-          "influence": 46797
+          "history": 224192300,
+          "influence": 0
         },
-        "seed_trace_path": "C:\\Users\\Timothy\\Desktop\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\profile\\outputs\\bl004_seed_trace.csv"
+        "seed_trace_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\profile\\outputs\\bl004_seed_trace.csv"
       },
       "dominant_lead_genres": [
         {
-          "label": "indie rock",
-          "weight": 4.5488
+          "label": "classical",
+          "weight": 1019.054278
         },
         {
-          "label": "alternative rock",
-          "weight": 4.0825
+          "label": "classic rock",
+          "weight": 778.886875
         },
         {
-          "label": "indie pop",
-          "weight": 3.0552
+          "label": "progressive rock",
+          "weight": 755.931709
         },
         {
-          "label": "electronic",
-          "weight": 1.4957
+          "label": "pop",
+          "weight": 522.761481
         },
         {
-          "label": "trip hop",
-          "weight": 1.4521
+          "label": "rock",
+          "weight": 321.150054
         }
       ],
       "dominant_tags": [
         {
-          "label": "indie",
-          "weight": 915.5389
-        },
-        {
-          "label": "alternative",
-          "weight": 743.4579
+          "label": "classic rock",
+          "weight": 1678.559723
         },
         {
           "label": "rock",
-          "weight": 733.035
+          "weight": 1552.346079
         },
         {
           "label": "pop",
-          "weight": 478.9434
+          "weight": 1238.989299
         },
         {
-          "label": "alternative rock",
-          "weight": 426.8445
+          "label": "classical",
+          "weight": 1166.327585
+        },
+        {
+          "label": "progressive rock",
+          "weight": 868.42847
         }
       ]
     },
     "retrieval": {
       "task": "BL-005",
-      "run_id": "BL005-FILTER-20260321-001004-550169",
+      "run_id": "BL005-FILTER-20260322-021107-181373",
       "counts": {
-        "candidate_rows_total": 60,
-        "seed_tracks_excluded": 11,
-        "kept_candidates": 42,
-        "rejected_non_seed_candidates": 7
+        "candidate_rows_total": 9330,
+        "seed_tracks_excluded": 0,
+        "kept_candidates": 1740,
+        "rejected_non_seed_candidates": 7590
       },
       "rule_hits": {
         "semantic_rule_hits": {
-          "lead_genre_match": 45,
-          "genre_overlap": 55,
-          "tag_overlap": 59
+          "lead_genre_match": 425,
+          "genre_overlap": 1669,
+          "tag_overlap": 1740
         },
         "numeric_rule_hits": {
-          "rhythm.bpm": 32,
-          "rhythm.danceability": 49,
-          "lowlevel.loudness_ebu128.integrated": 47,
-          "V_mean": 56,
-          "A_mean": 59,
-          "D_mean": 60
+          "tempo": 0,
+          "loudness": 0,
+          "key": 0,
+          "mode": 0
         }
       },
       "top_kept_track_ids": [
-        "axdv4kGugNPl0G69",
-        "Nyb0YqqyaSvWThIG",
-        "hn1Z3OcZ4HM3hcIi",
-        "X4fkzkyHslEut5Tc",
-        "9EERk7bPIn9HNBvE",
-        "CiLFjUJvYWGmyr2d",
-        "8keAhBJumHlc8qe9",
-        "IYI6RFvYIFFg9Mi7",
-        "jmq9rFLdkgwkaqyV",
-        "POdgTSLBnoFJaj2x",
-        "nlgMHNZ0qCS2vdmV",
-        "9CHzAeSHv9tWaIXW",
-        "APCOA8vqweV4WMee",
-        "0X9aluHlz6iKWBMR",
-        "j8qrlsfqWAPqzqD9"
+        "TRAAABD128F429CF47",
+        "TRAAAEF128F4273421",
+        "TRAAARJ128F9320760",
+        "TRAABLR128F423B7E3",
+        "TRAABVM128F92CA9DC",
+        "TRAACER128F4290F96",
+        "TRAADLN128F14832E9",
+        "TRAADNA128F9331246",
+        "TRAADQX128F422B4CF",
+        "TRAADRN128F932D607",
+        "TRAADVH128EF34DE7A",
+        "TRAAEEH128E0795DFE",
+        "TRAAEMJ128F425A917",
+        "TRAAEWG128F930B3A4",
+        "TRAAFJW128F428A424"
       ]
     },
     "scoring": {
       "task": "BL-006",
-      "run_id": "BL006-SCORE-20260321-001004-639679",
+      "run_id": "BL006-SCORE-20260322-021939-117790",
       "counts": {
-        "candidates_scored": 42
+        "candidates_scored": 1740
       },
       "score_statistics": {
-        "max_score": 0.724318,
-        "min_score": 0.20486,
-        "mean_score": 0.490817,
-        "median_score": 0.501178
+        "max_score": 0.770977,
+        "min_score": 0.012159,
+        "mean_score": 0.214394,
+        "median_score": 0.182508
       },
       "top_candidates": [
         {
           "rank": 1,
-          "track_id": "jPv1Tj4Mgo4l2Oue",
-          "lead_genre": "indie rock",
-          "final_score": 0.724318,
-          "matched_genres": "indie rock|rock",
-          "matched_tags": "indie rock|rock|indie|alternative|alternative rock"
+          "track_id": "TRBFMTO128F9322AE7",
+          "lead_genre": "classic rock",
+          "final_score": 0.770977,
+          "matched_genres": "classic rock|rock|80s|hard rock|pop|progressive rock",
+          "matched_tags": "classic rock|rock|80s|hard rock|pop|progressive rock"
         },
         {
           "rank": 2,
-          "track_id": "POdgTSLBnoFJaj2x",
-          "lead_genre": "indie rock",
-          "final_score": 0.702439,
-          "matched_genres": "indie rock|rock",
-          "matched_tags": "indie rock|indie|rock|alternative|alternative rock"
+          "track_id": "TRAOPRI12903C9FC25",
+          "lead_genre": "classic rock",
+          "final_score": 0.752611,
+          "matched_genres": "classic rock|rock|pop|80s|progressive rock",
+          "matched_tags": "classic rock|rock|singer-songwriter|pop|80s|progressive rock"
         },
         {
           "rank": 3,
-          "track_id": "PvGcoMH6vGWBaoXh",
-          "lead_genre": "indie rock",
-          "final_score": 0.669177,
-          "matched_genres": "indie rock|rock",
-          "matched_tags": "indie|rock|alternative|alternative rock"
+          "track_id": "TRARYCL128F1456224",
+          "lead_genre": "classic rock",
+          "final_score": 0.740033,
+          "matched_genres": "classic rock|progressive rock|rock|pop|80s",
+          "matched_tags": "classic rock|progressive rock|rock|pop|80s"
         },
         {
           "rank": 4,
-          "track_id": "1XZP3bEawLbWfSkM",
-          "lead_genre": "indie rock",
-          "final_score": 0.664076,
-          "matched_genres": "indie rock|alternative rock|rock",
-          "matched_tags": "indie rock|indie|rock|alternative|alternative rock"
+          "track_id": "TRBGRIP128F147FCA6",
+          "lead_genre": "pop",
+          "final_score": 0.722814,
+          "matched_genres": "pop|80s|rock|classic rock|hard rock|new wave|progressive rock",
+          "matched_tags": "pop|80s|rock|singer-songwriter|classic rock|hard rock|new wave|progressive rock"
         },
         {
           "rank": 5,
-          "track_id": "hn1Z3OcZ4HM3hcIi",
-          "lead_genre": "indie rock",
-          "final_score": 0.655572,
-          "matched_genres": "indie rock|rock",
-          "matched_tags": "indie rock|indie|rock|alternative|alternative rock"
+          "track_id": "TRACNAS128F14567C6",
+          "lead_genre": "classic rock",
+          "final_score": 0.718082,
+          "matched_genres": "classic rock|rock|80s|hard rock|pop",
+          "matched_tags": "classic rock|rock|80s|singer-songwriter|hard rock|pop"
         },
         {
           "rank": 6,
-          "track_id": "nlgMHNZ0qCS2vdmV",
-          "lead_genre": "indie rock",
-          "final_score": 0.646756,
-          "matched_genres": "indie rock|rock",
-          "matched_tags": "indie|alternative|rock|alternative rock|pop"
+          "track_id": "TRAADLN128F14832E9",
+          "lead_genre": "classic rock",
+          "final_score": 0.705504,
+          "matched_genres": "classic rock|rock|hard rock|pop|80s",
+          "matched_tags": "classic rock|rock|hard rock|pop|80s"
         },
         {
           "rank": 7,
-          "track_id": "yUa5uu5wFCGwl2PK",
-          "lead_genre": "indie pop",
-          "final_score": 0.643423,
-          "matched_genres": "indie pop|indie rock|electronic",
-          "matched_tags": "indie|indie pop|electronic|indie rock|alternative|rock"
+          "track_id": "TRAZISI128E078EE2F",
+          "lead_genre": "classic rock",
+          "final_score": 0.705504,
+          "matched_genres": "classic rock|hard rock|rock|80s|pop",
+          "matched_tags": "classic rock|hard rock|rock|80s|pop"
         },
         {
           "rank": 8,
-          "track_id": "j8qrlsfqWAPqzqD9",
-          "lead_genre": "indie rock",
-          "final_score": 0.631517,
-          "matched_genres": "indie rock|rock",
-          "matched_tags": "indie|indie rock|alternative|rock|alternative rock"
+          "track_id": "TRACTUH128F92C93A3",
+          "lead_genre": "classic rock",
+          "final_score": 0.674561,
+          "matched_genres": "classic rock|80s|rock|pop",
+          "matched_tags": "classic rock|80s|rock|pop"
         },
         {
           "rank": 9,
-          "track_id": "8keAhBJumHlc8qe9",
-          "lead_genre": "indie rock",
-          "final_score": 0.606053,
-          "matched_genres": "indie rock|rock|alternative rock",
-          "matched_tags": "rock|indie|alternative|alternative rock"
+          "track_id": "TRAHDJL128F9305B80",
+          "lead_genre": "classic rock",
+          "final_score": 0.658452,
+          "matched_genres": "classic rock|rock|hard rock|pop",
+          "matched_tags": "classic rock|rock|singer-songwriter|hard rock|pop"
         },
         {
           "rank": 10,
-          "track_id": "xr1HkbplUycZcEZX",
-          "lead_genre": "indie rock",
-          "final_score": 0.602369,
-          "matched_genres": "indie rock|rock",
-          "matched_tags": "indie rock|indie|rock|alternative"
+          "track_id": "TRAPNDJ128F427AB8A",
+          "lead_genre": "classic rock",
+          "final_score": 0.658452,
+          "matched_genres": "classic rock|rock|hard rock|pop",
+          "matched_tags": "classic rock|rock|singer-songwriter|hard rock|pop"
         }
       ]
     },
     "assembly": {
       "task": "BL-007",
-      "run_id": "BL007-ASSEMBLE-20260321-001004-706194",
+      "run_id": "BL007-ASSEMBLE-20260322-022410-790211",
       "counts": {
-        "candidates_evaluated": 42,
+        "candidates_evaluated": 1740,
         "tracks_included": 10,
-        "tracks_excluded": 32
+        "tracks_excluded": 1730
       },
       "rule_hits": {
-        "R3_consecutive_run": 4,
-        "R2_genre_cap": 5,
-        "R4_length_cap": 23
+        "R3_consecutive_run": 1,
+        "R2_genre_cap": 14,
+        "R4_length_cap": 1715
       },
       "playlist_genre_mix": {
-        "indie rock": 4,
-        "indie pop": 2,
-        "alternative rock": 2,
-        "pop": 1,
-        "folk": 1
+        "classic rock": 4,
+        "pop": 3,
+        "progressive rock": 2,
+        "rock": 1
       },
       "playlist_score_range": {
-        "max": 0.724318,
-        "min": 0.510916
+        "max": 0.770977,
+        "min": 0.595743
       },
       "playlist_length": 10
     },
     "transparency": {
       "task": "BL-008",
-      "run_id": "BL008-EXPLAIN-20260321-001004-770188",
+      "run_id": "BL008-EXPLAIN-20260322-022820-871202",
       "playlist_track_count": 10,
       "top_contributor_distribution": {
-        "Lead genre match": 5,
-        "Tag overlap": 2,
-        "Valence": 3
+        "Lead genre match": 6,
+        "Tag overlap": 3,
+        "Genre overlap": 1
       },
       "explanation_count": 10
     }
   },
   "exclusion_diagnostics": {
     "retrieval": {
-      "seed_tracks_excluded": 11,
-      "rejected_non_seed_candidates": 7,
+      "seed_tracks_excluded": 0,
+      "rejected_non_seed_candidates": 7590,
       "sample_rejected_non_seed_rows": [
         {
-          "track_id": "WMPyZbE6EvI5f4wF",
-          "lead_genre": "pop",
-          "semantic_score": 3,
-          "numeric_pass_count": 2,
-          "decision_reason": "reject: semantic_score=3, numeric_pass_count=2 below keep threshold"
-        },
-        {
-          "track_id": "9CLTmq6Ps7WVseF2",
-          "lead_genre": "hard rock",
-          "semantic_score": 2,
-          "numeric_pass_count": 3,
-          "decision_reason": "reject: semantic_score=2, numeric_pass_count=3 below keep threshold"
-        },
-        {
-          "track_id": "BbjwoLBQtBZL1YfK",
-          "lead_genre": "hip hop",
-          "semantic_score": 1,
-          "numeric_pass_count": 6,
-          "decision_reason": "reject: semantic_score=1, numeric_pass_count=6 below keep threshold"
-        },
-        {
-          "track_id": "kxCREUSVw4v3sL4R",
-          "lead_genre": "hard rock",
-          "semantic_score": 1,
-          "numeric_pass_count": 4,
-          "decision_reason": "reject: semantic_score=1, numeric_pass_count=4 below keep threshold"
-        },
-        {
-          "track_id": "vKFHcHKZg3pclkXm",
-          "lead_genre": "country",
+          "track_id": "TRAAAAW128F429D538",
+          "lead_genre": "bay area",
           "semantic_score": 0,
-          "numeric_pass_count": 5,
-          "decision_reason": "reject: semantic_score=0, numeric_pass_count=5 below keep threshold"
+          "numeric_pass_count": 0,
+          "decision_reason": "reject: semantic_score=0, numeric_pass_count=0 below keep threshold"
+        },
+        {
+          "track_id": "TRAAADZ128F9348C2E",
+          "lead_genre": "latin",
+          "semantic_score": 0,
+          "numeric_pass_count": 0,
+          "decision_reason": "reject: semantic_score=0, numeric_pass_count=0 below keep threshold"
+        },
+        {
+          "track_id": "TRAAAFD128F92F423A",
+          "lead_genre": "punk rock",
+          "semantic_score": 0,
+          "numeric_pass_count": 0,
+          "decision_reason": "reject: semantic_score=0, numeric_pass_count=0 below keep threshold"
+        },
+        {
+          "track_id": "TRAAAMO128F1481E7F",
+          "lead_genre": "",
+          "semantic_score": 0,
+          "numeric_pass_count": 0,
+          "decision_reason": "reject: semantic_score=0, numeric_pass_count=0 below keep threshold"
+        },
+        {
+          "track_id": "TRAAAMQ128F1460CD3",
+          "lead_genre": "",
+          "semantic_score": 0,
+          "numeric_pass_count": 0,
+          "decision_reason": "reject: semantic_score=0, numeric_pass_count=0 below keep threshold"
         }
       ]
     },
     "assembly": {
-      "tracks_excluded": 32,
+      "tracks_excluded": 1730,
       "rule_hits": {
-        "R3_consecutive_run": 4,
-        "R2_genre_cap": 5,
-        "R4_length_cap": 23
+        "R3_consecutive_run": 1,
+        "R2_genre_cap": 14,
+        "R4_length_cap": 1715
       },
       "first_length_cap_boundary": {
-        "score_rank": 20,
-        "track_id": "B7SJXdcP0HhDMyfm",
-        "lead_genre": "indie rock",
-        "final_score": 0.507858
+        "score_rank": 26,
+        "track_id": "TRBGCLK128F4237A50",
+        "lead_genre": "pop",
+        "final_score": 0.595743
       },
       "sample_exclusions_by_rule": {
         "consecutive_genre_run": [
           {
             "score_rank": 3,
-            "track_id": "PvGcoMH6vGWBaoXh",
-            "lead_genre": "indie rock",
-            "final_score": 0.669177
-          },
-          {
-            "score_rank": 4,
-            "track_id": "1XZP3bEawLbWfSkM",
-            "lead_genre": "indie rock",
-            "final_score": 0.664076
-          },
-          {
-            "score_rank": 5,
-            "track_id": "hn1Z3OcZ4HM3hcIi",
-            "lead_genre": "indie rock",
-            "final_score": 0.655572
+            "track_id": "TRARYCL128F1456224",
+            "lead_genre": "classic rock",
+            "final_score": 0.740033
           }
         ],
         "genre_cap_exceeded": [
           {
-            "score_rank": 10,
-            "track_id": "xr1HkbplUycZcEZX",
-            "lead_genre": "indie rock",
-            "final_score": 0.602369
+            "score_rank": 7,
+            "track_id": "TRAZISI128E078EE2F",
+            "lead_genre": "classic rock",
+            "final_score": 0.705504
           },
           {
-            "score_rank": 12,
-            "track_id": "CiLFjUJvYWGmyr2d",
-            "lead_genre": "indie rock",
-            "final_score": 0.583893
+            "score_rank": 8,
+            "track_id": "TRACTUH128F92C93A3",
+            "lead_genre": "classic rock",
+            "final_score": 0.674561
           },
           {
-            "score_rank": 14,
-            "track_id": "yKSK3z6kBv2YJfjx",
-            "lead_genre": "indie rock",
-            "final_score": 0.558186
+            "score_rank": 9,
+            "track_id": "TRAHDJL128F9305B80",
+            "lead_genre": "classic rock",
+            "final_score": 0.658452
           }
         ],
         "length_cap_reached": [
           {
-            "score_rank": 20,
-            "track_id": "B7SJXdcP0HhDMyfm",
-            "lead_genre": "indie rock",
-            "final_score": 0.507858
-          },
-          {
-            "score_rank": 21,
-            "track_id": "GB9LkV8pTLXCCvX6",
-            "lead_genre": "folk",
-            "final_score": 0.503448
-          },
-          {
-            "score_rank": 22,
-            "track_id": "SezvoI7y9p6mDvB3",
+            "score_rank": 26,
+            "track_id": "TRBGCLK128F4237A50",
             "lead_genre": "pop",
-            "final_score": 0.498907
+            "final_score": 0.595743
+          },
+          {
+            "score_rank": 27,
+            "track_id": "TRAZOSB128F9302A07",
+            "lead_genre": "pop",
+            "final_score": 0.589008
+          },
+          {
+            "score_rank": 28,
+            "track_id": "TRAQYZI128F4273CF3",
+            "lead_genre": "classic rock",
+            "final_score": 0.586994
           }
         ]
       }
@@ -597,31 +567,31 @@
     "primary_outputs": {
       "playlist": {
         "path": "07_implementation/implementation_notes/playlist/outputs/bl007_playlist.json",
-        "sha256": "2CEBDEF6C660A93C6888BB7A14B2E5D61EC7F310DB38CDC41144ED6441AB1DE8",
-        "size_bytes": 2061
+        "sha256": "67C87948FBA2BB8BDE93EEF01A11F5C51004C2E2BEFFAECAE415FEEBEC297AE8",
+        "size_bytes": 2078
       },
       "explanation_payloads": {
         "path": "07_implementation/implementation_notes/transparency/outputs/bl008_explanation_payloads.json",
-        "sha256": "A2F237566EFBBE65EF3B3D10B7E8CE4ED44BCA11AF6E43BB269A5A923A92935B",
-        "size_bytes": 29207
+        "sha256": "D1ED9567168C06F1001327C66402D388F0916007A05E38048271F4CE4054B116",
+        "size_bytes": 25759
       }
     },
     "trace_outputs": {
       "seed_trace": {
         "path": "07_implementation/implementation_notes/profile/outputs/bl004_seed_trace.csv",
-        "sha256": "C47D4FBC6F0D9CCDD33699AF2D62AA37368FE335883FFCE96CEACC1D0DA55584"
+        "sha256": "E99FF208D739655A46AE3D0C82D84F022CE754EFE90D65E427CFC3ED6D25F505"
       },
       "candidate_decisions": {
         "path": "07_implementation/implementation_notes/retrieval/outputs/bl005_candidate_decisions.csv",
-        "sha256": "F814C1EBED4E145B4AD94BCE37D9DA42BBD9399A08187DFB8D515BC7FA1D49D0"
+        "sha256": "5FDBFAC23C8A84D461EB2500626B7BC1C309A487CD8A94C98DC050FC21B34E46"
       },
       "scored_candidates": {
         "path": "07_implementation/implementation_notes/scoring/outputs/bl006_scored_candidates.csv",
-        "sha256": "BF9AB8A4FE27596276F8B1868FC1246BCA4B04B6315DFBB6FEF673DDF53E1AA2"
+        "sha256": "3FAEB6D42A423F87150B640FD3B751761398CEEB1E65C685AE0F6126A0CE2545"
       },
       "assembly_trace": {
         "path": "07_implementation/implementation_notes/playlist/outputs/bl007_assembly_trace.csv",
-        "sha256": "9F432BC31CCF158909F2488A2D3A85EB073E76FB562F924A1C51324B66C32193"
+        "sha256": "933F7C69223FEFE9BD59DD4D66B56297EC561DE7FD8ED6706005C4D2F2CAD1B9"
       }
     },
     "supporting_outputs": {
@@ -635,23 +605,23 @@
       },
       "profile": {
         "path": "07_implementation/implementation_notes/profile/outputs/bl004_preference_profile.json",
-        "sha256": "DF932E29786D19EC8010CE9DB2EA33622401D6C8DEFB74EB966FFC70F9E078B2"
+        "sha256": "400019A4194327F20C690BE76F971850D5C1C368EB1EC4F350D4398268A86545"
       },
       "retrieval_diagnostics": {
         "path": "07_implementation/implementation_notes/retrieval/outputs/bl005_candidate_diagnostics.json",
-        "sha256": "A6045AF3643DCCE58390DCACD67C5EFF419BB9C542F0E19B55CAAA1259615278"
+        "sha256": "34CE50911E25AED1D9B1F3C9F1DDB8010D3CEC15F4ABE505AAE84803E04DD57F"
       },
       "score_summary": {
         "path": "07_implementation/implementation_notes/scoring/outputs/bl006_score_summary.json",
-        "sha256": "7C8848BA9EBEC8271A6A752335094FE08EDAEC0432148A63715E2C2D7596669A"
+        "sha256": "D153EDB569F89FF12B7B0A16D181F544C4ED8B60F5F9E5849564B41158F62EBB"
       },
       "assembly_report": {
         "path": "07_implementation/implementation_notes/playlist/outputs/bl007_assembly_report.json",
-        "sha256": "416FDAC9FE971C7EF16C7BB9823E089F47468923332B09AF0083A49B2079D334"
+        "sha256": "7FAFDE365CE6DAB1E1510B1AAA98FE531D697D209EDE5838305BD4A0DDB2CEC0"
       },
       "explanation_summary": {
         "path": "07_implementation/implementation_notes/transparency/outputs/bl008_explanation_summary.json",
-        "sha256": "96BCF2548489E0E5F1A01569CCF3621D95EE44E40FBABCF92C7F4997C7A44902"
+        "sha256": "5E1F55AE50E6619622C23EEAE8B7F9D17FA6BC13CC7852142EDBA6FE1BDF68EF"
       }
     }
   }

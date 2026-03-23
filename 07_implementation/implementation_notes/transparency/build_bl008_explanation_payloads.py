@@ -31,21 +31,20 @@ from pathlib import Path
 # Paths
 # ---------------------------------------------------------------------------
 SCORED_CSV   = Path("07_implementation/implementation_notes/scoring/outputs/bl006_scored_candidates.csv")
+SCORE_SUMMARY_JSON = Path("07_implementation/implementation_notes/scoring/outputs/bl006_score_summary.json")
 PLAYLIST_JSON = Path("07_implementation/implementation_notes/playlist/outputs/bl007_playlist.json")
 TRACE_CSV    = Path("07_implementation/implementation_notes/playlist/outputs/bl007_assembly_trace.csv")
 OUTPUT_DIR   = Path("07_implementation/implementation_notes/transparency/outputs")
 
-# Component metadata: (csv_prefix, human_label, weight)
+# Component metadata: (csv_prefix, human_label, weight) — DS-002 features
 COMPONENTS = [
-    ("bpm",           "BPM (tempo)",         0.10),
-    ("danceability",  "Danceability",         0.10),
-    ("loudness",      "Loudness",             0.08),
-    ("V_mean",        "Valence",              0.12),
-    ("A_mean",        "Arousal",              0.08),
-    ("D_mean",        "Dominance",            0.08),
-    ("lead_genre",    "Lead genre match",     0.12),
-    ("genre_overlap", "Genre overlap",        0.16),
-    ("tag_overlap",   "Tag overlap",          0.16),
+    ("tempo",         "Tempo (BPM)",         0.18),
+    ("loudness",      "Loudness",            0.12),
+    ("key",           "Musical key",         0.10),
+    ("mode",          "Mode (major/minor)",  0.05),
+    ("lead_genre",    "Lead genre match",    0.20),
+    ("genre_overlap", "Genre overlap",       0.17),
+    ("tag_overlap",   "Tag overlap",         0.18),
 ]
 
 # Assembly rule labels
@@ -94,6 +93,8 @@ def main() -> None:
     scored_index: dict[str, dict] = {}
     for row in csv.DictReader(SCORED_CSV.open(encoding="utf-8", newline="")):
         scored_index[row["track_id"]] = row
+    score_summary = json.loads(SCORE_SUMMARY_JSON.read_text(encoding="utf-8"))
+    active_weights = score_summary.get("config", {}).get("active_component_weights", {})
 
     # Load BL-007 playlist (ordered)
     playlist_data = json.loads(PLAYLIST_JSON.read_text(encoding="utf-8"))
@@ -126,7 +127,7 @@ def main() -> None:
             score_breakdown.append({
                 "component":    prefix,
                 "label":        label,
-                "weight":       weight,
+                "weight":       round(float(active_weights.get(prefix, 0.0)), 6),
                 "similarity":   round(similarity, 6),
                 "contribution": round(contribution, 6),
             })
@@ -183,6 +184,7 @@ def main() -> None:
         "top_contributor_distribution": _top_contributor_counts(payloads),
         "input_artifact_hashes": {
             "bl006_scored_candidates.csv":   sha256(SCORED_CSV),
+            "bl006_score_summary.json":      sha256(SCORE_SUMMARY_JSON),
             "bl007_playlist.json":           sha256(PLAYLIST_JSON),
             "bl007_assembly_trace.csv":      sha256(TRACE_CSV),
         },

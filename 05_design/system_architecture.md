@@ -21,7 +21,7 @@ Treat this as an evolving design hypothesis.
 11. Configuration and execution
 
 ## Core Flow
-External listening data + influence tracks -> aligned track set -> preference profile -> candidate pool -> deterministic scoring -> playlist assembly -> explanations + logs.
+External listening data + influence tracks -> normalized metadata + semantic enrichment -> preference profile -> candidate pool (with DS-002 audio features) -> deterministic scoring -> playlist assembly -> explanations + logs.
 
 ## Hypothesis Constraint
 This architecture is provisional.

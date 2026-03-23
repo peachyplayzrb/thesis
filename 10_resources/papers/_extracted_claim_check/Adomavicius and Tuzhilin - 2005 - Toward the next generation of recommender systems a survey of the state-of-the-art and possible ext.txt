@@ -1,0 +1,20 @@
+SOURCE: User-provided attachment + Zotero full-text cache summary
+ORIGINAL_TITLE: Toward the Next Generation of Recommender Systems: A Survey of the State-of-the-Art and Possible Extensions
+AUTHORS: Gediminas Adomavicius; Alexander Tuzhilin
+YEAR: 2005
+DOI: 10.1109/TKDE.2005.99
+STATUS: recovered_for_claim_check
+
+SUMMARY:
+- Foundational survey framing recommender systems as utility estimation over user-item space.
+- Establishes core families: content-based, collaborative, hybrid.
+- Highlights known limitations (for example sparsity, cold start, context omission).
+- Proposes extension directions: richer user/item modeling, contextualization, multi-criteria ratings, and flexible recommendation interaction.
+
+CLAIM-CHECK CUES:
+- Valid for foundational taxonomy framing in Chapter 2.
+- Valid for historical limitations framing.
+- Not sufficient alone for current-state performance claims; pair with newer surveys/benchmarks.
+
+PROVENANCE_NOTE:
+- Recovered on 2026-03-23 from user-provided source package after earlier extraction failure was logged in UI-003.

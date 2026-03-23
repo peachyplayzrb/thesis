@@ -1,8 +1,8 @@
 id: P-011
 citation_key: adomavicius_toward_2005
-full_reference: Toward the next generation of recommender systems: a survey of the state-of-the-art and possible extensions. {IEEE (2005). doi:10.1109/TKDE.2005.99.
+full_reference: Adomavicius, G. and Tuzhilin, A. (2005) Toward the next generation of recommender systems: a survey of the state-of-the-art and possible extensions. IEEE Transactions on Knowledge and Data Engineering, 17(6), 734-749. doi:10.1109/TKDE.2005.99.
 document_status: processed_paper_note
-confidence: medium
+confidence: high
 
 research_problem:
 Define core recommender paradigms and limitations of then-current methods.
@@ -14,6 +14,7 @@ key_findings:
 - Identifies content-based, collaborative, and hybrid paradigms as core families.
 - Highlights recurring issues such as sparsity, cold start, and contextual limitations.
 - Proposes extension directions including richer user/item/context modelling.
+- Frames recommendation as utility estimation on user-item space and motivates evaluation choices as task dependent.
 
 limitations:
 - General-domain survey, not music-specific.
@@ -33,6 +34,7 @@ theme_mapping:
 design_implications:
 - Document paradigm choice explicitly as deliberate scope decision.
 - Use limitations as motivation for transparency and controllability focus.
+- Keep architecture claims bounded to foundational framing and complement with newer empirical sources for current-state performance trade-offs.
 
 chapter_use_cases:
 - Chapter 2
@@ -41,3 +43,6 @@ chapter_use_cases:
 linked_files:
 - 05_design/literature_architecture_mapping.md
 - 03_literature/literature_gap_tracker.md
+
+source_recovery_note:
+- 2026-03-23: recovered text evidence from user-provided source attachment and Zotero full-text cache export; no longer treated as missing extraction input for citation hardening.

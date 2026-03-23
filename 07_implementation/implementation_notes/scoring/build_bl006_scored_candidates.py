@@ -9,26 +9,39 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 
+# DS-002 numeric features and tolerances
 NUMERIC_THRESHOLDS = {
-    "rhythm.bpm": 20.0,
-    "rhythm.danceability": 0.4,
-    "lowlevel.loudness_ebu128.integrated": 6.0,
-    "V_mean": 0.8,
-    "A_mean": 0.9,
-    "D_mean": 0.8,
+    "tempo":    20.0,   # BPM tolerance
+    "loudness": 6.0,    # dB
+    "key":      2.0,    # semitones (circular distance)
+    "mode":     0.5,    # 0=minor/1=major: forces exact-match similarity
 }
 
-COMPONENT_WEIGHTS = {
-    "rhythm.bpm": 0.10,
-    "rhythm.danceability": 0.10,
-    "lowlevel.loudness_ebu128.integrated": 0.08,
-    "V_mean": 0.12,
-    "A_mean": 0.08,
-    "D_mean": 0.08,
-    "lead_genre": 0.12,
-    "genre_overlap": 0.16,
-    "tag_overlap": 0.16,
+# Base component weights. Numeric components are dropped and re-normalized when
+# the profile is semantic-only.
+BASE_COMPONENT_WEIGHTS = {
+    "tempo":        0.18,
+    "loudness":     0.12,
+    "key":          0.10,
+    "mode":         0.05,
+    "lead_genre":   0.20,
+    "genre_overlap":0.17,
+    "tag_overlap":  0.18,
 }
+
+NUMERIC_COMPONENTS = {"tempo", "loudness", "key", "mode"}
+
+
+def build_active_component_weights(numeric_profile: dict[str, object]) -> dict[str, float]:
+    active = {
+        component: weight
+        for component, weight in BASE_COMPONENT_WEIGHTS.items()
+        if component not in NUMERIC_COMPONENTS or component in numeric_profile
+    }
+    total = sum(active.values())
+    if total <= 0:
+        raise RuntimeError("BL-006 requires at least one active scoring component")
+    return {component: weight / total for component, weight in active.items()}
 
 
 def repo_root() -> Path:
@@ -97,10 +110,15 @@ def normalize_weight_map(items: list[dict[str, object]], top_k: int) -> tuple[di
     return weight_map, total
 
 
-def numeric_similarity(value: float | None, center: float, threshold: float) -> float:
+def numeric_similarity(value: float | None, center: float, threshold: float, circular: bool = False) -> float:
     if value is None:
         return 0.0
-    similarity = 1.0 - (abs(value - center) / threshold)
+    if circular:
+        raw_diff = abs(value - center)
+        diff = min(raw_diff, 12.0 - raw_diff)
+    else:
+        diff = abs(value - center)
+    similarity = 1.0 - (diff / threshold)
     if similarity < 0:
         return 0.0
     if similarity > 1:
@@ -128,8 +146,9 @@ def main() -> None:
     if not candidates:
         raise RuntimeError("No BL-005 filtered candidates found for BL-006")
 
-    if round(sum(COMPONENT_WEIGHTS.values()), 6) != 1.0:
-        raise RuntimeError("BL-006 component weights must sum to 1.0")
+    active_component_weights = build_active_component_weights(profile["numeric_feature_profile"])
+    if round(sum(active_component_weights.values()), 6) != 1.0:
+        raise RuntimeError("BL-006 active component weights must sum to 1.0")
 
     start_time = time.time()
     run_id = f"BL006-SCORE-{datetime.now(timezone.utc).strftime('%Y%m%d-%H%M%S-%f')}"
@@ -141,32 +160,36 @@ def main() -> None:
     scored_rows: list[dict[str, object]] = []
 
     for row in candidates:
-        lead_genres = parse_labels(row.get("top_genres_json", ""), "genre")
-        candidate_tags = parse_labels(row.get("top_tags_json", ""), "tag")
-        lead_genre = lead_genres[0] if lead_genres else ""
+        # DS-002: tags_json covers both tag and genre signal
+        candidate_tags = parse_labels(row.get("tags_json", ""), "tag")
+        lead_genre = candidate_tags[0] if candidate_tags else ""
+        candidate_genres = candidate_tags  # tags double as genre labels
 
         component_similarity: dict[str, float] = {}
         component_contribution: dict[str, float] = {}
 
         for column, threshold in NUMERIC_THRESHOLDS.items():
             value = parse_float(row.get(column, ""))
-            center = float(profile["numeric_feature_profile"][column])
-            similarity = numeric_similarity(value, center, threshold)
+            center_raw = profile["numeric_feature_profile"].get(column)
+            if center_raw is None or column not in active_component_weights:
+                similarity = 0.0
+            else:
+                similarity = numeric_similarity(value, float(center_raw), threshold, circular=(column == "key"))
             component_similarity[column] = similarity
-            component_contribution[column] = round(similarity * COMPONENT_WEIGHTS[column], 6)
+            component_contribution[column] = round(similarity * active_component_weights.get(column, 0.0), 6)
 
         lead_genre_similarity = 0.0
         if lead_genre and lead_genre in profile_lead_map and profile_lead_total > 0:
             lead_genre_similarity = round(profile_lead_map[lead_genre] / max(profile_lead_map.values()), 6)
         component_similarity["lead_genre"] = lead_genre_similarity
-        component_contribution["lead_genre"] = round(lead_genre_similarity * COMPONENT_WEIGHTS["lead_genre"], 6)
+        component_contribution["lead_genre"] = round(lead_genre_similarity * active_component_weights.get("lead_genre", 0.0), 6)
 
-        genre_overlap_similarity, matched_genres = weighted_overlap(lead_genres, profile_genre_map, profile_genre_total)
+        genre_overlap_similarity, matched_genres = weighted_overlap(candidate_genres, profile_genre_map, profile_genre_total)
         tag_overlap_similarity, matched_tags = weighted_overlap(candidate_tags, profile_tag_map, profile_tag_total)
         component_similarity["genre_overlap"] = genre_overlap_similarity
-        component_contribution["genre_overlap"] = round(genre_overlap_similarity * COMPONENT_WEIGHTS["genre_overlap"], 6)
+        component_contribution["genre_overlap"] = round(genre_overlap_similarity * active_component_weights.get("genre_overlap", 0.0), 6)
         component_similarity["tag_overlap"] = tag_overlap_similarity
-        component_contribution["tag_overlap"] = round(tag_overlap_similarity * COMPONENT_WEIGHTS["tag_overlap"], 6)
+        component_contribution["tag_overlap"] = round(tag_overlap_similarity * active_component_weights.get("tag_overlap", 0.0), 6)
 
         final_score = round(sum(component_contribution.values()), 6)
 
@@ -177,23 +200,19 @@ def main() -> None:
                 "matched_genres": "|".join(matched_genres),
                 "matched_tags": "|".join(matched_tags),
                 "final_score": final_score,
-                "bpm_similarity": component_similarity["rhythm.bpm"],
-                "bpm_contribution": component_contribution["rhythm.bpm"],
-                "danceability_similarity": component_similarity["rhythm.danceability"],
-                "danceability_contribution": component_contribution["rhythm.danceability"],
-                "loudness_similarity": component_similarity["lowlevel.loudness_ebu128.integrated"],
-                "loudness_contribution": component_contribution["lowlevel.loudness_ebu128.integrated"],
-                "V_mean_similarity": component_similarity["V_mean"],
-                "V_mean_contribution": component_contribution["V_mean"],
-                "A_mean_similarity": component_similarity["A_mean"],
-                "A_mean_contribution": component_contribution["A_mean"],
-                "D_mean_similarity": component_similarity["D_mean"],
-                "D_mean_contribution": component_contribution["D_mean"],
-                "lead_genre_similarity": component_similarity["lead_genre"],
-                "lead_genre_contribution": component_contribution["lead_genre"],
+                "tempo_similarity":        component_similarity["tempo"],
+                "tempo_contribution":       component_contribution["tempo"],
+                "loudness_similarity":      component_similarity["loudness"],
+                "loudness_contribution":    component_contribution["loudness"],
+                "key_similarity":           component_similarity["key"],
+                "key_contribution":         component_contribution["key"],
+                "mode_similarity":          component_similarity["mode"],
+                "mode_contribution":        component_contribution["mode"],
+                "lead_genre_similarity":    component_similarity["lead_genre"],
+                "lead_genre_contribution":  component_contribution["lead_genre"],
                 "genre_overlap_similarity": component_similarity["genre_overlap"],
                 "genre_overlap_contribution": component_contribution["genre_overlap"],
-                "tag_overlap_similarity": component_similarity["tag_overlap"],
+                "tag_overlap_similarity":   component_similarity["tag_overlap"],
                 "tag_overlap_contribution": component_contribution["tag_overlap"],
             }
         )
@@ -211,18 +230,14 @@ def main() -> None:
             "matched_genres",
             "matched_tags",
             "final_score",
-            "bpm_similarity",
-            "bpm_contribution",
-            "danceability_similarity",
-            "danceability_contribution",
+            "tempo_similarity",
+            "tempo_contribution",
             "loudness_similarity",
             "loudness_contribution",
-            "V_mean_similarity",
-            "V_mean_contribution",
-            "A_mean_similarity",
-            "A_mean_contribution",
-            "D_mean_similarity",
-            "D_mean_contribution",
+            "key_similarity",
+            "key_contribution",
+            "mode_similarity",
+            "mode_contribution",
             "lead_genre_similarity",
             "lead_genre_contribution",
             "genre_overlap_similarity",
@@ -259,7 +274,9 @@ def main() -> None:
         },
         "config": {
             "numeric_thresholds": NUMERIC_THRESHOLDS,
-            "component_weights": COMPONENT_WEIGHTS,
+            "base_component_weights": BASE_COMPONENT_WEIGHTS,
+            "active_component_weights": {key: round(value, 6) for key, value in active_component_weights.items()},
+            "inactive_components": sorted(set(BASE_COMPONENT_WEIGHTS) - set(active_component_weights)),
             "lead_genre_normalization": "candidate lead genre weight divided by max profile lead-genre weight",
             "genre_overlap_normalization": "sum overlapping profile genre weights / sum top profile genre weights",
             "tag_overlap_normalization": "sum overlapping profile tag weights / sum top profile tag weights",

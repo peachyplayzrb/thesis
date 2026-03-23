@@ -705,3 +705,135 @@ Use schema from `00_admin/operating_protocol.md`.
 - affected_components: 00_admin/music4all_access_email_draft_2026-03-21.md, 00_admin/change_log.md (C-064)
 - impact_assessment: Action taken on D-020 access track 1 (email authors). Track 2 (supervisor question MQ-008) still open for next meeting.
 - approval_record: User confirmed send on 2026-03-21.
+
+## C-065
+- date: 2026-03-21
+- proposed_by: user
+- status: accepted
+- change_summary: Ingestion pipeline and database have been changed; full implementation redo required. BL-020 added to backlog to track this work.
+- reason: User confirmed that both the ingestion layer and the underlying database have been updated since the prior implementation run (BL-004 through BL-013). All pipeline stages that depend on ingested records or the database schema must be re-executed against the new foundation.
+- evidence_basis: User instruction on 2026-03-21.
+- affected_components: 07_implementation/backlog.md (BL-020 added), 00_admin/change_log.md (C-065)
+- impact_assessment: High. Prior implementation artifacts (profiles, candidates, scoring, playlist, transparency, observability, reproducibility, controllability) are no longer valid against the current ingestion/database state and must be regenerated. BL-020 is the next P0 action.
+- approval_record: Requested and confirmed by user on 2026-03-21.
+
+## C-066
+- date: 2026-03-21
+- proposed_by: user
+- status: accepted
+- change_summary: BL-020 pivoted from DS-002 fuzzy alignment to Last.fm tag enrichment and semantic-only profile/scoring after real-data validation exposed a corpus mismatch and Spotify audio-feature deprecation.
+- reason: The user supplied a real Spotify Web API export. Initial BL-003 fuzzy matching against DS-002 produced false positives only, because DS-002 lacked coverage for core artists in the user's listening history. In parallel, Spotify audio-feature endpoints were confirmed deprecated, so user-side tempo/loudness/key/mode could not be sourced from Spotify. The active remediation path is to enrich imported Spotify tracks with Last.fm top tags and run BL-004 through BL-008 in semantic-only mode until a broader feature corpus is available.
+- evidence_basis: Real Spotify export summary (`SPOTIFY-EXPORT-20260321-192533-881299`); stale DS-002 fuzzy match artifacts in `07_implementation/implementation_notes/ingestion/outputs/bl020_alignment_report.json` and `bl020_aligned_events.jsonl`; partial Last.fm cache in `07_implementation/implementation_notes/ingestion/outputs/bl020_lastfm_tag_cache.json`; code updates to BL-003/004/005/006/008 in this session; experiment record `EXP-022`; test note `TC-BL020-001`.
+- affected_components: `07_implementation/implementation_notes/alignment/bl003_align_spotify_api_to_ds002.py`, `07_implementation/implementation_notes/profile/build_bl004_preference_profile.py`, `07_implementation/implementation_notes/retrieval/build_bl005_candidate_filter.py`, `07_implementation/implementation_notes/scoring/build_bl006_scored_candidates.py`, `07_implementation/implementation_notes/transparency/build_bl008_explanation_payloads.py`, `07_implementation/implementation_notes/ingestion/outputs/bl020_lastfm_tag_cache.json`, `07_implementation/experiment_log.md` (EXP-022), `07_implementation/test_notes.md` (TC-BL020-001), `00_admin/decision_log.md` (D-021), `07_implementation/backlog.md`.
+- impact_assessment: High. The active BL-020 execution path and evidence interpretation changed materially: recommendation evidence is now based on semantic/tag overlap rather than a track-to-track DS-002 alignment, and the current run remains incomplete until BL-003 outputs are overwritten with Last.fm-enriched artifacts.
+- approval_record: User supplied Last.fm API credentials in chat on 2026-03-21 and asked to continue. The shared secret was intentionally not persisted in repository files.
+
+## C-067
+- date: 2026-03-21
+- proposed_by: user
+- status: accepted
+- change_summary: Harden BL-003 Last.fm enrichment reliability and observability, then align governance/design/writing files with the semantic-enrichment execution path.
+- reason: During real-data BL-020 execution, the Last.fm cache showed unexpectedly high `no_tags` rates for well-known tracks and the long-running script provided weak operator feedback. Investigation found a brittle single-method lookup strategy and stale cache entries from the earlier version. The pipeline was updated with fallback lookups and cache versioning, plus visible live progress output. Repository docs were updated to reflect that user-side Spotify audio features are no longer available from deprecated endpoints and that BL-020 currently uses semantic user profiling with candidate-side DS-002 audio features.
+- evidence_basis: User-observed run progress, BL-003 script updates (`CACHE_SCHEMA_VERSION`, `track.search` and `artist.getTopTags` fallback chain, cache invalidation checks, live progress prints), direct spot-check calls returning tags for prior `no_tags` examples, and updated core docs (`thesis_state`, `limitations`, architecture, Chapter 5).
+- affected_components: `07_implementation/implementation_notes/alignment/bl003_align_spotify_api_to_ds002.py`, `00_admin/thesis_state.md`, `02_foundation/limitations.md`, `05_design/architecture.md`, `05_design/system_architecture.md`, `08_writing/chapter5.md`, `07_implementation/experiment_log.md` (`EXP-023`), `07_implementation/test_notes.md` (`TC-BL020-002`), `00_admin/decision_log.md` (`D-022`).
+- impact_assessment: High-positive for execution resilience and thesis coherence. Reduces false `no_tags` outcomes, restores operator visibility for long runs, and keeps narrative/documentation aligned with actual implemented behavior.
+- approval_record: User confirmed direction in chat ("fair. I like that. Now, update my current files to reflect all this." and "log everything").
+
+## C-068
+- date: 2026-03-21
+- proposed_by: user + AI
+- status: accepted
+- change_summary: Record a deferred controllability enhancement to add user-selectable Spotify profile-source scope (for example top tracks only vs include saved tracks), then update planning and design documents to keep this direction auditable before implementation.
+- reason: User requested that the idea be logged and all required documents updated now, while explicitly deferring implementation.
+- evidence_basis: User instruction in chat on 2026-03-21; controllability rationale already established in thesis scope; BL-020 runtime and data-volume concerns during live real-data runs.
+- affected_components: `00_admin/change_log.md`, `00_admin/decision_log.md`, `07_implementation/backlog.md`, `00_admin/thesis_state.md`, `05_design/controllability_design.md`
+- impact_assessment: Medium-positive. Improves thesis traceability and creates a concrete next-step item to reduce profile-build runtime and increase user-side controllability without creating immediate implementation risk.
+- approval_record: Requested and confirmed by user in chat on 2026-03-21.
+
+## C-069
+- date: 2026-03-22
+- proposed_by: user + AI
+- status: accepted
+- change_summary: Add BL-003 interruption-safe checkpoint behavior and create a cache-derived partial alignment test path so BL-004 can run without waiting for full Last.fm completion.
+- reason: User requested to halt long-running Last.fm enrichment and still use current progress as test evidence. Live terminal trace showed a `KeyboardInterrupt` during HTTPS read, which previously ended the run with traceback and no guaranteed partial aligned-events output.
+- evidence_basis: terminal traceback from `bl003_align_spotify_api_to_ds002.py` around progress `395/5592`; generated partial artifacts and profile outputs; compile-check pass after patch.
+- affected_components: `07_implementation/implementation_notes/alignment/bl003_align_spotify_api_to_ds002.py`, `07_implementation/implementation_notes/alignment/build_bl003_partial_from_cache.py`, `07_implementation/implementation_notes/ingestion/outputs/bl020_aligned_events_partial_from_cache.jsonl`, `07_implementation/implementation_notes/ingestion/outputs/bl020_alignment_report_partial_from_cache.json`, `07_implementation/implementation_notes/ingestion/outputs/bl020_aligned_events.pre_partial_backup_20260322-001050.jsonl`, `07_implementation/implementation_notes/profile/outputs/bl004_preference_profile.json`, `07_implementation/implementation_notes/profile/outputs/bl004_profile_summary.json`, `07_implementation/implementation_notes/profile/outputs/bl004_seed_trace.csv`, `00_admin/decision_log.md`, `07_implementation/experiment_log.md`, `07_implementation/test_notes.md`
+- impact_assessment: High-positive for runtime control and evidence continuity. User can safely stop BL-003 and still produce auditable partial artifacts for downstream pipeline validation.
+- approval_record: Requested and confirmed by user in chat on 2026-03-22 ("yes please" and "log everything").
+
+## C-070
+- date: 2026-03-22
+- proposed_by: user + AI
+- status: accepted
+- change_summary: Pre-chat-switch full logging sweep completed, including prior-session artifacts, stale-report caveats, and handoff state synchronization across thesis-state and backlog.
+- reason: User requested that not only the latest patch but all prior relevant work be logged before moving to a new chat.
+- evidence_basis: full changed-file audit snapshot; BL-020 partial artifacts; EXP-025 and TC-BL020-003 entries; stale fuzzy report retained for history; historical `bl_align_log.txt` cp1252 unicode-print traceback recorded as non-blocking prior-run anomaly.
+- affected_components: `00_admin/change_log.md`, `00_admin/thesis_state.md`, `07_implementation/backlog.md`, `07_implementation/experiment_log.md`, `07_implementation/test_notes.md`, `00_admin/decision_log.md`, `07_implementation/implementation_notes/ingestion/outputs/bl020_alignment_report.json`, `07_implementation/implementation_notes/ingestion/outputs/bl020_aligned_events.jsonl`, `07_implementation/implementation_notes/ingestion/outputs/bl020_aligned_events.pre_partial_backup_20260322-001050.jsonl`, `bl_align_log.txt`
+- impact_assessment: High-positive for handoff reliability. The next chat can resume immediately with explicit clarity on which artifacts are current, partial-test only, historical, or stale.
+- approval_record: Requested by user in chat on 2026-03-22 ("not just this even anything before. i want to switch to a new chat.").
+
+## C-071
+- date: 2026-03-22
+- proposed_by: user + AI
+- status: accepted
+- change_summary: Execute Music4All governance follow-up after positive provider reply by adding (1) license/usage confirmation checklist controls, (2) DS-001 version/access-condition tracking fields, and (3) explicit fallback trigger plan to keep DS-002 active unless DS-001 closure gates pass.
+- reason: User explicitly requested completion of action items 2, 3, and 4 from the access-response handling list.
+- evidence_basis: user report of positive Music4All response in chat; updated DS-001 access section and version/access register; new provenance checklist and unresolved-issue fallback trigger criteria.
+- affected_components: `06_data_and_sources/dataset_registry.md`, `06_data_and_sources/provenance_rules.md`, `00_admin/unresolved_issues.md`, `00_admin/change_log.md`
+- impact_assessment: High-positive for compliance and direction control. Keeps implementation momentum on DS-002 while creating a defensible and auditable path to activate DS-001 if and only if terms and version evidence are complete.
+- approval_record: Requested and confirmed by user in chat on 2026-03-22.
+
+## C-072
+- date: 2026-03-22
+- proposed_by: user + AI
+- status: accepted
+- change_summary: Log Music4All provider follow-up that access is agreement-gated (signed disclosure/confidentiality form required before credential release), then update DS-001 registry/provenance/unresolved-issue actions and add a send-ready reply template.
+- reason: User provided the exact provider response text and needed immediate governance synchronization plus practical next-step communication support.
+- evidence_basis: provider email text supplied in chat indicating signed disclosure/confidentiality agreement prerequisite for URL/password release.
+- affected_components: `06_data_and_sources/dataset_registry.md`, `06_data_and_sources/provenance_rules.md`, `00_admin/unresolved_issues.md`, `00_admin/music4all_access_email_draft_2026-03-21.md`, `00_admin/change_log.md`
+- impact_assessment: High-positive for compliance traceability and execution clarity. Converts ambiguous pending-access state into a concrete, auditable gate with explicit next actions.
+- approval_record: Requested and confirmed by user in chat on 2026-03-22.
+
+## C-073
+- date: 2026-03-22
+- proposed_by: user + AI
+- status: accepted
+- change_summary: Record user confirmation that the signed Music4All disclosure/confidentiality agreement was sent, advance DS-001 delivery state to awaiting credentials, and update follow-up tracking guidance.
+- reason: User confirmed completion of the required provider gate action (agreement return) and requested continuity of tracked governance state.
+- evidence_basis: user confirmation in chat ("i sent it"); updated DS-001 access state and UI-008 progress block.
+- affected_components: `06_data_and_sources/dataset_registry.md`, `00_admin/unresolved_issues.md`, `00_admin/music4all_access_email_draft_2026-03-21.md`, `00_admin/change_log.md`
+- impact_assessment: Medium-to-high positive. Removes ambiguity about gate completion and shifts the remaining dependency to provider credential delivery.
+- approval_record: Requested and confirmed by user in chat on 2026-03-22.
+
+## C-074
+- date: 2026-03-22
+- proposed_by: user + AI
+- status: accepted
+- change_summary: Log deferred future idea to keep the current DS-002/semantic pipeline as deterministic fallback if Music4All(-Onion) coverage is insufficient, with planned automatic path selection metadata.
+- reason: User explicitly asked to preserve the current approach as fallback and track it as a future idea.
+- evidence_basis: in-chat user request on 2026-03-22; existing coverage-risk discussions for corpus alignment.
+- affected_components: `00_admin/decision_log.md` (`D-025`), `07_implementation/backlog.md` (`BL-022`), `00_admin/change_log.md`
+- impact_assessment: Medium-positive. Preserves robustness planning without destabilizing current BL-020 execution.
+- approval_record: Requested and confirmed by user in chat on 2026-03-22.
+
+## C-075
+- date: 2026-03-23
+- proposed_by: user + AI
+- status: accepted
+- change_summary: Record user confirmation that the disclosure/confidentiality agreement was resent with signature included and maintain waiting-for-credentials state.
+- reason: User reported resend action ("sent") and requested ongoing continuity of access tracking.
+- evidence_basis: user confirmation in chat on 2026-03-23; updated status note and unresolved-issue progress block.
+- affected_components: `00_admin/music4all_access_email_draft_2026-03-21.md`, `00_admin/unresolved_issues.md`, `00_admin/change_log.md`
+- impact_assessment: Medium-positive. Improves communication traceability and reduces ambiguity about provider-side non-response causes.
+- approval_record: Requested and confirmed by user in chat on 2026-03-23.
+
+## C-076
+- date: 2026-03-23
+- proposed_by: user + AI
+- status: accepted
+- change_summary: Add a concrete 7-day execution plan to produce a mentor-ready full thesis draft, and synchronize active timeline work-package tracking.
+- reason: User requested an actionable 7-day path to produce a proper full draft suitable for mentor review.
+- evidence_basis: in-chat user request for a 7-day completion plan and explicit acceptance to convert plan into repository checklist artifacts.
+- affected_components: `00_admin/mentor_draft_7day_sprint_2026-03-23.md` (new), `00_admin/timeline.md` (WP-DRAFT-001 added), `00_admin/change_log.md`
+- impact_assessment: High-positive for execution focus and delivery confidence. Converts high-level advice into a date-bound operating checklist aligned to existing thesis governance files.
+- approval_record: Requested and confirmed by user in chat on 2026-03-23.

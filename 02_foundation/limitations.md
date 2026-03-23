@@ -9,7 +9,7 @@ The limits below are grounded in the implemented BL-010 and BL-011 evaluation ou
 	BL-010 confirmed deterministic replay for stable output content, while raw hashes for some JSON artifacts varied because those files intentionally include run metadata like timestamps and run ids. Reproducibility claims are therefore bounded to stable semantic fingerprints.
 
 3. Candidate corpus and feature coverage still bound behaviour quality.
-	The current Music4All-Onion execution path supports the locked MVP pipeline, but recommendation behaviour remains constrained by available features and corpus composition.
+	The active DS-002 path supports deterministic candidate-side audio scoring, but recommendation behaviour remains constrained by corpus composition and cross-source coverage gaps.
 
 4. Single-user, deterministic design scope.
 	The implemented system is intentionally single-user and deterministic for traceability. Results should not be generalized to multi-user dynamics, collaborative filtering behavior, or adaptive online learning settings.
@@ -17,8 +17,8 @@ The limits below are grounded in the implemented BL-010 and BL-011 evaluation ou
 5. No implemented deep or hybrid baseline comparator in MVP.
 	Trade-off discussion with modern recommenders remains literature-based because the MVP does not include an implemented high-capacity baseline.
 
-6. Ingestion and real-world alignment are deferred in bootstrap mode.
-	BL-001 to BL-003 remain deferred in the active bootstrap strategy, so current findings center on downstream pipeline behavior after pre-aligned synthetic inputs.
+6. User-side numeric audio features are externally constrained.
+	Spotify Web API audio-feature endpoints are deprecated, so user-side `tempo`, `loudness`, `key`, and `mode` cannot be sourced directly from Spotify in the current pipeline. Current BL-020 fallback uses semantic user profiling (Last.fm tags) plus candidate-side DS-002 audio features.
 
 7. External validity remains BSc-bounded.
 	Evaluation focuses on reproducibility, controllability, and traceability in a feasible engineering setting. It does not include long-horizon user studies or large-scale production deployment testing.
@@ -33,6 +33,9 @@ The limits below are grounded in the implemented BL-010 and BL-011 evaluation ou
 
 3. Control effects can be real but appear weak at final playlist level.
 	BL-011 threshold tests changed candidate pool size in the expected direction, but playlist overlap stayed at 10/10 under the bootstrap corpus. This is treated as a bounded data-regime limitation, not as a broken control path.
+
+4. Real-data alignment can fail even when deterministic code is correct.
+	BL-020 real-data execution showed that DS-002 fuzzy alignment can produce plausible but wrong matches when the user's dominant artists are sparsely represented in the candidate corpus. This was treated as a data-plane mismatch and mitigated by a semantic-enrichment fallback, not by silently accepting low-quality matches.
 
 ## Interpretation Note
 

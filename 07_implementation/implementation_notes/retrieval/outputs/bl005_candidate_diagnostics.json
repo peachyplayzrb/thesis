@@ -1,75 +1,72 @@
 {
-  "run_id": "BL005-FILTER-20260321-001004-550169",
+  "run_id": "BL005-FILTER-20260322-021107-181373",
   "task": "BL-005",
-  "generated_at_utc": "2026-03-21T00:10:04Z",
+  "generated_at_utc": "2026-03-22T02:11:07Z",
   "input_artifacts": {
-    "profile_path": "C:\\Users\\Timothy\\Desktop\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\profile\\outputs\\bl004_preference_profile.json",
-    "profile_sha256": "df932e29786d19ec8010ce9db2ea33622401d6c8defb74eb966ffc70f9e078b2",
-    "seed_trace_path": "C:\\Users\\Timothy\\Desktop\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\profile\\outputs\\bl004_seed_trace.csv",
-    "seed_trace_sha256": "c47d4fbc6f0d9ccdd33699af2d62aa37368fe335883ffce96ceacc1d0da55584",
-    "candidate_stub_path": "C:\\Users\\Timothy\\Desktop\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\test_assets\\bl016_candidate_stub.csv",
-    "candidate_stub_sha256": "66505924a3bc9a627122310b6c4108bd397f4dd3e5ff9924991977a4c9574678"
+    "profile_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\profile\\outputs\\bl004_preference_profile.json",
+    "profile_sha256": "400019a4194327f20c690be76f971850d5c1c368eb1ec4f350d4398268a86545",
+    "seed_trace_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\profile\\outputs\\bl004_seed_trace.csv",
+    "seed_trace_sha256": "e99ff208d739655a46ae3d0c82d84f022ce754efe90d65e427cfc3ed6d25f505",
+    "candidate_stub_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\data_layer\\outputs\\bl019_ds002_integrated_candidate_dataset.csv",
+    "candidate_stub_sha256": "b9c729a2b0fc1ab9e533ca5126402f4aff7c2b1ee8357a16e773a7837ad40b9f"
   },
   "config": {
     "top_lead_genre_limit": 6,
     "top_tag_limit": 10,
     "top_genre_limit": 8,
     "numeric_thresholds": {
-      "rhythm.bpm": 20.0,
-      "rhythm.danceability": 0.4,
-      "lowlevel.loudness_ebu128.integrated": 6.0,
-      "V_mean": 0.8,
-      "A_mean": 0.9,
-      "D_mean": 0.8
+      "tempo": 20.0,
+      "loudness": 6.0,
+      "key": 2.0,
+      "mode": 0.5
     },
-    "keep_rule": "keep if not seed and ((semantic_score >= 2 and numeric_pass_count >= 4) or (semantic_score == 3 and numeric_pass_count >= 3))"
+    "numeric_features_enabled": false,
+    "keep_rule": "keep if not seed and semantic_score >= 1"
   },
   "counts": {
-    "candidate_rows_total": 60,
-    "seed_tracks_excluded": 11,
-    "kept_candidates": 42,
-    "rejected_non_seed_candidates": 7
+    "candidate_rows_total": 9330,
+    "seed_tracks_excluded": 0,
+    "kept_candidates": 1740,
+    "rejected_non_seed_candidates": 7590
   },
   "rule_hits": {
     "semantic_rule_hits": {
-      "lead_genre_match": 45,
-      "genre_overlap": 55,
-      "tag_overlap": 59
+      "lead_genre_match": 425,
+      "genre_overlap": 1669,
+      "tag_overlap": 1740
     },
     "numeric_rule_hits": {
-      "rhythm.bpm": 32,
-      "rhythm.danceability": 49,
-      "lowlevel.loudness_ebu128.integrated": 47,
-      "V_mean": 56,
-      "A_mean": 59,
-      "D_mean": 60
+      "tempo": 0,
+      "loudness": 0,
+      "key": 0,
+      "mode": 0
     }
   },
   "top_kept_track_ids": [
-    "axdv4kGugNPl0G69",
-    "Nyb0YqqyaSvWThIG",
-    "hn1Z3OcZ4HM3hcIi",
-    "X4fkzkyHslEut5Tc",
-    "9EERk7bPIn9HNBvE",
-    "CiLFjUJvYWGmyr2d",
-    "8keAhBJumHlc8qe9",
-    "IYI6RFvYIFFg9Mi7",
-    "jmq9rFLdkgwkaqyV",
-    "POdgTSLBnoFJaj2x",
-    "nlgMHNZ0qCS2vdmV",
-    "9CHzAeSHv9tWaIXW",
-    "APCOA8vqweV4WMee",
-    "0X9aluHlz6iKWBMR",
-    "j8qrlsfqWAPqzqD9"
+    "TRAAABD128F429CF47",
+    "TRAAAEF128F4273421",
+    "TRAAARJ128F9320760",
+    "TRAABLR128F423B7E3",
+    "TRAABVM128F92CA9DC",
+    "TRAACER128F4290F96",
+    "TRAADLN128F14832E9",
+    "TRAADNA128F9331246",
+    "TRAADQX128F422B4CF",
+    "TRAADRN128F932D607",
+    "TRAADVH128EF34DE7A",
+    "TRAAEEH128E0795DFE",
+    "TRAAEMJ128F425A917",
+    "TRAAEWG128F930B3A4",
+    "TRAAFJW128F428A424"
   ],
-  "elapsed_seconds": 0.005,
+  "elapsed_seconds": 0.236,
   "output_files": {
-    "filtered_candidates_path": "C:\\Users\\Timothy\\Desktop\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\retrieval\\outputs\\bl005_filtered_candidates.csv",
-    "candidate_decisions_path": "C:\\Users\\Timothy\\Desktop\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\retrieval\\outputs\\bl005_candidate_decisions.csv"
+    "filtered_candidates_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\retrieval\\outputs\\bl005_filtered_candidates.csv",
+    "candidate_decisions_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\retrieval\\outputs\\bl005_candidate_decisions.csv"
   },
   "output_hashes_sha256": {
-    "bl005_filtered_candidates.csv": "4c7341830731a285dba71a7fdd34c983ad77a459b040a993a90880aa8f0971e1",
-    "bl005_candidate_decisions.csv": "f814c1ebed4e145b4ad94bce37d9da42bbd9399a08187dfb8d515bc7fa1d49d0"
+    "bl005_filtered_candidates.csv": "3a476cf88476c01681725e7584cab82a9a4bbde727c6bbaadf759d066ea7185b",
+    "bl005_candidate_decisions.csv": "5fdbfac23c8a84d461eb2500626b7bc1c309a487cd8a94c98dc050fc21b34e46"
   },
   "diagnostics_hash_note": "diagnostics file does not store its own hash to avoid recursive self-reference"
 }

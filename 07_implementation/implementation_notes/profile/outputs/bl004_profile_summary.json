@@ -1,93 +1,82 @@
 {
-  "run_id": "BL004-PROFILE-20260321-001004-483664",
+  "run_id": "BL004-PROFILE-20260322-020511-252947",
   "task": "BL-004",
-  "user_id": "synthetic_user_001",
-  "matched_seed_count": 11,
-  "total_effective_weight": 16.0276,
+  "user_id": "21zsn42xecjhogne4kghyw5hq",
+  "matched_seed_count": 5592,
+  "total_effective_weight": 6712.96146,
   "dominant_lead_genres": [
     {
-      "label": "indie rock",
-      "weight": 4.5488
+      "label": "classical",
+      "weight": 1019.054278
     },
     {
-      "label": "alternative rock",
-      "weight": 4.0825
+      "label": "classic rock",
+      "weight": 778.886875
     },
     {
-      "label": "indie pop",
-      "weight": 3.0552
+      "label": "progressive rock",
+      "weight": 755.931709
     },
     {
-      "label": "electronic",
-      "weight": 1.4957
+      "label": "pop",
+      "weight": 522.761481
     },
     {
-      "label": "trip hop",
-      "weight": 1.4521
+      "label": "rock",
+      "weight": 321.150054
     }
   ],
   "dominant_tags": [
     {
-      "label": "indie",
-      "weight": 915.5389
-    },
-    {
-      "label": "alternative",
-      "weight": 743.4579
+      "label": "classic rock",
+      "weight": 1678.559723
     },
     {
       "label": "rock",
-      "weight": 733.035
+      "weight": 1552.346079
     },
     {
       "label": "pop",
-      "weight": 478.9434
+      "weight": 1238.989299
     },
     {
-      "label": "alternative rock",
-      "weight": 426.8445
+      "label": "classical",
+      "weight": 1166.327585
+    },
+    {
+      "label": "progressive rock",
+      "weight": 868.42847
     }
   ],
   "dominant_genres": [
     {
-      "label": "indie rock",
-      "weight": 10.721713
-    },
-    {
-      "label": "indie pop",
-      "weight": 10.169745
+      "label": "classic rock",
+      "weight": 1678.559723
     },
     {
       "label": "rock",
-      "weight": 8.539655
+      "weight": 1552.346079
     },
     {
       "label": "pop",
-      "weight": 7.328026
+      "weight": 1238.989299
     },
     {
-      "label": "alternative rock",
-      "weight": 6.853586
+      "label": "classical",
+      "weight": 1166.327585
+    },
+    {
+      "label": "progressive rock",
+      "weight": 868.42847
     }
   ],
-  "feature_centers": {
-    "rhythm.bpm": 117.84215,
-    "rhythm.danceability": 1.190363,
-    "lowlevel.loudness_ebu128.integrated": -15.322141,
-    "lowlevel.spectral_energy.mean": 0.041164,
-    "tonal.key_edma.strength": 0.677007,
-    "V_mean": 5.741829,
-    "A_mean": 4.278339,
-    "D_mean": 5.371368
-  },
+  "feature_centers": {},
   "artifact_paths": {
-    "profile_path": "C:\\Users\\Timothy\\Desktop\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\profile\\outputs\\bl004_preference_profile.json",
-    "seed_trace_path": "C:\\Users\\Timothy\\Desktop\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\profile\\outputs\\bl004_seed_trace.csv"
+    "profile_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\profile\\outputs\\bl004_preference_profile.json",
+    "seed_trace_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\profile\\outputs\\bl004_seed_trace.csv"
   },
   "input_hashes": {
-    "aligned_events_path": "C:\\Users\\Timothy\\Desktop\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\test_assets\\bl016_synthetic_aligned_events.jsonl",
-    "aligned_events_sha256": "f22c31f512cb9dc1708858419923c46e8d65895cb582bfe019f869cf34333771",
-    "candidate_stub_path": "C:\\Users\\Timothy\\Desktop\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\test_assets\\bl016_candidate_stub.csv",
-    "candidate_stub_sha256": "66505924a3bc9a627122310b6c4108bd397f4dd3e5ff9924991977a4c9574678"
+    "aligned_events_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\ingestion\\outputs\\bl020_aligned_events.jsonl",
+    "aligned_events_sha256": "f855e475e29b76b505cc54ac34be7188e03c7ffb532ee77a724a80c727efcd50"
   }
 }

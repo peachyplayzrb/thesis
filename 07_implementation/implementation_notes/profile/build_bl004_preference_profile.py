@@ -8,40 +8,10 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 
-NUMERIC_FEATURE_COLUMNS = [
-    "lowlevel.average_loudness",
-    "lowlevel.loudness_ebu128.integrated",
-    "rhythm.danceability",
-    "rhythm.bpm",
-    "rhythm.onset_rate",
-    "rhythm.beats_count",
-    "rhythm.beats_loudness.mean",
-    "lowlevel.spectral_energy.mean",
-    "lowlevel.spectral_centroid.mean",
-    "lowlevel.spectral_complexity.mean",
-    "tonal.chords_changes_rate",
-    "tonal.key_edma.strength",
-    "tonal.key_krumhansl.strength",
-    "tonal.key_temperley.strength",
-    "V_mean",
-    "A_mean",
-    "D_mean",
-    "P_mean",
-    "V_std",
-    "A_std",
-    "D_std",
-]
+# BL-020 semantic-only profile: Spotify metadata + Last.fm tags
+NUMERIC_FEATURE_COLUMNS: list[str] = []
 
-SUMMARY_FEATURE_COLUMNS = [
-    "rhythm.bpm",
-    "rhythm.danceability",
-    "lowlevel.loudness_ebu128.integrated",
-    "lowlevel.spectral_energy.mean",
-    "tonal.key_edma.strength",
-    "V_mean",
-    "A_mean",
-    "D_mean",
-]
+SUMMARY_FEATURE_COLUMNS: list[str] = []
 
 TOP_TAG_LIMIT = 10
 TOP_GENRE_LIMIT = 10
@@ -69,12 +39,6 @@ def load_jsonl(path: Path) -> list[dict[str, object]]:
                 continue
             rows.append(json.loads(text))
     return rows
-
-
-def load_candidate_rows(path: Path) -> dict[str, dict[str, str]]:
-    with path.open("r", encoding="utf-8", newline="") as handle:
-        reader = csv.DictReader(handle)
-        return {row["track_id"]: row for row in reader}
 
 
 def parse_float(value: str) -> float | None:
@@ -111,6 +75,35 @@ def parse_weighted_list(raw_value: str, key_name: str, score_name: str) -> list[
     return items
 
 
+def parse_event_weighted_list(raw_value: object) -> list[tuple[str, float]]:
+    if isinstance(raw_value, str):
+        if not raw_value.strip():
+            return []
+        try:
+            payload = json.loads(raw_value)
+        except json.JSONDecodeError:
+            return []
+    elif isinstance(raw_value, list):
+        payload = raw_value
+    else:
+        return []
+
+    items: list[tuple[str, float]] = []
+    for item in payload:
+        if not isinstance(item, dict):
+            continue
+        label = item.get("tag")
+        score = item.get("weight")
+        if not isinstance(label, str) or not label.strip():
+            continue
+        try:
+            score_value = float(score)
+        except (TypeError, ValueError):
+            continue
+        items.append((label.strip(), score_value))
+    return items
+
+
 def sorted_weight_map(weight_map: dict[str, float], limit: int) -> list[dict[str, float | str]]:
     ordered = sorted(weight_map.items(), key=lambda item: (-item[1], item[0]))
     return [
@@ -121,15 +114,15 @@ def sorted_weight_map(weight_map: dict[str, float], limit: int) -> list[dict[str
 
 def main() -> None:
     root = repo_root()
-    input_dir = root / "07_implementation" / "implementation_notes" / "test_assets"
     output_dir = root / "07_implementation" / "implementation_notes" / "profile" / "outputs"
     output_dir.mkdir(parents=True, exist_ok=True)
 
-    aligned_path = input_dir / "bl016_synthetic_aligned_events.jsonl"
-    candidate_path = input_dir / "bl016_candidate_stub.csv"
+    aligned_path = (
+        root / "07_implementation" / "implementation_notes"
+        / "ingestion" / "outputs" / "bl020_aligned_events.jsonl"
+    )
 
     events = load_jsonl(aligned_path)
-    candidate_rows = load_candidate_rows(candidate_path)
 
     if not events:
         raise RuntimeError("No aligned events found for BL-004 input")
@@ -148,7 +141,6 @@ def main() -> None:
     genre_weights: dict[str, float] = {}
     lead_genre_weights: dict[str, float] = {}
     seed_trace_rows: list[dict[str, object]] = []
-    missing_track_ids: list[str] = []
 
     counts_by_type = {"history": 0, "influence": 0}
     weight_by_type = {"history": 0.0, "influence": 0.0}
@@ -156,11 +148,6 @@ def main() -> None:
 
     for event in events:
         track_id = str(event["track_id"])
-        candidate = candidate_rows.get(track_id)
-        if candidate is None:
-            missing_track_ids.append(track_id)
-            continue
-
         interaction_type = str(event["interaction_type"])
         preference_weight = float(event["preference_weight"])
         effective_weight = preference_weight
@@ -170,20 +157,15 @@ def main() -> None:
         weight_by_type[interaction_type] = weight_by_type.get(interaction_type, 0.0) + effective_weight
         interaction_count_sum_by_type[interaction_type] = interaction_count_sum_by_type.get(interaction_type, 0) + interaction_count
 
-        for column in NUMERIC_FEATURE_COLUMNS:
-            value = parse_float(candidate.get(column, ""))
-            if value is None:
-                continue
-            numeric_sums[column] += value * effective_weight
-            numeric_weights[column] += effective_weight
-
-        for tag, score in parse_weighted_list(candidate.get("top_tags_json", ""), "tag", "weight"):
+        for tag, score in parse_event_weighted_list(event.get("lastfm_tags", [])):
             tag_weights[tag] = tag_weights.get(tag, 0.0) + (effective_weight * score)
-
-        for genre, score in parse_weighted_list(candidate.get("top_genres_json", ""), "genre", "score"):
-            genre_weights[genre] = genre_weights.get(genre, 0.0) + (effective_weight * score)
+            genre_weights[tag] = genre_weights.get(tag, 0.0) + (effective_weight * score)
 
         lead_genre = str(event.get("lead_genre", "")).strip()
+        if not lead_genre:
+            parsed_tags = parse_event_weighted_list(event.get("lastfm_tags", []))
+            if parsed_tags:
+                lead_genre = parsed_tags[0][0]
         if lead_genre:
             lead_genre_weights[lead_genre] = lead_genre_weights.get(lead_genre, 0.0) + effective_weight
 
@@ -191,6 +173,9 @@ def main() -> None:
             {
                 "event_id": str(event["event_id"]),
                 "track_id": track_id,
+                "spotify_track_id": str(event.get("spotify_track_id", "")),
+                "spotify_artist": str(event.get("spotify_artist", "")),
+                "spotify_title": str(event.get("spotify_title", "")),
                 "interaction_type": interaction_type,
                 "signal_source": str(event["signal_source"]),
                 "seed_rank": int(event["seed_rank"]),
@@ -199,13 +184,9 @@ def main() -> None:
                 "effective_weight": round(effective_weight, 6),
                 "lead_genre": lead_genre,
                 "top_tag": str(event.get("top_tag", "")),
-                "candidate_playcount_sum": int(candidate.get("playcount_sum") or "0"),
-                "candidate_listener_rows": int(candidate.get("listener_rows") or "0"),
+                "lastfm_status": str(event.get("lastfm_status", "")),
             }
         )
-
-    if missing_track_ids:
-        raise RuntimeError(f"Missing candidate rows for track_ids: {missing_track_ids}")
 
     total_effective_weight = sum(weight_by_type.values())
     matched_seed_count = len(seed_trace_rows)
@@ -232,17 +213,16 @@ def main() -> None:
         "input_artifacts": {
             "aligned_events_path": str(aligned_path),
             "aligned_events_sha256": sha256_of_file(aligned_path),
-            "candidate_stub_path": str(candidate_path),
-            "candidate_stub_sha256": sha256_of_file(candidate_path),
         },
         "config": {
             "effective_weight_rule": "effective_weight = preference_weight",
             "numeric_feature_columns": NUMERIC_FEATURE_COLUMNS,
+            "profile_mode": "semantic_only_lastfm",
             "top_tag_limit": TOP_TAG_LIMIT,
             "top_genre_limit": TOP_GENRE_LIMIT,
             "top_lead_genre_limit": TOP_LEAD_GENRE_LIMIT,
             "aggregation_rules": {
-                "numeric": "weighted mean over matched seeds",
+                "numeric": "disabled; Spotify audio-feature endpoints are deprecated",
                 "tags": "sum(preference_weight * tag_weight)",
                 "genres": "sum(preference_weight * genre_score)",
                 "lead_genres": "sum(preference_weight)",
@@ -251,9 +231,9 @@ def main() -> None:
         "diagnostics": {
             "events_total": len(events),
             "matched_seed_count": matched_seed_count,
-            "missing_seed_count": len(missing_track_ids),
-            "missing_track_ids": missing_track_ids,
-            "candidate_rows_total": len(candidate_rows),
+            "missing_seed_count": 0,
+            "missing_track_ids": [],
+            "candidate_rows_total": 0,
             "total_effective_weight": round(total_effective_weight, 6),
             "elapsed_seconds": round(time.time() - start_time, 3),
         },

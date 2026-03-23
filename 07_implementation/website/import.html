@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Playlist Generator - Import Data</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="page page-import">
+
+    <!-- Left: source selector sidebar -->
+    <aside class="import-sidebar card">
+      <h2 class="sidebar-heading">Sources</h2>
+      <ul class="source-list" role="tablist" aria-label="Data sources">
+        <li>
+          <button class="source-btn active" data-source="spotify"
+                  role="tab" aria-selected="true" aria-controls="source-panel-spotify">
+            <span class="source-icon">♪</span>
+            <span class="source-name">Spotify</span>
+          </button>
+        </li>
+        <li>
+          <button class="source-btn" data-source="ph1" disabled
+                  role="tab" aria-selected="false" aria-controls="source-panel-ph1">
+            <span class="source-icon">○</span>
+            <span class="source-name">Source 2</span>
+            <span class="source-badge">soon</span>
+          </button>
+        </li>
+        <li>
+          <button class="source-btn" data-source="ph2" disabled
+                  role="tab" aria-selected="false" aria-controls="source-panel-ph2">
+            <span class="source-icon">○</span>
+            <span class="source-name">Source 3</span>
+            <span class="source-badge">soon</span>
+          </button>
+        </li>
+        <li>
+          <button class="source-btn" data-source="manual"
+                  role="tab" aria-selected="false" aria-controls="source-panel-manual">
+            <span class="source-icon">✎</span>
+            <span class="source-name">Manual</span>
+          </button>
+        </li>
+      </ul>
+    </aside>
+
+    <!-- Right: options content -->
+    <section class="import-content card">
+
+      <!-- Spotify panel -->
+      <div id="source-panel-spotify" class="source-panel" role="tabpanel">
+        <h1>Spotify</h1>
+        <p class="subtitle">Choose which endpoints to include. Click any row to expand it and configure options.</p>
+        <p class="hint">OAuth scopes needed: <code>user-top-read</code> · <code>user-library-read</code> · <code>playlist-read-private</code> · <code>user-read-recently-played</code></p>
+
+        <div class="endpoint-list" id="endpoint-list">
+
+          <!-- Top Tracks -->
+          <div class="endpoint-item" id="ep-item-top-tracks">
+            <div class="endpoint-header">
+              <input type="checkbox" id="ep-cb-top-tracks" class="endpoint-cb" aria-label="Enable Top Tracks">
+              <button type="button" class="endpoint-title-btn"
+                      aria-expanded="false" aria-controls="ep-body-top-tracks">
+                <span class="ep-path">GET /me/top/tracks</span>
+                <span class="ep-name">Top Tracks</span>
+                <span class="ep-caret" aria-hidden="true">›</span>
+              </button>
+            </div>
+            <div id="ep-body-top-tracks" class="endpoint-body" hidden>
+              <p class="ep-desc">Your most-listened tracks over a rolling time window. The API returns up to 50 per page and paginates — each range can yield hundreds of results.</p>
+              <div class="ep-controls">
+                <p class="ep-sublabel">Time ranges</p>
+                <div class="range-rows">
+                  <div class="range-row">
+                    <input id="ep-tts-enabled" type="checkbox" class="sub-cb" checked>
+                    <span class="range-label">Last 4 weeks</span>
+                    <input id="ep-tts-limit" type="number" min="1" value="50" class="range-num">
+                    <label class="max-inline"><input class="use-max-toggle" data-target="ep-tts-limit" type="checkbox" checked> Max</label>
+                  </div>
+                  <div class="range-row">
+                    <input id="ep-ttm-enabled" type="checkbox" class="sub-cb" checked>
+                    <span class="range-label">Last 6 months</span>
+                    <input id="ep-ttm-limit" type="number" min="1" value="50" class="range-num">
+                    <label class="max-inline"><input class="use-max-toggle" data-target="ep-ttm-limit" type="checkbox" checked> Max</label>
+                  </div>
+                  <div class="range-row">
+                    <input id="ep-ttl-enabled" type="checkbox" class="sub-cb" checked>
+                    <span class="range-label">Last year</span>
+                    <input id="ep-ttl-limit" type="number" min="1" value="50" class="range-num">
+                    <label class="max-inline"><input class="use-max-toggle" data-target="ep-ttl-limit" type="checkbox" checked> Max</label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Saved Tracks -->
+          <div class="endpoint-item" id="ep-item-saved-tracks">
+            <div class="endpoint-header">
+              <input type="checkbox" id="ep-cb-saved-tracks" class="endpoint-cb" aria-label="Enable Saved Tracks">
+              <button type="button" class="endpoint-title-btn"
+                      aria-expanded="false" aria-controls="ep-body-saved-tracks">
+                <span class="ep-path">GET /me/tracks</span>
+                <span class="ep-name">Saved Tracks</span>
+                <span class="ep-caret" aria-hidden="true">›</span>
+              </button>
+            </div>
+            <div id="ep-body-saved-tracks" class="endpoint-body" hidden>
+              <p class="ep-desc">Tracks saved to your Library (the heart button). Import stops automatically when your library ends.</p>
+              <div class="ep-controls">
+                <label for="ep-sav-max-items" class="ep-label-inline">Target items</label>
+                <input id="ep-sav-max-items" type="number" min="1" value="5000" class="ep-num">
+                <label class="max-inline"><input id="ep-sav-use-max" class="use-max-toggle" data-target="ep-sav-max-items" type="checkbox" checked> Use Max (entire library)</label>
+              </div>
+            </div>
+          </div>
+
+          <!-- Playlists + Items -->
+          <div class="endpoint-item" id="ep-item-playlists">
+            <div class="endpoint-header">
+              <input type="checkbox" id="ep-cb-playlists" class="endpoint-cb" aria-label="Enable Playlists">
+              <button type="button" class="endpoint-title-btn"
+                      aria-expanded="false" aria-controls="ep-body-playlists">
+                <span class="ep-path">GET /me/playlists → /playlists/{id}/items</span>
+                <span class="ep-name">Playlists + Items</span>
+                <span class="ep-caret" aria-hidden="true">›</span>
+              </button>
+            </div>
+            <div id="ep-body-playlists" class="endpoint-body" hidden>
+              <p class="ep-desc">All your owned and followed playlists, then every track inside each one. Requires <code>playlist-read-private</code> scope for private playlists.</p>
+              <div class="ep-controls">
+                <label for="ep-pl-max-playlists" class="ep-label-inline">Target playlists</label>
+                <input id="ep-pl-max-playlists" type="number" min="1" value="500" class="ep-num">
+                <label class="max-inline"><input id="ep-pl-use-max" class="use-max-toggle" data-target="ep-pl-max-playlists" type="checkbox" checked> Use Max (entire library)</label>
+                <label for="ep-pl-max-items" class="ep-label-inline">Target items per playlist</label>
+                <input id="ep-pl-max-items" type="number" min="1" value="1000" class="ep-num">
+                <label class="max-inline"><input id="ep-pl-items-use-max" class="use-max-toggle" data-target="ep-pl-max-items" type="checkbox" checked> Use Max (entire playlist)</label>
+              </div>
+            </div>
+          </div>
+
+          <!-- Recently Played -->
+          <div class="endpoint-item" id="ep-item-recently-played">
+            <div class="endpoint-header">
+              <input type="checkbox" id="ep-cb-recently-played" class="endpoint-cb" aria-label="Enable Recently Played">
+              <button type="button" class="endpoint-title-btn"
+                      aria-expanded="false" aria-controls="ep-body-recently-played">
+                <span class="ep-path">GET /me/player/recently-played</span>
+                <span class="ep-name">Recently Played</span>
+                <span class="ep-caret" aria-hidden="true">›</span>
+              </button>
+            </div>
+            <div id="ep-body-recently-played" class="endpoint-body" hidden>
+              <p class="ep-desc">The most recently played tracks. Spotify hard-caps this endpoint at 50 items with no pagination. Requires <code>user-read-recently-played</code> scope.</p>
+              <div class="ep-controls">
+                <label for="ep-rec-max-items" class="ep-label-inline">Target items (max 50)</label>
+                <input id="ep-rec-max-items" type="number" min="1" max="50" value="50" class="ep-num">
+                <label class="max-inline"><input id="ep-rec-use-max" class="use-max-toggle" data-target="ep-rec-max-items" type="checkbox" checked> Use Max</label>
+              </div>
+            </div>
+          </div>
+
+        </div><!-- /.endpoint-list -->
+      </div><!-- /#source-panel-spotify -->
+
+      <!-- Placeholder 1 panel -->
+      <div id="source-panel-ph1" class="source-panel" hidden role="tabpanel">
+        <h1>Source 2</h1>
+        <p class="subtitle">This data source has not been implemented yet.</p>
+        <p class="hint">It will be available in a future version.</p>
+      </div>
+
+      <!-- Placeholder 2 panel -->
+      <div id="source-panel-ph2" class="source-panel" hidden role="tabpanel">
+        <h1>Source 3</h1>
+        <p class="subtitle">This data source has not been implemented yet.</p>
+        <p class="hint">It will be available in a future version.</p>
+      </div>
+
+      <!-- Manual panel -->
+      <div id="source-panel-manual" class="source-panel" hidden role="tabpanel">
+        <h1>Manual Entry</h1>
+        <p class="subtitle">Provide your own input directly. JSON is the currently supported format.</p>
+
+        <h3>Supported Input</h3>
+        <table class="supported-input-table" aria-label="Supported manual input formats">
+          <thead>
+            <tr>
+              <th>Format</th>
+              <th>Status</th>
+              <th>Notes</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>JSON</td>
+              <td><span class="supported-pill">Supported</span></td>
+              <td>Upload a <code>.json</code> file or paste JSON text below.</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="manual-input-block">
+          <label for="manual-json-file" class="ep-label-inline">Upload JSON file</label>
+          <input id="manual-json-file" type="file" accept=".json,application/json" class="manual-file-input">
+
+          <label for="manual-json-paste" class="ep-label-inline">Or paste JSON</label>
+          <textarea id="manual-json-paste" class="manual-textarea" rows="10" placeholder='{"tracks":[{"title":"...","artist":"..."}]}'></textarea>
+          <p class="hint">If both are provided, pasted JSON is used first.</p>
+        </div>
+      </div>
+
+      <!-- Ingest bar — always at bottom of content card -->
+      <div class="ingest-bar">
+        <p id="import-summary" class="hint">Select at least one endpoint to enable ingestion.</p>
+        <div class="ingest-bar-actions">
+          <button id="start-ingest-btn" type="button" disabled>Ingest</button>
+          <a class="button-link" href="profile_basis.html">Go To Profile Basis →</a>
+        </div>
+        <div id="progress" class="progress hidden" aria-live="polite">
+          <p id="progress-step">Idle</p>
+          <div class="progress-bar-wrap">
+            <div id="progress-bar" class="progress-bar"></div>
+          </div>
+        </div>
+        <p id="status" class="status" aria-live="polite"></p>
+      </div>
+
+    </section><!-- /.import-content -->
+
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>

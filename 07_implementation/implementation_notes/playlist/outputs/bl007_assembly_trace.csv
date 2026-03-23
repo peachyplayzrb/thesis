@@ -1,43 +1,1741 @@
 score_rank,track_id,lead_genre,final_score,decision,playlist_position,exclusion_reason
-1,jPv1Tj4Mgo4l2Oue,indie rock,0.724318,included,1,
-2,POdgTSLBnoFJaj2x,indie rock,0.702439,included,2,
-3,PvGcoMH6vGWBaoXh,indie rock,0.669177,excluded,,consecutive_genre_run
-4,1XZP3bEawLbWfSkM,indie rock,0.664076,excluded,,consecutive_genre_run
-5,hn1Z3OcZ4HM3hcIi,indie rock,0.655572,excluded,,consecutive_genre_run
-6,nlgMHNZ0qCS2vdmV,indie rock,0.646756,excluded,,consecutive_genre_run
-7,yUa5uu5wFCGwl2PK,indie pop,0.643423,included,3,
-8,j8qrlsfqWAPqzqD9,indie rock,0.631517,included,4,
-9,8keAhBJumHlc8qe9,indie rock,0.606053,included,5,
-10,xr1HkbplUycZcEZX,indie rock,0.602369,excluded,,genre_cap_exceeded
-11,Nyb0YqqyaSvWThIG,indie pop,0.592793,included,6,
-12,CiLFjUJvYWGmyr2d,indie rock,0.583893,excluded,,genre_cap_exceeded
-13,0X9aluHlz6iKWBMR,alternative rock,0.559544,included,7,
-14,yKSK3z6kBv2YJfjx,indie rock,0.558186,excluded,,genre_cap_exceeded
-15,ql2191d6uNCVM932,alternative rock,0.548263,included,8,
-16,ez35sBpNVUuM6emD,indie rock,0.533993,excluded,,genre_cap_exceeded
-17,UD0DWvRMwWe8Swiw,indie rock,0.532331,excluded,,genre_cap_exceeded
-18,9ZtfD8gBZXonrJKX,pop,0.51886,included,9,
-19,PZEgbQhTHMMrKRLv,folk,0.510916,included,10,
-20,B7SJXdcP0HhDMyfm,indie rock,0.507858,excluded,,length_cap_reached
-21,GB9LkV8pTLXCCvX6,folk,0.503448,excluded,,length_cap_reached
-22,SezvoI7y9p6mDvB3,pop,0.498907,excluded,,length_cap_reached
-23,X4ws3hW4yKZyFPi6,indie pop,0.493248,excluded,,length_cap_reached
-24,X4fkzkyHslEut5Tc,indie rock,0.486783,excluded,,length_cap_reached
-25,P3KEx5uCaRSiG2x2,indie rock,0.481406,excluded,,length_cap_reached
-26,9CHzAeSHv9tWaIXW,electronic,0.468893,excluded,,length_cap_reached
-27,zFFaxVMVqVtQMaRB,hard rock,0.463347,excluded,,length_cap_reached
-28,axdv4kGugNPl0G69,alternative rock,0.45615,excluded,,length_cap_reached
-29,ZroyniZj5TmQTEeg,pop,0.426352,excluded,,length_cap_reached
-30,JdKYM8BZEjL8VmSe,pop punk,0.408465,excluded,,length_cap_reached
-31,QhQahljQAwJIBXvA,electronic,0.403581,excluded,,length_cap_reached
-32,VUwJpQjeH7lOujed,hard rock,0.368217,excluded,,length_cap_reached
-33,t69cOklpskwuIzkN,hard rock,0.359287,excluded,,length_cap_reached
-34,jmq9rFLdkgwkaqyV,electronic,0.349015,excluded,,length_cap_reached
-35,9z2L8uD3GjNoXSRs,pop,0.341677,excluded,,length_cap_reached
-36,itO50SbHqR6xiK3t,hip hop,0.338313,excluded,,length_cap_reached
-37,APCOA8vqweV4WMee,electronic,0.329266,excluded,,length_cap_reached
-38,zs8HfoDBJLYAtDrU,pop,0.316399,excluded,,length_cap_reached
-39,IYI6RFvYIFFg9Mi7,trip hop,0.315058,excluded,,length_cap_reached
-40,VjL805nl0oHFzqSt,hard rock,0.313157,excluded,,length_cap_reached
-41,eNKt8Nt4qTpVT935,hard rock,0.296153,excluded,,length_cap_reached
-42,9EERk7bPIn9HNBvE,pop,0.20486,excluded,,length_cap_reached
+1,TRBFMTO128F9322AE7,classic rock,0.770977,included,1,
+2,TRAOPRI12903C9FC25,classic rock,0.752611,included,2,
+3,TRARYCL128F1456224,classic rock,0.740033,excluded,,consecutive_genre_run
+4,TRBGRIP128F147FCA6,pop,0.722814,included,3,
+5,TRACNAS128F14567C6,classic rock,0.718082,included,4,
+6,TRAADLN128F14832E9,classic rock,0.705504,included,5,
+7,TRAZISI128E078EE2F,classic rock,0.705504,excluded,,genre_cap_exceeded
+8,TRACTUH128F92C93A3,classic rock,0.674561,excluded,,genre_cap_exceeded
+9,TRAHDJL128F9305B80,classic rock,0.658452,excluded,,genre_cap_exceeded
+10,TRAPNDJ128F427AB8A,classic rock,0.658452,excluded,,genre_cap_exceeded
+11,TRAERPT128F931103E,classic rock,0.645874,excluded,,genre_cap_exceeded
+12,TRASCWR12903CCC575,classic rock,0.645874,excluded,,genre_cap_exceeded
+13,TRASOUI128E078F152,classic rock,0.645874,excluded,,genre_cap_exceeded
+14,TRAWWQM128F148C796,classic rock,0.645874,excluded,,genre_cap_exceeded
+15,TRAJDHN128F92C2EEF,pop,0.626687,included,6,
+16,TRALIHL128E0791C9A,classic rock,0.617938,excluded,,genre_cap_exceeded
+17,TRAMHJH128E0793259,classic rock,0.617938,excluded,,genre_cap_exceeded
+18,TRAWMCL12903CAC63B,classic rock,0.617938,excluded,,genre_cap_exceeded
+19,TRBFHZG128F9310D3C,classic rock,0.617938,excluded,,genre_cap_exceeded
+20,TRBFUMI128F42B5731,classic rock,0.614931,excluded,,genre_cap_exceeded
+21,TRBFNMG128F4278109,classic rock,0.612094,excluded,,genre_cap_exceeded
+22,TRAMCGL128F92F3D87,progressive rock,0.609746,included,7,
+23,TRAWAXO12903CB2364,progressive rock,0.609746,included,8,
+24,TRAEWXY128E0786183,rock,0.607639,included,9,
+25,TRARIRG128F147FC96,pop,0.595743,included,10,
+26,TRBGCLK128F4237A50,pop,0.595743,excluded,,length_cap_reached
+27,TRAZOSB128F9302A07,pop,0.589008,excluded,,length_cap_reached
+28,TRAQYZI128F4273CF3,classic rock,0.586994,excluded,,length_cap_reached
+29,TRANMKF128E07995A8,pop,0.583166,excluded,,length_cap_reached
+30,TRBGGWQ128F42A88CF,pop,0.583166,excluded,,length_cap_reached
+31,TRAJOIH128F14B08F7,progressive rock,0.578802,excluded,,length_cap_reached
+32,TRBFFZN12903D08332,progressive rock,0.578802,excluded,,length_cap_reached
+33,TRAOLIX128E0793AFA,rock,0.57282,excluded,,length_cap_reached
+34,TRAQVWM128F426CFAD,classic rock,0.565042,excluded,,length_cap_reached
+35,TRAYJDF128F426B0DE,classic rock,0.565042,excluded,,length_cap_reached
+36,TRAEVIK12903CCC7E2,classic rock,0.552464,excluded,,length_cap_reached
+37,TRAGCXQ128F426BDD9,classic rock,0.552464,excluded,,length_cap_reached
+38,TRAIDGE128F4260E9F,classic rock,0.552464,excluded,,length_cap_reached
+39,TRAKTNE128EF3427CC,classic rock,0.552464,excluded,,length_cap_reached
+40,TRAMLZC128F92F3EB9,classic rock,0.552464,excluded,,length_cap_reached
+41,TRANHKC128F9309BF4,classic rock,0.552464,excluded,,length_cap_reached
+42,TRARCZH12903CF7D2F,classic rock,0.552464,excluded,,length_cap_reached
+43,TRAUDRC128F148D15E,classic rock,0.552464,excluded,,length_cap_reached
+44,TRAWHZJ128E0785694,classic rock,0.552464,excluded,,length_cap_reached
+45,TRAXQZA128F1463DEB,classic rock,0.552464,excluded,,length_cap_reached
+46,TRAYDJL128F145F261,classic rock,0.552464,excluded,,length_cap_reached
+47,TRAZSJF12903CB2B42,classic rock,0.552464,excluded,,length_cap_reached
+48,TRBAFBU128F427EFCE,classic rock,0.552464,excluded,,length_cap_reached
+49,TRBAVMF12903CEA4FB,classic rock,0.552464,excluded,,length_cap_reached
+50,TRBBXEG128F424EC2C,classic rock,0.552464,excluded,,length_cap_reached
+51,TRBDTNY128F9327A10,classic rock,0.552464,excluded,,length_cap_reached
+52,TRBGJIZ128F92E42BC,classic rock,0.552464,excluded,,length_cap_reached
+53,TRAZCOX128F42B6555,rock,0.548009,excluded,,length_cap_reached
+54,TRBBMPH128F1469775,rock,0.548009,excluded,,length_cap_reached
+55,TRBDWDQ128F1455787,rock,0.548009,excluded,,length_cap_reached
+56,TRBHJPQ128E078ED8F,rock,0.548009,excluded,,length_cap_reached
+57,TRBHLDQ128F423EF10,rock,0.548009,excluded,,length_cap_reached
+58,TRAAKAS128F4246013,progressive rock,0.545661,excluded,,length_cap_reached
+59,TRAAUMZ12903CA97DC,classical,0.544978,excluded,,length_cap_reached
+60,TRAEMNZ128F9334662,rock,0.542166,excluded,,length_cap_reached
+61,TRAQPKV128E078EE32,rock,0.542166,excluded,,length_cap_reached
+62,TRAUSHD128E0795347,rock,0.542166,excluded,,length_cap_reached
+63,TRAUYZG12903CDA4E9,rock,0.542166,excluded,,length_cap_reached
+64,TRAVTEH128E07953EA,rock,0.542166,excluded,,length_cap_reached
+65,TRAVUAJ128E078EDA2,rock,0.542166,excluded,,length_cap_reached
+66,TRAVVRE128F92EC0A9,rock,0.542166,excluded,,length_cap_reached
+67,TRAYKOC128F930D2B8,rock,0.542166,excluded,,length_cap_reached
+68,TRAZDPO128E078ECE6,rock,0.542166,excluded,,length_cap_reached
+69,TRAZJOI12903CDA550,rock,0.542166,excluded,,length_cap_reached
+70,TRBARHH128E078EDE9,rock,0.542166,excluded,,length_cap_reached
+71,TRBEATE128E078F0D8,rock,0.542166,excluded,,length_cap_reached
+72,TRBEKMX128F92D7B75,rock,0.542166,excluded,,length_cap_reached
+73,TRBGPJP128E078ED20,rock,0.542166,excluded,,length_cap_reached
+74,TRBHKKK128F427E9FF,rock,0.542166,excluded,,length_cap_reached
+75,TRBICGT128E0792473,rock,0.542166,excluded,,length_cap_reached
+76,TRABMFI128F1476F9F,rock,0.541876,excluded,,length_cap_reached
+77,TRANKIL128F1476FA2,rock,0.541876,excluded,,length_cap_reached
+78,TRAZGIL128E0793F9B,rock,0.541876,excluded,,length_cap_reached
+79,TRBBWDJ128F42595D5,rock,0.541876,excluded,,length_cap_reached
+80,TRAEOFB12903CB7900,progressive rock,0.540183,excluded,,length_cap_reached
+81,TRAYWLI128F9300223,pop,0.536114,excluded,,length_cap_reached
+82,TRALIVO128F4279262,classic rock,0.534099,excluded,,length_cap_reached
+83,TRAZRFV128F92FAAB6,classic rock,0.534099,excluded,,length_cap_reached
+84,TRAUJTZ12903CF7BB4,rock,0.5238,excluded,,length_cap_reached
+85,TRAXWQU128F42716E2,rock,0.5238,excluded,,length_cap_reached
+86,TRBDKOV128F4290943,rock,0.5238,excluded,,length_cap_reached
+87,TRADWAU128F145622F,classic rock,0.521521,excluded,,length_cap_reached
+88,TRBANZZ128F149EA4C,classic rock,0.521521,excluded,,length_cap_reached
+89,TRBDRTN12903D021D9,classic rock,0.521521,excluded,,length_cap_reached
+90,TRBDYEF128F423DC43,classic rock,0.521521,excluded,,length_cap_reached
+91,TRBEEQF128F4283395,classic rock,0.521521,excluded,,length_cap_reached
+92,TRBIBAQ128F93279F5,classic rock,0.521521,excluded,,length_cap_reached
+93,TRAEEGO12903CF7D27,classic rock,0.497896,excluded,,length_cap_reached
+94,TRATKVY128EF35F97A,rock,0.495114,excluded,,length_cap_reached
+95,TRAAGEC128E079252C,industrial,0.493041,excluded,,length_cap_reached
+96,TRAJNYU128E07856A5,hard rock,0.493041,excluded,,length_cap_reached
+97,TRAYVMU128F92EC210,80s,0.492751,excluded,,length_cap_reached
+98,TRAVMQE12903D08335,progressive rock,0.49271,excluded,,length_cap_reached
+99,TRAUVVR128F425A925,pop,0.487269,excluded,,length_cap_reached
+100,TRBIBLJ12903CCF436,pop,0.487269,excluded,,length_cap_reached
+101,TRBAUVN128F932FEF8,pop,0.484917,excluded,,length_cap_reached
+102,TRAIPZY128E0787299,progressive rock,0.483194,excluded,,length_cap_reached
+103,TRAMKDJ128F92F3D8B,progressive rock,0.483194,excluded,,length_cap_reached
+104,TRADSUA128C7196C7C,rock,0.482536,excluded,,length_cap_reached
+105,TRAEWVG128F428AC7F,rock,0.482536,excluded,,length_cap_reached
+106,TRAGJPA128F92F9665,rock,0.482536,excluded,,length_cap_reached
+107,TRALROP128F92CA9CC,rock,0.482536,excluded,,length_cap_reached
+108,TRAPVGB128F42725AF,rock,0.482536,excluded,,length_cap_reached
+109,TRAWWHM128F9310FD7,rock,0.482536,excluded,,length_cap_reached
+110,TRBASRX12903C9FDA8,rock,0.482536,excluded,,length_cap_reached
+111,TRBDAVU128F423814A,rock,0.482536,excluded,,length_cap_reached
+112,TRAOGAZ128F42B7FFC,rock,0.482247,excluded,,length_cap_reached
+113,TRAZASM128F932FBEE,rock,0.482247,excluded,,length_cap_reached
+114,TRBDMIN128F147FCBB,80s,0.474675,excluded,,length_cap_reached
+115,TRACQIS128F92CBED8,pop,0.469193,excluded,,length_cap_reached
+116,TRAGAPY128F92F5DDE,pop,0.469193,excluded,,length_cap_reached
+117,TRAUKYS128F14636CB,pop,0.469193,excluded,,length_cap_reached
+118,TRAUTPD128F92F1376,pop,0.469193,excluded,,length_cap_reached
+119,TRBAFJQ128F4259FB5,pop,0.469193,excluded,,length_cap_reached
+120,TRBHEHF128F428385A,pop,0.469193,excluded,,length_cap_reached
+121,TRBFWCC128F93017D3,rock,0.464171,excluded,,length_cap_reached
+122,TRAJNYD128F9340A32,80s,0.458222,excluded,,length_cap_reached
+123,TRAKOWP128F42988F8,pop,0.456615,excluded,,length_cap_reached
+124,TRAOATJ128F147FC9B,pop,0.456615,excluded,,length_cap_reached
+125,TRBHKCL128F425A036,pop,0.456615,excluded,,length_cap_reached
+126,TRAJOPN128F423BEC3,rock,0.4546,excluded,,length_cap_reached
+127,TRAENGX12903CBDFF6,progressive rock,0.452252,excluded,,length_cap_reached
+128,TRAFIHK12903CBDFF1,progressive rock,0.452252,excluded,,length_cap_reached
+129,TRAUHXR12903CBDFE4,progressive rock,0.452252,excluded,,length_cap_reached
+130,TRAYKHZ128F145289F,progressive rock,0.452252,excluded,,length_cap_reached
+131,TRBBBUG128F148D65B,progressive rock,0.452252,excluded,,length_cap_reached
+132,TRBENTT128E0781C26,progressive rock,0.452252,excluded,,length_cap_reached
+133,TRAIDUU128F145B15D,rock,0.451593,excluded,,length_cap_reached
+134,TRALJVQ128F428C764,rock,0.451593,excluded,,length_cap_reached
+135,TRATGTP128F427021D,rock,0.451593,excluded,,length_cap_reached
+136,TRAZSCZ128F42554F4,rock,0.451593,excluded,,length_cap_reached
+137,TRAOQVC128F930B50A,classical,0.451568,excluded,,length_cap_reached
+138,TRASTIS128F92FA998,classical,0.451568,excluded,,length_cap_reached
+139,TRAXKGT128F42725B8,classical,0.451568,excluded,,length_cap_reached
+140,TRBGYHC12903D0626A,classical,0.451568,excluded,,length_cap_reached
+141,TRAHMIV128F14693DC,rock,0.450145,excluded,,length_cap_reached
+142,TRAAFYL128E07856A7,rock,0.448756,excluded,,length_cap_reached
+143,TRAEGGV128F92F29B2,rock,0.448756,excluded,,length_cap_reached
+144,TRAGEVS128F145FEAD,rock,0.448756,excluded,,length_cap_reached
+145,TRAHEWR128F422BDF8,rock,0.448756,excluded,,length_cap_reached
+146,TRARTJL128F92CB44B,rock,0.448756,excluded,,length_cap_reached
+147,TRAZTWI128F424CF73,rock,0.448756,excluded,,length_cap_reached
+148,TRAAUEO128E0780CB9,alternative rock,0.445699,excluded,,length_cap_reached
+149,TRALMBM128F92EAA15,pop,0.440507,excluded,,length_cap_reached
+150,TRBGHRA128F42B90E6,pop,0.440507,excluded,,length_cap_reached
+151,TRAXVGE128E0783F1D,pop,0.440217,excluded,,length_cap_reached
+152,TRANRFB128F1481F1E,80s,0.439856,excluded,,length_cap_reached
+153,TRBDYNW128F425E6BE,classic rock,0.43543,excluded,,length_cap_reached
+154,TRBFJDL128F1461579,classic rock,0.43543,excluded,,length_cap_reached
+155,TRBHJLT128F1460832,classic rock,0.43543,excluded,,length_cap_reached
+156,TRBEFFG128E0793C24,covers,0.433122,excluded,,length_cap_reached
+157,TRAOQSA128F42AE616,pop,0.427639,excluded,,length_cap_reached
+158,TRBGNCL128F428F56F,pop,0.427639,excluded,,length_cap_reached
+159,TRAGUJK128F42A75C3,hard rock,0.427568,excluded,,length_cap_reached
+160,TRALPXC128E07819A8,punk,0.427568,excluded,,length_cap_reached
+161,TRBFWSP128F92F29B4,hard rock,0.427568,excluded,,length_cap_reached
+162,TRAFSAP128E0780ECF,80s,0.427278,excluded,,length_cap_reached
+163,TRAFYGA128F425A92C,80s,0.427278,excluded,,length_cap_reached
+164,TRAGHBP128E0793AF7,80s,0.427278,excluded,,length_cap_reached
+165,TRAQJAM128F14AC5E8,neue deutsche welle,0.427278,excluded,,length_cap_reached
+166,TRATAZV128F425A410,80s,0.427278,excluded,,length_cap_reached
+167,TRAVGYX128E078E8A8,new wave,0.427278,excluded,,length_cap_reached
+168,TRAXAAS128F146B741,mod,0.427278,excluded,,length_cap_reached
+169,TRBIBTE128E078E882,mod,0.427278,excluded,,length_cap_reached
+170,TRBIIOT128F423C594,post-punk,0.427278,excluded,,length_cap_reached
+171,TRAALHD12903D0BD6A,rock,0.417812,excluded,,length_cap_reached
+172,TRAKWZS128F4284294,rock,0.417812,excluded,,length_cap_reached
+173,TRBALIJ128F14884B5,rock,0.417812,excluded,,length_cap_reached
+174,TRBBANR128F4277C5B,rock,0.417812,excluded,,length_cap_reached
+175,TRABCUQ128E0783E2B,pop,0.409563,excluded,,length_cap_reached
+176,TRACAKD128F92D5D38,pop,0.409563,excluded,,length_cap_reached
+177,TRACKAP128F425B741,pop,0.409563,excluded,,length_cap_reached
+178,TRADVGV128F42BCACE,pop,0.409563,excluded,,length_cap_reached
+179,TRBAHID128F4278EAF,pop,0.409563,excluded,,length_cap_reached
+180,TRBAMHJ128F9302A08,pop,0.409563,excluded,,length_cap_reached
+181,TRBEAMO128F425B75F,pop,0.409563,excluded,,length_cap_reached
+182,TRAAEEH128E0795DFE,christmas,0.409202,excluded,,length_cap_reached
+183,TRAEARU128E0781A02,70s,0.409202,excluded,,length_cap_reached
+184,TRANSKF128F147FCB4,80s,0.409202,excluded,,length_cap_reached
+185,TRAQGMY128F425A2F5,female vocalists,0.409202,excluded,,length_cap_reached
+186,TRAYMKM128F4277046,folk,0.409202,excluded,,length_cap_reached
+187,TRBABQW128F148C7FB,soft rock,0.409202,excluded,,length_cap_reached
+188,TRBFVZI128F147FCAF,phil collins,0.409202,excluded,,length_cap_reached
+189,TRAHZMM128E07838FF,pop,0.406501,excluded,,length_cap_reached
+190,TRAGARS128F427216A,classic rock,0.404486,excluded,,length_cap_reached
+191,TRAGXBL128F149EBA2,classic rock,0.404486,excluded,,length_cap_reached
+192,TRAHSSO128EF347345,classic rock,0.404486,excluded,,length_cap_reached
+193,TRAKJOW128F1489DE4,classic rock,0.404486,excluded,,length_cap_reached
+194,TRAKMLM128F14932B0,classic rock,0.404486,excluded,,length_cap_reached
+195,TRAQHWF128F146FF11,classic rock,0.404486,excluded,,length_cap_reached
+196,TRAUOPC128F92F5EDE,classic rock,0.404486,excluded,,length_cap_reached
+197,TRAWAHY128F14AA11E,classic rock,0.404486,excluded,,length_cap_reached
+198,TRBAFWX12903CA9831,classic rock,0.404486,excluded,,length_cap_reached
+199,TRBGFUW12903CA0E6B,classic rock,0.404486,excluded,,length_cap_reached
+200,TRACECN128F9310E97,alternative,0.402467,excluded,,length_cap_reached
+201,TRAJXKX128F428021C,guitar virtuoso,0.399631,excluded,,length_cap_reached
+202,TRAUUZF128EF347CD5,hard rock,0.399631,excluded,,length_cap_reached
+203,TRAWYNV128F92F5E7E,hard rock,0.399631,excluded,,length_cap_reached
+204,TRBAOVA128F92F4355,hard rock,0.399631,excluded,,length_cap_reached
+205,TRABZOP128F9316E24,indie,0.398592,excluded,,length_cap_reached
+206,TRAAQCK128F92E8C33,pop,0.396986,excluded,,length_cap_reached
+207,TRABAFJ128F42AF24E,pop,0.396986,excluded,,length_cap_reached
+208,TRAEBXS128F429933A,pop,0.396986,excluded,,length_cap_reached
+209,TRAECBR128F429F8C0,pop,0.396986,excluded,,length_cap_reached
+210,TRAFMEJ128F4284652,pop,0.396986,excluded,,length_cap_reached
+211,TRAIHFF128EF351817,pop,0.396986,excluded,,length_cap_reached
+212,TRAINIF128F426416B,pop,0.396986,excluded,,length_cap_reached
+213,TRAIYDL128E0791583,pop,0.396986,excluded,,length_cap_reached
+214,TRANNZZ128F92C22F7,pop,0.396986,excluded,,length_cap_reached
+215,TRANZFP128E07995A9,pop,0.396986,excluded,,length_cap_reached
+216,TRAODGF128F92F3FF9,pop,0.396986,excluded,,length_cap_reached
+217,TRAPCIQ128F4241A74,pop,0.396986,excluded,,length_cap_reached
+218,TRAQRYZ128F4291DCB,pop,0.396986,excluded,,length_cap_reached
+219,TRARFQL128F931E523,pop,0.396986,excluded,,length_cap_reached
+220,TRAVANT128F92E3F71,pop,0.396986,excluded,,length_cap_reached
+221,TRBALRR128F429625D,pop,0.396986,excluded,,length_cap_reached
+222,TRBBXSE128F42798F6,pop,0.396986,excluded,,length_cap_reached
+223,TRBCIQL128F427C0AD,pop,0.396986,excluded,,length_cap_reached
+224,TRBCIRO128F42B0277,pop,0.396986,excluded,,length_cap_reached
+225,TRBECBM128F426AA34,pop,0.396986,excluded,,length_cap_reached
+226,TRBEIKK128F14628D6,pop,0.396986,excluded,,length_cap_reached
+227,TRBEXUF128F92DF175,pop,0.396986,excluded,,length_cap_reached
+228,TRACYOR128F427FB1D,rock nacional,0.396625,excluded,,length_cap_reached
+229,TRAIJLI128F92FC94A,blues,0.396625,excluded,,length_cap_reached
+230,TRATLTV128F92FC979,blues,0.396625,excluded,,length_cap_reached
+231,TRAYTDZ128F93146E3,blues,0.396625,excluded,,length_cap_reached
+232,TRBCGKB12903CC0031,80s,0.396625,excluded,,length_cap_reached
+233,TRBBMQN128EF35F995,rock,0.390515,excluded,,length_cap_reached
+234,TRABHWW128F424E9D2,rock,0.389126,excluded,,length_cap_reached
+235,TRADQAR128F92ED3DC,rock,0.389126,excluded,,length_cap_reached
+236,TRAFRKU128F933CE16,rock,0.389126,excluded,,length_cap_reached
+237,TRAIMFD128F92ED3CD,rock,0.389126,excluded,,length_cap_reached
+238,TRAJLKH128F422C613,rock,0.389126,excluded,,length_cap_reached
+239,TRAPNII12903CEA4F8,rock,0.389126,excluded,,length_cap_reached
+240,TRAPVXU128F149E7CD,rock,0.389126,excluded,,length_cap_reached
+241,TRAXLPR128F428E466,rock,0.389126,excluded,,length_cap_reached
+242,TRAZHZI128F930653D,rock,0.389126,excluded,,length_cap_reached
+243,TRBFNBC12903CA9800,rock,0.389126,excluded,,length_cap_reached
+244,TRBFXQT128F148D15B,rock,0.389126,excluded,,length_cap_reached
+245,TRALCCO12903CEBB97,rock,0.388837,excluded,,length_cap_reached
+246,TRAAKTK128F9343DCC,rock,0.384672,excluded,,length_cap_reached
+247,TRAXXIT128F4263075,rock,0.384672,excluded,,length_cap_reached
+248,TRBCJSZ128E07969B5,rock,0.384672,excluded,,length_cap_reached
+249,TRAOJZC128F14932D5,alternative,0.378779,excluded,,length_cap_reached
+250,TRAHIZR128F148D3D1,rock,0.370761,excluded,,length_cap_reached
+251,TRAJLOR128F428CCC9,rock,0.370761,excluded,,length_cap_reached
+252,TRAMUYQ128F428CA58,rock,0.370761,excluded,,length_cap_reached
+253,TRASQCW12903CA07D9,rock,0.370761,excluded,,length_cap_reached
+254,TRAYPMR128E0785DD1,rock,0.370761,excluded,,length_cap_reached
+255,TRARJEK128F930B3AA,blues,0.368687,excluded,,length_cap_reached
+256,TRAPJFL128F42AA7B4,rock,0.368564,excluded,,length_cap_reached
+257,TRASLVK128F935046C,rock,0.368564,excluded,,length_cap_reached
+258,TRBGUHX128F4279757,rock,0.368564,excluded,,length_cap_reached
+259,TRAADNA128F9331246,blues,0.367938,excluded,,length_cap_reached
+260,TRAEMZW128F148406D,70s,0.367938,excluded,,length_cap_reached
+261,TRAKBON128F9311039,60s,0.367938,excluded,,length_cap_reached
+262,TRANIJQ128F4298A10,hard rock,0.367938,excluded,,length_cap_reached
+263,TRANPRQ128EF348E34,latin,0.367938,excluded,,length_cap_reached
+264,TRBDANT128E0782452,alternative rock,0.364812,excluded,,length_cap_reached
+265,TRABBXU128F92FEF48,rock,0.358183,excluded,,length_cap_reached
+266,TRACHTO12903CBE58B,rock,0.358183,excluded,,length_cap_reached
+267,TRACNXS128F93395BA,rock,0.358183,excluded,,length_cap_reached
+268,TRADFXD128F424694C,rock,0.358183,excluded,,length_cap_reached
+269,TRADJSM128F14894AA,rock,0.358183,excluded,,length_cap_reached
+270,TRADYYK128F145FE74,rock,0.358183,excluded,,length_cap_reached
+271,TRAHOSP128F4260E9B,rock,0.358183,excluded,,length_cap_reached
+272,TRAJGGH128F42679C1,rock,0.358183,excluded,,length_cap_reached
+273,TRAMBVP128F424DD31,rock,0.358183,excluded,,length_cap_reached
+274,TRARKEH128F1463CB2,rock,0.358183,excluded,,length_cap_reached
+275,TRBDGQU128F146607A,rock,0.358183,excluded,,length_cap_reached
+276,TRBECMV128F427614B,rock,0.358183,excluded,,length_cap_reached
+277,TRACBWP128C7196948,rock,0.355987,excluded,,length_cap_reached
+278,TRACUEE128F427EA05,rock,0.355987,excluded,,length_cap_reached
+279,TRAPPUN128F429400B,rock,0.355987,excluded,,length_cap_reached
+280,TRAQTKV128F427BFA5,rock,0.355987,excluded,,length_cap_reached
+281,TRASDOI128F1480E28,rock,0.355987,excluded,,length_cap_reached
+282,TRAXJHG128F427EA02,rock,0.355987,excluded,,length_cap_reached
+283,TRBCANP128F92FA6B9,rock,0.355987,excluded,,length_cap_reached
+284,TRBDIOP128EF35F99C,rock,0.355987,excluded,,length_cap_reached
+285,TRBEEDK128F424D995,rock,0.355987,excluded,,length_cap_reached
+286,TRACFYQ128E0784150,hip-hop,0.349573,excluded,,length_cap_reached
+287,TRADNZM128F9300DF3,female vocalists,0.349573,excluded,,length_cap_reached
+288,TRAGPNN128F4230758,folk,0.349573,excluded,,length_cap_reached
+289,TRAHULA128F92CC05F,folk,0.349573,excluded,,length_cap_reached
+290,TRAIACZ128F428C60A,hip-hop,0.349573,excluded,,length_cap_reached
+291,TRAJZWM128F4262BBD,70s,0.349573,excluded,,length_cap_reached
+292,TRAYXZF128F425D645,country,0.349573,excluded,,length_cap_reached
+293,TRBBQPP128F92EE611,reggae,0.349573,excluded,,length_cap_reached
+294,TRBBZQM128F931A529,70s,0.349573,excluded,,length_cap_reached
+295,TRASVXM128F934792B,comedy,0.346736,excluded,,length_cap_reached
+296,TRBHSMF128F4285B9C,hard rock,0.346736,excluded,,length_cap_reached
+297,TRAZMZY128E078F06A,mod,0.346446,excluded,,length_cap_reached
+298,TRAHXWA128F4265D32,hard rock,0.340002,excluded,,length_cap_reached
+299,TRALSXX128F92F94B0,punk,0.340002,excluded,,length_cap_reached
+300,TRANRDW128E0793D49,hard rock,0.340002,excluded,,length_cap_reached
+301,TRATAGT128F42807AF,alternative,0.340002,excluded,,length_cap_reached
+302,TRBEGHL128F92F76E8,grunge,0.340002,excluded,,length_cap_reached
+303,TRAHLDG128F92EB4A9,pop,0.33958,excluded,,length_cap_reached
+304,TRAIVZI128F42642DE,pop,0.33958,excluded,,length_cap_reached
+305,TRAKPND128F42389EA,pop,0.33958,excluded,,length_cap_reached
+306,TRANIVG128F1484DED,pop,0.33958,excluded,,length_cap_reached
+307,TRAPUFL128F425A8F9,pop,0.33958,excluded,,length_cap_reached
+308,TRATQSL128F932E2ED,pop,0.33958,excluded,,length_cap_reached
+309,TRADAOM128F4263A78,rock,0.33762,excluded,,length_cap_reached
+310,TRAFOKY128F92ED751,rock,0.33762,excluded,,length_cap_reached
+311,TRAFRVU128F42649A6,rock,0.33762,excluded,,length_cap_reached
+312,TRAGWKV128F92C316A,rock,0.33762,excluded,,length_cap_reached
+313,TRAKXMS12903CB36F2,rock,0.33762,excluded,,length_cap_reached
+314,TRAOKSC128F4264989,rock,0.33762,excluded,,length_cap_reached
+315,TRAQSWI128F9343039,rock,0.33762,excluded,,length_cap_reached
+316,TRBFMAS128E078F352,rock,0.33762,excluded,,length_cap_reached
+317,TRBHLBZ128F9300586,rock,0.33762,excluded,,length_cap_reached
+318,TRARDJY128F14750EA,alternative rock,0.337515,excluded,,length_cap_reached
+319,TRBGMJF128F425E8EA,alternative rock,0.337515,excluded,,length_cap_reached
+320,TRAAABD128F429CF47,60s,0.336995,excluded,,length_cap_reached
+321,TRAAGJV128F1464090,60s,0.336995,excluded,,length_cap_reached
+322,TRAAYGH128F92ECD16,oldies,0.336995,excluded,,length_cap_reached
+323,TRACXGH128F931686C,60s,0.336995,excluded,,length_cap_reached
+324,TRADUXF128F1498A0A,60s,0.336995,excluded,,length_cap_reached
+325,TRADZQV128F14A5760,oldies,0.336995,excluded,,length_cap_reached
+326,TRAFHRS128F14599C0,90s,0.336995,excluded,,length_cap_reached
+327,TRAJCHY128EF349619,60s,0.336995,excluded,,length_cap_reached
+328,TRAKKTE128F934B0D9,60s,0.336995,excluded,,length_cap_reached
+329,TRAMLQH12903CA69B2,70s,0.336995,excluded,,length_cap_reached
+330,TRAQVSH128F92EF9A5,oldies,0.336995,excluded,,length_cap_reached
+331,TRARBGR128F42264D1,60s,0.336995,excluded,,length_cap_reached
+332,TRASARO128F145E40F,60s,0.336995,excluded,,length_cap_reached
+333,TRATPJK12903CBF745,60s,0.336995,excluded,,length_cap_reached
+334,TRATRMT128F4249901,60s,0.336995,excluded,,length_cap_reached
+335,TRBAZYH128F4288198,blues rock,0.336995,excluded,,length_cap_reached
+336,TRBCDHQ128F92F9AE8,60s,0.336995,excluded,,length_cap_reached
+337,TRBFNMW12903CBF3CE,60s,0.336995,excluded,,length_cap_reached
+338,TRAJLOY128F92E4EAF,progressive rock,0.335217,excluded,,length_cap_reached
+339,TRAJTYX128F145AD24,progressive rock,0.335217,excluded,,length_cap_reached
+340,TRAQLMY128F42313D6,progressive rock,0.335217,excluded,,length_cap_reached
+341,TRATQWS128F931E5EA,progressive rock,0.335217,excluded,,length_cap_reached
+342,TRBAHYS12903CDB329,progressive rock,0.335217,excluded,,length_cap_reached
+343,TRBHFVD128F4248837,progressive rock,0.335217,excluded,,length_cap_reached
+344,TRAAMSO128EF348DCC,hard rock,0.334158,excluded,,length_cap_reached
+345,TRABVIZ128F42BA066,thrash metal,0.334158,excluded,,length_cap_reached
+346,TRABVWG128F9359323,hard rock,0.334158,excluded,,length_cap_reached
+347,TRACLRV128EF33FAB8,hard rock,0.334158,excluded,,length_cap_reached
+348,TRACYXW128F4297569,hard rock,0.334158,excluded,,length_cap_reached
+349,TRADESF128F4214D8E,hard rock,0.334158,excluded,,length_cap_reached
+350,TRAFAEO128F92E9A19,hip-hop,0.334158,excluded,,length_cap_reached
+351,TRAFXYN128F148B3B4,hard rock,0.334158,excluded,,length_cap_reached
+352,TRAJPUF128E0784808,hard rock,0.334158,excluded,,length_cap_reached
+353,TRAKAGL128F148B3B7,hard rock,0.334158,excluded,,length_cap_reached
+354,TRANBMY128F426416A,hard rock,0.334158,excluded,,length_cap_reached
+355,TRANWZE128E078EE09,grunge,0.334158,excluded,,length_cap_reached
+356,TRAPQQI128F1460D64,glam rock,0.334158,excluded,,length_cap_reached
+357,TRAQJGB128F426A9B6,blues rock,0.334158,excluded,,length_cap_reached
+358,TRASOFS128F4243346,hair metal,0.334158,excluded,,length_cap_reached
+359,TRAVFEW128F92E2B47,hard rock,0.334158,excluded,,length_cap_reached
+360,TRAWEDC128F14A2EBA,hard rock,0.334158,excluded,,length_cap_reached
+361,TRAYKTU128F934C82A,heavy metal,0.334158,excluded,,length_cap_reached
+362,TRAYUCR128E078EE0F,grunge,0.334158,excluded,,length_cap_reached
+363,TRAZCOT128E0792471,hard rock,0.334158,excluded,,length_cap_reached
+364,TRAZJRY128EF347CD8,hard rock,0.334158,excluded,,length_cap_reached
+365,TRAZJUH128F934465B,hard rock,0.334158,excluded,,length_cap_reached
+366,TRAZUKY128F426C8BC,hard rock,0.334158,excluded,,length_cap_reached
+367,TRBGHND128E079438C,hard rock,0.334158,excluded,,length_cap_reached
+368,TRBHEVR128F4263CE0,hard rock,0.334158,excluded,,length_cap_reached
+369,TRBHLXQ128E07856AC,hard rock,0.334158,excluded,,length_cap_reached
+370,TRBIFWB128F1460D8C,hard rock,0.334158,excluded,,length_cap_reached
+371,TRAIXFB128F423C5A8,post-punk,0.333868,excluded,,length_cap_reached
+372,TRAKXJS12903CE0434,80s,0.333868,excluded,,length_cap_reached
+373,TRBDBGX128F92F3BC9,punk,0.333868,excluded,,length_cap_reached
+374,TRAVWZA128F931F36E,canadian,0.331672,excluded,,length_cap_reached
+375,TRBBCVJ128F425BE2C,rock,0.328048,excluded,,length_cap_reached
+376,TRBCUPT128F1462B73,rock,0.328048,excluded,,length_cap_reached
+377,TRABLMN128E0792687,rock,0.325043,excluded,,length_cap_reached
+378,TRABNEX128F92C9DEA,rock,0.325043,excluded,,length_cap_reached
+379,TRADXCF128EF357134,rock,0.325043,excluded,,length_cap_reached
+380,TRAETLW128F92C44F3,rock,0.325043,excluded,,length_cap_reached
+381,TRAGSGF128E0780CA7,rock,0.325043,excluded,,length_cap_reached
+382,TRAHIJE128F4243356,rock,0.325043,excluded,,length_cap_reached
+383,TRAILUH128E0784D6D,rock,0.325043,excluded,,length_cap_reached
+384,TRAMRFE128F4267DF3,rock,0.325043,excluded,,length_cap_reached
+385,TRANBUW128F933C645,rock,0.325043,excluded,,length_cap_reached
+386,TRAOJZU128F93211FA,rock,0.325043,excluded,,length_cap_reached
+387,TRAPGAG128F42ADAF7,rock,0.325043,excluded,,length_cap_reached
+388,TRASSZI128F146EC5F,rock,0.325043,excluded,,length_cap_reached
+389,TRATRMZ128F42A9AAC,rock,0.325043,excluded,,length_cap_reached
+390,TRAUMIT128F424DA18,rock,0.325043,excluded,,length_cap_reached
+391,TRAWCQE128F14676AC,rock,0.325043,excluded,,length_cap_reached
+392,TRBBSGI128F9309855,rock,0.325043,excluded,,length_cap_reached
+393,TRBCKSF128F932FA70,rock,0.325043,excluded,,length_cap_reached
+394,TRBEKGR128F425DA44,rock,0.322206,excluded,,length_cap_reached
+395,TRBBHPQ128F145A7F8,80s,0.315792,excluded,,length_cap_reached
+396,TRAHPBP128E079367D,blues rock,0.309058,excluded,,length_cap_reached
+397,TRAJTDG128E0792698,psychedelic,0.309058,excluded,,length_cap_reached
+398,TRAPWXY128F14B0901,masterpieces,0.309058,excluded,,length_cap_reached
+399,TRAQDXL128F4260EB8,guitar virtuoso,0.309058,excluded,,length_cap_reached
+400,TRBEBUU128F92C945D,masterpieces,0.309058,excluded,,length_cap_reached
+401,TRADYQK128F42A762A,alternative rock,0.306861,excluded,,length_cap_reached
+402,TRAFUKW12903CD802A,rock,0.30384,excluded,,length_cap_reached
+403,TRBDGXH128F92E1661,punk,0.303214,excluded,,length_cap_reached
+404,TRBDWRY128F427991E,blues,0.303214,excluded,,length_cap_reached
+405,TRANDHE128F9305CDA,hip-hop,0.301018,excluded,,length_cap_reached
+406,TRAAOJI128F1458DCD,80s,0.300728,excluded,,length_cap_reached
+407,TRAAPPQ128F14961F5,new wave,0.300728,excluded,,length_cap_reached
+408,TRABSXW128F4233422,gothic,0.300728,excluded,,length_cap_reached
+409,TRACGXQ128F1457F81,falco,0.300728,excluded,,length_cap_reached
+410,TRAEKCV128E0781A5B,new wave,0.300728,excluded,,length_cap_reached
+411,TRAESWB128F149CB2C,80s,0.300728,excluded,,length_cap_reached
+412,TRAJKXS128F42340B5,new wave,0.300728,excluded,,length_cap_reached
+413,TRAJPPX128F4259FD4,80s,0.300728,excluded,,length_cap_reached
+414,TRAQKVC128F425E65C,punk,0.300728,excluded,,length_cap_reached
+415,TRARKGW128F92EB8F9,new wave,0.300728,excluded,,length_cap_reached
+416,TRARMUI128F147162F,punk,0.300728,excluded,,length_cap_reached
+417,TRAVVZW12903CCEEE7,80s,0.300728,excluded,,length_cap_reached
+418,TRAWYIK12903CB4F3A,new wave,0.300728,excluded,,length_cap_reached
+419,TRAYCIH128E07890B9,post-punk,0.300728,excluded,,length_cap_reached
+420,TRBDNDG128E0782EDC,80s,0.300728,excluded,,length_cap_reached
+421,TRBGLCC128F427FE7D,neue deutsche welle,0.300728,excluded,,length_cap_reached
+422,TRBIAHA128F42A4C9B,80s,0.300728,excluded,,length_cap_reached
+423,TRAIKAW128E0785000,rock,0.297106,excluded,,length_cap_reached
+424,TRAMOPU128E07888FD,rock,0.297106,excluded,,length_cap_reached
+425,TRAXXVN128E0791AE4,rock,0.297106,excluded,,length_cap_reached
+426,TRAIKRJ128F4275BED,pop,0.292529,excluded,,length_cap_reached
+427,TRALJBT128F4266FD8,pop,0.292529,excluded,,length_cap_reached
+428,TRAPWZW128F4292E66,pop,0.292529,excluded,,length_cap_reached
+429,TRATJSR128F4266791,pop,0.292529,excluded,,length_cap_reached
+430,TRAUFLM128F42AECDC,pop,0.292529,excluded,,length_cap_reached
+431,TRAWFTQ12903CAC1FA,pop,0.292529,excluded,,length_cap_reached
+432,TRAYZZB128F425B73A,pop,0.292529,excluded,,length_cap_reached
+433,TRBCJUF128F93190C2,pop,0.292529,excluded,,length_cap_reached
+434,TRBCWNH128F93103EE,pop,0.292529,excluded,,length_cap_reached
+435,TRBEBVZ128F425A660,pop,0.292529,excluded,,length_cap_reached
+436,TRALDYU128F422C336,hard rock,0.287106,excluded,,length_cap_reached
+437,TRAPTRH128F4271659,blues,0.287106,excluded,,length_cap_reached
+438,TRARPXT128F425FDF9,grunge,0.287106,excluded,,length_cap_reached
+439,TRAUXEU12903CD3CD7,punk,0.287106,excluded,,length_cap_reached
+440,TRAVMXD12903CBBD0B,blues,0.287106,excluded,,length_cap_reached
+441,TRBDSFP128E07937B9,grunge,0.287106,excluded,,length_cap_reached
+442,TRATCMK12903CABAC8,electronic,0.285433,excluded,,length_cap_reached
+443,TRACUCQ128F92FFBF7,soul,0.282652,excluded,,length_cap_reached
+444,TRAJLEC128F93385A1,80s,0.282652,excluded,,length_cap_reached
+445,TRAAEMJ128F425A917,pop,0.279951,excluded,,length_cap_reached
+446,TRAASZE128F93499AE,pop,0.279951,excluded,,length_cap_reached
+447,TRACFDC128F147F1C6,pop,0.279951,excluded,,length_cap_reached
+448,TRACYCJ128F9309246,pop,0.279951,excluded,,length_cap_reached
+449,TRADTXQ128F9331913,pop,0.279951,excluded,,length_cap_reached
+450,TRAHFPA128F14A473A,pop,0.279951,excluded,,length_cap_reached
+451,TRAHHMV12903CD0B0D,pop,0.279951,excluded,,length_cap_reached
+452,TRAILTN128F42796DB,pop,0.279951,excluded,,length_cap_reached
+453,TRAJXYE128F92C9BD7,pop,0.279951,excluded,,length_cap_reached
+454,TRAKJNX128F92CF428,pop,0.279951,excluded,,length_cap_reached
+455,TRALIZA128F4233586,pop,0.279951,excluded,,length_cap_reached
+456,TRALONM128EF35A199,pop,0.279951,excluded,,length_cap_reached
+457,TRALZTM128F92EC5F0,pop,0.279951,excluded,,length_cap_reached
+458,TRAMFAS12903CD7030,pop,0.279951,excluded,,length_cap_reached
+459,TRAMKCK128F4266769,pop,0.279951,excluded,,length_cap_reached
+460,TRANGYF128E0786C33,pop,0.279951,excluded,,length_cap_reached
+461,TRANXHZ128F148D4DB,pop,0.279951,excluded,,length_cap_reached
+462,TRANZLM128F92F741E,pop,0.279951,excluded,,length_cap_reached
+463,TRAOMYU12903CF2C83,pop,0.279951,excluded,,length_cap_reached
+464,TRAPDCB128F42824A6,pop,0.279951,excluded,,length_cap_reached
+465,TRAPFXX128E0785EBA,pop,0.279951,excluded,,length_cap_reached
+466,TRAPHAH128F42677A4,pop,0.279951,excluded,,length_cap_reached
+467,TRAQDUR128F931B4E9,pop,0.279951,excluded,,length_cap_reached
+468,TRAQLOD128F145EC9D,pop,0.279951,excluded,,length_cap_reached
+469,TRARFSI128F92C5B06,pop,0.279951,excluded,,length_cap_reached
+470,TRARMYZ128F426150A,pop,0.279951,excluded,,length_cap_reached
+471,TRARSKA128F9336A04,pop,0.279951,excluded,,length_cap_reached
+472,TRASQIB128F426693D,pop,0.279951,excluded,,length_cap_reached
+473,TRATFEN128F14A3A6E,pop,0.279951,excluded,,length_cap_reached
+474,TRAUGRD128F425E997,pop,0.279951,excluded,,length_cap_reached
+475,TRAUNPM12903CB7CCC,pop,0.279951,excluded,,length_cap_reached
+476,TRAVJDB128F93305EB,pop,0.279951,excluded,,length_cap_reached
+477,TRAVNUK128F92F274F,pop,0.279951,excluded,,length_cap_reached
+478,TRAWBNP128F42BA71A,pop,0.279951,excluded,,length_cap_reached
+479,TRAWIOY128F147E3B8,pop,0.279951,excluded,,length_cap_reached
+480,TRAXPVO128F427C41E,pop,0.279951,excluded,,length_cap_reached
+481,TRBBLCU128F423C5DA,pop,0.279951,excluded,,length_cap_reached
+482,TRBBOPV12903CFB50F,pop,0.279951,excluded,,length_cap_reached
+483,TRBCBXZ128F14628C3,pop,0.279951,excluded,,length_cap_reached
+484,TRBDMWS128F423A021,pop,0.279951,excluded,,length_cap_reached
+485,TRBDOFA128F427C09D,pop,0.279951,excluded,,length_cap_reached
+486,TRBDSGK128F92F2C59,pop,0.279951,excluded,,length_cap_reached
+487,TRBDUXD128F148328A,pop,0.279951,excluded,,length_cap_reached
+488,TRBEVND128F93429DD,pop,0.279951,excluded,,length_cap_reached
+489,TRBFMFO128F421BFD4,pop,0.279951,excluded,,length_cap_reached
+490,TRBGASN128F427BF8F,pop,0.279951,excluded,,length_cap_reached
+491,TRAQJMP128F92E3821,cover,0.275917,excluded,,length_cap_reached
+492,TRARTEH128F423DBC1,alternative,0.275917,excluded,,length_cap_reached
+493,TRBFKVH128F4262579,alternative,0.275917,excluded,,length_cap_reached
+494,TRAABVM128F92CA9DC,hard rock,0.274528,excluded,,length_cap_reached
+495,TRAADVH128EF34DE7A,punk,0.274528,excluded,,length_cap_reached
+496,TRAAPIV128F1493132,blues,0.274528,excluded,,length_cap_reached
+497,TRADKAX128E0786B92,indie,0.274528,excluded,,length_cap_reached
+498,TRADPIA128E078EE1B,grunge,0.274528,excluded,,length_cap_reached
+499,TRAEATL128F42690A7,hard rock,0.274528,excluded,,length_cap_reached
+500,TRAENUU128F424F50C,hard rock,0.274528,excluded,,length_cap_reached
+501,TRAETTV12903CBBD09,blues,0.274528,excluded,,length_cap_reached
+502,TRAFMIA128F92E2B2B,hard rock,0.274528,excluded,,length_cap_reached
+503,TRAHBXB128F42797AE,grunge,0.274528,excluded,,length_cap_reached
+504,TRAHXHO128F933934B,blues rock,0.274528,excluded,,length_cap_reached
+505,TRAKZHN128F426C3D2,hard rock,0.274528,excluded,,length_cap_reached
+506,TRALKHT128F148833B,blues,0.274528,excluded,,length_cap_reached
+507,TRAMKUA128F92ED3E1,southern rock,0.274528,excluded,,length_cap_reached
+508,TRAQUJP128F146082C,hard rock,0.274528,excluded,,length_cap_reached
+509,TRARQSD128F427E2AA,grunge,0.274528,excluded,,length_cap_reached
+510,TRAWVNL128F9327983,70s,0.274528,excluded,,length_cap_reached
+511,TRAXRSK128F42B44D2,punk rock,0.274528,excluded,,length_cap_reached
+512,TRAYZWQ128F42752A8,hard rock,0.274528,excluded,,length_cap_reached
+513,TRAZLVR128E078F044,hard rock,0.274528,excluded,,length_cap_reached
+514,TRBCZKX12903C9E64C,proto-punk,0.274528,excluded,,length_cap_reached
+515,TRBFBQO12903CE7ACD,punk,0.274528,excluded,,length_cap_reached
+516,TRBFHWD128F148D15D,hard rock,0.274528,excluded,,length_cap_reached
+517,TRBFJNF128F1462488,female fronted metal,0.274528,excluded,,length_cap_reached
+518,TRBFNEE128F425C676,punk,0.274528,excluded,,length_cap_reached
+519,TRABIPA128F1458F79,new wave,0.274239,excluded,,length_cap_reached
+520,TRAYPFH128E07937C3,grunge,0.273081,excluded,,length_cap_reached
+521,TRAAVAH128F4284D7C,hip-hop,0.270074,excluded,,length_cap_reached
+522,TRALNJR128F145AC96,hip-hop,0.270074,excluded,,length_cap_reached
+523,TRAOBBJ128F429D31D,falco,0.270074,excluded,,length_cap_reached
+524,TRAZBRT128F9305CE3,90s,0.270074,excluded,,length_cap_reached
+525,TRBBYDT128F14805B4,80s,0.270074,excluded,,length_cap_reached
+526,TRBCWPC128F42438DF,love songs,0.270074,excluded,,length_cap_reached
+527,TRAPLSD128E0781A94,instrumental,0.264596,excluded,,length_cap_reached
+528,TRAAKDF128F92FA302,rock,0.262576,excluded,,length_cap_reached
+529,TRACAXP128F14A2127,rock,0.262576,excluded,,length_cap_reached
+530,TRACKAK128F1458461,rock,0.262576,excluded,,length_cap_reached
+531,TRAEHBW12903CE1045,rock,0.262576,excluded,,length_cap_reached
+532,TRAFEZF128F426C497,rock,0.262576,excluded,,length_cap_reached
+533,TRAFZHK128F145E86B,rock,0.262576,excluded,,length_cap_reached
+534,TRAGNBQ128F149CB93,rock,0.262576,excluded,,length_cap_reached
+535,TRAIQNF128F428386A,rock,0.262576,excluded,,length_cap_reached
+536,TRAKPHP128F42807B0,rock,0.262576,excluded,,length_cap_reached
+537,TRAKPJC128F4258613,rock,0.262576,excluded,,length_cap_reached
+538,TRAKQXJ128F147A028,rock,0.262576,excluded,,length_cap_reached
+539,TRAPASL128F422BC00,rock,0.262576,excluded,,length_cap_reached
+540,TRAPOYU128F42644C3,rock,0.262576,excluded,,length_cap_reached
+541,TRASGKM128F42644C5,rock,0.262576,excluded,,length_cap_reached
+542,TRASZUN128F148B165,rock,0.262576,excluded,,length_cap_reached
+543,TRBACGF128F92C5774,rock,0.262576,excluded,,length_cap_reached
+544,TRBFICL12903C9CE02,rock,0.262576,excluded,,length_cap_reached
+545,TRABLLK128F428FFAF,70s,0.256163,excluded,,length_cap_reached
+546,TRABNET128F14560AC,blues,0.256163,excluded,,length_cap_reached
+547,TRACRBQ128F4263964,blues,0.256163,excluded,,length_cap_reached
+548,TRAGHJX128F426F76F,folk,0.256163,excluded,,length_cap_reached
+549,TRAIVMM12903CFAD62,reggae,0.256163,excluded,,length_cap_reached
+550,TRASAQI128F426EEA3,folk,0.256163,excluded,,length_cap_reached
+551,TRAUTCA128F429B624,singer-songwriter,0.256163,excluded,,length_cap_reached
+552,TRABEMC128F148EF2D,britpop,0.253966,excluded,,length_cap_reached
+553,TRACBLO128E0784286,funny,0.253966,excluded,,length_cap_reached
+554,TRAFSGL128F42ADA3E,rock,0.244211,excluded,,length_cap_reached
+555,TRAHSAW128F4253EFC,rock,0.244211,excluded,,length_cap_reached
+556,TRANYAM12903CD9CFC,rock,0.244211,excluded,,length_cap_reached
+557,TRAUODU128F9307467,rock,0.244211,excluded,,length_cap_reached
+558,TRAVBCR128F933AE8E,rock,0.244211,excluded,,length_cap_reached
+559,TRAZRBR128E0782989,rock,0.244211,excluded,,length_cap_reached
+560,TRBEEMB128F9320082,rock,0.244211,excluded,,length_cap_reached
+561,TRBHZAA128F4271AE9,rock,0.244211,excluded,,length_cap_reached
+562,TRAAFSM128F425A2C5,5-star,0.243585,excluded,,length_cap_reached
+563,TRAAPSQ12903CAE86A,punk,0.243585,excluded,,length_cap_reached
+564,TRACVSS128E07846A7,indie,0.243585,excluded,,length_cap_reached
+565,TRACWBS128F932C993,cover,0.243585,excluded,,length_cap_reached
+566,TRAECKI128F149EA48,my angel,0.243585,excluded,,length_cap_reached
+567,TRAELUY128F93147BA,blues,0.243585,excluded,,length_cap_reached
+568,TRAFTMA128F933A3D7,ska,0.243585,excluded,,length_cap_reached
+569,TRAHSYA128F428143A,blues,0.243585,excluded,,length_cap_reached
+570,TRAHYLE128F1494718,psychedelic rock,0.243585,excluded,,length_cap_reached
+571,TRAIIEV128F934712A,blues rock,0.243585,excluded,,length_cap_reached
+572,TRAIWBW128F92F3DE0,krautrock,0.243585,excluded,,length_cap_reached
+573,TRALYPO128F429C4AF,blues,0.243585,excluded,,length_cap_reached
+574,TRAMGAZ128F148D4C3,blues,0.243585,excluded,,length_cap_reached
+575,TRAMGPM128F9311196,indie rock,0.243585,excluded,,length_cap_reached
+576,TRAPCDS128F147E530,60s,0.243585,excluded,,length_cap_reached
+577,TRAQUFS12903CF9F32,backstreets,0.243585,excluded,,length_cap_reached
+578,TRASAGX128F4262E28,blues,0.243585,excluded,,length_cap_reached
+579,TRASZQZ128F424B2FE,latin,0.243585,excluded,,length_cap_reached
+580,TRATDTH128F4263AAD,blues,0.243585,excluded,,length_cap_reached
+581,TRAUVUF128F148D1AA,horror punk,0.243585,excluded,,length_cap_reached
+582,TRAUYOD128F42647FE,blues,0.243585,excluded,,length_cap_reached
+583,TRAXPEN128F933F4DC,blues,0.243585,excluded,,length_cap_reached
+584,TRBAHSQ128F1492A8F,mod,0.243585,excluded,,length_cap_reached
+585,TRBAMES128F14947D4,blues,0.243585,excluded,,length_cap_reached
+586,TRBASHV128F92E5A7A,blues,0.243585,excluded,,length_cap_reached
+587,TRBBTUD128F42A10A3,blackened death metal,0.243585,excluded,,length_cap_reached
+588,TRBBVBM128F4276D82,indie,0.243585,excluded,,length_cap_reached
+589,TRBEBFU128F14971BD,the doors,0.243585,excluded,,length_cap_reached
+590,TRBEOUP12903CF652E,blues rock,0.243585,excluded,,length_cap_reached
+591,TRBETVK128F4288B49,blues,0.243585,excluded,,length_cap_reached
+592,TRBFNLX128F4249752,blues,0.243585,excluded,,length_cap_reached
+593,TRBHHGM12903CFD7C3,garage,0.243585,excluded,,length_cap_reached
+594,TRBIEIZ128F148D778,hip-hop,0.243585,excluded,,length_cap_reached
+595,TRABUCZ128F424163A,punk rock,0.241389,excluded,,length_cap_reached
+596,TRASYVP12903D09590,grunge,0.241389,excluded,,length_cap_reached
+597,TRAULOO12903CF47B6,gothic metal,0.241389,excluded,,length_cap_reached
+598,TRBGCAK128F425F3CC,electronic,0.241389,excluded,,length_cap_reached
+599,TRAARHS128F931689D,indie,0.241098,excluded,,length_cap_reached
+600,TRAIVNL128F422CFE2,punk,0.241098,excluded,,length_cap_reached
+601,TRAJNWY128E078907F,electronic,0.241098,excluded,,length_cap_reached
+602,TRAJPIQ128F14819A8,dance-punk,0.241098,excluded,,length_cap_reached
+603,TRAQGNV128C7196894,punk rock,0.241098,excluded,,length_cap_reached
+604,TRAQHLV12903CB6474,die wahren perlen deutschsprachiger popmusik,0.241098,excluded,,length_cap_reached
+605,TRAVVBW128F42819B2,indie,0.241098,excluded,,length_cap_reached
+606,TRBHDTL128F1468F7D,punk,0.241098,excluded,,length_cap_reached
+607,TRBIFGK128F92F23A2,indie rock,0.241098,excluded,,length_cap_reached
+608,TRASNRV128F931AE2E,industrial,0.238262,excluded,,length_cap_reached
+609,TRAJYRB128F1491A59,blues,0.23591,excluded,,length_cap_reached
+610,TRAATMY128F149562F,rock,0.231633,excluded,,length_cap_reached
+611,TRACALZ12903CDCFBB,rock,0.231633,excluded,,length_cap_reached
+612,TRACTWW12903CB7550,rock,0.231633,excluded,,length_cap_reached
+613,TRADXCO128F426B26D,rock,0.231633,excluded,,length_cap_reached
+614,TRADZXK128F429DB92,rock,0.231633,excluded,,length_cap_reached
+615,TRAEOOH128F934ACD4,rock,0.231633,excluded,,length_cap_reached
+616,TRAEVHU128F92D9EA0,rock,0.231633,excluded,,length_cap_reached
+617,TRAFBGP128F1451DFF,rock,0.231633,excluded,,length_cap_reached
+618,TRAFLZY128F148959F,rock,0.231633,excluded,,length_cap_reached
+619,TRAFMPX128F4246C49,rock,0.231633,excluded,,length_cap_reached
+620,TRAGBPI128E0792998,rock,0.231633,excluded,,length_cap_reached
+621,TRAGSKH12903CCCAA9,rock,0.231633,excluded,,length_cap_reached
+622,TRAHXBP128F92E7528,rock,0.231633,excluded,,length_cap_reached
+623,TRAHXWI128F428B7DA,rock,0.231633,excluded,,length_cap_reached
+624,TRAIELD128F92DC682,rock,0.231633,excluded,,length_cap_reached
+625,TRAJBGL128F145C7A8,rock,0.231633,excluded,,length_cap_reached
+626,TRAJJBG128F148A7CA,rock,0.231633,excluded,,length_cap_reached
+627,TRAKQFZ128F429D3C9,rock,0.231633,excluded,,length_cap_reached
+628,TRALQZK128F429802D,rock,0.231633,excluded,,length_cap_reached
+629,TRANCOS128F4267DFB,rock,0.231633,excluded,,length_cap_reached
+630,TRANHQG12903CF5C15,rock,0.231633,excluded,,length_cap_reached
+631,TRANQQZ128E079224E,rock,0.231633,excluded,,length_cap_reached
+632,TRANRGP128F1465737,rock,0.231633,excluded,,length_cap_reached
+633,TRANRKN128F93127BB,rock,0.231633,excluded,,length_cap_reached
+634,TRAPEIN128E078892E,rock,0.231633,excluded,,length_cap_reached
+635,TRAPHZY128F149579B,rock,0.231633,excluded,,length_cap_reached
+636,TRAQOXO128F42636BD,rock,0.231633,excluded,,length_cap_reached
+637,TRAQQZN128F931FA31,rock,0.231633,excluded,,length_cap_reached
+638,TRARWYG128F424D766,rock,0.231633,excluded,,length_cap_reached
+639,TRASHPV128F4281CB1,rock,0.231633,excluded,,length_cap_reached
+640,TRASVRH128F14AC24A,rock,0.231633,excluded,,length_cap_reached
+641,TRATHTH128F42BC347,rock,0.231633,excluded,,length_cap_reached
+642,TRAUOPE128EF367610,rock,0.231633,excluded,,length_cap_reached
+643,TRAUOXB128F146573B,rock,0.231633,excluded,,length_cap_reached
+644,TRAVWTN128F425D2D5,rock,0.231633,excluded,,length_cap_reached
+645,TRAWCUK128F92DE15C,rock,0.231633,excluded,,length_cap_reached
+646,TRAWFNS128F92F42F7,rock,0.231633,excluded,,length_cap_reached
+647,TRAXDAH128F422BBFC,rock,0.231633,excluded,,length_cap_reached
+648,TRAXDNU128F9341CDE,rock,0.231633,excluded,,length_cap_reached
+649,TRAXNKL128F42AFD92,rock,0.231633,excluded,,length_cap_reached
+650,TRAXXOL128F92E7529,rock,0.231633,excluded,,length_cap_reached
+651,TRAXYUH128F149EA4E,rock,0.231633,excluded,,length_cap_reached
+652,TRAYQSZ12903CDCFCB,rock,0.231633,excluded,,length_cap_reached
+653,TRBAIDT128F92CC7ED,rock,0.231633,excluded,,length_cap_reached
+654,TRBAUHT128F92F0657,rock,0.231633,excluded,,length_cap_reached
+655,TRBBIBE128F4226E29,rock,0.231633,excluded,,length_cap_reached
+656,TRBBOKQ128F933AE7C,rock,0.231633,excluded,,length_cap_reached
+657,TRBCMSO128F92E6AE5,rock,0.231633,excluded,,length_cap_reached
+658,TRBDCPM128F9331795,rock,0.231633,excluded,,length_cap_reached
+659,TRBDJNF12903CE6967,rock,0.231633,excluded,,length_cap_reached
+660,TRBDVJF128E078894B,rock,0.231633,excluded,,length_cap_reached
+661,TRBEZUP128F9331747,rock,0.231633,excluded,,length_cap_reached
+662,TRBFTJP128F426AC3F,rock,0.231633,excluded,,length_cap_reached
+663,TRBHJAY128F14A9061,rock,0.231633,excluded,,length_cap_reached
+664,TRALHUV128F92CBAFB,80s,0.226797,excluded,,length_cap_reached
+665,TRAILFA128EF349FE5,industrial,0.226029,excluded,,length_cap_reached
+666,TRAAGPH128F4273C8D,savage garden,0.223022,excluded,,length_cap_reached
+667,TRAAKDG128F42A0ECB,dance,0.223022,excluded,,length_cap_reached
+668,TRAAZQW128F93430DC,folk,0.223022,excluded,,length_cap_reached
+669,TRABQZK128F92F54F4,shakira,0.223022,excluded,,length_cap_reached
+670,TRACFOJ128F4253EFA,nick cave,0.223022,excluded,,length_cap_reached
+671,TRACPZH128F9311764,indie,0.223022,excluded,,length_cap_reached
+672,TRAEUIW12903D018F0,jack johnson,0.223022,excluded,,length_cap_reached
+673,TRAEZLQ128F427F954,indie,0.223022,excluded,,length_cap_reached
+674,TRAGFPP128E078F34C,alternative,0.223022,excluded,,length_cap_reached
+675,TRAGMXK128F9305A50,experimental,0.223022,excluded,,length_cap_reached
+676,TRAGQBY128F42635B7,singer-songwriter,0.223022,excluded,,length_cap_reached
+677,TRAHWNG128F932AFB7,soul,0.223022,excluded,,length_cap_reached
+678,TRAIVRW128F930F6DD,female vocalists,0.223022,excluded,,length_cap_reached
+679,TRALQGZ128F146F500,acoustic,0.223022,excluded,,length_cap_reached
+680,TRANAHT128E07895F8,acoustic,0.223022,excluded,,length_cap_reached
+681,TRANCFS12903C9B61B,indie,0.223022,excluded,,length_cap_reached
+682,TRANCSE128F93044F1,latin,0.223022,excluded,,length_cap_reached
+683,TRANQLL128F92F5263,shakira,0.223022,excluded,,length_cap_reached
+684,TRANTAD128F92FD042,singer-songwriter,0.223022,excluded,,length_cap_reached
+685,TRAOWBP128F4257C64,acoustic,0.223022,excluded,,length_cap_reached
+686,TRAOXXM128F932FC70,rnb,0.223022,excluded,,length_cap_reached
+687,TRAPRQZ128F427E188,acoustic,0.223022,excluded,,length_cap_reached
+688,TRAQEKD128F425293D,alternative rock,0.223022,excluded,,length_cap_reached
+689,TRAQEOP12903CA65E2,shakira,0.223022,excluded,,length_cap_reached
+690,TRAQICU128F4295BED,latin,0.223022,excluded,,length_cap_reached
+691,TRAROQC128F4273979,latin,0.223022,excluded,,length_cap_reached
+692,TRARPCK128F92FEA7F,indie,0.223022,excluded,,length_cap_reached
+693,TRASBVS12903CF4537,soul,0.223022,excluded,,length_cap_reached
+694,TRATBLI128F92F78F8,john mayer,0.223022,excluded,,length_cap_reached
+695,TRATQHP128F421CDBA,soul,0.223022,excluded,,length_cap_reached
+696,TRATQQC128F423851A,soul,0.223022,excluded,,length_cap_reached
+697,TRAUFCU128F42882B7,acoustic,0.223022,excluded,,length_cap_reached
+698,TRAUJKJ128E078FA48,acoustic,0.223022,excluded,,length_cap_reached
+699,TRAUOEY128F421CBD3,soul,0.223022,excluded,,length_cap_reached
+700,TRAYQLP128F92FA224,rnb,0.223022,excluded,,length_cap_reached
+701,TRAZTBZ12903CFB6DA,swedish,0.223022,excluded,,length_cap_reached
+702,TRAZVFJ128F9310CE2,radiohead,0.223022,excluded,,length_cap_reached
+703,TRAZWDT128F4241B14,singer-songwriter,0.223022,excluded,,length_cap_reached
+704,TRAZWGK128F93141E3,dance,0.223022,excluded,,length_cap_reached
+705,TRBBCUA128E078FA50,acoustic,0.223022,excluded,,length_cap_reached
+706,TRBBQFV128F4252EFF,acoustic,0.223022,excluded,,length_cap_reached
+707,TRBCUBV128F145F7E9,acoustic,0.223022,excluded,,length_cap_reached
+708,TRBDDMU128F9350474,rock argentino,0.223022,excluded,,length_cap_reached
+709,TRBFJPO128F4295BE3,latin,0.223022,excluded,,length_cap_reached
+710,TRBFURI128F1455498,female vocalists,0.223022,excluded,,length_cap_reached
+711,TRBGEUJ128F42B06B8,female vocalists,0.223022,excluded,,length_cap_reached
+712,TRBGRXO128F4282115,acoustic,0.223022,excluded,,length_cap_reached
+713,TRBHHUF12903CAA46B,acoustic,0.223022,excluded,,length_cap_reached
+714,TRBHVLH128F92F2369,singer-songwriter,0.223022,excluded,,length_cap_reached
+715,TRAHLQF12903CDB530,headbangers ball,0.222966,excluded,,length_cap_reached
+716,TRAONBN128F145F0C0,70s british hard rock,0.222966,excluded,,length_cap_reached
+717,TRABXLH128F935F8E7,oldies,0.21996,excluded,,length_cap_reached
+718,TRAHBWE128F9349247,oldies,0.21996,excluded,,length_cap_reached
+719,TRAHFAO12903CBCD36,instrumental,0.21996,excluded,,length_cap_reached
+720,TRBBCOM128F92F1208,60s,0.21996,excluded,,length_cap_reached
+721,TRBHTWC128F1488B7B,french,0.217545,excluded,,length_cap_reached
+722,TRAAIYR12903CD290D,hard rock,0.21345,excluded,,length_cap_reached
+723,TRAAMES128F42AF068,grunge,0.21345,excluded,,length_cap_reached
+724,TRAANTZ128E0792529,industrial,0.21345,excluded,,length_cap_reached
+725,TRAASKQ128F4265E04,cover,0.21345,excluded,,length_cap_reached
+726,TRAATNJ128F42631BA,nu metal,0.21345,excluded,,length_cap_reached
+727,TRAFDRG128F42797B6,grunge,0.21345,excluded,,length_cap_reached
+728,TRAGBBI128F4261828,instrumental rock,0.21345,excluded,,length_cap_reached
+729,TRAGRRP12903CD2911,hard rock,0.21345,excluded,,length_cap_reached
+730,TRAIOWX128F14750E5,alternative rock,0.21345,excluded,,length_cap_reached
+731,TRALPKG12903CDCA8A,alternative rock,0.21345,excluded,,length_cap_reached
+732,TRANCCN128E0794B18,alternative rock,0.21345,excluded,,length_cap_reached
+733,TRAOOGD128F92E4768,grunge,0.21345,excluded,,length_cap_reached
+734,TRAPHZT128F147A02B,punk,0.21345,excluded,,length_cap_reached
+735,TRARINE128F4280B9C,hard rock,0.21345,excluded,,length_cap_reached
+736,TRAUXNO128F42774A0,grunge,0.21345,excluded,,length_cap_reached
+737,TRBBXMC128F422C330,hard rock,0.21345,excluded,,length_cap_reached
+738,TRBHKMT12903CE4757,guitar virtuoso,0.21345,excluded,,length_cap_reached
+739,TRAACER128F4290F96,mathcore,0.210445,excluded,,length_cap_reached
+740,TRAAGCZ128F93210FD,hip-hop,0.210445,excluded,,length_cap_reached
+741,TRAAIHL128F92E6DDA,rnb,0.210445,excluded,,length_cap_reached
+742,TRABRMJ128E0780E42,punk rock,0.210445,excluded,,length_cap_reached
+743,TRABVIU128E0780DA0,alternative,0.210445,excluded,,length_cap_reached
+744,TRABVVN12903CB6445,late night,0.210445,excluded,,length_cap_reached
+745,TRACFAP128E07862C1,dmx,0.210445,excluded,,length_cap_reached
+746,TRACSBL128F42480E8,electroclash,0.210445,excluded,,length_cap_reached
+747,TRACSIE128F427F98E,latin,0.210445,excluded,,length_cap_reached
+748,TRACWCV128F429D196,60s,0.210445,excluded,,length_cap_reached
+749,TRADDXS12903CEDB38,dance,0.210445,excluded,,length_cap_reached
+750,TRADMUH128F146D3CD,hip hop,0.210445,excluded,,length_cap_reached
+751,TRADQJL128F92D9957,electronic,0.210445,excluded,,length_cap_reached
+752,TRADRJK128E078F041,cover,0.210445,excluded,,length_cap_reached
+753,TRAEQOS128F92EFD47,piano rock,0.210445,excluded,,length_cap_reached
+754,TRAFBPN128F428B8CF,rock-pop chileno,0.210445,excluded,,length_cap_reached
+755,TRAFKRE128F932002B,cover,0.210445,excluded,,length_cap_reached
+756,TRAFQFM128E078EC97,rap,0.210445,excluded,,length_cap_reached
+757,TRAFTDN128F427C29D,electronic,0.210445,excluded,,length_cap_reached
+758,TRAFWEV128F428D391,alternative,0.210445,excluded,,length_cap_reached
+759,TRAGYJM128EF3466D2,alternative rock,0.210445,excluded,,length_cap_reached
+760,TRAHIPA128F4279744,alternative,0.210445,excluded,,length_cap_reached
+761,TRAHKLC12903CC632E,hip-hop,0.210445,excluded,,length_cap_reached
+762,TRAIPST128F9302AE9,rap,0.210445,excluded,,length_cap_reached
+763,TRAJFFF128F429874A,alternative rock,0.210445,excluded,,length_cap_reached
+764,TRAJRIT128F92F4352,rnb,0.210445,excluded,,length_cap_reached
+765,TRAJZIS128F4288E43,70s,0.210445,excluded,,length_cap_reached
+766,TRALBIA128F4272082,christian,0.210445,excluded,,length_cap_reached
+767,TRALDUE128F9312AF2,indie,0.210445,excluded,,length_cap_reached
+768,TRALEPN128F9311179,indie rock,0.210445,excluded,,length_cap_reached
+769,TRALPQV128F424F989,deutsch,0.210445,excluded,,length_cap_reached
+770,TRAMCJI128F93335AF,indie,0.210445,excluded,,length_cap_reached
+771,TRAMLGE128F92F81DD,female vocalists,0.210445,excluded,,length_cap_reached
+772,TRAMXDO128E0798C6A,espanol,0.210445,excluded,,length_cap_reached
+773,TRAOHJU128E0780CD2,british,0.210445,excluded,,length_cap_reached
+774,TRAPDIO128F933C680,canadian,0.210445,excluded,,length_cap_reached
+775,TRAPMTM128F425B4E5,alternative rock,0.210445,excluded,,length_cap_reached
+776,TRAQAIW12903C9B61E,indie,0.210445,excluded,,length_cap_reached
+777,TRAQDXM128F421F033,christmas,0.210445,excluded,,length_cap_reached
+778,TRAQQHJ128F9345DC3,punk,0.210445,excluded,,length_cap_reached
+779,TRAQQVR128F4255A3A,alternative,0.210445,excluded,,length_cap_reached
+780,TRAQVTO128F14696A6,electronic,0.210445,excluded,,length_cap_reached
+781,TRARAIO128E0780FDE,indie,0.210445,excluded,,length_cap_reached
+782,TRARFOC128F92ED401,rap,0.210445,excluded,,length_cap_reached
+783,TRARODV128F1460DBC,emo,0.210445,excluded,,length_cap_reached
+784,TRASRVD128F933624A,spanish,0.210445,excluded,,length_cap_reached
+785,TRASRXK128F9311176,indie rock,0.210445,excluded,,length_cap_reached
+786,TRASTRY12903CB4B0A,indie,0.210445,excluded,,length_cap_reached
+787,TRASUJK128E0789C12,britpop,0.210445,excluded,,length_cap_reached
+788,TRASVKL128F931652A,british,0.210445,excluded,,length_cap_reached
+789,TRASWIV128E0788A84,alternative rock,0.210445,excluded,,length_cap_reached
+790,TRASYIH12903D08529,nick jonas and the administration,0.210445,excluded,,length_cap_reached
+791,TRATBVA128F9312ACC,alternative rock,0.210445,excluded,,length_cap_reached
+792,TRATDKN128E078EDB3,rap,0.210445,excluded,,length_cap_reached
+793,TRATTGW128F427A82D,alternative,0.210445,excluded,,length_cap_reached
+794,TRAUEYX12903CEAF48,indie pop,0.210445,excluded,,length_cap_reached
+795,TRAUONA128F4255A38,alternative,0.210445,excluded,,length_cap_reached
+796,TRAUZTR128F9351D2A,michael jackson,0.210445,excluded,,length_cap_reached
+797,TRAUZVU12903CC050D,60s,0.210445,excluded,,length_cap_reached
+798,TRAVLWL128F424EF6A,emo,0.210445,excluded,,length_cap_reached
+799,TRAWOCY128F145B051,oldies,0.210445,excluded,,length_cap_reached
+800,TRAWRKT128E0788857,acoustic,0.210445,excluded,,length_cap_reached
+801,TRAYDGF128F932F43D,2000s,0.210445,excluded,,length_cap_reached
+802,TRAYDXM128F9317358,indie rock,0.210445,excluded,,length_cap_reached
+803,TRAYJLA128F4267A6A,electronic,0.210445,excluded,,length_cap_reached
+804,TRAYJOF128F92F9EEA,female vocalists,0.210445,excluded,,length_cap_reached
+805,TRAYQLF128F933B4EF,rnb,0.210445,excluded,,length_cap_reached
+806,TRAYSMW128F1468307,cover,0.210445,excluded,,length_cap_reached
+807,TRAZDKY128F4235130,finnish,0.210445,excluded,,length_cap_reached
+808,TRAZDTT128F9346306,60s,0.210445,excluded,,length_cap_reached
+809,TRAZLXH12903CF7D51,alternative,0.210445,excluded,,length_cap_reached
+810,TRAZORC128F426C323,electronic,0.210445,excluded,,length_cap_reached
+811,TRAZRAR128F1477778,60s,0.210445,excluded,,length_cap_reached
+812,TRAZXNQ128F93351C4,rock en espanol,0.210445,excluded,,length_cap_reached
+813,TRAZYYE128F1456A0E,60s,0.210445,excluded,,length_cap_reached
+814,TRBABJK128F93330A6,jazz,0.210445,excluded,,length_cap_reached
+815,TRBAMEV128F148C814,indie,0.210445,excluded,,length_cap_reached
+816,TRBAUDE128F428E913,dutch,0.210445,excluded,,length_cap_reached
+817,TRBAWKB128F931BAEE,electronic,0.210445,excluded,,length_cap_reached
+818,TRBBMXI128F428CCD1,death metal,0.210445,excluded,,length_cap_reached
+819,TRBBOUO128F92D246B,jecks,0.210445,excluded,,length_cap_reached
+820,TRBBVNR128E078E1E4,hip-hop,0.210445,excluded,,length_cap_reached
+821,TRBCGRI128F93355E9,indie,0.210445,excluded,,length_cap_reached
+822,TRBCVBK128E07813EC,alternative,0.210445,excluded,,length_cap_reached
+823,TRBDDKF128F426BF7B,folk,0.210445,excluded,,length_cap_reached
+824,TRBDYFY128F93330AA,jazz,0.210445,excluded,,length_cap_reached
+825,TRBFLIP128E07897B4,britpop,0.210445,excluded,,length_cap_reached
+826,TRBGKGR128F92EE206,mpb,0.210445,excluded,,length_cap_reached
+827,TRBHBGB128F931E4CF,1972,0.210445,excluded,,length_cap_reached
+828,TRBHRGA128F4268884,alternative,0.210445,excluded,,length_cap_reached
+829,TRBIHAU128F425C317,alternative,0.210445,excluded,,length_cap_reached
+830,TRAATPA128F146753C,hair metal,0.207608,excluded,,length_cap_reached
+831,TRAFRYJ128F92E638B,industrial,0.207608,excluded,,length_cap_reached
+832,TRAHCVT128F4282806,hard rock,0.207608,excluded,,length_cap_reached
+833,TRAJIKY128F932AD73,80s,0.207608,excluded,,length_cap_reached
+834,TRAJIUK128F42668E6,hard rock,0.207608,excluded,,length_cap_reached
+835,TRAMPPS128F14A9068,80s,0.207608,excluded,,length_cap_reached
+836,TRAPIIR128F42AEE95,rap,0.207608,excluded,,length_cap_reached
+837,TRAPLMD128F932FF43,thrash metal,0.207608,excluded,,length_cap_reached
+838,TRARIIY128F147187D,hard rock,0.207608,excluded,,length_cap_reached
+839,TRAZDGW128F424A4A3,bon jovi cover,0.207608,excluded,,length_cap_reached
+840,TRBFJKU12903CEDB0C,psychedelic,0.207608,excluded,,length_cap_reached
+841,TRBFUXQ128F145B135,hard rock,0.207608,excluded,,length_cap_reached
+842,TRAGQLG128F9351109,drjazzmrfunkmusic,0.207318,excluded,,length_cap_reached
+843,TRAMAKK128F9301EE4,80s,0.207318,excluded,,length_cap_reached
+844,TRAUNEL128F1467D5C,new wave,0.207318,excluded,,length_cap_reached
+845,TRAYESZ128F1458FAE,post-punk,0.207318,excluded,,length_cap_reached
+846,TRBBAHD128F428E0FE,post-punk,0.207318,excluded,,length_cap_reached
+847,TRBDNIZ128E0781CCF,80s,0.207318,excluded,,length_cap_reached
+848,TRACAUP128F931AC60,instrumental,0.204967,excluded,,length_cap_reached
+849,TRACCUS128F92E1FEB,instrumental,0.204967,excluded,,length_cap_reached
+850,TRBEQFT128F146BD6D,soundtrack,0.204967,excluded,,length_cap_reached
+851,TRAVYXL128EF34722F,doom metal,0.194667,excluded,,length_cap_reached
+852,TRBARSX12903D03AE5,soul,0.19392,excluded,,length_cap_reached
+853,TRAAFMS128F933AB23,rock argentino,0.189242,excluded,,length_cap_reached
+854,TRAGLMS128F425FE0A,christian,0.18618,excluded,,length_cap_reached
+855,TRARBJW128E0788A1A,1988,0.18618,excluded,,length_cap_reached
+856,TRATQQQ128F93084BE,soundtrack,0.18618,excluded,,length_cap_reached
+857,TRADDRF128F145869F,new wave,0.183693,excluded,,length_cap_reached
+858,TRAMMDO128E0781A5D,new wave,0.183693,excluded,,length_cap_reached
+859,TRAVZWX128F92EC110,80s,0.183693,excluded,,length_cap_reached
+860,TRAXLZU12903D05F94,80s,0.183693,excluded,,length_cap_reached
+861,TRABCXB128F4286BD3,guitar virtuoso,0.182508,excluded,,length_cap_reached
+862,TRAEADK128F4270AA6,ambient,0.182508,excluded,,length_cap_reached
+863,TRAHUZS12903C9D9DD,nu metal,0.182508,excluded,,length_cap_reached
+864,TRAJXNB128F4261F43,guitar virtuoso,0.182508,excluded,,length_cap_reached
+865,TRALDDK128F9300AC5,post-hardcore,0.182508,excluded,,length_cap_reached
+866,TRANCJG128F14528B4,post-hardcore,0.182508,excluded,,length_cap_reached
+867,TRANJGM128F427A41B,symphonic metal,0.182508,excluded,,length_cap_reached
+868,TRARVEY128F9300AC3,post-hardcore,0.182508,excluded,,length_cap_reached
+869,TRASBZK128F42692CA,metal,0.182508,excluded,,length_cap_reached
+870,TRASQHA128F4280A1D,guitar virtuoso,0.182508,excluded,,length_cap_reached
+871,TRAVYPH128F149B902,african,0.182508,excluded,,length_cap_reached
+872,TRAWFYX12903CA4766,favourites,0.182508,excluded,,length_cap_reached
+873,TRAXDFV128F93180C0,post-rock,0.182508,excluded,,length_cap_reached
+874,TRAXXWU12903CF2094,gothic metal,0.182508,excluded,,length_cap_reached
+875,TRBBMIF12903CA1EB0,exploding chimney,0.182508,excluded,,length_cap_reached
+876,TRBGFXC12903D01967,gothic metal,0.182508,excluded,,length_cap_reached
+877,TRBHKXX128F4252D02,alternative,0.182508,excluded,,length_cap_reached
+878,TRAEBQO128F933C48A,1960s,0.181342,excluded,,length_cap_reached
+879,TRATCLI128F422BCF8,soft vocals,0.181342,excluded,,length_cap_reached
+880,TRAUORF128F424D160,african,0.181342,excluded,,length_cap_reached
+881,TRASFNS128F145247D,indie rock,0.178632,excluded,,length_cap_reached
+882,TRADYFD12903CE4161,punk,0.176664,excluded,,length_cap_reached
+883,TRAEXEA128F933C67D,canadian,0.176664,excluded,,length_cap_reached
+884,TRAFBML128F93163FB,1988,0.176664,excluded,,length_cap_reached
+885,TRAJNIL12903D15541,punk,0.176664,excluded,,length_cap_reached
+886,TRALBOZ128F4251490,punk,0.176664,excluded,,length_cap_reached
+887,TRALENK128F92F39E9,hardcore,0.176664,excluded,,length_cap_reached
+888,TRANDEK128F4259EBC,punk,0.176664,excluded,,length_cap_reached
+889,TRAOHPG12903CE4155,punk,0.176664,excluded,,length_cap_reached
+890,TRAPBSY128F4282B60,reggae,0.176664,excluded,,length_cap_reached
+891,TRAPEHR128E0786D5A,industrial,0.176664,excluded,,length_cap_reached
+892,TRARHCB128F148D1B0,horror punk,0.176664,excluded,,length_cap_reached
+893,TRARMHA128F92E7D32,punk,0.176664,excluded,,length_cap_reached
+894,TRARREF128F422FD96,punk,0.176664,excluded,,length_cap_reached
+895,TRASXZE128F427F156,indie pop,0.176664,excluded,,length_cap_reached
+896,TRAULZG128F425E06C,punk,0.176664,excluded,,length_cap_reached
+897,TRAUMNH128F92FB67F,blues rock,0.176664,excluded,,length_cap_reached
+898,TRBAAOT128F4261A18,80s,0.176664,excluded,,length_cap_reached
+899,TRBAPVL128F428CD92,old school,0.176664,excluded,,length_cap_reached
+900,TRBDHUR128F423EC48,80s,0.176664,excluded,,length_cap_reached
+901,TRBEHEY128F92C2852,guitar,0.176664,excluded,,length_cap_reached
+902,TRBGNAF128F9339532,rock argentino,0.176664,excluded,,length_cap_reached
+903,TRAETAG128F93385AE,chanson francaise,0.165618,excluded,,length_cap_reached
+904,TRAKTWZ128EF35E206,80s,0.165618,excluded,,length_cap_reached
+905,TRAMBHU128F425A620,80s,0.165618,excluded,,length_cap_reached
+906,TRAMFFW128F4263AD7,soft rock,0.165618,excluded,,length_cap_reached
+907,TRAVMRI128F4259E76,soul,0.165618,excluded,,length_cap_reached
+908,TRAWGXD128F428A36B,country,0.165618,excluded,,length_cap_reached
+909,TRAYZBA128F4264551,female vocalists,0.165618,excluded,,length_cap_reached
+910,TRBCNGI128F42597B4,soul,0.165618,excluded,,length_cap_reached
+911,TRBDXIM128F427ABDA,michael jackson,0.165618,excluded,,length_cap_reached
+912,TRAGTXE128F4229231,hard rock,0.157494,excluded,,length_cap_reached
+913,TRBCGXN128F148C0CD,glam rock,0.157494,excluded,,length_cap_reached
+914,TRBHKUE128F429215D,british hard rock,0.157494,excluded,,length_cap_reached
+915,TRAHVRW128F92F15FE,classic country,0.153039,excluded,,length_cap_reached
+916,TRAHXKA128F426E903,80s,0.153039,excluded,,length_cap_reached
+917,TRAJHHJ128F4279625,tantotempotaste,0.153039,excluded,,length_cap_reached
+918,TRALNOD128F4264AEB,80s,0.153039,excluded,,length_cap_reached
+919,TRAPPUJ128F931B3D1,ndw,0.153039,excluded,,length_cap_reached
+920,TRAQRTQ128F42707EA,80s,0.153039,excluded,,length_cap_reached
+921,TRAWFZB128F92FFB99,80s,0.153039,excluded,,length_cap_reached
+922,TRAWTUV128F426DD46,madchester,0.153039,excluded,,length_cap_reached
+923,TRAZSJY128F92CCEA0,80s,0.153039,excluded,,length_cap_reached
+924,TRBBMHE128EF341D09,80s,0.153039,excluded,,length_cap_reached
+925,TRBBOUN128F425A4E6,90s,0.153039,excluded,,length_cap_reached
+926,TRBDCAB128F92F7EE4,1980s,0.153039,excluded,,length_cap_reached
+927,TRBHLTT128F425C30D,reggae,0.153039,excluded,,length_cap_reached
+928,TRBIANT128F425C487,80s,0.153039,excluded,,length_cap_reached
+929,TRBIGRY128F42597B3,soul,0.153039,excluded,,length_cap_reached
+930,TRAAGPJ128F428CD1B,stoner rock,0.147978,excluded,,length_cap_reached
+931,TRAAJJG128F4284B27,alternative rock,0.147978,excluded,,length_cap_reached
+932,TRAASUZ128F9314950,nu metal,0.147978,excluded,,length_cap_reached
+933,TRAATGM12903C9CD7C,alternative,0.147978,excluded,,length_cap_reached
+934,TRABHVL128F92EFB0E,metalcore,0.147978,excluded,,length_cap_reached
+935,TRABUMO12903CBE25F,metal,0.147978,excluded,,length_cap_reached
+936,TRACCVZ128F4291A8A,progressive metal,0.147978,excluded,,length_cap_reached
+937,TRACOHQ128F424C5EF,metalcore,0.147978,excluded,,length_cap_reached
+938,TRACTIE128F92E473B,grunge,0.147978,excluded,,length_cap_reached
+939,TRACWBO128F92F322F,blues,0.147978,excluded,,length_cap_reached
+940,TRADFID128F4267231,grunge,0.147978,excluded,,length_cap_reached
+941,TRADFII128F931FC9F,thrash metal,0.147978,excluded,,length_cap_reached
+942,TRADHLI128F428FEFD,punk,0.147978,excluded,,length_cap_reached
+943,TRAECVW128E078884D,hardcore,0.147978,excluded,,length_cap_reached
+944,TRAEGFX12903CF8E7B,hard rock,0.147978,excluded,,length_cap_reached
+945,TRAEOUE128F93187B9,alternative metal,0.147978,excluded,,length_cap_reached
+946,TRAFAJC128E078888B,stoner rock,0.147978,excluded,,length_cap_reached
+947,TRAGNGY12903C9CD76,hard rock,0.147978,excluded,,length_cap_reached
+948,TRAGOVG128F42A963D,nu metal,0.147978,excluded,,length_cap_reached
+949,TRAGTUL12903CC81E8,mathcore,0.147978,excluded,,length_cap_reached
+950,TRAGYDZ12903D0957F,grunge,0.147978,excluded,,length_cap_reached
+951,TRAHHVA128F424ED80,glam rock,0.147978,excluded,,length_cap_reached
+952,TRAHUQT128F4281228,cover,0.147978,excluded,,length_cap_reached
+953,TRAHXGG128F9350452,nu metal,0.147978,excluded,,length_cap_reached
+954,TRAIAMS128EF34DC1B,hard rock,0.147978,excluded,,length_cap_reached
+955,TRAIHPX128F428081B,alternative rock,0.147978,excluded,,length_cap_reached
+956,TRAIJMG12903D08168,grunge,0.147978,excluded,,length_cap_reached
+957,TRAJAZP128F4290FF9,progressive metal,0.147978,excluded,,length_cap_reached
+958,TRAKNBW128F4249FD8,punk,0.147978,excluded,,length_cap_reached
+959,TRANLRX128F4259030,industrial,0.147978,excluded,,length_cap_reached
+960,TRAPGKY128F42972A9,post-hardcore,0.147978,excluded,,length_cap_reached
+961,TRAQEVV128EF34E413,alternative rock,0.147978,excluded,,length_cap_reached
+962,TRAQSPU128F422146B,cover,0.147978,excluded,,length_cap_reached
+963,TRARANL128F1478789,punk rock,0.147978,excluded,,length_cap_reached
+964,TRARKRC128E0791D82,hard rock,0.147978,excluded,,length_cap_reached
+965,TRARUOP12903CF2384,metalcore,0.147978,excluded,,length_cap_reached
+966,TRASAIH128F931F567,post-hardcore,0.147978,excluded,,length_cap_reached
+967,TRASLHI128EF343C84,indie,0.147978,excluded,,length_cap_reached
+968,TRAUXSO128F42B863C,grunge,0.147978,excluded,,length_cap_reached
+969,TRAVOVP128E078512B,nu metal,0.147978,excluded,,length_cap_reached
+970,TRAVQBP128F145BB9B,alternative rock,0.147978,excluded,,length_cap_reached
+971,TRAVRPL128F145E874,hard rock,0.147978,excluded,,length_cap_reached
+972,TRAVVIV128F932617C,ballad,0.147978,excluded,,length_cap_reached
+973,TRAWBOE128F92F2F46,grunge,0.147978,excluded,,length_cap_reached
+974,TRAWFGF128E0792FE0,hard rock,0.147978,excluded,,length_cap_reached
+975,TRAWNOJ128F4241807,copertura,0.147978,excluded,,length_cap_reached
+976,TRAXWDS12903CEE35E,hard rock,0.147978,excluded,,length_cap_reached
+977,TRAYLKH128F427BCCC,cover,0.147978,excluded,,length_cap_reached
+978,TRBBJAJ128F425DA40,alternative rock,0.147978,excluded,,length_cap_reached
+979,TRBBKLD128F424ABF5,sludge,0.147978,excluded,,length_cap_reached
+980,TRBCMJT128F14B12CC,metal,0.147978,excluded,,length_cap_reached
+981,TRBCQLB128F9332CF4,male vocalists,0.147978,excluded,,length_cap_reached
+982,TRBCSSE12903CBE261,metal,0.147978,excluded,,length_cap_reached
+983,TRBCYOI128F1455566,hip-hop,0.147978,excluded,,length_cap_reached
+984,TRBDBVM128F427BCC9,heavy metal,0.147978,excluded,,length_cap_reached
+985,TRBDMDS128F930B8F1,alternative metal,0.147978,excluded,,length_cap_reached
+986,TRBEEEP128F426C17D,post-hardcore,0.147978,excluded,,length_cap_reached
+987,TRBEHNT128E0792546,stoner rock,0.147978,excluded,,length_cap_reached
+988,TRBEOSC128F426AB23,alternative metal,0.147978,excluded,,length_cap_reached
+989,TRBFCSV128F92EF7B9,metalcore,0.147978,excluded,,length_cap_reached
+990,TRBFEIX128F426A5F8,grunge,0.147978,excluded,,length_cap_reached
+991,TRBGBGO128F4264203,hard rock,0.147978,excluded,,length_cap_reached
+992,TRBGRVF12903C9F806,blues rock,0.147978,excluded,,length_cap_reached
+993,TRBGWWM12903CCE627,alternative,0.147978,excluded,,length_cap_reached
+994,TRACUXJ128E0785F2B,post-punk,0.147689,excluded,,length_cap_reached
+995,TRAIVLC12903CF3A0C,reggae,0.147689,excluded,,length_cap_reached
+996,TRASYQQ128F425092B,remix,0.147689,excluded,,length_cap_reached
+997,TRBFHCP128F4265101,dub,0.147689,excluded,,length_cap_reached
+998,TRBHHMI128F426779C,chad stewart,0.147689,excluded,,length_cap_reached
+999,TRBIBGN128F42ADC66,alternative,0.147689,excluded,,length_cap_reached
+1000,TRAABLR128F423B7E3,blues,0.139128,excluded,,length_cap_reached
+1001,TRALSIS128F4223DAC,blues,0.139128,excluded,,length_cap_reached
+1002,TRABZRZ128F42628AD,blues,0.129613,excluded,,length_cap_reached
+1003,TRADQBK128F92E8B5F,singer-songwriter,0.129613,excluded,,length_cap_reached
+1004,TRAIAUB12903CDFB3D,reggae,0.129613,excluded,,length_cap_reached
+1005,TRAIKSH128E07816DF,alternative,0.129613,excluded,,length_cap_reached
+1006,TRAJHCS128F93192B5,francais,0.129613,excluded,,length_cap_reached
+1007,TRAKHYP128E0792F07,alt-country,0.129613,excluded,,length_cap_reached
+1008,TRAKLEZ128F4270649,female vocalists,0.129613,excluded,,length_cap_reached
+1009,TRAKVSG128EF34E609,french,0.129613,excluded,,length_cap_reached
+1010,TRAMEBP12903CD7EEA,dream,0.129613,excluded,,length_cap_reached
+1011,TRAMIUD128E07825DB,alternative,0.129613,excluded,,length_cap_reached
+1012,TRAMPCW128F92CC022,folk,0.129613,excluded,,length_cap_reached
+1013,TRAMTIH128F933E8E4,00s,0.129613,excluded,,length_cap_reached
+1014,TRAPGPZ128E0784AB8,gospel,0.129613,excluded,,length_cap_reached
+1015,TRAQEOG128F9353981,folk,0.129613,excluded,,length_cap_reached
+1016,TRARAEG128F42647B2,folk,0.129613,excluded,,length_cap_reached
+1017,TRAUOPA128F93537F2,acoustic,0.129613,excluded,,length_cap_reached
+1018,TRAZUVU128F42BABF4,singer-songwriter,0.129613,excluded,,length_cap_reached
+1019,TRBDDQF12903CB309A,indie,0.129613,excluded,,length_cap_reached
+1020,TRBEOYQ128F42955C3,alternative,0.129613,excluded,,length_cap_reached
+1021,TRBGRWH128F92E3551,singer-songwriter,0.129613,excluded,,length_cap_reached
+1022,TRAAIDY128F92CA454,77davez-all-tracks,0.12655,excluded,,length_cap_reached
+1023,TRACABS128E0786B0B,psychedelic rock,0.12655,excluded,,length_cap_reached
+1024,TRACISV12903D13877,country,0.12655,excluded,,length_cap_reached
+1025,TRACMIV128F14898A3,blues rock,0.12655,excluded,,length_cap_reached
+1026,TRAEBPG128F14AA0DA,70s,0.12655,excluded,,length_cap_reached
+1027,TRAFDFD128F14B07AB,female vocalists,0.12655,excluded,,length_cap_reached
+1028,TRAFYVC128F4268F8B,world music,0.12655,excluded,,length_cap_reached
+1029,TRAGGVT128F428F842,christmas,0.12655,excluded,,length_cap_reached
+1030,TRAITXM128F428E1F0,folk,0.12655,excluded,,length_cap_reached
+1031,TRAMFCQ128E078CF59,cactus,0.12655,excluded,,length_cap_reached
+1032,TRANZTY128F424D794,april wine,0.12655,excluded,,length_cap_reached
+1033,TRAOVRK128F4289B3A,oldies,0.12655,excluded,,length_cap_reached
+1034,TRAPKBI128F92F9D33,christmas,0.12655,excluded,,length_cap_reached
+1035,TRAPKJT128F9311D9E,blues,0.12655,excluded,,length_cap_reached
+1036,TRAXGIT128F92E3C04,brems tagg radio,0.12655,excluded,,length_cap_reached
+1037,TRAXGVY128F933E9C9,blues rock,0.12655,excluded,,length_cap_reached
+1038,TRBCNUH12903CC27A5,allboutguitar,0.12655,excluded,,length_cap_reached
+1039,TRBDNZI128F14A9065,blues,0.12655,excluded,,length_cap_reached
+1040,TRBECBY128F148B6F3,anby,0.12655,excluded,,length_cap_reached
+1041,TRACXIF128F425E206,celtic,0.124064,excluded,,length_cap_reached
+1042,TRAIBMN128E0780C96,alternative,0.124064,excluded,,length_cap_reached
+1043,TRAWAXV128F92E075C,dance,0.124064,excluded,,length_cap_reached
+1044,TRATZQS128F1467D4B,new wave,0.121227,excluded,,length_cap_reached
+1045,TRAADRN128F932D607,digital hardcore,0.117035,excluded,,length_cap_reached
+1046,TRAAEWG128F930B3A4,indie rock,0.117035,excluded,,length_cap_reached
+1047,TRAAFJW128F428A424,punk,0.117035,excluded,,length_cap_reached
+1048,TRAANLO128F422AE37,black metal,0.117035,excluded,,length_cap_reached
+1049,TRAAQDJ128F92F95E0,loved,0.117035,excluded,,length_cap_reached
+1050,TRAASQC128F93480F0,punk rock,0.117035,excluded,,length_cap_reached
+1051,TRAATIU128F4291A84,progressive metal,0.117035,excluded,,length_cap_reached
+1052,TRABDSK128F42443F1,emo,0.117035,excluded,,length_cap_reached
+1053,TRABECY128F93317AA,mi,0.117035,excluded,,length_cap_reached
+1054,TRABFKN12903CAF61B,pop punk,0.117035,excluded,,length_cap_reached
+1055,TRABIQP128F427D0DD,punk rock,0.117035,excluded,,length_cap_reached
+1056,TRABJZT128F425C8DC,garage rock,0.117035,excluded,,length_cap_reached
+1057,TRABKJU128F422A7FE,melodic death metal,0.117035,excluded,,length_cap_reached
+1058,TRABLGI128F42B867A,metalcore,0.117035,excluded,,length_cap_reached
+1059,TRABTXS128F92E2FDC,industrial,0.117035,excluded,,length_cap_reached
+1060,TRABXPR128F92F27FE,pop punk,0.117035,excluded,,length_cap_reached
+1061,TRACASH128F931C969,90s,0.117035,excluded,,length_cap_reached
+1062,TRACFZI128E0795424,post-hardcore,0.117035,excluded,,length_cap_reached
+1063,TRACMHD128F931FB14,folk metal,0.117035,excluded,,length_cap_reached
+1064,TRACMIU128F935381D,blues,0.117035,excluded,,length_cap_reached
+1065,TRACMZA128F423DD3E,soundtrack,0.117035,excluded,,length_cap_reached
+1066,TRACRTS128F9300F7E,hardcore punk,0.117035,excluded,,length_cap_reached
+1067,TRACUCT128F422BC2F,indie rock,0.117035,excluded,,length_cap_reached
+1068,TRACVFF12903CF055A,grunge,0.117035,excluded,,length_cap_reached
+1069,TRACZDR128F14599BC,alternative pop rock,0.117035,excluded,,length_cap_reached
+1070,TRADDHL128F92FD8DD,jazz,0.117035,excluded,,length_cap_reached
+1071,TRADJGI128F148B0F6,blues,0.117035,excluded,,length_cap_reached
+1072,TRADJJZ128F9341B40,alternative folk,0.117035,excluded,,length_cap_reached
+1073,TRADMCH128E0784D99,funk,0.117035,excluded,,length_cap_reached
+1074,TRADMFK12903CC2478,stoner,0.117035,excluded,,length_cap_reached
+1075,TRADPDI128F92EBD32,stoner rock,0.117035,excluded,,length_cap_reached
+1076,TRADPQW128F42636C3,alternative rock,0.117035,excluded,,length_cap_reached
+1077,TRADSQZ128F42707D7,grunge,0.117035,excluded,,length_cap_reached
+1078,TRADUCE128F9322F5A,j-rock,0.117035,excluded,,length_cap_reached
+1079,TRAECWI128F4226133,90s,0.117035,excluded,,length_cap_reached
+1080,TRAEDJJ128F426A526,beatles cover,0.117035,excluded,,length_cap_reached
+1081,TRAEFDB128E0783952,soul,0.117035,excluded,,length_cap_reached
+1082,TRAEHNA128F423786C,brasil,0.117035,excluded,,length_cap_reached
+1083,TRAENOH128F933978A,cerati y melero,0.117035,excluded,,length_cap_reached
+1084,TRAEOBA12903CAFAB0,amazing voice,0.117035,excluded,,length_cap_reached
+1085,TRAEPZJ12903CB00C4,metalcore,0.117035,excluded,,length_cap_reached
+1086,TRAEVRI128F93608F3,phil collins,0.117035,excluded,,length_cap_reached
+1087,TRAFAIB128F426E636,alternative rock,0.117035,excluded,,length_cap_reached
+1088,TRAFMME128F932B4D5,post-hardcore,0.117035,excluded,,length_cap_reached
+1089,TRAFPAY128F146B23B,experimental,0.117035,excluded,,length_cap_reached
+1090,TRAFTRY128F9329C26,grunge,0.117035,excluded,,length_cap_reached
+1091,TRAFXHL128F148D175,rickie lee jones,0.117035,excluded,,length_cap_reached
+1092,TRAGALB128EF3676EC,cool,0.117035,excluded,,length_cap_reached
+1093,TRAGALM128F4236C86,hip-hop,0.117035,excluded,,length_cap_reached
+1094,TRAGBHV128F4295074,punk,0.117035,excluded,,length_cap_reached
+1095,TRAGDLM128F4233397,heavy metal,0.117035,excluded,,length_cap_reached
+1096,TRAGEQI128F429154D,stoner rock,0.117035,excluded,,length_cap_reached
+1097,TRAGFVT128F92ECB5D,britpop,0.117035,excluded,,length_cap_reached
+1098,TRAGKXX128F424F3B5,punk,0.117035,excluded,,length_cap_reached
+1099,TRAGPAF128EF34542A,hardcore,0.117035,excluded,,length_cap_reached
+1100,TRAGVKL128F427E896,grunge,0.117035,excluded,,length_cap_reached
+1101,TRAHKRO128F9320EA7,alternative rock,0.117035,excluded,,length_cap_reached
+1102,TRAHMLW128F92D9D82,folk metal,0.117035,excluded,,length_cap_reached
+1103,TRAHNMN128F932DA8E,digital hardcore,0.117035,excluded,,length_cap_reached
+1104,TRAHQHK128F4288FC7,latin,0.117035,excluded,,length_cap_reached
+1105,TRAHVGN128F1484412,genialne,0.117035,excluded,,length_cap_reached
+1106,TRAHZFD12903C9AC7E,funk,0.117035,excluded,,length_cap_reached
+1107,TRAIBXQ128F425E6A5,dance,0.117035,excluded,,length_cap_reached
+1108,TRAICKK128F421847C,blues,0.117035,excluded,,length_cap_reached
+1109,TRAIFSM128F42722F1,christian rock,0.117035,excluded,,length_cap_reached
+1110,TRAISAT128F42BADC2,instrumental rock,0.117035,excluded,,length_cap_reached
+1111,TRAIWNA128F145E2CD,crossover,0.117035,excluded,,length_cap_reached
+1112,TRAIXJZ12903CEDB1D,renegade,0.117035,excluded,,length_cap_reached
+1113,TRAJFDU128F426A5F4,grunge,0.117035,excluded,,length_cap_reached
+1114,TRAJFQF128F92E354E,blues,0.117035,excluded,,length_cap_reached
+1115,TRAJGCF128F1499E61,blues rock,0.117035,excluded,,length_cap_reached
+1116,TRAJHHE128F146815C,blues,0.117035,excluded,,length_cap_reached
+1117,TRAJMEL128F4262B4A,blues rock,0.117035,excluded,,length_cap_reached
+1118,TRAJPCX12903CE8ACB,10s,0.117035,excluded,,length_cap_reached
+1119,TRAJPPJ128F1497140,alchemy,0.117035,excluded,,length_cap_reached
+1120,TRAJSCE128F92F9AC6,mod,0.117035,excluded,,length_cap_reached
+1121,TRAJUPF128F4231A2C,nu-metal,0.117035,excluded,,length_cap_reached
+1122,TRAJZCH128F933D2B7,ska,0.117035,excluded,,length_cap_reached
+1123,TRAJZYI128F424B412,deathrock,0.117035,excluded,,length_cap_reached
+1124,TRAKARY128F427253E,emo,0.117035,excluded,,length_cap_reached
+1125,TRAKCML128F4246E27,latin,0.117035,excluded,,length_cap_reached
+1126,TRAKGDZ12903CE4867,alternative rock,0.117035,excluded,,length_cap_reached
+1127,TRAKOEB128F1478783,punk rock,0.117035,excluded,,length_cap_reached
+1128,TRAKRXM128F4250E33,reggae,0.117035,excluded,,length_cap_reached
+1129,TRAKUJS128F14668E5,alternative rock,0.117035,excluded,,length_cap_reached
+1130,TRAKWZL128F93346EE,faves,0.117035,excluded,,length_cap_reached
+1131,TRAKYNP128F427FB32,real post-hardcore,0.117035,excluded,,length_cap_reached
+1132,TRALKVK128F14554D7,punk,0.117035,excluded,,length_cap_reached
+1133,TRALPGW12903CAFFB5,hardcore,0.117035,excluded,,length_cap_reached
+1134,TRALSWJ128F1467EDE,hardcore punk,0.117035,excluded,,length_cap_reached
+1135,TRALZBV128F4250E60,electronic,0.117035,excluded,,length_cap_reached
+1136,TRALZXZ128F92E26EF,blues rock,0.117035,excluded,,length_cap_reached
+1137,TRAMAHA12903CBF34E,davies,0.117035,excluded,,length_cap_reached
+1138,TRAMBEY128F42408F1,jonathanalive,0.117035,excluded,,length_cap_reached
+1139,TRAMBNF128F426FBB6,heavy metal,0.117035,excluded,,length_cap_reached
+1140,TRAMCND128F1466ACF,hip-hop,0.117035,excluded,,length_cap_reached
+1141,TRAMEVZ128F4280A16,guitar,0.117035,excluded,,length_cap_reached
+1142,TRAMIOZ128F4267176,blues,0.117035,excluded,,length_cap_reached
+1143,TRAMKVB128F4223DAE,blues,0.117035,excluded,,length_cap_reached
+1144,TRAMSAY128F92ED0DD,metalcore,0.117035,excluded,,length_cap_reached
+1145,TRAMTFQ128F9352EDB,pagan metal,0.117035,excluded,,length_cap_reached
+1146,TRAMXGR128E07822CC,acoustic,0.117035,excluded,,length_cap_reached
+1147,TRANAYD128F9322A70,love track,0.117035,excluded,,length_cap_reached
+1148,TRANDBY128F146E8CC,emo,0.117035,excluded,,length_cap_reached
+1149,TRANEMQ128F42A10A8,death metal,0.117035,excluded,,length_cap_reached
+1150,TRANGIY128F427FA51,indie,0.117035,excluded,,length_cap_reached
+1151,TRANRTT128F9347342,punk,0.117035,excluded,,length_cap_reached
+1152,TRANRWM128F42873F9,screamo,0.117035,excluded,,length_cap_reached
+1153,TRANRYX128F1488B7F,french,0.117035,excluded,,length_cap_reached
+1154,TRANTFR128F931C7DA,emo,0.117035,excluded,,length_cap_reached
+1155,TRANUME128E0789D4C,power pop,0.117035,excluded,,length_cap_reached
+1156,TRANYYX128F4276EE3,hip-hop,0.117035,excluded,,length_cap_reached
+1157,TRAOBOQ12903CC1289,proto-punk,0.117035,excluded,,length_cap_reached
+1158,TRAODAO12903CB24B8,absolutely kosher,0.117035,excluded,,length_cap_reached
+1159,TRAOEAQ12903CC26BD,hardcore,0.117035,excluded,,length_cap_reached
+1160,TRAOJMY128E07836D9,metal,0.117035,excluded,,length_cap_reached
+1161,TRAOKXG128F4232497,country rock,0.117035,excluded,,length_cap_reached
+1162,TRAOLZJ12903CB4FC7,britpop,0.117035,excluded,,length_cap_reached
+1163,TRAOMDT12903CF73C3,female vocalists,0.117035,excluded,,length_cap_reached
+1164,TRAPAZE128F4233355,punk,0.117035,excluded,,length_cap_reached
+1165,TRAPCVT128F428A9D0,punk rock,0.117035,excluded,,length_cap_reached
+1166,TRAPFPH128F42269F6,my pop music,0.117035,excluded,,length_cap_reached
+1167,TRAPQDB128F930BD28,michael stanley band,0.117035,excluded,,length_cap_reached
+1168,TRAPSHW128F14560A6,blues,0.117035,excluded,,length_cap_reached
+1169,TRAPTQA128F42341FA,indie rock,0.117035,excluded,,length_cap_reached
+1170,TRAQCKG128F421C277,folk metal,0.117035,excluded,,length_cap_reached
+1171,TRAQEFY128F42A0036,60s,0.117035,excluded,,length_cap_reached
+1172,TRAQHNX128E07822A7,b-side,0.117035,excluded,,length_cap_reached
+1173,TRAQPHD128F4226E5E,indie,0.117035,excluded,,length_cap_reached
+1174,TRAQRFD128F9322DE6,punk,0.117035,excluded,,length_cap_reached
+1175,TRAQRHA128F93001EB,indie rock,0.117035,excluded,,length_cap_reached
+1176,TRAQTBF12903CCC1B7,oi,0.117035,excluded,,length_cap_reached
+1177,TRARBGM12903CC5026,cool,0.117035,excluded,,length_cap_reached
+1178,TRARCSJ12903CA71D8,punk rock,0.117035,excluded,,length_cap_reached
+1179,TRARDOK128F9300AB5,acoustic,0.117035,excluded,,length_cap_reached
+1180,TRARIWH128E079349F,britpop,0.117035,excluded,,length_cap_reached
+1181,TRARIZK128F92FF27A,keeps the inner child happy,0.117035,excluded,,length_cap_reached
+1182,TRARJPL128F931C7D2,post-hardcore,0.117035,excluded,,length_cap_reached
+1183,TRARTGG128F424ABCD,get happy,0.117035,excluded,,length_cap_reached
+1184,TRARXMV128F92F59C8,folk metal,0.117035,excluded,,length_cap_reached
+1185,TRASHIP128F428FC4B,covers,0.117035,excluded,,length_cap_reached
+1186,TRASKII128F92FA33E,alternative,0.117035,excluded,,length_cap_reached
+1187,TRASNOT128E0791785,acoustic,0.117035,excluded,,length_cap_reached
+1188,TRASPTN128F14B0EF2,dirt,0.117035,excluded,,length_cap_reached
+1189,TRASTKB128F92F6AE7,post-hardcore,0.117035,excluded,,length_cap_reached
+1190,TRASTOM12903CBE8A6,2008,0.117035,excluded,,length_cap_reached
+1191,TRASUTG128F935A445,experimental,0.117035,excluded,,length_cap_reached
+1192,TRASVZZ128EF35EB69,black metal,0.117035,excluded,,length_cap_reached
+1193,TRASWKJ128E0792FE7,alt-country,0.117035,excluded,,length_cap_reached
+1194,TRASXSI128F9345EA2,hardcore,0.117035,excluded,,length_cap_reached
+1195,TRASYSY128F92F39F5,punk rock,0.117035,excluded,,length_cap_reached
+1196,TRASYWM128F14804A5,alternative rock,0.117035,excluded,,length_cap_reached
+1197,TRATAIB128F92E81CB,alternative rock,0.117035,excluded,,length_cap_reached
+1198,TRATCDG128F932B4D2,gothic punk,0.117035,excluded,,length_cap_reached
+1199,TRATHCF128F4293FC8,dutch,0.117035,excluded,,length_cap_reached
+1200,TRATIAH128F426B422,symphonic metal,0.117035,excluded,,length_cap_reached
+1201,TRATJNG128F4255834,punk rock,0.117035,excluded,,length_cap_reached
+1202,TRATKZR128F426B930,catalan,0.117035,excluded,,length_cap_reached
+1203,TRATOHC128EF3460DA,britpop,0.117035,excluded,,length_cap_reached
+1204,TRATOQD128F9336A53,jazz funk,0.117035,excluded,,length_cap_reached
+1205,TRATPGR12903CEDED4,punk,0.117035,excluded,,length_cap_reached
+1206,TRATQUI128F9347C68,rock band 2,0.117035,excluded,,length_cap_reached
+1207,TRAUCNU128F42671EB,latin,0.117035,excluded,,length_cap_reached
+1208,TRAUJPQ128F930D4C5,amazing,0.117035,excluded,,length_cap_reached
+1209,TRAULTS128F931290B,symphonic metal,0.117035,excluded,,length_cap_reached
+1210,TRAUPEE128F425943A,clap,0.117035,excluded,,length_cap_reached
+1211,TRAURRO128F1489B2C,punk rock,0.117035,excluded,,length_cap_reached
+1212,TRAUVGO128F14836DB,grandes temas,0.117035,excluded,,length_cap_reached
+1213,TRAUXSK128F427C58D,punk rock,0.117035,excluded,,length_cap_reached
+1214,TRAVBAH128F9305DFC,heavy metal,0.117035,excluded,,length_cap_reached
+1215,TRAVCBP128F422930E,1983,0.117035,excluded,,length_cap_reached
+1216,TRAVGFT128F424278B,latin,0.117035,excluded,,length_cap_reached
+1217,TRAVKGM12903CA66FB,grunge,0.117035,excluded,,length_cap_reached
+1218,TRAVKUT128F93462CE,mj - my bluez time,0.117035,excluded,,length_cap_reached
+1219,TRAVOLQ128F9322DB4,punk,0.117035,excluded,,length_cap_reached
+1220,TRAVPGQ128E079530E,audioase,0.117035,excluded,,length_cap_reached
+1221,TRAVPHL128F424EAE1,alternative rock,0.117035,excluded,,length_cap_reached
+1222,TRAVRJA128F9329C4C,grunge,0.117035,excluded,,length_cap_reached
+1223,TRAVTWI128F93586D0,trance,0.117035,excluded,,length_cap_reached
+1224,TRAVXII128F92FCC6D,reggae,0.117035,excluded,,length_cap_reached
+1225,TRAVYVD128F4237876,ska,0.117035,excluded,,length_cap_reached
+1226,TRAWBSO128F931F551,rolling stones cover,0.117035,excluded,,length_cap_reached
+1227,TRAWEST128F4242614,alternative,0.117035,excluded,,length_cap_reached
+1228,TRAWGYZ128F92C494B,proto-punk,0.117035,excluded,,length_cap_reached
+1229,TRAWKPT128E0795428,emo,0.117035,excluded,,length_cap_reached
+1230,TRAWLYF128F92D9EE0,alternative,0.117035,excluded,,length_cap_reached
+1231,TRAWOBG128F93256C6,bra liveband,0.117035,excluded,,length_cap_reached
+1232,TRAWPFY128F428A9CD,punk,0.117035,excluded,,length_cap_reached
+1233,TRAWSSL12903CC4734,horror punk,0.117035,excluded,,length_cap_reached
+1234,TRAWTKK128F92C25D0,b-side,0.117035,excluded,,length_cap_reached
+1235,TRAXFXT128F426A33A,guitar virtuoso,0.117035,excluded,,length_cap_reached
+1236,TRAXKLH128F4289138,blues,0.117035,excluded,,length_cap_reached
+1237,TRAXMAK128E07822CB,radiohead,0.117035,excluded,,length_cap_reached
+1238,TRAXQNR128F4282B06,finnish,0.117035,excluded,,length_cap_reached
+1239,TRAXZSJ128F145B3B0,progressiv,0.117035,excluded,,length_cap_reached
+1240,TRAYABW128F4235888,punk,0.117035,excluded,,length_cap_reached
+1241,TRAYEGN128F9361233,blues,0.117035,excluded,,length_cap_reached
+1242,TRAYSMO128F9318E7C,alternative,0.117035,excluded,,length_cap_reached
+1243,TRAYUCR128F92E574F,blues rock,0.117035,excluded,,length_cap_reached
+1244,TRAYUKR128F9344BB4,dauerbeschallung im umerziehungslager fuer nazis,0.117035,excluded,,length_cap_reached
+1245,TRAYVLL128F9335B7A,rock en espanol,0.117035,excluded,,length_cap_reached
+1246,TRAZBBP128E07845D4,hip-hop,0.117035,excluded,,length_cap_reached
+1247,TRAZKAG12903CD1918,punk-rock,0.117035,excluded,,length_cap_reached
+1248,TRAZKBJ128F931A3ED,favorites,0.117035,excluded,,length_cap_reached
+1249,TRAZSOV128F1487CA4,metal,0.117035,excluded,,length_cap_reached
+1250,TRBAAGQ128F148D17E,1993,0.117035,excluded,,length_cap_reached
+1251,TRBAEHW128F9316423,2008,0.117035,excluded,,length_cap_reached
+1252,TRBAFRG12903CB0FF5,electronic,0.117035,excluded,,length_cap_reached
+1253,TRBAGMH128F423A574,grunge,0.117035,excluded,,length_cap_reached
+1254,TRBAHPZ128F427FCEA,belgian,0.117035,excluded,,length_cap_reached
+1255,TRBALJE128F9310DCE,alternative rock,0.117035,excluded,,length_cap_reached
+1256,TRBAMXF128F1470AD6,alternative rock,0.117035,excluded,,length_cap_reached
+1257,TRBANBC128F147E363,cross rhythms,0.117035,excluded,,length_cap_reached
+1258,TRBAOJU128F42621E6,punk,0.117035,excluded,,length_cap_reached
+1259,TRBAQWN128F42539EA,punk,0.117035,excluded,,length_cap_reached
+1260,TRBATRO128F4225566,rock argentino,0.117035,excluded,,length_cap_reached
+1261,TRBAUXT128F147DF5A,alternative,0.117035,excluded,,length_cap_reached
+1262,TRBBAKH128F92FA339,alternative,0.117035,excluded,,length_cap_reached
+1263,TRBBARP128F9306CBE,hip-hop,0.117035,excluded,,length_cap_reached
+1264,TRBBEHB128E0784F71,3-star,0.117035,excluded,,length_cap_reached
+1265,TRBBMLR128F1466822,experimental,0.117035,excluded,,length_cap_reached
+1266,TRBBMTZ128F4260C61,huihuihui,0.117035,excluded,,length_cap_reached
+1267,TRBBNTP128F92D934C,oldies,0.117035,excluded,,length_cap_reached
+1268,TRBCBAM128F92E3044,stoner rock,0.117035,excluded,,length_cap_reached
+1269,TRBCBLV128F14ADF31,christian rock,0.117035,excluded,,length_cap_reached
+1270,TRBCEAB12903CA10FC,classic country,0.117035,excluded,,length_cap_reached
+1271,TRBCSPV128F4262DD7,blues,0.117035,excluded,,length_cap_reached
+1272,TRBDTZX128F92DFA66,christian,0.117035,excluded,,length_cap_reached
+1273,TRBDUSM128F9339A13,herbst,0.117035,excluded,,length_cap_reached
+1274,TRBEELS128F42B63A8,hard rock faves,0.117035,excluded,,length_cap_reached
+1275,TRBEERY128F4231A2E,nu-metal,0.117035,excluded,,length_cap_reached
+1276,TRBEGJR128F4275E2E,gw punk rock,0.117035,excluded,,length_cap_reached
+1277,TRBEISL128F931B107,indie pop,0.117035,excluded,,length_cap_reached
+1278,TRBEISX128F9322F51,antic cafe,0.117035,excluded,,length_cap_reached
+1279,TRBEMTF128F42660CA,90s,0.117035,excluded,,length_cap_reached
+1280,TRBERJV128F1458463,blues rock,0.117035,excluded,,length_cap_reached
+1281,TRBESGH128E0788912,me,0.117035,excluded,,length_cap_reached
+1282,TRBEWCS128F428BA34,punk rock,0.117035,excluded,,length_cap_reached
+1283,TRBEZEL128E079116D,christmas,0.117035,excluded,,length_cap_reached
+1284,TRBFAHF128F42A1F03,experimental,0.117035,excluded,,length_cap_reached
+1285,TRBFBUO128F42A3DED,kent,0.117035,excluded,,length_cap_reached
+1286,TRBFDOH128F933797E,african,0.117035,excluded,,length_cap_reached
+1287,TRBFIAK128E07823AA,emo,0.117035,excluded,,length_cap_reached
+1288,TRBFIHG128F4289CF9,alternative,0.117035,excluded,,length_cap_reached
+1289,TRBFLER128F148C52B,ska,0.117035,excluded,,length_cap_reached
+1290,TRBFLFI128F427F374,one tree hill,0.117035,excluded,,length_cap_reached
+1291,TRBFNZT128F429201E,symphonic metal,0.117035,excluded,,length_cap_reached
+1292,TRBFOEA128F425D2DB,blues,0.117035,excluded,,length_cap_reached
+1293,TRBFUNY128C7196B7D,hip-hop,0.117035,excluded,,length_cap_reached
+1294,TRBFUSW128F92D0357,jazz,0.117035,excluded,,length_cap_reached
+1295,TRBFXVN128E078CF62,ambience,0.117035,excluded,,length_cap_reached
+1296,TRBGGFE128E0785AC0,punk,0.117035,excluded,,length_cap_reached
+1297,TRBGHJG128F428ADB4,alternative rock,0.117035,excluded,,length_cap_reached
+1298,TRBGIZH128F4252D9E,alternative,0.117035,excluded,,length_cap_reached
+1299,TRBGKOU128F148C6C6,blues,0.117035,excluded,,length_cap_reached
+1300,TRBGMOG128F92D75BD,alternative rock,0.117035,excluded,,length_cap_reached
+1301,TRBGMWD12903D0F674,blues,0.117035,excluded,,length_cap_reached
+1302,TRBGNQC128F428A9D1,punk,0.117035,excluded,,length_cap_reached
+1303,TRBGPZX128F4285105,edp,0.117035,excluded,,length_cap_reached
+1304,TRBGRGT12903CC5019,alternative,0.117035,excluded,,length_cap_reached
+1305,TRBGSCR128F92FE2AE,electronic,0.117035,excluded,,length_cap_reached
+1306,TRBGTZD128EF34B6C3,alternative,0.117035,excluded,,length_cap_reached
+1307,TRBGWVI128E0788AE7,indie,0.117035,excluded,,length_cap_reached
+1308,TRBGZKO128F92DB016,indie rock,0.117035,excluded,,length_cap_reached
+1309,TRBHCQS128F4291D02,french,0.117035,excluded,,length_cap_reached
+1310,TRBHCXP128F146D63B,electronic,0.117035,excluded,,length_cap_reached
+1311,TRBHEBY128F148CF2B,90s,0.117035,excluded,,length_cap_reached
+1312,TRBHFBL128F14537D2,alternative,0.117035,excluded,,length_cap_reached
+1313,TRBHGUK128E078E031,electronic,0.117035,excluded,,length_cap_reached
+1314,TRBHNUB12903CC2475,acordes geniales,0.117035,excluded,,length_cap_reached
+1315,TRBHPLS12903CB0FE6,electronic,0.117035,excluded,,length_cap_reached
+1316,TRBHQHN128F148A1B3,grunge,0.117035,excluded,,length_cap_reached
+1317,TRBHSJX128F42BAE98,fav,0.117035,excluded,,length_cap_reached
+1318,TRBHTOR128F428CADE,mathcore,0.117035,excluded,,length_cap_reached
+1319,TRBIAVP12903CEDA19,blues rock,0.117035,excluded,,length_cap_reached
+1320,TRBIGRZ128E0792329,1995,0.117035,excluded,,length_cap_reached
+1321,TRBIJYB128F14AE326,christian rock,0.117035,excluded,,length_cap_reached
+1322,TRADXEB12903CEAC5B,italian,0.108583,excluded,,length_cap_reached
+1323,TRAJIIR128F149AE01,italian,0.108583,excluded,,length_cap_reached
+1324,TRBFAON128F9313C62,italian,0.108583,excluded,,length_cap_reached
+1325,TRBFBQG128F9313C6D,italian,0.108583,excluded,,length_cap_reached
+1326,TRBGMHU128EF356CB8,italian,0.108583,excluded,,length_cap_reached
+1327,TRBGPXH128F428C912,italian,0.108583,excluded,,length_cap_reached
+1328,TRABJIX128C7196953,soul,0.105988,excluded,,length_cap_reached
+1329,TRABWJA128F1460CFC,becky baeling,0.105988,excluded,,length_cap_reached
+1330,TRACLRS12903CE9386,country,0.105988,excluded,,length_cap_reached
+1331,TRADBSW128F933A7A8,shakira,0.105988,excluded,,length_cap_reached
+1332,TRADFCO12903CA9439,beyonce,0.105988,excluded,,length_cap_reached
+1333,TRAEASY128F148247C,french,0.105988,excluded,,length_cap_reached
+1334,TRAEGBE128F4284973,hip-hop,0.105988,excluded,,length_cap_reached
+1335,TRAELRO128F92DD2F1,female vocalists,0.105988,excluded,,length_cap_reached
+1336,TRAGJQL128E078E840,country,0.105988,excluded,,length_cap_reached
+1337,TRAIQNE128F423851B,soul,0.105988,excluded,,length_cap_reached
+1338,TRAISYO128E07888A6,rnb,0.105988,excluded,,length_cap_reached
+1339,TRAJSRH128F425DDC7,spanish,0.105988,excluded,,length_cap_reached
+1340,TRALIEV128F92DE23C,country,0.105988,excluded,,length_cap_reached
+1341,TRANHYE128F92DE232,country,0.105988,excluded,,length_cap_reached
+1342,TRANVZT128F42AE134,country,0.105988,excluded,,length_cap_reached
+1343,TRAPFIP128F42AC31E,soul,0.105988,excluded,,length_cap_reached
+1344,TRAPHDI128F92F5EA1,mpb,0.105988,excluded,,length_cap_reached
+1345,TRAQKPR128F427DDF8,chanson francaise,0.105988,excluded,,length_cap_reached
+1346,TRAREDZ12903CFB6E3,handclaps,0.105988,excluded,,length_cap_reached
+1347,TRASHSN12903CA9E34,soul,0.105988,excluded,,length_cap_reached
+1348,TRAVPYY128F92CEBAB,christian,0.105988,excluded,,length_cap_reached
+1349,TRAYYIN12903CAD8C6,hip-hop,0.105988,excluded,,length_cap_reached
+1350,TRAZLLR128F42A8DCC,soul,0.105988,excluded,,length_cap_reached
+1351,TRBAHEH128F9327D39,reggae,0.105988,excluded,,length_cap_reached
+1352,TRBBANU128F422B87B,soul,0.105988,excluded,,length_cap_reached
+1353,TRBDNGV128EF3431B5,soul,0.105988,excluded,,length_cap_reached
+1354,TRBECNW128F426BE82,mariah carey,0.105988,excluded,,length_cap_reached
+1355,TRBFKHT128F427215E,female vocalists,0.105988,excluded,,length_cap_reached
+1356,TRBGJDW128F4292EDB,rnb,0.105988,excluded,,length_cap_reached
+1357,TRAMDQE128F1458F98,post-punk,0.102862,excluded,,length_cap_reached
+1358,TRABUYT128F93069C8,sludge,0.096416,excluded,,length_cap_reached
+1359,TRAADQX128F422B4CF,lo-fi,0.09341,excluded,,length_cap_reached
+1360,TRAAPVV128F425D64C,rnb,0.09341,excluded,,length_cap_reached
+1361,TRAAXMX128F9307699,house,0.09341,excluded,,length_cap_reached
+1362,TRAAZIE128F427961E,best songs of the 80s,0.09341,excluded,,length_cap_reached
+1363,TRABJIA128F14B189F,bulgarian,0.09341,excluded,,length_cap_reached
+1364,TRABKUJ128F4292445,latin,0.09341,excluded,,length_cap_reached
+1365,TRABOOL128F426E836,celtic,0.09341,excluded,,length_cap_reached
+1366,TRABOXX128F92F29EB,electronic,0.09341,excluded,,length_cap_reached
+1367,TRABPGO128F931B50C,eurovision song contest,0.09341,excluded,,length_cap_reached
+1368,TRABUDI128F92D0C8C,soul,0.09341,excluded,,length_cap_reached
+1369,TRABUSZ128F4257BAB,reggae,0.09341,excluded,,length_cap_reached
+1370,TRACAYI128F4235122,finnish,0.09341,excluded,,length_cap_reached
+1371,TRACTLX128F42A51F6,reggae,0.09341,excluded,,length_cap_reached
+1372,TRACZJA128F429E665,dance,0.09341,excluded,,length_cap_reached
+1373,TRADABC128F4274FCC,spanish-pop,0.09341,excluded,,length_cap_reached
+1374,TRADHYQ128F427095F,greek,0.09341,excluded,,length_cap_reached
+1375,TRADTOV12903CA9E74,entrancing,0.09341,excluded,,length_cap_reached
+1376,TRADWYF128F421FA69,dancehall,0.09341,excluded,,length_cap_reached
+1377,TRAEBSY128E07873C0,hip-hop,0.09341,excluded,,length_cap_reached
+1378,TRAEBXE128F933B4F5,rnb,0.09341,excluded,,length_cap_reached
+1379,TRAEFOU128F932105B,laid back,0.09341,excluded,,length_cap_reached
+1380,TRAEJFN128F4291C10,perlen deutschsprachiger popmusik,0.09341,excluded,,length_cap_reached
+1381,TRAEOUM128F42915ED,deutsch,0.09341,excluded,,length_cap_reached
+1382,TRAEZFJ128F422A5C0,dance,0.09341,excluded,,length_cap_reached
+1383,TRAFDFA128F932C065,hip hop,0.09341,excluded,,length_cap_reached
+1384,TRAFNAH128F42A400D,ebm,0.09341,excluded,,length_cap_reached
+1385,TRAFOTS128F42255A6,jamiroquai,0.09341,excluded,,length_cap_reached
+1386,TRAFYGO128F42727E7,rnb,0.09341,excluded,,length_cap_reached
+1387,TRAGJQZ128F9302ADA,akon,0.09341,excluded,,length_cap_reached
+1388,TRAGKFX128F9308791,country,0.09341,excluded,,length_cap_reached
+1389,TRAGLFE128F428566B,chanson francaise,0.09341,excluded,,length_cap_reached
+1390,TRAGLSU128F145FFB2,hip hop,0.09341,excluded,,length_cap_reached
+1391,TRAHEEY128F9335ECD,hip-hop,0.09341,excluded,,length_cap_reached
+1392,TRAHORF12903CDA9FB,dreamy,0.09341,excluded,,length_cap_reached
+1393,TRAIISE128F42AE299,christian,0.09341,excluded,,length_cap_reached
+1394,TRAIUUS128F4214452,1989,0.09341,excluded,,length_cap_reached
+1395,TRAIYYA128F92E5A59,balada,0.09341,excluded,,length_cap_reached
+1396,TRAIYZW128F9330F7D,hip hop,0.09341,excluded,,length_cap_reached
+1397,TRAIZRI128F1466316,catchy beat,0.09341,excluded,,length_cap_reached
+1398,TRAJFHV128F4274FC0,slow and sad,0.09341,excluded,,length_cap_reached
+1399,TRAJKMI128F4281107,dance,0.09341,excluded,,length_cap_reached
+1400,TRAJQBF128F423C324,80,0.09341,excluded,,length_cap_reached
+1401,TRAJSQA128F4263330,french,0.09341,excluded,,length_cap_reached
+1402,TRAJVHI128F930EFAF,rnb,0.09341,excluded,,length_cap_reached
+1403,TRAJXQL128F428CAF0,dance,0.09341,excluded,,length_cap_reached
+1404,TRAJZLM128F427CEB7,hip-hop,0.09341,excluded,,length_cap_reached
+1405,TRAKCAE128F92DACD8,chanson,0.09341,excluded,,length_cap_reached
+1406,TRAKKOH128F42AF40E,latin,0.09341,excluded,,length_cap_reached
+1407,TRAKLQJ128F42607F9,dance,0.09341,excluded,,length_cap_reached
+1408,TRAKMUO128F4215890,romantic,0.09341,excluded,,length_cap_reached
+1409,TRAKOMW128F428A81A,chinese,0.09341,excluded,,length_cap_reached
+1410,TRAKORW128F1484DF0,female vocalists,0.09341,excluded,,length_cap_reached
+1411,TRAKRXN128F42670BE,christian,0.09341,excluded,,length_cap_reached
+1412,TRAKYRW128F425979E,soul,0.09341,excluded,,length_cap_reached
+1413,TRALFLH128F148AE6B,90s,0.09341,excluded,,length_cap_reached
+1414,TRALLFD128EF34A8B9,greek,0.09341,excluded,,length_cap_reached
+1415,TRALXEX128F425D50E,c-pop,0.09341,excluded,,length_cap_reached
+1416,TRAMEEO128F1462296,hip hop,0.09341,excluded,,length_cap_reached
+1417,TRAMESI128F93509F7,christian pop,0.09341,excluded,,length_cap_reached
+1418,TRAMFJR128F92C1DB1,rnb,0.09341,excluded,,length_cap_reached
+1419,TRAMMAF128F93051B0,dance,0.09341,excluded,,length_cap_reached
+1420,TRAMNJB128F92EFDC7,finnish,0.09341,excluded,,length_cap_reached
+1421,TRAMVOM128F42ACB16,electronic,0.09341,excluded,,length_cap_reached
+1422,TRAMYHK128F9348112,estar junto a ti,0.09341,excluded,,length_cap_reached
+1423,TRANHRS128F426B925,90s,0.09341,excluded,,length_cap_reached
+1424,TRANIBF12903CFA420,4 stars,0.09341,excluded,,length_cap_reached
+1425,TRANJWP128F428560C,estopa,0.09341,excluded,,length_cap_reached
+1426,TRANKKB128EF34A897,greek,0.09341,excluded,,length_cap_reached
+1427,TRANTEO128F429B51B,alternative,0.09341,excluded,,length_cap_reached
+1428,TRANZIC128F931CE6D,club,0.09341,excluded,,length_cap_reached
+1429,TRANZRO128F4278401,classic country,0.09341,excluded,,length_cap_reached
+1430,TRAOAAX128F93170DE,compulsive repeat listenings,0.09341,excluded,,length_cap_reached
+1431,TRAOAFS12903CF2B40,kool girl disko,0.09341,excluded,,length_cap_reached
+1432,TRAOGHG12903CA3B89,rnb,0.09341,excluded,,length_cap_reached
+1433,TRAONYI128F9324BA3,french,0.09341,excluded,,length_cap_reached
+1434,TRAOUTM128F4267580,rnb,0.09341,excluded,,length_cap_reached
+1435,TRAOYHS128F427EF8B,lo-fi,0.09341,excluded,,length_cap_reached
+1436,TRAPBHY128F148946F,rnb,0.09341,excluded,,length_cap_reached
+1437,TRAPDNS128F425F97E,jacques dutronc,0.09341,excluded,,length_cap_reached
+1438,TRAPFAQ128F14A050F,dance,0.09341,excluded,,length_cap_reached
+1439,TRAPIIR128F42555AE,disco,0.09341,excluded,,length_cap_reached
+1440,TRAPLBK128F930FDB4,90s,0.09341,excluded,,length_cap_reached
+1441,TRAPMRB128E078E21E,rap,0.09341,excluded,,length_cap_reached
+1442,TRAPMRV128F92F5F4C,country,0.09341,excluded,,length_cap_reached
+1443,TRAPTOE128F4272000,rnb,0.09341,excluded,,length_cap_reached
+1444,TRAPVBP128F9308A86,alejandro lerner,0.09341,excluded,,length_cap_reached
+1445,TRAPWMY128F4275285,chambre sunset cool,0.09341,excluded,,length_cap_reached
+1446,TRAPZTV128F92CAA4E,beyonce,0.09341,excluded,,length_cap_reached
+1447,TRAQEEB128F9332D97,house,0.09341,excluded,,length_cap_reached
+1448,TRAQHAK128F425EDD8,rnb,0.09341,excluded,,length_cap_reached
+1449,TRAQMKM128F92E4EDD,indie,0.09341,excluded,,length_cap_reached
+1450,TRAQMLV128F92F33CB,greek,0.09341,excluded,,length_cap_reached
+1451,TRAQRRD128F425F8E7,jacques dutronc,0.09341,excluded,,length_cap_reached
+1452,TRAQVMY128F424C862,alternative,0.09341,excluded,,length_cap_reached
+1453,TRAQVOG128F9340E58,attitude,0.09341,excluded,,length_cap_reached
+1454,TRARZBR128F934715D,latin pop,0.09341,excluded,,length_cap_reached
+1455,TRARZKD128F425D64D,rnb,0.09341,excluded,,length_cap_reached
+1456,TRASNDM128F92E17E7,inspirational,0.09341,excluded,,length_cap_reached
+1457,TRASRBB128F42AFD5C,christian,0.09341,excluded,,length_cap_reached
+1458,TRASUDV128F42B86FB,dance,0.09341,excluded,,length_cap_reached
+1459,TRASVOH12903CCDC0B,rnb,0.09341,excluded,,length_cap_reached
+1460,TRASWPD128F42B4F7B,rnb,0.09341,excluded,,length_cap_reached
+1461,TRASZQB12903CAAE1B,acoustic,0.09341,excluded,,length_cap_reached
+1462,TRATDLH128F93384B0,acoustic,0.09341,excluded,,length_cap_reached
+1463,TRATKAA128F426E8A0,female vocalists,0.09341,excluded,,length_cap_reached
+1464,TRATTAF128F147CA09,dore,0.09341,excluded,,length_cap_reached
+1465,TRATTMT128F149167B,soul,0.09341,excluded,,length_cap_reached
+1466,TRAURQM128F423C581,acoustic,0.09341,excluded,,length_cap_reached
+1467,TRAURRP128F4261B94,country,0.09341,excluded,,length_cap_reached
+1468,TRAUWRW128F9358C69,hip-hop,0.09341,excluded,,length_cap_reached
+1469,TRAUZLI128E0791D51,60s,0.09341,excluded,,length_cap_reached
+1470,TRAVELY128F42606F8,hip-hop,0.09341,excluded,,length_cap_reached
+1471,TRAVFOA128F92F2B38,latin jazz,0.09341,excluded,,length_cap_reached
+1472,TRAVKJJ128F424DA32,jazz,0.09341,excluded,,length_cap_reached
+1473,TRAVLNW128F4272F05,con corazon,0.09341,excluded,,length_cap_reached
+1474,TRAVXBL128F42BB389,michael jackson,0.09341,excluded,,length_cap_reached
+1475,TRAWCIC128F92FE36A,greek,0.09341,excluded,,length_cap_reached
+1476,TRAWDWZ128F9340E55,attitude,0.09341,excluded,,length_cap_reached
+1477,TRAWGLP128F92DE5AD,funny,0.09341,excluded,,length_cap_reached
+1478,TRAWGTL128F932D4F9,female vocalists,0.09341,excluded,,length_cap_reached
+1479,TRAWIGT128F427448E,latin alternative,0.09341,excluded,,length_cap_reached
+1480,TRAWMMI128F149CB27,1980s,0.09341,excluded,,length_cap_reached
+1481,TRAWOHD128F148D176,away from the sky,0.09341,excluded,,length_cap_reached
+1482,TRAWOPG128F92EF9A1,60s,0.09341,excluded,,length_cap_reached
+1483,TRAWPXB12903CFA413,french,0.09341,excluded,,length_cap_reached
+1484,TRAWSJK128F42767F2,reggae,0.09341,excluded,,length_cap_reached
+1485,TRAWULX128F4291255,country,0.09341,excluded,,length_cap_reached
+1486,TRAXAOX128F930DB6B,eurodance,0.09341,excluded,,length_cap_reached
+1487,TRAXBTV12903CD8399,boobs,0.09341,excluded,,length_cap_reached
+1488,TRAXFTO12903CAEA49,folk pop,0.09341,excluded,,length_cap_reached
+1489,TRAXIPO128F14923B2,christmas,0.09341,excluded,,length_cap_reached
+1490,TRAXMUC128F4273749,latin,0.09341,excluded,,length_cap_reached
+1491,TRAXMWV128F14612AB,latin,0.09341,excluded,,length_cap_reached
+1492,TRAXPDR128F424BCD7,cover,0.09341,excluded,,length_cap_reached
+1493,TRAXTSU128F4241835,classical voice,0.09341,excluded,,length_cap_reached
+1494,TRAXULE128F9320132,soul,0.09341,excluded,,length_cap_reached
+1495,TRAXUQL128F932D6C4,beautiful,0.09341,excluded,,length_cap_reached
+1496,TRAXWLM128F1453E3B,rap,0.09341,excluded,,length_cap_reached
+1497,TRAYBGC128F92E03EC,1960s,0.09341,excluded,,length_cap_reached
+1498,TRAYDSS128F423CE63,arabic,0.09341,excluded,,length_cap_reached
+1499,TRAYICR128F4282520,00s,0.09341,excluded,,length_cap_reached
+1500,TRAYSCQ128F933BA66,australian,0.09341,excluded,,length_cap_reached
+1501,TRAYTOM128F422B08C,perlen deutschsprachiger popmusik,0.09341,excluded,,length_cap_reached
+1502,TRAYUEL128F4290B28,house,0.09341,excluded,,length_cap_reached
+1503,TRAYXZX128F930F022,kalimba,0.09341,excluded,,length_cap_reached
+1504,TRAZHUK128E0789114,hip-hop,0.09341,excluded,,length_cap_reached
+1505,TRAZKXE128F149437C,espana,0.09341,excluded,,length_cap_reached
+1506,TRAZSVT128F92DEC7B,french,0.09341,excluded,,length_cap_reached
+1507,TRAZXDC128F429874E,dancehall reggae,0.09341,excluded,,length_cap_reached
+1508,TRBAADN128F426B7A4,dance,0.09341,excluded,,length_cap_reached
+1509,TRBABGU128F93391B2,country,0.09341,excluded,,length_cap_reached
+1510,TRBAJRL128F1482E66,chill,0.09341,excluded,,length_cap_reached
+1511,TRBAMLU128F146F6B2,latin,0.09341,excluded,,length_cap_reached
+1512,TRBAOTY128F9327A9C,jennifer lopez,0.09341,excluded,,length_cap_reached
+1513,TRBATKI128F4284D54,darkchild,0.09341,excluded,,length_cap_reached
+1514,TRBAZFD12903CB641D,brooke white,0.09341,excluded,,length_cap_reached
+1515,TRBBDAH128F92E625E,hip-hop,0.09341,excluded,,length_cap_reached
+1516,TRBBDXO128F14A4737,oldies,0.09341,excluded,,length_cap_reached
+1517,TRBBHHP128EF365DA0,oldies,0.09341,excluded,,length_cap_reached
+1518,TRBBLAN128F93183E6,dance,0.09341,excluded,,length_cap_reached
+1519,TRBBMTJ128F1477785,1960's,0.09341,excluded,,length_cap_reached
+1520,TRBBRJN128F425C040,chanson française,0.09341,excluded,,length_cap_reached
+1521,TRBCALG128F1483839,dance,0.09341,excluded,,length_cap_reached
+1522,TRBCJIX128F424F99E,deutsch,0.09341,excluded,,length_cap_reached
+1523,TRBCKXX128F92FD505,trip-hop,0.09341,excluded,,length_cap_reached
+1524,TRBCPTO12903CBBFD9,contemporary praise and worship,0.09341,excluded,,length_cap_reached
+1525,TRBCRUH128F930DB67,eurodance,0.09341,excluded,,length_cap_reached
+1526,TRBCSTN12903D13548,country,0.09341,excluded,,length_cap_reached
+1527,TRBCSVE12903D13D5C,country,0.09341,excluded,,length_cap_reached
+1528,TRBCVWC128F932F321,dance,0.09341,excluded,,length_cap_reached
+1529,TRBCYNZ128F933ABF5,indie,0.09341,excluded,,length_cap_reached
+1530,TRBDBXO128F42B3E45,french,0.09341,excluded,,length_cap_reached
+1531,TRBDHKL128F426BE45,rnb,0.09341,excluded,,length_cap_reached
+1532,TRBDMFL128F145F691,female vocalists,0.09341,excluded,,length_cap_reached
+1533,TRBDSLA128F4288246,soul,0.09341,excluded,,length_cap_reached
+1534,TRBDWLE128F42B3112,70s,0.09341,excluded,,length_cap_reached
+1535,TRBEAZN128F14858B3,chanson francaise,0.09341,excluded,,length_cap_reached
+1536,TRBEBWG128F93214A4,mariah carey,0.09341,excluded,,length_cap_reached
+1537,TRBEFJE128F932139E,anorexia,0.09341,excluded,,length_cap_reached
+1538,TRBESEX128F147BB13,merengue,0.09341,excluded,,length_cap_reached
+1539,TRBESWC128EF34B859,czech,0.09341,excluded,,length_cap_reached
+1540,TRBETHV128F429722F,latin,0.09341,excluded,,length_cap_reached
+1541,TRBFFNE128F92F6001,industrial,0.09341,excluded,,length_cap_reached
+1542,TRBFGFF12903CF4183,old school latin pop,0.09341,excluded,,length_cap_reached
+1543,TRBFJGB128F42612B1,bloodshy and avant,0.09341,excluded,,length_cap_reached
+1544,TRBGIAQ128F1483BFE,kanye west,0.09341,excluded,,length_cap_reached
+1545,TRBGICJ128F427BA9A,mustafa sandal,0.09341,excluded,,length_cap_reached
+1546,TRBGQFF128F42BAE97,lou reed cover,0.09341,excluded,,length_cap_reached
+1547,TRBGWEG12903CFF7EE,eurodance,0.09341,excluded,,length_cap_reached
+1548,TRBGXQP128F4290B22,house,0.09341,excluded,,length_cap_reached
+1549,TRBGYVK128F426A0D6,house,0.09341,excluded,,length_cap_reached
+1550,TRBHLIH128F92FE649,60s,0.09341,excluded,,length_cap_reached
+1551,TRBHQUM128F9309DE1,electronic,0.09341,excluded,,length_cap_reached
+1552,TRBHRUL12903CCDF09,hip hop,0.09341,excluded,,length_cap_reached
+1553,TRBHXNG128F423C6B7,trance,0.09341,excluded,,length_cap_reached
+1554,TRBHZNF128F14989FE,60s,0.09341,excluded,,length_cap_reached
+1555,TRBIFUV12903D07374,soul,0.09341,excluded,,length_cap_reached
+1556,TRBIIJY12903CE4755,country,0.09341,excluded,,length_cap_reached
+1557,TRAXUPN128F42855C8,heavy metal,0.090573,excluded,,length_cap_reached
+1558,TRBFSNP128F14572B5,vixen,0.090573,excluded,,length_cap_reached
+1559,TRAAAEF128F4273421,new wave,0.090284,excluded,,length_cap_reached
+1560,TRANFMB128F146631E,1980,0.090284,excluded,,length_cap_reached
+1561,TRASYLV128E0794878,80s,0.090284,excluded,,length_cap_reached
+1562,TRAWIFJ128F4259E47,80s,0.090284,excluded,,length_cap_reached
+1563,TRBGBGH128F14A23E5,electronic,0.090284,excluded,,length_cap_reached
+1564,TRAALRZ128F429024E,piano,0.087932,excluded,,length_cap_reached
+1565,TRAAVIT128F92E657C,symphonic metal,0.087932,excluded,,length_cap_reached
+1566,TRABQDK128F9308F8E,didge,0.087932,excluded,,length_cap_reached
+1567,TRAERCU128F42660A2,ambient,0.087932,excluded,,length_cap_reached
+1568,TRAFXPQ128F425385C,soundtrack,0.087932,excluded,,length_cap_reached
+1569,TRAHFSC128F92EACAB,folk,0.087932,excluded,,length_cap_reached
+1570,TRAIWMZ128F428B6D8,guitar,0.087932,excluded,,length_cap_reached
+1571,TRAMCUA128F4238312,experimental,0.087932,excluded,,length_cap_reached
+1572,TRAMLAE128F931FBE7,mozart,0.087932,excluded,,length_cap_reached
+1573,TRAQDWW12903CF4274,classic,0.087932,excluded,,length_cap_reached
+1574,TRARZBX12903CD70DA,abstract,0.087932,excluded,,length_cap_reached
+1575,TRAWJNK128F92FA89F,jazz,0.087932,excluded,,length_cap_reached
+1576,TRAXBUC128F1469548,instrumental,0.087932,excluded,,length_cap_reached
+1577,TRAYLCK128F933C422,polish,0.087932,excluded,,length_cap_reached
+1578,TRAZEJN12903CC5E4A,bikini,0.087932,excluded,,length_cap_reached
+1579,TRBEFQY128F932EE3F,soundtrack,0.087932,excluded,,length_cap_reached
+1580,TRBEYYM128F1493C56,christmas,0.087932,excluded,,length_cap_reached
+1581,TRBGNAF128F4253180,best soundtracks,0.087932,excluded,,length_cap_reached
+1582,TRBHWUC128E0784FF1,piano,0.087932,excluded,,length_cap_reached
+1583,TRBHXWT128F42931A9,soundtrack,0.087932,excluded,,length_cap_reached
+1584,TRAMNFT128F9316759,old school hip-hop,0.072207,excluded,,length_cap_reached
+1585,TRAAARJ128F9320760,bra2,0.065473,excluded,,length_cap_reached
+1586,TRAFNEI128F1458CAA,jazz rock,0.065473,excluded,,length_cap_reached
+1587,TRAKWNL12903CC37B6,porcupine tree,0.065473,excluded,,length_cap_reached
+1588,TRAPDOI128F9327982,dark ambient,0.065473,excluded,,length_cap_reached
+1589,TRAPNJP128F1463E4B,new age,0.065473,excluded,,length_cap_reached
+1590,TRAPXSL128F42305D6,kitaro,0.065473,excluded,,length_cap_reached
+1591,TRAUGNY12903CFEFB5,ambient,0.065473,excluded,,length_cap_reached
+1592,TRAVNST128F422EBD2,melodic death metal,0.065473,excluded,,length_cap_reached
+1593,TRAVWRV128F427D06A,rock argentino,0.065473,excluded,,length_cap_reached
+1594,TRBAOKR128F4235EA9,new age,0.065473,excluded,,length_cap_reached
+1595,TRBDROB128F93093CA,r41n7 m0rn1ngs,0.065473,excluded,,length_cap_reached
+1596,TRBEHFA128F145B3DA,70s,0.065473,excluded,,length_cap_reached
+1597,TRBFBAB128F4227B85,ambient,0.065473,excluded,,length_cap_reached
+1598,TRBGEGG12903CDD71F,new age,0.065473,excluded,,length_cap_reached
+1599,TRBHIRB128F1452ACC,indie rock,0.061598,excluded,,length_cap_reached
+1600,TRAATBN128F14ACE82,soundtrack,0.059629,excluded,,length_cap_reached
+1601,TRACBQQ128F4263AEB,fusion,0.059629,excluded,,length_cap_reached
+1602,TRACDJT128F42324C7,reggae,0.059629,excluded,,length_cap_reached
+1603,TRACLHC128F9343C39,reggae,0.059629,excluded,,length_cap_reached
+1604,TRADTQJ128F9340624,80s,0.059629,excluded,,length_cap_reached
+1605,TRAEUDO128F149CD13,no wave,0.059629,excluded,,length_cap_reached
+1606,TRAEVRU128F4263351,1980s,0.059629,excluded,,length_cap_reached
+1607,TRAFTAM128F4294843,80s,0.059629,excluded,,length_cap_reached
+1608,TRAFYEG12903CB647E,ndw,0.059629,excluded,,length_cap_reached
+1609,TRAGCYG128F428C517,80s,0.059629,excluded,,length_cap_reached
+1610,TRAHJCI128F92FFB38,80s,0.059629,excluded,,length_cap_reached
+1611,TRAIPAB128F42626AE,punk,0.059629,excluded,,length_cap_reached
+1612,TRAJODO12903CD7591,alternative,0.059629,excluded,,length_cap_reached
+1613,TRAKXYJ128F42525ED,hardcore,0.059629,excluded,,length_cap_reached
+1614,TRAKYHF128F42944ED,smooth jazz,0.059629,excluded,,length_cap_reached
+1615,TRALPJJ128F9311763,jazz,0.059629,excluded,,length_cap_reached
+1616,TRAMDCX128E07908F1,lovers rock,0.059629,excluded,,length_cap_reached
+1617,TRAMTYX128F42985D0,punk,0.059629,excluded,,length_cap_reached
+1618,TRAMVUW128F42325F9,southern rock,0.059629,excluded,,length_cap_reached
+1619,TRAOAYQ128F428A098,country,0.059629,excluded,,length_cap_reached
+1620,TRAOBBM128F4255271,punk,0.059629,excluded,,length_cap_reached
+1621,TRAOCOE128F4276D18,punk,0.059629,excluded,,length_cap_reached
+1622,TRAPAES128E0786E60,80s,0.059629,excluded,,length_cap_reached
+1623,TRAQYXL128F425EA21,christian contemporary,0.059629,excluded,,length_cap_reached
+1624,TRARUHU128F92FDC00,old school,0.059629,excluded,,length_cap_reached
+1625,TRAUSYQ12903CE5242,80s,0.059629,excluded,,length_cap_reached
+1626,TRAXLAY12903CA8612,hip-hop,0.059629,excluded,,length_cap_reached
+1627,TRAXYGR128EF3456B5,electro,0.059629,excluded,,length_cap_reached
+1628,TRAZZLJ128E07945F2,hip-hop,0.059629,excluded,,length_cap_reached
+1629,TRBAFFR128F425BC5B,80s,0.059629,excluded,,length_cap_reached
+1630,TRBAHBP128F42985D6,punk,0.059629,excluded,,length_cap_reached
+1631,TRBCTSB128F931D570,jazz,0.059629,excluded,,length_cap_reached
+1632,TRBDJUQ128F148C4A5,instrumental,0.059629,excluded,,length_cap_reached
+1633,TRBGUUE128F1494FB6,80s,0.059629,excluded,,length_cap_reached
+1634,TRBHCXR128F92E7D0E,depression,0.059629,excluded,,length_cap_reached
+1635,TRBHYBJ128C7196D75,hip-hop,0.059629,excluded,,length_cap_reached
+1636,TRABGHG128F934B27E,hard rock,0.030944,excluded,,length_cap_reached
+1637,TRABYND128F42765BB,hard rock,0.030944,excluded,,length_cap_reached
+1638,TRADJKG12903CE049F,hard rock,0.030944,excluded,,length_cap_reached
+1639,TRAGFSV12903CE532D,proto-punk,0.030944,excluded,,length_cap_reached
+1640,TRAHFHR12903CCCAF8,hard rock,0.030944,excluded,,length_cap_reached
+1641,TRAHKMS128F934B09E,heavy metal,0.030944,excluded,,length_cap_reached
+1642,TRAJOWK128F4263735,90s,0.030944,excluded,,length_cap_reached
+1643,TRALHMS128F930C08C,hardcore,0.030944,excluded,,length_cap_reached
+1644,TRANFFQ12903CFFF64,hard rock,0.030944,excluded,,length_cap_reached
+1645,TRAPJPD128F14572B3,hard rock,0.030944,excluded,,length_cap_reached
+1646,TRATOAJ128F422F6A7,black metal,0.030944,excluded,,length_cap_reached
+1647,TRAULZV12903CF968F,hard rock,0.030944,excluded,,length_cap_reached
+1648,TRAVSVL128F14B12BE,nu metal,0.030944,excluded,,length_cap_reached
+1649,TRAVYRR128F423C597,hard rock,0.030944,excluded,,length_cap_reached
+1650,TRAZCSY128F42683F2,90s,0.030944,excluded,,length_cap_reached
+1651,TRAZSVJ128E0785129,nu metal,0.030944,excluded,,length_cap_reached
+1652,TRAZYQF12903CE3DA5,hard rock,0.030944,excluded,,length_cap_reached
+1653,TRAZZQC128F427A0F5,hard rock,0.030944,excluded,,length_cap_reached
+1654,TRBBYOI128F4256732,punk,0.030944,excluded,,length_cap_reached
+1655,TRBESDU128F92F3CE9,hard rock,0.030944,excluded,,length_cap_reached
+1656,TRBGISL128F9342049,garage rock,0.030944,excluded,,length_cap_reached
+1657,TRBGKMB128F146E125,nu metal,0.030944,excluded,,length_cap_reached
+1658,TRBGRNH12903CF9685,hard rock,0.030944,excluded,,length_cap_reached
+1659,TRBGSJX128F92F863D,blues,0.030944,excluded,,length_cap_reached
+1660,TRBHGRU12903CE2C48,instrumental,0.030944,excluded,,length_cap_reached
+1661,TRBIJFB128F92ED124,metalcore,0.030944,excluded,,length_cap_reached
+1662,TRADLCP12903CB64FC,cool old electro,0.030654,excluded,,length_cap_reached
+1663,TRADZYD128E078BE45,electronic,0.030654,excluded,,length_cap_reached
+1664,TRAFONO128F4248100,new wave,0.030654,excluded,,length_cap_reached
+1665,TRAGAGQ128E0781352,80's,0.030654,excluded,,length_cap_reached
+1666,TRAHGAF128F930468E,new wave,0.030654,excluded,,length_cap_reached
+1667,TRAIXQL128F1467D66,devo,0.030654,excluded,,length_cap_reached
+1668,TRALJBG128F9301EDD,hl rocky,0.030654,excluded,,length_cap_reached
+1669,TRAOURR128F931A9EA,new wave,0.030654,excluded,,length_cap_reached
+1670,TRAQVUG128F4286DE3,adrien wayne,0.030654,excluded,,length_cap_reached
+1671,TRATUSS128F92FD5AA,f50 1977,0.030654,excluded,,length_cap_reached
+1672,TRAWBXQ128F149BF78,new wave,0.030654,excluded,,length_cap_reached
+1673,TRAZACV128F426983D,czhit,0.030654,excluded,,length_cap_reached
+1674,TRBENDH128F1467D62,new wave,0.030654,excluded,,length_cap_reached
+1675,TRBGCUP12903CCFE38,new romantic,0.030654,excluded,,length_cap_reached
+1676,TRAAQBF12903CF796B,xmas,0.012578,excluded,,length_cap_reached
+1677,TRABWPT128F42B06CC,blues,0.012578,excluded,,length_cap_reached
+1678,TRABZCL128E0789AED,alt-country,0.012578,excluded,,length_cap_reached
+1679,TRACBWQ128F92F2B91,blues,0.012578,excluded,,length_cap_reached
+1680,TRACFHZ128F4227BA4,90s,0.012578,excluded,,length_cap_reached
+1681,TRACYPF128F9338DE0,singer-songwriter,0.012578,excluded,,length_cap_reached
+1682,TRADQHV128F92CD663,country,0.012578,excluded,,length_cap_reached
+1683,TRAEXXT128F427AF12,ambient,0.012578,excluded,,length_cap_reached
+1684,TRAFYAV128F42ACA8C,french,0.012578,excluded,,length_cap_reached
+1685,TRAHEII128F9307D9A,blues,0.012578,excluded,,length_cap_reached
+1686,TRAHUWM128F42801C0,blues,0.012578,excluded,,length_cap_reached
+1687,TRAIIXC128F92EA806,folk,0.012578,excluded,,length_cap_reached
+1688,TRAIVMM128F4266056,blues,0.012578,excluded,,length_cap_reached
+1689,TRAKGAX128F4264182,el amor,0.012578,excluded,,length_cap_reached
+1690,TRAKRCM128F146B4DE,argentina,0.012578,excluded,,length_cap_reached
+1691,TRALPOE128F4272278,cantautor,0.012578,excluded,,length_cap_reached
+1692,TRALRPL12903CA71F2,christmas songs,0.012578,excluded,,length_cap_reached
+1693,TRALUNR128EF3425DE,acoustic,0.012578,excluded,,length_cap_reached
+1694,TRAMWDI128F92FF678,acoustic,0.012578,excluded,,length_cap_reached
+1695,TRANLJA128F42A5379,country,0.012578,excluded,,length_cap_reached
+1696,TRANMKA128F426C3B0,favorites 2008,0.012578,excluded,,length_cap_reached
+1697,TRANOHA128F428B1CB,acoustic,0.012578,excluded,,length_cap_reached
+1698,TRAOFJS12903CF3F3D,chanson,0.012578,excluded,,length_cap_reached
+1699,TRAOIRH128F427C366,blues,0.012578,excluded,,length_cap_reached
+1700,TRAPOEA12903CDBB5F,holy crap,0.012578,excluded,,length_cap_reached
+1701,TRAPUWG128EF3425E7,singer-songwriter,0.012578,excluded,,length_cap_reached
+1702,TRAQGWU128F93275F9,blues,0.012578,excluded,,length_cap_reached
+1703,TRAQITZ128F4265E0E,country,0.012578,excluded,,length_cap_reached
+1704,TRAQTYT12903D134AC,country,0.012578,excluded,,length_cap_reached
+1705,TRAREGG128F425A5D8,easy listening,0.012578,excluded,,length_cap_reached
+1706,TRARFWJ128F9339D70,indie,0.012578,excluded,,length_cap_reached
+1707,TRARWXH128F425D881,argentina,0.012578,excluded,,length_cap_reached
+1708,TRAUREN128F931F5AB,country,0.012578,excluded,,length_cap_reached
+1709,TRAVGZS128F9338603,country,0.012578,excluded,,length_cap_reached
+1710,TRAWIVY12903CF4A87,canadian,0.012578,excluded,,length_cap_reached
+1711,TRAWTGS128F14569A8,female vocalists,0.012578,excluded,,length_cap_reached
+1712,TRAWWHT128F426894E,folk,0.012578,excluded,,length_cap_reached
+1713,TRAYFBF128F92C52AB,singer-songwriter,0.012578,excluded,,length_cap_reached
+1714,TRAYUWU128F423F66D,blues,0.012578,excluded,,length_cap_reached
+1715,TRAYYGG128F1483C70,folk,0.012578,excluded,,length_cap_reached
+1716,TRAZHRE128F92F344E,blues,0.012578,excluded,,length_cap_reached
+1717,TRAZVYP128F1459AD9,female vocalists,0.012578,excluded,,length_cap_reached
+1718,TRBAHXJ128F9339A02,singer-songwriter,0.012578,excluded,,length_cap_reached
+1719,TRBAWQK128F42743A9,blues,0.012578,excluded,,length_cap_reached
+1720,TRBBTLA128F4226907,french,0.012578,excluded,,length_cap_reached
+1721,TRBCRDS128F426018C,experimental,0.012578,excluded,,length_cap_reached
+1722,TRBEBEZ128E0792F08,female vocalists,0.012578,excluded,,length_cap_reached
+1723,TRBELAZ128F422B87F,soul,0.012578,excluded,,length_cap_reached
+1724,TRBEUMG128F422305C,soul,0.012578,excluded,,length_cap_reached
+1725,TRBFMCN128F423625D,blues,0.012578,excluded,,length_cap_reached
+1726,TRBFPRL128F14569B9,indie,0.012578,excluded,,length_cap_reached
+1727,TRBGDQS128F9341414,the vampire diaries,0.012578,excluded,,length_cap_reached
+1728,TRBGODE128E0785BC8,heart beat beat,0.012578,excluded,,length_cap_reached
+1729,TRBGRAN128F9339A1B,acoustic,0.012578,excluded,,length_cap_reached
+1730,TRBHHUC128F4294C6F,folk,0.012578,excluded,,length_cap_reached
+1731,TRBHRKO128F42479B1,drugs,0.012578,excluded,,length_cap_reached
+1732,TRBHUOU128F423625E,blues,0.012578,excluded,,length_cap_reached
+1733,TRBHYTA128F93425AC,arjona,0.012578,excluded,,length_cap_reached
+1734,TRBHZUN12903CA60F7,indie,0.012578,excluded,,length_cap_reached
+1735,TRBIJLT12903CE7070,blues,0.012578,excluded,,length_cap_reached
+1736,TRAMEEC128F9307A54,raggamuffin,0.012159,excluded,,length_cap_reached
+1737,TRAUWQL128F424696E,folk metal,0.012159,excluded,,length_cap_reached
+1738,TRAWBVQ128F149ADFD,m3d1t3rr4n34n,0.012159,excluded,,length_cap_reached
+1739,TRAXBLJ128F92EEBB1,vibraphone,0.012159,excluded,,length_cap_reached
+1740,TRBAAJQ128F4273A42,90s,0.012159,excluded,,length_cap_reached

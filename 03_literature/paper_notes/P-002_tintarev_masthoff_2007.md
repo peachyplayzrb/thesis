@@ -43,3 +43,6 @@ linked_files:
 - 03_literature/literature_gap_tracker.md
 - 09_quality_control/claim_evidence_map.md
 - 05_design/requirements_to_design_map.md
+
+source_recovery_note:
+- 2026-03-23: refreshed from user-provided source attachment and Zotero full-text cache export.

@@ -1,15 +1,27 @@
 ﻿# Unresolved Issues
 ## Active
 
-- UI-007 (2026-03-21): Spotify API ingestion currently blocked by provider-side long cooldown (`HTTP 429`) on `/me` despite conservative batching/throttling settings.
-	- impact: Live BL-002 Spotify export artifacts (top tracks, saved tracks, playlists, playlist items) cannot be completed until cooldown expires or credentials rotate.
-	- observed_evidence:
-		- `retry_after_seconds=84882`
-		- `retry_at_utc=2026-03-22T02:40:32Z`
-		- blocker artifact: `07_implementation/implementation_notes/ingestion/outputs/spotify_api_export/spotify_rate_limit_block.json`
+- UI-008 (2026-03-22): Music4All access reply is positive, but provider requires a signed disclosure/confidentiality agreement before sharing download credentials, and final usage terms are not yet fully captured in governance records.
+	- impact: DS-001 cannot be promoted from fallback to active corpus until compliance and provenance checks are complete; risk of late rework if restrictions conflict with publication/repo artifacts.
+	- current_position:
+		- Keep DS-002 as active dataset for BL-020 continuity.
+		- Track DS-001 as ready-to-activate fallback path pending term closure.
+	- progress_update_2026-03-22:
+		1. Signed disclosure/confidentiality agreement was sent back to provider.
+		2. Current blocker is provider-side credential release (download URL and password).
+	- progress_update_2026-03-23:
+		1. Agreement was resent with signature explicitly included.
+		2. Current blocker remains provider acknowledgement and credential release.
+	- fallback_trigger_plan:
+		1. If DS-001 delivery is delayed beyond 2026-03-29, continue full execution on DS-002 with no corpus switch.
+		2. If DS-001 terms prohibit required thesis artifact sharing, keep DS-001 as discussion-only evidence and retain DS-002 as final operational corpus.
+		3. If DS-001 is delivered with compatible terms, run a bounded schema compatibility check before any activation decision.
 	- next_action:
-		1. Retry after `retry_at_utc` with current conservative run flags.
-		2. If cooldown persists, rotate to a new Spotify app `client_id/client_secret`, remove token cache, and run with `--force-auth`.
+		1. Capture provider response details (date, requirement to sign disclosure/confidentiality agreement, expected return channel).
+		2. Await provider confirmation and receipt of download URL/password.
+		3. After credentials are received, confirm exact dataset release/version and any checksum identifiers.
+		4. Record explicit permitted-use and redistribution constraints in `06_data_and_sources/dataset_registry.md`.
+		5. Escalate unresolved restrictions to supervisor before corpus activation.
 	- owner: AI + user
 	- status: open
 
@@ -30,6 +42,25 @@
 			- `10_resources/previous_drafts/lit_review_resource_pack/files/381/Adomavicius and Tuzhilin - 2005 - Toward the next generation of recommender systems a survey of the state-of-the-art and possible ext.pdf`
 			- `10_resources/previous_drafts/lit_review_resource_pack/files/391/Tintarev and Masthoff - 2012 - Evaluating the effectiveness of explanations for recommender systems Methodological issues and empi.pdf`
 		2. Citation-hardening runs that depend on these sources should treat them as missing inputs until recoverable copies are restored or equivalent sources are substituted.
+	- progress_update_2026-03-23:
+		1. Recovery evidence was provided and processed for both previously blocked sources (Adomavicius and Tuzhilin 2005; Tintarev and Masthoff 2012).
+		2. Extracted claim-check text artifacts were added under `10_resources/papers/_extracted_claim_check/`.
+		3. P-011 and P-003 paper notes were refreshed with recovered-source provenance notes.
+		4. Citation-hardening passes should no longer treat these two sources as missing inputs.
+	- progress_update_2026-03-23 (pdf-audit):
+		1. Full paper-note to PDF audit generated in `03_literature/paper_note_pdf_audit_full_2026-03-23.md` and `.csv`.
+		2. Targeted resolution checklist created: `03_literature/paper_pdf_resolution_checklist_2026-03-23.md`.
+		3. Remaining unresolved PDF mappings tracked explicitly:
+			- missing: P-011
+			- ambiguous: P-003, P-055, P-056
+	- progress_update_2026-03-23 (pdf-audit-closure):
+		1. Imported patch bundle PDFs for P-011, P-003, P-055, and P-056 into `10_resources/papers/`.
+		2. Re-ran full paper-note to PDF audit and regenerated summary files.
+		3. PDF mapping status is now fully closed for tracked literature notes (`missing_pdf=0`, `ambiguous=0`).
+	- progress_update_2026-03-23 (filename-normalization):
+		1. Added canonical filenames for previously non-standard matched papers (P-058 and P-063) in `10_resources/papers/`.
+		2. Re-ran audit with non-standard overrides removed.
+		3. Current audit summary is now fully standard-matched (`matched=65`).
 	- next_action: Execute the following thesis-wide work package using local PDFs in `10_resources/papers/` and chapter claims in active drafts.
 		1. Build claim-citation matrix from Chapter 2 and extend mapping to Chapters 3 to 5 where literature-backed claims appear.
 		2. Verify each claim against the cited PDF and record verdicts: supported, partially_supported, weak_support, or mismatch.
@@ -41,6 +72,10 @@
 	- due_window: 2026-03-19 to 2026-03-24
 
 ## Resolved
+- UI-007 (2026-03-21): Spotify API ingestion was temporarily blocked by provider-side long cooldown (`HTTP 429`) on `/me`.
+	- resolution: Subsequent authenticated export completed successfully (run_id `SPOTIFY-EXPORT-20260321-192533-881299`), generating full BL-002 artifacts (`spotify_export_run_summary.json`, top/saved/playlists/playlist-items exports) and enabling real-data BL-020 execution.
+	- evidence: `07_implementation/implementation_notes/ingestion/outputs/spotify_api_export/spotify_export_run_summary.json`; `07_implementation/experiment_log.md` (`EXP-022`); `00_admin/change_log.md` (`C-071`).
+
 - UI-006 (2026-03-21): Governance mismatch after DS-002 activation where `thesis_state.md` still stated Music4All/Music4All-Onion as current primary scope.
 	- resolution: Synchronized `00_admin/thesis_state.md` to DS-002 active wording and aligned related objective/assumption/limitation phrasing; marked issue closed after synchronization.
 	- evidence: `00_admin/thesis_state.md` (2026-03-21 update), `00_admin/change_log.md` (`C-042`).

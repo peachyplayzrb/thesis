@@ -10,7 +10,7 @@ The Chapter 2 synthesis is translated here into a small set of practical design 
 
 The second requirement is practical controllability. The system should expose explicit user influence paths, but those controls should remain understandable and methodologically testable rather than open-ended or opaque (Andjelkovic et al., 2019; Jin et al., 2020). The third requirement is playlist-aware behavior. Item relevance alone is insufficient in music settings where ordering, repetition, and collection-level coherence shape user experience (Schedl et al., 2018; Gkatzioura and Halkidi, 2019; Neto et al., 2023).
 
-The fourth requirement is governance at run level: observability, reproducibility, and auditability should be engineered directly into execution through configuration capture and structured diagnostics (Beel et al., 2016; Bellogin et al., 2021; Cavenaghi et al., 2023). The fifth is corpus defensibility. Music4All provides a documented multi-signal base suitable for content-driven experimentation under this scope, so it is used as the canonical candidate corpus (Pegoraro et al., 2020).
+The fourth requirement is governance at run level: observability, reproducibility, and auditability should be engineered directly into execution through configuration capture and structured diagnostics (Beel et al., 2016; Bellogin et al., 2021; Cavenaghi et al., 2023). The fifth is corpus defensibility. The active implementation corpus is DS-002 (`MSD subset + Last.fm tags`) because it provides deterministic candidate-side feature coverage for current scope constraints; MusicBrainz-related fields are treated as optional metadata and are not currently used by the active scoring path. Music4All remains a documented baseline reference for corpus-family justification (Pegoraro et al., 2020).
 
 Taken together, these requirements constrain the architecture toward explicit stages and explicit artifacts, because if a property cannot be observed, replayed, or stress-tested later, it should not be treated as a core design claim now.
 
@@ -33,9 +33,11 @@ This layout is chosen to keep causal traceability from user input to playlist ou
 The architecture also reflects deliberate scope discipline. It is single-user, deterministic, and content-driven, with one practical ingestion path and no deep-model complexity in the core pipeline. Those limits are not treated as missing sophistication; they are methodological choices that keep the artefact auditable and feasible within thesis constraints.
 
 ## 3.4 Data Ingestion and Alignment
-The ingestion boundary is intentionally narrow: one practical listening-history source plus optional manual influence tracks. Imported tracks are aligned to the canonical feature corpus using ISRC-first matching, followed by metadata fallback matching when ISRC is unavailable or inconsistent.
+The ingestion boundary is intentionally narrow: one practical listening-history source plus optional manual influence tracks. Imported tracks are normalized and transformed into an inspectable preference signal using staged metadata handling and semantic enrichment.
 
-This staged strategy follows entity-resolution practice that treats matching as a sequence of explicit steps with explicit trade-offs, rather than a single hidden operation (Allam et al., 2018; Papadakis et al., 2021). Neural matching remains a relevant comparator for difficult cases, but sits outside this artefact's inspectability and complexity boundary (Barlaug and Thorvaldsen, 2021). Unmatched tracks are therefore treated as an acknowledged limitation and reported directly.
+This staged strategy follows entity-resolution practice that treats matching as a sequence of explicit steps with explicit trade-offs, rather than a single hidden operation (Allam et al., 2018; Papadakis et al., 2021). In BL-020 real-data execution, direct DS-002 fuzzy alignment produced false positives because corpus coverage did not include large portions of the user's dominant artists. The active remediation path therefore enriches imported Spotify tracks with Last.fm top tags and carries explicit `ok`/`no_tags`/`error` status diagnostics into downstream profile construction. Neural matching remains a relevant comparator for difficult cases, but sits outside this artefact's inspectability and complexity boundary (Barlaug and Thorvaldsen, 2021).
+
+Spotify Web API audio-feature endpoints are deprecated, so user-side `tempo`, `loudness`, `key`, and `mode` are not directly available from Spotify in the current implementation. The active BL-020 mode therefore uses semantic user profiling from Last.fm tags, while retaining candidate-side numeric features from DS-002.
 
 At this stage, it is also important to make data assumptions explicit. Imported rows are expected to contain minimally usable artist-title metadata even when identifiers are missing, and the ingestion layer is expected to surface malformed or incomplete records rather than silently discarding them. In practice, cross-source music data can contain duplicated entries, inconsistent naming conventions, remaster/version suffixes, and partial metadata, all of which can affect fallback matching confidence. For design purposes, these are treated as manageable sources of uncertainty that must be made visible through diagnostics instead of being hidden behind aggregate success rates. This keeps method interpretation honest in Chapter 4 because alignment quality is reported as a property of both data conditions and matching logic.
 
@@ -78,7 +80,7 @@ The intended execution protocol has two complementary modes. Baseline replay mod
 The chapter scope remains design-only. The purpose here is to define what should be implemented and why, not to claim that the implementation has already achieved those outcomes. Empirical behavior, failure cases, and test results are therefore deferred to Chapter 4.
 
 ## 3.9 Decision Traceability
-The chapter centers on four linked architecture decisions. The first is corpus choice: Music4All is used as the canonical candidate space for feature-based retrieval and scoring. The second is scope discipline: the system remains within a single-user deterministic MVP boundary so behavior stays inspectable and feasible. The third is staged alignment: ISRC-first matching is combined with metadata fallback and explicit unmatched reporting. The fourth is mechanism-level transparency: deterministic scoring is paired with explanation linkage and run-level observability/reproducibility controls. Taken together, these decisions connect the Chapter 2 rationale to implementation commitments that can be tested directly in Chapter 4.
+The chapter centers on four linked architecture decisions. The first is corpus choice: DS-002 is used as the active canonical candidate space for feature-based retrieval and scoring. The second is scope discipline: the system remains within a single-user deterministic MVP boundary so behavior stays inspectable and feasible. The third is staged cross-source preference extraction: direct alignment uncertainty is surfaced and semantic enrichment fallback is used when corpus mismatch prevents trustworthy direct matches. The fourth is mechanism-level transparency: deterministic scoring is paired with explanation linkage and run-level observability/reproducibility controls. Taken together, these decisions connect the Chapter 2 rationale to implementation commitments that can be tested directly in Chapter 4.
 
 ## 3.10 Chapter 2 to Chapter 3 Handoff Mapping
 This section makes the literature-to-design handoff explicit by mapping each Chapter 2 section-level consequence to a concrete Chapter 3 commitment.
@@ -93,7 +95,7 @@ Table 3.1 documents this section-level handoff mapping from Chapter 2 consequenc
 | Section 2.4 (Preference Evidence Profile Construction and Candidate Shaping) | Use interpretable preference-profile construction and explicit candidate shaping before scoring. | Section 3.5 defines profile construction and candidate preparation as explicit, auditable pre-scoring stages.
 | Section 2.5 (Music Recommendation and Playlist-Specific Challenges) | Keep playlist assembly as a distinct stage and treat similarity as decision support, not ground truth. | Section 3.6 separates playlist assembly from item scoring and encodes explicit playlist-level constraints.
 | Section 2.6 (Deterministic Feature-Based Design Rationale with Comparator Context) | Make metric and feature-weight choices explicit and include sensitivity checks. | Sections 3.5 and 3.6 use explicit deterministic feature-based scoring and document parameterization for later sensitivity evaluation.
-| Section 2.7 (Cross-Source Alignment Reliability Reproducibility Governance and Synthesis) | Add staged alignment diagnostics, unmatched-rate reporting, and run-level configuration logging under governance-oriented evaluation criteria. | Sections 3.4 and 3.7 define staged alignment, unmatched-track reporting, and run-level observability artifacts aligned with Chapter 4 governance checks.
+| Section 2.7 (Cross-Source Alignment Reliability Reproducibility Governance and Synthesis) | Add staged alignment diagnostics, unmatched-rate reporting, semantic-fallback status capture, and run-level configuration logging under governance-oriented evaluation criteria. | Sections 3.4 and 3.7 define staged alignment diagnostics, semantic enrichment fallback status (`ok/no_tags/error`), and run-level observability artifacts aligned with Chapter 4 governance checks.
 
 This handoff mapping keeps the Chapter 2 conclusions operational and reduces drift between literature interpretation and architecture specification.
 
@@ -109,7 +111,7 @@ Table 3.2 provides this requirement-to-mechanism-to-evidence mapping.
 | Inspectability and explanation fidelity | Deterministic scoring with score decomposition plus mechanism-linked explanation payloads (Sections 3.6 and 3.7) | Score-trace reconstruction table showing explanation fidelity and mandatory explanation-field completeness |
 | Practical controllability | Influence-track input path plus parameterized metric/weight/rule controls with configuration capture (Sections 3.5, 3.6, and 3.8) | One-factor-at-a-time sensitivity comparison tables with configuration-diff snapshots and ranked-output deltas |
 | Playlist-level quality constraints | Distinct assembly stage with explicit length, repetition, and diversity/ordering rules (Section 3.6) | Rule-compliance summary tables with explicit pass/fail outcomes and violation logs where constraints are not met |
-| Cross-source alignment reliability visibility | ISRC-first matching with metadata fallback and unmatched diagnostics (Section 3.4) | Alignment diagnostics summary showing ISRC matches, fallback matches, unmatched rate, and unmatched-reason categories |
+| Cross-source alignment reliability visibility | Staged metadata handling with semantic enrichment fallback and unmatched/no-tag diagnostics (Section 3.4) | Alignment diagnostics summary showing direct-match quality checks, semantic enrichment coverage, no-tag rate, and unmatched-reason categories |
 | Observability and reproducibility | Run-level artifact schema linking input, configuration, alignment, scoring, assembly, and outputs (Sections 3.7 and 3.8) | Replay-consistency hash comparison table plus run-schema completeness checklist across repeated runs |
 
 This mapping fixes the evaluation contract before implementation reporting and keeps Chapter 4 focused on evidence of designed properties rather than ad hoc result narratives.
@@ -117,25 +119,26 @@ This mapping fixes the evaluation contract before implementation reporting and k
 ## 3.12 Diagram Drafts For Core Decision Logic
 Figure 3.3 and Figure 3.4 draft the most decision-critical parts of the architecture: cross-source alignment and the scoring-to-assembly transition.
 
-Figure 3.3 shows the ISRC-first alignment decision flow with fallback and unmatched handling.
+Figure 3.3 shows the staged cross-source preference extraction flow with semantic fallback and unmatched/no-tag handling.
 
 ```text
 Imported listening record
   -> Required fields valid?
-     -> No: Mark invalid record and log reason
-            -> Alignment diagnostics summary
-     -> Yes: ISRC present?
-            -> Yes: ISRC exists in canonical corpus?
-                   -> Yes: Match by ISRC -> Aligned record output -> Alignment diagnostics summary
-                   -> No: Proceed to metadata fallback
-            -> No: Proceed to metadata fallback
+     -> No: Mark invalid record and log reason -> Alignment diagnostics summary
+     -> Yes: Build normalized artist/title representation
+            -> Attempt direct alignment path quality check
+               -> Trustworthy match? yes -> Emit matched seed
+               -> Trustworthy match? no  -> Semantic fallback path
 
-Metadata fallback
-  -> Artist and title usable?
-     -> No: Mark unmatched and log reason -> Alignment diagnostics summary
-     -> Yes: Fallback similarity above threshold?
-            -> Yes: Match by metadata fallback -> Aligned record output -> Alignment diagnostics summary
-            -> No: Mark unmatched and log reason -> Alignment diagnostics summary
+Semantic fallback path (Last.fm)
+  -> Query track tags
+     -> Tags found? yes -> Emit semantic seed with status=ok
+     -> Tags found? no  -> Try fallback lookup path
+            -> Tags found? yes -> Emit semantic seed with status=ok
+            -> Tags found? no  -> Emit seed with status=no_tags
+  -> API failure? -> Emit seed with status=error
+
+All paths -> Alignment/enrichment diagnostics summary
 ```
 
 Figure 3.4 shows deterministic scoring, rule adjustment, and playlist assembly interaction.

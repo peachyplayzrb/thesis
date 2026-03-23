@@ -16,10 +16,13 @@ Operationalize controllability as measurable cause-effect behavior: changing a c
 
 ## Control Surfaces
 
-1. Influence tracks (manual preference steering).
-2. Feature-weight parameters (profile-to-candidate similarity emphasis).
-3. Candidate filtering thresholds (pool shaping before scoring).
-4. Playlist assembly constraints (length, diversity, repetition, ordering limits).
+1. Profile-source scope selection (which Spotify sources contribute to profile building, with per-source limits).
+2. Influence tracks (manual preference steering).
+3. Feature-weight parameters (profile-to-candidate similarity emphasis).
+4. Candidate filtering thresholds (pool shaping before scoring).
+5. Playlist assembly constraints (length, diversity, repetition, ordering limits).
+
+Note: Profile-source scope selection is design-approved but deferred for implementation (BL-021 / D-023) while BL-020 stabilization remains the active priority.
 
 ## Control Design Principles
 
@@ -44,10 +47,11 @@ Operationalize controllability as measurable cause-effect behavior: changing a c
 
 ## Control-to-Effect Mapping (Conceptual)
 
-1. `influence_tracks` -> preference profile shift -> candidate ranking differences.
-2. `feature_weights` -> similarity composition shift -> score/rank differences.
-3. `candidate_thresholds` -> candidate pool size/composition changes.
-4. `assembly_rules` -> playlist structure and sequence differences.
+1. `profile_source_scope` -> ingestion/profile input composition change -> runtime and profile-signal differences.
+2. `influence_tracks` -> preference profile shift -> candidate ranking differences.
+3. `feature_weights` -> similarity composition shift -> score/rank differences.
+4. `candidate_thresholds` -> candidate pool size/composition changes.
+5. `assembly_rules` -> playlist structure and sequence differences.
 
 ## Evaluation Alignment
 

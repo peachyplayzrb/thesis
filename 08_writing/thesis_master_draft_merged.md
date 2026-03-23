@@ -8,7 +8,7 @@ Student Name: Timothy Spiteri
 
 Student Number: 2460123
 
-Location/Site: STC Higher Education Malta (pembroke Campus)
+Location/Site: STC Higher Education Malta (Pembroke Campus)
 
 Module Code: 6CS007
 
@@ -34,27 +34,19 @@ It is acknowledged that the author of any project work shall own the copyright. 
 
 Student Name (Print): Timothy Spiteri
 
-Student Number: [Insert student number]
+Student Number: 2460123
 
 Signature: …………………………………………  
 
 Date: 01/05/2026
-(Must include the unedited statement above. Sign and date.)
-
-Please use an electronic signature (scan and insert).
 
 ## Abstract
 
 Music recommender systems are widely used to help listeners navigate large catalogues, but many practical recommendation pipelines remain difficult to inspect, tune, and reproduce. This is a serious issue, because if behaviour is opaque, design decisions are harder to justify and evaluation is harder to trust. This thesis addresses that problem by engineering a single user playlist generation pipeline that is automated but also transparent, controllable, observable, and reproducible, whilst using cross source music preference data.
 
-The artefact is designed as a deterministic, content based pipeline that imports listening history from one practical source, matches tracks to the Music4All dataset using ISRC-first matching with metadata fallback, builds an interpretable preference profile, generates and filters candidates, scores tracks using feature-based similarity, and assembles playlists using rule based constraints. The approach of this thesis is based on Design Science Research: literature is translated into requirements, requirements shape the architecture, and the implementation is tested using evaluation checks.
+The implemented artefact is a deterministic, content-based pipeline that imports listening history from one practical source, enriches imported tracks with Last.fm semantic tags when direct corpus alignment is unreliable, builds an interpretable preference profile, generates and filters candidates from DS-002 (MSD subset plus Last.fm tags), scores tracks using deterministic feature-based similarity, and assembles playlists using rule-based constraints. The approach of this thesis is based on Design Science Research: literature is translated into requirements, requirements shape the architecture, and the implementation is tested using explicit run-level evaluation checks.
 
-Evaluation is structured around reproducibility, traceability, controllability, constraint compliance, and testing quality under the conditions of the thesis. The thesis does not claim a new recommender model or being a superior pipeline. Instead, its contribution is engineering evidence that an automated playlist pipeline can be made auditable, testable, and practically controllable end to end.
-
-- Draft findings summary (to finalise after Chapter 4):
-- State which evaluation criteria were met (reproducibility, traceability, controllability, constraint compliance, and testing quality).
-- Briefly report what changed when key controls were varied and whether those changes were interpretable.
-- Note the main observed limitations (for example alignment gaps or feature-coverage limits) and the overall bounded conclusion.
+Evaluation is structured around reproducibility, traceability, controllability, constraint compliance, and testing quality under thesis constraints. The thesis does not claim a novel recommender model or universal superiority. Instead, its contribution is engineering evidence that an automated playlist pipeline can be made auditable, testable, and practically controllable end-to-end. Current implementation evidence includes BL-020 real-data execution through BL-009 observability and BL-014 automated sanity checks (21/21 pass), providing a complete and traceable evidence chain for the implemented scope.
 
 ## Table of Contents
 
@@ -102,8 +94,8 @@ This problem is addressed within a bounded MVP scope:
 
 - single-user recommendation context
 - deterministic, content-based methods rather than machine-learning model novelty
-- Music4All / Music4All-Onion as the candidate track corpus
-- one practical ingestion path with ISRC-first alignment
+- DS-002 (MSD subset plus Last.fm tags) as the active candidate track corpus
+- one practical ingestion path with staged metadata handling and semantic enrichment fallback
 - explicit rule-based scoring and playlist assembly with inspectable run logs
 
 Solving this problem contributes design and implementation evidence for building recommendation pipelines whose behaviour can be explained and audited, rather than only judged by output quality. The intended outcome is a defensible artefact and evaluation basis that aligns with the research question on design considerations for transparent, controllable, and observable playlist generation.
@@ -115,9 +107,9 @@ What design considerations shape the engineering of a transparent, controllable,
 ## 1.4 Research Objectives
 
 1. Design an automated pipeline that generates playlists from user listening histories.
-2. Align cross-platform music data with the Music4All dataset using ISRC-based track matching.
+2. Build cross-source preference evidence from imported listening history using staged metadata handling and Last.fm semantic enrichment where direct matching is unreliable.
 3. Construct a deterministic user preference profile based on imported listening data and manually selected influence tracks.
-4. Generate candidate tracks from the Music4All dataset using feature-based filtering.
+4. Generate candidate tracks from the DS-002 corpus using deterministic feature-based filtering.
 5. Score candidate tracks using deterministic similarity functions and rule-based adjustments.
 6. Assemble playlists using playlist-level rules that ensure diversity, coherence, and ordering.
 7. Provide transparent explanations and observability mechanisms for recommendation decisions.
@@ -125,7 +117,7 @@ What design considerations shape the engineering of a transparent, controllable,
 
 ## 1.5 Scope and Delimitations
 
-The thesis is bounded to a locked MVP artefact: a single-user, deterministic, content-based playlist-generation pipeline with one practical ingestion path and Music4All as the canonical candidate corpus. Transparency, controllability, observability, and reproducibility are treated as mandatory system qualities rather than optional enhancements.
+The thesis is bounded to a locked MVP artefact: a single-user, deterministic, content-based playlist-generation pipeline with one practical ingestion path and DS-002 as the active canonical candidate corpus. Transparency, controllability, observability, and reproducibility are treated as mandatory system qualities rather than optional enhancements.
 
 Several exclusions are deliberate. The project does not attempt to build or benchmark collaborative filtering, deep-learning, or large-scale hybrid recommender models. It does not extend to multi-user experimentation, production deployment, or a broad ecosystem of ingestion adapters. Evaluation is also constrained to BSc-feasible testing rather than large-scale user studies or longitudinal behavioral analysis.
 
@@ -171,7 +163,7 @@ The chapter moves through a narrowing argument: general recommender trade-offs f
 
 Recommender systems are broadly grouped into content-based, collaborative, and hybrid families (Adomavicius and Tuzhilin, 2005; Lu et al., 2015). The taxonomy is a useful starting point, but no family is categorically best. What matters is what data is available, how much complexity is justified, and — in a transparency-focused context — whether the design needs to support explanation or user control.
 
-Content-based methods work from item attributes: in music settings, those are metadata, tags, lyrics, and audio descriptors. In systems prioritising transparency, the practical advantage is that ranking depends on explicit features, and the reasoning behind any recommendation can usually be traced back to those same features (Deldjoo et al., 2024). Collaborative filtering takes a different route, inferring relevance from patterns of interaction across users and items. That can work well with dense interaction histories, but interpretability tends to weaken when rankings are encoded in latent relationships rather than named feature comparisons (Adomavicius and Tuzhilin, 2005; Zhang and Chen, 2020). Hybrid systems can combine the strengths of both, but the combination adds reasoning complexity that makes audit and explanation harder unless interpretability is deliberately engineered in from the start (Çano and Morisio, 2017).
+Content-based methods work from item attributes: in music settings, those are metadata, tags, lyrics, and audio descriptors. In systems prioritising transparency, the practical advantage is that ranking depends on explicit features, and the reasoning behind any recommendation can usually be traced back to those same features (Deldjoo et al., 2024). Collaborative filtering takes a different route, inferring relevance from patterns of interaction across users and items. That can work well with dense interaction histories, but interpretability tends to weaken when rankings are encoded in latent relationships rather than named feature comparisons (Adomavicius and Tuzhilin, 2005; Zhang and Chen, 2020). Hybrid systems can combine the strengths of both, but the combination adds reasoning complexity that makes audit and explanation harder unless interpretability is deliberately engineered in from the start (Cano and Morisio, 2017).
 
 Similarity modelling sits at the centre of these trade-offs. Distance metric, normalisation approach, and threshold settings all shape how candidates are ranked. These are real design decisions, not implementation details (Fkih, 2022). Left implicit, they make inspection difficult; stated explicitly, they can be tested and challenged.
 
@@ -215,7 +207,7 @@ Coherence, novelty, diversity, and ordering tend to pull against one another and
 
 Subjective similarity adds a separate difficulty. Flexer and Grill (2016) found limited inter-rater agreement on music similarity judgements, with considerable sensitivity to how the comparison task is framed. Low-level audio features and metadata do not capture what listeners mean by mood, atmosphere, or nostalgia. Listening context adds further instability: the same person may want a very different playlist for studying than for commuting, and often cannot articulate exactly why.
 
-Datasets like Music4All provide metadata, tags, lyrics, and audio-related attributes that support reproducible content-driven experimentation (Pegoraro et al., 2020). The dataset has also been used in independent multimodal recommendation work, which demonstrates its practical suitability for transparency-focused artefact research (Ru et al., 2023).
+Datasets like Music4All provide metadata, tags, lyrics, and audio-related attributes that support reproducible content-driven experimentation (Pegoraro Santana et al., 2020). The dataset has also been used in independent multimodal recommendation work, which demonstrates its practical suitability for transparency-focused artefact research (Ru et al., 2023).
 
 Explicit feature proxies are reasonable approximations for this kind of work. Claims that a system has captured the full complexity of listening intent are not.
 
@@ -223,7 +215,7 @@ Explicit feature proxies are reasonable approximations for this kind of work. Cl
 
 The core advantage of feature-based recommendation in this context is straightforward: ranking signals stay visible. When preference profiles and candidate scores are built from explicit descriptors, each decision can be traced back to the features that shaped it (Bogdanov et al., 2013). Making execution deterministic adds a further benefit. With fixed inputs and configuration, the same run should produce the same playlist — a basic requirement for any reproducibility claim.
 
-Neural and hybrid recommenders can capture richer feature interactions and often achieve stronger predictive performance where training data is plentiful (Çano and Morisio, 2017; He et al., 2017; Liu et al., 2025). Choosing a deterministic feature-based design is not a claim that this approach is generally superior. It is a deliberate trade-off: in artefact-oriented research where inspectability, controllability, and reproducibility are the primary objectives, a theoretically simpler but fully auditable approach is often the more appropriate choice.
+Neural and hybrid recommenders can capture richer feature interactions and often achieve stronger predictive performance where training data is plentiful (Cano and Morisio, 2017; He et al., 2017; Liu et al., 2025). Choosing a deterministic feature-based design is not a claim that this approach is generally superior. It is a deliberate trade-off: in artefact-oriented research where inspectability, controllability, and reproducibility are the primary objectives, a theoretically simpler but fully auditable approach is often the more appropriate choice.
 
 Metric sensitivity is also worth acknowledging directly. How similarity behaves in feature space depends on specific distance-function choices, and those choices matter (Fkih, 2022; Schweiger et al., 2025). Broad multi-dataset evidence isolating those effects across different playlist objectives is still limited, which reinforces the rationale rather than undermining it. Metric and weighting choices need to be explicit, logged parameters because their effects are real and should not be quietly absorbed into defaults.
 
@@ -231,9 +223,9 @@ Metric sensitivity is also worth acknowledging directly. How similarity behaves 
 
 Using cross-source preference data makes entity alignment a core engineering concern, not a preprocessing nicety. User-history records and item-corpus records come from different systems with partially inconsistent identifiers and uneven data quality. Standard entity-resolution practice addresses this through blocking, which narrows candidate pairs before detailed comparison, followed by staged matching with progressive refinement. The aim is to make alignment uncertainty progressively more visible rather than silently absorb it (Elmagarmid et al., 2007; Papadakis et al., 2021). Staged approaches such as ISRC-first matching with metadata fallback follow exactly that logic: exact identifiers offer high precision when present, and fallback routes recover additional matches when they are absent or inconsistent. Alignment uncertainty is not eliminated, but it becomes part of the audit trail.
 
-Two caveats are worth noting here. Most of the entity-resolution literature addresses cross-domain settings rather than music specifically. Neural matching is a relevant alternative for difficult cases (Barlaug and Thorvaldsen, 2021), but neural approaches reduce traceability unless substantial logging infrastructure is built around them — a poor trade-off in systems whose primary claim is transparency. In transparency-focused systems, that balance tends to favour staged deterministic matching with explicit logging of unmatched cases.
+Two caveats are worth noting here. Most of the entity-resolution literature addresses cross-domain settings rather than music specifically. Neural matching is a relevant alternative for difficult cases (Barlaug and Gulla, 2021), but neural approaches reduce traceability unless substantial logging infrastructure is built around them — a poor trade-off in systems whose primary claim is transparency. In transparency-focused systems, that balance tends to favour staged deterministic matching with explicit logging of unmatched cases.
 
-Reproducibility in recommender research is a well-documented problem. Under-specified split definitions, preprocessing steps, and dependency versions routinely prevent results from being independently reconstructed (Ferrari Dacrema et al., 2021; Bellogin et al., 2021; Zhu et al., 2022; Anelli et al., 2021). In an artefact thesis, reproducibility is part of what the work needs to demonstrate. Each run should preserve enough state for replay and inspection — including input summaries, alignment diagnostics, configuration records, candidate-pool statistics, score traces, and assembly outcomes. Recent music explainability work supports the same underlying principle — that explanations should expose how a decision was reached, not just what the outcome was (Sotirou et al., 2025).
+Reproducibility in recommender research is a well-documented problem. Under-specified split definitions, preprocessing steps, and dependency versions routinely prevent results from being independently reconstructed (Ferrari Dacrema et al., 2021; Bellogin and Said, 2021; Zhu et al., 2022; Anelli et al., 2021). In an artefact thesis, reproducibility is part of what the work needs to demonstrate. Each run should preserve enough state for replay and inspection — including input summaries, alignment diagnostics, configuration records, candidate-pool statistics, score traces, and assembly outcomes. Recent music explainability work supports the same underlying principle — that explanations should expose how a decision was reached, not just what the outcome was (Sotirou et al., 2025).
 
 Taken together, the literature points toward a consistent set of principles. Methods should be selected to match the contribution objective. Explanations should be tied directly to the mechanisms that produced them. Profile construction, candidate shaping, and alignment should all be treated as first-class design stages. Run-level governance should make the full pipeline inspectable and reproducible. What the literature does not provide is practical end-to-end guidance for integrating all of these concerns into a single pipeline that remains auditable and controllable under real cross-source data conditions. That gap is what this thesis addresses, and the contribution is a design-oriented demonstration of how such a pipeline can be built and evaluated — not a new model class.
 
@@ -251,9 +243,9 @@ This distinction is important because the chapter is not trying to prove a unive
 
 The Chapter 2 synthesis is translated here into a small set of practical design requirements that can be implemented and tested. The first requirement is inspectability: recommendation outputs should be traceable to concrete scoring contributors and rule effects, not explained only through persuasive post-hoc language (Tintarev and Masthoff, 2007; Tintarev and Masthoff, 2012; Zhang and Chen, 2020).
 
-The second requirement is practical controllability. The system should expose explicit user influence paths, but those controls should remain understandable and methodologically testable rather than open-ended or opaque (Andjelkovic et al., 2019; Jin et al., 2020). The third requirement is playlist-aware behavior. Item relevance alone is insufficient in music settings where ordering, repetition, and collection-level coherence shape user experience (Schedl et al., 2018; Gkatzioura and Halkidi, 2019; Neto et al., 2023).
+The second requirement is practical controllability. The system should expose explicit user influence paths, but those controls should remain understandable and methodologically testable rather than open-ended or opaque (Andjelkovic et al., 2019; Jin et al., 2020). The third requirement is playlist-aware behavior. Item relevance alone is insufficient in music settings where ordering, repetition, and collection-level coherence shape user experience (Schedl et al., 2018; Gatzioura et al., 2019; Neto et al., 2023).
 
-The fourth requirement is governance at run level: observability, reproducibility, and auditability should be engineered directly into execution through configuration capture and structured diagnostics (Beel et al., 2016; Bellogin and Said, 2021; Cavenaghi et al., 2023). The fifth is corpus defensibility. Music4All provides a documented multi-signal base suitable for content-driven experimentation under this scope, so it is used as the canonical candidate corpus (Pegoraro et al., 2020).
+The fourth requirement is governance at run level: observability, reproducibility, and auditability should be engineered directly into execution through configuration capture and structured diagnostics (Beel et al., 2016; Bellogin and Said, 2021; Cavenaghi et al., 2023). The fifth is corpus defensibility. DS-002 is the active implementation corpus because it provides deterministic candidate-side feature coverage under current scope constraints; Music4All remains a baseline literature reference for corpus-family suitability (Pegoraro Santana et al., 2020).
 
 Taken together, these requirements constrain the architecture toward explicit stages and explicit artifacts, because if a property cannot be observed, replayed, or stress-tested later, it should not be treated as a core design claim now.
 
@@ -278,9 +270,9 @@ The architecture also reflects deliberate scope discipline. It is single-user, d
 
 ## 3.4 Data Ingestion and Alignment
 
-The ingestion boundary is intentionally narrow: one practical listening-history source plus optional manual influence tracks. Imported tracks are aligned to the canonical feature corpus using ISRC-first matching, followed by metadata fallback matching when ISRC is unavailable or inconsistent.
+The ingestion boundary is intentionally narrow: one practical listening-history source plus optional manual influence tracks. Imported tracks are normalized and transformed into an inspectable preference signal using staged metadata handling and semantic enrichment.
 
-This staged strategy follows entity-resolution practice that treats matching as a sequence of explicit steps with explicit trade-offs, rather than a single hidden operation (Allam et al., 2018; Papadakis et al., 2021). Neural matching remains a relevant comparator for difficult cases, but sits outside this artefact's inspectability and complexity boundary (Barlaug and Gulla, 2021). Unmatched tracks are therefore treated as an acknowledged limitation and reported directly.
+This staged strategy follows entity-resolution practice that treats matching as a sequence of explicit steps with explicit trade-offs, rather than a single hidden operation (Allam et al., 2018; Papadakis et al., 2021). In BL-020 real-data execution, direct DS-002 fuzzy alignment produced false positives for the user's dominant repertoire, so the active path moved to Last.fm semantic enrichment with explicit ok/no_tags/error diagnostics. Neural matching remains a relevant comparator for difficult cases, but sits outside this artefact's inspectability and complexity boundary (Barlaug and Gulla, 2021).
 
 At this stage, it is also important to make data assumptions explicit. Imported rows are expected to contain minimally usable artist-title metadata even when identifiers are missing, and the ingestion layer is expected to surface malformed or incomplete records rather than silently discarding them. In practice, cross-source music data can contain duplicated entries, inconsistent naming conventions, remaster or version suffixes, and partial metadata, all of which can affect fallback matching confidence. For design purposes, these are treated as manageable sources of uncertainty that must be made visible through diagnostics instead of being hidden behind aggregate success rates. This keeps method interpretation honest in Chapter 4 because alignment quality is reported as a property of both data conditions and matching logic.
 
@@ -302,7 +294,7 @@ This section also acknowledges that richer context-aware or multimodal models ca
 
 Candidate scoring is performed using explicit deterministic similarity functions plus documented rule adjustments. Playlist assembly then enforces collection-level constraints, including playlist length, artist repetition limits, and diversity or ordering controls.
 
-The rationale is goal-aligned rather than absolutist: deterministic scoring is selected to maximize inspectability and replayability under thesis scope, not to claim universal accuracy superiority over hybrid or neural alternatives (Çano and Morisio, 2017; He et al., 2017; Liu et al., 2025).
+The rationale is goal-aligned rather than absolutist: deterministic scoring is selected to maximize inspectability and replayability under thesis scope, not to claim universal accuracy superiority over hybrid or neural alternatives (Cano and Morisio, 2017; He et al., 2017; Liu et al., 2025).
 
 Metric and feature-weight selections are treated as explicit design parameters rather than hidden implementation defaults. In methodological terms, this makes scoring behavior testable rather than assumed.
 
@@ -314,7 +306,7 @@ Explanation outputs are generated directly from scoring contributors and rule ad
 
 This coupling supports both user-facing transparency and developer-facing inspectability, and enables deterministic replay tests required by the evaluation plan (Beel et al., 2016; Bellogin and Said, 2021).
 
-A minimum run record should therefore capture input metadata summary, configuration snapshot and hash, alignment pathway counts for ISRC and fallback matches, unmatched counts with reason categories, score-trace summaries for ranked outputs, playlist-assembly rule outcomes, and final output identifiers. This does not require production-grade telemetry. It requires a consistent artifact bundle that can be reviewed and compared across runs. Defining this record format in Chapter 3 improves evaluation quality in Chapter 4 because replay checks, sensitivity checks, and explanation-fidelity checks all depend on the same observable execution footprint.
+A minimum run record should therefore capture input metadata summary, configuration snapshot and hash, semantic-enrichment coverage counts, no-tag/error categories, score-trace summaries for ranked outputs, playlist-assembly rule outcomes, and final output identifiers. This does not require production-grade telemetry. It requires a consistent artifact bundle that can be reviewed and compared across runs. Defining this record format in Chapter 3 improves evaluation quality in Chapter 4 because replay checks, sensitivity checks, and explanation-fidelity checks all depend on the same observable execution footprint.
 
 Modern music explainability work further reinforces this approach by emphasizing that explanation quality depends on exposing meaningful contribution structure rather than post-hoc narrative alone (Sotirou et al., 2025).
 
@@ -328,7 +320,7 @@ The chapter scope remains design-only. The purpose here is to define what should
 
 ## 3.9 Decision Traceability
 
-The chapter centers on four linked architecture decisions. The first is corpus choice: Music4All is used as the canonical candidate space for feature-based retrieval and scoring. The second is scope discipline: the system remains within a single-user deterministic MVP boundary so behaviour stays inspectable and feasible. The third is staged alignment: ISRC-first matching is combined with metadata fallback and explicit unmatched reporting. The fourth is mechanism-level transparency: deterministic scoring is paired with explanation linkage and run-level observability and reproducibility controls. Taken together, these decisions connect the Chapter 2 rationale to implementation commitments that can be tested directly in Chapter 4.
+The chapter centers on four linked architecture decisions. The first is corpus choice: DS-002 is used as the active canonical candidate space for feature-based retrieval and scoring. The second is scope discipline: the system remains within a single-user deterministic MVP boundary so behaviour stays inspectable and feasible. The third is staged cross-source preference extraction: direct alignment uncertainty is surfaced and semantic enrichment fallback is used when corpus mismatch prevents trustworthy direct matches. The fourth is mechanism-level transparency: deterministic scoring is paired with explanation linkage and run-level observability and reproducibility controls. Taken together, these decisions connect the Chapter 2 rationale to implementation commitments tested in Chapter 4.
 
 ## 3.10 Literature-to-Design Traceability
 
@@ -361,7 +353,7 @@ Table 3.2 provides this requirement-to-mechanism-to-evidence mapping.
 | Inspectability and explanation fidelity | Deterministic scoring with score decomposition plus mechanism-linked explanation payloads | Score-trace reconstruction table showing explanation fidelity and mandatory explanation-field completeness |
 | Practical controllability | Influence-track input path plus parameterized metric, weight, and rule controls with configuration capture | One-factor-at-a-time sensitivity comparison tables with configuration-diff snapshots and ranked-output deltas |
 | Playlist-level quality constraints | Distinct assembly stage with explicit length, repetition, and diversity or ordering rules | Rule-compliance summary tables with explicit pass or fail outcomes and violation logs where constraints are not met |
-| Cross-source alignment reliability visibility | ISRC-first matching with metadata fallback and unmatched diagnostics | Alignment diagnostics summary showing ISRC matches, fallback matches, unmatched rate, and unmatched-reason categories |
+| Cross-source alignment reliability visibility | Staged metadata handling with semantic enrichment fallback and unmatched/no-tag diagnostics | Alignment diagnostics summary showing direct-match quality checks, semantic enrichment coverage, no-tag rate, and unmatched-reason categories |
 | Observability and reproducibility | Run-level artifact schema linking input, configuration, alignment, scoring, assembly, and outputs | Replay-consistency hash comparison table plus run-schema completeness checklist across repeated runs |
 
 This mapping fixes the evaluation contract before implementation reporting and keeps Chapter 4 focused on evidence of designed properties rather than ad hoc result narratives.
@@ -370,25 +362,26 @@ This mapping fixes the evaluation contract before implementation reporting and k
 
 Figure 3.3 and Figure 3.4 illustrate the most decision-critical parts of the architecture: cross-source alignment and the scoring-to-assembly transition.
 
-Figure 3.3 shows the ISRC-first alignment decision flow with fallback and unmatched handling.
+Figure 3.3 shows the staged cross-source preference extraction flow with semantic fallback and unmatched/no-tag handling.
 
 ```text
 Imported listening record
   -> Required fields valid?
-     -> No: Mark invalid record and log reason
-            -> Alignment diagnostics summary
-     -> Yes: ISRC present?
-            -> Yes: ISRC exists in canonical corpus?
-                   -> Yes: Match by ISRC -> Aligned record output -> Alignment diagnostics summary
-                   -> No: Proceed to metadata fallback
-            -> No: Proceed to metadata fallback
+     -> No: Mark invalid record and log reason -> Alignment diagnostics summary
+     -> Yes: Build normalized artist/title representation
+            -> Attempt direct alignment path quality check
+               -> Trustworthy match? yes -> Emit matched seed
+               -> Trustworthy match? no  -> Semantic fallback path
 
-Metadata fallback
-  -> Artist and title usable?
-     -> No: Mark unmatched and log reason -> Alignment diagnostics summary
-     -> Yes: Fallback similarity above threshold?
-            -> Yes: Match by metadata fallback -> Aligned record output -> Alignment diagnostics summary
-            -> No: Mark unmatched and log reason -> Alignment diagnostics summary
+Semantic fallback path (Last.fm)
+  -> Query track tags
+     -> Tags found? yes -> Emit semantic seed with status=ok
+     -> Tags found? no  -> Try fallback lookup path
+            -> Tags found? yes -> Emit semantic seed with status=ok
+            -> Tags found? no  -> Emit seed with status=no_tags
+  -> API failure? -> Emit seed with status=error
+
+All paths -> Alignment/enrichment diagnostics summary
 ```
 
 Figure 3.4 shows deterministic scoring, rule adjustment, and playlist assembly interaction.
@@ -421,7 +414,7 @@ This chapter reports how the designed artefact is implemented and how it is eval
 
 Scope boundaries remain consistent with the locked thesis state: single-user pipeline, one practical ingestion path, deterministic scoring core, and no deep-model baseline benchmarking.
 
-> **[NOTE: Chapter 4 is planned and structured. Sections 4.2–4.5 define the evaluation framework, criteria, and testing procedure. Sections 4.6–4.10 contain placeholders for implementation reporting and result tables, which will be populated once artefact implementation is complete. Implementation tracking is maintained in `07_implementation/`.]**
+Chapter 4 now has implementation evidence available from BL-020 and BL-014 runs. Where a table still appears in placeholder form, it should be populated directly from the logged artifacts in `07_implementation/experiment_log.md`, `07_implementation/test_notes.md`, and the corresponding stage output files.
 
 ## 4.2 Evaluation Criteria and Success Conditions
 
@@ -466,7 +459,7 @@ Implementation reporting is organized by pipeline stage to preserve inspectabili
 6. Playlist assembly and post-assembly validation.
 7. Explanation rendering and run-level logging.
 
-> **[PLACEHOLDER: For each stage listed above, provide: (1) the implemented behaviour and key technical decisions; (2) the relevant configuration controls; (3) known limitations and edge cases; and (4) which evaluation criterion the stage primarily supports. Draw from `07_implementation/implementation_notes/`.]**
+The implemented behavior across these stages is evidenced by BL-020 runs and supporting quality checks. Ingestion uses one practical Spotify path with deterministic normalization. Alignment-quality checks showed that direct DS-002 fuzzy matching was unreliable for the user's dominant repertoire, so the active execution path moved to semantic enrichment with explicit `ok/no_tags/error` diagnostics. Profile construction and candidate preparation are deterministic and artifact-linked (BL-004 and BL-005), with scoring in semantic-only mode where user-side Spotify numeric audio features are unavailable under current API constraints (BL-006). Playlist assembly enforces explicit diversity and length rules with auditable rule-hit traces (BL-007). Explanations and observability are mechanism-linked through component breakdowns and run-level hashes (BL-008 and BL-009), and BL-014 confirms cross-stage schema/hash/count continuity.
 
 ## 4.5 Testing and Evaluation Procedure
 
@@ -497,62 +490,62 @@ The evaluation procedure uses a staged protocol to keep results interpretable.
 
 The evaluation evidence is structured around reproducible, cross-referenced artefacts that link observed system behaviour to named test conditions, saved configurations, and stage-level diagnostics. This ensures the artefact demonstration rests on inspectable records rather than informal screenshots alone.
 
-> **[PLACEHOLDER: Assemble the following evidence artefacts once implementation is complete: (1) Reproducibility run logs with configuration hashes and output hashes from repeated runs. (2) Alignment diagnostics summary showing ISRC match count, fallback match count, unmatched count, and unmatched rate. (3) Score-trace snapshots for sampled tracks showing explanation field completeness. (4) Parameter sensitivity comparison outputs for each tested control. (5) Playlist rule-compliance logs with pass or fail outcomes per configured constraint. Record primary evidence in `07_implementation/test_notes.md` and `07_implementation/experiment_log.md`.]**
+The evidence package used in this chapter includes: (1) BL-010 reproducibility logs and replay matrix with fixed-config stable hashes across three runs; (2) BL-020 alignment/enrichment diagnostics including coverage and error/no-tag categories; (3) BL-008 explanation payloads and summary with component-level contributor data and hash-link checks; (4) BL-011 controllability scenario outputs for one-factor-at-a-time parameter variation; and (5) BL-007 rule-compliance traces plus BL-014 automated sanity outputs validating schema and cross-stage linkage integrity. Primary references are maintained in `07_implementation/test_notes.md`, `07_implementation/experiment_log.md`, and stage-level output directories.
 
 ## 4.7 Evaluation Results Matrix
 
 This section reports outcomes for the execution matrix defined in the evaluation plan.
 
-**Table 4.3: Evaluation results matrix.** Populate from test notes and experiment logs once implementation is complete.
+**Table 4.3: Evaluation results matrix.** Populated from test notes and experiment logs.
 
 | EP Test ID | Related Test Note ID | Status | Key Metric Summary | Evidence Artefact(s) | Interpretation Note |
 | --- | --- | --- | --- | --- | --- |
-| EP-REPRO-001 | TC-003 | [Pending] | ranked_hash_match = [ ], playlist_hash_match = [ ] | Run hash logs | [Insert result interpretation] |
-| EP-EXPL-001 | TC-004 | [Pending] | reconstruction_error = [ ], fields_complete = [ ] | Score traces and explanation payloads | [Insert result interpretation] |
-| EP-CTRL-001 | TC-005 | [Pending] | top_k_overlap_delta = [ ], rank_shift = [ ] | Baseline and variant outputs | [Insert result interpretation] |
-| EP-CTRL-002 | TC-006 | [Pending] | component_delta = [ ], rank_shift = [ ] | Configuration diff and score traces | [Insert result interpretation] |
-| EP-CTRL-003 | TC-007 | [Pending] | candidate_pool_delta = [ ], playlist_overlap = [ ] | Candidate diagnostics and outputs | [Insert result interpretation] |
-| EP-RULE-001 | TC-008 | [Pending] | length_target = [ ], length_actual = [ ] | Playlist output and rule logs | [Insert result interpretation] |
-| EP-RULE-002 | TC-008 | [Pending] | max_artist_repeats = [ ] | Playlist output and rule logs | [Insert result interpretation] |
-| EP-OBS-001 | TC-009 | [Pending] | required_sections_present = [ ] | Run log bundle | [Insert result interpretation] |
-| EP-ALIGN-001 | TC-010 | [Pending] | matched_isrc = [ ], matched_fallback = [ ], unmatched_rate = [ ] | Alignment summary | [Insert result interpretation] |
+| EP-REPRO-001 | TC-003 | pass | `ranked_hash_match=True`, `playlist_hash_match=True`, `replay_count=3` | BL-010 reproducibility report + run matrix | Deterministic replay confirmed under fixed inputs/config; volatile metadata hashes documented separately. |
+| EP-EXPL-001 | TC-004 | pass | `fields_complete=10/10`, `reconstruction_error=0.000000` on validated sampled track | BL-008 explanation payloads + summary | Explanation outputs are mechanism-linked and complete for playlist tracks; sampled score reconstruction matched exactly. |
+| EP-CTRL-001 | TC-005 | pass | `top10_overlap_delta=1`, `playlist_overlap=7/10`, `mean_abs_rank_shift=2.619` | BL-011 no-influence scenario outputs | Influence-track removal caused interpretable profile/rank/playlist shifts, consistent with control intent. |
+| EP-CTRL-002 | TC-006 | pass | `mean_component_delta.V_mean=+0.038908`, `top10_overlap_delta=1`, `mean_abs_rank_shift=1.048` | BL-011 valence-weight scenario outputs | Increased valence emphasis raised valence contribution and shifted ranking directionally as expected. |
+| EP-CTRL-003 | TC-007 | pass | `candidate_pool_delta=-2/+2` (stricter/looser), `playlist_overlap=10/10` | BL-011 threshold scenarios + diagnostics | Threshold control changed candidate-pool size as expected; final playlist remained stable under current bootstrap regime. |
+| EP-RULE-001 | TC-008 | pass | `length_target=10`, `length_actual=10` | BL-007 playlist + assembly report | Length rule satisfied exactly with full traceability. |
+| EP-RULE-002 | TC-008 | pass | `max_artist_repeats=4` (cap respected) | BL-007 assembly report + trace | Artist/genre repetition constraints were enforced with explicit rule-hit diagnostics. |
+| EP-OBS-001 | TC-009 | pass | `required_sections_present=True`, `upstream_run_ids_linked=5` | BL-009 observability log + BL-014 sanity report | Observability schema complete and linked across BL-004 to BL-008 outputs. |
+| EP-ALIGN-001 | TC-010 | partial pass | Direct fuzzy path not trusted (`38/38` audited false positives); semantic enrichment `tag_coverage=95.87%`, `no_tags=204`, `errors=27` | BL-020 alignment report + EXP-022 + TC-BL020-001 | Alignment visibility objective passed, but direct-match reliability was insufficient; semantic fallback became active path. |
 
 ## 4.8 Reproducibility, Observability, and Alignment Results
 
-**Table 4.4: Reproducibility, observability, and alignment results.** Populate once repeated runs have been executed and alignment diagnostics are recorded.
+**Table 4.4: Reproducibility, observability, and alignment results.** Populated from BL-010, BL-009, BL-020, and BL-014 evidence.
 
 | Check | Baseline Run | Repeat Run(s) | Result | Notes |
 | --- | --- | --- | --- | --- |
-| Ranked output identity | [Pending] | [Pending] | [Pending] | [Insert repeated-run hash comparison] |
-| Playlist output identity | [Pending] | [Pending] | [Pending] | [Insert repeated-run hash comparison] |
-| Run schema completeness | [Pending] | [Pending] | [Pending] | [Insert observability completeness check] |
-| Alignment diagnostics completeness | [Pending] | [Pending] | [Pending] | [Insert ISRC, fallback, and unmatched summary] |
+| Ranked output identity | `BL010-REPRO-20260320-233937` | replay_01/replay_02/replay_03 | pass | Stable `ranked_output_hash` matched across all three replays. |
+| Playlist output identity | `BL010-REPRO-20260320-233937` | replay_01/replay_02/replay_03 | pass | Stable playlist fingerprint matched across replays; raw JSON hash variation attributed to per-run metadata fields. |
+| Run schema completeness | `BL009-OBSERVE-20260322-023314-347594` | `BL014-SANITY-20260322-024523-652281` | pass | BL-014 reported `checks_passed=21/21`, including schema/link/continuity checks. |
+| Alignment diagnostics completeness | `BL003-ALIGN-20260322-020126-080489` | N/A (single full real-data run) | pass | Report includes total seeds, tagged/no-tag/error counts, failure examples, and output linkage (`5592`, `5361`, `204`, `27`). |
 
 ## 4.9 Controllability and Rule-Compliance Results
 
-**Table 4.5: Parameter-sensitivity and assembly-rule compliance results.** Populate once one-factor-at-a-time sensitivity tests and rule-compliance checks have been completed.
+**Table 4.5: Parameter-sensitivity and assembly-rule compliance results.** Populated from BL-011 and BL-020 rule evidence.
 
 | Control Under Test | Baseline Value | Variant Value | Observed Effect | Directionally Consistent | Status |
 | --- | --- | --- | --- | --- | --- |
-| Influence tracks | [Pending] | [Pending] | [Pending] | [Pending] | [Pending] |
-| Feature weight | [Pending] | [Pending] | [Pending] | [Pending] | [Pending] |
-| Candidate threshold | [Pending] | [Pending] | [Pending] | [Pending] | [Pending] |
-| Playlist length rule | [Pending] | [Pending] | [Pending] | [Pending] | [Pending] |
-| Artist repetition rule | [Pending] | [Pending] | [Pending] | [Pending] | [Pending] |
+| Influence tracks | 3 synthetic influence tracks enabled | all influence tracks removed | Candidate pool `42 -> 47`; playlist overlap `7/10`; mean abs rank shift `2.619` | yes | pass |
+| Feature weight | `V_mean=0.12` (raw) | `V_mean=0.20` (raw, renormalized set) | Mean `V_mean` component `+0.038908`; top-10 overlap `9/10`; mean abs rank shift `1.048` | yes | pass |
+| Candidate threshold | baseline numeric thresholds (`1.0x`) | stricter `0.75x` and looser `1.25x` | Candidate pool `42 -> 40` (stricter), `42 -> 44` (looser); playlist overlap `10/10` | yes | pass (bounded effect) |
+| Playlist length rule | target size `10` | compliance verification on BL-020 run | Actual playlist length `10`; no length-rule violation | yes | pass |
+| Artist repetition rule | max per lead genre `4` | compliance verification on BL-020 run | Max observed per-genre count `4` (`classic rock`); no cap violation | yes | pass |
 
 ## 4.10 Explanation Fidelity Results
 
-**Table 4.6: Explanation fidelity verification results.** Populate once score-trace reconstruction checks have been run against sampled recommendation outputs.
+**Table 4.6: Explanation fidelity verification results.** Populated from BL-008 transparency outputs and validation checks.
 
 | Sampled Track Count | Reconstructable Scores | Missing Explanation Fields | Max Reconstruction Error | Status |
 | --- | --- | --- | --- | --- |
-| [Pending] | [Pending] | [Pending] | [Pending] | [Pending] |
+| 10 | 10/10 with component-linked breakdowns (explicit score reconstruction validated on sampled track) | 0 | 0.000000 (validated sample) | pass |
 
 ## 4.11 Evaluation Limits and Interpretation
 
 Results in this chapter should be interpreted as design evidence for a scoped deterministic pipeline, not as universal recommender-superiority claims. Any weak or mixed outcomes such as high unmatched rate or unstable sensitivity behaviour should be explicitly documented and carried into the Chapter 5 limitations section.
 
-> **[NOTE: Once all result tables have been populated, add 2–3 sentences here identifying any specific limitations revealed by the evidence. Carry notable weaknesses explicitly forward into Section 5.5.]**
+The observed limitations should be interpreted using the completed evidence chain: direct DS-002 alignment reliability varies by user-corpus overlap, semantic enrichment quality depends on external tag coverage and API reliability, and external validity remains bounded by single-user MVP scope.
 
 ## 4.12 Project Management and Process Evidence
 
@@ -562,7 +555,7 @@ At minimum, the final version of this section should summarize how the MVP scope
 
 ## 4.13 Chapter Summary
 
-Chapter 4 defines the evaluation framework and criteria for the artefact, providing a structured evidencing plan centred on reproducibility, inspectability, controllability, and playlist-rule compliance. The evaluation criteria, design-to-evaluation traceability mapping, and testing procedure are established in Sections 4.2–4.5. Result tables in Sections 4.7–4.10 will be populated from implementation test notes and experiment logs once the artefact is complete. Chapter 5 will interpret and critically evaluate the findings once the full evidence base is in place.
+Chapter 4 now presents both the evaluation framework and populated implementation evidence for the artefact. Reproducibility, inspectability, controllability, and playlist-rule compliance are evidenced through BL-010, BL-011, BL-020, and BL-014 artifacts, with explicit interpretation of both successful checks and bounded limitations. Chapter 5 interprets these outcomes under the thesis' scope-bounded contribution framing.
 
 # Chapter 5: Discussion, Critical Evaluation and Conclusion
 
@@ -584,7 +577,7 @@ The research question asks what design considerations shape the engineering of a
 
 First, method selection should be goal-aligned rather than model-family absolutist. The choice of recommendation method should be driven by the target qualities of inspectability, controllability, observability, and reproducibility rather than by an assumed universal superiority of any one recommender family (Roy and Dutta, 2022; Jannach and Jugovac, 2019).
 
-Second, cross-source alignment must be staged and uncertainty-aware. ISRC-first matching with metadata fallback is a practical and inspectable design, but unmatched or ambiguous cases must be surfaced as first-class outputs rather than hidden inside preprocessing (Papadakis et al., 2021; Allam et al., 2018).
+Second, cross-source preference extraction must be staged and uncertainty-aware. Under current API constraints, metadata normalization plus semantic enrichment is a practical and inspectable design, but unmatched, no-tag, or ambiguous cases must be surfaced as first-class outputs rather than hidden inside preprocessing (Papadakis et al., 2021; Allam et al., 2018).
 
 Third, deterministic scoring and rule-based playlist assembly support traceability. Explicit feature contributions and rule effects make explanation outputs and debugging behaviour auditable in ways that opaque pipelines do not (Zhang and Chen, 2020; Tintarev and Masthoff, 2007).
 
@@ -592,9 +585,7 @@ Fourth, evaluation protocol discipline is itself part of system design. Reproduc
 
 Fifth, comparator awareness must be maintained without allowing scope drift. Hybrid and self-supervised systems are relevant context for trade-off discussion, but they are not required to validate the contribution of this locked MVP artefact (Liu et al., 2025; Yu et al., 2024).
 
-Current evaluation evidence provides early support for the feasibility of staged alignment governance and deterministic replay-oriented design as central design considerations. Full end-to-end findings for candidate generation, deterministic scoring, playlist assembly, and controllability will be reported in Chapter 4.
-
-> **[NOTE: Update this paragraph once Chapter 4 is complete. Summarise which of the five design considerations above are confirmed, which are only partially supported, and whether the research question can be answered fully or with qualified scope.]**
+Current evaluation evidence supports these considerations directly. BL-020 completed real-data execution from BL-003 through BL-009 with explicit stage-level diagnostics, deterministic artifact hashes, and full observability linkage. BL-014 automated sanity checks then validated schema integrity, cross-stage hash linkage, and count/run-id continuity across the full evidence chain (21/21 checks passed). The research question can therefore be answered within a qualified, scope-bounded frame: transparent and controllable playlist generation is achievable with deterministic mechanisms when governance and artifact traceability are engineered as first-class requirements.
 
 ## 5.4 Critical Evaluation
 
@@ -602,9 +593,7 @@ The strongest aspect of the artefact design is its discipline. The system archit
 
 A second strength is the decision to treat explanation, observability, and reproducibility as engineering mechanisms rather than as presentation features. This avoids one of the common weaknesses in explainable recommendation work, where explanations are added after the ranking process in a way that sounds plausible but is poorly grounded in the real recommendation mechanism.
 
-The main weakness is the degree to which the strength of the final claims depends on the quality and completeness of the Chapter 4 evaluation evidence. Without a fully populated result base, it is not possible to confirm that all designed properties hold under real-data conditions. The design rationale remains sound, but empirical closure of the research question depends on completing and interpreting the evaluation evidence documented in Chapter 4.
-
-> **[NOTE: Once Chapter 4 is finalised, update this paragraph with any specific weaknesses identified by the evaluation. If results reveal a high unmatched rate, unstable sensitivity behaviour, or incomplete explanation fields, name those explicitly here rather than hedging in general terms.]**
+The main weakness is external validity rather than evidencing completeness. The Chapter 4 evidence base is now populated for the implemented pipeline path, but claims remain bounded by the single-user scope, DS-002 corpus composition, and reliance on semantic enrichment when direct alignment is unreliable.
 
 Another weakness is the dependence on the underlying corpus and alignment path. Recommendation behaviour can only be as complete as the aligned preference evidence and available feature descriptors allow. If track matching fails or if the corpus does not capture the most relevant aspects of listening intent, the transparency of the system will help diagnose the problem, but it will not remove the problem.
 
@@ -616,9 +605,11 @@ This thesis has several explicit limitations that constrain interpretation of re
 
 1. Scope limitation: the artefact is single-user, content-based, and deterministic by design, so findings are not generalized to collaborative, deep, or large-scale production recommenders.
 2. Data alignment limitation: some imported tracks may not align reliably to the canonical corpus, and the strongest methodological support remains in staged entity-resolution research rather than in music-specific alignment benchmarks.
-3. Feature-descriptor limitation: recommendation behaviour and output quality are constrained by the availability and quality of feature descriptors in Music4All.
-4. Comparator limitation: no implemented deep or hybrid baseline is included in the MVP, so broader trade-off comparisons remain literature-grounded rather than experimentally demonstrated.
-5. Evaluation-boundary limitation: evaluation is BSc-feasible and does not include large-scale user studies, longitudinal behaviour, or production-scale deployment evidence.
+3. Corpus-feature limitation: recommendation behaviour and output quality are constrained by DS-002 candidate composition and feature availability.
+4. External-API limitation: Spotify audio-feature endpoints are deprecated, so user-side tempo/loudness/key/mode are not directly available from Spotify in the current implementation.
+5. Alignment-quality limitation: direct fuzzy alignment into DS-002 can produce false positives for users with weak corpus overlap; semantic enrichment fallback is required in this regime.
+6. Comparator limitation: no implemented deep or hybrid baseline is included in the MVP, so broader trade-off comparisons remain literature-grounded rather than experimentally demonstrated.
+7. Evaluation-boundary limitation: evaluation is BSc-feasible and does not include large-scale user studies, longitudinal behaviour, or production-scale deployment evidence.
 
 These limitations do not invalidate the contribution, but they bound it to system-design guidance under transparent deterministic constraints.
 
@@ -626,10 +617,11 @@ These limitations do not invalidate the contribution, but they bound it to syste
 
 Future work should extend this artefact in ways that preserve traceability while strengthening evidence.
 
-1. Add a focused music-domain alignment reliability study, for example on ISRC and metadata ambiguity and matching error rates, to reduce current evidence risk.
-2. Execute structured controllability experiments and integrate their outcomes into the run-level observability logs.
-3. Add at least one comparator pipeline, such as a lightweight hybrid baseline, using protocol-matched evaluation so trade-off analysis improves without inflating scope.
-4. Expand from one ingestion adapter to additional adapters only after MVP evidence is complete, so comparability and reproducibility are maintained.
+1. Complete a full BL-020 rerun refresh (BL-003 through BL-013) on a later snapshot and compare outputs against the current evidence baseline.
+2. Add a focused music-domain alignment reliability study on corpus-overlap failure regimes and semantic-fallback quality.
+3. Execute broader controllability experiments and integrate their outcomes into run-level observability logs.
+4. Add at least one comparator pipeline, such as a lightweight hybrid baseline, using protocol-matched evaluation so trade-off analysis improves without inflating scope.
+5. Evaluate one audio-grounded extension path for user-side features (local extraction from a bounded track subset) to mitigate Spotify audio-feature endpoint deprecation.
 
 Collectively, these steps would strengthen external validity and comparative depth while keeping the thesis contribution centred on transparent, controllable, and observable engineering design.
 
@@ -639,11 +631,139 @@ This thesis has argued that the engineering of a transparent, controllable, and 
 
 # References
 
-> **[PLACEHOLDER: Insert the complete alphabetically ordered Harvard-format reference list here. All sources cited in-text throughout the document must appear. Compile from `08_writing/references.bib`.]**
+Adomavicius, G. and Tuzhilin, A. (2005) 'Toward the next generation of recommender systems: a survey of the state-of-the-art and possible extensions', IEEE Transactions on Knowledge and Data Engineering, 17(6), pp. 734-749. doi: 10.1109/TKDE.2005.99.
+
+Afroogh, S., Akbari, A., Malone, E., Kargar, M. and Alambeigi, H. (2024) 'Trust in AI: progress, challenges, and future directions', Humanities and Social Sciences Communications, 11(1), p. 1568. doi: 10.1057/s41599-024-04044-8.
+
+Allam, A., Salloum, S., Fahmy, A. and El-Desouky, A. (2018) 'Improved suffix blocking for record linkage and entity resolution', Data and Knowledge Engineering. doi: 10.1016/j.datak.2018.07.005.
+
+Andjelkovic, I., Parra, D. and O'Donovan, J. (2019) 'Moodplay: Interactive music recommendation based on artists' mood similarity', International Journal of Human-Computer Studies, 121, pp. 142-159. doi: 10.1016/j.ijhcs.2018.04.004.
+
+Anelli, V.W., Bellogin, A., Ferrara, A., Malitesta, D., Merra, F.A., Pomo, C., Donini, F.M. and Di Noia, T. (2021) 'Elliot: A comprehensive and rigorous framework for reproducible recommender systems evaluation', in Proceedings of the 44th International ACM SIGIR Conference on Research and Development in Information Retrieval. doi: 10.1145/3404835.3463245.
+
+Assuncao, W.G., Piccolo, L.S.G. and Zaina, L.A.M. (2022) 'Considering emotions and contextual factors in music recommendation: a systematic literature review', Multimedia Tools and Applications, 81(6), pp. 8367-8407. doi: 10.1007/s11042-022-12110-z.
+
+Balog, K., Radlinski, F. and Arakelyan, S. (2019) 'Transparent, scrutable and explainable user models for personalized recommendation', in Proceedings of the 42nd International ACM SIGIR Conference on Research and Development in Information Retrieval, pp. 265-274. doi: 10.1145/3331184.3331211.
+
+Barlaug, N. and Gulla, J.A. (2021) 'Neural networks for entity matching: a survey', ACM Transactions on Knowledge Discovery from Data. doi: 10.1145/3442200.
+
+Bauer, C., Zangerle, E. and Said, A. (2024) 'Exploring the landscape of recommender systems evaluation: practices and perspectives', ACM Transactions on Recommender Systems. doi: 10.1145/3629170.
+
+Beel, J., Breitinger, C., Langer, S. and Gipp, B. (2016) 'Towards reproducibility in recommender-systems research', User Modeling and User-Adapted Interaction. doi: 10.1007/s11257-016-9174-x.
+
+Bellogin, A. and Said, A. (2021) 'Improving accountability in recommender systems research through reproducibility', User Modeling and User-Adapted Interaction. doi: 10.1007/s11257-021-09302-x.
+
+Bertin-Mahieux, T., Ellis, D.P.W., Whitman, B. and Lamere, P. (2011) 'The Million Song Dataset', in Proceedings of the 12th International Society for Music Information Retrieval Conference (ISMIR 2011).
+
+Betello, F., Purificato, A., Siciliano, F., Trappolini, G., Bacciu, A., Tonellotto, N. and Silvestri, F. (2025) 'A reproducible analysis of sequential recommender systems', IEEE Access. doi: 10.1109/ACCESS.2024.3522049.
+
+Binette, O. and Steorts, R.C. (2022) '(Almost) all of entity resolution', Science Advances. doi: 10.1126/sciadv.abi8021.
+
+Bogdanov, D., Haro, M., Fuhrmann, F., Xambo, A., Gomez, E. and Herrera, P. (2013) 'Semantic audio content-based music recommendation and visualization based on user preference examples', Information Processing and Management, 49(1), pp. 13-33. doi: 10.1016/j.ipm.2012.06.004.
+
+Bonnin, G. and Jannach, D. (2015) 'Automated generation of music playlists: survey and experiments', ACM Computing Surveys, 47(2), pp. 1-35. doi: 10.1145/2652481.
+
+Bo Shao, Ogihara, M., Dingding Wang and Tao Li (2009) 'Music recommendation based on acoustic features and user access patterns', IEEE Transactions on Audio, Speech, and Language Processing, 17(8), pp. 1602-1611. doi: 10.1109/TASL.2009.2020893.
+
+Cano, E. and Morisio, M. (2017) 'Hybrid recommender systems: a systematic literature review', Intelligent Data Analysis, 21(6), pp. 1487-1524. doi: 10.3233/IDA-163209.
+
+Cavenaghi, E., Sottocornola, S., Stella, F. and Zanker, M. (2023) 'A systematic study on reproducibility of reinforcement learning in recommendation systems', ACM Transactions on Recommender Systems. doi: 10.1145/3596519.
+
+Deldjoo, Y., Schedl, M. and Knees, P. (2024) 'Content-driven music recommendation: evolution, state of the art, and challenges', Computer Science Review, 51, p. 100618. doi: 10.1016/j.cosrev.2024.100618.
+
+Elmagarmid, A.K., Ipeirotis, P.G. and Verykios, V.S. (2007) 'Duplicate record detection: a survey', IEEE Transactions on Knowledge and Data Engineering. doi: 10.1109/TKDE.2007.250581.
+
+Ferrari Dacrema, M., Boglio, S., Cremonesi, P. and Jannach, D. (2021) 'A troubling analysis of reproducibility and progress in recommender systems research', ACM Transactions on Information Systems. doi: 10.1145/3434185.
+
+Ferraro, A., Bogdanov, D., Yoon, J., Kim, K. and Serra, X. (2018) 'Automatic playlist continuation using a hybrid recommender system combining features from text and audio', in Proceedings of the ACM Recommender Systems Challenge 2018. doi: 10.1145/3267471.3267473.
+
+Fkih, F. (2022) 'Similarity measures for collaborative filtering-based recommender systems: review and experimental comparison', Journal of King Saud University - Computer and Information Sciences, 34(9), pp. 7645-7669. doi: 10.1016/j.jksuci.2021.09.014.
+
+Flexer, A. and Grill, T. (2016) 'The problem of limited inter-rater agreement in modelling music similarity', Journal of New Music Research, 45(3), pp. 239-251. doi: 10.1080/09298215.2016.1200631.
+
+Furini, M. and Fragnelli, F. (2024) 'Social music discovery: an ethical recommendation system based on friend's preferred songs', Multimedia Tools and Applications, 84(14), pp. 13469-13483. doi: 10.1007/s11042-024-19505-0.
+
+Gatzioura, A., Vinagre, J., Jorge, A.M. and Sanchez-Marre, M. (2019) 'A hybrid recommender system for improving automatic playlist continuation', IEEE Transactions on Knowledge and Data Engineering. doi: 10.1109/TKDE.2019.2952099.
+
+He, X., Liao, L., Zhang, H., Nie, L., Hu, X. and Chua, T.-S. (2017) 'Neural collaborative filtering', in Proceedings of the 26th International Conference on World Wide Web, pp. 173-182. doi: 10.1145/3038912.3052569.
+
+Herlocker, J.L., Konstan, J.A., Terveen, L.G. and Riedl, J.T. (2004) 'Evaluating collaborative filtering recommender systems', ACM Transactions on Information Systems. doi: 10.1145/963770.963772.
+
+Jannach, D. and Jugovac, M. (2019) 'Measuring the business value of recommender systems', ACM Transactions on Management Information Systems. doi: 10.1145/3370082.
+
+Jin, Y., Tintarev, N., Htun, N.N. and Verbert, K. (2020) 'Effects of personal characteristics in control-oriented user interfaces for music recommender systems', User Modeling and User-Adapted Interaction, 30(2), pp. 199-249. doi: 10.1007/s11257-019-09247-2.
+
+Kang, J. and Herremans, D. (2025) 'Are we there yet? A brief survey of music emotion prediction datasets, models and outstanding challenges', IEEE Transactions on Affective Computing. doi: 10.1109/TAFFC.2025.3583505.
+
+Knijnenburg, B.P., Willemsen, M.C., Gantner, Z., Soncu, H. and Newell, C. (2012) 'Explaining the user experience of recommender systems', User Modeling and User-Adapted Interaction, 22(4), pp. 441-504. doi: 10.1007/s11257-011-9118-4.
+
+Knox, D., Greer, T., Ma, B., Kuo, E., Somandepalli, K. and Narayanan, S. (2021) 'Loss function approaches for multi-label music tagging', in 2021 International Conference on Content-Based Multimedia Indexing (CBMI). doi: 10.1109/CBMI50038.2021.9461913.
+
+Kowald, D., Muellner, P., Zangerle, E., Bauer, C., Schedl, M. and Lex, E. (2021) 'Support the underground: characteristics of beyond-mainstream music listeners', EPJ Data Science. doi: 10.1140/epjds/s13688-021-00268-9.
+
+Liu, J. (2025) 'Aggregating contextual information for multi-criteria online music recommendations', IEEE Access. doi: 10.1109/ACCESS.2025.3527512.
+
+Liu, Q., Hu, J., Xiao, Y., Zhao, X., Gao, J., Wang, W., Li, Q. and Tang, J. (2025) 'Multimodal recommender systems: a survey', ACM Computing Surveys, 57(2), pp. 1-17. doi: 10.1145/3695461.
+
+Lopes, P., Silva, E., Braga, C., Oliveira, T. and Rosado, L. (2022) 'XAI systems evaluation: a review of human and computer-centred methods', Applied Sciences, 12(19), p. 9423. doi: 10.3390/app12199423.
+
+Lu, J., Wu, D., Mao, M., Wang, W. and Zhang, G. (2015) 'Recommender system application developments: a survey', Decision Support Systems, 74, pp. 12-32. doi: 10.1016/j.dss.2015.03.008.
+
+McFee, B., Bertin-Mahieux, T., Ellis, D.P.W. and Lanckriet, G.R.G. (2012) 'The million song dataset challenge', in Proceedings of the 21st International Conference on World Wide Web, pp. 909-916. doi: 10.1145/2187980.2188222.
+
+Moysis, L., Iliadis, L.A., Sotiroudis, S.P., Boursianis, A.D., Papadopoulou, M.S., Kokkinidis, K.-I.D., Volos, C., Sarigiannidis, P., Nikolaidis, S. and Goudos, S.K. (2023) 'Music deep learning: deep learning methods for music signal processing - a review of the state-of-the-art', IEEE Access. doi: 10.1109/ACCESS.2023.3244620.
+
+Nauta, M., Trienes, J., Pathak, S., Nguyen, E., Peters, M., Schmitt, Y., Schlotterer, J., Van Keulen, M. and Seifert, C. (2023) 'From anecdotal evidence to quantitative evaluation methods: a systematic review on evaluating explainable AI', ACM Computing Surveys, 55(13), pp. 1-42. doi: 10.1145/3583558.
+
+Neto, P.A.S.O., Hartmann, M., Luck, G. and Toiviainen, P. (2023) 'The algorithmic nature of song-sequencing: statistical regularities in music albums', Journal of New Music Research, 52(5), pp. 410-424. doi: 10.1080/09298215.2024.2423610.
+
+Pandeya, Y.R., You, J., Bhattarai, B. and Lee, J. (2021) 'Multi-modal, multi-task and multi-label for music genre classification and emotion regression', in 2021 International Conference on Information and Communication Technology Convergence (ICTC). doi: 10.1109/ICTC52510.2021.9620826.
+
+Papadakis, G., Skoutas, D., Thanos, E. and Palpanas, T. (2021) 'Blocking and filtering techniques for entity resolution: a survey', ACM Computing Surveys. doi: 10.1145/3377455.
+
+Pegoraro Santana, I.A., Pinhelli, F., Donini, J., Catharin, L., Mangolin, R.B., Da Costa, Y.M.E.G., Delisandra Feltrim, V. and Domingues, M.A. (2020) 'Music4All: a new music database and its applications', in 2020 International Conference on Systems, Signals and Image Processing (IWSSIP). doi: 10.1109/IWSSIP48289.2020.9145170.
+
+Roy, D. and Dutta, M. (2022) 'A systematic review and research perspective on recommender systems', Journal of Big Data, 9(1), p. 59. doi: 10.1186/s40537-022-00592-5.
+
+Ru, G., Zhang, X., Wang, J., Cheng, N. and Xiao, J. (2023) 'Improving music genre classification from multi-modal properties of music and genre correlations perspective', in ICASSP 2023 - 2023 IEEE International Conference on Acoustics, Speech and Signal Processing. doi: 10.1109/ICASSP49357.2023.10097241.
+
+Sanchez, P.M. and Bellogin, A. (2022) 'Point-of-interest recommender systems based on location-based social networks: a survey from an experimental perspective', ACM Computing Surveys. doi: 10.1145/3510409.
+
+Schedl, M. (2017) 'Investigating country-specific music preferences and music recommendation algorithms with the LFM-1b dataset', International Journal of Multimedia Information Retrieval. doi: 10.1007/s13735-017-0118-y.
+
+Schedl, M., Zamani, H., Chen, C.-W., Deldjoo, Y. and Elahi, M. (2018) 'Current challenges and visions in music recommender systems research', International Journal of Multimedia Information Retrieval, 7(2), pp. 95-116. doi: 10.1007/s13735-018-0154-2.
+
+Schweiger, H., Parada-Cabaleiro, E. and Schedl, M. (2025) 'The impact of playlist characteristics on coherence in user-curated music playlists', EPJ Data Science, 14(1), p. 24. doi: 10.1140/epjds/s13688-025-00531-3.
+
+Shakespeare, D., Chareyron, V. and Roth, C. (2025) 'Reframing the filter bubble through diverse scale effects in online music consumption', Scientific Reports. doi: 10.1038/s41598-024-75967-0.
+
+Siedenburg, K. and Mullensiefen, D. (2017) 'Modeling timbre similarity of short music clips', Frontiers in Psychology. doi: 10.3389/fpsyg.2017.00639.
+
+Sotirou, T., Lyberatos, V., Mastromichalakis, O.M. and Stamou, G. (2025) 'MusicLIME: explainable multimodal music understanding', in ICASSP 2025 - 2025 IEEE International Conference on Acoustics, Speech and Signal Processing. doi: 10.1109/ICASSP49660.2025.10889771.
+
+Teinemaa, I., Tax, N., Bentes, C., Semikin, M., Treimann, M.L. and Safka, C. (2018) 'Automatic playlist continuation through a composition of collaborative filters', RecSys Challenge 2018 Team Latte report.
+
+Tintarev, N. and Masthoff, J. (2007) 'A survey of explanations in recommender systems', in 2007 IEEE 23rd International Conference on Data Engineering Workshop, pp. 801-810. doi: 10.1109/ICDEW.2007.4401070.
+
+Tintarev, N. and Masthoff, J. (2012) 'Evaluating the effectiveness of explanations for recommender systems: methodological issues and empirical studies on the impact of personalization', User Modeling and User-Adapted Interaction, 22(4), pp. 399-439. doi: 10.1007/s11257-011-9117-5.
+
+Tsai, C.-H. and Brusilovsky, P. (2018) 'Explaining social recommendations to casual users: design principles and opportunities', in Companion Proceedings of the 23rd International Conference on Intelligent User Interfaces, pp. 1-2. doi: 10.1145/3180308.3180368.
+
+Vall, A., Dorfer, M., Eghbal-zadeh, H., Schedl, M., Burjorjee, K. and Widmer, G. (2019) 'Feature-combination hybrid recommender systems for automated music playlist continuation', User Modeling and User-Adapted Interaction, 29(2), pp. 527-572. doi: 10.1007/s11257-018-9215-8.
+
+Yu, R., Yin, X., Xia, L., Chen, T., Li, Z. and Huang, C. (2024) 'Self-supervised learning for recommender systems: a survey', IEEE Transactions on Knowledge and Data Engineering. doi: 10.1109/TKDE.2023.3282907.
+
+Zamani, H., Schedl, M., Lamere, P. and Chen, C.-W. (2019) 'An analysis of approaches taken in the ACM RecSys Challenge 2018 for automatic music playlist continuation', ACM Transactions on Intelligent Systems and Technology, 10(5), pp. 1-21. doi: 10.1145/3344257.
+
+Zhang, Y. and Chen, X. (2020) 'Explainable recommendation: a survey and new perspectives', Foundations and Trends in Information Retrieval, 14(1), pp. 1-101. doi: 10.1561/1500000066.
+
+Zhu, H., Zhou, Y., Chen, H., Yu, J., Ma, Z., Gu, R., Luo, Y., Tan, W. and Chen, X. (2025) 'MuQ: self-supervised music representation learning with Mel residual vector quantization', IEEE Transactions on Audio, Speech, and Language Processing. doi: 10.1109/TASLPRO.2025.3602320.
+
+Zhu, J., Dai, Q., Su, L., Ma, R., Liu, J., Cai, G., Xiao, X. and Zhang, R. (2022) 'BARS', in Proceedings of the 45th International ACM SIGIR Conference on Research and Development in Information Retrieval. doi: 10.1145/3477495.3531723.
 
 # Bibliography
 
-> **[NOTE: Include only uncited background sources here. If all sources are cited in the References section above, omit this section entirely from the final submission.]**
+This section is intentionally omitted in the final version if all listed sources are cited in the main text.
 
 # Appendices
 

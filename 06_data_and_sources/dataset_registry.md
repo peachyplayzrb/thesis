@@ -3,19 +3,49 @@
 ## DS-001: Music4All / Music4All-Onion
 
 - decision_log_ref: `D-001`, `D-015`
-- status: fallback baseline only — previously primary, now superseded for active BL-019 planning
+- status: fallback baseline with renewed access path — provider replied positively on access request (delivery/licensing details pending formal capture)
 - date_registered: 2026-03-12
-- last_updated: 2026-03-19
+- last_updated: 2026-03-22
 
 ### Description
 Research-grade music dataset providing rich audio features and metadata for a large catalogue of tracks. Used as the canonical candidate corpus for preference profiling, candidate retrieval, and deterministic scoring in the thesis pipeline.
 
 Music4All-Onion covers 109,269 tracks and 252,984,396 listening records from 119,140 Last.fm users. It extends the base Music4All dataset with 26 additional audio, video, and metadata features.
 
+### Important Distinction
+- Music4All (base) and Music4All-Onion are different dataset artifacts, not interchangeable names.
+- Music4All-Onion is an extension package built around the Music4All ecosystem, but practical access paths, file inventories, and feature availability can differ from the original base release.
+- Governance and implementation decisions must record which artifact is actually used in each run (base, Onion, or combined).
+
 ### Source
 - Music4All base dataset: Santana et al. (2020), ICMR — separate Zenodo record (search "Music4All Santana" on zenodo.org)
 - Music4All-Onion: Moscati et al. (2022), RecSys — zenodo.org/records/15394646 (use latest version / v2)
 - Music4All A+A (Artist and Album Dataset): NOT required — no album-level or artist-level feature weighting exists in the current pipeline design.
+
+### Access and Version Control Update (2026-03-22)
+- Provider response status: positive reply received; dataset sharing indicated as available.
+- Delivery state: agreement returned by user; awaiting provider credential delivery (URL and password).
+- License/usage state: pre-access confidentiality terms now explicitly required; post-access usage constraints still pending explicit written capture in thesis records.
+- Provisional corpus role: DS-001 remains fallback/reference while DS-002 stays active until DS-001 files are locally available and governance checks pass.
+
+#### Version and Access Conditions Register
+| Field | Value (current) | Action to close |
+| --- | --- | --- |
+| Access response received | Yes (2026-03-22) | Archive exact reply text/date in admin evidence note |
+| Pre-access agreement required | Yes - disclosure/confidentiality agreement requested by provider | Completed and sent back by user; wait for provider confirmation |
+| Dataset release target | Music4All-Onion Zenodo `15394646` (target latest v2) | Confirm exact delivered release/version from provider |
+| Base Music4All inclusion | Unknown | Confirm whether base metadata is included or separate |
+| Permitted use | Conditioned on signed disclosure/confidentiality agreement; detailed usage terms still pending | Extract and record allowed-use text from signed agreement and/or provider follow-up |
+| Redistribution right | Unknown | Confirm if derived subset/artifacts can be shared in repo |
+| Citation requirement | Expected mandatory | Capture exact required citation wording if supplied |
+| Retention period/deletion duty | Unknown | Confirm any post-thesis retention constraints |
+
+#### Reactivation Gate (DS-001 -> active)
+DS-001 may be switched from fallback to active only when all of the following are true:
+1. Dataset files are received and checksummed locally.
+2. Exact dataset version/release is documented.
+3. Usage/license constraints are explicitly recorded and compatible with thesis submission workflow.
+4. A quick BL-019 compatibility check confirms schema-to-pipeline fit without destabilizing current BL-020 work.
 
 ### Access Status Update (2026-03-19)
 - Base Music4All record is currently inaccessible in the user environment.

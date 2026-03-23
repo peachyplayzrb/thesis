@@ -31,6 +31,11 @@
 	- Extract high-value findings, limitations, and trade-off evidence for chapter strengthening.
 	- Produce citation replacement recommendations and chapter-targeted hardening notes.
 
+- WP-DRAFT-001 (2026-03-23 to 2026-03-29): 7-day mentor-ready full-draft sprint
+	- Execute day-by-day writing/evidence/coherence plan in `00_admin/mentor_draft_7day_sprint_2026-03-23.md`.
+	- Prioritize chapter-to-artefact alignment and claim-evidence traceability over new feature expansion.
+	- Freeze mentor package on Day 7 with explicit feedback questions and bounded limitations.
+
 ## Notes
 - Dates are a working baseline for execution control and can be refined against official module deadlines.
 - Scope remains locked to the MVP boundary in `00_admin/thesis_state.md` and `00_admin/Artefact_MVP_definition.md`.
