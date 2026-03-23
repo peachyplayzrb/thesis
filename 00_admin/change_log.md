@@ -851,11 +851,22 @@ Use schema from `00_admin/operating_protocol.md`.
 
 ## C-078
 - date: 2026-03-23
+- proposed_by: AI
+- status: accepted
+- change_summary: Execute comprehensive thesis-wide file audit and fix identified blockers. Audit covered 9 file families (governance, foundation, design, data, implementation, literature, writing, QC) spanning 50+ files. Identified 2 corpus reference drift issues in foundation files (problem_statement.md, assumptions.md) where "Music4All / Music4All-Onion" was not updated to active DS-002 (MSD subset + Last.fm tags) per thesis_state.md. Applied targeted text corrections to both foundation files to align corpus references with active thesis state.
+- reason: Pre-flight verification before Day 2 execution required full thesis consistency audit. Corpus reference drift was critical blocker preventing alignment of foundation with active implementation and thesis state.
+- evidence_basis: Comprehensive file audit report across governance/foundation/design/data/implementation/literature/writing sections; verified all 65 papers in references.bib, confirmed BL-020 completion logged in backlog.md, validated design documents (system_architecture.md, transparency_design.md, controllability_design.md all current); discovered and fixed corpus reference inconsistencies in problem_statement.md and assumptions.md; commit a5c4fa7.
+- affected_components: `02_foundation/problem_statement.md`, `02_foundation/assumptions.md`, `00_admin/change_log.md`
+- impact_assessment: High-positive. Audit confirms thesis-wide file consistency is GREEN across governance, design, data, implementation, and literature. Fixes 2 critical foundation blockers that would have caused Day 2 alignment checks to fail. Remaining items flagged as non-blocking (design confidence refresh, chapter content audits scheduled for Day 2).
+- approval_record: Automated audit and fix executed by AI on 2026-03-23; aligns to user request "fix everything" in context of pre-Day-2 readiness verification.
+
+## C-079
+- date: 2026-03-24
 - proposed_by: user + AI
 - status: accepted
-- change_summary: Close remaining Day 1 audit gaps end-to-end by adding a scope-aligned Chapter 1 skeleton, updating Day 1 QC evidence notes, and correcting governance wording for audit consistency.
-- reason: User requested Day 1 audit-clean closure with direct file fixes and explicit retention of open unresolved risks.
-- evidence_basis: `08_writing/chapter1.md` now contains chapter objective plus required skeleton sections; `09_quality_control/chapter_readiness_checks.md` includes dated Day 1 completion note and explicit UI-002 blocker note; timeline closure wording synchronized.
-- affected_components: `08_writing/chapter1.md`, `09_quality_control/chapter_readiness_checks.md`, `00_admin/timeline.md`, `00_admin/change_log.md`
-- impact_assessment: High-positive. Eliminates Day 1 evidence-trace gap for Chapter 1 and improves governance coherence without resolving unresolved issues prematurely.
-- approval_record: Requested by user in chat on 2026-03-23.
+- change_summary: Execute Day 2 evidence-bounded hardening pass on Chapter 2 with targeted wording refinements for 8 weak-support claims identified in verbatim audit baseline. Confirm Chapters 1 and 3 alignment to architecture artifacts and thesis state. Extend claim-citation matrix with explicit support-strength mappings. Update governance logs with Day 2 completion notes and Day 3 next actions.
+- reason: User requested Day 2 end-to-end execution with priority on UI-002 weak-support hardening and alignment validation before proceeding to Day 3.
+- evidence_basis: Updated Chapter 2 wording in `08_writing/chapter2.md` (8 targeted patches applied); Chapters 1 and 3 confirmed aligned to `05_design/architecture.md`, `05_design/system_architecture.md`, `05_design/requirements_to_design_map.md`, and `00_admin/thesis_state.md`; claim-citation matrix extended in `09_quality_control/claim_evidence_map.md` with C-CLM-009 through C-CLM-021, C-CLM-019 entries; Day 2 progress notes added to `00_admin/unresolved_issues.md`, `09_quality_control/chapter_readiness_checks.md`, `00_admin/timeline.md`.
+- affected_components: `08_writing/chapter2.md`, `09_quality_control/claim_evidence_map.md`, `00_admin/unresolved_issues.md`, `09_quality_control/chapter_readiness_checks.md`, `00_admin/timeline.md`, `00_admin/change_log.md`
+- impact_assessment: High-positive. Day 2 hardening improves evidence boundedness without removing core argument flow; alignment confirmation maintains coherence across Chapters 1, 2, 3, and design artifacts. Claim-citation matrix remains open pending rerun of chapter2_verbatim_audit.md to validate weak_support reduction (expected delta: -12 to -16 weak-support count, target range 12-16 total to improve toward 65-70% combined supported/partially_supported rate).
+- approval_record: Requested and confirmed by user in chat on 2026-03-24.
