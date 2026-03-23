@@ -19,10 +19,10 @@ Purpose: produce a full, coherent thesis draft in 7 days that reflects the curre
   - `09_quality_control/*` artifacts for checks performed
 
 ## Day 1 - Scope Lock and Skeleton Alignment
-- [ ] Confirm implemented-vs-deferred boundaries in `00_admin/thesis_state.md`.
-- [ ] Ensure unresolved priorities are explicit in `00_admin/unresolved_issues.md`.
-- [ ] Create or refresh chapter skeleton headings in `08_writing/` drafts.
-- [ ] Ensure chapter objective statements map to current artefact.
+- [x] Confirm implemented-vs-deferred boundaries in `00_admin/thesis_state.md`.
+- [x] Ensure unresolved priorities are explicit in `00_admin/unresolved_issues.md`.
+- [x] Create or refresh chapter skeleton headings in `08_writing/` drafts.
+- [x] Ensure chapter objective statements map to current artefact.
 
 Exit criteria:
 - No scope ambiguity remains between artefact and thesis narrative.

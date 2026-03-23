@@ -1,5 +1,7 @@
 ﻿# Chapter 3: Design and Methodology
 
+Chapter objective: convert the literature synthesis into implementation-faithful architecture commitments that match the active deterministic BL-020 artefact scope and can be audited in Chapter 4.
+
 ## 3.1 Design Methodology
 This chapter takes a Design Science Research position in which the literature synthesis is converted into explicit engineering requirements and then into an implementable artefact architecture. The workflow remains the defined thesis sequence: literature -> requirements -> design -> implementation -> evaluation. The key methodological point is that Chapter 3 does not claim validated outcomes. It defines design commitments that are intended to be tested in Chapter 4.
 
@@ -12,7 +14,7 @@ The second requirement is practical controllability. The system should expose ex
 
 The fourth requirement is governance at run level: observability, reproducibility, and auditability should be engineered directly into execution through configuration capture and structured diagnostics (Beel et al., 2016; Bellogin et al., 2021; Cavenaghi et al., 2023). The fifth is corpus defensibility. The active implementation corpus is DS-002 (`MSD subset + Last.fm tags`) because it provides deterministic candidate-side feature coverage for current scope constraints; MusicBrainz-related fields are treated as optional metadata and are not currently used by the active scoring path. Music4All remains a documented baseline reference for corpus-family justification (Pegoraro et al., 2020).
 
-Taken together, these requirements constrain the architecture toward explicit stages and explicit artifacts, because if a property cannot be observed, replayed, or stress-tested later, it should not be treated as a core design claim now.
+Taken together, these requirements constrain the architecture toward explicit stages and explicit artifacts, because if a property cannot be observed, replayed, or stress-tested later, it should not be treated as a core design claim now. To support UI-003 hardening, claims in this chapter are phrased as evidence-bounded design commitments and are linked to Chapter 4 artifact-level verification rather than model-superiority assertions.
 
 ## 3.3 Overall System Architecture
 The proposed architecture is a layered deterministic pipeline:
@@ -97,7 +99,7 @@ Table 3.1 documents this section-level handoff mapping from Chapter 2 consequenc
 | Section 2.6 (Deterministic Feature-Based Design Rationale with Comparator Context) | Make metric and feature-weight choices explicit and include sensitivity checks. | Sections 3.5 and 3.6 use explicit deterministic feature-based scoring and document parameterization for later sensitivity evaluation.
 | Section 2.7 (Cross-Source Alignment Reliability Reproducibility Governance and Synthesis) | Add staged alignment diagnostics, unmatched-rate reporting, semantic-fallback status capture, and run-level configuration logging under governance-oriented evaluation criteria. | Sections 3.4 and 3.7 define staged alignment diagnostics, semantic enrichment fallback status (`ok/no_tags/error`), and run-level observability artifacts aligned with Chapter 4 governance checks.
 
-This handoff mapping keeps the Chapter 2 conclusions operational and reduces drift between literature interpretation and architecture specification.
+This handoff mapping keeps the Chapter 2 conclusions operational and reduces drift between literature interpretation and architecture specification. It also serves as a UI-002/UI-003 hardening control: each design statement remains traceable either to a bounded literature claim or to a concrete evaluation artifact.
 
 Overall, this chapter operationalizes the Chapter 2 argument into implementable commitments while keeping the wording cautious: deterministic choices are justified as scope- and objective-aligned engineering decisions, not universal model-superiority claims.
 

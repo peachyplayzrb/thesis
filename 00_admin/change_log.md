@@ -837,3 +837,25 @@ Use schema from `00_admin/operating_protocol.md`.
 - affected_components: `00_admin/mentor_draft_7day_sprint_2026-03-23.md` (new), `00_admin/timeline.md` (WP-DRAFT-001 added), `00_admin/change_log.md`
 - impact_assessment: High-positive for execution focus and delivery confidence. Converts high-level advice into a date-bound operating checklist aligned to existing thesis governance files.
 - approval_record: Requested and confirmed by user in chat on 2026-03-23.
+
+## C-077
+- date: 2026-03-23
+- proposed_by: user + AI
+- status: accepted
+- change_summary: Execute Day 1 sprint actions by hardening high-risk evidence wording tied to UI-002/UI-003 and synchronizing governance progress tracking.
+- reason: User requested immediate Day 1 execution with priority on evidence hardening and explicit progress updates in state/timeline/change controls.
+- evidence_basis: Updated chapter text in `08_writing/chapter2.md`, `08_writing/chapter3.md`, and `08_writing/chapter5.md`; synchronized Day 1 tracking notes in `00_admin/thesis_state.md` and `00_admin/timeline.md`.
+- affected_components: `08_writing/chapter2.md`, `08_writing/chapter3.md`, `08_writing/chapter5.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`, `00_admin/change_log.md`
+- impact_assessment: High-positive. Reduces overclaim risk in active narrative chapters, improves mentor-readiness traceability, and starts the 7-day sprint with scope-faithful, evidence-bounded wording.
+- approval_record: Requested by user in chat on 2026-03-23.
+
+## C-078
+- date: 2026-03-23
+- proposed_by: user + AI
+- status: accepted
+- change_summary: Close remaining Day 1 audit gaps end-to-end by adding a scope-aligned Chapter 1 skeleton, updating Day 1 QC evidence notes, and correcting governance wording for audit consistency.
+- reason: User requested Day 1 audit-clean closure with direct file fixes and explicit retention of open unresolved risks.
+- evidence_basis: `08_writing/chapter1.md` now contains chapter objective plus required skeleton sections; `09_quality_control/chapter_readiness_checks.md` includes dated Day 1 completion note and explicit UI-002 blocker note; timeline closure wording synchronized.
+- affected_components: `08_writing/chapter1.md`, `09_quality_control/chapter_readiness_checks.md`, `00_admin/timeline.md`, `00_admin/change_log.md`
+- impact_assessment: High-positive. Eliminates Day 1 evidence-trace gap for Chapter 1 and improves governance coherence without resolving unresolved issues prematurely.
+- approval_record: Requested by user in chat on 2026-03-23.

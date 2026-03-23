@@ -35,6 +35,8 @@
 	- Execute day-by-day writing/evidence/coherence plan in `00_admin/mentor_draft_7day_sprint_2026-03-23.md`.
 	- Prioritize chapter-to-artefact alignment and claim-evidence traceability over new feature expansion.
 	- Freeze mentor package on Day 7 with explicit feedback questions and bounded limitations.
+	- Day 1 closure note (2026-03-23): scope-lock and skeleton-alignment pass is now audit-backed, including Chapter 1 skeleton completion in `08_writing/chapter1.md`, evidence-bounded hardening edits in `08_writing/chapter2.md`, `08_writing/chapter3.md`, and `08_writing/chapter5.md`, and QC logging in `09_quality_control/chapter_readiness_checks.md`.
+	- Day 2 next actions (2026-03-24): run full Chapter 1 and Chapter 3 wording pass against architecture artifacts (`05_design/architecture.md`, `05_design/system_architecture.md`, `05_design/requirements_to_design_map.md`) and produce an updated claim-citation matrix snapshot for Chapters 3 to 5.
 
 ## Notes
 - Dates are a working baseline for execution control and can be refined against official module deadlines.

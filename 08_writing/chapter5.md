@@ -1,5 +1,7 @@
 ﻿# Chapter 5
 
+Chapter objective: interpret implementation and evaluation results against the locked MVP contribution claim, while keeping all conclusion statements bounded to verifiable evidence.
+
 ## 5.1 Evaluation Interpretation and Comparator Framing
 Evaluation results in this thesis are interpreted as evidence for design-goal alignment (transparency, controllability, observability, and reproducibility), not as claims of universal recommendation superiority. This interpretation follows literature showing that practical value and scientific validity depend on explicit objective-metric alignment and clear reporting of protocol assumptions [@jannach_measuring_2019; @bauer_exploring_2024; @anelli_elliot_2021; @ferrari_dacrema_troubling_2021].
 
@@ -18,6 +20,8 @@ The research question asks what design considerations shape the engineering of a
 5. Comparator-awareness without scope drift. Hybrid and self-supervised systems are relevant context for trade-off discussion, but not required for validating this locked MVP contribution [@liu_multimodal_2025; @yu_self_supervised_2024].
 
 Current implementation evidence now includes deterministic replay checks (BL-010) and controllability sensitivity tests (BL-011) on the bootstrap pipeline, plus BL-020 real-data diagnostics that exposed a candidate-corpus mismatch and required a semantic-enrichment fallback. This supports consideration 4 directly and gives practical evidence for considerations 1 to 3 under real cross-source constraints.
+
+To maintain UI-003 discipline, conclusions in this chapter are treated as evidence-tiered statements: high-confidence where claim-evidence mapping is strong, and bounded wording where support remains partial or domain-transfer based.
 
 ## 5.4 Limitations
 This thesis has explicit limits that bound how the results should be interpreted.

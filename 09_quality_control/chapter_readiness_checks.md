@@ -1,11 +1,11 @@
 ﻿# Chapter Readiness Checks
 
 ## Chapter 1 (Introduction)
-- [ ] Problem context is clear and relevant to music recommendation engineering.
-- [ ] Research question exactly matches locked wording in `00_admin/thesis_state.md`.
-- [ ] Objectives align one-to-one with implementation/evaluation plan.
-- [ ] Scope and out-of-scope boundaries are explicit.
-- [ ] Contribution claim is stated without overclaiming ML novelty.
+- [x] Problem context is clear and relevant to music recommendation engineering.
+- [x] Research question exactly matches locked wording in `00_admin/thesis_state.md`.
+- [x] Objectives align one-to-one with implementation/evaluation plan.
+- [x] Scope and out-of-scope boundaries are explicit.
+- [x] Contribution claim is stated without overclaiming ML novelty.
 
 ## Chapter 2 (Literature Review)
 - [x] Key themes link to transparency, controllability, observability, and deterministic design.
@@ -57,4 +57,7 @@ Progress note (2026-03-15): Project-wide sync completed; latest approved `08_wri
 Progress note (2026-03-15): Canonical Chapter 2 was re-synchronized to `08_writing/chapter2_draft_v11.md` and lockfile hash parity was confirmed with `08_writing/chapter2_draft_locked_2026-03-15.md`.
 Progress note (2026-03-15): Verbatim audit parser was extended for author-year citations and now produces claim-level output on `08_writing/chapter2_draft_v11.md`.
 Open blocker note (2026-03-15): current Chapter 2 verbatim audit still reports `weak_support=24`; wording hardening is required before this check can be marked complete.
+
+Progress note (2026-03-23): Day 1 gap-closure pass completed. `08_writing/chapter1.md` now contains a structured skeleton with chapter objective, problem context, locked research question wording, aligned objectives, explicit in-scope/out-of-scope boundaries, contribution positioning, and chapter summary. Day 1 sprint checklist remains consistent with this evidence.
+Open blocker note (2026-03-23): UI-002 remains open because the active Chapter 2 verbatim audit baseline still records `weak_support=24` in `09_quality_control/chapter2_verbatim_audit.md`; Day 1 wording hardening reduced overclaim risk but does not by itself provide closure evidence.
 
