@@ -39,6 +39,13 @@
 	- Day 2 closure note (2026-03-24): evidence-bounded hardening completed on Chapter 2 with 8 targeted wording refinements to address weak-support claims in verbatim audit baseline. Chapters 1 and 3 confirmed aligned to architecture and thesis_state.md. Claim-citation matrix extended with explicit mapping entries (C-CLM-001 through C-CLM-023, extended). UI-002 remains open pending rerun of chapter2_verbatim_audit.md to measure weak_support reduction from hardening edits.
 	- Day 3 next actions (2026-03-25): execute targeted literature-to-chapter hardening for Chapters 2 and 3 using extracted paper-note evidence (high-value direct quotes and claims from `10_resources/papers/_extracted_claim_check/`). Rerun chapter2_verbatim_audit.md on current Chapter 2 text to measure weak_support delta. Prioritize closure path for UI-002 if audit still shows elevated weak_support (weak_support > 12).
 
+- WP-WEBINT-001 (2026-03-23 to 2026-03-30): Freeze-and-integrate website execution package
+	- Freeze current BL-020 pipeline behavior as the baseline for this package; allow only bug fixes, observability improvements, and integration wiring.
+	- Integrate `07_implementation/website/` pages with real run artifacts and deterministic pipeline invocation flow (`import` -> `profile` -> `filter` -> `score` -> `playlist` -> `explain` -> `observe`).
+	- Prioritize UI-mediated inspectability: surface run id, stage status, key counts, and artifact links in the website flow.
+	- Execute implementation refinement in parallel: stability hardening, clearer error handling around external API steps, and repeatable rerun controls for reproducibility evidence.
+	- Keep deferred scope unchanged (`BL-021`, `BL-022`), and avoid adding new adapters or model classes during this package.
+
 
 ## Notes
 - Dates are a working baseline for execution control and can be refined against official module deadlines.

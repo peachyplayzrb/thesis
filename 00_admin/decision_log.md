@@ -791,3 +791,25 @@ impacted_files:
 - `00_admin/change_log.md`
 - `07_implementation/backlog.md` (`BL-022`)
 review_date: none
+
+---
+
+id: D-026
+date: 2026-03-23
+status: accepted
+context: BL-020 and BL-014 are complete with evidence, while current user priority is to freeze the implemented pipeline and build a website interaction layer for demonstration, testing, and bounded refinement. Without a freeze decision, integration work risks accidental scope expansion into deferred items.
+decision: Adopt a freeze-first execution strategy for the current implementation baseline. Keep core recommendation behavior stable and direct implementation effort to website-to-pipeline integration, run observability exposure in the UI, and bounded reliability hardening.
+alternatives_considered:
+- Continue feature expansion first (BL-021/BL-022) before website integration
+- Refactor recommendation logic and integration together in one pass
+- Keep website as static prototype with simulated data only
+rationale: Freezing baseline behavior improves traceability and makes evaluation evidence defensible while enabling a practical interaction layer for demonstration. It also protects scope boundaries and reduces regression risk during the integration phase.
+evidence_basis: `00_admin/thesis_state.md` (BL-020 and BL-014 completion state); `07_implementation/backlog.md` (updated next-work order); `07_implementation/website.md` (freeze + integration execution log).
+impacted_files:
+- `00_admin/decision_log.md`
+- `00_admin/change_log.md`
+- `00_admin/timeline.md`
+- `00_admin/thesis_state.md`
+- `07_implementation/backlog.md`
+- `07_implementation/website.md`
+review_date: none

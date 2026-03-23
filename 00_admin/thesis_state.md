@@ -66,6 +66,7 @@ The active candidate corpus is DS-002 (`MSD subset + Last.fm tags`). The BL-019 
 - **Observability** (BL-009 ✅): Canonical run-level observability completed on 2026-03-22. Output: `bl009_run_observability_log.json` and `bl009_run_index.csv` with stage traceability, configuration snapshots, diagnostics, and artifact hashes. Evidence in EXP-030/TC-BL020-009.
 - **Pipeline Completion**: BL-020 is fully complete (BL-003 through BL-009 executed, logged, and test-documented).
 - **Quality Automation** (BL-014 ✅): Automated sanity checks completed on 2026-03-22 via `run_bl014_sanity_checks.py`. Result: 21/21 checks passed across schema validation, cross-stage hash integrity, and count/run-id continuity for BL-004 through BL-009 artifacts. Evidence in EXP-031/TC-BL014-001.
+- **Current Execution Focus** (2026-03-23 freeze decision): freeze the current BL-020 deterministic pipeline baseline and prioritize website integration plus bounded implementation refinement (bug fixes, observability clarity, and UI-run orchestration), with no scope expansion into deferred items.
 - **Active Risk**: External API reliability (Last.fm) is explicitly tracked in run reports; all observable transient errors logged
 
 ### Detailed Audit
@@ -77,7 +78,7 @@ See: `07_implementation/BL020_HANDOFF_AUDIT_2026-03-21.md` for comprehensive pre
 2026-03-23
 
 - Reason for last update:
-(1) Execute Day 1 of the mentor 7-day sprint by confirming scope-lock language remains aligned to implemented-vs-deferred MVP boundaries. (2) Prioritize UI-002 and UI-003 evidence hardening by applying bounded-claim wording fixes in `08_writing/chapter2.md`, `08_writing/chapter3.md`, and `08_writing/chapter5.md`. (3) Synchronize execution tracking in governance records for day-by-day mentor-readiness control (C-077).
+(1) Record freeze-first execution posture after BL-020 completion: hold pipeline behavior stable and route implementation effort to website integration and bounded hardening. (2) Prioritize UI-002 and UI-003 evidence hardening by applying bounded-claim wording fixes in `08_writing/chapter2.md`, `08_writing/chapter3.md`, and `08_writing/chapter5.md`. (3) Synchronize execution tracking in governance records for day-by-day mentor-readiness control and website-integration work package activation.
 
 ## Locked Definitions
 - Artefact scope lock: `00_admin/Artefact_MVP_definition.md`

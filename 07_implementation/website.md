@@ -304,3 +304,33 @@ Files:
 - 07_implementation/website/import.html
 - 07_implementation/website/style.css
 - 07_implementation/website/app.js
+
+## Freeze + Integration Execution Log
+
+Date: 2026-03-23
+Status: Active
+
+Execution decision:
+- Freeze current recommendation pipeline behavior (BL-020 baseline) to prevent scope drift while website integration is implemented.
+
+Primary objectives in this package:
+- Build a usable website interaction layer over the current implementation, not a new recommendation algorithm version.
+- Connect UI flow to real artifacts and deterministic stage execution outputs.
+- Improve reliability and observability in user-facing interaction without changing scoring or assembly logic.
+
+Planned integration sequence:
+1. Ingest: wire import controls to real import/export artifacts and stage status reporting.
+2. Profile basis: connect exclusions/selections to actual profile-generation inputs.
+3. Pipeline run: orchestrate deterministic BL-004 to BL-009 sequence from UI-triggered flow.
+4. Results: render playlist, explanation payloads, and run observability metadata in one inspectable path.
+5. Hardening: tighten error handling, timeouts, and rerun behavior for reproducible demonstrations.
+
+Scope guardrails:
+- Allowed: bug fixes, diagnostics clarity, integration glue, and reproducibility-oriented interaction controls.
+- Deferred: BL-021 scope-selection extension and BL-022 corpus-path switching.
+- Out of package: new ingestion adapters, ML model additions, or major schema redesign.
+
+Expected evidence artifacts:
+- Updated website integration notes and run walkthrough traces.
+- Example UI-driven run records linked to BL-020 artifact outputs.
+- Change and decision governance entries synchronized in `00_admin/` logs.
