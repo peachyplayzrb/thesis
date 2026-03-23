@@ -1,26 +1,31 @@
 ﻿# Unresolved Issues
 ## Active
 
-- UI-008 (2026-03-22): Music4All access reply is positive, but provider requires a signed disclosure/confidentiality agreement before sharing download credentials, and final usage terms are not yet fully captured in governance records.
+
+- UI-008 (2026-03-22): Music4All access path is now reopened and download credentials have been released, but final usage terms, provenance details, and local file verification are not yet fully captured in governance records.
 	- impact: DS-001 cannot be promoted from fallback to active corpus until compliance and provenance checks are complete; risk of late rework if restrictions conflict with publication/repo artifacts.
 	- current_position:
 		- Keep DS-002 as active dataset for BL-020 continuity.
-		- Track DS-001 as ready-to-activate fallback path pending term closure.
+		- Track DS-001 as a re-accessed fallback path pending download completion, provenance capture, and term closure.
 	- progress_update_2026-03-22:
 		1. Signed disclosure/confidentiality agreement was sent back to provider.
 		2. Current blocker is provider-side credential release (download URL and password).
 	- progress_update_2026-03-23:
 		1. Agreement was resent with signature explicitly included.
 		2. Current blocker remains provider acknowledgement and credential release.
+	- progress_update_2026-03-24:
+		1. Provider responded and released the dataset download path/credentials.
+		2. Local download is now in progress, which removes the main external access blocker.
+		3. Remaining work is governance and verification only: exact release identification, checksum/provenance capture, and explicit usage/redistribution constraints.
 	- fallback_trigger_plan:
 		1. If DS-001 delivery is delayed beyond 2026-03-29, continue full execution on DS-002 with no corpus switch.
 		2. If DS-001 terms prohibit required thesis artifact sharing, keep DS-001 as discussion-only evidence and retain DS-002 as final operational corpus.
 		3. If DS-001 is delivered with compatible terms, run a bounded schema compatibility check before any activation decision.
 	- next_action:
-		1. Capture provider response details (date, requirement to sign disclosure/confidentiality agreement, expected return channel).
-		2. Await provider confirmation and receipt of download URL/password.
-		3. After credentials are received, confirm exact dataset release/version and any checksum identifiers.
-		4. Record explicit permitted-use and redistribution constraints in `06_data_and_sources/dataset_registry.md`.
+		1. Finish the local download and record what was actually received (archive/file names, sizes, and any supplied version labels).
+		2. Confirm exact dataset release/version and any checksum identifiers.
+		3. Record explicit permitted-use, citation, redistribution, and retention constraints in `06_data_and_sources/dataset_registry.md`.
+		4. Run a bounded schema compatibility check before any DS-001 activation decision.
 		5. Escalate unresolved restrictions to supervisor before corpus activation.
 	- owner: AI + user
 	- status: open

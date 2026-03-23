@@ -858,6 +858,17 @@ Use schema from `00_admin/operating_protocol.md`.
 - evidence_basis: Comprehensive file audit report across governance/foundation/design/data/implementation/literature/writing sections; verified all 65 papers in references.bib, confirmed BL-020 completion logged in backlog.md, validated design documents (system_architecture.md, transparency_design.md, controllability_design.md all current); discovered and fixed corpus reference inconsistencies in problem_statement.md and assumptions.md; commit a5c4fa7.
 - affected_components: `02_foundation/problem_statement.md`, `02_foundation/assumptions.md`, `00_admin/change_log.md`
 - impact_assessment: High-positive. Audit confirms thesis-wide file consistency is GREEN across governance, design, data, implementation, and literature. Fixes 2 critical foundation blockers that would have caused Day 2 alignment checks to fail. Remaining items flagged as non-blocking (design confidence refresh, chapter content audits scheduled for Day 2).
+
+## C-079
+- date: 2026-03-23
+- proposed_by: user + AI
+- status: accepted
+- change_summary: Perform ingestion-folder hygiene by moving non-active ingestion files into a dated safekeep archive and retaining only active runtime artifacts used by the current website + BL-003/BL-004 pipeline path.
+- reason: User requested to keep only currently used files in the live ingestion folder while preserving all non-active files for safe rollback and auditability.
+- evidence_basis: Archived files under `07_implementation/implementation_notes/ingestion/_safekeep_unused_2026-03-23/`; retained active files in `07_implementation/implementation_notes/ingestion/` and `outputs/spotify_api_export/`; detailed move manifest in `07_implementation/implementation_notes/ingestion/cleanup_archive_log_2026-03-23.md`.
+- affected_components: `07_implementation/implementation_notes/ingestion/`, `07_implementation/implementation_notes/ingestion/outputs/`, `07_implementation/implementation_notes/ingestion/_safekeep_unused_2026-03-23/`, `07_implementation/implementation_notes/ingestion/cleanup_archive_log_2026-03-23.md`, `00_admin/change_log.md`
+- impact_assessment: Medium-positive. Reduces active-folder noise and preserves recoverability by moving rather than deleting historical and non-runtime artifacts.
+- approval_record: Requested and confirmed by user in chat on 2026-03-23.
 - approval_record: Automated audit and fix executed by AI on 2026-03-23; aligns to user request "fix everything" in context of pre-Day-2 readiness verification.
 
 ## C-079
@@ -928,3 +939,107 @@ Use schema from `00_admin/operating_protocol.md`.
 - affected_components: `00_admin/change_log.md`, `00_admin/decision_log.md`, `00_admin/timeline.md`, `00_admin/thesis_state.md`, `07_implementation/backlog.md`, `07_implementation/website.md`
 - impact_assessment: High-positive. Creates a clear, auditable execution baseline, reduces scope-drift risk, and aligns near-term implementation work with the user-prioritized website interaction objective.
 - approval_record: Requested and confirmed by user in chat on 2026-03-23.
+
+## C-085
+- date: 2026-03-23
+- proposed_by: user + AI
+- status: completed
+- change_summary: Executed post-cleanup real ingestion verification attempts for Spotify export and recorded runtime evidence. Multiple runs were launched (including output-redirection mode to avoid tool truncation), but no run completed end-to-end in this session; export artifacts and summary remained unchanged from 2026-03-21 baseline.
+- reason: User approved a full real test immediately after ingestion-folder safekeep cleanup to verify active-only runtime integrity.
+- evidence_basis: Runtime logs captured in session resource files and `tmp_bl020_full_run3.log`; post-run artifact inspection shows unchanged mtimes and unchanged `spotify_export_run_summary.json` (`run_id=SPOTIFY-EXPORT-20260321-192533-881299`, `generated_at_utc=2026-03-21T19:26:20Z`); `spotify_request_log.jsonl` absent from live output path.
+- affected_components: `07_implementation/implementation_notes/ingestion/cleanup_archive_log_2026-03-23.md`, `00_admin/change_log.md`
+- impact_assessment: Medium-negative short-term (runtime verification still open), medium-positive governance (test attempt and failure state are now explicitly logged and auditable).
+- approval_record: User requested and confirmed full test execution in chat on 2026-03-23.
+
+## C-086
+- date: 2026-03-23
+- proposed_by: user + AI
+- status: completed
+- change_summary: Completed a successful post-cleanup full Spotify ingestion verification rerun. End-to-end exporter execution finished and refreshed all key live artifacts, including run summary and API request log.
+- reason: Close the open verification gap from C-085 and confirm that the active-only ingestion folder state remains runtime-correct after safekeep archival.
+- evidence_basis: `spotify_export_run_summary.json` updated with `run_id=SPOTIFY-EXPORT-20260323-210703-012191` and `generated_at_utc=2026-03-23T21:08:36Z`; refreshed artifact mtimes and sizes in `spotify_top_tracks_flat.csv`, `spotify_saved_tracks_flat.csv`, `spotify_playlist_items_flat.csv`; regenerated `spotify_request_log.jsonl` (`api_calls_logged=187`).
+- affected_components: `07_implementation/implementation_notes/ingestion/outputs/spotify_api_export/spotify_export_run_summary.json`, `07_implementation/implementation_notes/ingestion/outputs/spotify_api_export/spotify_top_tracks_flat.csv`, `07_implementation/implementation_notes/ingestion/outputs/spotify_api_export/spotify_saved_tracks_flat.csv`, `07_implementation/implementation_notes/ingestion/outputs/spotify_api_export/spotify_playlist_items_flat.csv`, `07_implementation/implementation_notes/ingestion/outputs/spotify_api_export/spotify_request_log.jsonl`, `07_implementation/implementation_notes/ingestion/cleanup_archive_log_2026-03-23.md`, `00_admin/change_log.md`
+- impact_assessment: High-positive. Confirms ingestion runtime integrity after cleanup and restores full operational confidence for downstream website/profile consumption paths.
+- approval_record: Continuation requested by user in chat on 2026-03-23.
+
+## C-087
+- date: 2026-03-23
+- proposed_by: user + AI
+- status: completed
+- change_summary: Wired website Spotify import flow to real exporter artifacts. `import.html` now shows latest export metadata (run id, generated time, counts, refresh action), and `app.js` now loads real CSV/summary artifacts, builds endpoint groups from actual rows, persists them for profile page use, and removes mock-track ingestion behavior for Spotify mode.
+- reason: User approved the next step after successful exporter verification to connect website interaction with real ingestion outputs.
+- evidence_basis: New import-page status card and refresh control; successful reads from `spotify_export_run_summary.json`, `spotify_top_tracks_flat.csv`, `spotify_saved_tracks_flat.csv`, `spotify_playlist_items_flat.csv`; no diagnostics errors in modified website files.
+- affected_components: `07_implementation/website/import.html`, `07_implementation/website/app.js`, `07_implementation/website/style.css`, `00_admin/change_log.md`
+- impact_assessment: High-positive. Website import path now reflects real dataset state and creates profile-basis groups from actual export data, reducing mock-data drift risk.
+- approval_record: User confirmed continuation in chat on 2026-03-23.
+
+## C-088
+- date: 2026-03-23
+- proposed_by: user + AI
+- status: accepted
+- change_summary: Project-wide cleanup pass — moved all unused, scratch, and outdated files to dated safekeep/archive folders; website, ingestion package, and HTTP server confirmed working after cleanup.
+- reason: User requested that unused files be removed from active directories into a separate safekeeping folder, keeping only currently active files in place. Followed up with a live website test to verify nothing active was moved.
+- evidence_basis: HTTP server running on `127.0.0.1:5500` from `07_implementation/`; website `import.html` loads export summary and CSVs correctly after cleanup; ingestion package imports validated (`package imports ok`).
+- affected_components:
+	- Moved to `thesis-main/_scratch_archive_2026-03-23/`: `tmp_bl019_mtimes.json`, `tmp_bl019_processes.json`, `tmp_bl019_run1.txt`, `tmp_bl019_run1_utf8.txt`, `tmp_bl019_status.txt`, `tmp_bl019_status2.txt`, `tmp_spotify_run.log`, `tmp_terminal_probe.txt`, `bl_align_log.txt`
+	- Moved to `07_implementation/_archive_2026-03-23/`: `test_resilience_integration.py`, `BL020_HANDOFF_AUDIT_2026-03-21.md`, `test_notes.md`
+	- Moved to `07_implementation/_archive_2026-03-23/website_test_data/`: `website/test_data/` (empty folder)
+	- Moved to `ingestion/_safekeep_unused_2026-03-23/`: `outputs/export_run.log` (temp session log)
+	- `ingestion/cleanup_archive_log_2026-03-23.md` updated with new entries
+- impact_assessment: Low-risk positive. Reduces clutter in active directories; all moved files are recoverable from dated archive folders. No active scripts, modules, or website files were moved.
+- approval_record: Requested by user in chat on 2026-03-23.
+
+## C-089
+- date: 2026-03-23
+- proposed_by: user + AI
+- status: accepted
+- change_summary: Stabilize local website runtime after HTTP 404 failures by adding a canonical server launcher, a root redirect page, and explicit documentation for the supported local URL and startup path.
+- reason: User reported `404 - Nothing matches the given URI` during live website testing after cleanup. The issue was caused by temporary HTTP servers serving different working directories, making the local root URL inconsistent.
+- evidence_basis: Added `07_implementation/index.html` redirect; added `07_implementation/setup/start_website.ps1` and `07_implementation/setup/start_website.cmd`; validated that direct `.ps1` execution is blocked by local PowerShell execution policy and therefore standardized on the `.cmd` wrapper / `-ExecutionPolicy Bypass` invocation; started clean server on `127.0.0.1:5501` with explicit `--directory` pointing to `07_implementation/`.
+- affected_components: `07_implementation/index.html`, `07_implementation/setup/start_website.ps1`, `07_implementation/setup/start_website.cmd`, `07_implementation/website.md`, `07_implementation/implementation_notes/ingestion/cleanup_archive_log_2026-03-23.md`, `00_admin/change_log.md`
+- impact_assessment: Medium-positive. Removes an avoidable local runtime failure mode and makes website testing reproducible across sessions and machines.
+- approval_record: Requested by user in chat on 2026-03-23.
+
+## C-090
+- date: 2026-03-23
+- proposed_by: user + AI
+- status: accepted
+- change_summary: Convert the website import page from a static selection screen into a real Spotify ingestion client with a local API server, endpoint-scoped export controls, live run logs, and post-run import persistence for the profile page.
+- reason: User requested that the import page actually ingest data and clearly show everything happening during the run so the website becomes practically usable rather than a mock interface.
+- evidence_basis: Added `07_implementation/setup/website_api_server.py`; updated `07_implementation/website/app.js`, `07_implementation/website/import.html`, and `07_implementation/website/profile_basis.js`; expanded exporter support in `07_implementation/implementation_notes/ingestion/export_spotify_max_dataset.py`, `spotify_client.py`, `spotify_mapping.py`, and `spotify_artifacts.py`; API-backed smoke test completed successfully with run id `SPOTIFY-EXPORT-20260323-224359-435664` using `saved_tracks max_items=2`.
+- affected_components: `07_implementation/setup/website_api_server.py`, `07_implementation/setup/start_website.ps1`, `07_implementation/website/app.js`, `07_implementation/website/import.html`, `07_implementation/website/style.css`, `07_implementation/website/profile_basis.js`, `07_implementation/website.md`, `07_implementation/implementation_notes/ingestion/export_spotify_max_dataset.py`, `07_implementation/implementation_notes/ingestion/spotify_client.py`, `07_implementation/implementation_notes/ingestion/spotify_mapping.py`, `07_implementation/implementation_notes/ingestion/spotify_artifacts.py`, `00_admin/change_log.md`
+- impact_assessment: High-positive. The website now performs real ingestion runs, exposes live operational visibility to the user, and aligns the UI with the actual backend behavior.
+- approval_record: Requested by user in chat on 2026-03-23.
+
+## C-091
+- date: 2026-03-23
+- proposed_by: user + AI
+- status: accepted
+- change_summary: Add a profile-page import summary panel and fix source precedence so saved import-page selections override raw export fallback.
+- reason: After making the import page perform real ingestion, the profile page still had a usability gap: it could load full export artifacts even when the user had just saved a narrower import selection. The page also lacked a clear summary of what data basis it was showing.
+- evidence_basis: Updated `07_implementation/website/profile_basis.html` and `07_implementation/website/profile_basis.js`; profile page now shows source, timestamps, run id, counts, and selection scope; local saved selection metadata from `playlist_import_groups_v1` is now preferred over full export fallback.
+- affected_components: `07_implementation/website/profile_basis.html`, `07_implementation/website/profile_basis.js`, `07_implementation/website/app.js`, `07_implementation/website.md`, `00_admin/change_log.md`
+- impact_assessment: Medium-positive. Prevents silent mismatch between import-page choices and profile-page data basis, improving controllability and transparency.
+- approval_record: User confirmed continuation in chat on 2026-03-23.
+
+## C-092
+- date: 2026-03-24
+- proposed_by: user + AI
+- status: accepted
+- change_summary: Synchronize governance records after Music4All provider response by recording credential release, download-in-progress state, and the reduced external-blocker status for DS-001 without changing the active DS-002 baseline.
+- reason: User reported that Music4All has responded and the dataset download has started, which materially changes the blocker state and must be reflected in the thesis control files immediately.
+- evidence_basis: User-confirmed provider response and active download state in chat on 2026-03-24; synchronized updates in `00_admin/unresolved_issues.md` and `06_data_and_sources/dataset_registry.md`.
+- affected_components: `00_admin/unresolved_issues.md`, `06_data_and_sources/dataset_registry.md`, `00_admin/change_log.md`
+- impact_assessment: High-positive. Removes stale blocker wording, preserves honest governance about what is still pending, and clarifies that remaining DS-001 work is verification/compliance rather than access acquisition.
+- approval_record: Logged automatically from user-confirmed status update in chat on 2026-03-24.
+
+## C-093
+- date: 2026-03-24
+- proposed_by: user + AI
+- status: accepted
+- change_summary: Complete pre-chat-switch operational closure for website ingestion by executing a full Spotify export rerun, verifying artifact freshness and counts, performing endpoint/runtime health checks, and recording the active local launch context.
+- reason: User requested a final "log everything" pass before switching chats, requiring explicit traceability of the latest ingestion state and website operability.
+- evidence_basis: Full run completed with `run_id=SPOTIFY-EXPORT-20260323-225206-071342` and updated `spotify_export_run_summary.json` counts (top short 602, medium 3029, long 5114, saved 171, playlists 4, playlist_items 31). Follow-up health check confirmed `import.html` 200, `profile_basis.html` 200, API status 200/idle. Local server relaunch validated on `http://127.0.0.1:5501/` after detecting server-not-running state on the prior port.
+- affected_components: `07_implementation/implementation_notes/ingestion/outputs/spotify_api_export/spotify_export_run_summary.json`, `07_implementation/website.md`, `00_admin/change_log.md`
+- impact_assessment: High-positive. Leaves a clean, auditable handoff point with confirmed ingest freshness, known runtime URL, and no open website-operability blocker.
+- approval_record: Requested and confirmed by user in chat on 2026-03-24.

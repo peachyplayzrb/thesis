@@ -3,9 +3,9 @@
 ## DS-001: Music4All / Music4All-Onion
 
 - decision_log_ref: `D-001`, `D-015`
-- status: fallback baseline with renewed access path — provider replied positively on access request (delivery/licensing details pending formal capture)
+- status: fallback baseline with restored access path — provider has released download credentials and local download is in progress; licensing/provenance details still pending formal capture
 - date_registered: 2026-03-12
-- last_updated: 2026-03-22
+- last_updated: 2026-03-24
 
 ### Description
 Research-grade music dataset providing rich audio features and metadata for a large catalogue of tracks. Used as the canonical candidate corpus for preference profiling, candidate retrieval, and deterministic scoring in the thesis pipeline.
@@ -22,20 +22,21 @@ Music4All-Onion covers 109,269 tracks and 252,984,396 listening records from 119
 - Music4All-Onion: Moscati et al. (2022), RecSys — zenodo.org/records/15394646 (use latest version / v2)
 - Music4All A+A (Artist and Album Dataset): NOT required — no album-level or artist-level feature weighting exists in the current pipeline design.
 
-### Access and Version Control Update (2026-03-22)
-- Provider response status: positive reply received; dataset sharing indicated as available.
-- Delivery state: agreement returned by user; awaiting provider credential delivery (URL and password).
-- License/usage state: pre-access confidentiality terms now explicitly required; post-access usage constraints still pending explicit written capture in thesis records.
-- Provisional corpus role: DS-001 remains fallback/reference while DS-002 stays active until DS-001 files are locally available and governance checks pass.
+### Access and Version Control Update (2026-03-24)
+- Provider response status: positive reply confirmed and dataset sharing path reopened.
+- Delivery state: provider has released download credentials; local download is currently running.
+- License/usage state: pre-access confidentiality terms were accepted; post-access usage constraints still need explicit capture in thesis records.
+- Provisional corpus role: DS-001 remains fallback/reference while DS-002 stays active until DS-001 files are locally available, identified, and governance checks pass.
 
 #### Version and Access Conditions Register
 | Field | Value (current) | Action to close |
 | --- | --- | --- |
-| Access response received | Yes (2026-03-22) | Archive exact reply text/date in admin evidence note |
-| Pre-access agreement required | Yes - disclosure/confidentiality agreement requested by provider | Completed and sent back by user; wait for provider confirmation |
-| Dataset release target | Music4All-Onion Zenodo `15394646` (target latest v2) | Confirm exact delivered release/version from provider |
+| Access response received | Yes (2026-03-22; credentials released 2026-03-24) | Archive exact reply text/date in admin evidence note |
+| Pre-access agreement required | Yes - disclosure/confidentiality agreement requested by provider | Completed and accepted for access release |
+| Dataset release target | Music4All-Onion Zenodo `15394646` (target latest v2) | Confirm exact delivered release/version from provider or archive listing |
+| Credential delivery | Yes - download path/password released by provider | Record exact delivery channel and any expiry conditions |
 | Base Music4All inclusion | Unknown | Confirm whether base metadata is included or separate |
-| Permitted use | Conditioned on signed disclosure/confidentiality agreement; detailed usage terms still pending | Extract and record allowed-use text from signed agreement and/or provider follow-up |
+| Permitted use | Conditioned on signed disclosure/confidentiality agreement; detailed usage terms still pending explicit capture | Extract and record allowed-use text from signed agreement and/or provider follow-up |
 | Redistribution right | Unknown | Confirm if derived subset/artifacts can be shared in repo |
 | Citation requirement | Expected mandatory | Capture exact required citation wording if supplied |
 | Retention period/deletion duty | Unknown | Confirm any post-thesis retention constraints |
