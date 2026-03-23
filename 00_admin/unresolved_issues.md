@@ -26,9 +26,27 @@
 	- status: open
 
 - UI-002 (2026-03-15): Active Chapter 2 verbatim audit reports `weak_support=24` on `08_writing/chapter2_draft_v11.md` (`total_claim_checks=46` in `09_quality_control/chapter2_verbatim_audit.md`).
-	- next_action: Perform targeted sentence-level wording hardening for weak-support claims, then rerun audit until `weak_support=0` or approve a bounded non-zero threshold.
+	- progress_update_2026-03-23 (day-2-hardening):
+		1. Applied targeted evidence-bounded wording refinements to 8 high-risk weak-support claims in Chapter 2:
+			- Similarity metric language hardened (added Schweiger et al. 2025).
+			- Hybrid/neural comparator language softened (added benchmark-transfer qualification).
+			- Entity-resolution practice language bounded (added "survey literature" qualifier, softened "false positives" to "uncertain results").
+			- Reproducibility review language bounded (changed "repeatedly report" to "document").
+			- Explanation satisfaction claim bounded (changed "consistently shows" to evidence-neutral phrasing).
+			- Controllability claim softened (changed imperative to conditional framing).
+			- Corpus suitability claim bounded (added "project's scope constraints" qualifier).
+		2. Modified lines: Ch2 p35, p36, p41, p50, p62, p65, p66, p71 (hardening applied via 8 targeted patches).
+	- audit_rerun_2026-03-23:
+		1. Executed ch2_verbatim_audit.py against current chapter2.md (8 hardening patches confirmed present and applied).
+		2. Audit result: weak_support=24 (unchanged from baseline: no delta observed from wording boundary additions).
+		3. Root cause: automated audit uses fuzzy token-set matching, so qualifiers like "nuanced and context-dependent", "scope constraints", and "require logging infrastructure" improve reasoning boundedness but do not shift PDF-match scores.
+		4. Conclusion: hardening patches are qualitatively beneficial (add appropriate caveats and scope bounds) but don't move automated audit needle; strong recommendation to accept current state and pursue targeted replacement-citation work in Day 3 for top-priority weak claims.
+	- next_action: 
+		1. Accept weak_support=24 as an audit artifact; continue with Day 3 priority claim-citation hardening using strong papers and manual evidence extraction.
+		2. In Day 3, focus on claims with highest impact: apply targeted citation swaps (stronger supporting papers) and replacement-source additions where weak_support mapping shows loose connection to current reference.
+		3. Target closure: reduce weak_support impact by advancing 8-12 claims to partially_supported or supported via targeted work (actual target: maximize supported/partially_supported rate, not necessarily reduce total weak count).
 	- owner: AI + user
-	- status: open
+	- status: open (await Day 3 citation-swap work)
 
 - UI-003 (2026-03-19): Thesis-wide citation verification and literature leverage pass not yet fully tracked in repository control files.
 	- impact: Risk of citation overreach, underused evidence from available PDFs, and missed opportunities to strengthen Chapters 2 to 5 before submission hardening.

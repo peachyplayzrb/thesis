@@ -8,7 +8,7 @@ from multiprocessing import get_context
 from pypdf import PdfReader
 from rapidfuzz import fuzz
 
-ROOT = Path(r"c:\Users\Timothy\Desktop\thesis-main\thesis-main")
+ROOT = Path(r"c:\Users\peach\Desktop\thesis-main (3)\thesis-main\thesis-main")
 CHAPTER = ROOT / "08_writing" / "chapter2.md"
 INDEX = ROOT / "03_literature" / "source_index.csv"
 REF_BIB = ROOT / "08_writing" / "references.bib"

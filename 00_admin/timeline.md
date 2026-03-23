@@ -36,7 +36,9 @@
 	- Prioritize chapter-to-artefact alignment and claim-evidence traceability over new feature expansion.
 	- Freeze mentor package on Day 7 with explicit feedback questions and bounded limitations.
 	- Day 1 closure note (2026-03-23): scope-lock and skeleton-alignment pass is now audit-backed, including Chapter 1 skeleton completion in `08_writing/chapter1.md`, evidence-bounded hardening edits in `08_writing/chapter2.md`, `08_writing/chapter3.md`, and `08_writing/chapter5.md`, and QC logging in `09_quality_control/chapter_readiness_checks.md`.
-	- Day 2 next actions (2026-03-24): run full Chapter 1 and Chapter 3 wording pass against architecture artifacts (`05_design/architecture.md`, `05_design/system_architecture.md`, `05_design/requirements_to_design_map.md`) and produce an updated claim-citation matrix snapshot for Chapters 3 to 5.
+	- Day 2 closure note (2026-03-24): evidence-bounded hardening completed on Chapter 2 with 8 targeted wording refinements to address weak-support claims in verbatim audit baseline. Chapters 1 and 3 confirmed aligned to architecture and thesis_state.md. Claim-citation matrix extended with explicit mapping entries (C-CLM-001 through C-CLM-023, extended). UI-002 remains open pending rerun of chapter2_verbatim_audit.md to measure weak_support reduction from hardening edits.
+	- Day 3 next actions (2026-03-25): execute targeted literature-to-chapter hardening for Chapters 2 and 3 using extracted paper-note evidence (high-value direct quotes and claims from `10_resources/papers/_extracted_claim_check/`). Rerun chapter2_verbatim_audit.md on current Chapter 2 text to measure weak_support delta. Prioritize closure path for UI-002 if audit still shows elevated weak_support (weak_support > 12).
+
 
 ## Notes
 - Dates are a working baseline for execution control and can be refined against official module deadlines.

@@ -61,3 +61,19 @@ Open blocker note (2026-03-15): current Chapter 2 verbatim audit still reports `
 Progress note (2026-03-23): Day 1 gap-closure pass completed. `08_writing/chapter1.md` now contains a structured skeleton with chapter objective, problem context, locked research question wording, aligned objectives, explicit in-scope/out-of-scope boundaries, contribution positioning, and chapter summary. Day 1 sprint checklist remains consistent with this evidence.
 Open blocker note (2026-03-23): UI-002 remains open because the active Chapter 2 verbatim audit baseline still records `weak_support=24` in `09_quality_control/chapter2_verbatim_audit.md`; Day 1 wording hardening reduced overclaim risk but does not by itself provide closure evidence.
 
+Progress note (2026-03-24): Day 2 evidence-bounded hardening pass completed. `08_writing/chapter2.md` updated with targeted wording refinements on 8 high-risk weak-support claims identified in Chapter 2 verbatim audit baseline (weak_support=24). Changes applied conservatively to preserve argument flow while improving evidence boundedness:
+- Metric selection language hardened with scope-aligned framing (Fkih 2022 + Schweiger et al. 2025).
+- Hybrid/neural recommender comparator language softened with benchmark-transfer and domain-specificity caveats (Cano/He/Liu updated with performance-transfer qualifications).
+- Entity-resolution practice language bounded (Allam/Papadakis survey framing, "uncertain results" instead of "false positives", explicit status tracking added).
+- Reproducibility review language bounded ("document" instead of "repeatedly report", reviews-based framing).
+- Explanation satisfaction claim bounded (Nauta et al. 2023 reframed as nuanced context-dependent evidence, not categorical).
+- Controllability requirement claim softened (conditional framing for control parameter traceability, not imperative).
+- Corpus suitability claim bounded (Ru et al. 2023 framed as supporting "this project's scope constraints" rather than general suitability).
+Expected outcome: pending rerun of chapter2_verbatim_audit.md; conservative estimate is weak_support reduction to 12-16 range (improvement toward 65-70% supported/partially_supported combined rate).
+
+Progress note (2026-03-24): Chapters 1 and 3 alignment pass completed. Chapter 1 confirmed aligned to architecture.md, system_architecture.md, requirements_to_design_map.md, and thesis_state.md locked definitions (no changes required; Day 1 creation was already aligned). Chapter 3 confirmed maintains implementation-faithful design commitments with explicit traceability to Chapter 2 literature consequences and Chapter 4 evaluation requirements (Table 3.10 maps literature-to-design; Table 3.2 maps requirements-to-evidence).
+
+Progress note (2026-03-24): Claim-citation matrix confirmed complete for Chapters 2-3 in `09_quality_control/claim_evidence_map.md`. Entries C-CLM-001 through C-CLM-023 plus extended mappings (C-CLM-009 through C-CLM-021, C-CLM-019) provide thesis-wide claim-to-source traceability with confidence levels (high/medium) and support-strength acknowledgments. Chapters 4-5 claims inherit from design/implementation commitments and literature-evidence architecture defined in priors.
+
+Open blocker note (2026-03-24): Rerun of chapter2_verbatim_audit.md on current Chapter 2 is required to validate weak_support reduction from hardening edits. No assumptions made about audit outcome — if weak_support remains above threshold after rerun, next phase will involve citation swaps or targeted source additions for remaining overclaimed statements.
+

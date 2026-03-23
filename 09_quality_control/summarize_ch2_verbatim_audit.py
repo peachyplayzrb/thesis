@@ -1,7 +1,7 @@
 import re
 from pathlib import Path
 
-p = Path(r"c:\Users\Timothy\Desktop\thesis-main\thesis-main\09_quality_control\chapter2_verbatim_audit.md")
+p = Path(r"c:\Users\peach\Desktop\thesis-main (3)\thesis-main\thesis-main\09_quality_control\chapter2_verbatim_audit.md")
 text = p.read_text(encoding="utf-8")
 sections = re.split(r"\n## ", text)
 
