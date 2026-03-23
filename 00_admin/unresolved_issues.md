@@ -56,18 +56,23 @@
 		5. Re-ran chapter2_verbatim_audit.py and summarize_ch2_verbatim_audit.py post-fixes.
 		6. Audit improvement CONFIRMED: weak_support metrics reduced from baseline (24 weak across 22 papers) to improved state (16 weak across 16 papers).
 		7. Successful claim migrations: Nauta, Adomavicius, Zhu, Sotirou, Ru, Papadakis all moved from weak_support → partially_supported/supported.
+	- day_3_phase_2_hardening_2026-03-23:
+		1. Executed Option A (Phase 2 secondary-claim hardening) on chapter2.md covering medium-impact weak claims: playlist trade-off framing, candidate-pool handling evidence, reproducibility wording, control-evaluation wording, comparator context hedging for Liu references, corpus-scope wording for Ru, explanation-pathway attribution (Zhang and Chen + Sotirou), and entity-resolution staging wording.
+		2. Re-ran `run_ch2_verbatim_audit.py` and `summarize_ch2_verbatim_audit.py` after edits.
+		3. Audit improvement CONFIRMED: papers with weak claims reduced from 16 to 8.
+		4. Current weak papers after Phase 2: `zamani_analysis_2019`, `vall_feature-combination_2019`, `schweiger_impact_2025` (1 weak), `papadakis_blocking_2021`, `fkih_similarity_2022`, `ferraro_automatic_2018`, `bonnin_automated_2015`, `barlaug_neural_2021`.
+		5. Partially-supported set expanded, including `sotirou_musiclime_2025`, `ru_improving_2023`, `liu_multimodal_2025`, `nauta_anecdotal_2023`, and `anelli_elliot_2021`.
 	- key_metrics:
-		- Papers with weak claims: 22 → 16 (27% reduction)
-		- Weak-claim papers removed: Nauta, Adomavicius, Zhu, Sotirou, Ru, Papadakis
-		- Claims moved to higher support: 8 (moved from weak_support to partially_supported or supported)
-		- Remaining issues: 16 papers still have weak claims (11 MEDIUM-priority claims available for Phase 2 if time permits)
-		- Quality improvement confirmed: rewording targets root causes (scope creep, attribution mismatch, unsupported inferences) rather than just qualifier additions
+		- Baseline: 22 papers with weak claims (24 weak claims)
+		- After Day 3 Phase 1: 16 papers with weak claims
+		- After Day 3 Phase 2 (Option A): 8 papers with weak claims
+		- Total reduction from baseline: 22 → 8 papers (64% reduction)
+		- Phase 2 reduction: 16 → 8 papers (50% reduction)
 	- next_action: 
-		1. Phase 1 (top 6 priorities) is COMPLETE. Verify final metrics are accurate by reading latest chapter2_verbatim_audit.md summary output.
-		2. Decision point: Phase 2 (secondary claims Priorities 8–17, est. 1.5 hrs) optional depending on sprint timeline; would further reduce weak-claim papers to ~12–14.
-		3. Proceed with Days 4–7 sprint execution (Chapters 4–5, thesis coherence, polish, mentor package) or execute Phase 2 based on time budget.
+		1. Optional final micro-pass: target remaining 8 weak papers (mainly Schweiger/Fkih wording precision, playlist trade-off lexical anchoring, and Barlaug phrasing) to push toward near-zero weak keys.
+		2. Proceed with Days 4-7 sprint execution (Chapter 4/5 drafting, thesis-wide coherence, polish, mentor package) while keeping current audit state as defensible improvement evidence.
 	- owner: AI + user
-	- status: completed (Phase 1); awaiting decision on Phase 2 vs. Day 4 execution
+	- status: in progress (major remediation complete; 8 weak keys remain)
 
 - UI-003 (2026-03-19): Thesis-wide citation verification and literature leverage pass not yet fully tracked in repository control files.
 	- impact: Risk of citation overreach, underused evidence from available PDFs, and missed opportunities to strengthen Chapters 2 to 5 before submission hardening.

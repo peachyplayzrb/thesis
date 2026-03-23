@@ -882,3 +882,15 @@ Use schema from `00_admin/operating_protocol.md`.
 - measured_impact: Papers with weak claims 22→16 (27% reduction); 8 claims moved to higher support; weak claims reduced from 24 baseline to estimated 18-20 post-fixes.
 - impact_assessment: High-positive. Systematic root-cause fixes (scope narrowing, attribution refinement, claim reframing) show measurable audit-verified improvements. Remaining 16 papers compose 11 MEDIUM and 5 lower-impact secondary claims available for optional Phase 2.
 - approval_record: Completed 2026-03-24 per user specification to execute Day 3 weak-claims hardening; logged after completion and audit validation.
+
+## C-081
+- date: 2026-03-24
+- proposed_by: user + AI
+- status: completed
+- change_summary: Executed Option A (Day 3 Phase 2) secondary weak-claims hardening on Chapter 2 and validated results with a fresh verbatim audit run. Reworded medium-impact claims to tighten source alignment for playlist trade-offs, candidate handling, reproducibility/evaluation phrasing, comparator-context framing, corpus-scope statements, and explanation-pathway attribution.
+- reason: User selected Option A after C-080 completion, requesting continuation with Phase 2 hardening before moving to Days 4-7.
+- evidence_basis: Updated `08_writing/chapter2.md` in sections 2.3 to 2.7 with targeted source-aligned wording for remaining medium-impact weak claims; re-ran `09_quality_control/run_ch2_verbatim_audit.py`; re-ran `09_quality_control/summarize_ch2_verbatim_audit.py`; summary output reports `TOTAL_KEYS_WITH_WEAK=8` after Phase 2. Weak keys now limited to: `zamani_analysis_2019`, `vall_feature-combination_2019`, `schweiger_impact_2025`, `papadakis_blocking_2021`, `fkih_similarity_2022`, `ferraro_automatic_2018`, `bonnin_automated_2015`, `barlaug_neural_2021`.
+- affected_components: `08_writing/chapter2.md`, `09_quality_control/chapter2_verbatim_audit.md`, `00_admin/unresolved_issues.md`, `00_admin/change_log.md`
+- measured_impact: Papers with weak claims reduced from 16 to 8 (50% Phase 2 reduction). Cumulative improvement from Day 3 baseline: 22 to 8 weak papers (64% reduction).
+- impact_assessment: High-positive. Option A materially strengthens Chapter 2 claim defensibility and leaves a smaller, clearly scoped residual weak set for optional micro-pass cleanup while preserving momentum for Days 4-7 execution.
+- approval_record: Executed on 2026-03-24 immediately after user selected Option A; results validated through post-edit audit rerun.
