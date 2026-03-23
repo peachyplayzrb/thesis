@@ -1,18 +1,43 @@
 const profileForm = document.getElementById("profile-form");
 const profileStatus = document.getElementById("profile-status");
 const importedGroupsNode = document.getElementById("imported-groups");
+const profileImportSummaryMessage = document.getElementById("profile-import-summary-message");
+const profileImportSourceNode = document.getElementById("profile-import-source");
+const profileImportGeneratedAtNode = document.getElementById("profile-import-generated-at");
+const profileImportRunIdNode = document.getElementById("profile-import-run-id");
+const profileImportGroupCountNode = document.getElementById("profile-import-group-count");
+const profileImportTrackCountNode = document.getElementById("profile-import-track-count");
+const profileImportInclusionNode = document.getElementById("profile-import-inclusion");
+const profileImportSelectionNode = document.getElementById("profile-import-selection");
+const downloadIncludedBtn = document.getElementById("download-included-btn");
+const downloadExclusionsBtn = document.getElementById("download-exclusions-btn");
+const downloadProfileBundleBtn = document.getElementById("download-profile-bundle-btn");
 
 const IMPORT_GROUPS_KEY = "playlist_import_groups_v1";
 const PROFILE_EXCLUSIONS_KEY = "playlist_profile_exclusions_v1";
 const EXPORT_BASE = "../implementation_notes/ingestion/outputs/spotify_api_export";
+const EXPORT_RECENTLY_PLAYED_PATH = `${EXPORT_BASE}/spotify_recently_played_flat.csv`;
+const EXPORT_SUMMARY_PATH = `${EXPORT_BASE}/spotify_export_run_summary.json`;
 const RENDER_LIMIT_PER_GROUP = 1200;
 
 const state = {
   groups: [],
   groupSource: "none",
+  groupSourceMeta: null,
   excludeGroups: new Set(),
   excludeTracks: new Set()
 };
+
+function formatDateTimeDisplay(isoValue) {
+  if (!isoValue) {
+    return "-";
+  }
+  const date = new Date(isoValue);
+  if (Number.isNaN(date.getTime())) {
+    return isoValue;
+  }
+  return date.toISOString().replace(".000", "");
+}
 
 function csvSplitLine(line) {
   const out = [];
@@ -102,6 +127,18 @@ function mapPlaylistItemsRows(rows) {
     }));
 }
 
+function mapRecentlyPlayedRows(rows) {
+  return rows
+    .filter((r) => r.track_name)
+    .map((r, index) => ({
+      id: r.track_id || `recent_${index + 1}`,
+      title: r.track_name || "Untitled",
+      artist: r.artist_names || "Unknown artist",
+      source_key: "recently_played",
+      played_at: r.played_at || ""
+    }));
+}
+
 function toTitleCase(value) {
   return value
     .replace(/_/g, " ")
@@ -178,7 +215,22 @@ async function fetchCsvRows(path) {
   return parseCsv(text);
 }
 
+async function fetchJson(path) {
+  const response = await fetch(path);
+  if (!response.ok) {
+    throw new Error(`Unable to read ${path}`);
+  }
+  return response.json();
+}
+
 async function loadGroupsFromExistingExport() {
+  let summary = null;
+  try {
+    summary = await fetchJson(EXPORT_SUMMARY_PATH);
+  } catch {
+    summary = null;
+  }
+
   const sources = [
     {
       key: "get_top_tracks",
@@ -200,6 +252,13 @@ async function loadGroupsFromExistingExport() {
       description: "Loaded from existing spotify_playlist_items_flat.csv export.",
       path: `${EXPORT_BASE}/spotify_playlist_items_flat.csv`,
       mapper: mapPlaylistItemsRows
+    },
+    {
+      key: "get_recently_played",
+      label: "GET /me/player/recently-played",
+      description: "Loaded from existing spotify_recently_played_flat.csv export.",
+      path: EXPORT_RECENTLY_PLAYED_PATH,
+      mapper: mapRecentlyPlayedRows
     }
   ];
 
@@ -216,7 +275,65 @@ async function loadGroupsFromExistingExport() {
 
   return loaded
     .filter((item) => item.status === "fulfilled" && item.value)
-    .map((item) => item.value);
+    .map((item) => item.value)
+    .map((groups) => groups);
+}
+
+function summarizeSelection(selection) {
+  if (!selection) {
+    return "-";
+  }
+
+  const parts = [];
+  if (selection.include_top_tracks) {
+    const ranges = Array.isArray(selection.top_time_ranges) && selection.top_time_ranges.length
+      ? selection.top_time_ranges.join(", ")
+      : "all ranges";
+    parts.push(`Top: ${ranges}`);
+  }
+  if (selection.include_saved_tracks) {
+    parts.push(`Saved: ${selection.saved_max_items ?? "max"}`);
+  }
+  if (selection.include_playlists) {
+    parts.push(`Playlists: ${selection.playlists_max_items ?? "max"} / ${selection.playlist_items_max_per_playlist ?? "max"}`);
+  }
+  if (selection.include_recently_played) {
+    parts.push(`Recent: ${selection.recently_played_limit ?? 50}`);
+  }
+
+  return parts.length ? parts.join(" | ") : "-";
+}
+
+function renderImportSummary() {
+  const groupCount = state.groups.length;
+  const trackCount = state.groups.reduce((sum, group) => sum + group.tracks.length, 0);
+  const counts = getIncludedCounts();
+  const meta = state.groupSourceMeta || {};
+
+  profileImportSourceNode.textContent = state.groupSource || "none";
+  profileImportGeneratedAtNode.textContent = formatDateTimeDisplay(meta.generatedAt || meta.createdAt);
+  profileImportRunIdNode.textContent = meta.runId || "-";
+  profileImportGroupCountNode.textContent = String(groupCount);
+  profileImportTrackCountNode.textContent = String(trackCount);
+  profileImportInclusionNode.textContent = `${counts.includedTracks} / ${counts.excludedTracks}`;
+  profileImportSelectionNode.textContent = meta.selectionSummary || "-";
+
+  if (!groupCount) {
+    profileImportSummaryMessage.textContent = "No imported data available yet.";
+    return;
+  }
+
+  if (state.groupSource === "local") {
+    profileImportSummaryMessage.textContent = "Using the saved selection from the import page. This takes precedence over the full export fallback.";
+    return;
+  }
+
+  if (state.groupSource === "export") {
+    profileImportSummaryMessage.textContent = "Using full export artifacts because no saved import-page selection was found.";
+    return;
+  }
+
+  profileImportSummaryMessage.textContent = "Imported groups loaded.";
 }
 
 function setStatus(type, message) {
@@ -231,17 +348,6 @@ function setStatus(type, message) {
 }
 
 async function loadGroups() {
-  try {
-    const exportGroups = await loadGroupsFromExistingExport();
-    if (exportGroups.length) {
-      state.groups = exportGroups;
-      state.groupSource = "export";
-      return;
-    }
-  } catch {
-    // Ignore fetch failures and try local storage fallback.
-  }
-
   const raw = localStorage.getItem(IMPORT_GROUPS_KEY);
   if (raw) {
     try {
@@ -250,6 +356,15 @@ async function loadGroups() {
       if (localGroups.length) {
         state.groups = localGroups;
         state.groupSource = "local";
+        state.groupSourceMeta = {
+          createdAt: parsed.created_at || null,
+          runId: parsed.run_id || null,
+          selectionSummary: parsed.selection_summary || (
+            Array.isArray(parsed.groups)
+              ? `${parsed.groups.length} saved group${parsed.groups.length !== 1 ? "s" : ""}`
+              : "Saved selection"
+          )
+        };
         return;
       }
     } catch {
@@ -257,8 +372,26 @@ async function loadGroups() {
     }
   }
 
+  try {
+    const summary = await fetchJson(EXPORT_SUMMARY_PATH).catch(() => null);
+    const exportGroups = await loadGroupsFromExistingExport();
+    if (exportGroups.length) {
+      state.groups = exportGroups;
+      state.groupSource = "export";
+      state.groupSourceMeta = {
+        generatedAt: summary?.generated_at_utc || null,
+        runId: summary?.run_id || null,
+        selectionSummary: summarizeSelection(summary?.selection)
+      };
+      return;
+    }
+  } catch {
+    // Ignore fetch failures.
+  }
+
   state.groups = [];
   state.groupSource = "none";
+  state.groupSourceMeta = null;
 }
 
 function renderEmptyState() {
@@ -373,6 +506,8 @@ function renderGroups() {
             state.excludeTracks.delete(trackCheckbox.getAttribute("data-track"));
           }
         });
+
+      renderImportSummary();
     });
   });
 
@@ -384,6 +519,7 @@ function renderGroups() {
       } else {
         state.excludeTracks.delete(trackId);
       }
+      renderImportSummary();
     });
   });
 }
@@ -432,8 +568,104 @@ function handleSaveProfile(event) {
   setStatus("info", `Exclusions saved. Included tracks: ${counts.includedTracks}/${counts.totalTracks}.`);
 }
 
+function buildIncludedTracksPayload() {
+  const excludedGroups = state.excludeGroups;
+  const excludedTracks = state.excludeTracks;
+  const includedGroups = state.groups
+    .filter((group) => !excludedGroups.has(group.key))
+    .map((group) => {
+      const includedTracks = [];
+      const subsections = buildSubsectionsForGroup(group);
+      subsections.forEach((section) => {
+        section.tracks.forEach((track, index) => {
+          const trackKey = `${group.key}::${section.id}::${track.id || "na"}::${index}`;
+          if (!excludedTracks.has(trackKey)) {
+            includedTracks.push(track);
+          }
+        });
+      });
+      return {
+        key: group.key,
+        label: group.label,
+        description: group.description,
+        tracks: includedTracks
+      };
+    })
+    .filter((group) => group.tracks.length > 0);
+
+  return {
+    generated_at: new Date().toISOString(),
+    source: state.groupSource,
+    run_id: state.groupSourceMeta?.runId || null,
+    groups: includedGroups,
+    counts: getIncludedCounts()
+  };
+}
+
+function buildExclusionsPayload() {
+  return {
+    generated_at: new Date().toISOString(),
+    source: state.groupSource,
+    run_id: state.groupSourceMeta?.runId || null,
+    exclude_groups: Array.from(state.excludeGroups),
+    exclude_tracks: Array.from(state.excludeTracks),
+    counts: getIncludedCounts()
+  };
+}
+
+function downloadJsonFile(filename, payload) {
+  const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = filename;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
+}
+
+function handleDownloadIncluded() {
+  if (!state.groups.length) {
+    setStatus("error", "No imported groups available to export.");
+    return;
+  }
+  downloadJsonFile("playlist_included_tracks.json", buildIncludedTracksPayload());
+  setStatus("info", "Downloaded included tracks JSON.");
+}
+
+function handleDownloadExclusions() {
+  if (!state.groups.length) {
+    setStatus("error", "No imported groups available to export.");
+    return;
+  }
+  downloadJsonFile("playlist_exclusions.json", buildExclusionsPayload());
+  setStatus("info", "Downloaded exclusions JSON.");
+}
+
+function handleDownloadProfileBundle() {
+  if (!state.groups.length) {
+    setStatus("error", "No imported groups available to export.");
+    return;
+  }
+  const bundle = {
+    generated_at: new Date().toISOString(),
+    source: state.groupSource,
+    run_id: state.groupSourceMeta?.runId || null,
+    summary: {
+      import: state.groupSourceMeta,
+      counts: getIncludedCounts()
+    },
+    included: buildIncludedTracksPayload(),
+    exclusions: buildExclusionsPayload()
+  };
+  downloadJsonFile("playlist_profile_bundle.json", bundle);
+  setStatus("info", "Downloaded full profile bundle JSON.");
+}
+
 async function init() {
   await loadGroups();
+  renderImportSummary();
   renderGroups();
 
   if (!state.groups.length) {
@@ -447,6 +679,16 @@ async function init() {
   }
 
   profileForm.addEventListener("submit", handleSaveProfile);
+
+  if (downloadIncludedBtn) {
+    downloadIncludedBtn.addEventListener("click", handleDownloadIncluded);
+  }
+  if (downloadExclusionsBtn) {
+    downloadExclusionsBtn.addEventListener("click", handleDownloadExclusions);
+  }
+  if (downloadProfileBundleBtn) {
+    downloadProfileBundleBtn.addEventListener("click", handleDownloadProfileBundle);
+  }
 }
 
 init();

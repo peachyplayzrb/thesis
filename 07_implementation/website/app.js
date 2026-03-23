@@ -1,47 +1,80 @@
-// ─── DOM refs ────────────────────────────────────────────────────────────────
-const sourceBtns    = Array.from(document.querySelectorAll(".source-btn:not([disabled])"));
-const sourcePanels  = Array.from(document.querySelectorAll(".source-panel"));
+const sourceBtns = Array.from(document.querySelectorAll(".source-btn:not([disabled])"));
+const sourcePanels = Array.from(document.querySelectorAll(".source-panel"));
 const endpointItems = Array.from(document.querySelectorAll(".endpoint-item"));
-const endpointCbs   = Array.from(document.querySelectorAll(".endpoint-cb"));
+const endpointCbs = Array.from(document.querySelectorAll(".endpoint-cb"));
 const useMaxToggles = Array.from(document.querySelectorAll(".use-max-toggle"));
 
-const ingestBtn     = document.getElementById("start-ingest-btn");
+const ingestBtn = document.getElementById("start-ingest-btn");
 const importSummary = document.getElementById("import-summary");
-const statusNode    = document.getElementById("status");
-const progressNode  = document.getElementById("progress");
-const progressStep  = document.getElementById("progress-step");
-const progressBar   = document.getElementById("progress-bar");
+const statusNode = document.getElementById("status");
+const progressNode = document.getElementById("progress");
+const progressStep = document.getElementById("progress-step");
+const progressBar = document.getElementById("progress-bar");
 
-// Manual input controls
-const manualJsonFile  = document.getElementById("manual-json-file");
+const manualJsonFile = document.getElementById("manual-json-file");
 const manualJsonPaste = document.getElementById("manual-json-paste");
 
-// Spotify endpoint inputs
-const epCbTopTracks      = document.getElementById("ep-cb-top-tracks");
-const epCbSavedTracks    = document.getElementById("ep-cb-saved-tracks");
-const epCbPlaylists      = document.getElementById("ep-cb-playlists");
+const epCbTopTracks = document.getElementById("ep-cb-top-tracks");
+const epCbSavedTracks = document.getElementById("ep-cb-saved-tracks");
+const epCbPlaylists = document.getElementById("ep-cb-playlists");
 const epCbRecentlyPlayed = document.getElementById("ep-cb-recently-played");
 
 const epTtsEnabled = document.getElementById("ep-tts-enabled");
 const epTtmEnabled = document.getElementById("ep-ttm-enabled");
 const epTtlEnabled = document.getElementById("ep-ttl-enabled");
-const epTtsLimit   = document.getElementById("ep-tts-limit");
-const epTtmLimit   = document.getElementById("ep-ttm-limit");
-const epTtlLimit   = document.getElementById("ep-ttl-limit");
+const epTtsLimit = document.getElementById("ep-tts-limit");
+const epTtmLimit = document.getElementById("ep-ttm-limit");
+const epTtlLimit = document.getElementById("ep-ttl-limit");
 
-const epSavMaxItems    = document.getElementById("ep-sav-max-items");
-const epSavUseMax      = document.getElementById("ep-sav-use-max");
+const epSavMaxItems = document.getElementById("ep-sav-max-items");
+const epSavUseMax = document.getElementById("ep-sav-use-max");
 const epPlMaxPlaylists = document.getElementById("ep-pl-max-playlists");
-const epPlUseMax       = document.getElementById("ep-pl-use-max");
-const epPlMaxItems     = document.getElementById("ep-pl-max-items");
-const epPlItemsUseMax  = document.getElementById("ep-pl-items-use-max");
-const epRecMaxItems    = document.getElementById("ep-rec-max-items");
-const epRecUseMax      = document.getElementById("ep-rec-use-max");
+const epPlUseMax = document.getElementById("ep-pl-use-max");
+const epPlMaxItems = document.getElementById("ep-pl-max-items");
+const epPlItemsUseMax = document.getElementById("ep-pl-items-use-max");
+const epRecMaxItems = document.getElementById("ep-rec-max-items");
+const epRecUseMax = document.getElementById("ep-rec-use-max");
+
+const exportStatusMessage = document.getElementById("export-status-message");
+const exportRunIdNode = document.getElementById("export-run-id");
+const exportGeneratedAtNode = document.getElementById("export-generated-at");
+const exportCountTopNode = document.getElementById("export-count-top");
+const exportCountSavedNode = document.getElementById("export-count-saved");
+const exportCountPlaylistItemsNode = document.getElementById("export-count-playlist-items");
+const exportCountCallsNode = document.getElementById("export-count-calls");
+const refreshExportBtn = document.getElementById("refresh-export-btn");
+
+const runStatusMessage = document.getElementById("run-status-message");
+const runStateNode = document.getElementById("run-state");
+const runStepNode = document.getElementById("run-step");
+const runStartedAtNode = document.getElementById("run-started-at");
+const runCompletedAtNode = document.getElementById("run-completed-at");
+const runExitCodeNode = document.getElementById("run-exit-code");
+const runLogCountNode = document.getElementById("run-log-count");
+const runOauthBlock = document.getElementById("run-oauth-block");
+const runOauthLink = document.getElementById("run-oauth-link");
+const runLogNode = document.getElementById("run-log");
+const refreshRunBtn = document.getElementById("refresh-run-btn");
 
 const IMPORT_GROUPS_KEY = "playlist_import_groups_v1";
 const MANUAL_INPUT_KEY = "playlist_manual_input_v1";
+const EXPORT_BASE = "../implementation_notes/ingestion/outputs/spotify_api_export";
+const EXPORT_SUMMARY_PATH = `${EXPORT_BASE}/spotify_export_run_summary.json`;
+const EXPORT_TOP_TRACKS_PATH = `${EXPORT_BASE}/spotify_top_tracks_flat.csv`;
+const EXPORT_SAVED_TRACKS_PATH = `${EXPORT_BASE}/spotify_saved_tracks_flat.csv`;
+const EXPORT_PLAYLIST_ITEMS_PATH = `${EXPORT_BASE}/spotify_playlist_items_flat.csv`;
+const EXPORT_RECENTLY_PLAYED_PATH = `${EXPORT_BASE}/spotify_recently_played_flat.csv`;
+const API_EXPORT_STATUS_PATH = "/api/spotify/export/status";
+const API_EXPORT_START_PATH = "/api/spotify/export/start";
 
-// ─── Utilities ───────────────────────────────────────────────────────────────
+let latestExportSnapshot = null;
+let latestRunSnapshot = null;
+let latestRunLogIndex = 0;
+let runLogEntries = [];
+let runPollHandle = null;
+let activeIngestionRequested = false;
+let completionHandledKey = null;
+
 function setStatus(type, message) {
   statusNode.classList.remove("error", "loading", "warning");
   if (type) statusNode.classList.add(type);
@@ -70,8 +103,176 @@ function parseTargetInput(input, useMax) {
   return Number(input.value);
 }
 
+function parseApiCapInput(input, useMax) {
+  if (useMax) return null;
+  normalizeNumberInput(input);
+  return Number(input.value);
+}
+
 function formatTarget(value) {
   return value === Number.MAX_SAFE_INTEGER ? "max available" : String(value);
+}
+
+function formatDateTimeDisplay(isoValue) {
+  if (!isoValue) return "-";
+  const date = new Date(isoValue);
+  if (Number.isNaN(date.getTime())) return isoValue;
+  return date.toISOString().replace(".000", "");
+}
+
+function csvSplitLine(line) {
+  const out = [];
+  let current = "";
+  let inQuotes = false;
+
+  for (let i = 0; i < line.length; i += 1) {
+    const ch = line[i];
+    if (ch === '"') {
+      const isEscaped = inQuotes && line[i + 1] === '"';
+      if (isEscaped) {
+        current += '"';
+        i += 1;
+      } else {
+        inQuotes = !inQuotes;
+      }
+      continue;
+    }
+
+    if (ch === "," && !inQuotes) {
+      out.push(current);
+      current = "";
+      continue;
+    }
+
+    current += ch;
+  }
+
+  out.push(current);
+  return out;
+}
+
+function parseCsv(text) {
+  const lines = text.split(/\r?\n/).filter((line) => line.trim().length > 0);
+  if (!lines.length) return [];
+
+  const headers = csvSplitLine(lines[0]).map((header) => header.trim());
+  return lines.slice(1).map((line) => {
+    const cells = csvSplitLine(line);
+    const row = {};
+    headers.forEach((header, index) => {
+      row[header] = (cells[index] || "").trim();
+    });
+    return row;
+  });
+}
+
+async function fetchJson(path, options = undefined) {
+  let response;
+  try {
+    response = await fetch(path, options);
+  } catch (error) {
+    if (String(path).startsWith("/api/")) {
+      throw new Error("Local ingestion API is unreachable. Start the website via setup/start_website.cmd and refresh this page.");
+    }
+    throw error;
+  }
+
+  if (!response.ok) {
+    let message = `Unable to load ${path}`;
+    try {
+      const payload = await response.json();
+      if (payload && payload.error) {
+        message = payload.error;
+      }
+    } catch {
+      const text = await response.text();
+      if (text) {
+        message = text;
+      }
+    }
+    throw new Error(message);
+  }
+  return response.json();
+}
+
+async function fetchCsvRows(path) {
+  const response = await fetch(path);
+  if (!response.ok) {
+    throw new Error(`Unable to load ${path}`);
+  }
+  return parseCsv(await response.text());
+}
+
+function renderExportStatus(snapshot, messageType = "") {
+  if (!exportStatusMessage) return;
+
+  exportStatusMessage.classList.remove("warning", "error");
+  if (messageType === "warning" || messageType === "error") {
+    exportStatusMessage.classList.add(messageType);
+  }
+
+  if (!snapshot) {
+    exportStatusMessage.textContent = "No Spotify export artifacts found yet. Start a run from this page to generate them.";
+    if (exportRunIdNode) exportRunIdNode.textContent = "-";
+    if (exportGeneratedAtNode) exportGeneratedAtNode.textContent = "-";
+    if (exportCountTopNode) exportCountTopNode.textContent = "-";
+    if (exportCountSavedNode) exportCountSavedNode.textContent = "-";
+    if (exportCountPlaylistItemsNode) exportCountPlaylistItemsNode.textContent = "-";
+    if (exportCountCallsNode) exportCountCallsNode.textContent = "-";
+    return;
+  }
+
+  const counts = snapshot.summary && snapshot.summary.counts ? snapshot.summary.counts : {};
+  exportStatusMessage.textContent = "Latest successful export artifacts loaded.";
+  if (exportRunIdNode) exportRunIdNode.textContent = snapshot.summary.run_id || "-";
+  if (exportGeneratedAtNode) exportGeneratedAtNode.textContent = formatDateTimeDisplay(snapshot.summary.generated_at_utc);
+  if (exportCountTopNode) {
+    const short = counts.top_tracks_short_term || 0;
+    const medium = counts.top_tracks_medium_term || 0;
+    const long = counts.top_tracks_long_term || 0;
+    exportCountTopNode.textContent = `${short}/${medium}/${long}`;
+  }
+  if (exportCountSavedNode) exportCountSavedNode.textContent = String(counts.saved_tracks || 0);
+  if (exportCountPlaylistItemsNode) exportCountPlaylistItemsNode.textContent = String(counts.playlist_items || 0);
+  if (exportCountCallsNode) exportCountCallsNode.textContent = String(counts.api_calls_logged || 0);
+}
+
+async function loadLatestExportSnapshot() {
+  const [summaryResult, topResult, savedResult, playlistsResult, recentResult] = await Promise.allSettled([
+    fetchJson(EXPORT_SUMMARY_PATH),
+    fetchCsvRows(EXPORT_TOP_TRACKS_PATH),
+    fetchCsvRows(EXPORT_SAVED_TRACKS_PATH),
+    fetchCsvRows(EXPORT_PLAYLIST_ITEMS_PATH),
+    fetchCsvRows(EXPORT_RECENTLY_PLAYED_PATH)
+  ]);
+
+  if (summaryResult.status !== "fulfilled") {
+    return null;
+  }
+
+  return {
+    summary: summaryResult.value,
+    topTracksRows: topResult.status === "fulfilled" ? topResult.value : [],
+    savedTracksRows: savedResult.status === "fulfilled" ? savedResult.value : [],
+    playlistItemsRows: playlistsResult.status === "fulfilled" ? playlistsResult.value : [],
+    recentlyPlayedRows: recentResult.status === "fulfilled" ? recentResult.value : []
+  };
+}
+
+async function refreshExportSnapshot() {
+  if (exportStatusMessage) {
+    exportStatusMessage.textContent = "Checking export artifacts...";
+  }
+
+  try {
+    latestExportSnapshot = await loadLatestExportSnapshot();
+    renderExportStatus(latestExportSnapshot, latestExportSnapshot ? "" : "warning");
+  } catch {
+    latestExportSnapshot = null;
+    renderExportStatus(null, "warning");
+  }
+
+  updateIngestBtn();
 }
 
 function getUseMaxToggleForInput(inputId) {
@@ -94,7 +295,6 @@ function applyUseMaxToggle(toggle) {
   }
 
   input.disabled = false;
-
   if (toggle.checked) {
     if (input.value !== "") {
       input.dataset.lastManualValue = input.value;
@@ -109,7 +309,6 @@ function applyUseMaxToggle(toggle) {
   input.readOnly = Boolean(toggle.disabled);
   input.placeholder = "";
   input.classList.remove("is-max");
-
   if (input.value === "") {
     input.value = input.dataset.lastManualValue || input.min || "1";
   }
@@ -117,28 +316,25 @@ function applyUseMaxToggle(toggle) {
 }
 
 function setTopTracksParentFromChildren() {
-  const anyRangeEnabled = epTtsEnabled.checked || epTtmEnabled.checked || epTtlEnabled.checked;
-  epCbTopTracks.checked = anyRangeEnabled;
+  epCbTopTracks.checked = epTtsEnabled.checked || epTtmEnabled.checked || epTtlEnabled.checked;
 }
 
 function setTopTrackChildrenFromParent() {
   if (epCbTopTracks.checked) {
-    const anyRangeEnabled = epTtsEnabled.checked || epTtmEnabled.checked || epTtlEnabled.checked;
-    if (!anyRangeEnabled) {
+    const anyEnabled = epTtsEnabled.checked || epTtmEnabled.checked || epTtlEnabled.checked;
+    if (!anyEnabled) {
       epTtsEnabled.checked = true;
       epTtmEnabled.checked = true;
       epTtlEnabled.checked = true;
     }
     return;
   }
-
   epTtsEnabled.checked = false;
   epTtmEnabled.checked = false;
   epTtlEnabled.checked = false;
 }
 
 function updateControlEnabledState() {
-  // Top tracks endpoint controls
   const topEnabled = epCbTopTracks.checked;
   epTtsEnabled.disabled = !topEnabled;
   epTtmEnabled.disabled = !topEnabled;
@@ -164,19 +360,14 @@ function updateControlEnabledState() {
     }
   });
 
-  // Saved tracks endpoint controls
-  const savedEnabled = epCbSavedTracks.checked;
-  epSavUseMax.disabled = !savedEnabled;
+  epSavUseMax.disabled = !epCbSavedTracks.checked;
   applyUseMaxToggle(epSavUseMax);
 
-  // Playlists endpoint controls
-  const playlistsEnabled = epCbPlaylists.checked;
-  epPlUseMax.disabled = !playlistsEnabled;
-  epPlItemsUseMax.disabled = !playlistsEnabled;
+  epPlUseMax.disabled = !epCbPlaylists.checked;
+  epPlItemsUseMax.disabled = !epCbPlaylists.checked;
   applyUseMaxToggle(epPlUseMax);
   applyUseMaxToggle(epPlItemsUseMax);
 
-  // Recently played endpoint controls
   epRecUseMax.disabled = !epCbRecentlyPlayed.checked;
   applyUseMaxToggle(epRecUseMax);
 }
@@ -202,10 +393,7 @@ function hasManualInput() {
 async function readManualJsonInput() {
   const pasted = manualJsonPaste.value.trim();
   if (pasted) {
-    return {
-      raw: pasted,
-      source: "paste"
-    };
+    return { raw: pasted, source: "paste" };
   }
 
   const file = manualJsonFile.files && manualJsonFile.files[0];
@@ -213,15 +401,13 @@ async function readManualJsonInput() {
     return null;
   }
 
-  const raw = await file.text();
   return {
-    raw,
+    raw: await file.text(),
     source: "file",
     fileName: file.name
   };
 }
 
-// ─── Source switching ─────────────────────────────────────────────────────────
 function switchSource(sourceId) {
   sourceBtns.forEach((btn) => {
     const active = btn.dataset.source === sourceId;
@@ -231,13 +417,11 @@ function switchSource(sourceId) {
   sourcePanels.forEach((panel) => {
     panel.hidden = panel.id !== `source-panel-${sourceId}`;
   });
-
   updateIngestBtn();
 }
 
-// ─── Endpoint accordion ───────────────────────────────────────────────────────
 function openEndpoint(item) {
-  const btn  = item.querySelector(".endpoint-title-btn");
+  const btn = item.querySelector(".endpoint-title-btn");
   const body = item.querySelector(".endpoint-body");
   btn.setAttribute("aria-expanded", "true");
   body.removeAttribute("hidden");
@@ -245,7 +429,7 @@ function openEndpoint(item) {
 }
 
 function closeEndpoint(item) {
-  const btn  = item.querySelector(".endpoint-title-btn");
+  const btn = item.querySelector(".endpoint-title-btn");
   const body = item.querySelector(".endpoint-body");
   btn.setAttribute("aria-expanded", "false");
   body.setAttribute("hidden", "");
@@ -260,17 +444,22 @@ function toggleEndpointOpen(item) {
   }
 }
 
-// ─── Ingest button + summary ──────────────────────────────────────────────────
+function isRunInProgress() {
+  return Boolean(latestRunSnapshot && latestRunSnapshot.status === "running");
+}
+
 function updateIngestBtn() {
   const activeSource = getActiveSourceId();
   if (activeSource === "manual") {
     ingestBtn.disabled = !hasManualInput();
+    ingestBtn.textContent = "Ingest";
     updateImportSummary();
     return;
   }
 
   const anyChecked = endpointCbs.some((cb) => cb.checked);
-  ingestBtn.disabled = activeSource !== "spotify" || !anyChecked;
+  ingestBtn.disabled = activeSource !== "spotify" || !anyChecked || isRunInProgress();
+  ingestBtn.textContent = isRunInProgress() ? "Ingesting..." : "Ingest";
   updateImportSummary();
 }
 
@@ -294,126 +483,151 @@ function updateImportSummary() {
   }
 
   const checked = endpointCbs.filter((cb) => cb.checked);
-  if (checked.length === 0) {
+  if (!checked.length) {
     importSummary.textContent = "Select at least one endpoint to enable ingestion.";
     return;
   }
 
   const parts = [];
-
-  if (epCbTopTracks && epCbTopTracks.checked) {
+  if (epCbTopTracks.checked) {
     const ranges = [];
-    if (epTtsEnabled.checked) {
-      const shortTarget = parseTargetInput(epTtsLimit, isUseMaxForInput("ep-tts-limit"));
-      ranges.push(`4 weeks (${formatTarget(shortTarget)})`);
-    }
-    if (epTtmEnabled.checked) {
-      const mediumTarget = parseTargetInput(epTtmLimit, isUseMaxForInput("ep-ttm-limit"));
-      ranges.push(`6 months (${formatTarget(mediumTarget)})`);
-    }
-    if (epTtlEnabled.checked) {
-      const longTarget = parseTargetInput(epTtlLimit, isUseMaxForInput("ep-ttl-limit"));
-      ranges.push(`1 year (${formatTarget(longTarget)})`);
-    }
-    parts.push("Top Tracks" + (ranges.length ? `: ${ranges.join(", ")}` : " (no ranges)"));
+    if (epTtsEnabled.checked) ranges.push(`4 weeks (${formatTarget(parseTargetInput(epTtsLimit, isUseMaxForInput("ep-tts-limit")))})`);
+    if (epTtmEnabled.checked) ranges.push(`6 months (${formatTarget(parseTargetInput(epTtmLimit, isUseMaxForInput("ep-ttm-limit")))})`);
+    if (epTtlEnabled.checked) ranges.push(`1 year (${formatTarget(parseTargetInput(epTtlLimit, isUseMaxForInput("ep-ttl-limit")))})`);
+    parts.push(`Top Tracks: ${ranges.join(", ")}`);
   }
-
-  if (epCbSavedTracks && epCbSavedTracks.checked) {
+  if (epCbSavedTracks.checked) {
     parts.push(`Saved Tracks: ${formatTarget(parseTargetInput(epSavMaxItems, epSavUseMax.checked))}`);
   }
-
-  if (epCbPlaylists && epCbPlaylists.checked) {
-    const pl = formatTarget(parseTargetInput(epPlMaxPlaylists, epPlUseMax.checked));
-    const it = formatTarget(parseTargetInput(epPlMaxItems, epPlItemsUseMax.checked));
-    parts.push(`Playlists: ${pl} playlists, ${it} items each`);
+  if (epCbPlaylists.checked) {
+    parts.push(`Playlists: ${formatTarget(parseTargetInput(epPlMaxPlaylists, epPlUseMax.checked))} playlists, ${formatTarget(parseTargetInput(epPlMaxItems, epPlItemsUseMax.checked))} items each`);
   }
-
-  if (epCbRecentlyPlayed && epCbRecentlyPlayed.checked) {
-    const recTarget = getRecentlyPlayedTarget();
-    parts.push(`Recently Played: ${epRecUseMax.checked ? "max" : recTarget}`);
+  if (epCbRecentlyPlayed.checked) {
+    parts.push(`Recently Played: ${epRecUseMax.checked ? "max" : getRecentlyPlayedTarget()}`);
   }
-
-  importSummary.textContent = `Selected: ${parts.join(" | ")}`;
+  importSummary.textContent = `Selected for live ingest: ${parts.join(" | ")}`;
 }
 
-// ─── Build / persist groups ───────────────────────────────────────────────────
-function buildMockTracks(sourceKey, label, total, idPrefix) {
-  const tracks = [];
-  for (let i = 0; i < total; i += 1) {
-    tracks.push({
-      id: `${idPrefix}_${i + 1}`,
-      title: `${label} ${i + 1}`,
-      artist: `${sourceKey.replace(/_/g, " ")} artist ${(i % 30) + 1}`,
-      source_key: sourceKey
-    });
-  }
-  return tracks;
-}
-
-function buildPreviewTracks(sourceKey, label, targetCount, idPrefix) {
-  const n = Math.min(12, targetCount === Number.MAX_SAFE_INTEGER ? 12 : targetCount);
-  return buildMockTracks(sourceKey, label, n, idPrefix);
-}
-
-function buildImportGroups() {
+function buildImportGroupsFromExport(snapshot) {
   const groups = [];
 
-  if (epCbTopTracks && epCbTopTracks.checked) {
+  if (epCbTopTracks.checked) {
     const tracks = [];
-    if (epTtsEnabled.checked) {
-      const shortTarget = parseTargetInput(epTtsLimit, isUseMaxForInput("ep-tts-limit"));
-      tracks.push(...buildPreviewTracks("top_tracks_short", "Top Track (4 Weeks)", shortTarget, "tts"));
-    }
-    if (epTtmEnabled.checked) {
-      const mediumTarget = parseTargetInput(epTtmLimit, isUseMaxForInput("ep-ttm-limit"));
-      tracks.push(...buildPreviewTracks("top_tracks_medium", "Top Track (6 Months)", mediumTarget, "ttm"));
-    }
-    if (epTtlEnabled.checked) {
-      const longTarget = parseTargetInput(epTtlLimit, isUseMaxForInput("ep-ttl-limit"));
-      tracks.push(...buildPreviewTracks("top_tracks_long", "Top Track (1 Year)", longTarget, "ttl"));
-    }
+    const topRanges = [
+      { enabled: epTtsEnabled.checked, timeRange: "short_term", label: "Last 4 weeks", target: parseTargetInput(epTtsLimit, isUseMaxForInput("ep-tts-limit")) },
+      { enabled: epTtmEnabled.checked, timeRange: "medium_term", label: "Last 6 months", target: parseTargetInput(epTtmLimit, isUseMaxForInput("ep-ttm-limit")) },
+      { enabled: epTtlEnabled.checked, timeRange: "long_term", label: "Last year", target: parseTargetInput(epTtlLimit, isUseMaxForInput("ep-ttl-limit")) }
+    ].filter((range) => range.enabled);
+
+    topRanges.forEach((range) => {
+      const rowsForRange = snapshot.topTracksRows
+        .filter((row) => row.time_range === range.timeRange && row.track_name)
+        .slice(0, range.target === Number.MAX_SAFE_INTEGER ? undefined : range.target);
+      rowsForRange.forEach((row, index) => {
+        tracks.push({
+          id: row.track_id || `top_${range.timeRange}_${index + 1}`,
+          title: row.track_name || "Untitled",
+          artist: row.artist_names || "Unknown artist",
+          source_key: `top_tracks_${range.timeRange}`
+        });
+      });
+    });
+
     if (tracks.length) {
+      const selectedRanges = [];
+      if (epTtsEnabled.checked) selectedRanges.push("4 weeks");
+      if (epTtmEnabled.checked) selectedRanges.push("6 months");
+      if (epTtlEnabled.checked) selectedRanges.push("1 year");
       groups.push({
         key: "get_top_tracks",
         label: "GET /me/top/tracks",
-        description: "Top tracks across selected time ranges",
+        description: `Top tracks from the live ingestion run (${selectedRanges.join(", ")}).`,
         tracks
       });
     }
   }
 
-  if (epCbSavedTracks && epCbSavedTracks.checked) {
+  if (epCbSavedTracks.checked) {
     const maxItems = parseTargetInput(epSavMaxItems, epSavUseMax.checked);
-    groups.push({
-      key: "get_saved_tracks",
-      label: "GET /me/tracks",
-      description: `Saved tracks (target: ${formatTarget(maxItems)})`,
-      tracks: buildPreviewTracks("saved_tracks", "Saved Track", maxItems, "sav")
-    });
+    const rows = snapshot.savedTracksRows
+      .filter((row) => row.track_name)
+      .slice(0, maxItems === Number.MAX_SAFE_INTEGER ? undefined : maxItems);
+    const tracks = rows.map((row, index) => ({
+      id: row.track_id || `saved_${index + 1}`,
+      title: row.track_name || "Untitled",
+      artist: row.artist_names || "Unknown artist",
+      source_key: "saved_tracks"
+    }));
+    if (tracks.length) {
+      groups.push({
+        key: "get_saved_tracks",
+        label: "GET /me/tracks",
+        description: `Saved tracks imported from live run (target: ${formatTarget(maxItems)}).`,
+        tracks
+      });
+    }
   }
 
-  if (epCbPlaylists && epCbPlaylists.checked) {
-    const maxPl = parseTargetInput(epPlMaxPlaylists, epPlUseMax.checked);
-    const maxIt = parseTargetInput(epPlMaxItems, epPlItemsUseMax.checked);
-    const total = maxPl === Number.MAX_SAFE_INTEGER || maxIt === Number.MAX_SAFE_INTEGER
-      ? Number.MAX_SAFE_INTEGER
-      : maxPl * maxIt;
-    groups.push({
-      key: "get_current_user_playlists_items",
-      label: "GET /me/playlists + /playlists/{id}/items",
-      description: `Playlists: ${formatTarget(maxPl)}, items per playlist: ${formatTarget(maxIt)}`,
-      tracks: buildPreviewTracks("current_user_playlist_items", "Playlist Item", total, "pli")
+  if (epCbPlaylists.checked) {
+    const maxPlaylists = parseTargetInput(epPlMaxPlaylists, epPlUseMax.checked);
+    const maxItems = parseTargetInput(epPlMaxItems, epPlItemsUseMax.checked);
+    const playlistBuckets = new Map();
+    snapshot.playlistItemsRows.forEach((row) => {
+      const playlistId = row.playlist_id || "unknown_playlist";
+      if (!playlistBuckets.has(playlistId)) {
+        playlistBuckets.set(playlistId, []);
+      }
+      playlistBuckets.get(playlistId).push(row);
     });
+
+    const selectedPlaylistIds = (maxPlaylists === Number.MAX_SAFE_INTEGER ? Array.from(playlistBuckets.keys()) : Array.from(playlistBuckets.keys()).slice(0, maxPlaylists));
+    const tracks = [];
+    selectedPlaylistIds.forEach((playlistId) => {
+      const rows = playlistBuckets.get(playlistId) || [];
+      const limitedRows = maxItems === Number.MAX_SAFE_INTEGER ? rows : rows.slice(0, maxItems);
+      limitedRows.forEach((row, index) => {
+        tracks.push({
+          id: row.track_id || `${playlistId}_${index + 1}`,
+          title: row.track_name || "Untitled",
+          artist: row.artist_names || row.playlist_name || "Unknown artist",
+          source_key: "current_user_playlist_items",
+          playlist_id: row.playlist_id || playlistId,
+          playlist_name: row.playlist_name || "Unknown Playlist",
+          playlist_position: row.playlist_position || ""
+        });
+      });
+    });
+
+    if (tracks.length) {
+      groups.push({
+        key: "get_current_user_playlists_items",
+        label: "GET /me/playlists + /playlists/{id}/items",
+        description: `Playlist items imported from live run (playlists: ${formatTarget(maxPlaylists)}, items per playlist: ${formatTarget(maxItems)}).`,
+        tracks
+      });
+    }
   }
 
-  if (epCbRecentlyPlayed && epCbRecentlyPlayed.checked) {
-    const maxItems = getRecentlyPlayedTarget();
-    groups.push({
-      key: "get_recently_played",
-      label: "GET /me/player/recently-played",
-      description: `Recently played (target: ${maxItems})`,
-      tracks: buildPreviewTracks("recently_played", "Recently Played Track", maxItems, "rec")
-    });
+  if (epCbRecentlyPlayed.checked) {
+    const maxItems = epRecUseMax.checked ? Number(epRecMaxItems.max || 50) : getRecentlyPlayedTarget();
+    const rows = snapshot.recentlyPlayedRows
+      .filter((row) => row.track_name)
+      .slice(0, maxItems);
+    const tracks = rows.map((row, index) => ({
+      id: row.track_id || `recent_${index + 1}`,
+      title: row.track_name || "Untitled",
+      artist: row.artist_names || "Unknown artist",
+      source_key: "recently_played",
+      played_at: row.played_at || ""
+    }));
+    if (tracks.length) {
+      groups.push({
+        key: "get_recently_played",
+        label: "GET /me/player/recently-played",
+        description: `Recently played tracks imported from live run (target: ${maxItems}).`,
+        tracks
+      });
+    }
   }
 
   return groups;
@@ -422,14 +636,243 @@ function buildImportGroups() {
 function persistImportGroups(groups) {
   localStorage.setItem(IMPORT_GROUPS_KEY, JSON.stringify({
     created_at: new Date().toISOString(),
+    run_id: latestExportSnapshot?.summary?.run_id || null,
+    selection_summary: importSummary.textContent || "",
     groups
   }));
 }
 
-// ─── Ingest handler ───────────────────────────────────────────────────────────
+function getRunProgressPercent(run) {
+  const map = {
+    idle: 0,
+    starting: 8,
+    oauth: 15,
+    auth: 15,
+    profile: 22,
+    top_tracks: 42,
+    saved_tracks: 58,
+    playlists: 72,
+    playlist_items: 84,
+    recently_played: 90,
+    write: 97,
+    completed: 100,
+    failed: 100,
+    blocked: 100
+  };
+  return map[run?.current_step] || map[run?.status] || 0;
+}
+
+function renderRunProgress(run) {
+  if (!run || run.status === "idle") {
+    progressStep.textContent = "Idle";
+    progressBar.style.width = "0%";
+    progressNode.classList.add("hidden");
+    return;
+  }
+
+  progressNode.classList.remove("hidden");
+  progressStep.textContent = run.current_message || run.current_step || run.status;
+  progressBar.style.width = `${getRunProgressPercent(run)}%`;
+}
+
+function renderRunStatus(run) {
+  if (!runStatusMessage) return;
+
+  if (!run || run.status === "idle") {
+    runStatusMessage.textContent = "No ingestion run started yet.";
+    runStateNode.textContent = "idle";
+    runStepNode.textContent = "-";
+    runStartedAtNode.textContent = "-";
+    runCompletedAtNode.textContent = "-";
+    runExitCodeNode.textContent = "-";
+    runLogCountNode.textContent = "0";
+    runLogNode.textContent = "No logs yet.";
+    runOauthBlock.classList.add("hidden");
+    renderRunProgress(null);
+    return;
+  }
+
+  runStatusMessage.textContent = run.current_message || "Live ingestion state updated.";
+  runStateNode.textContent = run.status || "-";
+  runStepNode.textContent = run.current_step || "-";
+  runStartedAtNode.textContent = formatDateTimeDisplay(run.started_at_utc);
+  runCompletedAtNode.textContent = formatDateTimeDisplay(run.completed_at_utc);
+  runExitCodeNode.textContent = run.exit_code ?? "-";
+  runLogCountNode.textContent = String(run.line_count || 0);
+  runLogNode.textContent = runLogEntries.length
+    ? runLogEntries.map((entry) => entry.line).join("\n")
+    : "No logs yet.";
+  runLogNode.scrollTop = runLogNode.scrollHeight;
+
+  if (run.oauth_url) {
+    runOauthBlock.classList.remove("hidden");
+    runOauthLink.href = run.oauth_url;
+  } else {
+    runOauthBlock.classList.add("hidden");
+  }
+
+  renderRunProgress(run);
+}
+
+function buildSpotifyApiRequestFromForm() {
+  return {
+    spotify: {
+      top_tracks: {
+        enabled: epCbTopTracks.checked,
+        ranges: {
+          short_term: { enabled: epTtsEnabled.checked, limit: parseApiCapInput(epTtsLimit, isUseMaxForInput("ep-tts-limit")) },
+          medium_term: { enabled: epTtmEnabled.checked, limit: parseApiCapInput(epTtmLimit, isUseMaxForInput("ep-ttm-limit")) },
+          long_term: { enabled: epTtlEnabled.checked, limit: parseApiCapInput(epTtlLimit, isUseMaxForInput("ep-ttl-limit")) }
+        }
+      },
+      saved_tracks: {
+        enabled: epCbSavedTracks.checked,
+        max_items: parseApiCapInput(epSavMaxItems, epSavUseMax.checked)
+      },
+      playlists: {
+        enabled: epCbPlaylists.checked,
+        max_playlists: parseApiCapInput(epPlMaxPlaylists, epPlUseMax.checked),
+        max_items_per_playlist: parseApiCapInput(epPlMaxItems, epPlItemsUseMax.checked)
+      },
+      recently_played: {
+        enabled: epCbRecentlyPlayed.checked,
+        limit: epRecUseMax.checked ? Number(epRecMaxItems.max || 50) : getRecentlyPlayedTarget()
+      }
+    }
+  };
+}
+
+function validateSpotifySelection() {
+  if (!endpointCbs.some((cb) => cb.checked)) {
+    return "Please select at least one endpoint.";
+  }
+  if (epCbTopTracks.checked && !(epTtsEnabled.checked || epTtmEnabled.checked || epTtlEnabled.checked)) {
+    return "Top Tracks is enabled but no time ranges are selected.";
+  }
+  return "";
+}
+
+function stopRunPolling() {
+  if (runPollHandle) {
+    clearTimeout(runPollHandle);
+    runPollHandle = null;
+  }
+}
+
+function scheduleRunPolling() {
+  stopRunPolling();
+  runPollHandle = window.setTimeout(async () => {
+    await refreshRunStatus(true);
+  }, 1500);
+}
+
+async function refreshRunStatus(incremental = false) {
+  try {
+    const after = incremental ? latestRunLogIndex : 0;
+    const payload = await fetchJson(`${API_EXPORT_STATUS_PATH}?after=${after}`);
+    const run = payload.run || null;
+
+    if (!incremental) {
+      runLogEntries = [];
+      latestRunLogIndex = 0;
+    }
+
+    if (run && Array.isArray(run.logs) && run.logs.length) {
+      run.logs.forEach((entry) => runLogEntries.push(entry));
+      latestRunLogIndex = run.logs[run.logs.length - 1].index;
+    }
+
+    latestRunSnapshot = run ? { ...run, logs: runLogEntries.slice() } : null;
+    renderRunStatus(latestRunSnapshot);
+    updateIngestBtn();
+
+    if (latestRunSnapshot && latestRunSnapshot.status === "running") {
+      scheduleRunPolling();
+    } else {
+      stopRunPolling();
+      await finalizeCompletedRun();
+    }
+  } catch (error) {
+    stopRunPolling();
+    runStatusMessage.textContent = `Unable to read live run status: ${error.message}`;
+    setStatus("error", error.message || "Unable to read live run status.");
+  }
+}
+
+async function finalizeCompletedRun() {
+  if (!activeIngestionRequested || !latestRunSnapshot) {
+    return;
+  }
+
+  const runKey = latestRunSnapshot.summary?.run_id || `${latestRunSnapshot.completed_at_utc || ""}:${latestRunSnapshot.exit_code}`;
+  if (completionHandledKey === runKey) {
+    return;
+  }
+
+  if (latestRunSnapshot.status === "completed") {
+    await refreshExportSnapshot();
+    const groups = latestExportSnapshot
+      ? buildImportGroupsFromExport(latestExportSnapshot).filter((group) => group.tracks.length > 0)
+      : [];
+
+    if (!groups.length) {
+      setStatus("warning", "Ingestion finished, but no rows matched your selected endpoints/options.");
+    } else {
+      persistImportGroups(groups);
+      const labels = groups.map((group) => `${group.label} (${group.tracks.length})`);
+      setStatus("", `Spotify ingestion finished. Imported ${groups.length} endpoint group${groups.length !== 1 ? "s" : ""}: ${labels.join("; ")}.`);
+    }
+  } else if (latestRunSnapshot.status === "failed") {
+    setStatus("error", `Spotify ingestion failed. See live run log for details.${latestRunSnapshot.oauth_url ? " Authorization may still be required." : ""}`);
+  }
+
+  activeIngestionRequested = false;
+  completionHandledKey = runKey;
+  updateIngestBtn();
+}
+
+async function startSpotifyIngestion() {
+  const validationMessage = validateSpotifySelection();
+  if (validationMessage) {
+    setStatus("error", validationMessage);
+    return;
+  }
+
+  const requestPayload = buildSpotifyApiRequestFromForm();
+  activeIngestionRequested = true;
+  completionHandledKey = null;
+  runLogEntries = [];
+  latestRunLogIndex = 0;
+  latestRunSnapshot = {
+    status: "running",
+    current_step: "starting",
+    current_message: "Starting Spotify ingestion run...",
+    started_at_utc: new Date().toISOString(),
+    completed_at_utc: null,
+    exit_code: null,
+    oauth_url: null,
+    line_count: 0
+  };
+  renderRunStatus(latestRunSnapshot);
+  updateIngestBtn();
+  setStatus("loading", "Starting Spotify ingestion run...");
+
+  try {
+    await fetchJson(API_EXPORT_START_PATH, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(requestPayload)
+    });
+    await refreshRunStatus(false);
+  } catch (error) {
+    activeIngestionRequested = false;
+    setStatus("error", error.message || "Unable to start Spotify ingestion.");
+    updateIngestBtn();
+  }
+}
+
 async function handleIngest() {
   const activeSource = getActiveSourceId();
-
   if (activeSource === "manual") {
     if (!hasManualInput()) {
       setStatus("error", "Manual mode requires a JSON file or pasted JSON text.");
@@ -450,7 +893,6 @@ async function handleIngest() {
       }
 
       const parsed = JSON.parse(inputPayload.raw);
-
       progressStep.textContent = "Saving manual input...";
       progressBar.style.width = "75%";
 
@@ -465,62 +907,22 @@ async function handleIngest() {
       progressStep.textContent = "Done";
       progressBar.style.width = "100%";
       await sleep(180);
-
       setStatus("", `Manual JSON saved from ${inputPayload.source}.`);
-    } catch (err) {
-      setStatus("error", `Invalid JSON: ${err.message || "Unable to parse input."}`);
+    } catch (error) {
+      setStatus("error", `Invalid JSON: ${error.message || "Unable to parse input."}`);
     } finally {
       ingestBtn.textContent = "Ingest";
       progressStep.textContent = "Idle";
       progressBar.style.width = "0%";
       updateIngestBtn();
     }
-
     return;
   }
 
-  const anyChecked = endpointCbs.some((cb) => cb.checked);
-  if (!anyChecked) {
-    setStatus("error", "Please select at least one endpoint.");
-    return;
-  }
-
-  if (epCbTopTracks && epCbTopTracks.checked) {
-    const hasRange = epTtsEnabled.checked || epTtmEnabled.checked || epTtlEnabled.checked;
-    if (!hasRange) {
-      setStatus("error", "Top Tracks is enabled but no time ranges are selected.");
-      return;
-    }
-  }
-
-  ingestBtn.disabled = true;
-  ingestBtn.textContent = "Saving...";
-  progressNode.classList.remove("hidden");
-  progressStep.textContent = "Building selection...";
-  progressBar.style.width = "40%";
-  setStatus("loading", "Saving your selection...");
-
-  await sleep(300);
-
-  const groups = buildImportGroups();
-  persistImportGroups(groups);
-
-  progressStep.textContent = "Done";
-  progressBar.style.width = "100%";
-  await sleep(200);
-
-  const labels = groups.map((g) => g.label);
-  setStatus("", `Saved. ${groups.length} endpoint group${groups.length !== 1 ? "s" : ""}: ${labels.join("; ")}.`);
-
-  ingestBtn.disabled = false;
-  ingestBtn.textContent = "Ingest";
-  progressBar.style.width = "0%";
-  progressStep.textContent = "Idle";
+  await startSpotifyIngestion();
 }
 
-// ─── Init ─────────────────────────────────────────────────────────────────────
 function init() {
-  // Source switching
   sourceBtns.forEach((btn) => {
     btn.addEventListener("click", () => switchSource(btn.dataset.source));
   });
@@ -532,15 +934,13 @@ function init() {
     manualJsonFile.addEventListener("change", () => updateIngestBtn());
   }
 
-  // Endpoint accordion: title button toggles body open/closed
   endpointItems.forEach((item) => {
     const titleBtn = item.querySelector(".endpoint-title-btn");
-    titleBtn.addEventListener("click", (e) => {
-      e.stopPropagation();
+    titleBtn.addEventListener("click", (event) => {
+      event.stopPropagation();
       toggleEndpointOpen(item);
     });
 
-    // Checking the checkbox also auto-opens the body so user can see options
     const cb = item.querySelector(".endpoint-cb");
     cb.addEventListener("change", () => {
       if (cb === epCbTopTracks) {
@@ -554,7 +954,6 @@ function init() {
     });
   });
 
-  // Use-max toggles
   useMaxToggles.forEach((toggle) => {
     applyUseMaxToggle(toggle);
     toggle.addEventListener("change", () => {
@@ -563,33 +962,45 @@ function init() {
     });
   });
 
-  // Sub-checkboxes (top track time ranges) → update summary
   [epTtsEnabled, epTtmEnabled, epTtlEnabled].forEach((cb) => {
-    if (cb) {
-      cb.addEventListener("change", () => {
-        setTopTracksParentFromChildren();
-        updateControlEnabledState();
-        updateIngestBtn();
-      });
-    }
+    if (!cb) return;
+    cb.addEventListener("change", () => {
+      setTopTracksParentFromChildren();
+      updateControlEnabledState();
+      updateIngestBtn();
+    });
   });
 
-  // Number inputs → normalize and update summary
-  [epTtsLimit, epTtmLimit, epTtlLimit, epSavMaxItems, epPlMaxPlaylists, epPlMaxItems, epRecMaxItems]
-    .forEach((input) => {
-      if (!input) return;
-      input.addEventListener("input", () => { normalizeNumberInput(input); updateImportSummary(); });
-      input.addEventListener("blur",  () => { normalizeNumberInput(input); updateImportSummary(); });
+  [epTtsLimit, epTtmLimit, epTtlLimit, epSavMaxItems, epPlMaxPlaylists, epPlMaxItems, epRecMaxItems].forEach((input) => {
+    if (!input) return;
+    input.addEventListener("input", () => {
+      normalizeNumberInput(input);
+      updateImportSummary();
     });
+    input.addEventListener("blur", () => {
+      normalizeNumberInput(input);
+      updateImportSummary();
+    });
+  });
 
-  // Ingest button
   ingestBtn.addEventListener("click", handleIngest);
+  if (refreshExportBtn) {
+    refreshExportBtn.addEventListener("click", () => {
+      void refreshExportSnapshot();
+    });
+  }
+  if (refreshRunBtn) {
+    refreshRunBtn.addEventListener("click", () => {
+      void refreshRunStatus(false);
+    });
+  }
 
-  // Set initial state
   switchSource("spotify");
   setTopTracksParentFromChildren();
   updateControlEnabledState();
   updateIngestBtn();
+  void refreshExportSnapshot();
+  void refreshRunStatus(false);
 }
 
 init();

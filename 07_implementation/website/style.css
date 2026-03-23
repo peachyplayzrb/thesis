@@ -369,6 +369,28 @@ button:disabled {
   background: var(--accent-dark);
 }
 
+.secondary-btn {
+  margin-top: 0;
+  padding: 9px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: #f7f2e8;
+  color: var(--ink);
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+.secondary-btn:hover {
+  background: #efe7d8;
+}
+
+.profile-action-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+
 .hidden {
   display: none;
 }
@@ -632,6 +654,78 @@ button:disabled {
 /* Source panels */
 .source-panel {
   flex: 1;
+}
+
+.export-status-card {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: #fcf8ef;
+  padding: 12px;
+  margin: 10px 0 14px;
+}
+
+.export-status-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.export-status-head h3 {
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+.refresh-btn {
+  margin: 0;
+  padding: 6px 10px;
+  font-size: 0.82rem;
+  border-radius: 8px;
+}
+
+.export-meta-grid {
+  margin: 8px 0 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.export-meta-grid div {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 8px;
+  background: #fff;
+}
+
+.export-meta-grid dt {
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+
+.export-meta-grid dd {
+  margin: 3px 0 0;
+  font-weight: 700;
+  font-size: 0.88rem;
+  word-break: break-word;
+}
+
+.run-log {
+  margin: 10px 0 0;
+  min-height: 180px;
+  max-height: 360px;
+  overflow: auto;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: #1c1f1d;
+  color: #d9efe4;
+  font-family: "Cascadia Code", "Consolas", monospace;
+  font-size: 0.8rem;
+  line-height: 1.45;
+  white-space: pre-wrap;
+  word-break: break-word;
 }
 
 /* Endpoint list */
@@ -905,6 +999,10 @@ button:disabled {
 
   .range-row {
     grid-template-columns: auto 1fr;
+  }
+
+  .export-meta-grid {
+    grid-template-columns: 1fr;
   }
 
   .param-row {

@@ -55,6 +55,76 @@
         <p class="subtitle">Choose which endpoints to include. Click any row to expand it and configure options.</p>
         <p class="hint">OAuth scopes needed: <code>user-top-read</code> · <code>user-library-read</code> · <code>playlist-read-private</code> · <code>user-read-recently-played</code></p>
 
+        <section id="spotify-export-status" class="export-status-card" aria-live="polite">
+          <div class="export-status-head">
+            <h3>Latest Spotify Export</h3>
+            <button id="refresh-export-btn" type="button" class="refresh-btn">Refresh</button>
+          </div>
+          <p id="export-status-message" class="hint">Checking export artifacts...</p>
+          <dl class="export-meta-grid">
+            <div>
+              <dt>Run ID</dt>
+              <dd id="export-run-id">-</dd>
+            </div>
+            <div>
+              <dt>Generated (UTC)</dt>
+              <dd id="export-generated-at">-</dd>
+            </div>
+            <div>
+              <dt>Top Tracks</dt>
+              <dd id="export-count-top">-</dd>
+            </div>
+            <div>
+              <dt>Saved Tracks</dt>
+              <dd id="export-count-saved">-</dd>
+            </div>
+            <div>
+              <dt>Playlist Items</dt>
+              <dd id="export-count-playlist-items">-</dd>
+            </div>
+            <div>
+              <dt>API Calls Logged</dt>
+              <dd id="export-count-calls">-</dd>
+            </div>
+          </dl>
+        </section>
+
+        <section id="spotify-run-status" class="export-status-card" aria-live="polite">
+          <div class="export-status-head">
+            <h3>Live Ingestion Run</h3>
+            <button id="refresh-run-btn" type="button" class="refresh-btn">Refresh Run</button>
+          </div>
+          <p id="run-status-message" class="hint">No ingestion run started yet.</p>
+          <dl class="export-meta-grid">
+            <div>
+              <dt>Run State</dt>
+              <dd id="run-state">idle</dd>
+            </div>
+            <div>
+              <dt>Current Step</dt>
+              <dd id="run-step">-</dd>
+            </div>
+            <div>
+              <dt>Started (UTC)</dt>
+              <dd id="run-started-at">-</dd>
+            </div>
+            <div>
+              <dt>Finished (UTC)</dt>
+              <dd id="run-completed-at">-</dd>
+            </div>
+            <div>
+              <dt>Exit Code</dt>
+              <dd id="run-exit-code">-</dd>
+            </div>
+            <div>
+              <dt>Log Lines</dt>
+              <dd id="run-log-count">0</dd>
+            </div>
+          </dl>
+          <p id="run-oauth-block" class="hint hidden">Spotify authorization needed: <a id="run-oauth-link" href="#" target="_blank" rel="noopener noreferrer">Open authorization page</a></p>
+          <pre id="run-log" class="run-log">No logs yet.</pre>
+        </section>
+
         <div class="endpoint-list" id="endpoint-list">
 
           <!-- Top Tracks -->

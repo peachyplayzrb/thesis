@@ -12,6 +12,43 @@
       <h1>Profile Basis</h1>
       <p class="subtitle">Review imported endpoint groups and exclude whole endpoints or specific tracks. If no local selection exists, this page loads your existing Spotify export artifacts automatically.</p>
 
+      <section id="profile-import-summary" class="export-status-card" aria-live="polite">
+        <div class="export-status-head">
+          <h3>Imported Data Summary</h3>
+        </div>
+        <p id="profile-import-summary-message" class="hint">Checking import source and export artifacts...</p>
+        <dl class="export-meta-grid">
+          <div>
+            <dt>Source</dt>
+            <dd id="profile-import-source">-</dd>
+          </div>
+          <div>
+            <dt>Saved / Generated</dt>
+            <dd id="profile-import-generated-at">-</dd>
+          </div>
+          <div>
+            <dt>Run ID</dt>
+            <dd id="profile-import-run-id">-</dd>
+          </div>
+          <div>
+            <dt>Endpoint Groups</dt>
+            <dd id="profile-import-group-count">-</dd>
+          </div>
+          <div>
+            <dt>Visible Tracks</dt>
+            <dd id="profile-import-track-count">-</dd>
+          </div>
+          <div>
+            <dt>Included / Excluded</dt>
+            <dd id="profile-import-inclusion">-</dd>
+          </div>
+          <div>
+            <dt>Selection Scope</dt>
+            <dd id="profile-import-selection">-</dd>
+          </div>
+        </dl>
+      </section>
+
       <form id="profile-form" class="form">
         <div id="imported-groups" class="group-stack"></div>
 
@@ -21,7 +58,12 @@
       <p id="profile-status" class="status" aria-live="polite">Load imported groups, then set exclusions.</p>
 
       <div class="next-step">
-        <a class="button-link" href="import.html">Back To Import Options</a>
+        <div class="profile-action-row">
+          <button id="download-included-btn" type="button" class="secondary-btn">Download Included Tracks (JSON)</button>
+          <button id="download-exclusions-btn" type="button" class="secondary-btn">Download Exclusions (JSON)</button>
+          <button id="download-profile-bundle-btn" type="button" class="secondary-btn">Download Full Profile Bundle</button>
+          <a class="button-link" href="import.html">Back To Import Options</a>
+        </div>
       </div>
     </section>
   </main>
