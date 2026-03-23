@@ -1,0 +1,27 @@
+{
+  "run_id": "BL003-PARTIAL-20260321-231044-509916",
+  "task": "BL-003-partial",
+  "generated_at_utc": "2026-03-21T23:10:44Z",
+  "mode": "cache_to_partial_events",
+  "input_artifacts": {
+    "top_tracks_csv": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\ingestion\\outputs\\spotify_api_export\\spotify_top_tracks_flat.csv",
+    "saved_tracks_csv": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\ingestion\\outputs\\spotify_api_export\\spotify_saved_tracks_flat.csv",
+    "cache_json": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\ingestion\\outputs\\bl020_lastfm_tag_cache.json"
+  },
+  "stats": {
+    "unique_spotify_tracks": 5592,
+    "cache_entries": 300,
+    "tracks_with_cache": 398,
+    "tagged_with_lastfm": 375,
+    "no_tags": 4,
+    "errors": 19,
+    "missing_cache": 5194,
+    "aligned_events_count": 398,
+    "coverage_over_total_tracks_pct": 7.12,
+    "tag_coverage_over_partial_pct": 94.22
+  },
+  "output_artifacts": {
+    "aligned_events_jsonl": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\ingestion\\outputs\\bl020_aligned_events_partial_from_cache.jsonl",
+    "aligned_events_count": 398
+  }
+}

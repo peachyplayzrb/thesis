@@ -1,22 +1,24 @@
 {
   "task": "BL-002-spotify-api-export",
-  "run_id": "SPOTIFY-EXPORT-20260321-192533-881299",
-  "generated_at_utc": "2026-03-21T19:26:20Z",
+  "run_id": "SPOTIFY-EXPORT-20260323-225724-423567",
+  "generated_at_utc": "2026-03-23T22:58:11Z",
   "oauth": {
     "redirect_uri": "http://127.0.0.1:8001/spotify/auth/callback",
     "scopes_requested": [
+      "user-read-private",
       "user-top-read",
       "user-library-read",
       "playlist-read-private",
       "playlist-read-collaborative",
-      "user-read-private"
+      "user-read-recently-played"
     ],
     "scope_granted": [
       "playlist-read-private",
       "playlist-read-collaborative",
       "user-library-read",
-      "user-top-read",
-      "user-read-private"
+      "user-read-recently-played",
+      "user-read-private",
+      "user-top-read"
     ]
   },
   "account_profile": {
@@ -25,15 +27,36 @@
     "product": "premium"
   },
   "counts": {
-    "top_tracks_short_term": 598,
-    "top_tracks_medium_term": 3021,
-    "top_tracks_long_term": 5104,
-    "saved_tracks": 170,
+    "top_tracks_short_term": 602,
+    "top_tracks_medium_term": 3029,
+    "top_tracks_long_term": 5114,
+    "saved_tracks": 171,
     "playlists": 4,
     "playlist_items": 31,
+    "recently_played": 50,
     "api_calls_logged": 2
   },
-  "elapsed_seconds": 46.711,
+  "selection": {
+    "include_top_tracks": true,
+    "include_saved_tracks": true,
+    "include_playlists": true,
+    "include_recently_played": true,
+    "top_time_ranges": [
+      "short_term",
+      "medium_term",
+      "long_term"
+    ],
+    "top_caps": {
+      "short_term": null,
+      "medium_term": null,
+      "long_term": null
+    },
+    "saved_max_items": null,
+    "playlists_max_items": null,
+    "playlist_items_max_per_playlist": null,
+    "recently_played_limit": 50
+  },
+  "elapsed_seconds": 48.462,
   "resilience": {
     "cache_enabled": true,
     "cache_db_path": "07_implementation/implementation_notes/ingestion/outputs/spotify_api_export/spotify_resilience_cache.sqlite",
@@ -42,32 +65,32 @@
   "artifacts": {
     "spotify_profile.json": {
       "path": "07_implementation/implementation_notes/ingestion/outputs/spotify_api_export/spotify_profile.json",
-      "sha256": "942EA798EDA891DF73CAE810EDE03189E2AD181C321540B53F9D8898D6CF21D1",
+      "sha256": "B3E85959D929CAD562ABDDFB46398BE10376D3F847DE68199BF052FBC4F011BB",
       "bytes": 1737
     },
     "spotify_top_tracks_by_range.json": {
       "path": "07_implementation/implementation_notes/ingestion/outputs/spotify_api_export/spotify_top_tracks_by_range.json",
-      "sha256": "3A88DF4BBD3AB9507361E5C7A8F0477A2E788FB82CE392653652025A6F56C713",
-      "bytes": 26816335
+      "sha256": "FEDFE1A6DE8D4C003DC54C873E52A6125871A170A5CEA1341978E645FD9B1528",
+      "bytes": 26902605
     },
     "spotify_top_tracks_flat.csv": {
       "path": "07_implementation/implementation_notes/ingestion/outputs/spotify_api_export/spotify_top_tracks_flat.csv",
-      "sha256": "009994C647271F68F4D3DF49316E371AE4DCC78D4C4C3716CDFDA256B0B90F22",
-      "bytes": 2571512
+      "sha256": "51E22252DBC6513F96F137764F22EAF2956282A80FBABF4B8B72836DE0AD6E73",
+      "bytes": 2579815
     },
     "spotify_saved_tracks.json": {
       "path": "07_implementation/implementation_notes/ingestion/outputs/spotify_api_export/spotify_saved_tracks.json",
-      "sha256": "AC317F3BF7BDA07BE0102BC9D9D4C0728A6FE7C34F5B134F7C289C4CA90D6B72",
-      "bytes": 531969
+      "sha256": "3775854EE18874557DE3B337A703BF2D2074965BA7F08CBE2FFC13ED460422AE",
+      "bytes": 535226
     },
     "spotify_saved_tracks_flat.csv": {
       "path": "07_implementation/implementation_notes/ingestion/outputs/spotify_api_export/spotify_saved_tracks_flat.csv",
-      "sha256": "BD3B04C9895285FB41FC71B29622368905C1EA35C840511518817639D1E25561",
-      "bytes": 50937
+      "sha256": "75A5C144D0D46F1E3BB12630B3BDB810800A79E920D352A44F69AA3C4E8A47FD",
+      "bytes": 51305
     },
     "spotify_playlists.json": {
       "path": "07_implementation/implementation_notes/ingestion/outputs/spotify_api_export/spotify_playlists.json",
-      "sha256": "4801E0EE1A02A285D5ECECF76BCB2979F359FA6A69758EF3CAADEDEEAC15B4E3",
+      "sha256": "577A4D34F70C2A1007DF4ADBFFFDE699FF9FBDA97B552B752B0704B76B39DD8F",
       "bytes": 5802
     },
     "spotify_playlists_flat.csv": {
@@ -85,10 +108,20 @@
       "sha256": "37FE25E5BA22CC7165D988D411F60615807C2FA26ABE7459BF7D3A48B22B0615",
       "bytes": 3656
     },
+    "spotify_recently_played.json": {
+      "path": "07_implementation/implementation_notes/ingestion/outputs/spotify_api_export/spotify_recently_played.json",
+      "sha256": "4A5D9F6AECC7565432976B203BDDE6F956A16D9DDD38C2731174128A281D3CBF",
+      "bytes": 159948
+    },
+    "spotify_recently_played_flat.csv": {
+      "path": "07_implementation/implementation_notes/ingestion/outputs/spotify_api_export/spotify_recently_played_flat.csv",
+      "sha256": "316C6B4323C46D50881979B4FF068C7077E3F84356D2B607DF1E61CD416AE61C",
+      "bytes": 15877
+    },
     "spotify_request_log.jsonl": {
       "path": "07_implementation/implementation_notes/ingestion/outputs/spotify_api_export/spotify_request_log.jsonl",
-      "sha256": "8E1467AA4229F2E30A30F59642468FD3834C713BDD65A9A82594FA02F423F1BE",
-      "bytes": 397
+      "sha256": "E8AEBE62C97CB24B7AF109854BB5CCF5BECEABDD5A99A40A29FD9D45734CE180",
+      "bytes": 297
     }
   },
   "notes": {
