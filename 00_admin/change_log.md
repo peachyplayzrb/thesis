@@ -894,3 +894,15 @@ Use schema from `00_admin/operating_protocol.md`.
 - measured_impact: Papers with weak claims reduced from 16 to 8 (50% Phase 2 reduction). Cumulative improvement from Day 3 baseline: 22 to 8 weak papers (64% reduction).
 - impact_assessment: High-positive. Option A materially strengthens Chapter 2 claim defensibility and leaves a smaller, clearly scoped residual weak set for optional micro-pass cleanup while preserving momentum for Days 4-7 execution.
 - approval_record: Executed on 2026-03-24 immediately after user selected Option A; results validated through post-edit audit rerun.
+
+## C-082
+- date: 2026-03-24
+- proposed_by: user + AI
+- status: completed
+- change_summary: Executed final Chapter 2 weak-claim micro-pass targeting the residual 8 weak keys from C-081. Applied source-faithful lexical and scope refinements to the remaining weak sentences and re-ran the verbatim audit workflow. Final summary reports `TOTAL_KEYS_WITH_WEAK=0`.
+- reason: User selected final cleanup path (option 1) to close remaining weak claims before continuing to Days 4-7 sprint execution.
+- evidence_basis: Updated `08_writing/chapter2.md` with final targeted rewrites to residual weak-key claim areas: Fkih metric-study wording, Schweiger coherence wording, Zamani seed-track/input-handling wording, split playlist evidence phrasing for Bonnin/Vall/Ferraro, Papadakis+Allam staged blocking wording, and Barlaug comparator phrasing. Re-ran `09_quality_control/run_ch2_verbatim_audit.py` and `09_quality_control/summarize_ch2_verbatim_audit.py`; summary output shows no weak keys and `weak_support: 0` in `09_quality_control/chapter2_verbatim_audit.md` summary block.
+- affected_components: `08_writing/chapter2.md`, `09_quality_control/chapter2_verbatim_audit.md`, `00_admin/unresolved_issues.md`, `00_admin/change_log.md`
+- measured_impact: Weak papers reduced from 8 to 0 in this micro-pass (100% residual clearance). Cumulative Day 3 improvement: 22 weak papers to 0.
+- impact_assessment: High-positive. Chapter 2 now has fully cleared weak-key status under the current verbatim audit method, with strengthened source-aligned phrasing and improved defendability ahead of Day 4-7 work.
+- approval_record: Executed and validated on 2026-03-24 immediately after user selected final micro-pass execution.

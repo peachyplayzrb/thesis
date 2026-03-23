@@ -41,19 +41,6 @@ Method note: automated lexical matching (RapidFuzz token-set ratio) with manual 
     secondary_score: 53.674121405750796
     secondary_quote: "Moreover, empathy has links to expectation: if the AI system can act in accordance with its user ’ s expectations, the user will probably form a trust in the system (Gebhard et al., 2021)."
 
-## allam_improved_2018
-- title: Improved suffix blocking for record linkage and entity resolution
-- mapped_pdf: c:\Users\peach\Desktop\thesis-main (3)\thesis-main\thesis-main\10_resources\papers\Allam et al. - 2018 - Improved suffix blocking for record linkage and entity resolution.pdf
-- mapping_score: 105
-- mapping_method: fuzzy_title_author_year
-- claim_checks:
-  - claim_1_status: partially_supported
-    score: 52.136752136752136
-    claim: "Entity resolution literature documents staged matching pipelines: blocking and filtering first reduce the number of pairwise comparisons, then candidate pairs are refined through within-block comparison and subsequent matching stages (Papadakis et al., 2021; Allam et al., 2018)."
-    quote_candidate: "To evaluate the accuracy of the blocking stage (discussed in Section 2)o ﬀered by INCSUFFBLOCK and MPB, we use the pairs com- pleteness metric deﬁned in Section 6.2 and the number of pairs for comparison metric which counts the total number of pairs outputted by the blocking stage and fed to the comparison stage."
-    secondary_score: 50.925925925925924
-    secondary_quote: "Recent suﬃ x-based blocking methods, identify sets of records that correspond to blocks of su ﬃ xes in SortSuf (D) and use these sets to create the pairs that are forwarded to the comparison stage."
-
 ## andjelkovic_moodplay_2019
 - title: Moodplay: Interactive music recommendation based on Artists' mood similarity
 - mapped_pdf: c:\Users\peach\Desktop\thesis-main (3)\thesis-main\thesis-main\10_resources\previous_drafts\lit_review_resource_pack\files\415\Andjelkovic et al. - 2019 - Moodplay Interactive music recommendation based on Artists’ mood similarity.pdf
@@ -92,12 +79,12 @@ Method note: automated lexical matching (RapidFuzz token-set ratio) with manual 
 - mapping_score: 105
 - mapping_method: fuzzy_title_author_year
 - claim_checks:
-  - claim_1_status: weak_support
-    score: 48.01512287334594
-    claim: "Neural entity-matching approaches can address cases where rule-based or fuzzy matching fails (Barlaug and Thorvaldsen, 2021), but for a transparency-focused system, they present a fundamental challenge: building fully transparent neural components requires substantial logging infrastructure to expose how decisions were reached."
+  - claim_1_status: partially_supported
+    score: 53.09278350515464
+    claim: "Neural entity-matching methods vary in what matching problems they solve and how they implement those solutions (Barlaug and Gulla, 2021), and they remain a relevant comparator family for difficult cases."
     quote_candidate: "With this is in mind, we formulate the following research questions: —How do methods using neural networks for entity matching differ in what they solve, and how do the methods that address the same aspects differ in their approaches?"
-    secondary_score: 46.484375
-    secondary_quote: "While earlier works mention or cover neural networks for entity matching to various degrees, we are to the best of our knowledge the first to present a dedicated, complete, and up-to-date survey."
+    secondary_score: 50.87719298245614
+    secondary_quote: "We also discuss contributions from deep learning in entity matching compared to traditional methods, and propose a taxonomy of deep neural networks for entity matching."
 
 ## bauer_exploring_2024
 - title: Exploring the Landscape of Recommender Systems Evaluation: Practices and Perspectives
@@ -144,19 +131,6 @@ Method note: automated lexical matching (RapidFuzz token-set ratio) with manual 
     secondary_score: 56.15141955835962
     secondary_quote: "These semantic descriptors are computed from an explicit set of music tracks deﬁned by a given user as evidence of her/his musical preferences."
 
-## bonnin_automated_2015
-- title: Automated Generation of Music Playlists: Survey and Experiments
-- mapped_pdf: c:\Users\peach\Desktop\thesis-main (3)\thesis-main\thesis-main\10_resources\papers\nw\files\569\Bonnin and Jannach - 2015 - Automated Generation of Music Playlists Survey and Experiments.pdf
-- mapping_score: 105
-- mapping_method: fuzzy_title_author_year
-- claim_checks:
-  - claim_1_status: weak_support
-    score: 47.57505773672055
-    claim: "Playlist-generation studies commonly evaluate coherence, novelty, diversity, and ordering together, and frame playlist construction as an explicit balancing problem across objectives (Ferraro et al., 2018; Vall et al., 2019; Bonnin and Jannach, 2015)."
-    quote_candidate: "Another potential problem is that not all types of metadata are objective, and annotations regarding, for example, the mood or the genre of a track can be imprecise or inconsistent [Celma 2010; Lee and Cho 2011]."
-    secondary_score: 46.91358024691358
-    secondary_quote: "The playlist generation problem can thus be deﬁned as follows."
-
 ## cano_hybrid_2017
 - title: Hybrid recommender systems: A systematic literature review
 - mapped_pdf: c:\Users\peach\Desktop\thesis-main (3)\thesis-main\thesis-main\10_resources\previous_drafts\lit_review_resource_pack\files\430\Çano and Morisio - 2017 - Hybrid recommender systems A systematic literature review.pdf
@@ -189,32 +163,13 @@ Method note: automated lexical matching (RapidFuzz token-set ratio) with manual 
     secondary_score: 51.041666666666664
     secondary_quote: "The intuitive idea behind this work is that music experts with better VM and MS may perceive the same music recommendation list more diverse than non-specialists with lower VM and MS."
 
-## ferraro_automatic_2018
-- title: Automatic playlist continuation using a hybrid recommender system combining features from text and audio
-- mapped_pdf: c:\Users\peach\Desktop\thesis-main (3)\thesis-main\thesis-main\10_resources\papers\Ferraro et al. - 2018 - Automatic playlist continuation using a hybrid recommender system combining features from text and a.pdf
-- mapping_score: 1000
-- mapping_method: bib_attachment_exact_stem
-- claim_checks:
-  - claim_1_status: weak_support
-    score: 43.66197183098591
-    claim: "Playlist-generation studies commonly evaluate coherence, novelty, diversity, and ordering together, and frame playlist construction as an explicit balancing problem across objectives (Ferraro et al., 2018; Vall et al., 2019; Bonnin and Jannach, 2015)."
-    quote_candidate: "One approach is based on M a- trix Factorization combining the information about the interactions between playlists and tracks with playlist features extrac ted from playlist titles and track features extracted from audio."
-    secondary_score: 43.3048433048433
-    secondary_quote: "Given the time constraints of the challenge, we were not able to evaluate all combinations of audio features that we planned ."
-
 ## fkih_similarity_2022
 - title: Similarity measures for Collaborative Filtering-based Recommender Systems: Review and experimental comparison
 - mapped_pdf: c:\Users\peach\Desktop\thesis-main (3)\thesis-main\thesis-main\10_resources\previous_drafts\lit_review_resource_pack\files\432\Fkih - 2022 - Similarity measures for Collaborative Filtering-based Recommender Systems Review and experimental c.pdf
 - mapping_score: 1000
 - mapping_method: bib_attachment_exact_stem
 - claim_checks:
-  - claim_1_status: weak_support
-    score: 47.61904761904762
-    claim: "Metric selection should be treated as an explicit configurable choice rather than a hidden implementation default (Fkih, 2022)."
-    quote_candidate: "Spearman rank-order correlation coefﬁcient The Spearman correlation ( Spearman, 2010 ) evaluates the monotonic relationship between two variables."
-    secondary_score: 47.61904761904762
-    secondary_quote: "Methodology In this section, we carried out an experimental comparative study between the thirteen correlation measures described in the Section 3: 1."
-  - claim_2_status: partially_supported
+  - claim_1_status: partially_supported
     score: 54.054054054054056
     claim: "The choice of distance function fundamentally shapes how similarity is computed in feature space (Fkih, 2022)."
     quote_candidate: "The Euclidean distance should be normalized to become a similarity measure."
@@ -355,19 +310,6 @@ Method note: automated lexical matching (RapidFuzz token-set ratio) with manual 
     secondary_score: 50.306748466257666
     secondary_quote: "Additionally, Section6 presents an overview of quantitative evaluation methods and categorizes them along our so-called Co-12 properties."
 
-## papadakis_blocking_2021
-- title: Blocking and Filtering Techniques for Entity Resolution: A Survey
-- mapped_pdf: c:\Users\peach\Desktop\thesis-main (3)\thesis-main\thesis-main\10_resources\papers\Papadakis et al. - 2021 - Blocking and Filtering Techniques for Entity Resolution A Survey.pdf
-- mapping_score: 105
-- mapping_method: fuzzy_title_author_year
-- claim_checks:
-  - claim_1_status: weak_support
-    score: 48.275862068965516
-    claim: "Entity resolution literature documents staged matching pipelines: blocking and filtering first reduce the number of pairwise comparisons, then candidate pairs are refined through within-block comparison and subsequent matching stages (Papadakis et al., 2021; Allam et al., 2018)."
-    quote_candidate: "Figure1(a) models this workflow as a deterministic finite automaton with three states, where each state corresponds to one of the blocking subtasks."
-    secondary_score: 48.111332007952285
-    secondary_quote: "Multisource Entity Resolutioninvolves three or more entity collections and can be performed by applying Deduplication to the union of all collections or by executing a sequence of pairwise Record Linkage tasks, provided that every input collection is duplicate-free."
-
 ## roy_systematic_2022
 - title: A systematic review and research perspective on recommender systems
 - mapped_pdf: c:\Users\peach\Desktop\thesis-main (3)\thesis-main\thesis-main\10_resources\previous_drafts\lit_review_resource_pack\files\385\Roy and Dutta - 2022 - A systematic review and research perspective on recommender systems.pdf
@@ -406,12 +348,12 @@ Method note: automated lexical matching (RapidFuzz token-set ratio) with manual 
 - mapping_score: 105
 - mapping_method: fuzzy_title_author_year
 - claim_checks:
-  - claim_1_status: weak_support
-    score: 45.32374100719424
-    claim: "This is especially important in music recommendation, where different distance-metric choices produce demonstrably different playlist-level objectives (Schweiger et al., 2025)."
-    quote_candidate: "2.1 Researchcontribution The importance of coherence is evaluated with varying relevance in existing literature."
-    secondary_score: 45.16129032258065
-    secondary_quote: "[8]p r o p o s e s a hybrid recommendation system that balances coherence and diversity based on given Schweigeretal."
+  - claim_1_status: partially_supported
+    score: 52.961672473867594
+    claim: "In music recommendation, coherence outcomes are tied to playlist characteristics and distance-feature construction choices in user-curated playlists (Schweiger et al., 2025)."
+    quote_candidate: "[8]p r o p o s e s a hybrid recommendation system that balances coherence and diversity based on given Schweigeretal."
+    secondary_score: 51.80327868852459
+    secondary_quote: "4 CPs can lead to playlists containing more diverse music, as the musical tastes of multiple users feed into one playlist [24, 40]."
   - claim_2_status: partially_supported
     score: 52.56797583081571
     claim: "In music recommendation specifically, playlist-level objectives like coherence are affected by distance-metric and feature-combination choices, including coherence-diversity balancing settings (Schweiger et al., 2025)."
@@ -445,31 +387,18 @@ Method note: automated lexical matching (RapidFuzz token-set ratio) with manual 
     secondary_score: 53.1578947368421
     secondary_quote: "If an explanation helps users make good decisions, getting more (accurate and balanced) information or trying the product should not change their valuation of the product greatly."
 
-## vall_feature-combination_2019
-- title: Feature-combination hybrid recommender systems for automated music playlist continuation
-- mapped_pdf: c:\Users\peach\Desktop\thesis-main (3)\thesis-main\thesis-main\10_resources\papers\Vall et al. - 2019 - Feature-combination hybrid recommender systems for automated music playlist continuation.pdf
-- mapping_score: 1000
-- mapping_method: bib_attachment_exact_stem
-- claim_checks:
-  - claim_1_status: weak_support
-    score: 49.699398797595194
-    claim: "Playlist-generation studies commonly evaluate coherence, novelty, diversity, and ordering together, and frame playlist construction as an explicit balancing problem across objectives (Ferraro et al., 2018; Vall et al., 2019; Bonnin and Jannach, 2015)."
-    quote_candidate: "A common approach to explicitly address the automated continuation of music playlists consists in applying Collaborative Filtering (CF) to curated music playlists, revealing specialized playlist-song co-occurrence patterns (Aizenberg et al.2012; Bon- nin and Jannach 2014)."
-    secondary_score: 48.03695150115473
-    secondary_quote: "3.1 Playlist continuation as matrix completion While a single playlist typically reﬂects individual preferences, a collection of playlists constitutes a source of collaborative implicit feedback (Hu et al."
-
 ## zamani_analysis_2019
 - title: An Analysis of Approaches Taken in the ACM RecSys Challenge 2018 for Automatic Music Playlist Continuation
 - mapped_pdf: c:\Users\peach\Desktop\thesis-main (3)\thesis-main\thesis-main\10_resources\papers\Zamani et al. - 2019 - An Analysis of Approaches Taken in the ACM RecSys Challenge 2018 for Automatic Music Playlist Contin.pdf
 - mapping_score: 100
 - mapping_method: fuzzy_title_author_year
 - claim_checks:
-  - claim_1_status: weak_support
-    score: 46.808510638297875
-    claim: "Analyses of RecSys Challenge playlist-continuation systems show that performance and behavior depend strongly on candidate-pool construction and input-handling choices (Zamani et al., 2019)."
-    quote_candidate: "7ACM Recommender Systems Challenge, or RecSys Challenge, is an annual competition organized in conjunction with the ACM Conference on Recommender Systems, since 2010."
-    secondary_score: 46.58385093167702
-    secondary_quote: "[46] have recently identified the task of automatic music playlist continuation as one of the grand challenges in music recommender systems research."
+  - claim_1_status: partially_supported
+    score: 54.82233502538071
+    claim: "Analyses of RecSys Challenge playlist-continuation systems show that even one added seed track can change automatic playlist continuation performance, and that input/candidate formulation choices materially influence recommendation accuracy (Zamani et al., 2019)."
+    quote_candidate: "[46] have recently identified the task of automatic music playlist continuation as one of the grand challenges in music recommender systems research."
+    secondary_score: 50.328227571115974
+    secondary_quote: "Considered a variation of automatic playlist generation, the task ofautomatic playlist continu- ation (APC) consists of adding one or more tracks to a playlist in a way that fits the same target characteristics of the original playlist [4, 46]."
 
 ## zhang_explainable_2020
 - title: Explainable Recommendation: A Survey and New Perspectives
@@ -510,8 +439,8 @@ Method note: automated lexical matching (RapidFuzz token-set ratio) with manual 
     secondary_quote: "We also call for generous contributions from the whole community to improve this open benchmarking project and to keep healthy development with the rapid evolution of recommender systems research."
 
 ## Summary
-- total_claim_checks: 47
+- total_claim_checks: 41
 - supported: 2
-- partially_supported: 37
-- weak_support: 8
+- partially_supported: 39
+- weak_support: 0
 - no_match: 0
