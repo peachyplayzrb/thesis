@@ -906,3 +906,14 @@ Use schema from `00_admin/operating_protocol.md`.
 - measured_impact: Weak papers reduced from 8 to 0 in this micro-pass (100% residual clearance). Cumulative Day 3 improvement: 22 weak papers to 0.
 - impact_assessment: High-positive. Chapter 2 now has fully cleared weak-key status under the current verbatim audit method, with strengthened source-aligned phrasing and improved defendability ahead of Day 4-7 work.
 - approval_record: Executed and validated on 2026-03-24 immediately after user selected final micro-pass execution.
+
+## C-083
+- date: 2026-03-23
+- proposed_by: user + AI
+- status: completed
+- change_summary: Three-pass tone and register refinement of Chapter 2. Pass 1 (boundary control): removed DS-002 and BL-020 implementation references from chapter body, softened directive phrasing, recast corpus paragraph with literature-level discussion and explicit deferral. Pass 2 (literature-review voice): applied "the literature suggests / within this body of work / this indicates" phrasing throughout, deferred all artefact commitments to later chapters. Pass 3 (final polish): replaced residual stiff or method-declarative phrases — "playlist pipeline framing", "project context relies on", "Within this thesis framing", "bounded control surface", "evaluation frame that follows", "within this evidence landscape", "tends to frame replay", and related constructions — with natural academic wording. Chapter 2 now reads as a disciplined literature synthesis with deferred design relevance throughout.
+- reason: User identified tone and chapter-boundary discipline as the outstanding quality concern after weak-claim hardening was completed. Iterative refinement requested across three sessions until all method-declarative and implementation-aware language was removed.
+- evidence_basis: Targeted grep scans confirming removal of trigger phrases after each pass; final scan returned zero matches for "pipeline framing", "this framing", "project context", "transparency-by-design", "bounded control surface", "evaluation frame", "evidence landscape".
+- affected_components: `08_writing/chapter2.md`, `00_admin/change_log.md`
+- impact_assessment: High-positive. Chapter 2 is now submission-ready in terms of voice register, chapter-boundary discipline, and academic tone. No structural, argumentative, or evidentiary changes were made.
+- approval_record: Executed and confirmed by user across 2026-03-23 session; final polish pass approved on 2026-03-23.
