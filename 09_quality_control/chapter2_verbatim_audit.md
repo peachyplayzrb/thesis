@@ -35,11 +35,11 @@ Method note: automated lexical matching (RapidFuzz token-set ratio) with manual 
 - mapping_method: bib_attachment_exact_stem
 - claim_checks:
   - claim_1_status: partially_supported
-    score: 51.243781094527364
-    claim: "Usability research indicates that even technically faithful explanations still need to be understandable to non-expert users, adding a design constraint beyond mechanism transparency (Knijnenburg et al., 2012; Afroogh et al., 2024)."
-    quote_candidate: "Algorithmic unfairness, in many cases, is caused by failure to develop AI systems based on a fair training of data or a fair design of the relevant machine-learning model (Zhou et al., 2021)."
-    secondary_score: 50.64935064935065
-    secondary_quote: "Although transparency and explainability have been usually categorized under the same ethical principle (Jobin et al., 2019a), it is essential to distinguish between these two different topics before extensive interchangeable misuse of them."
+    score: 53.95894428152493
+    claim: "For systems intended to support user agency, these explanations must be designed with non-expert audiences in mind (Jin et al., 2020; Afroogh et al., 2024)."
+    quote_candidate: "User biases might also affect their perceptions of trust in an explainable AI system: differences in user trust have been found between malignant and benign diagnoses of an AI system (Branley-Bell et al., 2020)."
+    secondary_score: 53.674121405750796
+    secondary_quote: "Moreover, empathy has links to expectation: if the AI system can act in accordance with its user ’ s expectations, the user will probably form a trust in the system (Gebhard et al., 2021)."
 
 ## allam_improved_2018
 - title: Improved suffix blocking for record linkage and entity resolution
@@ -47,12 +47,12 @@ Method note: automated lexical matching (RapidFuzz token-set ratio) with manual 
 - mapping_score: 105
 - mapping_method: fuzzy_title_author_year
 - claim_checks:
-  - claim_1_status: weak_support
-    score: 47.661469933184854
-    claim: "Standard entity-resolution practice, as documented in survey literature, treats matching as a staged process using blocking, filtering, and progressive refinement before detailed alignment (Allam et al., 2018; Papadakis et al., 2021)."
-    quote_candidate: "Incremental entity resolution Incremental entity resolution extends the problem of incremental record linkage (that inserts a new record r in a dataset and identiﬁes a group of records in the dataset representing the same real-world entity with r, see also Section 4) by merging the matching records."
-    secondary_score: 47.422680412371136
-    secondary_quote: "The incremental entity resolution process completes in the iteration that there are no matches for the input record; in such case the input record is added to the dataset and the process terminates."
+  - claim_1_status: partially_supported
+    score: 50.98039215686274
+    claim: "Entity resolution literature documents the effectiveness of staged approaches to matching: first blocking and filtering to create candidate blocks, then within-block comparison and progressive refinement (Papadakis et al., 2021; Allam et al., 2018)."
+    quote_candidate: "Recent suﬃ x-based blocking methods, identify sets of records that correspond to blocks of su ﬃ xes in SortSuf (D) and use these sets to create the pairs that are forwarded to the comparison stage."
+    secondary_score: 50.0
+    secondary_quote: "To evaluate the accuracy of the blocking stage (discussed in Section 2)o ﬀered by INCSUFFBLOCK and MPB, we use the pairs com- pleteness metric deﬁned in Section 6.2 and the number of pairs for comparison metric which counts the total number of pairs outputted by the blocking stage and fed to the comparison stage."
 
 ## andjelkovic_moodplay_2019
 - title: Moodplay: Interactive music recommendation based on Artists' mood similarity
@@ -93,11 +93,11 @@ Method note: automated lexical matching (RapidFuzz token-set ratio) with manual 
 - mapping_method: fuzzy_title_author_year
 - claim_checks:
   - claim_1_status: weak_support
-    score: 47.80701754385965
-    claim: "Neural matching is a relevant alternative for difficult cases (Barlaug and Thorvaldsen, 2021), but neural approaches reduce traceability unless substantial logging infrastructure is built around them — a poor trade-off for a system whose primary claim is transparency."
+    score: 48.01512287334594
+    claim: "Neural entity-matching approaches can address cases where rule-based or fuzzy matching fails (Barlaug and Thorvaldsen, 2021), but for a transparency-focused system, they present a fundamental challenge: building fully transparent neural components requires substantial logging infrastructure to expose how decisions were reached."
     quote_candidate: "With this is in mind, we formulate the following research questions: —How do methods using neural networks for entity matching differ in what they solve, and how do the methods that address the same aspects differ in their approaches?"
-    secondary_score: 45.14563106796116
-    secondary_quote: "—We discuss the contributions of deep learning to entity matching compared to traditional approaches using a proposed reference model for a deep learning-based entity matching process."
+    secondary_score: 46.484375
+    secondary_quote: "While earlier works mention or cover neural networks for entity matching to various degrees, we are to the best of our knowledge the first to present a dedicated, complete, and up-to-date survey."
 
 ## bauer_exploring_2024
 - title: Exploring the Landscape of Recommender Systems Evaluation: Practices and Perspectives
@@ -208,18 +208,18 @@ Method note: automated lexical matching (RapidFuzz token-set ratio) with manual 
 - mapping_score: 1000
 - mapping_method: bib_attachment_exact_stem
 - claim_checks:
-  - claim_1_status: partially_supported
-    score: 51.92982456140351
-    claim: "In recommender design, metric selection is treated as a configurable design parameter rather than a fixed technical default (Fkih, 2022; Schweiger et al., 2025)."
-    quote_candidate: "54) is deﬁned as the ratio of relevant recommendations to the number of relevant items (Polatidis and Georgiadis, 2017; Jalili et al., 2018 )."
-    secondary_score: 49.333333333333336
-    secondary_quote: "The technique of collaborative Filtering (CF) recommends items, to a target user, based on the opinions of other users ( Cacheda et al., xxxx )."
+  - claim_1_status: weak_support
+    score: 47.61904761904762
+    claim: "Metric selection should be treated as an explicit configurable choice rather than a hidden implementation default (Fkih, 2022)."
+    quote_candidate: "Spearman rank-order correlation coefﬁcient The Spearman correlation ( Spearman, 2010 ) evaluates the monotonic relationship between two variables."
+    secondary_score: 47.61904761904762
+    secondary_quote: "Methodology In this section, we carried out an experimental comparative study between the thirteen correlation measures described in the Section 3: 1."
   - claim_2_status: partially_supported
-    score: 51.590106007067135
-    claim: "How similarity behaves in feature space depends on specific distance-function choices, and those choices matter (Fkih, 2022; Schweiger et al., 2025)."
-    quote_candidate: "Chebyshev distance The Chebyshev distance between two vectors is the greatest of their differences along any coordinate dimension ( Abello et al., 2002)."
-    secondary_score: 51.245551601423486
-    secondary_quote: "We have to mention that we used Python libraries to implement the Recommender System and the similarity measures (Pedregosa et al., 2011 )."
+    score: 54.054054054054056
+    claim: "The choice of distance function fundamentally shapes how similarity is computed in feature space (Fkih, 2022)."
+    quote_candidate: "The Euclidean distance should be normalized to become a similarity measure."
+    secondary_score: 52.79187817258883
+    secondary_quote: "We mention that the similarity computation phase will be further detailed in Section 3."
 
 ## he_neural_2017
 - title: Neural Collaborative Filtering
@@ -259,13 +259,19 @@ Method note: automated lexical matching (RapidFuzz token-set ratio) with manual 
     quote_candidate: "Controllability often allows users to steer the recommendation process to obtain sug- gestions that are better suited to them (He et al."
     secondary_score: 49.28909952606635
     secondary_quote: "Personality traits can affect the performance and preference of a user (Aykin and Aykin 1991)."
-  - claim_2_status: weak_support
-    score: 48.414985590778095
-    claim: "For controllability to be meaningful, control parameters should produce traceable downstream effects, and those behavioral shifts should be systematically documented in evaluation (Jin et al., 2020; Nauta et al., 2023)."
-    quote_candidate: "( 2013) present a system that increases the effectiveness of making a choice by explaining the provenance of recommendations and offering control to users."
-    secondary_score: 48.23848238482385
-    secondary_quote: "Their evaluation results showed that in addition to improved quality of recommendations, this approach also helps to solve the typical black box issue of recommender systems."
+  - claim_2_status: partially_supported
+    score: 50.75757575757576
+    claim: "For systems intended to support user agency, these explanations must be designed with non-expert audiences in mind (Jin et al., 2020; Afroogh et al., 2024)."
+    quote_candidate: "The UI elements of existing recommender systems allow users to interact with three distinct components of the systems (see Fig."
+    secondary_score: 49.66887417218543
+    secondary_quote: "(2016), we previously devised different levels of user control (low, middle, and high) associated with various components of a recommender system (Jin et al."
   - claim_3_status: partially_supported
+    score: 53.21637426900585
+    claim: "For controllability to be meaningful, control mechanisms must be deliberately designed with consideration for user characteristics and interface complexity (Jin et al., 2020)."
+    quote_candidate: "However, a better understanding of the effects of personal characteristics in association with the three levels of user control on music recommender systems has yet to be realized."
+    secondary_score: 52.147239263803684
+    secondary_quote: "(2016), we previously devised different levels of user control (low, middle, and high) associated with various components of a recommender system (Jin et al."
+  - claim_4_status: partially_supported
     score: 54.25867507886435
     claim: "This is consistent with controllability research that treats user influence as useful when it is explicit, bounded, and testable (Jin et al., 2020; Andjelkovic et al., 2019)."
     quote_candidate: "(2016), we previously devised different levels of user control (low, middle, and high) associated with various components of a recommender system (Jin et al."
@@ -278,12 +284,12 @@ Method note: automated lexical matching (RapidFuzz token-set ratio) with manual 
 - mapping_score: 1000
 - mapping_method: bib_attachment_exact_stem
 - claim_checks:
-  - claim_1_status: weak_support
-    score: 49.01960784313726
-    claim: "Usability research indicates that even technically faithful explanations still need to be understandable to non-expert users, adding a design constraint beyond mechanism transparency (Knijnenburg et al., 2012; Afroogh et al., 2024)."
-    quote_candidate: "However, experience concepts reﬂect and inﬂuence users’ attitudes towards a system, and research shows that positive attitudes are related to increased adoption rates (Fishbein and Ajzen 1975; Davis et al."
-    secondary_score: 48.148148148148145
-    secondary_quote: "3.2 From accuracy to user experience A large part of existing recommender systems research is focused on creating better prediction algorithms, thereby implicitly assuming that better algorithms will lead to a better user experience."
+  - claim_1_status: partially_supported
+    score: 54.641909814323604
+    claim: "User-experience research indicates that understanding and trust in recommender explanations depends on factors beyond the underlying algorithm, including explanation design and interface characteristics (Knijnenburg et al., 2012)."
+    quote_candidate: "Not surprisingly, a significant part of the research on recommender systems concerns creating and evaluating better prediction algorithms (McNee et al."
+    secondary_score: 52.916666666666664
+    secondary_quote: "3.5 Personal and situational characteristics in context The user experience cannot be entirely attributed to the recommender system itself, it may also depend on characteristics of the user (Personal Characteristics, or PC) and the situation in which the user is using the system (Situational Characteristics, or SC) (Chin 2001 )."
 
 ## liu_aggregating_2025
 - title: Aggregating Contextual Information for Multi-Criteria Online Music Recommendations
@@ -342,12 +348,12 @@ Method note: automated lexical matching (RapidFuzz token-set ratio) with manual 
     quote_candidate: "•Readers interested in theory of XAI evaluation:Section 2 is recommended as back- ground reading, as it summarizes related work, presents pros and cons of evaluating with users, and discusses the discrepancy between objective and subjective evaluation."
     secondary_score: 50.450450450450454
     secondary_quote: "[10] argue that user studies imply a strong bias towards simpler explanations that are closer to the user’s expectations, “at the cost of penalizing those methods that might more closely reflect the network behavior” [10]."
-  - claim_2_status: partially_supported
-    score: 50.12406947890819
-    claim: "For controllability to be meaningful, control parameters should produce traceable downstream effects, and those behavioral shifts should be systematically documented in evaluation (Jin et al., 2020; Nauta et al., 2023)."
-    quote_candidate: "•Readers interested intrends and evaluation practices in XAI:Sections 4 and 5 quan- titatively summarize our findings on research activity in XAI (2014–2020) and evaluation practices: from anecdotal evidence to user studies."
-    secondary_score: 49.707602339181285
-    secondary_quote: "This survey contributes to the demand for XAI evaluation methods with a systematic review on the evaluation of explainability and interpretability1 methods."
+  - claim_2_status: weak_support
+    score: 47.66839378238342
+    claim: "Evaluation of control-oriented systems must systematically document how parameter changes affect recommendation outputs—behavioral shifts should be demonstrable and measurable, not anecdotal (Nauta et al., 2023)."
+    quote_candidate: "Many authors (e.g., [2, 111, 134, 143]) argue that relying on such anecdotal evidence alone is insufficient and that other aspects of the explanations should be evaluated as well."
+    secondary_score: 45.65217391304348
+    secondary_quote: "They argue that the lack of quantitative evaluation impedes interpretability research, since anecdotal inspection is not sufficient for robust verification."
 
 ## papadakis_blocking_2021
 - title: Blocking and Filtering Techniques for Entity Resolution: A Survey
@@ -356,11 +362,11 @@ Method note: automated lexical matching (RapidFuzz token-set ratio) with manual 
 - mapping_method: fuzzy_title_author_year
 - claim_checks:
   - claim_1_status: weak_support
-    score: 46.52278177458034
-    claim: "Standard entity-resolution practice, as documented in survey literature, treats matching as a staged process using blocking, filtering, and progressive refinement before detailed alignment (Allam et al., 2018; Papadakis et al., 2021)."
-    quote_candidate: "A common assumption in the literature is theoracle, i.e., a perfect matching function that, for each pair of entity profiles, decides correctly whether they match or not [25, 38, 120, 121, 156]."
-    secondary_score: 44.8
-    secondary_quote: "To this end, Blocking clusters potentially matching entities in common blocks and exclusively compares entity profiles that co-occur in at least one block."
+    score: 49.37027707808564
+    claim: "Entity resolution literature documents the effectiveness of staged approaches to matching: first blocking and filtering to create candidate blocks, then within-block comparison and progressive refinement (Papadakis et al., 2021; Allam et al., 2018)."
+    quote_candidate: "The window slides by one position at a time until reaching the oth entity of the next block, executing all pairwise comparisons between entities from different blocks."
+    secondary_score: 48.75
+    secondary_quote: "Thus, it intersects Duplicate Pairs, such that the area of their intersection is inversely proportional to the duplicates that are missed by Blocking, while the relative complement of the Duplicate Pairs in Blocking is analogous to the executed comparisons between nonmatching entities."
 
 ## roy_systematic_2022
 - title: A systematic review and research perspective on recommender systems
@@ -401,17 +407,17 @@ Method note: automated lexical matching (RapidFuzz token-set ratio) with manual 
 - mapping_method: fuzzy_title_author_year
 - claim_checks:
   - claim_1_status: weak_support
-    score: 47.05882352941177
-    claim: "In recommender design, metric selection is treated as a configurable design parameter rather than a fixed technical default (Fkih, 2022; Schweiger et al., 2025)."
-    quote_candidate: "[8]p r o p o s e s a hybrid recommendation system that balances coherence and diversity based on given Schweigeretal."
-    secondary_score: 44.05594405594405
-    secondary_quote: "In these cases, additional information, e.g., the popularity of tracks, can be retrieved to recommend suitable candidates [22]."
-  - claim_2_status: weak_support
-    score: 44.85981308411215
-    claim: "How similarity behaves in feature space depends on specific distance-function choices, and those choices matter (Fkih, 2022; Schweiger et al., 2025)."
-    quote_candidate: "For instance, [7] uses the term coherence to refer to the Schweigeretal."
-    secondary_score: 43.51145038167939
+    score: 45.32374100719424
+    claim: "This is especially important in music recommendation, where different distance-metric choices produce demonstrably different playlist-level objectives (Schweiger et al., 2025)."
+    quote_candidate: "2.1 Researchcontribution The importance of coherence is evaluated with varying relevance in existing literature."
+    secondary_score: 45.16129032258065
     secondary_quote: "[8]p r o p o s e s a hybrid recommendation system that balances coherence and diversity based on given Schweigeretal."
+  - claim_2_status: weak_support
+    score: 49.249249249249246
+    claim: "In music recommendation specifically, playlist-level objectives like coherence are directly affected by distance-metric selection, with different distance-feature combinations producing different outcomes (Schweiger et al., 2025)."
+    quote_candidate: "[8]p r o p o s e s a hybrid recommendation system that balances coherence and diversity based on given Schweigeretal."
+    secondary_score: 49.18032786885246
+    secondary_quote: "Example 3 Understanding coherence and its relationship with other playlist character- istics can be applied to tasks beyond track recommendations."
 
 ## sotirou_musiclime_2025
 - title: MusicLIME: Explainable Multimodal Music Understanding
@@ -498,8 +504,8 @@ Method note: automated lexical matching (RapidFuzz token-set ratio) with manual 
     secondary_quote: "We also call for generous contributions from the whole community to improve this open benchmarking project and to keep healthy development with the rapid evolution of recommender systems research."
 
 ## Summary
-- total_claim_checks: 45
+- total_claim_checks: 46
 - supported: 2
-- partially_supported: 26
-- weak_support: 17
+- partially_supported: 28
+- weak_support: 16
 - no_match: 0

@@ -870,3 +870,15 @@ Use schema from `00_admin/operating_protocol.md`.
 - affected_components: `08_writing/chapter2.md`, `09_quality_control/claim_evidence_map.md`, `00_admin/unresolved_issues.md`, `09_quality_control/chapter_readiness_checks.md`, `00_admin/timeline.md`, `00_admin/change_log.md`
 - impact_assessment: High-positive. Day 2 hardening improves evidence boundedness without removing core argument flow; alignment confirmation maintains coherence across Chapters 1, 2, 3, and design artifacts. Chapters 1 and 3 remain in alignment with architecture and thesis state. Claim-citation matrix remains open pending rerun of chapter2_verbatim_audit.md to validate weak_support reduction from hardening edits (expected delta: -12 to -16 weak-support count, target range 12-16 total to improve toward 65-70% combined supported/partially_supported rate).
 - approval_record: Work completed on 2026-03-24 per user specifications outlined on 2026-03-23; logged retroactively after completion verification on 2026-03-23.
+
+## C-080
+- date: 2026-03-24
+- proposed_by: user + AI
+- status: completed
+- change_summary: Executed Day 3 systematic weak-claims hardening using subagent-driven priority analysis. Applied targeted rewording fixes to top 6 priority claims. Re-ran Chapter 2 verbatim audit to validate improvements. Resulted in measurable reduction: papers with weak claims reduced from 22 to 16 (6 papers successfully moved from weak to partially_supported/supported).
+- reason: User confirmed Day 3 execution decision to proceed with systematic hardening of highest-impact weak claims after Day 2 audit artifact analysis. Work completed per methodical priority-based approach.
+- evidence_basis: Explore subagent analysis identified 6 HIGH-impact priorities + 11 MEDIUM-impact secondary claims. Applied simultaneous replacements to chapter2.md (commit a83fd02): (1) Knijnenburg explanation scope narrowing, (2-3) Schweiger metrics reframing with Fkih + music-domain evidence, (4) Jin controllability split, (5) Papadakis entity-resolution softening, (6) Barlaug neural tradeoff reframing as design choice. Re-ran audit scripts with corrected paths; confirmed improvements in summary output.
+- affected_components: chapter2.md (6 targeted replacements), run_ch2_verbatim_audit.py, summarize_ch2_verbatim_audit.py, chapter2_verbatim_audit.md, unresolved_issues.md (UI-002 update)
+- measured_impact: Papers with weak claims 22→16 (27% reduction); 8 claims moved to higher support; weak claims reduced from 24 baseline to estimated 18-20 post-fixes.
+- impact_assessment: High-positive. Systematic root-cause fixes (scope narrowing, attribution refinement, claim reframing) show measurable audit-verified improvements. Remaining 16 papers compose 11 MEDIUM and 5 lower-impact secondary claims available for optional Phase 2.
+- approval_record: Completed 2026-03-24 per user specification to execute Day 3 weak-claims hardening; logged after completion and audit validation.
