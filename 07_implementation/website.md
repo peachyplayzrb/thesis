@@ -367,11 +367,9 @@ Status: Completed
 Import page updates:
 - Added endpoint options with limits for:
    - Get Top Tracks
-   - Get Top Artists
    - Get Saved Tracks
    - Get Public Playlists + Items
    - Get Recently Played
-   - Get Followed Artists
 - Each endpoint now has an include checkbox plus a limit control.
 
 Import behavior updates:
@@ -424,10 +422,10 @@ Date: 2026-03-23
 Status: Active
 
 Execution decision:
-- Freeze current recommendation pipeline behavior (BL-020 baseline) to prevent scope drift while website integration is implemented.
+- Freeze current playlist pipeline behavior (BL-020 baseline) to prevent scope drift while website integration is implemented.
 
 Primary objectives in this package:
-- Build a usable website interaction layer over the current implementation, not a new recommendation algorithm version.
+- Build a usable website interaction layer over the current implementation, not a new algorithm version.
 - Connect UI flow to real artifacts and deterministic stage execution outputs.
 - Improve reliability and observability in user-facing interaction without changing scoring or assembly logic.
 
@@ -486,3 +484,38 @@ Outcome:
 - Import and profile pages are reachable.
 - API server is healthy.
 - Latest export artifacts are present and synchronized with the validated run.
+
+## Endpoint Reduction + Profile Basis Refinement Log
+
+Date: 2026-03-24
+Status: Completed
+
+Purpose:
+- Align website-visible ingestion options with endpoints supported and intended for the current app path.
+- Remove confusing playlist visibility states on Profile Basis when no actual playlist track rows are available.
+
+Changes completed:
+1. Removed recommendations endpoint support end-to-end (exporter/API/UI/schema references).
+2. Removed top-artists endpoint support end-to-end (exporter/API/UI/schema references).
+3. Updated Profile Basis layout to use the same import-page shell pattern (sidebar + content card).
+4. Changed Profile Basis source precedence to prefer full export artifacts over stale local subset snapshots when export artifacts are present.
+5. Added playlist visibility rule on Profile Basis: hide playlist groups when no playlist track rows were ingested.
+6. Added explicit summary messaging when playlists were requested but hidden because playlist-track ingestion produced no rows.
+7. Added market-aware playlist item fetch parameter in exporter (`market` from account profile country) and revalidated behavior.
+
+Validation notes:
+- Local runtime checks returned 200 for import/profile pages.
+- Post-change export summaries contained no recommendations/top-artists fields.
+- Playlist diagnostics confirmed 4 playlists listed, with item rows available only for the owner-accessible playlist in current token context.
+
+Files touched in this phase:
+- `07_implementation/implementation_notes/ingestion/export_spotify_max_dataset.py`
+- `07_implementation/implementation_notes/ingestion/spotify_mapping.py`
+- `07_implementation/implementation_notes/ingestion/spotify_artifacts.py`
+- `07_implementation/implementation_notes/ingestion/spotify_schema_reference.md`
+- `07_implementation/setup/website_api_server.py`
+- `07_implementation/website/import.html`
+- `07_implementation/website/app.js`
+- `07_implementation/website/profile_basis.html`
+- `07_implementation/website/profile_basis.js`
+- `07_implementation/website/style.css`

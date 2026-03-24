@@ -9,11 +9,19 @@ TOP_TRACKS_FIELDS = [
     "track_id",
     "track_uri",
     "track_name",
+    "artist_ids",
     "artist_names",
+    "album_id",
     "album_name",
+    "release_date",
+    "release_date_precision",
     "duration_ms",
+    "duration_seconds",
     "popularity",
     "explicit",
+    "is_playable",
+    "restriction_reason",
+    "linked_from_track_id",
     "isrc",
     "track_href",
     "track_external_url",
@@ -24,11 +32,19 @@ SAVED_TRACKS_FIELDS = [
     "track_id",
     "track_uri",
     "track_name",
+    "artist_ids",
     "artist_names",
+    "album_id",
     "album_name",
+    "release_date",
+    "release_date_precision",
     "duration_ms",
+    "duration_seconds",
     "popularity",
     "explicit",
+    "is_playable",
+    "restriction_reason",
+    "linked_from_track_id",
     "isrc",
     "track_href",
     "track_external_url",
@@ -55,11 +71,19 @@ PLAYLIST_ITEMS_FIELDS = [
     "track_id",
     "track_uri",
     "track_name",
+    "artist_ids",
     "artist_names",
+    "album_id",
     "album_name",
+    "release_date",
+    "release_date_precision",
     "duration_ms",
+    "duration_seconds",
     "popularity",
     "explicit",
+    "is_playable",
+    "restriction_reason",
+    "linked_from_track_id",
     "isrc",
     "track_href",
     "track_external_url",
@@ -72,11 +96,19 @@ RECENTLY_PLAYED_FIELDS = [
     "track_id",
     "track_uri",
     "track_name",
+    "artist_ids",
     "artist_names",
+    "album_id",
     "album_name",
+    "release_date",
+    "release_date_precision",
     "duration_ms",
+    "duration_seconds",
     "popularity",
     "explicit",
+    "is_playable",
+    "restriction_reason",
+    "linked_from_track_id",
     "isrc",
     "track_href",
     "track_external_url",
@@ -85,19 +117,35 @@ RECENTLY_PLAYED_FIELDS = [
 
 def extract_track_fields(track: Dict[str, Any]) -> Dict[str, Any]:
     artists = track.get("artists", []) if isinstance(track, dict) else []
+    artist_ids = [artist.get("id", "") for artist in artists if isinstance(artist, dict)]
     artist_names = [artist.get("name", "") for artist in artists if isinstance(artist, dict)]
     album = track.get("album", {}) if isinstance(track, dict) else {}
     external_ids = track.get("external_ids", {}) if isinstance(track, dict) else {}
+    restrictions = track.get("restrictions", {}) if isinstance(track, dict) else {}
+    linked_from = track.get("linked_from", {}) if isinstance(track, dict) else {}
+    duration_ms = track.get("duration_ms")
+
+    duration_seconds = None
+    if isinstance(duration_ms, (int, float)):
+        duration_seconds = round(float(duration_ms) / 1000.0, 3)
 
     return {
         "track_id": track.get("id"),
         "track_uri": track.get("uri"),
         "track_name": track.get("name"),
+        "artist_ids": " | ".join([str(artist_id) for artist_id in artist_ids if artist_id]),
         "artist_names": " | ".join([str(name) for name in artist_names if name]),
+        "album_id": album.get("id") if isinstance(album, dict) else None,
         "album_name": album.get("name") if isinstance(album, dict) else None,
-        "duration_ms": track.get("duration_ms"),
+        "release_date": album.get("release_date") if isinstance(album, dict) else None,
+        "release_date_precision": album.get("release_date_precision") if isinstance(album, dict) else None,
+        "duration_ms": duration_ms,
+        "duration_seconds": duration_seconds,
         "popularity": track.get("popularity"),
         "explicit": track.get("explicit"),
+        "is_playable": track.get("is_playable"),
+        "restriction_reason": restrictions.get("reason") if isinstance(restrictions, dict) else None,
+        "linked_from_track_id": linked_from.get("id") if isinstance(linked_from, dict) else None,
         "isrc": external_ids.get("isrc") if isinstance(external_ids, dict) else None,
         "track_href": track.get("href"),
         "track_external_url": (track.get("external_urls", {}) or {}).get("spotify") if isinstance(track, dict) else None,
@@ -184,3 +232,5 @@ def build_recently_played_rows(recently_played_items: List[Dict[str, Any]]) -> L
             }
         )
     return rows
+
+

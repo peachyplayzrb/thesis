@@ -485,14 +485,7 @@ button:disabled {
 }
 
 .page-profile {
-  max-width: 1400px;
-  grid-template-columns: minmax(0, 1fr);
-}
-
-.page-profile .main-card {
-  width: 100%;
-  max-width: 1220px;
-  margin: 0 auto;
+  max-width: 1280px;
 }
 
 .page-profile .group-stack {

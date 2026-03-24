@@ -32,7 +32,7 @@ function Test-PortAvailable {
         return $false
     }
     finally {
-        if ($listener -ne $null) {
+        if ($null -ne $listener) {
             $listener.Stop()
         }
     }

@@ -27,6 +27,9 @@ Thumbs.db
 # Local dataset payloads kept outside version control
 10_resources/datasets/
 
+# Music4All raw provider archive and extracted data — large binary/data files, not for version control
+06_data_and_sources/music4all_raw/
+
 # Local temporary probes and run-status scratch files
 tmp_bl019_*.json
 tmp_bl019_*.txt

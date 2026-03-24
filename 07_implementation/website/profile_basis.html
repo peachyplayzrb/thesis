@@ -7,10 +7,29 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <main class="page page-profile">
-    <section class="card main-card">
+  <main class="page page-import page-profile">
+    <aside class="import-sidebar card">
+      <h2 class="sidebar-heading">Profile</h2>
+      <ul class="source-list" role="tablist" aria-label="Profile sections">
+        <li>
+          <button class="source-btn active" type="button" aria-selected="true">
+            <span class="source-icon">☰</span>
+            <span class="source-name">Imported Groups</span>
+          </button>
+        </li>
+        <li>
+          <button class="source-btn" type="button" disabled aria-selected="false">
+            <span class="source-icon">○</span>
+            <span class="source-name">Advanced Filters</span>
+            <span class="source-badge">soon</span>
+          </button>
+        </li>
+      </ul>
+    </aside>
+
+    <section class="import-content card">
       <h1>Profile Basis</h1>
-      <p class="subtitle">Review imported endpoint groups and exclude whole endpoints or specific tracks. If no local selection exists, this page loads your existing Spotify export artifacts automatically.</p>
+      <p class="subtitle">Review imported endpoint groups and exclude whole endpoints or specific tracks. This page now prioritizes full Spotify export artifacts so all playlists and items are represented when available.</p>
 
       <section id="profile-import-summary" class="export-status-card" aria-live="polite">
         <div class="export-status-head">
@@ -35,7 +54,7 @@
             <dd id="profile-import-group-count">-</dd>
           </div>
           <div>
-            <dt>Visible Tracks</dt>
+            <dt>Visible Rows</dt>
             <dd id="profile-import-track-count">-</dd>
           </div>
           <div>
@@ -51,7 +70,6 @@
 
       <form id="profile-form" class="form">
         <div id="imported-groups" class="group-stack"></div>
-
         <button id="save-profile-btn" type="submit">Save Exclusion Choices</button>
       </form>
 

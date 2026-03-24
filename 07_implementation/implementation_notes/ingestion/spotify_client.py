@@ -11,10 +11,8 @@ from collections import deque
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
-# spotify_resilience lives two levels up at 07_implementation/
-sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 try:
-    from spotify_resilience import CacheDB
+    from .spotify_resilience import CacheDB
     RESILIENCE_AVAILABLE: bool = True
 except ImportError:
     CacheDB = None  # type: ignore[assignment,misc]

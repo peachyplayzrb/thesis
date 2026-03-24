@@ -16,9 +16,9 @@ const downloadProfileBundleBtn = document.getElementById("download-profile-bundl
 const IMPORT_GROUPS_KEY = "playlist_import_groups_v1";
 const PROFILE_EXCLUSIONS_KEY = "playlist_profile_exclusions_v1";
 const EXPORT_BASE = "../implementation_notes/ingestion/outputs/spotify_api_export";
+const EXPORT_PLAYLISTS_PATH = `${EXPORT_BASE}/spotify_playlists_flat.csv`;
 const EXPORT_RECENTLY_PLAYED_PATH = `${EXPORT_BASE}/spotify_recently_played_flat.csv`;
 const EXPORT_SUMMARY_PATH = `${EXPORT_BASE}/spotify_export_run_summary.json`;
-const RENDER_LIMIT_PER_GROUP = 1200;
 
 const state = {
   groups: [],
@@ -115,7 +115,7 @@ function mapSavedTracksRows(rows) {
 
 function mapPlaylistItemsRows(rows) {
   return rows
-    .filter((r) => r.track_name)
+    .filter((r) => (r.track_name || "").trim().length > 0)
     .map((r, index) => ({
       id: r.track_id || `pl_item_${index + 1}`,
       title: r.track_name || "Untitled",
@@ -124,6 +124,22 @@ function mapPlaylistItemsRows(rows) {
       playlist_id: r.playlist_id || "unknown_playlist",
       playlist_name: r.playlist_name || "Unknown Playlist",
       playlist_position: r.playlist_position || ""
+    }));
+}
+
+function mapPlaylistsRows(rows) {
+  return rows
+    .filter((r) => r.playlist_name)
+    .map((r, index) => ({
+      id: r.playlist_id || `playlist_${index + 1}`,
+      title: r.playlist_name || "Untitled Playlist",
+      artist: r.owner_id ? `owner: ${r.owner_id}` : "owner: unknown",
+      source_key: "current_user_playlists",
+      playlist_id: r.playlist_id || "unknown_playlist",
+      playlist_name: r.playlist_name || "Unknown Playlist",
+      tracks_total: r.tracks_total || "",
+      is_public: r.public || "",
+      collaborative: r.collaborative || ""
     }));
 }
 
@@ -182,6 +198,16 @@ function buildSubsectionsForGroup(group) {
     });
   }
 
+  if (group.key === "get_current_user_playlists") {
+    return [
+      {
+        id: "all_playlists",
+        label: "All Playlists",
+        tracks: group.tracks
+      }
+    ];
+  }
+
   return [
     {
       id: `${group.key}_all`,
@@ -192,17 +218,11 @@ function buildSubsectionsForGroup(group) {
 }
 
 function toGroup(key, label, description, tracks) {
-  const totalFromFile = tracks.length;
-  const visibleTracks = tracks.slice(0, RENDER_LIMIT_PER_GROUP);
-  const visibleNote = totalFromFile > visibleTracks.length
-    ? ` Showing first ${visibleTracks.length} of ${totalFromFile} rows from your export.`
-    : "";
-
   return {
     key,
     label,
-    description: `${description}${visibleNote}`,
-    tracks: visibleTracks
+    description,
+    tracks
   };
 }
 
@@ -224,13 +244,6 @@ async function fetchJson(path) {
 }
 
 async function loadGroupsFromExistingExport() {
-  let summary = null;
-  try {
-    summary = await fetchJson(EXPORT_SUMMARY_PATH);
-  } catch {
-    summary = null;
-  }
-
   const sources = [
     {
       key: "get_top_tracks",
@@ -245,6 +258,13 @@ async function loadGroupsFromExistingExport() {
       description: "Loaded from existing spotify_saved_tracks_flat.csv export.",
       path: `${EXPORT_BASE}/spotify_saved_tracks_flat.csv`,
       mapper: mapSavedTracksRows
+    },
+    {
+      key: "get_current_user_playlists",
+      label: "GET /me/playlists",
+      description: "Loaded from existing spotify_playlists_flat.csv export.",
+      path: EXPORT_PLAYLISTS_PATH,
+      mapper: mapPlaylistsRows
     },
     {
       key: "get_current_user_playlists_items",
@@ -273,10 +293,29 @@ async function loadGroupsFromExistingExport() {
     })
   );
 
-  return loaded
+  const groups = loaded
     .filter((item) => item.status === "fulfilled" && item.value)
     .map((item) => item.value)
-    .map((groups) => groups);
+    .map((group) => group);
+
+  const playlistItemsGroup = groups.find((group) => group.key === "get_current_user_playlists_items");
+  const playlistsGroup = groups.find((group) => group.key === "get_current_user_playlists");
+
+  if (!playlistItemsGroup || !playlistItemsGroup.tracks.length) {
+    return groups.filter((group) => group.key !== "get_current_user_playlists");
+  }
+
+  if (playlistsGroup) {
+    const ingestedPlaylistIds = new Set(
+      playlistItemsGroup.tracks
+        .map((track) => track.playlist_id)
+        .filter((playlistId) => typeof playlistId === "string" && playlistId.length > 0)
+    );
+
+    playlistsGroup.tracks = playlistsGroup.tracks.filter((playlist) => ingestedPlaylistIds.has(playlist.playlist_id));
+  }
+
+  return groups.filter((group) => group.key !== "get_current_user_playlists" || group.tracks.length > 0);
 }
 
 function summarizeSelection(selection) {
@@ -309,6 +348,8 @@ function renderImportSummary() {
   const trackCount = state.groups.reduce((sum, group) => sum + group.tracks.length, 0);
   const counts = getIncludedCounts();
   const meta = state.groupSourceMeta || {};
+  const hasPlaylistGroup = state.groups.some((group) => group.key === "get_current_user_playlists");
+  const hasPlaylistItemsGroup = state.groups.some((group) => group.key === "get_current_user_playlists_items");
 
   profileImportSourceNode.textContent = state.groupSource || "none";
   profileImportGeneratedAtNode.textContent = formatDateTimeDisplay(meta.generatedAt || meta.createdAt);
@@ -320,6 +361,18 @@ function renderImportSummary() {
 
   if (!groupCount) {
     profileImportSummaryMessage.textContent = "No imported data available yet.";
+    return;
+  }
+
+  const caps = state.groupSourceMeta?.selectionCaps || [];
+  if (caps.length) {
+    profileImportSummaryMessage.textContent = `Export is currently capped (${caps.join(", ")}). Increase limits on Import page to see all playlists/items.`;
+    return;
+  }
+
+  const playlistsRequested = Boolean(meta.selectionRaw && meta.selectionRaw.include_playlists);
+  if (playlistsRequested && !hasPlaylistItemsGroup && !hasPlaylistGroup) {
+    profileImportSummaryMessage.textContent = "Playlists are hidden because no playlist track rows were ingested from playlist items.";
     return;
   }
 
@@ -348,6 +401,34 @@ function setStatus(type, message) {
 }
 
 async function loadGroups() {
+  try {
+    const summary = await fetchJson(EXPORT_SUMMARY_PATH).catch(() => null);
+    const exportGroups = await loadGroupsFromExistingExport();
+    if (exportGroups.length) {
+      const selection = summary?.selection || {};
+      const caps = [];
+      if (selection.playlists_max_items !== null && selection.playlists_max_items !== undefined) {
+        caps.push(`playlists=${selection.playlists_max_items}`);
+      }
+      if (selection.playlist_items_max_per_playlist !== null && selection.playlist_items_max_per_playlist !== undefined) {
+        caps.push(`items-per-playlist=${selection.playlist_items_max_per_playlist}`);
+      }
+
+      state.groups = exportGroups;
+      state.groupSource = "export";
+      state.groupSourceMeta = {
+        generatedAt: summary?.generated_at_utc || null,
+        runId: summary?.run_id || null,
+        selectionSummary: summarizeSelection(selection),
+        selectionCaps: caps,
+        selectionRaw: selection
+      };
+      return;
+    }
+  } catch {
+    // Ignore fetch failures.
+  }
+
   const raw = localStorage.getItem(IMPORT_GROUPS_KEY);
   if (raw) {
     try {
@@ -363,30 +444,14 @@ async function loadGroups() {
             Array.isArray(parsed.groups)
               ? `${parsed.groups.length} saved group${parsed.groups.length !== 1 ? "s" : ""}`
               : "Saved selection"
-          )
+          ),
+          selectionCaps: []
         };
         return;
       }
     } catch {
       state.groups = [];
     }
-  }
-
-  try {
-    const summary = await fetchJson(EXPORT_SUMMARY_PATH).catch(() => null);
-    const exportGroups = await loadGroupsFromExistingExport();
-    if (exportGroups.length) {
-      state.groups = exportGroups;
-      state.groupSource = "export";
-      state.groupSourceMeta = {
-        generatedAt: summary?.generated_at_utc || null,
-        runId: summary?.run_id || null,
-        selectionSummary: summarizeSelection(summary?.selection)
-      };
-      return;
-    }
-  } catch {
-    // Ignore fetch failures.
   }
 
   state.groups = [];
@@ -455,7 +520,14 @@ function renderGroup(group) {
       const safeTitle = track.title || "Untitled";
       const safeArtist = track.artist || "Unknown artist";
       const trackKey = `${group.key}::${section.id}::${track.id || "na"}::${index}`;
-      const extraMeta = track.playlist_position ? ` · pos ${track.playlist_position}` : "";
+      const metaParts = [];
+      if (track.playlist_position) {
+        metaParts.push(`pos ${track.playlist_position}`);
+      }
+      if (group.key === "get_current_user_playlists" && track.tracks_total) {
+        metaParts.push(`tracks ${track.tracks_total}`);
+      }
+      const extraMeta = metaParts.length ? ` · ${metaParts.join(" · ")}` : "";
 
       li.innerHTML = `
         <label class="scope-check">
@@ -671,9 +743,9 @@ async function init() {
   if (!state.groups.length) {
     setStatus("warning", "No import data found. Save a selection from Import page or keep Spotify export files in implementation_notes/ingestion/outputs/spotify_api_export.");
   } else if (state.groupSource === "export") {
-    setStatus("info", "Loaded from existing Spotify export artifacts.");
+    setStatus("info", "Loaded from existing Spotify export artifacts (full export priority).");
   } else if (state.groupSource === "local") {
-    setStatus("warning", "Loaded from saved local selection data (export artifacts not available from this page context).");
+    setStatus("warning", "Loaded from saved local selection data because full export artifacts were unavailable.");
   } else {
     setStatus("info", "Imported groups loaded. You can now exclude endpoint groups or specific tracks.");
   }

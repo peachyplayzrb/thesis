@@ -184,16 +184,20 @@ def _fetch_all_data(
 
     playlist_item_batches: List[Dict[str, Any]] = []
     if args.include_playlists:
+        market = profile.get("country") if isinstance(profile, dict) else None
         for playlist in playlists:
             playlist_id = playlist.get("id")
             if not playlist_id:
                 continue
+            playlist_params: Dict[str, Any] = {"additional_types": "track"}
+            if isinstance(market, str) and market:
+                playlist_params["market"] = market
             try:
                 items = fetch_all_offset_pages(
                     client=client,
                     cache_db=cache_db,
                     path=f"/playlists/{playlist_id}/items",
-                    base_params={"additional_types": "track"},
+                    base_params=playlist_params,
                     limit=args.batch_size_playlist_items,
                     max_items=_normalize_optional_cap(args.playlist_items_max_per_playlist),
                 )
@@ -289,6 +293,13 @@ def _clear_previous_export_artifacts(output_dir: Path) -> None:
     artifacts = build_export_artifact_paths(output_dir)
     support_paths = build_support_file_paths(output_dir)
     removable_paths = list(artifacts.values()) + [support_paths["request_log"], support_paths["summary"], support_paths["rate_limit_block"]]
+    # Remove legacy recommendation artifacts from older runs.
+    removable_paths.extend([
+        output_dir / "spotify_top_artists_by_range.json",
+        output_dir / "spotify_top_artists_flat.csv",
+        output_dir / "spotify_recommendations.json",
+        output_dir / "spotify_recommendations_flat.csv",
+    ])
     for path in removable_paths:
         if path.exists():
             path.unlink()
@@ -324,7 +335,12 @@ def main() -> None:
             "Missing Spotify credentials. Provide --client-id/--client-secret or SPOTIFY_CLIENT_ID/SPOTIFY_CLIENT_SECRET."
         )
 
-    if not any((args.include_top_tracks, args.include_saved_tracks, args.include_playlists, args.include_recently_played)):
+    if not any((
+        args.include_top_tracks,
+        args.include_saved_tracks,
+        args.include_playlists,
+        args.include_recently_played,
+    )):
         args.include_top_tracks = True
         args.include_saved_tracks = True
         args.include_playlists = True

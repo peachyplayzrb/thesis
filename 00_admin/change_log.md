@@ -1037,9 +1037,53 @@ Use schema from `00_admin/operating_protocol.md`.
 - date: 2026-03-24
 - proposed_by: user + AI
 - status: accepted
+- change_summary: Process official Music4All contact-page references, download and place paper/slide artifacts in thesis resource folders, and establish a dedicated DS-001 raw-archive export target directory.
+- reason: User requested that all provided Music4All references be processed and moved to the correct locations and asked for an exact destination for exporting the provider zip archive.
+- evidence_basis: Contact page content at `https://sites.google.com/view/contact4music4all`; downloaded local files `music4all_slide.pdf` and contact-site paper copy; hash comparison against existing paper copy; created raw drop-zone guide in `06_data_and_sources/music4all_raw/README.md`.
+- affected_components: `10_resources/dataset_docs/music4all/music4all_slide.pdf`, `10_resources/papers/Pegoraro Santana et al. - 2020 - Music4All A New Music Database and Its Applications (contact-site copy).pdf`, `06_data_and_sources/music4all_raw/README.md`, `06_data_and_sources/dataset_registry.md`, `06_data_and_sources/source_adapter_notes.md`, `00_admin/change_log.md`
+- impact_assessment: High-positive. Centralizes DS-001 supporting references, improves provenance traceability, and removes ambiguity about where provider-delivered archives should be stored.
+- approval_record: Requested by user in chat on 2026-03-24.
+
+## C-094
+- date: 2026-03-24
+- proposed_by: user + AI
+- status: accepted
 - change_summary: Complete pre-chat-switch operational closure for website ingestion by executing a full Spotify export rerun, verifying artifact freshness and counts, performing endpoint/runtime health checks, and recording the active local launch context.
 - reason: User requested a final "log everything" pass before switching chats, requiring explicit traceability of the latest ingestion state and website operability.
 - evidence_basis: Full run completed with `run_id=SPOTIFY-EXPORT-20260323-225206-071342` and updated `spotify_export_run_summary.json` counts (top short 602, medium 3029, long 5114, saved 171, playlists 4, playlist_items 31). Follow-up health check confirmed `import.html` 200, `profile_basis.html` 200, API status 200/idle. Local server relaunch validated on `http://127.0.0.1:5501/` after detecting server-not-running state on the prior port.
 - affected_components: `07_implementation/implementation_notes/ingestion/outputs/spotify_api_export/spotify_export_run_summary.json`, `07_implementation/website.md`, `00_admin/change_log.md`
 - impact_assessment: High-positive. Leaves a clean, auditable handoff point with confirmed ingest freshness, known runtime URL, and no open website-operability blocker.
 - approval_record: Requested and confirmed by user in chat on 2026-03-24.
+
+## C-095
+- date: 2026-03-24
+- proposed_by: user + AI
+- status: accepted
+- change_summary: Correct DS-001 access documentation to mark the newly delivered package as base Music4All (normal), not Music4All-Onion, and update raw archive naming guidance accordingly.
+- reason: User clarified that the provider-delivered dataset is Music4All normal/base; recent notes had carried forward Onion wording in the release-target and filename example.
+- evidence_basis: User clarification in chat on 2026-03-24; synchronized edits in `06_data_and_sources/dataset_registry.md`, `06_data_and_sources/source_adapter_notes.md`, and `06_data_and_sources/music4all_raw/README.md`.
+- affected_components: `06_data_and_sources/dataset_registry.md`, `06_data_and_sources/source_adapter_notes.md`, `06_data_and_sources/music4all_raw/README.md`, `00_admin/change_log.md`
+- impact_assessment: Medium-positive. Removes artifact-type ambiguity and prevents mislabeling the downloaded archive in provenance records.
+- approval_record: Requested by user in chat on 2026-03-24.
+
+## C-096
+- date: 2026-03-24
+- proposed_by: user + AI
+- status: accepted
+- change_summary: Move `spotify_resilience.py` from the incorrect `07_implementation/` root level to `07_implementation/implementation_notes/ingestion/`; fix the broken `sys.path` import hack in `spotify_client.py` with a proper relative import; remove stale root-level pycache entry.
+- reason: `spotify_resilience.py` had been deposited at the `07_implementation/` root during earlier website-integration work. `spotify_client.py` compensated via `sys.path.insert(0, str(Path(__file__).resolve().parents[2]))` — a fragile hack inconsistent with the rest of the ingestion package's relative-import pattern. User observed an unexpected top-level file and an audit confirmed the misplacement.
+- evidence_basis: Recursive directory listing of `07_implementation/`; `Test-Path` confirmation the file existed at root level; `spotify_client.py` diff (sys.path block removed, replaced with `from .spotify_resilience import CacheDB`); post-fix import verification (`RESILIENCE_AVAILABLE=True`).
+- affected_components: `07_implementation/implementation_notes/ingestion/spotify_resilience.py` (destination after move), `07_implementation/implementation_notes/ingestion/spotify_client.py` (import fixed), `07_implementation/__pycache__/spotify_resilience.cpython-314.pyc` (removed — stale from old root-level path), `00_admin/change_log.md`
+- impact_assessment: Medium-positive. Removes a fragile path-manipulation hack, restores package import consistency, eliminates a confusing root-level stray file, and cleans stale bytecode.
+- approval_record: Requested by user ("log all this") in chat on 2026-03-24.
+
+## C-097
+- date: 2026-03-24
+- proposed_by: user + AI
+- status: accepted
+- change_summary: Remove unsupported Spotify endpoints (`/recommendations`, top artists) from ingestion/export/API/UI flows; restructure Profile Basis to match import-page shell; prioritize full export data on Profile Basis; add playlist/item visibility safeguards and messaging when no playlist tracks are ingested.
+- reason: User requested removal of unsupported endpoints, asked for Profile Basis structure parity with Import, and raised mismatch concerns when playlists appeared without usable ingested playlist-track rows.
+- evidence_basis: End-to-end code removals in exporter, API server, schema/docs, and website controls; refreshed export runs (`SPOTIFY-EXPORT-20260324-010411-637251`, `SPOTIFY-EXPORT-20260324-011716-200279`); diagnostics checks returned no errors for touched files; local page health checks returned 200 for import/profile pages.
+- affected_components: `07_implementation/implementation_notes/ingestion/export_spotify_max_dataset.py`, `07_implementation/implementation_notes/ingestion/spotify_mapping.py`, `07_implementation/implementation_notes/ingestion/spotify_artifacts.py`, `07_implementation/implementation_notes/ingestion/spotify_schema_reference.md`, `07_implementation/setup/website_api_server.py`, `07_implementation/website/import.html`, `07_implementation/website/app.js`, `07_implementation/website/profile_basis.html`, `07_implementation/website/profile_basis.js`, `07_implementation/website/style.css`, `07_implementation/website.md`, `07_implementation/implementation_notes/ingestion/outputs/spotify_api_export/*`, `00_admin/change_log.md`
+- impact_assessment: High-positive. Aligns UI/runtime capabilities with supported API behavior, reduces operator confusion around unavailable playlist-item payloads, and improves handoff clarity with explicit visibility rules.
+- approval_record: Requested and iteratively confirmed by user in chat on 2026-03-24.
