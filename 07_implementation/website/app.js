@@ -10,6 +10,7 @@ const statusNode = document.getElementById("status");
 const progressNode = document.getElementById("progress");
 const progressStep = document.getElementById("progress-step");
 const progressBar = document.getElementById("progress-bar");
+const clearSavedSelectionBtn = document.getElementById("clear-saved-selection-btn");
 
 const manualJsonFile = document.getElementById("manual-json-file");
 const manualJsonPaste = document.getElementById("manual-json-paste");
@@ -55,6 +56,7 @@ const runOauthBlock = document.getElementById("run-oauth-block");
 const runOauthLink = document.getElementById("run-oauth-link");
 const runLogNode = document.getElementById("run-log");
 const refreshRunBtn = document.getElementById("refresh-run-btn");
+const cancelRunBtn = document.getElementById("cancel-run-btn");
 
 const IMPORT_GROUPS_KEY = "playlist_import_groups_v1";
 const MANUAL_INPUT_KEY = "playlist_manual_input_v1";
@@ -66,6 +68,7 @@ const EXPORT_PLAYLIST_ITEMS_PATH = `${EXPORT_BASE}/spotify_playlist_items_flat.c
 const EXPORT_RECENTLY_PLAYED_PATH = `${EXPORT_BASE}/spotify_recently_played_flat.csv`;
 const API_EXPORT_STATUS_PATH = "/api/spotify/export/status";
 const API_EXPORT_START_PATH = "/api/spotify/export/start";
+const API_EXPORT_CANCEL_PATH = "/api/spotify/export/cancel";
 
 let latestExportSnapshot = null;
 let latestRunSnapshot = null;
@@ -390,6 +393,27 @@ function hasManualInput() {
   return hasText || hasFile;
 }
 
+function hasSavedImportSelection() {
+  const raw = localStorage.getItem(IMPORT_GROUPS_KEY);
+  if (!raw) {
+    return false;
+  }
+
+  try {
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed.groups) && parsed.groups.length > 0;
+  } catch {
+    return false;
+  }
+}
+
+function updateSavedSelectionButtonState() {
+  if (!clearSavedSelectionBtn) {
+    return;
+  }
+  clearSavedSelectionBtn.disabled = !hasSavedImportSelection();
+}
+
 async function readManualJsonInput() {
   const pasted = manualJsonPaste.value.trim();
   if (pasted) {
@@ -448,6 +472,13 @@ function isRunInProgress() {
   return Boolean(latestRunSnapshot && latestRunSnapshot.status === "running");
 }
 
+function updateRunActionButtons() {
+  const running = isRunInProgress();
+  if (cancelRunBtn) {
+    cancelRunBtn.disabled = !running;
+  }
+}
+
 function updateIngestBtn() {
   const activeSource = getActiveSourceId();
   if (activeSource === "manual") {
@@ -461,6 +492,7 @@ function updateIngestBtn() {
   ingestBtn.disabled = activeSource !== "spotify" || !anyChecked || isRunInProgress();
   ingestBtn.textContent = isRunInProgress() ? "Ingesting..." : "Ingest";
   updateImportSummary();
+  updateSavedSelectionButtonState();
 }
 
 function updateImportSummary() {
@@ -640,6 +672,13 @@ function persistImportGroups(groups) {
     selection_summary: importSummary.textContent || "",
     groups
   }));
+  updateSavedSelectionButtonState();
+}
+
+function clearSavedImportSelection() {
+  localStorage.removeItem(IMPORT_GROUPS_KEY);
+  setStatus("", "Saved import-page selection snapshot cleared.");
+  updateSavedSelectionButtonState();
 }
 
 function getRunProgressPercent(run) {
@@ -655,9 +694,11 @@ function getRunProgressPercent(run) {
     playlist_items: 86,
     recently_played: 90,
     write: 97,
+    cancelling: 99,
     completed: 100,
     failed: 100,
-    blocked: 100
+    blocked: 100,
+    cancelled: 100
   };
   return map[run?.current_step] || map[run?.status] || 0;
 }
@@ -712,6 +753,7 @@ function renderRunStatus(run) {
   }
 
   renderRunProgress(run);
+  updateRunActionButtons();
 }
 
 function buildSpotifyApiRequestFromForm() {
@@ -785,6 +827,7 @@ async function refreshRunStatus(incremental = false) {
     latestRunSnapshot = run ? { ...run, logs: runLogEntries.slice() } : null;
     renderRunStatus(latestRunSnapshot);
     updateIngestBtn();
+    updateRunActionButtons();
 
     if (latestRunSnapshot && latestRunSnapshot.status === "running") {
       scheduleRunPolling();
@@ -796,6 +839,7 @@ async function refreshRunStatus(incremental = false) {
     stopRunPolling();
     runStatusMessage.textContent = `Unable to read live run status: ${error.message}`;
     setStatus("error", error.message || "Unable to read live run status.");
+    updateRunActionButtons();
   }
 }
 
@@ -824,11 +868,14 @@ async function finalizeCompletedRun() {
     }
   } else if (latestRunSnapshot.status === "failed") {
     setStatus("error", `Spotify ingestion failed. See live run log for details.${latestRunSnapshot.oauth_url ? " Authorization may still be required." : ""}`);
+  } else if (latestRunSnapshot.status === "cancelled") {
+    setStatus("warning", "Spotify ingestion was cancelled before completion.");
   }
 
   activeIngestionRequested = false;
   completionHandledKey = runKey;
   updateIngestBtn();
+  updateRunActionButtons();
 }
 
 async function startSpotifyIngestion() {
@@ -855,6 +902,7 @@ async function startSpotifyIngestion() {
   };
   renderRunStatus(latestRunSnapshot);
   updateIngestBtn();
+  updateRunActionButtons();
   setStatus("loading", "Starting Spotify ingestion run...");
 
   try {
@@ -868,6 +916,31 @@ async function startSpotifyIngestion() {
     activeIngestionRequested = false;
     setStatus("error", error.message || "Unable to start Spotify ingestion.");
     updateIngestBtn();
+  }
+}
+
+async function cancelSpotifyIngestion() {
+  if (!isRunInProgress()) {
+    setStatus("warning", "No active ingestion run to cancel.");
+    return;
+  }
+
+  if (cancelRunBtn) {
+    cancelRunBtn.disabled = true;
+  }
+  setStatus("warning", "Sending cancellation request...");
+
+  try {
+    await fetchJson(API_EXPORT_CANCEL_PATH, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: "{}"
+    });
+    await refreshRunStatus(false);
+    setStatus("warning", "Cancellation requested. Waiting for run to stop...");
+  } catch (error) {
+    setStatus("error", error.message || "Unable to cancel Spotify ingestion.");
+    updateRunActionButtons();
   }
 }
 
@@ -994,11 +1067,23 @@ function init() {
       void refreshRunStatus(false);
     });
   }
+  if (clearSavedSelectionBtn) {
+    clearSavedSelectionBtn.addEventListener("click", () => {
+      clearSavedImportSelection();
+    });
+  }
+  if (cancelRunBtn) {
+    cancelRunBtn.addEventListener("click", () => {
+      void cancelSpotifyIngestion();
+    });
+  }
 
   switchSource("spotify");
   setTopTracksParentFromChildren();
   updateControlEnabledState();
   updateIngestBtn();
+  updateSavedSelectionButtonState();
+  updateRunActionButtons();
   void refreshExportSnapshot();
   void refreshRunStatus(false);
 }

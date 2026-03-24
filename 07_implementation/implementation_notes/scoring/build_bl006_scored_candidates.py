@@ -3,40 +3,96 @@ from __future__ import annotations
 import csv
 import hashlib
 import json
+import importlib.util
+import os
 import statistics
 import time
 from datetime import datetime, timezone
 from pathlib import Path
 
 
-# DS-002 numeric features and tolerances
-NUMERIC_THRESHOLDS = {
-    "tempo":    20.0,   # BPM tolerance
-    "loudness": 6.0,    # dB
-    "key":      2.0,    # semitones (circular distance)
-    "mode":     0.5,    # 0=minor/1=major: forces exact-match similarity
+# Numeric features that remain comparable between the BL-004 profile contract
+# and the current candidate dataset.
+NUMERIC_FEATURE_SPECS = {
+    "tempo": {
+        "candidate_column": "tempo",
+        "threshold": 20.0,
+        "circular": False,
+    },
+    "key": {
+        "candidate_column": "key",
+        "threshold": 2.0,
+        "circular": True,
+    },
+    "mode": {
+        "candidate_column": "mode",
+        "threshold": 0.5,
+        "circular": False,
+    },
+    "duration_ms": {
+        "candidate_column": "duration_ms",
+        "threshold": 45000.0,
+        "circular": False,
+    },
 }
 
 # Base component weights. Numeric components are dropped and re-normalized when
 # the profile is semantic-only.
-BASE_COMPONENT_WEIGHTS = {
-    "tempo":        0.18,
-    "loudness":     0.12,
-    "key":          0.10,
-    "mode":         0.05,
-    "lead_genre":   0.20,
-    "genre_overlap":0.17,
-    "tag_overlap":  0.18,
+DEFAULT_COMPONENT_WEIGHTS: dict[str, float] = {
+    "tempo":         0.20,
+    "duration_ms":   0.13,
+    "key":           0.13,
+    "mode":          0.09,
+    "lead_genre":    0.17,
+    "genre_overlap": 0.12,
+    "tag_overlap":   0.16,
 }
 
-NUMERIC_COMPONENTS = {"tempo", "loudness", "key", "mode"}
+NUMERIC_COMPONENTS = {"tempo", "duration_ms", "key", "mode"}
 
 
-def build_active_component_weights(numeric_profile: dict[str, object]) -> dict[str, float]:
+def load_component_weight_overrides(defaults: dict[str, float]) -> dict[str, float]:
+    raw = os.environ.get("BL006_COMPONENT_WEIGHTS_JSON", "").strip()
+    if not raw:
+        return dict(defaults)
+    try:
+        payload = json.loads(raw)
+    except json.JSONDecodeError:
+        return dict(defaults)
+    if not isinstance(payload, dict):
+        return dict(defaults)
+
+    merged = dict(defaults)
+    for key, value in payload.items():
+        if key in merged and isinstance(value, (int, float)) and value >= 0:
+            merged[key] = float(value)
+    return merged
+
+
+def apply_numeric_threshold_overrides(specs: dict[str, dict[str, object]]) -> None:
+    raw = os.environ.get("BL006_NUMERIC_THRESHOLDS_JSON", "").strip()
+    if not raw:
+        return
+    try:
+        payload = json.loads(raw)
+    except json.JSONDecodeError:
+        return
+    if not isinstance(payload, dict):
+        return
+
+    for feature_name, threshold in payload.items():
+        if feature_name in specs and isinstance(threshold, (int, float)) and threshold > 0:
+            specs[feature_name]["threshold"] = float(threshold)
+
+
+def build_active_component_weights(
+    active_numeric_components: set[str],
+    component_weights: dict[str, float],
+) -> dict[str, float]:
     active = {
         component: weight
-        for component, weight in BASE_COMPONENT_WEIGHTS.items()
-        if component not in NUMERIC_COMPONENTS or component in numeric_profile
+        for component, weight in component_weights.items()
+        if component not in NUMERIC_COMPONENTS or component in active_numeric_components
     }
     total = sum(active.values())
     if total <= 0:
@@ -46,6 +102,60 @@ def build_active_component_weights(numeric_profile: dict[str, object]) -> dict[s
 
 def repo_root() -> Path:
     return Path(__file__).resolve().parents[3]
+
+
+def load_run_config_utils_module():
+    module_path = (
+        repo_root()
+        / "07_implementation"
+        / "implementation_notes"
+        / "run_config"
+        / "run_config_utils.py"
+    )
+    spec = importlib.util.spec_from_file_location("run_config_utils", module_path)
+    if spec is None or spec.loader is None:
+        raise RuntimeError(f"Unable to load run-config utilities from {module_path}")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+def _load_bl006_numeric_thresholds_from_env() -> dict[str, float]:
+    raw = os.environ.get("BL006_NUMERIC_THRESHOLDS_JSON", "").strip()
+    if not raw:
+        return {}
+    try:
+        payload = json.loads(raw)
+    except json.JSONDecodeError:
+        return {}
+    if not isinstance(payload, dict):
+        return {}
+    return {
+        k: float(v)
+        for k, v in payload.items()
+        if isinstance(v, (int, float)) and v > 0
+    }
+
+
+def resolve_bl006_runtime_controls() -> dict[str, object]:
+    run_config_path = os.environ.get("BL_RUN_CONFIG_PATH", "").strip() or None
+    if run_config_path:
+        run_config_utils = load_run_config_utils_module()
+        controls = run_config_utils.resolve_bl006_controls(run_config_path)
+        return {
+            "config_source": "run_config",
+            "run_config_path": controls.get("config_path"),
+            "run_config_schema_version": controls.get("schema_version"),
+            "component_weights": dict(controls.get("component_weights") or DEFAULT_COMPONENT_WEIGHTS),
+            "numeric_thresholds": dict(controls.get("numeric_thresholds") or {}),
+        }
+    return {
+        "config_source": "environment",
+        "run_config_path": None,
+        "run_config_schema_version": None,
+        "component_weights": load_component_weight_overrides(DEFAULT_COMPONENT_WEIGHTS),
+        "numeric_thresholds": _load_bl006_numeric_thresholds_from_env(),
+    }
 
 
 def sha256_of_file(path: Path) -> str:
@@ -75,6 +185,23 @@ def parse_float(value: str) -> float | None:
         return None
 
 
+def candidate_numeric_value(row: dict[str, str], profile_column: str, candidate_column: str) -> float | None:
+    value = parse_float(row.get(candidate_column, ""))
+    if value is None:
+        return None
+    if profile_column == "duration_ms" and candidate_column == "duration":
+        return value * 1000.0
+    return value
+
+
+def resolve_candidate_column(profile_column: str, preferred_column: str, candidate_columns: set[str]) -> str | None:
+    if preferred_column in candidate_columns:
+        return preferred_column
+    if profile_column == "duration_ms" and "duration" in candidate_columns:
+        return "duration"
+    return None
+
+
 def parse_labels(raw_value: str, label_key: str) -> list[str]:
     if not raw_value:
         return []
@@ -89,6 +216,20 @@ def parse_labels(raw_value: str, label_key: str) -> list[str]:
         label = item.get(label_key)
         if isinstance(label, str) and label.strip():
             labels.append(label.strip())
+    return labels
+
+
+def parse_csv_labels(raw_value: str) -> list[str]:
+    if not raw_value:
+        return []
+    labels: list[str] = []
+    seen: set[str] = set()
+    for piece in raw_value.split(","):
+        label = piece.strip().lower()
+        if not label or label in seen:
+            continue
+        seen.add(label)
+        labels.append(label)
     return labels
 
 
@@ -134,6 +275,47 @@ def weighted_overlap(candidate_labels: list[str], profile_weight_map: dict[str, 
     return round(overlap_weight / profile_total, 6), matched
 
 
+def contribution_breakdown(rows: list[dict[str, object]]) -> dict[str, float]:
+    if not rows:
+        return {
+            "numeric_contribution_mean": 0.0,
+            "semantic_contribution_mean": 0.0,
+            "tempo_mean": 0.0,
+            "duration_ms_mean": 0.0,
+            "key_mean": 0.0,
+            "mode_mean": 0.0,
+            "lead_genre_mean": 0.0,
+            "genre_overlap_mean": 0.0,
+            "tag_overlap_mean": 0.0,
+        }
+
+    def mean_of(key: str) -> float:
+        return round(statistics.mean(float(row[key]) for row in rows), 6)
+
+    tempo_mean = mean_of("tempo_contribution")
+    duration_mean = mean_of("duration_ms_contribution")
+    key_mean = mean_of("key_contribution")
+    mode_mean = mean_of("mode_contribution")
+    lead_mean = mean_of("lead_genre_contribution")
+    genre_overlap_mean = mean_of("genre_overlap_contribution")
+    tag_overlap_mean = mean_of("tag_overlap_contribution")
+
+    numeric_mean = round(tempo_mean + duration_mean + key_mean + mode_mean, 6)
+    semantic_mean = round(lead_mean + genre_overlap_mean + tag_overlap_mean, 6)
+
+    return {
+        "numeric_contribution_mean": numeric_mean,
+        "semantic_contribution_mean": semantic_mean,
+        "tempo_mean": tempo_mean,
+        "duration_ms_mean": duration_mean,
+        "key_mean": key_mean,
+        "mode_mean": mode_mean,
+        "lead_genre_mean": lead_mean,
+        "genre_overlap_mean": genre_overlap_mean,
+        "tag_overlap_mean": tag_overlap_mean,
+    }
+
+
 def main() -> None:
     root = repo_root()
     profile_path = root / "07_implementation" / "implementation_notes" / "profile" / "outputs" / "bl004_preference_profile.json"
@@ -146,7 +328,28 @@ def main() -> None:
     if not candidates:
         raise RuntimeError("No BL-005 filtered candidates found for BL-006")
 
-    active_component_weights = build_active_component_weights(profile["numeric_feature_profile"])
+    runtime_controls = resolve_bl006_runtime_controls()
+    effective_component_weights: dict[str, float] = dict(runtime_controls["component_weights"])
+    numeric_threshold_overrides: dict[str, float] = dict(runtime_controls["numeric_thresholds"])
+    effective_numeric_specs = {
+        k: {**v, "threshold": float(numeric_threshold_overrides.get(k, v["threshold"]))}
+        for k, v in NUMERIC_FEATURE_SPECS.items()
+    }
+
+    candidate_columns = set(candidates[0].keys()) if candidates else set()
+    active_numeric_specs = {
+        profile_column: {
+            **spec,
+            "candidate_column": resolved_column,
+        }
+        for profile_column, spec in effective_numeric_specs.items()
+        for resolved_column in [
+            resolve_candidate_column(profile_column, str(spec["candidate_column"]), candidate_columns)
+        ]
+        if profile_column in profile["numeric_feature_profile"]
+        and resolved_column is not None
+    }
+    active_component_weights = build_active_component_weights(set(active_numeric_specs), effective_component_weights)
     if round(sum(active_component_weights.values()), 6) != 1.0:
         raise RuntimeError("BL-006 active component weights must sum to 1.0")
 
@@ -160,23 +363,28 @@ def main() -> None:
     scored_rows: list[dict[str, object]] = []
 
     for row in candidates:
-        # DS-002: tags_json covers both tag and genre signal
-        candidate_tags = parse_labels(row.get("tags_json", ""), "tag")
-        lead_genre = candidate_tags[0] if candidate_tags else ""
-        candidate_genres = candidate_tags  # tags double as genre labels
+        # DS-001 semantic labels are provided as explicit CSV lists.
+        candidate_tags = parse_csv_labels(row.get("tags", ""))
+        candidate_genres = parse_csv_labels(row.get("genres", ""))
+        if candidate_tags:
+            lead_genre = candidate_tags[0]
+        elif candidate_genres:
+            lead_genre = candidate_genres[0]
+        else:
+            lead_genre = ""
 
         component_similarity: dict[str, float] = {}
         component_contribution: dict[str, float] = {}
 
-        for column, threshold in NUMERIC_THRESHOLDS.items():
-            value = parse_float(row.get(column, ""))
-            center_raw = profile["numeric_feature_profile"].get(column)
-            if center_raw is None or column not in active_component_weights:
+        for profile_column, spec in active_numeric_specs.items():
+            value = candidate_numeric_value(row, profile_column, str(spec["candidate_column"]))
+            center_raw = profile["numeric_feature_profile"].get(profile_column)
+            if center_raw is None or profile_column not in active_component_weights:
                 similarity = 0.0
             else:
-                similarity = numeric_similarity(value, float(center_raw), threshold, circular=(column == "key"))
-            component_similarity[column] = similarity
-            component_contribution[column] = round(similarity * active_component_weights.get(column, 0.0), 6)
+                similarity = numeric_similarity(value, float(center_raw), float(spec["threshold"]), circular=bool(spec["circular"]))
+            component_similarity[profile_column] = similarity
+            component_contribution[profile_column] = round(similarity * active_component_weights.get(profile_column, 0.0), 6)
 
         lead_genre_similarity = 0.0
         if lead_genre and lead_genre in profile_lead_map and profile_lead_total > 0:
@@ -202,8 +410,8 @@ def main() -> None:
                 "final_score": final_score,
                 "tempo_similarity":        component_similarity["tempo"],
                 "tempo_contribution":       component_contribution["tempo"],
-                "loudness_similarity":      component_similarity["loudness"],
-                "loudness_contribution":    component_contribution["loudness"],
+                "duration_ms_similarity":   component_similarity["duration_ms"],
+                "duration_ms_contribution": component_contribution["duration_ms"],
                 "key_similarity":           component_similarity["key"],
                 "key_contribution":         component_contribution["key"],
                 "mode_similarity":          component_similarity["mode"],
@@ -232,8 +440,8 @@ def main() -> None:
             "final_score",
             "tempo_similarity",
             "tempo_contribution",
-            "loudness_similarity",
-            "loudness_contribution",
+            "duration_ms_similarity",
+            "duration_ms_contribution",
             "key_similarity",
             "key_contribution",
             "mode_similarity",
@@ -262,6 +470,8 @@ def main() -> None:
     ]
 
     score_values = [float(row["final_score"]) for row in scored_rows]
+    top_100_rows = scored_rows[:100]
+    top_500_rows = scored_rows[:500]
     summary = {
         "run_id": run_id,
         "task": "BL-006",
@@ -273,13 +483,21 @@ def main() -> None:
             "filtered_candidates_sha256": sha256_of_file(filtered_candidates_path),
         },
         "config": {
-            "numeric_thresholds": NUMERIC_THRESHOLDS,
-            "base_component_weights": BASE_COMPONENT_WEIGHTS,
+            "numeric_thresholds": {
+                profile_column: spec["threshold"]
+                for profile_column, spec in active_numeric_specs.items()
+            },
+            "numeric_feature_mapping": {
+                profile_column: spec["candidate_column"]
+                for profile_column, spec in active_numeric_specs.items()
+            },
+            "base_component_weights": effective_component_weights,
             "active_component_weights": {key: round(value, 6) for key, value in active_component_weights.items()},
-            "inactive_components": sorted(set(BASE_COMPONENT_WEIGHTS) - set(active_component_weights)),
+            "inactive_components": sorted(set(effective_component_weights) - set(active_component_weights)),
             "lead_genre_normalization": "candidate lead genre weight divided by max profile lead-genre weight",
             "genre_overlap_normalization": "sum overlapping profile genre weights / sum top profile genre weights",
             "tag_overlap_normalization": "sum overlapping profile tag weights / sum top profile tag weights",
+            "semantic_source": "ds001_tags_and_genres_columns",
         },
         "counts": {
             "candidates_scored": len(scored_rows),
@@ -289,6 +507,11 @@ def main() -> None:
             "min_score": round(min(score_values), 6),
             "mean_score": round(statistics.mean(score_values), 6),
             "median_score": round(statistics.median(score_values), 6),
+        },
+        "component_balance": {
+            "all_candidates": contribution_breakdown(scored_rows),
+            "top_100": contribution_breakdown(top_100_rows),
+            "top_500": contribution_breakdown(top_500_rows),
         },
         "top_candidates": top_candidates,
         "elapsed_seconds": round(time.time() - start_time, 3),

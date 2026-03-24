@@ -22,7 +22,9 @@ Outputs
 
 import csv
 import hashlib
+import importlib.util
 import json
+import os
 import time
 from datetime import datetime, timezone
 from pathlib import Path
@@ -36,15 +38,25 @@ PLAYLIST_JSON = Path("07_implementation/implementation_notes/playlist/outputs/bl
 TRACE_CSV    = Path("07_implementation/implementation_notes/playlist/outputs/bl007_assembly_trace.csv")
 OUTPUT_DIR   = Path("07_implementation/implementation_notes/transparency/outputs")
 
-# Component metadata: (csv_prefix, human_label, weight) — DS-002 features
-COMPONENTS = [
-    ("tempo",         "Tempo (BPM)",         0.18),
-    ("loudness",      "Loudness",            0.12),
-    ("key",           "Musical key",         0.10),
-    ("mode",          "Mode (major/minor)",  0.05),
-    ("lead_genre",    "Lead genre match",    0.20),
-    ("genre_overlap", "Genre overlap",       0.17),
-    ("tag_overlap",   "Tag overlap",         0.18),
+# Human labels for known BL-006 scoring components.
+COMPONENT_LABELS = {
+    "tempo": "Tempo (BPM)",
+    "duration_ms": "Duration match",
+    "key": "Musical key",
+    "mode": "Mode (major/minor)",
+    "lead_genre": "Lead genre match",
+    "genre_overlap": "Genre overlap",
+    "tag_overlap": "Tag overlap",
+}
+
+COMPONENT_ORDER = [
+    "tempo",
+    "duration_ms",
+    "key",
+    "mode",
+    "lead_genre",
+    "genre_overlap",
+    "tag_overlap",
 ]
 
 # Assembly rule labels
@@ -55,6 +67,58 @@ RULE_LABELS = {
     "consecutive_genre_run": "R3 — consecutive genre run",
     "length_cap_reached":    "R4 — length cap reached",
 }
+
+
+def env_int(name: str, default: int) -> int:
+    raw = os.environ.get(name)
+    if raw is None or not str(raw).strip():
+        return default
+    try:
+        return int(raw)
+    except ValueError:
+        return default
+
+
+DEFAULT_TOP_CONTRIBUTOR_LIMIT = 3
+
+
+def repo_root() -> Path:
+    return Path(__file__).resolve().parents[3]
+
+
+def load_run_config_utils_module():
+    module_path = (
+        repo_root()
+        / "07_implementation"
+        / "implementation_notes"
+        / "run_config"
+        / "run_config_utils.py"
+    )
+    spec = importlib.util.spec_from_file_location("run_config_utils", module_path)
+    if spec is None or spec.loader is None:
+        raise RuntimeError(f"Unable to load run-config utilities from {module_path}")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+def resolve_bl008_runtime_controls() -> dict[str, object]:
+    run_config_path = os.environ.get("BL_RUN_CONFIG_PATH", "").strip() or None
+    if run_config_path:
+        run_config_utils = load_run_config_utils_module()
+        controls = run_config_utils.resolve_bl008_controls(run_config_path)
+        return {
+            "config_source": "run_config",
+            "run_config_path": controls.get("config_path"),
+            "run_config_schema_version": controls.get("schema_version"),
+            "top_contributor_limit": int(controls["top_contributor_limit"]),
+        }
+    return {
+        "config_source": "environment",
+        "run_config_path": None,
+        "run_config_schema_version": None,
+        "top_contributor_limit": max(1, env_int("BL008_TOP_CONTRIBUTOR_LIMIT", DEFAULT_TOP_CONTRIBUTOR_LIMIT)),
+    }
 
 
 # ---------------------------------------------------------------------------
@@ -71,8 +135,9 @@ def write_json(path: Path, obj) -> None:
 
 
 def build_why_selected(track_id: str, lead_genre: str, final_score: float,
-                       top_contributors: list, playlist_position: int) -> str:
-    top_labels = [c["label"] for c in top_contributors[:3]]
+                       top_contributors: list, playlist_position: int,
+                       top_contributor_limit: int) -> str:
+    top_labels = [c["label"] for c in top_contributors[:top_contributor_limit]]
     contributors_str = ", ".join(top_labels)
     return (
         f"Selected at playlist position {playlist_position} "
@@ -88,6 +153,9 @@ def build_why_selected(track_id: str, lead_genre: str, final_score: float,
 def main() -> None:
     t0 = time.time()
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+
+    runtime_controls = resolve_bl008_runtime_controls()
+    top_contributor_limit = int(runtime_controls["top_contributor_limit"])
 
     # Load BL-006 scored candidates keyed by track_id
     scored_index: dict[str, dict] = {}
@@ -119,21 +187,30 @@ def main() -> None:
 
         # Build score breakdown
         score_breakdown = []
-        for prefix, label, weight in COMPONENTS:
+        ordered_components = [
+            component
+            for component in COMPONENT_ORDER
+            if component in active_weights
+        ]
+        ordered_components.extend(
+            sorted(component for component in active_weights if component not in set(ordered_components))
+        )
+
+        for prefix in ordered_components:
             sim_key  = f"{prefix}_similarity"
             cont_key = f"{prefix}_contribution"
             similarity   = float(scored_row.get(sim_key, 0))
             contribution = float(scored_row.get(cont_key, 0))
             score_breakdown.append({
                 "component":    prefix,
-                "label":        label,
+                "label":        COMPONENT_LABELS.get(prefix, prefix.replace("_", " ").title()),
                 "weight":       round(float(active_weights.get(prefix, 0.0)), 6),
                 "similarity":   round(similarity, 6),
                 "contribution": round(contribution, 6),
             })
 
-        # Top 3 contributors by contribution value
-        top_contributors = sorted(score_breakdown, key=lambda x: x["contribution"], reverse=True)[:3]
+        # Top-N contributors by contribution value.
+        top_contributors = sorted(score_breakdown, key=lambda x: x["contribution"], reverse=True)[:top_contributor_limit]
 
         # Assembly context
         exclusion_reason = trace_row.get("exclusion_reason", "")
@@ -144,7 +221,8 @@ def main() -> None:
         }
 
         why_selected = build_why_selected(
-            track_id, lead_genre, final_score, top_contributors, playlist_pos
+            track_id, lead_genre, final_score, top_contributors, playlist_pos,
+            top_contributor_limit,
         )
 
         payloads.append({

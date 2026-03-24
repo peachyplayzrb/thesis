@@ -2,24 +2,112 @@ from __future__ import annotations
 
 import csv
 import hashlib
+import importlib.util
 import json
+import math
+import os
 import time
 from datetime import datetime, timezone
 from pathlib import Path
 
 
-# BL-020 semantic-only profile: Spotify metadata + Last.fm tags
-NUMERIC_FEATURE_COLUMNS: list[str] = []
+# Hybrid profile: semantic labels + numeric centers from DS-001 candidate dataset.
+NUMERIC_FEATURE_COLUMNS: list[str] = [
+    "danceability",
+    "energy",
+    "valence",
+    "tempo",
+    "key",
+    "mode",
+    "popularity",
+    "duration_ms",
+]
 
-SUMMARY_FEATURE_COLUMNS: list[str] = []
+SUMMARY_FEATURE_COLUMNS: list[str] = [
+    "danceability",
+    "energy",
+    "valence",
+    "tempo",
+]
 
-TOP_TAG_LIMIT = 10
-TOP_GENRE_LIMIT = 10
-TOP_LEAD_GENRE_LIMIT = 10
+DEFAULT_TOP_TAG_LIMIT = 10
+DEFAULT_TOP_GENRE_LIMIT = 10
+DEFAULT_TOP_LEAD_GENRE_LIMIT = 10
+DEFAULT_USER_ID = "21zsn42xecjhogne4kghyw5hq"
+DEFAULT_INPUT_SCOPE: dict[str, object] = {
+    "source_family": "spotify_api_export",
+    "include_top_tracks": True,
+    "top_time_ranges": ["short_term", "medium_term", "long_term"],
+    "include_saved_tracks": True,
+    "saved_tracks_limit": None,
+    "include_playlists": True,
+    "playlists_limit": None,
+    "playlist_items_per_playlist_limit": None,
+    "include_recently_played": True,
+    "recently_played_limit": 50,
+}
+
+
+def env_int(name: str, default: int) -> int:
+    raw = os.environ.get(name)
+    if raw is None or not str(raw).strip():
+        return default
+    try:
+        return int(raw)
+    except ValueError:
+        return default
+
+
+def env_str(name: str, default: str) -> str:
+    raw = os.environ.get(name)
+    if raw is None:
+        return default
+    value = str(raw).strip()
+    return value if value else default
 
 
 def repo_root() -> Path:
     return Path(__file__).resolve().parents[3]
+
+
+def load_run_config_utils_module():
+    module_path = repo_root() / "07_implementation" / "implementation_notes" / "run_config" / "run_config_utils.py"
+    spec = importlib.util.spec_from_file_location("run_config_utils", module_path)
+    if spec is None or spec.loader is None:
+        raise RuntimeError(f"Unable to load run-config utilities from {module_path}")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+def resolve_bl004_runtime_controls() -> dict[str, object]:
+    run_config_path = os.environ.get("BL_RUN_CONFIG_PATH", "").strip() or None
+
+    if run_config_path:
+        run_config_utils = load_run_config_utils_module()
+        controls = run_config_utils.resolve_bl004_controls(run_config_path)
+        user_id = controls.get("user_id") or env_str("BL004_USER_ID", DEFAULT_USER_ID)
+        return {
+            "config_source": "run_config",
+            "run_config_path": controls.get("config_path"),
+            "run_config_schema_version": controls.get("schema_version"),
+            "input_scope": dict(controls.get("input_scope") or DEFAULT_INPUT_SCOPE),
+            "top_tag_limit": int(controls["top_tag_limit"]),
+            "top_genre_limit": int(controls["top_genre_limit"]),
+            "top_lead_genre_limit": int(controls["top_lead_genre_limit"]),
+            "user_id": user_id,
+        }
+
+    return {
+        "config_source": "environment",
+        "run_config_path": None,
+        "run_config_schema_version": None,
+        "input_scope": dict(DEFAULT_INPUT_SCOPE),
+        "top_tag_limit": env_int("BL004_TOP_TAG_LIMIT", DEFAULT_TOP_TAG_LIMIT),
+        "top_genre_limit": env_int("BL004_TOP_GENRE_LIMIT", DEFAULT_TOP_GENRE_LIMIT),
+        "top_lead_genre_limit": env_int("BL004_TOP_LEAD_GENRE_LIMIT", DEFAULT_TOP_LEAD_GENRE_LIMIT),
+        "user_id": env_str("BL004_USER_ID", DEFAULT_USER_ID),
+    }
 
 
 def sha256_of_file(path: Path) -> str:
@@ -41,6 +129,11 @@ def load_jsonl(path: Path) -> list[dict[str, object]]:
     return rows
 
 
+def load_csv(path: Path) -> list[dict[str, str]]:
+    with path.open("r", encoding="utf-8", newline="") as handle:
+        return list(csv.DictReader(handle))
+
+
 def parse_float(value: str) -> float | None:
     text = value.strip()
     if not text:
@@ -49,6 +142,20 @@ def parse_float(value: str) -> float | None:
         return float(text)
     except ValueError:
         return None
+
+
+def parse_csv_labels(raw_value: str) -> list[str]:
+    if not raw_value:
+        return []
+    labels: list[str] = []
+    seen: set[str] = set()
+    for piece in raw_value.split(","):
+        text = piece.strip().lower()
+        if not text or text in seen:
+            continue
+        seen.add(text)
+        labels.append(text)
+    return labels
 
 
 def parse_weighted_list(raw_value: str, key_name: str, score_name: str) -> list[tuple[str, float]]:
@@ -112,25 +219,35 @@ def sorted_weight_map(weight_map: dict[str, float], limit: int) -> list[dict[str
     ]
 
 
+def circular_mean_key(sum_x: float, sum_y: float) -> float | None:
+    if sum_x == 0.0 and sum_y == 0.0:
+        return None
+    angle = math.atan2(sum_y, sum_x)
+    if angle < 0.0:
+        angle += 2.0 * math.pi
+    return (angle / (2.0 * math.pi)) * 12.0
+
+
 def main() -> None:
     root = repo_root()
     output_dir = root / "07_implementation" / "implementation_notes" / "profile" / "outputs"
     output_dir.mkdir(parents=True, exist_ok=True)
 
-    aligned_path = (
+    seed_table_path = (
         root / "07_implementation" / "implementation_notes"
-        / "ingestion" / "outputs" / "bl020_aligned_events.jsonl"
+        / "alignment" / "outputs" / "bl003_ds001_spotify_seed_table.csv"
     )
 
-    events = load_jsonl(aligned_path)
+    seed_rows = load_csv(seed_table_path)
+    if not seed_rows:
+        raise RuntimeError("No DS-001 seed rows found for BL-004 input")
 
-    if not events:
-        raise RuntimeError("No aligned events found for BL-004 input")
-
-    user_ids = {str(event["user_id"]) for event in events}
-    if len(user_ids) != 1:
-        raise RuntimeError(f"Expected one user_id, got {sorted(user_ids)}")
-    user_id = next(iter(user_ids))
+    runtime_controls = resolve_bl004_runtime_controls()
+    user_id = str(runtime_controls["user_id"])
+    input_scope = dict(runtime_controls["input_scope"])
+    top_tag_limit = int(runtime_controls["top_tag_limit"])
+    top_genre_limit = int(runtime_controls["top_genre_limit"])
+    top_lead_genre_limit = int(runtime_controls["top_lead_genre_limit"])
 
     start_time = time.time()
     run_id = f"BL004-PROFILE-{datetime.now(timezone.utc).strftime('%Y%m%d-%H%M%S-%f')}"
@@ -145,46 +262,71 @@ def main() -> None:
     counts_by_type = {"history": 0, "influence": 0}
     weight_by_type = {"history": 0.0, "influence": 0.0}
     interaction_count_sum_by_type = {"history": 0, "influence": 0}
+    numeric_observations = {column: 0 for column in NUMERIC_FEATURE_COLUMNS}
+    missing_numeric_track_ids: list[str] = []
+    key_circular_sum_x = 0.0
+    key_circular_sum_y = 0.0
 
-    for event in events:
-        track_id = str(event["track_id"])
-        interaction_type = str(event["interaction_type"])
-        preference_weight = float(event["preference_weight"])
+    for index, row in enumerate(seed_rows, start=1):
+        track_id = str(row.get("ds001_id", "")).strip()
+        spotify_ids = str(row.get("spotify_track_ids", "")).strip().split("|")
+        spotify_id = next((item for item in spotify_ids if item), "")
+        interaction_type = "history"
+        preference_weight = parse_float(str(row.get("preference_weight_sum", ""))) or 0.0
+        if preference_weight <= 0:
+            continue
         effective_weight = preference_weight
-        interaction_count = int(event["interaction_count"])
+        interaction_count = int(parse_float(str(row.get("interaction_count_sum", ""))) or max(1, round(preference_weight * 10)))
+        tags = parse_csv_labels(str(row.get("tags", "")))
+        genres = parse_csv_labels(str(row.get("genres", "")))
 
         counts_by_type[interaction_type] = counts_by_type.get(interaction_type, 0) + 1
         weight_by_type[interaction_type] = weight_by_type.get(interaction_type, 0.0) + effective_weight
         interaction_count_sum_by_type[interaction_type] = interaction_count_sum_by_type.get(interaction_type, 0) + interaction_count
 
-        for tag, score in parse_event_weighted_list(event.get("lastfm_tags", [])):
-            tag_weights[tag] = tag_weights.get(tag, 0.0) + (effective_weight * score)
-            genre_weights[tag] = genre_weights.get(tag, 0.0) + (effective_weight * score)
+        for tag in tags:
+            tag_weights[tag] = tag_weights.get(tag, 0.0) + effective_weight
 
-        lead_genre = str(event.get("lead_genre", "")).strip()
-        if not lead_genre:
-            parsed_tags = parse_event_weighted_list(event.get("lastfm_tags", []))
-            if parsed_tags:
-                lead_genre = parsed_tags[0][0]
+        for genre in genres:
+            genre_weights[genre] = genre_weights.get(genre, 0.0) + effective_weight
+
+        row_has_numeric_value = False
+        for column in NUMERIC_FEATURE_COLUMNS:
+            parsed_value = parse_float(str(row.get(column, "")))
+            if parsed_value is None:
+                continue
+            row_has_numeric_value = True
+            numeric_sums[column] += parsed_value * effective_weight
+            numeric_weights[column] += effective_weight
+            numeric_observations[column] += 1
+            if column == "key":
+                angle = (parsed_value / 12.0) * 2.0 * math.pi
+                key_circular_sum_x += math.cos(angle) * effective_weight
+                key_circular_sum_y += math.sin(angle) * effective_weight
+        if not row_has_numeric_value:
+            missing_numeric_track_ids.append(track_id)
+
+        lead_genre = genres[0] if genres else (tags[0] if tags else "")
         if lead_genre:
             lead_genre_weights[lead_genre] = lead_genre_weights.get(lead_genre, 0.0) + effective_weight
 
         seed_trace_rows.append(
             {
-                "event_id": str(event["event_id"]),
+                "event_id": f"ds001_seed_{index:06d}",
                 "track_id": track_id,
-                "spotify_track_id": str(event.get("spotify_track_id", "")),
-                "spotify_artist": str(event.get("spotify_artist", "")),
-                "spotify_title": str(event.get("spotify_title", "")),
+                "spotify_track_id": spotify_id,
+                "spotify_artist": str(row.get("artist", "")),
+                "spotify_title": str(row.get("song", "")),
                 "interaction_type": interaction_type,
-                "signal_source": str(event["signal_source"]),
-                "seed_rank": int(event["seed_rank"]),
+                "signal_source": "ds001_seed_table",
+                "seed_rank": index,
                 "interaction_count": interaction_count,
                 "preference_weight": round(preference_weight, 6),
                 "effective_weight": round(effective_weight, 6),
                 "lead_genre": lead_genre,
-                "top_tag": str(event.get("top_tag", "")),
-                "lastfm_status": str(event.get("lastfm_status", "")),
+                "top_tag": tags[0] if tags else "",
+                "numeric_feature_coverage": "1" if row_has_numeric_value else "0",
+                "lastfm_status": "not_applicable_ds001",
             }
         )
 
@@ -194,6 +336,12 @@ def main() -> None:
     numeric_profile: dict[str, float] = {}
     for column in NUMERIC_FEATURE_COLUMNS:
         if numeric_weights[column] == 0:
+            continue
+        if column == "key":
+            circular_key = circular_mean_key(key_circular_sum_x, key_circular_sum_y)
+            if circular_key is None:
+                continue
+            numeric_profile[column] = round(circular_key, 6)
             continue
         numeric_profile[column] = round(numeric_sums[column] / numeric_weights[column], 6)
 
@@ -210,30 +358,36 @@ def main() -> None:
         "task": "BL-004",
         "generated_at_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
         "user_id": user_id,
+        "config_source": str(runtime_controls["config_source"]),
+        "run_config_path": runtime_controls["run_config_path"],
+        "run_config_schema_version": runtime_controls["run_config_schema_version"],
         "input_artifacts": {
-            "aligned_events_path": str(aligned_path),
-            "aligned_events_sha256": sha256_of_file(aligned_path),
+            "seed_table_path": str(seed_table_path),
+            "seed_table_sha256": sha256_of_file(seed_table_path),
         },
         "config": {
+            "input_scope": input_scope,
             "effective_weight_rule": "effective_weight = preference_weight",
             "numeric_feature_columns": NUMERIC_FEATURE_COLUMNS,
-            "profile_mode": "semantic_only_lastfm",
-            "top_tag_limit": TOP_TAG_LIMIT,
-            "top_genre_limit": TOP_GENRE_LIMIT,
-            "top_lead_genre_limit": TOP_LEAD_GENRE_LIMIT,
+            "profile_mode": "hybrid_semantic_numeric_from_bl003_enriched_seed_table",
+            "top_tag_limit": top_tag_limit,
+            "top_genre_limit": top_genre_limit,
+            "top_lead_genre_limit": top_lead_genre_limit,
             "aggregation_rules": {
-                "numeric": "disabled; Spotify audio-feature endpoints are deprecated",
-                "tags": "sum(preference_weight * tag_weight)",
-                "genres": "sum(preference_weight * genre_score)",
+                "numeric": "weighted mean over numeric columns embedded in the BL-003 enriched seed table; key uses weighted circular mean on the 12-semitone wheel",
+                "tags": "sum(preference_weight) over DS-001 tag labels",
+                "genres": "sum(preference_weight) over DS-001 genre labels",
                 "lead_genres": "sum(preference_weight)",
             },
         },
         "diagnostics": {
-            "events_total": len(events),
+            "events_total": len(seed_rows),
             "matched_seed_count": matched_seed_count,
-            "missing_seed_count": 0,
-            "missing_track_ids": [],
-            "candidate_rows_total": 0,
+            "missing_seed_count": len(missing_numeric_track_ids),
+            "missing_track_ids": missing_numeric_track_ids[:50],
+            "candidate_rows_total": len(seed_rows),
+            "numeric_observations": numeric_observations,
+            "key_aggregation_method": "weighted_circular_mean",
             "total_effective_weight": round(total_effective_weight, 6),
             "elapsed_seconds": round(time.time() - start_time, 3),
         },
@@ -245,9 +399,9 @@ def main() -> None:
         },
         "numeric_feature_profile": numeric_profile,
         "semantic_profile": {
-            "top_tags": sorted_weight_map(tag_weights, TOP_TAG_LIMIT),
-            "top_genres": sorted_weight_map(genre_weights, TOP_GENRE_LIMIT),
-            "top_lead_genres": sorted_weight_map(lead_genre_weights, TOP_LEAD_GENRE_LIMIT),
+            "top_tags": sorted_weight_map(tag_weights, top_tag_limit),
+            "top_genres": sorted_weight_map(genre_weights, top_genre_limit),
+            "top_lead_genres": sorted_weight_map(lead_genre_weights, top_lead_genre_limit),
         },
     }
 
@@ -259,6 +413,10 @@ def main() -> None:
         "run_id": run_id,
         "task": "BL-004",
         "user_id": user_id,
+        "config_source": str(runtime_controls["config_source"]),
+        "run_config_path": runtime_controls["run_config_path"],
+        "run_config_schema_version": runtime_controls["run_config_schema_version"],
+        "input_scope": input_scope,
         "matched_seed_count": matched_seed_count,
         "total_effective_weight": round(total_effective_weight, 6),
         "dominant_lead_genres": profile["semantic_profile"]["top_lead_genres"][:5],

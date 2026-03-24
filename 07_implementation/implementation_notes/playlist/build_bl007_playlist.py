@@ -21,7 +21,9 @@ Outputs
 
 import csv
 import hashlib
+import importlib.util
 import json
+import os
 import time
 from collections import Counter
 from datetime import datetime, timezone
@@ -35,10 +37,75 @@ SCORED_CANDIDATES_PATH = Path(
 )
 OUTPUT_DIR = Path("07_implementation/implementation_notes/playlist/outputs")
 
-TARGET_SIZE          = 10
-MIN_SCORE_THRESHOLD  = 0.35
-MAX_PER_GENRE        = 4
-MAX_CONSECUTIVE      = 2
+def env_int(name: str, default: int) -> int:
+    raw = os.environ.get(name)
+    if raw is None or not str(raw).strip():
+        return default
+    try:
+        return int(raw)
+    except ValueError:
+        return default
+
+
+def env_float(name: str, default: float) -> float:
+    raw = os.environ.get(name)
+    if raw is None or not str(raw).strip():
+        return default
+    try:
+        return float(raw)
+    except ValueError:
+        return default
+
+
+DEFAULT_TARGET_SIZE         = 10
+DEFAULT_MIN_SCORE_THRESHOLD = 0.35
+DEFAULT_MAX_PER_GENRE       = 4
+DEFAULT_MAX_CONSECUTIVE     = 2
+
+
+def repo_root() -> Path:
+    return Path(__file__).resolve().parents[3]
+
+
+def load_run_config_utils_module():
+    module_path = (
+        repo_root()
+        / "07_implementation"
+        / "implementation_notes"
+        / "run_config"
+        / "run_config_utils.py"
+    )
+    spec = importlib.util.spec_from_file_location("run_config_utils", module_path)
+    if spec is None or spec.loader is None:
+        raise RuntimeError(f"Unable to load run-config utilities from {module_path}")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+def resolve_bl007_runtime_controls() -> dict[str, object]:
+    run_config_path = os.environ.get("BL_RUN_CONFIG_PATH", "").strip() or None
+    if run_config_path:
+        run_config_utils = load_run_config_utils_module()
+        controls = run_config_utils.resolve_bl007_controls(run_config_path)
+        return {
+            "config_source": "run_config",
+            "run_config_path": controls.get("config_path"),
+            "run_config_schema_version": controls.get("schema_version"),
+            "target_size": int(controls["target_size"]),
+            "min_score_threshold": float(controls["min_score_threshold"]),
+            "max_per_genre": int(controls["max_per_genre"]),
+            "max_consecutive": int(controls["max_consecutive"]),
+        }
+    return {
+        "config_source": "environment",
+        "run_config_path": None,
+        "run_config_schema_version": None,
+        "target_size": env_int("BL007_TARGET_SIZE", DEFAULT_TARGET_SIZE),
+        "min_score_threshold": env_float("BL007_MIN_SCORE_THRESHOLD", DEFAULT_MIN_SCORE_THRESHOLD),
+        "max_per_genre": env_int("BL007_MAX_PER_GENRE", DEFAULT_MAX_PER_GENRE),
+        "max_consecutive": env_int("BL007_MAX_CONSECUTIVE", DEFAULT_MAX_CONSECUTIVE),
+    }
 
 
 # ---------------------------------------------------------------------------
@@ -65,6 +132,12 @@ def main() -> None:
     t0 = time.time()
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
+    runtime_controls    = resolve_bl007_runtime_controls()
+    target_size         = int(runtime_controls["target_size"])
+    min_score_threshold = float(runtime_controls["min_score_threshold"])
+    max_per_genre       = int(runtime_controls["max_per_genre"])
+    max_consecutive     = int(runtime_controls["max_consecutive"])
+
     candidates = list(
         csv.DictReader(
             SCORED_CANDIDATES_PATH.open(encoding="utf-8", newline="")
@@ -84,25 +157,25 @@ def main() -> None:
         decision         = "included"
         exclusion_reason = ""
 
-        if len(playlist) >= TARGET_SIZE:
+        if len(playlist) >= target_size:
             # R4 checked first so we still log remaining candidates as excluded
             decision         = "excluded"
             exclusion_reason = "length_cap_reached"
             rule_hits["R4_length_cap"] += 1
 
-        elif final_score < MIN_SCORE_THRESHOLD:
+        elif final_score < min_score_threshold:
             decision         = "excluded"
             exclusion_reason = "below_score_threshold"
             rule_hits["R1_score_threshold"] += 1
 
-        elif sum(1 for t in playlist if t["lead_genre"] == lead_genre) >= MAX_PER_GENRE:
+        elif sum(1 for t in playlist if t["lead_genre"] == lead_genre) >= max_per_genre:
             decision         = "excluded"
             exclusion_reason = "genre_cap_exceeded"
             rule_hits["R2_genre_cap"] += 1
 
         elif (
-            len(playlist) >= MAX_CONSECUTIVE
-            and all(g == lead_genre for g in last_n_genres(playlist, MAX_CONSECUTIVE))
+            len(playlist) >= max_consecutive
+            and all(g == lead_genre for g in last_n_genres(playlist, max_consecutive))
         ):
             decision         = "excluded"
             exclusion_reason = "consecutive_genre_run"
@@ -144,10 +217,10 @@ def main() -> None:
         "generated_at_utc":  datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "elapsed_seconds":   elapsed,
         "config": {
-            "target_size":         TARGET_SIZE,
-            "min_score_threshold": MIN_SCORE_THRESHOLD,
-            "max_per_genre":       MAX_PER_GENRE,
-            "max_consecutive":     MAX_CONSECUTIVE,
+            "target_size":         target_size,
+            "min_score_threshold": min_score_threshold,
+            "max_per_genre":       max_per_genre,
+            "max_consecutive":     max_consecutive,
         },
         "playlist_length": len(playlist),
         "tracks":           playlist,
@@ -197,7 +270,7 @@ def main() -> None:
     }
     write_json(report_path, report)
 
-    print(f"BL-007 playlist assembly complete.  Playlist: {len(playlist)}/{TARGET_SIZE} tracks")
+    print(f"BL-007 playlist assembly complete.  Playlist: {len(playlist)}/{target_size} tracks")
     print(f"Run ID : {run_id}")
     print(f"Genre mix : {dict(genre_mix)}")
 

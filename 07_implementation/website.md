@@ -4,6 +4,256 @@ Date: 2026-03-22
 Owner: GitHub Copilot (GPT-5.3-Codex)
 Location: 07_implementation/website/
 
+## Comprehensive Website Blueprint (v2)
+
+Date: 2026-03-24
+Status: Active Plan (supersedes the initial minimal plan)
+
+### 1) Product Purpose
+- Deliver a full website-controlled path for the deterministic generator pipeline: import -> profile basis -> run -> results -> inspect evidence.
+- Preserve deterministic BL-020 stage behavior while making operation controllable, observable, and recoverable for end users.
+- Keep all controls and outputs explainable enough to support thesis evidence and demonstrations.
+
+### 2) User Goals
+- Start, monitor, cancel, and rerun ingestion and generation without terminal usage.
+- Control input scope and profile basis at a fine-grained level.
+- Understand exactly why a playlist was produced (inputs, parameters, stage outputs, and explanations).
+- Recover safely from stale data, partial runs, API errors, and unsupported endpoint states.
+
+### 3) UX Principles (Control + Transparency)
+- Control-first: every irreversible or high-impact action has explicit controls, confirmation, and safe defaults.
+- Transparency-by-default: every stage shows run id, timestamps, status, inputs, output hashes, and artifact links.
+- Deterministic trust: rerun actions surface whether config or inputs changed from prior run.
+- Recoverability: stale snapshots, cancelled runs, and failed stages always expose next best action.
+- Progressive depth: keep quick summaries visible, with expandable diagnostics/log detail.
+
+### 4) End-to-End Website Information Architecture
+1. Landing
+    - Purpose: clear entry points and current runtime health.
+    - Route: `/website/index.html`
+2. Import Data
+    - Purpose: source selection, ingest run control, live ingest diagnostics.
+    - Route: `/website/import.html`
+3. Profile Basis
+    - Purpose: group/track exclusions and profile-input verification.
+    - Route: `/website/profile_basis.html`
+4. Run Generator (new)
+    - Purpose: trigger BL-004 -> BL-009 chain with selected controls.
+    - Route: `/website/run.html`
+5. Results + Transparency (new)
+    - Purpose: playlist output, explanation payloads, observability snapshot, export/download.
+    - Route: `/website/results.html`
+6. Run History (new)
+    - Purpose: compare past runs, detect drift, reload prior successful state.
+    - Route: `/website/history.html`
+
+### 5) Core User Flows
+1. Ingest flow
+    - Configure source scope -> Start -> OAuth (if required) -> Running diagnostics -> Completed/Cancelled/Failed.
+2. Profile preparation flow
+    - Load current source -> apply exclusions -> verify included track counts -> save profile basis snapshot.
+3. Pipeline run flow
+    - Select active run controls -> execute deterministic stages -> observe stage-by-stage state.
+4. Results inspection flow
+    - Review playlist, score/explanation summaries, and observability metadata -> export evidence package.
+5. Recovery flow
+    - Failed/cancelled stage -> show cause + actionable recovery options -> rerun from safe checkpoint.
+
+### 6) Control Surfaces To Expose
+- Ingestion controls
+   - Source toggles and limits.
+   - Start/Cancel/Refresh/Clear saved selection.
+- Profile basis controls
+   - Exclude group.
+   - Exclude individual track.
+   - Clear exclusions.
+   - Clear local snapshot.
+   - Refresh from latest export.
+- Pipeline controls (new)
+   - Run full chain.
+   - Run from selected stage (bounded; only valid checkpoints).
+   - Cancel active run.
+   - Deterministic rerun with prior config lock.
+   - Save named run config preset.
+- Results controls (new)
+   - View summary vs full diagnostics.
+   - Download playlist JSON/CSV and explanation payloads.
+   - Download run evidence bundle metadata manifest.
+
+### 7) Transparency Surfaces To Expose
+- Global run banner
+   - `run_id`, status, start/end UTC, elapsed duration, current stage.
+- Stage cards
+   - Input artifact hash, output artifact hash, row/count summary, status, and failure reason if any.
+- Config visibility
+   - Active settings and source-scope manifest for current run.
+- Evidence links
+   - Direct links or file references for BL-004 to BL-009 output artifacts.
+- Diff transparency
+   - Compare current run vs previous run on key metrics (counts, top-10 overlap, hash changes).
+
+### 8) Target Backend API Contract (Website-Oriented)
+
+Current implemented ingestion endpoints:
+- `POST /api/spotify/export/start`
+- `GET /api/spotify/export/status`
+- `POST /api/spotify/export/cancel`
+
+Planned generator orchestration endpoints:
+- `POST /api/pipeline/run/start`
+   - Body: profile snapshot reference + run controls.
+- `GET /api/pipeline/run/status?run_id=...&after=...`
+   - Returns global + per-stage status timeline.
+- `POST /api/pipeline/run/cancel`
+   - Cancels active pipeline execution.
+- `GET /api/pipeline/run/results?run_id=...`
+   - Returns summary pointers to playlist/transparency/observability outputs.
+- `GET /api/pipeline/run/history?limit=...`
+   - Returns prior run index for compare/reload.
+
+Planned utility endpoints:
+- `GET /api/health`
+- `GET /api/runtime/config`
+- `POST /api/runtime/config/validate`
+
+### 9) Frontend State Contracts
+- Canonical state domains
+   - `ingestionRunState`
+   - `profileBasisState`
+   - `pipelineRunState`
+   - `resultsState`
+   - `uiPreferences`
+- Persistence boundaries
+   - `localStorage` only for user selections and UI preferences.
+   - Generated artifacts remain file-system backed through API.
+- Source precedence policy
+   - Export artifacts (latest valid run) -> local saved snapshot -> empty state.
+- Stale data policy
+   - Every persisted local snapshot carries `created_at`, `source_run_id`, and compatibility version.
+
+### 10) File and Module Structure Plan
+
+Keep current files, then incrementally split logic by domain.
+
+Current files (already in use):
+- `07_implementation/website/index.html`
+- `07_implementation/website/import.html`
+- `07_implementation/website/profile_basis.html`
+- `07_implementation/website/app.js`
+- `07_implementation/website/profile_basis.js`
+- `07_implementation/website/style.css`
+- `07_implementation/setup/website_api_server.py`
+
+Planned website files:
+- `07_implementation/website/run.html`
+- `07_implementation/website/results.html`
+- `07_implementation/website/history.html`
+- `07_implementation/website/scripts/core/api_client.js`
+- `07_implementation/website/scripts/core/state_store.js`
+- `07_implementation/website/scripts/core/storage.js`
+- `07_implementation/website/scripts/core/formatters.js`
+- `07_implementation/website/scripts/core/constants.js`
+- `07_implementation/website/scripts/pages/import_page.js`
+- `07_implementation/website/scripts/pages/profile_basis_page.js`
+- `07_implementation/website/scripts/pages/run_page.js`
+- `07_implementation/website/scripts/pages/results_page.js`
+- `07_implementation/website/scripts/pages/history_page.js`
+- `07_implementation/website/scripts/components/status_badge.js`
+- `07_implementation/website/scripts/components/stage_timeline.js`
+- `07_implementation/website/scripts/components/log_viewer.js`
+- `07_implementation/website/scripts/components/artifact_table.js`
+- `07_implementation/website/styles/tokens.css`
+- `07_implementation/website/styles/layout.css`
+- `07_implementation/website/styles/components.css`
+- `07_implementation/website/styles/pages/import.css`
+- `07_implementation/website/styles/pages/profile_basis.css`
+- `07_implementation/website/styles/pages/run.css`
+- `07_implementation/website/styles/pages/results.css`
+- `07_implementation/website/styles/pages/history.css`
+
+Planned backend modules (inside setup):
+- `07_implementation/setup/website_api_server.py` (router + HTTP contract)
+- `07_implementation/setup/services/run_registry.py` (active/past run bookkeeping)
+- `07_implementation/setup/services/ingestion_service.py` (Spotify export orchestration)
+- `07_implementation/setup/services/pipeline_service.py` (BL-004 -> BL-009 orchestration)
+- `07_implementation/setup/services/artifact_service.py` (artifact discovery + hash summaries)
+- `07_implementation/setup/services/events_service.py` (line-based run event stream)
+
+### 11) Pipeline Stage Visibility Model
+- Stages to display:
+   - BL-004 profile
+   - BL-005 retrieval
+   - BL-006 scoring
+   - BL-007 playlist assembly
+   - BL-008 transparency
+   - BL-009 observability
+- Per-stage data shown:
+   - status (`queued|running|completed|failed|cancelled`)
+   - start/end UTC and duration
+   - primary input/output artifact references
+   - row/count metrics
+   - deterministic hash snippet
+
+### 12) Error and Recovery Strategy
+- Error categories:
+   - auth/oauth, network, upstream API rate/permission, artifact missing, contract mismatch, unexpected runtime exception.
+- Recovery actions per category:
+   - retry now, rerun stage, clear local snapshot, refresh artifacts, open diagnostic log, and copy failure context.
+- Safety rules:
+   - no silent fallback when data source changed.
+   - explicit warning when using stale local data over export data.
+
+### 13) Accessibility and Usability Requirements
+- Keyboard reachable controls for all run actions.
+- Clear button labels with verb-first action names.
+- ARIA-live status region for run-state changes.
+- Color is never the only status signal.
+- Mobile-first layout for core action cards and timelines.
+
+### 14) Security and Privacy Boundaries
+- Never persist OAuth secrets or tokens in website localStorage.
+- API responses set no-store headers for status and run metadata.
+- Logs should avoid leaking sensitive request headers.
+- Restrict local API server bind scope to localhost.
+
+### 15) Testing Plan (Website Integration)
+- Contract checks
+   - Endpoint response schema validation for start/status/cancel/results/history.
+- Scenario checks
+   - happy path full run.
+   - cancel during ingestion.
+   - cancel during pipeline stage.
+   - stale snapshot clear and refresh.
+   - unsupported endpoint selection handling.
+- Determinism checks
+   - same inputs/config -> same output hashes.
+- UI checks
+   - button enable/disable correctness by state.
+   - stage timeline transitions.
+
+### 16) Evidence and Governance Hooks
+- Each website-triggered run records:
+   - `run_id`, selected sources, control settings, stage timeline, artifact hashes, and user actions (start/cancel/retry).
+- Update logs in:
+   - `07_implementation/website.md`
+   - `07_implementation/experiment_log.md`
+   - `07_implementation/test_notes.md`
+   - `00_admin/change_log.md`
+
+### 17) Delivery Phases
+1. Phase A: Stabilize current import/profile controls (complete).
+2. Phase B: Add pipeline run orchestration page and API endpoints.
+3. Phase C: Add results/transparency page with artifact drill-down.
+4. Phase D: Add run history and compare view.
+5. Phase E: Split frontend into modular page/core/component files.
+
+### 18) Definition of Done (Website Generator Integration)
+- User can complete end-to-end flow entirely from website UI.
+- All major actions (start, cancel, rerun, refresh, clear) are available and state-safe.
+- Stage-level transparency is visible with artifact references and key metrics.
+- Run outputs are downloadable and auditable.
+- Logging/evidence artifacts are updated for reproducibility and thesis traceability.
+
 ## Objective
 Create a simple HTML, CSS, and JavaScript website for user interaction with the playlist generator.
 
@@ -519,3 +769,317 @@ Files touched in this phase:
 - `07_implementation/website/profile_basis.html`
 - `07_implementation/website/profile_basis.js`
 - `07_implementation/website/style.css`
+
+## Interaction Hardening + Bootstrap Acceleration Log
+
+Date: 2026-03-24
+Status: Completed
+
+Purpose:
+- Improve reliability and recoverability of website-driven Spotify ingestion runs.
+- Reduce stale local snapshot confusion between Import and Profile pages.
+- Speed up UI iteration with a temporary premade framework layer.
+
+Changes completed:
+1. Added cancellable ingestion control path end-to-end.
+   - Backend endpoint: `POST /api/spotify/export/cancel`
+   - UI control: `Cancel Run` on Import page
+   - States covered: `running`, `cancelling`, `cancelled`
+2. Hardened API status handling and cache behavior.
+   - Safer parsing for malformed `after` query values
+   - No-store cache headers on JSON responses to avoid stale status reads
+3. Added stale-snapshot controls.
+   - Import page: `Clear Saved Selection`
+   - Profile page: `Refresh Data`, `Clear Saved Snapshot`
+4. Clarified source precedence messaging in Profile Basis.
+   - Explicit export-first vs local-fallback behavior in summary text
+   - Reload path now resets exclusions and re-renders from current source
+5. Added temporary Bootstrap 5 layer for faster styling iteration.
+   - Included Bootstrap CSS and JS bundle on:
+     - `07_implementation/website/import.html`
+     - `07_implementation/website/profile_basis.html`
+     - `07_implementation/website/index.html`
+
+Validation notes:
+- Local API smoke flow verified start -> status -> cancel -> status transitions.
+- Import page reflects cancellation lifecycle and button-state locking during runs.
+- Diagnostics checks reported no file errors on touched website files.
+
+Files touched in this phase:
+- `07_implementation/setup/website_api_server.py`
+- `07_implementation/website/import.html`
+- `07_implementation/website/profile_basis.html`
+- `07_implementation/website/index.html`
+- `07_implementation/website/app.js`
+- `07_implementation/website/profile_basis.js`
+- `07_implementation/website/style.css`
+
+## Phase B Scaffold: Run Orchestration From Website
+
+Date: 2026-03-24
+Status: Implemented
+
+Purpose:
+- Start Phase B from the blueprint by enabling website-triggered BL-004 to BL-009 orchestration.
+- Provide live run transparency (run status, stage timeline, logs, artifact summary) directly in UI.
+
+Changes completed:
+1. Added pipeline API orchestration paths in local website server.
+   - `POST /api/pipeline/run/start`
+   - `GET /api/pipeline/run/status?after=...`
+   - `POST /api/pipeline/run/cancel`
+   - `GET /api/pipeline/run/results`
+2. Added deterministic stage execution chain in backend job runner.
+   - Executes BL-004 -> BL-009 scripts sequentially.
+   - Tracks per-stage status, timestamps, exit code, and stage-scoped logs.
+   - Supports cancellation and terminal state transitions.
+3. Added new run control page.
+   - `run.html` with run controls, stage timeline table, artifact summary, and live logs.
+   - `run.js` with polling, start/cancel flow, log streaming, and state-safe action locking.
+4. Added page-to-page navigation for execution flow.
+   - Import -> Profile Basis -> Run Generator links.
+   - Landing page updated with direct links to all three pages.
+5. Added styling for run-stage transparency components.
+   - Stage table and artifact cards integrated into existing style system.
+
+Implementation notes:
+- Artifact summary in pipeline status currently reports presence/mtime/size for key BL-004 to BL-009 outputs.
+- Pipeline run config payload is accepted and persisted for traceability; advanced config branching remains future work.
+
+Files touched in this phase:
+- `07_implementation/setup/website_api_server.py`
+- `07_implementation/website/run.html`
+- `07_implementation/website/run.js`
+- `07_implementation/website/import.html`
+- `07_implementation/website/profile_basis.html`
+- `07_implementation/website/index.html`
+- `07_implementation/website/style.css`
+
+## Phase C/D Delivery: Results, History, and Evidence Bundle Export
+
+Date: 2026-03-24
+Status: Implemented
+
+Purpose:
+- Complete the immediate next steps after Phase B by adding results inspection, run history comparison, and one-click evidence bundle export from website UI.
+
+Changes completed:
+1. Extended pipeline API for transparency and history.
+   - Added `GET /api/pipeline/run/history?limit=...`.
+   - Upgraded `GET /api/pipeline/run/results` to include run snapshot, compare data, playlist preview, explanation summary, and observability payload.
+   - Added `POST /api/pipeline/run/evidence_bundle` to generate a downloadable evidence manifest JSON.
+2. Added run-history persistence in backend.
+   - Terminal run states (`completed`, `failed`, `cancelled`) are now recorded with stage summary and artifact hashes.
+   - Artifact summary now includes SHA-256 hashes for compare and audit use.
+3. Added Results page.
+   - New `results.html` + `results.js` render run summary, playlist top-10 preview, compare-to-previous details, explanation/observability JSON snapshot, and artifact summary.
+4. Added History page.
+   - New `history.html` + `history.js` render recent run index and compare counts, with direct links to open specific runs in Results.
+5. Added one-click evidence export on Run page.
+   - `run.html` now includes an `Export Evidence Bundle` action.
+   - `run.js` calls bundle endpoint and downloads the returned JSON manifest.
+6. Expanded navigation to full website flow.
+   - Added links for Results and Run History in run and landing pages.
+
+Validation notes:
+- Diagnostics checks reported no file errors on all touched Python/HTML/JS files.
+- Browser page rendering confirms new Run page actions and navigation are visible.
+- If API routes return 404 in browser, restart launcher to load latest backend code.
+
+Files touched in this phase:
+- `07_implementation/setup/website_api_server.py`
+- `07_implementation/website/run.html`
+- `07_implementation/website/run.js`
+- `07_implementation/website/results.html`
+- `07_implementation/website/results.js`
+- `07_implementation/website/history.html`
+- `07_implementation/website/history.js`
+- `07_implementation/website/index.html`
+
+## Per-Stage Control + Transparency Pages Delivery
+
+Date: 2026-03-24
+Status: Implemented
+
+Purpose:
+- Make each BL-004 to BL-009 stage directly controllable and inspectable from dedicated pages.
+- Allow users to run a single stage (or selected stage subset) rather than only full-chain execution.
+
+Changes completed:
+1. Added selected-stage execution support in pipeline backend.
+   - `POST /api/pipeline/run/start` now accepts `stage_ids` and runs only that subset.
+   - Stage selection is validated and reflected in run status payload (`selected_stage_ids`, `available_stage_ids`).
+2. Added pipeline stage-catalog endpoint.
+   - New `GET /api/pipeline/stages` provides stage labels, scripts, and descriptions for UI metadata.
+3. Added dedicated stage pages (one per stage).
+   - `stage_bl004.html`
+   - `stage_bl005.html`
+   - `stage_bl006.html`
+   - `stage_bl007.html`
+   - `stage_bl008.html`
+   - `stage_bl009.html`
+4. Added shared stage-page controller.
+   - `stage_page.js` handles stage-specific start/cancel/refresh actions, log filtering by stage id, and artifact transparency rendering.
+5. Added stage-page navigation from main run page.
+   - `run.html` sidebar now links directly to each stage page.
+
+User-visible behavior:
+- Each stage page has independent control buttons:
+  - `Run This Stage`
+  - `Cancel Run`
+  - `Refresh`
+- Each stage page shows:
+  - run and stage status metadata
+  - filtered stage logs
+  - artifact summary with path, timestamp, and hash
+
+Validation notes:
+- Diagnostics reported no file errors for all new/updated files.
+- Browser render confirmed stage page UI and stage-specific log visibility.
+- If stage metadata endpoint is unavailable in a running browser session, restart server to load latest API routes.
+
+Files touched in this phase:
+- `07_implementation/setup/website_api_server.py`
+- `07_implementation/website/run.html`
+- `07_implementation/website/stage_page.js`
+- `07_implementation/website/stage_bl004.html`
+- `07_implementation/website/stage_bl005.html`
+- `07_implementation/website/stage_bl006.html`
+- `07_implementation/website/stage_bl007.html`
+- `07_implementation/website/stage_bl008.html`
+- `07_implementation/website/stage_bl009.html`
+
+## Per-Stage Parameter Tunability Delivery
+
+Date: 2026-03-24
+Status: Implemented
+
+Purpose:
+- Extend per-stage controllability from stage selection to stage-specific parameter tuning.
+- Ensure stage pages can send validated parameter overrides that actually affect BL-005 to BL-009 execution.
+
+Changes completed:
+1. Added backend stage-parameter pass-through for stage subprocess execution.
+   - `POST /api/pipeline/run/start` now accepts `stage_params` keyed by stage id.
+   - Pipeline runner maps stage params into stage-specific environment variable overrides per stage.
+2. Added script-level override support in BL-005 to BL-009 builders.
+   - BL-005: semantic and profile-limit thresholds configurable by environment.
+   - BL-006: component weights and numeric-threshold JSON overrides supported.
+   - BL-007: playlist assembly constraints (size, minimum score, diversity caps) configurable.
+   - BL-008: top-contributor explanation depth configurable.
+   - BL-009: observability diagnostic sample depth configurable.
+3. Added dynamic stage-parameter UI controls to stage pages.
+   - `stage_page.js` now renders stage-specific parameter forms for BL-005 to BL-009.
+   - Numeric and JSON parameters are validated client-side before run start.
+   - Stage run requests include `stage_params` only when overrides are provided.
+
+User-visible behavior:
+- BL-004 stage page remains control-only (no parameter form).
+- BL-005 to BL-009 pages now expose stage-specific parameter inputs and apply them to the next stage run.
+- Parameter usage is surfaced in-page before run dispatch.
+
+Files touched in this phase:
+- `07_implementation/setup/website_api_server.py`
+- `07_implementation/website/stage_page.js`
+- `07_implementation/implementation_notes/retrieval/build_bl005_candidate_filter.py`
+- `07_implementation/implementation_notes/scoring/build_bl006_scored_candidates.py`
+- `07_implementation/implementation_notes/playlist/build_bl007_playlist.py`
+- `07_implementation/implementation_notes/transparency/build_bl008_explanation_payloads.py`
+- `07_implementation/implementation_notes/observability/build_bl009_observability_log.py`
+
+## BL-004 Parameter Tunability Extension
+
+Date: 2026-03-24
+Status: Implemented
+
+Purpose:
+- Remove the BL-004 tunability gap so all stage pages BL-004 to BL-009 support stage-level parameter control.
+
+Changes completed:
+1. Added BL-004 stage parameter controls on stage page UI.
+   - `top_tag_limit`
+   - `top_genre_limit`
+   - `top_lead_genre_limit`
+   - `user_id`
+2. Added backend mapping of BL-004 stage params to BL-004 environment variables.
+3. Added BL-004 script environment override consumption for top limits and user id.
+
+User-visible behavior:
+- BL-004 stage page now includes Stage Parameters and sends overrides through `stage_params` when running BL-004.
+- BL-004 outputs are now tunable from UI without terminal edits.
+
+Files touched in this phase:
+- `07_implementation/website/stage_page.js`
+- `07_implementation/setup/website_api_server.py`
+- `07_implementation/implementation_notes/profile/build_bl004_preference_profile.py`
+
+## Website Runtime Hardening Pass
+
+Date: 2026-03-24
+Status: Implemented
+
+Purpose:
+- Improve operational visibility with explicit health and runtime-config APIs.
+- Improve stage-page controllability ergonomics with reset/preset controls.
+- Add a repeatable smoke check script for quick regression verification.
+
+Changes completed:
+1. Added utility API endpoints for runtime observability and validation.
+   - `GET /api/health` returns service status, uptime, bind/port, and active job states.
+   - `GET /api/runtime/config` returns stage catalog and stage-parameter schema.
+   - `POST /api/runtime/config/validate` validates and normalizes `stage_params` payloads.
+2. Added run-page health visibility.
+   - `run.html` now shows API health state and server uptime.
+   - `run.js` polls `/api/health` along with pipeline status updates.
+3. Added stage-parameter reset and preset controls.
+   - `stage_page.js` now provides `Reset Defaults`, `Save Preset`, and `Load Preset` actions.
+   - Presets are persisted per-stage in browser localStorage.
+4. Added automation script for rapid website API smoke checks.
+   - New script: `07_implementation/setup/smoke_website_api.ps1`
+   - Verifies page reachability, health/config endpoints, config validation, stage catalog, and pipeline status response shape.
+
+User-visible behavior:
+- Run Generator page now shows whether the local API server is healthy and how long it has been up.
+- Stage pages support quick reset to defaults and reusable per-stage parameter presets.
+- Operators can run a single smoke script to verify core website+API contract readiness.
+
+Files touched in this phase:
+- `07_implementation/setup/website_api_server.py`
+- `07_implementation/website/run.html`
+- `07_implementation/website/run.js`
+- `07_implementation/website/stage_page.js`
+- `07_implementation/website/style.css`
+- `07_implementation/setup/smoke_website_api.ps1`
+
+## Website IA + Visual Reboot Baseline
+
+Date: 2026-03-24
+Status: Implemented (Baseline Slice)
+
+Design direction selected:
+- Visual language: studio control room
+- Scope: full IA reboot direction
+- Baseline page: Import
+- Tone: high-contrast technical palette
+
+What changed in this baseline slice:
+1. Reframed website navigation around an import-first operational flow.
+   - Workflow framing now uses: Import -> Profile Basis -> Run Pipeline -> Inspect Results -> Compare Runs.
+2. Rebuilt `import.html` into a control-room shell while preserving existing ingestion behavior and IDs used by `app.js`.
+   - Added workflow navigation in sidebar.
+   - Added dedicated input-mode section.
+   - Reorganized telemetry into side-by-side operational cards.
+   - Moved endpoint controls under a single endpoint matrix section.
+3. Switched website visual system to a high-contrast technical theme in `style.css`.
+   - New dark control-room palette and accent system.
+   - Updated card/button/input/table surfaces for contrast consistency.
+   - Added import-shell specific classes (`control-shell`, `control-topbar`, `ops-grid`).
+4. Updated landing copy in `index.html` to match the new IA language.
+
+Compatibility note:
+- Import page JS behavior is intentionally preserved by keeping all existing control IDs and endpoint wiring intact.
+
+Files touched in this phase:
+- `07_implementation/website/import.html`
+- `07_implementation/website/style.css`
+- `07_implementation/website/index.html`

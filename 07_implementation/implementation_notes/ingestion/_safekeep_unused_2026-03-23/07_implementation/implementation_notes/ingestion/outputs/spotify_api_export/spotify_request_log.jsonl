@@ -1,2 +1,0 @@
-{"timestamp_utc": "2026-03-21T19:25:34Z", "path": "/me", "query": {}, "status": 200, "attempt": 1, "item_count": 0, "total": null}
-{"timestamp_utc": "2026-03-21T19:26:20Z", "path": "/playlists/1TtCwbjgOevA0UaSKyqka9/items", "query": {"additional_types": "track", "limit": 50, "offset": 0}, "status": 403, "attempt": 1, "error_body": "{\"error\": {\"status\": 403, \"message\": \"Forbidden\" } }"}

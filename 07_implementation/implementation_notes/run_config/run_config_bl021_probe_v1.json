@@ -1,0 +1,15 @@
+{
+  "schema_version": "run-config-v1",
+  "input_scope": {
+    "source_family": "spotify_api_export",
+    "include_top_tracks": true,
+    "top_time_ranges": ["short_term"],
+    "include_saved_tracks": false,
+    "saved_tracks_limit": 25,
+    "include_playlists": true,
+    "playlists_limit": 3,
+    "playlist_items_per_playlist_limit": 20,
+    "include_recently_played": true,
+    "recently_played_limit": 15
+  }
+}

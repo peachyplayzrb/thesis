@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Playlist Generator - Results</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="page page-import page-run">
+    <aside class="import-sidebar card">
+      <h2 class="sidebar-heading">Results</h2>
+      <ul class="source-list" aria-label="Results navigation">
+        <li><a class="button-link" href="import.html">Import Data</a></li>
+        <li><a class="button-link" href="profile_basis.html">Profile Basis</a></li>
+        <li><a class="button-link" href="run.html">Run Generator</a></li>
+        <li><a class="button-link" href="results.html">Results</a></li>
+        <li><a class="button-link" href="history.html">Run History</a></li>
+      </ul>
+    </aside>
+
+    <section class="import-content card">
+      <h1>Results</h1>
+      <p class="subtitle">Inspect playlist output, explanation summary, observability snapshot, and artifact compare data.</p>
+
+      <section class="export-status-card" aria-live="polite">
+        <div class="export-status-head">
+          <h3>Run Summary</h3>
+          <button id="results-refresh-btn" type="button" class="refresh-btn">Refresh</button>
+        </div>
+        <p id="results-message" class="hint">Loading latest run results...</p>
+        <dl class="export-meta-grid">
+          <div><dt>Run ID</dt><dd id="results-run-id">-</dd></div>
+          <div><dt>Status</dt><dd id="results-status">-</dd></div>
+          <div><dt>Current Stage</dt><dd id="results-stage">-</dd></div>
+          <div><dt>Started (UTC)</dt><dd id="results-started">-</dd></div>
+          <div><dt>Finished (UTC)</dt><dd id="results-finished">-</dd></div>
+          <div><dt>Artifact Changes</dt><dd id="results-change-count">-</dd></div>
+        </dl>
+      </section>
+
+      <section class="export-status-card">
+        <div class="export-status-head">
+          <h3>Playlist Preview (Top 10)</h3>
+        </div>
+        <div class="stage-table-wrap">
+          <table class="stage-table" aria-label="Playlist preview">
+            <thead>
+              <tr>
+                <th>Track ID</th>
+                <th>Title</th>
+                <th>Artist</th>
+                <th>Score</th>
+              </tr>
+            </thead>
+            <tbody id="results-playlist-body">
+              <tr><td colspan="4" class="hint">No playlist preview available yet.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="export-status-card">
+        <div class="export-status-head">
+          <h3>Compare To Previous Run</h3>
+        </div>
+        <div id="results-compare" class="artifact-list">
+          <p class="hint">No compare data yet.</p>
+        </div>
+      </section>
+
+      <section class="export-status-card">
+        <div class="export-status-head">
+          <h3>Explanation + Observability Snapshot</h3>
+        </div>
+        <pre id="results-json" class="run-log">No result payload loaded yet.</pre>
+      </section>
+
+      <section class="export-status-card">
+        <div class="export-status-head">
+          <h3>Artifact Summary</h3>
+        </div>
+        <div id="results-artifacts" class="artifact-list">
+          <p class="hint">No artifact summary available yet.</p>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+  <script src="results.js"></script>
+</body>
+</html>

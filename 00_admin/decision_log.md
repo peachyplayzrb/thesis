@@ -292,10 +292,13 @@ none
 
 id: D-014
 date: 2026-03-21
-status: accepted
+status: superseded
 
 context:
 BL-019 was previously a deferred placeholder for alternative corpus engineering. The current need is to define a practical, repeatable dataset-build workflow for the active Onion MVP path so data refreshes are deterministic and quality-gated before downstream reruns.
+
+superseded_by:
+D-015
 
 decision:
 Reframe BL-019 as an active dataset-build planning item for the Onion canonical layer. The workflow will produce a canonical refresh report, dataset manifest, and explicit quality-gate checks, and will require a two-run deterministic repeat check before BL-019 can be closed.
@@ -734,8 +737,9 @@ review_date: none
 
 id: D-023
 date: 2026-03-21
-status: accepted
+status: superseded
 context: BL-020 real-data execution highlighted that profile-build runtime and API load are strongly affected by which Spotify data sources are ingested (for example top tracks vs saved tracks). The user proposed adding an explicit UI control so a user can choose the profile input scope before ingestion/profile construction.
+superseded_by: D-027
 decision: Add a deferred design requirement for a user-selectable Spotify profile-source scope control, with per-source on/off selection and bounded limits. Initial target controls include top tracks (short/medium/long term), saved tracks, and optional playlist-derived tracks. Implementation is intentionally deferred; this decision only records and aligns planning/design artifacts.
 alternatives_considered:
 - Keep fixed full-ingestion behavior for all users (rejected: weaker controllability and slower runtime for users who only want a subset)
@@ -796,8 +800,9 @@ review_date: none
 
 id: D-026
 date: 2026-03-23
-status: accepted
+status: superseded
 context: BL-020 and BL-014 are complete with evidence, while current user priority is to freeze the implemented pipeline and build a website interaction layer for demonstration, testing, and bounded refinement. Without a freeze decision, integration work risks accidental scope expansion into deferred items.
+superseded_by: D-027
 decision: Adopt a freeze-first execution strategy for the current implementation baseline. Keep core recommendation behavior stable and direct implementation effort to website-to-pipeline integration, run observability exposure in the UI, and bounded reliability hardening.
 alternatives_considered:
 - Continue feature expansion first (BL-021/BL-022) before website integration
@@ -812,4 +817,32 @@ impacted_files:
 - `00_admin/thesis_state.md`
 - `07_implementation/backlog.md`
 - `07_implementation/website.md`
+review_date: none
+
+---
+
+id: D-027
+date: 2026-03-24
+status: accepted
+context: D-023 recorded source-scope control as a deferred design item, and D-026 temporarily froze feature expansion for website integration. Subsequent BL-021 implementation work completed canonical source-scope control end-to-end, including run-config contract, runtime actuation, and A/B evidence.
+decision: Close the D-023 deferment by promoting source-scope control from deferred design to implemented baseline behavior. Treat D-026 freeze-first mode as a completed temporary execution strategy rather than the current development posture.
+alternatives_considered:
+- Keep D-023 as deferred despite implemented behavior (rejected: governance drift and contradictory status)
+- Keep D-026 as the current active strategy (rejected: no longer aligned with implemented BL-021 work)
+- Rewrite or delete prior decisions (rejected: harms chronology and auditability)
+rationale: A supersession decision preserves historical traceability while making current state explicit. This avoids contradictory planning signals across backlog, thesis-state, and implementation evidence records.
+evidence_basis:
+- `07_implementation/backlog.md` (BL-021 now marked done)
+- `00_admin/thesis_state.md` (BL-021 completion update section)
+- `07_implementation/experiment_log.md` (`EXP-040`, `EXP-041`, `EXP-042`)
+- `07_implementation/test_notes.md` (`TC-BL021-R2-001`, `TC-BL021-R2-002`, `TC-BL021-R2-003`)
+- `07_implementation/implementation_notes/alignment/build_bl003_ds001_spotify_seed_table.py`
+- `07_implementation/implementation_notes/profile/build_bl004_preference_profile.py`
+- `07_implementation/implementation_notes/observability/build_bl009_observability_log.py`
+- `07_implementation/implementation_notes/entrypoint/run_bl013_pipeline_entrypoint.py`
+impacted_files:
+- `00_admin/decision_log.md`
+- `00_admin/change_log.md`
+- `00_admin/thesis_state.md`
+- `07_implementation/backlog.md`
 review_date: none

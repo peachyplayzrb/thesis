@@ -1,6 +1,8 @@
 from __future__ import annotations
 
+import os
 import json
+import hashlib
 import subprocess
 import sys
 import threading
@@ -194,6 +196,17 @@ class SpotifyExportJob:
 
         threading.Thread(target=self._monitor_process, daemon=True).start()
 
+    def cancel(self) -> None:
+        with self.lock:
+            if self.process is None or self.process.poll() is not None:
+                raise RuntimeError("No ingestion run is currently in progress.")
+            self.state.current_step = "cancelling"
+            self.state.current_message = "Cancelling Spotify ingestion run..."
+            self.state.status = "running"
+            process = self.process
+
+        process.terminate()
+
     def _monitor_process(self) -> None:
         process = self.process
         if process is None or process.stdout is None:
@@ -208,6 +221,12 @@ class SpotifyExportJob:
             self.state.exit_code = exit_code
             self.state.completed_at_utc = now_utc()
             self.state.summary = summary
+            if self.state.current_step == "cancelling":
+                self.state.status = "cancelled"
+                self.state.current_step = "cancelled"
+                self.state.current_message = "Spotify ingestion was cancelled by user request."
+                return
+
             self.state.status = "completed" if exit_code == 0 else "failed"
             if exit_code == 0:
                 self.state.current_step = "completed"
@@ -239,6 +258,828 @@ class SpotifyExportJob:
             }
 
 
+@dataclass
+class PipelineStageState:
+    stage_id: str
+    label: str
+    script_path: str
+    status: str = "queued"
+    started_at_utc: Optional[str] = None
+    completed_at_utc: Optional[str] = None
+    exit_code: Optional[int] = None
+    current_message: str = "Queued"
+    log_start_index: Optional[int] = None
+    log_end_index: Optional[int] = None
+
+
+@dataclass
+class PipelineRunState:
+    status: str = "idle"
+    run_id: Optional[str] = None
+    started_at_utc: Optional[str] = None
+    completed_at_utc: Optional[str] = None
+    current_stage: str = "idle"
+    current_message: str = "No pipeline run started yet."
+    cancel_requested: bool = False
+    request_config: Dict[str, Any] = field(default_factory=dict)
+    logs: List[Dict[str, Any]] = field(default_factory=list)
+    line_count: int = 0
+    stages: List[PipelineStageState] = field(default_factory=list)
+    artifact_summary: Dict[str, Any] = field(default_factory=dict)
+
+
+class PipelineJob:
+    STAGE_SPECS: List[Dict[str, str]] = [
+        {
+            "stage_id": "bl004",
+            "label": "BL-004 Profile",
+            "script": "profile/build_bl004_preference_profile.py",
+            "description": "Build deterministic preference profile from aligned seed data.",
+        },
+        {
+            "stage_id": "bl005",
+            "label": "BL-005 Retrieval",
+            "script": "retrieval/build_bl005_candidate_filter.py",
+            "description": "Filter candidate corpus against profile signals and keep rules.",
+        },
+        {
+            "stage_id": "bl006",
+            "label": "BL-006 Scoring",
+            "script": "scoring/build_bl006_scored_candidates.py",
+            "description": "Score retained candidates with weighted components.",
+        },
+        {
+            "stage_id": "bl007",
+            "label": "BL-007 Playlist",
+            "script": "playlist/build_bl007_playlist.py",
+            "description": "Assemble final playlist with deterministic rule checks.",
+        },
+        {
+            "stage_id": "bl008",
+            "label": "BL-008 Transparency",
+            "script": "transparency/build_bl008_explanation_payloads.py",
+            "description": "Generate explanation payloads and summary transparency outputs.",
+        },
+        {
+            "stage_id": "bl009",
+            "label": "BL-009 Observability",
+            "script": "observability/build_bl009_observability_log.py",
+            "description": "Record run-chain observability metadata and index outputs.",
+        },
+    ]
+
+    STAGE_PARAM_SCHEMA: Dict[str, List[Dict[str, Any]]] = {
+        "bl004": [
+            {"key": "top_tag_limit", "type": "int", "min": 1, "max": 100, "default": 10},
+            {"key": "top_genre_limit", "type": "int", "min": 1, "max": 100, "default": 10},
+            {"key": "top_lead_genre_limit", "type": "int", "min": 1, "max": 100, "default": 10},
+            {"key": "user_id", "type": "string", "default": "21zsn42xecjhogne4kghyw5hq"},
+        ],
+        "bl005": [
+            {"key": "semantic_strong_keep_score", "type": "int", "min": 0, "max": 10, "default": 2},
+            {"key": "semantic_min_keep_score", "type": "int", "min": 0, "max": 10, "default": 1},
+            {"key": "numeric_support_min_pass", "type": "int", "min": 0, "max": 10, "default": 1},
+            {"key": "profile_top_lead_genre_limit", "type": "int", "min": 1, "max": 30, "default": 6},
+            {"key": "profile_top_tag_limit", "type": "int", "min": 1, "max": 50, "default": 10},
+            {"key": "profile_top_genre_limit", "type": "int", "min": 1, "max": 50, "default": 8},
+        ],
+        "bl006": [
+            {"key": "component_weights", "type": "json"},
+            {"key": "numeric_thresholds", "type": "json"},
+        ],
+        "bl007": [
+            {"key": "target_size", "type": "int", "min": 1, "max": 100, "default": 10},
+            {"key": "min_score_threshold", "type": "float", "min": 0, "max": 1, "default": 0.35},
+            {"key": "max_per_genre", "type": "int", "min": 1, "max": 20, "default": 4},
+            {"key": "max_consecutive", "type": "int", "min": 1, "max": 10, "default": 2},
+        ],
+        "bl008": [
+            {"key": "top_contributor_limit", "type": "int", "min": 1, "max": 20, "default": 3},
+        ],
+        "bl009": [
+            {"key": "diagnostic_sample_limit", "type": "int", "min": 1, "max": 50, "default": 5},
+        ],
+    }
+
+    def __init__(self, repo_root: Path) -> None:
+        self.repo_root = repo_root
+        self.implementation_notes_root = repo_root / "07_implementation" / "implementation_notes"
+        self.observability_output_root = self.implementation_notes_root / "observability" / "outputs"
+        self.python_executable = Path(sys.executable)
+        self.lock = threading.Lock()
+        self.process: Optional[subprocess.Popen[str]] = None
+        self.history: Deque[Dict[str, Any]] = deque(maxlen=30)
+        self.state = PipelineRunState(
+            stages=[
+                PipelineStageState(
+                    stage_id=spec["stage_id"],
+                    label=spec["label"],
+                    script_path=spec["script"],
+                )
+                for spec in self.STAGE_SPECS
+            ]
+        )
+
+    def _new_run_id(self) -> str:
+        return datetime.now(timezone.utc).strftime("PIPELINE-RUN-%Y%m%d-%H%M%S-%f")
+
+    def _append_log(self, line: str, stage_id: Optional[str] = None) -> None:
+        clean = line.rstrip("\r\n")
+        with self.lock:
+            self.state.line_count += 1
+            entry = {
+                "index": self.state.line_count,
+                "timestamp_utc": now_utc(),
+                "stage_id": stage_id,
+                "line": clean,
+            }
+            self.state.logs.append(entry)
+            if len(self.state.logs) > 1200:
+                self.state.logs = self.state.logs[-1200:]
+
+    def _find_stage(self, stage_id: str) -> PipelineStageState:
+        for stage in self.state.stages:
+            if stage.stage_id == stage_id:
+                return stage
+        raise KeyError(f"Unknown stage id: {stage_id}")
+
+    def _stage_command(self, script_relative: str) -> List[str]:
+        script_path = self.implementation_notes_root / script_relative
+        return [str(self.python_executable), "-u", str(script_path)]
+
+    def _stage_env_overrides(self, stage_id: str, stage_params: Dict[str, Any]) -> Dict[str, str]:
+        if not isinstance(stage_params, dict):
+            return {}
+
+        env: Dict[str, str] = {}
+
+        if stage_id == "bl004":
+            mapping = {
+                "top_tag_limit": "BL004_TOP_TAG_LIMIT",
+                "top_genre_limit": "BL004_TOP_GENRE_LIMIT",
+                "top_lead_genre_limit": "BL004_TOP_LEAD_GENRE_LIMIT",
+            }
+            for key, env_key in mapping.items():
+                value = stage_params.get(key)
+                if isinstance(value, (int, float)):
+                    env[env_key] = str(value)
+
+            user_id = stage_params.get("user_id")
+            if isinstance(user_id, str) and user_id.strip():
+                env["BL004_USER_ID"] = user_id.strip()
+
+        if stage_id == "bl005":
+            mapping = {
+                "profile_top_lead_genre_limit": "BL005_PROFILE_TOP_LEAD_GENRE_LIMIT",
+                "profile_top_tag_limit": "BL005_PROFILE_TOP_TAG_LIMIT",
+                "profile_top_genre_limit": "BL005_PROFILE_TOP_GENRE_LIMIT",
+                "semantic_strong_keep_score": "BL005_SEMANTIC_STRONG_KEEP_SCORE",
+                "semantic_min_keep_score": "BL005_SEMANTIC_MIN_KEEP_SCORE",
+                "numeric_support_min_pass": "BL005_NUMERIC_SUPPORT_MIN_PASS",
+            }
+            for key, env_key in mapping.items():
+                value = stage_params.get(key)
+                if isinstance(value, (int, float)):
+                    env[env_key] = str(value)
+
+        if stage_id == "bl006":
+            weights = stage_params.get("component_weights")
+            if isinstance(weights, dict) and weights:
+                try:
+                    env["BL006_COMPONENT_WEIGHTS_JSON"] = json.dumps(weights, ensure_ascii=True)
+                except Exception:
+                    pass
+
+            threshold_overrides = stage_params.get("numeric_threshold_overrides")
+            if not isinstance(threshold_overrides, dict) or not threshold_overrides:
+                threshold_overrides = stage_params.get("numeric_thresholds")
+            if isinstance(threshold_overrides, dict) and threshold_overrides:
+                try:
+                    env["BL006_NUMERIC_THRESHOLDS_JSON"] = json.dumps(threshold_overrides, ensure_ascii=True)
+                except Exception:
+                    pass
+
+        if stage_id == "bl007":
+            mapping = {
+                "target_size": "BL007_TARGET_SIZE",
+                "min_score_threshold": "BL007_MIN_SCORE_THRESHOLD",
+                "max_per_genre": "BL007_MAX_PER_GENRE",
+                "max_consecutive": "BL007_MAX_CONSECUTIVE",
+            }
+            for key, env_key in mapping.items():
+                value = stage_params.get(key)
+                if isinstance(value, (int, float)):
+                    env[env_key] = str(value)
+
+        if stage_id == "bl008":
+            top_limit = stage_params.get("top_contributor_limit")
+            if isinstance(top_limit, (int, float)):
+                env["BL008_TOP_CONTRIBUTOR_LIMIT"] = str(top_limit)
+
+        if stage_id == "bl009":
+            sample_limit = stage_params.get("diagnostic_sample_limit")
+            if isinstance(sample_limit, (int, float)):
+                env["BL009_DIAGNOSTIC_SAMPLE_LIMIT"] = str(sample_limit)
+
+        return env
+
+    def stage_catalog(self) -> Dict[str, Any]:
+        return {
+            "server_time_utc": now_utc(),
+            "stages": [
+                {
+                    "stage_id": spec["stage_id"],
+                    "label": spec["label"],
+                    "script_path": spec["script"],
+                    "description": spec.get("description", ""),
+                }
+                for spec in self.STAGE_SPECS
+            ],
+        }
+
+    def runtime_config_snapshot(self) -> Dict[str, Any]:
+        return {
+            "server_time_utc": now_utc(),
+            "pipeline": {
+                "stages": [
+                    {
+                        "stage_id": spec["stage_id"],
+                        "label": spec["label"],
+                        "script_path": spec["script"],
+                        "description": spec.get("description", ""),
+                    }
+                    for spec in self.STAGE_SPECS
+                ],
+                "stage_parameter_schema": self.STAGE_PARAM_SCHEMA,
+                "history_limit": self.history.maxlen,
+                "pipeline_log_retention": 1200,
+                "export_log_retention": 600,
+            },
+        }
+
+    def validate_stage_params_payload(self, payload: Any) -> Dict[str, Any]:
+        source = payload if isinstance(payload, dict) else {}
+        stage_params = source.get("stage_params", source)
+        errors: List[str] = []
+        normalized: Dict[str, Dict[str, Any]] = {}
+
+        if stage_params in (None, {}):
+            return {
+                "valid": True,
+                "errors": [],
+                "normalized_stage_params": {},
+            }
+
+        if not isinstance(stage_params, dict):
+            return {
+                "valid": False,
+                "errors": ["stage_params must be an object keyed by stage id."],
+                "normalized_stage_params": {},
+            }
+
+        for stage_id, raw_params in stage_params.items():
+            sid = str(stage_id).strip().lower()
+            schema = self.STAGE_PARAM_SCHEMA.get(sid)
+            if schema is None:
+                errors.append(f"Unknown stage id for stage_params: {sid}")
+                continue
+            if not isinstance(raw_params, dict):
+                errors.append(f"stage_params.{sid} must be an object.")
+                continue
+
+            defs = {item["key"]: item for item in schema}
+            stage_out: Dict[str, Any] = {}
+
+            for key, value in raw_params.items():
+                spec = defs.get(key)
+                if spec is None:
+                    errors.append(f"Unknown parameter for {sid}: {key}")
+                    continue
+
+                value_type = spec.get("type")
+                if value_type == "string":
+                    if not isinstance(value, str):
+                        errors.append(f"{sid}.{key} must be a string.")
+                        continue
+                    clean = value.strip()
+                    if not clean:
+                        errors.append(f"{sid}.{key} cannot be empty.")
+                        continue
+                    stage_out[key] = clean
+                    continue
+
+                if value_type in ("int", "float"):
+                    if isinstance(value, bool):
+                        errors.append(f"{sid}.{key} must be a number.")
+                        continue
+                    number: Optional[float] = None
+                    if isinstance(value, (int, float)):
+                        number = float(value)
+                    elif isinstance(value, str):
+                        try:
+                            number = float(value.strip())
+                        except Exception:
+                            number = None
+                    if number is None:
+                        errors.append(f"{sid}.{key} must be a number.")
+                        continue
+
+                    if value_type == "int":
+                        if abs(number - round(number)) > 1e-9:
+                            errors.append(f"{sid}.{key} must be an integer.")
+                            continue
+                        final_value: Any = int(round(number))
+                    else:
+                        final_value = float(number)
+
+                    min_value = spec.get("min")
+                    max_value = spec.get("max")
+                    if isinstance(min_value, (int, float)) and final_value < min_value:
+                        errors.append(f"{sid}.{key} must be >= {min_value}.")
+                        continue
+                    if isinstance(max_value, (int, float)) and final_value > max_value:
+                        errors.append(f"{sid}.{key} must be <= {max_value}.")
+                        continue
+
+                    stage_out[key] = final_value
+                    continue
+
+                if value_type == "json":
+                    if not isinstance(value, dict):
+                        errors.append(f"{sid}.{key} must be a JSON object.")
+                        continue
+                    stage_out[key] = value
+                    continue
+
+            if stage_out:
+                normalized[sid] = stage_out
+
+        return {
+            "valid": len(errors) == 0,
+            "errors": errors,
+            "normalized_stage_params": normalized,
+        }
+
+    def _resolve_stage_selection(self, config: Dict[str, Any]) -> List[Dict[str, str]]:
+        selected_raw = config.get("stage_ids", []) if isinstance(config, dict) else []
+        all_ids = [spec["stage_id"] for spec in self.STAGE_SPECS]
+
+        if not selected_raw:
+            return list(self.STAGE_SPECS)
+
+        if not isinstance(selected_raw, list):
+            raise RuntimeError("stage_ids must be an array of stage identifiers.")
+
+        selected_set = {str(item).strip().lower() for item in selected_raw if str(item).strip()}
+        if not selected_set:
+            raise RuntimeError("At least one valid stage id is required.")
+
+        unknown = sorted(selected_set.difference(all_ids))
+        if unknown:
+            raise RuntimeError(f"Unknown stage_ids: {', '.join(unknown)}")
+
+        return [spec for spec in self.STAGE_SPECS if spec["stage_id"] in selected_set]
+
+    def _file_sha256(self, path: Path) -> str:
+        digest = hashlib.sha256()
+        with path.open("rb") as handle:
+            while True:
+                chunk = handle.read(1024 * 1024)
+                if not chunk:
+                    break
+                digest.update(chunk)
+        return digest.hexdigest().upper()
+
+    def _safe_json_load(self, path: Path) -> Any:
+        if not path.exists():
+            return None
+        try:
+            return json.loads(path.read_text(encoding="utf-8"))
+        except Exception:
+            return None
+
+    def _playlist_preview(self, payload: Any, max_items: int = 10) -> List[Dict[str, Any]]:
+        rows: List[Any]
+        if isinstance(payload, dict) and isinstance(payload.get("tracks"), list):
+            rows = payload.get("tracks", [])
+        elif isinstance(payload, list):
+            rows = payload
+        else:
+            rows = []
+
+        preview: List[Dict[str, Any]] = []
+        for row in rows[:max_items]:
+            if not isinstance(row, dict):
+                continue
+            preview.append({
+                "track_id": row.get("track_id") or row.get("id") or "-",
+                "title": row.get("title") or row.get("track_name") or row.get("name") or "-",
+                "artist": row.get("artist") or row.get("artist_name") or row.get("artist_names") or "-",
+                "score": row.get("score"),
+            })
+        return preview
+
+    def _artifact_summary(self) -> Dict[str, Any]:
+        targets = {
+            "bl004_profile": self.implementation_notes_root / "profile" / "outputs" / "bl004_preference_profile.json",
+            "bl005_candidates": self.implementation_notes_root / "retrieval" / "outputs" / "bl005_filtered_candidates.csv",
+            "bl006_scores": self.implementation_notes_root / "scoring" / "outputs" / "bl006_scored_candidates.csv",
+            "bl007_playlist": self.implementation_notes_root / "playlist" / "outputs" / "bl007_playlist.json",
+            "bl008_explanations": self.implementation_notes_root / "transparency" / "outputs" / "bl008_explanation_payloads.json",
+            "bl008_explanation_summary": self.implementation_notes_root / "transparency" / "outputs" / "bl008_explanation_summary.json",
+            "bl009_observability": self.implementation_notes_root / "observability" / "outputs" / "bl009_run_observability_log.json",
+        }
+        summary: Dict[str, Any] = {}
+        for key, path in targets.items():
+            if path.exists():
+                stat = path.stat()
+                summary[key] = {
+                    "path": str(path.relative_to(self.repo_root)).replace("\\", "/"),
+                    "mtime_utc": datetime.fromtimestamp(stat.st_mtime, timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+                    "size_bytes": stat.st_size,
+                    "sha256": self._file_sha256(path),
+                }
+            else:
+                summary[key] = {
+                    "path": str(path.relative_to(self.repo_root)).replace("\\", "/"),
+                    "missing": True,
+                }
+        return summary
+
+    def _build_compare(self, newer: Dict[str, Any], older: Optional[Dict[str, Any]]) -> Dict[str, Any]:
+        if not older:
+            return {
+                "baseline_run_id": None,
+                "changed_artifacts": [],
+                "unchanged_artifacts": [],
+                "changed_count": 0,
+            }
+
+        changed: List[str] = []
+        unchanged: List[str] = []
+        newer_artifacts = newer.get("artifact_summary", {}) if isinstance(newer, dict) else {}
+        older_artifacts = older.get("artifact_summary", {}) if isinstance(older, dict) else {}
+
+        all_keys = sorted(set(newer_artifacts.keys()) | set(older_artifacts.keys()))
+        for key in all_keys:
+            n = newer_artifacts.get(key, {})
+            o = older_artifacts.get(key, {})
+            if n.get("sha256") and o.get("sha256") and n.get("sha256") == o.get("sha256"):
+                unchanged.append(key)
+            elif n.get("missing") and o.get("missing"):
+                unchanged.append(key)
+            else:
+                changed.append(key)
+
+        return {
+            "baseline_run_id": older.get("run_id"),
+            "changed_artifacts": changed,
+            "unchanged_artifacts": unchanged,
+            "changed_count": len(changed),
+        }
+
+    def _record_history_locked(self) -> None:
+        record = {
+            "run_id": self.state.run_id,
+            "status": self.state.status,
+            "started_at_utc": self.state.started_at_utc,
+            "completed_at_utc": self.state.completed_at_utc,
+            "current_stage": self.state.current_stage,
+            "current_message": self.state.current_message,
+            "request_config": self.state.request_config,
+            "line_count": self.state.line_count,
+            "stages": [
+                {
+                    "stage_id": stage.stage_id,
+                    "label": stage.label,
+                    "status": stage.status,
+                    "started_at_utc": stage.started_at_utc,
+                    "completed_at_utc": stage.completed_at_utc,
+                    "exit_code": stage.exit_code,
+                    "current_message": stage.current_message,
+                }
+                for stage in self.state.stages
+            ],
+            "artifact_summary": self.state.artifact_summary,
+        }
+        self.history.append(record)
+
+    def _terminalize_locked(self, status: str, current_stage: str, message: str) -> None:
+        self.state.status = status
+        self.state.current_stage = current_stage
+        self.state.current_message = message
+        self.state.completed_at_utc = now_utc()
+        self.state.artifact_summary = self._artifact_summary()
+        self.process = None
+        self._record_history_locked()
+
+    def start(self, config: Dict[str, Any]) -> None:
+        selected_specs = self._resolve_stage_selection(config if isinstance(config, dict) else {})
+        with self.lock:
+            if self.process is not None and self.process.poll() is None:
+                raise RuntimeError("A pipeline run is already in progress.")
+
+            self.state = PipelineRunState(
+                status="running",
+                run_id=self._new_run_id(),
+                started_at_utc=now_utc(),
+                current_stage="starting",
+                current_message="Starting deterministic BL-004 to BL-009 run...",
+                request_config=config,
+                stages=[
+                    PipelineStageState(
+                        stage_id=spec["stage_id"],
+                        label=spec["label"],
+                        script_path=spec["script"],
+                    )
+                    for spec in selected_specs
+                ],
+            )
+
+        threading.Thread(target=self._run_pipeline, args=(selected_specs,), daemon=True).start()
+
+    def cancel(self) -> None:
+        with self.lock:
+            if self.state.status != "running":
+                raise RuntimeError("No pipeline run is currently in progress.")
+            self.state.cancel_requested = True
+            self.state.current_message = "Cancellation requested. Stopping active stage..."
+            process = self.process
+
+        if process is not None and process.poll() is None:
+            process.terminate()
+
+    def _run_pipeline(self, selected_specs: List[Dict[str, str]]) -> None:
+        for spec in selected_specs:
+            with self.lock:
+                if self.state.cancel_requested:
+                    self._terminalize_locked(
+                        status="cancelled",
+                        current_stage="cancelled",
+                        message="Pipeline run cancelled by user request.",
+                    )
+                    return
+
+            stage_id = spec["stage_id"]
+            stage = self._find_stage(stage_id)
+            with self.lock:
+                stage.status = "running"
+                stage.started_at_utc = now_utc()
+                stage.current_message = f"Running {stage.label}"
+                stage.log_start_index = self.state.line_count + 1
+                self.state.current_stage = stage_id
+                self.state.current_message = f"Running {stage.label}"
+
+            command = self._stage_command(spec["script"])
+            stage_params = {}
+            try:
+                stage_params = (self.state.request_config.get("stage_params", {}) or {}).get(stage_id, {})
+            except Exception:
+                stage_params = {}
+
+            env = os.environ.copy()
+            env.update(self._stage_env_overrides(stage_id, stage_params))
+            process = subprocess.Popen(
+                command,
+                cwd=str(self.repo_root),
+                env=env,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT,
+                text=True,
+                bufsize=1,
+            )
+
+            with self.lock:
+                self.process = process
+
+            assert process.stdout is not None
+            for line in process.stdout:
+                self._append_log(line, stage_id=stage_id)
+
+            exit_code = process.wait()
+
+            with self.lock:
+                stage.completed_at_utc = now_utc()
+                stage.exit_code = exit_code
+                stage.log_end_index = self.state.line_count
+
+                if self.state.cancel_requested:
+                    stage.status = "cancelled"
+                    stage.current_message = f"{stage.label} cancelled."
+                    self._terminalize_locked(
+                        status="cancelled",
+                        current_stage="cancelled",
+                        message="Pipeline run cancelled by user request.",
+                    )
+                    return
+
+                if exit_code != 0:
+                    stage.status = "failed"
+                    stage.current_message = f"{stage.label} failed with exit code {exit_code}."
+                    self._terminalize_locked(
+                        status="failed",
+                        current_stage=stage_id,
+                        message=stage.current_message,
+                    )
+                    return
+
+                stage.status = "completed"
+                stage.current_message = f"{stage.label} completed successfully."
+
+            time.sleep(0.05)
+
+        with self.lock:
+            self._terminalize_locked(
+                status="completed",
+                current_stage="completed",
+                message="Pipeline run completed successfully.",
+            )
+
+    def history_snapshot(self, limit: int = 10) -> Dict[str, Any]:
+        with self.lock:
+            limit = max(1, min(limit, 50))
+            ordered = list(self.history)[-limit:]
+            ordered.reverse()
+
+            enriched: List[Dict[str, Any]] = []
+            for index, record in enumerate(ordered):
+                older = ordered[index + 1] if index + 1 < len(ordered) else None
+                compare = self._build_compare(record, older)
+                item = dict(record)
+                item["compare_to_previous"] = compare
+                enriched.append(item)
+
+            return {
+                "server_time_utc": now_utc(),
+                "history_count": len(self.history),
+                "runs": enriched,
+            }
+
+    def _pick_run_locked(self, run_id: Optional[str]) -> Optional[Dict[str, Any]]:
+        if run_id:
+            if self.state.run_id == run_id:
+                return {
+                    "run_id": self.state.run_id,
+                    "status": self.state.status,
+                    "started_at_utc": self.state.started_at_utc,
+                    "completed_at_utc": self.state.completed_at_utc,
+                    "current_stage": self.state.current_stage,
+                    "current_message": self.state.current_message,
+                    "request_config": self.state.request_config,
+                    "selected_stage_ids": [stage.stage_id for stage in self.state.stages],
+                    "available_stage_ids": [spec["stage_id"] for spec in self.STAGE_SPECS],
+                    "line_count": self.state.line_count,
+                    "stages": [
+                        {
+                            "stage_id": stage.stage_id,
+                            "label": stage.label,
+                            "status": stage.status,
+                            "started_at_utc": stage.started_at_utc,
+                            "completed_at_utc": stage.completed_at_utc,
+                            "exit_code": stage.exit_code,
+                            "current_message": stage.current_message,
+                        }
+                        for stage in self.state.stages
+                    ],
+                    "artifact_summary": self.state.artifact_summary,
+                }
+
+            for record in reversed(self.history):
+                if record.get("run_id") == run_id:
+                    return dict(record)
+            return None
+
+        if self.history:
+            return dict(self.history[-1])
+
+        if self.state.run_id:
+            return {
+                "run_id": self.state.run_id,
+                "status": self.state.status,
+                "started_at_utc": self.state.started_at_utc,
+                "completed_at_utc": self.state.completed_at_utc,
+                "current_stage": self.state.current_stage,
+                "current_message": self.state.current_message,
+                "request_config": self.state.request_config,
+                "line_count": self.state.line_count,
+                "stages": [
+                    {
+                        "stage_id": stage.stage_id,
+                        "label": stage.label,
+                        "status": stage.status,
+                        "started_at_utc": stage.started_at_utc,
+                        "completed_at_utc": stage.completed_at_utc,
+                        "exit_code": stage.exit_code,
+                        "current_message": stage.current_message,
+                    }
+                    for stage in self.state.stages
+                ],
+                "artifact_summary": self.state.artifact_summary,
+            }
+
+        return None
+
+    def results_snapshot(self, run_id: Optional[str] = None) -> Dict[str, Any]:
+        with self.lock:
+            selected = self._pick_run_locked(run_id)
+
+        playlist_path = self.implementation_notes_root / "playlist" / "outputs" / "bl007_playlist.json"
+        explanation_summary_path = self.implementation_notes_root / "transparency" / "outputs" / "bl008_explanation_summary.json"
+        observability_path = self.implementation_notes_root / "observability" / "outputs" / "bl009_run_observability_log.json"
+
+        playlist_payload = self._safe_json_load(playlist_path)
+        explanation_summary = self._safe_json_load(explanation_summary_path)
+        observability_payload = self._safe_json_load(observability_path)
+
+        playlist_preview = self._playlist_preview(playlist_payload, max_items=10)
+        compare = None
+        if selected and self.history:
+            selected_id = selected.get("run_id")
+            ordered = list(self.history)
+            ordered.reverse()
+            target_index = next((idx for idx, item in enumerate(ordered) if item.get("run_id") == selected_id), None)
+            if target_index is not None:
+                older = ordered[target_index + 1] if target_index + 1 < len(ordered) else None
+                compare = self._build_compare(ordered[target_index], older)
+
+        return {
+            "server_time_utc": now_utc(),
+            "run": selected,
+            "playlist_preview": playlist_preview,
+            "explanation_summary": explanation_summary,
+            "observability_summary": observability_payload,
+            "compare_to_previous": compare,
+        }
+
+    def create_evidence_bundle(self, run_id: Optional[str] = None) -> Dict[str, Any]:
+        with self.lock:
+            selected = self._pick_run_locked(run_id)
+
+        if selected is None:
+            raise RuntimeError("No pipeline run evidence is available yet.")
+
+        results = self.results_snapshot(run_id=selected.get("run_id"))
+        manifest = {
+            "bundle_generated_at_utc": now_utc(),
+            "bundle_type": "website_pipeline_evidence",
+            "run": results.get("run"),
+            "compare_to_previous": results.get("compare_to_previous"),
+            "playlist_preview": results.get("playlist_preview"),
+            "explanation_summary": results.get("explanation_summary"),
+            "artifact_summary": (results.get("run") or {}).get("artifact_summary", {}),
+        }
+
+        run_key = (selected.get("run_id") or "unknown").replace(":", "-")
+        output_path = self.observability_output_root / f"website_evidence_bundle_{run_key}.json"
+        output_path.parent.mkdir(parents=True, exist_ok=True)
+        output_path.write_text(json.dumps(manifest, indent=2, ensure_ascii=True), encoding="utf-8")
+
+        return {
+            "server_time_utc": now_utc(),
+            "run_id": selected.get("run_id"),
+            "bundle_path": str(output_path.relative_to(self.repo_root)).replace("\\", "/"),
+            "bundle": manifest,
+        }
+
+    def snapshot(self, after: int = 0) -> Dict[str, Any]:
+        with self.lock:
+            logs = [entry for entry in self.state.logs if entry["index"] > after]
+            return {
+                "server_time_utc": now_utc(),
+                "run": {
+                    "status": self.state.status,
+                    "run_id": self.state.run_id,
+                    "started_at_utc": self.state.started_at_utc,
+                    "completed_at_utc": self.state.completed_at_utc,
+                    "current_stage": self.state.current_stage,
+                    "current_message": self.state.current_message,
+                    "cancel_requested": self.state.cancel_requested,
+                    "request_config": self.state.request_config,
+                    "line_count": self.state.line_count,
+                    "selected_stage_ids": [stage.stage_id for stage in self.state.stages],
+                    "available_stage_ids": [spec["stage_id"] for spec in self.STAGE_SPECS],
+                    "logs": logs,
+                    "history_count": len(self.history),
+                    "stages": [
+                        {
+                            "stage_id": stage.stage_id,
+                            "label": stage.label,
+                            "script_path": stage.script_path,
+                            "status": stage.status,
+                            "started_at_utc": stage.started_at_utc,
+                            "completed_at_utc": stage.completed_at_utc,
+                            "exit_code": stage.exit_code,
+                            "current_message": stage.current_message,
+                            "log_start_index": stage.log_start_index,
+                            "log_end_index": stage.log_end_index,
+                        }
+                        for stage in self.state.stages
+                    ],
+                    "artifact_summary": self.state.artifact_summary,
+                },
+            }
+
+
 class WebsiteApiHandler(SimpleHTTPRequestHandler):
     def __init__(self, *args: Any, directory: str | None = None, **kwargs: Any) -> None:
         super().__init__(*args, directory=directory, **kwargs)
@@ -247,21 +1088,161 @@ class WebsiteApiHandler(SimpleHTTPRequestHandler):
         data = json.dumps(payload, ensure_ascii=True).encode("utf-8")
         self.send_response(status)
         self.send_header("Content-Type", "application/json; charset=utf-8")
+        self.send_header("Cache-Control", "no-store")
         self.send_header("Content-Length", str(len(data)))
         self.end_headers()
         self.wfile.write(data)
 
     def do_GET(self) -> None:  # noqa: N802
         parsed = urllib.parse.urlparse(self.path)
+        if parsed.path == "/api/health":
+            pipeline_state = self.server.pipeline_job.snapshot().get("run", {})
+            export_state = self.server.export_job.snapshot().get("run", {})
+            uptime_seconds = max(0, int(time.time() - self.server.started_monotonic))
+            self._send_json({
+                "server_time_utc": now_utc(),
+                "status": "ok",
+                "uptime_seconds": uptime_seconds,
+                "started_at_utc": self.server.started_at_utc,
+                "server": {
+                    "bind": self.server.server_address[0],
+                    "port": self.server.server_address[1],
+                    "serve_root": str(self.server.serve_root).replace("\\", "/"),
+                },
+                "services": {
+                    "pipeline": {
+                        "status": pipeline_state.get("status", "idle"),
+                        "run_id": pipeline_state.get("run_id"),
+                    },
+                    "spotify_export": {
+                        "status": export_state.get("status", "idle"),
+                        "line_count": export_state.get("line_count", 0),
+                    },
+                },
+            })
+            return
+
+        if parsed.path == "/api/runtime/config":
+            payload = self.server.pipeline_job.runtime_config_snapshot()
+            payload["server"] = {
+                "bind": self.server.server_address[0],
+                "port": self.server.server_address[1],
+                "started_at_utc": self.server.started_at_utc,
+            }
+            self._send_json(payload)
+            return
+
+        if parsed.path == "/api/pipeline/stages":
+            self._send_json(self.server.pipeline_job.stage_catalog())
+            return
+
+        if parsed.path == "/api/pipeline/run/history":
+            query = urllib.parse.parse_qs(parsed.query)
+            limit_raw = query.get("limit", ["10"])[0]
+            try:
+                limit = int(limit_raw)
+            except (TypeError, ValueError):
+                limit = 10
+            self._send_json(self.server.pipeline_job.history_snapshot(limit=limit))
+            return
+
+        if parsed.path == "/api/pipeline/run/status":
+            query = urllib.parse.parse_qs(parsed.query)
+            after_raw = query.get("after", ["0"])[0]
+            try:
+                after = max(0, int(after_raw))
+            except (TypeError, ValueError):
+                after = 0
+            self._send_json(self.server.pipeline_job.snapshot(after=after))
+            return
+
+        if parsed.path == "/api/pipeline/run/results":
+            query = urllib.parse.parse_qs(parsed.query)
+            run_id = query.get("run_id", [None])[0]
+            self._send_json(self.server.pipeline_job.results_snapshot(run_id=run_id))
+            return
+
         if parsed.path == "/api/spotify/export/status":
             query = urllib.parse.parse_qs(parsed.query)
-            after = int(query.get("after", ["0"])[0])
+            after_raw = query.get("after", ["0"])[0]
+            try:
+                after = max(0, int(after_raw))
+            except (TypeError, ValueError):
+                after = 0
             self._send_json(self.server.export_job.snapshot(after=after))
             return
         super().do_GET()
 
     def do_POST(self) -> None:  # noqa: N802
         parsed = urllib.parse.urlparse(self.path)
+        if parsed.path == "/api/runtime/config/validate":
+            try:
+                content_length = int(self.headers.get("Content-Length", "0"))
+                raw = self.rfile.read(content_length).decode("utf-8") if content_length else "{}"
+                payload = json.loads(raw or "{}")
+                result = self.server.pipeline_job.validate_stage_params_payload(payload)
+            except Exception as exc:
+                self._send_json({"error": f"Unable to validate runtime config: {exc}"}, status=HTTPStatus.BAD_REQUEST)
+                return
+
+            status = HTTPStatus.OK if result.get("valid") else HTTPStatus.BAD_REQUEST
+            self._send_json({
+                "server_time_utc": now_utc(),
+                **result,
+            }, status=status)
+            return
+
+        if parsed.path == "/api/pipeline/run/cancel":
+            try:
+                self.server.pipeline_job.cancel()
+            except RuntimeError as exc:
+                self._send_json({"error": str(exc)}, status=HTTPStatus.CONFLICT)
+                return
+            self._send_json(self.server.pipeline_job.snapshot(), status=HTTPStatus.ACCEPTED)
+            return
+
+        if parsed.path == "/api/pipeline/run/start":
+            try:
+                content_length = int(self.headers.get("Content-Length", "0"))
+                raw = self.rfile.read(content_length).decode("utf-8") if content_length else "{}"
+                payload = json.loads(raw or "{}")
+                self.server.pipeline_job.start(payload)
+            except RuntimeError as exc:
+                self._send_json({"error": str(exc)}, status=HTTPStatus.CONFLICT)
+                return
+            except Exception as exc:
+                self._send_json({"error": f"Unable to start pipeline run: {exc}"}, status=HTTPStatus.BAD_REQUEST)
+                return
+
+            self._send_json(self.server.pipeline_job.snapshot(), status=HTTPStatus.ACCEPTED)
+            return
+
+        if parsed.path == "/api/pipeline/run/evidence_bundle":
+            try:
+                content_length = int(self.headers.get("Content-Length", "0"))
+                raw = self.rfile.read(content_length).decode("utf-8") if content_length else "{}"
+                payload = json.loads(raw or "{}")
+                run_id = payload.get("run_id") if isinstance(payload, dict) else None
+                bundle = self.server.pipeline_job.create_evidence_bundle(run_id=run_id)
+            except RuntimeError as exc:
+                self._send_json({"error": str(exc)}, status=HTTPStatus.CONFLICT)
+                return
+            except Exception as exc:
+                self._send_json({"error": f"Unable to create evidence bundle: {exc}"}, status=HTTPStatus.BAD_REQUEST)
+                return
+
+            self._send_json(bundle, status=HTTPStatus.ACCEPTED)
+            return
+
+        if parsed.path == "/api/spotify/export/cancel":
+            try:
+                self.server.export_job.cancel()
+            except RuntimeError as exc:
+                self._send_json({"error": str(exc)}, status=HTTPStatus.CONFLICT)
+                return
+            self._send_json(self.server.export_job.snapshot(), status=HTTPStatus.ACCEPTED)
+            return
+
         if parsed.path != "/api/spotify/export/start":
             self._send_json({"error": "Not found."}, status=HTTPStatus.NOT_FOUND)
             return
@@ -282,9 +1263,12 @@ class WebsiteApiHandler(SimpleHTTPRequestHandler):
 
 
 class WebsiteApiServer(ThreadingHTTPServer):
-    def __init__(self, server_address: tuple[str, int], handler_class: type[WebsiteApiHandler], serve_root: Path, export_job: SpotifyExportJob) -> None:
+    def __init__(self, server_address: tuple[str, int], handler_class: type[WebsiteApiHandler], serve_root: Path, export_job: SpotifyExportJob, pipeline_job: PipelineJob) -> None:
         self.serve_root = serve_root
         self.export_job = export_job
+        self.pipeline_job = pipeline_job
+        self.started_at_utc = now_utc()
+        self.started_monotonic = time.time()
         super().__init__(server_address, lambda *args, **kwargs: handler_class(*args, directory=str(serve_root), **kwargs))
 
 
@@ -296,8 +1280,9 @@ def main() -> None:
     implementation_root = setup_dir.parent
     repo_root = implementation_root.parent
     export_job = SpotifyExportJob(repo_root=repo_root)
+    pipeline_job = PipelineJob(repo_root=repo_root)
 
-    server = WebsiteApiServer((bind, port), WebsiteApiHandler, implementation_root, export_job)
+    server = WebsiteApiServer((bind, port), WebsiteApiHandler, implementation_root, export_job, pipeline_job)
     print(f"Serving website + API on http://{bind}:{port}/", flush=True)
     print(f"Import page: http://{bind}:{port}/website/import.html", flush=True)
     server.serve_forever()

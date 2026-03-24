@@ -19,7 +19,7 @@ What design considerations shape the engineering of a transparent, controllable,
 8. Evaluate the system with respect to transparency, controllability, inspectability, and reproducibility.
 
 - Current artefact definition:
-A deterministic single-user playlist generation pipeline with one practical ingestion path, semantic preference extraction from imported history, deterministic feature-based scoring on a fixed candidate corpus, configurable playlist assembly rules, transparent score explanations, and reproducible run logging. User-selectable profile source scope is a documented deferred extension (BL-021, D-023), not a completed MVP capability.
+A deterministic single-user playlist generation pipeline with one practical ingestion path, semantic preference extraction from imported history, deterministic feature-based scoring on a fixed candidate corpus, configurable playlist assembly rules, transparent score explanations, reproducible run logging, and implemented source-scope control via canonical run-config (`input_scope`) with recorded effective scope in BL-004 and BL-009 outputs.
 
 - Current methodology position:
 Design Science Research with an iterative literature -> requirements -> design -> implementation -> evaluation flow. Contribution focus is engineering/design evidence for transparent, controllable, and observable recommendation pipelines, not ML model novelty.
@@ -52,6 +52,13 @@ The active candidate corpus is DS-002 (`MSD subset + Last.fm tags`). The BL-019 
 • no collaborative filtering or deep recommender baseline is included
 • evaluation is limited to BSc-feasible testing and does not include large-scale user studies
 
+### BL-021 Source-Scope Completion Update (2026-03-24)
+- Canonical run-config source-scope contract is implemented and validated.
+- BL-003 now applies `input_scope` filtering and emits `bl003_source_scope_manifest.json`.
+- BL-004 and BL-009 persist effective source-scope plus run-config provenance.
+- A/B probes confirm behavioral controllability with non-zero profile deltas after actuation (`EXP-042`, `TC-BL021-R2-003`).
+- BL-013 now supports optional one-command seed refresh (`--refresh-seed`) to align orchestration with scope changes.
+
 ## Current Implementation Status
 
 ### BL-020 Implementation State (as of 2026-03-22)
@@ -75,10 +82,10 @@ See: `07_implementation/BL020_HANDOFF_AUDIT_2026-03-21.md` for comprehensive pre
 ## Update Control
 
 - Last updated:
-2026-03-23
+2026-03-24
 
 - Reason for last update:
-(1) Record freeze-first execution posture after BL-020 completion: hold pipeline behavior stable and route implementation effort to website integration and bounded hardening. (2) Prioritize UI-002 and UI-003 evidence hardening by applying bounded-claim wording fixes in `08_writing/chapter2.md`, `08_writing/chapter3.md`, and `08_writing/chapter5.md`. (3) Synchronize execution tracking in governance records for day-by-day mentor-readiness control and website-integration work package activation.
+(1) Synchronize governance state with completed BL-021 source-scope contract and actuation evidence (`EXP-040` to `EXP-042`, `TC-BL021-R2-001` to `TC-BL021-R2-003`). (2) Record BL-003 scope-aware alignment behavior and new source-scope manifest output in the active implementation posture. (3) Note BL-013 orchestration update (`--refresh-seed`) that enables one-command scope-sensitive replay runs.
 
 ## Locked Definitions
 - Artefact scope lock: `00_admin/Artefact_MVP_definition.md`

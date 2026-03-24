@@ -23,6 +23,12 @@ Continue after a stage failure to inspect downstream behavior:
 python 07_implementation/implementation_notes/entrypoint/run_bl013_pipeline_entrypoint.py --continue-on-error
 ```
 
+Refresh BL-003 seed-table before running BL-004 to BL-009 (recommended when source scope changes):
+
+```powershell
+python 07_implementation/implementation_notes/entrypoint/run_bl013_pipeline_entrypoint.py --refresh-seed --run-config 07_implementation/implementation_notes/run_config/run_config_bl021_probe_v1.json
+```
+
 ## Output artifacts
 - Run summaries are written to:
   - `07_implementation/implementation_notes/entrypoint/outputs/bl013_orchestration_run_<run_id>.json`

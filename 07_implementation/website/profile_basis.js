@@ -9,9 +9,19 @@ const profileImportGroupCountNode = document.getElementById("profile-import-grou
 const profileImportTrackCountNode = document.getElementById("profile-import-track-count");
 const profileImportInclusionNode = document.getElementById("profile-import-inclusion");
 const profileImportSelectionNode = document.getElementById("profile-import-selection");
+const profileRefreshBtn = document.getElementById("profile-refresh-btn");
+const profileClearLocalBtn = document.getElementById("profile-clear-local-btn");
 const downloadIncludedBtn = document.getElementById("download-included-btn");
 const downloadExclusionsBtn = document.getElementById("download-exclusions-btn");
 const downloadProfileBundleBtn = document.getElementById("download-profile-bundle-btn");
+const profileReadinessNode = document.getElementById("profile-readiness");
+const profileReadinessDetailNode = document.getElementById("profile-readiness-detail");
+const profileBasisIncludedNode = document.getElementById("profile-basis-included-count");
+const profileBasisExcludedNode = document.getElementById("profile-basis-excluded-count");
+const profileBasisGroupsNode = document.getElementById("profile-basis-active-groups");
+const profileIncludedPreviewNode = document.getElementById("profile-included-preview");
+const profileExcludedPreviewNode = document.getElementById("profile-excluded-preview");
+const profileDecisionRulesNode = document.getElementById("profile-decision-rules");
 
 const IMPORT_GROUPS_KEY = "playlist_import_groups_v1";
 const PROFILE_EXCLUSIONS_KEY = "playlist_profile_exclusions_v1";
@@ -27,6 +37,98 @@ const state = {
   excludeGroups: new Set(),
   excludeTracks: new Set()
 };
+
+function buildTrackKey(groupKey, sectionId, trackId, index) {
+  return `${groupKey}::${sectionId}::${trackId || "na"}::${index}`;
+}
+
+function buildTrackLabel(track) {
+  const safeTitle = track.title || "Untitled";
+  const safeArtist = track.artist || "Unknown artist";
+  return `${safeTitle} - ${safeArtist}`;
+}
+
+function readSavedExclusions() {
+  const raw = localStorage.getItem(PROFILE_EXCLUSIONS_KEY);
+  if (!raw) {
+    return null;
+  }
+
+  try {
+    const parsed = JSON.parse(raw);
+    return {
+      excludeGroups: Array.isArray(parsed.exclude_groups) ? parsed.exclude_groups : [],
+      excludeTracks: Array.isArray(parsed.exclude_tracks) ? parsed.exclude_tracks : []
+    };
+  } catch {
+    return null;
+  }
+}
+
+function restoreSavedExclusions() {
+  const saved = readSavedExclusions();
+  if (!saved) {
+    state.excludeGroups = new Set();
+    state.excludeTracks = new Set();
+    return;
+  }
+
+  const validGroupKeys = new Set(state.groups.map((group) => group.key));
+  const validTrackKeys = new Set();
+
+  state.groups.forEach((group) => {
+    const subsections = buildSubsectionsForGroup(group);
+    subsections.forEach((section) => {
+      section.tracks.forEach((track, index) => {
+        validTrackKeys.add(buildTrackKey(group.key, section.id, track.id, index));
+      });
+    });
+  });
+
+  state.excludeGroups = new Set(saved.excludeGroups.filter((groupKey) => validGroupKeys.has(groupKey)));
+  state.excludeTracks = new Set(
+    saved.excludeTracks.filter((trackKey) => {
+      const groupKey = trackKey.split("::")[0];
+      return validTrackKeys.has(trackKey) && !state.excludeGroups.has(groupKey);
+    })
+  );
+}
+
+function createReviewItem(entry, tone = "neutral") {
+  const li = document.createElement("li");
+  li.className = `profile-review-item tone-${tone}`;
+
+  const title = document.createElement("strong");
+  title.className = "profile-review-title";
+  title.textContent = entry.title;
+  li.appendChild(title);
+
+  if (entry.meta) {
+    const meta = document.createElement("p");
+    meta.className = "profile-review-meta";
+    meta.textContent = entry.meta;
+    li.appendChild(meta);
+  }
+
+  return li;
+}
+
+function renderReviewList(node, entries, emptyMessage, tone = "neutral") {
+  if (!node) {
+    return;
+  }
+
+  node.innerHTML = "";
+
+  if (!entries.length) {
+    node.appendChild(createReviewItem({ title: emptyMessage }, tone));
+    return;
+  }
+
+  entries.forEach((entry) => {
+    node.appendChild(createReviewItem(entry, entry.tone || tone));
+  });
+}
 
 function formatDateTimeDisplay(isoValue) {
   if (!isoValue) {
@@ -377,12 +479,17 @@ function renderImportSummary() {
   }
 
   if (state.groupSource === "local") {
-    profileImportSummaryMessage.textContent = "Using the saved selection from the import page. This takes precedence over the full export fallback.";
+    profileImportSummaryMessage.textContent = "Using the saved import-page snapshot because full export artifacts were unavailable.";
     return;
   }
 
   if (state.groupSource === "export") {
-    profileImportSummaryMessage.textContent = "Using full export artifacts because no saved import-page selection was found.";
+    if (meta.localSnapshotExists) {
+      profileImportSummaryMessage.textContent = `Using full export artifacts. A local snapshot from ${formatDateTimeDisplay(meta.localSnapshotCreatedAt)} is available only as fallback.`;
+      return;
+    }
+
+    profileImportSummaryMessage.textContent = "Using full export artifacts. No local snapshot fallback was found.";
     return;
   }
 
@@ -400,7 +507,43 @@ function setStatus(type, message) {
   profileStatus.textContent = message;
 }
 
+function readLocalSnapshot() {
+  const raw = localStorage.getItem(IMPORT_GROUPS_KEY);
+  if (!raw) {
+    return null;
+  }
+
+  try {
+    const parsed = JSON.parse(raw);
+    const localGroups = Array.isArray(parsed.groups) ? parsed.groups : [];
+    if (!localGroups.length) {
+      return null;
+    }
+    return {
+      groups: localGroups,
+      createdAt: parsed.created_at || null,
+      runId: parsed.run_id || null,
+      selectionSummary: parsed.selection_summary || `${localGroups.length} saved group${localGroups.length !== 1 ? "s" : ""}`
+    };
+  } catch {
+    return null;
+  }
+}
+
+function updateSourceActionButtons() {
+  if (!profileClearLocalBtn) {
+    return;
+  }
+
+  const hasLocalSnapshot = Boolean(state.groupSourceMeta && (
+    state.groupSource === "local" || state.groupSourceMeta.localSnapshotExists
+  ));
+  profileClearLocalBtn.disabled = !hasLocalSnapshot;
+}
+
 async function loadGroups() {
+  const localSnapshot = readLocalSnapshot();
+
   try {
     const summary = await fetchJson(EXPORT_SUMMARY_PATH).catch(() => null);
     const exportGroups = await loadGroupsFromExistingExport();
@@ -421,7 +564,9 @@ async function loadGroups() {
         runId: summary?.run_id || null,
         selectionSummary: summarizeSelection(selection),
         selectionCaps: caps,
-        selectionRaw: selection
+        selectionRaw: selection,
+        localSnapshotExists: Boolean(localSnapshot),
+        localSnapshotCreatedAt: localSnapshot?.createdAt || null
       };
       return;
     }
@@ -429,34 +574,45 @@ async function loadGroups() {
     // Ignore fetch failures.
   }
 
-  const raw = localStorage.getItem(IMPORT_GROUPS_KEY);
-  if (raw) {
-    try {
-      const parsed = JSON.parse(raw);
-      const localGroups = Array.isArray(parsed.groups) ? parsed.groups : [];
-      if (localGroups.length) {
-        state.groups = localGroups;
-        state.groupSource = "local";
-        state.groupSourceMeta = {
-          createdAt: parsed.created_at || null,
-          runId: parsed.run_id || null,
-          selectionSummary: parsed.selection_summary || (
-            Array.isArray(parsed.groups)
-              ? `${parsed.groups.length} saved group${parsed.groups.length !== 1 ? "s" : ""}`
-              : "Saved selection"
-          ),
-          selectionCaps: []
-        };
-        return;
-      }
-    } catch {
-      state.groups = [];
-    }
+  if (localSnapshot) {
+    state.groups = localSnapshot.groups;
+    state.groupSource = "local";
+    state.groupSourceMeta = {
+      createdAt: localSnapshot.createdAt,
+      runId: localSnapshot.runId,
+      selectionSummary: localSnapshot.selectionSummary,
+      selectionCaps: []
+    };
+    return;
   }
 
   state.groups = [];
   state.groupSource = "none";
   state.groupSourceMeta = null;
+}
+
+function clearLocalSnapshot() {
+  localStorage.removeItem(IMPORT_GROUPS_KEY);
+  localStorage.removeItem(PROFILE_EXCLUSIONS_KEY);
+}
+
+async function reloadSourceData(statusMessage = "Imported data refreshed.") {
+  state.excludeGroups = new Set();
+  state.excludeTracks = new Set();
+
+  await loadGroups();
+  restoreSavedExclusions();
+  renderImportSummary();
+  renderGroups();
+  renderBasisPanel();
+  updateSourceActionButtons();
+
+  if (!state.groups.length) {
+    setStatus("warning", "No import data found. Save a selection from Import page or keep Spotify export files in implementation_notes/ingestion/outputs/spotify_api_export.");
+    return;
+  }
+
+  setStatus("info", statusMessage);
 }
 
 function renderEmptyState() {
@@ -470,6 +626,7 @@ function renderEmptyState() {
 function renderGroup(group) {
   const wrap = document.createElement("section");
   wrap.className = "api-group";
+  const groupExcluded = state.excludeGroups.has(group.key);
 
   const endpointDetails = document.createElement("details");
   endpointDetails.className = "group-details";
@@ -490,7 +647,7 @@ function renderGroup(group) {
 
   const excludeGroupLabel = document.createElement("label");
   excludeGroupLabel.className = "scope-check";
-  excludeGroupLabel.innerHTML = `<input type="checkbox" data-group="${group.key}" class="exclude-group-checkbox"><span>Exclude entire endpoint group</span>`;
+  excludeGroupLabel.innerHTML = `<input type="checkbox" data-group="${group.key}" class="exclude-group-checkbox" ${groupExcluded ? "checked" : ""}><span>Exclude entire endpoint group</span>`;
   body.appendChild(excludeGroupLabel);
 
   const subsectionsWrap = document.createElement("div");
@@ -515,11 +672,12 @@ function renderGroup(group) {
 
     section.tracks.forEach((track, index) => {
       const li = document.createElement("li");
-      li.className = "track-item";
+      const trackKey = buildTrackKey(group.key, section.id, track.id, index);
+      const trackExcluded = groupExcluded || state.excludeTracks.has(trackKey);
+      li.className = `track-item ${trackExcluded ? "is-excluded" : "is-included"}`;
 
       const safeTitle = track.title || "Untitled";
       const safeArtist = track.artist || "Unknown artist";
-      const trackKey = `${group.key}::${section.id}::${track.id || "na"}::${index}`;
       const metaParts = [];
       if (track.playlist_position) {
         metaParts.push(`pos ${track.playlist_position}`);
@@ -531,7 +689,7 @@ function renderGroup(group) {
 
       li.innerHTML = `
         <label class="scope-check">
-          <input type="checkbox" data-track="${trackKey}" data-group="${group.key}" class="exclude-track-checkbox">
+          <input type="checkbox" data-track="${trackKey}" data-group="${group.key}" class="exclude-track-checkbox" ${state.excludeTracks.has(trackKey) ? "checked" : ""} ${groupExcluded ? "disabled" : ""}>
           <span><strong>${safeTitle}</strong><br><span class="track-meta">${safeArtist}${extraMeta}</span></span>
         </label>
       `;
@@ -569,17 +727,17 @@ function renderGroups() {
         state.excludeGroups.delete(groupKey);
       }
 
-      importedGroupsNode
-        .querySelectorAll(`.exclude-track-checkbox[data-group="${groupKey}"]`)
-        .forEach((trackCheckbox) => {
-          trackCheckbox.disabled = input.checked;
-          if (input.checked) {
-            trackCheckbox.checked = false;
+      if (input.checked) {
+        importedGroupsNode
+          .querySelectorAll(`.exclude-track-checkbox[data-group="${groupKey}"]`)
+          .forEach((trackCheckbox) => {
             state.excludeTracks.delete(trackCheckbox.getAttribute("data-track"));
-          }
-        });
+          });
+      }
 
       renderImportSummary();
+      renderGroups();
+      renderBasisPanel();
     });
   });
 
@@ -592,6 +750,13 @@ function renderGroups() {
         state.excludeTracks.delete(trackId);
       }
       renderImportSummary();
+      renderBasisPanel();
+
+      const trackItem = input.closest(".track-item");
+      if (trackItem) {
+        trackItem.classList.toggle("is-excluded", input.checked);
+        trackItem.classList.toggle("is-included", !input.checked);
+      }
     });
   });
 }
@@ -609,6 +774,123 @@ function getIncludedCounts() {
 
   const includedTracks = Math.max(0, totalTracks - excludedTracks);
   return { totalTracks, excludedTracks, includedTracks };
+}
+
+function renderBasisPanel() {
+  const counts = getIncludedCounts();
+  const activeGroups = [];
+  const excludedPreview = [];
+
+  state.groups.forEach((group) => {
+    const groupExcluded = state.excludeGroups.has(group.key);
+    const subsections = buildSubsectionsForGroup(group);
+    let groupIncludedCount = 0;
+    let groupManualExcludedCount = 0;
+
+    subsections.forEach((section) => {
+      section.tracks.forEach((track, index) => {
+        const trackKey = buildTrackKey(group.key, section.id, track.id, index);
+        const label = buildTrackLabel(track);
+
+        if (groupExcluded) {
+          if (excludedPreview.length < 6) {
+            excludedPreview.push({
+              title: label,
+              meta: `${group.label}. Excluded because the full endpoint group is disabled.`,
+              tone: "warning"
+            });
+          }
+          return;
+        }
+
+        if (state.excludeTracks.has(trackKey)) {
+          groupManualExcludedCount += 1;
+          if (excludedPreview.length < 6) {
+            excludedPreview.push({
+              title: label,
+              meta: `${group.label}. Excluded manually on this page.`,
+              tone: "warning"
+            });
+          }
+          return;
+        }
+
+        groupIncludedCount += 1;
+      });
+    });
+
+    if (groupExcluded) {
+      excludedPreview.unshift({
+        title: group.label,
+        meta: `${group.tracks.length} rows excluded because the endpoint group was disabled.`,
+        tone: "warning"
+      });
+      return;
+    }
+
+    activeGroups.push({
+      title: group.label,
+      meta: `${groupIncludedCount} rows approved${groupManualExcludedCount ? `, ${groupManualExcludedCount} manually excluded` : ""}.`,
+      tone: "ok"
+    });
+  });
+
+  if (profileBasisIncludedNode) {
+    profileBasisIncludedNode.textContent = String(counts.includedTracks);
+  }
+  if (profileBasisExcludedNode) {
+    profileBasisExcludedNode.textContent = String(counts.excludedTracks);
+  }
+  if (profileBasisGroupsNode) {
+    profileBasisGroupsNode.textContent = String(activeGroups.length);
+  }
+
+  if (profileReadinessNode && profileReadinessDetailNode) {
+    profileReadinessNode.classList.remove("tone-ok", "tone-warning");
+
+    if (!state.groups.length) {
+      profileReadinessNode.textContent = "No imported basis found";
+      profileReadinessDetailNode.textContent = "Import or refresh source data before preparing the profile basis.";
+      profileReadinessNode.classList.add("tone-warning");
+    } else if (!counts.includedTracks) {
+      profileReadinessNode.textContent = "No rows currently approved";
+      profileReadinessDetailNode.textContent = "Every candidate row is excluded. Re-enable at least one group or row before running the pipeline.";
+      profileReadinessNode.classList.add("tone-warning");
+    } else if (counts.excludedTracks > 0) {
+      profileReadinessNode.textContent = "Ready with exclusions";
+      profileReadinessDetailNode.textContent = `${counts.includedTracks} of ${counts.totalTracks} rows remain active for the next run.`;
+      profileReadinessNode.classList.add("tone-ok");
+    } else {
+      profileReadinessNode.textContent = "Ready for pipeline handoff";
+      profileReadinessDetailNode.textContent = `All ${counts.totalTracks} imported rows remain approved for the next run.`;
+      profileReadinessNode.classList.add("tone-ok");
+    }
+  }
+
+  renderReviewList(profileIncludedPreviewNode, activeGroups, "No approved rows yet.", "ok");
+  renderReviewList(profileExcludedPreviewNode, excludedPreview, "No exclusions applied.", "warning");
+  renderReviewList(profileDecisionRulesNode, [
+    {
+      title: "Included",
+      meta: "An item stays in the profile basis when its endpoint group is active and the row itself is not excluded."
+    },
+    {
+      title: "Not included",
+      meta: "An item is removed when the full endpoint group is disabled or its row checkbox is selected."
+    },
+    {
+      title: "Current evidence source",
+      meta: state.groupSource === "export"
+        ? "The basis is currently built from full export artifacts."
+        : state.groupSource === "local"
+          ? "The basis is currently built from the saved local snapshot fallback."
+          : "No source data is currently loaded."
+    },
+    {
+      title: "Scope of this page",
+      meta: "This surface explains basis selection decisions. Recommendation match explanations should appear on Results after scoring runs."
+    }
+  ], "No decision rules available.");
 }
 
 function saveExclusions() {
@@ -631,6 +913,7 @@ function handleSaveProfile(event) {
 
   saveExclusions();
   const counts = getIncludedCounts();
+  renderBasisPanel();
 
   if (!counts.includedTracks) {
     setStatus("warning", "All tracks are currently excluded. You may want to include at least one endpoint or track.");
@@ -650,7 +933,7 @@ function buildIncludedTracksPayload() {
       const subsections = buildSubsectionsForGroup(group);
       subsections.forEach((section) => {
         section.tracks.forEach((track, index) => {
-          const trackKey = `${group.key}::${section.id}::${track.id || "na"}::${index}`;
+          const trackKey = buildTrackKey(group.key, section.id, track.id, index);
           if (!excludedTracks.has(trackKey)) {
             includedTracks.push(track);
           }
@@ -736,21 +1019,22 @@ function handleDownloadProfileBundle() {
 }
 
 async function init() {
-  await loadGroups();
-  renderImportSummary();
-  renderGroups();
-
-  if (!state.groups.length) {
-    setStatus("warning", "No import data found. Save a selection from Import page or keep Spotify export files in implementation_notes/ingestion/outputs/spotify_api_export.");
-  } else if (state.groupSource === "export") {
-    setStatus("info", "Loaded from existing Spotify export artifacts (full export priority).");
-  } else if (state.groupSource === "local") {
-    setStatus("warning", "Loaded from saved local selection data because full export artifacts were unavailable.");
-  } else {
-    setStatus("info", "Imported groups loaded. You can now exclude endpoint groups or specific tracks.");
-  }
+  await reloadSourceData("Imported groups loaded. You can now exclude endpoint groups or specific tracks.");
 
   profileForm.addEventListener("submit", handleSaveProfile);
+
+  if (profileRefreshBtn) {
+    profileRefreshBtn.addEventListener("click", () => {
+      void reloadSourceData("Imported data refreshed from current sources.");
+    });
+  }
+
+  if (profileClearLocalBtn) {
+    profileClearLocalBtn.addEventListener("click", () => {
+      clearLocalSnapshot();
+      void reloadSourceData("Saved local snapshot cleared. Current source data reloaded.");
+    });
+  }
 
   if (downloadIncludedBtn) {
     downloadIncludedBtn.addEventListener("click", handleDownloadIncluded);

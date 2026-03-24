@@ -2,27 +2,100 @@ from __future__ import annotations
 
 import csv
 import hashlib
+import importlib.util
 import json
+import os
 import time
 from datetime import datetime, timezone
 from pathlib import Path
 
 
-PROFILE_TOP_LEAD_GENRE_LIMIT = 6
-PROFILE_TOP_TAG_LIMIT = 10
-PROFILE_TOP_GENRE_LIMIT = 8
+def env_int(name: str, default: int) -> int:
+    raw = os.environ.get(name)
+    if raw is None or not str(raw).strip():
+        return default
+    try:
+        return int(raw)
+    except ValueError:
+        return default
 
-# DS-002 numeric features and tolerances
-NUMERIC_THRESHOLDS = {
-    "tempo":    20.0,   # BPM tolerance
-    "loudness": 6.0,    # dB tolerance
-    "key":      2.0,    # semitones (circular distance)
-    "mode":     0.5,    # 0=minor/1=major: 0.5 forces exact match
+
+DEFAULT_PROFILE_TOP_LEAD_GENRE_LIMIT = 6
+DEFAULT_PROFILE_TOP_TAG_LIMIT = 10
+DEFAULT_PROFILE_TOP_GENRE_LIMIT = 8
+DEFAULT_SEMANTIC_STRONG_KEEP_SCORE = 2
+DEFAULT_SEMANTIC_MIN_KEEP_SCORE = 1
+DEFAULT_NUMERIC_SUPPORT_MIN_PASS = 1
+
+# Numeric features that are valid only when both the BL-004 profile and the
+# candidate dataset provide comparable values.
+NUMERIC_FEATURE_SPECS = {
+    "tempo": {
+        "candidate_column": "tempo",
+        "threshold": 20.0,
+        "circular": False,
+    },
+    "key": {
+        "candidate_column": "key",
+        "threshold": 2.0,
+        "circular": True,
+    },
+    "mode": {
+        "candidate_column": "mode",
+        "threshold": 0.5,
+        "circular": False,
+    },
+    "duration_ms": {
+        "candidate_column": "duration_ms",
+        "threshold": 45000.0,
+        "circular": False,
+    },
 }
 
 
 def repo_root() -> Path:
     return Path(__file__).resolve().parents[3]
+
+
+def load_run_config_utils_module():
+    module_path = repo_root() / "07_implementation" / "implementation_notes" / "run_config" / "run_config_utils.py"
+    spec = importlib.util.spec_from_file_location("run_config_utils", module_path)
+    if spec is None or spec.loader is None:
+        raise RuntimeError(f"Unable to load run-config utilities from {module_path}")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+def resolve_bl005_runtime_controls() -> dict[str, object]:
+    run_config_path = os.environ.get("BL_RUN_CONFIG_PATH", "").strip() or None
+    if run_config_path:
+        run_config_utils = load_run_config_utils_module()
+        controls = run_config_utils.resolve_bl005_controls(run_config_path)
+        return {
+            "config_source": "run_config",
+            "run_config_path": controls.get("config_path"),
+            "run_config_schema_version": controls.get("schema_version"),
+            "profile_top_lead_genre_limit": int(controls["profile_top_lead_genre_limit"]),
+            "profile_top_tag_limit": int(controls["profile_top_tag_limit"]),
+            "profile_top_genre_limit": int(controls["profile_top_genre_limit"]),
+            "semantic_strong_keep_score": int(controls["semantic_strong_keep_score"]),
+            "semantic_min_keep_score": int(controls["semantic_min_keep_score"]),
+            "numeric_support_min_pass": int(controls["numeric_support_min_pass"]),
+            "numeric_thresholds": controls.get("numeric_thresholds") or {},
+        }
+    return {
+        "config_source": "environment",
+        "run_config_path": None,
+        "run_config_schema_version": None,
+        "profile_top_lead_genre_limit": env_int("BL005_PROFILE_TOP_LEAD_GENRE_LIMIT", DEFAULT_PROFILE_TOP_LEAD_GENRE_LIMIT),
+        "profile_top_tag_limit": env_int("BL005_PROFILE_TOP_TAG_LIMIT", DEFAULT_PROFILE_TOP_TAG_LIMIT),
+        "profile_top_genre_limit": env_int("BL005_PROFILE_TOP_GENRE_LIMIT", DEFAULT_PROFILE_TOP_GENRE_LIMIT),
+        "semantic_strong_keep_score": env_int("BL005_SEMANTIC_STRONG_KEEP_SCORE", DEFAULT_SEMANTIC_STRONG_KEEP_SCORE),
+        "semantic_min_keep_score": env_int("BL005_SEMANTIC_MIN_KEEP_SCORE", DEFAULT_SEMANTIC_MIN_KEEP_SCORE),
+        "numeric_support_min_pass": env_int("BL005_NUMERIC_SUPPORT_MIN_PASS", DEFAULT_NUMERIC_SUPPORT_MIN_PASS),
+        "numeric_thresholds": {},
+    }
 
 
 def sha256_of_file(path: Path) -> str:
@@ -52,6 +125,37 @@ def parse_float(value: str) -> float | None:
         return None
 
 
+def parse_csv_labels(raw_value: str) -> list[str]:
+    if not raw_value:
+        return []
+    labels: list[str] = []
+    seen: set[str] = set()
+    for piece in raw_value.split(","):
+        label = piece.strip().lower()
+        if not label or label in seen:
+            continue
+        seen.add(label)
+        labels.append(label)
+    return labels
+
+
+def candidate_numeric_value(row: dict[str, str], profile_column: str, candidate_column: str) -> float | None:
+    value = parse_float(row.get(candidate_column, ""))
+    if value is None:
+        return None
+    if profile_column == "duration_ms" and candidate_column == "duration":
+        return value * 1000.0
+    return value
+
+
+def resolve_candidate_column(profile_column: str, preferred_column: str, candidate_columns: set[str]) -> str | None:
+    if preferred_column in candidate_columns:
+        return preferred_column
+    if profile_column == "duration_ms" and "duration" in candidate_columns:
+        return "duration"
+    return None
+
+
 def parse_list(raw_value: str, label_key: str) -> list[str]:
     if not raw_value:
         return []
@@ -69,11 +173,54 @@ def parse_list(raw_value: str, label_key: str) -> list[str]:
     return result
 
 
-def decision_reason(is_seed_track: bool, semantic_score: int, numeric_pass_count: int, kept: bool) -> str:
+def normalize_candidate_row(row: dict[str, str]) -> dict[str, str]:
+    normalized = dict(row)
+    track_id = (normalized.get("track_id") or "").strip()
+    if not track_id:
+        track_id = (normalized.get("id") or "").strip()
+    normalized["track_id"] = track_id
+    return normalized
+
+
+def keep_decision(
+    is_seed_track: bool,
+    semantic_score: int,
+    numeric_pass_count: int,
+    numeric_features_enabled: bool,
+    semantic_strong_keep_score: int,
+    semantic_min_keep_score: int,
+    numeric_support_min_pass: int,
+) -> tuple[bool, str]:
     if is_seed_track:
+        return False, "reject_seed_track"
+    if not numeric_features_enabled:
+        if semantic_score >= semantic_min_keep_score:
+            return True, "keep_semantic_only"
+        return False, "reject_insufficient_semantic"
+    if semantic_score >= semantic_strong_keep_score:
+        return True, "keep_strong_semantic"
+    if semantic_score >= semantic_min_keep_score and numeric_pass_count >= numeric_support_min_pass:
+        return True, "keep_semantic_numeric_supported"
+    if semantic_score >= semantic_min_keep_score:
+        return False, "reject_semantic_without_numeric_support"
+    if numeric_pass_count > 0:
+        return False, "reject_numeric_without_semantic_support"
+    return False, "reject_no_signal"
+
+
+def decision_reason(decision_path: str, semantic_score: int, numeric_pass_count: int) -> str:
+    if decision_path == "reject_seed_track":
         return "reject: seed track excluded from retrieval output"
-    if kept:
-        return f"keep: semantic_score={semantic_score}, numeric_pass_count={numeric_pass_count}"
+    if decision_path == "keep_semantic_only":
+        return f"keep: semantic_score={semantic_score} with semantic-only mode"
+    if decision_path == "keep_strong_semantic":
+        return f"keep: semantic_score={semantic_score} meets strong semantic threshold"
+    if decision_path == "keep_semantic_numeric_supported":
+        return f"keep: semantic_score={semantic_score} with numeric_pass_count={numeric_pass_count}"
+    if decision_path == "reject_semantic_without_numeric_support":
+        return f"reject: semantic_score={semantic_score} lacks numeric support (numeric_pass_count={numeric_pass_count})"
+    if decision_path == "reject_numeric_without_semantic_support":
+        return f"reject: numeric_pass_count={numeric_pass_count} without semantic evidence"
     return f"reject: semantic_score={semantic_score}, numeric_pass_count={numeric_pass_count} below keep threshold"
 
 
@@ -83,35 +230,68 @@ def main() -> None:
     seed_trace_path = root / "07_implementation" / "implementation_notes" / "profile" / "outputs" / "bl004_seed_trace.csv"
     candidate_path = (
         root / "07_implementation" / "implementation_notes"
-        / "data_layer" / "outputs" / "bl019_ds002_integrated_candidate_dataset.csv"
+        / "data_layer" / "outputs" / "ds001_working_candidate_dataset.csv"
     )
     output_dir = root / "07_implementation" / "implementation_notes" / "retrieval" / "outputs"
     output_dir.mkdir(parents=True, exist_ok=True)
 
+    runtime_controls = resolve_bl005_runtime_controls()
+    profile_top_lead_genre_limit = int(runtime_controls["profile_top_lead_genre_limit"])
+    profile_top_tag_limit = int(runtime_controls["profile_top_tag_limit"])
+    profile_top_genre_limit = int(runtime_controls["profile_top_genre_limit"])
+    semantic_strong_keep_score = int(runtime_controls["semantic_strong_keep_score"])
+    semantic_min_keep_score = int(runtime_controls["semantic_min_keep_score"])
+    numeric_support_min_pass = int(runtime_controls["numeric_support_min_pass"])
+    numeric_threshold_overrides: dict[str, float] = runtime_controls.get("numeric_thresholds") or {}
+    effective_numeric_specs = {
+        k: {**v, "threshold": float(numeric_threshold_overrides.get(k, v["threshold"]))}
+        for k, v in NUMERIC_FEATURE_SPECS.items()
+    }
+
     profile = load_json(profile_path)
-    candidate_rows = load_csv_rows(candidate_path)
+    candidate_rows_raw = load_csv_rows(candidate_path)
+    candidate_rows = [normalize_candidate_row(row) for row in candidate_rows_raw]
     seed_trace_rows = load_csv_rows(seed_trace_path)
 
     seed_track_ids = {row["track_id"] for row in seed_trace_rows}
-    top_lead_genres = {item["label"] for item in profile["semantic_profile"]["top_lead_genres"][:PROFILE_TOP_LEAD_GENRE_LIMIT]}
-    top_tags = {item["label"] for item in profile["semantic_profile"]["top_tags"][:PROFILE_TOP_TAG_LIMIT]}
-    top_genres = {item["label"] for item in profile["semantic_profile"]["top_genres"][:PROFILE_TOP_GENRE_LIMIT]}
-    numeric_centers = {key: float(value) for key, value in profile["numeric_feature_profile"].items() if key in NUMERIC_THRESHOLDS}
+    candidate_columns = set(candidate_rows[0].keys()) if candidate_rows else set()
+    top_lead_genres = {item["label"] for item in profile["semantic_profile"]["top_lead_genres"][:profile_top_lead_genre_limit]}
+    top_tags = {item["label"] for item in profile["semantic_profile"]["top_tags"][:profile_top_tag_limit]}
+    top_genres = {item["label"] for item in profile["semantic_profile"]["top_genres"][:profile_top_genre_limit]}
+    active_numeric_specs = {
+        profile_column: {
+            **spec,
+            "candidate_column": resolved_column,
+        }
+        for profile_column, spec in effective_numeric_specs.items()
+        for resolved_column in [
+            resolve_candidate_column(profile_column, str(spec["candidate_column"]), candidate_columns)
+        ]
+        if profile_column in profile["numeric_feature_profile"]
+        and resolved_column is not None
+    }
+    numeric_centers = {
+        profile_column: float(profile["numeric_feature_profile"][profile_column])
+        for profile_column in active_numeric_specs
+    }
     numeric_features_enabled = bool(numeric_centers)
 
     decisions: list[dict[str, object]] = []
     kept_rows: list[dict[str, str]] = []
     decision_counts = {
         "seed_excluded": 0,
-        "semantic_and_numeric_keep": 0,
+        "kept_candidates": 0,
         "rejected_threshold": 0,
     }
+    decision_path_counts: dict[str, int] = {}
     semantic_rule_hits = {
         "lead_genre_match": 0,
         "genre_overlap": 0,
         "tag_overlap": 0,
     }
-    numeric_rule_hits = {key: 0 for key in NUMERIC_THRESHOLDS}
+    numeric_rule_hits = {key: 0 for key in active_numeric_specs}
+    semantic_score_distribution = {str(score): 0 for score in range(4)}
+    numeric_pass_distribution = {str(score): 0 for score in range(len(active_numeric_specs) + 1)}
 
     start_time = time.time()
     run_id = f"BL005-FILTER-{datetime.now(timezone.utc).strftime('%Y%m%d-%H%M%S-%f')}"
@@ -120,12 +300,14 @@ def main() -> None:
         track_id = row["track_id"]
         is_seed_track = track_id in seed_track_ids
 
-        # DS-002 uses tags_json (covers both tag and genre signal)
+        # DS-001 provides explicit tags and genres columns.
         lead_genre = ""
-        candidate_tags = parse_list(row.get("tags_json", ""), "tag")
+        candidate_tags = parse_csv_labels(row.get("tags", ""))
+        candidate_genres = parse_csv_labels(row.get("genres", ""))
         if candidate_tags:
             lead_genre = candidate_tags[0]   # top tag acts as lead genre
-        candidate_genres = candidate_tags    # same list for genre overlap
+        elif candidate_genres:
+            lead_genre = candidate_genres[0]
 
         lead_genre_match = lead_genre in top_lead_genres if lead_genre else False
         genre_overlap = len(top_genres.intersection(candidate_genres))
@@ -142,40 +324,40 @@ def main() -> None:
         semantic_score += 1 if lead_genre_match else 0
         semantic_score += 1 if genre_overlap > 0 else 0
         semantic_score += 1 if tag_overlap > 0 else 0
+        semantic_score_distribution[str(semantic_score)] = semantic_score_distribution.get(str(semantic_score), 0) + 1
 
         numeric_pass_count = 0
         numeric_distances: dict[str, float | None] = {}
-        for column, threshold in NUMERIC_THRESHOLDS.items():
-            value = parse_float(row.get(column, ""))
+        for profile_column, spec in active_numeric_specs.items():
+            value = candidate_numeric_value(row, profile_column, str(spec["candidate_column"]))
             if value is None:
-                numeric_distances[column] = None
+                numeric_distances[profile_column] = None
                 continue
-            center = numeric_centers.get(column)
+            center = numeric_centers.get(profile_column)
             if center is None:
-                numeric_distances[column] = None
+                numeric_distances[profile_column] = None
                 continue
-            # Circular distance for key (0-11 semitone wheel)
-            if column == "key":
+            if bool(spec["circular"]):
                 raw_diff = abs(value - center)
                 distance = min(raw_diff, 12.0 - raw_diff)
             else:
                 distance = abs(value - center)
-            numeric_distances[column] = round(distance, 6)
-            if distance <= threshold:
+            numeric_distances[profile_column] = round(distance, 6)
+            if distance <= float(spec["threshold"]):
                 numeric_pass_count += 1
-                numeric_rule_hits[column] += 1
+                numeric_rule_hits[profile_column] += 1
+        numeric_pass_distribution[str(numeric_pass_count)] = numeric_pass_distribution.get(str(numeric_pass_count), 0) + 1
 
-        kept = False
-        if not is_seed_track:
-            if numeric_features_enabled:
-                kept = (tag_overlap > 0) or (numeric_pass_count >= 2)
-            else:
-                kept = semantic_score >= 1
+        kept, decision_path = keep_decision(
+            is_seed_track, semantic_score, numeric_pass_count, numeric_features_enabled,
+            semantic_strong_keep_score, semantic_min_keep_score, numeric_support_min_pass,
+        )
+        decision_path_counts[decision_path] = decision_path_counts.get(decision_path, 0) + 1
 
         if is_seed_track:
             decision_counts["seed_excluded"] += 1
         elif kept:
-            decision_counts["semantic_and_numeric_keep"] += 1
+            decision_counts["kept_candidates"] += 1
         else:
             decision_counts["rejected_threshold"] += 1
 
@@ -188,12 +370,13 @@ def main() -> None:
             "genre_overlap_count": genre_overlap,
             "tag_overlap_count": tag_overlap,
             "numeric_pass_count": numeric_pass_count,
-            "tempo_distance":    numeric_distances.get("tempo"),
-            "loudness_distance": numeric_distances.get("loudness"),
-            "key_distance":      numeric_distances.get("key"),
-            "mode_distance":     numeric_distances.get("mode"),
+            "tempo_distance": numeric_distances.get("tempo"),
+            "duration_ms_distance": numeric_distances.get("duration_ms"),
+            "key_distance": numeric_distances.get("key"),
+            "mode_distance": numeric_distances.get("mode"),
             "decision": "keep" if kept else "reject",
-            "decision_reason": decision_reason(is_seed_track, semantic_score, numeric_pass_count, kept),
+            "decision_path": decision_path,
+            "decision_reason": decision_reason(decision_path, semantic_score, numeric_pass_count),
         }
         decisions.append(decision_row)
         if kept:
@@ -224,16 +407,25 @@ def main() -> None:
             "candidate_stub_sha256": sha256_of_file(candidate_path),
         },
         "config": {
-            "top_lead_genre_limit": PROFILE_TOP_LEAD_GENRE_LIMIT,
-            "top_tag_limit": PROFILE_TOP_TAG_LIMIT,
-            "top_genre_limit": PROFILE_TOP_GENRE_LIMIT,
-            "numeric_thresholds": NUMERIC_THRESHOLDS,
+            "top_lead_genre_limit": profile_top_lead_genre_limit,
+            "top_tag_limit": profile_top_tag_limit,
+            "top_genre_limit": profile_top_genre_limit,
+            "numeric_thresholds": {
+                profile_column: spec["threshold"]
+                for profile_column, spec in active_numeric_specs.items()
+            },
+            "numeric_feature_mapping": {
+                profile_column: spec["candidate_column"]
+                for profile_column, spec in active_numeric_specs.items()
+            },
             "numeric_features_enabled": numeric_features_enabled,
             "keep_rule": (
-                "keep if not seed and ((tag_overlap > 0) or (numeric_pass_count >= 2))"
+                f"keep if not seed and (semantic_score >= {semantic_strong_keep_score} or "
+                f"(semantic_score >= {semantic_min_keep_score} and numeric_pass_count >= {numeric_support_min_pass}))"
                 if numeric_features_enabled
-                else "keep if not seed and semantic_score >= 1"
+                else f"keep if not seed and semantic_score >= {semantic_min_keep_score}"
             ),
+            "semantic_source": "ds001_tags_and_genres_columns",
         },
         "counts": {
             "candidate_rows_total": len(candidate_rows),
@@ -244,6 +436,11 @@ def main() -> None:
         "rule_hits": {
             "semantic_rule_hits": semantic_rule_hits,
             "numeric_rule_hits": numeric_rule_hits,
+        },
+        "decision_path_counts": decision_path_counts,
+        "score_distributions": {
+            "semantic_score": semantic_score_distribution,
+            "numeric_pass_count": numeric_pass_distribution,
         },
         "top_kept_track_ids": [row["track_id"] for row in kept_rows[:15]],
         "elapsed_seconds": round(time.time() - start_time, 3),

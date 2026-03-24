@@ -1340,3 +1340,124 @@ Use schema from `00_admin/operating_protocol.md`.
 - affected_components: `07_implementation/implementation_notes/reproducibility/run_bl010_reproducibility_check.py`, `07_implementation/implementation_notes/reproducibility/outputs/bl010_reproducibility_report.json`, `07_implementation/implementation_notes/reproducibility/outputs/bl010_reproducibility_run_matrix.csv`, `07_implementation/implementation_notes/reproducibility/outputs/bl010_reproducibility_config_snapshot.json`, `07_implementation/implementation_notes/reproducibility/outputs/replay_01/`, `07_implementation/implementation_notes/reproducibility/outputs/replay_02/`, `07_implementation/implementation_notes/reproducibility/outputs/replay_03/`, `07_implementation/implementation_notes/reproducibility/bl010_state_log_2026-03-24.md`, `07_implementation/experiment_log.md`, `07_implementation/test_notes.md`, `07_implementation/backlog.md`, `00_admin/change_log.md`
 - impact_assessment: High-positive. Confirms deterministic reproducibility on the current baseline and keeps thesis governance/evidence chain synchronized end to end.
 - approval_record: Requested by user in chat on 2026-03-24.
+
+## C-121
+- date: 2026-03-24
+- proposed_by: user + AI
+- status: accepted
+- change_summary: Harden the website interaction flow by adding cancellable Spotify ingestion runs, explicit stale-snapshot controls, and temporary Bootstrap 5 page scaffolding to accelerate UI iteration while preserving existing app logic.
+- reason: User requested continuing quality improvements and explicitly approved use of premade CSS/JS to make development easier before a later rewrite.
+- evidence_basis: Implemented `/api/spotify/export/cancel` and cancellation-state handling in `07_implementation/setup/website_api_server.py`; validated start -> status -> cancel -> status transitions via local API calls; added import/profile clear/refresh controls and precedence messaging in `07_implementation/website/app.js` and `07_implementation/website/profile_basis.js`; added Bootstrap 5 CDN assets to `07_implementation/website/import.html`, `07_implementation/website/profile_basis.html`, and `07_implementation/website/index.html`; diagnostics checks reported no file errors on touched HTML/JS/CSS files.
+- affected_components: `07_implementation/setup/website_api_server.py`, `07_implementation/website/import.html`, `07_implementation/website/profile_basis.html`, `07_implementation/website/index.html`, `07_implementation/website/app.js`, `07_implementation/website/profile_basis.js`, `07_implementation/website/style.css`, `07_implementation/website.md`, `00_admin/change_log.md`
+- impact_assessment: High-positive. Improves operational control and recoverability in website-driven ingestion, reduces stale-data confusion, and speeds frontend delivery with a temporary framework layer without changing core recommendation behavior.
+- approval_record: Requested and confirmed by user in chat on 2026-03-24.
+
+## C-122
+- date: 2026-03-24
+- proposed_by: user + AI
+- status: accepted
+- change_summary: Replace the minimal website plan with a comprehensive end-to-end website blueprint covering control model, transparency model, full page architecture, frontend/backend module structure, API contracts, state contracts, testing strategy, evidence hooks, and phased delivery plan for running the generator from the website.
+- reason: User requested a complete, comprehensive structure plan that maximizes user control and transparency and enumerates all required files to operate the generator through the website UI.
+- evidence_basis: Added `Comprehensive Website Blueprint (v2)` section in `07_implementation/website.md` with architecture, flow, control surfaces, transparency surfaces, API contract targets, detailed file/module plan, recovery model, and definition of done.
+- affected_components: `07_implementation/website.md`, `00_admin/change_log.md`
+- impact_assessment: High-positive. Establishes a complete implementation blueprint that reduces ambiguity, improves execution sequencing, and provides an auditable structure for website-to-generator integration.
+- approval_record: Requested by user in chat on 2026-03-24.
+
+## C-123
+- date: 2026-03-24
+- proposed_by: user + AI
+- status: accepted
+- change_summary: Implement Phase B scaffold for website-driven generator execution by adding pipeline run API endpoints, stage orchestration backend, a dedicated Run Generator page, and cross-page navigation linking import/profile/run flow.
+- reason: User approved moving from planning to implementation and asked to proceed with the next step of scaffolding run-page and pipeline routes based on the comprehensive website blueprint.
+- evidence_basis: Added pipeline endpoints and orchestration logic in `07_implementation/setup/website_api_server.py`; created `07_implementation/website/run.html` and `07_implementation/website/run.js`; added run-page links in `07_implementation/website/import.html`, `07_implementation/website/profile_basis.html`, and `07_implementation/website/index.html`; added run transparency styles in `07_implementation/website/style.css`; diagnostics reported no file errors on touched files.
+- affected_components: `07_implementation/setup/website_api_server.py`, `07_implementation/website/run.html`, `07_implementation/website/run.js`, `07_implementation/website/import.html`, `07_implementation/website/profile_basis.html`, `07_implementation/website/index.html`, `07_implementation/website/style.css`, `07_implementation/website.md`, `00_admin/change_log.md`
+- impact_assessment: High-positive. Converts the blueprint into executable website orchestration scaffolding and materially improves user control/transparency for generator runs from UI.
+- approval_record: Requested and confirmed by user in chat on 2026-03-24.
+
+## C-124
+- date: 2026-03-24
+- proposed_by: user + AI
+- status: accepted
+- change_summary: Implement the next website execution steps by adding results inspection and run-history pages, extending pipeline API responses with compare-oriented artifact hashes and payload summaries, and enabling one-click evidence bundle export from the Run Generator page.
+- reason: User requested execution of the immediate next steps after Phase B to complete control/transparency flow for using the generator from website UI.
+- evidence_basis: Extended backend in `07_implementation/setup/website_api_server.py` with history/results/evidence-bundle endpoints and run-history persistence; created `07_implementation/website/results.html`, `07_implementation/website/results.js`, `07_implementation/website/history.html`, `07_implementation/website/history.js`; updated `07_implementation/website/run.html` and `07_implementation/website/run.js` with export-bundle action and navigation; diagnostics reported no file errors on touched files.
+- affected_components: `07_implementation/setup/website_api_server.py`, `07_implementation/website/run.html`, `07_implementation/website/run.js`, `07_implementation/website/results.html`, `07_implementation/website/results.js`, `07_implementation/website/history.html`, `07_implementation/website/history.js`, `07_implementation/website/index.html`, `07_implementation/website.md`, `00_admin/change_log.md`
+- impact_assessment: High-positive. Completes a practical website transparency loop (run -> inspect -> compare -> export evidence) and improves reproducibility-facing usability for thesis demonstrations.
+- approval_record: Requested by user in chat on 2026-03-24.
+
+## C-125
+- date: 2026-03-24
+- proposed_by: user + AI
+- status: accepted
+- change_summary: Add per-stage controllability and transparency by introducing dedicated stage pages for BL-004 to BL-009, stage-specific UI controls, stage-filtered logs, and backend support for selected-stage execution via `stage_ids`.
+- reason: User requested that each part of the run be controllable and transparent, preferably through separate HTML pages so users can interact with each stage independently.
+- evidence_basis: Updated `07_implementation/setup/website_api_server.py` to validate and execute selected `stage_ids` plus expose `GET /api/pipeline/stages`; added `07_implementation/website/stage_page.js`; created `07_implementation/website/stage_bl004.html` through `stage_bl009.html`; updated `07_implementation/website/run.html` with direct links to each stage page; diagnostics reported no file errors on touched files.
+- affected_components: `07_implementation/setup/website_api_server.py`, `07_implementation/website/run.html`, `07_implementation/website/stage_page.js`, `07_implementation/website/stage_bl004.html`, `07_implementation/website/stage_bl005.html`, `07_implementation/website/stage_bl006.html`, `07_implementation/website/stage_bl007.html`, `07_implementation/website/stage_bl008.html`, `07_implementation/website/stage_bl009.html`, `07_implementation/website.md`, `00_admin/change_log.md`
+- impact_assessment: High-positive. Delivers stage-level interaction control and clearer operational transparency, reducing reliance on full-chain runs when targeted stage checks are needed.
+- approval_record: Requested by user in chat on 2026-03-24.
+
+## C-126
+- date: 2026-03-24
+- proposed_by: user + AI
+- status: accepted
+- change_summary: Add stage-parameter tunability for BL-005 to BL-009 by wiring per-stage parameter overrides from dedicated stage pages through pipeline API `stage_params` into stage-script execution environments, with script-level override consumption for retrieval, scoring, playlist assembly, transparency, and observability builders.
+- reason: User approved extending stage-level control beyond stage selection so each stage page can tune execution parameters while preserving transparency.
+- evidence_basis: Updated `07_implementation/setup/website_api_server.py` to pass validated stage parameters into per-stage environment overrides; updated `07_implementation/website/stage_page.js` to render stage-specific parameter controls and submit `stage_params`; updated `07_implementation/implementation_notes/retrieval/build_bl005_candidate_filter.py`, `07_implementation/implementation_notes/scoring/build_bl006_scored_candidates.py`, `07_implementation/implementation_notes/playlist/build_bl007_playlist.py`, `07_implementation/implementation_notes/transparency/build_bl008_explanation_payloads.py`, and `07_implementation/implementation_notes/observability/build_bl009_observability_log.py` to consume overrides.
+- affected_components: `07_implementation/setup/website_api_server.py`, `07_implementation/website/stage_page.js`, `07_implementation/implementation_notes/retrieval/build_bl005_candidate_filter.py`, `07_implementation/implementation_notes/scoring/build_bl006_scored_candidates.py`, `07_implementation/implementation_notes/playlist/build_bl007_playlist.py`, `07_implementation/implementation_notes/transparency/build_bl008_explanation_payloads.py`, `07_implementation/implementation_notes/observability/build_bl009_observability_log.py`, `07_implementation/website.md`, `00_admin/change_log.md`
+- impact_assessment: High-positive. Completes end-to-end per-stage tunability and makes stage pages materially useful for targeted what-if runs and transparent experimentation.
+- approval_record: Requested by user in chat on 2026-03-24 (follow-up "yes" to stage-specific parameter controls).
+
+## C-127
+- date: 2026-03-24
+- proposed_by: user + AI
+- status: accepted
+- change_summary: Extend stage-parameter tunability to BL-004 so all stage pages BL-004 through BL-009 are tunable, including BL-004 profile limits and user-id controls via `stage_params`.
+- reason: User approved adding BL-004 parameter controls after clarifying that BL-004 was still control-only.
+- evidence_basis: Updated `07_implementation/website/stage_page.js` with BL-004 parameter definitions and string input handling; updated `07_implementation/setup/website_api_server.py` with BL-004 stage-param to env mapping; updated `07_implementation/implementation_notes/profile/build_bl004_preference_profile.py` to consume `BL004_TOP_TAG_LIMIT`, `BL004_TOP_GENRE_LIMIT`, `BL004_TOP_LEAD_GENRE_LIMIT`, and `BL004_USER_ID`.
+- affected_components: `07_implementation/website/stage_page.js`, `07_implementation/setup/website_api_server.py`, `07_implementation/implementation_notes/profile/build_bl004_preference_profile.py`, `07_implementation/website.md`, `00_admin/change_log.md`
+- impact_assessment: High-positive. Removes the last stage-tunability gap and enables complete per-stage parameter control coverage across the pipeline UI.
+- approval_record: Requested by user in chat on 2026-03-24 ("yes" to adding BL-004 parameter inputs).
+
+## C-128
+- date: 2026-03-24
+- proposed_by: user + AI
+- status: accepted
+- change_summary: Complete website hardening pass by adding runtime utility endpoints (`/api/health`, `/api/runtime/config`, `/api/runtime/config/validate`), surfacing health status on the Run page, adding stage-page parameter reset/preset controls, and creating an automated smoke script for contract checks.
+- reason: User approved continuation after current-state analysis, and the next-step hardening items were utility observability endpoints, better stage-parameter UX, and automated regression checks.
+- evidence_basis: Updated backend routes and validation logic in `07_implementation/setup/website_api_server.py`; added Run page health UI in `07_implementation/website/run.html` and `07_implementation/website/run.js`; added stage preset/reset controls in `07_implementation/website/stage_page.js`; added smoke automation script `07_implementation/setup/smoke_website_api.ps1`; implementation log updated in `07_implementation/website.md`.
+- affected_components: `07_implementation/setup/website_api_server.py`, `07_implementation/website/run.html`, `07_implementation/website/run.js`, `07_implementation/website/stage_page.js`, `07_implementation/website/style.css`, `07_implementation/setup/smoke_website_api.ps1`, `07_implementation/website.md`, `00_admin/change_log.md`
+- impact_assessment: High-positive. Improves operational transparency, reduces manual tuning friction on stage pages, and adds repeatable website API validation for faster confidence checks after changes.
+- approval_record: Requested by user in chat on 2026-03-24 ("yes" to proceed with current recommended hardening actions).
+
+## C-129
+- date: 2026-03-24
+- proposed_by: user + AI
+- status: accepted
+- change_summary: Start website design rethink with a new IA + visual baseline: import-first workflow framing, control-room layout on Import page, and high-contrast technical design system refresh while preserving existing ingestion logic contracts.
+- reason: User requested a rethink of the whole website design and selected a studio-control-room direction, full IA reboot scope, import-first baseline, and high-contrast technical tone.
+- evidence_basis: Rebuilt Import page shell in `07_implementation/website/import.html`; applied new visual palette and control-shell styling in `07_implementation/website/style.css`; updated entrypoint language in `07_implementation/website/index.html`; implementation log entry added in `07_implementation/website.md`.
+- affected_components: `07_implementation/website/import.html`, `07_implementation/website/style.css`, `07_implementation/website/index.html`, `07_implementation/website.md`, `00_admin/change_log.md`
+- impact_assessment: High-positive. Establishes a coherent new design baseline without breaking current API wiring, enabling structured rollout of the same IA and visual language across Profile/Run/Results/History surfaces.
+- approval_record: Requested by user in chat on 2026-03-24 ("i think we need to rethink the whole design of the website").
+
+## C-130
+- date: 2026-03-24
+- proposed_by: user + AI
+- status: accepted
+- change_summary: Synchronize governance state after BL-021 completion by updating backlog status, recording BL-003 scope-actuated alignment completion for the active DS-001 path, and extending BL-013 orchestration with optional one-command seed refresh (`--refresh-seed`) so source-scope runs can be executed from a single entrypoint flow.
+- reason: User requested overall thesis-status clarification, and governance files were stale versus implemented/evidenced work (`EXP-040` to `EXP-042`, `TC-BL021-R2-001` to `TC-BL021-R2-003`).
+- evidence_basis: BL-021 persistence + A/B evidence artifacts in `07_implementation/implementation_notes/run_config/probe_comparison_outputs/`; BL-003 scope manifest `07_implementation/implementation_notes/alignment/outputs/bl003_source_scope_manifest.json`; BL-013 refresh-seed smoke run `BL013-ENTRYPOINT-20260324-221334-097740` recorded in entrypoint outputs.
+- affected_components: `07_implementation/backlog.md`, `00_admin/thesis_state.md`, `00_admin/change_log.md`, `07_implementation/implementation_notes/entrypoint/run_bl013_pipeline_entrypoint.py`, `07_implementation/implementation_notes/entrypoint/bl013_run_command.md`
+- impact_assessment: High-positive. Restores consistency between implementation reality and governance tracking, and reduces execution friction for scope-sensitive replay runs.
+- approval_record: Requested and confirmed by user in chat on 2026-03-24 ("yes" to backlog/admin sync).
+
+## C-131
+- date: 2026-03-24
+- proposed_by: user + AI
+- status: accepted
+- change_summary: Clean and normalize the decision trail by introducing explicit supersession links for outdated planning decisions and adding a closure decision that records BL-021 source-scope implementation as completed baseline behavior.
+- reason: User requested full decision-history cleanup so governance no longer shows stale deferred/freeze posture after BL-021 completion.
+- evidence_basis: Updated `00_admin/decision_log.md` entries (`D-014`, `D-023`, `D-026`) to `status: superseded`; added `D-027` documenting closure of D-023 deferment and end of temporary freeze-first mode, aligned to `07_implementation/backlog.md` BL-021 done state and `00_admin/thesis_state.md` BL-021 completion section.
+- affected_components: `00_admin/decision_log.md`, `00_admin/change_log.md`
+- impact_assessment: Medium-positive. Improves governance clarity and removes contradictory decision posture without deleting historical context.
+- approval_record: Requested by user in chat on 2026-03-24 ("yes look at my whole deision and make it clean").

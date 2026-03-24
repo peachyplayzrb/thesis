@@ -34,7 +34,7 @@
 | --- | --- | --- | --- | --- |
 | BL-001 | P0 | done | Define ingestion schema for one platform export path | `06_data_and_sources/schema_notes.md` Spotify mapping section + `07_implementation/implementation_notes/ingestion/bl001_spotify_input_output_mapping.md` |
 | BL-002 | P0 | done | Implement ingestion parser and validation checks | `07_implementation/implementation_notes/ingestion/ingest_history_parser.py` + `07_implementation/implementation_notes/ingestion/export_spotify_max_dataset.py` + run outputs/logs |
-| BL-003 | P0 | deferred | Implement ISRC-first track alignment with fallback matching | Match report with matched/unmatched counts |
+| BL-003 | P0 | done | Implement ISRC-first track alignment with fallback matching | Match report with matched/unmatched counts |
 | BL-004 | P0 | done | Build deterministic user preference profile generator | Profile artifact for at least one test user |
 | BL-005 | P0 | done | Implement candidate retrieval and feature filtering | Candidate set diagnostics per run |
 | BL-006 | P0 | done | Implement deterministic scoring function with weighted components | Score breakdown table per track |
@@ -52,14 +52,14 @@
 | BL-018 | P0 | done | Run candidate-corpus feasibility review before further canonical-layer work | `07_implementation/implementation_notes/data_layer/candidate_corpus_feasibility_review_2026-03-19.md` |
 | BL-019 | P0 | done | Build DS-002 integrated candidate dataset (`MSD subset + Last.fm tags`; optional MusicBrainz metadata) with deterministic joins and quality gates | `07_implementation/experiment_log.md` (`EXP-016`) + `07_implementation/test_notes.md` (`TC-DATASET-001`) + dataset outputs under `07_implementation/implementation_notes/data_layer/outputs/` |
 | BL-020 | P0 | done | Redo full pipeline implementation against updated ingestion schema and database (C-065) — re-run BL-004 through BL-013 stages and regenerate all artifacts | Updated run outputs, profile, candidate, scoring, playlist, transparency, observability, reproducibility and controllability artifacts under `07_implementation/implementation_notes/` + `07_implementation/experiment_log.md` (`EXP-022`) + `07_implementation/test_notes.md` (`TC-BL020-001`) |
-| BL-021 | P1 | todo | Add user-selectable Spotify profile-source scope control (top tracks/saved tracks/playlist tracks + per-source limits) and persist selected scope in run metadata | Config/UI spec + source-selection manifest in run outputs + controllability test showing runtime/profile-effect deltas |
+| BL-021 | P1 | done | Add user-selectable Spotify profile-source scope control (top tracks/saved tracks/playlist tracks + per-source limits) and persist selected scope in run metadata | Config/UI spec + source-selection manifest in run outputs + controllability test showing runtime/profile-effect deltas |
 | BL-022 | P1 | todo | Add deterministic corpus fallback policy: try Music4All(-Onion) alignment first, then auto-fallback to current DS-002 semantic path when coverage thresholds are not met | Fallback policy spec + per-run path-selection metadata + A/B alignment coverage report |
 | BL-023 | P1 | doing | Integrate website flow with current deterministic pipeline outputs and run orchestration under freeze scope | UI run trace (run id + stage status), artifact linkage screen captures, and implementation notes in `07_implementation/website.md` |
 | BL-024 | P1 | todo | Refine current implementation for interaction reliability (error handling, observability clarity, bounded rerun control) without changing core recommendation logic | Hardening diff summary + updated diagnostics examples + stability test notes |
 
 ## In Progress
 - `BL-023` started on 2026-03-23 as the freeze-package integration item. Direction: keep BL-020 behavior stable, wire website interaction flow to real run artifacts/stage execution, and prioritize inspectable run diagnostics in the UI.
-- `BL-021` has been accepted as a deferred P1 design item (D-023): do not implement yet; keep current BL-020 stabilization as the active execution priority.
+- `BL-021` was previously deferred by D-023 during freeze packaging, then activated and completed on 2026-03-24 through run-config contract wiring, BL-003 scope actuation, and A/B controllability evidence (`EXP-040`, `EXP-041`, `EXP-042`; `TC-BL021-R2-001`, `TC-BL021-R2-002`, `TC-BL021-R2-003`).
 - `BL-022` has been accepted as a deferred P1 idea (D-025): define deterministic dataset-path fallback switching (Music4All-first when available, DS-002 fallback on low coverage) after BL-020 stabilization.
 
 ### Handoff Note (2026-03-22)
@@ -68,6 +68,8 @@
 - Historical terminal artifact `bl_align_log.txt` records a prior cp1252 Unicode print failure (`UnicodeEncodeError` on arrow character) from an older script revision; this is non-blocking for the current patched workflow.
 
 ## Done
+- `BL-021` completed on 2026-03-24. Canonical run-config source-scope contract is now wired end-to-end and behaviorally actuated: BL-004 and BL-009 persist effective `input_scope`, BL-003 applies source-scope filtering and emits `bl003_source_scope_manifest.json`, and A/B evidence confirms non-zero profile deltas. Evidence in `07_implementation/experiment_log.md` (`EXP-040` to `EXP-042`) and `07_implementation/test_notes.md` (`TC-BL021-R2-001` to `TC-BL021-R2-003`).
+- `BL-003` completed on 2026-03-24 for the active DS-001 path. ISRC-first plus metadata fallback alignment is operational with strict selected-source checks, canonical DS-001 seed outputs, and source-scope-aware filtering integrated into `build_bl003_ds001_spotify_seed_table.py`; evidence in `EXP-034`, `EXP-042`, and `TC-BL003-005-DS001-ONLY-001`.
 - `BL-020` completed on 2026-03-22. Full rerun pipeline executed end-to-end on real Spotify export + Last.fm semantic enrichment path with BL-003 through BL-009 artifacts generated and validated. Evidence in `07_implementation/experiment_log.md` (`EXP-022` through `EXP-030`) and `07_implementation/test_notes.md` (`TC-BL020-001` through `TC-BL020-009`).
 - `BL-014` completed on 2026-03-22. Automated sanity checks implemented and executed (`21/21` checks passed) with evidence in `07_implementation/experiment_log.md` (`EXP-031`) and `07_implementation/test_notes.md` (`TC-BL014-001`).
 - `BL-002` completed on 2026-03-21. Deterministic parser implemented and validated on Spotify-style sample export (`rows_total=7`, `rows_valid=4`, `rows_invalid=3`) with artifacts in `07_implementation/implementation_notes/run_outputs/`; Spotify Web API max-export ingestion script added at `07_implementation/implementation_notes/ingestion/export_spotify_max_dataset.py` with runbook `07_implementation/implementation_notes/ingestion/spotify_api_ingestion_runbook.md`.

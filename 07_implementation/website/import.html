@@ -4,20 +4,37 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Playlist Generator - Import Data</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <main class="page page-import">
+  <main class="page page-import control-shell">
 
-    <!-- Left: source selector sidebar -->
     <aside class="import-sidebar card">
-      <h2 class="sidebar-heading">Sources</h2>
+      <h2 class="sidebar-heading">Mission Control</h2>
+      <p class="hint">Import is now the operational entrypoint. Configure, ingest, then move downstream.</p>
+      <ul class="source-list" aria-label="Workflow navigation">
+        <li><a class="button-link" href="import.html">1. Import</a></li>
+        <li><a class="button-link" href="profile_basis.html">2. Profile Basis</a></li>
+        <li><a class="button-link" href="run.html">3. Run Pipeline</a></li>
+        <li><a class="button-link" href="results.html">4. Inspect Results</a></li>
+        <li><a class="button-link" href="history.html">5. Compare Runs</a></li>
+      </ul>
+
+      <h3 class="sidebar-heading">Input Mode</h3>
       <ul class="source-list" role="tablist" aria-label="Data sources">
         <li>
           <button class="source-btn active" data-source="spotify"
                   role="tab" aria-selected="true" aria-controls="source-panel-spotify">
             <span class="source-icon">♪</span>
-            <span class="source-name">Spotify</span>
+            <span class="source-name">Spotify API</span>
+          </button>
+        </li>
+        <li>
+          <button class="source-btn" data-source="manual"
+                  role="tab" aria-selected="false" aria-controls="source-panel-manual">
+            <span class="source-icon">✎</span>
+            <span class="source-name">Manual JSON</span>
           </button>
         </li>
         <li>
@@ -36,96 +53,100 @@
             <span class="source-badge">soon</span>
           </button>
         </li>
-        <li>
-          <button class="source-btn" data-source="manual"
-                  role="tab" aria-selected="false" aria-controls="source-panel-manual">
-            <span class="source-icon">✎</span>
-            <span class="source-name">Manual</span>
-          </button>
-        </li>
       </ul>
     </aside>
 
-    <!-- Right: options content -->
     <section class="import-content card">
 
-      <!-- Spotify panel -->
+      <div class="control-topbar">
+        <h1>Ingestion Deck</h1>
+        <p class="subtitle">High-control import surface for deterministic pipeline runs.</p>
+      </div>
+
       <div id="source-panel-spotify" class="source-panel" role="tabpanel">
-        <h1>Spotify</h1>
-        <p class="subtitle">Choose which endpoints to include. Click any row to expand it and configure options.</p>
-        <p class="hint">OAuth scopes needed: <code>user-top-read</code> · <code>user-library-read</code> · <code>playlist-read-private</code> · <code>user-read-recently-played</code></p>
+        <p class="hint">OAuth scopes: <code>user-top-read</code> · <code>user-library-read</code> · <code>playlist-read-private</code> · <code>user-read-recently-played</code></p>
 
-        <section id="spotify-export-status" class="export-status-card" aria-live="polite">
+        <div class="ops-grid">
+          <section id="spotify-export-status" class="export-status-card" aria-live="polite">
+            <div class="export-status-head">
+              <h3>Latest Export Snapshot</h3>
+              <button id="refresh-export-btn" type="button" class="refresh-btn">Refresh</button>
+            </div>
+            <p id="export-status-message" class="hint">Checking export artifacts...</p>
+            <dl class="export-meta-grid">
+              <div>
+                <dt>Run ID</dt>
+                <dd id="export-run-id">-</dd>
+              </div>
+              <div>
+                <dt>Generated (UTC)</dt>
+                <dd id="export-generated-at">-</dd>
+              </div>
+              <div>
+                <dt>Top Tracks</dt>
+                <dd id="export-count-top">-</dd>
+              </div>
+              <div>
+                <dt>Saved Tracks</dt>
+                <dd id="export-count-saved">-</dd>
+              </div>
+              <div>
+                <dt>Playlist Items</dt>
+                <dd id="export-count-playlist-items">-</dd>
+              </div>
+              <div>
+                <dt>API Calls Logged</dt>
+                <dd id="export-count-calls">-</dd>
+              </div>
+            </dl>
+          </section>
+
+          <section id="spotify-run-status" class="export-status-card" aria-live="polite">
+            <div class="export-status-head">
+              <h3>Live Ingestion Telemetry</h3>
+              <div class="run-actions">
+                <button id="refresh-run-btn" type="button" class="refresh-btn">Refresh Run</button>
+                <button id="cancel-run-btn" type="button" class="refresh-btn danger-btn" disabled>Cancel Run</button>
+              </div>
+            </div>
+            <p id="run-status-message" class="hint">No ingestion run started yet.</p>
+            <dl class="export-meta-grid">
+              <div>
+                <dt>Run State</dt>
+                <dd id="run-state">idle</dd>
+              </div>
+              <div>
+                <dt>Current Step</dt>
+                <dd id="run-step">-</dd>
+              </div>
+              <div>
+                <dt>Started (UTC)</dt>
+                <dd id="run-started-at">-</dd>
+              </div>
+              <div>
+                <dt>Finished (UTC)</dt>
+                <dd id="run-completed-at">-</dd>
+              </div>
+              <div>
+                <dt>Exit Code</dt>
+                <dd id="run-exit-code">-</dd>
+              </div>
+              <div>
+                <dt>Log Lines</dt>
+                <dd id="run-log-count">0</dd>
+              </div>
+            </dl>
+            <p id="run-oauth-block" class="hint hidden">Spotify authorization needed: <a id="run-oauth-link" href="#" target="_blank" rel="noopener noreferrer">Open authorization page</a></p>
+            <pre id="run-log" class="run-log">No logs yet.</pre>
+          </section>
+        </div>
+
+        <section class="export-status-card">
           <div class="export-status-head">
-            <h3>Latest Spotify Export</h3>
-            <button id="refresh-export-btn" type="button" class="refresh-btn">Refresh</button>
+            <h3>Endpoint Matrix</h3>
           </div>
-          <p id="export-status-message" class="hint">Checking export artifacts...</p>
-          <dl class="export-meta-grid">
-            <div>
-              <dt>Run ID</dt>
-              <dd id="export-run-id">-</dd>
-            </div>
-            <div>
-              <dt>Generated (UTC)</dt>
-              <dd id="export-generated-at">-</dd>
-            </div>
-            <div>
-              <dt>Top Tracks</dt>
-              <dd id="export-count-top">-</dd>
-            </div>
-            <div>
-              <dt>Saved Tracks</dt>
-              <dd id="export-count-saved">-</dd>
-            </div>
-            <div>
-              <dt>Playlist Items</dt>
-              <dd id="export-count-playlist-items">-</dd>
-            </div>
-            <div>
-              <dt>API Calls Logged</dt>
-              <dd id="export-count-calls">-</dd>
-            </div>
-          </dl>
-        </section>
-
-        <section id="spotify-run-status" class="export-status-card" aria-live="polite">
-          <div class="export-status-head">
-            <h3>Live Ingestion Run</h3>
-            <button id="refresh-run-btn" type="button" class="refresh-btn">Refresh Run</button>
-          </div>
-          <p id="run-status-message" class="hint">No ingestion run started yet.</p>
-          <dl class="export-meta-grid">
-            <div>
-              <dt>Run State</dt>
-              <dd id="run-state">idle</dd>
-            </div>
-            <div>
-              <dt>Current Step</dt>
-              <dd id="run-step">-</dd>
-            </div>
-            <div>
-              <dt>Started (UTC)</dt>
-              <dd id="run-started-at">-</dd>
-            </div>
-            <div>
-              <dt>Finished (UTC)</dt>
-              <dd id="run-completed-at">-</dd>
-            </div>
-            <div>
-              <dt>Exit Code</dt>
-              <dd id="run-exit-code">-</dd>
-            </div>
-            <div>
-              <dt>Log Lines</dt>
-              <dd id="run-log-count">0</dd>
-            </div>
-          </dl>
-          <p id="run-oauth-block" class="hint hidden">Spotify authorization needed: <a id="run-oauth-link" href="#" target="_blank" rel="noopener noreferrer">Open authorization page</a></p>
-          <pre id="run-log" class="run-log">No logs yet.</pre>
-        </section>
-
-        <div class="endpoint-list" id="endpoint-list">
+          <p class="hint">Toggle rows to include endpoint families, then expand each row for volume controls.</p>
+          <div class="endpoint-list" id="endpoint-list">
 
           <!-- Top Tracks -->
           <div class="endpoint-item" id="ep-item-top-tracks">
@@ -232,26 +253,24 @@
             </div>
           </div>
 
-        </div><!-- /.endpoint-list -->
-      </div><!-- /#source-panel-spotify -->
+          </div>
+        </section>
+      </div>
 
-      <!-- Placeholder 1 panel -->
       <div id="source-panel-ph1" class="source-panel" hidden role="tabpanel">
         <h1>Source 2</h1>
         <p class="subtitle">This data source has not been implemented yet.</p>
         <p class="hint">It will be available in a future version.</p>
       </div>
 
-      <!-- Placeholder 2 panel -->
       <div id="source-panel-ph2" class="source-panel" hidden role="tabpanel">
         <h1>Source 3</h1>
         <p class="subtitle">This data source has not been implemented yet.</p>
         <p class="hint">It will be available in a future version.</p>
       </div>
 
-      <!-- Manual panel -->
       <div id="source-panel-manual" class="source-panel" hidden role="tabpanel">
-        <h1>Manual Entry</h1>
+        <h1>Manual Intake</h1>
         <p class="subtitle">Provide your own input directly. JSON is the currently supported format.</p>
 
         <h3>Supported Input</h3>
@@ -282,12 +301,13 @@
         </div>
       </div>
 
-      <!-- Ingest bar — always at bottom of content card -->
       <div class="ingest-bar">
         <p id="import-summary" class="hint">Select at least one endpoint to enable ingestion.</p>
         <div class="ingest-bar-actions">
           <button id="start-ingest-btn" type="button" disabled>Ingest</button>
+          <button id="clear-saved-selection-btn" type="button" class="secondary-btn">Clear Saved Selection</button>
           <a class="button-link" href="profile_basis.html">Go To Profile Basis →</a>
+          <a class="button-link" href="run.html">Go To Run Generator →</a>
         </div>
         <div id="progress" class="progress hidden" aria-live="polite">
           <p id="progress-step">Idle</p>
@@ -298,10 +318,11 @@
         <p id="status" class="status" aria-live="polite"></p>
       </div>
 
-    </section><!-- /.import-content -->
+    </section>
 
   </main>
 
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
   <script src="app.js"></script>
 </body>
 </html>

@@ -2,10 +2,26 @@ from __future__ import annotations
 
 import csv
 import hashlib
+import importlib.util
 import json
+import os
 import time
 from datetime import datetime, timezone
 from pathlib import Path
+
+
+DEFAULT_INPUT_SCOPE: dict[str, object] = {
+    "source_family": "spotify_api_export",
+    "include_top_tracks": True,
+    "top_time_ranges": ["short_term", "medium_term", "long_term"],
+    "include_saved_tracks": True,
+    "saved_tracks_limit": None,
+    "include_playlists": True,
+    "playlists_limit": None,
+    "playlist_items_per_playlist_limit": None,
+    "include_recently_played": True,
+    "recently_played_limit": 50,
+}
 
 
 def repo_root() -> Path:
@@ -57,6 +73,16 @@ def parse_exclusion_samples(rows: list[dict[str, str]], field: str, limit: int) 
     return grouped
 
 
+def env_int(name: str, default: int) -> int:
+    raw = os.environ.get(name)
+    if raw is None or not str(raw).strip():
+        return default
+    try:
+        return int(raw)
+    except ValueError:
+        return default
+
+
 def ensure_required_sections(run_log: dict) -> None:
     required_keys = [
         "run_metadata",
@@ -71,7 +97,48 @@ def ensure_required_sections(run_log: dict) -> None:
         raise RuntimeError(f"BL-009 run log missing required sections: {missing}")
 
 
+def load_run_config_utils_module():
+    module_path = (
+        repo_root()
+        / "07_implementation"
+        / "implementation_notes"
+        / "run_config"
+        / "run_config_utils.py"
+    )
+    spec = importlib.util.spec_from_file_location("run_config_utils", module_path)
+    if spec is None or spec.loader is None:
+        raise RuntimeError(f"Unable to load run-config utilities from {module_path}")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+def resolve_bl009_runtime_controls() -> dict[str, object]:
+    run_config_path = os.environ.get("BL_RUN_CONFIG_PATH", "").strip() or None
+    if run_config_path:
+        run_config_utils = load_run_config_utils_module()
+        controls = run_config_utils.resolve_bl009_controls(run_config_path)
+        input_scope_controls = run_config_utils.resolve_input_scope_controls(run_config_path)
+        return {
+            "config_source": "run_config",
+            "run_config_path": controls.get("config_path"),
+            "run_config_schema_version": controls.get("schema_version"),
+            "input_scope": dict(input_scope_controls.get("input_scope") or DEFAULT_INPUT_SCOPE),
+            "diagnostic_sample_limit": int(controls["diagnostic_sample_limit"]),
+        }
+    return {
+        "config_source": "environment",
+        "run_config_path": None,
+        "run_config_schema_version": None,
+        "input_scope": dict(DEFAULT_INPUT_SCOPE),
+        "diagnostic_sample_limit": max(1, env_int("BL009_DIAGNOSTIC_SAMPLE_LIMIT", 5)),
+    }
+
+
 def main() -> None:
+    runtime_controls = resolve_bl009_runtime_controls()
+    input_scope = dict(runtime_controls["input_scope"])
+    diagnostic_sample_limit = int(runtime_controls["diagnostic_sample_limit"])
     root = repo_root()
     output_dir = root / "07_implementation" / "implementation_notes" / "observability" / "outputs"
     output_dir.mkdir(parents=True, exist_ok=True)
@@ -162,11 +229,11 @@ def main() -> None:
             "numeric_pass_count": int(row["numeric_pass_count"]),
             "decision_reason": row["decision_reason"],
         }
-        for row in first_items(rejected_non_seed, 5)
+        for row in first_items(rejected_non_seed, diagnostic_sample_limit)
     ]
 
     assembly_excluded = [row for row in bl007_trace if row.get("decision") == "excluded"]
-    assembly_rule_samples_raw = parse_exclusion_samples(assembly_excluded, "exclusion_reason", 3)
+    assembly_rule_samples_raw = parse_exclusion_samples(assembly_excluded, "exclusion_reason", diagnostic_sample_limit)
     assembly_rule_samples = {
         reason: [
             {
@@ -234,8 +301,12 @@ def main() -> None:
                 "BL-007": bl007_report["run_id"],
                 "BL-008": bl008_summary["run_id"],
             },
+            "config_source": runtime_controls["config_source"],
+            "run_config_path": runtime_controls["run_config_path"],
+            "run_config_schema_version": runtime_controls["run_config_schema_version"],
         },
         "run_config": {
+            "input_scope": input_scope,
             "data_layer": bl017_coverage["run_metadata"],
             "bootstrap_assets": bl016_manifest["selection_rules"],
             "profile": bl004_profile["config"],

@@ -355,3 +355,147 @@
 - `07_implementation/implementation_notes/reproducibility/outputs/replay_01/`
 - `07_implementation/implementation_notes/reproducibility/outputs/replay_02/`
 - `07_implementation/implementation_notes/reproducibility/outputs/replay_03/`
+
+## Test Case TC-BL021-R2-001: Source-Scope Contract Persistence Probe
+
+- Date: 2026-03-24
+- Backlog link: `BL-021`
+- Purpose: Verify that a canonical run-config `input_scope` override is carried through BL-013 execution and persisted in BL-004 and BL-009 outputs.
+
+### Inputs
+- Probe run config:
+	- `07_implementation/implementation_notes/run_config/run_config_bl021_probe_v1.json`
+- Entrypoint:
+	- `07_implementation/implementation_notes/entrypoint/run_bl013_pipeline_entrypoint.py`
+- Target evidence outputs:
+	- `07_implementation/implementation_notes/profile/outputs/bl004_preference_profile.json`
+	- `07_implementation/implementation_notes/profile/outputs/bl004_profile_summary.json`
+	- `07_implementation/implementation_notes/observability/outputs/bl009_run_observability_log.json`
+
+### Pass Criteria
+- BL-013 completes pass with `--run-config` probe file.
+- BL-004 profile config includes `input_scope` matching probe values.
+- BL-004 summary includes `config_source=run_config`, run-config path, schema version, and `input_scope`.
+- BL-009 run metadata includes run-config provenance and BL-009 run_config includes matching `input_scope`.
+
+### Actual Result
+- Status: pass
+- Run evidence: `experiment_log.md` `EXP-040`
+- Observed metrics:
+	- `bl013_run_id=BL013-ENTRYPOINT-20260324-220254-870418`
+	- `bl013_overall_status=pass`
+	- `bl004_run_id=BL004-PROFILE-20260324-220254-972377`
+	- `bl009_run_id=BL009-OBSERVE-20260324-220302-492033`
+	- `bl004.config.input_scope.top_time_ranges=["short_term"]`
+	- `bl004.config.input_scope.include_saved_tracks=false`
+	- `bl004.config.input_scope.saved_tracks_limit=25`
+	- `bl009.run_metadata.config_source=run_config`
+	- `bl009.run_metadata.run_config_schema_version=run-config-v1`
+	- `bl009.run_config.input_scope.playlists_limit=3`
+	- `bl009.run_config.input_scope.playlist_items_per_playlist_limit=20`
+	- `bl009.run_config.input_scope.recently_played_limit=15`
+
+### Closure Evidence Artifacts
+- `07_implementation/implementation_notes/entrypoint/outputs/bl013_orchestration_run_latest.json`
+- `07_implementation/implementation_notes/profile/outputs/bl004_preference_profile.json`
+- `07_implementation/implementation_notes/profile/outputs/bl004_profile_summary.json`
+- `07_implementation/implementation_notes/observability/outputs/bl009_run_observability_log.json`
+
+## Test Case TC-BL021-R2-002: Source-Scope A/B Probe Comparison
+
+- Date: 2026-03-24
+- Backlog link: `BL-021`
+- Purpose: Compare probe-A and probe-B source-scope runs to verify persisted scope deltas and measure whether current BL-004 profile metrics change.
+
+### Inputs
+- Probe-A config:
+	- `07_implementation/implementation_notes/run_config/run_config_bl021_probe_v1.json`
+- Probe-B config:
+	- `07_implementation/implementation_notes/run_config/run_config_bl021_probe_v2.json`
+- Entrypoint:
+	- `07_implementation/implementation_notes/entrypoint/run_bl013_pipeline_entrypoint.py`
+- Comparison artifact output:
+	- `07_implementation/implementation_notes/run_config/probe_comparison_outputs/bl021_probe_comparison_summary.json`
+
+### Pass Criteria
+- Probe-B BL-013 run passes with explicit run-config provenance.
+- A/B input-scope differences are captured in a persisted comparison artifact.
+- BL-004 and BL-009 run IDs differ between probes, proving rerun execution.
+- Comparison includes profile delta metrics and states whether deltas are zero/non-zero.
+
+### Actual Result
+- Status: pass
+- Run evidence: `experiment_log.md` `EXP-041`
+- Observed metrics:
+	- `probeA.bl004_run_id=BL004-PROFILE-20260324-220254-972377`
+	- `probeB.bl004_run_id=BL004-PROFILE-20260324-220502-403111`
+	- `probeA.bl009_run_id=BL009-OBSERVE-20260324-220302-492033`
+	- `probeB.bl009_run_id=BL009-OBSERVE-20260324-220509-565736`
+	- `top_time_ranges: ["short_term"] -> ["short_term", "medium_term", "long_term"]`
+	- `include_saved_tracks: false -> true`
+	- `saved_tracks_limit: 25 -> 200`
+	- `playlists_limit: 3 -> 12`
+	- `playlist_items_per_playlist_limit: 20 -> 100`
+	- `recently_played_limit: 15 -> 50`
+	- `matched_seed_count_delta=0`
+	- `total_effective_weight_delta=0.0`
+	- `feature_center_deltas={danceability:0.0, energy:0.0, valence:0.0, tempo:0.0}`
+
+### Interpretation
+- Scope persistence and observability contract are working as intended.
+- Behavioral profile deltas are currently zero under this pipeline path, consistent with source-scope actuation not yet wired into upstream ingestion/alignment selection.
+
+### Closure Evidence Artifacts
+- `07_implementation/implementation_notes/run_config/probe_comparison_outputs/bl004_profile_summary_probeA.json`
+- `07_implementation/implementation_notes/run_config/probe_comparison_outputs/bl004_preference_profile_probeA.json`
+- `07_implementation/implementation_notes/run_config/probe_comparison_outputs/bl009_run_observability_log_probeA.json`
+- `07_implementation/implementation_notes/run_config/probe_comparison_outputs/bl021_probe_comparison_summary.json`
+- `07_implementation/implementation_notes/entrypoint/outputs/bl013_orchestration_run_latest.json`
+
+## Test Case TC-BL021-R2-003: Source-Scope Actuation A/B Verification
+
+- Date: 2026-03-24
+- Backlog link: `BL-021`
+- Purpose: Verify that source-scope is not only persisted but actively changes BL-003 seed construction and downstream BL-004 profile outputs.
+
+### Inputs
+- Probe-A config:
+	- `07_implementation/implementation_notes/run_config/run_config_bl021_probe_v1.json`
+- Probe-B config:
+	- `07_implementation/implementation_notes/run_config/run_config_bl021_probe_v2.json`
+- Scripts:
+	- `07_implementation/implementation_notes/alignment/build_bl003_ds001_spotify_seed_table.py`
+	- `07_implementation/implementation_notes/entrypoint/run_bl013_pipeline_entrypoint.py`
+- Comparison artifact:
+	- `07_implementation/implementation_notes/run_config/probe_comparison_outputs/bl021_probe_comparison_actuated_summary.json`
+
+### Pass Criteria
+- BL-003 run metrics differ between probe-A and probe-B in line with scope limits.
+- BL-004 profile summary shows non-zero deltas between probes.
+- BL-009 continues to record run-config provenance and effective input_scope.
+
+### Actual Result
+- Status: pass
+- Run evidence: `experiment_log.md` `EXP-042`
+- Observed metrics:
+	- `probeA.BL003.input_event_rows=637`
+	- `probeB.BL003.input_event_rows=8997`
+	- `BL003.input_event_rows_delta=8360`
+	- `BL003.matched_events_rows_delta=2674`
+	- `BL003.seed_table_rows_delta=1342`
+	- `BL004.matched_seed_count_delta=1342`
+	- `BL004.total_effective_weight_delta=3183.151003`
+	- `BL004.feature_center_delta.tempo=-1.541983`
+	- `BL009.run_metadata.config_source=run_config` (both probes)
+
+### Interpretation
+- BL-021 source-scope actuation is now behaviorally effective: changing scope controls materially changes BL-003 inputs and BL-004 outputs.
+- Remaining gap is orchestration convenience: BL-003 must currently be invoked before BL-013 when scope changes.
+
+### Closure Evidence Artifacts
+- `07_implementation/implementation_notes/run_config/probe_comparison_outputs/bl003_summary_probeA_actuated.json`
+- `07_implementation/implementation_notes/run_config/probe_comparison_outputs/bl003_source_scope_manifest_probeA_actuated.json`
+- `07_implementation/implementation_notes/run_config/probe_comparison_outputs/bl004_profile_summary_probeA_actuated.json`
+- `07_implementation/implementation_notes/run_config/probe_comparison_outputs/bl009_run_observability_log_probeA_actuated.json`
+- `07_implementation/implementation_notes/run_config/probe_comparison_outputs/bl021_probe_comparison_actuated_summary.json`
+- `07_implementation/implementation_notes/alignment/outputs/bl003_source_scope_manifest.json`

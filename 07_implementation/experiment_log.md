@@ -3665,3 +3665,235 @@ Do NOT download: audio files (.mp3), id_incp/id_resnet/id_vgg19 (video features)
 - backlog_status_recommendation: keep `BL-010` status done and treat this run as the active reproducibility baseline.
 
 
+## EXP-040
+- date: 2026-03-24
+- backlog_link: `BL-021`
+- owner: Timothy + AI
+- status: pass
+- related_test_id: `TC-BL021-R2-001`
+
+### Objective
+- Validate that Phase R2 source-scope contract wiring is executed end-to-end via BL-013 and persisted into BL-004 and BL-009 outputs.
+
+### Scope Check
+- In-scope confirmation: BL-021 artefact-level scope controls and run-metadata persistence only.
+- Protected items affected? no
+
+### Inputs
+- source_data:
+  - existing BL-003/BL-019-backed pipeline artifacts consumed by BL-004 through BL-009
+- config_or_parameters:
+  - `--run-config 07_implementation/implementation_notes/run_config/run_config_bl021_probe_v1.json`
+  - probe input scope:
+    - `top_time_ranges=["short_term"]`
+    - `include_saved_tracks=false`
+    - `saved_tracks_limit=25`
+    - `playlists_limit=3`
+    - `playlist_items_per_playlist_limit=20`
+    - `recently_played_limit=15`
+- code_or_script_path:
+  - `07_implementation/implementation_notes/entrypoint/run_bl013_pipeline_entrypoint.py`
+- dependency assumptions:
+  - current BL-004 through BL-009 scripts compile and execute under repo-local Python venv.
+
+### Expected Evidence
+- primary_output_artifact: `07_implementation/implementation_notes/observability/outputs/bl009_run_observability_log.json`
+- secondary_output_artifacts:
+  - `07_implementation/implementation_notes/profile/outputs/bl004_preference_profile.json`
+  - `07_implementation/implementation_notes/profile/outputs/bl004_profile_summary.json`
+  - `07_implementation/implementation_notes/entrypoint/outputs/bl013_orchestration_run_latest.json`
+- success_condition: identical probe `input_scope` values are visible in BL-004 config and BL-009 run_config sections, with run metadata showing `config_source=run_config`.
+
+### Run Record
+- command_or_execution_method: run BL-013 with `--run-config` probe file and inspect resulting BL-004/BL-009 JSON fields.
+- run_id: `BL013-ENTRYPOINT-20260324-220254-870418`
+- start_state_summary: Phase R2 code wiring complete and compile-validated; evidence run pending.
+- end_state_summary: end-to-end pipeline pass; probe config path propagated to each stage and persisted in outputs.
+
+### Results
+- outcome_summary: pass - source-scope contract appears in both profile and observability outputs with run-config provenance.
+- key_metrics:
+  - `bl013_overall_status=pass`
+  - `bl009_run_id=BL009-OBSERVE-20260324-220302-492033`
+  - `bl004_run_id=BL004-PROFILE-20260324-220254-972377`
+  - `bl009_run_metadata.config_source=run_config`
+  - `bl009_run_metadata.run_config_schema_version=run-config-v1`
+  - `bl004.config.input_scope.top_time_ranges=["short_term"]`
+  - `bl004.config.input_scope.include_saved_tracks=false`
+  - `bl009.run_config.input_scope.include_saved_tracks=false`
+- deterministic_repeat_checked: no
+- output_paths:
+  - `07_implementation/implementation_notes/entrypoint/outputs/bl013_orchestration_run_latest.json`
+  - `07_implementation/implementation_notes/profile/outputs/bl004_preference_profile.json`
+  - `07_implementation/implementation_notes/profile/outputs/bl004_profile_summary.json`
+  - `07_implementation/implementation_notes/observability/outputs/bl009_run_observability_log.json`
+
+### Issues And Limits
+- failures_or_anomalies: none observed during this execution.
+- likely_cause: n/a
+- bounded_mvp_limitation_or_bug: source-scope is now contractually represented and logged, but ingestion-path behavioral pruning remains a separate implementation slice.
+
+### Thesis Traceability
+- chapter4_relevance: provides direct implementation evidence that source-scope controls are represented in run-intent and persisted into stage outputs.
+- chapter5_relevance: supports claims on controllability and auditability through explicit per-run config provenance.
+- quality_control_files_to_update: `07_implementation/test_notes.md`, `07_implementation/backlog.md` (BL-021 status note when ready).
+
+### Next Action
+- immediate_follow_up: add one bounded controllability comparison run (scope A vs scope B) and record profile delta metrics.
+- backlog_status_recommendation: move BL-021 from todo to doing once the comparison run is logged.
+
+
+## EXP-041
+- date: 2026-03-24
+- backlog_link: `BL-021`
+- owner: Timothy + AI
+- status: pass
+- related_test_id: `TC-BL021-R2-002`
+
+### Objective
+- Execute a second source-scope probe and compare it against probe-A to test whether current pipeline behavior changes when scope limits are widened.
+
+### Scope Check
+- In-scope confirmation: BL-021 contract persistence and bounded controllability evidence.
+- Protected items affected? no
+
+### Inputs
+- source_data:
+  - existing BL-003 seed table and downstream BL-005..BL-009 artifacts regenerated through BL-013.
+- config_or_parameters:
+  - probe-A config: `07_implementation/implementation_notes/run_config/run_config_bl021_probe_v1.json`
+  - probe-B config: `07_implementation/implementation_notes/run_config/run_config_bl021_probe_v2.json`
+  - BL-013 command: `--run-config ...run_config_bl021_probe_v2.json`
+- code_or_script_path:
+  - `07_implementation/implementation_notes/entrypoint/run_bl013_pipeline_entrypoint.py`
+- dependency assumptions:
+  - Phase R2 code wiring is present in run-config utils, BL-004, and BL-009.
+
+### Expected Evidence
+- primary_output_artifact: `07_implementation/implementation_notes/run_config/probe_comparison_outputs/bl021_probe_comparison_summary.json`
+- secondary_output_artifacts:
+  - `07_implementation/implementation_notes/entrypoint/outputs/bl013_orchestration_run_latest.json`
+  - `07_implementation/implementation_notes/profile/outputs/bl004_profile_summary.json`
+  - `07_implementation/implementation_notes/observability/outputs/bl009_run_observability_log.json`
+- success_condition: probe-B run passes, run-config provenance remains explicit, and A/B deltas can be computed for scope + profile metrics.
+
+### Run Record
+- command_or_execution_method: snapshot probe-A outputs, run BL-013 with probe-B, then compute A/B deltas from persisted artifacts.
+- run_id: `BL013-ENTRYPOINT-20260324-220502-255881`
+- start_state_summary: probe-A outputs existed from EXP-040 and were copied into `probe_comparison_outputs/`.
+- end_state_summary: probe-B completed pass; comparison summary file generated.
+
+### Results
+- outcome_summary: pass - scope deltas are visible and provenance is preserved; profile metrics remained unchanged under current upstream data path.
+- key_metrics:
+  - `bl013_overall_status=pass`
+  - `probeA.bl004_run_id=BL004-PROFILE-20260324-220254-972377`
+  - `probeB.bl004_run_id=BL004-PROFILE-20260324-220502-403111`
+  - `probeA.bl009_run_id=BL009-OBSERVE-20260324-220302-492033`
+  - `probeB.bl009_run_id=BL009-OBSERVE-20260324-220509-565736`
+  - `scope_delta.include_saved_tracks: false -> true`
+  - `scope_delta.saved_tracks_limit: 25 -> 200`
+  - `scope_delta.playlists_limit: 3 -> 12`
+  - `scope_delta.playlist_items_per_playlist_limit: 20 -> 100`
+  - `scope_delta.recently_played_limit: 15 -> 50`
+  - `matched_seed_count_delta=0`
+  - `total_effective_weight_delta=0.0`
+  - `feature_center_deltas={danceability:0.0, energy:0.0, valence:0.0, tempo:0.0}`
+- deterministic_repeat_checked: no
+- output_paths:
+  - `07_implementation/implementation_notes/run_config/probe_comparison_outputs/bl021_probe_comparison_summary.json`
+  - `07_implementation/implementation_notes/entrypoint/outputs/bl013_orchestration_run_latest.json`
+  - `07_implementation/implementation_notes/profile/outputs/bl004_profile_summary.json`
+  - `07_implementation/implementation_notes/observability/outputs/bl009_run_observability_log.json`
+
+### Issues And Limits
+- failures_or_anomalies: none during probe-B execution.
+- likely_cause: n/a
+- bounded_mvp_limitation_or_bug: no behavioral delta is expected yet because source-scope is now contractually represented but not yet bound to ingestion-time row selection in the active BL-003 seed path.
+
+### Thesis Traceability
+- chapter4_relevance: documents controlled A/B source-scope experiment setup and observed effect under current implementation constraints.
+- chapter5_relevance: supports limitation statement that contract persistence is complete while ingestion-time scope actuation remains pending.
+- quality_control_files_to_update: `07_implementation/test_notes.md`, `07_implementation/backlog.md`, `00_admin/change_log.md`.
+
+### Next Action
+- immediate_follow_up: implement source-scope actuation on the upstream ingestion/alignment path, then rerun the same A/B probes to verify non-zero profile deltas.
+- backlog_status_recommendation: keep BL-021 in doing until actuation is wired; current evidence closes the persistence contract slice.
+
+
+## EXP-042
+- date: 2026-03-24
+- backlog_link: `BL-021`
+- owner: Timothy + AI
+- status: pass
+- related_test_id: `TC-BL021-R2-003`
+
+### Objective
+- Validate BL-021 source-scope actuation by applying `input_scope` at BL-003 and re-running A/B probes to confirm non-zero downstream profile deltas.
+
+### Scope Check
+- In-scope confirmation: BL-003 source selection actuation + BL-004/BL-009 evidence propagation.
+- Protected items affected? no
+
+### Inputs
+- source_data:
+  - Spotify export flat files under `07_implementation/implementation_notes/ingestion/outputs/spotify_api_export/`
+  - DS-001 working candidate dataset
+- config_or_parameters:
+  - probe-A: `07_implementation/implementation_notes/run_config/run_config_bl021_probe_v1.json`
+  - probe-B: `07_implementation/implementation_notes/run_config/run_config_bl021_probe_v2.json`
+  - BL-003 run with `BL_RUN_CONFIG_PATH` for each probe before BL-013.
+- code_or_script_path:
+  - `07_implementation/implementation_notes/alignment/build_bl003_ds001_spotify_seed_table.py`
+  - `07_implementation/implementation_notes/entrypoint/run_bl013_pipeline_entrypoint.py`
+- dependency assumptions:
+  - run-config `input_scope` resolution is available in run-config utilities.
+
+### Expected Evidence
+- primary_output_artifact: `07_implementation/implementation_notes/run_config/probe_comparison_outputs/bl021_probe_comparison_actuated_summary.json`
+- secondary_output_artifacts:
+  - `07_implementation/implementation_notes/alignment/outputs/bl003_source_scope_manifest.json`
+  - `07_implementation/implementation_notes/profile/outputs/bl004_profile_summary.json`
+  - `07_implementation/implementation_notes/observability/outputs/bl009_run_observability_log.json`
+- success_condition: probe-A vs probe-B differences produce non-zero BL-003 and BL-004 deltas while preserving config provenance in BL-009.
+
+### Run Record
+- command_or_execution_method: BL-003 with probe-A -> BL-013 probe-A -> snapshot A -> BL-003 with probe-B -> BL-013 probe-B -> generate actuated A/B comparison summary.
+- run_id: `BL013-ENTRYPOINT-20260324-220923-624121` (probe-B final run)
+- start_state_summary: source-scope persistence existed, but prior A/B profile deltas were zero.
+- end_state_summary: source-scope actuation in BL-003 produced major event/seed and profile deltas across probes.
+
+### Results
+- outcome_summary: pass - actuation is now behaviorally effective.
+- key_metrics:
+  - `probeA.BL003.input_event_rows=637`
+  - `probeB.BL003.input_event_rows=8997`
+  - `BL003.input_event_rows_delta=8360`
+  - `BL003.matched_events_rows_delta=2674`
+  - `BL003.seed_table_rows_delta=1342`
+  - `BL004.matched_seed_count_delta=1342`
+  - `BL004.total_effective_weight_delta=3183.151003`
+  - `BL004.feature_center_delta.tempo=-1.541983`
+  - `BL009.run_metadata.config_source=run_config` (both probes)
+- deterministic_repeat_checked: no
+- output_paths:
+  - `07_implementation/implementation_notes/run_config/probe_comparison_outputs/bl021_probe_comparison_actuated_summary.json`
+  - `07_implementation/implementation_notes/run_config/probe_comparison_outputs/bl003_summary_probeA_actuated.json`
+  - `07_implementation/implementation_notes/run_config/probe_comparison_outputs/bl003_source_scope_manifest_probeA_actuated.json`
+  - `07_implementation/implementation_notes/alignment/outputs/bl003_source_scope_manifest.json`
+
+### Issues And Limits
+- failures_or_anomalies: none during final execution sequence.
+- likely_cause: n/a
+- bounded_mvp_limitation_or_bug: BL-013 still does not invoke BL-003 by default; current sequence runs BL-003 explicitly before BL-013 when scope changes.
+
+### Thesis Traceability
+- chapter4_relevance: demonstrates measurable controllability from source-scope inputs to profile outputs.
+- chapter5_relevance: narrows prior limitation from "persistence only" to an integration/routing concern in orchestration.
+- quality_control_files_to_update: `07_implementation/test_notes.md`, `07_implementation/backlog.md`, `00_admin/change_log.md`.
+
+### Next Action
+- immediate_follow_up: add optional BL-003 stage integration in BL-013 (or a pre-stage hook) so source-scope actuation is automatic in one command.
+- backlog_status_recommendation: BL-021 can move to pass-ready for the actuation + evidence slice.
+
+
