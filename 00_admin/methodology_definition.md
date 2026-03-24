@@ -1,5 +1,7 @@
 # Methodology Definition
 
+Last updated: 2026-03-25
+
 ## Methodological Stance
 Design Science Research (DSR).
 
@@ -19,6 +21,9 @@ Each iteration updates:
 - design rationale
 - implementation notes
 - evaluation evidence
+
+Current execution-cycle note (2026-03-25):
+- Core deterministic pipeline baseline is stable; active iteration focus is evidence hardening, chapter coherence, and bounded integration refinement.
 
 ## Method Boundaries
 - Thesis contribution is engineering/design knowledge, not new ML algorithm invention.

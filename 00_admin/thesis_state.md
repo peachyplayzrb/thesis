@@ -1,5 +1,7 @@
 ﻿# Thesis State
 
+Last updated: 2026-03-25
+
 ## Official Current State
 
 - Current title:
@@ -38,6 +40,8 @@ Evaluation focuses on BSc-feasible artefact testing aligned to module expectatio
 - Current data scope:
 The active candidate corpus is DS-002 (`MSD subset + Last.fm tags`). The BL-019 intersection dataset has been built and verified (9330 tracks, all quality gates pass, determinism confirmed — see `07_implementation/experiment_log.md` EXP-016). Music4All/Music4All-Onion remains a historical baseline and fallback reference. Real Spotify history is now available via BL-002 API export. For BL-020, user-side preference extraction is executed as semantic enrichment (Last.fm top tags on imported Spotify tracks) because Spotify Web API audio-feature endpoints are deprecated. Candidate-side audio features (`tempo`, `loudness`, `key`, `mode`) remain sourced from DS-002. MusicBrainz-related fields exist in the dataset as optional metadata but are not currently used in the active pipeline.
 
+DS-001 (Music4All access-reopened path) remains governance-pending and is not active until provenance, terms, and compatibility checks are fully recorded (tracked in UI-008).
+
 - Current assumptions:
 • recommendation modelling focuses on a single user profile
 • deterministic algorithms are used instead of machine learning
@@ -59,9 +63,17 @@ The active candidate corpus is DS-002 (`MSD subset + Last.fm tags`). The BL-019 
 - A/B probes confirm behavioral controllability with non-zero profile deltas after actuation (`EXP-042`, `TC-BL021-R2-003`).
 - BL-013 now supports optional one-command seed refresh (`--refresh-seed`) to align orchestration with scope changes.
 
+## Latest Open Priorities (Execution Snapshot)
+1. Close `UI-008` governance completion: finalize DS-001 provenance, version, terms, and checksum capture before any activation decision.
+2. Close `UI-003` thesis-wide citation package: complete claim-citation hardening synthesis for Chapters 2 to 5 and finalize chapter-targeted improvement notes.
+3. Continue mentor sprint execution at Day 4 to Day 7 from `00_admin/mentor_draft_7day_sprint_2026-03-23.md`.
+4. Keep website integration under bounded hardening only (`WP-WEBINT-001`): bug fixes, observability clarity, and orchestration reliability without scope expansion.
+
+Priority status checkpoint (2026-03-25): UI-002 is closed for current Chapter 2 audit workflow; UI-003 and UI-008 remain the two governance-critical open items.
+
 ## Current Implementation Status
 
-### BL-020 Implementation State (as of 2026-03-22)
+### BL-020 Implementation State (as of 2026-03-25)
 - **Ingestion**: Schema locked (BL-001 ✅), parser + Web API exporter implemented (BL-002 ✅), real Spotify API export completed (5,592 unique tracks from top + saved history)
 - **Candidate Dataset**: DS-002 built and verified (BL-019 ✅) — 9,330 tracks ready for pipeline
 - **Alignment** (BL-003 ✅): Last.fm tag enrichment completed end-to-end on 2026-03-22. Outputs: `bl020_aligned_events.jsonl` (5,592 events, 5.9 MB), `bl020_alignment_report.json`, `bl020_lastfm_tag_cache.json` (5.4 MB). Coverage: 5,361 successfully tagged (95.87%), 204 no_tags (3.65%), 27 errors (0.48%). Runtime: ~101 minutes. Evidence in EXP-022/TC-BL020-001.
@@ -73,8 +85,14 @@ The active candidate corpus is DS-002 (`MSD subset + Last.fm tags`). The BL-019 
 - **Observability** (BL-009 ✅): Canonical run-level observability completed on 2026-03-22. Output: `bl009_run_observability_log.json` and `bl009_run_index.csv` with stage traceability, configuration snapshots, diagnostics, and artifact hashes. Evidence in EXP-030/TC-BL020-009.
 - **Pipeline Completion**: BL-020 is fully complete (BL-003 through BL-009 executed, logged, and test-documented).
 - **Quality Automation** (BL-014 ✅): Automated sanity checks completed on 2026-03-22 via `run_bl014_sanity_checks.py`. Result: 21/21 checks passed across schema validation, cross-stage hash integrity, and count/run-id continuity for BL-004 through BL-009 artifacts. Evidence in EXP-031/TC-BL014-001.
-- **Current Execution Focus** (2026-03-23 freeze decision): freeze the current BL-020 deterministic pipeline baseline and prioritize website integration plus bounded implementation refinement (bug fixes, observability clarity, and UI-run orchestration), with no scope expansion into deferred items.
+- **Current Execution Focus** (2026-03-25): keep deterministic recommendation behavior stable while continuing bounded website integration and thesis-writing hardening in parallel; avoid scope expansion beyond active work packages and deferred-item boundaries.
 - **Active Risk**: External API reliability (Last.fm) is explicitly tracked in run reports; all observable transient errors logged
+
+### BL-021 Source-Scope Control State (as of 2026-03-25)
+- Source-scope contract is baseline behavior (no longer deferred): implemented, validated, and traceable in run artifacts.
+- BL-003 applies `input_scope` filtering and emits `bl003_source_scope_manifest.json`.
+- BL-004 and BL-009 persist effective source-scope plus run-config provenance.
+- BL-013 supports optional one-command seed refresh (`--refresh-seed`) for scope-sensitive reruns.
 
 ### Detailed Audit
 See: `07_implementation/BL020_HANDOFF_AUDIT_2026-03-21.md` for comprehensive pre-implementation checklist and artifact inventory.
@@ -82,10 +100,10 @@ See: `07_implementation/BL020_HANDOFF_AUDIT_2026-03-21.md` for comprehensive pre
 ## Update Control
 
 - Last updated:
-2026-03-24
+2026-03-25
 
 - Reason for last update:
-(1) Synchronize governance state with completed BL-021 source-scope contract and actuation evidence (`EXP-040` to `EXP-042`, `TC-BL021-R2-001` to `TC-BL021-R2-003`). (2) Record BL-003 scope-aware alignment behavior and new source-scope manifest output in the active implementation posture. (3) Note BL-013 orchestration update (`--refresh-seed`) that enables one-command scope-sensitive replay runs.
+(1) Align execution posture wording with supersession state (freeze-first mode treated as historical context, not active strategy). (2) Add explicit DS-001 governance-pending note to prevent corpus-activation ambiguity while UI-008 remains open. (3) Add priority-status checkpoint clarifying UI-002 closure and current critical open items (UI-003, UI-008). (4) Synchronize BL-021 source-scope status placement and implementation-state date with current control docs.
 
 ## Locked Definitions
 - Artefact scope lock: `00_admin/Artefact_MVP_definition.md`

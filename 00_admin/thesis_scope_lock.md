@@ -1,9 +1,12 @@
 ﻿# Thesis Scope Lock
 
+Last updated: 2026-03-25
+
 ## In Scope
 - Single-user automated playlist generation pipeline.
-- Cross-source listening-history ingestion and dataset alignment.
+- Cross-source listening-history ingestion, semantic enrichment, and dataset alignment.
 - Deterministic, inspectable scoring and explanation generation.
+- Source-scope controllability via canonical run-config and traceable effective-scope outputs.
 - Playlist assembly rules (diversity, ordering, repetition control).
 - Observability and reproducibility support (logs/config profiles).
 - Evaluation focused on transparency, controllability, observability, and reproducibility.

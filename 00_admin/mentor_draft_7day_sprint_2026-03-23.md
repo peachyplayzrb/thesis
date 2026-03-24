@@ -2,6 +2,8 @@
 
 Purpose: produce a full, coherent thesis draft in 7 days that reflects the current artefact and is ready for mentor review.
 
+Status checkpoint (2026-03-24): Days 1 to 3 completed; Day 4 is the active workday.
+
 ## Outcome Target (Day 7)
 - Full draft assembled (Chapters 1 to 5 + references).
 - Claims aligned to implemented artefact behavior.
@@ -28,9 +30,9 @@ Exit criteria:
 - No scope ambiguity remains between artefact and thesis narrative.
 
 ## Day 2 - Chapter 1 and Chapter 3 Full Pass
-- [ ] Refine Chapter 1 problem/objectives/contribution claims.
-- [ ] Refine Chapter 3 methodology/design to match actual implementation choices.
-- [ ] Cross-check with:
+- [x] Refine Chapter 1 problem/objectives/contribution claims.
+- [x] Refine Chapter 3 methodology/design to match actual implementation choices.
+- [x] Cross-check with:
   - `05_design/architecture.md`
   - `05_design/system_architecture.md`
   - `05_design/requirements_to_design_map.md`
@@ -39,12 +41,12 @@ Exit criteria:
 - Intro and methodology are implementation-faithful and internally consistent.
 
 ## Day 3 - Chapter 2 Literature Hardening Pass
-- [ ] Map all major Chapter 2 claims to specific paper-note evidence.
-- [ ] Use current audited corpus and notes:
+- [x] Map all major Chapter 2 claims to specific paper-note evidence.
+- [x] Use current audited corpus and notes:
   - `03_literature/paper_notes/`
   - `03_literature/paper_note_pdf_audit_full_2026-03-23.md`
-- [ ] Tighten or reword over-claimed statements.
-- [ ] Update `09_quality_control/claim_evidence_map.md` where needed.
+- [x] Tighten or reword over-claimed statements.
+- [x] Update `09_quality_control/claim_evidence_map.md` where needed.
 
 Exit criteria:
 - Each major literature claim has support quality identified (strong/partial/weak).

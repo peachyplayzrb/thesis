@@ -73,6 +73,11 @@ Operational interpretation:
 - User resent the agreement with signature explicitly included.
 - Awaiting provider acknowledgement/credential release remains the active dependency.
 
+### Status Update (2026-03-24)
+- Provider released dataset credentials and download path.
+- External access blocker is cleared.
+- Remaining tasks are governance-only: release/version capture, checksum/provenance recording, and explicit usage/redistribution constraints.
+
 ---
 
 ## READY-TO-SEND REPLY EMAIL

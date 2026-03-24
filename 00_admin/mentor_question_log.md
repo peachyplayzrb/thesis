@@ -1,5 +1,9 @@
 ﻿# Mentor Question Log
 
+Status checkpoint (2026-03-25):
+- Open: MQ-001, MQ-002, MQ-003, MQ-004, MQ-007
+- Deferred: MQ-005, MQ-006, MQ-008
+
 id: MQ-001
 date: 2026-03-13
 topic: Pass requirements interpretation
@@ -56,7 +60,8 @@ affected_files:
 - 07_implementation/implementation_plan.md
 - 01_requirements/ambiguity_flags.md
 urgency: high
-status: open
+status: deferred
+deferred_reason: Internally bounded for execution by `00_admin/thesis_scope_lock.md`, `00_admin/Artefact_MVP_definition.md`, and `00_admin/thesis_state.md`. Keep for next mentor checkpoint as external validation, not as an active blocker.
 
 id: MQ-006
 date: 2026-03-13
@@ -68,7 +73,8 @@ affected_files:
 - 00_admin/thesis_state.md
 - 01_requirements/ambiguity_flags.md
 urgency: high
-status: open
+status: deferred
+deferred_reason: Implementation posture is now locked to one practical ingestion path within MVP boundaries; retain this as a mentor-validation question during review rather than an active execution blocker.
 
 id: MQ-007
 date: 2026-03-14
@@ -95,4 +101,5 @@ affected_files:
 - 07_implementation/implementation_notes/data_layer/full_dataset_acquisition_checklist_2026-03-21.md
 - 00_admin/decision_log.md (D-020)
 urgency: medium
-status: open
+status: deferred
+deferred_reason: Access-route subquestion is operationally progressed (author email path executed and provider response received). Remaining mentor input concerns corpus sufficiency judgment, which is review-stage rather than run-stage blocking.

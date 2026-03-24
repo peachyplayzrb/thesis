@@ -2,6 +2,15 @@
 
 Use schema from `00_admin/operating_protocol.md`.
 
+Ordering convention (standardized 2026-03-24):
+- This log is append-only for traceability.
+- Entry order reflects historical insertion timing and may not be numerically contiguous in older sections.
+- New entries must be appended at the end; historical entries remain unchanged except for explicit correction records.
+
+Maintenance snapshot (2026-03-24):
+- Highest change ID currently present: `C-134`
+- Known legacy correction applied in this file: prior duplicate `C-079` entry has been normalized to `C-135` for unique-ID compliance.
+
 ## C-001
 - date: 2026-03-12
 - proposed_by: AI + user
@@ -858,6 +867,7 @@ Use schema from `00_admin/operating_protocol.md`.
 - evidence_basis: Comprehensive file audit report across governance/foundation/design/data/implementation/literature/writing sections; verified all 65 papers in references.bib, confirmed BL-020 completion logged in backlog.md, validated design documents (system_architecture.md, transparency_design.md, controllability_design.md all current); discovered and fixed corpus reference inconsistencies in problem_statement.md and assumptions.md; commit a5c4fa7.
 - affected_components: `02_foundation/problem_statement.md`, `02_foundation/assumptions.md`, `00_admin/change_log.md`
 - impact_assessment: High-positive. Audit confirms thesis-wide file consistency is GREEN across governance, design, data, implementation, and literature. Fixes 2 critical foundation blockers that would have caused Day 2 alignment checks to fail. Remaining items flagged as non-blocking (design confidence refresh, chapter content audits scheduled for Day 2).
+- approval_record: Automated audit and fix executed by AI on 2026-03-23; aligns to user request "fix everything" in context of pre-Day-2 readiness verification.
 
 ## C-079
 - date: 2026-03-23
@@ -869,9 +879,8 @@ Use schema from `00_admin/operating_protocol.md`.
 - affected_components: `07_implementation/implementation_notes/ingestion/`, `07_implementation/implementation_notes/ingestion/outputs/`, `07_implementation/implementation_notes/ingestion/_safekeep_unused_2026-03-23/`, `07_implementation/implementation_notes/ingestion/cleanup_archive_log_2026-03-23.md`, `00_admin/change_log.md`
 - impact_assessment: Medium-positive. Reduces active-folder noise and preserves recoverability by moving rather than deleting historical and non-runtime artifacts.
 - approval_record: Requested and confirmed by user in chat on 2026-03-23.
-- approval_record: Automated audit and fix executed by AI on 2026-03-23; aligns to user request "fix everything" in context of pre-Day-2 readiness verification.
 
-## C-079
+## C-135
 - date: 2026-03-24
 - proposed_by: user + AI
 - status: completed
@@ -881,6 +890,7 @@ Use schema from `00_admin/operating_protocol.md`.
 - affected_components: `08_writing/chapter2.md`, `09_quality_control/claim_evidence_map.md`, `00_admin/unresolved_issues.md`, `09_quality_control/chapter_readiness_checks.md`, `00_admin/timeline.md`, `00_admin/change_log.md`
 - impact_assessment: High-positive. Day 2 hardening improves evidence boundedness without removing core argument flow; alignment confirmation maintains coherence across Chapters 1, 2, 3, and design artifacts. Chapters 1 and 3 remain in alignment with architecture and thesis state. Claim-citation matrix remains open pending rerun of chapter2_verbatim_audit.md to validate weak_support reduction from hardening edits (expected delta: -12 to -16 weak-support count, target range 12-16 total to improve toward 65-70% combined supported/partially_supported rate).
 - approval_record: Work completed on 2026-03-24 per user specifications outlined on 2026-03-23; logged retroactively after completion verification on 2026-03-23.
+- correction_note: Renumbered from duplicate `C-079` during change-log normalization on 2026-03-24 to preserve unique ID requirements.
 
 ## C-080
 - date: 2026-03-24
@@ -1461,3 +1471,113 @@ Use schema from `00_admin/operating_protocol.md`.
 - affected_components: `00_admin/decision_log.md`, `00_admin/change_log.md`
 - impact_assessment: Medium-positive. Improves governance clarity and removes contradictory decision posture without deleting historical context.
 - approval_record: Requested by user in chat on 2026-03-24 ("yes look at my whole deision and make it clean").
+
+## C-132
+- date: 2026-03-24
+- proposed_by: user + AI
+- status: accepted
+- change_summary: Perform full `00_admin` governance cleanup and organization refresh by adding a control-hub index, fixing protocol numbering/schema drift, updating sprint/handoff status to current priorities, removing duplicated unresolved-item markup, and syncing timeline notes.
+- reason: User requested an end-to-end admin-folder pass to analyze everything, clean up documentation, and make current control files up to date and organized.
+- evidence_basis: Updated control-map index `00_admin/README.md`; protocol consistency fixes in `00_admin/operating_protocol.md`; sprint tracker updates in `00_admin/mentor_draft_7day_sprint_2026-03-23.md`; handoff priority refresh in `00_admin/handoff_friend_chat_playbook.md`; unresolved issues cleanup in `00_admin/unresolved_issues.md`; timeline freshness note in `00_admin/timeline.md`; mentor feedback log initialization in `00_admin/mentor_feedback_log.md`.
+- affected_components: `00_admin/README.md`, `00_admin/operating_protocol.md`, `00_admin/mentor_draft_7day_sprint_2026-03-23.md`, `00_admin/handoff_friend_chat_playbook.md`, `00_admin/unresolved_issues.md`, `00_admin/timeline.md`, `00_admin/mentor_feedback_log.md`, `00_admin/change_log.md`
+- impact_assessment: High-positive. Improves admin discoverability, removes stale collaborator guidance, and restores consistency across governance-control documents without rewriting historical decision/change content.
+- approval_record: Requested by user in chat on 2026-03-24 ("analyze everything in admin folder, clean up, and make everything up to date and organized").
+
+## C-133
+- date: 2026-03-24
+- proposed_by: user + AI
+- status: accepted
+- change_summary: Apply second-pass governance normalization by standardizing ordering conventions in decision/change logs and reclassifying non-blocking mentor questions from open to deferred with explicit rationale notes.
+- reason: User approved follow-up actions to improve log organization consistency and reduce false-active mentor backlog noise.
+- evidence_basis: Added ordering-convention sections to `00_admin/decision_log.md` and `00_admin/change_log.md`; updated `00_admin/mentor_question_log.md` status checkpoint and set MQ-005/MQ-006/MQ-008 to deferred with bounded deferred reasons tied to current scope and access state.
+- affected_components: `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/mentor_question_log.md`
+- impact_assessment: Medium-positive. Improves control readability and operational prioritization while preserving full historical content.
+- approval_record: Confirmed by user reply in chat on 2026-03-24 ("yes").
+
+## C-134
+- date: 2026-03-24
+- proposed_by: user + AI
+- status: accepted
+- change_summary: Add a compact "Latest Open Priorities" execution snapshot to `thesis_state.md` so current governance focus is visible from the primary state file.
+- reason: User approved final polish to improve one-file visibility of active next actions.
+- evidence_basis: Added prioritized open-item block to `00_admin/thesis_state.md` covering UI-008 closure, UI-003 closure, Day 4 to Day 7 sprint continuation, and bounded website hardening scope.
+- affected_components: `00_admin/thesis_state.md`, `00_admin/change_log.md`
+- impact_assessment: Medium-positive. Reduces control-friction by making active priorities immediately visible during session starts and status checks.
+- approval_record: Confirmed by user reply in chat on 2026-03-24 ("yes").
+
+## C-136
+- date: 2026-03-24
+- proposed_by: user + AI
+- status: accepted
+- change_summary: Clean, organize, and bring `00_admin/change_log.md` up to date by resolving duplicate ID ambiguity, fixing misplaced approval metadata, and adding maintenance snapshot metadata for quicker log health checks.
+- reason: User requested explicit cleanup and organization of the change log itself.
+- evidence_basis: Duplicate heading `C-079` resolved by assigning unique ID `C-135` to the later Day 2 hardening entry; misplaced `approval_record` moved to `C-078`; maintenance snapshot added near top with highest-ID and correction context.
+- affected_components: `00_admin/change_log.md`
+- impact_assessment: High-positive. Restores unique ID integrity, reduces audit ambiguity, and improves maintainability without removing historical content.
+- approval_record: Requested by user in chat on 2026-03-24 ("cleanup and organize and make up to date the change log").
+
+## C-137
+- date: 2026-03-24
+- proposed_by: user + AI
+- status: accepted
+- change_summary: Clean and organize `00_admin/decision_log.md` by adding maintenance and current-posture snapshots, plus minor schema-normalization cleanup for supersession metadata formatting.
+- reason: User requested that the decision log be cleaned, organized, and brought up to date.
+- evidence_basis: Added top-of-file maintenance snapshot (highest ID, entry count, status distribution, duplicate-ID check) and active-posture summary reflecting current governance decisions (`D-015`, `D-021`, `D-025`, `D-027`); normalized `D-014` supersession field to one-line format (`superseded_by: D-015`).
+- affected_components: `00_admin/decision_log.md`, `00_admin/change_log.md`
+- impact_assessment: Medium-positive. Improves decision-log readability and operational status visibility while preserving full historical chronology.
+- approval_record: Requested by user in chat on 2026-03-24 ("cleanup and organize and make up to date the decision log").
+
+## C-138
+- date: 2026-03-25
+- proposed_by: user + AI
+- status: accepted
+- change_summary: Clean, reorganize, and update `00_admin/Artefact_MVP_definition.md` to match the active implemented baseline (semantic enrichment path, DS-002 active corpus, and source-scope controllability contract).
+- reason: User requested the artefact MVP definition to be cleaned, organized, and brought up to date.
+- evidence_basis: Added document control and structured baseline sections; replaced outdated ISRC-first wording with current semantic-enrichment positioning aligned to `00_admin/thesis_state.md`; added source-scope controllability as mandatory functionality; refined acceptance criteria to include observability lineage requirements.
+- affected_components: `00_admin/Artefact_MVP_definition.md`, `00_admin/change_log.md`
+- impact_assessment: High-positive. Removes governance drift between MVP definition and active implementation state, improving consistency for execution and writing alignment.
+- approval_record: Requested by user in chat on 2026-03-25 ("cleanup and organize and make up to date the artefat mvp definittion").
+
+## C-139
+- date: 2026-03-25
+- proposed_by: user + AI
+- status: accepted
+- change_summary: Clean, reorganize, and update `00_admin/timeline.md` to reflect current implementation/evidence posture, active package status, and closed vs open execution signals.
+- reason: User requested the timeline to be cleaned, organized, and brought up to date.
+- evidence_basis: Replaced outdated M2 ISRC-first wording with active semantic-enrichment alignment posture; updated package windows/status notes (`WP-CITE-001`, `WP-DRAFT-001`, `WP-WEBINT-001`); added Day 3 closure and Day 4 active notes; removed stale `BL-021` deferred reference after source-scope completion; added recently-closed section for UI-002 and BL-021 context.
+- affected_components: `00_admin/timeline.md`, `00_admin/change_log.md`
+- impact_assessment: High-positive. Restores timeline-state consistency with current governance records and improves day-to-day execution clarity.
+- approval_record: Requested by user in chat on 2026-03-25 ("cleanup and organize and make up to date the timeline").
+
+## C-140
+- date: 2026-03-25
+- proposed_by: user + AI
+- status: accepted
+- change_summary: Clean, organize, and update `00_admin/thesis_state.md` by removing stale execution wording, clarifying active open priorities, and synchronizing data/execution notes with current governance state.
+- reason: User requested `thesis_state.md` to be cleaned, organized, and brought up to date.
+- evidence_basis: Added top-level document date stamp; updated implementation-state date and execution focus text; added DS-001 governance-pending note tied to UI-008; added priority-status checkpoint (UI-002 closed; UI-003/UI-008 open); added explicit BL-021 source-scope baseline section; refreshed Update Control reason block for 2026-03-25.
+- affected_components: `00_admin/thesis_state.md`, `00_admin/change_log.md`
+- impact_assessment: High-positive. Improves state-file accuracy as the primary governance reference and reduces ambiguity in current execution posture.
+- approval_record: Requested by user in chat on 2026-03-25 ("cleanup and organize and make up to date the thesis state").
+
+## C-141
+- date: 2026-03-25
+- proposed_by: user + AI
+- status: accepted
+- change_summary: Clean, reorganize, and update `00_admin/unresolved_issues.md` by separating active vs resolved issues clearly, moving completed UI-002 out of active, and condensing long progress history into current actionable status blocks.
+- reason: User requested unresolved-issues governance cleanup and currency update.
+- evidence_basis: Added file-level date stamp; active section now contains only open UI-008 and UI-003 with concise impact/progress/next-action blocks; moved UI-002 to resolved with final audit outcome summary (`TOTAL_KEYS_WITH_WEAK=0`); split resolved items into recent vs historical for faster retrieval.
+- affected_components: `00_admin/unresolved_issues.md`, `00_admin/change_log.md`
+- impact_assessment: High-positive. Reduces control noise, removes stale-active ambiguity, and improves day-to-day issue triage clarity.
+- approval_record: Requested by user in chat on 2026-03-25 ("cleanup and organize and make up to date the unresolved issues").
+
+## C-142
+- date: 2026-03-25
+- proposed_by: user + AI
+- status: accepted
+- change_summary: Complete remaining `00_admin` cleanup pass by updating stale metadata/status notes, aligning evaluation/protocol/template schemas with current implementation posture, and refreshing operational handoff/access tracking notes.
+- reason: User requested cleanup, organization, and currency updates across all other admin files.
+- evidence_basis: Updated `EP-ALIGN-001` in `00_admin/evaluation_plan.md` from outdated ISRC-first wording to semantic-enrichment/source-scope visibility metrics; added current metadata stamps in `00_admin/README.md`, `00_admin/methodology_definition.md`, `00_admin/thesis_scope_lock.md`, `00_admin/handoff_friend_chat_playbook.md`, and `00_admin/mentor_feedback_log.md`; refreshed `00_admin/mentor_question_log.md` checkpoint date; added 2026-03-24 credential-release status in `00_admin/music4all_access_email_draft_2026-03-21.md`; synchronized decision-status schema in `00_admin/operating_protocol.md` and `00_admin/templates/decision_entry.template.md`; added legacy-pointer note in `00_admin/C_080_day_3_hardening.txt`.
+- affected_components: `00_admin/README.md`, `00_admin/evaluation_plan.md`, `00_admin/methodology_definition.md`, `00_admin/thesis_scope_lock.md`, `00_admin/handoff_friend_chat_playbook.md`, `00_admin/mentor_question_log.md`, `00_admin/mentor_feedback_log.md`, `00_admin/music4all_access_email_draft_2026-03-21.md`, `00_admin/operating_protocol.md`, `00_admin/templates/decision_entry.template.md`, `00_admin/C_080_day_3_hardening.txt`, `00_admin/change_log.md`
+- impact_assessment: High-positive. Brings the remaining admin surface into state-consistent form and reduces stale wording/schema drift across planning, governance, and collaborator handoff artifacts.
+- approval_record: Requested by user in chat on 2026-03-25 ("cleanup and organize and make up to date all the other files in my admin").

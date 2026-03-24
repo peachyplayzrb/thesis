@@ -1,5 +1,7 @@
 # Friend Handoff Playbook
 
+Last updated: 2026-03-25
+
 ## Purpose
 This file gives a collaborator the exact way to use chat in this thesis repo so work quality, logging, and governance remain consistent.
 
@@ -39,10 +41,12 @@ Use one of these patterns for every task:
 5. End every session with a "log everything" pass.
 
 ## Current Priority Queue (At Handoff)
-1. BL-014: automated sanity checks for schema and deterministic hashes.
-2. Resolve UI-007: Spotify API cooldown blocker rerun after retry window.
-3. Resolve UI-002: Chapter 2 weak-support hardening and rerun audit.
-4. Resolve UI-003: thesis-wide citation verification package.
+1. Resolve UI-008: close DS-001 governance/provenance/terms verification after access reopening.
+2. Resolve UI-003: finish thesis-wide citation verification package and synthesis closeout.
+3. Execute Days 4 to 7 of `00_admin/mentor_draft_7day_sprint_2026-03-23.md`.
+4. Continue `WP-WEBINT-001` freeze-and-integrate website package with bounded hardening only.
+
+Current sprint state note: Day 4 is active as of 2026-03-25.
 
 ## Run References
 1. BL-013 entrypoint command docs:

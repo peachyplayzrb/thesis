@@ -2,7 +2,7 @@
 
 id: D-###
 date: YYYY-MM-DD
-status: proposed|accepted|rejected|deprecated
+status: proposed|accepted|rejected|deprecated|superseded
 
 context:
 

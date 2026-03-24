@@ -1,3 +1,5 @@
+Legacy status note (2026-03-25): this is a historical working snapshot retained for traceability; canonical status for UI-002 now lives in `00_admin/unresolved_issues.md` (Resolved section) and `00_admin/change_log.md`.
+
 ## C-080
 - date: 2026-03-24
 - proposed_by: user + AI

@@ -26,7 +26,7 @@ Rules:
 ### `00_admin/decision_log.md`
 - `id`
 - `date`
-- `status` (`proposed|accepted|rejected|deprecated`)
+- `status` (`proposed|accepted|rejected|deprecated|superseded`)
 - `context`
 - `decision`
 - `alternatives_considered`
@@ -46,6 +46,10 @@ Rules:
 - `affected_components`
 - `impact_assessment`
 - `approval_record`
+
+Format note:
+- Entries may be stored either as `id: C-###` blocks or as section headers like `## C-###` followed by the same required fields.
+- Existing historical entries do not need conversion if required fields remain present.
 
 ### `00_admin/mentor_question_log.md`
 - `id`
@@ -193,7 +197,7 @@ During any AI-assisted chat session:
 
 - If architecture, literature themes, and claimed gap conflict, log the conflict and propose options; do not force agreement.
 
-## 13) Implementation Logging Rules
+## 14) Implementation Logging Rules
 
 These rules apply whenever implementation work is in progress (Phase A onward).
 
@@ -212,7 +216,7 @@ Each completed `EXP-XXX` entry must link to at least one concrete output artifac
 ### Reproducibility check
 Every implementation run must include a deterministic repeat run (same inputs + config → same outputs). The result (`yes`/`no` + hash comparison if applicable) must be recorded in the `EXP-XXX` entry.
 
-## 14) Session Start Checklist
+## 15) Session Start Checklist
 
 At the start of every session (or on any "make sure everything is logged" prompt), the AI must:
 1. Read `00_admin/thesis_state.md` — verify title/RQ/scope unchanged.
@@ -223,7 +227,7 @@ At the start of every session (or on any "make sure everything is logged" prompt
 6. Read `00_admin/unresolved_issues.md` — flag any open blockers.
 7. Report findings and fixes before starting work.
 
-## 15) Collaborator Handoff Continuity
+## 16) Collaborator Handoff Continuity
 
 When a collaborator takes over this repository, they must follow the same AI workflow and logging strictness already established.
 

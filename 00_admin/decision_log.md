@@ -1,5 +1,22 @@
 ﻿# Decision Log
 
+Ordering convention (standardized 2026-03-24):
+- This log is append-only for auditability.
+- Entry IDs remain unique identifiers, but physical entry order reflects historical insertion timing (not strict numeric sorting).
+- New entries must be appended at the end and may include `superseded_by` when a prior decision is replaced.
+
+Maintenance snapshot (2026-03-24):
+- Highest decision ID currently present: `D-027`
+- Total decision entries: 27
+- Status distribution: accepted=23, superseded=3, rejected=1
+- ID integrity check: no duplicate decision IDs detected
+
+Current posture snapshot (2026-03-24):
+- Active baseline path: DS-002 candidate corpus with semantic enrichment flow (`D-015`, `D-021`).
+- Implemented source-scope closure: deferred source-scope design is now baseline behavior (`D-027`; supersedes `D-023`).
+- Freeze-first strategy was temporary and is now historical (`D-026` superseded by `D-027`).
+- Deferred enhancement still tracked: deterministic corpus-path switching fallback (`D-025`).
+
 id: D-001
 date: 2026-03-12
 status: accepted
@@ -297,8 +314,7 @@ status: superseded
 context:
 BL-019 was previously a deferred placeholder for alternative corpus engineering. The current need is to define a practical, repeatable dataset-build workflow for the active Onion MVP path so data refreshes are deterministic and quality-gated before downstream reruns.
 
-superseded_by:
-D-015
+superseded_by: D-015
 
 decision:
 Reframe BL-019 as an active dataset-build planning item for the Onion canonical layer. The workflow will produce a canonical refresh report, dataset manifest, and explicit quality-gate checks, and will require a two-run deterministic repeat check before BL-019 can be closed.
