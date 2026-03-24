@@ -2993,6 +2993,566 @@ Do NOT download: audio files (.mp3), id_incp/id_resnet/id_vgg19 (video features)
   - `sha256.bl014_sanity_config_snapshot.json=627C3F0D9457B444FC7BAB8DF9B7C1148BBC948B662C4372B4CAD7C2E9C4F4CA`
   - `sha256.run_bl014_sanity_checks.py=52D2D31A7096755EA9D0E5764F0F2C054DF05FFB7E85881F9FCF4730412ECBC0`
 - deterministic_repeat_checked: no
+
+---
+
+## EXP-032
+- date: 2026-03-24
+- backlog_link: `BL-005`
+- owner: user + AI
+- status: pass
+- related_test_id: `TC-BL005-HARDEN-001`
+
+### Objective
+- Tighten BL-005 candidate retrieval so weak numeric-only matches are rejected, preserve deterministic auditability, and verify that BL-006 remains continuous on the hardened candidate subset.
+
+### Scope Check
+- In-scope confirmation: yes. This is a bounded retrieval-quality improvement on an existing P0 stage and does not expand thesis scope.
+- Protected items affected? no
+
+### Inputs
+- source_data:
+  - `07_implementation/implementation_notes/profile/outputs/bl004_preference_profile.json` (`run_id=BL004-PROFILE-20260324-180708-238627`)
+  - `07_implementation/implementation_notes/profile/outputs/bl004_seed_trace.csv`
+  - `07_implementation/implementation_notes/data_layer/outputs/bl019_ds002_integrated_candidate_dataset.csv` (9,330 candidate tracks)
+  - prior BL-005 diagnostics baseline showing `kept_candidates=6604` under the looser numeric-pass rule
+- config_or_parameters:
+  - numeric thresholds retained: `tempo<=20.0`, `key<=2.0`, `mode<=0.5`, `duration_ms<=45000.0`
+  - new keep rule: keep if not seed and `(semantic_score >= 2 or (semantic_score >= 1 and numeric_pass_count >= 1))`
+  - reject numeric-only rows even when `numeric_pass_count >= 2`
+- code_or_script_path:
+  - `07_implementation/implementation_notes/retrieval/build_bl005_candidate_filter.py`
+  - `07_implementation/implementation_notes/scoring/build_bl006_scored_candidates.py` (rerun only; no logic change in this task)
+- dependency assumptions:
+  - BL-004 profile and seed trace are valid and current
+  - DS-002 candidate dataset remains unchanged from the latest BL-005/BL-006 alignment run
+
+### Expected Evidence
+- primary_output_artifact: `07_implementation/implementation_notes/retrieval/outputs/bl005_candidate_diagnostics.json`
+- secondary_output_artifacts:
+  - `07_implementation/implementation_notes/retrieval/outputs/bl005_filtered_candidates.csv`
+  - `07_implementation/implementation_notes/retrieval/outputs/bl005_candidate_decisions.csv`
+  - `07_implementation/implementation_notes/scoring/outputs/bl006_scored_candidates.csv`
+  - `07_implementation/implementation_notes/scoring/outputs/bl006_score_summary.json`
+- success_condition: BL-005 retained volume falls to a more credible retrieval range, explicit decision pathways are logged, and BL-006 scores exactly the hardened retained subset.
+
+### Run Record
+- command_or_execution_method:
+  - run `07_implementation/implementation_notes/retrieval/build_bl005_candidate_filter.py`
+  - rerun `07_implementation/implementation_notes/scoring/build_bl006_scored_candidates.py` on the hardened BL-005 output
+- run_id:
+  - `BL005-FILTER-20260324-182142-419959`
+  - downstream validation rerun `BL006-SCORE-20260324-182143-804380`
+- start_state_summary: BL-005 was structurally correct but over-permissive, keeping 6,604 / 9,330 candidates because numeric-only rows with `numeric_pass_count >= 2` were admitted even when semantic evidence was zero.
+- end_state_summary: BL-005 now rejects numeric-only weak matches, keeps 1,938 / 9,330 candidates, records explicit decision paths, and BL-006 reran successfully on the narrower candidate set.
+
+### Results
+- outcome_summary: pass - BL-005 selectivity improved materially without breaking downstream continuity.
+- key_metrics:
+  - `candidate_rows_total=9330`
+  - `kept_candidates=1938` (`20.77%`)
+  - `rejected_non_seed_candidates=7392`
+  - `prior_kept_candidates=6604`
+  - `absolute_reduction=4666`
+  - `decision_path.keep_strong_semantic=1654`
+  - `decision_path.keep_semantic_numeric_supported=284`
+  - `decision_path.reject_numeric_without_semantic_support=6877`
+  - `decision_path.reject_semantic_without_numeric_support=15`
+  - `decision_path.reject_no_signal=500`
+  - `semantic_score_distribution={0:7377,1:299,2:1209,3:445}`
+  - `numeric_pass_count_distribution={0:616,1:2709,2:3584,3:1999,4:422}`
+  - `bl006_candidates_scored=1938`
+  - `bl006_mean_score=0.250159`
+  - `sha256.bl005_filtered_candidates.csv=3B259A6471C0D9112C315723488487694B655513FBC2C7A4D842AAD5082E2DD0`
+  - `sha256.bl005_candidate_decisions.csv=878586AE36634E37B67BC5954E082DF6E8A2F4916C433F2AF79C255A9AE50DE7`
+  - `sha256.bl005_candidate_diagnostics.json=4958523C42DA8C306EFCB8AAEDDDE1B1DA2F0A9796905E71849CDCE054EB9E99`
+  - `sha256.bl006_scored_candidates.csv=DF40DADF9F4E5F37D806B3DDD72D1E452B80215902554D8ED8A3D410B77D86A5`
+  - `sha256.bl006_score_summary.json=CD8CA2BA81D12268B3A3A6743F0ABBB194CDB07811EF155FD079CD2944FED804`
+- deterministic_repeat_checked: no
+- output_paths:
+  - `07_implementation/implementation_notes/retrieval/outputs/bl005_filtered_candidates.csv`
+  - `07_implementation/implementation_notes/retrieval/outputs/bl005_candidate_decisions.csv`
+  - `07_implementation/implementation_notes/retrieval/outputs/bl005_candidate_diagnostics.json`
+  - `07_implementation/implementation_notes/scoring/outputs/bl006_scored_candidates.csv`
+  - `07_implementation/implementation_notes/scoring/outputs/bl006_score_summary.json`
+
+### Issues And Limits
+- failures_or_anomalies: no execution failures observed.
+- likely_cause: n/a
+- bounded_mvp_limitation_or_bug: BL-005 still relies on DS-002 `tags_json` for both tag and genre overlap, so semantic signals are not yet fully disentangled.
+
+### Thesis Traceability
+- chapter4_relevance: strengthens the retrieval-stage evidence by showing a concrete hardening step that reduced candidate volume from `70.8%` kept to `20.8%` kept while preserving deterministic outputs.
+- chapter5_relevance: documents a bounded retrieval-quality correction that removed a numeric-only admission loophole without changing the overall pipeline contract.
+- quality_control_files_to_update: `07_implementation/test_notes.md` (`TC-BL005-HARDEN-001`), `07_implementation/backlog.md` (BL-005 done note), `00_admin/change_log.md` (`C-108`)
+
+### Next Action
+- immediate_follow_up: review whether BL-005 should separate tag and genre evidence more explicitly to reduce semantic double-counting inherited from the DS-002 candidate schema.
+- backlog_status_recommendation: keep `BL-005` as done with hardened retrieval logic; continue any further work as bounded refinement rather than stage redesign.
+
+---
+
+## EXP-033
+- date: 2026-03-24
+- backlog_link: `BL-006`
+- owner: user + AI
+- status: pass
+- related_test_id: `TC-BL006-RETUNE-001`
+
+### Objective
+- Retune BL-006 component weights so numeric evidence has more influence on top-ranked candidates while slightly reducing pressure from semantically entangled tag and genre overlap components.
+
+### Scope Check
+- In-scope confirmation: yes. This is a bounded scoring-quality refinement on an existing P0 stage using the current BL-005 candidate set.
+- Protected items affected? no
+
+### Inputs
+- source_data:
+  - `07_implementation/implementation_notes/profile/outputs/bl004_preference_profile.json`
+  - `07_implementation/implementation_notes/retrieval/outputs/bl005_filtered_candidates.csv` (`1938` rows)
+  - prior BL-006 run summary `BL006-SCORE-20260324-182143-804380` for before/after comparison
+- config_or_parameters:
+  - prior weights: `tempo=0.16`, `duration_ms=0.10`, `key=0.09`, `mode=0.05`, `lead_genre=0.20`, `genre_overlap=0.18`, `tag_overlap=0.22`
+  - retuned weights: `tempo=0.18`, `duration_ms=0.11`, `key=0.11`, `mode=0.07`, `lead_genre=0.18`, `genre_overlap=0.15`, `tag_overlap=0.20`
+  - goal: modest numeric uplift plus small semantic debias without large ranking instability
+- code_or_script_path:
+  - `07_implementation/implementation_notes/scoring/build_bl006_scored_candidates.py`
+- dependency assumptions:
+  - BL-005 tightened candidate set is current and valid
+  - numeric similarity logic remains unchanged; only component weights are retuned
+
+### Expected Evidence
+- primary_output_artifact: `07_implementation/implementation_notes/scoring/outputs/bl006_score_summary.json`
+- secondary_output_artifacts:
+  - `07_implementation/implementation_notes/scoring/outputs/bl006_scored_candidates.csv`
+  - updated active test note in `07_implementation/test_notes.md`
+- success_condition: BL-006 reruns successfully, top-ranked numeric contribution increases, and the ranking remains broadly stable.
+
+### Run Record
+- command_or_execution_method: run `07_implementation/implementation_notes/scoring/build_bl006_scored_candidates.py` after updating `BASE_COMPONENT_WEIGHTS`
+- run_id: `BL006-SCORE-20260324-182702-117298`
+- start_state_summary: BL-006 was functioning correctly on the tightened BL-005 set, but top-ranked rows remained strongly semantic-dominated (`top100_mean_numeric=0.162864`, `top100_mean_semantic=0.410939`).
+- end_state_summary: BL-006 reran successfully with retuned weights; top-ranked rows now show materially higher numeric contribution while preserving broad ranking continuity.
+
+### Results
+- outcome_summary: pass - bounded weight retune improved numeric influence without disruptive ranking churn.
+- key_metrics:
+  - `candidates_scored=1938`
+  - `max_score=0.68037`
+  - `mean_score=0.247705`
+  - `top100_mean_numeric=0.216824` (prior `0.162864`)
+  - `top100_mean_semantic=0.338817` (prior `0.410939`)
+  - `top10_overlap_with_prior_run=9/10`
+  - `new_top10_entry=TRAAPPQ128F14961F5`
+  - `sha256.bl006_scored_candidates.csv=71FD79022EF93AB779989E1514E8107EF7F6222D1014C051EA89C8AB955A5F88`
+  - `sha256.bl006_score_summary.json=448635ACD6D5CFE3996B1CCB784809D5B8FCD513234CF33B8997E6E1BE8538CA`
+- deterministic_repeat_checked: no
+- output_paths:
+  - `07_implementation/implementation_notes/scoring/outputs/bl006_scored_candidates.csv`
+  - `07_implementation/implementation_notes/scoring/outputs/bl006_score_summary.json`
+
+### Issues And Limits
+- failures_or_anomalies: no execution failures observed.
+- likely_cause: n/a
+- bounded_mvp_limitation_or_bug: tag and genre evidence still originate from the same DS-002 `tags_json` source, so this retune only reduces the weighting impact of that coupling; it does not eliminate the schema-level coupling itself.
+
+### Thesis Traceability
+- chapter4_relevance: adds a defensible scoring-hardening step showing that weight calibration was refined after candidate retrieval was tightened, with before/after quantitative evidence.
+- chapter5_relevance: documents that the scoring stage required bounded post-integration tuning to avoid over-reliance on semantically overlapping evidence sources.
+- quality_control_files_to_update: `07_implementation/test_notes.md` (`TC-BL006-RETUNE-001`), `07_implementation/backlog.md` (BL-006 done note), `00_admin/change_log.md` (`C-109`)
+
+### Next Action
+- immediate_follow_up: if further scoring refinement is needed, inspect explanation payloads and top-ranked track plausibility before changing weights again.
+- backlog_status_recommendation: keep `BL-006` as done with bounded retuned weights; avoid further churn unless evaluation artifacts show a concrete issue.
+
+---
+
+## EXP-034
+- date: 2026-03-24
+- backlog_link: `BL-003`, `BL-005`, `BL-006`
+- owner: user + AI
+- status: pass
+- related_test_id: `TC-BL003-005-DS001-ONLY-001`
+
+### Objective
+- Enforce that BL-003 validates selected BL-002 source completeness and migrate BL-005/BL-006 semantic matching to DS-001-native `tags` and `genres` columns with no `tags_json` dependency.
+
+### Scope Check
+- In-scope confirmation: yes. This is a contract-alignment correction to keep the active pipeline DS-001-only.
+- Protected items affected? no
+
+### Inputs
+- source_data:
+  - `07_implementation/implementation_notes/ingestion/outputs/spotify_api_export/spotify_export_run_summary.json`
+  - `07_implementation/implementation_notes/data_layer/outputs/ds001_working_candidate_dataset.csv`
+  - `07_implementation/implementation_notes/profile/outputs/bl004_preference_profile.json`
+- config_or_parameters:
+  - BL-003 selected-source strict check enabled by default
+  - BL-005/BL-006 semantic source set to DS-001 columns (`tags`, `genres`)
+  - duration mapping resolves `duration_ms` first, with `duration` fallback for compatibility
+- code_or_script_path:
+  - `07_implementation/implementation_notes/alignment/build_bl003_ds001_spotify_seed_table.py`
+  - `07_implementation/implementation_notes/retrieval/build_bl005_candidate_filter.py`
+  - `07_implementation/implementation_notes/scoring/build_bl006_scored_candidates.py`
+- dependency assumptions:
+  - BL-002 export summary reflects the selected ingestion sources for this run
+
+### Expected Evidence
+- primary_output_artifact: `07_implementation/implementation_notes/retrieval/outputs/bl005_candidate_diagnostics.json`
+- secondary_output_artifacts:
+  - `07_implementation/implementation_notes/alignment/outputs/bl003_ds001_spotify_summary.json`
+  - `07_implementation/implementation_notes/scoring/outputs/bl006_score_summary.json`
+- success_condition: BL-003 strict source validation passes; BL-005 and BL-006 both report DS-001 semantic source and produce coherent row counts.
+
+### Run Record
+- command_or_execution_method:
+  - run BL-003, BL-004, BL-005, BL-006 sequentially under the repo venv
+- run_id:
+  - `BL005-FILTER-20260324-183958-225058`
+  - `BL006-SCORE-20260324-184028-117165`
+- start_state_summary: BL-005/BL-006 still contained DS-002-era `tags_json` semantic parsing and BL-003 did not assert selected-source completeness.
+- end_state_summary: BL-003 now enforces selected-source completeness contract; BL-005/BL-006 semantic parsing is DS-001-native; outputs regenerated successfully.
+
+### Results
+- outcome_summary: pass - DS-001-only semantic path and selected-source alignment contract are now active.
+- key_metrics:
+  - `bl003_input_event_rows=8997`
+  - `bl003_matched_events_rows=2898`
+  - `bl003_unmatched_rows=6099`
+  - `bl005_candidate_rows_total=109269`
+  - `bl005_kept_candidates=56700`
+  - `bl006_candidates_scored=56700`
+  - `bl005_semantic_source=ds001_tags_and_genres_columns`
+  - `bl006_semantic_source=ds001_tags_and_genres_columns`
+  - `sha256.bl005_filtered_candidates.csv=ADF61C5EECBAD48A704C802EAE3441A7F09826A87C224D7F0A226253F2CCA679`
+  - `sha256.bl006_scored_candidates.csv=C822C15A2867BA9F9A9C044AF27561403FEE8A9AA4362586AF2AAC1A616CEDD9`
+- deterministic_repeat_checked: no
+- output_paths:
+  - `07_implementation/implementation_notes/alignment/outputs/bl003_ds001_spotify_summary.json`
+  - `07_implementation/implementation_notes/retrieval/outputs/bl005_candidate_diagnostics.json`
+  - `07_implementation/implementation_notes/scoring/outputs/bl006_score_summary.json`
+
+### Issues And Limits
+- failures_or_anomalies: one transient BL-006 KeyError during migration due legacy duration column assumption; fixed by dynamic duration column resolution.
+- likely_cause: DS-001 dataset uses `duration_ms` while legacy DS-002 flow used `duration`.
+- bounded_mvp_limitation_or_bug: DS-001 retrieval set is large, so BL-005 still requires future threshold tuning if narrower candidate volume is desired.
+
+### Thesis Traceability
+- chapter4_relevance: documents the DS-001-only contract correction and validates that downstream stages consume aligned semantic fields.
+- chapter5_relevance: records the migration risk and fix (duration field mismatch) as implementation limitation evidence.
+- quality_control_files_to_update: `07_implementation/test_notes.md` (`TC-BL003-005-DS001-ONLY-001`), `07_implementation/backlog.md`, `00_admin/change_log.md` (`C-110`)
+
+### Next Action
+- immediate_follow_up: tune BL-005 DS-001 thresholds if a stricter candidate reduction target is required.
+- backlog_status_recommendation: keep BL-003/BL-005/BL-006 as done with DS-001-only semantic contract now enforced.
+
+---
+
+## EXP-035
+- date: 2026-03-24
+- backlog_link: `BL-006`
+- owner: user + AI
+- status: pass
+- related_test_id: `TC-BL006-FINAL-001`
+
+### Objective
+- Finalize BL-006 after bounded retune by validating ranking stability, contribution-balance shift, and logging complete closure evidence before BL-007 handoff.
+
+### Scope Check
+- In-scope confirmation: yes. This is a BL-006 closure and evidence-pack finalization pass.
+- Protected items affected? no
+
+### Inputs
+- source_data:
+  - `07_implementation/implementation_notes/profile/outputs/bl004_preference_profile.json`
+  - `07_implementation/implementation_notes/retrieval/outputs/bl005_filtered_candidates.csv`
+  - `07_implementation/implementation_notes/scoring/outputs/bl006_scored_candidates_pre_retune.csv`
+  - `07_implementation/implementation_notes/scoring/outputs/bl006_score_summary_pre_retune.json`
+- config_or_parameters:
+  - active weights: `tempo=0.20`, `duration_ms=0.13`, `key=0.13`, `mode=0.09`, `lead_genre=0.17`, `genre_overlap=0.12`, `tag_overlap=0.16`
+  - diagnostics: `component_balance` (all candidates, top-100, top-500)
+- code_or_script_path:
+  - `07_implementation/implementation_notes/scoring/build_bl006_scored_candidates.py`
+- dependency assumptions:
+  - BL-005 filtered candidate contract is current and deterministic
+
+### Expected Evidence
+- primary_output_artifact: `07_implementation/implementation_notes/scoring/outputs/bl006_score_summary.json`
+- secondary_output_artifacts:
+  - `07_implementation/implementation_notes/scoring/outputs/bl006_scored_candidates.csv`
+  - `07_implementation/implementation_notes/scoring/bl006_state_log_2026-03-24.md`
+  - `07_implementation/implementation_notes/scoring/bl006_top50_quality_snapshot_2026-03-24.md`
+- success_condition: BL-006 rerun succeeds, top-10 remains broadly stable versus baseline, and top-ranked contribution balance remains numeric-led.
+
+### Run Record
+- command_or_execution_method: run `07_implementation/implementation_notes/scoring/build_bl006_scored_candidates.py`, then compare pre/post outputs and compute top-50 quality snapshot.
+- run_id: `BL006-SCORE-20260324-190145-197533`
+- start_state_summary: BL-006 already retuned and instrumented with component-balance diagnostics; pre-retune baseline artifacts retained.
+- end_state_summary: BL-006 closure checks pass with stable ranking and numeric-led top-rank contribution profile; closure artifacts and logs updated.
+
+### Results
+- outcome_summary: pass - BL-006 finalized for current scope with complete evidence and governance traceability.
+- key_metrics:
+  - `candidates_scored=56700`
+  - `max_score=0.817654`
+  - `mean_score=0.241022`
+  - `top10_overlap_vs_pre_retune=9/10`
+  - `top100_numeric_mean=0.384627` (pre-retune `0.310008`)
+  - `top100_semantic_mean=0.292601` (pre-retune `0.362157`)
+  - `top50_numeric_gt_semantic_count=41/50`
+  - `sha256.bl006_scored_candidates.csv=189C3DCF575D69736CFD855CE5D456AB5C391AD58EA20DEA803A216D35F8CE7C`
+  - `sha256.bl006_score_summary.json=748755F1596205B3D0B46C88D71A5BF7DE3537C79AA32A9342A410A7B7E5F896`
+- deterministic_repeat_checked: no
+- output_paths:
+  - `07_implementation/implementation_notes/scoring/outputs/bl006_scored_candidates.csv`
+  - `07_implementation/implementation_notes/scoring/outputs/bl006_score_summary.json`
+  - `07_implementation/implementation_notes/scoring/bl006_state_log_2026-03-24.md`
+  - `07_implementation/implementation_notes/scoring/bl006_top50_quality_snapshot_2026-03-24.md`
+
+### Issues And Limits
+- failures_or_anomalies: no runtime failures in closure run.
+- likely_cause: n/a
+- bounded_mvp_limitation_or_bug: top-ranked results still show lead-genre concentration; this is a diversity-risk signal for BL-007 handling rather than a BL-006 scoring-defect blocker.
+
+### Thesis Traceability
+- chapter4_relevance: provides final BL-006 evidence that score weighting and component-balance behavior are controlled and inspectable.
+- chapter5_relevance: records remaining bounded limitation as concentration risk in top-ranked semantic clusters.
+- quality_control_files_to_update: `07_implementation/test_notes.md` (`TC-BL006-FINAL-001`), `07_implementation/backlog.md` (BL-006 done note), `00_admin/change_log.md`.
+
+### Next Action
+- immediate_follow_up: proceed to BL-007 playlist assembly using this finalized BL-006 ranked output.
+- backlog_status_recommendation: keep `BL-006` status as done and treat current run/log bundle as closure baseline for BL-007 handoff.
+
+---
+
+## EXP-036
+- date: 2026-03-24
+- backlog_link: `BL-007`
+- owner: user + AI
+- status: pass
+- related_test_id: `TC-BL007-REFRESH-001`
+
+### Objective
+- Refresh BL-007 playlist assembly against the finalized BL-006 baseline and log full current-run evidence before proceeding downstream.
+
+### Scope Check
+- In-scope confirmation: yes. This is a deterministic rerun and evidence synchronization for an existing P0 stage.
+- Protected items affected? no
+
+### Inputs
+- source_data:
+  - `07_implementation/implementation_notes/scoring/outputs/bl006_scored_candidates.csv`
+- config_or_parameters:
+  - `target_size=10`
+  - `min_score_threshold=0.35`
+  - `max_per_genre=4`
+  - `max_consecutive=2`
+  - rule traversal: `R1 -> R2 -> R3 -> R4`
+- code_or_script_path:
+  - `07_implementation/implementation_notes/playlist/build_bl007_playlist.py`
+- dependency assumptions:
+  - BL-006 finalized baseline (`EXP-035`) is current and hash-stable.
+
+### Expected Evidence
+- primary_output_artifact: `07_implementation/implementation_notes/playlist/outputs/bl007_assembly_report.json`
+- secondary_output_artifacts:
+  - `07_implementation/implementation_notes/playlist/outputs/bl007_playlist.json`
+  - `07_implementation/implementation_notes/playlist/outputs/bl007_assembly_trace.csv`
+  - `07_implementation/implementation_notes/playlist/bl007_state_log_2026-03-24.md`
+- success_condition: playlist assembles to target length with deterministic rule trace and BL-006 input-hash alignment.
+
+### Run Record
+- command_or_execution_method: run `07_implementation/implementation_notes/playlist/build_bl007_playlist.py`
+- run_id: `BL007-ASSEMBLE-20260324-195257-583625`
+- start_state_summary: BL-007 outputs were present but stale relative to finalized BL-006 artifacts.
+- end_state_summary: BL-007 outputs regenerated and now aligned to the finalized BL-006 hash baseline.
+
+### Results
+- outcome_summary: pass - BL-007 refreshed successfully and evidence synchronized.
+- key_metrics:
+  - `candidates_evaluated=56700`
+  - `tracks_included=10`
+  - `tracks_excluded=56690`
+  - `rule_hits.R2_genre_cap=5`
+  - `rule_hits.R4_length_cap=56685`
+  - `rule_hits.R1_score_threshold=0`
+  - `rule_hits.R3_consecutive_run=0`
+  - `playlist_genre_mix={classic rock:4, pop:4, rock:2}`
+  - `playlist_score_range.max=0.817654`
+  - `playlist_score_range.min=0.703525`
+  - `trace_rows=56700`
+  - `sha256.bl007_playlist.json=6E9E7D2CB82901E87CF64C13536E6469EAD9F8AF25B88C38331476B3E74A4473`
+  - `sha256.bl007_assembly_trace.csv=692A1F4DE6BD32DE0D785A3D5952D901CDF98966C264A1C8D72FF1926B6DDB9E`
+  - `sha256.bl007_assembly_report.json=7F9B176E44AD29517F80D8904CB3A8E0E2B3111D217C5A64ED0FF67694489ADE`
+- deterministic_repeat_checked: no
+- output_paths:
+  - `07_implementation/implementation_notes/playlist/outputs/bl007_playlist.json`
+  - `07_implementation/implementation_notes/playlist/outputs/bl007_assembly_trace.csv`
+  - `07_implementation/implementation_notes/playlist/outputs/bl007_assembly_report.json`
+  - `07_implementation/implementation_notes/playlist/bl007_state_log_2026-03-24.md`
+
+### Issues And Limits
+- failures_or_anomalies: no runtime failures.
+- likely_cause: n/a
+- bounded_mvp_limitation_or_bug: with large candidate pools, R4 (length cap) naturally dominates exclusions and can mask mid-rank rule pressure patterns unless explicitly summarized.
+
+### Thesis Traceability
+- chapter4_relevance: provides refreshed playlist-assembly evidence aligned with the current BL-006 scoring baseline.
+- chapter5_relevance: documents rule-hit dominance under large candidate pools as a bounded operational characteristic.
+- quality_control_files_to_update: `07_implementation/test_notes.md` (`TC-BL007-REFRESH-001`), `07_implementation/backlog.md` (BL-007 done note), `00_admin/change_log.md`.
+
+### Next Action
+- immediate_follow_up: proceed to BL-008 transparency generation using refreshed BL-007 artifacts.
+- backlog_status_recommendation: keep `BL-007` status done and treat this run as the current baseline snapshot.
+
+---
+
+## EXP-037
+- date: 2026-03-24
+- backlog_link: `BL-008`
+- owner: user + AI
+- status: pass
+- related_test_id: `TC-BL008-REFRESH-001`
+
+### Objective
+- Refresh BL-008 transparency artifacts on the finalized BL-006 and refreshed BL-007 outputs, and correct BL-008 component mapping so explanation payloads reflect the active scoring contract.
+
+### Scope Check
+- In-scope confirmation: yes. This is a BL-008 evidence refresh and contract-alignment fix.
+- Protected items affected? no
+
+### Inputs
+- source_data:
+  - `07_implementation/implementation_notes/scoring/outputs/bl006_scored_candidates.csv`
+  - `07_implementation/implementation_notes/scoring/outputs/bl006_score_summary.json`
+  - `07_implementation/implementation_notes/playlist/outputs/bl007_playlist.json`
+  - `07_implementation/implementation_notes/playlist/outputs/bl007_assembly_trace.csv`
+- config_or_parameters:
+  - dynamic component extraction from BL-006 `active_component_weights`
+  - component label map for known active components
+- code_or_script_path:
+  - `07_implementation/implementation_notes/transparency/build_bl008_explanation_payloads.py`
+- dependency assumptions:
+  - BL-006 and BL-007 refresh runs are current and hash-stable.
+
+### Expected Evidence
+- primary_output_artifact: `07_implementation/implementation_notes/transparency/outputs/bl008_explanation_payloads.json`
+- secondary_output_artifacts:
+  - `07_implementation/implementation_notes/transparency/outputs/bl008_explanation_summary.json`
+  - `07_implementation/implementation_notes/transparency/bl008_state_log_2026-03-24.md`
+- success_condition: BL-008 rerun succeeds; explanations use active BL-006 components; hashes and run metadata are updated.
+
+### Run Record
+- command_or_execution_method: run `07_implementation/implementation_notes/transparency/build_bl008_explanation_payloads.py` after component-mapping fix.
+- run_id: `BL008-EXPLAIN-20260324-195641-957331`
+- start_state_summary: BL-008 script contained stale DS-002-era hardcoded component list (`loudness` present, `duration_ms` absent).
+- end_state_summary: BL-008 script updated to dynamic active-component mapping and outputs regenerated successfully.
+
+### Results
+- outcome_summary: pass - BL-008 refreshed and aligned with current BL-006/BL-007 contracts.
+- key_metrics:
+  - `playlist_track_count=10`
+  - `top_contributor_distribution={Tempo (BPM):8, Lead genre match:2}`
+  - `sha256.bl008_explanation_payloads.json=BFAE7BBA70568DD3D0F25E20D4E1A496342C0D9A10D8C259EE9ADFB26AE59C4C`
+  - `sha256.bl008_explanation_summary.json=3D841F3BD8E37F90AD43F4F3DD5BEF199849C40A2F3DF6E3F007633F59CDDE1D`
+  - `input_hash.bl006_scored_candidates=189C3DCF575D69736CFD855CE5D456AB5C391AD58EA20DEA803A216D35F8CE7C`
+  - `input_hash.bl007_playlist=6E9E7D2CB82901E87CF64C13536E6469EAD9F8AF25B88C38331476B3E74A4473`
+- deterministic_repeat_checked: no
+- output_paths:
+  - `07_implementation/implementation_notes/transparency/outputs/bl008_explanation_payloads.json`
+  - `07_implementation/implementation_notes/transparency/outputs/bl008_explanation_summary.json`
+  - `07_implementation/implementation_notes/transparency/bl008_state_log_2026-03-24.md`
+
+### Issues And Limits
+- failures_or_anomalies: no runtime failures.
+- likely_cause: n/a
+- bounded_mvp_limitation_or_bug: explanation narrative is per-track and component-focused; playlist-level narrative synthesis is not yet included.
+
+### Thesis Traceability
+- chapter4_relevance: refreshes transparency evidence on the current scoring and playlist baselines with explicit score-contribution rationale.
+- chapter5_relevance: documents a resolved contract-drift risk (stale component mapping) and remaining limitation in playlist-level narrative scope.
+- quality_control_files_to_update: `07_implementation/test_notes.md` (`TC-BL008-REFRESH-001`), `07_implementation/backlog.md` (BL-008 done note), `00_admin/change_log.md`.
+
+### Next Action
+- immediate_follow_up: proceed to BL-009 observability refresh with the current BL-006 -> BL-007 -> BL-008 run chain.
+- backlog_status_recommendation: keep `BL-008` status done and treat this run as the active transparency baseline.
+
+---
+
+## EXP-038
+- date: 2026-03-24
+- backlog_link: `BL-009`
+- owner: user + AI
+- status: pass
+- related_test_id: `TC-BL009-REFRESH-001`
+
+### Objective
+- Refresh BL-009 observability artifacts so run metadata and stage diagnostics reflect the latest finalized BL-006, refreshed BL-007, and refreshed BL-008 chain.
+
+### Scope Check
+- In-scope confirmation: yes. This is a deterministic observability refresh for current pipeline state.
+- Protected items affected? no
+
+### Inputs
+- source_data:
+  - `07_implementation/implementation_notes/scoring/outputs/bl006_score_summary.json`
+  - `07_implementation/implementation_notes/playlist/outputs/bl007_assembly_report.json`
+  - `07_implementation/implementation_notes/transparency/outputs/bl008_explanation_summary.json`
+  - other required BL-004 to BL-008 artifacts consumed by BL-009 script
+- config_or_parameters:
+  - default BL-009 observability schema
+  - bootstrap_mode=true
+- code_or_script_path:
+  - `07_implementation/implementation_notes/observability/build_bl009_observability_log.py`
+- dependency assumptions:
+  - refreshed BL-006 through BL-008 artifacts are present and hash-stable.
+
+### Expected Evidence
+- primary_output_artifact: `07_implementation/implementation_notes/observability/outputs/bl009_run_observability_log.json`
+- secondary_output_artifacts:
+  - `07_implementation/implementation_notes/observability/outputs/bl009_run_index.csv`
+  - `07_implementation/implementation_notes/observability/bl009_state_log_2026-03-24.md`
+- success_condition: BL-009 rerun succeeds, upstream run IDs are current, and run-index/hash fields are consistent.
+
+### Run Record
+- command_or_execution_method: run `07_implementation/implementation_notes/observability/build_bl009_observability_log.py`
+- run_id: `BL009-OBSERVE-20260324-195859-875091`
+- start_state_summary: BL-009 outputs existed but predated BL-008 refresh and needed chain alignment.
+- end_state_summary: BL-009 outputs regenerated and now reference the current BL-006 -> BL-007 -> BL-008 run IDs and hashes.
+
+### Results
+- outcome_summary: pass - BL-009 observability layer refreshed and aligned.
+- key_metrics:
+  - `dataset_version=2648A3237AA62F9E4C667C93178D482A5ACCDA0461299472E4FC1697786A993B`
+  - `pipeline_version=4E90899F05BF270F8E6C614BDF96F64D8363674DB1F32E0796A7C3CB7F0DB613`
+  - `upstream.BL006=BL006-SCORE-20260324-190145-197533`
+  - `upstream.BL007=BL007-ASSEMBLE-20260324-195257-583625`
+  - `upstream.BL008=BL008-EXPLAIN-20260324-195641-957331`
+  - `kept_candidates=56700`
+  - `candidates_scored=56700`
+  - `playlist_length=10`
+  - `explanation_count=10`
+  - `sha256.bl009_run_observability_log.json=DA7ED442B963DE439342F7232AE1CE59123AFD760B2A9DBCEDF3663468DA09D6`
+  - `sha256.bl009_run_index.csv=840CA55DC9845A88157352EA9C5A011C7CA6C7D5EFBC72F61E3FF1D3A9F4F332`
+- deterministic_repeat_checked: no
+- output_paths:
+  - `07_implementation/implementation_notes/observability/outputs/bl009_run_observability_log.json`
+  - `07_implementation/implementation_notes/observability/outputs/bl009_run_index.csv`
+  - `07_implementation/implementation_notes/observability/bl009_state_log_2026-03-24.md`
+
+### Issues And Limits
+- failures_or_anomalies: no runtime failures.
+- likely_cause: n/a
+- bounded_mvp_limitation_or_bug: run metadata still records deferred ingestion/alignment diagnostics under bootstrap mode; this is expected for current execution strategy.
+
+### Thesis Traceability
+- chapter4_relevance: provides refreshed run-level observability evidence linking current scoring, assembly, and transparency artifacts.
+- chapter5_relevance: documents current operational context and deferred-stage observability assumptions under bootstrap mode.
+- quality_control_files_to_update: `07_implementation/test_notes.md` (`TC-BL009-REFRESH-001`), `07_implementation/backlog.md` (BL-009 done note), `00_admin/change_log.md`.
+
+### Next Action
+- immediate_follow_up: proceed to BL-010 reproducibility refresh using the updated BL-009 baseline.
+- backlog_status_recommendation: keep `BL-009` status done and treat this run as the active observability baseline.
 - output_paths:
   - `07_implementation/implementation_notes/quality/outputs/bl014_sanity_report.json`
   - `07_implementation/implementation_notes/quality/outputs/bl014_sanity_run_matrix.csv`
@@ -3013,5 +3573,95 @@ Do NOT download: audio files (.mp3), id_incp/id_resnet/id_vgg19 (video features)
 ### Next Action
 - immediate_follow_up: continue with `UI-002` and `UI-003` writing/citation hardening while using BL-014 checker for regression validation after future artifact changes.
 - backlog_status_recommendation: mark `BL-014` done.
+
+---
+
+## EXP-039
+- date: 2026-03-24
+- backlog_link: `BL-010`
+- owner: user + AI
+- status: pass
+- related_test_id: `TC-BL010-REFRESH-001`
+
+### Objective
+- Refresh BL-010 reproducibility evidence on the current BL-006 through BL-009 baseline and confirm stable deterministic replay across repeated runs.
+
+### Scope Check
+- In-scope confirmation: yes. This is a deterministic replay refresh and evidence update for BL-010.
+- Protected items affected? no
+
+### Inputs
+- source_data:
+  - `07_implementation/implementation_notes/profile/outputs/bl004_preference_profile.json`
+  - `07_implementation/implementation_notes/retrieval/outputs/bl005_candidate_diagnostics.json`
+  - `07_implementation/implementation_notes/scoring/outputs/bl006_score_summary.json`
+  - `07_implementation/implementation_notes/playlist/outputs/bl007_assembly_report.json`
+  - `07_implementation/implementation_notes/transparency/outputs/bl008_explanation_summary.json`
+  - `07_implementation/implementation_notes/observability/outputs/bl009_run_observability_log.json`
+  - fixed assets from BL-016 and BL-017 consumed by BL-010 config snapshot
+- config_or_parameters:
+  - `replay_count=3`
+  - `bootstrap_mode=true`
+  - stage order: BL-004 -> BL-005 -> BL-006 -> BL-007 -> BL-008 -> BL-009
+- code_or_script_path:
+  - `07_implementation/implementation_notes/reproducibility/run_bl010_reproducibility_check.py`
+- dependency assumptions:
+  - current BL-004 to BL-009 scripts and required upstream artifacts are available and executable.
+
+### Expected Evidence
+- primary_output_artifact: `07_implementation/implementation_notes/reproducibility/outputs/bl010_reproducibility_report.json`
+- secondary_output_artifacts:
+  - `07_implementation/implementation_notes/reproducibility/outputs/bl010_reproducibility_run_matrix.csv`
+  - `07_implementation/implementation_notes/reproducibility/outputs/bl010_reproducibility_config_snapshot.json`
+  - `07_implementation/implementation_notes/reproducibility/bl010_state_log_2026-03-24.md`
+- success_condition: deterministic_match remains true across all stable replay comparison artifacts and refreshed hashes are recorded.
+
+### Run Record
+- command_or_execution_method: run `07_implementation/implementation_notes/reproducibility/run_bl010_reproducibility_check.py`
+- run_id: `BL010-REPRO-20260324-200214`
+- start_state_summary: BL-010 outputs existed from earlier baseline and needed refresh after BL-006, BL-007, BL-008, and BL-009 updates.
+- end_state_summary: BL-010 outputs regenerated; 3 replay runs completed with stable-hash equality and deterministic pass status.
+
+### Results
+- outcome_summary: pass - BL-010 reproducibility refresh succeeded on current baseline.
+- key_metrics:
+  - `deterministic_match=true`
+  - `first_mismatch_artifact=null`
+  - `replay_count=3`
+  - `config_hash=72CCA053B8AB1EDCEED0E1D8A8B14C27309945AC2464A2AADDD5797C1AD64D78`
+  - `stable.ranked_output_hash=189C3DCF575D69736CFD855CE5D456AB5C391AD58EA20DEA803A216D35F8CE7C`
+  - `stable.playlist_output_hash=651F1F546BCD1C391A865AE25E85350E2081A06FF9ABA5827BDA4000496A64EB`
+  - `stable.explanation_output_hash=A4830010E7F696FBDA5E35C73567A60DB0A72758BD2736E713AC810295B229B7`
+  - `stable.observability_output_hash=02245616FB0434F39817EDC91858A5B282EDCB622E9C4BC0F3D246D5BB5D7FB6`
+  - `dataset_version=2648A3237AA62F9E4C667C93178D482A5ACCDA0461299472E4FC1697786A993B`
+  - `pipeline_version=4E90899F05BF270F8E6C614BDF96F64D8363674DB1F32E0796A7C3CB7F0DB613`
+  - `sha256.bl010_reproducibility_report.json=A5B902E31DF2AE2D8A5FDEFFB0EF4E5DC5A20E1987E720DC2B7B3ED9391CB3A4`
+  - `sha256.bl010_reproducibility_run_matrix.csv=36CBDFEAE6C3B7AD766B10C73A9283D6B438C92EFE30485045B2487C4AACD679`
+  - `sha256.bl010_reproducibility_config_snapshot.json=9D9EA949CE944AE75CE13F499FBDE1F6F2EAA017E39A67AB871353CFAF04BF98`
+- deterministic_repeat_checked: yes
+- output_paths:
+  - `07_implementation/implementation_notes/reproducibility/outputs/bl010_reproducibility_report.json`
+  - `07_implementation/implementation_notes/reproducibility/outputs/bl010_reproducibility_run_matrix.csv`
+  - `07_implementation/implementation_notes/reproducibility/outputs/bl010_reproducibility_config_snapshot.json`
+  - `07_implementation/implementation_notes/reproducibility/outputs/replay_01/`
+  - `07_implementation/implementation_notes/reproducibility/outputs/replay_02/`
+  - `07_implementation/implementation_notes/reproducibility/outputs/replay_03/`
+  - `07_implementation/implementation_notes/reproducibility/bl010_state_log_2026-03-24.md`
+
+### Issues And Limits
+- failures_or_anomalies:
+  - first execution attempt used incorrect PowerShell invocation syntax for quoted executable path and failed before script startup.
+- likely_cause:
+  - quoted executable path in PowerShell requires call operator (`&`).
+- bounded_mvp_limitation_or_bug: raw BL-007, BL-008, and BL-009 file hashes vary across replays because run metadata fields are intentionally volatile; BL-010 therefore evaluates stable semantic fingerprints for determinism.
+
+### Thesis Traceability
+- chapter4_relevance: provides refreshed deterministic replay evidence for recommendation pipeline reproducibility under fixed input/config conditions.
+- chapter5_relevance: clarifies the distinction between stable-output determinism and expected volatility in metadata-bearing raw artifacts.
+- quality_control_files_to_update: `07_implementation/test_notes.md` (`TC-BL010-REFRESH-001`), `07_implementation/backlog.md` (BL-010 done-note refresh), `00_admin/change_log.md`.
+
+### Next Action
+- immediate_follow_up: proceed to optional freeze-package consolidation (artifact manifest lock and UI linkage verification) on top of the refreshed BL-010 baseline.
+- backlog_status_recommendation: keep `BL-010` status done and treat this run as the active reproducibility baseline.
 
 

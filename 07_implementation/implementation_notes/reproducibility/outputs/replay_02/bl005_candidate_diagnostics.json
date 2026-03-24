@@ -1,75 +1,102 @@
 {
-  "run_id": "BL005-FILTER-20260320-233937-688727",
+  "run_id": "BL005-FILTER-20260324-200226-518120",
   "task": "BL-005",
-  "generated_at_utc": "2026-03-20T23:39:37Z",
+  "generated_at_utc": "2026-03-24T20:02:29Z",
   "input_artifacts": {
-    "profile_path": "C:\\Users\\Timothy\\Desktop\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\profile\\outputs\\bl004_preference_profile.json",
-    "profile_sha256": "2ef1c6f85a2edc5e7e4607d5ff53f5bc3740444da17644300c3e5c7ac2329885",
-    "seed_trace_path": "C:\\Users\\Timothy\\Desktop\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\profile\\outputs\\bl004_seed_trace.csv",
-    "seed_trace_sha256": "c47d4fbc6f0d9ccdd33699af2d62aa37368fe335883ffce96ceacc1d0da55584",
-    "candidate_stub_path": "C:\\Users\\Timothy\\Desktop\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\test_assets\\bl016_candidate_stub.csv",
-    "candidate_stub_sha256": "66505924a3bc9a627122310b6c4108bd397f4dd3e5ff9924991977a4c9574678"
+    "profile_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\profile\\outputs\\bl004_preference_profile.json",
+    "profile_sha256": "4c7a03ed65117cf20468af5f3aaae02709a0732d7a01936a224af15ed1fc7219",
+    "seed_trace_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\profile\\outputs\\bl004_seed_trace.csv",
+    "seed_trace_sha256": "6378f963a43adaace2818945e1f5216323d1880853085446fdb74d00cd7b525c",
+    "candidate_stub_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\data_layer\\outputs\\ds001_working_candidate_dataset.csv",
+    "candidate_stub_sha256": "296331ca6390d2c111aa336c7eb154b69ec7060604312ac8a274f545b68a04ef"
   },
   "config": {
     "top_lead_genre_limit": 6,
     "top_tag_limit": 10,
     "top_genre_limit": 8,
     "numeric_thresholds": {
-      "rhythm.bpm": 20.0,
-      "rhythm.danceability": 0.4,
-      "lowlevel.loudness_ebu128.integrated": 6.0,
-      "V_mean": 0.8,
-      "A_mean": 0.9,
-      "D_mean": 0.8
+      "tempo": 20.0,
+      "key": 2.0,
+      "mode": 0.5,
+      "duration_ms": 45000.0
     },
-    "keep_rule": "keep if not seed and ((semantic_score >= 2 and numeric_pass_count >= 4) or (semantic_score == 3 and numeric_pass_count >= 3))"
+    "numeric_feature_mapping": {
+      "tempo": "tempo",
+      "key": "key",
+      "mode": "mode",
+      "duration_ms": "duration_ms"
+    },
+    "numeric_features_enabled": true,
+    "keep_rule": "keep if not seed and (semantic_score >= 2 or (semantic_score >= 1 and numeric_pass_count >= 1))",
+    "semantic_source": "ds001_tags_and_genres_columns"
   },
   "counts": {
-    "candidate_rows_total": 60,
-    "seed_tracks_excluded": 11,
-    "kept_candidates": 42,
-    "rejected_non_seed_candidates": 7
+    "candidate_rows_total": 109269,
+    "seed_tracks_excluded": 1563,
+    "kept_candidates": 56700,
+    "rejected_non_seed_candidates": 51006
   },
   "rule_hits": {
     "semantic_rule_hits": {
-      "lead_genre_match": 45,
-      "genre_overlap": 55,
-      "tag_overlap": 59
+      "lead_genre_match": 20939,
+      "genre_overlap": 52245,
+      "tag_overlap": 53420
     },
     "numeric_rule_hits": {
-      "rhythm.bpm": 32,
-      "rhythm.danceability": 49,
-      "lowlevel.loudness_ebu128.integrated": 47,
-      "V_mean": 56,
-      "A_mean": 59,
-      "D_mean": 60
+      "tempo": 55033,
+      "key": 43325,
+      "mode": 68257,
+      "duration_ms": 47777
+    }
+  },
+  "decision_path_counts": {
+    "keep_strong_semantic": 47364,
+    "reject_no_signal": 3940,
+    "reject_numeric_without_semantic_support": 46472,
+    "keep_semantic_numeric_supported": 9336,
+    "reject_seed_track": 1563,
+    "reject_semantic_without_numeric_support": 594
+  },
+  "score_distributions": {
+    "semantic_score": {
+      "0": 50568,
+      "1": 9971,
+      "2": 29557,
+      "3": 19173
+    },
+    "numeric_pass_count": {
+      "0": 7269,
+      "1": 28664,
+      "2": 40790,
+      "3": 26036,
+      "4": 6510
     }
   },
   "top_kept_track_ids": [
-    "axdv4kGugNPl0G69",
-    "Nyb0YqqyaSvWThIG",
-    "hn1Z3OcZ4HM3hcIi",
-    "X4fkzkyHslEut5Tc",
-    "9EERk7bPIn9HNBvE",
-    "CiLFjUJvYWGmyr2d",
-    "8keAhBJumHlc8qe9",
-    "IYI6RFvYIFFg9Mi7",
-    "jmq9rFLdkgwkaqyV",
-    "POdgTSLBnoFJaj2x",
-    "nlgMHNZ0qCS2vdmV",
-    "9CHzAeSHv9tWaIXW",
-    "APCOA8vqweV4WMee",
-    "0X9aluHlz6iKWBMR",
-    "j8qrlsfqWAPqzqD9"
+    "0009fFIM1eYThaPg",
+    "002Jyd0vN4HyCpqL",
+    "007LIJOPQ4Sb98qV",
+    "00IeldeA9ijZOL0P",
+    "00KSCJkYb8JKa4Y3",
+    "00LuPWdOccBb09bW",
+    "00P2bHdWFkghmDqz",
+    "00XWljDxNBgBKEEA",
+    "00b6fV3nx5z2b8Ls",
+    "00hFmpewuNvc4dRL",
+    "00i0OB17z3m3yamO",
+    "00mLjKFmaTv9MdaB",
+    "00wqHIO65EtRyRQM",
+    "013BFFjvohJT9dW9",
+    "013QDoTqbexEwkHr"
   ],
-  "elapsed_seconds": 0.005,
+  "elapsed_seconds": 3.002,
   "output_files": {
-    "filtered_candidates_path": "C:\\Users\\Timothy\\Desktop\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\retrieval\\outputs\\bl005_filtered_candidates.csv",
-    "candidate_decisions_path": "C:\\Users\\Timothy\\Desktop\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\retrieval\\outputs\\bl005_candidate_decisions.csv"
+    "filtered_candidates_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\retrieval\\outputs\\bl005_filtered_candidates.csv",
+    "candidate_decisions_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\retrieval\\outputs\\bl005_candidate_decisions.csv"
   },
   "output_hashes_sha256": {
-    "bl005_filtered_candidates.csv": "4c7341830731a285dba71a7fdd34c983ad77a459b040a993a90880aa8f0971e1",
-    "bl005_candidate_decisions.csv": "f814c1ebed4e145b4ad94bce37d9da42bbd9399a08187dfb8d515bc7fa1d49d0"
+    "bl005_filtered_candidates.csv": "adf61c5eecbad48a704c802eae3441a7f09826a87c224d7f0a226253f2cca679",
+    "bl005_candidate_decisions.csv": "ba58b95a7d1b7f2c8ced25944c64335f9610a51980066d64657ecc2532a2209c"
   },
   "diagnostics_hash_note": "diagnostics file does not store its own hash to avoid recursive self-reference"
 }

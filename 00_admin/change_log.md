@@ -1109,3 +1109,234 @@ Use schema from `00_admin/operating_protocol.md`.
 - affected_components: `00_admin/change_log.md`
 - impact_assessment: Medium-positive. Locks short-term scope, reduces integration risk, and preserves delivery momentum while keeping Onion integration available for future controlled enhancement.
 - approval_record: Requested directly by user in chat on 2026-03-24.
+
+## C-100
+- date: 2026-03-24
+- proposed_by: user + AI
+- status: accepted
+- change_summary: Add a comprehensive BL-001 current-state governance audit log that consolidates completion status, contract scope, evidence links, drift check, risk snapshot, and bounded next actions.
+- reason: User requested confirmation that BL-001 is coherent and up to date, plus a standalone comprehensive log explicitly describing BL-001 current state.
+- evidence_basis: Newly created audit artifact `07_implementation/implementation_notes/ingestion/bl001_state_log_2026-03-24.md`, plus reconciled references to `07_implementation/backlog.md`, `06_data_and_sources/schema_notes.md`, and `07_implementation/implementation_notes/ingestion/bl001_spotify_input_output_mapping.md`.
+- affected_components: `07_implementation/implementation_notes/ingestion/bl001_state_log_2026-03-24.md`, `00_admin/change_log.md`
+- impact_assessment: Medium-positive. Improves governance traceability and reduces ambiguity about BL-001 current truth without changing runtime behavior.
+- approval_record: Requested and confirmed by user in chat on 2026-03-24.
+
+## C-101
+- date: 2026-03-24
+- proposed_by: user + AI
+- status: accepted
+- change_summary: Add a comprehensive BL-002 current-state governance audit log consolidating implementation scope, active runtime evidence, artifact inventory, contract-vs-practice check, and bounded follow-up actions.
+- reason: User requested a BL-002 file matching the comprehensive BL-001 state-log style and asked to formalize it in governance tracking.
+- evidence_basis: Newly created audit artifact `07_implementation/implementation_notes/ingestion/bl002_state_log_2026-03-24.md`, reconciled against `07_implementation/backlog.md`, `07_implementation/implementation_notes/ingestion/ingest_history_parser.py`, `07_implementation/implementation_notes/ingestion/export_spotify_max_dataset.py`, and latest run summary `07_implementation/implementation_notes/ingestion/outputs/spotify_api_export/spotify_export_run_summary.json`.
+- affected_components: `07_implementation/implementation_notes/ingestion/bl002_state_log_2026-03-24.md`, `00_admin/change_log.md`
+- impact_assessment: Medium-positive. Strengthens BL-002 traceability and confirms stage readiness with current evidence while keeping scope unchanged.
+- approval_record: Requested and confirmed by user in chat on 2026-03-24.
+
+## C-102
+- date: 2026-03-24
+- proposed_by: user + AI
+- status: accepted
+- change_summary: Add and fully populate a comprehensive BL-003 current-state governance audit log with concrete run evidence, including input/output hashes, source counts, match/unmatched distribution, schema fields, derived rates, and known-risk notes.
+- reason: User requested a comprehensive BL-003 log and then asked to fill it in with complete, run-specific details rather than placeholders.
+- evidence_basis: Newly created and populated audit artifact `07_implementation/implementation_notes/alignment/bl003_state_log_2026-03-24.md`, reconciled against `07_implementation/implementation_notes/alignment/build_bl003_ds001_spotify_seed_table.py`, `07_implementation/implementation_notes/alignment/outputs/bl003_ds001_spotify_summary.json`, `07_implementation/implementation_notes/alignment/outputs/bl003_ds001_spotify_unmatched.csv`, and `07_implementation/implementation_notes/alignment/outputs/bl003_ds001_spotify_matched_events.jsonl`.
+- affected_components: `07_implementation/implementation_notes/alignment/bl003_state_log_2026-03-24.md`, `00_admin/change_log.md`
+- impact_assessment: Medium-positive. Closes BL-003 governance documentation debt, improves auditability and reproducibility evidence quality, and clarifies current alignment coverage limits without changing runtime pipeline behavior.
+- approval_record: Requested and confirmed by user in chat on 2026-03-24.
+
+## C-103
+- date: 2026-03-24
+- proposed_by: user + AI
+- status: accepted
+- change_summary: Add a comprehensive BL-004 current-state governance audit log populated with concrete profile-run evidence, including BL-003 dependency hash linkage, semantic profile distributions, trace/output hashes, schema inventory, and current-mode constraints.
+- reason: User requested BL-004 state coverage in the same comprehensive style as BL-001/BL-002/BL-003 and confirmed creation of the full log.
+- evidence_basis: Newly created audit artifact `07_implementation/implementation_notes/profile/bl004_state_log_2026-03-24.md`, reconciled against `07_implementation/implementation_notes/profile/build_bl004_preference_profile.py`, `07_implementation/implementation_notes/profile/outputs/bl004_preference_profile.json`, `07_implementation/implementation_notes/profile/outputs/bl004_profile_summary.json`, `07_implementation/implementation_notes/profile/outputs/bl004_seed_trace.csv`, and BL-003 seed input `07_implementation/implementation_notes/alignment/outputs/bl003_ds001_spotify_seed_table.csv`.
+- affected_components: `07_implementation/implementation_notes/profile/bl004_state_log_2026-03-24.md`, `00_admin/change_log.md`
+- impact_assessment: Medium-positive. Improves BL-004 traceability and reproducibility confidence by consolidating current run truth, dependency integrity, and profile-mode limitations without altering runtime behavior.
+- approval_record: Requested and confirmed by user in chat on 2026-03-24.
+
+## C-104
+- date: 2026-03-24
+- proposed_by: user + AI
+- status: accepted
+- change_summary: Upgrade BL-004 from semantic-only to hybrid semantic+numeric profiling by joining DS-001 candidate numeric features, computing weighted feature centers, regenerating profile artifacts, and synchronizing BL-004 state documentation.
+- reason: User asked whether BL-004 should also use numeric features and confirmed implementation.
+- evidence_basis: Updated `07_implementation/implementation_notes/profile/build_bl004_preference_profile.py`; rerun outputs with `run_id=BL004-PROFILE-20260324-162651-244574`; populated numeric centers in `07_implementation/implementation_notes/profile/outputs/bl004_preference_profile.json` and `bl004_profile_summary.json` (`danceability=0.555574`, `energy=0.597315`, `valence=0.553242`, `tempo=120.793962`); refreshed artifact hashes and updated BL-004 state log.
+- affected_components: `07_implementation/implementation_notes/profile/build_bl004_preference_profile.py`, `07_implementation/implementation_notes/profile/outputs/bl004_preference_profile.json`, `07_implementation/implementation_notes/profile/outputs/bl004_profile_summary.json`, `07_implementation/implementation_notes/profile/outputs/bl004_seed_trace.csv`, `07_implementation/implementation_notes/profile/bl004_state_log_2026-03-24.md`, `00_admin/change_log.md`
+- impact_assessment: High-positive. Preserves semantic preference signals while adding numeric profile structure for downstream hybrid ranking and controllability experiments, with full backward-compatible artifact continuity.
+- approval_record: Requested and confirmed by user in chat on 2026-03-24.
+
+## C-105
+- date: 2026-03-24
+- proposed_by: user + AI
+- status: accepted
+- change_summary: Refactor the BL-003 to BL-004 boundary so BL-003 emits a single enriched seed-table artifact containing DS-001 numeric feature columns, and simplify BL-004 to consume only that enriched BL-003 output with no separate DS-001 runtime join.
+- reason: User asked whether embedding numeric enrichment into BL-003 would be a better long-term design and then approved implementation to keep BL-004 dependent on a single upstream artifact.
+- evidence_basis: Updated `07_implementation/implementation_notes/alignment/build_bl003_ds001_spotify_seed_table.py` to write numeric columns into `bl003_ds001_spotify_seed_table.csv`; updated `07_implementation/implementation_notes/profile/build_bl004_preference_profile.py` to remove the separate DS-001 candidate-data join and read numeric values directly from BL-003 seed rows; regenerated outputs with `BL-003-DS001-spotify-seed-build` timestamp `2026-03-24T17:55:16Z` and `BL004-PROFILE-20260324-175523-224833`; refreshed BL-003 and BL-004 state logs.
+- affected_components: `07_implementation/implementation_notes/alignment/build_bl003_ds001_spotify_seed_table.py`, `07_implementation/implementation_notes/alignment/outputs/bl003_ds001_spotify_seed_table.csv`, `07_implementation/implementation_notes/alignment/outputs/bl003_ds001_spotify_summary.json`, `07_implementation/implementation_notes/profile/build_bl004_preference_profile.py`, `07_implementation/implementation_notes/profile/outputs/bl004_preference_profile.json`, `07_implementation/implementation_notes/profile/outputs/bl004_profile_summary.json`, `07_implementation/implementation_notes/profile/outputs/bl004_seed_trace.csv`, `07_implementation/implementation_notes/alignment/bl003_state_log_2026-03-24.md`, `07_implementation/implementation_notes/profile/bl004_state_log_2026-03-24.md`, `00_admin/change_log.md`
+- impact_assessment: High-positive. Improves artifact-boundary clarity, reduces downstream join complexity, strengthens reproducibility by making BL-003 the single upstream contract for BL-004, and keeps future ingestion extensibility manageable by localizing enrichment at the aligned canonical-seed layer.
+- approval_record: Requested and confirmed by user in chat on 2026-03-24.
+
+## C-106
+- date: 2026-03-24
+- proposed_by: user + AI
+- status: accepted
+- change_summary: Correct BL-004 musical-key aggregation by replacing arithmetic averaging with weighted circular mean on the 12-semitone wheel, regenerate BL-004 outputs, and refresh governance evidence to reflect the corrected numeric center.
+- reason: User selected the BL-004 normalization review recommendation to fix `key` first before proceeding to BL-005 and BL-006, because arithmetic averaging produced a musically invalid center across the pitch-class wrap-around boundary.
+- evidence_basis: Updated `07_implementation/implementation_notes/profile/build_bl004_preference_profile.py` to compute circular key aggregates; regenerated outputs with `run_id=BL004-PROFILE-20260324-180708-238627`; refreshed `07_implementation/implementation_notes/profile/outputs/bl004_preference_profile.json` showing `diagnostics.key_aggregation_method=weighted_circular_mean` and `numeric_feature_profile.key=0.337536`; updated `07_implementation/implementation_notes/profile/bl004_state_log_2026-03-24.md` with new hashes and run evidence.
+- affected_components: `07_implementation/implementation_notes/profile/build_bl004_preference_profile.py`, `07_implementation/implementation_notes/profile/outputs/bl004_preference_profile.json`, `07_implementation/implementation_notes/profile/outputs/bl004_profile_summary.json`, `07_implementation/implementation_notes/profile/outputs/bl004_seed_trace.csv`, `07_implementation/implementation_notes/profile/bl004_state_log_2026-03-24.md`, `00_admin/change_log.md`
+- impact_assessment: High-positive. Removes a mathematically incorrect aggregation on a circular musical dimension, improves downstream comparability for key-based retrieval/scoring, and brings BL-004 profile construction into line with the pipeline's existing circular key-distance logic.
+- approval_record: Requested and confirmed by user in chat on 2026-03-24.
+
+## C-107
+- date: 2026-03-24
+- proposed_by: user + AI
+- status: accepted
+- change_summary: Align BL-005 and BL-006 with the current BL-004 hybrid profile contract by removing stale `loudness` dependence, activating only shared comparable numeric dimensions, mapping candidate `duration` to profile `duration_ms`, and regenerating downstream retrieval/scoring outputs.
+- reason: After the BL-004 hybrid-profile and circular-key fixes, BL-005 and BL-006 still reflected an older DS-002-era assumption set and were not consuming the current comparable numeric features correctly.
+- evidence_basis: Updated `07_implementation/implementation_notes/retrieval/build_bl005_candidate_filter.py` and `07_implementation/implementation_notes/scoring/build_bl006_scored_candidates.py`; reran BL-005 with `run_id=BL005-FILTER-20260324-181111-514436` and BL-006 with `run_id=BL006-SCORE-20260324-181112-418794`; refreshed diagnostics now show active numeric mappings `{tempo->tempo, key->key, mode->mode, duration_ms->duration}` and removed inactive `loudness` handling.
+- affected_components: `07_implementation/implementation_notes/retrieval/build_bl005_candidate_filter.py`, `07_implementation/implementation_notes/retrieval/outputs/bl005_filtered_candidates.csv`, `07_implementation/implementation_notes/retrieval/outputs/bl005_candidate_decisions.csv`, `07_implementation/implementation_notes/retrieval/outputs/bl005_candidate_diagnostics.json`, `07_implementation/implementation_notes/scoring/build_bl006_scored_candidates.py`, `07_implementation/implementation_notes/scoring/outputs/bl006_scored_candidates.csv`, `07_implementation/implementation_notes/scoring/outputs/bl006_score_summary.json`, `00_admin/change_log.md`
+- impact_assessment: High-positive. Restores downstream contract consistency after BL-004 modernization, ensures retrieval and scoring use only defensible cross-stage numeric comparisons, and removes a silent fallback path that previously left BL-006 effectively semantic-only.
+- approval_record: Requested by user in chat on 2026-03-24 as the next step after the BL-004 key-aggregation fix.
+
+## C-108
+- date: 2026-03-24
+- proposed_by: user + AI
+- status: accepted
+- change_summary: Harden BL-005 retrieval selectivity by replacing the permissive numeric-only keep path with a semantic-first rule (`semantic_score >= 2` or `semantic_score >= 1` with numeric support), add explicit decision-path diagnostics, rerun BL-005, and refresh BL-006 on the tightened candidate subset.
+- reason: User requested that BL-005 be improved end to end. The current rule was retaining too many candidates because semantic-zero rows could still pass on weak numeric agreement alone.
+- evidence_basis: Updated `07_implementation/implementation_notes/retrieval/build_bl005_candidate_filter.py`; reran BL-005 with `run_id=BL005-FILTER-20260324-182142-419959` and BL-006 with `run_id=BL006-SCORE-20260324-182143-804380`; new diagnostics show `kept_candidates=1938` versus the prior `6604`, with `reject_numeric_without_semantic_support=6877` and new decision-path audit counts recorded.
+- affected_components: `07_implementation/implementation_notes/retrieval/build_bl005_candidate_filter.py`, `07_implementation/implementation_notes/retrieval/outputs/bl005_filtered_candidates.csv`, `07_implementation/implementation_notes/retrieval/outputs/bl005_candidate_decisions.csv`, `07_implementation/implementation_notes/retrieval/outputs/bl005_candidate_diagnostics.json`, `07_implementation/implementation_notes/scoring/outputs/bl006_scored_candidates.csv`, `07_implementation/implementation_notes/scoring/outputs/bl006_score_summary.json`, `07_implementation/test_notes.md`, `07_implementation/experiment_log.md`, `07_implementation/backlog.md`, `00_admin/change_log.md`
+- impact_assessment: High-positive. Restores BL-005 as a real retrieval filter rather than a broad numeric pass-through, improves auditability of keep/reject pathways, and preserves downstream scoring continuity on a substantially narrower candidate set.
+- approval_record: Requested by user in chat on 2026-03-24 ("improve it. plan, implement test, and log everythibg").
+
+## C-109
+- date: 2026-03-24
+- proposed_by: user + AI
+- status: accepted
+- change_summary: Retune BL-006 scoring weights to modestly increase numeric influence (`tempo`, `duration_ms`, `key`, `mode`) and reduce semantic overlap pressure from `genre_overlap` and `tag_overlap`, then regenerate the scoring outputs on the hardened BL-005 candidate set.
+- reason: After BL-005 hardening, BL-006 top-ranked rows remained overly semantic-dominated. A bounded retune was needed to better balance comparable numeric evidence without destabilizing the ranked output set.
+- evidence_basis: Updated `07_implementation/implementation_notes/scoring/build_bl006_scored_candidates.py`; reran BL-006 with `run_id=BL006-SCORE-20260324-182702-117298`; top-100 average numeric contribution increased from `0.162864` to `0.216824` while top-10 ranking overlap with the prior run remained `9/10`; refreshed hashes recorded in `07_implementation/test_notes.md` and `07_implementation/experiment_log.md`.
+- affected_components: `07_implementation/implementation_notes/scoring/build_bl006_scored_candidates.py`, `07_implementation/implementation_notes/scoring/outputs/bl006_scored_candidates.csv`, `07_implementation/implementation_notes/scoring/outputs/bl006_score_summary.json`, `07_implementation/test_notes.md`, `07_implementation/experiment_log.md`, `07_implementation/backlog.md`, `00_admin/change_log.md`
+- impact_assessment: Medium-to-high positive. Improves balance between semantic and numeric evidence in final ranking while preserving output stability and keeping the scoring stage deterministic.
+- approval_record: Continued by user approval in chat on 2026-03-24 after the BL-005 hardening pass.
+
+## C-110
+- date: 2026-03-24
+- proposed_by: user + AI
+- status: accepted
+- change_summary: Migrate BL-003 to BL-006 semantic contract to DS-001-only by adding BL-003 selected-source completeness checks from BL-002 summary metadata and replacing BL-005/BL-006 DS-002 `tags_json` parsing with DS-001 `tags` and `genres` column parsing.
+- reason: User requested that BL-003 align all raw Spotify evidence chosen at ingestion and that DS-002 `tags_json` no longer be used because active pipeline scope is DS-001-only.
+- evidence_basis: Updated `07_implementation/implementation_notes/alignment/build_bl003_ds001_spotify_seed_table.py` with selected-source validation; updated `07_implementation/implementation_notes/retrieval/build_bl005_candidate_filter.py` and `07_implementation/implementation_notes/scoring/build_bl006_scored_candidates.py` to parse DS-001 semantic columns and resolve `duration_ms` mapping; reran BL-003, BL-004, BL-005 (`run_id=BL005-FILTER-20260324-183958-225058`), and BL-006 (`run_id=BL006-SCORE-20260324-184028-117165`) successfully.
+- affected_components: `07_implementation/implementation_notes/alignment/build_bl003_ds001_spotify_seed_table.py`, `07_implementation/implementation_notes/alignment/outputs/bl003_ds001_spotify_summary.json`, `07_implementation/implementation_notes/retrieval/build_bl005_candidate_filter.py`, `07_implementation/implementation_notes/retrieval/outputs/bl005_filtered_candidates.csv`, `07_implementation/implementation_notes/retrieval/outputs/bl005_candidate_diagnostics.json`, `07_implementation/implementation_notes/scoring/build_bl006_scored_candidates.py`, `07_implementation/implementation_notes/scoring/outputs/bl006_scored_candidates.csv`, `07_implementation/implementation_notes/scoring/outputs/bl006_score_summary.json`, `07_implementation/test_notes.md`, `07_implementation/experiment_log.md`, `07_implementation/backlog.md`, `00_admin/change_log.md`
+- impact_assessment: High-positive. Removes DS-002 semantic dependency from active retrieval/scoring, makes BL-003 alignment stricter with respect to selected ingestion evidence, and restores stage-contract consistency for DS-001-only execution.
+- approval_record: Requested by user in chat on 2026-03-24.
+
+## C-111
+- date: 2026-03-24
+- proposed_by: user + AI
+- status: accepted
+- change_summary: Standardize BL-001 through BL-005 state logs into a common comprehensive format, refresh BL-003 and BL-004 evidence to latest DS-001-only reruns, and create missing BL-005 state log with current diagnostics and hashes.
+- reason: User requested that BL-001 to BL-005 logs be similar and comprehensive so stage status and evidence can be audited consistently.
+- evidence_basis: Updated `07_implementation/implementation_notes/ingestion/bl001_state_log_2026-03-24.md`, `07_implementation/implementation_notes/ingestion/bl002_state_log_2026-03-24.md`, `07_implementation/implementation_notes/alignment/bl003_state_log_2026-03-24.md`, `07_implementation/implementation_notes/profile/bl004_state_log_2026-03-24.md`; created `07_implementation/implementation_notes/retrieval/bl005_state_log_2026-03-24.md`; all entries now include aligned sections (purpose, contract, run evidence, hashes, risks, conclusions).
+- affected_components: `07_implementation/implementation_notes/ingestion/bl001_state_log_2026-03-24.md`, `07_implementation/implementation_notes/ingestion/bl002_state_log_2026-03-24.md`, `07_implementation/implementation_notes/alignment/bl003_state_log_2026-03-24.md`, `07_implementation/implementation_notes/profile/bl004_state_log_2026-03-24.md`, `07_implementation/implementation_notes/retrieval/bl005_state_log_2026-03-24.md`, `00_admin/change_log.md`
+- impact_assessment: Medium-to-high positive. Improves governance readability and reduces audit friction by making BL-stage state evidence structure uniform.
+- approval_record: Requested by user in chat on 2026-03-24.
+
+## C-112
+- date: 2026-03-24
+- proposed_by: user + AI
+- status: accepted
+- change_summary: Reclassify BL-003 unmatched-event coverage and BL-002 external API dependency items as accepted operational constraints in stage state logs, and keep focus on remaining active issues.
+- reason: User explicitly confirmed that DS-001 coverage-driven unmatched Spotify events are expected and that BL-002 external dependency risk is acceptable.
+- evidence_basis: Updated risk/constraint wording in `07_implementation/implementation_notes/alignment/bl003_state_log_2026-03-24.md` and `07_implementation/implementation_notes/ingestion/bl002_state_log_2026-03-24.md` to mark both items as accepted constraints rather than unresolved defects.
+- affected_components: `07_implementation/implementation_notes/alignment/bl003_state_log_2026-03-24.md`, `07_implementation/implementation_notes/ingestion/bl002_state_log_2026-03-24.md`, `00_admin/change_log.md`
+- impact_assessment: Medium-positive. Reduces governance ambiguity by separating accepted constraints from active remediation items.
+- approval_record: Confirmed by user in chat on 2026-03-24.
+
+## C-113
+- date: 2026-03-24
+- proposed_by: user + AI
+- status: accepted
+- change_summary: Add BL-006 component-balance diagnostics (all candidates, top-100, top-500) to scoring summary output, rerun BL-006, and create a comprehensive BL-006 state log aligned with BL-001 to BL-005 documentation structure.
+- reason: User confirmed work should continue on BL-006 and needed clear visibility into what BL-006 currently does and how numeric-versus-semantic contributions behave in ranked outputs.
+- evidence_basis: Updated `07_implementation/implementation_notes/scoring/build_bl006_scored_candidates.py` to emit `component_balance`; reran BL-006 with `run_id=BL006-SCORE-20260324-185938-252856`; produced refreshed outputs and hashes; created `07_implementation/implementation_notes/scoring/bl006_state_log_2026-03-24.md` with run evidence and diagnostics interpretation.
+- affected_components: `07_implementation/implementation_notes/scoring/build_bl006_scored_candidates.py`, `07_implementation/implementation_notes/scoring/outputs/bl006_scored_candidates.csv`, `07_implementation/implementation_notes/scoring/outputs/bl006_score_summary.json`, `07_implementation/implementation_notes/scoring/bl006_state_log_2026-03-24.md`, `00_admin/change_log.md`
+- impact_assessment: Medium-to-high positive. Improves BL-006 observability for evidence-based retuning while preserving deterministic scoring behavior.
+- approval_record: Confirmed by user in chat on 2026-03-24.
+
+## C-114
+- date: 2026-03-24
+- proposed_by: user + AI
+- status: accepted
+- change_summary: Apply a bounded BL-006 weight retune to increase numeric contribution and reduce semantic-overlap pressure, rerun scoring, and update BL-006 state evidence with before/after comparison metrics.
+- reason: User confirmed continuation on BL-006. New component-balance diagnostics showed top-ranked segments still semantic-leading, so a controlled retune was executed to improve numeric influence while preserving ranking stability.
+- evidence_basis: Updated `07_implementation/implementation_notes/scoring/build_bl006_scored_candidates.py` weights to `{tempo:0.20, duration_ms:0.13, key:0.13, mode:0.09, lead_genre:0.17, genre_overlap:0.12, tag_overlap:0.16}`; baseline artifacts preserved as `bl006_scored_candidates_pre_retune.csv` and `bl006_score_summary_pre_retune.json`; reran BL-006 with `run_id=BL006-SCORE-20260324-190145-197533`; observed `top10_overlap=9/10`; top-100 mean contributions shifted from numeric `0.310008` / semantic `0.362157` to numeric `0.384627` / semantic `0.292601`.
+- affected_components: `07_implementation/implementation_notes/scoring/build_bl006_scored_candidates.py`, `07_implementation/implementation_notes/scoring/outputs/bl006_scored_candidates_pre_retune.csv`, `07_implementation/implementation_notes/scoring/outputs/bl006_score_summary_pre_retune.json`, `07_implementation/implementation_notes/scoring/outputs/bl006_scored_candidates.csv`, `07_implementation/implementation_notes/scoring/outputs/bl006_score_summary.json`, `07_implementation/implementation_notes/scoring/bl006_state_log_2026-03-24.md`, `00_admin/change_log.md`
+- impact_assessment: High-positive. Improves numeric-vs-semantic balance in top-ranked outputs while retaining high ranking continuity.
+- approval_record: Confirmed by user in chat on 2026-03-24.
+
+## C-115
+- date: 2026-03-24
+- proposed_by: user + AI
+- status: accepted
+- change_summary: Add a BL-006 top-50 quality snapshot artifact and align BL-006 risk wording to reflect post-retune numeric-leading behavior with remaining genre-concentration risk.
+- reason: User confirmed continuation on BL-006 after retune; a compact quality snapshot was needed to inspect upper-rank behavior before deciding on additional tuning.
+- evidence_basis: Computed top-50 distribution and contribution metrics from `07_implementation/implementation_notes/scoring/outputs/bl006_scored_candidates.csv`; created `07_implementation/implementation_notes/scoring/bl006_top50_quality_snapshot_2026-03-24.md`; updated constraints wording in `07_implementation/implementation_notes/scoring/bl006_state_log_2026-03-24.md` to replace semantic-dominance risk with concentration-focused risk.
+- affected_components: `07_implementation/implementation_notes/scoring/bl006_top50_quality_snapshot_2026-03-24.md`, `07_implementation/implementation_notes/scoring/bl006_state_log_2026-03-24.md`, `00_admin/change_log.md`
+- impact_assessment: Medium-positive. Improves BL-006 monitoring clarity and better targets remaining quality risk.
+- approval_record: Confirmed by user in chat on 2026-03-24.
+
+## C-116
+- date: 2026-03-24
+- proposed_by: user + AI
+- status: accepted
+- change_summary: Finalize BL-006 before BL-007 handoff by adding a closure-gate experiment record and test case, and synchronizing backlog evidence references to the current post-retune scoring baseline.
+- reason: User requested that BL-006 be finished and fully logged before moving to BL-007.
+- evidence_basis: Added `EXP-035` to `07_implementation/experiment_log.md` with closure metrics/hashes and handoff recommendation; added `TC-BL006-FINAL-001` to `07_implementation/test_notes.md` validating stability (`top10_overlap_vs_pre_retune=9/10`) and numeric-led top-100 contribution (`0.384627 > 0.292601`); updated BL-006 done-note in `07_implementation/backlog.md` to reference final closure evidence.
+- affected_components: `07_implementation/experiment_log.md`, `07_implementation/test_notes.md`, `07_implementation/backlog.md`, `00_admin/change_log.md`
+- impact_assessment: High-positive. Establishes a clear BL-006 closure baseline and removes governance ambiguity before BL-007 execution.
+- approval_record: Requested by user in chat on 2026-03-24.
+
+## C-117
+- date: 2026-03-24
+- proposed_by: user + AI
+- status: accepted
+- change_summary: Refresh BL-007 playlist assembly against the finalized BL-006 baseline, regenerate playlist artifacts, and synchronize implementation/test/backlog/state evidence before moving downstream.
+- reason: User requested BL-007 status after BL-006 closure; current BL-007 outputs were identified as stale relative to the latest BL-006 run and required a refresh for contract alignment.
+- evidence_basis: Reran `07_implementation/implementation_notes/playlist/build_bl007_playlist.py` with `run_id=BL007-ASSEMBLE-20260324-195257-583625`; generated refreshed outputs (`bl007_playlist.json`, `bl007_assembly_trace.csv`, `bl007_assembly_report.json`) with BL-006 input hash `189C3DCF575D69736CFD855CE5D456AB5C391AD58EA20DEA803A216D35F8CE7C`; added `EXP-036`, `TC-BL007-REFRESH-001`, backlog done-note refresh, and `bl007_state_log_2026-03-24.md`.
+- affected_components: `07_implementation/implementation_notes/playlist/build_bl007_playlist.py`, `07_implementation/implementation_notes/playlist/outputs/bl007_playlist.json`, `07_implementation/implementation_notes/playlist/outputs/bl007_assembly_trace.csv`, `07_implementation/implementation_notes/playlist/outputs/bl007_assembly_report.json`, `07_implementation/implementation_notes/playlist/bl007_state_log_2026-03-24.md`, `07_implementation/experiment_log.md`, `07_implementation/test_notes.md`, `07_implementation/backlog.md`, `00_admin/change_log.md`
+- impact_assessment: High-positive. Restores BL-007 evidence currency and ensures downstream stages consume playlist artifacts aligned with the finalized scoring baseline.
+- approval_record: Requested by user in chat on 2026-03-24.
+
+## C-118
+- date: 2026-03-24
+- proposed_by: user + AI
+- status: accepted
+- change_summary: Refresh BL-008 transparency outputs on the finalized BL-006 and refreshed BL-007 baseline, including a contract-alignment fix that replaces stale DS-002-era hardcoded component mapping with dynamic active-component extraction.
+- reason: User requested execution of the first artefact next step (BL-008 refresh). Existing BL-008 script mapping still referenced outdated component assumptions and needed alignment to current BL-006 scoring features.
+- evidence_basis: Updated `07_implementation/implementation_notes/transparency/build_bl008_explanation_payloads.py` to derive breakdown components from BL-006 `active_component_weights`; reran BL-008 with `run_id=BL008-EXPLAIN-20260324-195641-957331`; regenerated `bl008_explanation_payloads.json` and `bl008_explanation_summary.json` with current BL-006/BL-007 input hashes; added `EXP-037`, `TC-BL008-REFRESH-001`, backlog done-note refresh, and `bl008_state_log_2026-03-24.md`.
+- affected_components: `07_implementation/implementation_notes/transparency/build_bl008_explanation_payloads.py`, `07_implementation/implementation_notes/transparency/outputs/bl008_explanation_payloads.json`, `07_implementation/implementation_notes/transparency/outputs/bl008_explanation_summary.json`, `07_implementation/implementation_notes/transparency/bl008_state_log_2026-03-24.md`, `07_implementation/experiment_log.md`, `07_implementation/test_notes.md`, `07_implementation/backlog.md`, `00_admin/change_log.md`
+- impact_assessment: High-positive. Restores transparency-contract correctness and ensures explanation artifacts are auditable against current scoring and playlist baselines.
+- approval_record: Requested by user in chat on 2026-03-24.
+
+## C-119
+- date: 2026-03-24
+- proposed_by: user + AI
+- status: accepted
+- change_summary: Refresh BL-009 observability outputs to capture the updated BL-006, BL-007, and BL-008 run chain and synchronize state/experiment/test/backlog evidence.
+- reason: User requested continuation of artefact next steps after BL-008 refresh. Observability needed to be regenerated so run metadata reflects the current stage-chain baseline.
+- evidence_basis: Reran `07_implementation/implementation_notes/observability/build_bl009_observability_log.py` with `run_id=BL009-OBSERVE-20260324-195859-875091`; regenerated `bl009_run_observability_log.json` and `bl009_run_index.csv`; confirmed upstream run IDs (`BL006-SCORE-20260324-190145-197533`, `BL007-ASSEMBLE-20260324-195257-583625`, `BL008-EXPLAIN-20260324-195641-957331`) and consistent counts (`kept_candidates=56700`, `candidates_scored=56700`, `playlist_length=10`, `explanation_count=10`); added `EXP-038`, `TC-BL009-REFRESH-001`, backlog done-note refresh, and `bl009_state_log_2026-03-24.md`.
+- affected_components: `07_implementation/implementation_notes/observability/build_bl009_observability_log.py`, `07_implementation/implementation_notes/observability/outputs/bl009_run_observability_log.json`, `07_implementation/implementation_notes/observability/outputs/bl009_run_index.csv`, `07_implementation/implementation_notes/observability/bl009_state_log_2026-03-24.md`, `07_implementation/experiment_log.md`, `07_implementation/test_notes.md`, `07_implementation/backlog.md`, `00_admin/change_log.md`
+- impact_assessment: High-positive. Restores observability currency and provides a coherent run-chain baseline for reproducibility refresh work.
+- approval_record: Requested by user in chat on 2026-03-24.
+
+## C-120
+- date: 2026-03-24
+- proposed_by: user + AI
+- status: accepted
+- change_summary: Refresh BL-010 reproducibility artifacts and governance records on the updated BL-006 through BL-009 baseline, including a new stage state log and refreshed hash evidence.
+- reason: User approved progression to step 3 of the artefact sequence, requiring BL-010 rerun and full log synchronization after BL-009 refresh.
+- evidence_basis: Reran `07_implementation/implementation_notes/reproducibility/run_bl010_reproducibility_check.py` with `run_id=BL010-REPRO-20260324-200214`; deterministic replay result remained pass (`deterministic_match=true`, `first_mismatch_artifact=null`) across three replays; regenerated `bl010_reproducibility_report.json`, `bl010_reproducibility_run_matrix.csv`, and `bl010_reproducibility_config_snapshot.json`; recorded `EXP-039`, `TC-BL010-REFRESH-001`, backlog done-note refresh, and new `bl010_state_log_2026-03-24.md`.
+- affected_components: `07_implementation/implementation_notes/reproducibility/run_bl010_reproducibility_check.py`, `07_implementation/implementation_notes/reproducibility/outputs/bl010_reproducibility_report.json`, `07_implementation/implementation_notes/reproducibility/outputs/bl010_reproducibility_run_matrix.csv`, `07_implementation/implementation_notes/reproducibility/outputs/bl010_reproducibility_config_snapshot.json`, `07_implementation/implementation_notes/reproducibility/outputs/replay_01/`, `07_implementation/implementation_notes/reproducibility/outputs/replay_02/`, `07_implementation/implementation_notes/reproducibility/outputs/replay_03/`, `07_implementation/implementation_notes/reproducibility/bl010_state_log_2026-03-24.md`, `07_implementation/experiment_log.md`, `07_implementation/test_notes.md`, `07_implementation/backlog.md`, `00_admin/change_log.md`
+- impact_assessment: High-positive. Confirms deterministic reproducibility on the current baseline and keeps thesis governance/evidence chain synchronized end to end.
+- approval_record: Requested by user in chat on 2026-03-24.

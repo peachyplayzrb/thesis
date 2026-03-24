@@ -1,7 +1,7 @@
 {
-  "run_id": "BL007-ASSEMBLE-20260320-233938-350723",
-  "generated_at_utc": "2026-03-20T23:39:38Z",
-  "elapsed_seconds": 0.001,
+  "run_id": "BL007-ASSEMBLE-20260324-200244-069001",
+  "generated_at_utc": "2026-03-24T20:02:44Z",
+  "elapsed_seconds": 0.434,
   "config": {
     "target_size": 10,
     "min_score_threshold": 0.35,
@@ -9,31 +9,28 @@
     "max_consecutive": 2
   },
   "counts": {
-    "candidates_evaluated": 42,
+    "candidates_evaluated": 56700,
     "tracks_included": 10,
-    "tracks_excluded": 32
+    "tracks_excluded": 56690
   },
   "rule_hits": {
-    "R3_consecutive_run": 4,
     "R2_genre_cap": 5,
-    "R4_length_cap": 23
+    "R4_length_cap": 56685
   },
   "playlist_genre_mix": {
-    "indie rock": 4,
-    "indie pop": 2,
-    "alternative rock": 2,
-    "pop": 1,
-    "folk": 1
+    "classic rock": 4,
+    "pop": 4,
+    "rock": 2
   },
   "playlist_score_range": {
-    "max": 0.724318,
-    "min": 0.510916
+    "max": 0.817654,
+    "min": 0.703525
   },
   "input_artifact_hashes": {
-    "bl006_scored_candidates.csv": "BF9AB8A4FE27596276F8B1868FC1246BCA4B04B6315DFBB6FEF673DDF53E1AA2"
+    "bl006_scored_candidates.csv": "189C3DCF575D69736CFD855CE5D456AB5C391AD58EA20DEA803A216D35F8CE7C"
   },
   "output_artifact_hashes": {
-    "bl007_playlist.json": "40F06177AB2D72D1CB81E4DE590EA890D3AE59C84796E2763A4A08D480696318",
-    "bl007_assembly_trace.csv": "9F432BC31CCF158909F2488A2D3A85EB073E76FB562F924A1C51324B66C32193"
+    "bl007_playlist.json": "E688A721E806C96A500EFC2EFAB8A2BE2276BD16816AB91E509E4E725471AEB3",
+    "bl007_assembly_trace.csv": "692A1F4DE6BD32DE0D785A3D5952D901CDF98966C264A1C8D72FF1926B6DDB9E"
   }
 }

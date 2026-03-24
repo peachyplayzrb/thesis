@@ -1,12 +1,12 @@
 {
   "run_metadata": {
-    "run_id": "BL010-REPRO-20260320-233937",
+    "run_id": "BL010-REPRO-20260324-200214",
     "task": "BL-010",
-    "generated_at_utc": "2026-03-20T23:39:37Z",
-    "elapsed_seconds": 1.508,
+    "generated_at_utc": "2026-03-24T20:02:14Z",
+    "elapsed_seconds": 31.881,
     "replay_count": 3,
     "bootstrap_mode": true,
-    "config_hash": "B259CD10A428DD8DC5CF2EA8255807D28B6E771BDEDC24C32733982A6D47386F"
+    "config_hash": "72CCA053B8AB1EDCEED0E1D8A8B14C27309945AC2464A2AADDD5797C1AD64D78"
   },
   "inputs": {
     "config_snapshot_path": "07_implementation/implementation_notes/reproducibility/outputs/bl010_reproducibility_config_snapshot.json",
@@ -17,11 +17,11 @@
       "07_implementation/implementation_notes/data_layer/outputs/onion_join_coverage_report.json": "071A76D683921BE4FC08F58D28E5F0421C57BA517878D2FF899D7FFB852DC9BF"
     },
     "stage_scripts": {
-      "07_implementation/implementation_notes/profile/build_bl004_preference_profile.py": "A47790F391A0E1BED5877FA13013A2CE775E1D968E339E2C3433D29A89CAF1DB",
-      "07_implementation/implementation_notes/retrieval/build_bl005_candidate_filter.py": "CE1B459BFB329C29CDD8DB7B1CDFDA58EC8427EBD112462A2CFF1DCB8FFAD18B",
-      "07_implementation/implementation_notes/scoring/build_bl006_scored_candidates.py": "6F3FCE68461E0A21F840F2912C7AC43D54213E3BC54EE6333119094A34B9D7D4",
+      "07_implementation/implementation_notes/profile/build_bl004_preference_profile.py": "92ACD4F0A010ED9D5C017691C13AFEDB99A2043345C94F48D060AF4BA43DA3EC",
+      "07_implementation/implementation_notes/retrieval/build_bl005_candidate_filter.py": "FE8F1BC1C5F90E4BF12A2B9CD77AAE214DF19414C95557866DEC727652346FD5",
+      "07_implementation/implementation_notes/scoring/build_bl006_scored_candidates.py": "29164E533F0B3F243629F9C94CEE3B6BEFF5B634B11D0CF50360204E7F310EFF",
       "07_implementation/implementation_notes/playlist/build_bl007_playlist.py": "30F1DB047B3F5E07BED3646C80ACD2EACD7BC98A3D696B04D30B52BC1379430A",
-      "07_implementation/implementation_notes/transparency/build_bl008_explanation_payloads.py": "DE393F4139D4E926ADF4D3656F77297CB9C198D42D28D57927F5B23F4EF35F06",
+      "07_implementation/implementation_notes/transparency/build_bl008_explanation_payloads.py": "398F49739C0B15088841D24A167816353FE342CD7FD05895745688DB19B84390",
       "07_implementation/implementation_notes/observability/build_bl009_observability_log.py": "14D7BC576DBA5EFD578B7AF3C5CF0E1C0796D62094CDFFD14A4BBF972A91CBFD"
     }
   },
@@ -57,152 +57,152 @@
       "stage_runs": [
         {
           "script": "build_bl004_preference_profile.py",
-          "command": "C:\\Program Files\\Python312\\python.exe C:\\Users\\Timothy\\Desktop\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\profile\\build_bl004_preference_profile.py",
-          "elapsed_seconds": 0.062,
+          "command": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\.venv\\Scripts\\python.exe C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\profile\\build_bl004_preference_profile.py",
+          "elapsed_seconds": 0.181,
           "stdout": [
             "BL-004 preference profile created.",
-            "profile=C:\\Users\\Timothy\\Desktop\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\profile\\outputs\\bl004_preference_profile.json",
-            "summary=C:\\Users\\Timothy\\Desktop\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\profile\\outputs\\bl004_profile_summary.json",
-            "seed_trace=C:\\Users\\Timothy\\Desktop\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\profile\\outputs\\bl004_seed_trace.csv"
+            "profile=C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\profile\\outputs\\bl004_preference_profile.json",
+            "summary=C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\profile\\outputs\\bl004_profile_summary.json",
+            "seed_trace=C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\profile\\outputs\\bl004_seed_trace.csv"
           ]
         },
         {
           "script": "build_bl005_candidate_filter.py",
-          "command": "C:\\Program Files\\Python312\\python.exe C:\\Users\\Timothy\\Desktop\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\retrieval\\build_bl005_candidate_filter.py",
-          "elapsed_seconds": 0.083,
+          "command": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\.venv\\Scripts\\python.exe C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\retrieval\\build_bl005_candidate_filter.py",
+          "elapsed_seconds": 4.371,
           "stdout": [
             "BL-005 candidate filtering complete.",
-            "filtered_candidates=C:\\Users\\Timothy\\Desktop\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\retrieval\\outputs\\bl005_filtered_candidates.csv",
-            "decisions=C:\\Users\\Timothy\\Desktop\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\retrieval\\outputs\\bl005_candidate_decisions.csv",
-            "diagnostics=C:\\Users\\Timothy\\Desktop\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\retrieval\\outputs\\bl005_candidate_diagnostics.json"
+            "filtered_candidates=C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\retrieval\\outputs\\bl005_filtered_candidates.csv",
+            "decisions=C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\retrieval\\outputs\\bl005_candidate_decisions.csv",
+            "diagnostics=C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\retrieval\\outputs\\bl005_candidate_diagnostics.json"
           ]
         },
         {
           "script": "build_bl006_scored_candidates.py",
-          "command": "C:\\Program Files\\Python312\\python.exe C:\\Users\\Timothy\\Desktop\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\scoring\\build_bl006_scored_candidates.py",
-          "elapsed_seconds": 0.084,
+          "command": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\.venv\\Scripts\\python.exe C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\scoring\\build_bl006_scored_candidates.py",
+          "elapsed_seconds": 3.096,
           "stdout": [
             "BL-006 candidate scoring complete.",
-            "scored_candidates=C:\\Users\\Timothy\\Desktop\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\scoring\\outputs\\bl006_scored_candidates.csv",
-            "score_summary=C:\\Users\\Timothy\\Desktop\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\scoring\\outputs\\bl006_score_summary.json"
+            "scored_candidates=C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\scoring\\outputs\\bl006_scored_candidates.csv",
+            "score_summary=C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\scoring\\outputs\\bl006_score_summary.json"
           ]
         },
         {
           "script": "build_bl007_playlist.py",
-          "command": "C:\\Program Files\\Python312\\python.exe C:\\Users\\Timothy\\Desktop\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\playlist\\build_bl007_playlist.py",
-          "elapsed_seconds": 0.063,
+          "command": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\.venv\\Scripts\\python.exe C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\playlist\\build_bl007_playlist.py",
+          "elapsed_seconds": 0.929,
           "stdout": [
             "BL-007 playlist assembly complete.  Playlist: 10/10 tracks",
-            "Run ID : BL007-ASSEMBLE-20260320-233937-352163",
-            "Genre mix : {'indie rock': 4, 'indie pop': 2, 'alternative rock': 2, 'pop': 1, 'folk': 1}"
+            "Run ID : BL007-ASSEMBLE-20260324-200222-837432",
+            "Genre mix : {'classic rock': 4, 'pop': 4, 'rock': 2}"
           ]
         },
         {
           "script": "build_bl008_explanation_payloads.py",
-          "command": "C:\\Program Files\\Python312\\python.exe C:\\Users\\Timothy\\Desktop\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\transparency\\build_bl008_explanation_payloads.py",
-          "elapsed_seconds": 0.064,
+          "command": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\.venv\\Scripts\\python.exe C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\transparency\\build_bl008_explanation_payloads.py",
+          "elapsed_seconds": 0.777,
           "stdout": [
             "BL-008 explanation payloads complete. Tracks explained: 10",
-            "Run ID: BL008-EXPLAIN-20260320-233937-415173",
-            "  pos= 1  jPv1Tj4Mgo4l2Oue  top=Lead genre match",
-            "  pos= 2  POdgTSLBnoFJaj2x  top=Lead genre match",
-            "  pos= 3  yUa5uu5wFCGwl2PK  top=Tag overlap",
-            "  pos= 4  j8qrlsfqWAPqzqD9  top=Lead genre match",
-            "  pos= 5  8keAhBJumHlc8qe9  top=Lead genre match",
-            "  pos= 6  Nyb0YqqyaSvWThIG  top=Tag overlap",
-            "  pos= 7  0X9aluHlz6iKWBMR  top=Valence",
-            "  pos= 8  ql2191d6uNCVM932  top=Lead genre match",
-            "  pos= 9  9ZtfD8gBZXonrJKX  top=Valence",
-            "  pos=10  PZEgbQhTHMMrKRLv  top=Valence"
+            "Run ID: BL008-EXPLAIN-20260324-200223-907297",
+            "  pos= 1  8WnHV12FDAeaQwkd  top=Tempo (BPM)",
+            "  pos= 2  9B6dNFjeE90pp4x6  top=Lead genre match",
+            "  pos= 3  C0mhpBhouqyLmYSK  top=Tempo (BPM)",
+            "  pos= 4  m17iB8yxNZn3tqdE  top=Tempo (BPM)",
+            "  pos= 5  df0JOlTEeZCAVz1W  top=Tempo (BPM)",
+            "  pos= 6  9qCc2lNrSBbmtjCj  top=Lead genre match",
+            "  pos= 7  CaR8UnowNJUR5Dib  top=Tempo (BPM)",
+            "  pos= 8  YfV01HfNXWAFfgtm  top=Tempo (BPM)",
+            "  pos= 9  N1yOEQ8Rf8ljdHmf  top=Tempo (BPM)",
+            "  pos=10  rZL9jXtTHHqJ49D7  top=Tempo (BPM)"
           ]
         },
         {
           "script": "build_bl009_observability_log.py",
-          "command": "C:\\Program Files\\Python312\\python.exe C:\\Users\\Timothy\\Desktop\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\observability\\build_bl009_observability_log.py",
-          "elapsed_seconds": 0.12,
+          "command": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\.venv\\Scripts\\python.exe C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\observability\\build_bl009_observability_log.py",
+          "elapsed_seconds": 1.129,
           "stdout": [
             "BL-009 observability logging complete.",
-            "run_log=C:\\Users\\Timothy\\Desktop\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\observability\\outputs\\bl009_run_observability_log.json",
-            "run_index=C:\\Users\\Timothy\\Desktop\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\observability\\outputs\\bl009_run_index.csv",
-            "run_id=BL009-OBSERVE-20260320-233937-515683"
+            "run_log=C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\observability\\outputs\\bl009_run_observability_log.json",
+            "run_index=C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\observability\\outputs\\bl009_run_index.csv",
+            "run_id=BL009-OBSERVE-20260324-200224-898285"
           ]
         }
       ],
       "stage_run_ids": {
-        "BL-004": "BL004-PROFILE-20260320-233937-128253",
-        "BL-005": "BL005-FILTER-20260320-233937-196140",
-        "BL-006": "BL006-SCORE-20260320-233937-284649",
-        "BL-007": "BL007-ASSEMBLE-20260320-233937-352163",
-        "BL-008": "BL008-EXPLAIN-20260320-233937-415173",
-        "BL-009": "BL009-OBSERVE-20260320-233937-515683"
+        "BL-004": "BL004-PROFILE-20260324-200214-764226",
+        "BL-005": "BL005-FILTER-20260324-200215-948151",
+        "BL-006": "BL006-SCORE-20260324-200219-707307",
+        "BL-007": "BL007-ASSEMBLE-20260324-200222-837432",
+        "BL-008": "BL008-EXPLAIN-20260324-200223-907297",
+        "BL-009": "BL009-OBSERVE-20260324-200224-898285"
       },
       "raw_hashes": {
-        "bl004_seed_trace": "C47D4FBC6F0D9CCDD33699AF2D62AA37368FE335883FFCE96CEACC1D0DA55584",
-        "bl005_filtered": "4C7341830731A285DBA71A7FDD34C983AD77A459B040A993A90880AA8F0971E1",
-        "bl005_decisions": "F814C1EBED4E145B4AD94BCE37D9DA42BBD9399A08187DFB8D515BC7FA1D49D0",
-        "bl006_scored": "BF9AB8A4FE27596276F8B1868FC1246BCA4B04B6315DFBB6FEF673DDF53E1AA2",
-        "bl007_trace": "9F432BC31CCF158909F2488A2D3A85EB073E76FB562F924A1C51324B66C32193",
-        "bl007_playlist": "8368DC6C0F318390E52CBDCEE9A329CAACB135A76D4D6D428A82DE56F4223BDC",
-        "bl008_payloads": "F107B0C3AF6C91B12C6F05F3FDCABC1402A3395A8C6CD1B46EB346349D43068C",
-        "bl009_log": "B12B152091984ED0DAC9A561357C2AAF6BFDE552544D7144F32BBA8B6DB17683",
-        "bl009_index": "3C6ACEDD7AE851742BAA4693D3978A16D1A930CFDCBE891DDDF0CE9E70610E26"
+        "bl004_seed_trace": "6378F963A43ADAACE2818945E1F5216323D1880853085446FDB74D00CD7B525C",
+        "bl005_filtered": "ADF61C5EECBAD48A704C802EAE3441A7F09826A87C224D7F0A226253F2CCA679",
+        "bl005_decisions": "BA58B95A7D1B7F2C8CED25944C64335F9610A51980066D64657ECC2532A2209C",
+        "bl006_scored": "189C3DCF575D69736CFD855CE5D456AB5C391AD58EA20DEA803A216D35F8CE7C",
+        "bl007_trace": "692A1F4DE6BD32DE0D785A3D5952D901CDF98966C264A1C8D72FF1926B6DDB9E",
+        "bl007_playlist": "CA2DCBE1B8B25B99FBEF6A9DD63F85C4A69161CBBBEBD723D16EDEE9B3E451C2",
+        "bl008_payloads": "DE348C64E5F635DF910BF826DE12520D2EAB1964E365478D71BFA175F325088D",
+        "bl009_log": "4C343FDAA7E93E2726682F1EEF552978917224A3F44AE5EF43E4AB15AE5682F6",
+        "bl009_index": "6CB4075FC3D57B9DD0765021A2A77CA18CE7490050A0DE36E3749D5509C6EEAC"
       },
       "stable_hashes": {
-        "profile_semantic_hash": "3786ED41671609C2AF3CD73147C7CC5CD42A58A6826503F6DB0766667B17F07C",
-        "ranked_output_hash": "BF9AB8A4FE27596276F8B1868FC1246BCA4B04B6315DFBB6FEF673DDF53E1AA2",
-        "playlist_output_hash": "589920D4EB9C862F010F9C516BF7199D187F82A88265ACCC0B26FFD03E85A651",
-        "explanation_output_hash": "568D6099CF8D7B035B67309143EF783E54B102505909A0EE2D01E22ECF6B4161",
-        "observability_output_hash": "FA765EFEAEB7A0B49AC3DF3DC87A4DF8504FCF866731AE1F6872820CB2CAC2E0",
-        "seed_trace_hash": "C47D4FBC6F0D9CCDD33699AF2D62AA37368FE335883FFCE96CEACC1D0DA55584",
-        "candidate_decisions_hash": "F814C1EBED4E145B4AD94BCE37D9DA42BBD9399A08187DFB8D515BC7FA1D49D0",
-        "filtered_candidates_hash": "4C7341830731A285DBA71A7FDD34C983AD77A459B040A993A90880AA8F0971E1",
-        "assembly_trace_hash": "9F432BC31CCF158909F2488A2D3A85EB073E76FB562F924A1C51324B66C32193"
+        "profile_semantic_hash": "E7F0D5C1FC542AFA27284D5693DB91AD46D7A5FEF544AA3AE4A03057FBC48809",
+        "ranked_output_hash": "189C3DCF575D69736CFD855CE5D456AB5C391AD58EA20DEA803A216D35F8CE7C",
+        "playlist_output_hash": "651F1F546BCD1C391A865AE25E85350E2081A06FF9ABA5827BDA4000496A64EB",
+        "explanation_output_hash": "A4830010E7F696FBDA5E35C73567A60DB0A72758BD2736E713AC810295B229B7",
+        "observability_output_hash": "02245616FB0434F39817EDC91858A5B282EDCB622E9C4BC0F3D246D5BB5D7FB6",
+        "seed_trace_hash": "6378F963A43ADAACE2818945E1F5216323D1880853085446FDB74D00CD7B525C",
+        "candidate_decisions_hash": "BA58B95A7D1B7F2C8CED25944C64335F9610A51980066D64657ECC2532A2209C",
+        "filtered_candidates_hash": "ADF61C5EECBAD48A704C802EAE3441A7F09826A87C224D7F0A226253F2CCA679",
+        "assembly_trace_hash": "692A1F4DE6BD32DE0D785A3D5952D901CDF98966C264A1C8D72FF1926B6DDB9E"
       },
       "semantic_snapshots": {
         "playlist_track_ids": [
-          "jPv1Tj4Mgo4l2Oue",
-          "POdgTSLBnoFJaj2x",
-          "yUa5uu5wFCGwl2PK",
-          "j8qrlsfqWAPqzqD9",
-          "8keAhBJumHlc8qe9",
-          "Nyb0YqqyaSvWThIG",
-          "0X9aluHlz6iKWBMR",
-          "ql2191d6uNCVM932",
-          "9ZtfD8gBZXonrJKX",
-          "PZEgbQhTHMMrKRLv"
+          "8WnHV12FDAeaQwkd",
+          "9B6dNFjeE90pp4x6",
+          "C0mhpBhouqyLmYSK",
+          "m17iB8yxNZn3tqdE",
+          "df0JOlTEeZCAVz1W",
+          "9qCc2lNrSBbmtjCj",
+          "CaR8UnowNJUR5Dib",
+          "YfV01HfNXWAFfgtm",
+          "N1yOEQ8Rf8ljdHmf",
+          "rZL9jXtTHHqJ49D7"
         ],
         "explanation_track_ids": [
-          "jPv1Tj4Mgo4l2Oue",
-          "POdgTSLBnoFJaj2x",
-          "yUa5uu5wFCGwl2PK",
-          "j8qrlsfqWAPqzqD9",
-          "8keAhBJumHlc8qe9",
-          "Nyb0YqqyaSvWThIG",
-          "0X9aluHlz6iKWBMR",
-          "ql2191d6uNCVM932",
-          "9ZtfD8gBZXonrJKX",
-          "PZEgbQhTHMMrKRLv"
+          "8WnHV12FDAeaQwkd",
+          "9B6dNFjeE90pp4x6",
+          "C0mhpBhouqyLmYSK",
+          "m17iB8yxNZn3tqdE",
+          "df0JOlTEeZCAVz1W",
+          "9qCc2lNrSBbmtjCj",
+          "CaR8UnowNJUR5Dib",
+          "YfV01HfNXWAFfgtm",
+          "N1yOEQ8Rf8ljdHmf",
+          "rZL9jXtTHHqJ49D7"
         ],
         "observability_dataset_version": "2648A3237AA62F9E4C667C93178D482A5ACCDA0461299472E4FC1697786A993B",
-        "observability_pipeline_version": "E622A5784035EAEA845636DFA9C9991A8096D39ECCE18D9DBFA071832158FCB8",
+        "observability_pipeline_version": "4E90899F05BF270F8E6C614BDF96F64D8363674DB1F32E0796A7C3CB7F0DB613",
         "observability_index_row": {
-          "run_id": "BL009-OBSERVE-20260320-233937-515683",
-          "generated_at_utc": "2026-03-20T23:39:37Z",
+          "run_id": "BL009-OBSERVE-20260324-200224-898285",
+          "generated_at_utc": "2026-03-24T20:02:24Z",
           "dataset_version": "2648A3237AA62F9E4C667C93178D482A5ACCDA0461299472E4FC1697786A993B",
-          "pipeline_version": "E622A5784035EAEA845636DFA9C9991A8096D39ECCE18D9DBFA071832158FCB8",
+          "pipeline_version": "4E90899F05BF270F8E6C614BDF96F64D8363674DB1F32E0796A7C3CB7F0DB613",
           "bootstrap_mode": "1",
-          "profile_run_id": "BL004-PROFILE-20260320-233937-128253",
-          "retrieval_run_id": "BL005-FILTER-20260320-233937-196140",
-          "scoring_run_id": "BL006-SCORE-20260320-233937-284649",
-          "assembly_run_id": "BL007-ASSEMBLE-20260320-233937-352163",
-          "transparency_run_id": "BL008-EXPLAIN-20260320-233937-415173",
-          "kept_candidates": "42",
-          "candidates_scored": "42",
+          "profile_run_id": "BL004-PROFILE-20260324-200214-764226",
+          "retrieval_run_id": "BL005-FILTER-20260324-200215-948151",
+          "scoring_run_id": "BL006-SCORE-20260324-200219-707307",
+          "assembly_run_id": "BL007-ASSEMBLE-20260324-200222-837432",
+          "transparency_run_id": "BL008-EXPLAIN-20260324-200223-907297",
+          "kept_candidates": "56700",
+          "candidates_scored": "56700",
           "playlist_length": "10",
           "explanation_count": "10",
-          "playlist_sha256": "8368DC6C0F318390E52CBDCEE9A329CAACB135A76D4D6D428A82DE56F4223BDC",
-          "explanation_payloads_sha256": "F107B0C3AF6C91B12C6F05F3FDCABC1402A3395A8C6CD1B46EB346349D43068C",
-          "observability_log_sha256": "B12B152091984ED0DAC9A561357C2AAF6BFDE552544D7144F32BBA8B6DB17683"
+          "playlist_sha256": "CA2DCBE1B8B25B99FBEF6A9DD63F85C4A69161CBBBEBD723D16EDEE9B3E451C2",
+          "explanation_payloads_sha256": "DE348C64E5F635DF910BF826DE12520D2EAB1964E365478D71BFA175F325088D",
+          "observability_log_sha256": "4C343FDAA7E93E2726682F1EEF552978917224A3F44AE5EF43E4AB15AE5682F6"
         }
       },
       "archive_dir": "07_implementation/implementation_notes/reproducibility/outputs/replay_01"
@@ -212,152 +212,152 @@
       "stage_runs": [
         {
           "script": "build_bl004_preference_profile.py",
-          "command": "C:\\Program Files\\Python312\\python.exe C:\\Users\\Timothy\\Desktop\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\profile\\build_bl004_preference_profile.py",
-          "elapsed_seconds": 0.058,
+          "command": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\.venv\\Scripts\\python.exe C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\profile\\build_bl004_preference_profile.py",
+          "elapsed_seconds": 0.173,
           "stdout": [
             "BL-004 preference profile created.",
-            "profile=C:\\Users\\Timothy\\Desktop\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\profile\\outputs\\bl004_preference_profile.json",
-            "summary=C:\\Users\\Timothy\\Desktop\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\profile\\outputs\\bl004_profile_summary.json",
-            "seed_trace=C:\\Users\\Timothy\\Desktop\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\profile\\outputs\\bl004_seed_trace.csv"
+            "profile=C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\profile\\outputs\\bl004_preference_profile.json",
+            "summary=C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\profile\\outputs\\bl004_profile_summary.json",
+            "seed_trace=C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\profile\\outputs\\bl004_seed_trace.csv"
           ]
         },
         {
           "script": "build_bl005_candidate_filter.py",
-          "command": "C:\\Program Files\\Python312\\python.exe C:\\Users\\Timothy\\Desktop\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\retrieval\\build_bl005_candidate_filter.py",
-          "elapsed_seconds": 0.08,
+          "command": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\.venv\\Scripts\\python.exe C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\retrieval\\build_bl005_candidate_filter.py",
+          "elapsed_seconds": 4.215,
           "stdout": [
             "BL-005 candidate filtering complete.",
-            "filtered_candidates=C:\\Users\\Timothy\\Desktop\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\retrieval\\outputs\\bl005_filtered_candidates.csv",
-            "decisions=C:\\Users\\Timothy\\Desktop\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\retrieval\\outputs\\bl005_candidate_decisions.csv",
-            "diagnostics=C:\\Users\\Timothy\\Desktop\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\retrieval\\outputs\\bl005_candidate_diagnostics.json"
+            "filtered_candidates=C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\retrieval\\outputs\\bl005_filtered_candidates.csv",
+            "decisions=C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\retrieval\\outputs\\bl005_candidate_decisions.csv",
+            "diagnostics=C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\retrieval\\outputs\\bl005_candidate_diagnostics.json"
           ]
         },
         {
           "script": "build_bl006_scored_candidates.py",
-          "command": "C:\\Program Files\\Python312\\python.exe C:\\Users\\Timothy\\Desktop\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\scoring\\build_bl006_scored_candidates.py",
-          "elapsed_seconds": 0.081,
+          "command": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\.venv\\Scripts\\python.exe C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\scoring\\build_bl006_scored_candidates.py",
+          "elapsed_seconds": 3.212,
           "stdout": [
             "BL-006 candidate scoring complete.",
-            "scored_candidates=C:\\Users\\Timothy\\Desktop\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\scoring\\outputs\\bl006_scored_candidates.csv",
-            "score_summary=C:\\Users\\Timothy\\Desktop\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\scoring\\outputs\\bl006_score_summary.json"
+            "scored_candidates=C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\scoring\\outputs\\bl006_scored_candidates.csv",
+            "score_summary=C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\scoring\\outputs\\bl006_score_summary.json"
           ]
         },
         {
           "script": "build_bl007_playlist.py",
-          "command": "C:\\Program Files\\Python312\\python.exe C:\\Users\\Timothy\\Desktop\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\playlist\\build_bl007_playlist.py",
-          "elapsed_seconds": 0.067,
+          "command": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\.venv\\Scripts\\python.exe C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\playlist\\build_bl007_playlist.py",
+          "elapsed_seconds": 0.918,
           "stdout": [
             "BL-007 playlist assembly complete.  Playlist: 10/10 tracks",
-            "Run ID : BL007-ASSEMBLE-20260320-233937-841023",
-            "Genre mix : {'indie rock': 4, 'indie pop': 2, 'alternative rock': 2, 'pop': 1, 'folk': 1}"
+            "Run ID : BL007-ASSEMBLE-20260324-200233-498159",
+            "Genre mix : {'classic rock': 4, 'pop': 4, 'rock': 2}"
           ]
         },
         {
           "script": "build_bl008_explanation_payloads.py",
-          "command": "C:\\Program Files\\Python312\\python.exe C:\\Users\\Timothy\\Desktop\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\transparency\\build_bl008_explanation_payloads.py",
-          "elapsed_seconds": 0.061,
+          "command": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\.venv\\Scripts\\python.exe C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\transparency\\build_bl008_explanation_payloads.py",
+          "elapsed_seconds": 0.716,
           "stdout": [
             "BL-008 explanation payloads complete. Tracks explained: 10",
-            "Run ID: BL008-EXPLAIN-20260320-233937-907556",
-            "  pos= 1  jPv1Tj4Mgo4l2Oue  top=Lead genre match",
-            "  pos= 2  POdgTSLBnoFJaj2x  top=Lead genre match",
-            "  pos= 3  yUa5uu5wFCGwl2PK  top=Tag overlap",
-            "  pos= 4  j8qrlsfqWAPqzqD9  top=Lead genre match",
-            "  pos= 5  8keAhBJumHlc8qe9  top=Lead genre match",
-            "  pos= 6  Nyb0YqqyaSvWThIG  top=Tag overlap",
-            "  pos= 7  0X9aluHlz6iKWBMR  top=Valence",
-            "  pos= 8  ql2191d6uNCVM932  top=Lead genre match",
-            "  pos= 9  9ZtfD8gBZXonrJKX  top=Valence",
-            "  pos=10  PZEgbQhTHMMrKRLv  top=Valence"
+            "Run ID: BL008-EXPLAIN-20260324-200234-483569",
+            "  pos= 1  8WnHV12FDAeaQwkd  top=Tempo (BPM)",
+            "  pos= 2  9B6dNFjeE90pp4x6  top=Lead genre match",
+            "  pos= 3  C0mhpBhouqyLmYSK  top=Tempo (BPM)",
+            "  pos= 4  m17iB8yxNZn3tqdE  top=Tempo (BPM)",
+            "  pos= 5  df0JOlTEeZCAVz1W  top=Tempo (BPM)",
+            "  pos= 6  9qCc2lNrSBbmtjCj  top=Lead genre match",
+            "  pos= 7  CaR8UnowNJUR5Dib  top=Tempo (BPM)",
+            "  pos= 8  YfV01HfNXWAFfgtm  top=Tempo (BPM)",
+            "  pos= 9  N1yOEQ8Rf8ljdHmf  top=Tempo (BPM)",
+            "  pos=10  rZL9jXtTHHqJ49D7  top=Tempo (BPM)"
           ]
         },
         {
           "script": "build_bl009_observability_log.py",
-          "command": "C:\\Program Files\\Python312\\python.exe C:\\Users\\Timothy\\Desktop\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\observability\\build_bl009_observability_log.py",
-          "elapsed_seconds": 0.118,
+          "command": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\.venv\\Scripts\\python.exe C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\observability\\build_bl009_observability_log.py",
+          "elapsed_seconds": 1.252,
           "stdout": [
             "BL-009 observability logging complete.",
-            "run_log=C:\\Users\\Timothy\\Desktop\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\observability\\outputs\\bl009_run_observability_log.json",
-            "run_index=C:\\Users\\Timothy\\Desktop\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\observability\\outputs\\bl009_run_index.csv",
-            "run_id=BL009-OBSERVE-20260320-233938-006085"
+            "run_log=C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\observability\\outputs\\bl009_run_observability_log.json",
+            "run_index=C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\observability\\outputs\\bl009_run_index.csv",
+            "run_id=BL009-OBSERVE-20260324-200235-570279"
           ]
         }
       ],
       "stage_run_ids": {
-        "BL-004": "BL004-PROFILE-20260320-233937-625219",
-        "BL-005": "BL005-FILTER-20260320-233937-688727",
-        "BL-006": "BL006-SCORE-20260320-233937-776013",
-        "BL-007": "BL007-ASSEMBLE-20260320-233937-841023",
-        "BL-008": "BL008-EXPLAIN-20260320-233937-907556",
-        "BL-009": "BL009-OBSERVE-20260320-233938-006085"
+        "BL-004": "BL004-PROFILE-20260324-200225-460265",
+        "BL-005": "BL005-FILTER-20260324-200226-518120",
+        "BL-006": "BL006-SCORE-20260324-200230-250637",
+        "BL-007": "BL007-ASSEMBLE-20260324-200233-498159",
+        "BL-008": "BL008-EXPLAIN-20260324-200234-483569",
+        "BL-009": "BL009-OBSERVE-20260324-200235-570279"
       },
       "raw_hashes": {
-        "bl004_seed_trace": "C47D4FBC6F0D9CCDD33699AF2D62AA37368FE335883FFCE96CEACC1D0DA55584",
-        "bl005_filtered": "4C7341830731A285DBA71A7FDD34C983AD77A459B040A993A90880AA8F0971E1",
-        "bl005_decisions": "F814C1EBED4E145B4AD94BCE37D9DA42BBD9399A08187DFB8D515BC7FA1D49D0",
-        "bl006_scored": "BF9AB8A4FE27596276F8B1868FC1246BCA4B04B6315DFBB6FEF673DDF53E1AA2",
-        "bl007_trace": "9F432BC31CCF158909F2488A2D3A85EB073E76FB562F924A1C51324B66C32193",
-        "bl007_playlist": "9108B6A9A9A7C9F76330AE8CC0ABEC8BD3B640ED4DBD028202249B9E600B6E3B",
-        "bl008_payloads": "6A637EAD99B6901D1DF82067CB9D485D8DEE5F3D0BEBC435DBB9763356F07119",
-        "bl009_log": "2B85B583BD268C3D4BF2C9B282E126A1C808A5BFED2960162F922EA2EA904459",
-        "bl009_index": "99D70FB23907EA2B7C9E41AA29A62EF5E9DB3B53876C40990ABAA635ABB31C54"
+        "bl004_seed_trace": "6378F963A43ADAACE2818945E1F5216323D1880853085446FDB74D00CD7B525C",
+        "bl005_filtered": "ADF61C5EECBAD48A704C802EAE3441A7F09826A87C224D7F0A226253F2CCA679",
+        "bl005_decisions": "BA58B95A7D1B7F2C8CED25944C64335F9610A51980066D64657ECC2532A2209C",
+        "bl006_scored": "189C3DCF575D69736CFD855CE5D456AB5C391AD58EA20DEA803A216D35F8CE7C",
+        "bl007_trace": "692A1F4DE6BD32DE0D785A3D5952D901CDF98966C264A1C8D72FF1926B6DDB9E",
+        "bl007_playlist": "791698269D4EF37D31B3AA9C35405A1D8B4E147E5BE2A4EFD0F99E879B0498FB",
+        "bl008_payloads": "AA1A8B6B8F284C160D8F377371C1DB3D45F0305994A1F4724294C88BE5772ABF",
+        "bl009_log": "9B0BAA11DFFF622806A0BD502A025D835E39DE83FAE2891B66004F79A2CD58FA",
+        "bl009_index": "601A9DBA26B668B09B4E170613DBF19A25B6712FDA7B4C258244602691C2B5E8"
       },
       "stable_hashes": {
-        "profile_semantic_hash": "3786ED41671609C2AF3CD73147C7CC5CD42A58A6826503F6DB0766667B17F07C",
-        "ranked_output_hash": "BF9AB8A4FE27596276F8B1868FC1246BCA4B04B6315DFBB6FEF673DDF53E1AA2",
-        "playlist_output_hash": "589920D4EB9C862F010F9C516BF7199D187F82A88265ACCC0B26FFD03E85A651",
-        "explanation_output_hash": "568D6099CF8D7B035B67309143EF783E54B102505909A0EE2D01E22ECF6B4161",
-        "observability_output_hash": "FA765EFEAEB7A0B49AC3DF3DC87A4DF8504FCF866731AE1F6872820CB2CAC2E0",
-        "seed_trace_hash": "C47D4FBC6F0D9CCDD33699AF2D62AA37368FE335883FFCE96CEACC1D0DA55584",
-        "candidate_decisions_hash": "F814C1EBED4E145B4AD94BCE37D9DA42BBD9399A08187DFB8D515BC7FA1D49D0",
-        "filtered_candidates_hash": "4C7341830731A285DBA71A7FDD34C983AD77A459B040A993A90880AA8F0971E1",
-        "assembly_trace_hash": "9F432BC31CCF158909F2488A2D3A85EB073E76FB562F924A1C51324B66C32193"
+        "profile_semantic_hash": "E7F0D5C1FC542AFA27284D5693DB91AD46D7A5FEF544AA3AE4A03057FBC48809",
+        "ranked_output_hash": "189C3DCF575D69736CFD855CE5D456AB5C391AD58EA20DEA803A216D35F8CE7C",
+        "playlist_output_hash": "651F1F546BCD1C391A865AE25E85350E2081A06FF9ABA5827BDA4000496A64EB",
+        "explanation_output_hash": "A4830010E7F696FBDA5E35C73567A60DB0A72758BD2736E713AC810295B229B7",
+        "observability_output_hash": "02245616FB0434F39817EDC91858A5B282EDCB622E9C4BC0F3D246D5BB5D7FB6",
+        "seed_trace_hash": "6378F963A43ADAACE2818945E1F5216323D1880853085446FDB74D00CD7B525C",
+        "candidate_decisions_hash": "BA58B95A7D1B7F2C8CED25944C64335F9610A51980066D64657ECC2532A2209C",
+        "filtered_candidates_hash": "ADF61C5EECBAD48A704C802EAE3441A7F09826A87C224D7F0A226253F2CCA679",
+        "assembly_trace_hash": "692A1F4DE6BD32DE0D785A3D5952D901CDF98966C264A1C8D72FF1926B6DDB9E"
       },
       "semantic_snapshots": {
         "playlist_track_ids": [
-          "jPv1Tj4Mgo4l2Oue",
-          "POdgTSLBnoFJaj2x",
-          "yUa5uu5wFCGwl2PK",
-          "j8qrlsfqWAPqzqD9",
-          "8keAhBJumHlc8qe9",
-          "Nyb0YqqyaSvWThIG",
-          "0X9aluHlz6iKWBMR",
-          "ql2191d6uNCVM932",
-          "9ZtfD8gBZXonrJKX",
-          "PZEgbQhTHMMrKRLv"
+          "8WnHV12FDAeaQwkd",
+          "9B6dNFjeE90pp4x6",
+          "C0mhpBhouqyLmYSK",
+          "m17iB8yxNZn3tqdE",
+          "df0JOlTEeZCAVz1W",
+          "9qCc2lNrSBbmtjCj",
+          "CaR8UnowNJUR5Dib",
+          "YfV01HfNXWAFfgtm",
+          "N1yOEQ8Rf8ljdHmf",
+          "rZL9jXtTHHqJ49D7"
         ],
         "explanation_track_ids": [
-          "jPv1Tj4Mgo4l2Oue",
-          "POdgTSLBnoFJaj2x",
-          "yUa5uu5wFCGwl2PK",
-          "j8qrlsfqWAPqzqD9",
-          "8keAhBJumHlc8qe9",
-          "Nyb0YqqyaSvWThIG",
-          "0X9aluHlz6iKWBMR",
-          "ql2191d6uNCVM932",
-          "9ZtfD8gBZXonrJKX",
-          "PZEgbQhTHMMrKRLv"
+          "8WnHV12FDAeaQwkd",
+          "9B6dNFjeE90pp4x6",
+          "C0mhpBhouqyLmYSK",
+          "m17iB8yxNZn3tqdE",
+          "df0JOlTEeZCAVz1W",
+          "9qCc2lNrSBbmtjCj",
+          "CaR8UnowNJUR5Dib",
+          "YfV01HfNXWAFfgtm",
+          "N1yOEQ8Rf8ljdHmf",
+          "rZL9jXtTHHqJ49D7"
         ],
         "observability_dataset_version": "2648A3237AA62F9E4C667C93178D482A5ACCDA0461299472E4FC1697786A993B",
-        "observability_pipeline_version": "E622A5784035EAEA845636DFA9C9991A8096D39ECCE18D9DBFA071832158FCB8",
+        "observability_pipeline_version": "4E90899F05BF270F8E6C614BDF96F64D8363674DB1F32E0796A7C3CB7F0DB613",
         "observability_index_row": {
-          "run_id": "BL009-OBSERVE-20260320-233938-006085",
-          "generated_at_utc": "2026-03-20T23:39:38Z",
+          "run_id": "BL009-OBSERVE-20260324-200235-570279",
+          "generated_at_utc": "2026-03-24T20:02:35Z",
           "dataset_version": "2648A3237AA62F9E4C667C93178D482A5ACCDA0461299472E4FC1697786A993B",
-          "pipeline_version": "E622A5784035EAEA845636DFA9C9991A8096D39ECCE18D9DBFA071832158FCB8",
+          "pipeline_version": "4E90899F05BF270F8E6C614BDF96F64D8363674DB1F32E0796A7C3CB7F0DB613",
           "bootstrap_mode": "1",
-          "profile_run_id": "BL004-PROFILE-20260320-233937-625219",
-          "retrieval_run_id": "BL005-FILTER-20260320-233937-688727",
-          "scoring_run_id": "BL006-SCORE-20260320-233937-776013",
-          "assembly_run_id": "BL007-ASSEMBLE-20260320-233937-841023",
-          "transparency_run_id": "BL008-EXPLAIN-20260320-233937-907556",
-          "kept_candidates": "42",
-          "candidates_scored": "42",
+          "profile_run_id": "BL004-PROFILE-20260324-200225-460265",
+          "retrieval_run_id": "BL005-FILTER-20260324-200226-518120",
+          "scoring_run_id": "BL006-SCORE-20260324-200230-250637",
+          "assembly_run_id": "BL007-ASSEMBLE-20260324-200233-498159",
+          "transparency_run_id": "BL008-EXPLAIN-20260324-200234-483569",
+          "kept_candidates": "56700",
+          "candidates_scored": "56700",
           "playlist_length": "10",
           "explanation_count": "10",
-          "playlist_sha256": "9108B6A9A9A7C9F76330AE8CC0ABEC8BD3B640ED4DBD028202249B9E600B6E3B",
-          "explanation_payloads_sha256": "6A637EAD99B6901D1DF82067CB9D485D8DEE5F3D0BEBC435DBB9763356F07119",
-          "observability_log_sha256": "2B85B583BD268C3D4BF2C9B282E126A1C808A5BFED2960162F922EA2EA904459"
+          "playlist_sha256": "791698269D4EF37D31B3AA9C35405A1D8B4E147E5BE2A4EFD0F99E879B0498FB",
+          "explanation_payloads_sha256": "AA1A8B6B8F284C160D8F377371C1DB3D45F0305994A1F4724294C88BE5772ABF",
+          "observability_log_sha256": "9B0BAA11DFFF622806A0BD502A025D835E39DE83FAE2891B66004F79A2CD58FA"
         }
       },
       "archive_dir": "07_implementation/implementation_notes/reproducibility/outputs/replay_02"
@@ -367,152 +367,152 @@
       "stage_runs": [
         {
           "script": "build_bl004_preference_profile.py",
-          "command": "C:\\Program Files\\Python312\\python.exe C:\\Users\\Timothy\\Desktop\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\profile\\build_bl004_preference_profile.py",
-          "elapsed_seconds": 0.057,
+          "command": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\.venv\\Scripts\\python.exe C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\profile\\build_bl004_preference_profile.py",
+          "elapsed_seconds": 0.158,
           "stdout": [
             "BL-004 preference profile created.",
-            "profile=C:\\Users\\Timothy\\Desktop\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\profile\\outputs\\bl004_preference_profile.json",
-            "summary=C:\\Users\\Timothy\\Desktop\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\profile\\outputs\\bl004_profile_summary.json",
-            "seed_trace=C:\\Users\\Timothy\\Desktop\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\profile\\outputs\\bl004_seed_trace.csv"
+            "profile=C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\profile\\outputs\\bl004_preference_profile.json",
+            "summary=C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\profile\\outputs\\bl004_profile_summary.json",
+            "seed_trace=C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\profile\\outputs\\bl004_seed_trace.csv"
           ]
         },
         {
           "script": "build_bl005_candidate_filter.py",
-          "command": "C:\\Program Files\\Python312\\python.exe C:\\Users\\Timothy\\Desktop\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\retrieval\\build_bl005_candidate_filter.py",
-          "elapsed_seconds": 0.088,
+          "command": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\.venv\\Scripts\\python.exe C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\retrieval\\build_bl005_candidate_filter.py",
+          "elapsed_seconds": 4.332,
           "stdout": [
             "BL-005 candidate filtering complete.",
-            "filtered_candidates=C:\\Users\\Timothy\\Desktop\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\retrieval\\outputs\\bl005_filtered_candidates.csv",
-            "decisions=C:\\Users\\Timothy\\Desktop\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\retrieval\\outputs\\bl005_candidate_decisions.csv",
-            "diagnostics=C:\\Users\\Timothy\\Desktop\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\retrieval\\outputs\\bl005_candidate_diagnostics.json"
+            "filtered_candidates=C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\retrieval\\outputs\\bl005_filtered_candidates.csv",
+            "decisions=C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\retrieval\\outputs\\bl005_candidate_decisions.csv",
+            "diagnostics=C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\retrieval\\outputs\\bl005_candidate_diagnostics.json"
           ]
         },
         {
           "script": "build_bl006_scored_candidates.py",
-          "command": "C:\\Program Files\\Python312\\python.exe C:\\Users\\Timothy\\Desktop\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\scoring\\build_bl006_scored_candidates.py",
-          "elapsed_seconds": 0.091,
+          "command": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\.venv\\Scripts\\python.exe C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\scoring\\build_bl006_scored_candidates.py",
+          "elapsed_seconds": 3.016,
           "stdout": [
             "BL-006 candidate scoring complete.",
-            "scored_candidates=C:\\Users\\Timothy\\Desktop\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\scoring\\outputs\\bl006_scored_candidates.csv",
-            "score_summary=C:\\Users\\Timothy\\Desktop\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\scoring\\outputs\\bl006_score_summary.json"
+            "scored_candidates=C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\scoring\\outputs\\bl006_scored_candidates.csv",
+            "score_summary=C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\scoring\\outputs\\bl006_score_summary.json"
           ]
         },
         {
           "script": "build_bl007_playlist.py",
-          "command": "C:\\Program Files\\Python312\\python.exe C:\\Users\\Timothy\\Desktop\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\playlist\\build_bl007_playlist.py",
-          "elapsed_seconds": 0.069,
+          "command": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\.venv\\Scripts\\python.exe C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\playlist\\build_bl007_playlist.py",
+          "elapsed_seconds": 0.872,
           "stdout": [
             "BL-007 playlist assembly complete.  Playlist: 10/10 tracks",
-            "Run ID : BL007-ASSEMBLE-20260320-233938-350723",
-            "Genre mix : {'indie rock': 4, 'indie pop': 2, 'alternative rock': 2, 'pop': 1, 'folk': 1}"
+            "Run ID : BL007-ASSEMBLE-20260324-200244-069001",
+            "Genre mix : {'classic rock': 4, 'pop': 4, 'rock': 2}"
           ]
         },
         {
           "script": "build_bl008_explanation_payloads.py",
-          "command": "C:\\Program Files\\Python312\\python.exe C:\\Users\\Timothy\\Desktop\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\transparency\\build_bl008_explanation_payloads.py",
-          "elapsed_seconds": 0.064,
+          "command": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\.venv\\Scripts\\python.exe C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\transparency\\build_bl008_explanation_payloads.py",
+          "elapsed_seconds": 0.798,
           "stdout": [
             "BL-008 explanation payloads complete. Tracks explained: 10",
-            "Run ID: BL008-EXPLAIN-20260320-233938-418090",
-            "  pos= 1  jPv1Tj4Mgo4l2Oue  top=Lead genre match",
-            "  pos= 2  POdgTSLBnoFJaj2x  top=Lead genre match",
-            "  pos= 3  yUa5uu5wFCGwl2PK  top=Tag overlap",
-            "  pos= 4  j8qrlsfqWAPqzqD9  top=Lead genre match",
-            "  pos= 5  8keAhBJumHlc8qe9  top=Lead genre match",
-            "  pos= 6  Nyb0YqqyaSvWThIG  top=Tag overlap",
-            "  pos= 7  0X9aluHlz6iKWBMR  top=Valence",
-            "  pos= 8  ql2191d6uNCVM932  top=Lead genre match",
-            "  pos= 9  9ZtfD8gBZXonrJKX  top=Valence",
-            "  pos=10  PZEgbQhTHMMrKRLv  top=Valence"
+            "Run ID: BL008-EXPLAIN-20260324-200245-111888",
+            "  pos= 1  8WnHV12FDAeaQwkd  top=Tempo (BPM)",
+            "  pos= 2  9B6dNFjeE90pp4x6  top=Lead genre match",
+            "  pos= 3  C0mhpBhouqyLmYSK  top=Tempo (BPM)",
+            "  pos= 4  m17iB8yxNZn3tqdE  top=Tempo (BPM)",
+            "  pos= 5  df0JOlTEeZCAVz1W  top=Tempo (BPM)",
+            "  pos= 6  9qCc2lNrSBbmtjCj  top=Lead genre match",
+            "  pos= 7  CaR8UnowNJUR5Dib  top=Tempo (BPM)",
+            "  pos= 8  YfV01HfNXWAFfgtm  top=Tempo (BPM)",
+            "  pos= 9  N1yOEQ8Rf8ljdHmf  top=Tempo (BPM)",
+            "  pos=10  rZL9jXtTHHqJ49D7  top=Tempo (BPM)"
           ]
         },
         {
           "script": "build_bl009_observability_log.py",
-          "command": "C:\\Program Files\\Python312\\python.exe C:\\Users\\Timothy\\Desktop\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\observability\\build_bl009_observability_log.py",
-          "elapsed_seconds": 0.122,
+          "command": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\.venv\\Scripts\\python.exe C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\observability\\build_bl009_observability_log.py",
+          "elapsed_seconds": 1.13,
           "stdout": [
             "BL-009 observability logging complete.",
-            "run_log=C:\\Users\\Timothy\\Desktop\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\observability\\outputs\\bl009_run_observability_log.json",
-            "run_index=C:\\Users\\Timothy\\Desktop\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\observability\\outputs\\bl009_run_index.csv",
-            "run_id=BL009-OBSERVE-20260320-233938-519108"
+            "run_log=C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\observability\\outputs\\bl009_run_observability_log.json",
+            "run_index=C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\observability\\outputs\\bl009_run_index.csv",
+            "run_id=BL009-OBSERVE-20260324-200246-150083"
           ]
         }
       ],
       "stage_run_ids": {
-        "BL-004": "BL004-PROFILE-20260320-233938-114198",
-        "BL-005": "BL005-FILTER-20260320-233938-182408",
-        "BL-006": "BL006-SCORE-20260320-233938-281708",
-        "BL-007": "BL007-ASSEMBLE-20260320-233938-350723",
-        "BL-008": "BL008-EXPLAIN-20260320-233938-418090",
-        "BL-009": "BL009-OBSERVE-20260320-233938-519108"
+        "BL-004": "BL004-PROFILE-20260324-200236-148226",
+        "BL-005": "BL005-FILTER-20260324-200237-224504",
+        "BL-006": "BL006-SCORE-20260324-200240-976136",
+        "BL-007": "BL007-ASSEMBLE-20260324-200244-069001",
+        "BL-008": "BL008-EXPLAIN-20260324-200245-111888",
+        "BL-009": "BL009-OBSERVE-20260324-200246-150083"
       },
       "raw_hashes": {
-        "bl004_seed_trace": "C47D4FBC6F0D9CCDD33699AF2D62AA37368FE335883FFCE96CEACC1D0DA55584",
-        "bl005_filtered": "4C7341830731A285DBA71A7FDD34C983AD77A459B040A993A90880AA8F0971E1",
-        "bl005_decisions": "F814C1EBED4E145B4AD94BCE37D9DA42BBD9399A08187DFB8D515BC7FA1D49D0",
-        "bl006_scored": "BF9AB8A4FE27596276F8B1868FC1246BCA4B04B6315DFBB6FEF673DDF53E1AA2",
-        "bl007_trace": "9F432BC31CCF158909F2488A2D3A85EB073E76FB562F924A1C51324B66C32193",
-        "bl007_playlist": "40F06177AB2D72D1CB81E4DE590EA890D3AE59C84796E2763A4A08D480696318",
-        "bl008_payloads": "BB78E5A81B01D3855671FF59868AC7697BCED9C5761BA13B1DBD613515A16F5C",
-        "bl009_log": "CB29B2CA65DFE0D79CA27273D97BF24F04AF1660BEA6998F83CC65105D972A47",
-        "bl009_index": "FCDA24B383CB14C7B18188665A730DA8D000C8FA4B4A11D9DEE7C2B5DFE62F62"
+        "bl004_seed_trace": "6378F963A43ADAACE2818945E1F5216323D1880853085446FDB74D00CD7B525C",
+        "bl005_filtered": "ADF61C5EECBAD48A704C802EAE3441A7F09826A87C224D7F0A226253F2CCA679",
+        "bl005_decisions": "BA58B95A7D1B7F2C8CED25944C64335F9610A51980066D64657ECC2532A2209C",
+        "bl006_scored": "189C3DCF575D69736CFD855CE5D456AB5C391AD58EA20DEA803A216D35F8CE7C",
+        "bl007_trace": "692A1F4DE6BD32DE0D785A3D5952D901CDF98966C264A1C8D72FF1926B6DDB9E",
+        "bl007_playlist": "E688A721E806C96A500EFC2EFAB8A2BE2276BD16816AB91E509E4E725471AEB3",
+        "bl008_payloads": "9CC268F69179139BBE6905C03C529F27ED89C8737695706150E88C4900EFBC3C",
+        "bl009_log": "25C3A0635F304524E4ECA485052D8BBF85509E281CDFDBD9CC9123722CCE333F",
+        "bl009_index": "2C5F93148F7ABD87E9E2E0FF8265F2297AAF4514F2B559A8D9879EEF684BC1FA"
       },
       "stable_hashes": {
-        "profile_semantic_hash": "3786ED41671609C2AF3CD73147C7CC5CD42A58A6826503F6DB0766667B17F07C",
-        "ranked_output_hash": "BF9AB8A4FE27596276F8B1868FC1246BCA4B04B6315DFBB6FEF673DDF53E1AA2",
-        "playlist_output_hash": "589920D4EB9C862F010F9C516BF7199D187F82A88265ACCC0B26FFD03E85A651",
-        "explanation_output_hash": "568D6099CF8D7B035B67309143EF783E54B102505909A0EE2D01E22ECF6B4161",
-        "observability_output_hash": "FA765EFEAEB7A0B49AC3DF3DC87A4DF8504FCF866731AE1F6872820CB2CAC2E0",
-        "seed_trace_hash": "C47D4FBC6F0D9CCDD33699AF2D62AA37368FE335883FFCE96CEACC1D0DA55584",
-        "candidate_decisions_hash": "F814C1EBED4E145B4AD94BCE37D9DA42BBD9399A08187DFB8D515BC7FA1D49D0",
-        "filtered_candidates_hash": "4C7341830731A285DBA71A7FDD34C983AD77A459B040A993A90880AA8F0971E1",
-        "assembly_trace_hash": "9F432BC31CCF158909F2488A2D3A85EB073E76FB562F924A1C51324B66C32193"
+        "profile_semantic_hash": "E7F0D5C1FC542AFA27284D5693DB91AD46D7A5FEF544AA3AE4A03057FBC48809",
+        "ranked_output_hash": "189C3DCF575D69736CFD855CE5D456AB5C391AD58EA20DEA803A216D35F8CE7C",
+        "playlist_output_hash": "651F1F546BCD1C391A865AE25E85350E2081A06FF9ABA5827BDA4000496A64EB",
+        "explanation_output_hash": "A4830010E7F696FBDA5E35C73567A60DB0A72758BD2736E713AC810295B229B7",
+        "observability_output_hash": "02245616FB0434F39817EDC91858A5B282EDCB622E9C4BC0F3D246D5BB5D7FB6",
+        "seed_trace_hash": "6378F963A43ADAACE2818945E1F5216323D1880853085446FDB74D00CD7B525C",
+        "candidate_decisions_hash": "BA58B95A7D1B7F2C8CED25944C64335F9610A51980066D64657ECC2532A2209C",
+        "filtered_candidates_hash": "ADF61C5EECBAD48A704C802EAE3441A7F09826A87C224D7F0A226253F2CCA679",
+        "assembly_trace_hash": "692A1F4DE6BD32DE0D785A3D5952D901CDF98966C264A1C8D72FF1926B6DDB9E"
       },
       "semantic_snapshots": {
         "playlist_track_ids": [
-          "jPv1Tj4Mgo4l2Oue",
-          "POdgTSLBnoFJaj2x",
-          "yUa5uu5wFCGwl2PK",
-          "j8qrlsfqWAPqzqD9",
-          "8keAhBJumHlc8qe9",
-          "Nyb0YqqyaSvWThIG",
-          "0X9aluHlz6iKWBMR",
-          "ql2191d6uNCVM932",
-          "9ZtfD8gBZXonrJKX",
-          "PZEgbQhTHMMrKRLv"
+          "8WnHV12FDAeaQwkd",
+          "9B6dNFjeE90pp4x6",
+          "C0mhpBhouqyLmYSK",
+          "m17iB8yxNZn3tqdE",
+          "df0JOlTEeZCAVz1W",
+          "9qCc2lNrSBbmtjCj",
+          "CaR8UnowNJUR5Dib",
+          "YfV01HfNXWAFfgtm",
+          "N1yOEQ8Rf8ljdHmf",
+          "rZL9jXtTHHqJ49D7"
         ],
         "explanation_track_ids": [
-          "jPv1Tj4Mgo4l2Oue",
-          "POdgTSLBnoFJaj2x",
-          "yUa5uu5wFCGwl2PK",
-          "j8qrlsfqWAPqzqD9",
-          "8keAhBJumHlc8qe9",
-          "Nyb0YqqyaSvWThIG",
-          "0X9aluHlz6iKWBMR",
-          "ql2191d6uNCVM932",
-          "9ZtfD8gBZXonrJKX",
-          "PZEgbQhTHMMrKRLv"
+          "8WnHV12FDAeaQwkd",
+          "9B6dNFjeE90pp4x6",
+          "C0mhpBhouqyLmYSK",
+          "m17iB8yxNZn3tqdE",
+          "df0JOlTEeZCAVz1W",
+          "9qCc2lNrSBbmtjCj",
+          "CaR8UnowNJUR5Dib",
+          "YfV01HfNXWAFfgtm",
+          "N1yOEQ8Rf8ljdHmf",
+          "rZL9jXtTHHqJ49D7"
         ],
         "observability_dataset_version": "2648A3237AA62F9E4C667C93178D482A5ACCDA0461299472E4FC1697786A993B",
-        "observability_pipeline_version": "E622A5784035EAEA845636DFA9C9991A8096D39ECCE18D9DBFA071832158FCB8",
+        "observability_pipeline_version": "4E90899F05BF270F8E6C614BDF96F64D8363674DB1F32E0796A7C3CB7F0DB613",
         "observability_index_row": {
-          "run_id": "BL009-OBSERVE-20260320-233938-519108",
-          "generated_at_utc": "2026-03-20T23:39:38Z",
+          "run_id": "BL009-OBSERVE-20260324-200246-150083",
+          "generated_at_utc": "2026-03-24T20:02:46Z",
           "dataset_version": "2648A3237AA62F9E4C667C93178D482A5ACCDA0461299472E4FC1697786A993B",
-          "pipeline_version": "E622A5784035EAEA845636DFA9C9991A8096D39ECCE18D9DBFA071832158FCB8",
+          "pipeline_version": "4E90899F05BF270F8E6C614BDF96F64D8363674DB1F32E0796A7C3CB7F0DB613",
           "bootstrap_mode": "1",
-          "profile_run_id": "BL004-PROFILE-20260320-233938-114198",
-          "retrieval_run_id": "BL005-FILTER-20260320-233938-182408",
-          "scoring_run_id": "BL006-SCORE-20260320-233938-281708",
-          "assembly_run_id": "BL007-ASSEMBLE-20260320-233938-350723",
-          "transparency_run_id": "BL008-EXPLAIN-20260320-233938-418090",
-          "kept_candidates": "42",
-          "candidates_scored": "42",
+          "profile_run_id": "BL004-PROFILE-20260324-200236-148226",
+          "retrieval_run_id": "BL005-FILTER-20260324-200237-224504",
+          "scoring_run_id": "BL006-SCORE-20260324-200240-976136",
+          "assembly_run_id": "BL007-ASSEMBLE-20260324-200244-069001",
+          "transparency_run_id": "BL008-EXPLAIN-20260324-200245-111888",
+          "kept_candidates": "56700",
+          "candidates_scored": "56700",
           "playlist_length": "10",
           "explanation_count": "10",
-          "playlist_sha256": "40F06177AB2D72D1CB81E4DE590EA890D3AE59C84796E2763A4A08D480696318",
-          "explanation_payloads_sha256": "BB78E5A81B01D3855671FF59868AC7697BCED9C5761BA13B1DBD613515A16F5C",
-          "observability_log_sha256": "CB29B2CA65DFE0D79CA27273D97BF24F04AF1660BEA6998F83CC65105D972A47"
+          "playlist_sha256": "E688A721E806C96A500EFC2EFAB8A2BE2276BD16816AB91E509E4E725471AEB3",
+          "explanation_payloads_sha256": "9CC268F69179139BBE6905C03C529F27ED89C8737695706150E88C4900EFBC3C",
+          "observability_log_sha256": "25C3A0635F304524E4ECA485052D8BBF85509E281CDFDBD9CC9123722CCE333F"
         }
       },
       "archive_dir": "07_implementation/implementation_notes/reproducibility/outputs/replay_03"
@@ -523,15 +523,15 @@
     "status": "pass",
     "first_mismatch_artifact": null,
     "stable_hash_reference": {
-      "profile_semantic_hash": "3786ED41671609C2AF3CD73147C7CC5CD42A58A6826503F6DB0766667B17F07C",
-      "ranked_output_hash": "BF9AB8A4FE27596276F8B1868FC1246BCA4B04B6315DFBB6FEF673DDF53E1AA2",
-      "playlist_output_hash": "589920D4EB9C862F010F9C516BF7199D187F82A88265ACCC0B26FFD03E85A651",
-      "explanation_output_hash": "568D6099CF8D7B035B67309143EF783E54B102505909A0EE2D01E22ECF6B4161",
-      "observability_output_hash": "FA765EFEAEB7A0B49AC3DF3DC87A4DF8504FCF866731AE1F6872820CB2CAC2E0",
-      "seed_trace_hash": "C47D4FBC6F0D9CCDD33699AF2D62AA37368FE335883FFCE96CEACC1D0DA55584",
-      "candidate_decisions_hash": "F814C1EBED4E145B4AD94BCE37D9DA42BBD9399A08187DFB8D515BC7FA1D49D0",
-      "filtered_candidates_hash": "4C7341830731A285DBA71A7FDD34C983AD77A459B040A993A90880AA8F0971E1",
-      "assembly_trace_hash": "9F432BC31CCF158909F2488A2D3A85EB073E76FB562F924A1C51324B66C32193"
+      "profile_semantic_hash": "E7F0D5C1FC542AFA27284D5693DB91AD46D7A5FEF544AA3AE4A03057FBC48809",
+      "ranked_output_hash": "189C3DCF575D69736CFD855CE5D456AB5C391AD58EA20DEA803A216D35F8CE7C",
+      "playlist_output_hash": "651F1F546BCD1C391A865AE25E85350E2081A06FF9ABA5827BDA4000496A64EB",
+      "explanation_output_hash": "A4830010E7F696FBDA5E35C73567A60DB0A72758BD2736E713AC810295B229B7",
+      "observability_output_hash": "02245616FB0434F39817EDC91858A5B282EDCB622E9C4BC0F3D246D5BB5D7FB6",
+      "seed_trace_hash": "6378F963A43ADAACE2818945E1F5216323D1880853085446FDB74D00CD7B525C",
+      "candidate_decisions_hash": "BA58B95A7D1B7F2C8CED25944C64335F9610A51980066D64657ECC2532A2209C",
+      "filtered_candidates_hash": "ADF61C5EECBAD48A704C802EAE3441A7F09826A87C224D7F0A226253F2CCA679",
+      "assembly_trace_hash": "692A1F4DE6BD32DE0D785A3D5952D901CDF98966C264A1C8D72FF1926B6DDB9E"
     },
     "raw_metadata_hash_checks": {
       "bl007_playlist_raw_hash_match": false,

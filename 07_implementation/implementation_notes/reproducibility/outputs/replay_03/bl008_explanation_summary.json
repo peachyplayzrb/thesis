@@ -1,19 +1,19 @@
 {
-  "run_id": "BL008-EXPLAIN-20260320-233938-418090",
-  "generated_at_utc": "2026-03-20T23:39:38Z",
-  "elapsed_seconds": 0.001,
+  "run_id": "BL008-EXPLAIN-20260324-200245-111888",
+  "generated_at_utc": "2026-03-24T20:02:45Z",
+  "elapsed_seconds": 0.61,
   "playlist_track_count": 10,
   "top_contributor_distribution": {
-    "Lead genre match": 5,
-    "Tag overlap": 2,
-    "Valence": 3
+    "Tempo (BPM)": 8,
+    "Lead genre match": 2
   },
   "input_artifact_hashes": {
-    "bl006_scored_candidates.csv": "BF9AB8A4FE27596276F8B1868FC1246BCA4B04B6315DFBB6FEF673DDF53E1AA2",
-    "bl007_playlist.json": "40F06177AB2D72D1CB81E4DE590EA890D3AE59C84796E2763A4A08D480696318",
-    "bl007_assembly_trace.csv": "9F432BC31CCF158909F2488A2D3A85EB073E76FB562F924A1C51324B66C32193"
+    "bl006_scored_candidates.csv": "189C3DCF575D69736CFD855CE5D456AB5C391AD58EA20DEA803A216D35F8CE7C",
+    "bl006_score_summary.json": "A6A47DEC8A8B42F0B64BE43C88C4BC87AB1084481EE2C521DFED7D004F1613B5",
+    "bl007_playlist.json": "E688A721E806C96A500EFC2EFAB8A2BE2276BD16816AB91E509E4E725471AEB3",
+    "bl007_assembly_trace.csv": "692A1F4DE6BD32DE0D785A3D5952D901CDF98966C264A1C8D72FF1926B6DDB9E"
   },
   "output_artifact_hashes": {
-    "bl008_explanation_payloads.json": "BB78E5A81B01D3855671FF59868AC7697BCED9C5761BA13B1DBD613515A16F5C"
+    "bl008_explanation_payloads.json": "9CC268F69179139BBE6905C03C529F27ED89C8737695706150E88C4900EFBC3C"
   }
 }
