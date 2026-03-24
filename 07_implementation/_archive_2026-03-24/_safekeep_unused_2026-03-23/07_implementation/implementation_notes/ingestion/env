@@ -1,0 +1,3 @@
+$env:SPOTIFY_CLIENT_ID = "3791d693c0ec437eb023a71da2c8c812"
+$env:SPOTIFY_CLIENT_SECRET = "00ece6baf67f489faa1ff5aaac934743"
+$env:SPOTIFY_REDIRECT_URI = "http://127.0.0.1:8001/spotify/auth/callback"

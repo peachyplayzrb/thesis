@@ -1,5 +1,2 @@
-{"timestamp_utc": "2026-03-24T01:17:16Z", "path": "/me", "query": {}, "status": 200, "attempt": 1, "item_count": 0, "total": null}
-{"timestamp_utc": "2026-03-24T01:17:16Z", "path": "/playlists/5P35fO7yXSnTKf4oLoSGek/items", "query": {"additional_types": "track", "market": "MT", "limit": 50, "offset": 0}, "status": 403, "attempt": 1, "error_body": "{\"error\": {\"status\": 403, \"message\": \"Forbidden\" } }"}
-{"timestamp_utc": "2026-03-24T01:17:17Z", "path": "/playlists/3LVttZ7Q8nihXkpjzhzyFt/items", "query": {"additional_types": "track", "market": "MT", "limit": 50, "offset": 0}, "status": 200, "attempt": 1, "item_count": 31, "total": 31}
-{"timestamp_utc": "2026-03-24T01:17:17Z", "path": "/playlists/39rRww1hqREuCEzM5NQW3i/items", "query": {"additional_types": "track", "market": "MT", "limit": 50, "offset": 0}, "status": 403, "attempt": 1, "error_body": "{\"error\": {\"status\": 403, \"message\": \"Forbidden\" } }"}
-{"timestamp_utc": "2026-03-24T01:17:17Z", "path": "/playlists/1TtCwbjgOevA0UaSKyqka9/items", "query": {"additional_types": "track", "market": "MT", "limit": 50, "offset": 0}, "status": 403, "attempt": 1, "error_body": "{\"error\": {\"status\": 403, \"message\": \"Forbidden\" } }"}
+{"timestamp_utc": "2026-03-24T21:00:32Z", "path": "/me", "query": {}, "status": 200, "attempt": 1, "item_count": 0, "total": null}
+{"timestamp_utc": "2026-03-24T21:01:18Z", "path": "/me/player/recently-played", "query": {"limit": 50}, "status": 200, "attempt": 1, "item_count": 50, "total": null}

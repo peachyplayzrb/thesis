@@ -1,0 +1,4 @@
+row_number,event_id,row_quality_flag,track_name,artist_name,played_at_raw,ms_played_raw,isrc_raw
+4,EVT-000004-591C1598D20E,invalid_timestamp,dreams,fleetwood mac,not-a-timestamp,257000,GBAYE7600107
+5,EVT-000005-4DA40D6B0349,missing_core_field,bad data example,,2025-11-22T03:05:00Z,193000,
+6,EVT-000006-87FBAD773D7A,invalid_ms_played,negative play,test artist,2025-11-22T04:00:00Z,-500,USABC1200123

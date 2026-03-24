@@ -1,0 +1,155 @@
+{
+  "task": "BL-003-DS001-spotify-seed-build",
+  "generated_at_utc": "2026-03-24T22:13:35Z",
+  "elapsed_seconds": 1.166,
+  "inputs": {
+    "ds001_candidates": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\data_layer\\outputs\\ds001_working_candidate_dataset.csv",
+    "ds001_candidates_sha256": "296331CA6390D2C111AA336C7EB154B69EC7060604312AC8A274F545B68A04EF",
+    "spotify_export_dir": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\ingestion\\outputs\\spotify_api_export",
+    "files": {
+      "spotify_top_tracks_flat_csv": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\ingestion\\outputs\\spotify_api_export\\spotify_top_tracks_flat.csv",
+      "spotify_saved_tracks_flat_csv": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\ingestion\\outputs\\spotify_api_export\\spotify_saved_tracks_flat.csv",
+      "spotify_playlist_items_flat_csv": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\ingestion\\outputs\\spotify_api_export\\spotify_playlist_items_flat.csv",
+      "spotify_recently_played_flat_csv": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\ingestion\\outputs\\spotify_api_export\\spotify_recently_played_flat.csv"
+    },
+    "selection": {
+      "include_top_tracks": true,
+      "include_saved_tracks": true,
+      "include_playlists": true,
+      "include_recently_played": true,
+      "top_time_ranges": [
+        "short_term",
+        "medium_term",
+        "long_term"
+      ],
+      "top_caps": {
+        "short_term": null,
+        "medium_term": null,
+        "long_term": null
+      },
+      "saved_max_items": null,
+      "playlists_max_items": null,
+      "playlist_items_max_per_playlist": null,
+      "recently_played_limit": 50
+    },
+    "config_source": "run_config",
+    "run_config_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\run_config\\run_config_bl021_probe_v1.json",
+    "run_config_schema_version": "run-config-v1",
+    "input_scope": {
+      "source_family": "spotify_api_export",
+      "include_top_tracks": true,
+      "top_time_ranges": [
+        "short_term"
+      ],
+      "include_saved_tracks": false,
+      "saved_tracks_limit": 25,
+      "include_playlists": true,
+      "playlists_limit": 3,
+      "playlist_items_per_playlist_limit": 20,
+      "include_recently_played": true,
+      "recently_played_limit": 15
+    },
+    "selected_sources_expected": {
+      "top_tracks": true,
+      "saved_tracks": false,
+      "playlist_items": true,
+      "recently_played": true
+    },
+    "selected_sources_available": {
+      "top_tracks": true,
+      "saved_tracks": true,
+      "playlist_items": true,
+      "recently_played": true
+    },
+    "missing_selected_sources": [],
+    "allow_missing_selected_sources": false
+  },
+  "source_stats": {
+    "top_tracks": {
+      "file_present": true,
+      "rows_available": 8745,
+      "rows_selected": 602
+    },
+    "saved_tracks": {
+      "file_present": true,
+      "rows_available": 171,
+      "rows_selected": 0
+    },
+    "playlist_items": {
+      "file_present": true,
+      "rows_available": 31,
+      "rows_selected": 20
+    },
+    "recently_played": {
+      "file_present": true,
+      "rows_available": 50,
+      "rows_selected": 15
+    }
+  },
+  "source_scope_filtering": {
+    "requested_input_scope": {
+      "source_family": "spotify_api_export",
+      "include_top_tracks": true,
+      "top_time_ranges": [
+        "short_term"
+      ],
+      "include_saved_tracks": false,
+      "saved_tracks_limit": 25,
+      "include_playlists": true,
+      "playlists_limit": 3,
+      "playlist_items_per_playlist_limit": 20,
+      "include_recently_played": true,
+      "recently_played_limit": 15
+    },
+    "limits": {
+      "saved_tracks_limit": 25,
+      "playlists_limit": 3,
+      "playlist_items_per_playlist_limit": 20,
+      "recently_played_limit": 15
+    },
+    "rows_available": {
+      "top_tracks": 8745,
+      "saved_tracks": 171,
+      "playlist_items": 31,
+      "recently_played": 50
+    },
+    "rows_selected": {
+      "top_tracks": 602,
+      "saved_tracks": 0,
+      "playlist_items": 20,
+      "recently_played": 15
+    }
+  },
+  "counts": {
+    "input_event_rows": 637,
+    "matched_by_spotify_id": 160,
+    "matched_by_metadata": 64,
+    "unmatched": 413,
+    "unmatched_missing_keys": 20,
+    "unmatched_no_candidate": 393,
+    "matched_events_rows": 224,
+    "seed_table_rows": 221,
+    "trace_rows": 637,
+    "unmatched_rows": 413
+  },
+  "outputs": {
+    "matched_events_jsonl": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\alignment\\outputs\\bl003_ds001_spotify_matched_events.jsonl",
+    "seed_table_csv": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\alignment\\outputs\\bl003_ds001_spotify_seed_table.csv",
+    "trace_csv": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\alignment\\outputs\\bl003_ds001_spotify_trace.csv",
+    "unmatched_csv": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\alignment\\outputs\\bl003_ds001_spotify_unmatched.csv",
+    "summary_json": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\alignment\\outputs\\bl003_ds001_spotify_summary.json",
+    "source_scope_manifest_json": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\alignment\\outputs\\bl003_source_scope_manifest.json",
+    "sha256": {
+      "matched_events_jsonl": "25F8F546BB39F1667ACFFCD20F42C034463879B37801AA541388F3BFCA44CE68",
+      "seed_table_csv": "A7E405BED9870C19CAFCA37925872B189CB2BD3F7A414AC2D8A9851B58A6CDC3",
+      "trace_csv": "6D789265C13AE796701E747F12440ABCBD02DE59BD5CEDF3AA509FCFA3DB2A60",
+      "unmatched_csv": "629EB4AA18F36B2C7E89A1D24DDACD03CAF8B37288AA95FEEB027A08AD506E8C",
+      "source_scope_manifest_json": "8A652ED10A7DA9E042515A2D902724E51DB7B8E1E306959FF4FAF060DAE92059"
+    }
+  },
+  "notes": {
+    "policy": "spotify_id exact match is primary for DS-001; metadata fallback used only when needed",
+    "logging": "full row-level trace includes matched and unmatched reasons",
+    "seed_table_enrichment": "seed table includes DS-001 numeric feature columns so downstream profile stages can consume a single BL-003 artifact"
+  }
+}

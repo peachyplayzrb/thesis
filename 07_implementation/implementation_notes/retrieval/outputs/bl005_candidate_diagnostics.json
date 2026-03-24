@@ -1,14 +1,14 @@
 {
-  "run_id": "BL005-FILTER-20260322-021107-181373",
+  "run_id": "BL005-FILTER-20260324-220924-588977",
   "task": "BL-005",
-  "generated_at_utc": "2026-03-22T02:11:07Z",
+  "generated_at_utc": "2026-03-24T22:09:26Z",
   "input_artifacts": {
     "profile_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\profile\\outputs\\bl004_preference_profile.json",
-    "profile_sha256": "400019a4194327f20c690be76f971850d5c1c368eb1ec4f350d4398268a86545",
+    "profile_sha256": "8b05155c93db33f9ee89b1d9ad44b19d80f1162de8f5a240e659cfeaef5480f7",
     "seed_trace_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\profile\\outputs\\bl004_seed_trace.csv",
-    "seed_trace_sha256": "e99ff208d739655a46ae3d0c82d84f022ce754efe90d65e427cfc3ed6d25f505",
-    "candidate_stub_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\data_layer\\outputs\\bl019_ds002_integrated_candidate_dataset.csv",
-    "candidate_stub_sha256": "b9c729a2b0fc1ab9e533ca5126402f4aff7c2b1ee8357a16e773a7837ad40b9f"
+    "seed_trace_sha256": "6378f963a43adaace2818945e1f5216323d1880853085446fdb74d00cd7b525c",
+    "candidate_stub_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\data_layer\\outputs\\ds001_working_candidate_dataset.csv",
+    "candidate_stub_sha256": "296331ca6390d2c111aa336c7eb154b69ec7060604312ac8a274f545b68a04ef"
   },
   "config": {
     "top_lead_genre_limit": 6,
@@ -16,57 +16,87 @@
     "top_genre_limit": 8,
     "numeric_thresholds": {
       "tempo": 20.0,
-      "loudness": 6.0,
       "key": 2.0,
-      "mode": 0.5
+      "mode": 0.5,
+      "duration_ms": 45000.0
     },
-    "numeric_features_enabled": false,
-    "keep_rule": "keep if not seed and semantic_score >= 1"
+    "numeric_feature_mapping": {
+      "tempo": "tempo",
+      "key": "key",
+      "mode": "mode",
+      "duration_ms": "duration_ms"
+    },
+    "numeric_features_enabled": true,
+    "keep_rule": "keep if not seed and (semantic_score >= 2 or (semantic_score >= 1 and numeric_pass_count >= 1))",
+    "semantic_source": "ds001_tags_and_genres_columns"
   },
   "counts": {
-    "candidate_rows_total": 9330,
-    "seed_tracks_excluded": 0,
-    "kept_candidates": 1740,
-    "rejected_non_seed_candidates": 7590
+    "candidate_rows_total": 109269,
+    "seed_tracks_excluded": 1563,
+    "kept_candidates": 56700,
+    "rejected_non_seed_candidates": 51006
   },
   "rule_hits": {
     "semantic_rule_hits": {
-      "lead_genre_match": 425,
-      "genre_overlap": 1669,
-      "tag_overlap": 1740
+      "lead_genre_match": 20939,
+      "genre_overlap": 52245,
+      "tag_overlap": 53420
     },
     "numeric_rule_hits": {
-      "tempo": 0,
-      "loudness": 0,
-      "key": 0,
-      "mode": 0
+      "tempo": 55033,
+      "key": 43325,
+      "mode": 68257,
+      "duration_ms": 47777
+    }
+  },
+  "decision_path_counts": {
+    "keep_strong_semantic": 47364,
+    "reject_no_signal": 3940,
+    "reject_numeric_without_semantic_support": 46472,
+    "keep_semantic_numeric_supported": 9336,
+    "reject_seed_track": 1563,
+    "reject_semantic_without_numeric_support": 594
+  },
+  "score_distributions": {
+    "semantic_score": {
+      "0": 50568,
+      "1": 9971,
+      "2": 29557,
+      "3": 19173
+    },
+    "numeric_pass_count": {
+      "0": 7269,
+      "1": 28664,
+      "2": 40790,
+      "3": 26036,
+      "4": 6510
     }
   },
   "top_kept_track_ids": [
-    "TRAAABD128F429CF47",
-    "TRAAAEF128F4273421",
-    "TRAAARJ128F9320760",
-    "TRAABLR128F423B7E3",
-    "TRAABVM128F92CA9DC",
-    "TRAACER128F4290F96",
-    "TRAADLN128F14832E9",
-    "TRAADNA128F9331246",
-    "TRAADQX128F422B4CF",
-    "TRAADRN128F932D607",
-    "TRAADVH128EF34DE7A",
-    "TRAAEEH128E0795DFE",
-    "TRAAEMJ128F425A917",
-    "TRAAEWG128F930B3A4",
-    "TRAAFJW128F428A424"
+    "0009fFIM1eYThaPg",
+    "002Jyd0vN4HyCpqL",
+    "007LIJOPQ4Sb98qV",
+    "00IeldeA9ijZOL0P",
+    "00KSCJkYb8JKa4Y3",
+    "00LuPWdOccBb09bW",
+    "00P2bHdWFkghmDqz",
+    "00XWljDxNBgBKEEA",
+    "00b6fV3nx5z2b8Ls",
+    "00hFmpewuNvc4dRL",
+    "00i0OB17z3m3yamO",
+    "00mLjKFmaTv9MdaB",
+    "00wqHIO65EtRyRQM",
+    "013BFFjvohJT9dW9",
+    "013QDoTqbexEwkHr"
   ],
-  "elapsed_seconds": 0.236,
+  "elapsed_seconds": 1.907,
   "output_files": {
     "filtered_candidates_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\retrieval\\outputs\\bl005_filtered_candidates.csv",
     "candidate_decisions_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\retrieval\\outputs\\bl005_candidate_decisions.csv"
   },
   "output_hashes_sha256": {
-    "bl005_filtered_candidates.csv": "3a476cf88476c01681725e7584cab82a9a4bbde727c6bbaadf759d066ea7185b",
-    "bl005_candidate_decisions.csv": "5fdbfac23c8a84d461eb2500626b7bc1c309a487cd8a94c98dc050fc21b34e46"
+    "bl005_filtered_candidates.csv": "adf61c5eecbad48a704c802eae3441a7f09826a87c224d7f0a226253f2cca679",
+    "bl005_candidate_decisions.csv": "ba58b95a7d1b7f2c8ced25944c64335f9610a51980066d64657ecc2532a2209c"
   },
   "diagnostics_hash_note": "diagnostics file does not store its own hash to avoid recursive self-reference"
 }

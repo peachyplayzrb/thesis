@@ -1,0 +1,10 @@
+{
+  "task": "BL-002-spotify-api-export",
+  "run_id": "SPOTIFY-EXPORT-20260321-030550-407798",
+  "generated_at_utc": "2026-03-21T03:05:50Z",
+  "status": "blocked_by_rate_limit",
+  "path": "/me",
+  "retry_after_seconds": 84882,
+  "retry_at_utc": "2026-03-22T02:40:32Z",
+  "guidance": "Wait until retry_at_utc or rotate to a new Spotify app client id/secret and re-authenticate."
+}

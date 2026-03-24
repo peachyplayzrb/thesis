@@ -1,0 +1,638 @@
+source_type,source_row_index,spotify_track_id,isrc,track_name,artist_names,duration_ms,event_time,time_range,rank,playlist_id,playlist_name,playlist_position,match_status,match_method,matched_ds001_id,matched_song,matched_artist,duration_delta_ms,reason,preference_weight
+top_tracks,1,6JkioJZkImC4GRzgw5MGMO,GBUM71700956,Sgt. Pepper's Lonely Hearts Club Band - 2017 Mix,The Beatles,122133,,short_term,1,,,,unmatched,,,,,,no_ds001_candidate,50.000000
+top_tracks,2,4tFumK7mnlcpNeHCNEQ4wc,GBAAN8000012,While You See A Chance,Steve Winwood,313493,,short_term,2,,,,matched,metadata_fallback,zp0LFbOG09bow7VL,While You See a Chance,Steve Winwood,720,,25.000000
+top_tracks,3,6to7uMMtCgtONKQxrzZ0F3,USSM18600632,True Colors,Cyndi Lauper,227590,,short_term,3,,,,matched,metadata_fallback,S9NHB8tncOFLjyYh,True Colors,Cyndi Lauper,1523,,16.666667
+top_tracks,4,2zyxrWJaUgH1kNbcSnn4dC,DELE21612408,"Toccata & Fugue in D Minor, BWV 565 (Transc. I. Friedman): Fugue",Johann Sebastian Bach | Roberto Cominati,316746,,short_term,4,,,,unmatched,,,,,,no_ds001_candidate,12.500000
+top_tracks,5,08XKCwMrwEAyyfTCTGkkhg,GBUM71700961,With A Little Help From My Friends - 2017 Mix,The Beatles,165293,,short_term,5,,,,unmatched,,,,,,no_ds001_candidate,10.000000
+top_tracks,6,1T08XqfbOPbT4FbZe0s0pA,FROV62539704,Songs My Mother Taught Me (Arr. for Violin and Piano by Galy & Gonzalez Buajasan After Powell),Antonín Dvořák | Manon Galy | Jorge Gonzalez Buajasan,199480,,short_term,6,,,,unmatched,,,,,,no_ds001_candidate,8.333333
+top_tracks,7,7zMUCLm1TN9o9JlLISztxO,USRC18705934,Burning Love,Elvis Presley,171533,,short_term,7,,,,matched,spotify_id_exact,1NSrxYWqrIUfYJlG,Burning Love,Elvis Presley,,,7.142857
+top_tracks,8,4lC9s3vwDa16w2G33KfF9C,SEAYD8102010,The Visitors,ABBA,347706,,short_term,8,,,,matched,metadata_fallback,iB4aqqnGw5d3hmq2,The Visitors,ABBA,113986,,6.250000
+top_tracks,9,7u7iJ2Ib9hvID6XEa5Q0ip,GBUM71001044,In Dulce Jubilo (For Maureen),Mike Oldfield,166066,,short_term,9,,,,unmatched,,,,,,no_ds001_candidate,5.555556
+top_tracks,10,0oE6A9bCTnQsT5lXFJxVzb,QZPLR2253103,"Married Life (from ""Up"")",Jacob's Piano,166622,,short_term,10,,,,unmatched,,,,,,no_ds001_candidate,5.000000
+top_tracks,11,4gBxiDBESs2s2dgyUaqEWv,GBAAN8000013,Arc Of A Diver,Steve Winwood,328506,,short_term,11,,,,unmatched,,,,,,no_ds001_candidate,4.545455
+top_tracks,12,2iIRl5jf9beA2ExZWzn2nt,GBUM71700954,Lucy In The Sky With Diamonds - 2017 Mix,The Beatles,207680,,short_term,12,,,,matched,spotify_id_exact,TEnAcMdffxfWONyl,Lucy in the sky with diamonds - Remix,The Beatles,,,4.166667
+top_tracks,13,03XVN6x6W02DZXqqPNH9Lr,GBAAN8000016,Dust,Steve Winwood,381333,,short_term,13,,,,unmatched,,,,,,no_ds001_candidate,3.846154
+top_tracks,14,0YMFcrMtBowDdD5bPz0cgy,USEE10100547,Talkin' Bout a Revolution,Tracy Chapman,161600,,short_term,14,,,,matched,spotify_id_exact,UCCManHYx1CyyHpG,Talkin' Bout a Revolution,Tracy Chapman,,,3.571429
+top_tracks,15,0kEDYd5bgOdo2yjTaXGMi4,GBUM71700963,Within You Without You - 2017 Mix,The Beatles,307586,,short_term,15,,,,unmatched,,,,,,no_ds001_candidate,3.333333
+top_tracks,16,1vGfZYrNSxT72PdgToMubU,USRC16007151,Such a Night,Elvis Presley,181968,,short_term,16,,,,unmatched,,,,,,no_ds001_candidate,3.125000
+top_tracks,17,3jR8Xw0qPyGGv8bvFtNmDw,GBUM71700949,Getting Better - 2017 Mix,The Beatles,167013,,short_term,17,,,,matched,spotify_id_exact,sUzn7GZix4mpeUK4,Getting Better,The Beatles,,,2.941176
+top_tracks,18,4Ggjly9D6YlPfywZOViMaG,GBUM71700958,She's Leaving Home - 2017 Mix,The Beatles,205840,,short_term,18,,,,matched,spotify_id_exact,QAxhAZhljYgVKGuB,She's Leaving Home - Remix,The Beatles,,,2.777778
+top_tracks,19,5jFr0DzRfDI9QcQ9NG4ltE,DEF059430527,"Le nozze di Figaro, K. 492, Act II: No. 12, Voi che sapete",Wolfgang Amadeus Mozart | Cecilia Bartoli | Wiener Philharmoniker | Claudio Abbado,147000,,short_term,19,,,,unmatched,,,,,,no_ds001_candidate,2.631579
+top_tracks,20,65mQIDMBEI6KsCPphwWKrK,GBUM71700947,Being For The Benefit Of Mr. Kite! - 2017 Mix,The Beatles,159200,,short_term,20,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,21,6a98mDyXTsYugJhUs1tZr4,GBUM71700948,Fixing A Hole - 2017 Mix,The Beatles,157960,,short_term,21,,,,matched,spotify_id_exact,EluJPZ1gvKeMbf3X,Fixing A Hole - Remix,The Beatles,,,2.500000
+top_tracks,22,6b4BCZJT6W622djmunsBzl,USMR18930347,"Mission - Live In San Diego, California/1988",Rush,346466,,short_term,22,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,23,0q6kL6JEfoGbozD1rjG7NY,USMR18700007,Mission,Rush,315706,,short_term,23,,,,matched,spotify_id_exact,JTbvJI8lNUTib1O5,Mission,Rush,,,2.500000
+top_tracks,24,7o9uu2GDtVDr9nsR7ZRN73,USSM18300650,Time After Time,Cyndi Lauper,245529,,short_term,24,,,,matched,metadata_fallback,rSZ71tsqQD5GsgSN,Time After Time,Cyndi Lauper,2462,,2.500000
+top_tracks,25,18qhv7DD1sEpgWffovGnhn,GBUM71700946,A Day In The Life - 2017 Mix,The Beatles,330906,,short_term,25,,,,matched,spotify_id_exact,OK8VmZrhLaWmW2R7,A Day In The Life - remix,The Beatles,,,2.500000
+top_tracks,26,5NdzToomqRRxNSR0F0nUHg,GBBLY0606398,Music Box Dancer,Frank Mills,192360,,short_term,26,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,27,0AvygKcKeMyZlFmDzbqcYK,GBUM71700960,When I'm Sixty-Four - 2017 Mix,The Beatles,160013,,short_term,27,,,,matched,spotify_id_exact,ZhIEXl61ad4ZIeHw,When I'm Sixty-Four - Remix,The Beatles,,,2.500000
+top_tracks,28,4gzLeEbCDmgK5XuhgXZt7x,GBUM71700951,Lovely Rita - 2017 Mix,The Beatles,165800,,short_term,28,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,29,0SH68QO8BDQpxezIZE91Ba,GBUM71700957,Sgt. Pepper's Lonely Hearts Club Band (Reprise) - 2017 Mix,The Beatles,80600,,short_term,29,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,30,0ldihDAaEYrlk68C4oSewz,GBUM71700950,Good Morning Good Morning - 2017 Mix,The Beatles,154466,,short_term,30,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,31,3U5JVgI2x4rDyHGObzJfNf,GBARL0400707,Unwritten,Natasha Bedingfield,259333,,short_term,31,,,,matched,metadata_fallback,IAzZGYyHfsmexzGi,Unwritten,Natasha Bedingfield,0,,2.500000
+top_tracks,32,6iLzFJhs4ATwJn7P1utZIJ,USNLR1600338,Light of the Seven,Ramin Djawadi,589094,,short_term,32,,,,matched,metadata_fallback,zMtZubmfy3SOxtgg,Light of the Seven,Ramin Djawadi,1,,2.500000
+top_tracks,33,6jBUP2KCe821yqf1hiBqPR,GBUM70810083,Broken Strings,James Morrison | Nelly Furtado,250453,,short_term,33,,,,matched,metadata_fallback,kOIoaM8eyUi56jtt,Broken Strings,James Morrison,0,,2.500000
+top_tracks,34,0l0wAg37zHIadmfSc282Hu,GBAYC9004998,"Sarasate: Spanish Dances, Op. 23: II. Zapateado (Allegro)",Pablo de Sarasate | Itzhak Perlman | Samuel Sanders,195973,,short_term,34,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,35,5boJKR3VLBW0dc5167wKDE,SEAYD8102020,Head Over Heels,ABBA,228693,,short_term,35,,,,matched,metadata_fallback,SAA2SBcmpbhFsB8Y,Head Over Heels,ABBA,719,,2.500000
+top_tracks,36,00OMaIm4VEsUcXad5Pf1Qe,USEE10100549,Behind the Wall,Tracy Chapman,109506,,short_term,36,,,,matched,spotify_id_exact,TwVNNHVqSPdJFaqz,Behind the Wall,Tracy Chapman,,,2.500000
+top_tracks,37,0Qv7xi6uPSqH2k82tOkGSt,GBF088200040,Mad World,Tears For Fears,215400,,short_term,37,,,,matched,spotify_id_exact,TKCScJ2KJ78HCRcB,Mad World,Tears for Fears,,,2.500000
+top_tracks,38,2DjWsDGgL1xNbhnr7f6t5F,USEE10180931,Baby Can I Hold You,Tracy Chapman,193120,,short_term,38,,,,matched,spotify_id_exact,ZayNF6UdzLYKhbpE,Baby Can I Hold You,Tracy Chapman,,,2.500000
+top_tracks,39,2M9ro2krNb7nr7HSprkEgo,USEE10180719,Fast Car,Tracy Chapman,296800,,short_term,39,,,,matched,spotify_id_exact,c0VlO6Z7FmfIJLVV,Fast Car,Tracy Chapman,,,2.500000
+top_tracks,40,3R9LrKCdEcgECnrVFA1Flz,USSM10027986,Cheek to Cheek,Fred Astaire,197946,,short_term,40,,,,matched,metadata_fallback,D6fkJpDr6KTNzDpL,Cheek To Cheek,Fred Astaire,161,,2.500000
+top_tracks,41,3XkXJNMHJB0UiKiVz83yD7,USEE10100548,Across the Lines,Tracy Chapman,204666,,short_term,41,,,,matched,spotify_id_exact,QXkYgalw42rz4k5X,Across the Lines,Tracy Chapman,,,2.500000
+top_tracks,42,4xxn8GDqs7RUwgZTNznXNp,USWB19904166,Dueling Banjos,Eric Weissberg | Steve Mandell,194879,,short_term,42,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,43,52Lz3HKBItvMWuSNDBixq3,USAT20702541,It Can Happen,Yes,329506,,short_term,43,,,,matched,spotify_id_exact,FrjEAGwfV6qohKmJ,It Can Happen,Yes,,,2.500000
+top_tracks,44,5YsrGiOhGUGzW89RXrLYGV,CAA310600450,Red Sector A,Rush,311866,,short_term,44,,,,matched,metadata_fallback,jnW0htumn57RO9M1,Red Sector A,Rush,2719,,2.500000
+top_tracks,45,6GzMz3s0K1YKwRVI36CgRx,HKI199610305,"Liebestraume, S541/R211 : No. 3: Nocturne in A-Flat Major",Franz Liszt | Jenő Jandó,270000,,short_term,45,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,46,6W26h4KbGUnEaav5VWIyJm,SEAYD8209010,The Day Before You Came,ABBA,349080,,short_term,46,,,,matched,spotify_id_exact,meMTxddMEzfnTqD7,The Day Before You Came,ABBA,,,2.500000
+top_tracks,47,7xxZUTxxlkiFEMzL6lYXtF,USMR17880083,Cygnus X-1 Book II: Hemispheres,Rush,1084266,,short_term,47,,,,matched,spotify_id_exact,ulMPRuWan46llLA0,Cygnus X-1,Rush,,,2.500000
+top_tracks,48,2st9kwCck5g6hjUwwRGQCE,GBAYC9503392,"Sarasate: Zigeunerweisen, Op. 20",Pablo de Sarasate | Itzhak Perlman | Abbey Road Ensemble,517706,,short_term,48,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,49,2CIDqYfIYfl9vx02wIyCG9,USSM18300652,All Through the Night,Cyndi Lauper,272637,,short_term,49,,,,matched,spotify_id_exact,ROm2Vv0rig9S5d6E,All Through the Night,Cyndi Lauper,,,2.500000
+top_tracks,50,2UQaaIJqGD3k2FYV4mjt9Z,USAR29301259,Chaconne,Johann Sebastian Bach | Nathan Milstein,829053,,short_term,50,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,51,0zHc9jVOLmAONeZfUtqQ6H,KRB461800289,"La Campanella from the Violin Concerto No 2 in B Minor, Op. 7",Niccolò Paganini | Roman Kim | Jure Gorucan,392000,,short_term,51,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,52,08rAnrICc7QJl2FxaW45WO,SEAYD8102090,Like An Angel Passing Through My Room,ABBA,214666,,short_term,52,,,,matched,spotify_id_exact,czL4cbRM6xXV2itL,Like An Angel Passing Through My Room,ABBA,,,2.500000
+top_tracks,53,0nH4SKCFlfnypKLKlNBT1c,SEAYD8209040,I Am The City,ABBA,244240,,short_term,53,,,,matched,spotify_id_exact,aETTFyZbufNqw9Pu,I Am the City,ABBA,,,2.500000
+top_tracks,54,1HmwvKA2TLUh5QlY7QGLzt,SEAYD8209030,You Owe Me One,ABBA,210413,,short_term,54,,,,matched,spotify_id_exact,rcOwnwKuHxrByrNx,You Owe Me One,ABBA,,,2.500000
+top_tracks,55,1R9uNg9F6WINW53YMwG3GP,USRC16005322,"Dirty, Dirty Feeling",Elvis Presley,96566,,short_term,55,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,56,1TaDWN9kixXxE7eYx1Cctd,SEAYD8102050,I Let The Music Speak,ABBA,321346,,short_term,56,,,,matched,spotify_id_exact,79gGvHv2KqAvswk8,I Let the Music Speak,ABBA,,,2.500000
+top_tracks,57,1dGIHdI2bkAyALXNMQ3s2R,USRC16007198,Make Me Know It,Elvis Presley,122311,,short_term,57,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,58,1vOgunupwdkhGjoB7SK2Va,SEAYD8102070,Two For The Price Of One,ABBA,217706,,short_term,58,,,,matched,metadata_fallback,GbbYeHso7KMaXXZk,Two for the Price of One,ABBA,1201,,2.500000
+top_tracks,59,1wOp7yTVyH176bW1z9WAiv,USAT22403017,Carry You Home,Alex Warren,166880,,short_term,59,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,60,2BQGfESOhrW5VpEXhVdoic,USRC10501913,Thrill of Your Love,Elvis Presley,183055,,short_term,60,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,61,2JhIaeltCDCcp02K936tgx,GBF088300046,Change,Tears For Fears,254000,,short_term,61,,,,matched,spotify_id_exact,wi20guqqLvHXZvTu,Change,Tears for Fears,,,2.500000
+top_tracks,62,2NeKjEryWM5VZToeosUsUu,USRC16005320,The Girl of My Best Friend,Elvis Presley,145519,,short_term,62,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,63,2bi3SJI9GYzBEvPOh53EpX,USRC16005321,I Will Be Home Again,Elvis Presley,156541,,short_term,63,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,64,34K50Idx5EKBEVWkmHZ2IZ,USRC16005329,Reconsider Baby,Elvis Presley,219114,,short_term,64,,,,matched,spotify_id_exact,bXUtXEansZmn31Bl,Reconsider Baby,Elvis Presley,,,2.500000
+top_tracks,65,36rlDduHIpnVQMFznr1GDy,USRC16005328,Like a Baby,Elvis Presley,161893,,short_term,65,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,66,3CADzRN1OykvppXzYJRRHq,USRC16005324,Soldier Boy,Elvis Presley,187251,,short_term,66,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,67,3MsQJQPi172pXgXcYGlenx,SEAYD8209020,Under Attack,ABBA,227640,,short_term,67,,,,matched,metadata_fallback,Ve257XDVBwPNUg7K,Under Attack,ABBA,1053,,2.500000
+top_tracks,68,3bNlkT7b8SlGEFgDYgHemj,SE6HN2173663,Disney Pixar's Up - Married Life / piano version - Instrumental Version,Santiago Melo,119250,,short_term,68,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,69,40IHflbrHcOuC8ZcYxUSAC,SEAYD8102060,One Of Us,ABBA,237013,,short_term,69,,,,matched,metadata_fallback,HNN3N9MY2Okf4kfQ,One of Us,ABBA,707,,2.500000
+top_tracks,70,43T696K5X1s1mtxIuuUvvz,SEAYD8102030,When All Is Said And Done,ABBA,198586,,short_term,70,,,,matched,metadata_fallback,jINYnPgqIQJ6mmMl,When All Is Said and Done,ABBA,1281,,2.500000
+top_tracks,71,45GTwVJoDDLGEAYkB5NOrT,USEE10100550,Mountains O' Things,Tracy Chapman,279426,,short_term,71,,,,matched,spotify_id_exact,BurkN8hwXKYLo8xS,Mountains O' Things,Tracy Chapman,,,2.500000
+top_tracks,72,4PRGxHpCpF2yoOHYKQIEwD,USAT21300957,Rock and Roll - Remaster,Led Zeppelin,220560,,short_term,72,,,,matched,spotify_id_exact,5YjeA9RnddUgDFjI,Rock and Roll,Led Zeppelin,,,2.500000
+top_tracks,73,4ZoBC5MhSEzuknIgAkBaoT,USSM17800448,My Life,Billy Joel,285009,,short_term,73,,,,matched,spotify_id_exact,dt2rHqDjy0925YZa,My Life,Billy Joel,,,2.500000
+top_tracks,74,4noe32LLODXkYV5FqkTIKT,DEF058803212,"Toccata & Fugue in D Minor, BWV 565: II. Fugue",Johann Sebastian Bach | Simon Preston,354200,,short_term,74,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,75,4ogNDyqRuHvv3qADGiCazn,SEUM70500101,Should I Laugh Or Cry - Intro Version,ABBA,272333,,short_term,75,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,76,4zRZfRxsvUIOETGCvkkboc,USRC16007255,The Girl Next Door Went A'Walking,Elvis Presley,135713,,short_term,76,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,77,5Qawpf7n2qDIcTaBDK67Sb,SEAYD8208010,Cassandra,ABBA,292280,,short_term,77,,,,matched,spotify_id_exact,i82ar0zt90BSEhdS,Cassandra,ABBA,,,2.500000
+top_tracks,78,5RsdY1b0JSQTGeONEYFcwm,USRC16005326,It Feels So Right,Elvis Presley,131832,,short_term,78,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,79,5kRtxsw0JGktZ4fkeXCLlh,SEUM71200350,From A Twinkling Star To A Passing Angel - Demo Medley,ABBA,547880,,short_term,79,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,80,61xvgZVz1DiR628nmGtsZH,USEE10100551,She's Got Her Ticket,Tracy Chapman,234506,,short_term,80,,,,matched,spotify_id_exact,d1bPxFltzwLJuBYc,She's Got Her Ticket,Tracy Chapman,,,2.500000
+top_tracks,81,64UioB4Nmwgn2f4cbIpAkl,USSM18000211,It's Still Rock and Roll to Me,Billy Joel,177597,,short_term,81,,,,matched,spotify_id_exact,XPhsdXhKGswGFS85,It's Still Rock and Roll to Me,Billy Joel,,,2.500000
+top_tracks,82,6EXi6ZqTITKGtVBKqbphjL,GBAJH9900036,Porcelain,Moby,241160,,short_term,82,,,,matched,metadata_fallback,kb7H6FbRLXnCra6z,Porcelain,Moby,13,,2.500000
+top_tracks,83,6TI91Un4sxz3ehEhguwKuc,SEAYD8102040,Soldiers,ABBA,280813,,short_term,83,,,,matched,spotify_id_exact,zJB6BWFhqkPeY8OA,Soldiers,ABBA,,,2.500000
+top_tracks,84,6TvxPS4fj4LUdjw2es4g21,SEAYD8102080,Slipping Through My Fingers,ABBA,233720,,short_term,84,,,,matched,spotify_id_exact,iB4aqqnGw5d3hmq2,The Visitors,ABBA,,,2.500000
+top_tracks,85,6gG5Xmu1lphjsxUDprMWLm,USSM19927699,"The Goonies 'R' Good Enough - From ""The Goonies"" Soundtrack",Cyndi Lauper,216866,,short_term,85,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,86,73m8WuJlhzVusTVzJCGaDZ,USRC16007197,Fever,Elvis Presley,215264,,short_term,86,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,87,7CIoJE0JfVFcmmUY3fFojH,USBC15300135,"Hungarian Rhapsody No. 2 in C-Sharp Minor, S. 244/2",Franz Liszt | Vladimir Horowitz,541600,,short_term,87,,,,matched,spotify_id_exact,oFJO85A0ZhnelznP,Hungarian Rhapsody No. 2,Franz Liszt,,,2.500000
+top_tracks,88,0rhUvAqeXfG4gl4IZhglgX,GBAKW0300439,I Hear You Now,Jon & Vangelis,288200,,short_term,88,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,89,3mzKP5WdcB86KPOcpD663W,GBUM71204301,Arc Of A Diver: The Steve Winwood Story,Steve Winwood,3393133,,short_term,89,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,90,5lEpCOAChEETXFWY9SmIuu,CAA310600453,Kid Gloves,Rush,260026,,short_term,90,,,,matched,metadata_fallback,8e1XAO305okHTnbt,Kid Gloves,Rush,2026,,2.500000
+top_tracks,91,7iN1s7xHE4ifF5povM6A48,GBAYE0601713,Let It Be - Remastered 2009,The Beatles,243026,,short_term,91,,,,matched,spotify_id_exact,Yh6WQXVEjRQbrnFB,Let It Be,The Beatles,,,2.500000
+top_tracks,92,4DK3JpX2NkEMhCnltUEvUg,USWB10100645,Classical Gas,Mason Williams,184800,,short_term,92,,,,matched,metadata_fallback,nJamJt72j4tlle1g,Classical Gas,Mason Williams,733,,2.500000
+top_tracks,93,5aBPCuLgtWxOt53xcMZVKW,CAA310600451,The Enemy Within,Rush,276733,,short_term,93,,,,matched,metadata_fallback,t79ZBHGAN1A2NbOg,The Enemy Within,Rush,2226,,2.500000
+top_tracks,94,7MrjAyGcYhIY8i6EBUpxnN,CAA310600448,Distant Early Warning,Rush,297680,,short_term,94,,,,matched,metadata_fallback,5G6OktV6MQZjl2LQ,Distant Early Warning,Rush,933,,2.500000
+top_tracks,95,06ypiqmILMdVeaiErMFA91,GBAYE0601479,Drive My Car - Remastered 2009,The Beatles,148893,,short_term,95,,,,matched,spotify_id_exact,ovL1QVHmIMQnjULe,Drive My Car - remastered,The Beatles,,,2.500000
+top_tracks,96,70C4NyhjD5OZUMzvWZ3njJ,USSM17300504,Piano Man,Billy Joel,339000,,short_term,96,,,,matched,metadata_fallback,tuA9OQatzhlFyO8d,Piano Man,Billy Joel,2907,,2.500000
+top_tracks,97,0EaLRxrtnq7Mqhdf8q9txr,GBN9Y1100116,Run Like Hell,Pink Floyd,263386,,short_term,97,,,,matched,spotify_id_exact,ovqSpdUbgFRRGdyi,Run Like Hell,Pink Floyd,,,2.500000
+top_tracks,98,0M8Xggmk34Ntg1wY5wd5A3,USEE10100552,Why?,Tracy Chapman,126400,,short_term,98,,,,matched,spotify_id_exact,fhNjQgeL91zroEEG,Why?,Tracy Chapman,,,2.500000
+top_tracks,99,0yoHlBKXHK6uqkKKrR6549,AUUS00634627,Married Life (Up Movie Theme),Hollywood Classics,58185,,short_term,99,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,100,16GUMo6u3D2qo9a19AkYct,USSM17700369,Movin' Out (Anthony's Song),Billy Joel,210760,,short_term,100,,,,matched,metadata_fallback,NfSfEoxJmTd2T2Aj,Movin' Out (Anthony's Song),Billy Joel,2853,,2.500000
+top_tracks,101,17W8bZBSty1TJ4CRG4GGJK,USEE10100553,For My Lover,Tracy Chapman,192440,,short_term,101,,,,matched,spotify_id_exact,QvYpogJ5qMDGPvsw,For My Lover,Tracy Chapman,,,2.500000
+top_tracks,102,17i5jLpzndlQhbS4SrTd0B,USSM18200515,"Cello Suite No. 1 in G Major, BWV 1007: I. Prélude",Johann Sebastian Bach | Yo-Yo Ma,152280,,short_term,102,,,,matched,metadata_fallback,sW2G2sUK5IhR6srj,"Cello Suite No. 1 in G Major, BWV 1007: I. Prélude",Johann Sebastian Bach,800,,2.500000
+top_tracks,103,1AXyXGUFvce3tNwRDelbPf,GBAJY1509802,"Scherzo in B Minor, MWV U69",Felix Mendelssohn | Howard Shelley,66173,,short_term,103,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,104,1PHBBJNH4WFuDBlAuVKWMA,GBAMB9500006,Have Mercy On The Criminal,Elton John,357733,,short_term,104,,,,matched,spotify_id_exact,y8D6klsSSV37sR3E,Have Mercy On The Criminal,Elton John,,,2.500000
+top_tracks,105,1emZ9HriFeDe36qbVSUB9L,USACU0503383,Teddy Bear Song,Barbara Fairchild,184386,,short_term,105,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,106,1i5oEx2vFczQ2sCY3c6Kn5,USAM19500609,Love Hurts,Nazareth,233133,,short_term,106,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,107,1ksmaYi2yWCMG46EWbm1kX,UK4YE1300059,Running in the Family - Unplugged,Level 42,283599,,short_term,107,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,108,1qqtb9WEtsanQpElKWQs9x,GBAAN8000014,Spanish Dancer,Steve Winwood,360266,,short_term,108,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,109,24iBrOJoRFiQygVJgkWBRl,USEE10100555,For You,Tracy Chapman,189493,,short_term,109,,,,matched,metadata_fallback,dgrUz3f0xTL2gCGE,For You,Tracy Chapman,75880,,2.500000
+top_tracks,110,268MYoRM1f8rPRoCmW5NAN,CAA310600452,The Body Electric,Rush,301986,,short_term,110,,,,matched,metadata_fallback,8amnHzBUPrdIQp6A,The Body Electric,Rush,2013,,2.500000
+top_tracks,111,28fI85MOgzcIPWpS4NNMYP,USMR18930344,Marathon - Live In Birmingham England/1988,Rush,399666,,short_term,111,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,112,2MUWyT5IwC78FzzvJ7GpJU,QZDA42456093,Now We Are Free (from “Gladiator”) - Piano Version,Jacob's Piano,191756,,short_term,112,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,113,2xZSSlwJvomeVI7YWbjlay,GBGVZ0850002,Albatross,The Session,189973,,short_term,113,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,114,2zfzktmvCMIIPaey2DiO9H,USSM22600232,"Piano Man - Live at Wembley Arena, June 8, 1984",Billy Joel,459520,,short_term,114,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,115,30qVCFYKBtAENjTIBA8FPZ,USSM19300280,The River of Dreams,Billy Joel,245893,,short_term,115,,,,matched,spotify_id_exact,ME9AVNcYwpF1WPYG,The River of Dreams,Billy Joel,,,2.500000
+top_tracks,116,34E0Higz6fFVXlbVsn6TIW,USSM17800447,Honesty,Billy Joel,234159,,short_term,116,,,,matched,spotify_id_exact,wWr87YN3j07FWo5d,Honesty,Billy Joel,,,2.500000
+top_tracks,117,3AMCuMIDuPKM2nxf3dKyx4,USJT12000129,"Absolute Beginners - Live at BBC Radio Theatre, London, 27th June, 2000; 2021 Remaster",David Bowie,394876,,short_term,117,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,118,3J0AoQhAufniMrznCRJASD,USSM10020723,I Drove All Night,Cyndi Lauper,251506,,short_term,118,,,,matched,spotify_id_exact,RfyZW9445WyeHPgN,I Drove All Night,Cyndi Lauper,,,2.500000
+top_tracks,119,3M7A89P5LDjRzoRjeMp0ad,GBAYD8300163,Amor vittorioso - 1989 Digital Remaster,The King's Singers | Consort Of Musicke,43266,,short_term,119,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,120,3NOX2QXWXZe1N10iboNVZP,SE6HN2173661,Passacaglia / Handel - Instrumental Version,Santiago Melo,157500,,short_term,120,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,121,3W0rRQVOE5mE5qNjsgiXjL,BEY449800215,"Theme From ""Hawaii Five-0""",The Whodads,111893,,short_term,121,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,122,3aAuIvgJGdp4wWd60riWfB,GBAAN8200002,Valerie,Steve Winwood,246666,,short_term,122,,,,matched,metadata_fallback,ZVqMzQ2HXZQ0czai,Valerie,Steve Winwood,521,,2.500000
+top_tracks,123,3i0DP1AB6ha4JlFH8RrB1n,GBAAN8100002,Sweetheart,Marianne Faithfull,197160,,short_term,123,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,124,3pVnCDD8Qqpw9NdBhbua1a,CAA310600454,Red Lenses,Rush,283986,,short_term,124,,,,matched,metadata_fallback,RRH8Atb65rb6xiy6,Red Lenses,Rush,2146,,2.500000
+top_tracks,125,3wLBK5rqH6MjvN7EubEKTC,GBAAN8000015,Night Train,Steve Winwood,470066,,short_term,125,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,126,3wq4jcgClEawNa7v54onJe,GBAYE2100037,Suburbia - 2023 Remaster,Pet Shop Boys,244986,,short_term,126,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,127,3xr8COed4nPPn6XWZ0iCGr,KRA031103194,River Flows in You,Yiruma,218293,,short_term,127,,,,matched,metadata_fallback,FeRInaEhXdfN0VZv,River Flows in You,Yiruma,32766,,2.500000
+top_tracks,128,49MHCPzvMLXhRjDantBMVH,USSM17700371,Just the Way You Are,Billy Joel,290573,,short_term,128,,,,matched,spotify_id_exact,uj7iH69jmruknJ9V,Just The Way You Are,Billy Joel,,,2.500000
+top_tracks,129,4H01mwwbBufDk74Gg4wwkV,USWWW0127629,Slowdown Sundown,Steve Winwood,327173,,short_term,129,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,130,4QNpBfC0zvjKqPJcyqBy9W,USJAY1100032,Give Me Everything (feat. Nayer),Pitbull | AFROJACK | Ne-Yo | Nayer,252306,,short_term,130,,,,matched,spotify_id_exact,p9Tw7i7fN4LeGSBR,Give Me Everything,Pitbull,,,2.500000
+top_tracks,131,4jgdKiZhbD6BlVMhCf4NJH,GBAYE1700764,Opportunities (Let's Make Lots of Money) - 2018 Remaster,Pet Shop Boys,223666,,short_term,131,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,132,4peE8TByata0dJsmmwlFtC,USUM72508072,Distant Early Warning - 2026 Terry Brown Mix,Rush,295380,,short_term,132,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,133,55OFR7IaTUPbKuqT1TqmhQ,GBSWE0813179,Mission Impossible,DLG Orchestra,194773,,short_term,133,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,134,56pV40GccoDi3obX7YoKfO,USUM72508182,"Kid Gloves - Live At Maple Leaf Gardens, Toronto, Canada - September 21, 1984",Rush,262973,,short_term,134,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,135,5DH7nDryMhpixm4G4B7RP9,USSM18300273,The Longest Time,Billy Joel,223176,,short_term,135,,,,matched,spotify_id_exact,HhnTUIZ040LnpSZm,The Longest Time,Billy Joel,,,2.500000
+top_tracks,136,5Ih9gbqyxCzTJ43nuSuKnC,USSM10011897,Dream On,Aerosmith,267600,,short_term,136,,,,matched,metadata_fallback,9CLTmq6Ps7WVseF2,Dream On,Aerosmith,640,,2.500000
+top_tracks,137,5vrMM7hAZPQx9955euW6Jb,USJT11700514,Blue Jean - 2018 Remaster,David Bowie,191906,,short_term,137,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,138,6MOvNZLlCiR8kUvvK61B4z,GBUM71204304,Arc Of A Diver - Edited / US Single Version,Steve Winwood,255240,,short_term,138,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,139,6OKUhXuJMvoVPde9fMJJzy,USAM18790001,Tom's Diner,Suzanne Vega,129106,,short_term,139,,,,matched,spotify_id_exact,mhen6zCPqULPXTed,Solitude Standing,Suzanne Vega,,,2.500000
+top_tracks,140,6mVlGhXn7yXqI3iiwfeyHj,ITUM71701149,X Colpa Di Chi? - Remastered 2017,Zucchero,194600,,short_term,140,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,141,78lgmZwycJ3nzsdgmPPGNx,USAT21300934,Immigrant Song - Remaster,Led Zeppelin,146250,,short_term,141,,,,matched,spotify_id_exact,OxCTebk8s4Ex3yBg,Immigrant Song,Led Zeppelin,,,2.500000
+top_tracks,142,7a1vlK2RyPLh05moKO1fQf,USWWW0127628,Second-Hand Woman,Steve Winwood,221160,,short_term,142,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,143,7wBf5LhqfF6A9AVHILTJWi,USEE10100554,If Not Now...,Tracy Chapman,181266,,short_term,143,,,,matched,spotify_id_exact,nwFf2NmOZwlcjrfr,If Not Now...,Tracy Chapman,,,2.500000
+top_tracks,144,7yFvSYKk3g5g8e7Ffl16ws,USIR27700016,Three Little Birds,Bob Marley & The Wailers,180266,,short_term,144,,,,matched,metadata_fallback,F8vAvaC1LW5E8DOU,Three Little Birds,Bob Marley & The Wailers,1,,2.500000
+top_tracks,145,1GEOSS415bZVHNuXWlCT6b,GBN9Y1100100,Mother,Pink Floyd,334880,,short_term,145,,,,matched,spotify_id_exact,qiptUsLxxafOMF2P,Mother,Pink Floyd,,,2.500000
+top_tracks,146,1V15l05snHYHYVxerjMFGo,GBAAM0201111,King Of Pain,The Police,299040,,short_term,146,,,,matched,spotify_id_exact,wpyLLsDEjbhFrTRt,King of Pain,The Police,,,2.500000
+top_tracks,147,1lfQ1Upwiu5Fr9doTkspv3,ITVK71600007,"Jill's Theme - From ""Once Upon A Time In The West""",Ennio Morricone | Czech National Symphony Orchestra | Csaba Kiss | Péter Gyüvészi | Stefano Cucci,186040,,short_term,147,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,148,1ns4tLflyL2FDgH23Wq7hu,GBAYC8100207,"Mozart: Don Giovanni, K. 527: Overture",Wolfgang Amadeus Mozart | Sir Neville Marriner | Academy of St. Martin in the Fields,390200,,short_term,148,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,149,1nsUmjTDFBHtF0e9YDZKkG,USUV72503791,"Between The Wheels - Live At Maple Leaf Gardens, Toronto, Canada, September 21, 1984",Rush,341023,,short_term,149,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,150,29CJGwJt5wyo7Sjje87Cy8,CAT311000140,Lay It On The Line,Triumph,246026,,short_term,150,,,,matched,metadata_fallback,2eQ2zwD8LOR5Oj9m,Lay It On The Line,Triumph,1,,2.500000
+top_tracks,151,3xkHsmpQCBMytMJNiDf3Ii,USWB12307016,Beautiful Things,Benson Boone,180304,,short_term,151,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,152,4gMgiXfqyzZLMhsksGmbQV,GBN9Y1100099,"Another Brick in the Wall, Pt. 2",Pink Floyd,238946,,short_term,152,,,,matched,spotify_id_exact,umwmt9WBlxEWLrE7,"Another Brick in the Wall, Pt. 2",Pink Floyd,,,2.500000
+top_tracks,153,52q3JFaEKB54R12ciC7J4P,USWB10500058,"Cherish - 7"" Version",Madonna,243417,,short_term,153,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,154,5HNCy40Ni5BZJFw1TKzRsC,GBN9Y1100113,Comfortably Numb,Pink Floyd,382280,,short_term,154,,,,matched,spotify_id_exact,GGVEhXe864IozrMK,Comfortably Numb,Pink Floyd,,,2.500000
+top_tracks,155,62vx6uOYO7PrqKqKTKg9RY,GBF088990128,Sowing The Seeds Of Love,Tears For Fears,379333,,short_term,155,,,,matched,metadata_fallback,9emO9FRFYFQesS1g,Sowing The Seeds Of Love,Tears for Fears,2600,,2.500000
+top_tracks,156,6WzRpISELf3YglGAh7TXcG,USUG12303876,Popular (with Playboi Carti & Madonna) - From The Idol Vol. 1 (Music from the HBO Original Series),The Weeknd | Playboi Carti | Madonna,215466,,short_term,156,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,157,6ppj20FRcnCAaM7vRhJd0b,DEA809199028,"Mozart: Così fan tutte, K. 588, Act 1: Sestetto. ""Alla bella Despinetta"" (Fiordiligi, Dorabella, Despina, Ferrando, Don Alfonso, Guglielmo)",Wolfgang Amadeus Mozart | Nikolaus Harnoncourt | Royal Concertgebouw Orchestra | Anna Steiger | Charlotte Margiono | Delores Ziegler | Deon Van Der Walt | Gilles Cachemaille | Thomas Hampson,282506,,short_term,157,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,158,6vNZ2o21cwzNHozR6zY70n,GBUM71204302,Night Train - Instrumental Version,Steve Winwood,403360,,short_term,158,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,159,6yjKlmm7vOszkXEUku1EM1,USSM17600481,New York State of Mind,Billy Joel,363286,,short_term,159,,,,matched,spotify_id_exact,AeEKbcGeUG3kIp41,New York State Of Mind,Billy Joel,,,2.500000
+top_tracks,160,01SfTM5nfCou5gQL70r6gs,GBAYE0601703,Golden Slumbers - Remastered 2009,The Beatles,91760,,short_term,160,,,,matched,spotify_id_exact,WOWxCR8vLzQt33x5,Golden Slumbers - Remastered,The Beatles,,,2.500000
+top_tracks,161,0pNeVovbiZHkulpGeOx1Gj,GBAYE0601691,Something - Remastered 2009,The Beatles,182293,,short_term,161,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,162,1Bj6YgjjPbEb4jhQ50T8tJ,GBAAN0300580,Back In The High Life Again,Steve Winwood,335840,,short_term,162,,,,matched,spotify_id_exact,kIUFIR4QDKMTWyY3,Back In The High Life Again,Steve Winwood,,,2.500000
+top_tracks,163,1gFNm7cXfG1vSMcxPpSxec,GBAYE0601647,"Ob-La-Di, Ob-La-Da - Remastered 2009",The Beatles,188960,,short_term,163,,,,matched,spotify_id_exact,p7A20RSXaA6h4DNY,"Ob-La-Di, Ob-La-Da",The Beatles,,,2.500000
+top_tracks,164,2EqlS6tkEnglzr7tkKAAYD,GBAYE0601690,Come Together - Remastered 2009,The Beatles,259946,,short_term,164,,,,matched,spotify_id_exact,sHQ4NOxkSvefPKL8,Come Together (Remastered 2009),The Beatles,,,2.500000
+top_tracks,165,385rLznnaUjxlbQR1oAiU6,GBAAN0201245,The Finer Things,Steve Winwood,349666,,short_term,165,,,,matched,metadata_fallback,kISjOqvgqlS11n7f,The Finer Things,Steve Winwood,98466,,2.500000
+top_tracks,166,389QX9Q1eUOEZ19vtzzI9O,GBAYE0601650,While My Guitar Gently Weeps - Remastered 2009,The Beatles,285000,,short_term,166,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,167,3BQHpFgAp4l80e1XslIjNI,GBAYE0601477,Yesterday - Remastered 2009,The Beatles,125666,,short_term,167,,,,matched,spotify_id_exact,iglBkItdGVz3tOAG,Help! - Remastered 2009,The Beatles,,,2.500000
+top_tracks,168,3KfbEIOC7YIv90FIfNSZpo,GBAYE0601489,In My Life - Remastered 2009,The Beatles,146333,,short_term,168,,,,matched,spotify_id_exact,15CxeKsD9DvqCVhY,In My Life,The Beatles,,,2.500000
+top_tracks,169,4joiWvli4qJVEW6qZV2i2J,GBAYE0601426,All My Loving - Remastered 2009,The Beatles,127853,,short_term,169,,,,matched,spotify_id_exact,wzBQapgHuYmDanR9,All My Loving,The Beatles,,,2.500000
+top_tracks,170,5GjPQ0eI7AgmOnADn1EO6Q,GBAYE0601494,Eleanor Rigby - Remastered 2009,The Beatles,126533,,short_term,170,,,,matched,spotify_id_exact,twTZiJnIkFnPHEF7,Eleanor Rigby - Remastered,The Beatles,,,2.500000
+top_tracks,171,5ZBeML7Lf3FMEVviTyvi8l,GBAYE0601423,Twist And Shout - Remastered 2009,The Beatles,155226,,short_term,171,,,,matched,spotify_id_exact,y8AxY885GUWQuyCR,Twist and Shout,The Beatles,,,2.500000
+top_tracks,172,5jgFfDIR6FR0gvlA56Nakr,GBAYE0601654,Blackbird - Remastered 2009,The Beatles,138386,,short_term,172,,,,matched,spotify_id_exact,XQrflLn70qYnXiw1,Blackbird - Remastered 2009,The Beatles,,,2.500000
+top_tracks,173,65vdMBskhx3akkG9vQlSH1,GBAYE0601442,And I Love Her - Remastered 2009,The Beatles,149693,,short_term,173,,,,matched,spotify_id_exact,f0HiP8dEZqJXmcnW,And I Love Her,The Beatles,,,2.500000
+top_tracks,174,7DD7eSuYSC5xk2ArU62esN,GBAYE0601465,Help! - Remastered 2009,The Beatles,139560,,short_term,174,,,,matched,metadata_fallback,iglBkItdGVz3tOAG,Help! - Remastered 2009,The Beatles,13893,,2.500000
+top_tracks,175,09x9v1o51dbqi5H0u7UGfp,GBAYE0601659,I Will - Remastered 2009,The Beatles,105933,,short_term,175,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,176,1H7gMYGykdtwZOV6s1N0by,GBAYE0601480,Norwegian Wood (This Bird Has Flown) - Remastered 2009,The Beatles,124693,,short_term,176,,,,matched,spotify_id_exact,K2InLHoJqZgf5Opi,Norwegian Wood (This Bird Has Flown),The Beatles,,,2.500000
+top_tracks,177,2B4Y9u4ERAFiMo13XPJyGP,GBAYE0601497,"Here, There And Everywhere - Remastered 2009",The Beatles,144880,,short_term,177,,,,matched,spotify_id_exact,zjAaPKwKnysMKLhT,"Here, There and Everywhere",The Beatles,,,2.500000
+top_tracks,178,2mxByJWOajjiVsLWjNXvDJ,GBAYE0601693,Oh! Darling - Remastered 2009,The Beatles,207240,,short_term,178,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,179,3evG0BIqEFMMP7lVJh1cSf,GBAYE0900599,Don't Let Me Down - Remastered 2009,The Beatles,215733,,short_term,179,,,,matched,spotify_id_exact,q6eGnEvANi2I0NEp,Don't Let Me Down - Remastered 2009,The Beatles,,,2.500000
+top_tracks,180,3m7V717IKZqZLW5qUIOxdD,GBAYE0900596,Hey Jude - Remastered 2009,The Beatles,431333,,short_term,180,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,181,4MLBqAEzNN89o2M9h92Z26,GBAYE0601719,Get Back - Remastered 2009,The Beatles,189386,,short_term,181,,,,matched,spotify_id_exact,UxnfrRn4Sonejy8X,Get Back,The Beatles,,,2.500000
+top_tracks,182,5Qe7NHxeLAn8KoLTNLSdwe,GBAYE0801384,I Want To Hold Your Hand - Remastered 2009,The Beatles,146720,,short_term,182,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,183,05ZVTnFGjDTnzQHMxK0Bir,GBUM70810072,Please Don't Stop The Rain,James Morrison,234266,,short_term,183,,,,matched,metadata_fallback,StuJducbhXoaFIYJ,Please Don't Stop the Rain,James Morrison,1,,2.500000
+top_tracks,184,0AhfsdWmbBuwsqXLk93pFn,GBAYD8300169,Or si rallegri il cielo - 1989 Digital Remaster,The King's Singers,103933,,short_term,184,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,185,0FagZA3eFiW0beR4xRSlOl,GBAYD0800097,Hummelflug (from Das Märchen vom Zar Saltan),Nikolai Rimsky-Korsakov | The King's Singers,78000,,short_term,185,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,186,0HD6R75qng3N7Zn5uXxYUW,GBAYD8300170,"Who made thee, Hob, forsake the plough? - 1989 Digital Remaster",The King's Singers | Anthony Holt | Consort Of Musicke | Simon Carrington,81666,,short_term,186,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,187,0K6SwVltkkQyt4Zrl4PxfF,GBAAN8100004,Easy In The City,Marianne Faithfull,196333,,short_term,187,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,188,0NvGpIcpzNo0FipKe9naaC,GBAYD0800098,Gitarren spielt auf,Ludwig Schmidseder | The King's Singers,194000,,short_term,188,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,189,0XHGKdViVybbZKqEZ2tXqV,AUSM09800190,Beds Are Burning,Midnight Oil,254626,,short_term,189,,,,matched,metadata_fallback,MDKgaD6aiKpqk7cz,Beds Are Burning,Midnight Oil,3547,,2.500000
+top_tracks,190,0Xam0zVac3hKWWN4OQ5Gdr,GBF088300041,Pale Shelter - 2nd Single Version,Tears For Fears,273893,,short_term,190,,,,matched,spotify_id_exact,4xYdj1WQYnfLCl11,Pale Shelter,Tears for Fears,,,2.500000
+top_tracks,191,0cQeKUAZNOLLpyayaIlvr2,GBAYD0700481,"Friml : The Donkey Serenade (From ""The Firefly"")",Herbert Stothart | Rudolph Friml | The King's Singers,206000,,short_term,191,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,192,0dn75T5dNMj24StMbpgegI,GBAYD8300193,"Ach, weh des Leiden - 1989 Digital Remaster",The King's Singers,184706,,short_term,192,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,193,0frJ9pMEs3EjpM15wjO5Zv,GBAYD0800096,Wenn der Wind weht über das Meer,Werner R. Heymann | The King's Singers,210000,,short_term,193,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,194,0hCB0YR03f6AmQaHbwWDe8,USAT29900471,Whole Lotta Love - 1990 Remaster,Led Zeppelin,333893,,short_term,194,,,,matched,spotify_id_exact,K01Mxf5XW4k9jAIt,Whole Lotta Love,Led Zeppelin,,,2.500000
+top_tracks,195,0jFh6JsXyZPBCLip0J8JxZ,GBAYD8300176,La Guerre - 1989 Digital Remaster,The King's Singers,368173,,short_term,195,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,196,0mkXphWUcailJA6IsV9DQD,SE6HN2173662,Date 2 & Mitsuha's Theme - Kimi no Na wa soundtrack - Instrumental Version,Santiago Melo,239374,,short_term,196,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,197,0wab34q52CInxmZ0y54nUL,GBAYD0800099,"No, No, Nanette: Tea for two",Vincent Youmans | The King's Singers,215000,,short_term,197,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,198,1B5Tp2Ml9nLlmTSJx8xVfI,USRC10202061,Always On My Mind,Elvis Presley,219109,,short_term,198,,,,matched,metadata_fallback,w0lG1tWinVrGp5xK,Always On My Mind,Elvis Presley,1362,,2.500000
+top_tracks,199,1H5IfYyIIAlgDX8zguUzns,USRC16901355,Suspicious Minds,Elvis Presley,263135,,short_term,199,,,,matched,spotify_id_exact,6M4XbtDIOtPeDA06,Suspicious Minds,Elvis Presley,,,2.500000
+top_tracks,200,1MUsWVRPLaC7ANKcEiMRCl,USRC15602859,Don't Be Cruel,Elvis Presley,121960,,short_term,200,,,,matched,metadata_fallback,FvmUxqDYcskY1E1q,Don't Be Cruel,Elvis Presley,933,,2.500000
+top_tracks,201,1Yw6ViCo3tuufI0Hg4mzSU,GBUM70810071,You Make It Real,James Morrison,211400,,short_term,201,,,,matched,metadata_fallback,Sui4UkxqCn3z4n2Q,You Make It Real,James Morrison,0,,2.500000
+top_tracks,202,1cFnx0fwY6C1Sac1oFNidf,GBAYD8300172,Too much I once lamented - 1989 Digital Remaster,The King's Singers,211240,,short_term,202,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,203,1eT2CjXwFXNx6oY5ydvzKU,GBAYE0601566,Hey Jude,The Beatles,238854,,short_term,203,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,204,1fTmXn3DfiyHfDTO1kDzbo,GBAYD8300183,Faulte d'argent,The King's Singers | Consort Of Musicke,119906,,short_term,204,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,205,1rjVExUon7W4mbFYfshpBX,GBAYC8806615,Simon / Arr Cullen: Bridge Over Troubled Water,Paul Simon | The King's Singers | Carl Davis | English Chamber Orchestra,269106,,short_term,205,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,206,1wXE6zvNWRz8GuMfEUgETz,USAM17502187,Hair Of The Dog,Nazareth,249240,,short_term,206,,,,matched,spotify_id_exact,OUkZI66QebyJvgIS,Hair of the Dog,Nazareth,,,2.500000
+top_tracks,207,1xOXXYh6lTW8laxlW7JP2J,USSM17700374,Only the Good Die Young,Billy Joel,235560,,short_term,207,,,,matched,spotify_id_exact,cZXcA0XJNGeXkzgu,Only the Good Die Young,Billy Joel,,,2.500000
+top_tracks,208,1zADrAQ8PdoGvfTBfoD6NE,GBAYD8300188,Fatal la parte - 1989 Digital Remaster,The King's Singers,54000,,short_term,208,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,209,26IwBD0SdVGuuEtzjAyiXZ,GBAYD0800102,Wochenend und Sonnenschein,Milton Ager | The King's Singers,184000,,short_term,209,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,210,2DQ5r0crvortwaNRYcninK,USRC15602852,Love Me,Elvis Presley,166542,,short_term,210,,,,matched,metadata_fallback,ZdJ9xQO7UXEtKKOG,Love Me,Elvis Presley,38685,,2.500000
+top_tracks,211,2IKdyQqPlccmFZ5NHIm0KI,GX8LE2601708,Passacaglia,Pianist Daisy,194067,,short_term,211,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,212,2Jge2Q6MP538tvpNXQXpUE,GBAYD8300192,"Ach Elslein, liebes Elselein - 1989 Digital Remaster",Anthony Rooley | The King's Singers,171533,,short_term,212,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,213,2QlPByrmEO9XciNBXCrawR,GBAAA8800199,Roll With It,Steve Winwood,320733,,short_term,213,,,,matched,spotify_id_exact,VDhvqsjG56T7t8jr,Roll With It,Steve Winwood,,,2.500000
+top_tracks,214,2TUzU4IkfH8kcvY2MUlsd2,GBUM71104692,I Won't Let You Go,James Morrison,229303,,short_term,214,,,,matched,spotify_id_exact,8xE82ySWCYSxN8TD,I Won't Let You Go,James Morrison,,,2.500000
+top_tracks,215,2ToZuyfrugosCKm2WkCVLF,GBAYD8300182,Un gentil amoureux,The King's Singers | Consort Of Musicke,153160,,short_term,215,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,216,2VJIpkgyMX96mKktuxfGHD,GBAYD8300165,Il bianco e dolce cigno - 1989 Digital Remaster,The King's Singers | Anthony Holt,124666,,short_term,216,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,217,2W2mN3qRAvF172TlNdr71e,GBUM70600706,Wonderful World,James Morrison,210066,,short_term,217,,,,matched,metadata_fallback,pKa8r2L0a8LJ1I2K,Wonderful World,James Morrison,279,,2.500000
+top_tracks,218,2W9jQGznleSwY8PXpsqPf2,GBAAN8100003,Intrigue,Marianne Faithfull,271173,,short_term,218,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,219,2bIAXDcBRWV3iiU1UoiX2c,GBAYD8300178,"Mignonne, allons voir si la rose",Anthony Rooley | The King's Singers | Simon Carrington,151173,,short_term,219,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,220,2bJvI42r8EF3wxjOuDav4r,USRC11402647,Time of Our Lives,Pitbull | Ne-Yo,229358,,short_term,220,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,221,2mnUGxY7QpO62QH1KqhY4O,USRE10900396,Can't Find My Way Home - Live from Madison Square Garden,Eric Clapton | Steve Winwood,332813,,short_term,221,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,222,2nafCirhlhOrADztKGd7RI,GBAYD0800094,"Eins, zwei, drei, vier",Paul Abraham | The King's Singers,121000,,short_term,222,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,223,2zQ4IChuAANJf70vz3ICoP,GBAYD8300187,"Cucú, Cucú - 1989 Digital Remaster",The King's Singers,57733,,short_term,223,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,224,30RT4IksXQitnbcoqCrFWm,GBAYD8300185,La tricotea Samartin la vea - 1989 Digital Remaster,The King's Singers | Consort Of Musicke,94826,,short_term,224,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,225,32LUH7H9vkYVhFHIeQFA34,GBAYD8300167,Ultimi mei sospiri - 1989 Digital Remaster,The King's Singers,201066,,short_term,225,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,226,32q4kkoVx7hcYHAt13IN1k,GBAYC8806616,Simon / Arr Cullen: The Sound of Silence,Paul Simon | The King's Singers | Carl Davis | English Chamber Orchestra,328493,,short_term,226,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,227,34lupuiXvgbzqcOfPdrNic,GBFUA1000001,Spanish Dancer - 2010 Version,Steve Winwood,370693,,short_term,227,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,228,36sUwBECBd5voRbwrdIbBX,GBAYD8300191,Vitrum nostrum gloriosum - 1989 Digital Remaster,The King's Singers | Consort Of Musicke,89826,,short_term,228,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,229,3Cx4yrFaX8CeHwBMReOWXI,USSM18900217,We Didn't Start the Fire,Billy Joel,291100,,short_term,229,,,,matched,spotify_id_exact,cEHfOhOsSTSVgSpF,We Didn't Start the Fire,Billy Joel,,,2.500000
+top_tracks,230,3HG6k7ljKJoX9BMXGhYxnQ,GBAYD8300344,Now is The Month of Maying - 1989 Digital Remaster,The King's Singers,145000,,short_term,230,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,231,3Ie2eLOIj2IhKnzPwXrLbJ,USSM17100342,She's Got a Way,Billy Joel,175083,,short_term,231,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,232,3MODES4TNtygekLl146Dxd,USAT29900477,Ramble On - 1990 Remaster,Led Zeppelin,263333,,short_term,232,,,,matched,spotify_id_exact,xT64RcWqBTj2zDCC,Ramble On,Led Zeppelin,,,2.500000
+top_tracks,233,3e7HfcY4WOppERKwFko08Q,GBAYD0700479,Stormy Weather,Harold Arlen | The King's Singers,233000,,short_term,233,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,234,3hPwiRNVmWd69wDNeavd9T,GBAAN8100005,Strange One,Marianne Faithfull,172333,,short_term,234,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,235,3lLvfaaU1ARbxAB2qhtIym,FR50X2302612,"Così fan tutte, K.588, Act I: Sextetto. ""Alla bella Despinetta""",Wolfgang Amadeus Mozart | Golda Schultz | Kammerakademie Potsdam | Antonello Manacorda | Julie Roset | Amitai Pati | Ashley Dixon Santelli | Milan Siljanov | Samuel Dale Johnson,268880,,short_term,235,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,236,3mMyeGK1uUYhal3mERJ44H,GBAYD8300190,Tanzen und Springen - 1989 Digital Remaster,The King's Singers | Consort Of Musicke,104000,,short_term,236,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,237,3n0nEpArcSjh04tGYiO14P,GBAYD8300164,Lirum bililirum - 1989 Digital Remaster,The King's Singers | Consort Of Musicke,97666,,short_term,237,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,238,3qT4bUD1MaWpGrTwcvguhb,USAT21300956,Black Dog - Remaster,Led Zeppelin,295386,,short_term,238,,,,matched,spotify_id_exact,RmMSHhTryKoZYEjZ,Black Dog,Led Zeppelin,,,2.500000
+top_tracks,239,3utq2FgD1pkmIoaWfjXWAU,USSM17700372,Scenes from an Italian Restaurant,Billy Joel,456893,,short_term,239,,,,matched,spotify_id_exact,Ydh9qUkrroIymncM,Scenes from an Italian Restaurant,Billy Joel,,,2.500000
+top_tracks,240,3vZs8o4aKQS7IZdtIN544J,GBAYD0800095,Das ist die Liebe der Matrosen,Werner R. Heymann | The King's Singers,185000,,short_term,240,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,241,3wowK80ug94yqlI86A9Ej9,GBAYE9701948,Happiness Is Easy - 1997 Remaster,Talk Talk,390693,,short_term,241,,,,matched,spotify_id_exact,ql0ehFkXrSeNq2gU,Happiness Is Easy - 1997 Remaster,Talk Talk,,,2.500000
+top_tracks,242,3yu8uEsdvZUA1vSKt32dpu,GBAYD0800091,"Liebling, mein Herz läßt dich grüßen",Werner R. Heymann | The King's Singers,173000,,short_term,242,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,243,452KBpASS5lZLeJWX9Ixub,USRC15705223,Jailhouse Rock,Elvis Presley,146933,,short_term,243,,,,matched,metadata_fallback,qAKGvFq9liu9CBNq,Jailhouse Rock,Elvis Presley,453,,2.500000
+top_tracks,244,4850v7DuT7raVYAWc1ODPv,USSM17600479,"Summer, Highland Falls",Billy Joel,200165,,short_term,244,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,245,48DYQUzmiq76xTpGUTAW2z,GBAYD8300194,Das Glaut zu Speyer - 1989 Digital Remaster,The King's Singers,67000,,short_term,245,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,246,4Az17xLJj5BF4FDgusAp62,GBAYD8300184,Tres morillas m'enamoran - 1989 Digital Remaster,Anthony Rooley | The King's Singers,147000,,short_term,246,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,247,4OZbWCJ3xPqWiIzxeNltq6,GBAAN8600003,Higher Love,Steve Winwood,243920,,short_term,247,,,,matched,metadata_fallback,AjhBBHOd3OCtwjoN,Higher Love,Steve Winwood,8333,,2.500000
+top_tracks,248,4RY3rpkmwSYNekFUDDZEiY,GBAYD8300180,Bon jour et puis quelles nouvelles,The King's Singers,70960,,short_term,248,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,249,4U45aEWtQhrm8A5mxPaFZ7,USSM17700373,Vienna,Billy Joel,214240,,short_term,249,,,,matched,spotify_id_exact,fJJCD6DJfQyDgjyh,Vienna,Billy Joel,,,2.500000
+top_tracks,250,4ZExvJvQXPEeYzGU0N3THi,GBAAN8600003,Higher Love,Steve Winwood,351506,,short_term,250,,,,matched,metadata_fallback,AjhBBHOd3OCtwjoN,Higher Love,Steve Winwood,99253,,2.500000
+top_tracks,251,4aZUYGauusCsBAsczI7Jxw,GBAYD8300166,La Bella Franceschina - 1989 Digital Remaster,The King's Singers | Consort Of Musicke,140933,,short_term,251,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,252,4avPNbmKfQNJiPu9TpEMov,GBAYD8300179,Il est bel et bon,The King's Singers | Consort Of Musicke,85133,,short_term,252,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,253,4cURHmiuYii52BVbhrGbv0,USSM19300282,"Lullabye (Goodnight, My Angel)",Billy Joel,213871,,short_term,253,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,254,4dqMAEfqK4lsZjH64lEkRM,GBAYD8300177,"La, la, la, je ne I'ose dire",The King's Singers,45933,,short_term,254,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,255,4fxyKcvjqk5Bx6JdMNngR9,GBAYD0700478,Night and Day,Cole Porter | The King's Singers,235000,,short_term,255,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,256,4jhsuQCUCJKA5f0bXb6XdJ,GBAYE9700491,It's My Life - 1997 Remaster,Talk Talk,232400,,short_term,256,,,,matched,spotify_id_exact,6MJkge2anZHEYvjl,It's My Life,Talk Talk,,,2.500000
+top_tracks,257,4lShKS7ee6aoC8hbUVOhYG,USMR17880084,Circumstances,Rush,220333,,short_term,257,,,,matched,spotify_id_exact,PibkyDY19wIzhvpc,Circumstances,Rush,,,2.500000
+top_tracks,258,4rr0gWiMrF4sOIefs3IEvZ,USRC10200288,A Little Less Conversation - JXL Radio Edit Remix,Elvis Presley | Junkie XL,211506,,short_term,258,,,,matched,spotify_id_exact,EP4cXLGgw90hzP3O,A Little Less Conversation,Elvis Presley,,,2.500000
+top_tracks,259,5Ac1kgBTTTGb1fs6xhE0MV,GBAYD0800101,Du armes girl vom Chor,N. Doughaby | The King's Singers,165000,,short_term,259,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,260,5JWvdZfzBFtAWOvBBDqxYZ,GBAYD8300181,Margot labourez les vignes,The King's Singers,67733,,short_term,260,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,261,5Px8cTAayT3olf6VHBtaJr,GBAYD8300174,The Silver swan - 1989 Digital Remaster,The King's Singers | Jeremy Jackman | Consort Of Musicke,83693,,short_term,261,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,262,5RgFlk1fcClZd0Y4SGYhqH,USSM17700375,She's Always a Woman,Billy Joel,201373,,short_term,262,,,,matched,spotify_id_exact,RdFRnRnYEQazgtcd,She's Always a Woman,Billy Joel,,,2.500000
+top_tracks,263,5ZL2sx8wZreUNEFjOntteH,GBAAN8100006,Tenderness,Marianne Faithfull,233000,,short_term,263,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,264,5Zx0q0KM8ZeAoFosoHMC5V,GBAYD8200084,Fine knacks for ladies,Spencer | The King's Singers,147000,,short_term,264,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,265,5bcR4vGBb5i71EpiQWmUrb,GBAYD8300168,Alla cazza - 1989 Digital Remaster,The King's Singers,76133,,short_term,265,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,266,5cHnoalJPx909Umw8EoroV,USMR17880085,The Trees,Rush,282506,,short_term,266,,,,matched,spotify_id_exact,zVe3ALTXIuXPDoCc,The Trees,Rush,,,2.500000
+top_tracks,267,5k2o3kOdJtx02db2WHexwg,GBAYD8300171,Of all the birds that I do know - 1989 Digital Remaster,Anthony Rooley | The King's Singers,136226,,short_term,267,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,268,5mMZ53OfxBFfpqWoAFAkk7,GBAYD0800092,Mein kleiner grüner Kaktus,Bert Reisfeld | The King's Singers,132000,,short_term,268,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,269,5zA8vzDGqPl2AzZkEYQGKh,USSM18300270,Uptown Girl,Billy Joel,198294,,short_term,269,,,,matched,spotify_id_exact,yWRhfm4JZ4VqIuS8,Uptown Girl,Billy Joel,,,2.500000
+top_tracks,270,64Ny7djQ6rNJspquof2KoX,USRC15602857,Hound Dog,Elvis Presley,138948,,short_term,270,,,,matched,spotify_id_exact,FKCVBKj4lauIUFna,Hound Dog,Elvis Presley,,,2.500000
+top_tracks,271,68D1lmwm6PZdE2VUSoiqy8,GBAYD8300195,Herzliebstes Bild - 1989 Digital Remaster,Anthony Rooley | The King's Singers,96666,,short_term,271,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,272,6J212smZzpeOCYQ9DITMSC,USSM18600312,A Matter of Trust,Billy Joel,252046,,short_term,272,,,,matched,spotify_id_exact,x2AFbVbFJ8Na3lQg,A Matter Of Trust,Billy Joel,,,2.500000
+top_tracks,273,6Vjk8MNXpQpi0F4BefdTyq,USAT21300969,Kashmir - Remaster,Led Zeppelin,517125,,short_term,273,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,274,6bFsQ6yOp3z5mGNkhWP0P1,GBUM70600967,You Give Me Something,James Morrison,213173,,short_term,274,,,,matched,metadata_fallback,9S6X7coXdb927q9L,You Give Me Something,James Morrison,240,,2.500000
+top_tracks,275,6g4vHtdGqD5eEgpf7nKISk,USSM18000289,Don't Ask Me Why,Billy Joel,179448,,short_term,275,,,,matched,spotify_id_exact,9PUnKxg2n1co5JI1,Don't Ask Me Why,Billy Joel,,,2.500000
+top_tracks,276,6gB2AtpNVVjj2V5F2yqRAj,GBAYD8300173,Fair Phyllis I saw sitting all alone - 1989 Digital Remaster,The King's Singers,78066,,short_term,276,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,277,6kCJMxv445L2okuTiou1fR,USSM18300272,Tell Her About It,Billy Joel,235748,,short_term,277,,,,matched,spotify_id_exact,2UbyfJ2ads4YvskN,Tell Her About It,Billy Joel,,,2.500000
+top_tracks,278,6m9JFxOe0o8uad26OYDdc8,GBAYD8300189,La Bomba - 1989 Digital Remaster,The King's Singers,536066,,short_term,278,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,279,6t3yK6hxZBlYEWmEobjabR,GBAYD8300186,Triste estaba el rey David - 1989 Digital Remaster,Anthony Rooley | The King's Singers,129306,,short_term,279,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,280,6yzncbcf7P70Dne8sqVzr8,GBAYD0800093,Creole Love Call,Duke Ellington | The King's Singers,182000,,short_term,280,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,281,70gbuMqwNBE2Y5rkQJE9By,USAT21300962,Going to California - Remaster,Led Zeppelin,212160,,short_term,281,,,,matched,spotify_id_exact,8TauRq2Dzjuqlen8,Going to California,Led Zeppelin,,,2.500000
+top_tracks,282,7GK6EcM02e3uqYtDClEtXI,GBAYD8400150,"Veronika, der Lenz ist da",Walter Jurmann | The King's Singers,152000,,short_term,282,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,283,7MsL9a98WUHN76Wks49Zeq,GBUM71503733,Too Late For Lullabies,James Morrison,256040,,short_term,283,,,,matched,spotify_id_exact,h6ZdpBDUURD99Ofa,Too Late For Lullabies,James Morrison,,,2.500000
+top_tracks,284,7aN9EIdrXZaZObxMeajXYZ,UK4YE1300061,To Be with You Again - Unplugged,Level 42,274599,,short_term,284,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,285,7b4L2Hx4gAnpZvhhTBpJ9g,GBAAN8600004,Freedom Overspill,Steve Winwood,337333,,short_term,285,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,286,7gMOe0gXYcELUoVugfMmHP,USSM17900398,You May Be Right,Billy Joel,256372,,short_term,286,,,,matched,spotify_id_exact,vh5gcly9V14bYFlF,You May Be Right,Billy Joel,,,2.500000
+top_tracks,287,7iOm7tuQZeqXqzBZJ14CSM,GBCBR0402642,Where Are You Now,Nazareth,233853,,short_term,287,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,288,1PT3zNAnVCN2CjeYaTcQH7,GBAYD0700480,"The Barber of Seville, Overture",Gioachino Rossini | The King's Singers,207000,,short_term,288,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,289,3VbGCXWRiouAq8VyMYN2MI,GBAYE0601417,Love Me Do - Remastered 2009,The Beatles,141693,,short_term,289,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,290,07KavU3KM6SwZQUElsG6av,GBAKW8401062,The Chant Has Begun - Power Mix,Level 42 | Mark King | Gregg Jackman,481349,,short_term,290,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,291,0KQlYA88cnOftc7SFhWv5U,US38Y2529297,Little Life,Robert Gromotka,148863,,short_term,291,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,292,1Gg14U26oq94uWcG7khccX,USSM18300269,An Innocent Man,Billy Joel,318770,,short_term,292,,,,matched,metadata_fallback,VOqPgoGT5vVkLa3n,An Innocent Man,Billy Joel,121063,,2.500000
+top_tracks,293,1hcI2TWBGj9bRLhP1kvCmM,QZES92146833,Range Rover,Ben Rector | Steve Winwood,200346,,short_term,293,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,294,254poIi2T5QaPnxgbDg3Qb,GX5MY2303488,Audio Calibration,Audio Test Pink Noise,222168,,short_term,294,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,295,2DVkYfl2YuOMlRfC98srEG,GBN9Y1100117,Waiting for the Worms,Pink Floyd,237133,,short_term,295,,,,matched,spotify_id_exact,6qNbHN2lGfuVydmr,Waiting for the Worms,Pink Floyd,,,2.500000
+top_tracks,296,2FAL6hxj5Qxuj0kWOkEOsF,USSM18300651,She Bop,Cyndi Lauper,232342,,short_term,296,,,,matched,spotify_id_exact,7LfUFSaaFyxcITaK,She Bop,Cyndi Lauper,,,2.500000
+top_tracks,297,31SBMFpLi1x0KNlGenfnQ1,GBUM70810069,Precious Love,James Morrison,217373,,short_term,297,,,,matched,spotify_id_exact,0qV2T61m2AvCSw88,Precious Love,James Morrison,,,2.500000
+top_tracks,298,591vZVHhDqpGPdfrJl6KmK,SE6HN2173664,Penn Ar Roch - Instrumental Version,Santiago Melo,172062,,short_term,298,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,299,5b3C40EzC5DBit14cLfby8,GBCBR0402575,Dream On,Nazareth,204826,,short_term,299,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,300,6KWmh3bKdKQmqLdSvkVhVB,GBAYC8806617,Simon / Arr Cullen: America,David Cullen | Paul Simon | The King's Singers | Carl Davis | English Chamber Orchestra,241733,,short_term,300,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,301,7IVkyo8IVhPsRuZwdfpoLo,USSM10502921,"Violin Partita No. 2 in D Minor, BWV 1004: V. Ciaccona",Johann Sebastian Bach | Hilary Hahn,1067026,,short_term,301,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,302,7KWoeBqSdZHEloYKVxssfG,USRC16906016,In the Ghetto,Elvis Presley,167993,,short_term,302,,,,matched,spotify_id_exact,q1pYqQ7pabjiPLiK,In the Ghetto,Elvis Presley,,,2.500000
+top_tracks,303,7dmiCodd3eGiA1KkU6yjIt,DEF059430529,"Le nozze di Figaro, K. 492, Act II: No. 13, Venite inginocchiatevi",Wolfgang Amadeus Mozart | Sylvia McNair | Wiener Philharmoniker | Claudio Abbado,164000,,short_term,303,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,304,06IsyJksK6vgJX66rU77Ij,USAM18500051,Fortress Around Your Heart,Sting,279693,,short_term,304,,,,matched,spotify_id_exact,EoM9b6SAT1D9Ytq1,Fortress Around Your Heart,Sting,,,2.500000
+top_tracks,305,1iCbAqODmFfdXPN45ia31b,ITB006400699,Per un pugno di dollari - Titoli,Ennio Morricone,178173,,short_term,305,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,306,20wsyOBewHFZXJdV75vt9K,USFI87400007,Run Fay Run,Isaac Hayes,165400,,short_term,306,,,,matched,metadata_fallback,kiTxoyOhsiHSvrUJ,Run Fay Run,Isaac Hayes,1387,,2.500000
+top_tracks,307,59a4aoXHvFGrEOyw1PrvbH,GBAAA0700078,Deep in the Motherlode - 2007 Remaster,Genesis,315786,,short_term,307,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,308,6s2cfFpeV0zjME5NQrIowl,FRZ208901024,"Paganini: 24 Caprices, Op. 1: No. 24 in A Minor",Niccolò Paganini | Alexander Markov,304026,,short_term,308,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,309,0BYTlVmPqa5Oc9iJzkXhVg,USA560988340,Caprice No. 5,Niccolò Paganini,175813,,short_term,309,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,310,0KFPsX30uBNCDpkgdz0JrV,GBF077900300,'O sole mio (Arr. Chiaramello for Tenor & Orchestra),Eduardo di Capua | Alfredo Mazzucchi | Luciano Pavarotti | National Philharmonic Orchestra | Giancarlo Chiaramello,202680,,short_term,310,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,311,3KiexfmhxHvG5IgAElmTkd,GBAYE0601410,I Saw Her Standing There - Remastered 2009,The Beatles,173946,,short_term,311,,,,matched,spotify_id_exact,zeGyVR3p3GQ8a7gv,I Saw Her Standing There,The Beatles,,,2.500000
+top_tracks,312,5wQnmLuC1W7ATsArWACrgW,USRE10602613,Welcome to the Black Parade,My Chemical Romance,311106,,short_term,312,,,,matched,spotify_id_exact,zxkjK9m2IBpYzqWl,Romance,My Chemical Romance,,,2.500000
+top_tracks,313,6NiKl1DJJUj7aJut1JbElY,GBAYC9902250,"Paganini: 24 Caprices, Op. 1: No. 2 in B Minor",Niccolò Paganini | Itzhak Perlman,163866,,short_term,313,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,314,7x0TQDEhEjaug0YRVxew7v,FRZ209901390,"Paganini: 24 Caprices, Op. 1: No. 1 in E Major",Niccolò Paganini | Alexander Markov,116733,,short_term,314,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,315,00MT1y8hSLboKdlGE2X8wH,HKI199704326,"Mendelssohn - Lieder, S547/R217 (7 Lieder From Mendelssohn, Op, 19a, 34, 47): Wasserfahrt",Joseph Banowetz | Franz Liszt,157626,,short_term,315,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,316,07W9DzKqaXCSL9niXf6BGf,GBLTP0600031,Out of the Blue - 2006 Remaster,David Gilmour,220853,,short_term,316,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,317,0CkwffTDfwSMbt87jeGEys,USBB19601154,Where or When,Benny Goodman Trio,203840,,short_term,317,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,318,0EWrS5A1Zeav3dTmhEVkmr,USMR18930346,"Manhattan Project - Live In Phoenix, Arizona/1988",Rush,318800,,short_term,318,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,319,0Ea3kkPW4LIC0BnbolZw1R,USFF29030315,Ashokan Farewell,Fiddle Fever,245200,,short_term,319,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,320,0H1bN2MLwNuJCu3w9QuuBO,GBCBR0300294,Girl Goodbye - Live,TOTO,223933,,short_term,320,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,321,0KusMtfwkVyZpl8kV3QJYU,USSM12503785,"Forgotten Melodies I, Op. 38: VIII. Alla reminiscenza",Nikolai Medtner | Alexander Malofeev,153080,,short_term,321,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,322,0NPBEx8pbKVXOtnUb56kcq,BKNKT2401152,Funky Fanfare,Carnaby Street Pop Orchestra,148356,,short_term,322,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,323,0Us9eQUEPZrXnQi6wgOsKJ,USSM12503786,"2 Fairy Tales, Op. 48: No. 2, Tale of the Elves",Nikolai Medtner | Alexander Malofeev,230626,,short_term,323,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,324,0VX8ptOQhUt1SIOHYLZGNN,USUM70503557,Stardust,Hoagy Carmichael,146346,,short_term,324,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,325,0Vli4Bwguk2pci3IHp4yWx,HKI199328922,"Concerto Grosso In D Minor, Op. 3, No. 11, RV 565: II. Largo E Spiccato",Antonio Vivaldi | Capella Istropolitana,144573,,short_term,325,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,326,0a72vqfDbmuCc5qoXa2XQv,QZES62208692,Cottagecore Dreams,Piano House,122374,,short_term,326,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,327,0eInL1bLAFdHJDL04R0OCP,USBB10600043,Two Sleepy People,Fats Waller,183560,,short_term,327,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,328,0ggbepNvsNEhfGiaHvfMrk,GBAYC2102814,"Franck / Transc. Bauer: Prélude, Fugue et Variation Op. 18, CFF 30B (transcr. H. Bauer) – II. Lento + III. Fugue (Allegretto ma non troppo)",César Franck | Mariam Batsashvili,202853,,short_term,328,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,329,0jIxlloOV1IC8ANskrmjuz,GBBBC2200367,"Come, Sweet Death, BWV 478 (Arr. for 5 Cellos)",Sheku Kanneh-Mason | Hannah Roberts | Ben Davies | Desmond Neysmith | Max Ruisi,197200,,short_term,329,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,330,0rDQYwfq0xrwVjbllMXbba,DEN961701555,"Partita for Violin Solo No. 2 in D Minor, BWV 1004: V. Chaconne",Johann Sebastian Bach | Daniel Lozakovich,899626,,short_term,330,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,331,0u7i81DQkfM1ksK9VdLjmz,QZES82014733,Wind,prm. | Paul Roggenbuck,80245,,short_term,331,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,332,0vZ97gHhemKm6c64hTfJNA,GBAYE0601639,"Hello, Goodbye - Remastered 2009",The Beatles,208840,,short_term,332,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,333,0wkq1XMWsmBv1i01sxw4fA,DEN962300192,"Piano Sonata No. 3 in F-Sharp Minor, Op. 23: II. Allegretto",Yuja Wang,170224,,short_term,333,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,334,0xKnnlfjQOE6pOHfRMWKmX,USSM10501937,Isn't This a Lovely Day (with Johnny Green & His Orchestra),Fred Astaire | Johnny Green & His Orchestra,195373,,short_term,334,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,335,15YN4pQxF2GXFaxBQ2PWXD,HKI192527604,"5 Morceaux de fantaisie, Op. 3: No. 4, Polichinelle",Sergei Rachmaninoff | Boris Giltburg,223840,,short_term,335,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,336,178ZWJ6873V8oDhzqfYgOa,HKI199911317,"Overture (Suite) No. 3 In D Major, BWV 1068: III. Gavotte I And II",Cologne Chamber Orchestra | Johann Sebastian Bach,249200,,short_term,336,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,337,1Dg4dFJr3HW7sbA7vPejre,GBAYE0601458,Eight Days A Week - Remastered 2009,The Beatles,163600,,short_term,337,,,,matched,spotify_id_exact,u7B64d0Vtw9LSy7s,Eight Days a Week,The Beatles,,,2.500000
+top_tracks,338,1Fn64eCx8CksXqEo2p8nz3,HKI199911313,"Overture (Suite) No. 2 In B Minor, BWV 1067 : VI. Menuet",Cologne Chamber Orchestra | Johann Sebastian Bach,80000,,short_term,338,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,339,1JLn8RhQzHz3qDqsChcmBl,USAT29900662,I Want to Know What Love Is - 1999 Remaster,Foreigner,304786,,short_term,339,,,,matched,spotify_id_exact,z6cWTXD9qNglPS4w,I Want to Know What Love Is,Foreigner,,,2.500000
+top_tracks,340,1JSIWsJfxOji0FrxFcxdCK,USNPD0714249,"The Good, The Bad And The Ugly - 2004 Remaster",Ennio Morricone,162133,,short_term,340,,,,matched,spotify_id_exact,qhZKUL9jq5qIYlE2,"The Good, The Bad and The Ugly - Main Title",Ennio Morricone,,,2.500000
+top_tracks,341,1KVuWb4s8vKwfcaCTruMOZ,HKI199910615,"Concerto in C minor, BWV 1060: III. Allegro",Johann Sebastian Bach | Christian Hommel | Lisa Stewart | Cologne Chamber Orchestra | Helmut Müller-Brühl,201000,,short_term,341,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,342,1Qd7HazxX1k8YNP72lD3qv,GBAYC1800351,"Mendelssohn: Fantasie, Op. 28: II. Allegro con moto",Felix Mendelssohn | Doomin Kim,137320,,short_term,342,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,343,1UD6sgOfvaUBpvw0Mj4ykY,USSM12503779,"Forgotten Melodies I, Op. 38: II. Danza graziosa",Nikolai Medtner | Alexander Malofeev,199480,,short_term,343,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,344,1WYSzWGFN5r7vs0j1bDf3y,SE5Q51805987,The Appalachian Trail,Hunter Quinn,128443,,short_term,344,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,345,1YH3geH5f4BCaXNoLV7Za3,IEACJ1600067,Tamacun (Remastered),Rodrigo y Gabriela,205801,,short_term,345,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,346,1h04XMpzGzmAudoI6VHBgA,GBAYE0601641,Penny Lane - Remastered 2009,The Beatles,180893,,short_term,346,,,,matched,spotify_id_exact,1GngSVshm9HPaMVa,Penny Lane,The Beatles,,,2.500000
+top_tracks,347,1hR3TNe1neCWRQatSVOFfX,GBA157600010,A Fifth Of Beethoven,Walter Murphy,182533,,short_term,347,,,,matched,spotify_id_exact,6Op0YXj5bEEcScnz,A Fifth of Beethoven,Walter Murphy,,,2.500000
+top_tracks,348,1qRA5BS78u3gME0loMl9AA,USEE10170607,For What It's Worth,Buffalo Springfield,153693,,short_term,348,,,,matched,spotify_id_exact,nM7CF8cIbWP2xY67,For What It's Worth,Buffalo Springfield,,,2.500000
+top_tracks,349,1uUgWZNZ68nc2ULCNa5N97,QM7YK2300258,Rock & Roll Machine,Triumph | Sebastian Bach,290601,,short_term,349,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,350,1upQiytDIEZfl9ItruoXuC,GBAYC0201575,"Handel / Orch. Hale: Keyboard Suite No. 4 in D Minor, HWV 437: III. Sarabande",George Frideric Handel | Alexander Briger | Academy of St. Martin in the Fields,207266,,short_term,350,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,351,1wRwsILmh1KAu0EZzJepAp,QZ22B1974217,"Goodbye (From ""Hachiko: A Dog's Story"") [Piano Solo]",Juggernoud1,129159,,short_term,351,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,352,1yDCp0j1KjCXxL4kPZXq7Y,DE1QW2607251,"Lyrische Stucke. Op. 43, No.6. To Spring. (An Den Fruling) - Duo-Art 5888",Edvard Grieg | Clarence Adler | Peter Phillips,183800,,short_term,352,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,353,1zTEP1xkU5bZbJSIXoA8wq,AEA0Q2182007,Little Things,Adrián Berenguer,184500,,short_term,353,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,354,20pfp5KREnDWhLYeMP0rr5,GBAYE1601701,Childhood's End? - 2017 Remaster,Marillion,272440,,short_term,354,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,355,22aaPppUbLkufXZT0GroV8,GBELP0500145,"Bach, JS : Well-Tempered Clavier Book 2 : Prelude No.3 in C sharp major BWV872",Daniel Barenboim,120240,,short_term,355,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,356,23PxZxEAHqQk7ZmyMAwQQQ,GBF078911493,"Concerto for Lute, 2 Violins and Continuo in D major, RV 93: 3. Allegro",Antonio Vivaldi | Tom Finucane | New London Consort | Philip Pickett,152733,,short_term,356,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,357,24cgBBhZD1cWekUqaYuqTB,DEN961101770,"Orfeo ed Euridice, Wq. 30: Dance of the Blessed Spirits ""Melody"" (Arr. Sgambati for Piano)",Christoph Willibald Gluck | Yuja Wang,181546,,short_term,357,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,358,27145diX1C7BE6m6FzONqb,USMC17226000,Funny Face,Donna Fargo,166360,,short_term,358,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,359,28QFsbJu659jZoZXbzFFfD,HKI199636307,"2 Musical Sketches, ""2 Klavierstucke"": Andante cantabile in B-Flat Major",Felix Mendelssohn | Benjamin Frith,153720,,short_term,359,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,360,2Bc6WSraFGZOw1YrcOFiHM,SEAEC2460090,"Am Meer, S. 560/4 (After Schubert, D. 957/12)",Franz Liszt | Alexandre Kantorow,235666,,short_term,360,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,361,2HyPrPSANTIPkR6CfiytwY,USSM19907730,Dream a Little Dream of Me (with Paul Weston & His Music From Hollywood),Doris Day | Paul Weston And His Orchestra,223373,,short_term,361,,,,matched,spotify_id_exact,u0eiYoYYMGrIcAEG,Dream a Little Dream of Me,Doris Day,,,2.500000
+top_tracks,362,2LKMUX3iN0tQOvggbalydj,USQX91500824,"The Carnival of the Animals, R. 125: XIII. The Swan (Arr. for Cello and Piano)",Camille Saint-Saëns | Yo-Yo Ma | Kathryn Stott,174266,,short_term,362,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,363,2MOnLdZkD4GNngzfYaa8QQ,CH1400211402,"Toccata and Fugue in D Minor, BWV 565 (Arr. by Cord Garben): II. Fugue",Johann Sebastian Bach | Sefika Kutluer | Cord Garben | Berliner Philharmoniker,303080,,short_term,363,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,364,2QLQ8R0UbYX5iNNTgmR7V6,USMR18700003,Open Secrets,Rush,337600,,short_term,364,,,,matched,spotify_id_exact,jwsubef8YSRz8SAo,Open Secrets,Rush,,,2.500000
+top_tracks,365,2Tz7fLm0pWasWCCfJiHPlJ,DEN961502140,"Herz und Mund und Tat und Leben, Cantata BWV 147: Jesu, Joy of Man's Desiring (Arr. Myra Hess for Piano)",Johann Sebastian Bach | Rafal Blechacz,243373,,short_term,365,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,366,2de98HzQLgj4mN9X68IjAu,USEE10301011,Wonderous Stories - 2003 Remaster,Yes,229160,,short_term,366,,,,matched,spotify_id_exact,teHrRVv3boBd5myT,Wonderous Stories,Yes,,,2.500000
+top_tracks,367,2ff6ILugtshFUiWIVu83B9,USWB10100647,Baroque-A-Nova,Mason Williams,133666,,short_term,367,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,368,2ijBcYi7FZXt7bvuVb7NQz,USPR35200119,'S Wonderful,Fred Astaire,175386,,short_term,368,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,369,2mQNIuPvWqI7uSJRGvKBXZ,KRUM71100216,"Capriccio In C Major, Op. 76 No. 8",Johannes Brahms | Kun-Woo Paik,169293,,short_term,369,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,370,2qpY7SWPPP76wN84KTlQX4,TCAHH2383218,Don Juan Serenade,Valentina Lisitsa,153627,,short_term,370,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,371,2sqhid2MBYJCZWPrLjsUbP,USSM19604968,"Violin Partita No. 3 in E Major, BWV 1006: I. Preludio",Johann Sebastian Bach | Hilary Hahn,214266,,short_term,371,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,372,2wPTuonKLuHOc3034E7lLY,GBCPB0900723,Steam,Peter Gabriel,363066,,short_term,372,,,,matched,metadata_fallback,kRaJL2dcpl3iRVtQ,Steam,Peter Gabriel,334,,2.500000
+top_tracks,373,2y59HKXmIFd9NIghLdP5sR,USWB19904174,End of a Dream,Eric Weissberg | Steve Mandell,109973,,short_term,373,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,374,30AECpWqRGpyPtUWlIdvWJ,USRH11601132,Inside Out - Live 1990,Phil Collins,331680,,short_term,374,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,375,318jLr9oY0UrxYqyUHCfBA,DEN961903320,The Arts and the Hours,Víkingur Ólafsson | Jean-Philippe Rameau,285442,,short_term,375,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,376,35cbV1SEL8IWdXR3a1tckb,GBELP0400175,"Bach, JS : Well-Tempered Clavier Book 1 : Prelude No.3 in C sharp major BWV848",Daniel Barenboim,79626,,short_term,376,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,377,37MNcJhL9KOaXnt0NQrokr,USSM18100503,"Goldberg Variations, BWV 988: Aria",Johann Sebastian Bach | Glenn Gould,185120,,short_term,377,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,378,384YYUfgIsaYKHaqZzxXVP,USSM12503781,"Forgotten Melodies I, Op. 38: IV. Canzona fluviala",Nikolai Medtner | Alexander Malofeev,183973,,short_term,378,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,379,3Am0IbOxmvlSXro7N5iSfZ,GBAYE0601640,Strawberry Fields Forever - Remastered 2009,The Beatles,247320,,short_term,379,,,,matched,spotify_id_exact,nrJdjUOX50wfkdDX,Magical Mystery Tour,The Beatles,,,2.500000
+top_tracks,380,3BFRqZFLSrqtQr6cjHbAxU,USBB10000483,Ain't Misbehavin',Fats Waller,237773,,short_term,380,,,,matched,spotify_id_exact,QjxUmiXnnXxYDt72,Ain't Misbehavin',Fats Waller,,,2.500000
+top_tracks,381,3C99TRw1M1uGg0jTkCX9FX,FRZ132603006,"6 Consolations, S. 172: III. Lento placido",Franz Liszt | Stella Almondo,241986,,short_term,381,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,382,3GBdi14u3jYzQCkIBTuoMu,HKI199636308,"2 Musical Sketches, ""2 Klavierstucke"": Presto agitato in G Minor",Felix Mendelssohn | Benjamin Frith,157680,,short_term,382,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,383,3M8FzayQWtkvOhqMn2V4T2,USSM17200461,Lean on Me,Bill Withers,258834,,short_term,383,,,,matched,spotify_id_exact,QrsNJaTFIN7k6GvQ,Lean on Me,Bill Withers,,,2.500000
+top_tracks,384,3NaQ3BFKDXjpv254bWeV0S,HKI199204111,Oboe Concerto in D Minor: II. Adagio,Alessandro Marcello | Jozsef Kiss | Budapest Ferenc Erkel Chamber Orchestra,254386,,short_term,384,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,385,3RY6FUqBW9fV9L0RNVq3aT,HKI199648703,"Concerto For 2 Keyboards In C Minor, BWV 1060: III. Allegro",Cologne Chamber Orchestra | Michael Behringer | Robert Hill | Johann Sebastian Bach,221800,,short_term,385,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,386,3SdingSsFcZDZAyvcJbgAw,GBAYE0601444,Can't Buy Me Love - Remastered 2009,The Beatles,131866,,short_term,386,,,,matched,spotify_id_exact,hSeeghyPuOovg4ED,Can't Buy Me Love,The Beatles,,,2.500000
+top_tracks,387,3Wwy5wlxd8CpKMZGc4Mgjf,USMC16350518,Pipeline,The Chantays,139253,,short_term,387,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,388,3XZ2DJ54tNJoPJ3xL3Jxfq,FRZ209644100,"Mendelssohn: Songs Without Words, Book II, Op. 30: No. 6, Allegretto tranquillo, MWV U110 ""Venetian Boat Song""",Felix Mendelssohn | Georges Pludermacher,132000,,short_term,388,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,389,3XiFWZoHQtGUYIdtShPwPD,USRC19901217,Moonlight Serenade,Glenn Miller,201400,,short_term,389,,,,matched,spotify_id_exact,XkxP8SKGduJBalHe,Moonlight Serenade,Glenn Miller,,,2.500000
+top_tracks,390,3YPIdokgXd71oUhRG9Gk9l,COF010600727,If I Had You,Benny Goodman,182293,,short_term,390,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,391,3YtnnPB8j1OVOo3CS4sLNZ,QM6P41932563,Feuding Banjos,Eric Weissberg,116933,,short_term,391,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,392,3aaeRQeZKFkGFPdg4nhwX2,USMC13762896,Bei Mir Bist Du Schoen,Ella Fitzgerald and Her Savoy Eight,183066,,short_term,392,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,393,3g2fYZW5v2od8KIF7VktT0,USSM16600723,Scarborough Fair / Canticle,Simon & Garfunkel,194044,,short_term,393,,,,matched,spotify_id_exact,12jXnbQrbvSWYgp7,Scarborough Fair,Simon & Garfunkel,,,2.500000
+top_tracks,394,3iTkd7x5X2LIVKu7JNwqHR,GBBBN6800001,Albatross - 2018 Master,Fleetwood Mac,191106,,short_term,394,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,395,3yZEUIdqCvuPvxVXWETXBL,HKI199648707,"Concerto For 2 Keyboards In C Minor, BWV 1062: I. - Allegro",Cologne Chamber Orchestra | Michael Behringer | Robert Hill | Johann Sebastian Bach,207973,,short_term,395,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,396,40GgX0YMx1QEKdpNmNJGMG,DELE21612407,"Toccata & Fugue in D Minor, BWV 565 (Transc. I. Friedman): Toccata",Johann Sebastian Bach | Roberto Cominati,156573,,short_term,396,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,397,41ujv4mhxlqR8nlnieDpDp,DEF057730030,"La traviata, Act I: Libiamo ne' lieti calici ""Brindisi""",Giuseppe Verdi | Ileana Cotrubas | Plácido Domingo | Chor der Bayerischen Staatsoper | Bavarian State Orchestra | Carlos Kleiber,175506,,short_term,397,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,398,41xh0S7KvmpSeQq3jjWxIC,GBAYC1102588,"Bach, JS: Concerto for Four Pianos in A Minor, BWV 1065: I. Allegro",Johann Sebastian Bach | Alexandre Tharaud | Les Violons du Roy | Bernard Labadie,226893,,short_term,398,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,399,432wVZnpi6ZWQI4ak714On,GBAYC2501190,"Scarlatti, D: Keyboard Sonata in D Minor, Kk. 1",Domenico Scarlatti | David Fray,134986,,short_term,399,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,400,437flh1ruQQncb41Go81pR,TCAJX2584357,"Piano Sonata No. 30 in E Major, Op. 109 III. Variation 2",Valentina Lisitsa,108874,,short_term,400,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,401,43sddo2MEKEv7LGqHkJPry,QT6642577347,Prelude Op.32 No.7 F Major,Valentina Lisitsa,123180,,short_term,401,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,402,48nLwxEwcSHml1lqybLacR,USSM12503782,"Forgotten Melodies I, Op. 38: V. Danza rustica",Nikolai Medtner | Alexander Malofeev,162946,,short_term,402,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,403,4AE032Y0x1WPOi5CsmggnU,HKI190303801,Maple Leaf Rag,Scott Joplin | Alexander Peskanov,189906,,short_term,403,,,,matched,spotify_id_exact,wynbXLf0gt4hfRby,Maple Leaf Rag,Scott Joplin,,,2.500000
+top_tracks,404,4DFogzXAjC6PapkwOrGVaS,HKI199631224,"Herz und Mund und Tat und Leben, BWV 147: Chorale: Jesus bleibt meine Freude (Chorus)",Johann Sebastian Bach | Ingrid Kertesi | Judit Nemeth | Jozsef Mukk | Istvan Gati | Hungarian Radio Chorus | Budapest Failoni Chamber Orchestra | Matyas Antal,203466,,short_term,404,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,405,4E9sH6SuXr470qZEbEJN0c,TCAHH2383201,Greensleaves,Valentina Lisitsa,181238,,short_term,405,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,406,4KNRyYkqFE3uyWoE3t4q6L,DEF058501263,"Concerto for 2 Mandolins in G Major, RV 532: III. Allegro",Antonio Vivaldi | James Tyler | Robin Jeffrey | The English Concert | Trevor Pinnock,231967,,short_term,406,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,407,4MrSDUU1Pqil5xRL3vT8vl,HKI190903407,Piano Sonata in G Minor: I. Allegro molto agitato,Fanny Mendelssohn | Heather Schmidt,236720,,short_term,407,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,408,4QsG7Gbk4BMNuGZLOxZncV,TCAJX2584402,"Piano Sonata No. 30 in E Major, Op. 109 III. Variation 6 (Tempo Primo Del Tema)",Valentina Lisitsa,238025,,short_term,408,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,409,4VH7tq0Rgxz2Xg2yeUKCA8,NLA460911388,"Grand Caprice on Schubert's ""Der Erlkönig"", Op. 26. Presto",Heinrich Wilhelm Ernst | Ning Feng,284520,,short_term,409,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,410,4YUy2CrBN5knyvFKgHtWeW,USUM71021497,Lord Is It Mine - Remastered 2026,Supertramp,250480,,short_term,410,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,411,4fQMGlCawbTkH9yPPZ49kP,USAT20000736,Green Onions,Booker T. & the M.G.'s,176333,,short_term,411,,,,matched,spotify_id_exact,RudvUvHOOal4SOD7,Green Onions,Booker T. & The M.G.'s,,,2.500000
+top_tracks,412,4hbvrHgfZ8lqFrPx1Ztd6j,GBAYC0402499,"Chopin: Nocturne No. 8 in D-Flat Major, Op. 27 No. 2",Frédéric Chopin | Gabriela Montero,338253,,short_term,412,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,413,4jDAYu92EiY1HYyWXgnyrp,DEF058300592,"Concerto In G Minor R439 Op.10 No.2 ""La Notte"": 2. Largo - Presto",Antonio Vivaldi | Andreas Blau | Berliner Philharmoniker | Herbert von Karajan,135400,,short_term,413,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,414,4ouqBKIa1ThUzbAkGZk2he,HKI192208302,II. Andante sostenuto (Arr. P. Breiner for Piano),Antonín Dvořák | Peter Breiner,193880,,short_term,414,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,415,4qonrwiiUxXZiOouiXnUvc,DEN962300201,"24 Jazz Preludes, Op. 53: No. 11",Yuja Wang,161143,,short_term,415,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,416,4rWt6xm14G1hsgBb9a0luS,DEF058501222,"Concerto for Oboe and Violin in B-Flat Major, RV 548: II. Largo",Antonio Vivaldi | David Reichenberg | Simon Standage | The English Concert | Trevor Pinnock,201000,,short_term,416,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,417,4uMouIqepgCCnZwlPzGicm,USTC60821059,Turkey In the Straw,Fiddle Fiddle Fiddle,170666,,short_term,417,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,418,4xeYQNxPlUqCsDCT5cByo5,DEUE12617501,My Reverie,Bea Wain,205493,,short_term,418,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,419,4yR25IogNxZ2YJXhbfX6ST,USWB12000733,Greensleeves,Mason Williams,165000,,short_term,419,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,420,50KVOLNNqft8SJr5ybrv8G,GBF077130101,"Rigoletto, Act III: La donna è mobile",Giuseppe Verdi | Luciano Pavarotti | London Symphony Orchestra | Richard Bonynge,142506,,short_term,420,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,421,50xwQXPtfNZFKFeZ0XePWc,GBAYE0601498,Yellow Submarine - Remastered 2009,The Beatles,158880,,short_term,421,,,,matched,spotify_id_exact,a9BhHylJgyqIxBWe,Yellow Submarine,The Beatles,,,2.500000
+top_tracks,422,56k6cPPXFUSzrY05pfS1L3,DEN961830918,"Variations sérieuses, Op. 54, MWV U156: Variation XVII",Felix Mendelssohn | Jan Lisiecki,150093,,short_term,422,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,423,57RpOkh02rlcuNqRQswtpb,DEN962300181,"Iberia, T. 105 / Book 4: No. 10, Málaga",Yuja Wang,296808,,short_term,423,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,424,58gTIXqsg6sVmAscK3LpKx,USRH11600251,Inside Out - 2016 Remaster,Phil Collins,315893,,short_term,424,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,425,59hrh6KWf9lu8awstqltMZ,USUW61300272,"Orfeo ed Euridice, Act II: Dance of the Blessed Spirits, ""Melodie"" (Arr. I. Friedman)",Christoph Willibald Gluck | Yoonie Han,215816,,short_term,425,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,426,5AIcgmY1VdrNzrKjUnwkJg,HKI199704330,"Mendelssohn - Lieder, S547/R217 (7 Lieder From Mendelssohn, Op, 19a, 34, 47) : Fruhlingslied(from Op. 47, No. 3)",Joseph Banowetz | Franz Liszt,149800,,short_term,426,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,427,5By7Pzgl6TMuVJG168VWzS,GBAYE0601485,Michelle - Remastered 2009,The Beatles,162373,,short_term,427,,,,matched,spotify_id_exact,Usy1B96bUQGLjrjx,Michelle - Remastered,The Beatles,,,2.500000
+top_tracks,428,5ChIFKHCfWS5i0gRU70uWz,DEAD62306603,"4 Valses oubliées, S. 215: No. 1, —",Franz Liszt | Anna Leyerer,174658,,short_term,428,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,429,5FWn20xrAQ1IdbA8Dml6pj,FRZ198900010,Si tu vois ma mère - Slow,Sidney Bechet | Claude Luter et son orchestre,193573,,short_term,429,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,430,5IWHEQVcwuUAVw4olVJcQs,GBAAA0700986,Driving the Last Spike - 2007 Remaster,Genesis,608600,,short_term,430,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,431,5J2CHimS7dWYMImCHkEFaJ,GBAYE0601438,A Hard Day's Night - Remastered 2009,The Beatles,154200,,short_term,431,,,,matched,spotify_id_exact,mi8js8zk212SNqLa,A Hard Day's Night - Remastered,The Beatles,,,2.500000
+top_tracks,432,5KXTDunEgNVBnuSBDzsm6x,GBAAA9400440,Turn It on Again,Genesis,229333,,short_term,432,,,,matched,spotify_id_exact,lw4m9PxzySLxDSl2,Turn It On Again,Genesis,,,2.500000
+top_tracks,433,5NKk3escrlQe7r4UHyqE4J,FRZ130805150,"Songs Without Words, Book VI Opus 67: No. 5 in B Minor",Felix Mendelssohn | Bertrand Chamayou,141493,,short_term,433,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,434,5Uene4exc7GwWYDN6X3Ihd,GBAYK0100053,Bourée,Jethro Tull,225400,,short_term,434,,,,matched,metadata_fallback,2PflxozrqQJVQchQ,Bouree,Jethro Tull,1107,,2.500000
+top_tracks,435,5VNlUlsA6yZLzDzEctTkst,HKI199328904,"Concerto Grosso In G Minor, Op. 3, No. 2, RV 578: I. Adagio E Spiccato - Allegro",Antonio Vivaldi | Capella Istropolitana,264200,,short_term,435,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,436,5XMJBKj01EU7asjQCAlYhu,USSM19303766,A Wink and a Smile,"Harry Connick, Jr.",166360,,short_term,436,,,,matched,spotify_id_exact,v8APALdGAhTc4hdo,A Wink and a Smile,"Harry Connick, Jr.",,,2.500000
+top_tracks,437,5YtZRC9ZcaM2f2AaPEeLl3,HKI192425408,"Piano Sonata No. 4 in C-Sharp Minor, Op. 21 No. 2: II. Romance. Andante con moto",Wilhelm Taubert | Lucas Wong,238960,,short_term,437,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,438,5aHHf6jrqDRb1fcBmue2kn,GBAYE0601705,The End - Remastered 2009,The Beatles,141613,,short_term,438,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,439,5n2AZNomNhK9L2l1dNS4GM,DEUE12612063,Stormy Weather,Ethel Waters,192266,,short_term,439,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,440,5nkqm9c9hsKQeSd5L2PEH5,GBAKW8500002,Leaving Me Now - Extended Version,Level 42,301133,,short_term,440,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,441,5pbu82rBtd4x1T5zv4AQNG,GBF089190002,On Every Street - Live Version,Dire Straits,421293,,short_term,441,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,442,5xaSJ9DJH7aOxQExIagQ2E,HKD012532983,"Two Fairy Tales, op. 20, II. Pesante, minaccioso - 其他",Nikolai Medtner | Arseniy Gusev,207840,,short_term,442,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,443,5xwmLfRd5kLb6XohkIqNV2,QM6MZ2006325,Joy,Apollo 100 | Tom Parker,170282,,short_term,443,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,444,5y2ijHECwFYWqcAHKTZgzD,USAT22509142,Risk It All,Bruno Mars,204068,,short_term,444,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,445,64ke84hxJ2dqK10gDTmrYb,USSM19303259,Streets of Philadelphia,Bruce Springsteen,254413,,short_term,445,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,446,68BTFws92cRztMS1oQ7Ewj,GBAYE0601643,All You Need Is Love - Remastered 2009,The Beatles,230386,,short_term,446,,,,matched,spotify_id_exact,jSx0se2IcyE1i8by,All You Need Is Love - Remastered 2009,The Beatles,,,2.500000
+top_tracks,447,6ABXFyZq1cm6zrUOKJa5hN,QT6642577332,Prelude Op.23 No.2 B Flat Major,Valentina Lisitsa,204950,,short_term,447,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,448,6ALpCzjVWFQJRwKIM8he8F,USSM10024561,The Way You Look Tonight,Fred Astaire,188520,,short_term,448,,,,matched,metadata_fallback,1EhoPstBUguE4Btf,The Way You Look Tonight,Fred Astaire,280,,2.500000
+top_tracks,449,6DWIm1TfM9WiCNQeLbbAsd,GBF079812980,The Entertainer,Scott Joplin | Morten Gunnar Larsen,233600,,short_term,449,,,,matched,spotify_id_exact,eJQFqTOFGOIqtbql,The Entertainer,Scott Joplin,,,2.500000
+top_tracks,450,6Gifhuvyk4uPDGSRrtw8Y6,DEF059602120,"Schwanengesang, D. 957: Ständchen",Franz Schubert | Mischa Maisky | Daria Hovora,260000,,short_term,450,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,451,6JC4VNHDjcF6AWGm8OP4yd,USSJ10901599,Largo from 'Xerxes',George Frideric Handel | Latvian Philharmonic Chamber Orchestra | Ilmar Lapinsch | Riga Radio Choir,251186,,short_term,451,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,452,6JRLFiX9NJSoRRKxowlBYr,USIR27800259,Is This Love,Bob Marley & The Wailers,232200,,short_term,452,,,,matched,spotify_id_exact,tSBoahjUECeByewg,Kaya,Bob Marley & The Wailers,,,2.500000
+top_tracks,453,6Jug5mAtcQJh8ejCQ8JtiH,GBAJY1509801,"Etude in F Minor, MWV U125",Felix Mendelssohn | Howard Shelley,115573,,short_term,453,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,454,6L5BZEcZmD6RBJnimzlyKr,GBBBA6760792,Nights In White Satin - Single Version / Mono,The Moody Blues,269106,,short_term,454,,,,matched,spotify_id_exact,adG7LBliQbcLS3eM,Nights in White Satin,The Moody Blues,,,2.500000
+top_tracks,455,6LVRf0RkzW09Zyrg3vrreq,CALC42020157,Improvisation No. 4,Gabriela Montero,145373,,short_term,455,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,456,6PrKZUXJPmBiobMN44yR8Y,USNPD0800979,The Ecstasy Of Gold - 2004 Remaster,Ennio Morricone,203226,,short_term,456,,,,matched,spotify_id_exact,eZ8zvGe1lJxaAiM5,The Ecstasy of Gold,Ennio Morricone,,,2.500000
+top_tracks,457,6VLGpRXbJAwtMCCsYWGyjB,DEN961400701,"The Well-Tempered Clavier, Book 1: Prelude No. 1 in C Major BWV 846/1",Johann Sebastian Bach | Pierre-Laurent Aimard,137560,,short_term,457,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,458,6fvPsQUOACfXp9IWG8Qrx8,CZA160900064,"4 Sketches, Op. 4, JB 1:66: No. 4 in G-Sharp Minor, Relentless Struggle. Moderato",Bedřich Smetana | Jitka Čechová,141226,,short_term,458,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,459,6guVLGbBU2HWkmhmobJn3Q,DEUE22693045,Sh-Boom (Life Could Be a Dream),The Crew Cuts,168948,,short_term,459,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,460,6h5uEuCPp7HNIfnj7IPS2N,NLA460911390,"The Last Rose of Summer, ""Polyphonic Study No. 6"": Introduction. Moderato - Tema. Andante non troppo - Variations I, II, III, IV - Finale",Heinrich Wilhelm Ernst | Ning Feng,624440,,short_term,460,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,461,6hKcc7CKKRaC8zhJ3Criu4,USSM10013674,"The Last Rose of Summer ""Étude No. 6""",Heinrich Wilhelm Ernst | Midori,597666,,short_term,461,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,462,6itnhgWDgGf2GRXVkVIMq4,ITDC81300292,Up - Theme from the Motion Picture,Giampaolo Pasquile,164185,,short_term,462,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,463,6jZj45D2jdR6fMEb58TlSc,USSM11308082,"Suite in B-Flat Major, HWV 434: IV. Menuet",George Frideric Handel | Khatia Buniatishvili,230893,,short_term,463,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,464,6sbBnPHG4PgfoX46CPboOX,USSM10401292,"Concerto in G Minor for 2 Cellos, Strings and Basso continuo, RV 531: I. Allegro",Antonio Vivaldi | Yo-Yo Ma | Amsterdam Baroque Orchestra | Ton Koopman | Jonathan Manson,199320,,short_term,464,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,465,6tQvjqDIK9GXWIC6mejms8,GBAYE0601487,Girl - Remastered 2009,The Beatles,151720,,short_term,465,,,,matched,spotify_id_exact,N9SjyAdz5ogvctSR,Girl - Remastered,The Beatles,,,2.500000
+top_tracks,466,6vH7rcUoSok4FYH6RTRIAE,USMC16646777,Wade In The Water,Ramsey Lewis,231506,,short_term,466,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,467,6vidl8jt9bqqFD1ZKJowSQ,NLN580500884,Violin Concerto In A Minor BWV 1041: Allegro,Camerata Antonio Luco | Emmy Verhey | Johann Sebastian Bach,231000,,short_term,467,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,468,6w7vluxLQVrDdhZUEwOmSI,USTC60821145,Arkansas Traveler,Fiddle Fiddle Fiddle,136613,,short_term,468,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,469,70ruGS6DI4xneVprt6RHxG,USBB11400001,Until the Real Thing Comes Along,Fats Waller,203413,,short_term,469,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,470,780J7MG7ndugILokwamG43,HKI199911010,"Concerto For 4 Violins in B Minor, Op. 3, No. 10, RV 580 : I. Allegro",Cologne Chamber Orchestra | Renee Ohldin | Corinne Chapelle | Christine Pichlmeier | Lucas Barr | Antonio Vivaldi,217533,,short_term,470,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,471,7CZiDzGVjUssMSOXrDNYHL,GBAYE0601471,Ticket To Ride - Remastered 2009,The Beatles,189680,,short_term,471,,,,matched,spotify_id_exact,wLsNwj3xRaEkb36J,Ticket to Ride,The Beatles,,,2.500000
+top_tracks,472,7Kd39FdvG56h2Nz2I9aY3E,USAT29500191,Starrider,Foreigner,242866,,short_term,472,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,473,7c8EKQLv5ld1uWm1BdGqds,GBAYC9101134,"Shostakovich / Arr. Atovmyan: Suite from the Gadfly, Op. 97a: VIII. Romance",Dmitri Shostakovich | Tasmin Little | Piers Lane,194266,,short_term,473,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,474,7fJ336lpndYK0Kn1tLPmGC,GBARL1001545,Fanfare for the Common Man - Single Edit,"Emerson, Lake & Palmer",179360,,short_term,474,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,475,7kcRojUSdZejUE1ZToliK9,HKI199271224,"Lieder ohne Worte (Songs without Words), Book 8, Op. 102: No. 43 in E Minor, Op. 102, No. 1, MWV U162",Felix Mendelssohn | Péter Nagy,130679,,short_term,475,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,476,7p0Zmt5k3LjIebIbbcE4nx,DEN962300212,"Piano Sonata No. 18 in E-Flat Major, Op. 31 No. 3 ""The Hunt"": II. Scherzo. Allegretto vivace",Yuja Wang,207997,,short_term,476,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,477,7t3qBNw37k2P2OmgK0MilM,GBAYE9900692,Puttin' on the Ritz,Fred Astaire,157093,,short_term,477,,,,matched,spotify_id_exact,4yJQAF5ZuAuzs24P,Puttin' On The Ritz,Fred Astaire,,,2.500000
+top_tracks,478,05od2qm2MTSKCHxy1GBp5W,USWB12502453,12 to 12,sombr,242903,,short_term,478,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,479,0BCPKOYdS2jbQ8iyB56Zns,GBAYE0200771,Clocks,Coldplay,307879,,short_term,479,,,,matched,spotify_id_exact,yqNY16s5yT0amiRZ,Clocks,Coldplay,,,2.500000
+top_tracks,480,0ESIjVxnDnCDaTPo6sStHm,GBAYE0601429,Till There Was You - Remastered 2009,The Beatles,133506,,short_term,480,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,481,0FIDCNYYjNvPVimz5icugS,USUG12406536,Timeless (feat Playboi Carti),The Weeknd | Playboi Carti,256000,,short_term,481,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,482,0InIeZW4P6VO7dUGRM4AKH,USAT22400849,Sienna,The Marías,224840,,short_term,482,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,483,0L2ip4yf7XCGvQWbD3vj0A,QZZ8B2347160,Kill Bill Whistle (Main Theme),William Jacobs,87915,,short_term,483,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,484,0T3sHoiR3t9HtwbIOgTI7J,USAT22508730,Dying for You,Charli xcx,182038,,short_term,484,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,485,0TlcczkVTGpinpkGJpT81L,USAT22506957,Drag Path,Twenty One Pilots,224000,,short_term,485,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,486,0ViM3sjKdaCQR488Dxw62D,FR6V80482702,Sette note - Pt. 1 - Single Version,Vince Tempera,145479,,short_term,486,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,487,0ZCKf2NjCYDNOhHsG27Y45,GBEKZ0300209,"Habanera (From “Carmen”, WD. 31)",Katherine Jenkins | The Arcadian Ensemble,167746,,short_term,487,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,488,0beWi6QSfNUj2sycVEMqq9,GBAYC0001068,"Mozart: Così fan tutte, K. 588, Act 1: Aria. ""Un'aura amorosa del nostro tesoro"" (Ferrando)",Wolfgang Amadeus Mozart | Karl Böhm | Alfredo Kraus | Heinrich Schmidt | Philharmonia Orchestra,285093,,short_term,488,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,489,0bxPRWprUVpQK0UFcddkrA,USAT22504344,Folded,Kehlani,238120,,short_term,489,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,490,0gd8VkAfJcFNt9TucUZwdK,ITD061403974,Storm Rider - The Grand Duel: Parte Prima,Luis Bacalov,207000,,short_term,490,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,491,0j3p1p06deJ7f9xmJ9yG22,GBAYE0601644,Back In The U.S.S.R. - Remastered 2009,The Beatles,163453,,short_term,491,,,,matched,spotify_id_exact,u37Ou4VTCKu3G8M9,Back In The U.S.S.R. - Remastered,The Beatles,,,2.500000
+top_tracks,492,0qsS2A3hwicJCLtcaR6JRQ,GBAYE0900759,She Loves You - Mono Version / Remastered 2009,The Beatles,142653,,short_term,492,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,493,1CPZ5BxNNd0n0nF4Orb9JS,QZ8BZ2513510,Golden,HUNTR/X | EJAE | AUDREY NUNA | REI AMI | KPop Demon Hunters Cast,194607,,short_term,493,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,494,1DwscornXpj8fmOmYVlqZt,GBAYE2501217,Stateside + Zara Larsson,PinkPantheress | Zara Larsson,184761,,short_term,494,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,495,1aOzDhi5a1RWWRy5dmYA8I,GBAYE0601668,Revolution 1 - Remastered 2009,The Beatles,255706,,short_term,495,,,,matched,spotify_id_exact,LP8SxUB1bOG1Ra3P,Revolution 1,The Beatles,,,2.500000
+top_tracks,496,1dxbAIfCASqv6jix2R1Taj,GBAYE0601637,Your Mother Should Know - Remastered 2009,The Beatles,148413,,short_term,496,,,,matched,spotify_id_exact,oDaxi00bIoYlesLx,Your Mother Should Know,The Beatles,,,2.500000
+top_tracks,497,1jD811OG5DyS459iFxNKmm,TCJPX2325203,"BANG, BANG",Nancy Sinatra,164680,,short_term,497,,,,matched,metadata_fallback,166TJqR8YtaoibkS,Bang Bang,Nancy Sinatra,4240,,2.500000
+top_tracks,498,1qRV1dKLOfH1s00b9J2LUQ,USSM12502221,Midnight Sun,Zara Larsson,189898,,short_term,498,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,499,1qbmS6ep2hbBRaEZFpn7BX,GBUM72503089,Man I Need,Olivia Dean,184000,,short_term,499,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,500,1sA1DhT0bLyeICf8NalPS7,USSM12600096,Aperture,Harry Styles,311733,,short_term,500,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,501,1v7L65Lzy0j0vdpRjJewt1,USIR10211559,Lose Yourself,Eminem,322226,,short_term,501,,,,matched,metadata_fallback,QolCFgn0lRVqdc9N,Lose Yourself,Eminem,4241,,2.500000
+top_tracks,502,1wR6BMsw6rBO4WhvY2wYmt,GBHGA1422178,"Long days of Vengeance (From ""Long days of Vengeance"")",Armando Trovajoli,72186,,short_term,502,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,503,1xOqGUkyxGQRdCvGpvWKmL,USUM72503465,Gabriela,KATSEYE,197226,,short_term,503,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,504,2BwO5K8Q7EPAJSGze3AAh9,USUM72504354,Manchild,Sabrina Carpenter,213645,,short_term,504,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,505,2CGNAOSuO1MEFCbBRgUzjd,USUG12408496,luther (with sza),Kendrick Lamar | SZA,177598,,short_term,505,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,506,2CoC3apW4ahryZB9vCoGKT,US23A9060658,"the decoupling of the nuclear family FEAT HAWA, GHOSTFACE KILLAH & RAPSODY",_BY.ALEXANDER | HAWA | Ghostface Killah | Rapsody,229220,,short_term,506,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,507,2CvOqDpQIMw69cCzWqr5yr,USSM10804556,Halo,Beyoncé,261160,,short_term,507,,,,matched,metadata_fallback,gQbivAeNzh1daC1x,Halo,Beyoncé,480,,2.500000
+top_tracks,508,2RkZ5LkEzeHGRsmDqKwmaJ,USAT22500463,Ordinary,Alex Warren,186964,,short_term,508,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,509,2VmB1rF9FtfKUmFHDVnq8Q,GBAYE0601419,Baby It's You - Remastered 2009,The Beatles,160520,,short_term,509,,,,matched,spotify_id_exact,SS0WjBrVPOgSw8HC,Baby It's You,The Beatles,,,2.500000
+top_tracks,510,2baEFuU0gQon0hgVRioI1o,GBAYE0601412,Anna (Go To Him) - Remastered 2009,The Beatles,177133,,short_term,510,,,,matched,spotify_id_exact,tXrpzpClM4wLWosU,Anna (Go to Him),The Beatles,,,2.500000
+top_tracks,511,2gYTC8DsplN3RNdpdBcCOQ,USUG12508560,Die On This Hill,SIENNA SPIRO,217008,,short_term,511,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,512,2iEIcP9Fam3DIhqliqGH4I,GBLGL1249099,"Gianni Schicchi: ""O Mio Babbino Caro""",Various Artists | Gioachino Rossini | Luigi Cherubini | Louis Carpentier | Giacomo Meyerbeer | Amilcare Ponchielli | Vincenzo Bellini | Giuseppe Verdi | Wolfgang Amadeus Mozart | Jules Massenet | Gaetano Donizetti | Giacomo Puccini | Maria Callas | Royal Concertgebouw Orchestra | Nicola Rescigno,136440,,short_term,512,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,513,2ue1KRstSKHF8jQkIJZiNC,GBAYE0601473,It's Only Love - Remastered 2009,The Beatles,116480,,short_term,513,,,,matched,spotify_id_exact,a2jdDPn2s274JB4E,It's Only Love,The Beatles,,,2.500000
+top_tracks,514,35ISBknsCeZQtq66xABI9g,GBUM72401610,Messy,Lola Young,284066,,short_term,514,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,515,3B4cjvGlPvyBLNG3AzEgkZ,USAT22600117,E85,Don Toliver,153181,,short_term,515,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,516,3JQWLa88R35d971o5bIImd,GBAYE0601413,Chains - Remastered 2009,The Beatles,145080,,short_term,516,,,,matched,spotify_id_exact,N4dWQMEKRaUONlaP,Chains,The Beatles,,,2.500000
+top_tracks,517,3QaPy1KgI7nu9FJEQUgn6h,USUM72401993,WILDFLOWER,Billie Eilish,261466,,short_term,517,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,518,3RjvlvYcX4wQycMEezsVUL,DEUE12612643,That Certain Female - Alternate Take,Charlie Feathers,181226,,short_term,518,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,519,3UDmHZcBTQp8Iu8droNtUl,GBAYE0900597,Revolution - Remastered 2009,The Beatles,205293,,short_term,519,,,,matched,spotify_id_exact,IQHIVdQXeQ7dk3So,Revolution,The Beatles,,,2.500000
+top_tracks,520,3WViRcNzScXDSIexDDFDLf,CAT311000142,Magic Power,Triumph,292400,,short_term,520,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,521,3cZajhyr8LmtPfHZ9296tj,USAT22504362,No Broke Boys,Disco Lines | Tinashe,163994,,short_term,521,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,522,3hMir99e3Uk4MfH4n7LQX1,USC4R1605548,"Main Title ""Truck Turner""",Isaac Hayes,162503,,short_term,522,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,523,3idqWaBn3mRdsIodCU6uBi,GBAYE0601431,Roll Over Beethoven - Remastered 2009,The Beatles,165466,,short_term,523,,,,matched,spotify_id_exact,3UfIu7IgRBza12y2,Roll over Beethoven,The Beatles,,,2.500000
+top_tracks,524,3mlMpmY8oZIBFc39D9zLbh,GBAYE0601717,The Long And Winding Road - Remastered 2009,The Beatles,218186,,short_term,524,,,,matched,spotify_id_exact,f9mg0ghupKNjfeLG,The Long and Winding Road,The Beatles,,,2.500000
+top_tracks,525,3oTuTpF1F3A7rEC6RKsMRz,GBUM72506029,Raindance (feat. Tems),Dave | Tems,219743,,short_term,525,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,526,3pU1CUgPiFfxPCpscwIwQR,GBAYE0601439,I Should Have Known Better - Remastered 2009,The Beatles,163080,,short_term,526,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,527,3qhlB30KknSejmIvZZLjOD,GBKPL2205058,End of Beginning,Djo,159245,,short_term,527,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,528,3sK8wGT43QFpWrvNQsrQya,QMFMF2447070,DtMF,Bad Bunny,237117,,short_term,528,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,529,3tGhRLgcCP6SIZU3tbGl7l,GBAYE0601505,Got To Get You Into My Life - Remastered 2009,The Beatles,149240,,short_term,529,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,530,3uX11UryFh2ujpeZBWYgkv,GBF077230201,"Turandot, Act III: Nessun dorma!",Giacomo Puccini | Luciano Pavarotti | John Alldis Choir | Wandsworth School Boys Choir | London Philharmonic Orchestra | Zubin Mehta,177333,,short_term,530,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,531,3yWuTOYDztXjZxdE2cIRUa,USUG12506438,Opalite,Taylor Swift,235355,,short_term,531,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,532,3zw4FTrVNfy2teEkV9FOvh,GBAYE0601437,Money (That's What I Want) - Remastered 2009,The Beatles,169506,,short_term,532,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,533,40qXGg5nRbcWzcFb26KWkQ,GBAYE0601411,Misery - Remastered 2009,The Beatles,108546,,short_term,533,,,,matched,spotify_id_exact,kpgL9YkG2TykW9gd,Misery,The Beatles,,,2.500000
+top_tracks,534,42VUCXerQ5qTr4Qp6PhKo4,USUM72504355,Tears,Sabrina Carpenter,160183,,short_term,534,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,535,4F1AgKpuFRMLEgtPETVwZk,GBAYE0601467,You've Got To Hide Your Love Away - Remastered 2009,The Beatles,129119,,short_term,535,,,,matched,spotify_id_exact,gKnKZ0Ax7LFtdo0D,You've Got to Hide Your Love Away,The Beatles,,,2.500000
+top_tracks,536,4UPPQcwiQJpmXYirbgicT9,DEF058230622,"Nabucco / Act III: Va, pensiero, sull'ali dorate",Giuseppe Verdi | Orchester der Deutschen Oper Berlin | Giuseppe Sinopoli | Chor der Deutschen Oper Berlin,234226,,short_term,536,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,537,4VxTzYm00mg82MuoT35Ja7,USSM12503648,CHANEL,Tyla,188059,,short_term,537,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,538,4WFgvKVfEhb3IUAFGrutTR,USAT22401137,Love Me Not,Ravyn Lenae,213466,,short_term,538,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,539,4WXNu1v6hEs3Sf9Cz2Dpn5,GBF078441608,Norma / Act 1: Casta Diva,Vincenzo Bellini | Dame Joan Sutherland | Samuel Ramey | Welsh National Opera Chorus | Welsh National Opera Orchestra | Richard Bonynge,357266,,short_term,539,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,540,4ekUX4pWizXXksJe0JfS9U,GBAYE0601424,It Won't Be Long - Remastered 2009,The Beatles,133386,,short_term,540,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,541,4f4Lmrpw0Me9VOaueFidlB,ITD061403979,Storm Rider - The Grand Duel: Parte Sesta,Luis Bacalov,146200,,short_term,541,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,542,4gxs9En3aoaOm2J5wNMMm9,GBAYE0801392,I Feel Fine - Remastered 2009,The Beatles,140400,,short_term,542,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,543,4jyyma8YdFC4S4llusSFRu,QZJG52634676,butterflies.,Brent Faiyaz,248297,,short_term,543,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,544,4w1lzcaoZ1IC2K5TwjalRP,USIR10210955,A Thousand Miles,Vanessa Carlton,237493,,short_term,544,,,,matched,spotify_id_exact,yiNlhVBKm5rEIWXf,A Thousand Miles,Vanessa Carlton,,,2.500000
+top_tracks,545,503OTo2dSqe7qk76rgsbep,USIR19905031,Still D.R.E.,Dr. Dre | Snoop Dogg,270586,,short_term,545,,,,matched,spotify_id_exact,P2S6M5e4PN1JubTp,Still D.R.E.,Dr. Dre,,,2.500000
+top_tracks,546,53iuhJlwXhSER5J2IYYv1W,USUG12506436,The Fate of Ophelia,Taylor Swift,226073,,short_term,546,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,547,55lijDD6OAjLFFUHU9tcDm,QMFME2535037,WHERE IS MY HUSBAND!,RAYE,196795,,short_term,547,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,548,5BZsQlgw21vDOAjoqkNgKb,USUG12504304,DAISIES,Justin Bieber,176453,,short_term,548,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,549,5EzvwjFwdP5Kfl5AZAemzu,GBAYE0601468,I Need You - Remastered 2009,The Beatles,148786,,short_term,549,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,550,5IMpnpD0tQVcqWlVIgtAtV,USAT22600011,iloveitiloveitiloveit,Bella Kay,183237,,short_term,550,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,551,5QQCp4fQiU9I2FU9FvJVV2,USEE10183228,Always,Erasure,237800,,short_term,551,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,552,5RKQ5NdjSh2QzD4MaunT91,USSM18100116,Don't Stop Believin' (2022 Remaster),Journey,249600,,short_term,552,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,553,5SUlhldQJtOhUr2GzH5RI7,GBAYE0601482,Nowhere Man - Remastered 2009,The Beatles,163693,,short_term,553,,,,matched,spotify_id_exact,idAM9CbU70mtINrG,Nowhere Man - Remastered 2009,The Beatles,,,2.500000
+top_tracks,554,5ViLKrbyL3HD6wsq3AB9eI,USQX92506204,White Keys,Dominic Fike,144101,,short_term,554,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,555,5eZrW59C3UgBhkqNlowEID,GBAYE0601704,Carry That Weight - Remastered 2009,The Beatles,96466,,short_term,555,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,556,5lkpeJwmQKgY3bX2zChjxX,GBBKS1000351,Someone Like You,Adele,285240,,short_term,556,,,,matched,metadata_fallback,rKhKGhLTw5HRbpZ7,Someone Like You,Adele,200,,2.500000
+top_tracks,557,5vl0sRtrQM1BTSAxQZFqEN,GBAYE0601436,Not A Second Time - Remastered 2009,The Beatles,126826,,short_term,557,,,,matched,spotify_id_exact,R3ZB7V3mgBeG2SSh,Not a Second Time,The Beatles,,,2.500000
+top_tracks,558,5yvVYFDUpbnjcnRBgjwTzM,USQX92600464,Dracula - JENNIE Remix,Tame Impala | JENNIE,209720,,short_term,558,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,559,65DbTqJKhbwqYbZ1Okr0rc,USSM12504190,Choosin' Texas,Ella Langley,232226,,short_term,559,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,560,69EKwvg7nkdOO3RmeUMJZG,GBAYC1400676,"Puccini: Madama Butterfly, Act 2: ""Un bel dì vedremo"" (Butterfly)","Giacomo Puccini | Maria Callas | Herbert von Karajan | Orchestra Del Teatro Alla Scala, Milano",283934,,short_term,560,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,561,6DH13QYXK7lKkYHSU88N48,USUG12505893,Who Knows,Daniel Caesar,226283,,short_term,561,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,562,6EHuOufBeL6vk3TvVJB5qo,GBAYE0601416,Please Please Me - Remastered 2009,The Beatles,120853,,short_term,562,,,,matched,metadata_fallback,kWs0fdHRRBQrla8u,Please Please Me - Remastered 2009,The Beatles,34374,,2.500000
+top_tracks,563,6Pq9MmkDQYZiiCDpxnvrf6,GBAYE0601638,I Am The Walrus - Remastered 2009,The Beatles,275866,,short_term,563,,,,matched,spotify_id_exact,JZrvucFQ56izpI9f,I Am the Walrus,The Beatles,,,2.500000
+top_tracks,564,6dGnYIeXmHdcikdzNNDMm2,GBAYE0601696,Here Comes The Sun - Remastered 2009,The Beatles,185733,,short_term,564,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,565,6f68Ac5tt5BQOpwr0BV9oN,USAT22509144,I Just Might,Bruno Mars,212973,,short_term,565,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,566,6rHh8urosEFRI67xVa6fzU,GBAYE0601634,The Fool On The Hill - Remastered 2009,The Beatles,179106,,short_term,566,,,,matched,spotify_id_exact,BoDfJUleKTckWpiW,The Fool On The Hill - Remastered 2009,The Beatles,,,2.500000
+top_tracks,567,6sGIMrtIzQjdzNndVxe397,GBUM72503087,So Easy (To Fall In Love),Olivia Dean,169000,,short_term,567,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,568,6vDVu9IM9s8L8XMQ1c1Yti,USSM12503876,bittersweet,Madison Beer,202795,,short_term,568,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,569,6wfK1R6FoLpmUA9lk5ll4T,GBAYE0601430,Please Mister Postman - Remastered 2009,The Beatles,154160,,short_term,569,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,570,7529Z6b1rlGZFFPWjHPeV5,GBAYE0601415,Ask Me Why - Remastered 2009,The Beatles,146533,,short_term,570,,,,matched,spotify_id_exact,NnPChlLXcE8YETJS,Ask Me Why,The Beatles,,,2.500000
+top_tracks,571,762B4bOcXF7I2Y8UlKTyTy,SEAYD7901080,Chiquitita,ABBA,326320,,short_term,571,,,,matched,metadata_fallback,x0NWP5jCon9IHrG0,Chiquitita,ABBA,720,,2.500000
+top_tracks,572,77zqs8ucHCSk5jh9TYec4b,USUM72600177,The Great Divide,Noah Kahan,317961,,short_term,572,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,573,788U1Sqej9M6c4iikuDGxO,GBAYE0601476,I've Just Seen A Face - Remastered 2009,The Beatles,125040,,short_term,573,,,,matched,spotify_id_exact,jxaHjCUQsD444nrk,I've Just Seen a Face,The Beatles,,,2.500000
+top_tracks,574,7Aobt67JnaF7qN8jCCKvHq,GBAYE0601420,Do You Want To Know A Secret - Remastered 2009,The Beatles,117013,,short_term,574,,,,matched,spotify_id_exact,CV1cYS3ulclC2pwO,Do You Want to Know a Secret,The Beatles,,,2.500000
+top_tracks,575,7B3BwNecBhKvNwSMOOl7Gk,USSM12501572,Fame is a Gun,Addison Rae,183237,,short_term,575,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,576,7JxGM1R32ZqfwZou3VtnTg,GBAYE0601414,Boys - Remastered 2009,The Beatles,146440,,short_term,576,,,,matched,spotify_id_exact,ny24slisveRoUbHG,Boys,The Beatles,,,2.500000
+top_tracks,577,7LNiAjyg9P2GKINTtN6Yt8,GBAYE0900591,We Can Work It Out - Remastered 2009,The Beatles,136120,,short_term,577,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,578,7cb2SdLm1UMLwdUoWwrZN1,GBAYE0601453,Baby's In Black - Remastered 2009,The Beatles,124520,,short_term,578,,,,matched,spotify_id_exact,MkVbtlOpm2Q2D41x,Baby's in Black,The Beatles,,,2.500000
+top_tracks,579,7cjoZVmWe2xsGR4wcXiV2v,NL8RL2584094,What You Saying,Lil Uzi Vert,131729,,short_term,579,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,580,7eYtVEDIXCSxMXL19FZzj4,CAT319200101,Troublemaker,Triumph,246400,,short_term,580,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,581,7ogpGbKc4Io6NCU6ydxXwZ,USAT22600670,FEVER DREAM,Alex Warren,153430,,short_term,581,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,582,7pKfPomDEeI4TPT6EOYjn9,GBAYE1000769,Imagine - Remastered 2010,John Lennon,187866,,short_term,582,,,,matched,spotify_id_exact,wYdW8jGnrLfB8PhF,Imagine,John Lennon,,,2.500000
+top_tracks,583,7rgUYidQh5tH0YlXCoKaYJ,GBAYE0601433,You Really Got A Hold On Me - Remastered 2009,The Beatles,181346,,short_term,583,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,584,7so0lgd0zP2Sbgs2d7a1SZ,USUM72409273,Die With A Smile,Lady Gaga | Bruno Mars,251667,,short_term,584,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,585,7tICCrK3CcyRFKza7yrR0z,USWB12600102,Homewrecker,sombr,209066,,short_term,585,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,586,1yOwaMlgQUfbPqsrsrVJvQ,GBBLY1404163,Toccata,Sky,282813,,short_term,586,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,587,4oVO4fGNRRvEn0CRuFO4qv,USSM12504035,La Perla,ROSALÍA | Yahritza Y Su Esencia,195546,,short_term,587,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,588,0ohgsfSecjJz8OtZQ6F3QY,USTE10359006,Toccata and Fugue in D minor,Johann Sebastian Bach | Jacques Loussier Trio,652260,,short_term,588,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,589,1PkwJPD48S9IXYpZHJne3f,KRB461800291,"Variations on ""God Save The King"" for Solo Violin, Op. 9",Niccolò Paganini | Roman Kim | Jure Gorucan,356000,,short_term,589,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,590,1Zx0HBD6TK0X6lzrxtPWth,USA371126085,"Toccata and Fugue in d monor, BWV 565",London Pops Orchestra | Nelson Corbin,542000,,short_term,590,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,591,1fYfrz7yZ3rL9V3LYqIaFf,DEN961230943,"Così fan tutte, K. 588 / Act II: ""Secondate, aurette amiche""",Wolfgang Amadeus Mozart | Rolando Villazón | Adam Plachetka | Chamber Orchestra of Europe | Yannick Nézet-Séguin | Vocalensemble Rastatt,200466,,short_term,591,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,592,6yZv0Nl6BXABbXoPVpfF5y,SEAYD7501040,SOS,ABBA,202386,,short_term,592,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,593,3DK6m7It6Pw857FcQftMds,USUM71027402,Runaway,Kanye West | Pusha T,547733,,short_term,593,,,,matched,spotify_id_exact,0SZzDlqkVto82lT8,Runaway,Kanye West,,,2.500000
+top_tracks,594,3XVBdLihbNbxUwZosxcGuJ,USJAY0300452,If I Ain't Got You,Alicia Keys,228706,,short_term,594,,,,matched,spotify_id_exact,YpFT73HDtV6wY1Zs,Diary,Alicia Keys,,,2.500000
+top_tracks,595,3lKN03PDeBnXZS7sDukRBt,SEAYD7601060,"Money, Money, Money",ABBA,186426,,short_term,595,,,,matched,metadata_fallback,NPOsbL3fobizZyEs,"Money, Money, Money",ABBA,361,,2.500000
+top_tracks,596,4KLjbz39GaTXtWVa98SsM3,QZNJY2552118,Torn,Reverse Pathogen,228857,,short_term,596,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,597,4dkoqJrP0L8FXftrMZongF,GBAYE0601710,Across The Universe - Remastered 2009,The Beatles,228133,,short_term,597,,,,matched,spotify_id_exact,ihJzcgC098p5jeUR,Across the Universe - Remastered,The Beatles,,,2.500000
+top_tracks,598,5HgqQJMn2cwVCP34GuwQHc,GBAAP8400257,I Feel Love / Johnny Remember Me,Bronski Beat,348466,,short_term,598,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,599,5Wj1rJnCLpMHdLaxsFtJLs,GBUM71304955,Bennie And The Jets - Remastered 2014,Elton John,322548,,short_term,599,,,,matched,metadata_fallback,NQbNKyYkv5MxNeQy,Bennie And The Jets (Remastered 2014),Elton John,1,,2.500000
+top_tracks,600,5lw4ru7fuLv9wD7bXnZjYI,NLA508906101,"Toccata & Fugue in D Minor, BWV 565",Johann Sebastian Bach | Boston Symphony Orchestra | Seiji Ozawa,546000,,short_term,600,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,601,6393yGahSJ9slVdOwSxOVR,USAT22001300,Pink Pony Club,Chappell Roan,258034,,short_term,601,,,,unmatched,,,,,,no_ds001_candidate,2.500000
+top_tracks,602,7Msq9qojB7yORuJvz49iUy,GBAYE0601418,P.S. I Love You - Remastered 2009,The Beatles,124360,,short_term,602,,,,matched,spotify_id_exact,nhe8AL94tqlw7X7b,P.S. I Love You - Remastered 2009,The Beatles,,,2.500000
+playlist_items,1,,,,,,2025-05-29T13:31:14Z,,,3LVttZ7Q8nihXkpjzhzyFt,Top Played Last Year,1,unmatched,,,,,,missing_track_id_and_metadata,8.000000
+playlist_items,2,,,,,,2025-05-29T13:31:14Z,,,3LVttZ7Q8nihXkpjzhzyFt,Top Played Last Year,2,unmatched,,,,,,missing_track_id_and_metadata,4.000000
+playlist_items,3,,,,,,2025-05-29T13:31:14Z,,,3LVttZ7Q8nihXkpjzhzyFt,Top Played Last Year,3,unmatched,,,,,,missing_track_id_and_metadata,2.666667
+playlist_items,4,,,,,,2025-05-29T13:31:14Z,,,3LVttZ7Q8nihXkpjzhzyFt,Top Played Last Year,4,unmatched,,,,,,missing_track_id_and_metadata,2.000000
+playlist_items,5,,,,,,2025-05-29T13:31:14Z,,,3LVttZ7Q8nihXkpjzhzyFt,Top Played Last Year,5,unmatched,,,,,,missing_track_id_and_metadata,1.600000
+playlist_items,6,,,,,,2025-05-29T13:31:14Z,,,3LVttZ7Q8nihXkpjzhzyFt,Top Played Last Year,6,unmatched,,,,,,missing_track_id_and_metadata,1.333333
+playlist_items,7,,,,,,2025-05-29T13:31:14Z,,,3LVttZ7Q8nihXkpjzhzyFt,Top Played Last Year,7,unmatched,,,,,,missing_track_id_and_metadata,1.142857
+playlist_items,8,,,,,,2025-05-29T13:31:14Z,,,3LVttZ7Q8nihXkpjzhzyFt,Top Played Last Year,8,unmatched,,,,,,missing_track_id_and_metadata,1.000000
+playlist_items,9,,,,,,2025-05-29T13:31:14Z,,,3LVttZ7Q8nihXkpjzhzyFt,Top Played Last Year,9,unmatched,,,,,,missing_track_id_and_metadata,0.888889
+playlist_items,10,,,,,,2025-05-29T13:31:14Z,,,3LVttZ7Q8nihXkpjzhzyFt,Top Played Last Year,10,unmatched,,,,,,missing_track_id_and_metadata,0.800000
+playlist_items,11,,,,,,2025-05-29T13:31:14Z,,,3LVttZ7Q8nihXkpjzhzyFt,Top Played Last Year,11,unmatched,,,,,,missing_track_id_and_metadata,0.727273
+playlist_items,12,,,,,,2025-05-29T13:31:14Z,,,3LVttZ7Q8nihXkpjzhzyFt,Top Played Last Year,12,unmatched,,,,,,missing_track_id_and_metadata,0.666667
+playlist_items,13,,,,,,2025-05-29T13:31:14Z,,,3LVttZ7Q8nihXkpjzhzyFt,Top Played Last Year,13,unmatched,,,,,,missing_track_id_and_metadata,0.615385
+playlist_items,14,,,,,,2025-05-29T13:31:14Z,,,3LVttZ7Q8nihXkpjzhzyFt,Top Played Last Year,14,unmatched,,,,,,missing_track_id_and_metadata,0.571429
+playlist_items,15,,,,,,2025-05-29T13:31:14Z,,,3LVttZ7Q8nihXkpjzhzyFt,Top Played Last Year,15,unmatched,,,,,,missing_track_id_and_metadata,0.533333
+playlist_items,16,,,,,,2025-05-29T13:31:14Z,,,3LVttZ7Q8nihXkpjzhzyFt,Top Played Last Year,16,unmatched,,,,,,missing_track_id_and_metadata,0.500000
+playlist_items,17,,,,,,2025-05-29T13:31:14Z,,,3LVttZ7Q8nihXkpjzhzyFt,Top Played Last Year,17,unmatched,,,,,,missing_track_id_and_metadata,0.470588
+playlist_items,18,,,,,,2025-05-29T13:31:14Z,,,3LVttZ7Q8nihXkpjzhzyFt,Top Played Last Year,18,unmatched,,,,,,missing_track_id_and_metadata,0.444444
+playlist_items,19,,,,,,2025-05-29T13:31:14Z,,,3LVttZ7Q8nihXkpjzhzyFt,Top Played Last Year,19,unmatched,,,,,,missing_track_id_and_metadata,0.421053
+playlist_items,20,,,,,,2025-05-29T13:31:14Z,,,3LVttZ7Q8nihXkpjzhzyFt,Top Played Last Year,20,unmatched,,,,,,missing_track_id_and_metadata,0.400000
+recently_played,1,08hBmJsQarUreIlbhT1GJ0,,The Whispering Wind,Moby,362666,2026-03-24T15:40:46.246Z,,,,,,matched,metadata_fallback,rI5G12llOXXzgocS,The Whispering Wind,Moby,1,,0.500000
+recently_played,2,3KdNyeEZPSND2Eii1O2lNf,,Everloving,Moby,205560,2026-03-24T15:34:45.817Z,,,,,,matched,metadata_fallback,JHJusOYsaL3zLGtA,Everloving,Moby,13,,0.500000
+recently_played,3,2PhictGwt3fvU1uqqMXIZ6,,Retreat,Moby,404430,2026-03-24T15:31:15.644Z,,,,,,unmatched,,,,,,no_ds001_candidate,0.500000
+recently_played,4,7EXMu7qI9Hv5PlMgtmfjES,,We Are All Made of Stars,Moby,273213,2026-03-24T15:24:47.475Z,,,,,,matched,metadata_fallback,bbRubPkT5bxwLQpH,We Are All Made of Stars,Moby,0,,0.500000
+recently_played,5,1YmF9PvLhIISIANoMLIYGq,,A$AP Forever (feat. Moby),A$AP Rocky | Moby,233061,2026-03-24T15:20:15.707Z,,,,,,unmatched,,,,,,no_ds001_candidate,0.500000
+recently_played,6,0c6XBVz2evmzERhch4Diew,,Oh My (feat. Moby),Luude | Issey Cross | Moby,160116,2026-03-24T15:16:34.908Z,,,,,,unmatched,,,,,,no_ds001_candidate,0.500000
+recently_played,7,1mVd372eD1BYzf8NvJd9jr,,Mott St 1992,Moby,348437,2026-03-24T15:13:16.632Z,,,,,,unmatched,,,,,,no_ds001_candidate,0.500000
+recently_played,8,2UoxRLlTWbVnH1xvXOKfrE,,One of These Mornings,Moby,192693,2026-03-24T15:07:46.878Z,,,,,,matched,metadata_fallback,wYoJBT9Lg1bBf8Nd,One Of These Mornings,Moby,0,,0.500000
+recently_played,9,5YKh3YV7d5SC7T6rdX73OM,,Memory Gospel,Moby,402066,2026-03-24T15:04:16.025Z,,,,,,unmatched,,,,,,no_ds001_candidate,0.500000
+recently_played,10,0FBdKYYhoKxtpPU1WETW46,,When It's Cold I'd Like to Die - Moby's Remix 7,Moby | Jacob Lusk,427868,2026-03-24T14:57:46.288Z,,,,,,unmatched,,,,,,no_ds001_candidate,0.500000
+recently_played,11,64hZX40A8Z14efLfF0JjwT,,Lift Me Up,Moby,199293,2026-03-24T14:50:46.059Z,,,,,,matched,metadata_fallback,22YI5YceDuG0QoOj,Lift Me Up,Moby,0,,0.500000
+recently_played,12,1dcphLLksiA99xOQujqUAa,,Honey,Moby,208666,2026-03-24T14:47:15.900Z,,,,,,matched,metadata_fallback,l05MaeKgw6wjJxLs,Honey,Moby,827,,0.500000
+recently_played,13,6HqsiOkwppOgixff56dWDm,,The Last Day,Moby | Skylar Grey,279659,2026-03-24T14:43:45.838Z,,,,,,unmatched,,,,,,no_ds001_candidate,0.500000
+recently_played,14,7uCnDfUGb0vtjonHaSv6ka,,In This World,Moby,242520,2026-03-24T14:39:16.113Z,,,,,,matched,metadata_fallback,xsAC7LEsEv3vlz4p,In This World,Moby,0,,0.500000
+recently_played,15,7siMHyJyxIwMQkHc7EPi9D,,Why Does My Heart Feel So Bad?,Moby,264840,2026-03-24T14:35:15.731Z,,,,,,unmatched,,,,,,no_ds001_candidate,0.500000

@@ -1,0 +1,21 @@
+{
+  "task": "BL-002",
+  "ingest_run_id": "BL002-INGEST-C87E2315871F",
+  "input_csv": "07_implementation/implementation_notes/test_assets/sample_listening_history.csv",
+  "input_sha256": "C87E2315871F553B062F1AB3B1B9E72D1E940C0FD8CA2FBAFED155E91766890A",
+  "rows_total": 7,
+  "rows_valid": 4,
+  "rows_invalid": 3,
+  "rows_missing_isrc": 1,
+  "rows_by_quality_flag": {
+    "ok": 3,
+    "missing_isrc": 1,
+    "missing_core_field": 1,
+    "invalid_timestamp": 1,
+    "invalid_ms_played": 1
+  },
+  "output_jsonl": "07_implementation/implementation_notes/run_outputs/tc001_normalized_events.jsonl",
+  "invalid_rows_csv": "07_implementation/implementation_notes/run_outputs/tc001_invalid_rows.csv",
+  "output_jsonl_sha256": "5BEF104D3350EBCADDA71D3EC08D9A06C3A9071E757474146950E87D18771B28",
+  "invalid_rows_sha256": "53C3F73E31FFE78058B242A44EE802F4CE09EDEC77CCE8EFDF87D86982B527EC"
+}
