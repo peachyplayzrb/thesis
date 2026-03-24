@@ -1087,3 +1087,25 @@ Use schema from `00_admin/operating_protocol.md`.
 - affected_components: `07_implementation/implementation_notes/ingestion/export_spotify_max_dataset.py`, `07_implementation/implementation_notes/ingestion/spotify_mapping.py`, `07_implementation/implementation_notes/ingestion/spotify_artifacts.py`, `07_implementation/implementation_notes/ingestion/spotify_schema_reference.md`, `07_implementation/setup/website_api_server.py`, `07_implementation/website/import.html`, `07_implementation/website/app.js`, `07_implementation/website/profile_basis.html`, `07_implementation/website/profile_basis.js`, `07_implementation/website/style.css`, `07_implementation/website.md`, `07_implementation/implementation_notes/ingestion/outputs/spotify_api_export/*`, `00_admin/change_log.md`
 - impact_assessment: High-positive. Aligns UI/runtime capabilities with supported API behavior, reduces operator confusion around unavailable playlist-item payloads, and improves handoff clarity with explicit visibility rules.
 - approval_record: Requested and iteratively confirmed by user in chat on 2026-03-24.
+
+## C-098
+- date: 2026-03-24
+- proposed_by: user + AI
+- status: accepted
+- change_summary: Adopt Music4All base (raw) as the primary candidate corpus for the thesis pipeline; run full schema audit of the extracted archive; create `ds_001_music4all_information_sheet.md`; update `.gitignore` to exclude the raw archive; clarify that the Onion extension is separate and unmerged.
+- reason: User received the Music4All base archive from the research team, confirmed the export completed, and decided to use it as the main corpus going forward. The dataset provides 109,269 tracks with Spotify-native audio features and `spotify_id` for direct alignment — a significant improvement over the DS-002 fallback (9,330-track MSD/Last.fm intersection requiring fuzzy matching). The Onion-enriched version is not available; only the raw base was provided.
+- evidence_basis: Live inspection of all 6 CSVs: row counts (109,269 per track file, 5,109,592 listening events), confirmed column headers, 3 sample rows each. `Test-Path` confirmation for Onion `.tsv.bz2` files in `10_resources/datasets/music4all_onion/selected/` — present but unmerged. `git status` verified `music4all_raw/` excluded after `.gitignore` update.
+- affected_components: `06_data_and_sources/ds_001_music4all_information_sheet.md` (created — full schema reference for all 6 CSVs), `06_data_and_sources/dataset_registry.md` (DS-001 section updated with confirmed schema), `06_data_and_sources/source_adapter_notes.md` (updated), `.gitignore` (added `06_data_and_sources/music4all_raw/` directory rule), `00_admin/change_log.md`
+- impact_assessment: High-positive. Establishes a 109k-track corpus with direct Spotify ID alignment, eliminating the fuzzy-match dependency of DS-002. Pipeline scoring is fully compatible with the 7 Spotify-native audio features present in `id_metadata.csv`. Marks a corpus strategy decision point for the thesis MVP.
+- approval_record: User confirmed adoption ("i want to use this from now on") in chat on 2026-03-24.
+
+## C-099
+- date: 2026-03-24
+- proposed_by: user + AI
+- status: accepted
+- change_summary: Confirm Music4All base (raw) as sufficient for the current implementation phase; continue building on base-only DS-001 and keep Onion as deferred optional enrichment.
+- reason: User explicitly confirmed the current project direction is to proceed with the available Music4All base release without introducing Onion integration complexity at this stage.
+- evidence_basis: User instruction in chat: "for now musi4all base version is sufficient so ill build on that." Existing DS-001 base schema and compatibility were already verified in prior checks and documented in `06_data_and_sources/ds_001_music4all_information_sheet.md`.
+- affected_components: `00_admin/change_log.md`
+- impact_assessment: Medium-positive. Locks short-term scope, reduces integration risk, and preserves delivery momentum while keeping Onion integration available for future controlled enhancement.
+- approval_record: Requested directly by user in chat on 2026-03-24.
