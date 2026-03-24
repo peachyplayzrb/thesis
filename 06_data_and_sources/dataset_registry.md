@@ -25,15 +25,25 @@ Music4All-Onion covers 109,269 tracks and 252,984,396 listening records from 119
 ### Access and Version Control Update (2026-03-24)
 - Provider response status: positive reply confirmed and dataset sharing path reopened.
 - Delivery state: provider has released download credentials; local download is currently running.
+- Delivery artifact clarification: current delivery is base Music4All (normal), not Music4All-Onion.
 - License/usage state: pre-access confidentiality terms were accepted; post-access usage constraints still need explicit capture in thesis records.
 - Provisional corpus role: DS-001 remains fallback/reference while DS-002 stays active until DS-001 files are locally available, identified, and governance checks pass.
+
+### Local Placement and Export Target (2026-03-24)
+- Raw provider archive export target: `06_data_and_sources/music4all_raw/`.
+- Keep the full provider archive intact in this folder before any extraction.
+- Current provider package type: base Music4All (normal), not Onion.
+- Official contact-page slide copy is stored at `10_resources/dataset_docs/music4all/music4all_slide.pdf`.
+- Official contact-page paper copy is stored at `10_resources/papers/Pegoraro Santana et al. - 2020 - Music4All A New Music Database and Its Applications (contact-site copy).pdf`.
+- Existing library paper copy remains at `10_resources/papers/Pegoraro Santana et al. - 2020 - Music4All A New Music Database and Its Applications.pdf`.
+- Hash comparison result between the two paper copies: different SHA256 values (both retained for provenance traceability).
 
 #### Version and Access Conditions Register
 | Field | Value (current) | Action to close |
 | --- | --- | --- |
 | Access response received | Yes (2026-03-22; credentials released 2026-03-24) | Archive exact reply text/date in admin evidence note |
 | Pre-access agreement required | Yes - disclosure/confidentiality agreement requested by provider | Completed and accepted for access release |
-| Dataset release target | Music4All-Onion Zenodo `15394646` (target latest v2) | Confirm exact delivered release/version from provider or archive listing |
+| Dataset release target | Music4All base dataset release (Santana et al., 2020) | Confirm exact delivered release/version from provider or archive listing |
 | Credential delivery | Yes - download path/password released by provider | Record exact delivery channel and any expiry conditions |
 | Base Music4All inclusion | Unknown | Confirm whether base metadata is included or separate |
 | Permitted use | Conditioned on signed disclosure/confidentiality agreement; detailed usage terms still pending explicit capture | Extract and record allowed-use text from signed agreement and/or provider follow-up |
