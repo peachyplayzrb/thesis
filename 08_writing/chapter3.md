@@ -45,6 +45,22 @@ At this stage, it is also important to make data assumptions explicit. Imported 
 
 In line with Chapter 2 evidence-limiting language, this design treats alignment reliability as methodologically grounded but still uncertain because much entity-resolution evidence is cross-domain rather than music-specific.
 
+### 3.4.1 Known Alignment Limitation: Incomplete Corpus Coverage
+
+A critical empirical finding during implementation is that the DS-001 corpus provides limited coverage of real-world Spotify history imports. In active testing with realistic user data, the alignment process achieves approximately **32.2% match rate** when matched against the DS-001 candidate dataset—meaning roughly two-thirds of imported tracks cannot be located in the corpus and do not contribute to the preference profile.
+
+This has direct implications for preference profile construction and downstream validity claims:
+
+1. **Restricted Signal Representation**: The preference model is built only from matched tracks, not the full imported history. If unmatched tracks are systematically different (e.g., more niche, newer, in specific genres), the profile becomes a biased representation of user preference.
+
+2. **Generalization Boundary**: Claims about "user preference" in playlist output implicitly assume the matched subset is representative. This is an empirical assumption that should be tested rather than assumed.
+
+3. **Playlist Quality Constraint**: Final playlists are drawn only from corpus candidates—a subset of a subset. The effective recommendation space is more constrained than marketing might suggest.
+
+To maintain transparency, the implementation now includes a **match-rate validation gate**: a configurable minimum match-rate threshold (currently set to 30% to accommodate observed reality) is enforced at the alignment stage, and both the threshold and actual match rate are logged in run metadata. Runs that fall below this threshold are flagged as potentially unreliable for profile claims.
+
+In Chapter 4, this limitation is addressed through explicit discussion of profile sensitivity: controlled experiments test whether the partial corpus creates systematic retrieval bias, and results are interpreted with awareness of this structural constraint rather than claimed as universal-preference findings. Future work might pursue richer corpus coverage or weighting schemes that include reduced-confidence matched/inferred signals, but this is deferred to keep the current artefact's scope bounded and auditable.
+
 ## 3.5 Preference Modelling and Candidate Preparation
 The preference model is built from aligned listening history and influence tracks using interpretable feature representations. Candidate generation then restricts the searchable set before scoring to preserve tractability and maintain deterministic behavior.
 

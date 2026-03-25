@@ -123,6 +123,11 @@ Table 4.5 should summarize parameter-sensitivity and assembly-rule outcomes.
 | Playlist length rule | `pending` | `pending` | `pending` | `pending` | `pending` |
 | Artist repetition rule | `pending` | `pending` | `pending` | `pending` | `pending` |
 
+### 4.9.1 Rule-Compliance Caveat: Undersized Playlist Outputs
+BL-007 now explicitly warns when the final playlist length is below `target_size`. This behavior is expected under strict rule combinations and should be interpreted as constrained feasibility rather than silent failure.
+
+Evidence example (2026-03-25 strict-control run): with `target_size=10`, `min_score_threshold=0.6`, `max_per_genre=1`, `max_consecutive=1`, BL-007 produced `5/10` tracks and emitted warning diagnostics. The persisted assembly report records shortfall and exclusion-pressure breakdown (for example high `below_score_threshold` counts), enabling transparent Chapter 4 interpretation rather than overstating fixed-length generation capability.
+
 ## 4.10 Explanation Fidelity Results
 
 Table 4.6 should summarize explanation-fidelity verification.

@@ -32,6 +32,8 @@ This folder is the governance and execution-control layer for the thesis. It tra
 1. `UI-003` in `unresolved_issues.md`: thesis-wide citation hardening completion and synthesis closeout.
 2. Mentor response backlog in `mentor_question_log.md`: MQ-001, MQ-002, MQ-003, MQ-004, and MQ-007 are open (MQ-005, MQ-006, MQ-008 are deferred).
 
+Admin sync checkpoint (2026-03-25): milestone-state recalibration and freshness-control closure are now reflected across `timeline.md`, `thesis_state.md`, and `unresolved_issues.md`.
+
 ## Hygiene Rules
 - Keep this folder as the single source of truth for governance state.
 - When implementation/writing reality changes, update admin files in the same session.

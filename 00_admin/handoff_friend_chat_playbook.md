@@ -46,6 +46,7 @@ Use one of these patterns for every task:
 3. Continue `WP-WEBINT-001` freeze-and-integrate website package with bounded hardening only.
 
 Current sprint state note: Day 4 is active as of 2026-03-25.
+Governance sync note: UI-010 freshness controls are closed/operational; UI-003 remains the only active unresolved issue.
 
 ## Run References
 1. BL-013 entrypoint command docs:

@@ -1,6 +1,6 @@
 ﻿# Unresolved Issues
 
-Last updated: 2026-03-25
+Last updated: 2026-03-25 15:20 UTC
 
 ## Active
 
@@ -18,7 +18,42 @@ Last updated: 2026-03-25
 	- status: open
 	- due_window: 2026-03-19 to 2026-03-29
 
+Active-set sync note (2026-03-25 15:20 UTC): UI-003 remains the only open unresolved issue after milestone-state recalibration and freshness-control closure.
+
 ## Resolved (Recent)
+
+- UI-010 (2026-03-25): Control-evaluation artifacts risk drift from current live data baselines.
+	- resolution: Closed. BL-010 and BL-011 evidence was regenerated after the lead-genre fix, freshness expectations were recorded in test notes, and a dedicated quality check now fails when BL-010/BL-011 evidence no longer matches the current active baseline contracts.
+	- evidence:
+		1. `07_implementation/implementation_notes/reproducibility/run_bl010_reproducibility_check.py` defaults to active pipeline outputs unless legacy mode is explicitly enabled.
+		2. `07_implementation/implementation_notes/controllability/run_bl011_controllability_check.py` defaults to active pipeline outputs unless legacy mode is explicitly enabled.
+		3. BL-010 reproducibility refresh passed (`BL010-REPRO-20260325-020749`, `deterministic_match=true`, `fixed_input_source=active_pipeline_outputs`).
+		4. BL-011 controllability refresh passed (`BL011-CTRL-20260325-020828`, `all_scenarios_repeat_consistent=true`, `all_variant_shifts_observable=true`, `status=pass`).
+		5. `07_implementation/implementation_notes/quality/check_bl010_bl011_freshness.py` passed on 2026-03-25 (`BL-FRESHNESS-20260325-021237`, `9/9` checks).
+		6. `07_implementation/implementation_notes/quality/run_active_freshness_suite.py` passed on 2026-03-25 (`BL-FRESHNESS-SUITE-20260325-021510`, `6/6` checks), consolidating active freshness checks for BL-013, BL-014, and BL-010/BL-011.
+
+- UI-012 (2026-03-25): Lead-genre semantic contract was inconsistent across BL-004, BL-005, and BL-006.
+	- resolution: Closed. BL-004, BL-005, and BL-006 now use one canonical lead-genre rule: prefer the first `genres` label and only fall back to the first `tags` label when no genre is present.
+	- evidence:
+		1. `07_implementation/implementation_notes/profile/build_bl004_preference_profile.py` now resolves lead genre with the canonical genre-first rule.
+		2. `07_implementation/implementation_notes/retrieval/build_bl005_candidate_filter.py` now uses the same genre-first rule for `lead_genre_match`.
+		3. `07_implementation/implementation_notes/scoring/build_bl006_scored_candidates.py` now uses the same genre-first rule for `lead_genre_similarity`.
+		4. BL-013 canonical rerun passed (`BL013-ENTRYPOINT-20260325-020526-881730`).
+		5. BL-014 sanity suite passed (`BL014-SANITY-20260325-020553-870468`, `21/21` checks).
+
+- UI-011 (2026-03-25): Tier-1 pipeline remediation package closure tracking item.
+	- resolution: Closed. All Tier-1 remediation items (CRI-004, CRI-002, HIGH-003, HIGH-004, CRI-003) are implemented with integrated validation evidence complete.
+	- evidence:
+		1. BL-013 integrated canonical run passed (`BL013-ENTRYPOINT-20260325-014411-311800`).
+		2. BL-014 sanity suite passed (`BL014-SANITY-20260325-014516-905552`, `21/21` checks).
+		3. Consolidated execution record logged in `00_admin/tier1_hardening_execution_log_2026-03-25.md`.
+
+- UI-009 (2026-03-25): BL-013 stale-seed false-pass risk under run-config execution.
+	- resolution: Implemented a BL-003 freshness guard in BL-013. When `--run-config` is supplied without `--refresh-seed`, BL-013 now fails fast on seed-contract mismatch and instructs the operator to refresh BL-003.
+	- evidence:
+		1. `07_implementation/implementation_notes/entrypoint/run_bl013_pipeline_entrypoint.py` includes `BL-003-FRESHNESS-GUARD` preflight validation.
+		2. `07_implementation/implementation_notes/alignment/build_bl003_ds001_spotify_seed_table.py` now emits `inputs.seed_contract` + contract hash for comparison.
+		3. Validation run on 2026-03-25: fail without refresh, pass with `--refresh-seed`.
 
 - UI-008 (2026-03-22): Music4All governance-closure tracking item.
 	- resolution: Closed by current-state confirmation that DS-001 is already received and operational for active runs; unresolved-issue status removed per user directive.

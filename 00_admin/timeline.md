@@ -1,6 +1,6 @@
 ﻿# Thesis Timeline
 
-Last updated: 2026-03-25
+Last updated: 2026-03-25 15:00 UTC
 
 ## Milestones
 - M1 (2026-03-13 to 2026-03-20): Planning baseline finalized [completed]
@@ -11,14 +11,15 @@ Last updated: 2026-03-25
 	- Implement DS-001 metadata/identifier alignment path for imported listening history.
 	- Implement source-scope actuation and persist effective scope in run outputs.
 	- Log alignment diagnostics, coverage, and traceability artifacts.
-- M3 (2026-04-06 to 2026-04-20): Deterministic profile and scoring implemented [planned]
+- M3 (2026-04-06 to 2026-04-20): Deterministic profile and scoring implemented [in progress]
 	- Build deterministic user profile construction.
 	- Implement candidate filtering and deterministic similarity scoring.
 	- Add score contribution breakdown outputs.
-- M4 (2026-04-21 to 2026-05-05): Playlist assembly and controllability layer complete [planned]
+- M4 (2026-04-21 to 2026-05-05): Playlist assembly and controllability layer complete [in progress]
 	- Implement playlist-level rule checks (diversity, coherence, ordering).
 	- Add configurable rule parameters and run-level config capture.
 	- Validate deterministic behavior across repeated runs.
+	- Status note (2026-03-25): BL-004 through BL-009 implementation is complete and validated; remaining scope in M3/M4 is evidence packaging and chapter-facing synthesis alignment.
 - M5 (2026-05-06 to 2026-05-20): Evaluation evidence complete [planned]
 	- Run reproducibility checks and parameter sensitivity tests.
 	- Record transparency/inspectability artifacts and known limitations.
@@ -54,6 +55,11 @@ Last updated: 2026-03-25
 ## Recently Closed
 - UI-002 closure recorded (2026-03-24): Chapter 2 weak-claim remediation objective completed for current audit workflow.
 - BL-021 source-scope contract closure recorded (2026-03-24): source-scope behavior promoted from deferred design to implemented baseline.
+- Tier-1 remediation package closure recorded (2026-03-25): CRI-004, CRI-002, HIGH-003, HIGH-004, and CRI-003 all completed with governance logging and test evidence.
+- Integrated validation closure recorded (2026-03-25): BL-013 canonical orchestration passed and BL-014 sanity checks passed (`21/21`) after hardening updates.
+- Lead-genre contract closure recorded (2026-03-25): UI-012 closed after aligning BL-004, BL-005, and BL-006 to one canonical genre-first lead-genre rule, followed by BL-013/BL-014 validation pass.
+- Evaluation-freshness closure recorded (2026-03-25): UI-010 closed after BL-010/BL-011 evidence refresh and implementation of executable freshness controls (`check_bl010_bl011_freshness.py` and `run_active_freshness_suite.py`).
+- Milestone-state recalibration recorded (2026-03-25): M3 and M4 moved from planned to in progress to reflect completed BL-004 through BL-009 implementation and active evidence-synthesis work.
 
 ## Notes
 - Dates are a working baseline for execution control and can be refined against official module deadlines.

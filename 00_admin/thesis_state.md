@@ -1,6 +1,6 @@
 ﻿# Thesis State
 
-Last updated: 2026-03-25
+Last updated: 2026-03-25 15:00 UTC
 
 ## Official Current State
 
@@ -65,8 +65,9 @@ The active execution corpus is DS-001 (Music4All base path). DS-002 (`MSD subset
 1. Close `UI-003` thesis-wide citation package: complete claim-citation hardening synthesis for Chapters 2 to 5 and finalize chapter-targeted improvement notes.
 2. Continue mentor sprint execution at Day 4 to Day 7 from `00_admin/mentor_draft_7day_sprint_2026-03-23.md`.
 3. Keep website integration under bounded hardening only (`WP-WEBINT-001`): bug fixes, observability clarity, and orchestration reliability without scope expansion.
+4. Keep M3/M4 execution status synchronized with implementation reality and package evidence for M5 evaluation consolidation.
 
-Priority status checkpoint (2026-03-25): UI-002 is closed for current Chapter 2 audit workflow; UI-003 is the remaining governance-critical open item.
+Priority status checkpoint (2026-03-25 15:00 UTC): Tier-1 pipeline remediation package is fully complete and integrated validation passed (`BL-013` pass + `BL-014` pass 21/21). UI-010 freshness automation is closed and operational; UI-003 remains the main thesis-writing governance dependency.
 
 ## Current Implementation Status
 
@@ -81,9 +82,10 @@ Priority status checkpoint (2026-03-25): UI-002 is closed for current Chapter 2 
 - **Transparency Explanations** (BL-008 ✅): Transparency explanation payload generation remains active with mechanism-linked score breakdowns and rule-effect traces for playlist outputs.
 - **Observability** (BL-009 ✅): Canonical run-level observability completed on 2026-03-22. Output: `bl009_run_observability_log.json` and `bl009_run_index.csv` with stage traceability, configuration snapshots, diagnostics, and artifact hashes. Evidence in EXP-030/TC-BL020-009.
 - **Pipeline Completion**: BL-020 is fully complete (BL-003 through BL-009 executed, logged, and test-documented).
-- **Quality Automation** (BL-014 ✅): Automated sanity checks completed on 2026-03-22 via `run_bl014_sanity_checks.py`. Result: 21/21 checks passed across schema validation, cross-stage hash integrity, and count/run-id continuity for BL-004 through BL-009 artifacts. Evidence in EXP-031/TC-BL014-001.
-- **Current Execution Focus** (2026-03-25): keep deterministic recommendation behavior stable while continuing bounded website integration and thesis-writing hardening in parallel; avoid scope expansion beyond active work packages and deferred-item boundaries.
-- **Active Risk**: Citation-package closure (UI-003) remains the main governance dependency before submission hardening.
+- **Quality Automation** (BL-014 ✅): Automated sanity checks remain green after Tier-1 hardening updates. Latest integrated run on 2026-03-25 (`BL014-SANITY-20260325-014516-905552`) passed 21/21 checks.
+- **Tier-1 Hardening Closure** (2026-03-25 ✅): CRI-004, CRI-002, HIGH-003, HIGH-004, and CRI-003 are implemented, validated, and logged in `00_admin/tier1_hardening_execution_log_2026-03-25.md`.
+- **Current Execution Focus** (2026-03-25 14:35 UTC): thesis-writing hardening, citation-package closure, and bounded website integration stabilization; no new scope expansion.
+- **Active Risk**: Citation-package closure (UI-003) remains the main governance dependency before submission hardening; BL-010/BL-011 freshness controls are now active and passing.
 
 ### BL-021 Source-Scope Control State (as of 2026-03-25)
 - Source-scope contract is baseline behavior (no longer deferred): implemented, validated, and traceable in run artifacts.
@@ -102,10 +104,10 @@ See: `07_implementation/BL020_HANDOFF_AUDIT_2026-03-21.md` for comprehensive pre
 ## Update Control
 
 - Last updated:
-2026-03-25
+2026-03-25 15:00 UTC
 
 - Reason for last update:
-(1) Add artefact refinement cycle completion record (R1, R2, R3 all complete): canonical run-pair artifacts, semantic control-layer map, and BL-009 schema promotion. (2) Align execution posture wording with supersession state. (3) Record DS-001 as active execution corpus. (4) Synchronize BL-021 source-scope status.
+(1) Synchronize thesis-state execution snapshot with completed Tier-1 remediation package and integrated validation pass (`BL-013` pass, `BL-014` pass 21/21). (2) Refresh open-priority list to reflect post-hardening governance focus and milestone-state recalibration. (3) Align active-risk wording with current unresolved issue posture after UI-010 closure.
 
 ## Locked Definitions
 - Artefact scope lock: `00_admin/Artefact_MVP_definition.md`
