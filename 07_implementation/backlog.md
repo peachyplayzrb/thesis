@@ -1,11 +1,73 @@
 ﻿# Backlog
 
+Last updated: 2026-03-25
+
 ## Priority Legend
 - P0: Must complete for locked MVP and assessment evidence.
 - P1: Strongly recommended quality improvement.
 - P2: Optional stretch item if time permits.
 
-## Handoff Snapshot (2026-03-21)
+## Current Execution Posture (2026-03-25)
+- All P0 items and all previously active P1 items (BL-021 and the artefact refinement cycle) are complete.
+- BL-013 and BL-009 have been significantly enhanced: canonical run-intent/run-effective-config artifact pair on every run; BL-009 schema versioned at `bl009-observability-v1` with `execution_scope_summary` block. Validated in `BL013-ENTRYPOINT-20260325-001946-187550`.
+- Semantic control-layer map published at `07_implementation/implementation_notes/run_config/semantic_control_map.md`.
+- Active work: BL-023 (website-to-pipeline integration) and thesis writing/citation hardening (UI-003).
+- BL-024 and BL-022 remain deferred; BL-015 is out of scope.
+
+## Items
+
+| ID | Priority | Status | Task | Evidence Output |
+| --- | --- | --- | --- | --- |
+| BL-001 | P0 | done | Define ingestion schema for one platform export path | `06_data_and_sources/schema_notes.md` Spotify mapping section + `07_implementation/implementation_notes/ingestion/bl001_spotify_input_output_mapping.md` |
+| BL-002 | P0 | done | Implement ingestion parser and validation checks | `07_implementation/implementation_notes/ingestion/ingest_history_parser.py` + `07_implementation/implementation_notes/ingestion/export_spotify_max_dataset.py` |
+| BL-003 | P0 | done | Implement ISRC-first track alignment with fallback matching against DS-001 | BL-003 alignment outputs; `bl003_source_scope_manifest.json`; evidence in EXP-034, EXP-042, TC-BL003-005-DS001-ONLY-001 |
+| BL-004 | P0 | done | Build deterministic user preference profile generator | `07_implementation/implementation_notes/profile/outputs/bl004_preference_profile.json`, `bl004_profile_summary.json`, `bl004_seed_trace.csv` |
+| BL-005 | P0 | done | Implement candidate retrieval and feature filtering | `07_implementation/implementation_notes/retrieval/outputs/bl005_filtered_candidates.csv`, `bl005_candidate_decisions.csv`, `bl005_candidate_diagnostics.json`; 1,740 kept candidates from 9,330; EXP-032 |
+| BL-006 | P0 | done | Implement deterministic scoring function with weighted components | `07_implementation/implementation_notes/scoring/outputs/bl006_scored_candidates.csv`, `bl006_score_summary.json`; retuned 2026-03-24 (EXP-033, EXP-035, TC-BL006-FINAL-001) |
+| BL-007 | P0 | done | Implement rule-based playlist assembly (diversity, coherence, ordering) | `07_implementation/implementation_notes/playlist/outputs/bl007_playlist.json` (10 tracks), `bl007_assembly_trace.csv`, `bl007_assembly_report.json`; score range 0.596–0.771 |
+| BL-008 | P0 | done | Add transparency outputs (score contribution and rule adjustment trace) | `07_implementation/implementation_notes/transparency/outputs/bl008_explanation_payloads.json`, `bl008_explanation_summary.json` |
+| BL-009 | P0 | done | Add observability logging; schema-versioned at `bl009-observability-v1` with `execution_scope_summary` and canonical config artifact pair links | `07_implementation/implementation_notes/observability/outputs/bl009_run_observability_log.json`, `bl009_run_index.csv`; validated in BL013-ENTRYPOINT-20260325-001946-187550 |
+| BL-010 | P0 | done | Execute reproducibility tests (same input/config => same output) | `07_implementation/implementation_notes/reproducibility/outputs/bl010_reproducibility_report.json`; `deterministic_match=true` across three replays; run BL010-REPRO-20260324-234322 |
+| BL-011 | P0 | done | Execute controllability tests (parameter sensitivity) | `07_implementation/implementation_notes/controllability/outputs/bl011_controllability_report.json`, `bl011_controllability_run_matrix.csv`; five scenarios; run BL011-CTRL-20260324-235114 |
+| BL-012 | P0 | done | Document limitations and failure modes from test outcomes | `02_foundation/limitations.md` + `08_writing/chapter5.md` Sections 5.4 and 5.5 |
+| BL-013 | P1 | done | Lightweight orchestrator with repeatable run controls; emits canonical run-intent/run-effective-config artifact pair per run | `07_implementation/implementation_notes/entrypoint/run_bl013_pipeline_entrypoint.py`; `run_config/outputs/run_intent_*.json` and `run_effective_config_*.json`; validated in BL013-ENTRYPOINT-20260325-001946-187550 |
+| BL-014 | P1 | done | Automated sanity checks for input schema and deterministic output hashes | `07_implementation/implementation_notes/sanity/run_bl014_sanity_checks.py`; 21/21 checks pass; EXP-031, TC-BL014-001 |
+| BL-015 | P2 | todo | Add second ingestion adapter scaffold (out of core scope) | Backlog-only design note |
+| BL-016 | P0 | done | Create synthetic pre-aligned data assets for core pipeline development | `07_implementation/implementation_notes/test_assets/bl016_synthetic_aligned_events.jsonl`, `bl016_candidate_stub.csv`, `bl016_asset_manifest.json` |
+| BL-017 | P0 | done | Build Music4All-Onion canonical dataset layer with join and quality checks | `07_implementation/implementation_notes/data_layer/outputs/` — canonical track table, join-coverage report, selected-column manifest |
+| BL-018 | P0 | done | Candidate-corpus feasibility review | `07_implementation/implementation_notes/data_layer/candidate_corpus_feasibility_review_2026-03-19.md`; superseded by D-015 (DS-002 activated) |
+| BL-019 | P0 | done | Build DS-002 integrated candidate dataset (MSD subset + Last.fm tags) with deterministic joins and quality gates | `07_implementation/implementation_notes/data_layer/outputs/`; 9,330 tracks; all quality gates pass; EXP-016, TC-DATASET-001 |
+| BL-020 | P0 | done | Full pipeline redo against updated ingestion schema and DS-001 corpus; BL-004 through BL-013 stages regenerated | All stage outputs under `07_implementation/implementation_notes/`; EXP-022 to EXP-030; TC-BL020-001 to TC-BL020-009 |
+| BL-021 | P1 | done | Add user-selectable source-scope control and persist effective scope in run metadata | Run-config `input_scope` contract wired; `bl003_source_scope_manifest.json`; A/B controllability evidence EXP-040 to EXP-042, TC-BL021-R2-001 to TC-BL021-R2-003 |
+| BL-022 | P1 | todo | Add deterministic corpus fallback policy (Music4All-first, DS-002 fallback on low coverage) | Fallback policy spec + per-run path-selection metadata + A/B report |
+| BL-023 | P1 | doing | Integrate website flow with deterministic pipeline outputs and run orchestration | UI run trace (run id + stage status), artifact linkage, implementation notes in `07_implementation/website.md` |
+| BL-024 | P1 | todo | Bounded implementation hardening (error handling, observability clarity, rerun controls) without changing core recommendation logic | Hardening diff summary + updated diagnostics examples + stability test notes |
+
+## Active
+
+### BL-023 — Website-to-Pipeline Integration
+Status: in progress since 2026-03-23.
+Scope: wire `07_implementation/website/` import controls, run trigger/orchestration, stage status and diagnostics render, and output/explanation display to real pipeline artifacts.
+Server: `07_implementation/setup/website_api_server.py`; stage parameters passed via env vars (BL004–BL009 env var contract documented in repo memory).
+Plan: `07_implementation/website.md`.
+Next: complete stage-status display and output render; smoke-test full UI flow against live BL-013 orchestrated run.
+
+## Deferred
+
+- **BL-024** (P1): bounded implementation hardening — activate after BL-023 reaches stable state.
+- **BL-022** (P1): deterministic corpus fallback — deferred per D-025; activate after BL-020 stabilization window closes.
+- **BL-015** (P2): second ingestion adapter scaffold — out of core scope; not planned for current submission.
+
+## Done
+
+All P0 items and active P1 items (BL-021, BL-013 artefact refinement, BL-009 schema promotion) are complete. Final evidence for each item is recorded in the Items table above. Full experiment and test-case evidence in `07_implementation/experiment_log.md` and `07_implementation/test_notes.md`.
+
+Key final-state references:
+- Latest full-chain orchestrated run: `BL013-ENTRYPOINT-20260325-001946-187550` (6/6 stages pass)
+- Reproducibility: `BL010-REPRO-20260324-234322` (deterministic_match=true)
+- Controllability: `BL011-CTRL-20260324-235114` (all checks true, five scenarios)
+- Semantic control-layer map: `07_implementation/implementation_notes/run_config/semantic_control_map.md`
+- Governance: change IDs C-065 through C-148 in `00_admin/change_log.md`
 - Collaboration repo: `https://github.com/TimothySpiteri/thesis` (private).
 - Primary working branch: `setup/initial-work`.
 - Current local head at handoff prep: `93f6369624a55f33d544737aaea9c9f5b3152eb5`.
