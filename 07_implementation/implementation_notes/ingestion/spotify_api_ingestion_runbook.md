@@ -76,3 +76,27 @@ Files:
 - Batch controls (`--batch-size-*`) are clamped to API limits (1-50) and applied per endpoint.
 - Proactive throttling applies before each request via `--min-request-interval-ms` and `--max-requests-per-minute`.
 - If Spotify still returns `429`, the script logs `retry_after_seconds` and applies additional backoff before retry.
+
+## A/B Profile Test (Env-Var Only)
+Use this to test a different app/account without changing pipeline code.
+
+1. Define profile-scoped credentials in your local shell/session using:
+   - `SPOTIFY_BASE_CLIENT_ID`, `SPOTIFY_BASE_CLIENT_SECRET`, `SPOTIFY_BASE_REDIRECT_URI`
+   - `SPOTIFY_ALT_CLIENT_ID`, `SPOTIFY_ALT_CLIENT_SECRET`, `SPOTIFY_ALT_REDIRECT_URI`
+2. Optional helper template: `07_implementation/implementation_notes/ingestion/spotify_env_profiles_template.ps1`
+3. Run baseline profile test:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File 07_implementation/implementation_notes/ingestion/run_profile_ab_test.ps1 -Profile BASE -RunIngestion
+```
+
+4. Run alternate profile test:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File 07_implementation/implementation_notes/ingestion/run_profile_ab_test.ps1 -Profile ALT -RunIngestion
+```
+
+5. Compare evidence snapshots under:
+   - `07_implementation/implementation_notes/quality/outputs/profile_tests/`
+
+The runner executes BL-013 (`--refresh-seed`), BL-014, and active freshness checks, then snapshots key reports for comparison.
