@@ -1,9 +1,9 @@
 {
   "run_metadata": {
-    "run_id": "BL-FRESHNESS-SUITE-20260325-021510",
+    "run_id": "BL-FRESHNESS-SUITE-20260325-151614",
     "task": "active freshness suite",
-    "generated_at_utc": "2026-03-25T02:15:10Z",
-    "elapsed_seconds": 1.133,
+    "generated_at_utc": "2026-03-25T15:16:14Z",
+    "elapsed_seconds": 1.222,
     "overall_status": "pass",
     "checks_total": 6,
     "checks_passed": 6,
@@ -15,7 +15,7 @@
     "bl010_bl011_freshness_report": "07_implementation/implementation_notes/quality/outputs/bl010_bl011_freshness_report.json"
   },
   "script_outputs": {
-    "bl014_stdout_stderr": "[BL-014] run_id=BL014-SANITY-20260325-021509-011197\n[BL-014] overall_status=pass checks_passed=21/21\n[BL-014] report=C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\quality\\outputs\\bl014_sanity_report.json\n[BL-014] run_matrix=C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\quality\\outputs\\bl014_sanity_run_matrix.csv\n[BL-014] config_snapshot=C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\quality\\outputs\\bl014_sanity_config_snapshot.json",
+    "bl014_stdout_stderr": "[BL-014] run_id=BL014-SANITY-20260325-151613-836771\n[BL-014] overall_status=pass checks_passed=21/21\n[BL-014] report=C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\quality\\outputs\\bl014_sanity_report.json\n[BL-014] run_matrix=C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\quality\\outputs\\bl014_sanity_run_matrix.csv\n[BL-014] config_snapshot=C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\quality\\outputs\\bl014_sanity_config_snapshot.json",
     "bl010_bl011_freshness_stdout_stderr": "BL-010/BL-011 freshness check complete.\noverall_status=pass\nreport=C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\quality\\outputs\\bl010_bl011_freshness_report.json\nrun_matrix=C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\quality\\outputs\\bl010_bl011_freshness_matrix.csv"
   },
   "checks": [

@@ -1,28 +1,28 @@
 {
-  "run_id": "BL011-STRICTER_THRESHOLDS-BL004-20260325-020904-653827",
+  "run_id": "BL011-STRICTER_THRESHOLDS-BL004-20260325-033728-298942",
   "scenario_id": "stricter_thresholds",
-  "matched_seed_count": 1563,
-  "total_effective_weight": 3777.667577,
+  "matched_seed_count": 1058,
+  "total_effective_weight": 2298.198246,
   "dominant_lead_genres": [
     "pop",
     "classic rock",
     "rock",
-    "progressive rock",
-    "new wave"
+    "electronic",
+    "rap"
   ],
   "dominant_tags": [
     "rock",
-    "classic rock",
     "pop",
-    "80s",
-    "70s"
+    "classic rock",
+    "70s",
+    "80s"
   ],
   "dominant_genres": [
     "rock",
-    "classic rock",
     "pop",
-    "progressive rock",
-    "hard rock"
+    "classic rock",
+    "electronic",
+    "singer-songwriter"
   ],
   "feature_centers": {}
 }

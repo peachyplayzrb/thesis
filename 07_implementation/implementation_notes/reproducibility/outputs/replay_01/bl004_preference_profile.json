@@ -1,14 +1,14 @@
 {
-  "run_id": "BL004-PROFILE-20260325-020749-720852",
+  "run_id": "BL004-PROFILE-20260325-033555-545797",
   "task": "BL-004",
-  "generated_at_utc": "2026-03-25T02:07:49Z",
-  "user_id": "21zsn42xecjhogne4kghyw5hq",
+  "generated_at_utc": "2026-03-25T03:35:55Z",
+  "user_id": "214f23jw73wgv4vdpcjabds2a",
   "config_source": "run_config",
-  "run_config_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\run_config\\run_config_template_v1.json",
+  "run_config_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\run_config\\outputs\\run_config_profile_test_threshold_015.json",
   "run_config_schema_version": "run-config-v1",
   "input_artifacts": {
     "seed_table_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\alignment\\outputs\\bl003_ds001_spotify_seed_table.csv",
-    "seed_table_sha256": "36ca08db341a137270d7d7a35e3c59a0b35d30799d192b46e07314c0e83597b9"
+    "seed_table_sha256": "b317cdc69e0c097a68720cc8f1c41c4b4a6210993d32b8ef6fc4f7fae826d558"
   },
   "config": {
     "input_scope": {
@@ -50,175 +50,175 @@
     }
   },
   "diagnostics": {
-    "events_total": 1563,
-    "matched_seed_count": 1563,
+    "events_total": 1058,
+    "matched_seed_count": 1058,
     "missing_seed_count": 0,
     "missing_track_ids": [],
-    "candidate_rows_total": 1563,
+    "candidate_rows_total": 1058,
     "numeric_observations": {
-      "danceability": 1563,
-      "energy": 1563,
-      "valence": 1563,
-      "tempo": 1563,
-      "key": 1563,
-      "mode": 1563,
-      "popularity": 1563,
-      "duration_ms": 1563
+      "danceability": 1058,
+      "energy": 1058,
+      "valence": 1058,
+      "tempo": 1058,
+      "key": 1058,
+      "mode": 1058,
+      "popularity": 1058,
+      "duration_ms": 1058
     },
     "key_aggregation_method": "weighted_circular_mean",
-    "total_effective_weight": 3777.667577,
-    "elapsed_seconds": 0.051
+    "total_effective_weight": 2298.198246,
+    "elapsed_seconds": 0.033
   },
   "seed_summary": {
     "counts_by_interaction_type": {
-      "history": 1563,
+      "history": 1058,
       "influence": 0
     },
     "weight_by_interaction_type": {
-      "history": 3777.667577,
+      "history": 2298.198246,
       "influence": 0.0
     },
     "interaction_count_sum_by_interaction_type": {
-      "history": 37775,
+      "history": 22982,
       "influence": 0
     },
     "seed_trace_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\profile\\outputs\\bl004_seed_trace.csv"
   },
   "numeric_feature_profile": {
-    "danceability": 0.555602,
-    "energy": 0.597241,
-    "valence": 0.553157,
-    "tempo": 120.785257,
-    "key": 0.337536,
-    "mode": 0.707699,
-    "popularity": 51.247089,
-    "duration_ms": 261673.612686
+    "danceability": 0.581239,
+    "energy": 0.612168,
+    "valence": 0.509981,
+    "tempo": 121.177902,
+    "key": 10.415716,
+    "mode": 0.633656,
+    "popularity": 61.045376,
+    "duration_ms": 240069.285422
   },
   "semantic_profile": {
     "top_tags": [
       {
         "label": "rock",
-        "weight": 2090.781279
-      },
-      {
-        "label": "classic rock",
-        "weight": 1707.50985
+        "weight": 972.731579
       },
       {
         "label": "pop",
-        "weight": 1592.605828
+        "weight": 736.998246
       },
       {
-        "label": "80s",
-        "weight": 1309.822432
+        "label": "classic rock",
+        "weight": 610.631579
       },
       {
         "label": "70s",
-        "weight": 653.216667
+        "weight": 342.331579
       },
       {
-        "label": "progressive rock",
-        "weight": 566.45
+        "label": "80s",
+        "weight": 301.1
       },
       {
-        "label": "hard rock",
-        "weight": 446.4
+        "label": "alternative",
+        "weight": 298.1
       },
       {
-        "label": "new wave",
-        "weight": 401.278788
+        "label": "electronic",
+        "weight": 263.4
       },
       {
-        "label": "british",
-        "weight": 397.52689
+        "label": "dance",
+        "weight": 224.1
+      },
+      {
+        "label": "indie",
+        "weight": 220.9
       },
       {
         "label": "female vocalists",
-        "weight": 374.52381
+        "weight": 220.0
       }
     ],
     "top_genres": [
       {
         "label": "rock",
-        "weight": 2090.781279
-      },
-      {
-        "label": "classic rock",
-        "weight": 1707.50985
+        "weight": 972.731579
       },
       {
         "label": "pop",
-        "weight": 1592.605828
+        "weight": 736.998246
       },
       {
-        "label": "progressive rock",
-        "weight": 566.45
+        "label": "classic rock",
+        "weight": 610.631579
       },
       {
-        "label": "hard rock",
-        "weight": 446.4
-      },
-      {
-        "label": "new wave",
-        "weight": 401.278788
+        "label": "electronic",
+        "weight": 263.4
       },
       {
         "label": "singer-songwriter",
-        "weight": 299.571429
+        "weight": 204.498246
       },
       {
-        "label": "soul",
-        "weight": 176.5
+        "label": "rap",
+        "weight": 172.9
+      },
+      {
+        "label": "alternative rock",
+        "weight": 143.5
       },
       {
         "label": "folk",
-        "weight": 159.971429
+        "weight": 125.8
       },
       {
-        "label": "soft rock",
-        "weight": 141.1
+        "label": "hip hop",
+        "weight": 123.0
+      },
+      {
+        "label": "psychedelic rock",
+        "weight": 120.3
       }
     ],
     "top_lead_genres": [
       {
         "label": "pop",
-        "weight": 813.197986
+        "weight": 396.7
       },
       {
         "label": "classic rock",
-        "weight": 810.924509
+        "weight": 344.231579
       },
       {
         "label": "rock",
-        "weight": 539.907563
+        "weight": 242.5
       },
       {
-        "label": "progressive rock",
-        "weight": 448.5
+        "label": "electronic",
+        "weight": 149.7
       },
       {
-        "label": "new wave",
-        "weight": 216.278788
+        "label": "rap",
+        "weight": 136.9
       },
       {
         "label": "folk",
-        "weight": 124.271429
-      },
-      {
-        "label": "classical",
-        "weight": 105.2
+        "weight": 81.8
       },
       {
         "label": "soul",
-        "weight": 81.0
+        "weight": 75.3
       },
       {
-        "label": "soundtrack",
-        "weight": 63.842857
+        "label": "progressive rock",
+        "weight": 75.1
       },
       {
-        "label": "hard rock",
-        "weight": 59.5
+        "label": "psychedelic rock",
+        "weight": 58.6
+      },
+      {
+        "label": "indie rock",
+        "weight": 55.5
       }
     ]
   }

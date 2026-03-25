@@ -1,5 +1,5 @@
 {
-  "run_id": "BL011-BASELINE-BL006-20260325-020834-063727",
+  "run_id": "BL011-BASELINE-BL006-20260325-033642-808309",
   "task": "BL-006",
   "scenario_id": "baseline",
   "config": {
@@ -22,99 +22,99 @@
     "raw_override_value": null
   },
   "counts": {
-    "candidates_scored": 56691,
-    "score_max": 0.853982,
-    "score_min": 0.003196
+    "candidates_scored": 72246,
+    "score_max": 0.756485,
+    "score_min": 0.00501
   },
   "top_candidates": [
     {
       "rank": 1,
+      "track_id": "hU7yckCKoiTkHjwi",
+      "lead_genre": "pop",
+      "final_score": 0.756485,
+      "matched_genres": "pop|rock",
+      "matched_tags": "pop|rock|female vocalists"
+    },
+    {
+      "rank": 2,
       "track_id": "CaR8UnowNJUR5Dib",
       "lead_genre": "pop",
-      "final_score": 0.853982,
+      "final_score": 0.749942,
       "matched_genres": "pop|rock|classic rock",
       "matched_tags": "pop|80s|rock|classic rock"
     },
     {
-      "rank": 2,
+      "rank": 3,
       "track_id": "yEz9rqTTulkiDDm7",
       "lead_genre": "classic rock",
-      "final_score": 0.802193,
+      "final_score": 0.745133,
       "matched_genres": "classic rock|rock|pop",
       "matched_tags": "classic rock|80s|rock|pop"
     },
     {
-      "rank": 3,
+      "rank": 4,
       "track_id": "M3ApGs7RGZwXHqs4",
       "lead_genre": "pop",
-      "final_score": 0.774769,
+      "final_score": 0.733517,
       "matched_genres": "pop|rock",
       "matched_tags": "pop|80s|rock|female vocalists"
     },
     {
-      "rank": 4,
+      "rank": 5,
       "track_id": "rqeIltq5ixzHA5EG",
       "lead_genre": "pop",
-      "final_score": 0.760832,
+      "final_score": 0.728091,
       "matched_genres": "pop|rock",
       "matched_tags": "pop|80s|rock"
     },
     {
-      "rank": 5,
-      "track_id": "s0Qo4gihN9Rzx8we",
-      "lead_genre": "classic rock",
-      "final_score": 0.758173,
-      "matched_genres": "classic rock|rock|hard rock",
-      "matched_tags": "classic rock|rock|hard rock|80s"
-    },
-    {
       "rank": 6,
-      "track_id": "qob8Z8qGt0UR4JAs",
-      "lead_genre": "rock",
-      "final_score": 0.742888,
-      "matched_genres": "rock|singer-songwriter|pop|classic rock",
-      "matched_tags": "rock|80s|pop|classic rock"
+      "track_id": "o27WwIo8F6fMirMs",
+      "lead_genre": "classic rock",
+      "final_score": 0.724924,
+      "matched_genres": "classic rock|rock",
+      "matched_tags": "classic rock|rock|80s"
     },
     {
       "rank": 7,
-      "track_id": "Xh9f0R2Q7wJMaxhy",
-      "lead_genre": "classic rock",
-      "final_score": 0.738827,
-      "matched_genres": "classic rock|progressive rock|rock",
-      "matched_tags": "classic rock|70s|progressive rock|rock"
+      "track_id": "lGnkOkQSUQO175Qg",
+      "lead_genre": "pop",
+      "final_score": 0.718769,
+      "matched_genres": "pop|rock|singer-songwriter",
+      "matched_tags": "pop|indie|rock|alternative"
     },
     {
       "rank": 8,
-      "track_id": "HheoXQPQtBis2mmJ",
+      "track_id": "kJa0UEVtgRvCJiXS",
       "lead_genre": "pop",
-      "final_score": 0.734392,
-      "matched_genres": "pop",
-      "matched_tags": "pop|80s|female vocalists"
+      "final_score": 0.710972,
+      "matched_genres": "pop|rock",
+      "matched_tags": "pop|alternative|female vocalists|rock"
     },
     {
       "rank": 9,
-      "track_id": "M1aGgogF0dGiRiXA",
-      "lead_genre": "rock",
-      "final_score": 0.7193,
-      "matched_genres": "rock|classic rock|soul",
-      "matched_tags": "rock|80s|classic rock"
+      "track_id": "dv1r49qWV1haZtYv",
+      "lead_genre": "classic rock",
+      "final_score": 0.699275,
+      "matched_genres": "classic rock|rock",
+      "matched_tags": "classic rock|rock|80s"
     },
     {
       "rank": 10,
-      "track_id": "YEWH2dMDiRCIJy7F",
-      "lead_genre": "pop",
-      "final_score": 0.718355,
-      "matched_genres": "pop|new wave",
-      "matched_tags": "pop|80s|new wave"
+      "track_id": "s0Qo4gihN9Rzx8we",
+      "lead_genre": "classic rock",
+      "final_score": 0.699275,
+      "matched_genres": "classic rock|rock",
+      "matched_tags": "classic rock|rock|80s"
     }
   ],
   "mean_component_contributions": {
-    "tempo": 0.056181,
-    "duration_ms": 0.030051,
-    "key": 0.020326,
-    "mode": 0.024535,
-    "lead_genre": 0.045727,
-    "genre_overlap": 0.027141,
-    "tag_overlap": 0.03098
+    "tempo": 0.057406,
+    "duration_ms": 0.039644,
+    "key": 0.020754,
+    "mode": 0.015583,
+    "lead_genre": 0.038067,
+    "genre_overlap": 0.02426,
+    "tag_overlap": 0.030033
   }
 }

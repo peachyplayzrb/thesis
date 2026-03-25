@@ -1,28 +1,28 @@
 {
-  "run_id": "BL011-NO_INFLUENCE_TRACKS-BL004-20260325-020841-362618",
+  "run_id": "BL011-NO_INFLUENCE_TRACKS-BL004-20260325-033652-368026",
   "scenario_id": "no_influence_tracks",
-  "matched_seed_count": 1563,
-  "total_effective_weight": 3777.667577,
+  "matched_seed_count": 1058,
+  "total_effective_weight": 2298.198246,
   "dominant_lead_genres": [
     "pop",
     "classic rock",
     "rock",
-    "progressive rock",
-    "new wave"
+    "electronic",
+    "rap"
   ],
   "dominant_tags": [
     "rock",
-    "classic rock",
     "pop",
-    "80s",
-    "70s"
+    "classic rock",
+    "70s",
+    "80s"
   ],
   "dominant_genres": [
     "rock",
-    "classic rock",
     "pop",
-    "progressive rock",
-    "hard rock"
+    "classic rock",
+    "electronic",
+    "singer-songwriter"
   ],
   "feature_centers": {}
 }

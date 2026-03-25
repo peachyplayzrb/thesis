@@ -1,7 +1,7 @@
 {
   "task": "BL-003-DS001-spotify-seed-build",
-  "generated_at_utc": "2026-03-25T02:05:29Z",
-  "elapsed_seconds": 1.845,
+  "generated_at_utc": "2026-03-25T15:15:01Z",
+  "elapsed_seconds": 2.24,
   "inputs": {
     "ds001_candidates": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\data_layer\\outputs\\ds001_working_candidate_dataset.csv",
     "ds001_candidates_sha256": "296331CA6390D2C111AA336C7EB154B69EC7060604312AC8A274F545B68A04EF",
@@ -16,7 +16,7 @@
       "include_top_tracks": true,
       "include_saved_tracks": true,
       "include_playlists": true,
-      "include_recently_played": true,
+      "include_recently_played": false,
       "top_time_ranges": [
         "short_term",
         "medium_term",
@@ -33,7 +33,7 @@
       "recently_played_limit": 50
     },
     "config_source": "run_config",
-    "run_config_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\run_config\\run_config_template_v1.json",
+    "run_config_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\run_config\\outputs\\run_config_profile_test_threshold_015.json",
     "run_config_schema_version": "run-config-v1",
     "input_scope": {
       "source_family": "spotify_api_export",
@@ -92,31 +92,33 @@
       "top_tracks": true,
       "saved_tracks": true,
       "playlist_items": true,
-      "recently_played": true
+      "recently_played": false
     },
-    "missing_selected_sources": [],
-    "allow_missing_selected_sources": false
+    "missing_selected_sources": [
+      "recently_played"
+    ],
+    "allow_missing_selected_sources": true
   },
   "source_stats": {
     "top_tracks": {
       "file_present": true,
-      "rows_available": 8745,
-      "rows_selected": 8745
+      "rows_available": 10001,
+      "rows_selected": 10001
     },
     "saved_tracks": {
       "file_present": true,
-      "rows_available": 171,
-      "rows_selected": 171
+      "rows_available": 1303,
+      "rows_selected": 1303
     },
     "playlist_items": {
       "file_present": true,
-      "rows_available": 31,
-      "rows_selected": 31
+      "rows_available": 779,
+      "rows_selected": 779
     },
     "recently_played": {
-      "file_present": true,
-      "rows_available": 50,
-      "rows_selected": 50
+      "file_present": false,
+      "rows_available": 0,
+      "rows_selected": 0
     }
   },
   "source_scope_filtering": {
@@ -143,33 +145,33 @@
       "recently_played_limit": 50
     },
     "rows_available": {
-      "top_tracks": 8745,
-      "saved_tracks": 171,
-      "playlist_items": 31,
-      "recently_played": 50
+      "top_tracks": 10001,
+      "saved_tracks": 1303,
+      "playlist_items": 779,
+      "recently_played": 0
     },
     "rows_selected": {
-      "top_tracks": 8745,
-      "saved_tracks": 171,
-      "playlist_items": 31,
-      "recently_played": 50
+      "top_tracks": 10001,
+      "saved_tracks": 1303,
+      "playlist_items": 779,
+      "recently_played": 0
     }
   },
   "counts": {
-    "input_event_rows": 8997,
-    "matched_by_spotify_id": 1735,
-    "matched_by_metadata": 1163,
-    "unmatched": 6099,
-    "unmatched_missing_keys": 31,
-    "unmatched_no_candidate": 6068,
-    "matched_events_rows": 2898,
-    "seed_table_rows": 1563,
-    "trace_rows": 8997,
-    "unmatched_rows": 6099,
+    "input_event_rows": 12083,
+    "matched_by_spotify_id": 1095,
+    "matched_by_metadata": 791,
+    "unmatched": 10197,
+    "unmatched_missing_keys": 779,
+    "unmatched_no_candidate": 9418,
+    "matched_events_rows": 1886,
+    "seed_table_rows": 1058,
+    "trace_rows": 12083,
+    "unmatched_rows": 10197,
     "match_rate_validation": {
       "threshold_enforced": true,
-      "min_threshold": 0.3,
-      "actual_match_rate": 0.3221,
+      "min_threshold": 0.15,
+      "actual_match_rate": 0.1561,
       "status": "pass"
     }
   },
@@ -181,11 +183,11 @@
     "summary_json": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\alignment\\outputs\\bl003_ds001_spotify_summary.json",
     "source_scope_manifest_json": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\alignment\\outputs\\bl003_source_scope_manifest.json",
     "sha256": {
-      "matched_events_jsonl": "D032E8C1111B214CD7116A950002DA25C79C89FAF6C0BD08CAE6A44F09AD80A9",
-      "seed_table_csv": "36CA08DB341A137270D7D7A35E3C59A0B35D30799D192B46E07314C0E83597B9",
-      "trace_csv": "A6A30B6FD0433662C03EFDBF3E90043E6E24C42159B022D322722E25F3674E14",
-      "unmatched_csv": "2ECF7E56A7C5D8DB96DB9A271E520FC3B6FE37117BF3C6530D37A039E2CD682E",
-      "source_scope_manifest_json": "24958892A291DE27D6B287D287339EC75B33F4D9EB94673602F3F36C99F6D51F"
+      "matched_events_jsonl": "39F61053FB00F1EB8327B9129A1C96A353FD2095A364ADDD9B7FD2D004136076",
+      "seed_table_csv": "B317CDC69E0C097A68720CC8F1C41C4B4A6210993D32B8EF6FC4F7FAE826D558",
+      "trace_csv": "0740C5136C94D6539A2583CDA54878E98986D800568BAB54BBCF082CF6710CF5",
+      "unmatched_csv": "BFD618D4663BDEE572634C4031D9319306C695C26A12ACBBA850D19823FF5C23",
+      "source_scope_manifest_json": "124499AD9AA2FC77049EAA20959ACAC562DF80E6276C27E7F16D6075DF2B9ED4"
     }
   },
   "notes": {

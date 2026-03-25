@@ -1,12 +1,12 @@
 {
-  "run_id": "BL006-SCORE-20260325-020754-986087",
+  "run_id": "BL006-SCORE-20260325-033601-641747",
   "task": "BL-006",
-  "generated_at_utc": "2026-03-25T02:07:56Z",
+  "generated_at_utc": "2026-03-25T03:36:04Z",
   "input_artifacts": {
     "profile_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\profile\\outputs\\bl004_preference_profile.json",
-    "profile_sha256": "0c02aee92a46bd1eba2544078acffcf431eebb93680a617fb2cf3a350be74222",
+    "profile_sha256": "c3f7b5b1b7994b713b9d85dd108fff107b29dee9e37504577d70228d37343306",
     "filtered_candidates_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\retrieval\\outputs\\bl005_filtered_candidates.csv",
-    "filtered_candidates_sha256": "77ae5d53d3d2a1682787127d508897c89baf6043f7442624516bcacbebeda505"
+    "filtered_candidates_sha256": "8b5b19eb1257cf4116e9d166fac96859a4ac502cdcbf78728074f1a8a4c0fbcd"
   },
   "config": {
     "numeric_thresholds": {
@@ -71,137 +71,137 @@
     "semantic_source": "ds001_tags_and_genres_columns"
   },
   "counts": {
-    "candidates_scored": 57370
+    "candidates_scored": 72463
   },
   "score_statistics": {
-    "max_score": 0.817654,
-    "min_score": 0.003736,
-    "mean_score": 0.262056,
-    "median_score": 0.25518
+    "max_score": 0.787428,
+    "min_score": 0.006383,
+    "mean_score": 0.245727,
+    "median_score": 0.235016
   },
   "component_balance": {
     "all_candidates": {
-      "numeric_contribution_mean": 0.137219,
-      "semantic_contribution_mean": 0.124837,
-      "tempo_mean": 0.056153,
-      "duration_ms_mean": 0.030062,
-      "key_mean": 0.02644,
-      "mode_mean": 0.024564,
-      "lead_genre_mean": 0.067402,
-      "genre_overlap_mean": 0.026822,
-      "tag_overlap_mean": 0.030613
+      "numeric_contribution_mean": 0.133388,
+      "semantic_contribution_mean": 0.112339,
+      "tempo_mean": 0.057234,
+      "duration_ms_mean": 0.039525,
+      "key_mean": 0.021093,
+      "mode_mean": 0.015536,
+      "lead_genre_mean": 0.058185,
+      "genre_overlap_mean": 0.0242,
+      "tag_overlap_mean": 0.029954
     },
     "top_100": {
-      "numeric_contribution_mean": 0.392127,
-      "semantic_contribution_mean": 0.292869,
-      "tempo_mean": 0.169839,
-      "duration_ms_mean": 0.089038,
-      "key_mean": 0.098855,
-      "mode_mean": 0.034395,
-      "lead_genre_mean": 0.157659,
-      "genre_overlap_mean": 0.061405,
-      "tag_overlap_mean": 0.073805
+      "numeric_contribution_mean": 0.386646,
+      "semantic_contribution_mean": 0.277081,
+      "tempo_mean": 0.180331,
+      "duration_ms_mean": 0.105052,
+      "key_mean": 0.082017,
+      "mode_mean": 0.019246,
+      "lead_genre_mean": 0.164856,
+      "genre_overlap_mean": 0.050329,
+      "tag_overlap_mean": 0.061896
     },
     "top_500": {
-      "numeric_contribution_mean": 0.357188,
-      "semantic_contribution_mean": 0.273154,
-      "tempo_mean": 0.163889,
-      "duration_ms_mean": 0.076861,
-      "key_mean": 0.083688,
-      "mode_mean": 0.03275,
-      "lead_genre_mean": 0.158179,
-      "genre_overlap_mean": 0.052317,
-      "tag_overlap_mean": 0.062658
+      "numeric_contribution_mean": 0.350026,
+      "semantic_contribution_mean": 0.264177,
+      "tempo_mean": 0.171063,
+      "duration_ms_mean": 0.095354,
+      "key_mean": 0.066383,
+      "mode_mean": 0.017226,
+      "lead_genre_mean": 0.159809,
+      "genre_overlap_mean": 0.047021,
+      "tag_overlap_mean": 0.057347
     }
   },
   "top_candidates": [
     {
       "rank": 1,
-      "track_id": "8WnHV12FDAeaQwkd",
-      "lead_genre": "classic rock",
-      "final_score": 0.817654,
-      "matched_genres": "classic rock|rock|pop",
-      "matched_tags": "classic rock|70s|rock|pop"
+      "track_id": "C9oA7Glm1TItxpQA",
+      "lead_genre": "pop",
+      "final_score": 0.787428,
+      "matched_genres": "pop|rock|classic rock",
+      "matched_tags": "pop|rock|classic rock"
     },
     {
       "rank": 2,
-      "track_id": "9B6dNFjeE90pp4x6",
-      "lead_genre": "classic rock",
-      "final_score": 0.78014,
-      "matched_genres": "classic rock|progressive rock|rock|pop",
-      "matched_tags": "classic rock|progressive rock|80s|rock|pop"
+      "track_id": "7dYk0TCGZqev3LJD",
+      "lead_genre": "pop",
+      "final_score": 0.742005,
+      "matched_genres": "pop|classic rock|rock",
+      "matched_tags": "80s|pop|classic rock|rock"
     },
     {
       "rank": 3,
-      "track_id": "C0mhpBhouqyLmYSK",
+      "track_id": "I2K0KDtgE2eZhPRw",
       "lead_genre": "pop",
-      "final_score": 0.774292,
-      "matched_genres": "pop|classic rock|rock",
-      "matched_tags": "pop|classic rock|80s|rock"
+      "final_score": 0.741969,
+      "matched_genres": "pop|rock",
+      "matched_tags": "pop|rock|70s|80s|female vocalists"
     },
     {
       "rank": 4,
-      "track_id": "m17iB8yxNZn3tqdE",
-      "lead_genre": "classic rock",
-      "final_score": 0.771257,
-      "matched_genres": "classic rock|rock|hard rock",
-      "matched_tags": "classic rock|rock|hard rock|80s"
+      "track_id": "36zZsq0r6BMf2VfX",
+      "lead_genre": "pop",
+      "final_score": 0.731171,
+      "matched_genres": "pop|rock",
+      "matched_tags": "80s|pop|female vocalists|rock"
     },
     {
       "rank": 5,
-      "track_id": "df0JOlTEeZCAVz1W",
-      "lead_genre": "pop",
-      "final_score": 0.755859,
-      "matched_genres": "pop|rock",
-      "matched_tags": "pop|rock|female vocalists"
+      "track_id": "3ltMH5jik02hVLDF",
+      "lead_genre": "classic rock",
+      "final_score": 0.721757,
+      "matched_genres": "classic rock|rock|pop",
+      "matched_tags": "classic rock|rock|70s|pop"
     },
     {
       "rank": 6,
-      "track_id": "9qCc2lNrSBbmtjCj",
-      "lead_genre": "classic rock",
-      "final_score": 0.737008,
-      "matched_genres": "classic rock|rock",
-      "matched_tags": "classic rock|rock|70s"
+      "track_id": "5c9fu0pBIl9QUmed",
+      "lead_genre": "pop",
+      "final_score": 0.720671,
+      "matched_genres": "pop|singer-songwriter|rock",
+      "matched_tags": "pop|rock"
     },
     {
       "rank": 7,
-      "track_id": "CaR8UnowNJUR5Dib",
+      "track_id": "Oa3WjjG6GreWw3Bf",
       "lead_genre": "pop",
-      "final_score": 0.730006,
-      "matched_genres": "pop|rock|classic rock",
-      "matched_tags": "pop|80s|rock|classic rock"
+      "final_score": 0.717345,
+      "matched_genres": "pop|rock",
+      "matched_tags": "indie|alternative|pop|rock"
     },
     {
       "rank": 8,
-      "track_id": "YfV01HfNXWAFfgtm",
-      "lead_genre": "rock",
-      "final_score": 0.725523,
-      "matched_genres": "rock|classic rock|new wave|pop",
-      "matched_tags": "rock|classic rock|new wave|80s|pop"
+      "track_id": "pTle20sjv0uVIr2o",
+      "lead_genre": "pop",
+      "final_score": 0.716622,
+      "matched_genres": "pop|rock",
+      "matched_tags": "pop|female vocalists|rock"
     },
     {
       "rank": 9,
-      "track_id": "A8Q9gX4RokaFDMOP",
+      "track_id": "D8u1nCspnPIixiZa",
       "lead_genre": "classic rock",
-      "final_score": 0.723613,
-      "matched_genres": "classic rock|rock|pop|singer-songwriter",
-      "matched_tags": "classic rock|rock|80s|pop"
+      "final_score": 0.702795,
+      "matched_genres": "classic rock|rock|pop",
+      "matched_tags": "80s|classic rock|rock|pop"
     },
     {
       "rank": 10,
-      "track_id": "N1yOEQ8Rf8ljdHmf",
+      "track_id": "h2e5nNsGSAuOyTfw",
       "lead_genre": "pop",
-      "final_score": 0.720878,
+      "final_score": 0.694995,
       "matched_genres": "pop|rock",
-      "matched_tags": "pop|rock"
+      "matched_tags": "pop|rock|female vocalists|dance"
     }
   ],
-  "elapsed_seconds": 2.393,
+  "elapsed_seconds": 3.434,
   "output_files": {
     "scored_candidates_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\scoring\\outputs\\bl006_scored_candidates.csv"
   },
   "output_hashes_sha256": {
-    "bl006_scored_candidates.csv": "128f7e4cd5c485ea7b31e5b68f9ec496db1d263b56c27713c58df674717e2145"
+    "bl006_scored_candidates.csv": "64f7fb2c3d6389479a40d5b075f25dd1d14413e1f19b49a8e43ba4ba533e9c70"
   },
   "summary_hash_note": "summary file hash collected separately in experiment logging to avoid recursive self-reference"
 }

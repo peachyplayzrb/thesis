@@ -1,32 +1,32 @@
 {
   "country": "MT",
-  "display_name": "Alex Spiteri",
+  "display_name": "T",
   "explicit_content": {
     "filter_enabled": false,
     "filter_locked": false
   },
   "external_urls": {
-    "spotify": "https://open.spotify.com/user/21zsn42xecjhogne4kghyw5hq"
+    "spotify": "https://open.spotify.com/user/214f23jw73wgv4vdpcjabds2a"
   },
   "followers": {
     "href": null,
-    "total": 3
+    "total": 20
   },
-  "href": "https://api.spotify.com/v1/users/21zsn42xecjhogne4kghyw5hq",
-  "id": "21zsn42xecjhogne4kghyw5hq",
+  "href": "https://api.spotify.com/v1/users/214f23jw73wgv4vdpcjabds2a",
+  "id": "214f23jw73wgv4vdpcjabds2a",
   "images": [
     {
       "height": 300,
-      "url": "https://scontent-tpe1-1.xx.fbcdn.net/v/t39.30808-1/242612464_10216705333980742_1547045440139103906_n.jpg?stp=dst-jpg_s320x320_tt6&_nc_cat=101&ccb=1-7&_nc_sid=08baa4&_nc_ohc=h9k-j7wP0bMQ7kNvwEfju54&_nc_oc=AdoFDF09l_CX4bg7RPsS7qLR9rNEdd6ZhHvUvf96w1hmObCsq5WGIffWL3_KTA1o9tANsEvSuQchM-iEOcVl8PLr&_nc_zt=24&_nc_ht=scontent-tpe1-1.xx&edm=AP4hL3IEAAAA&_nc_gid=JlaUGW0PZWppBAFSOW3DQQ&_nc_tpa=Q5bMBQFO0PGIAA0eYn-0ifBHtqoZ_qGXutbd-xa7McKALxEz2j5zOO-QLx7Nk2_sirmY_vXHvI4X&oh=00_AfwjeDe1KY9VPCMKJsfzNKrNsf8lQL1hENOaZ5Ap4rb9Mg&oe=69C868B1",
+      "url": "https://i.scdn.co/image/ab6775700000ee852d558106d1b606852a01db6e",
       "width": 300
     },
     {
       "height": 64,
-      "url": "https://scontent-tpe1-1.xx.fbcdn.net/v/t39.30808-1/242612464_10216705333980742_1547045440139103906_n.jpg?stp=cp0_dst-jpg_s50x50_tt6&_nc_cat=101&ccb=1-7&_nc_sid=28885b&_nc_ohc=h9k-j7wP0bMQ7kNvwEfju54&_nc_oc=AdoFDF09l_CX4bg7RPsS7qLR9rNEdd6ZhHvUvf96w1hmObCsq5WGIffWL3_KTA1o9tANsEvSuQchM-iEOcVl8PLr&_nc_zt=24&_nc_ht=scontent-tpe1-1.xx&edm=AP4hL3IEAAAA&_nc_gid=JlaUGW0PZWppBAFSOW3DQQ&_nc_tpa=Q5bMBQGsQ1vHVkP5f5uUTotsOGbM45WTUSRnnokijVBKTuo9KnJbhUxK5Ijn2iMIEQ0SRTmL2aDg&oh=00_Afyv9eben_ug7tIw0f5ltMPxRt0wdruAIa2NupjG9xaNpw&oe=69C868B1",
+      "url": "https://i.scdn.co/image/ab67757000003b822d558106d1b606852a01db6e",
       "width": 64
     }
   ],
   "product": "premium",
   "type": "user",
-  "uri": "spotify:user:21zsn42xecjhogne4kghyw5hq"
+  "uri": "spotify:user:214f23jw73wgv4vdpcjabds2a"
 }

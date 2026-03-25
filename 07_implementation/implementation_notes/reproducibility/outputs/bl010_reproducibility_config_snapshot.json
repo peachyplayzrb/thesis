@@ -4,11 +4,11 @@
   "fixed_input_source": "active_pipeline_outputs",
   "replay_count": 3,
   "fixed_inputs": {
-    "07_implementation/implementation_notes/profile/outputs/bl004_seed_trace.csv": "6378F963A43ADAACE2818945E1F5216323D1880853085446FDB74D00CD7B525C",
-    "07_implementation/implementation_notes/retrieval/outputs/bl005_filtered_candidates.csv": "77AE5D53D3D2A1682787127D508897C89BAF6043F7442624516BCACBEBEDA505",
-    "07_implementation/implementation_notes/retrieval/outputs/bl005_candidate_decisions.csv": "768D2A6EBF6E55C56907A74AB4BC1EBB7C83837F547DD1DA3F97149EBD1E69E8",
-    "07_implementation/implementation_notes/scoring/outputs/bl006_scored_candidates.csv": "128F7E4CD5C485EA7B31E5B68F9EC496DB1D263B56C27713C58DF674717E2145",
-    "07_implementation/implementation_notes/playlist/outputs/bl007_assembly_trace.csv": "46ACA139C57AF326843FBDF96A2C2DE4D40525C41BAE112E17B3AD05E4B66EF4"
+    "07_implementation/implementation_notes/profile/outputs/bl004_seed_trace.csv": "CCC8B1824BC40AB7B5668040434E7ABC910ABB541858CC0996741BEC02A75FB9",
+    "07_implementation/implementation_notes/retrieval/outputs/bl005_filtered_candidates.csv": "8B5B19EB1257CF4116E9D166FAC96859A4AC502CDCBF78728074F1A8A4C0FBCD",
+    "07_implementation/implementation_notes/retrieval/outputs/bl005_candidate_decisions.csv": "5E91AE05F3E9E0255997D880E24F811B2A42C74CD162F7F93C1D1FB9137B71FF",
+    "07_implementation/implementation_notes/scoring/outputs/bl006_scored_candidates.csv": "64F7FB2C3D6389479A40D5B075F25DD1D14413E1F19B49A8E43BA4BA533E9C70",
+    "07_implementation/implementation_notes/playlist/outputs/bl007_assembly_trace.csv": "7F5FC6AD951C6066CA9EBF8597D51EB68D73A8EF5DB557D1752DFFBC5E7D4D42"
   },
   "optional_dependency_availability": {
     "bl016_events": {
@@ -29,7 +29,7 @@
     }
   },
   "stage_scripts": {
-    "07_implementation/implementation_notes/profile/build_bl004_preference_profile.py": "39CF3DF90AEFE0E6B1C1810F21B50CF80C9C368AA95E791A2924EC73E0FA600D",
+    "07_implementation/implementation_notes/profile/build_bl004_preference_profile.py": "299CBE7023391A60F4DDEEAD3E0CC7BD32A25045ADE006995298D21E414FE2F5",
     "07_implementation/implementation_notes/retrieval/build_bl005_candidate_filter.py": "01293DA7F3E82DB63034CD20FF26DCC9FF280A12AB556E70338C4816DB3942FD",
     "07_implementation/implementation_notes/scoring/build_bl006_scored_candidates.py": "3208056FF900217BAABCE3F4C97B0AF5393ADAFE3D4DEE1D4FC62DAA22A98F3F",
     "07_implementation/implementation_notes/playlist/build_bl007_playlist.py": "2D50361B085928F67C6ACF9CCF422D8939CE888077B68008F8395282140B9F0B",

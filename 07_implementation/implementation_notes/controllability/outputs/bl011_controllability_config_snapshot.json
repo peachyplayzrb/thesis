@@ -1,10 +1,10 @@
 {
   "task": "BL-011",
   "generated_from": "07_implementation/implementation_notes/reproducibility/outputs/bl010_reproducibility_config_snapshot.json",
-  "baseline_config_hash": "4C6934E266AD3E572562CC2115CEDF2F1D8AAE16E4DE9D8E89E442ED3A46C0CB",
+  "baseline_config_hash": "A355BE084C101D0E9468097DCC83C074C29E14C974113520519C643A45D4FAED",
   "input_source": "active_pipeline_outputs",
   "fixed_inputs": {
-    "07_implementation/implementation_notes/profile/outputs/bl004_seed_trace.csv": "6378F963A43ADAACE2818945E1F5216323D1880853085446FDB74D00CD7B525C",
+    "07_implementation/implementation_notes/profile/outputs/bl004_seed_trace.csv": "CCC8B1824BC40AB7B5668040434E7ABC910ABB541858CC0996741BEC02A75FB9",
     "07_implementation/implementation_notes/data_layer/outputs/ds001_working_candidate_dataset.csv": "296331CA6390D2C111AA336C7EB154B69EC7060604312AC8A274F545B68A04EF"
   },
   "optional_dependency_availability": {

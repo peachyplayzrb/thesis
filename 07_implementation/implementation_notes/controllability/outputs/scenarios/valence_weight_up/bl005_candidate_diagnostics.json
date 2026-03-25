@@ -1,5 +1,5 @@
 {
-  "run_id": "BL011-VALENCE_WEIGHT_UP-BL005-20260325-020853-975531",
+  "run_id": "BL011-VALENCE_WEIGHT_UP-BL005-20260325-033712-815046",
   "task": "BL-005",
   "scenario_id": "valence_weight_up",
   "config": {
@@ -17,38 +17,38 @@
   },
   "counts": {
     "candidate_rows_total": 109269,
-    "seed_tracks_excluded": 1563,
-    "kept_candidates": 56691,
-    "rejected_non_seed_candidates": 51015
+    "seed_tracks_excluded": 1058,
+    "kept_candidates": 72246,
+    "rejected_non_seed_candidates": 35965
   },
   "rule_hits": {
     "semantic_rule_hits": {
-      "lead_genre_match": 20939,
-      "genre_overlap": 52245,
-      "tag_overlap": 53420
+      "lead_genre_match": 23936,
+      "genre_overlap": 62883,
+      "tag_overlap": 67276
     },
     "numeric_rule_hits": {
-      "tempo": 55033,
-      "key": 28584,
+      "tempo": 54845,
+      "key": 37653,
       "mode": 68257,
-      "duration_ms": 47777
+      "duration_ms": 58778
     }
   },
   "top_kept_track_ids": [
     "0009fFIM1eYThaPg",
     "002Jyd0vN4HyCpqL",
-    "007LIJOPQ4Sb98qV",
+    "00CH4HJdxQQQbJfu",
+    "00DZ3XCAQb2FdCc6",
     "00IeldeA9ijZOL0P",
     "00KSCJkYb8JKa4Y3",
     "00LuPWdOccBb09bW",
-    "00P2bHdWFkghmDqz",
     "00XWljDxNBgBKEEA",
     "00b6fV3nx5z2b8Ls",
     "00hFmpewuNvc4dRL",
     "00i0OB17z3m3yamO",
     "00mLjKFmaTv9MdaB",
+    "00uLdNEc6yXbIxyW",
     "00wqHIO65EtRyRQM",
-    "013BFFjvohJT9dW9",
-    "013QDoTqbexEwkHr"
+    "013BFFjvohJT9dW9"
   ]
 }
