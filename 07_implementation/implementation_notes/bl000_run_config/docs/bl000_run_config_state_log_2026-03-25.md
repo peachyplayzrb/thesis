@@ -126,3 +126,31 @@ Checks executed for this state log:
 
 ## 8. Conclusion
 BL-000 run config is operational, wired through the active BL-013 to BL-009 path, and has current canonical artifact evidence for the latest run. No blocking issue was found for run-config operation under the current contract, and the previous `seed_controls` normalization inconsistency has been remediated.
+
+## 9. UI-013 Delta Update (2026-03-25 23:00 UTC)
+Objective:
+- Complete focused BL-008 explanation-diversity control uplift through run-config without introducing hardcoded selection logic.
+
+Implemented control-surface additions:
+- `transparency_controls.blend_primary_contributor_on_near_tie` (bool)
+- `transparency_controls.primary_contributor_tie_delta` (non-negative float)
+
+Resolver and normalization status:
+- `run_config_utils.py` now canonicalizes both fields in effective config resolution and exposes them through `resolve_bl008_controls`.
+- BL-008 runtime now consumes these controls from run-config when `BL_RUN_CONFIG_PATH` is set.
+
+Validated profile and runtime evidence:
+- Active tuned profile: `configs/profiles/run_config_ui013_tuning_v1b.json`
+- Effective transparency controls in latest validated run:
+  - `top_contributor_limit=3`
+  - `blend_primary_contributor_on_near_tie=true`
+  - `primary_contributor_tie_delta=0.09`
+
+Latest canonical artifact pair (focused validation run):
+- `outputs/run_intent_latest.json`
+  - run_id: `BL013-ENTRYPOINT-20260325-225725-328263`
+- `outputs/run_effective_config_latest.json`
+  - run_id: `BL013-ENTRYPOINT-20260325-225725-328263`
+
+Outcome linkage:
+- BL-008 top-label dominance share reduced to `0.5` on v1b-focused rerun, satisfying UI-013 target (`<= 0.6`) while BL-014 remains pass.

@@ -700,6 +700,33 @@ review_date: none
 
 ---
 
+id: D-030
+date: 2026-03-25
+status: accepted
+context: UI-013 remained open after controlled sweep because BL-008 explanation top-label dominance stayed high (`0.8` in the best v1b profile candidate) even when BL-003/BL-005/BL-006 and BL-014 conditions were acceptable. Existing BL-008 distribution logic used only the first-ranked contributor label per track, which amplified contributor concentration in summaries.
+decision: Introduce a config-driven near-tie primary-driver selection policy for BL-008 explanations. Add `transparency_controls.blend_primary_contributor_on_near_tie` and `transparency_controls.primary_contributor_tie_delta` to run-config, and compute `primary_explanation_driver` per track by rotating across near-tied top contributors when enabled. Define BL-008 dominance from this primary-driver label distribution.
+alternatives_considered:
+- Continue using strict first-ranked contributor only (rejected: failed UI-013 dominance target on v1b)
+- Hardcode stage-specific diversity heuristics without run-config controls (rejected: weak governance/auditability)
+- Rebalance BL-006 component weights solely to force explanation diversity (rejected: over-couples scoring semantics to narrative output objective)
+rationale: A dedicated transparency control surface preserves the principle that behavior should be user-configurable and auditable in run-config. Near-tie blending addresses explanation concentration when contributions are close while avoiding arbitrary overrides when one contributor is clearly dominant.
+evidence_basis: `07_implementation/implementation_notes/bl000_run_config/run_config_utils.py`; `07_implementation/implementation_notes/bl008_transparency/build_bl008_explanation_payloads.py`; v1b validation run `BL013-ENTRYPOINT-20260325-225725-328263`; BL-014 pass `BL014-SANITY-20260325-225735-601840`; BL-008 distribution `{Lead genre match:5, Tag overlap:3, Genre overlap:2}` and dominance share `0.5`.
+impacted_files:
+- `00_admin/decision_log.md`
+- `00_admin/change_log.md`
+- `00_admin/unresolved_issues.md`
+- `00_admin/thesis_state.md`
+- `07_implementation/implementation_notes/bl000_run_config/run_config_utils.py`
+- `07_implementation/implementation_notes/bl008_transparency/build_bl008_explanation_payloads.py`
+- `07_implementation/implementation_notes/bl000_run_config/configs/profiles/run_config_ui013_tuning_v1b.json`
+- `07_implementation/implementation_notes/bl000_run_config/docs/bl000_run_config_state_log_2026-03-25.md`
+- `07_implementation/implementation_notes/bl008_transparency/bl008_state_log_2026-03-24.md`
+- `07_implementation/experiment_log.md`
+- `07_implementation/test_notes.md`
+review_date: none
+
+---
+
 id: D-029
 date: 2026-03-25
 status: accepted

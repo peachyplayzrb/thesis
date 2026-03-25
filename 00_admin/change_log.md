@@ -26,6 +26,7 @@ Maintenance snapshot (2026-03-25):
 | C-171 | 2026-03-25 16:40 | Copilot | Completed BL-ordered implementation-notes path migration hardening, fixed missed path-construction references across stage scripts, reran BL-013 to pass, reran BL-014 to 21/21 pass, and updated handoff-critical admin state for chat transition. |
 | C-172 | 2026-03-25 18:25 | Copilot | Expanded implementation state into a comprehensive issue-focused health report and synchronized admin control files (`thesis_state.md`, `unresolved_issues.md`) to track active optimization and evidence-hygiene risks. |
 | C-173 | 2026-03-25 22:55 | Copilot | Implemented config-surface control uplift (`control_mode` + config-driven BL-009 bootstrap mode), refreshed BL-000/BL-009 state logs and implementation state, and synchronized admin tracking files for UI-013 progress evidence. |
+| C-174 | 2026-03-25 23:00 | Copilot | Implemented and validated BL-008 explanation-diversity control uplift (near-tie primary-driver blending), updated stage/test/admin logs, and confirmed UI-013 BL-008 dominance target pass on v1b (`0.5` <= `0.6`) with BL-014 pass. |
 ## C-162
 - date: 2026-03-25
 - proposed_by: Copilot
@@ -148,6 +149,17 @@ Maintenance snapshot (2026-03-25):
 - evidence_basis: `run_config_utils.py` now resolves `control_mode` fields (`validation_profile`, `allow_threshold_decoupling`, `allow_weight_auto_normalization`) and `observability_controls.bootstrap_mode`; BL-009 run log includes `run_config.control_mode` and config-driven `run_metadata.bootstrap_mode`; BL-000 and BL-009 stage state logs plus `IMPLEMENTATION_STATE_2026-03-24.md` were updated to reflect this baseline.
 - affected_components: `07_implementation/implementation_notes/bl000_run_config/run_config_utils.py`, `07_implementation/implementation_notes/bl009_observability/build_bl009_observability_log.py`, `07_implementation/implementation_notes/bl000_run_config/configs/templates/run_config_template_v1.json`, `07_implementation/implementation_notes/bl000_run_config/outputs/run_config_profile_test_threshold_015.json`, `07_implementation/implementation_notes/bl000_run_config/docs/bl000_run_config_state_log_2026-03-25.md`, `07_implementation/implementation_notes/bl009_observability/bl009_state_log_2026-03-24.md`, `07_implementation/IMPLEMENTATION_STATE_2026-03-24.md`, `00_admin/thesis_state.md`, `00_admin/unresolved_issues.md`, `00_admin/change_log.md`
 - impact_assessment: High-positive for controllability and governance clarity. Moves behavior-selection decisions from hardcoded defaults into explicit run-config controls while preserving strict-safe defaults.
+- approval_record: Requested and confirmed by user in chat on 2026-03-25.
+
+## C-174
+- date: 2026-03-25
+- proposed_by: Copilot
+- status: accepted
+- change_summary: Implemented BL-008-focused explanation-diversity control uplift by adding near-tie primary-driver blending controls to run-config, wiring BL-008 primary-driver selection to those controls, and validating UI-013 acceptance on the v1b profile.
+- reason: UI-013 remained blocked by BL-008 top-label dominance (`0.8`), requiring a bounded, auditable, config-driven remediation pass.
+- evidence_basis: BL-013 pass `BL013-ENTRYPOINT-20260325-225725-328263`; BL-014 pass `BL014-SANITY-20260325-225735-601840`; BL-008 distribution `Lead genre match:5, Tag overlap:3, Genre overlap:2`; dominance share `0.5`; focused evidence artifact `_scratch/ui013_v1b_bl008_focus_result.json`.
+- affected_components: `07_implementation/implementation_notes/bl000_run_config/run_config_utils.py`, `07_implementation/implementation_notes/bl008_transparency/build_bl008_explanation_payloads.py`, `07_implementation/implementation_notes/bl000_run_config/configs/profiles/run_config_ui013_tuning_v1b.json`, `07_implementation/implementation_notes/bl000_run_config/docs/bl000_run_config_state_log_2026-03-25.md`, `07_implementation/implementation_notes/bl008_transparency/bl008_state_log_2026-03-24.md`, `07_implementation/experiment_log.md`, `07_implementation/test_notes.md`, `07_implementation/IMPLEMENTATION_STATE_2026-03-24.md`, `00_admin/unresolved_issues.md`, `00_admin/thesis_state.md`, `00_admin/change_log.md`, `00_admin/decision_log.md`
+- impact_assessment: High-positive. Clears the remaining BL-008 UI-013 acceptance gate while preserving strict run-config governance and BL-014 quality pass status.
 - approval_record: Requested and confirmed by user in chat on 2026-03-25.
 ## C-006
 

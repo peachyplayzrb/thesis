@@ -1,6 +1,6 @@
 # Unresolved Issues
 
-Last updated: 2026-03-25 22:55 UTC
+Last updated: 2026-03-25 23:00 UTC
 
 ## Active
 
@@ -25,17 +25,27 @@ Last updated: 2026-03-25 22:55 UTC
 		1. Comprehensive implementation issue register was consolidated in `07_implementation/IMPLEMENTATION_STATE_2026-03-24.md`.
 		2. Runtime and assurance stages are passing, but optimization debt remains visible in BL-003/BL-005/BL-006/BL-008 and governance-hygiene drift remains in BL-010/BL-011 path semantics.
 		3. Config-surface control uplift implemented: run-config now exposes explicit `control_mode` governance switches (`validation_profile`, `allow_threshold_decoupling`, `allow_weight_auto_normalization`) and BL-009 observability `bootstrap_mode` is now config-driven instead of hardcoded.
+		4. Canonical UI-013 tuning baseline is now fixed at `07_implementation/implementation_notes/bl000_run_config/configs/profiles/run_config_ui013_tuning_v1.json`.
+		5. Controlled sweep executed (`v1`, `v1a`, `v1b`, `v1c`) with BL-013 + BL-014 and metric extraction in `_scratch/ui013_tuning_sweep_results.json`.
+		6. Interim best candidate for precision/scoring balance is `run_config_ui013_tuning_v1b.json` (`kept_candidates=55643`, `numeric_minus_semantic=-0.112839`, BL-014 pass).
+		7. Focused BL-008 diversity pass completed: `run_config_ui013_tuning_v1b.json` now enables near-tie primary-driver blending (`primary_contributor_tie_delta=0.09`), producing `top_contributor_distribution={Lead genre match:5, Tag overlap:3, Genre overlap:2}` and dominance share `0.5` (target <= 0.6 met).
 	- next_action:
-		1. Define target thresholds for BL-003 match-rate and BL-005 kept-candidate volume under one canonical tuning config.
-		2. Run one controlled tuning sweep for BL-005/BL-006 weight and gate settings with BL-009 diagnostic comparison.
-		3. Normalize BL-010/BL-011 report path semantics to BL-prefixed canonical rendering.
-		4. Log closure evidence and map unresolved items to Chapter 4 limitation language if deferred.
+		1. Execute all UI-013 tuning runs using only `run_config_ui013_tuning_v1.json` as the baseline lineage source.
+		2. Run one controlled BL-005/BL-006 tuning sweep (max 3 variants) and compare BL-009 diagnostics against the baseline.
+		3. Evaluate acceptance targets:
+			- BL-003: `match_rate_validation.threshold_enforced=true` and `actual_match_rate >= 0.15`
+			- BL-005: `kept_candidates <= 65000`
+			- BL-006: `numeric_contribution_mean - semantic_contribution_mean <= 0.015`
+			- BL-008: no single top-contributor label accounts for > 60% of playlist explanations
+		4. Normalize BL-010/BL-011 report path semantics to BL-prefixed canonical rendering.
+		5. Log closure evidence and map unresolved items to Chapter 4 limitation language if deferred.
 	- owner: AI + user
 	- status: open
 	- due_window: 2026-03-25 to 2026-03-31
 
 Active-set sync note (2026-03-25 18:25 UTC): Open items are UI-003 (citation package closure) and UI-013 (pipeline optimization and evidence-hygiene closure).
 Active-set sync note (2026-03-25 22:55 UTC): Open items remain UI-003 (citation package closure) and UI-013 (pipeline optimization and evidence-hygiene closure); UI-013 control-surface uplift is implemented, optimization tuning closure is pending.
+Active-set sync note (2026-03-25 23:00 UTC): Open items remain UI-003 and UI-013; UI-013 BL-008 explanation-dominance criterion is now passing under the v1b profile, with remaining closure work centered on BL-010/BL-011 path-semantics normalization and final evidence packaging.
 
 ## Resolved (Recent)
 

@@ -3965,4 +3965,98 @@ Do NOT download: audio files (.mp3), id_incp/id_resnet/id_vgg19 (video features)
 - immediate_follow_up: keep this as current baseline and proceed to any remaining quality/report packaging tasks.
 - backlog_status_recommendation: BL-011 remains done; BL-013 remains done.
 
+---
+
+## EXP-043
+- date: 2026-03-25
+- backlog_link: `BL-008`, `UI-013`
+- owner: AI + user
+- status: pass
+- related_test_id: `TC-UI013-BL008-DIVERSITY-001`
+
+### Objective
+- Reduce BL-008 explanation top-label dominance to meet UI-013 acceptance (`<= 0.60`) using config-driven controls instead of hardcoded contributor overrides.
+
+### Scope Check
+- In-scope confirmation: yes, this is a focused UI-013 closure pass on BL-008 transparency behavior.
+- Protected items affected? no
+
+### Inputs
+- source_data:
+  - `07_implementation/implementation_notes/bl006_scoring/outputs/bl006_scored_candidates.csv`
+  - `07_implementation/implementation_notes/bl006_scoring/outputs/bl006_score_summary.json`
+  - `07_implementation/implementation_notes/bl007_playlist/outputs/bl007_playlist.json`
+  - `07_implementation/implementation_notes/bl007_playlist/outputs/bl007_assembly_trace.csv`
+- config_or_parameters:
+  - profile: `run_config_ui013_tuning_v1b.json`
+  - `transparency_controls.blend_primary_contributor_on_near_tie=true`
+  - `transparency_controls.primary_contributor_tie_delta=0.09`
+- code_or_script_path:
+  - `07_implementation/implementation_notes/bl000_run_config/run_config_utils.py`
+  - `07_implementation/implementation_notes/bl008_transparency/build_bl008_explanation_payloads.py`
+- dependency assumptions:
+  - BL-013 orchestrates BL-003 through BL-009 with resolved run-config controls.
+
+### Expected Evidence
+- primary_output_artifact:
+  - `07_implementation/implementation_notes/bl008_transparency/outputs/bl008_explanation_summary.json`
+- secondary_output_artifacts:
+  - `07_implementation/implementation_notes/bl008_transparency/outputs/bl008_explanation_payloads.json`
+  - `07_implementation/implementation_notes/bl013_entrypoint/outputs/bl013_orchestration_run_BL013-ENTRYPOINT-20260325-225725-328263.json`
+  - `07_implementation/implementation_notes/bl014_quality/outputs/bl014_sanity_report.json`
+  - `_scratch/ui013_v1b_bl008_focus_result.json`
+- success_condition:
+  - BL-008 dominance share <= 0.60 with BL-014 pass.
+
+### Run Record
+- command_or_execution_method:
+  - `python run_bl013_pipeline_entrypoint.py --run-config ...run_config_ui013_tuning_v1b.json --refresh-seed`
+  - `python run_bl014_sanity_checks.py`
+- run_id:
+  - `BL013-ENTRYPOINT-20260325-225725-328263`
+  - `BL014-SANITY-20260325-225735-601840`
+- start_state_summary:
+  - BL-008 dominance remained `0.8` under earlier v1b controls.
+- end_state_summary:
+  - BL-008 dominance reduced to `0.5` with near-tie primary-driver blending controls enabled.
+
+### Results
+- outcome_summary:
+  - Focused BL-008 diversity pass succeeded and met the UI-013 contributor-dominance criterion.
+- key_metrics:
+  - `bl003_threshold_enforced=true`
+  - `bl003_match_rate=0.1632`
+  - `bl005_kept_candidates=55643`
+  - `bl006_gap_numeric_minus_semantic=-0.112839`
+  - `bl008_top_contributor_distribution={Lead genre match:5, Tag overlap:3, Genre overlap:2}`
+  - `bl008_top_label_dominance_share=0.5`
+  - `bl014_overall_status=pass`
+- deterministic_repeat_checked: no
+- output_paths:
+  - `07_implementation/implementation_notes/bl008_transparency/outputs/bl008_explanation_summary.json`
+  - `_scratch/ui013_v1b_bl008_focus_result.json`
+
+### Issues And Limits
+- failures_or_anomalies:
+  - Initial tie-delta `0.025` was too narrow for observed contribution gaps and did not activate enough blending.
+- likely_cause:
+  - Most top-vs-second contributor deltas in this run were between `0.04` and `0.09`.
+- bounded_mvp_limitation_or_bug:
+  - Diversity actuation depends on observed near-tie ranges and may require profile-specific tie-delta tuning.
+
+### Thesis Traceability
+- chapter4_relevance:
+  - Provides concrete controllability evidence that explanation behavior can be tuned through explicit run-config controls.
+- chapter5_relevance:
+  - Supports limitation framing on profile-dependent tuning sensitivity.
+- quality_control_files_to_update:
+  - `07_implementation/test_notes.md`
+  - `00_admin/unresolved_issues.md`
+
+### Next Action
+- immediate_follow_up:
+  - Complete UI-013 remaining closure work on BL-010/BL-011 report path-semantics normalization.
+- backlog_status_recommendation:
+  - Mark BL-008 diversity-focused UI-013 action as complete.
+
 

@@ -1,0 +1,16 @@
+{
+  "config": "run_config_ui013_tuning_v1b.json",
+  "run_id_bl013": "BL013-ENTRYPOINT-20260325-225725-328263",
+  "run_id_bl014": "BL014-SANITY-20260325-225735-601840",
+  "bl003_threshold_enforced": true,
+  "bl003_match_rate": 0.1632,
+  "bl005_kept_candidates": 55643,
+  "bl006_gap_numeric_minus_semantic": -0.112839,
+  "bl008_top_contributor_distribution": {
+    "Lead genre match": 5,
+    "Tag overlap": 3,
+    "Genre overlap": 2
+  },
+  "bl008_top_label_dominance_share": 0.5,
+  "bl014_overall_status": "pass"
+}

@@ -89,6 +89,8 @@ DEFAULT_RUN_CONFIG: dict[str, Any] = {
     },
     "transparency_controls": {
         "top_contributor_limit": 3,
+        "blend_primary_contributor_on_near_tie": False,
+        "primary_contributor_tie_delta": 0.02,
     },
     "observability_controls": {
         "diagnostic_sample_limit": 5,
@@ -157,6 +159,14 @@ def _coerce_validation_profile(value: Any, default: str) -> str:
         if token in allowed:
             return token
     return default
+
+
+def _coerce_non_negative_float(value: Any, default: float) -> float:
+    try:
+        parsed = float(value)
+    except (TypeError, ValueError):
+        return default
+    return parsed if parsed >= 0 else default
 
 def _validate_positive_thresholds(thresholds: dict[str, Any] | None, context: str) -> dict[str, float]:
     """Validate that all numeric thresholds in the dict are positive (> 0).
@@ -556,6 +566,23 @@ def resolve_effective_run_config(run_config_path: str | Path | None) -> tuple[di
         bool(observability_defaults["bootstrap_mode"]),
     )
 
+    transparency_controls = effective.setdefault("transparency_controls", {})
+    if not isinstance(transparency_controls, dict):
+        raise RunConfigError("run_config.transparency_controls must be an object")
+    transparency_defaults = DEFAULT_RUN_CONFIG["transparency_controls"]
+    transparency_controls["top_contributor_limit"] = _coerce_positive_int(
+        transparency_controls.get("top_contributor_limit"),
+        int(transparency_defaults["top_contributor_limit"]),
+    )
+    transparency_controls["blend_primary_contributor_on_near_tie"] = _coerce_bool(
+        transparency_controls.get("blend_primary_contributor_on_near_tie"),
+        bool(transparency_defaults["blend_primary_contributor_on_near_tie"]),
+    )
+    transparency_controls["primary_contributor_tie_delta"] = _coerce_non_negative_float(
+        transparency_controls.get("primary_contributor_tie_delta"),
+        float(transparency_defaults["primary_contributor_tie_delta"]),
+    )
+
     return effective, path
 
 
@@ -707,6 +734,14 @@ def resolve_bl008_controls(run_config_path: str | Path | None) -> dict[str, Any]
         "top_contributor_limit": _coerce_positive_int(
             transparency.get("top_contributor_limit"),
             defaults["top_contributor_limit"],
+        ),
+        "blend_primary_contributor_on_near_tie": _coerce_bool(
+            transparency.get("blend_primary_contributor_on_near_tie"),
+            bool(defaults["blend_primary_contributor_on_near_tie"]),
+        ),
+        "primary_contributor_tie_delta": _coerce_non_negative_float(
+            transparency.get("primary_contributor_tie_delta"),
+            float(defaults["primary_contributor_tie_delta"]),
         ),
     }
 

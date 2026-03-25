@@ -1054,3 +1054,44 @@ Tier-1 control stack validated as coherent and operational:
 
 - [unresolved_issues.md](../../00_admin/unresolved_issues.md) - UI-010 active risk entry with full context and remediation plan
 - [change_log.md](../../00_admin/change_log.md) - C-150 entry documenting BL-010/BL-011 refactoring + validation
+
+## Test Case TC-UI013-BL008-DIVERSITY-001: Primary-Driver Dominance Control
+
+- Date: 2026-03-25
+- Backlog link: `BL-008`, `UI-013`
+- Purpose: Validate that BL-008 explanation dominance can be reduced to the UI-013 threshold using config-driven near-tie primary-driver controls.
+
+### Inputs
+- BL-008 controls via run-config profile:
+	- `07_implementation/implementation_notes/bl000_run_config/configs/profiles/run_config_ui013_tuning_v1b.json`
+- Control settings:
+	- `top_contributor_limit=3`
+	- `blend_primary_contributor_on_near_tie=true`
+	- `primary_contributor_tie_delta=0.09`
+- Scripts:
+	- `07_implementation/implementation_notes/bl013_entrypoint/run_bl013_pipeline_entrypoint.py`
+	- `07_implementation/implementation_notes/bl014_quality/run_bl014_sanity_checks.py`
+
+### Pass Criteria
+- BL-013 completes pass with v1b profile.
+- BL-014 completes pass.
+- BL-008 top-label dominance share is <= `0.60`.
+- BL-008 summary reflects multi-label primary-driver distribution.
+
+### Actual Result
+- Status: pass
+- Observed metrics:
+	- `bl013_run_id=BL013-ENTRYPOINT-20260325-225725-328263`
+	- `bl014_run_id=BL014-SANITY-20260325-225735-601840`
+	- `bl014_overall_status=pass`
+	- `bl003_threshold_enforced=true`
+	- `bl003_match_rate=0.1632`
+	- `bl005_kept_candidates=55643`
+	- `bl006_gap_numeric_minus_semantic=-0.112839`
+	- `bl008_top_contributor_distribution={Lead genre match:5, Tag overlap:3, Genre overlap:2}`
+	- `bl008_top_label_dominance_share=0.5`
+
+### Evidence Artifacts
+- `07_implementation/implementation_notes/bl008_transparency/outputs/bl008_explanation_summary.json`
+- `07_implementation/implementation_notes/bl008_transparency/outputs/bl008_explanation_payloads.json`
+- `_scratch/ui013_v1b_bl008_focus_result.json`

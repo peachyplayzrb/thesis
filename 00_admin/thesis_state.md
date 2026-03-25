@@ -1,6 +1,6 @@
 # Thesis State
 
-Last updated: 2026-03-25 22:55 UTC
+Last updated: 2026-03-25 23:00 UTC
 
 ## Official Current State
 
@@ -67,7 +67,7 @@ The active execution corpus is DS-001 (Music4All base path). DS-002 (`MSD subset
 3. Keep website integration under bounded hardening only (`WP-WEBINT-001`): bug fixes, observability clarity, and orchestration reliability without scope expansion.
 4. Keep M3/M4 execution status synchronized with implementation reality and package evidence for M5 evaluation consolidation.
 
-Priority status checkpoint (2026-03-25 22:55 UTC): Tier-1 pipeline remediation package remains complete and integrated validation remains passing on the BL-prefixed baseline. UI-013 progressed with config-surface control uplift (explicit `control_mode` governance switches and config-driven BL-009 `bootstrap_mode`), while optimization-quality closure work remains open.
+Priority status checkpoint (2026-03-25 23:00 UTC): Tier-1 pipeline remediation package remains complete and integrated validation remains passing on the BL-prefixed baseline. UI-013 progressed further with BL-008 explanation-diversity control uplift validated on v1b (`top-label dominance=0.5`, target `<=0.6`, BL-014 pass), while remaining optimization-quality closure work is centered on BL-010/BL-011 path-semantics normalization and final evidence packaging.
 
 ## Current Implementation Status
 
@@ -106,10 +106,10 @@ See: `07_implementation/BL020_HANDOFF_AUDIT_2026-03-21.md` for comprehensive pre
 ## Update Control
 
 - Last updated:
-2026-03-25 22:55 UTC
+2026-03-25 23:00 UTC
 
 - Reason for last update:
-(1) Record UI-013 control-surface uplift where run-config now exposes explicit governance switches (`control_mode`) and BL-009 `bootstrap_mode` is config-driven. (2) Synchronize implementation/admin state files and stage logs to the latest control-layer evidence.
+(1) Record UI-013 BL-008 focused pass closure progress with config-driven near-tie primary-driver blending controls and validated dominance-target pass on v1b. (2) Synchronize implementation/admin state files and stage logs to the latest run evidence.
 
 ## Locked Definitions
 - Artefact scope lock: `00_admin/Artefact_MVP_definition.md`

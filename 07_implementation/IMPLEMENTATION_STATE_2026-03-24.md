@@ -20,6 +20,15 @@ Overall health:
 - Governance health: strong
 - Optimization health: moderate (precision/coverage/explanation quality issues remain)
 
+UI-013 focused delta (2026-03-25 23:00 UTC):
+
+- BL-008 explanation-diversity control uplift implemented and validated.
+- v1b focused rerun passed BL-013 and BL-014 with dominance target met:
+  - BL-013: `BL013-ENTRYPOINT-20260325-225725-328263`
+  - BL-014: `BL014-SANITY-20260325-225735-601840`
+  - BL-008 primary-driver distribution: `{Lead genre match:5, Tag overlap:3, Genre overlap:2}`
+  - BL-008 top-label dominance share: `0.5` (target `<= 0.6`)
+
 ---
 
 ## 2. Active Architecture
@@ -208,16 +217,18 @@ This section tracks concrete implementation issues visible in current logs.
   - tune BL-005/BL-006 so BL-007 receives a narrower, cleaner pool
   - adjust threshold/diversity controls with run-level diagnostics
 
-### 4.5 Explanation diversity is narrow (BL-008)
+### 4.5 Explanation diversity was narrow (BL-008)
 
 - Evidence:
-  - top contributors concentrated in `Tempo (BPM)` and `Lead genre match`
+  - historical runs showed concentration in one top label.
+  - focused v1b rerun now reports `Lead genre match:5`, `Tag overlap:3`, `Genre overlap:2`.
 - Current impact:
-  - explanations can feel repetitive and template-like
+  - baseline concentration risk is materially reduced on the active v1b profile.
 - Risk level: medium
+  - updated status: controlled (profile- and parameter-dependent)
 - Mitigation direction:
-  - rebalance upstream scoring contributions
-  - extend explanation templates with richer context fields
+  - keep near-tie blending controls in run-config for tuned profiles.
+  - continue explanation-template enrichment for contextual variety.
 
 ### 4.6 Observability payload interpretation friction (BL-009)
 
@@ -330,4 +341,4 @@ Use these files as source of truth:
 
 ## 8. Conclusion
 
-Implementation status is operationally strong, with all major runtime and assurance stages passing, but optimization and governance-quality improvements are still needed in alignment coverage, retrieval precision, scoring balance, explanation richness, and evidence readability.
+Implementation status is operationally strong, with all major runtime and assurance stages passing. The BL-008 UI-013 dominance criterion is now met in the active v1b tuning profile; remaining optimization and governance-quality work is concentrated in alignment coverage, retrieval precision, scoring-balance tuning policy, and evidence readability/path-semantics hygiene.

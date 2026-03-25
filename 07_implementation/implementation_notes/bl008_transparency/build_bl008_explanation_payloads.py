@@ -112,12 +112,16 @@ def resolve_bl008_runtime_controls() -> dict[str, object]:
             "run_config_path": controls.get("config_path"),
             "run_config_schema_version": controls.get("schema_version"),
             "top_contributor_limit": int(controls["top_contributor_limit"]),
+            "blend_primary_contributor_on_near_tie": bool(controls.get("blend_primary_contributor_on_near_tie", False)),
+            "primary_contributor_tie_delta": float(controls.get("primary_contributor_tie_delta", 0.02)),
         }
     return {
         "config_source": "environment",
         "run_config_path": None,
         "run_config_schema_version": None,
         "top_contributor_limit": max(1, env_int("BL008_TOP_CONTRIBUTOR_LIMIT", DEFAULT_TOP_CONTRIBUTOR_LIMIT)),
+        "blend_primary_contributor_on_near_tie": False,
+        "primary_contributor_tie_delta": 0.02,
     }
 
 
@@ -147,6 +151,39 @@ def build_why_selected(track_id: str, lead_genre: str, final_score: float,
     )
 
 
+def select_primary_explanation_driver(
+    top_contributors: list[dict],
+    playlist_position: int,
+    *,
+    enable_near_tie_blend: bool,
+    near_tie_delta: float,
+) -> dict:
+    if not top_contributors:
+        return {
+            "component": "unknown",
+            "label": "Unknown",
+            "weight": 0.0,
+            "similarity": 0.0,
+            "contribution": 0.0,
+        }
+
+    if not enable_near_tie_blend or len(top_contributors) == 1:
+        return top_contributors[0]
+
+    best = float(top_contributors[0].get("contribution", 0.0))
+    near_tied = [
+        c
+        for c in top_contributors
+        if best - float(c.get("contribution", 0.0)) <= near_tie_delta
+    ]
+    if len(near_tied) <= 1:
+        return top_contributors[0]
+
+    # Rotate across near-tied contributors by playlist position to avoid one label dominating explanations.
+    idx = (max(int(playlist_position), 1) - 1) % len(near_tied)
+    return near_tied[idx]
+
+
 # ---------------------------------------------------------------------------
 # Main
 # ---------------------------------------------------------------------------
@@ -156,6 +193,8 @@ def main() -> None:
 
     runtime_controls = resolve_bl008_runtime_controls()
     top_contributor_limit = int(runtime_controls["top_contributor_limit"])
+    blend_primary_contributor_on_near_tie = bool(runtime_controls["blend_primary_contributor_on_near_tie"])
+    primary_contributor_tie_delta = float(runtime_controls["primary_contributor_tie_delta"])
 
     # Load BL-006 scored candidates keyed by track_id
     scored_index: dict[str, dict] = {}
@@ -211,6 +250,12 @@ def main() -> None:
 
         # Top-N contributors by contribution value.
         top_contributors = sorted(score_breakdown, key=lambda x: x["contribution"], reverse=True)[:top_contributor_limit]
+        primary_driver = select_primary_explanation_driver(
+            top_contributors,
+            playlist_pos,
+            enable_near_tie_blend=blend_primary_contributor_on_near_tie,
+            near_tie_delta=primary_contributor_tie_delta,
+        )
 
         # Assembly context
         exclusion_reason = trace_row.get("exclusion_reason", "")
@@ -232,6 +277,7 @@ def main() -> None:
             "final_score":        round(final_score, 6),
             "score_rank":         score_rank,
             "why_selected":       why_selected,
+            "primary_explanation_driver": primary_driver,
             "top_score_contributors": top_contributors,
             "score_breakdown":    score_breakdown,
             "assembly_context":   assembly_context,
@@ -275,14 +321,15 @@ def main() -> None:
     print(f"BL-008 explanation payloads complete. Tracks explained: {len(payloads)}")
     print(f"Run ID: {run_id}")
     for p in payloads:
-        print(f"  pos={p['playlist_position']:>2}  {p['track_id']}  top={p['top_score_contributors'][0]['label']}")
+        print(f"  pos={p['playlist_position']:>2}  {p['track_id']}  top={p['primary_explanation_driver']['label']}")
 
 
 def _top_contributor_counts(payloads: list) -> dict:
     from collections import Counter
     c: Counter = Counter()
     for p in payloads:
-        c[p["top_score_contributors"][0]["label"]] += 1
+        primary = p.get("primary_explanation_driver") or {}
+        c[primary.get("label", "Unknown")] += 1
     return dict(c)
 
 
