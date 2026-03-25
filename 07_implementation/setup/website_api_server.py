@@ -129,7 +129,7 @@ class SpotifyExportJob:
             str(self.python_executable),
             "-u",
             "-m",
-            "ingestion.export_spotify_max_dataset",
+            "bl001_bl002_ingestion.export_spotify_max_dataset",
             "--scopes",
             " ".join(scopes),
         ]

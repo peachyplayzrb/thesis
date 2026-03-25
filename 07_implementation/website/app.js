@@ -60,7 +60,7 @@ const cancelRunBtn = document.getElementById("cancel-run-btn");
 
 const IMPORT_GROUPS_KEY = "playlist_import_groups_v1";
 const MANUAL_INPUT_KEY = "playlist_manual_input_v1";
-const EXPORT_BASE = "../implementation_notes/ingestion/outputs/spotify_api_export";
+const EXPORT_BASE = "../implementation_notes/bl001_bl002_ingestion/outputs/spotify_api_export";
 const EXPORT_SUMMARY_PATH = `${EXPORT_BASE}/spotify_export_run_summary.json`;
 const EXPORT_TOP_TRACKS_PATH = `${EXPORT_BASE}/spotify_top_tracks_flat.csv`;
 const EXPORT_SAVED_TRACKS_PATH = `${EXPORT_BASE}/spotify_saved_tracks_flat.csv`;

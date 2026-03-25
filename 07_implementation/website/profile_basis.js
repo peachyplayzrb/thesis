@@ -25,7 +25,7 @@ const profileDecisionRulesNode = document.getElementById("profile-decision-rules
 
 const IMPORT_GROUPS_KEY = "playlist_import_groups_v1";
 const PROFILE_EXCLUSIONS_KEY = "playlist_profile_exclusions_v1";
-const EXPORT_BASE = "../implementation_notes/ingestion/outputs/spotify_api_export";
+const EXPORT_BASE = "../implementation_notes/bl001_bl002_ingestion/outputs/spotify_api_export";
 const EXPORT_PLAYLISTS_PATH = `${EXPORT_BASE}/spotify_playlists_flat.csv`;
 const EXPORT_RECENTLY_PLAYED_PATH = `${EXPORT_BASE}/spotify_recently_played_flat.csv`;
 const EXPORT_SUMMARY_PATH = `${EXPORT_BASE}/spotify_export_run_summary.json`;
@@ -608,7 +608,7 @@ async function reloadSourceData(statusMessage = "Imported data refreshed.") {
   updateSourceActionButtons();
 
   if (!state.groups.length) {
-    setStatus("warning", "No import data found. Save a selection from Import page or keep Spotify export files in implementation_notes/ingestion/outputs/spotify_api_export.");
+    setStatus("warning", "No import data found. Save a selection from Import page or keep Spotify export files in implementation_notes/bl001_bl002_ingestion/outputs/spotify_api_export.");
     return;
   }
 
