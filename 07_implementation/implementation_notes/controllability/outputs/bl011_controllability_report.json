@@ -1,17 +1,17 @@
 {
   "run_metadata": {
-    "run_id": "BL011-CTRL-20260324-235114",
+    "run_id": "BL011-CTRL-20260325-020828",
     "task": "BL-011",
-    "generated_at_utc": "2026-03-24T23:52:25Z",
-    "elapsed_seconds": 70.507,
-    "baseline_config_hash": "7DAE304FEFB113F5B5C6311F03141F29B655575A6E4B80331758CF5B49D0362E",
+    "generated_at_utc": "2026-03-25T02:09:28Z",
+    "elapsed_seconds": 59.573,
+    "baseline_config_hash": "4C6934E266AD3E572562CC2115CEDF2F1D8AAE16E4DE9D8E89E442ED3A46C0CB",
     "scenario_count": 5
   },
   "inputs": {
     "baseline_snapshot_path": "07_implementation/implementation_notes/reproducibility/outputs/bl010_reproducibility_config_snapshot.json",
     "controllability_config_snapshot_path": "07_implementation/implementation_notes/controllability/outputs/bl011_controllability_config_snapshot.json",
     "fixed_input_hashes": {
-      "07_implementation/implementation_notes/profile/outputs/bl004_seed_trace.csv": "2CFCBECE4C0009A514C90DCFCC8C8C4A003FB68491C6B735D2D4A54D7C1C4793",
+      "07_implementation/implementation_notes/profile/outputs/bl004_seed_trace.csv": "6378F963A43ADAACE2818945E1F5216323D1880853085446FDB74D00CD7B525C",
       "07_implementation/implementation_notes/data_layer/outputs/ds001_working_candidate_dataset.csv": "296331CA6390D2C111AA336C7EB154B69EC7060604312AC8A274F545B68A04EF"
     }
   },
@@ -117,66 +117,66 @@
         }
       },
       "stable_hashes": {
-        "profile_semantic_hash": "9F688BAF4E25DDFA965FBB75DE34C4C3292AC8CDDFB49AFA9FB44BA45023B89D",
-        "seed_trace_hash": "2C2FA90F811EF8189AB1B9EC1566083C1C422BF51A975484680B8EA8B6B18C8F",
-        "filtered_candidates_hash": "91B47C47B7160560DADFBEF139D54E8924A42ED50DA35215DC87A3745F4D8472",
-        "candidate_decisions_hash": "1455030144087E3F7CD9611726B56AF3D8B201FA34E87E527F1624A87805D979",
-        "ranked_output_hash": "72EE98F8A6498375B6721DFA863B86AC7F98334C5900562BA3CF3451395BCAE6",
-        "assembly_trace_hash": "8CC29CF1CB2EE6FBCFB87FE577221CD08D7AFA3DBF49341A5CD59DC9646F179B",
-        "playlist_output_hash": "29215E2A72914946AC2196F2F7561A2745ACE540F9558980EB987C5E44EC2FA1"
+        "profile_semantic_hash": "783BE37C440FAF30FC81CABB6605049DE088FBEC87A9FCE2840F64254B192372",
+        "seed_trace_hash": "7896232795DF347E426EEE2F5346BAA1A776F445FEBCA08B95FAFF1B884A1C7E",
+        "filtered_candidates_hash": "D160E6B2FE3E13BC9E0EB8D430A67580CAFEBBB82AE37BAB332928C32A25C0A5",
+        "candidate_decisions_hash": "54E4F14F1BEFCA6163671CA121B94CEFF5AE0E1E43B2B4A176D195F46F025B24",
+        "ranked_output_hash": "D0764BA430A44E797A6D02D5D3F1EB5D8D8FC3CF4CA22C21D4C2A6173D1835A8",
+        "assembly_trace_hash": "0B2EF977EB376DB44353DD9B549EC74B4E0C50DDF2F19B4FEBA2CA1DD6E43201",
+        "playlist_output_hash": "D16015CFA1AC70E93A22F798E713BC14C6ED27617B7715715429842CF312D038"
       },
       "metrics": {
-        "selected_event_count": 221,
-        "matched_seed_count": 221,
-        "candidate_pool_size": 58823,
-        "scored_candidate_count": 58823,
+        "selected_event_count": 1563,
+        "matched_seed_count": 1563,
+        "candidate_pool_size": 56691,
+        "scored_candidate_count": 56691,
         "playlist_length": 10,
         "top10_track_ids": [
+          "CaR8UnowNJUR5Dib",
           "yEz9rqTTulkiDDm7",
-          "ru7tTgHQ3Pn5sFku",
-          "65Mp5rxG0Bjd0Fpr",
-          "ry7KVHYQ10CXYDmE",
-          "Kj5SnfDEQl2M7Xm9",
-          "o27WwIo8F6fMirMs",
-          "4P9s3Ny397GUNITy",
-          "phL12CBijBqwQ9qB",
-          "KZR6R3ipwAKSCdA0",
-          "dv1r49qWV1haZtYv"
+          "M3ApGs7RGZwXHqs4",
+          "rqeIltq5ixzHA5EG",
+          "s0Qo4gihN9Rzx8we",
+          "qob8Z8qGt0UR4JAs",
+          "Xh9f0R2Q7wJMaxhy",
+          "HheoXQPQtBis2mmJ",
+          "M1aGgogF0dGiRiXA",
+          "YEWH2dMDiRCIJy7F"
         ],
         "playlist_track_ids": [
+          "CaR8UnowNJUR5Dib",
           "yEz9rqTTulkiDDm7",
-          "ru7tTgHQ3Pn5sFku",
-          "phL12CBijBqwQ9qB",
-          "KZR6R3ipwAKSCdA0",
-          "dv1r49qWV1haZtYv",
-          "c7CeSmnsVeJSYvN4",
-          "4oTCBnBQ389wmbQN",
-          "0dUzaNgp1pENO3CP",
-          "BQIgXeFtTz3kN67J",
-          "lBmaPfuBMaTt0dZl"
+          "M3ApGs7RGZwXHqs4",
+          "rqeIltq5ixzHA5EG",
+          "s0Qo4gihN9Rzx8we",
+          "qob8Z8qGt0UR4JAs",
+          "Xh9f0R2Q7wJMaxhy",
+          "HheoXQPQtBis2mmJ",
+          "M1aGgogF0dGiRiXA",
+          "CZOYJJKuyuUosACw"
         ],
         "dominant_lead_genres": [
-          "classic rock",
           "pop",
+          "classic rock",
           "rock",
           "progressive rock",
-          "folk"
+          "new wave"
         ],
         "dominant_tags": [
           "rock",
           "classic rock",
           "pop",
           "80s",
-          "60s"
+          "70s"
         ],
         "mean_component_contributions": {
-          "tempo": 0.056453,
-          "duration_ms": 0.042692,
-          "key": 0.019288,
-          "mode": 0.033206,
-          "lead_genre": 0.025315,
-          "genre_overlap": 0.02863,
-          "tag_overlap": 0.030616
+          "tempo": 0.056181,
+          "duration_ms": 0.030051,
+          "key": 0.020326,
+          "mode": 0.024535,
+          "lead_genre": 0.045727,
+          "genre_overlap": 0.027141,
+          "tag_overlap": 0.03098
         },
         "playlist_genre_mix": {
           "classic rock": 4,
@@ -198,18 +198,18 @@
         "playlist_added_track_ids": [],
         "playlist_removed_track_ids": [],
         "profile_lead_genres_before": [
-          "classic rock",
           "pop",
+          "classic rock",
           "rock",
           "progressive rock",
-          "folk"
+          "new wave"
         ],
         "profile_lead_genres_after": [
-          "classic rock",
           "pop",
+          "classic rock",
           "rock",
           "progressive rock",
-          "folk"
+          "new wave"
         ],
         "component_mean_delta": {
           "tempo": 0.0,
@@ -221,7 +221,7 @@
           "tag_overlap": 0.0
         },
         "rank_shift_summary": {
-          "common_candidate_count": 58823,
+          "common_candidate_count": 56691,
           "mean_abs_rank_delta": 0.0,
           "max_rank_improvement": 0,
           "max_rank_drop": 0,
@@ -235,15 +235,15 @@
       "scenario_id": "no_influence_tracks",
       "test_id": "EP-CTRL-001",
       "control_surface": "influence_tracks",
-      "description": "Remove the three synthetic influence tracks while keeping all other inputs and parameters fixed.",
+      "description": "Disable influence-track interactions while keeping all other inputs and parameters fixed.",
       "expected_effect": "profile and ranking shift away from influence-steered indie/alternative emphasis",
       "repeat_consistent": true,
-      "config_hash": "FC90EFA24234CEB639E0AFC70CE34EE43AC99FCBCE4A91FCEA7DF912DDAD2B48",
+      "config_hash": "16F62C32689E526A808AD3EB4A319388B28F267B3DD154B9AD5E5616F178F96E",
       "effective_config": {
         "scenario_id": "no_influence_tracks",
         "test_id": "EP-CTRL-001",
         "control_surface": "influence_tracks",
-        "description": "Remove the three synthetic influence tracks while keeping all other inputs and parameters fixed.",
+        "description": "Disable influence-track interactions while keeping all other inputs and parameters fixed.",
         "expected_effect": "profile and ranking shift away from influence-steered indie/alternative emphasis",
         "profile": {
           "effective_weight_rule": "effective_weight = preference_weight",
@@ -310,66 +310,66 @@
         }
       },
       "stable_hashes": {
-        "profile_semantic_hash": "DD19358D69B6F1A700DD5F81F3026EBFE9D680647B2512B6B23E91DA80857F92",
-        "seed_trace_hash": "2C2FA90F811EF8189AB1B9EC1566083C1C422BF51A975484680B8EA8B6B18C8F",
-        "filtered_candidates_hash": "91B47C47B7160560DADFBEF139D54E8924A42ED50DA35215DC87A3745F4D8472",
-        "candidate_decisions_hash": "1455030144087E3F7CD9611726B56AF3D8B201FA34E87E527F1624A87805D979",
-        "ranked_output_hash": "72EE98F8A6498375B6721DFA863B86AC7F98334C5900562BA3CF3451395BCAE6",
-        "assembly_trace_hash": "8CC29CF1CB2EE6FBCFB87FE577221CD08D7AFA3DBF49341A5CD59DC9646F179B",
-        "playlist_output_hash": "29215E2A72914946AC2196F2F7561A2745ACE540F9558980EB987C5E44EC2FA1"
+        "profile_semantic_hash": "A384E4729FDB2357684870130F245F81913E50A98255E8D15A216BEE0F90FB59",
+        "seed_trace_hash": "7896232795DF347E426EEE2F5346BAA1A776F445FEBCA08B95FAFF1B884A1C7E",
+        "filtered_candidates_hash": "D160E6B2FE3E13BC9E0EB8D430A67580CAFEBBB82AE37BAB332928C32A25C0A5",
+        "candidate_decisions_hash": "54E4F14F1BEFCA6163671CA121B94CEFF5AE0E1E43B2B4A176D195F46F025B24",
+        "ranked_output_hash": "D0764BA430A44E797A6D02D5D3F1EB5D8D8FC3CF4CA22C21D4C2A6173D1835A8",
+        "assembly_trace_hash": "0B2EF977EB376DB44353DD9B549EC74B4E0C50DDF2F19B4FEBA2CA1DD6E43201",
+        "playlist_output_hash": "D16015CFA1AC70E93A22F798E713BC14C6ED27617B7715715429842CF312D038"
       },
       "metrics": {
-        "selected_event_count": 221,
-        "matched_seed_count": 221,
-        "candidate_pool_size": 58823,
-        "scored_candidate_count": 58823,
+        "selected_event_count": 1563,
+        "matched_seed_count": 1563,
+        "candidate_pool_size": 56691,
+        "scored_candidate_count": 56691,
         "playlist_length": 10,
         "top10_track_ids": [
+          "CaR8UnowNJUR5Dib",
           "yEz9rqTTulkiDDm7",
-          "ru7tTgHQ3Pn5sFku",
-          "65Mp5rxG0Bjd0Fpr",
-          "ry7KVHYQ10CXYDmE",
-          "Kj5SnfDEQl2M7Xm9",
-          "o27WwIo8F6fMirMs",
-          "4P9s3Ny397GUNITy",
-          "phL12CBijBqwQ9qB",
-          "KZR6R3ipwAKSCdA0",
-          "dv1r49qWV1haZtYv"
+          "M3ApGs7RGZwXHqs4",
+          "rqeIltq5ixzHA5EG",
+          "s0Qo4gihN9Rzx8we",
+          "qob8Z8qGt0UR4JAs",
+          "Xh9f0R2Q7wJMaxhy",
+          "HheoXQPQtBis2mmJ",
+          "M1aGgogF0dGiRiXA",
+          "YEWH2dMDiRCIJy7F"
         ],
         "playlist_track_ids": [
+          "CaR8UnowNJUR5Dib",
           "yEz9rqTTulkiDDm7",
-          "ru7tTgHQ3Pn5sFku",
-          "phL12CBijBqwQ9qB",
-          "KZR6R3ipwAKSCdA0",
-          "dv1r49qWV1haZtYv",
-          "c7CeSmnsVeJSYvN4",
-          "4oTCBnBQ389wmbQN",
-          "0dUzaNgp1pENO3CP",
-          "BQIgXeFtTz3kN67J",
-          "lBmaPfuBMaTt0dZl"
+          "M3ApGs7RGZwXHqs4",
+          "rqeIltq5ixzHA5EG",
+          "s0Qo4gihN9Rzx8we",
+          "qob8Z8qGt0UR4JAs",
+          "Xh9f0R2Q7wJMaxhy",
+          "HheoXQPQtBis2mmJ",
+          "M1aGgogF0dGiRiXA",
+          "CZOYJJKuyuUosACw"
         ],
         "dominant_lead_genres": [
-          "classic rock",
           "pop",
+          "classic rock",
           "rock",
           "progressive rock",
-          "folk"
+          "new wave"
         ],
         "dominant_tags": [
           "rock",
           "classic rock",
           "pop",
           "80s",
-          "60s"
+          "70s"
         ],
         "mean_component_contributions": {
-          "tempo": 0.056453,
-          "duration_ms": 0.042692,
-          "key": 0.019288,
-          "mode": 0.033206,
-          "lead_genre": 0.025315,
-          "genre_overlap": 0.02863,
-          "tag_overlap": 0.030616
+          "tempo": 0.056181,
+          "duration_ms": 0.030051,
+          "key": 0.020326,
+          "mode": 0.024535,
+          "lead_genre": 0.045727,
+          "genre_overlap": 0.027141,
+          "tag_overlap": 0.03098
         },
         "playlist_genre_mix": {
           "classic rock": 4,
@@ -391,18 +391,18 @@
         "playlist_added_track_ids": [],
         "playlist_removed_track_ids": [],
         "profile_lead_genres_before": [
-          "classic rock",
           "pop",
+          "classic rock",
           "rock",
           "progressive rock",
-          "folk"
+          "new wave"
         ],
         "profile_lead_genres_after": [
-          "classic rock",
           "pop",
+          "classic rock",
           "rock",
           "progressive rock",
-          "folk"
+          "new wave"
         ],
         "component_mean_delta": {
           "duration_ms": 0.0,
@@ -414,7 +414,7 @@
           "tempo": 0.0
         },
         "rank_shift_summary": {
-          "common_candidate_count": 58823,
+          "common_candidate_count": 56691,
           "mean_abs_rank_delta": 0.0,
           "max_rank_improvement": 0,
           "max_rank_drop": 0,
@@ -504,66 +504,66 @@
         }
       },
       "stable_hashes": {
-        "profile_semantic_hash": "9F688BAF4E25DDFA965FBB75DE34C4C3292AC8CDDFB49AFA9FB44BA45023B89D",
-        "seed_trace_hash": "2C2FA90F811EF8189AB1B9EC1566083C1C422BF51A975484680B8EA8B6B18C8F",
-        "filtered_candidates_hash": "91B47C47B7160560DADFBEF139D54E8924A42ED50DA35215DC87A3745F4D8472",
-        "candidate_decisions_hash": "1455030144087E3F7CD9611726B56AF3D8B201FA34E87E527F1624A87805D979",
-        "ranked_output_hash": "6A8CED9F27D91959EDBAC4605CEB40F2D28420F2AB6D0964CB4B2CA5D82FA766",
-        "assembly_trace_hash": "2D542DB7561248739DC12297B7A0CDFCCDD30C1C6D2F88E7EF82F8CCF27567D9",
-        "playlist_output_hash": "00B5DCE350B5CD9E2B38E717F72AD4F0C31DB4002048EB716C07E208F3A80F18"
+        "profile_semantic_hash": "783BE37C440FAF30FC81CABB6605049DE088FBEC87A9FCE2840F64254B192372",
+        "seed_trace_hash": "7896232795DF347E426EEE2F5346BAA1A776F445FEBCA08B95FAFF1B884A1C7E",
+        "filtered_candidates_hash": "D160E6B2FE3E13BC9E0EB8D430A67580CAFEBBB82AE37BAB332928C32A25C0A5",
+        "candidate_decisions_hash": "54E4F14F1BEFCA6163671CA121B94CEFF5AE0E1E43B2B4A176D195F46F025B24",
+        "ranked_output_hash": "AF26F3AE0D942BA3C2C8D5696DC15266A1624CB3F73F9637C36E0CF643211504",
+        "assembly_trace_hash": "97C423C039914756B71501CDEF9D841C7F4079A94E23445A4D0ECE4DD07C21B3",
+        "playlist_output_hash": "EA54CC61782922061ABDB2295DA57ECE143DD830DFBAAC27A81587C9EB4B793F"
       },
       "metrics": {
-        "selected_event_count": 221,
-        "matched_seed_count": 221,
-        "candidate_pool_size": 58823,
-        "scored_candidate_count": 58823,
+        "selected_event_count": 1563,
+        "matched_seed_count": 1563,
+        "candidate_pool_size": 56691,
+        "scored_candidate_count": 56691,
         "playlist_length": 10,
         "top10_track_ids": [
+          "CaR8UnowNJUR5Dib",
           "yEz9rqTTulkiDDm7",
-          "ry7KVHYQ10CXYDmE",
-          "Kj5SnfDEQl2M7Xm9",
-          "65Mp5rxG0Bjd0Fpr",
-          "ru7tTgHQ3Pn5sFku",
-          "o27WwIo8F6fMirMs",
-          "KZR6R3ipwAKSCdA0",
-          "phL12CBijBqwQ9qB",
-          "7Wtv58F77XFSGy7b",
-          "4P9s3Ny397GUNITy"
+          "M3ApGs7RGZwXHqs4",
+          "rqeIltq5ixzHA5EG",
+          "s0Qo4gihN9Rzx8we",
+          "Xh9f0R2Q7wJMaxhy",
+          "HheoXQPQtBis2mmJ",
+          "qob8Z8qGt0UR4JAs",
+          "CZOYJJKuyuUosACw",
+          "hU7yckCKoiTkHjwi"
         ],
         "playlist_track_ids": [
+          "CaR8UnowNJUR5Dib",
           "yEz9rqTTulkiDDm7",
-          "ry7KVHYQ10CXYDmE",
-          "phL12CBijBqwQ9qB",
-          "7Wtv58F77XFSGy7b",
-          "4P9s3Ny397GUNITy",
-          "c7CeSmnsVeJSYvN4",
-          "0dUzaNgp1pENO3CP",
-          "4oTCBnBQ389wmbQN",
-          "BQIgXeFtTz3kN67J",
-          "lBmaPfuBMaTt0dZl"
+          "M3ApGs7RGZwXHqs4",
+          "rqeIltq5ixzHA5EG",
+          "s0Qo4gihN9Rzx8we",
+          "Xh9f0R2Q7wJMaxhy",
+          "HheoXQPQtBis2mmJ",
+          "qob8Z8qGt0UR4JAs",
+          "CZOYJJKuyuUosACw",
+          "M1aGgogF0dGiRiXA"
         ],
         "dominant_lead_genres": [
-          "classic rock",
           "pop",
+          "classic rock",
           "rock",
           "progressive rock",
-          "folk"
+          "new wave"
         ],
         "dominant_tags": [
           "rock",
           "classic rock",
           "pop",
           "80s",
-          "60s"
+          "70s"
         ],
         "mean_component_contributions": {
-          "tempo": 0.07318,
-          "duration_ms": 0.03953,
-          "key": 0.017859,
-          "mode": 0.030746,
-          "lead_genre": 0.023439,
-          "genre_overlap": 0.026509,
-          "tag_overlap": 0.028348
+          "tempo": 0.072827,
+          "duration_ms": 0.027825,
+          "key": 0.01882,
+          "mode": 0.022717,
+          "lead_genre": 0.04234,
+          "genre_overlap": 0.025131,
+          "tag_overlap": 0.028685
         },
         "playlist_genre_mix": {
           "classic rock": 4,
@@ -576,116 +576,110 @@
         "expected_direction_met": true,
         "candidate_pool_size_delta": 0,
         "playlist_length_delta": 0,
-        "top10_overlap_count": 9,
-        "top10_overlap_ratio": 0.9,
-        "playlist_overlap_count": 7,
-        "playlist_overlap_ratio": 0.7,
+        "top10_overlap_count": 8,
+        "top10_overlap_ratio": 0.8,
+        "playlist_overlap_count": 10,
+        "playlist_overlap_ratio": 1.0,
         "top10_added_track_ids": [
-          "7Wtv58F77XFSGy7b"
+          "CZOYJJKuyuUosACw",
+          "hU7yckCKoiTkHjwi"
         ],
         "top10_removed_track_ids": [
-          "dv1r49qWV1haZtYv"
+          "M1aGgogF0dGiRiXA",
+          "YEWH2dMDiRCIJy7F"
         ],
-        "playlist_added_track_ids": [
-          "ry7KVHYQ10CXYDmE",
-          "7Wtv58F77XFSGy7b",
-          "4P9s3Ny397GUNITy"
-        ],
-        "playlist_removed_track_ids": [
-          "ru7tTgHQ3Pn5sFku",
-          "KZR6R3ipwAKSCdA0",
-          "dv1r49qWV1haZtYv"
-        ],
+        "playlist_added_track_ids": [],
+        "playlist_removed_track_ids": [],
         "profile_lead_genres_before": [
-          "classic rock",
           "pop",
+          "classic rock",
           "rock",
           "progressive rock",
-          "folk"
+          "new wave"
         ],
         "profile_lead_genres_after": [
-          "classic rock",
           "pop",
+          "classic rock",
           "rock",
           "progressive rock",
-          "folk"
+          "new wave"
         ],
         "component_mean_delta": {
-          "duration_ms": -0.003162,
-          "genre_overlap": -0.002121,
-          "key": -0.001429,
-          "lead_genre": -0.001876,
-          "mode": -0.00246,
-          "tag_overlap": -0.002268,
-          "tempo": 0.016727
+          "duration_ms": -0.002226,
+          "genre_overlap": -0.00201,
+          "key": -0.001506,
+          "lead_genre": -0.003387,
+          "mode": -0.001818,
+          "tag_overlap": -0.002295,
+          "tempo": 0.016646
         },
         "rank_shift_summary": {
-          "common_candidate_count": 58823,
-          "mean_abs_rank_delta": 2060.956,
-          "max_rank_improvement": 10643,
-          "max_rank_drop": -4906,
+          "common_candidate_count": 56691,
+          "mean_abs_rank_delta": 2038.375,
+          "max_rank_improvement": 8869,
+          "max_rank_drop": -4277,
           "top_risers": [
             {
-              "track_id": "gFq5adBjTe0rUmvT",
-              "baseline_rank": 38569,
-              "scenario_rank": 27926,
-              "rank_delta": 10643
+              "track_id": "CmikkFTB7vU3zn4y",
+              "baseline_rank": 30368,
+              "scenario_rank": 21499,
+              "rank_delta": 8869
             },
             {
-              "track_id": "HVsBpn8xr10EK59H",
-              "baseline_rank": 38517,
-              "scenario_rank": 27881,
-              "rank_delta": 10636
+              "track_id": "7h9u5LFzbF7EMyKs",
+              "baseline_rank": 31499,
+              "scenario_rank": 22652,
+              "rank_delta": 8847
             },
             {
-              "track_id": "d5h727RTt6GtF1By",
-              "baseline_rank": 38508,
-              "scenario_rank": 27872,
-              "rank_delta": 10636
+              "track_id": "Vx7W1muqnFgFdmL4",
+              "baseline_rank": 31480,
+              "scenario_rank": 22634,
+              "rank_delta": 8846
             },
             {
-              "track_id": "2Pw2YaoPJkuYR6kZ",
-              "baseline_rank": 38748,
-              "scenario_rank": 28124,
-              "rank_delta": 10624
+              "track_id": "RHWdyFgBS6PerWlM",
+              "baseline_rank": 31883,
+              "scenario_rank": 23069,
+              "rank_delta": 8814
             },
             {
-              "track_id": "t817JyHFyhz31Z3O",
-              "baseline_rank": 38769,
-              "scenario_rank": 28145,
-              "rank_delta": 10624
+              "track_id": "Ms60PqwQCI5Is6wU",
+              "baseline_rank": 31319,
+              "scenario_rank": 22510,
+              "rank_delta": 8809
             }
           ],
           "top_fallers": [
             {
-              "track_id": "2G755jGCwuIwgflq",
-              "baseline_rank": 11770,
-              "scenario_rank": 16676,
-              "rank_delta": -4906
+              "track_id": "NM16q5EFCYh5vhaH",
+              "baseline_rank": 15077,
+              "scenario_rank": 19354,
+              "rank_delta": -4277
             },
             {
-              "track_id": "G8WlW8dELjoHeIxA",
-              "baseline_rank": 11756,
-              "scenario_rank": 16658,
-              "rank_delta": -4902
+              "track_id": "sBk4lV1M3O26HEqf",
+              "baseline_rank": 15087,
+              "scenario_rank": 19364,
+              "rank_delta": -4277
             },
             {
-              "track_id": "ROdTtJw7f3hm4zMu",
-              "baseline_rank": 11755,
-              "scenario_rank": 16656,
-              "rank_delta": -4901
+              "track_id": "KGgXRGJbyjrRSiPV",
+              "baseline_rank": 15083,
+              "scenario_rank": 19358,
+              "rank_delta": -4275
             },
             {
-              "track_id": "HlWyhj5hDAKrMGeq",
-              "baseline_rank": 11750,
-              "scenario_rank": 16650,
-              "rank_delta": -4900
+              "track_id": "KzJhZmSkyX6lFuSo",
+              "baseline_rank": 15108,
+              "scenario_rank": 19383,
+              "rank_delta": -4275
             },
             {
-              "track_id": "3Mr2Tnbsgg879BCL",
-              "baseline_rank": 11785,
-              "scenario_rank": 16684,
-              "rank_delta": -4899
+              "track_id": "i2UuU4CiJoZM6pHa",
+              "baseline_rank": 15868,
+              "scenario_rank": 20143,
+              "rank_delta": -4275
             }
           ]
         }
@@ -772,66 +766,66 @@
         }
       },
       "stable_hashes": {
-        "profile_semantic_hash": "9F688BAF4E25DDFA965FBB75DE34C4C3292AC8CDDFB49AFA9FB44BA45023B89D",
-        "seed_trace_hash": "2C2FA90F811EF8189AB1B9EC1566083C1C422BF51A975484680B8EA8B6B18C8F",
-        "filtered_candidates_hash": "5C4BE06B7FE3E480DD066EAA43D7778FE3FA15B0A38897F0C2CE78F12E4E3A55",
-        "candidate_decisions_hash": "44053E48F200E0A0773D615F5B83011BFFAAB4EF80D3395EFE9919452458437E",
-        "ranked_output_hash": "4DDF02E33BB4225D05F56D26D8D1A43929FE0F58AC426DD5E23C586B64310726",
-        "assembly_trace_hash": "B103B23BA0AE6AC6EEA76809DE457B49CCF67BF4F4937737DA3FCEA9647EE42E",
-        "playlist_output_hash": "29215E2A72914946AC2196F2F7561A2745ACE540F9558980EB987C5E44EC2FA1"
+        "profile_semantic_hash": "783BE37C440FAF30FC81CABB6605049DE088FBEC87A9FCE2840F64254B192372",
+        "seed_trace_hash": "7896232795DF347E426EEE2F5346BAA1A776F445FEBCA08B95FAFF1B884A1C7E",
+        "filtered_candidates_hash": "089FDE0122C9943E4011EA72554F5F41F6D0338349CC315C3751651422219EFA",
+        "candidate_decisions_hash": "5B63B23A137494D6CAB109EED08AA405726DF4CCF1A5F9C062F32A489A079795",
+        "ranked_output_hash": "35B8EC889DC45045FF2D4B32F3BFEDE7465BC9B872BE4F0A20E44C7C8F1D40F7",
+        "assembly_trace_hash": "4802D0B589E02B5A649C6E798503B3C7A009CE5CCDD434B6826C67C1F42B4BEB",
+        "playlist_output_hash": "D16015CFA1AC70E93A22F798E713BC14C6ED27617B7715715429842CF312D038"
       },
       "metrics": {
-        "selected_event_count": 221,
-        "matched_seed_count": 221,
-        "candidate_pool_size": 58423,
-        "scored_candidate_count": 58423,
+        "selected_event_count": 1563,
+        "matched_seed_count": 1563,
+        "candidate_pool_size": 56342,
+        "scored_candidate_count": 56342,
         "playlist_length": 10,
         "top10_track_ids": [
+          "CaR8UnowNJUR5Dib",
           "yEz9rqTTulkiDDm7",
-          "ru7tTgHQ3Pn5sFku",
-          "65Mp5rxG0Bjd0Fpr",
-          "ry7KVHYQ10CXYDmE",
-          "Kj5SnfDEQl2M7Xm9",
-          "o27WwIo8F6fMirMs",
-          "4P9s3Ny397GUNITy",
-          "phL12CBijBqwQ9qB",
-          "KZR6R3ipwAKSCdA0",
-          "dv1r49qWV1haZtYv"
+          "M3ApGs7RGZwXHqs4",
+          "rqeIltq5ixzHA5EG",
+          "s0Qo4gihN9Rzx8we",
+          "qob8Z8qGt0UR4JAs",
+          "Xh9f0R2Q7wJMaxhy",
+          "HheoXQPQtBis2mmJ",
+          "M1aGgogF0dGiRiXA",
+          "YEWH2dMDiRCIJy7F"
         ],
         "playlist_track_ids": [
+          "CaR8UnowNJUR5Dib",
           "yEz9rqTTulkiDDm7",
-          "ru7tTgHQ3Pn5sFku",
-          "phL12CBijBqwQ9qB",
-          "KZR6R3ipwAKSCdA0",
-          "dv1r49qWV1haZtYv",
-          "c7CeSmnsVeJSYvN4",
-          "4oTCBnBQ389wmbQN",
-          "0dUzaNgp1pENO3CP",
-          "BQIgXeFtTz3kN67J",
-          "lBmaPfuBMaTt0dZl"
+          "M3ApGs7RGZwXHqs4",
+          "rqeIltq5ixzHA5EG",
+          "s0Qo4gihN9Rzx8we",
+          "qob8Z8qGt0UR4JAs",
+          "Xh9f0R2Q7wJMaxhy",
+          "HheoXQPQtBis2mmJ",
+          "M1aGgogF0dGiRiXA",
+          "CZOYJJKuyuUosACw"
         ],
         "dominant_lead_genres": [
-          "classic rock",
           "pop",
+          "classic rock",
           "rock",
           "progressive rock",
-          "folk"
+          "new wave"
         ],
         "dominant_tags": [
           "rock",
           "classic rock",
           "pop",
           "80s",
-          "60s"
+          "70s"
         ],
         "mean_component_contributions": {
-          "tempo": 0.056759,
-          "duration_ms": 0.042937,
-          "key": 0.019384,
-          "mode": 0.033434,
-          "lead_genre": 0.025488,
-          "genre_overlap": 0.028813,
-          "tag_overlap": 0.030788
+          "tempo": 0.056444,
+          "duration_ms": 0.030192,
+          "key": 0.020448,
+          "mode": 0.024687,
+          "lead_genre": 0.046,
+          "genre_overlap": 0.027301,
+          "tag_overlap": 0.031143
         },
         "playlist_genre_mix": {
           "classic rock": 4,
@@ -842,7 +836,7 @@
       "comparison_to_baseline": {
         "observable_shift": true,
         "expected_direction_met": true,
-        "candidate_pool_size_delta": -400,
+        "candidate_pool_size_delta": -349,
         "playlist_length_delta": 0,
         "top10_overlap_count": 10,
         "top10_overlap_ratio": 1.0,
@@ -853,63 +847,63 @@
         "playlist_added_track_ids": [],
         "playlist_removed_track_ids": [],
         "profile_lead_genres_before": [
-          "classic rock",
           "pop",
+          "classic rock",
           "rock",
           "progressive rock",
-          "folk"
+          "new wave"
         ],
         "profile_lead_genres_after": [
-          "classic rock",
           "pop",
+          "classic rock",
           "rock",
           "progressive rock",
-          "folk"
+          "new wave"
         ],
         "component_mean_delta": {
-          "duration_ms": 0.000245,
-          "genre_overlap": 0.000183,
-          "key": 9.6e-05,
-          "lead_genre": 0.000173,
-          "mode": 0.000228,
-          "tag_overlap": 0.000172,
-          "tempo": 0.000306
+          "duration_ms": 0.000141,
+          "genre_overlap": 0.00016,
+          "key": 0.000122,
+          "lead_genre": 0.000273,
+          "mode": 0.000152,
+          "tag_overlap": 0.000163,
+          "tempo": 0.000263
         },
         "rank_shift_summary": {
-          "common_candidate_count": 58423,
-          "mean_abs_rank_delta": 3.183,
-          "max_rank_improvement": 380,
+          "common_candidate_count": 56342,
+          "mean_abs_rank_delta": 4.946,
+          "max_rank_improvement": 316,
           "max_rank_drop": 0,
           "top_risers": [
             {
-              "track_id": "rnMsLWVK5Z9tWE5V",
-              "baseline_rank": 58801,
-              "scenario_rank": 58421,
-              "rank_delta": 380
+              "track_id": "07JhtfVVlSifEGu6",
+              "baseline_rank": 56601,
+              "scenario_rank": 56285,
+              "rank_delta": 316
             },
             {
-              "track_id": "zh1kLwzf2IVkTGQK",
-              "baseline_rank": 58802,
-              "scenario_rank": 58422,
-              "rank_delta": 380
+              "track_id": "0BOfpnljgDlsgqz6",
+              "baseline_rank": 56602,
+              "scenario_rank": 56286,
+              "rank_delta": 316
             },
             {
-              "track_id": "zzyb5LvKJTWLVnrk",
-              "baseline_rank": 58803,
-              "scenario_rank": 58423,
-              "rank_delta": 380
+              "track_id": "12J0SifUY3ZcE7dL",
+              "baseline_rank": 56603,
+              "scenario_rank": 56287,
+              "rank_delta": 316
             },
             {
-              "track_id": "0cQdObcXUyY1tLkj",
-              "baseline_rank": 58796,
-              "scenario_rank": 58417,
-              "rank_delta": 379
+              "track_id": "1yD7beXgdNjMQCsJ",
+              "baseline_rank": 56604,
+              "scenario_rank": 56288,
+              "rank_delta": 316
             },
             {
-              "track_id": "61DR82y95ylmm68D",
-              "baseline_rank": 58797,
-              "scenario_rank": 58418,
-              "rank_delta": 379
+              "track_id": "22JDgutxkjEvsRIv",
+              "baseline_rank": 56605,
+              "scenario_rank": 56289,
+              "rank_delta": 316
             }
           ],
           "top_fallers": []
@@ -997,66 +991,66 @@
         }
       },
       "stable_hashes": {
-        "profile_semantic_hash": "9F688BAF4E25DDFA965FBB75DE34C4C3292AC8CDDFB49AFA9FB44BA45023B89D",
-        "seed_trace_hash": "2C2FA90F811EF8189AB1B9EC1566083C1C422BF51A975484680B8EA8B6B18C8F",
-        "filtered_candidates_hash": "D49C56F7300A07037B272B55741C7191236152ED5A3FD31F3CD723BF12C79ACB",
-        "candidate_decisions_hash": "43F3BBD424ADC7D5DB678276EA6D6ED818C2A43018FCE39C45D403FD3425EAEB",
-        "ranked_output_hash": "6272C09269161790972EA7CF249BBF9B75B51A229ECE40193F63BD24B46F2210",
-        "assembly_trace_hash": "458FF84BDFDC2CB337B444D579D0DE75915D6331427290E7F2464B8AD08910EF",
-        "playlist_output_hash": "29215E2A72914946AC2196F2F7561A2745ACE540F9558980EB987C5E44EC2FA1"
+        "profile_semantic_hash": "783BE37C440FAF30FC81CABB6605049DE088FBEC87A9FCE2840F64254B192372",
+        "seed_trace_hash": "7896232795DF347E426EEE2F5346BAA1A776F445FEBCA08B95FAFF1B884A1C7E",
+        "filtered_candidates_hash": "2F6F584E476CC837A9E426C3632F8CC929C46750E9F171AE87620E4B52DDC13B",
+        "candidate_decisions_hash": "5E0A6513903D2BB14D95B0B317C0491C57AB261B69FE6D255341911A0FAF378D",
+        "ranked_output_hash": "49191C76B0B54E7838AF2D70159F7E4AE85957AB25359A79F8BC6034E4109141",
+        "assembly_trace_hash": "7BACA72981785DA0FF1F8B4D4465CC5B3CF0F8CB9DBC8669A7CB0C7EA6739B64",
+        "playlist_output_hash": "D16015CFA1AC70E93A22F798E713BC14C6ED27617B7715715429842CF312D038"
       },
       "metrics": {
-        "selected_event_count": 221,
-        "matched_seed_count": 221,
-        "candidate_pool_size": 59099,
-        "scored_candidate_count": 59099,
+        "selected_event_count": 1563,
+        "matched_seed_count": 1563,
+        "candidate_pool_size": 56946,
+        "scored_candidate_count": 56946,
         "playlist_length": 10,
         "top10_track_ids": [
+          "CaR8UnowNJUR5Dib",
           "yEz9rqTTulkiDDm7",
-          "ru7tTgHQ3Pn5sFku",
-          "65Mp5rxG0Bjd0Fpr",
-          "ry7KVHYQ10CXYDmE",
-          "Kj5SnfDEQl2M7Xm9",
-          "o27WwIo8F6fMirMs",
-          "4P9s3Ny397GUNITy",
-          "phL12CBijBqwQ9qB",
-          "KZR6R3ipwAKSCdA0",
-          "dv1r49qWV1haZtYv"
+          "M3ApGs7RGZwXHqs4",
+          "rqeIltq5ixzHA5EG",
+          "s0Qo4gihN9Rzx8we",
+          "qob8Z8qGt0UR4JAs",
+          "Xh9f0R2Q7wJMaxhy",
+          "HheoXQPQtBis2mmJ",
+          "M1aGgogF0dGiRiXA",
+          "YEWH2dMDiRCIJy7F"
         ],
         "playlist_track_ids": [
+          "CaR8UnowNJUR5Dib",
           "yEz9rqTTulkiDDm7",
-          "ru7tTgHQ3Pn5sFku",
-          "phL12CBijBqwQ9qB",
-          "KZR6R3ipwAKSCdA0",
-          "dv1r49qWV1haZtYv",
-          "c7CeSmnsVeJSYvN4",
-          "4oTCBnBQ389wmbQN",
-          "0dUzaNgp1pENO3CP",
-          "BQIgXeFtTz3kN67J",
-          "lBmaPfuBMaTt0dZl"
+          "M3ApGs7RGZwXHqs4",
+          "rqeIltq5ixzHA5EG",
+          "s0Qo4gihN9Rzx8we",
+          "qob8Z8qGt0UR4JAs",
+          "Xh9f0R2Q7wJMaxhy",
+          "HheoXQPQtBis2mmJ",
+          "M1aGgogF0dGiRiXA",
+          "CZOYJJKuyuUosACw"
         ],
         "dominant_lead_genres": [
-          "classic rock",
           "pop",
+          "classic rock",
           "rock",
           "progressive rock",
-          "folk"
+          "new wave"
         ],
         "dominant_tags": [
           "rock",
           "classic rock",
           "pop",
           "80s",
-          "60s"
+          "70s"
         ],
         "mean_component_contributions": {
-          "tempo": 0.056189,
-          "duration_ms": 0.042493,
-          "key": 0.019198,
-          "mode": 0.033051,
-          "lead_genre": 0.025196,
-          "genre_overlap": 0.028504,
-          "tag_overlap": 0.030499
+          "tempo": 0.055929,
+          "duration_ms": 0.029916,
+          "key": 0.020235,
+          "mode": 0.024425,
+          "lead_genre": 0.04553,
+          "genre_overlap": 0.027027,
+          "tag_overlap": 0.030859
         },
         "playlist_genre_mix": {
           "classic rock": 4,
@@ -1067,7 +1061,7 @@
       "comparison_to_baseline": {
         "observable_shift": true,
         "expected_direction_met": true,
-        "candidate_pool_size_delta": 276,
+        "candidate_pool_size_delta": 255,
         "playlist_length_delta": 0,
         "top10_overlap_count": 10,
         "top10_overlap_ratio": 1.0,
@@ -1078,64 +1072,64 @@
         "playlist_added_track_ids": [],
         "playlist_removed_track_ids": [],
         "profile_lead_genres_before": [
-          "classic rock",
           "pop",
+          "classic rock",
           "rock",
           "progressive rock",
-          "folk"
+          "new wave"
         ],
         "profile_lead_genres_after": [
-          "classic rock",
           "pop",
+          "classic rock",
           "rock",
           "progressive rock",
-          "folk"
+          "new wave"
         ],
         "component_mean_delta": {
-          "duration_ms": -0.000199,
-          "genre_overlap": -0.000126,
-          "key": -9e-05,
-          "lead_genre": -0.000119,
-          "mode": -0.000155,
-          "tag_overlap": -0.000117,
-          "tempo": -0.000264
+          "duration_ms": -0.000135,
+          "genre_overlap": -0.000114,
+          "key": -9.1e-05,
+          "lead_genre": -0.000197,
+          "mode": -0.00011,
+          "tag_overlap": -0.000121,
+          "tempo": -0.000252
         },
         "rank_shift_summary": {
-          "common_candidate_count": 58823,
-          "mean_abs_rank_delta": 0.149,
+          "common_candidate_count": 56691,
+          "mean_abs_rank_delta": 0.286,
           "max_rank_improvement": 0,
-          "max_rank_drop": -241,
+          "max_rank_drop": -187,
           "top_risers": [],
           "top_fallers": [
             {
-              "track_id": "3RhR1Xu2anWmVXSH",
-              "baseline_rank": 58823,
-              "scenario_rank": 59064,
-              "rank_delta": -241
+              "track_id": "9DwxP2q95xUhHUGM",
+              "baseline_rank": 56689,
+              "scenario_rank": 56876,
+              "rank_delta": -187
             },
             {
-              "track_id": "Ny7sn9eEM2BQO7AK",
-              "baseline_rank": 58822,
-              "scenario_rank": 59034,
-              "rank_delta": -212
+              "track_id": "VtwdxlksohvZrAFT",
+              "baseline_rank": 56687,
+              "scenario_rank": 56874,
+              "rank_delta": -187
             },
             {
-              "track_id": "BLY9R68S8EJRgNWv",
-              "baseline_rank": 58820,
-              "scenario_rank": 59003,
-              "rank_delta": -183
+              "track_id": "ZUAd05n8T6RWYE7V",
+              "baseline_rank": 56690,
+              "scenario_rank": 56877,
+              "rank_delta": -187
             },
             {
-              "track_id": "zDRzqup4B5PYbIdi",
-              "baseline_rank": 58821,
-              "scenario_rank": 59004,
-              "rank_delta": -183
+              "track_id": "pYXsKZTi6rXoYNeM",
+              "baseline_rank": 56691,
+              "scenario_rank": 56878,
+              "rank_delta": -187
             },
             {
-              "track_id": "p0rRjHgvFp7DVGSS",
-              "baseline_rank": 58819,
-              "scenario_rank": 58975,
-              "rank_delta": -156
+              "track_id": "xoDWi8UhtqT0zdcJ",
+              "baseline_rank": 56688,
+              "scenario_rank": 56875,
+              "rank_delta": -187
             }
           ]
         }

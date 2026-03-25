@@ -1,28 +1,28 @@
 {
-  "run_id": "BL011-BASELINE-BL004-20260324-235115-002140",
+  "run_id": "BL011-BASELINE-BL004-20260325-020828-858429",
   "scenario_id": "baseline",
-  "matched_seed_count": 221,
-  "total_effective_weight": 594.516574,
+  "matched_seed_count": 1563,
+  "total_effective_weight": 3777.667577,
   "dominant_lead_genres": [
-    "classic rock",
     "pop",
+    "classic rock",
     "rock",
     "progressive rock",
-    "folk"
+    "new wave"
   ],
   "dominant_tags": [
     "rock",
     "classic rock",
     "pop",
     "80s",
-    "60s"
+    "70s"
   ],
   "dominant_genres": [
     "rock",
     "classic rock",
     "pop",
-    "singer-songwriter",
-    "progressive rock"
+    "progressive rock",
+    "hard rock"
   ],
   "feature_centers": {}
 }

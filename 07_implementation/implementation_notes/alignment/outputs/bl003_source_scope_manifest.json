@@ -1,21 +1,23 @@
 {
-  "generated_at_utc": "2026-03-24T22:13:35Z",
+  "generated_at_utc": "2026-03-25T02:05:28Z",
   "config_source": "run_config",
-  "run_config_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\run_config\\run_config_bl021_probe_v1.json",
+  "run_config_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\run_config\\run_config_template_v1.json",
   "run_config_schema_version": "run-config-v1",
   "input_scope": {
     "source_family": "spotify_api_export",
     "include_top_tracks": true,
     "top_time_ranges": [
-      "short_term"
+      "short_term",
+      "medium_term",
+      "long_term"
     ],
-    "include_saved_tracks": false,
-    "saved_tracks_limit": 25,
+    "include_saved_tracks": true,
+    "saved_tracks_limit": null,
     "include_playlists": true,
-    "playlists_limit": 3,
-    "playlist_items_per_playlist_limit": 20,
+    "playlists_limit": null,
+    "playlist_items_per_playlist_limit": null,
     "include_recently_played": true,
-    "recently_played_limit": 15
+    "recently_played_limit": 50
   },
   "rows_available": {
     "top_tracks": 8745,
@@ -24,9 +26,9 @@
     "recently_played": 50
   },
   "rows_selected": {
-    "top_tracks": 602,
-    "saved_tracks": 0,
-    "playlist_items": 20,
-    "recently_played": 15
+    "top_tracks": 8745,
+    "saved_tracks": 171,
+    "playlist_items": 31,
+    "recently_played": 50
   }
 }

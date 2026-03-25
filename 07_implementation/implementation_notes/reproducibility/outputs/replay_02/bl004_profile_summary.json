@@ -1,10 +1,10 @@
 {
-  "run_id": "BL004-PROFILE-20260324-234337-262070",
+  "run_id": "BL004-PROFILE-20260325-020800-791145",
   "task": "BL-004",
   "user_id": "21zsn42xecjhogne4kghyw5hq",
-  "config_source": "environment",
-  "run_config_path": null,
-  "run_config_schema_version": null,
+  "config_source": "run_config",
+  "run_config_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\run_config\\run_config_template_v1.json",
+  "run_config_schema_version": "run-config-v1",
   "input_scope": {
     "source_family": "spotify_api_export",
     "include_top_tracks": true,
@@ -21,79 +21,79 @@
     "include_recently_played": true,
     "recently_played_limit": 50
   },
-  "matched_seed_count": 221,
-  "total_effective_weight": 594.516574,
+  "matched_seed_count": 1563,
+  "total_effective_weight": 3777.667577,
   "dominant_lead_genres": [
     {
-      "label": "classic rock",
-      "weight": 215.441176
+      "label": "pop",
+      "weight": 813.197986
     },
     {
-      "label": "pop",
-      "weight": 115.416667
+      "label": "classic rock",
+      "weight": 810.924509
     },
     {
       "label": "rock",
-      "weight": 52.142857
+      "weight": 539.907563
     },
     {
       "label": "progressive rock",
-      "weight": 50.0
+      "weight": 448.5
     },
     {
-      "label": "folk",
-      "weight": 36.071429
+      "label": "new wave",
+      "weight": 216.278788
     }
   ],
   "dominant_tags": [
     {
       "label": "rock",
-      "weight": 351.43324
+      "weight": 2090.781279
     },
     {
       "label": "classic rock",
-      "weight": 320.361811
+      "weight": 1707.50985
     },
     {
       "label": "pop",
-      "weight": 293.857843
+      "weight": 1592.605828
     },
     {
       "label": "80s",
-      "weight": 162.916667
+      "weight": 1309.822432
     },
     {
-      "label": "60s",
-      "weight": 140.718954
+      "label": "70s",
+      "weight": 653.216667
     }
   ],
   "dominant_genres": [
     {
       "label": "rock",
-      "weight": 351.43324
+      "weight": 2090.781279
     },
     {
       "label": "classic rock",
-      "weight": 320.361811
+      "weight": 1707.50985
     },
     {
       "label": "pop",
-      "weight": 293.857843
-    },
-    {
-      "label": "singer-songwriter",
-      "weight": 78.571429
+      "weight": 1592.605828
     },
     {
       "label": "progressive rock",
-      "weight": 55.0
+      "weight": 566.45
+    },
+    {
+      "label": "hard rock",
+      "weight": 446.4
     }
   ],
   "feature_centers": {
-    "danceability": 0.550561,
-    "energy": 0.553168,
-    "valence": 0.562421,
-    "tempo": 122.32724
+    "danceability": 0.555602,
+    "energy": 0.597241,
+    "valence": 0.553157,
+    "tempo": 120.785257
   },
   "artifact_paths": {
     "profile_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\profile\\outputs\\bl004_preference_profile.json",
@@ -101,6 +101,6 @@
   },
   "input_hashes": {
     "seed_table_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\alignment\\outputs\\bl003_ds001_spotify_seed_table.csv",
-    "seed_table_sha256": "a7e405bed9870c19cafca37925872b189cb2bd3f7a414ac2d8a9851b58a6cdc3"
+    "seed_table_sha256": "36ca08db341a137270d7d7a35e3c59a0b35d30799d192b46e07314c0e83597b9"
   }
 }

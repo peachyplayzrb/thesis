@@ -1,7 +1,7 @@
 {
   "task": "BL-014",
   "description": "Automated sanity checks for BL-020 artifact schema, hash linkage, and count continuity",
-  "run_id": "BL014-SANITY-20260322-024523-652281",
+  "run_id": "BL014-SANITY-20260325-021509-011197",
   "required_artifacts": {
     "bl004_profile": "07_implementation\\implementation_notes\\profile\\outputs\\bl004_preference_profile.json",
     "bl004_summary": "07_implementation\\implementation_notes\\profile\\outputs\\bl004_profile_summary.json",
@@ -17,7 +17,6 @@
     "bl008_summary": "07_implementation\\implementation_notes\\transparency\\outputs\\bl008_explanation_summary.json",
     "bl009_log": "07_implementation\\implementation_notes\\observability\\outputs\\bl009_run_observability_log.json",
     "bl009_index": "07_implementation\\implementation_notes\\observability\\outputs\\bl009_run_index.csv",
-    "bl019_dataset": "07_implementation\\implementation_notes\\data_layer\\outputs\\bl019_ds002_integrated_candidate_dataset.csv",
     "bl004_seed_trace": "07_implementation\\implementation_notes\\profile\\outputs\\bl004_seed_trace.csv"
   },
   "schema_checks": [
@@ -40,6 +39,7 @@
     "BL-005 kept count matches filtered rows",
     "BL-006 scored count matches scored rows",
     "BL-007 playlist count aligns with BL-008 explanations",
+    "BL-007 undersized playlist advisory flagging",
     "BL-009 index counts align with upstream stage outputs",
     "BL-009 run_id linkage aligns with upstream stage summaries"
   ]

@@ -2,7 +2,7 @@
   "scenario_id": "no_influence_tracks",
   "test_id": "EP-CTRL-001",
   "control_surface": "influence_tracks",
-  "description": "Remove the three synthetic influence tracks while keeping all other inputs and parameters fixed.",
+  "description": "Disable influence-track interactions while keeping all other inputs and parameters fixed.",
   "expected_effect": "profile and ranking shift away from influence-steered indie/alternative emphasis",
   "profile": {
     "effective_weight_rule": "effective_weight = preference_weight",

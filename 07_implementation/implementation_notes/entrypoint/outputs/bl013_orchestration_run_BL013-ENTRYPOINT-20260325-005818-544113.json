@@ -1,0 +1,102 @@
+{
+  "run_id": "BL013-ENTRYPOINT-20260325-005818-544113",
+  "task": "BL-013",
+  "generated_at_utc": "2026-03-25T00:58:18Z",
+  "overall_status": "fail",
+  "continue_on_error": false,
+  "python_executable": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\.venv\\Scripts\\python.exe",
+  "run_config_path": null,
+  "canonical_run_config_artifacts": {
+    "run_id": "BL013-ENTRYPOINT-20260325-005818-544113",
+    "generated_at_utc": "2026-03-25T00:58:18Z",
+    "output_dir": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\run_config\\outputs",
+    "run_intent": {
+      "path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\run_config\\outputs\\run_intent_20260325-005818-553005.json",
+      "sha256": "146FE03D4BA8E563E4B97262FDF518C9B83014A9CBD2429CDE1A0C1B8994EE1E",
+      "artifact_schema_version": "run-intent-v1"
+    },
+    "run_effective_config": {
+      "path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\run_config\\outputs\\run_effective_config_20260325-005818-553005.json",
+      "sha256": "F4E9EB3F40B28BB58A5CA8E21BD9DDA40731270DF5FC9FEBC5189C1E14205454",
+      "artifact_schema_version": "run-effective-config-v1"
+    },
+    "latest": {
+      "run_intent": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\run_config\\outputs\\run_intent_latest.json",
+      "run_effective_config": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\run_config\\outputs\\run_effective_config_latest.json"
+    }
+  },
+  "refresh_seed": false,
+  "requested_stage_order": [
+    "BL-004",
+    "BL-005",
+    "BL-006",
+    "BL-007",
+    "BL-008",
+    "BL-009"
+  ],
+  "executed_stage_count": 3,
+  "failed_stage_count": 1,
+  "elapsed_seconds": 7.985,
+  "stage_results": [
+    {
+      "stage_id": "BL-004",
+      "script_path": "07_implementation/implementation_notes/profile/build_bl004_preference_profile.py",
+      "command": [
+        "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\.venv\\Scripts\\python.exe",
+        "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\profile\\build_bl004_preference_profile.py"
+      ],
+      "run_config_path": null,
+      "run_intent_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\run_config\\outputs\\run_intent_20260325-005818-553005.json",
+      "run_effective_config_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\run_config\\outputs\\run_effective_config_20260325-005818-553005.json",
+      "return_code": 0,
+      "status": "pass",
+      "elapsed_seconds": 0.222,
+      "stdout": "BL-004 preference profile created.\nprofile=C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\profile\\outputs\\bl004_preference_profile.json\nsummary=C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\profile\\outputs\\bl004_profile_summary.json\nseed_trace=C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\profile\\outputs\\bl004_seed_trace.csv",
+      "stderr": ""
+    },
+    {
+      "stage_id": "BL-005",
+      "script_path": "07_implementation/implementation_notes/retrieval/build_bl005_candidate_filter.py",
+      "command": [
+        "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\.venv\\Scripts\\python.exe",
+        "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\retrieval\\build_bl005_candidate_filter.py"
+      ],
+      "run_config_path": null,
+      "run_intent_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\run_config\\outputs\\run_intent_20260325-005818-553005.json",
+      "run_effective_config_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\run_config\\outputs\\run_effective_config_20260325-005818-553005.json",
+      "return_code": 0,
+      "status": "pass",
+      "elapsed_seconds": 5.204,
+      "stdout": "BL-005 candidate filtering complete.\nfiltered_candidates=C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\retrieval\\outputs\\bl005_filtered_candidates.csv\ndecisions=C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\retrieval\\outputs\\bl005_candidate_decisions.csv\ndiagnostics=C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\retrieval\\outputs\\bl005_candidate_diagnostics.json",
+      "stderr": ""
+    },
+    {
+      "stage_id": "BL-006",
+      "script_path": "07_implementation/implementation_notes/scoring/build_bl006_scored_candidates.py",
+      "command": [
+        "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\.venv\\Scripts\\python.exe",
+        "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\scoring\\build_bl006_scored_candidates.py"
+      ],
+      "run_config_path": null,
+      "run_intent_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\run_config\\outputs\\run_intent_20260325-005818-553005.json",
+      "run_effective_config_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\run_config\\outputs\\run_effective_config_20260325-005818-553005.json",
+      "return_code": 1,
+      "status": "fail",
+      "elapsed_seconds": 2.557,
+      "stdout": "",
+      "stderr": "Traceback (most recent call last):\n  File \"C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\scoring\\build_bl006_scored_candidates.py\", line 540, in <module>\n    main()\n    ~~~~^^\n  File \"C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\scoring\\build_bl006_scored_candidates.py\", line 433, in main\n    with scored_path.open(\"w\", encoding=\"utf-8\", newline=\"\") as handle:\n         ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\peach\\AppData\\Roaming\\uv\\python\\cpython-3.14.3-windows-x86_64-none\\Lib\\pathlib\\__init__.py\", line 771, in open\n    return io.open(self, mode, buffering, encoding, errors, newline)\n           ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nOSError: [Errno 22] Invalid argument: 'C:\\\\Users\\\\peach\\\\Desktop\\\\thesis-main (3)\\\\thesis-main\\\\thesis-main\\\\07_implementation\\\\implementation_notes\\\\scoring\\\\outputs\\\\bl006_scored_candidates.csv'"
+    }
+  ],
+  "stable_artifact_hashes": {
+    "bl004_seed_trace": "6378F963A43ADAACE2818945E1F5216323D1880853085446FDB74D00CD7B525C",
+    "bl005_filtered_candidates": "ADF61C5EECBAD48A704C802EAE3441A7F09826A87C224D7F0A226253F2CCA679",
+    "bl005_candidate_decisions": "BA58B95A7D1B7F2C8CED25944C64335F9610A51980066D64657ECC2532A2209C",
+    "bl006_scored_candidates": "7302AABC4BD50D462B016F21F9F9748BAA01C5D0DA10D00FDB55DE91C756A91B",
+    "bl007_assembly_trace": "4AAB4C9D5523C32DB1F269782BFC8DA22EE5B7C6817B3E5FBE1AA2529083A764"
+  },
+  "missing_stable_artifacts": [],
+  "notes": {
+    "purpose": "Lightweight wrapper to run existing BL-004..BL-009 scripts in one command.",
+    "repeatability_check_guidance": "Compare stable_artifact_hashes between repeated runs under unchanged inputs/config."
+  }
+}

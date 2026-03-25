@@ -1,5 +1,5 @@
 {
-  "run_id": "BL011-NO_INFLUENCE_TRACKS-BL005-20260324-235131-323636",
+  "run_id": "BL011-NO_INFLUENCE_TRACKS-BL005-20260325-020842-631320",
   "task": "BL-005",
   "scenario_id": "no_influence_tracks",
   "config": {
@@ -17,26 +17,27 @@
   },
   "counts": {
     "candidate_rows_total": 109269,
-    "seed_tracks_excluded": 221,
-    "kept_candidates": 58823,
-    "rejected_non_seed_candidates": 50225
+    "seed_tracks_excluded": 1563,
+    "kept_candidates": 56691,
+    "rejected_non_seed_candidates": 51015
   },
   "rule_hits": {
     "semantic_rule_hits": {
-      "lead_genre_match": 22391,
-      "genre_overlap": 53692,
-      "tag_overlap": 53406
+      "lead_genre_match": 20939,
+      "genre_overlap": 52245,
+      "tag_overlap": 53420
     },
     "numeric_rule_hits": {
-      "tempo": 54751,
+      "tempo": 55033,
       "key": 28584,
       "mode": 68257,
-      "duration_ms": 60647
+      "duration_ms": 47777
     }
   },
   "top_kept_track_ids": [
     "0009fFIM1eYThaPg",
     "002Jyd0vN4HyCpqL",
+    "007LIJOPQ4Sb98qV",
     "00IeldeA9ijZOL0P",
     "00KSCJkYb8JKa4Y3",
     "00LuPWdOccBb09bW",
@@ -46,7 +47,6 @@
     "00hFmpewuNvc4dRL",
     "00i0OB17z3m3yamO",
     "00mLjKFmaTv9MdaB",
-    "00uLdNEc6yXbIxyW",
     "00wqHIO65EtRyRQM",
     "013BFFjvohJT9dW9",
     "013QDoTqbexEwkHr"
