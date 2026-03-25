@@ -554,6 +554,7 @@ implementation_notes/reproducibility/outputs/bl010_reproducibility_run_matrix.cs
 implementation_notes/reproducibility/outputs/bl010_reproducibility_config_snapshot.json
 
 implementation_notes/controllability/run_bl011_controllability_check.py
+implementation_notes/controllability/bl011_state_log_2026-03-24.md
 implementation_notes/controllability/outputs/bl011_controllability_report.json
 implementation_notes/controllability/outputs/bl011_controllability_run_matrix.csv
 implementation_notes/controllability/outputs/bl011_controllability_config_snapshot.json
@@ -659,3 +660,26 @@ Archived in `_archive_2026-03-24/`: **101 files**
 | BL-022 | Corpus-path switching | deferred |
 
 Full details: `backlog.md`
+
+---
+
+## 10. 2026-03-25 Baseline Refresh
+
+Latest validated baseline (post-alignment):
+
+- BL-010 reproducibility
+  - run_id: `BL010-REPRO-20260324-234322`
+  - status: pass (`deterministic_match=true`)
+  - fixed_input_source: `active_pipeline_outputs`
+- BL-011 controllability
+  - run_id: `BL011-CTRL-20260324-235114`
+  - status: pass
+  - all scenario checks (repeat consistency, observable shift, expected direction): true
+- BL-013 orchestrator
+  - run_id: `BL013-ENTRYPOINT-20260324-235248-642823`
+  - status: pass
+  - BL-004 through BL-009: all pass
+
+Operational note:
+- BL-009, BL-010, and BL-011 are now aligned with the active BL-004..BL-009 path and no longer hard-depend on archived BL-016/BL-017 assets.
+

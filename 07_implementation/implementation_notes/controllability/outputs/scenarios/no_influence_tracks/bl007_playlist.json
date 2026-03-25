@@ -1,5 +1,5 @@
 {
-  "run_id": "BL011-NO_INFLUENCE_TRACKS-BL007-20260320-235345-259873",
+  "run_id": "BL011-NO_INFLUENCE_TRACKS-BL007-20260324-235135-832269",
   "task": "BL-007",
   "scenario_id": "no_influence_tracks",
   "config": {
@@ -12,73 +12,73 @@
   "tracks": [
     {
       "playlist_position": 1,
-      "track_id": "jPv1Tj4Mgo4l2Oue",
-      "lead_genre": "indie rock",
-      "final_score": 0.741196,
+      "track_id": "yEz9rqTTulkiDDm7",
+      "lead_genre": "classic rock",
+      "final_score": 0.779817,
       "score_rank": 1
     },
     {
       "playlist_position": 2,
-      "track_id": "POdgTSLBnoFJaj2x",
-      "lead_genre": "indie rock",
-      "final_score": 0.719758,
+      "track_id": "ru7tTgHQ3Pn5sFku",
+      "lead_genre": "classic rock",
+      "final_score": 0.761923,
       "score_rank": 2
     },
     {
       "playlist_position": 3,
-      "track_id": "yUa5uu5wFCGwl2PK",
-      "lead_genre": "indie pop",
-      "final_score": 0.617834,
+      "track_id": "phL12CBijBqwQ9qB",
+      "lead_genre": "pop",
+      "final_score": 0.735196,
       "score_rank": 8
     },
     {
       "playlist_position": 4,
-      "track_id": "xr1HkbplUycZcEZX",
-      "lead_genre": "indie rock",
-      "final_score": 0.604422,
+      "track_id": "KZR6R3ipwAKSCdA0",
+      "lead_genre": "classic rock",
+      "final_score": 0.730162,
       "score_rank": 9
     },
     {
       "playlist_position": 5,
-      "track_id": "KxryDZFfi0mkMMiM",
-      "lead_genre": "alternative rock",
-      "final_score": 0.593906,
+      "track_id": "dv1r49qWV1haZtYv",
+      "lead_genre": "classic rock",
+      "final_score": 0.7134,
       "score_rank": 10
     },
     {
       "playlist_position": 6,
-      "track_id": "8keAhBJumHlc8qe9",
-      "lead_genre": "indie rock",
-      "final_score": 0.587562,
-      "score_rank": 11
+      "track_id": "c7CeSmnsVeJSYvN4",
+      "lead_genre": "pop",
+      "final_score": 0.694147,
+      "score_rank": 16
     },
     {
       "playlist_position": 7,
-      "track_id": "Nyb0YqqyaSvWThIG",
-      "lead_genre": "indie pop",
-      "final_score": 0.582128,
-      "score_rank": 12
-    },
-    {
-      "playlist_position": 8,
-      "track_id": "PZEgbQhTHMMrKRLv",
-      "lead_genre": "folk",
-      "final_score": 0.508231,
+      "track_id": "4oTCBnBQ389wmbQN",
+      "lead_genre": "rock",
+      "final_score": 0.692927,
       "score_rank": 18
     },
     {
-      "playlist_position": 9,
-      "track_id": "9ZtfD8gBZXonrJKX",
+      "playlist_position": 8,
+      "track_id": "0dUzaNgp1pENO3CP",
       "lead_genre": "pop",
-      "final_score": 0.500642,
-      "score_rank": 19
+      "final_score": 0.689772,
+      "score_rank": 20
+    },
+    {
+      "playlist_position": 9,
+      "track_id": "BQIgXeFtTz3kN67J",
+      "lead_genre": "pop",
+      "final_score": 0.671856,
+      "score_rank": 35
     },
     {
       "playlist_position": 10,
-      "track_id": "GB9LkV8pTLXCCvX6",
-      "lead_genre": "folk",
-      "final_score": 0.486935,
-      "score_rank": 22
+      "track_id": "lBmaPfuBMaTt0dZl",
+      "lead_genre": "rock",
+      "final_score": 0.6714,
+      "score_rank": 36
     }
   ]
 }

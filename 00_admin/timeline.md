@@ -6,11 +6,11 @@ Last updated: 2026-03-25
 - M1 (2026-03-13 to 2026-03-20): Planning baseline finalized [completed]
 	- Populate backlog, implementation plan, and chapter readiness checklist.
 	- Confirm evaluation protocol and reproducibility evidence format.
-- M2 (2026-03-21 to 2026-04-05): Data ingestion, enrichment, and alignment baseline [in progress]
+- M2 (2026-03-21 to 2026-04-05): Data ingestion and DS-001 alignment baseline [in progress]
 	- Implement one ingestion path for listening history import.
-	- Implement semantic-enrichment alignment path for imported listening history.
+	- Implement DS-001 metadata/identifier alignment path for imported listening history.
 	- Implement source-scope actuation and persist effective scope in run outputs.
-	- Log enrichment coverage, diagnostics, and traceability artifacts.
+	- Log alignment diagnostics, coverage, and traceability artifacts.
 - M3 (2026-04-06 to 2026-04-20): Deterministic profile and scoring implemented [planned]
 	- Build deterministic user profile construction.
 	- Implement candidate filtering and deterministic similarity scoring.

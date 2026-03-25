@@ -1,9 +1,222 @@
 event_id,track_id,interaction_type,signal_source,seed_rank,interaction_count,preference_weight,effective_weight,lead_genre,top_tag,candidate_playcount_sum,candidate_listener_rows
-syn_evt_001,0ng9VQtWuSjd0arq,history,synthetic_history,1,233427,1.8,1.8,indie rock,indie,233427,19296
-syn_evt_002,lJKIbZNzpS6IsNgh,history,synthetic_history,2,211291,1.7052,1.7052,indie pop,indie,211291,23422
-syn_evt_003,yfm7RER1PWTqgjIp,history,synthetic_history,3,162397,1.4957,1.4957,electronic,pop,162397,15253
-syn_evt_004,io7RYSOjKB4YpBKy,history,synthetic_history,4,152211,1.4521,1.4521,trip hop,electronic,152211,20680
-syn_evt_005,L4lGOjfg9lTLXh3U,history,synthetic_history,5,135960,1.3825,1.3825,alternative rock,rock,135960,17443
-syn_evt_006,zp4zYVjiH2Tm3gTM,history,synthetic_history,6,138503,1.3933,1.3933,pop,pop,138503,10362
-syn_evt_007,lZDk11KaRskQqhWf,history,synthetic_history,7,134517,1.3763,1.3763,indie rock,rock,134517,13753
-syn_evt_008,wQ4RdMXUKj1ry4p6,history,synthetic_history,8,133639,1.3725,1.3725,indie rock,alternative,133639,12986
+ds001_seed_000009,22YI5YceDuG0QoOj,history,ds001_seed_table,5,5,0.5,0.5,electronic,electronic,0,0
+ds001_seed_000052,JHJusOYsaL3zLGtA,history,ds001_seed_table,5,5,0.5,0.5,electronic,chillout,0,0
+ds001_seed_000115,bbRubPkT5bxwLQpH,history,ds001_seed_table,5,5,0.5,0.5,electronic,electronic,0,0
+ds001_seed_000151,l05MaeKgw6wjJxLs,history,ds001_seed_table,5,5,0.5,0.5,electronic,electronic,0,0
+ds001_seed_000175,rI5G12llOXXzgocS,history,ds001_seed_table,5,5,0.5,0.5,ambient,ambient,0,0
+ds001_seed_000200,wYoJBT9Lg1bBf8Nd,history,ds001_seed_table,5,5,0.5,0.5,electronic,electronic,0,0
+ds001_seed_000208,xsAC7LEsEv3vlz4p,history,ds001_seed_table,5,5,0.5,0.5,electronic,electronic,0,0
+ds001_seed_000001,0SZzDlqkVto82lT8,history,ds001_seed_table,25,25,2.5,2.5,hip hop,hip-hop,0,0
+ds001_seed_000002,0qV2T61m2AvCSw88,history,ds001_seed_table,25,25,2.5,2.5,soul,soul,0,0
+ds001_seed_000003,12jXnbQrbvSWYgp7,history,ds001_seed_table,25,25,2.5,2.5,folk,folk,0,0
+ds001_seed_000004,15CxeKsD9DvqCVhY,history,ds001_seed_table,25,25,2.5,2.5,classic rock,classic rock,0,0
+ds001_seed_000005,166TJqR8YtaoibkS,history,ds001_seed_table,25,25,2.5,2.5,soundtrack,soundtrack,0,0
+ds001_seed_000006,1EhoPstBUguE4Btf,history,ds001_seed_table,25,25,2.5,2.5,swing,swing,0,0
+ds001_seed_000007,1GngSVshm9HPaMVa,history,ds001_seed_table,25,25,2.5,2.5,classic rock,classic rock,0,0
+ds001_seed_000010,2PflxozrqQJVQchQ,history,ds001_seed_table,25,25,2.5,2.5,progressive rock,progressive rock,0,0
+ds001_seed_000011,2UbyfJ2ads4YvskN,history,ds001_seed_table,25,25,2.5,2.5,pop,80s,0,0
+ds001_seed_000012,2eQ2zwD8LOR5Oj9m,history,ds001_seed_table,25,25,2.5,2.5,classic rock,classic rock,0,0
+ds001_seed_000013,3UfIu7IgRBza12y2,history,ds001_seed_table,25,25,2.5,2.5,classic rock,classic rock,0,0
+ds001_seed_000014,4xYdj1WQYnfLCl11,history,ds001_seed_table,25,25,2.5,2.5,new wave,80s,0,0
+ds001_seed_000015,4yJQAF5ZuAuzs24P,history,ds001_seed_table,25,25,2.5,2.5,swing,swing,0,0
+ds001_seed_000016,5G6OktV6MQZjl2LQ,history,ds001_seed_table,25,25,2.5,2.5,progressive rock,progressive rock,0,0
+ds001_seed_000017,5YjeA9RnddUgDFjI,history,ds001_seed_table,25,25,2.5,2.5,classic rock,classic rock,0,0
+ds001_seed_000018,6M4XbtDIOtPeDA06,history,ds001_seed_table,25,25,2.5,2.5,classic rock,60s,0,0
+ds001_seed_000019,6MJkge2anZHEYvjl,history,ds001_seed_table,25,25,2.5,2.5,new wave,80s,0,0
+ds001_seed_000020,6Op0YXj5bEEcScnz,history,ds001_seed_table,25,25,2.5,2.5,disco,fip,0,0
+ds001_seed_000021,6qNbHN2lGfuVydmr,history,ds001_seed_table,25,25,2.5,2.5,progressive rock,progressive rock,0,0
+ds001_seed_000022,79gGvHv2KqAvswk8,history,ds001_seed_table,25,25,2.5,2.5,pop,pop,0,0
+ds001_seed_000023,7LfUFSaaFyxcITaK,history,ds001_seed_table,25,25,2.5,2.5,pop,80s,0,0
+ds001_seed_000024,8TauRq2Dzjuqlen8,history,ds001_seed_table,25,25,2.5,2.5,classic rock,classic rock,0,0
+ds001_seed_000025,8amnHzBUPrdIQp6A,history,ds001_seed_table,25,25,2.5,2.5,progressive rock,progressive rock,0,0
+ds001_seed_000026,8e1XAO305okHTnbt,history,ds001_seed_table,25,25,2.5,2.5,progressive rock,progressive rock,0,0
+ds001_seed_000027,8xE82ySWCYSxN8TD,history,ds001_seed_table,25,25,2.5,2.5,soul,british,0,0
+ds001_seed_000028,9CLTmq6Ps7WVseF2,history,ds001_seed_table,25,25,2.5,2.5,classic rock,classic rock,0,0
+ds001_seed_000029,9PUnKxg2n1co5JI1,history,ds001_seed_table,25,25,2.5,2.5,classic rock,classic rock,0,0
+ds001_seed_000030,9S6X7coXdb927q9L,history,ds001_seed_table,25,25,2.5,2.5,soul,soul,0,0
+ds001_seed_000031,9emO9FRFYFQesS1g,history,ds001_seed_table,25,25,2.5,2.5,new wave,80s,0,0
+ds001_seed_000032,AeEKbcGeUG3kIp41,history,ds001_seed_table,25,25,2.5,2.5,singer-songwriter,piano,0,0
+ds001_seed_000034,BoDfJUleKTckWpiW,history,ds001_seed_table,25,25,2.5,2.5,classic rock,psychedelic peppermint,0,0
+ds001_seed_000035,BurkN8hwXKYLo8xS,history,ds001_seed_table,25,25,2.5,2.5,folk,folk,0,0
+ds001_seed_000036,CV1cYS3ulclC2pwO,history,ds001_seed_table,25,25,2.5,2.5,rock,60s,0,0
+ds001_seed_000037,D6fkJpDr6KTNzDpL,history,ds001_seed_table,25,25,2.5,2.5,swing,swing,0,0
+ds001_seed_000038,EP4cXLGgw90hzP3O,history,ds001_seed_table,25,25,2.5,2.5,classic rock,rock n roll,0,0
+ds001_seed_000039,EluJPZ1gvKeMbf3X,history,ds001_seed_table,25,25,2.5,2.5,baroque pop,baroque pop,0,0
+ds001_seed_000040,EoM9b6SAT1D9Ytq1,history,ds001_seed_table,25,25,2.5,2.5,rock,rock,0,0
+ds001_seed_000041,F8vAvaC1LW5E8DOU,history,ds001_seed_table,25,25,2.5,2.5,reggae,reggae,0,0
+ds001_seed_000042,FKCVBKj4lauIUFna,history,ds001_seed_table,25,25,2.5,2.5,classic rock,rock n roll,0,0
+ds001_seed_000043,FeRInaEhXdfN0VZv,history,ds001_seed_table,25,25,2.5,2.5,classical,piano,0,0
+ds001_seed_000044,FrjEAGwfV6qohKmJ,history,ds001_seed_table,25,25,2.5,2.5,progressive rock,progressive rock,0,0
+ds001_seed_000045,FvmUxqDYcskY1E1q,history,ds001_seed_table,25,25,2.5,2.5,classic rock,rock n roll,0,0
+ds001_seed_000046,GGVEhXe864IozrMK,history,ds001_seed_table,25,25,2.5,2.5,progressive rock,progressive rock,0,0
+ds001_seed_000047,GbbYeHso7KMaXXZk,history,ds001_seed_table,25,25,2.5,2.5,pop,pop,0,0
+ds001_seed_000048,HNN3N9MY2Okf4kfQ,history,ds001_seed_table,25,25,2.5,2.5,pop,pop,0,0
+ds001_seed_000049,HhnTUIZ040LnpSZm,history,ds001_seed_table,25,25,2.5,2.5,pop,80s,0,0
+ds001_seed_000050,IAzZGYyHfsmexzGi,history,ds001_seed_table,25,25,2.5,2.5,pop,pop,0,0
+ds001_seed_000051,IQHIVdQXeQ7dk3So,history,ds001_seed_table,25,25,2.5,2.5,classic rock,classic rock,0,0
+ds001_seed_000053,JTbvJI8lNUTib1O5,history,ds001_seed_table,25,25,2.5,2.5,progressive rock,progressive rock,0,0
+ds001_seed_000054,JZrvucFQ56izpI9f,history,ds001_seed_table,25,25,2.5,2.5,classic rock,classic rock,0,0
+ds001_seed_000055,K01Mxf5XW4k9jAIt,history,ds001_seed_table,25,25,2.5,2.5,classic rock,classic rock,0,0
+ds001_seed_000056,K2InLHoJqZgf5Opi,history,ds001_seed_table,25,25,2.5,2.5,classic rock,60s,0,0
+ds001_seed_000057,LP8SxUB1bOG1Ra3P,history,ds001_seed_table,25,25,2.5,2.5,classic rock,60s,0,0
+ds001_seed_000058,MDKgaD6aiKpqk7cz,history,ds001_seed_table,25,25,2.5,2.5,rock,80s,0,0
+ds001_seed_000059,ME9AVNcYwpF1WPYG,history,ds001_seed_table,25,25,2.5,2.5,pop,pop,0,0
+ds001_seed_000060,MkVbtlOpm2Q2D41x,history,ds001_seed_table,25,25,2.5,2.5,rock,60s,0,0
+ds001_seed_000061,N4dWQMEKRaUONlaP,history,ds001_seed_table,25,25,2.5,2.5,classic rock,60s,0,0
+ds001_seed_000062,N9SjyAdz5ogvctSR,history,ds001_seed_table,25,25,2.5,2.5,folk,folk,0,0
+ds001_seed_000063,NPOsbL3fobizZyEs,history,ds001_seed_table,25,25,2.5,2.5,pop,pop,0,0
+ds001_seed_000064,NQbNKyYkv5MxNeQy,history,ds001_seed_table,25,25,2.5,2.5,pop,pop,0,0
+ds001_seed_000065,NfSfEoxJmTd2T2Aj,history,ds001_seed_table,25,25,2.5,2.5,classic rock,classic rock,0,0
+ds001_seed_000066,NnPChlLXcE8YETJS,history,ds001_seed_table,25,25,2.5,2.5,classic rock,60s,0,0
+ds001_seed_000067,OK8VmZrhLaWmW2R7,history,ds001_seed_table,25,25,2.5,2.5,psychedelic rock,psychedelic rock,0,0
+ds001_seed_000068,OUkZI66QebyJvgIS,history,ds001_seed_table,25,25,2.5,2.5,classic rock,classic rock,0,0
+ds001_seed_000069,OxCTebk8s4Ex3yBg,history,ds001_seed_table,25,25,2.5,2.5,classic rock,classic rock,0,0
+ds001_seed_000070,P2S6M5e4PN1JubTp,history,ds001_seed_table,25,25,2.5,2.5,rap,hip-hop,0,0
+ds001_seed_000071,PibkyDY19wIzhvpc,history,ds001_seed_table,25,25,2.5,2.5,progressive rock,progressive rock,0,0
+ds001_seed_000073,QXkYgalw42rz4k5X,history,ds001_seed_table,25,25,2.5,2.5,folk,folk,0,0
+ds001_seed_000074,QjxUmiXnnXxYDt72,history,ds001_seed_table,25,25,2.5,2.5,jazz,jazz,0,0
+ds001_seed_000075,QolCFgn0lRVqdc9N,history,ds001_seed_table,25,25,2.5,2.5,rap,rap,0,0
+ds001_seed_000076,QrsNJaTFIN7k6GvQ,history,ds001_seed_table,25,25,2.5,2.5,soul,soul,0,0
+ds001_seed_000077,QvYpogJ5qMDGPvsw,history,ds001_seed_table,25,25,2.5,2.5,folk,folk,0,0
+ds001_seed_000078,R3ZB7V3mgBeG2SSh,history,ds001_seed_table,25,25,2.5,2.5,rock,60s,0,0
+ds001_seed_000079,ROm2Vv0rig9S5d6E,history,ds001_seed_table,25,25,2.5,2.5,pop,80s,0,0
+ds001_seed_000080,RRH8Atb65rb6xiy6,history,ds001_seed_table,25,25,2.5,2.5,progressive rock,progressive rock,0,0
+ds001_seed_000081,RdFRnRnYEQazgtcd,history,ds001_seed_table,25,25,2.5,2.5,classic rock,classic rock,0,0
+ds001_seed_000082,RfyZW9445WyeHPgN,history,ds001_seed_table,25,25,2.5,2.5,pop,80s,0,0
+ds001_seed_000083,RmMSHhTryKoZYEjZ,history,ds001_seed_table,25,25,2.5,2.5,classic rock,classic rock,0,0
+ds001_seed_000084,RudvUvHOOal4SOD7,history,ds001_seed_table,25,25,2.5,2.5,soul,soul,0,0
+ds001_seed_000086,SAA2SBcmpbhFsB8Y,history,ds001_seed_table,25,25,2.5,2.5,pop,pop,0,0
+ds001_seed_000087,SS0WjBrVPOgSw8HC,history,ds001_seed_table,25,25,2.5,2.5,classic rock,classic rock,0,0
+ds001_seed_000088,StuJducbhXoaFIYJ,history,ds001_seed_table,25,25,2.5,2.5,pop,pop,0,0
+ds001_seed_000089,Sui4UkxqCn3z4n2Q,history,ds001_seed_table,25,25,2.5,2.5,pop,pop,0,0
+ds001_seed_000091,TKCScJ2KJ78HCRcB,history,ds001_seed_table,25,25,2.5,2.5,new wave,80s,0,0
+ds001_seed_000092,TwVNNHVqSPdJFaqz,history,ds001_seed_table,25,25,2.5,2.5,folk,female vocalists,0,0
+ds001_seed_000094,Usy1B96bUQGLjrjx,history,ds001_seed_table,25,25,2.5,2.5,classic rock,classic rock,0,0
+ds001_seed_000095,UxnfrRn4Sonejy8X,history,ds001_seed_table,25,25,2.5,2.5,rock,rock,0,0
+ds001_seed_000096,VDhvqsjG56T7t8jr,history,ds001_seed_table,25,25,2.5,2.5,classic rock,classic rock,0,0
+ds001_seed_000097,VOqPgoGT5vVkLa3n,history,ds001_seed_table,25,25,2.5,2.5,pop,80s,0,0
+ds001_seed_000098,Ve257XDVBwPNUg7K,history,ds001_seed_table,25,25,2.5,2.5,pop,pop,0,0
+ds001_seed_000099,WOWxCR8vLzQt33x5,history,ds001_seed_table,25,25,2.5,2.5,rock,rock,0,0
+ds001_seed_000100,XPhsdXhKGswGFS85,history,ds001_seed_table,25,25,2.5,2.5,rock,rock,0,0
+ds001_seed_000101,XQrflLn70qYnXiw1,history,ds001_seed_table,25,25,2.5,2.5,classic rock,classic rock,0,0
+ds001_seed_000102,XkxP8SKGduJBalHe,history,ds001_seed_table,25,25,2.5,2.5,big band,big band,0,0
+ds001_seed_000103,Ydh9qUkrroIymncM,history,ds001_seed_table,25,25,2.5,2.5,rock,rock,0,0
+ds001_seed_000104,Yh6WQXVEjRQbrnFB,history,ds001_seed_table,25,25,2.5,2.5,classic rock,classic rock,0,0
+ds001_seed_000105,YpFT73HDtV6wY1Zs,history,ds001_seed_table,25,25,2.5,2.5,soul,soul,0,0
+ds001_seed_000106,ZVqMzQ2HXZQ0czai,history,ds001_seed_table,25,25,2.5,2.5,classic rock,80s,0,0
+ds001_seed_000107,ZayNF6UdzLYKhbpE,history,ds001_seed_table,25,25,2.5,2.5,folk,female vocalists,0,0
+ds001_seed_000108,ZdJ9xQO7UXEtKKOG,history,ds001_seed_table,25,25,2.5,2.5,rock,rock,0,0
+ds001_seed_000109,ZhIEXl61ad4ZIeHw,history,ds001_seed_table,25,25,2.5,2.5,classic rock,classic rock,0,0
+ds001_seed_000110,a2jdDPn2s274JB4E,history,ds001_seed_table,25,25,2.5,2.5,classic rock,60s,0,0
+ds001_seed_000111,a9BhHylJgyqIxBWe,history,ds001_seed_table,25,25,2.5,2.5,classic rock,classic rock,0,0
+ds001_seed_000112,aETTFyZbufNqw9Pu,history,ds001_seed_table,25,25,2.5,2.5,pop,pop,0,0
+ds001_seed_000113,adG7LBliQbcLS3eM,history,ds001_seed_table,25,25,2.5,2.5,classic rock,classic rock,0,0
+ds001_seed_000114,bXUtXEansZmn31Bl,history,ds001_seed_table,25,25,2.5,2.5,blues,fip,0,0
+ds001_seed_000116,c0VlO6Z7FmfIJLVV,history,ds001_seed_table,25,25,2.5,2.5,folk,folk,0,0
+ds001_seed_000117,cEHfOhOsSTSVgSpF,history,ds001_seed_table,25,25,2.5,2.5,rock,80s,0,0
+ds001_seed_000118,cZXcA0XJNGeXkzgu,history,ds001_seed_table,25,25,2.5,2.5,classic rock,classic rock,0,0
+ds001_seed_000119,czL4cbRM6xXV2itL,history,ds001_seed_table,25,25,2.5,2.5,pop,pop,0,0
+ds001_seed_000120,d1bPxFltzwLJuBYc,history,ds001_seed_table,25,25,2.5,2.5,folk,female vocalists,0,0
+ds001_seed_000121,dgrUz3f0xTL2gCGE,history,ds001_seed_table,25,25,2.5,2.5,folk,female vocalists,0,0
+ds001_seed_000122,dt2rHqDjy0925YZa,history,ds001_seed_table,25,25,2.5,2.5,pop,pop,0,0
+ds001_seed_000123,eJQFqTOFGOIqtbql,history,ds001_seed_table,25,25,2.5,2.5,ragtime,ragtime,0,0
+ds001_seed_000124,eZ8zvGe1lJxaAiM5,history,ds001_seed_table,25,25,2.5,2.5,soundtrack,soundtrack,0,0
+ds001_seed_000125,f0HiP8dEZqJXmcnW,history,ds001_seed_table,25,25,2.5,2.5,classic rock,classic rock,0,0
+ds001_seed_000126,f9mg0ghupKNjfeLG,history,ds001_seed_table,25,25,2.5,2.5,classic rock,classic rock,0,0
+ds001_seed_000127,fJJCD6DJfQyDgjyh,history,ds001_seed_table,25,25,2.5,2.5,classic rock,classic rock,0,0
+ds001_seed_000128,fhNjQgeL91zroEEG,history,ds001_seed_table,25,25,2.5,2.5,folk,folk,0,0
+ds001_seed_000129,gKnKZ0Ax7LFtdo0D,history,ds001_seed_table,25,25,2.5,2.5,classic rock,60s,0,0
+ds001_seed_000130,gQbivAeNzh1daC1x,history,ds001_seed_table,25,25,2.5,2.5,pop,pop,0,0
+ds001_seed_000131,h6ZdpBDUURD99Ofa,history,ds001_seed_table,25,25,2.5,2.5,singer-songwriter,singer-songwriter,0,0
+ds001_seed_000132,hSeeghyPuOovg4ED,history,ds001_seed_table,25,25,2.5,2.5,classic rock,classic rock,0,0
+ds001_seed_000133,i82ar0zt90BSEhdS,history,ds001_seed_table,25,25,2.5,2.5,pop,pop,0,0
+ds001_seed_000135,idAM9CbU70mtINrG,history,ds001_seed_table,25,25,2.5,2.5,classic rock,classic rock,0,0
+ds001_seed_000137,ihJzcgC098p5jeUR,history,ds001_seed_table,25,25,2.5,2.5,psychedelic folk,psychedelic folk,0,0
+ds001_seed_000138,jINYnPgqIQJ6mmMl,history,ds001_seed_table,25,25,2.5,2.5,pop,pop,0,0
+ds001_seed_000139,jSx0se2IcyE1i8by,history,ds001_seed_table,25,25,2.5,2.5,rock,rock,0,0
+ds001_seed_000140,jnW0htumn57RO9M1,history,ds001_seed_table,25,25,2.5,2.5,progressive rock,progressive rock,0,0
+ds001_seed_000141,jwsubef8YSRz8SAo,history,ds001_seed_table,25,25,2.5,2.5,progressive rock,progressive rock,0,0
+ds001_seed_000142,jxaHjCUQsD444nrk,history,ds001_seed_table,25,25,2.5,2.5,classic rock,classic rock,0,0
+ds001_seed_000143,kISjOqvgqlS11n7f,history,ds001_seed_table,25,25,2.5,2.5,classic rock,classic rock,0,0
+ds001_seed_000144,kIUFIR4QDKMTWyY3,history,ds001_seed_table,25,25,2.5,2.5,classic rock,80s,0,0
+ds001_seed_000145,kOIoaM8eyUi56jtt,history,ds001_seed_table,25,25,2.5,2.5,pop,pop,0,0
+ds001_seed_000146,kRaJL2dcpl3iRVtQ,history,ds001_seed_table,25,25,2.5,2.5,progressive rock,progressive rock,0,0
+ds001_seed_000147,kWs0fdHRRBQrla8u,history,ds001_seed_table,25,25,2.5,2.5,classic rock,classic rock,0,0
+ds001_seed_000148,kb7H6FbRLXnCra6z,history,ds001_seed_table,25,25,2.5,2.5,electronic,chillout,0,0
+ds001_seed_000149,kiTxoyOhsiHSvrUJ,history,ds001_seed_table,25,25,2.5,2.5,funk,funk,0,0
+ds001_seed_000150,kpgL9YkG2TykW9gd,history,ds001_seed_table,25,25,2.5,2.5,classic rock,60s,0,0
+ds001_seed_000152,lw4m9PxzySLxDSl2,history,ds001_seed_table,25,25,2.5,2.5,progressive rock,progressive rock,0,0
+ds001_seed_000153,meMTxddMEzfnTqD7,history,ds001_seed_table,25,25,2.5,2.5,pop,pop,0,0
+ds001_seed_000154,mhen6zCPqULPXTed,history,ds001_seed_table,25,25,2.5,2.5,folk,female vocalists,0,0
+ds001_seed_000155,mi8js8zk212SNqLa,history,ds001_seed_table,25,25,2.5,2.5,classic rock,classic rock,0,0
+ds001_seed_000156,nJamJt72j4tlle1g,history,ds001_seed_table,25,25,2.5,2.5,classic rock,instrumental,0,0
+ds001_seed_000157,nM7CF8cIbWP2xY67,history,ds001_seed_table,25,25,2.5,2.5,classic rock,classic rock,0,0
+ds001_seed_000158,nhe8AL94tqlw7X7b,history,ds001_seed_table,25,25,2.5,2.5,rock,rock,0,0
+ds001_seed_000159,nrJdjUOX50wfkdDX,history,ds001_seed_table,25,25,2.5,2.5,classic rock,60s,0,0
+ds001_seed_000160,nwFf2NmOZwlcjrfr,history,ds001_seed_table,25,25,2.5,2.5,folk,female vocalists,0,0
+ds001_seed_000161,ny24slisveRoUbHG,history,ds001_seed_table,25,25,2.5,2.5,classic rock,60s,0,0
+ds001_seed_000162,oDaxi00bIoYlesLx,history,ds001_seed_table,25,25,2.5,2.5,classic rock,60s,0,0
+ds001_seed_000163,oFJO85A0ZhnelznP,history,ds001_seed_table,25,25,2.5,2.5,classical,classical,0,0
+ds001_seed_000164,ovL1QVHmIMQnjULe,history,ds001_seed_table,25,25,2.5,2.5,rock,rock,0,0
+ds001_seed_000165,ovqSpdUbgFRRGdyi,history,ds001_seed_table,25,25,2.5,2.5,progressive rock,progressive rock,0,0
+ds001_seed_000166,p7A20RSXaA6h4DNY,history,ds001_seed_table,25,25,2.5,2.5,classic rock,classic rock,0,0
+ds001_seed_000167,p9Tw7i7fN4LeGSBR,history,ds001_seed_table,25,25,2.5,2.5,pop,dance,0,0
+ds001_seed_000168,pKa8r2L0a8LJ1I2K,history,ds001_seed_table,25,25,2.5,2.5,pop,pop,0,0
+ds001_seed_000169,q1pYqQ7pabjiPLiK,history,ds001_seed_table,25,25,2.5,2.5,classic rock,60s,0,0
+ds001_seed_000170,q6eGnEvANi2I0NEp,history,ds001_seed_table,25,25,2.5,2.5,classic rock,classic rock,0,0
+ds001_seed_000171,qAKGvFq9liu9CBNq,history,ds001_seed_table,25,25,2.5,2.5,classic rock,rock n roll,0,0
+ds001_seed_000172,qhZKUL9jq5qIYlE2,history,ds001_seed_table,25,25,2.5,2.5,soundtrack,soundtrack,0,0
+ds001_seed_000173,qiptUsLxxafOMF2P,history,ds001_seed_table,25,25,2.5,2.5,progressive rock,progressive rock,0,0
+ds001_seed_000174,ql0ehFkXrSeNq2gU,history,ds001_seed_table,25,25,2.5,2.5,new wave,new wave,0,0
+ds001_seed_000176,rKhKGhLTw5HRbpZ7,history,ds001_seed_table,25,25,2.5,2.5,soul,soul,0,0
+ds001_seed_000177,rSZ71tsqQD5GsgSN,history,ds001_seed_table,25,25,2.5,2.5,pop,80s,0,0
+ds001_seed_000178,rcOwnwKuHxrByrNx,history,ds001_seed_table,25,25,2.5,2.5,pop,pop,0,0
+ds001_seed_000179,sHQ4NOxkSvefPKL8,history,ds001_seed_table,25,25,2.5,2.5,classic rock,classic rock,0,0
+ds001_seed_000181,sW2G2sUK5IhR6srj,history,ds001_seed_table,25,25,2.5,2.5,classical,classical,0,0
+ds001_seed_000182,t79ZBHGAN1A2NbOg,history,ds001_seed_table,25,25,2.5,2.5,progressive rock,progressive rock,0,0
+ds001_seed_000183,tSBoahjUECeByewg,history,ds001_seed_table,25,25,2.5,2.5,reggae,reggae,0,0
+ds001_seed_000184,tXrpzpClM4wLWosU,history,ds001_seed_table,25,25,2.5,2.5,classic rock,60s,0,0
+ds001_seed_000185,teHrRVv3boBd5myT,history,ds001_seed_table,25,25,2.5,2.5,progressive rock,progressive rock,0,0
+ds001_seed_000186,tuA9OQatzhlFyO8d,history,ds001_seed_table,25,25,2.5,2.5,classic rock,classic rock,0,0
+ds001_seed_000187,twTZiJnIkFnPHEF7,history,ds001_seed_table,25,25,2.5,2.5,baroque pop,baroque pop,0,0
+ds001_seed_000188,u0eiYoYYMGrIcAEG,history,ds001_seed_table,25,25,2.5,2.5,jazz,female vocalists,0,0
+ds001_seed_000189,u37Ou4VTCKu3G8M9,history,ds001_seed_table,25,25,2.5,2.5,hard rock,hard rock,0,0
+ds001_seed_000190,u7B64d0Vtw9LSy7s,history,ds001_seed_table,25,25,2.5,2.5,rock,rock,0,0
+ds001_seed_000191,uj7iH69jmruknJ9V,history,ds001_seed_table,25,25,2.5,2.5,pop,70s,0,0
+ds001_seed_000192,ulMPRuWan46llLA0,history,ds001_seed_table,25,25,2.5,2.5,progressive rock,progressive rock,0,0
+ds001_seed_000193,umwmt9WBlxEWLrE7,history,ds001_seed_table,25,25,2.5,2.5,classic rock,classic rock,0,0
+ds001_seed_000194,v8APALdGAhTc4hdo,history,ds001_seed_table,25,25,2.5,2.5,jazz,jazz,0,0
+ds001_seed_000195,vh5gcly9V14bYFlF,history,ds001_seed_table,25,25,2.5,2.5,classic rock,classic rock,0,0
+ds001_seed_000196,w0lG1tWinVrGp5xK,history,ds001_seed_table,25,25,2.5,2.5,classic rock,oldies,0,0
+ds001_seed_000197,wLsNwj3xRaEkb36J,history,ds001_seed_table,25,25,2.5,2.5,classic rock,60s,0,0
+ds001_seed_000198,wWr87YN3j07FWo5d,history,ds001_seed_table,25,25,2.5,2.5,pop,70s,0,0
+ds001_seed_000199,wYdW8jGnrLfB8PhF,history,ds001_seed_table,25,25,2.5,2.5,classic rock,classic rock,0,0
+ds001_seed_000201,wi20guqqLvHXZvTu,history,ds001_seed_table,25,25,2.5,2.5,new wave,80s,0,0
+ds001_seed_000202,wpyLLsDEjbhFrTRt,history,ds001_seed_table,25,25,2.5,2.5,rock,rock,0,0
+ds001_seed_000203,wynbXLf0gt4hfRby,history,ds001_seed_table,25,25,2.5,2.5,ragtime,ragtime,0,0
+ds001_seed_000204,wzBQapgHuYmDanR9,history,ds001_seed_table,25,25,2.5,2.5,classic rock,60s,0,0
+ds001_seed_000205,x0NWP5jCon9IHrG0,history,ds001_seed_table,25,25,2.5,2.5,pop,pop,0,0
+ds001_seed_000206,x2AFbVbFJ8Na3lQg,history,ds001_seed_table,25,25,2.5,2.5,rock,rock,0,0
+ds001_seed_000207,xT64RcWqBTj2zDCC,history,ds001_seed_table,25,25,2.5,2.5,classic rock,classic rock,0,0
+ds001_seed_000209,y8AxY885GUWQuyCR,history,ds001_seed_table,25,25,2.5,2.5,classic rock,classic rock,0,0
+ds001_seed_000210,y8D6klsSSV37sR3E,history,ds001_seed_table,25,25,2.5,2.5,pop,pop,0,0
+ds001_seed_000211,yWRhfm4JZ4VqIuS8,history,ds001_seed_table,25,25,2.5,2.5,pop,80s,0,0
+ds001_seed_000212,yiNlhVBKm5rEIWXf,history,ds001_seed_table,25,25,2.5,2.5,pop,pop,0,0
+ds001_seed_000213,yqNY16s5yT0amiRZ,history,ds001_seed_table,25,25,2.5,2.5,rock,rock,0,0
+ds001_seed_000214,z6cWTXD9qNglPS4w,history,ds001_seed_table,25,25,2.5,2.5,classic rock,80s,0,0
+ds001_seed_000215,zJB6BWFhqkPeY8OA,history,ds001_seed_table,25,25,2.5,2.5,pop,pop,0,0
+ds001_seed_000216,zMtZubmfy3SOxtgg,history,ds001_seed_table,25,25,2.5,2.5,soundtrack,game of thrones,0,0
+ds001_seed_000217,zVe3ALTXIuXPDoCc,history,ds001_seed_table,25,25,2.5,2.5,progressive rock,progressive rock,0,0
+ds001_seed_000218,zeGyVR3p3GQ8a7gv,history,ds001_seed_table,25,25,2.5,2.5,classic rock,classic rock,0,0
+ds001_seed_000219,zjAaPKwKnysMKLhT,history,ds001_seed_table,25,25,2.5,2.5,classic rock,60s,0,0
+ds001_seed_000221,zxkjK9m2IBpYzqWl,history,ds001_seed_table,25,25,2.5,2.5,emo,instrumental,0,0
+ds001_seed_000072,QAxhAZhljYgVKGuB,history,ds001_seed_table,28,28,2.777778,2.777778,baroque pop,baroque pop,0,0
+ds001_seed_000180,sUzn7GZix4mpeUK4,history,ds001_seed_table,29,29,2.941176,2.941176,classic rock,classic rock,0,0
+ds001_seed_000093,UCCManHYx1CyyHpG,history,ds001_seed_table,36,36,3.571429,3.571429,folk,folk,0,0
+ds001_seed_000090,TEnAcMdffxfWONyl,history,ds001_seed_table,42,42,4.166667,4.166667,psychedelic rock,psychedelic rock,0,0
+ds001_seed_000033,AjhBBHOd3OCtwjoN,history,ds001_seed_table,50,50,5.0,5.0,classic rock,80s,0,0
+ds001_seed_000136,iglBkItdGVz3tOAG,history,ds001_seed_table,50,50,5.0,5.0,classic rock,classic rock,0,0
+ds001_seed_000008,1NSrxYWqrIUfYJlG,history,ds001_seed_table,71,71,7.142857,7.142857,rock,rock n roll,0,0
+ds001_seed_000134,iB4aqqnGw5d3hmq2,history,ds001_seed_table,87,87,8.75,8.75,pop,pop,0,0
+ds001_seed_000085,S9NHB8tncOFLjyYh,history,ds001_seed_table,167,167,16.666667,16.666667,pop,80s,0,0
+ds001_seed_000220,zp0LFbOG09bow7VL,history,ds001_seed_table,250,250,25.0,25.0,classic rock,classic rock,0,0

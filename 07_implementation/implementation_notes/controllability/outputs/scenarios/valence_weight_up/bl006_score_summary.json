@@ -1,126 +1,120 @@
 {
-  "run_id": "BL011-VALENCE_WEIGHT_UP-BL006-20260320-235345-277383",
+  "run_id": "BL011-VALENCE_WEIGHT_UP-BL006-20260324-235148-981476",
   "task": "BL-006",
   "scenario_id": "valence_weight_up",
   "config": {
     "numeric_thresholds": {
-      "rhythm.bpm": 20.0,
-      "rhythm.danceability": 0.4,
-      "lowlevel.loudness_ebu128.integrated": 6.0,
-      "V_mean": 0.8,
-      "A_mean": 0.9,
-      "D_mean": 0.8
+      "tempo": 20.0,
+      "key": 2.0,
+      "mode": 0.5,
+      "duration_ms": 45000.0
     },
     "component_weights": {
-      "rhythm.bpm": 0.092593,
-      "rhythm.danceability": 0.092593,
-      "lowlevel.loudness_ebu128.integrated": 0.074074,
-      "V_mean": 0.185185,
-      "A_mean": 0.074074,
-      "D_mean": 0.074074,
-      "lead_genre": 0.111111,
-      "genre_overlap": 0.148148,
+      "tempo": 0.259259,
+      "duration_ms": 0.12037,
+      "key": 0.12037,
+      "mode": 0.083333,
+      "lead_genre": 0.157407,
+      "genre_overlap": 0.111111,
       "tag_overlap": 0.148148
     },
-    "weight_override_component": "V_mean",
-    "raw_override_value": 0.2
+    "weight_override_component": "tempo",
+    "raw_override_value": 0.28
   },
   "counts": {
-    "candidates_scored": 42,
-    "score_max": 0.74273,
-    "score_min": 0.189685
+    "candidates_scored": 58823,
+    "score_max": 0.792419,
+    "score_min": 0.003386
   },
   "top_candidates": [
     {
       "rank": 1,
-      "track_id": "jPv1Tj4Mgo4l2Oue",
-      "lead_genre": "indie rock",
-      "final_score": 0.74273,
-      "matched_genres": "indie rock|rock",
-      "matched_tags": "indie rock|rock|indie|alternative|alternative rock"
+      "track_id": "yEz9rqTTulkiDDm7",
+      "lead_genre": "classic rock",
+      "final_score": 0.792419,
+      "matched_genres": "classic rock|rock|pop",
+      "matched_tags": "classic rock|80s|rock|pop"
     },
     {
       "rank": 2,
-      "track_id": "POdgTSLBnoFJaj2x",
-      "lead_genre": "indie rock",
-      "final_score": 0.697104,
-      "matched_genres": "indie rock|rock",
-      "matched_tags": "indie rock|indie|rock|alternative|alternative rock"
+      "track_id": "ry7KVHYQ10CXYDmE",
+      "lead_genre": "classic rock",
+      "final_score": 0.761055,
+      "matched_genres": "classic rock|rock|singer-songwriter",
+      "matched_tags": "classic rock|70s|rock|singer-songwriter"
     },
     {
       "rank": 3,
-      "track_id": "PvGcoMH6vGWBaoXh",
-      "lead_genre": "indie rock",
-      "final_score": 0.681956,
-      "matched_genres": "indie rock|rock",
-      "matched_tags": "indie|rock|alternative|alternative rock"
+      "track_id": "Kj5SnfDEQl2M7Xm9",
+      "lead_genre": "classic rock",
+      "final_score": 0.75909,
+      "matched_genres": "classic rock|rock|pop",
+      "matched_tags": "classic rock|60s|rock|british|pop|the beatles"
     },
     {
       "rank": 4,
-      "track_id": "1XZP3bEawLbWfSkM",
-      "lead_genre": "indie rock",
-      "final_score": 0.673704,
-      "matched_genres": "indie rock|alternative rock|rock",
-      "matched_tags": "indie rock|indie|rock|alternative|alternative rock"
+      "track_id": "65Mp5rxG0Bjd0Fpr",
+      "lead_genre": "classic rock",
+      "final_score": 0.757544,
+      "matched_genres": "classic rock|rock|hard rock",
+      "matched_tags": "classic rock|rock"
     },
     {
       "rank": 5,
-      "track_id": "hn1Z3OcZ4HM3hcIi",
-      "lead_genre": "indie rock",
-      "final_score": 0.663826,
-      "matched_genres": "indie rock|rock",
-      "matched_tags": "indie rock|indie|rock|alternative|alternative rock"
+      "track_id": "ru7tTgHQ3Pn5sFku",
+      "lead_genre": "classic rock",
+      "final_score": 0.752289,
+      "matched_genres": "classic rock|rock|pop",
+      "matched_tags": "classic rock|rock|70s|pop"
     },
     {
       "rank": 6,
-      "track_id": "nlgMHNZ0qCS2vdmV",
-      "lead_genre": "indie rock",
-      "final_score": 0.656527,
-      "matched_genres": "indie rock|rock",
-      "matched_tags": "indie|alternative|rock|alternative rock|pop"
+      "track_id": "o27WwIo8F6fMirMs",
+      "lead_genre": "classic rock",
+      "final_score": 0.749977,
+      "matched_genres": "classic rock|rock|hard rock",
+      "matched_tags": "classic rock|rock|80s"
     },
     {
       "rank": 7,
-      "track_id": "yUa5uu5wFCGwl2PK",
-      "lead_genre": "indie pop",
-      "final_score": 0.64607,
-      "matched_genres": "indie pop|indie rock|electronic",
-      "matched_tags": "indie|indie pop|electronic|indie rock|alternative|rock"
+      "track_id": "KZR6R3ipwAKSCdA0",
+      "lead_genre": "classic rock",
+      "final_score": 0.749777,
+      "matched_genres": "classic rock|rock",
+      "matched_tags": "classic rock|rock|80s|british"
     },
     {
       "rank": 8,
-      "track_id": "j8qrlsfqWAPqzqD9",
-      "lead_genre": "indie rock",
-      "final_score": 0.642716,
-      "matched_genres": "indie rock|rock",
-      "matched_tags": "indie|indie rock|alternative|rock|alternative rock"
+      "track_id": "phL12CBijBqwQ9qB",
+      "lead_genre": "pop",
+      "final_score": 0.746546,
+      "matched_genres": "pop|classic rock|rock",
+      "matched_tags": "pop|classic rock|rock"
     },
     {
       "rank": 9,
-      "track_id": "Nyb0YqqyaSvWThIG",
-      "lead_genre": "indie pop",
-      "final_score": 0.620564,
-      "matched_genres": "indie pop|indie rock|electronic",
-      "matched_tags": "indie|indie pop|electronic|indie rock|rock|pop|alternative"
+      "track_id": "7Wtv58F77XFSGy7b",
+      "lead_genre": "classic rock",
+      "final_score": 0.730236,
+      "matched_genres": "classic rock|rock",
+      "matched_tags": "classic rock|rock|70s"
     },
     {
       "rank": 10,
-      "track_id": "8keAhBJumHlc8qe9",
-      "lead_genre": "indie rock",
-      "final_score": 0.617724,
-      "matched_genres": "indie rock|rock|alternative rock",
-      "matched_tags": "rock|indie|alternative|alternative rock"
+      "track_id": "4P9s3Ny397GUNITy",
+      "lead_genre": "classic rock",
+      "final_score": 0.728054,
+      "matched_genres": "classic rock|pop|rock",
+      "matched_tags": "classic rock|70s|80s|pop|rock"
     }
   ],
   "mean_component_contributions": {
-    "rhythm.bpm": 0.024634,
-    "rhythm.danceability": 0.046109,
-    "lowlevel.loudness_ebu128.integrated": 0.025635,
-    "V_mean": 0.110534,
-    "A_mean": 0.056215,
-    "D_mean": 0.057838,
-    "lead_genre": 0.063967,
-    "genre_overlap": 0.038851,
-    "tag_overlap": 0.074891
+    "tempo": 0.07318,
+    "duration_ms": 0.03953,
+    "key": 0.017859,
+    "mode": 0.030746,
+    "lead_genre": 0.023439,
+    "genre_overlap": 0.026509,
+    "tag_overlap": 0.028348
   }
 }

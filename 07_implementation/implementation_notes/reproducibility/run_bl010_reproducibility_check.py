@@ -12,6 +12,13 @@ from pathlib import Path
 
 REPLAY_COUNT = 3
 
+LEGACY_FIXED_INPUT_KEYS = [
+    "bl016_events",
+    "bl016_candidates",
+    "bl016_manifest",
+    "bl017_coverage",
+]
+
 
 def repo_root() -> Path:
     return Path(__file__).resolve().parents[3]
@@ -82,7 +89,12 @@ def build_paths(root: Path) -> dict[str, Path]:
 
 
 def ensure_required_inputs(paths: dict[str, Path], root: Path) -> None:
-    missing = [relpath(path, root) for path in paths.values() if not path.exists()]
+    required_keys = [
+        key
+        for key in paths
+        if key not in LEGACY_FIXED_INPUT_KEYS
+    ]
+    missing = [relpath(paths[key], root) for key in required_keys if not paths[key].exists()]
     if missing:
         raise FileNotFoundError(f"BL-010 missing required inputs: {missing}")
 
@@ -94,9 +106,23 @@ def build_config_snapshot(paths: dict[str, Path], root: Path) -> dict:
     bl007_report = load_json(paths["bl007_report"])
     bl008_summary = load_json(paths["bl008_summary"])
 
+    has_legacy_fixed_inputs = all(paths[key].exists() for key in LEGACY_FIXED_INPUT_KEYS)
+    if has_legacy_fixed_inputs:
+        fixed_input_source = "legacy_surrogate_assets"
+        fixed_input_keys = list(LEGACY_FIXED_INPUT_KEYS)
+    else:
+        fixed_input_source = "active_pipeline_outputs"
+        fixed_input_keys = [
+            "bl004_seed_trace",
+            "bl005_filtered",
+            "bl005_decisions",
+            "bl006_scored",
+            "bl007_trace",
+        ]
+
     fixed_inputs = {
         relpath(paths[key], root): sha256_of_file(paths[key])
-        for key in ["bl016_events", "bl016_candidates", "bl016_manifest", "bl017_coverage"]
+        for key in fixed_input_keys
     }
     stage_scripts = {
         relpath(paths[key], root): sha256_of_file(paths[key])
@@ -105,9 +131,17 @@ def build_config_snapshot(paths: dict[str, Path], root: Path) -> dict:
 
     return {
         "task": "BL-010",
-        "bootstrap_mode": True,
+        "bootstrap_mode": has_legacy_fixed_inputs,
+        "fixed_input_source": fixed_input_source,
         "replay_count": REPLAY_COUNT,
         "fixed_inputs": fixed_inputs,
+        "optional_dependency_availability": {
+            key: {
+                "path": relpath(paths[key], root),
+                "available": paths[key].exists(),
+            }
+            for key in LEGACY_FIXED_INPUT_KEYS
+        },
         "stage_scripts": stage_scripts,
         "stage_order": ["BL-004", "BL-005", "BL-006", "BL-007", "BL-008", "BL-009"],
         "stage_configs": {
@@ -413,8 +447,9 @@ def main() -> None:
             "generated_at_utc": run_started_at,
             "elapsed_seconds": round(time.time() - started, 3),
             "replay_count": REPLAY_COUNT,
-            "bootstrap_mode": True,
+            "bootstrap_mode": bool(config_snapshot["bootstrap_mode"]),
             "config_hash": config_hash,
+            "fixed_input_source": config_snapshot["fixed_input_source"],
         },
         "inputs": {
             "config_snapshot_path": relpath(config_path, root),

@@ -10,6 +10,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 
+BL009_OBSERVABILITY_SCHEMA_VERSION = "bl009-observability-v1"
+
 DEFAULT_INPUT_SCOPE: dict[str, object] = {
     "source_family": "spotify_api_export",
     "include_top_tracks": True,
@@ -49,6 +51,13 @@ def relpath(path: Path, root: Path) -> str:
     return path.relative_to(root).as_posix()
 
 
+def safe_relpath(path: Path, root: Path) -> str:
+    try:
+        return path.relative_to(root).as_posix()
+    except ValueError:
+        return str(path)
+
+
 def combined_sha256(values: list[str]) -> str:
     digest = hashlib.sha256()
     for value in values:
@@ -86,6 +95,7 @@ def env_int(name: str, default: int) -> int:
 def ensure_required_sections(run_log: dict) -> None:
     required_keys = [
         "run_metadata",
+        "execution_scope_summary",
         "run_config",
         "ingestion_alignment_diagnostics",
         "stage_diagnostics",
@@ -115,6 +125,8 @@ def load_run_config_utils_module():
 
 def resolve_bl009_runtime_controls() -> dict[str, object]:
     run_config_path = os.environ.get("BL_RUN_CONFIG_PATH", "").strip() or None
+    run_intent_path = os.environ.get("BL_RUN_INTENT_PATH", "").strip() or None
+    run_effective_config_path = os.environ.get("BL_RUN_EFFECTIVE_CONFIG_PATH", "").strip() or None
     if run_config_path:
         run_config_utils = load_run_config_utils_module()
         controls = run_config_utils.resolve_bl009_controls(run_config_path)
@@ -123,6 +135,8 @@ def resolve_bl009_runtime_controls() -> dict[str, object]:
             "config_source": "run_config",
             "run_config_path": controls.get("config_path"),
             "run_config_schema_version": controls.get("schema_version"),
+            "run_intent_path": run_intent_path,
+            "run_effective_config_path": run_effective_config_path,
             "input_scope": dict(input_scope_controls.get("input_scope") or DEFAULT_INPUT_SCOPE),
             "diagnostic_sample_limit": int(controls["diagnostic_sample_limit"]),
         }
@@ -130,6 +144,8 @@ def resolve_bl009_runtime_controls() -> dict[str, object]:
         "config_source": "environment",
         "run_config_path": None,
         "run_config_schema_version": None,
+        "run_intent_path": run_intent_path,
+        "run_effective_config_path": run_effective_config_path,
         "input_scope": dict(DEFAULT_INPUT_SCOPE),
         "diagnostic_sample_limit": max(1, env_int("BL009_DIAGNOSTIC_SAMPLE_LIMIT", 5)),
     }
@@ -143,11 +159,7 @@ def main() -> None:
     output_dir = root / "07_implementation" / "implementation_notes" / "observability" / "outputs"
     output_dir.mkdir(parents=True, exist_ok=True)
 
-    paths = {
-        "bl017_coverage": root / "07_implementation" / "implementation_notes" / "data_layer" / "outputs" / "onion_join_coverage_report.json",
-        "bl016_manifest": root / "07_implementation" / "implementation_notes" / "test_assets" / "bl016_asset_manifest.json",
-        "bl016_events": root / "07_implementation" / "implementation_notes" / "test_assets" / "bl016_synthetic_aligned_events.jsonl",
-        "bl016_candidates": root / "07_implementation" / "implementation_notes" / "test_assets" / "bl016_candidate_stub.csv",
+    required_paths = {
         "bl004_profile": root / "07_implementation" / "implementation_notes" / "profile" / "outputs" / "bl004_preference_profile.json",
         "bl004_summary": root / "07_implementation" / "implementation_notes" / "profile" / "outputs" / "bl004_profile_summary.json",
         "bl004_seed_trace": root / "07_implementation" / "implementation_notes" / "profile" / "outputs" / "bl004_seed_trace.csv",
@@ -161,8 +173,6 @@ def main() -> None:
         "bl007_playlist": root / "07_implementation" / "implementation_notes" / "playlist" / "outputs" / "bl007_playlist.json",
         "bl008_summary": root / "07_implementation" / "implementation_notes" / "transparency" / "outputs" / "bl008_explanation_summary.json",
         "bl008_payloads": root / "07_implementation" / "implementation_notes" / "transparency" / "outputs" / "bl008_explanation_payloads.json",
-        "bl017_script": root / "07_implementation" / "implementation_notes" / "data_layer" / "build_onion_canonical_layer.py",
-        "bl016_script": root / "07_implementation" / "implementation_notes" / "test_assets" / "build_bl016_synthetic_assets.py",
         "bl004_script": root / "07_implementation" / "implementation_notes" / "profile" / "build_bl004_preference_profile.py",
         "bl005_script": root / "07_implementation" / "implementation_notes" / "retrieval" / "build_bl005_candidate_filter.py",
         "bl006_script": root / "07_implementation" / "implementation_notes" / "scoring" / "build_bl006_scored_candidates.py",
@@ -171,14 +181,33 @@ def main() -> None:
         "bl009_script": Path(__file__).resolve(),
     }
 
-    missing_paths = [relpath(path, root) for path in paths.values() if not path.exists()]
+    optional_paths = {
+        "bl017_coverage": root / "07_implementation" / "implementation_notes" / "data_layer" / "outputs" / "onion_join_coverage_report.json",
+        "bl016_manifest": root / "07_implementation" / "implementation_notes" / "test_assets" / "bl016_asset_manifest.json",
+        "bl016_events": root / "07_implementation" / "implementation_notes" / "test_assets" / "bl016_synthetic_aligned_events.jsonl",
+        "bl016_candidates": root / "07_implementation" / "implementation_notes" / "test_assets" / "bl016_candidate_stub.csv",
+        "bl017_script": root / "07_implementation" / "implementation_notes" / "data_layer" / "build_onion_canonical_layer.py",
+        "bl016_script": root / "07_implementation" / "implementation_notes" / "test_assets" / "build_bl016_synthetic_assets.py",
+    }
+
+    missing_paths = [relpath(path, root) for path in required_paths.values() if not path.exists()]
     if missing_paths:
         raise FileNotFoundError(f"BL-009 missing required inputs: {missing_paths}")
 
+    paths = {**required_paths, **optional_paths}
+    optional_availability = {
+        key: path.exists()
+        for key, path in optional_paths.items()
+    }
+    has_legacy_surrogate_inputs = all(
+        optional_availability.get(key, False)
+        for key in ["bl017_coverage", "bl016_manifest", "bl016_events", "bl016_candidates"]
+    )
+
     start_time = time.time()
 
-    bl017_coverage = load_json(paths["bl017_coverage"])
-    bl016_manifest = load_json(paths["bl016_manifest"])
+    bl017_coverage = load_json(paths["bl017_coverage"]) if optional_availability.get("bl017_coverage", False) else None
+    bl016_manifest = load_json(paths["bl016_manifest"]) if optional_availability.get("bl016_manifest", False) else None
     bl004_profile = load_json(paths["bl004_profile"])
     bl004_summary = load_json(paths["bl004_summary"])
     bl005_diagnostics = load_json(paths["bl005_diagnostics"])
@@ -194,28 +223,52 @@ def main() -> None:
     generated_at_utc = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
     run_id = f"BL009-OBSERVE-{datetime.now(timezone.utc).strftime('%Y%m%d-%H%M%S-%f')}"
 
+    script_hash_keys = [
+        "bl004_script",
+        "bl005_script",
+        "bl006_script",
+        "bl007_script",
+        "bl008_script",
+        "bl009_script",
+    ]
+    if optional_availability.get("bl017_script", False):
+        script_hash_keys.append("bl017_script")
+    if optional_availability.get("bl016_script", False):
+        script_hash_keys.append("bl016_script")
+
     script_hashes = {
         relpath(paths[key], root): sha256_of_file(paths[key])
-        for key in [
-            "bl017_script",
-            "bl016_script",
-            "bl004_script",
-            "bl005_script",
-            "bl006_script",
-            "bl007_script",
-            "bl008_script",
-            "bl009_script",
-        ]
+        for key in script_hash_keys
     }
     pipeline_version = combined_sha256([script_hashes[key] for key in sorted(script_hashes)])
 
+    if has_legacy_surrogate_inputs:
+        dataset_hash_sources = ["bl017_coverage", "bl016_manifest", "bl016_events", "bl016_candidates"]
+        dataset_version_source = "legacy_surrogate_assets"
+    else:
+        dataset_hash_sources = ["bl004_seed_trace", "bl005_filtered", "bl006_scored"]
+        dataset_version_source = "active_pipeline_outputs"
+
     dataset_component_hashes = {
-        relpath(paths["bl017_coverage"], root): sha256_of_file(paths["bl017_coverage"]),
-        relpath(paths["bl016_manifest"], root): sha256_of_file(paths["bl016_manifest"]),
-        relpath(paths["bl016_events"], root): sha256_of_file(paths["bl016_events"]),
-        relpath(paths["bl016_candidates"], root): sha256_of_file(paths["bl016_candidates"]),
+        relpath(paths[key], root): sha256_of_file(paths[key])
+        for key in dataset_hash_sources
     }
     dataset_version = combined_sha256([dataset_component_hashes[key] for key in sorted(dataset_component_hashes)])
+
+    interaction_types_included: list[str] = []
+    if input_scope.get("include_top_tracks"):
+        interaction_types_included.append("top_tracks")
+    if input_scope.get("include_saved_tracks"):
+        interaction_types_included.append("saved_tracks")
+    if input_scope.get("include_playlists"):
+        interaction_types_included.append("playlists")
+    if input_scope.get("include_recently_played"):
+        interaction_types_included.append("recently_played")
+
+    seed_counts_by_type = bl004_profile.get("seed_summary", {}).get("counts_by_interaction_type", {})
+    influence_track_count = int(seed_counts_by_type.get("influence", 0))
+    history_track_count = int(seed_counts_by_type.get("history", 0))
+    influence_tracks_included = influence_track_count > 0
 
     rejected_non_seed = [
         row for row in bl005_decisions
@@ -252,34 +305,49 @@ def main() -> None:
         None,
     )
 
+    script_keys = {
+        "bl017_script",
+        "bl016_script",
+        "bl004_script",
+        "bl005_script",
+        "bl006_script",
+        "bl007_script",
+        "bl008_script",
+        "bl009_script",
+    }
+
+    canonical_config_artifacts: dict[str, dict[str, object]] = {}
+    for alias, env_key in [
+        ("run_intent", "run_intent_path"),
+        ("run_effective_config", "run_effective_config_path"),
+    ]:
+        raw_path = runtime_controls.get(env_key)
+        if not raw_path:
+            canonical_config_artifacts[alias] = {
+                "path": None,
+                "available": False,
+                "sha256": None,
+            }
+            continue
+        candidate_path = Path(str(raw_path))
+        if not candidate_path.is_absolute():
+            candidate_path = (root / candidate_path).resolve()
+        available = candidate_path.exists()
+        canonical_config_artifacts[alias] = {
+            "path": safe_relpath(candidate_path, root),
+            "available": available,
+            "sha256": sha256_of_file(candidate_path) if available else None,
+        }
     artifact_hashes = {
         relpath(path, root): sha256_of_file(path)
         for key, path in paths.items()
-        if key not in {
-            "bl017_script",
-            "bl016_script",
-            "bl004_script",
-            "bl005_script",
-            "bl006_script",
-            "bl007_script",
-            "bl008_script",
-            "bl009_script",
-        }
+        if key not in script_keys and path.exists()
     }
 
     artifact_sizes = {
         relpath(path, root): path.stat().st_size
         for key, path in paths.items()
-        if key not in {
-            "bl017_script",
-            "bl016_script",
-            "bl004_script",
-            "bl005_script",
-            "bl006_script",
-            "bl007_script",
-            "bl008_script",
-            "bl009_script",
-        }
+        if key not in script_keys and path.exists()
     }
 
     run_log = {
@@ -288,12 +356,21 @@ def main() -> None:
             "task": "BL-009",
             "generated_at_utc": generated_at_utc,
             "elapsed_seconds": None,
+            "observability_schema_version": BL009_OBSERVABILITY_SCHEMA_VERSION,
             "observability_scope": "artifact-level deterministic audit log",
             "bootstrap_mode": True,
             "dataset_version": dataset_version,
+            "dataset_version_source": dataset_version_source,
             "pipeline_version": pipeline_version,
             "dataset_component_hashes": dataset_component_hashes,
             "pipeline_script_hashes": script_hashes,
+            "optional_dependency_availability": {
+                key: {
+                    "path": relpath(optional_paths[key], root),
+                    "available": optional_availability[key],
+                }
+                for key in sorted(optional_paths)
+            },
             "upstream_stage_run_ids": {
                 "BL-004": bl004_profile["run_id"],
                 "BL-005": bl005_diagnostics["run_id"],
@@ -304,11 +381,41 @@ def main() -> None:
             "config_source": runtime_controls["config_source"],
             "run_config_path": runtime_controls["run_config_path"],
             "run_config_schema_version": runtime_controls["run_config_schema_version"],
+            "run_intent_path": runtime_controls["run_intent_path"],
+            "run_effective_config_path": runtime_controls["run_effective_config_path"],
+        },
+        "execution_scope_summary": {
+            "observability_schema_version": BL009_OBSERVABILITY_SCHEMA_VERSION,
+            "source_family": input_scope.get("source_family"),
+            "interaction_types_included": interaction_types_included,
+            "total_seed_count": bl004_profile["diagnostics"]["matched_seed_count"],
+            "history_track_count": history_track_count,
+            "influence_tracks_included": influence_tracks_included,
+            "influence_track_count": influence_track_count,
+            "canonical_config_artifact_pair_available": (
+                canonical_config_artifacts.get("run_intent", {}).get("available", False)
+                and canonical_config_artifacts.get("run_effective_config", {}).get("available", False)
+            ),
         },
         "run_config": {
             "input_scope": input_scope,
-            "data_layer": bl017_coverage["run_metadata"],
-            "bootstrap_assets": bl016_manifest["selection_rules"],
+            "canonical_config_artifacts": canonical_config_artifacts,
+            "data_layer": (
+                bl017_coverage["run_metadata"]
+                if bl017_coverage is not None
+                else {
+                    "status": "not_available_in_current_pipeline",
+                    "expected_path": relpath(paths["bl017_coverage"], root),
+                }
+            ),
+            "bootstrap_assets": (
+                bl016_manifest["selection_rules"]
+                if bl016_manifest is not None
+                else {
+                    "status": "not_available_in_current_pipeline",
+                    "expected_path": relpath(paths["bl016_manifest"], root),
+                }
+            ),
             "profile": bl004_profile["config"],
             "retrieval": bl005_diagnostics["config"],
             "scoring": bl006_summary["config"],
@@ -320,12 +427,27 @@ def main() -> None:
             },
         },
         "ingestion_alignment_diagnostics": {
-            "stage_status": "deferred_bootstrap_mode",
-            "reason": "BL-001 to BL-003 were intentionally deferred under the synthetic pre-aligned bootstrap strategy (D-005).",
-            "surrogate_inputs": {
-                "aligned_events_path": relpath(paths["bl016_events"], root),
-                "candidate_stub_path": relpath(paths["bl016_candidates"], root),
-            },
+            "stage_status": (
+                "deferred_bootstrap_mode"
+                if has_legacy_surrogate_inputs
+                else "active_bl004_to_bl008_mode"
+            ),
+            "reason": (
+                "BL-001 to BL-003 were intentionally deferred under the synthetic pre-aligned bootstrap strategy (D-005)."
+                if has_legacy_surrogate_inputs
+                else "BL-009 is aligned to current implementation scope and logs BL-004..BL-008 artifacts directly."
+            ),
+            "surrogate_inputs": (
+                {
+                    "aligned_events_path": relpath(paths["bl016_events"], root),
+                    "candidate_stub_path": relpath(paths["bl016_candidates"], root),
+                }
+                if has_legacy_surrogate_inputs
+                else {
+                    "aligned_events_path": None,
+                    "candidate_stub_path": None,
+                }
+            ),
             "conceptual_fields_recorded_as_not_applicable": [
                 "imported_row_counts",
                 "valid_invalid_counts",
@@ -335,19 +457,35 @@ def main() -> None:
             ],
         },
         "stage_diagnostics": {
-            "data_layer": {
-                "task": "BL-017",
-                "track_id_universe_count": bl017_coverage["track_id_universe_count"],
-                "source_track_counts": bl017_coverage["source_track_counts"],
-                "join_intersections": bl017_coverage["join_intersections"],
-                "availability_counts": bl017_coverage["availability_counts"],
-            },
-            "bootstrap_assets": {
-                "task": "BL-016",
-                "summary": bl016_manifest["summary"],
-                "history_track_ids": bl016_manifest["history_track_ids"],
-                "influence_track_ids": bl016_manifest["influence_track_ids"],
-            },
+            "data_layer": (
+                {
+                    "task": "BL-017",
+                    "track_id_universe_count": bl017_coverage["track_id_universe_count"],
+                    "source_track_counts": bl017_coverage["source_track_counts"],
+                    "join_intersections": bl017_coverage["join_intersections"],
+                    "availability_counts": bl017_coverage["availability_counts"],
+                }
+                if bl017_coverage is not None
+                else {
+                    "task": "BL-017",
+                    "status": "not_available_in_current_pipeline",
+                    "expected_path": relpath(paths["bl017_coverage"], root),
+                }
+            ),
+            "bootstrap_assets": (
+                {
+                    "task": "BL-016",
+                    "summary": bl016_manifest["summary"],
+                    "history_track_ids": bl016_manifest["history_track_ids"],
+                    "influence_track_ids": bl016_manifest["influence_track_ids"],
+                }
+                if bl016_manifest is not None
+                else {
+                    "task": "BL-016",
+                    "status": "not_available_in_current_pipeline",
+                    "expected_path": relpath(paths["bl016_manifest"], root),
+                }
+            ),
             "profile": {
                 "task": "BL-004",
                 "run_id": bl004_profile["run_id"],
@@ -442,14 +580,6 @@ def main() -> None:
                 },
             },
             "supporting_outputs": {
-                "data_layer_coverage": {
-                    "path": relpath(paths["bl017_coverage"], root),
-                    "sha256": artifact_hashes[relpath(paths["bl017_coverage"], root)],
-                },
-                "bootstrap_manifest": {
-                    "path": relpath(paths["bl016_manifest"], root),
-                    "sha256": artifact_hashes[relpath(paths["bl016_manifest"], root)],
-                },
                 "profile": {
                     "path": relpath(paths["bl004_profile"], root),
                     "sha256": artifact_hashes[relpath(paths["bl004_profile"], root)],
@@ -470,6 +600,28 @@ def main() -> None:
                     "path": relpath(paths["bl008_summary"], root),
                     "sha256": artifact_hashes[relpath(paths["bl008_summary"], root)],
                 },
+                "data_layer_coverage": (
+                    {
+                        "path": relpath(paths["bl017_coverage"], root),
+                        "sha256": artifact_hashes[relpath(paths["bl017_coverage"], root)],
+                    }
+                    if optional_availability.get("bl017_coverage", False)
+                    else {
+                        "path": relpath(paths["bl017_coverage"], root),
+                        "status": "not_available_in_current_pipeline",
+                    }
+                ),
+                "bootstrap_manifest": (
+                    {
+                        "path": relpath(paths["bl016_manifest"], root),
+                        "sha256": artifact_hashes[relpath(paths["bl016_manifest"], root)],
+                    }
+                    if optional_availability.get("bl016_manifest", False)
+                    else {
+                        "path": relpath(paths["bl016_manifest"], root),
+                        "status": "not_available_in_current_pipeline",
+                    }
+                ),
             },
         },
     }

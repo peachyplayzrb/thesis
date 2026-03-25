@@ -1,455 +1,209 @@
 # Artefact Refinement Spec
 
-Status: working implementation spec
-Date: 2026-03-24
+Status: R1, R2, and R3 complete — all refinements delivered
+Date: 2026-03-25 (updated 2026-03-25 after all refinements validated)
 Scope: pipeline artefact only; website/UI intentionally excluded
 
 ## 1. Purpose
 
-This document defines the next refinement step for the thesis artefact itself.
+This document defines the current artefact refinement state after the BL-009, BL-010, BL-011 alignment cycle and BL-021 source-scope implementation.
 
-The core pipeline BL-004 to BL-009 already exists and produces deterministic outputs. The main refinement gap is not missing stages, but a weak control contract:
+The objective is no longer to define the entire control surface from scratch. That foundation is now in place. The objective is to harden, normalize, and operationalize what already exists so the artefact remains explainable, controllable, and auditable under thesis defense conditions.
 
-1. control surfaces are fragmented across input artefacts, environment variables, and controllability scenarios
-2. user intent is not represented as a first-class run artefact
-3. source-scope control is documented as required but still deferred
-4. influence tracks exist in architecture and tests, but not as a clean stable run-time contract
+## 2. Current Baseline (As Implemented)
 
-The refinement goal is to make the artefact easier to explain, easier to control, and easier to audit.
+### 2.1 Run-Config Contract Exists
 
-## 2. Current Control Inventory
+Implemented:
 
-### 2.1 Upstream Input Composition
+1. canonical run-config utilities and schema template are active
+2. stage scripts consume run-config values rather than only stage-local constants
+3. effective run metadata is persisted into stage outputs
 
-Current effective controls:
+Key implementation evidence:
 
-1. which listening events are present in the aligned input artefact
-2. whether influence tracks are present
-3. which interaction types are included
-4. which candidate dataset is active
+1. 07_implementation/implementation_notes/run_config/run_config_utils.py
+2. 07_implementation/implementation_notes/run_config/run_config_template_v1.json
+3. 07_implementation/IMPLEMENTATION_STATE_2026-03-24.md
 
-Current implementation state:
+### 2.2 Source-Scope Control (BL-021) Is Actuated
 
-1. this control surface is real, but largely implicit
-2. it is mostly exercised through input artefact selection and controllability scenarios
-3. it is not yet normalized into a canonical run configuration object
+Implemented:
 
-Primary evidence:
+1. source-family inclusion and per-source limits are represented in run config
+2. BL-003 applies scope filters and emits source-scope manifest evidence
+3. BL-004 and BL-009 persist effective input scope in run outputs
 
-1. `07_implementation/implementation_plan.md`
-2. `05_design/architecture.md`
-3. `07_implementation/implementation_notes/controllability/run_bl011_controllability_check.py`
+Status:
 
-### 2.2 BL-004 Profile Construction Controls
+1. BL-021 is complete at artefact level (not deferred)
 
-Current explicit controls:
+### 2.3 BL-009, BL-010, BL-011 Active-Mode Compatibility Is Complete
 
-1. `BL004_TOP_TAG_LIMIT`
-2. `BL004_TOP_GENRE_LIMIT`
-3. `BL004_TOP_LEAD_GENRE_LIMIT`
-4. `BL004_USER_ID`
+Implemented:
 
-What they currently control:
+1. BL-009 observability no longer hard-fails on legacy BL-016/BL-017 assets
+2. BL-010 reproducibility supports active pipeline outputs as fixed-input source
+3. BL-011 controllability supports active schemas and mode-compatible normalization
 
-1. the size of the retained semantic profile summary
-2. the breadth of top tags and genres used downstream
-3. the user identifier associated with the profile run
+Current behavior:
 
-Important limitation:
+1. legacy surrogate artefacts are optional
+2. active BL-004 to BL-009 chain is the primary validated path
 
-1. influence tracks affect BL-004 indirectly through input events, not through a dedicated BL-004 control group
+### 2.4 Canonical Run Pair Artifacts (R1) Are Implemented
 
-Primary evidence:
+Implemented:
 
-1. `07_implementation/implementation_notes/profile/build_bl004_preference_profile.py`
+1. run-intent and run-effective-config artifacts are emitted as a deterministic pair on every top-level BL-013 run
+2. BL-013 emits both artifacts before any stage executes and propagates paths via BL_RUN_INTENT_PATH and BL_RUN_EFFECTIVE_CONFIG_PATH env vars
+3. BL-009 ingests the artifact pair, checks availability, computes SHA256, and records a canonical_config_artifacts block in the observability log
+4. artifact schema versions: run-intent-v1, run-effective-config-v1
 
-### 2.3 BL-005 Retrieval Controls
+Key implementation evidence:
 
-Current explicit controls:
+1. 07_implementation/implementation_notes/run_config/run_config_utils.py — write_run_config_artifact_pair and builder functions
+2. 07_implementation/implementation_notes/entrypoint/run_bl013_pipeline_entrypoint.py — emit_run_config_artifact_pair, --run-config-artifact-dir, env var propagation
+3. 07_implementation/implementation_notes/observability/build_bl009_observability_log.py — canonical_config_artifacts block, safe_relpath, BL_RUN_INTENT_PATH/BL_RUN_EFFECTIVE_CONFIG_PATH ingestion
+4. 07_implementation/implementation_notes/run_config/outputs/ — timestamped and _latest artifact files
 
-1. `BL005_PROFILE_TOP_LEAD_GENRE_LIMIT`
-2. `BL005_PROFILE_TOP_TAG_LIMIT`
-3. `BL005_PROFILE_TOP_GENRE_LIMIT`
-4. `BL005_SEMANTIC_STRONG_KEEP_SCORE`
-5. `BL005_SEMANTIC_MIN_KEEP_SCORE`
-6. `BL005_NUMERIC_SUPPORT_MIN_PASS`
+### 2.5 Validated Recent Baseline Runs
 
-What they currently control:
+1. BL-010 reproducibility pass: BL010-REPRO-20260324-234322
+2. BL-011 controllability pass: BL011-CTRL-20260324-235114
+3. BL-013 orchestrated pass (pre-R1): BL013-ENTRYPOINT-20260324-235248-642823
+4. BL-013 orchestrated pass (R1 validation): BL013-ENTRYPOINT-20260325-000545-164768
 
-1. how much of the profile is exposed to candidate filtering
-2. how strict semantic evidence must be before retention
-3. how much numeric support is needed when semantic evidence is weaker
+## 3. Control Inventory (Current Practical Surface)
 
-Important limitation:
+### 3.1 Input Composition Controls
 
-1. numeric thresholds for tempo, key, mode, and duration exist in the script, but are not exposed as equivalent first-class configuration fields
+Current controls include:
 
-Primary evidence:
+1. source-scope toggles and limits (top tracks, saved tracks, playlists, recently played)
+2. interaction type inclusion
+3. influence-track participation in profile construction
 
-1. `07_implementation/implementation_notes/retrieval/build_bl005_candidate_filter.py`
+### 3.2 Profile Controls (BL-004)
 
-### 2.4 BL-006 Scoring Controls
+Current controls include:
 
-Current explicit controls:
+1. top tag, genre, and lead-genre limits
+2. profile weighting behavior such as influence and recency factors
 
-1. `BL006_COMPONENT_WEIGHTS_JSON`
-2. `BL006_NUMERIC_THRESHOLDS_JSON`
+### 3.3 Retrieval Controls (BL-005)
 
-What they currently control:
+Current controls include:
 
-1. relative weight of semantic and numeric scoring components
-2. tolerance thresholds for numeric similarity calculations
+1. semantic keep thresholds
+2. numeric support threshold
+3. numeric tolerance thresholds for tempo/key/mode/duration proximity
 
-Current strength:
+### 3.4 Scoring Controls (BL-006)
 
-1. this is the strongest ranking-behavior control surface in the current pipeline
+Current controls include:
 
-Primary evidence:
+1. component weights
+2. numeric thresholds used during scoring similarity calculations
 
-1. `07_implementation/implementation_notes/scoring/build_bl006_scored_candidates.py`
+### 3.5 Assembly, Transparency, and Observability Controls (BL-007 to BL-009)
 
-### 2.5 BL-007 Playlist Assembly Controls
+Current controls include:
 
-Current explicit controls:
+1. playlist size and diversity constraints
+2. explanation depth limit
+3. observability diagnostic sample limit and stage/run metadata capture
 
-1. `BL007_TARGET_SIZE`
-2. `BL007_MIN_SCORE_THRESHOLD`
-3. `BL007_MAX_PER_GENRE`
-4. `BL007_MAX_CONSECUTIVE`
+## 4. What Is Still Weak (Remaining Refinement)
 
-What they currently control:
+This section lists only unresolved gaps after the 2026-03-24 stabilization.
 
-1. playlist length
-2. final admission strictness
-3. genre diversity cap
-4. consecutive repetition tolerance
+### 4.1 ~~Run Intent vs Effective Config Is Not Yet Canonicalized Per Run Artifact Pair~~ — RESOLVED (R1)
 
-Primary evidence:
+Resolution:
 
-1. `07_implementation/implementation_notes/playlist/build_bl007_playlist.py`
+1. deterministic run-intent and run-effective artifact pairs are now emitted on every BL-013 run
+2. lineage references are propagated to BL-009 via environment variables and recorded in the observability log with SHA256 verification
+3. validated in run BL013-ENTRYPOINT-20260325-000545-164768
 
-### 2.6 BL-008 Transparency Controls
+### ~~4.2 Control Naming Is Still Stage-Centric For External Explanation~~ — RESOLVED (R2)
 
-Current explicit control:
+Resolution:
 
-1. `BL008_TOP_CONTRIBUTOR_LIMIT`
+1. semantic control-layer map produced and stored at 07_implementation/implementation_notes/run_config/semantic_control_map.md
+2. seven semantic groups defined: Input Composition, Profile Construction, Retrieval Filtering, Scoring, Playlist Assembly, Transparency, Observability
+3. each group maps to its run-config section(s), individual field names with types and defaults, consuming stage(s), resolver function, and implementation output paths
+4. engineering names retained internally; semantic map is the thesis/operator-facing layer only
 
-What it currently controls:
+### 4.3 ~~BL-009 Schema Can Be Upgraded To Become The Single Canonical Execution Record~~ — RESOLVED (R3)
 
-1. explanation depth, not recommendation behavior
+Resolution:
 
-Primary evidence:
+1. BL009_OBSERVABILITY_SCHEMA_VERSION = "bl009-observability-v1" constant added and recorded in run_metadata.observability_schema_version
+2. execution_scope_summary top-level block added: source family, interaction types included, seed count, history/influence track counts, influence participation flag, canonical config artifact pair availability
+3. first-class lineage links to run-intent and run-effective artifacts already present from R1
+4. validated in run BL013-ENTRYPOINT-20260325-001552-538292
 
-1. `07_implementation/implementation_notes/transparency/build_bl008_explanation_payloads.py`
+## 5. Updated Refinement Plan
 
-### 2.7 BL-009 Observability Controls
+### R1 (P0): Canonical Run Pair Artifacts — COMPLETE
 
-Current explicit control:
+Deliverables (all delivered):
 
-1. `BL009_DIAGNOSTIC_SAMPLE_LIMIT`
+1. run_intent_<timestamp>.json — schema version run-intent-v1
+2. run_effective_config_<timestamp>.json — schema version run-effective-config-v1
+3. strict schema validation and version tagging
+4. _latest copies maintained alongside timestamped files
+5. BL-009 observability log links to both artifacts with SHA256 and availability flags
 
-What it currently controls:
+Validated in: BL013-ENTRYPOINT-20260325-000545-164768
 
-1. logging and diagnostic sample depth, not recommendation behavior
+### R2 (P1): Semantic Control-Layer Mapping — COMPLETE
 
-Primary evidence:
+Deliverables (all delivered):
 
-1. `07_implementation/implementation_notes/observability/build_bl009_observability_log.py`
+1. semantic_control_map.md at 07_implementation/implementation_notes/run_config/semantic_control_map.md
+2. seven semantic control groups with full field-level mapping from run-config schema to stage implementation
+3. cross-reference table of resolver entry points and artifact lineage notes
+4. controllability scenario cross-reference
 
-## 3. Missing Or Weak Controls
+### R3 (P1): BL-009 Schema Promotion — COMPLETE
 
-### 3.1 Missing First-Class Run Intent
+Deliverables (all delivered):
 
-Current problem:
+1. BL009_OBSERVABILITY_SCHEMA_VERSION = "bl009-observability-v1" constant in build_bl009_observability_log.py
+2. observability_schema_version field in run_metadata
+3. execution_scope_summary top-level block with source family, interaction types, seed counts, influence participation, and canonical artifact pair availability flag
+4. direct lineage links to run-intent and run-effective artifacts (delivered by R1, retained)
 
-1. the pipeline has outputs for profile, retrieval, scoring, assembly, transparency, and observability
-2. it does not have a canonical artefact that records the intended run behavior before execution
+Validated in: BL013-ENTRYPOINT-20260325-001552-538292
 
-Required refinement:
+## 6. Definition Of Done (Revised)
 
-1. add a stable run-intent artefact as a primary input to execution
+Refinement is complete when:
 
-This artefact should record:
+1. every run emits run-intent and run-effective artifacts as a deterministic pair
+2. BL-009 links directly to that pair and all downstream stage artefacts
+3. control-layer documentation maps semantic controls to concrete stage fields
+4. reproducibility and controllability comparisons reference canonical config artifacts rather than inferred overrides
 
-1. selected source scope
-2. included interaction types
-3. selected influence tracks
-4. profile controls
-5. retrieval controls
-6. scoring controls
-7. assembly controls
-8. transparency controls
-9. observability controls
+## 7. Out Of Scope For This Pass
 
-### 3.2 Missing Source-Scope Control Contract
-
-Current problem:
-
-1. user-selectable source scope is explicitly identified as deferred work
-2. the thesis state already describes it as desirable, but it is not implemented as part of the artefact contract
-
-Required refinement:
-
-1. implement BL-021 at the artefact level before treating it as a completed system capability
-
-Primary evidence:
-
-1. `07_implementation/backlog.md`
-2. `00_admin/thesis_state.md`
-
-### 3.3 Influence Tracks Are Not Formalized Enough
-
-Current problem:
-
-1. influence tracks clearly exist in architecture, controllability testing, and synthetic assets
-2. they do not yet exist as a stable top-level configuration object for real runs
-
-Required refinement:
-
-1. formalize influence tracks in the canonical run config and downstream observability outputs
-
-Primary evidence:
-
-1. `05_design/architecture.md`
-2. `07_implementation/implementation_plan.md`
-3. `07_implementation/implementation_notes/controllability/run_bl011_controllability_check.py`
-
-### 3.4 Control Naming Is Too Script-Centric
-
-Current problem:
-
-1. most controls are named as environment variable overrides
-2. this is sufficient for engineering execution, but weak for artefact explanation and thesis defence
-
-Required refinement:
-
-1. group controls into semantic layers rather than stage-local env variables only
-
-Recommended groups:
-
-1. input composition controls
-2. profile shaping controls
-3. candidate selection controls
-4. ranking controls
-5. playlist behavior controls
-6. explanation depth controls
-7. observability depth controls
-
-## 4. Proposed Canonical Run Configuration
-
-The refined artefact should introduce a single canonical configuration file for each run.
-
-Suggested location:
-
-1. `07_implementation/implementation_notes/run_config/`
-
-Suggested filename pattern:
-
-1. `run_intent_<timestamp>.json`
-2. `run_effective_config_<timestamp>.json`
-
-Recommended structure:
-
-```json
-{
-  "run_id": "RUN-INTENT-YYYYMMDD-HHMMSS-ffffff",
-  "generated_at_utc": "2026-03-24T00:00:00Z",
-  "input_scope": {
-    "source_family": "spotify_api_export",
-    "include_top_tracks": true,
-    "top_time_ranges": ["short_term", "medium_term", "long_term"],
-    "saved_tracks_limit": null,
-    "include_saved_tracks": true,
-    "include_playlists": true,
-    "playlists_limit": null,
-    "playlist_items_per_playlist_limit": null,
-    "include_recently_played": true,
-    "recently_played_limit": 50
-  },
-  "interaction_scope": {
-    "include_interaction_types": ["history", "influence"]
-  },
-  "influence_tracks": {
-    "enabled": true,
-    "track_ids": [],
-    "source": "manual_or_imported_selection"
-  },
-  "profile_controls": {
-    "top_tag_limit": 10,
-    "top_genre_limit": 10,
-    "top_lead_genre_limit": 10
-  },
-  "retrieval_controls": {
-    "profile_top_tag_limit": 10,
-    "profile_top_genre_limit": 8,
-    "profile_top_lead_genre_limit": 6,
-    "semantic_strong_keep_score": 2,
-    "semantic_min_keep_score": 1,
-    "numeric_support_min_pass": 1,
-    "numeric_thresholds": {
-      "tempo": 20.0,
-      "key": 2.0,
-      "mode": 0.5,
-      "duration_ms": 45000.0
-    }
-  },
-  "scoring_controls": {
-    "component_weights": {
-      "tempo": 0.20,
-      "duration_ms": 0.13,
-      "key": 0.13,
-      "mode": 0.09,
-      "lead_genre": 0.17,
-      "genre_overlap": 0.12,
-      "tag_overlap": 0.16
-    },
-    "numeric_thresholds": {
-      "tempo": 20.0,
-      "key": 2.0,
-      "mode": 0.5,
-      "duration_ms": 45000.0
-    }
-  },
-  "assembly_controls": {
-    "target_size": 10,
-    "min_score_threshold": 0.35,
-    "max_per_genre": 4,
-    "max_consecutive": 2
-  },
-  "transparency_controls": {
-    "top_contributor_limit": 3
-  },
-  "observability_controls": {
-    "diagnostic_sample_limit": 5
-  }
-}
-```
-
-## 5. Effective Configuration Rule
-
-The artefact should distinguish between:
-
-1. intended configuration
-2. effective configuration
-
-Intended configuration:
-
-1. what the user or operator requested before run start
-
-Effective configuration:
-
-1. what the pipeline actually used after defaults, validation, and stage-level normalization
-
-This distinction matters for deterministic replay and thesis traceability.
-
-## 6. Required Refinement Work
-
-### 6.1 Phase R1: Formalize Configuration Contract
-
-Deliverables:
-
-1. canonical run-intent schema
-2. canonical effective-run schema
-3. schema documentation and validation rules
-
-Target outcome:
-
-1. every run begins with a stable machine-readable contract
-
-### 6.2 Phase R2: Implement BL-021 As Artefact Capability
-
-Deliverables:
-
-1. source-scope selection contract for top tracks, saved tracks, playlists, and recently played
-2. per-source limits persisted into run metadata
-3. profile and observability artefacts updated to record active source scope
-
-Target outcome:
-
-1. source selection becomes part of the real artefact definition rather than a deferred statement
-
-### 6.3 Phase R3: Formalize Influence Track Contract
-
-Deliverables:
-
-1. influence-track list as explicit run input
-2. clear recording of which influence tracks were active in BL-004 and BL-009 outputs
-3. replay support for runs with and without influence tracks
-
-Target outcome:
-
-1. controllability evidence around influence tracks becomes part of the core artefact contract
-
-### 6.4 Phase R4: Normalize Control Layers
-
-Deliverables:
-
-1. semantic grouping of controls across BL-004 to BL-009
-2. mapping from semantic control groups to stage-level implementation fields
-3. documentation that explains which controls affect profile construction, retrieval, ranking, assembly, explanation, and logging
-
-Target outcome:
-
-1. the artefact becomes easier to defend and easier to operate reproducibly
-
-### 6.5 Phase R5: Upgrade Observability Schema
-
-Deliverables:
-
-1. BL-009 log extension to record full effective configuration
-2. lineage links between run intent, profile, retrieval, scoring, playlist, transparency, and observability artefacts
-3. explicit recording of source scope and influence-track participation
-
-Target outcome:
-
-1. BL-009 becomes the canonical execution record rather than only a downstream summary
-
-## 7. Prioritization
-
-Priority order:
-
-1. P0: canonical run-intent and effective-config artefacts
-2. P0: BL-021 source-scope contract implementation
-3. P1: influence-track formalization
-4. P1: control-layer normalization
-5. P1: BL-009 observability schema upgrade
-
-Explicit deprioritization for this refinement pass:
-
-1. website flow changes
+1. website UX flow redesign
 2. new ingestion adapters
-3. corpus switching beyond currently tracked backlog items
-4. model-logic expansion beyond current deterministic architecture
+3. corpus fallback policy expansion beyond already tracked backlog commitments
+4. recommendation model expansion beyond current deterministic architecture
 
-## 8. Implementation Order Across Stages
+## 8. Status: All Refinements Complete
 
-Recommended execution order:
+R1, R2, and R3 are all delivered and validated. The artefact refinement cycle is closed.
 
-1. add shared run-config schema and validation helpers
-2. update ingestion/export metadata to emit source-scope selections
-3. update BL-004 to consume source-scope and influence-track config from canonical run input
-4. update BL-005 and BL-006 to read canonical config rather than stage-local assumptions only
-5. update BL-007 to record playlist behavior controls from the same contract
-6. update BL-008 to record explanation controls from the same contract
-7. update BL-009 to snapshot intended and effective configuration with full lineage
+Summary of what was delivered:
 
-## 9. Definition Of Done For Refinement
+1. R1: canonical run-intent / run-effective-config artifact pair emitted on every BL-013 run with SHA256 verification and BL-009 lineage links
+2. R2: semantic_control_map.md documenting all seven control groups with field-level mapping from run-config schema to stage implementation
+3. R3: BL-009 observability log promoted to versioned schema (bl009-observability-v1) with execution_scope_summary top-level block
 
-The artefact refinement pass is complete when:
+## 9. Historical Note
 
-1. every run has a canonical run-intent artefact
-2. every run has a canonical effective-config artefact
-3. source scope is user-selectable and recorded in run metadata
-4. influence tracks are explicitly represented and traceable
-5. BL-009 records the full effective configuration and upstream lineage
-6. reproducibility and controllability tests can compare runs using canonical config artefacts rather than inferred stage overrides
-
-## 10. Immediate Next Action
-
-Implement the configuration contract first.
-
-Practical next step:
-
-1. create a shared run-config schema and loader
-2. map all current BL-004 to BL-009 controls into that schema
-3. treat BL-021 as the first real consumer-facing artefact refinement item after schema lock
+Sections in older versions that marked BL-021 and active-mode BL-009/10/11 compatibility as missing are now historical and superseded by the current implementation baseline.

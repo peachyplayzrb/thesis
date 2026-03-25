@@ -1,20 +1,40 @@
 {
   "task": "BL-010",
-  "bootstrap_mode": true,
+  "bootstrap_mode": false,
+  "fixed_input_source": "active_pipeline_outputs",
   "replay_count": 3,
   "fixed_inputs": {
-    "07_implementation/implementation_notes/test_assets/bl016_synthetic_aligned_events.jsonl": "F22C31F512CB9DC1708858419923C46E8D65895CB582BFE019F869CF34333771",
-    "07_implementation/implementation_notes/test_assets/bl016_candidate_stub.csv": "66505924A3BC9A627122310B6C4108BD397F4DD3E5FF9924991977A4C9574678",
-    "07_implementation/implementation_notes/test_assets/bl016_asset_manifest.json": "8D7BF7193777681DA9D9CD476EC2FE6D23B3541E29347F854413FD87ACF266EC",
-    "07_implementation/implementation_notes/data_layer/outputs/onion_join_coverage_report.json": "071A76D683921BE4FC08F58D28E5F0421C57BA517878D2FF899D7FFB852DC9BF"
+    "07_implementation/implementation_notes/profile/outputs/bl004_seed_trace.csv": "2CFCBECE4C0009A514C90DCFCC8C8C4A003FB68491C6B735D2D4A54D7C1C4793",
+    "07_implementation/implementation_notes/retrieval/outputs/bl005_filtered_candidates.csv": "679F4CD6821C4EEB23555E59DD4B4CB045558AD2C23830E525CCF65D3BB5C96E",
+    "07_implementation/implementation_notes/retrieval/outputs/bl005_candidate_decisions.csv": "48FF9A54BD374A2C675FB499AE8F417009C622BABF77B840CDFBCF8C576C1428",
+    "07_implementation/implementation_notes/scoring/outputs/bl006_scored_candidates.csv": "7302AABC4BD50D462B016F21F9F9748BAA01C5D0DA10D00FDB55DE91C756A91B",
+    "07_implementation/implementation_notes/playlist/outputs/bl007_assembly_trace.csv": "4AAB4C9D5523C32DB1F269782BFC8DA22EE5B7C6817B3E5FBE1AA2529083A764"
+  },
+  "optional_dependency_availability": {
+    "bl016_events": {
+      "path": "07_implementation/implementation_notes/test_assets/bl016_synthetic_aligned_events.jsonl",
+      "available": false
+    },
+    "bl016_candidates": {
+      "path": "07_implementation/implementation_notes/test_assets/bl016_candidate_stub.csv",
+      "available": false
+    },
+    "bl016_manifest": {
+      "path": "07_implementation/implementation_notes/test_assets/bl016_asset_manifest.json",
+      "available": false
+    },
+    "bl017_coverage": {
+      "path": "07_implementation/implementation_notes/data_layer/outputs/onion_join_coverage_report.json",
+      "available": false
+    }
   },
   "stage_scripts": {
-    "07_implementation/implementation_notes/profile/build_bl004_preference_profile.py": "92ACD4F0A010ED9D5C017691C13AFEDB99A2043345C94F48D060AF4BA43DA3EC",
-    "07_implementation/implementation_notes/retrieval/build_bl005_candidate_filter.py": "FE8F1BC1C5F90E4BF12A2B9CD77AAE214DF19414C95557866DEC727652346FD5",
-    "07_implementation/implementation_notes/scoring/build_bl006_scored_candidates.py": "29164E533F0B3F243629F9C94CEE3B6BEFF5B634B11D0CF50360204E7F310EFF",
-    "07_implementation/implementation_notes/playlist/build_bl007_playlist.py": "30F1DB047B3F5E07BED3646C80ACD2EACD7BC98A3D696B04D30B52BC1379430A",
-    "07_implementation/implementation_notes/transparency/build_bl008_explanation_payloads.py": "398F49739C0B15088841D24A167816353FE342CD7FD05895745688DB19B84390",
-    "07_implementation/implementation_notes/observability/build_bl009_observability_log.py": "14D7BC576DBA5EFD578B7AF3C5CF0E1C0796D62094CDFFD14A4BBF972A91CBFD"
+    "07_implementation/implementation_notes/profile/build_bl004_preference_profile.py": "7C748E40711E758CB6013A5E2701AF8E91343BF6565F416462F6AC940D51FC74",
+    "07_implementation/implementation_notes/retrieval/build_bl005_candidate_filter.py": "4F1014EF1DFF329D156EE0F63E2229F37B8D2D480664088C05EDD37276AEDC6C",
+    "07_implementation/implementation_notes/scoring/build_bl006_scored_candidates.py": "55364E5EB443596AFE5AE7E04593CDD2198E50F57F2C3D88A16ED2E3E247AC28",
+    "07_implementation/implementation_notes/playlist/build_bl007_playlist.py": "C5EF062D0483A6681DB82B5764DADAE8114D2AD724583118BA27B1363769B89C",
+    "07_implementation/implementation_notes/transparency/build_bl008_explanation_payloads.py": "4424F5B3F48B3D7EA070138C0F761CF694DF33510B36CD38496D6B29D762C4C1",
+    "07_implementation/implementation_notes/observability/build_bl009_observability_log.py": "7C3084385A7713A7C78EE85B15968D352619D91E09915F3F727AB07C3AC66581"
   },
   "stage_order": [
     "BL-004",
@@ -26,6 +46,22 @@
   ],
   "stage_configs": {
     "profile": {
+      "input_scope": {
+        "source_family": "spotify_api_export",
+        "include_top_tracks": true,
+        "top_time_ranges": [
+          "short_term",
+          "medium_term",
+          "long_term"
+        ],
+        "include_saved_tracks": true,
+        "saved_tracks_limit": null,
+        "include_playlists": true,
+        "playlists_limit": null,
+        "playlist_items_per_playlist_limit": null,
+        "include_recently_played": true,
+        "recently_played_limit": 50
+      },
       "effective_weight_rule": "effective_weight = preference_weight",
       "numeric_feature_columns": [
         "danceability",
@@ -114,8 +150,8 @@
     "transparency": {
       "playlist_track_count": 10,
       "top_contributor_distribution": {
-        "Tempo (BPM)": 8,
-        "Lead genre match": 2
+        "Tempo (BPM)": 9,
+        "Lead genre match": 1
       }
     }
   }

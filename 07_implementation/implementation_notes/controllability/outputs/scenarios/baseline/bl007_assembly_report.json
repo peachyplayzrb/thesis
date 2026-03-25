@@ -1,5 +1,5 @@
 {
-  "run_id": "BL011-BASELINE-BL007-20260320-235345-241868",
+  "run_id": "BL011-BASELINE-BL007-20260324-235122-084364",
   "task": "BL-007",
   "scenario_id": "baseline",
   "config": {
@@ -9,25 +9,23 @@
     "max_consecutive": 2
   },
   "counts": {
-    "candidates_evaluated": 42,
+    "candidates_evaluated": 58823,
     "tracks_included": 10,
-    "tracks_excluded": 32
+    "tracks_excluded": 58813
   },
   "rule_hits": {
     "R1_score_threshold": 0,
-    "R2_genre_cap": 5,
-    "R3_consecutive_run": 4,
-    "R4_length_cap": 23
+    "R2_genre_cap": 21,
+    "R3_consecutive_run": 5,
+    "R4_length_cap": 58787
   },
   "playlist_genre_mix": {
-    "alternative rock": 2,
-    "folk": 1,
-    "indie pop": 2,
-    "indie rock": 4,
-    "pop": 1
+    "classic rock": 4,
+    "pop": 4,
+    "rock": 2
   },
   "playlist_score_range": {
-    "max": 0.724318,
-    "min": 0.510916
+    "max": 0.779817,
+    "min": 0.6714
   }
 }

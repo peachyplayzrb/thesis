@@ -1,0 +1,225 @@
+{
+  "run_id": "BL004-PROFILE-20260324-234337-262070",
+  "task": "BL-004",
+  "generated_at_utc": "2026-03-24T23:43:37Z",
+  "user_id": "21zsn42xecjhogne4kghyw5hq",
+  "config_source": "environment",
+  "run_config_path": null,
+  "run_config_schema_version": null,
+  "input_artifacts": {
+    "seed_table_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\alignment\\outputs\\bl003_ds001_spotify_seed_table.csv",
+    "seed_table_sha256": "a7e405bed9870c19cafca37925872b189cb2bd3f7a414ac2d8a9851b58a6cdc3"
+  },
+  "config": {
+    "input_scope": {
+      "source_family": "spotify_api_export",
+      "include_top_tracks": true,
+      "top_time_ranges": [
+        "short_term",
+        "medium_term",
+        "long_term"
+      ],
+      "include_saved_tracks": true,
+      "saved_tracks_limit": null,
+      "include_playlists": true,
+      "playlists_limit": null,
+      "playlist_items_per_playlist_limit": null,
+      "include_recently_played": true,
+      "recently_played_limit": 50
+    },
+    "effective_weight_rule": "effective_weight = preference_weight",
+    "numeric_feature_columns": [
+      "danceability",
+      "energy",
+      "valence",
+      "tempo",
+      "key",
+      "mode",
+      "popularity",
+      "duration_ms"
+    ],
+    "profile_mode": "hybrid_semantic_numeric_from_bl003_enriched_seed_table",
+    "top_tag_limit": 10,
+    "top_genre_limit": 10,
+    "top_lead_genre_limit": 10,
+    "aggregation_rules": {
+      "numeric": "weighted mean over numeric columns embedded in the BL-003 enriched seed table; key uses weighted circular mean on the 12-semitone wheel",
+      "tags": "sum(preference_weight) over DS-001 tag labels",
+      "genres": "sum(preference_weight) over DS-001 genre labels",
+      "lead_genres": "sum(preference_weight)"
+    }
+  },
+  "diagnostics": {
+    "events_total": 221,
+    "matched_seed_count": 221,
+    "missing_seed_count": 0,
+    "missing_track_ids": [],
+    "candidate_rows_total": 221,
+    "numeric_observations": {
+      "danceability": 221,
+      "energy": 221,
+      "valence": 221,
+      "tempo": 221,
+      "key": 221,
+      "mode": 221,
+      "popularity": 221,
+      "duration_ms": 221
+    },
+    "key_aggregation_method": "weighted_circular_mean",
+    "total_effective_weight": 594.516574,
+    "elapsed_seconds": 0.011
+  },
+  "seed_summary": {
+    "counts_by_interaction_type": {
+      "history": 221,
+      "influence": 0
+    },
+    "weight_by_interaction_type": {
+      "history": 594.516574,
+      "influence": 0.0
+    },
+    "interaction_count_sum_by_interaction_type": {
+      "history": 5945,
+      "influence": 0
+    },
+    "seed_trace_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\profile\\outputs\\bl004_seed_trace.csv"
+  },
+  "numeric_feature_profile": {
+    "danceability": 0.550561,
+    "energy": 0.553168,
+    "valence": 0.562421,
+    "tempo": 122.32724,
+    "key": 0.586777,
+    "mode": 0.780214,
+    "popularity": 55.182237,
+    "duration_ms": 233657.126329
+  },
+  "semantic_profile": {
+    "top_tags": [
+      {
+        "label": "rock",
+        "weight": 351.43324
+      },
+      {
+        "label": "classic rock",
+        "weight": 320.361811
+      },
+      {
+        "label": "pop",
+        "weight": 293.857843
+      },
+      {
+        "label": "80s",
+        "weight": 162.916667
+      },
+      {
+        "label": "60s",
+        "weight": 140.718954
+      },
+      {
+        "label": "british",
+        "weight": 120.441176
+      },
+      {
+        "label": "the beatles",
+        "weight": 82.941176
+      },
+      {
+        "label": "singer-songwriter",
+        "weight": 78.571429
+      },
+      {
+        "label": "female vocalists",
+        "weight": 72.738096
+      },
+      {
+        "label": "70s",
+        "weight": 60.0
+      }
+    ],
+    "top_genres": [
+      {
+        "label": "rock",
+        "weight": 351.43324
+      },
+      {
+        "label": "classic rock",
+        "weight": 320.361811
+      },
+      {
+        "label": "pop",
+        "weight": 293.857843
+      },
+      {
+        "label": "singer-songwriter",
+        "weight": 78.571429
+      },
+      {
+        "label": "progressive rock",
+        "weight": 55.0
+      },
+      {
+        "label": "hard rock",
+        "weight": 40.0
+      },
+      {
+        "label": "folk",
+        "weight": 38.571429
+      },
+      {
+        "label": "soul",
+        "weight": 32.5
+      },
+      {
+        "label": "psychedelic rock",
+        "weight": 24.166667
+      },
+      {
+        "label": "jazz",
+        "weight": 22.5
+      }
+    ],
+    "top_lead_genres": [
+      {
+        "label": "classic rock",
+        "weight": 215.441176
+      },
+      {
+        "label": "pop",
+        "weight": 115.416667
+      },
+      {
+        "label": "rock",
+        "weight": 52.142857
+      },
+      {
+        "label": "progressive rock",
+        "weight": 50.0
+      },
+      {
+        "label": "folk",
+        "weight": 36.071429
+      },
+      {
+        "label": "soul",
+        "weight": 17.5
+      },
+      {
+        "label": "new wave",
+        "weight": 15.0
+      },
+      {
+        "label": "soundtrack",
+        "weight": 10.0
+      },
+      {
+        "label": "baroque pop",
+        "weight": 7.777778
+      },
+      {
+        "label": "classical",
+        "weight": 7.5
+      }
+    ]
+  }
+}

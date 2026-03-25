@@ -1,0 +1,37 @@
+{
+  "run_id": "BL007-ASSEMBLE-20260324-234333-941342",
+  "generated_at_utc": "2026-03-24T23:43:33Z",
+  "elapsed_seconds": 0.605,
+  "config": {
+    "target_size": 10,
+    "min_score_threshold": 0.35,
+    "max_per_genre": 4,
+    "max_consecutive": 2
+  },
+  "counts": {
+    "candidates_evaluated": 58831,
+    "tracks_included": 10,
+    "tracks_excluded": 58821
+  },
+  "rule_hits": {
+    "R3_consecutive_run": 37,
+    "R2_genre_cap": 98,
+    "R4_length_cap": 58686
+  },
+  "playlist_genre_mix": {
+    "classic rock": 4,
+    "pop": 4,
+    "rock": 2
+  },
+  "playlist_score_range": {
+    "max": 0.752574,
+    "min": 0.623718
+  },
+  "input_artifact_hashes": {
+    "bl006_scored_candidates.csv": "7302AABC4BD50D462B016F21F9F9748BAA01C5D0DA10D00FDB55DE91C756A91B"
+  },
+  "output_artifact_hashes": {
+    "bl007_playlist.json": "EF58DF0E37C74DA67AC1268A36F5515B35401F675F883506AC7D19303C78F41D",
+    "bl007_assembly_trace.csv": "4AAB4C9D5523C32DB1F269782BFC8DA22EE5B7C6817B3E5FBE1AA2529083A764"
+  }
+}

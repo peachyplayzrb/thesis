@@ -4,7 +4,7 @@ Last updated: 2026-03-25
 
 ## In Scope
 - Single-user automated playlist generation pipeline.
-- Cross-source listening-history ingestion, semantic enrichment, and dataset alignment.
+- Cross-source listening-history ingestion, metadata/identifier alignment, and dataset integration.
 - Deterministic, inspectable scoring and explanation generation.
 - Source-scope controllability via canonical run-config and traceable effective-scope outputs.
 - Playlist assembly rules (diversity, ordering, repetition control).

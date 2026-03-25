@@ -67,11 +67,11 @@ Operational interpretation:
 
 ### Status Update (2026-03-22)
 - Signed disclosure/confidentiality agreement has been sent back to Music4All team by user.
-- Awaiting provider confirmation and delivery of dataset URL/password.
+- Awaiting provider confirmation and delivery of dataset URL/password (historical status at this date).
 
 ### Status Update (2026-03-23)
 - User resent the agreement with signature explicitly included.
-- Awaiting provider acknowledgement/credential release remains the active dependency.
+- This dependency is now historical; provider credentials were released on 2026-03-24.
 
 ### Status Update (2026-03-24)
 - Provider released dataset credentials and download path.

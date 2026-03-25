@@ -7,8 +7,8 @@ Ordering convention (standardized 2026-03-24):
 - Entry order reflects historical insertion timing and may not be numerically contiguous in older sections.
 - New entries must be appended at the end; historical entries remain unchanged except for explicit correction records.
 
-Maintenance snapshot (2026-03-24):
-- Highest change ID currently present: `C-134`
+Maintenance snapshot (2026-03-25):
+- Highest change ID currently present: `C-148`
 - Known legacy correction applied in this file: prior duplicate `C-079` entry has been normalized to `C-135` for unique-ID compliance.
 
 ## C-001
@@ -1581,3 +1581,69 @@ Maintenance snapshot (2026-03-24):
 - affected_components: `00_admin/README.md`, `00_admin/evaluation_plan.md`, `00_admin/methodology_definition.md`, `00_admin/thesis_scope_lock.md`, `00_admin/handoff_friend_chat_playbook.md`, `00_admin/mentor_question_log.md`, `00_admin/mentor_feedback_log.md`, `00_admin/music4all_access_email_draft_2026-03-21.md`, `00_admin/operating_protocol.md`, `00_admin/templates/decision_entry.template.md`, `00_admin/C_080_day_3_hardening.txt`, `00_admin/change_log.md`
 - impact_assessment: High-positive. Brings the remaining admin surface into state-consistent form and reduces stale wording/schema drift across planning, governance, and collaborator handoff artifacts.
 - approval_record: Requested by user in chat on 2026-03-25 ("cleanup and organize and make up to date all the other files in my admin").
+
+## C-143
+- date: 2026-03-25
+- proposed_by: user + AI
+- status: accepted
+- change_summary: Analyze current implementation evidence and synchronize admin control files to DS-001 direct-alignment baseline while marking Last.fm enrichment as historical evidence only.
+- reason: User requested implementation-grounded admin synchronization and explicitly confirmed current posture (`DS-001` active corpus; no active Last.fm usage).
+- evidence_basis: `07_implementation/implementation_notes/alignment/bl003_state_log_2026-03-24.md`; `07_implementation/implementation_notes/alignment/build_bl003_ds001_spotify_seed_table.py`; `07_implementation/implementation_notes/profile/build_bl004_preference_profile.py` (`lastfm_status=not_applicable_ds001`); updated admin control files in this change.
+- affected_components: `00_admin/decision_log.md`, `00_admin/evaluation_plan.md`, `00_admin/thesis_scope_lock.md`, `00_admin/thesis_state.md`, `00_admin/change_log.md`
+- impact_assessment: High-positive. Removes active-posture ambiguity between implementation and governance records and improves Chapter 4/5 interpretation consistency.
+- approval_record: Requested by user in chat on 2026-03-25 ("alanlyze the current implementation and update any admin files to it.").
+
+## C-144
+- date: 2026-03-25
+- proposed_by: user + AI
+- status: accepted
+- change_summary: Execute full non-historical admin cleanup pass after implementation audit: remove duplicate/stale baseline wording, refresh open-control snapshots, align timeline milestone language to DS-001 direct alignment, and update mentor/email trackers to current operational status.
+- reason: User requested an overall current-implementation analysis and asked that all admin files be updated accordingly.
+- evidence_basis: Admin-surface audit against active stage evidence (`07_implementation/implementation_notes/alignment/bl003_state_log_2026-03-24.md`, BL-003/BL-004 scripts) plus targeted updates in README, timeline, MVP definition, mentor question log, and Music4All access tracker.
+- affected_components: `00_admin/Artefact_MVP_definition.md`, `00_admin/README.md`, `00_admin/timeline.md`, `00_admin/music4all_access_email_draft_2026-03-21.md`, `00_admin/mentor_question_log.md`, `00_admin/change_log.md`
+- impact_assessment: High-positive. Brings remaining operational admin documents into explicit alignment with the current DS-001 implementation posture while preserving historical logs.
+- approval_record: Requested by user in chat on 2026-03-25 ("now analyze overall the implementation currently and update all the admin files to it.").
+
+## C-145
+- date: 2026-03-25
+- proposed_by: user + AI
+- status: accepted
+- change_summary: Synchronize governance wording with confirmed DS-001 possession by replacing residual "download in progress" phrasing and tightening UI-008 next actions to governance-capture tasks only.
+- reason: User confirmed that Music4All DS-001 database is already available locally and asked for state alignment.
+- evidence_basis: User confirmation in chat ("musi4all i already have the database that is ds-001."); updates applied to DS-001 delivery state in dataset registry and UI-008 action list in unresolved issues.
+- affected_components: `06_data_and_sources/dataset_registry.md`, `00_admin/unresolved_issues.md`, `00_admin/change_log.md`
+- impact_assessment: Medium-positive. Reduces operational ambiguity and keeps governance backlog focused on compliance/provenance closure rather than acquisition status.
+- approval_record: Requested and confirmed by user in chat on 2026-03-25.
+
+## C-146
+- date: 2026-03-25
+- proposed_by: user + AI
+- status: accepted
+- change_summary: Close UI-008 as an active unresolved issue and synchronize admin control snapshots so only UI-003 remains open in current-priority surfaces.
+- reason: User explicitly requested removal of the unresolved DS-001 governance item ("lose the unresolved issue its not an issue anymore").
+- evidence_basis: `00_admin/unresolved_issues.md` moved UI-008 to resolved; `00_admin/thesis_state.md`, `00_admin/README.md`, and `00_admin/handoff_friend_chat_playbook.md` updated to remove active UI-008 queue references; `06_data_and_sources/dataset_registry.md` status wording aligned.
+- affected_components: `00_admin/unresolved_issues.md`, `00_admin/thesis_state.md`, `00_admin/README.md`, `00_admin/handoff_friend_chat_playbook.md`, `06_data_and_sources/dataset_registry.md`, `00_admin/change_log.md`
+- impact_assessment: Medium-positive. Simplifies active governance focus and removes stale-open-item noise from daily control navigation.
+- approval_record: Requested and confirmed by user in chat on 2026-03-25.
+
+## C-147
+- date: 2026-03-25
+- proposed_by: user + AI
+- status: accepted
+- change_summary: Execute final consistency sweep for control-doc currency, verify maintenance snapshot integrity, and remove a stale MQ-008 affected-file reference to closed UI-008.
+- reason: User requested that everything be up to date.
+- evidence_basis: Cross-file grep/read pass over admin and dataset registry surfaces; PowerShell integrity check confirmed `D_COUNT=28`, `D_MAX=28`, `C_COUNT=147`, `C_MAX=147`; `00_admin/mentor_question_log.md` MQ-008 affected-files updated from resolved UI-008 reference to current-state file linkage.
+- affected_components: `00_admin/mentor_question_log.md`, `00_admin/change_log.md`
+- impact_assessment: Low-positive. Removes minor residual drift and confirms control-log snapshot integrity.
+- approval_record: Requested by user in chat on 2026-03-25 ("make sure everrything is up to date.").
+
+## C-148
+- date: 2026-03-25
+- proposed_by: user + AI
+- status: accepted
+- change_summary: Complete artefact refinement cycle (R1, R2, R3): emit canonical run-intent/run-effective-config artifact pair on every BL-013 run; add BL-009 schema version and execution_scope_summary block; produce semantic control-layer map. Validated in BL013-ENTRYPOINT-20260325-001946-187550.
+- reason: Harden pipeline outputs for thesis defense audibility: deterministic per-run config evidence, versioned BL-009 observability schema, and semantic control-layer documentation for examiner-facing explanation.
+- evidence_basis: Live run BL013-ENTRYPOINT-20260325-001946-187550; all 6 stages pass; run_intent and run_effective_config artifacts available with SHA256; observability_schema_version=bl009-observability-v1; execution_scope_summary confirmed in bl009_run_observability_log.json; artefact_refinement_spec.md updated to all-complete.
+- affected_components: `07_implementation/implementation_notes/run_config/run_config_utils.py`, `07_implementation/implementation_notes/entrypoint/run_bl013_pipeline_entrypoint.py`, `07_implementation/implementation_notes/observability/build_bl009_observability_log.py`, `07_implementation/implementation_notes/run_config/outputs/` (new), `07_implementation/implementation_notes/run_config/semantic_control_map.md` (new), `07_implementation/artefact_refinement_spec.md`
+- impact_assessment: High-positive. Every pipeline run now emits a two-file config-evidence pair linked from the BL-009 audit log; BL-009 output is now schema-versioned; semantic control map enables examiner-facing explanation without relying on stage IDs.
+- approval_record: Requested by user in chat on 2026-03-25.

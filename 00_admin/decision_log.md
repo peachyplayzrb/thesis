@@ -5,14 +5,14 @@ Ordering convention (standardized 2026-03-24):
 - Entry IDs remain unique identifiers, but physical entry order reflects historical insertion timing (not strict numeric sorting).
 - New entries must be appended at the end and may include `superseded_by` when a prior decision is replaced.
 
-Maintenance snapshot (2026-03-24):
-- Highest decision ID currently present: `D-027`
-- Total decision entries: 27
-- Status distribution: accepted=23, superseded=3, rejected=1
+Maintenance snapshot (2026-03-25):
+- Highest decision ID currently present: `D-028`
+- Total decision entries: 28
+- Status distribution: accepted=24, superseded=3, rejected=1
 - ID integrity check: no duplicate decision IDs detected
 
-Current posture snapshot (2026-03-24):
-- Active baseline path: DS-002 candidate corpus with semantic enrichment flow (`D-015`, `D-021`).
+Current posture snapshot (2026-03-25):
+- Active baseline path: DS-001 candidate corpus with direct metadata/identifier alignment (`D-028`), with DS-002 retained as validated fallback reference.
 - Implemented source-scope closure: deferred source-scope design is now baseline behavior (`D-027`; supersedes `D-023`).
 - Freeze-first strategy was temporary and is now historical (`D-026` superseded by `D-027`).
 - Deferred enhancement still tracked: deterministic corpus-path switching fallback (`D-025`).
@@ -861,4 +861,30 @@ impacted_files:
 - `00_admin/change_log.md`
 - `00_admin/thesis_state.md`
 - `07_implementation/backlog.md`
+review_date: none
+
+---
+
+id: D-028
+date: 2026-03-25
+status: accepted
+context: Current stage evidence and state logs show BL-003 to BL-006 operating on the DS-001 contract (`build_bl003_ds001_spotify_seed_table.py` and downstream consumers), while several admin surfaces still describe DS-002 + Last.fm semantic enrichment as the active baseline.
+decision: Treat DS-001 (Music4All base) with direct metadata/identifier alignment as the active implementation baseline. Mark Last.fm enrichment as historical/legacy evidence for earlier BL-020 runs, not part of the current active path. Keep DS-002 as a validated fallback reference only.
+alternatives_considered:
+- Keep DS-002 + Last.fm as active wording for continuity (rejected: contradicts current stage-state evidence)
+- Remove all DS-002 references (rejected: DS-002 remains useful fallback and historical evidence)
+- Rewrite historical decisions to match current state (rejected: harms chronology and auditability)
+rationale: This keeps governance wording aligned with implemented behavior while preserving historical traceability. It reduces ambiguity in thesis control files and prevents evaluation/reporting drift.
+evidence_basis:
+- `07_implementation/implementation_notes/alignment/bl003_state_log_2026-03-24.md`
+- `07_implementation/implementation_notes/alignment/build_bl003_ds001_spotify_seed_table.py`
+- `07_implementation/implementation_notes/profile/build_bl004_preference_profile.py` (`lastfm_status=not_applicable_ds001`)
+- `00_admin/thesis_state.md`
+impacted_files:
+- `00_admin/decision_log.md`
+- `00_admin/change_log.md`
+- `00_admin/thesis_state.md`
+- `00_admin/evaluation_plan.md`
+- `00_admin/thesis_scope_lock.md`
+- `00_admin/Artefact_MVP_definition.md`
 review_date: none

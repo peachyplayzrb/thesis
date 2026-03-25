@@ -28,10 +28,9 @@ This folder is the governance and execution-control layer for the thesis. It tra
 - `operating_protocol.md`: logging and workflow policy.
 - `templates/`: reusable entry templates.
 
-## Current Open Control Items (as of 2026-03-24)
-1. `UI-008` in `unresolved_issues.md`: DS-001 governance/provenance closure after access reopening.
-2. `UI-003` in `unresolved_issues.md`: thesis-wide citation hardening completion and synthesis closeout.
-3. Mentor response backlog in `mentor_question_log.md`: MQ-001 to MQ-008 still open.
+## Current Open Control Items (as of 2026-03-25)
+1. `UI-003` in `unresolved_issues.md`: thesis-wide citation hardening completion and synthesis closeout.
+2. Mentor response backlog in `mentor_question_log.md`: MQ-001, MQ-002, MQ-003, MQ-004, and MQ-007 are open (MQ-005, MQ-006, MQ-008 are deferred).
 
 ## Hygiene Rules
 - Keep this folder as the single source of truth for governance state.

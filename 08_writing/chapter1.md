@@ -14,7 +14,7 @@ What design considerations shape the engineering of a transparent, controllable,
 The thesis objectives are aligned to the locked scope and implementation posture:
 
 1. Design an automated pipeline that generates playlists from user listening histories.
-2. Align cross-platform listening data into an inspectable preference signal using robust metadata handling and semantic enrichment.
+2. Align cross-platform listening data into an inspectable preference signal using robust metadata and identifier handling.
 3. Construct a deterministic user preference profile based on imported listening data, user-selectable source scope, and manually selected influence tracks.
 4. Generate candidate tracks from the active integrated candidate dataset using feature-based filtering.
 5. Score candidate tracks using deterministic similarity functions and rule-based adjustments.
@@ -27,7 +27,7 @@ In-scope position for this thesis:
 - Single-user deterministic playlist generation pipeline.
 - Content-based recommendation logic with explicit transparency, controllability, and observability requirements.
 - One practical ingestion path and reproducible run logging.
-- Active candidate corpus: DS-002 (MSD subset + Last.fm tags), with semantic enrichment for user-side preference extraction.
+- Active candidate corpus: DS-001 (Music4All base), with direct metadata/identifier alignment for user-side preference extraction.
 
 Out-of-scope position for this thesis:
 - Collaborative filtering and deep neural model novelty as core contribution claims.

@@ -9,6 +9,16 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 
+LEGACY_NUMERIC_COLUMNS = {
+    "rhythm.bpm",
+    "rhythm.danceability",
+    "lowlevel.loudness_ebu128.integrated",
+    "V_mean",
+    "A_mean",
+    "D_mean",
+}
+
+
 def repo_root() -> Path:
     return Path(__file__).resolve().parents[3]
 
@@ -69,6 +79,17 @@ def load_csv_rows(path: Path) -> list[dict[str, str]]:
         return list(csv.DictReader(handle))
 
 
+def normalize_candidate_row(row: dict[str, str]) -> dict[str, str]:
+    normalized = dict(row)
+    track_id = (normalized.get("track_id") or "").strip()
+    if not track_id:
+        track_id = (normalized.get("id") or "").strip()
+    if not track_id:
+        track_id = (normalized.get("ds001_id") or "").strip()
+    normalized["track_id"] = track_id
+    return normalized
+
+
 def parse_float(value: str) -> float | None:
     text = value.strip()
     if not text:
@@ -119,6 +140,48 @@ def parse_labels(raw_value: str, label_key: str) -> list[str]:
         if isinstance(label, str) and label.strip():
             labels.append(label.strip())
     return labels
+
+
+def parse_csv_labels(raw_value: str) -> list[str]:
+    if not raw_value:
+        return []
+    labels: list[str] = []
+    seen: set[str] = set()
+    for piece in raw_value.split(","):
+        label = piece.strip().lower()
+        if not label or label in seen:
+            continue
+        seen.add(label)
+        labels.append(label)
+    return labels
+
+
+def candidate_labels(row: dict[str, str], label_type: str) -> list[str]:
+    if label_type == "genres":
+        legacy = parse_labels(row.get("top_genres_json", ""), "genre")
+        if legacy:
+            return legacy
+        return parse_csv_labels(row.get("genres", ""))
+    legacy = parse_labels(row.get("top_tags_json", ""), "tag")
+    if legacy:
+        return legacy
+    return parse_csv_labels(row.get("tags", ""))
+
+
+def candidate_weight_pairs(row: dict[str, str], label_type: str) -> list[tuple[str, float]]:
+    if label_type == "genres":
+        legacy = parse_weighted_list(row.get("top_genres_json", ""), "genre", "score")
+        if legacy:
+            return legacy
+        return [(label, 1.0) for label in parse_csv_labels(row.get("genres", ""))]
+    legacy = parse_weighted_list(row.get("top_tags_json", ""), "tag", "weight")
+    if legacy:
+        return legacy
+    return [(label, 1.0) for label in parse_csv_labels(row.get("tags", ""))]
+
+
+def resolve_legacy_mode(paths: dict[str, Path]) -> bool:
+    return paths["legacy_events"].exists() and paths["legacy_candidates"].exists()
 
 
 def sorted_weight_map(weight_map: dict[str, float], limit: int) -> list[dict[str, float | str]]:
@@ -180,17 +243,24 @@ def decision_reason(is_seed_track: bool, semantic_score: int, numeric_pass_count
 
 def build_paths(root: Path) -> dict[str, Path]:
     return {
-        "events": root / "07_implementation" / "implementation_notes" / "test_assets" / "bl016_synthetic_aligned_events.jsonl",
-        "candidates": root / "07_implementation" / "implementation_notes" / "test_assets" / "bl016_candidate_stub.csv",
-        "manifest": root / "07_implementation" / "implementation_notes" / "test_assets" / "bl016_asset_manifest.json",
-        "coverage": root / "07_implementation" / "implementation_notes" / "data_layer" / "outputs" / "onion_join_coverage_report.json",
+        "legacy_events": root / "07_implementation" / "implementation_notes" / "test_assets" / "bl016_synthetic_aligned_events.jsonl",
+        "legacy_candidates": root / "07_implementation" / "implementation_notes" / "test_assets" / "bl016_candidate_stub.csv",
+        "legacy_manifest": root / "07_implementation" / "implementation_notes" / "test_assets" / "bl016_asset_manifest.json",
+        "legacy_coverage": root / "07_implementation" / "implementation_notes" / "data_layer" / "outputs" / "onion_join_coverage_report.json",
+        "active_seed_trace": root / "07_implementation" / "implementation_notes" / "profile" / "outputs" / "bl004_seed_trace.csv",
+        "active_candidates": root / "07_implementation" / "implementation_notes" / "data_layer" / "outputs" / "ds001_working_candidate_dataset.csv",
         "baseline_snapshot": root / "07_implementation" / "implementation_notes" / "reproducibility" / "outputs" / "bl010_reproducibility_config_snapshot.json",
         "output_dir": root / "07_implementation" / "implementation_notes" / "controllability" / "outputs",
     }
 
 
 def ensure_required_inputs(paths: dict[str, Path], root: Path) -> None:
-    missing = [relpath(path, root) for key, path in paths.items() if key != "output_dir" and not path.exists()]
+    required = ["baseline_snapshot"]
+    if resolve_legacy_mode(paths):
+        required.extend(["legacy_events", "legacy_candidates"])
+    else:
+        required.extend(["active_seed_trace", "active_candidates"])
+    missing = [relpath(paths[key], root) for key in required if not paths[key].exists()]
     if missing:
         raise FileNotFoundError(f"BL-011 missing required inputs: {missing}")
 
@@ -200,6 +270,23 @@ def build_scenarios(baseline_snapshot: dict) -> list[dict[str, object]]:
     base_retrieval = baseline_snapshot["stage_configs"]["retrieval"]
     base_scoring = baseline_snapshot["stage_configs"]["scoring"]
     base_assembly = baseline_snapshot["stage_configs"]["assembly"]
+    scoring_weights = dict(
+        base_scoring.get("component_weights")
+        or base_scoring.get("active_component_weights")
+        or base_scoring.get("base_component_weights")
+        or {}
+    )
+    if not scoring_weights:
+        raise RuntimeError("BL-011 could not resolve scoring component weights from baseline snapshot")
+    if "valence" in scoring_weights:
+        override_component = "valence"
+        override_raw_value = 0.20
+    elif "V_mean" in scoring_weights:
+        override_component = "V_mean"
+        override_raw_value = 0.20
+    else:
+        override_component = next(iter(scoring_weights.keys()))
+        override_raw_value = min(0.35, float(scoring_weights[override_component]) + 0.08)
 
     return [
         {
@@ -248,7 +335,7 @@ def build_scenarios(baseline_snapshot: dict) -> list[dict[str, object]]:
             "scenario_id": "valence_weight_up",
             "test_id": "EP-CTRL-002",
             "control_surface": "feature_weight",
-            "description": "Increase the raw valence weight from 0.12 to 0.20, then renormalize all score weights to preserve a 1.0 total.",
+            "description": "Increase one score-component raw weight and renormalize all score weights to preserve a 1.0 total.",
             "profile": {
                 **base_profile,
                 "include_interaction_types": ["history", "influence"],
@@ -259,12 +346,12 @@ def build_scenarios(baseline_snapshot: dict) -> list[dict[str, object]]:
             },
             "scoring": {
                 **base_scoring,
-                "component_weights": normalized_weights_with_override(base_scoring["component_weights"], "V_mean", 0.20),
-                "weight_override_component": "V_mean",
-                "raw_override_value": 0.20,
+                "component_weights": normalized_weights_with_override(scoring_weights, override_component, override_raw_value),
+                "weight_override_component": override_component,
+                "raw_override_value": override_raw_value,
             },
             "assembly": dict(base_assembly),
-            "expected_effect": "tracks with stronger valence fit should gain score contribution and rank position",
+            "expected_effect": "tracks with stronger fit on the boosted component should gain score contribution and rank position",
         },
         {
             "scenario_id": "stricter_thresholds",
@@ -316,6 +403,7 @@ def execute_profile_stage(
     candidate_rows_by_id: dict[str, dict[str, str]],
     scenario: dict[str, object],
     root: Path,
+    input_artifacts: dict[str, str],
 ) -> dict[str, object]:
     profile_config = scenario["profile"]
     include_interaction_types = set(profile_config["include_interaction_types"])
@@ -360,10 +448,10 @@ def execute_profile_stage(
             numeric_sums[column] += value * effective_weight
             numeric_weights[column] += effective_weight
 
-        for tag, score in parse_weighted_list(candidate.get("top_tags_json", ""), "tag", "weight"):
+        for tag, score in candidate_weight_pairs(candidate, "tags"):
             tag_weights[tag] = tag_weights.get(tag, 0.0) + (effective_weight * score)
 
-        for genre, score in parse_weighted_list(candidate.get("top_genres_json", ""), "genre", "score"):
+        for genre, score in candidate_weight_pairs(candidate, "genres"):
             genre_weights[genre] = genre_weights.get(genre, 0.0) + (effective_weight * score)
 
         lead_genre = str(event.get("lead_genre", "")).strip()
@@ -382,8 +470,8 @@ def execute_profile_stage(
                 "effective_weight": round(effective_weight, 6),
                 "lead_genre": lead_genre,
                 "top_tag": str(event.get("top_tag", "")),
-                "candidate_playcount_sum": int(candidate.get("playcount_sum") or "0"),
-                "candidate_listener_rows": int(candidate.get("listener_rows") or "0"),
+                "candidate_playcount_sum": int(float(candidate.get("playcount_sum") or "0")),
+                "candidate_listener_rows": int(float(candidate.get("listener_rows") or "0")),
             }
         )
 
@@ -407,8 +495,8 @@ def execute_profile_stage(
         "user_id": user_id,
         "scenario_id": scenario["scenario_id"],
         "input_artifacts": {
-            "aligned_events_path": relpath(root / "07_implementation" / "implementation_notes" / "test_assets" / "bl016_synthetic_aligned_events.jsonl", root),
-            "candidate_stub_path": relpath(root / "07_implementation" / "implementation_notes" / "test_assets" / "bl016_candidate_stub.csv", root),
+            "aligned_events_path": input_artifacts["aligned_events_path"],
+            "candidate_stub_path": input_artifacts["candidate_stub_path"],
         },
         "config": {
             "effective_weight_rule": profile_config["effective_weight_rule"],
@@ -515,6 +603,7 @@ def execute_retrieval_stage(
         for key, value in retrieval_config["numeric_thresholds"].items()
     }
     numeric_centers = {key: float(value) for key, value in profile["numeric_feature_profile"].items() if key in scaled_thresholds}
+    keep_rule = str(retrieval_config.get("keep_rule", "")).lower()
 
     decisions: list[dict[str, object]] = []
     kept_rows: list[dict[str, str]] = []
@@ -525,9 +614,9 @@ def execute_retrieval_stage(
     for row in candidate_rows:
         track_id = row["track_id"]
         is_seed_track = track_id in seed_track_ids
-        candidate_genres = parse_labels(row.get("top_genres_json", ""), "genre")
-        candidate_tags = parse_labels(row.get("top_tags_json", ""), "tag")
-        lead_genre = candidate_genres[0] if candidate_genres else ""
+        candidate_genres = candidate_labels(row, "genres")
+        candidate_tags = candidate_labels(row, "tags")
+        lead_genre = candidate_tags[0] if candidate_tags else (candidate_genres[0] if candidate_genres else "")
 
         lead_genre_match = lead_genre in top_lead_genres if lead_genre else False
         genre_overlap = len(top_genres.intersection(candidate_genres))
@@ -549,7 +638,15 @@ def execute_retrieval_stage(
             if value is None:
                 numeric_distances[column] = None
                 continue
-            distance = abs(value - numeric_centers[column])
+            center = numeric_centers.get(column)
+            if center is None:
+                numeric_distances[column] = None
+                continue
+            if column == "key":
+                raw_diff = abs(value - center)
+                distance = min(raw_diff, 12.0 - raw_diff)
+            else:
+                distance = abs(value - center)
             numeric_distances[column] = round(distance, 6)
             if distance <= threshold:
                 numeric_pass_count += 1
@@ -557,7 +654,10 @@ def execute_retrieval_stage(
 
         kept = False
         if not is_seed_track:
-            kept = ((semantic_score >= 2 and numeric_pass_count >= 4) or (semantic_score == 3 and numeric_pass_count >= 3))
+            if "semantic_score >= 2 or" in keep_rule:
+                kept = semantic_score >= 2 or (semantic_score >= 1 and numeric_pass_count >= 1)
+            else:
+                kept = ((semantic_score >= 2 and numeric_pass_count >= 4) or (semantic_score == 3 and numeric_pass_count >= 3))
 
         if is_seed_track:
             decision_counts["seed_excluded"] += 1
@@ -575,15 +675,11 @@ def execute_retrieval_stage(
             "genre_overlap_count": genre_overlap,
             "tag_overlap_count": tag_overlap,
             "numeric_pass_count": numeric_pass_count,
-            "bpm_distance": numeric_distances["rhythm.bpm"],
-            "danceability_distance": numeric_distances["rhythm.danceability"],
-            "loudness_distance": numeric_distances["lowlevel.loudness_ebu128.integrated"],
-            "V_mean_distance": numeric_distances["V_mean"],
-            "A_mean_distance": numeric_distances["A_mean"],
-            "D_mean_distance": numeric_distances["D_mean"],
             "decision": "keep" if kept else "reject",
             "decision_reason": decision_reason(is_seed_track, semantic_score, numeric_pass_count, kept),
         }
+        for column in sorted(scaled_thresholds):
+            decision_row[f"{column}_distance"] = numeric_distances.get(column)
         decisions.append(decision_row)
         if kept:
             kept_rows.append(row)
@@ -642,11 +738,20 @@ def execute_scoring_stage(profile_stage: dict[str, object], retrieval_stage: dic
     if not candidates:
         raise RuntimeError(f"Scenario {scenario['scenario_id']} has no BL-005 candidates for BL-006")
 
-    component_weights = {key: float(value) for key, value in scoring_config["component_weights"].items()}
-    if round(sum(component_weights.values()), 6) != 1.0:
+    raw_component_weights = (
+        scoring_config.get("component_weights")
+        or scoring_config.get("active_component_weights")
+        or scoring_config.get("base_component_weights")
+        or {}
+    )
+    component_weights = {key: float(value) for key, value in raw_component_weights.items()}
+    if not component_weights:
+        raise RuntimeError(f"Scenario {scenario['scenario_id']} has no scoring component weights")
+    if abs(sum(component_weights.values()) - 1.0) > 1e-4:
         raise RuntimeError(f"Scenario {scenario['scenario_id']} scoring weights must sum to 1.0")
 
     numeric_thresholds = {key: float(value) for key, value in scoring_config["numeric_thresholds"].items()}
+    numeric_components = [key for key in numeric_thresholds if key in component_weights]
     profile_lead_map, profile_lead_total = normalize_weight_map(profile["semantic_profile"]["top_lead_genres"], top_k=6)
     profile_genre_map, profile_genre_total = normalize_weight_map(profile["semantic_profile"]["top_genres"], top_k=8)
     profile_tag_map, profile_tag_total = normalize_weight_map(profile["semantic_profile"]["top_tags"], top_k=10)
@@ -655,17 +760,23 @@ def execute_scoring_stage(profile_stage: dict[str, object], retrieval_stage: dic
     component_totals = {component: 0.0 for component in component_weights}
 
     for row in candidates:
-        lead_genres = parse_labels(row.get("top_genres_json", ""), "genre")
-        candidate_tags = parse_labels(row.get("top_tags_json", ""), "tag")
-        lead_genre = lead_genres[0] if lead_genres else ""
+        lead_genres = candidate_labels(row, "genres")
+        candidate_tags = candidate_labels(row, "tags")
+        lead_genre = candidate_tags[0] if candidate_tags else (lead_genres[0] if lead_genres else "")
 
         component_similarity: dict[str, float] = {}
         component_contribution: dict[str, float] = {}
 
-        for column, threshold in numeric_thresholds.items():
+        for column in numeric_components:
+            threshold = float(numeric_thresholds[column])
             value = parse_float(row.get(column, ""))
             center = float(profile["numeric_feature_profile"][column])
-            similarity = numeric_similarity(value, center, threshold)
+            if column == "key" and value is not None:
+                raw_diff = abs(value - center)
+                circular_distance = min(raw_diff, 12.0 - raw_diff)
+                similarity = max(0.0, min(1.0, round(1.0 - (circular_distance / threshold), 6)))
+            else:
+                similarity = numeric_similarity(value, center, threshold)
             component_similarity[column] = similarity
             component_contribution[column] = round(similarity * component_weights[column], 6)
 
@@ -686,33 +797,22 @@ def execute_scoring_stage(profile_stage: dict[str, object], retrieval_stage: dic
         for key, value in component_contribution.items():
             component_totals[key] += value
 
-        scored_rows.append(
-            {
-                "track_id": row["track_id"],
-                "lead_genre": lead_genre,
-                "matched_genres": "|".join(matched_genres),
-                "matched_tags": "|".join(matched_tags),
-                "final_score": final_score,
-                "bpm_similarity": component_similarity["rhythm.bpm"],
-                "bpm_contribution": component_contribution["rhythm.bpm"],
-                "danceability_similarity": component_similarity["rhythm.danceability"],
-                "danceability_contribution": component_contribution["rhythm.danceability"],
-                "loudness_similarity": component_similarity["lowlevel.loudness_ebu128.integrated"],
-                "loudness_contribution": component_contribution["lowlevel.loudness_ebu128.integrated"],
-                "V_mean_similarity": component_similarity["V_mean"],
-                "V_mean_contribution": component_contribution["V_mean"],
-                "A_mean_similarity": component_similarity["A_mean"],
-                "A_mean_contribution": component_contribution["A_mean"],
-                "D_mean_similarity": component_similarity["D_mean"],
-                "D_mean_contribution": component_contribution["D_mean"],
-                "lead_genre_similarity": component_similarity["lead_genre"],
-                "lead_genre_contribution": component_contribution["lead_genre"],
-                "genre_overlap_similarity": component_similarity["genre_overlap"],
-                "genre_overlap_contribution": component_contribution["genre_overlap"],
-                "tag_overlap_similarity": component_similarity["tag_overlap"],
-                "tag_overlap_contribution": component_contribution["tag_overlap"],
-            }
-        )
+        row_payload: dict[str, object] = {
+            "track_id": row["track_id"],
+            "lead_genre": lead_genre,
+            "matched_genres": "|".join(matched_genres),
+            "matched_tags": "|".join(matched_tags),
+            "final_score": final_score,
+        }
+        ordered_components = list(numeric_components) + [
+            component
+            for component in ["lead_genre", "genre_overlap", "tag_overlap"]
+            if component in component_weights
+        ]
+        for component in ordered_components:
+            row_payload[f"{component}_similarity"] = component_similarity.get(component, 0.0)
+            row_payload[f"{component}_contribution"] = component_contribution.get(component, 0.0)
+        scored_rows.append(row_payload)
 
     scored_rows.sort(key=lambda item: (-float(item["final_score"]), str(item["track_id"])))
     for index, row in enumerate(scored_rows, start=1):
@@ -752,32 +852,10 @@ def execute_scoring_stage(profile_stage: dict[str, object], retrieval_stage: dic
         },
     }
 
-    scored_fields = [
-        "rank",
-        "track_id",
-        "lead_genre",
-        "matched_genres",
-        "matched_tags",
-        "final_score",
-        "bpm_similarity",
-        "bpm_contribution",
-        "danceability_similarity",
-        "danceability_contribution",
-        "loudness_similarity",
-        "loudness_contribution",
-        "V_mean_similarity",
-        "V_mean_contribution",
-        "A_mean_similarity",
-        "A_mean_contribution",
-        "D_mean_similarity",
-        "D_mean_contribution",
-        "lead_genre_similarity",
-        "lead_genre_contribution",
-        "genre_overlap_similarity",
-        "genre_overlap_contribution",
-        "tag_overlap_similarity",
-        "tag_overlap_contribution",
-    ]
+    scored_fields = list(scored_rows[0].keys())
+    if "rank" in scored_fields:
+        scored_fields.remove("rank")
+        scored_fields.insert(0, "rank")
     scored_text = csv_text(scored_fields, scored_rows)
     summary_text = json_text(summary)
 
@@ -909,8 +987,9 @@ def execute_scenario(
     candidate_rows: list[dict[str, str]],
     candidate_rows_by_id: dict[str, dict[str, str]],
     root: Path,
+    input_artifacts: dict[str, str],
 ) -> dict[str, object]:
-    profile_stage = execute_profile_stage(events, candidate_rows_by_id, scenario, root)
+    profile_stage = execute_profile_stage(events, candidate_rows_by_id, scenario, root, input_artifacts)
     retrieval_stage = execute_retrieval_stage(profile_stage, candidate_rows, scenario)
     scoring_stage = execute_scoring_stage(profile_stage, retrieval_stage, scenario)
     playlist_stage = execute_playlist_stage(scoring_stage, scenario)
@@ -1050,7 +1129,8 @@ def compare_to_baseline(baseline_result: dict[str, object], scenario_result: dic
     if scenario_id == "no_influence_tracks":
         expected_direction_met = scenario_result["stable_hashes"]["profile_semantic_hash"] != baseline_result["stable_hashes"]["profile_semantic_hash"] and observable_shift
     elif scenario_id == "valence_weight_up":
-        expected_direction_met = component_delta.get("V_mean", 0.0) > 0 and rank_shift_summary["mean_abs_rank_delta"] > 0
+        override_component = str(scenario_result["effective_config"]["scoring"].get("weight_override_component") or "")
+        expected_direction_met = component_delta.get(override_component, 0.0) > 0 and rank_shift_summary["mean_abs_rank_delta"] > 0
     elif scenario_id == "stricter_thresholds":
         expected_direction_met = scenario_metrics["candidate_pool_size"] < baseline_metrics["candidate_pool_size"]
     elif scenario_id == "looser_thresholds":
@@ -1080,27 +1160,73 @@ def main() -> None:
     root = repo_root()
     paths = build_paths(root)
     ensure_required_inputs(paths, root)
+    legacy_mode = resolve_legacy_mode(paths)
 
     output_dir = paths["output_dir"]
     output_dir.mkdir(parents=True, exist_ok=True)
     (output_dir / "scenarios").mkdir(parents=True, exist_ok=True)
 
     baseline_snapshot = load_json(paths["baseline_snapshot"])
-    events = load_jsonl(paths["events"])
-    candidate_rows = load_csv_rows(paths["candidates"])
+    if legacy_mode:
+        events = load_jsonl(paths["legacy_events"])
+        candidate_rows = [normalize_candidate_row(row) for row in load_csv_rows(paths["legacy_candidates"])]
+        input_artifacts = {
+            "aligned_events_path": relpath(paths["legacy_events"], root),
+            "candidate_stub_path": relpath(paths["legacy_candidates"], root),
+        }
+    else:
+        seed_rows = load_csv_rows(paths["active_seed_trace"])
+        events = []
+        for idx, row in enumerate(seed_rows, start=1):
+            events.append(
+                {
+                    "event_id": str(row.get("event_id") or f"seed_event_{idx:06d}"),
+                    "track_id": str(row.get("track_id", "")),
+                    "interaction_type": str(row.get("interaction_type") or "history"),
+                    "signal_source": str(row.get("signal_source") or "seed_trace"),
+                    "seed_rank": int(float(row.get("interaction_count") or idx)),
+                    "interaction_count": int(float(row.get("interaction_count") or 1)),
+                    "preference_weight": float(row.get("preference_weight") or row.get("effective_weight") or 1.0),
+                    "user_id": str(row.get("user_id") or "active_user"),
+                    "lead_genre": str(row.get("lead_genre") or ""),
+                    "top_tag": str(row.get("top_tag") or ""),
+                }
+            )
+        candidate_rows = [normalize_candidate_row(row) for row in load_csv_rows(paths["active_candidates"])]
+        input_artifacts = {
+            "aligned_events_path": relpath(paths["active_seed_trace"], root),
+            "candidate_stub_path": relpath(paths["active_candidates"], root),
+        }
+
     candidate_rows_by_id = {row["track_id"]: row for row in candidate_rows}
 
     baseline_config_hash = canonical_json_hash(baseline_snapshot)
     scenarios = build_scenarios(baseline_snapshot)
+
+    fixed_inputs = {
+        input_artifacts["aligned_events_path"]: sha256_of_file(paths["legacy_events"] if legacy_mode else paths["active_seed_trace"]),
+        input_artifacts["candidate_stub_path"]: sha256_of_file(paths["legacy_candidates"] if legacy_mode else paths["active_candidates"]),
+    }
+    optional_inputs = {
+        "legacy_manifest": paths["legacy_manifest"],
+        "legacy_coverage": paths["legacy_coverage"],
+    }
+    for key, path in optional_inputs.items():
+        if path.exists():
+            fixed_inputs[relpath(path, root)] = sha256_of_file(path)
+
     config_snapshot = {
         "task": "BL-011",
         "generated_from": relpath(paths["baseline_snapshot"], root),
         "baseline_config_hash": baseline_config_hash,
-        "fixed_inputs": {
-            relpath(paths["events"], root): sha256_of_file(paths["events"]),
-            relpath(paths["candidates"], root): sha256_of_file(paths["candidates"]),
-            relpath(paths["manifest"], root): sha256_of_file(paths["manifest"]),
-            relpath(paths["coverage"], root): sha256_of_file(paths["coverage"]),
+        "input_source": "legacy_surrogate_assets" if legacy_mode else "active_pipeline_outputs",
+        "fixed_inputs": fixed_inputs,
+        "optional_dependency_availability": {
+            key: {
+                "path": relpath(path, root),
+                "available": path.exists(),
+            }
+            for key, path in optional_inputs.items()
         },
         "scenario_count": len(scenarios),
         "scenarios": scenarios,
@@ -1113,8 +1239,8 @@ def main() -> None:
     scenario_records: list[dict[str, object]] = []
 
     for scenario in scenarios:
-        first_run = execute_scenario(scenario, events, candidate_rows, candidate_rows_by_id, root)
-        second_run = execute_scenario(scenario, events, candidate_rows, candidate_rows_by_id, root)
+        first_run = execute_scenario(scenario, events, candidate_rows, candidate_rows_by_id, root, input_artifacts)
+        second_run = execute_scenario(scenario, events, candidate_rows, candidate_rows_by_id, root, input_artifacts)
         repeat_consistent = first_run["stable_hashes"] == second_run["stable_hashes"]
         write_scenario_outputs(output_dir, first_run)
 

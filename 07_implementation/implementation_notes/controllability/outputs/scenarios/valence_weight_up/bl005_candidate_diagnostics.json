@@ -1,5 +1,5 @@
 {
-  "run_id": "BL011-VALENCE_WEIGHT_UP-BL005-20260320-235345-275383",
+  "run_id": "BL011-VALENCE_WEIGHT_UP-BL005-20260324-235145-532019",
   "task": "BL-005",
   "scenario_id": "valence_weight_up",
   "config": {
@@ -8,51 +8,47 @@
     "top_genre_limit": 8,
     "threshold_scale": 1.0,
     "numeric_thresholds": {
-      "rhythm.bpm": 20.0,
-      "rhythm.danceability": 0.4,
-      "lowlevel.loudness_ebu128.integrated": 6.0,
-      "V_mean": 0.8,
-      "A_mean": 0.9,
-      "D_mean": 0.8
+      "tempo": 20.0,
+      "key": 2.0,
+      "mode": 0.5,
+      "duration_ms": 45000.0
     },
-    "keep_rule": "keep if not seed and ((semantic_score >= 2 and numeric_pass_count >= 4) or (semantic_score == 3 and numeric_pass_count >= 3))"
+    "keep_rule": "keep if not seed and (semantic_score >= 2 or (semantic_score >= 1 and numeric_pass_count >= 1))"
   },
   "counts": {
-    "candidate_rows_total": 60,
-    "seed_tracks_excluded": 11,
-    "kept_candidates": 42,
-    "rejected_non_seed_candidates": 7
+    "candidate_rows_total": 109269,
+    "seed_tracks_excluded": 221,
+    "kept_candidates": 58823,
+    "rejected_non_seed_candidates": 50225
   },
   "rule_hits": {
     "semantic_rule_hits": {
-      "lead_genre_match": 45,
-      "genre_overlap": 55,
-      "tag_overlap": 59
+      "lead_genre_match": 22391,
+      "genre_overlap": 53692,
+      "tag_overlap": 53406
     },
     "numeric_rule_hits": {
-      "rhythm.bpm": 32,
-      "rhythm.danceability": 49,
-      "lowlevel.loudness_ebu128.integrated": 47,
-      "V_mean": 56,
-      "A_mean": 59,
-      "D_mean": 60
+      "tempo": 54751,
+      "key": 28584,
+      "mode": 68257,
+      "duration_ms": 60647
     }
   },
   "top_kept_track_ids": [
-    "axdv4kGugNPl0G69",
-    "Nyb0YqqyaSvWThIG",
-    "hn1Z3OcZ4HM3hcIi",
-    "X4fkzkyHslEut5Tc",
-    "9EERk7bPIn9HNBvE",
-    "CiLFjUJvYWGmyr2d",
-    "8keAhBJumHlc8qe9",
-    "IYI6RFvYIFFg9Mi7",
-    "jmq9rFLdkgwkaqyV",
-    "POdgTSLBnoFJaj2x",
-    "nlgMHNZ0qCS2vdmV",
-    "9CHzAeSHv9tWaIXW",
-    "APCOA8vqweV4WMee",
-    "0X9aluHlz6iKWBMR",
-    "j8qrlsfqWAPqzqD9"
+    "0009fFIM1eYThaPg",
+    "002Jyd0vN4HyCpqL",
+    "00IeldeA9ijZOL0P",
+    "00KSCJkYb8JKa4Y3",
+    "00LuPWdOccBb09bW",
+    "00P2bHdWFkghmDqz",
+    "00XWljDxNBgBKEEA",
+    "00b6fV3nx5z2b8Ls",
+    "00hFmpewuNvc4dRL",
+    "00i0OB17z3m3yamO",
+    "00mLjKFmaTv9MdaB",
+    "00uLdNEc6yXbIxyW",
+    "00wqHIO65EtRyRQM",
+    "013BFFjvohJT9dW9",
+    "013QDoTqbexEwkHr"
   ]
 }

@@ -14,12 +14,12 @@ The contribution claim is scoped to deterministic pipeline engineering under exp
 The research question asks what design considerations shape the engineering of a transparent, controllable, and observable automated playlist generation pipeline using cross-source music preference data. Based on the literature synthesis and current implementation evidence, the key design considerations are:
 
 1. Goal-aligned method selection over model-family absolutism. Method choice should be driven by target qualities (inspectability, controllability, observability, reproducibility) rather than assumed universal superiority of any single recommender family [@roy_systematic_2022; @jannach_measuring_2019].
-2. Staged cross-source preference extraction with explicit uncertainty handling. Under current API constraints, metadata normalization plus semantic enrichment (Last.fm tags) is a practical and inspectable design, but unmatched/ambiguous/no-tag cases must be surfaced as first-class outputs [@papadakis_blocking_2021; @allam_improved_2018].
+2. Staged cross-source preference extraction with explicit uncertainty handling. Under current API constraints, metadata/identifier normalization and direct DS-001 alignment are practical and inspectable design choices, but unmatched/ambiguous cases must be surfaced as first-class outputs [@papadakis_blocking_2021; @allam_improved_2018].
 3. Deterministic scoring and rule-based assembly for traceability. Explicit feature contributions and rule effects make explanation outputs and debugging behavior auditable in ways that opaque pipelines do not [@zhang_explainable_2020; @tintarev_survey_2007].
 4. Evaluation protocol discipline as part of system design. Reproducibility and interpretation quality depend on logging, configuration traceability, and clear metric-objective alignment [@beel_towards_2016; @bauer_exploring_2024; @anelli_elliot_2021].
 5. Comparator-awareness without scope drift. Hybrid and self-supervised systems are relevant context for trade-off discussion, but not required for validating this locked MVP contribution [@liu_multimodal_2025; @yu_self_supervised_2024].
 
-Current implementation evidence now includes deterministic replay checks (BL-010) and controllability sensitivity tests (BL-011) on the bootstrap pipeline, plus BL-020 real-data diagnostics that exposed a candidate-corpus mismatch and required a semantic-enrichment fallback. This supports consideration 4 directly and gives practical evidence for considerations 1 to 3 under real cross-source constraints.
+Current implementation evidence now includes deterministic replay checks (BL-010) and controllability sensitivity tests (BL-011) on the bootstrap pipeline, plus BL-020 real-data diagnostics for DS-001 alignment behavior under real cross-source constraints. This supports consideration 4 directly and gives practical evidence for considerations 1 to 3.
 
 To maintain UI-003 discipline, conclusions in this chapter are treated as evidence-tiered statements: high-confidence where claim-evidence mapping is strong, and bounded wording where support remains partial or domain-transfer based.
 
@@ -28,12 +28,12 @@ This thesis has explicit limits that bound how the results should be interpreted
 
 1. Bootstrap-data limitation: BL-011 confirmed controllability at candidate and ranking layers, but threshold variants did not change final playlist membership under the synthetic pool used for those runs.
 2. Reproducibility interpretation limitation: BL-010 showed semantic replay determinism, while some raw JSON hashes still varied because those artifacts include per-run metadata by design.
-3. Corpus-feature limitation: recommendation behavior is constrained by DS-002 candidate composition and feature availability.
+3. Corpus-feature limitation: recommendation behavior is constrained by DS-001 candidate composition and feature availability.
 4. Scope limitation: the artefact is single-user and deterministic, so findings are not generalized to collaborative or adaptive multi-user systems.
 5. Comparator limitation: no implemented deep or hybrid baseline is included in the MVP, so that comparison remains literature-grounded.
 6. External-API limitation: Spotify audio-feature endpoints are deprecated, so user-side `tempo`, `loudness`, `key`, and `mode` are not directly available from Spotify in the current implementation.
 7. External-validity limitation: evaluation remains BSc-feasible and does not include long-horizon user studies.
-8. Alignment-quality limitation: direct fuzzy alignment into DS-002 can produce false positives when user listening history has weak corpus overlap; fallback semantic enrichment is required in this regime.
+8. Alignment-quality limitation: direct metadata/identifier alignment can still produce unmatched or ambiguous records and requires explicit diagnostics and conservative handling.
 
 These limitations do not invalidate the contribution, but they bound it to design evidence for transparent deterministic recommender engineering under a constrained evaluation setting.
 

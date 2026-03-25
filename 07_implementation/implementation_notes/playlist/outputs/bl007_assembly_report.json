@@ -1,7 +1,7 @@
 {
-  "run_id": "BL007-ASSEMBLE-20260324-220929-541533",
-  "generated_at_utc": "2026-03-24T22:09:29Z",
-  "elapsed_seconds": 0.342,
+  "run_id": "BL007-ASSEMBLE-20260325-001955-362490",
+  "generated_at_utc": "2026-03-25T00:19:55Z",
+  "elapsed_seconds": 0.469,
   "config": {
     "target_size": 10,
     "min_score_threshold": 0.35,
@@ -9,13 +9,14 @@
     "max_consecutive": 2
   },
   "counts": {
-    "candidates_evaluated": 56700,
+    "candidates_evaluated": 58831,
     "tracks_included": 10,
-    "tracks_excluded": 56690
+    "tracks_excluded": 58821
   },
   "rule_hits": {
-    "R2_genre_cap": 5,
-    "R4_length_cap": 56685
+    "R3_consecutive_run": 37,
+    "R2_genre_cap": 98,
+    "R4_length_cap": 58686
   },
   "playlist_genre_mix": {
     "classic rock": 4,
@@ -23,14 +24,14 @@
     "rock": 2
   },
   "playlist_score_range": {
-    "max": 0.817654,
-    "min": 0.703525
+    "max": 0.752574,
+    "min": 0.623718
   },
   "input_artifact_hashes": {
-    "bl006_scored_candidates.csv": "189C3DCF575D69736CFD855CE5D456AB5C391AD58EA20DEA803A216D35F8CE7C"
+    "bl006_scored_candidates.csv": "7302AABC4BD50D462B016F21F9F9748BAA01C5D0DA10D00FDB55DE91C756A91B"
   },
   "output_artifact_hashes": {
-    "bl007_playlist.json": "878A26CFF3D6218918FC1ECB5ED80EC1F83812636586E43637567237E266C245",
-    "bl007_assembly_trace.csv": "692A1F4DE6BD32DE0D785A3D5952D901CDF98966C264A1C8D72FF1926B6DDB9E"
+    "bl007_playlist.json": "A59751C9C6492B011536B2835017580B9F47E96CC08CC962BA0CA6E7A7E7FE36",
+    "bl007_assembly_trace.csv": "4AAB4C9D5523C32DB1F269782BFC8DA22EE5B7C6817B3E5FBE1AA2529083A764"
   }
 }

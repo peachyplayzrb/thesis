@@ -1,0 +1,19 @@
+{
+  "run_id": "BL008-EXPLAIN-20260324-234401-971321",
+  "generated_at_utc": "2026-03-24T23:44:01Z",
+  "elapsed_seconds": 0.69,
+  "playlist_track_count": 10,
+  "top_contributor_distribution": {
+    "Tempo (BPM)": 9,
+    "Lead genre match": 1
+  },
+  "input_artifact_hashes": {
+    "bl006_scored_candidates.csv": "7302AABC4BD50D462B016F21F9F9748BAA01C5D0DA10D00FDB55DE91C756A91B",
+    "bl006_score_summary.json": "8FCFECFC7AA7B92603195FE22A52E8AEDCAB109354690A1B2971C7F8B538E8BA",
+    "bl007_playlist.json": "C0410E6FEA1B55DA9B5B7A0FB9B532A8091F75BA3047A02BC8BEAC859CA8956D",
+    "bl007_assembly_trace.csv": "4AAB4C9D5523C32DB1F269782BFC8DA22EE5B7C6817B3E5FBE1AA2529083A764"
+  },
+  "output_artifact_hashes": {
+    "bl008_explanation_payloads.json": "7E0EBB6E42D9138030D3002478ADC33A60183417020E5966BB92AC8F24498B9C"
+  }
+}

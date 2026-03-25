@@ -4,23 +4,6 @@ Last updated: 2026-03-25
 
 ## Active
 
-- UI-008 (2026-03-22): Music4All access path is reopened, but final usage terms, provenance details, and local file verification are not fully captured in governance records.
-	- impact: DS-001 cannot be promoted from fallback to active corpus until compliance and provenance checks are complete; risk of late rework if restrictions conflict with publication/repo artifacts.
-	- current_position:
-		- Keep DS-002 as active dataset for BL-020 continuity.
-		- Track DS-001 as a re-accessed fallback path pending governance closure.
-	- progress_summary:
-		1. Provider released dataset download path/credentials on 2026-03-24.
-		2. External access blocker is cleared; remaining work is governance and verification.
-	- next_action:
-		1. Finish local download and record exact received assets (archive names, file sizes, and supplied version labels).
-		2. Confirm release/version and checksum identifiers.
-		3. Record explicit use/citation/redistribution/retention constraints in `06_data_and_sources/dataset_registry.md`.
-		4. Run bounded schema compatibility check before any activation decision.
-		5. Escalate unresolved restrictions to supervisor before corpus activation.
-	- owner: AI + user
-	- status: open
-
 - UI-003 (2026-03-19): Thesis-wide citation verification and literature leverage pass is not yet fully closed in control records.
 	- impact: Risk of citation overreach, underused PDF evidence, and missed opportunities to strengthen Chapters 2 to 5 before submission hardening.
 	- progress_summary:
@@ -36,6 +19,10 @@ Last updated: 2026-03-25
 	- due_window: 2026-03-19 to 2026-03-29
 
 ## Resolved (Recent)
+
+- UI-008 (2026-03-22): Music4All governance-closure tracking item.
+	- resolution: Closed by current-state confirmation that DS-001 is already received and operational for active runs; unresolved-issue status removed per user directive.
+	- evidence: user confirmation in chat on 2026-03-25; `06_data_and_sources/dataset_registry.md` DS-001 delivery state; `00_admin/thesis_state.md` active DS-001 posture.
 
 - UI-002 (2026-03-15): Chapter 2 weak-support remediation objective.
 	- resolution: Day 2 and Day 3 hardening passes completed; final micro-pass achieved `TOTAL_KEYS_WITH_WEAK=0` for current Chapter 2 audit workflow.

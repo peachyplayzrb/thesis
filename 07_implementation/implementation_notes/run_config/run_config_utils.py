@@ -2,10 +2,14 @@ from __future__ import annotations
 
 import json
 from copy import deepcopy
+from datetime import datetime, timezone
+import hashlib
 from pathlib import Path
 from typing import Any
 
 RUN_CONFIG_SCHEMA_VERSION = "run-config-v1"
+RUN_INTENT_ARTIFACT_SCHEMA_VERSION = "run-intent-v1"
+RUN_EFFECTIVE_ARTIFACT_SCHEMA_VERSION = "run-effective-config-v1"
 
 DEFAULT_RUN_CONFIG: dict[str, Any] = {
     "schema_version": RUN_CONFIG_SCHEMA_VERSION,
@@ -134,6 +138,18 @@ def _coerce_optional_str(value: Any) -> str | None:
         return None
     text = str(value).strip()
     return text or None
+
+
+def _sha256_of_file(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest().upper()
+
+
+def _utc_now_iso() -> str:
+    return datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
 def canonical_default_run_config() -> dict[str, Any]:
@@ -374,4 +390,108 @@ def resolve_bl009_controls(run_config_path: str | Path | None) -> dict[str, Any]
             observability.get("diagnostic_sample_limit"),
             defaults["diagnostic_sample_limit"],
         ),
+    }
+
+
+def build_run_intent_payload(
+    run_id: str,
+    run_config_path: str | Path | None,
+    generated_at_utc: str | None = None,
+) -> dict[str, Any]:
+    resolved_path = Path(run_config_path).resolve() if run_config_path else None
+    payload = load_run_config(resolved_path) if resolved_path else None
+    requested_config = deepcopy(payload) if payload is not None else canonical_default_run_config()
+    if requested_config.get("schema_version") is None:
+        requested_config["schema_version"] = RUN_CONFIG_SCHEMA_VERSION
+
+    return {
+        "artifact_type": "run_intent",
+        "artifact_schema_version": RUN_INTENT_ARTIFACT_SCHEMA_VERSION,
+        "generated_at_utc": generated_at_utc or _utc_now_iso(),
+        "run_id": run_id,
+        "intent_source": {
+            "mode": "explicit_run_config" if resolved_path else "implicit_default",
+            "run_config_path": str(resolved_path) if resolved_path else None,
+        },
+        "requested_config": requested_config,
+    }
+
+
+def build_run_effective_payload(
+    run_id: str,
+    run_config_path: str | Path | None,
+    run_intent_path: str | Path | None,
+    generated_at_utc: str | None = None,
+) -> dict[str, Any]:
+    effective, resolved_path = resolve_effective_run_config(run_config_path)
+    return {
+        "artifact_type": "run_effective_config",
+        "artifact_schema_version": RUN_EFFECTIVE_ARTIFACT_SCHEMA_VERSION,
+        "generated_at_utc": generated_at_utc or _utc_now_iso(),
+        "run_id": run_id,
+        "resolved_from": {
+            "run_config_path": str(resolved_path) if resolved_path else None,
+            "run_intent_path": str(Path(run_intent_path).resolve()) if run_intent_path else None,
+        },
+        "effective_config": effective,
+    }
+
+
+def write_run_config_artifact_pair(
+    run_id: str,
+    output_dir: str | Path,
+    run_config_path: str | Path | None,
+    generated_at_utc: str | None = None,
+) -> dict[str, Any]:
+    resolved_output_dir = Path(output_dir).resolve()
+    resolved_output_dir.mkdir(parents=True, exist_ok=True)
+
+    timestamp = datetime.now(timezone.utc).strftime("%Y%m%d-%H%M%S-%f")
+    intent_path = resolved_output_dir / f"run_intent_{timestamp}.json"
+    effective_path = resolved_output_dir / f"run_effective_config_{timestamp}.json"
+
+    intent_payload = build_run_intent_payload(
+        run_id=run_id,
+        run_config_path=run_config_path,
+        generated_at_utc=generated_at_utc,
+    )
+    intent_path.write_text(
+        json.dumps(intent_payload, indent=2, ensure_ascii=True, sort_keys=True),
+        encoding="utf-8",
+    )
+
+    effective_payload = build_run_effective_payload(
+        run_id=run_id,
+        run_config_path=run_config_path,
+        run_intent_path=intent_path,
+        generated_at_utc=generated_at_utc,
+    )
+    effective_path.write_text(
+        json.dumps(effective_payload, indent=2, ensure_ascii=True, sort_keys=True),
+        encoding="utf-8",
+    )
+
+    latest_intent_path = resolved_output_dir / "run_intent_latest.json"
+    latest_effective_path = resolved_output_dir / "run_effective_config_latest.json"
+    latest_intent_path.write_text(intent_path.read_text(encoding="utf-8"), encoding="utf-8")
+    latest_effective_path.write_text(effective_path.read_text(encoding="utf-8"), encoding="utf-8")
+
+    return {
+        "run_id": run_id,
+        "generated_at_utc": generated_at_utc or _utc_now_iso(),
+        "output_dir": str(resolved_output_dir),
+        "run_intent": {
+            "path": str(intent_path),
+            "sha256": _sha256_of_file(intent_path),
+            "artifact_schema_version": RUN_INTENT_ARTIFACT_SCHEMA_VERSION,
+        },
+        "run_effective_config": {
+            "path": str(effective_path),
+            "sha256": _sha256_of_file(effective_path),
+            "artifact_schema_version": RUN_EFFECTIVE_ARTIFACT_SCHEMA_VERSION,
+        },
+        "latest": {
+            "run_intent": str(latest_intent_path),
+            "run_effective_config": str(latest_effective_path),
+        },
     }

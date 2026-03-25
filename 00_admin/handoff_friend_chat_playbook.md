@@ -41,10 +41,9 @@ Use one of these patterns for every task:
 5. End every session with a "log everything" pass.
 
 ## Current Priority Queue (At Handoff)
-1. Resolve UI-008: close DS-001 governance/provenance/terms verification after access reopening.
-2. Resolve UI-003: finish thesis-wide citation verification package and synthesis closeout.
-3. Execute Days 4 to 7 of `00_admin/mentor_draft_7day_sprint_2026-03-23.md`.
-4. Continue `WP-WEBINT-001` freeze-and-integrate website package with bounded hardening only.
+1. Resolve UI-003: finish thesis-wide citation verification package and synthesis closeout.
+2. Execute Days 4 to 7 of `00_admin/mentor_draft_7day_sprint_2026-03-23.md`.
+3. Continue `WP-WEBINT-001` freeze-and-integrate website package with bounded hardening only.
 
 Current sprint state note: Day 4 is active as of 2026-03-25.
 

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+import importlib.util
 import json
 import os
 import subprocess
@@ -83,6 +84,14 @@ def parse_args() -> argparse.Namespace:
             "Useful when run-config input_scope changes."
         ),
     )
+    parser.add_argument(
+        "--run-config-artifact-dir",
+        default="07_implementation/implementation_notes/run_config/outputs",
+        help=(
+            "Directory where canonical run_intent/run_effective_config artifacts "
+            "are emitted for this BL-013 run."
+        ),
+    )
     return parser.parse_args()
 
 
@@ -119,17 +128,55 @@ def compute_stable_artifact_hashes(root: Path) -> tuple[dict[str, str], list[str
     return hashes, missing
 
 
+def load_run_config_utils_module(root: Path):
+    module_path = (
+        root
+        / "07_implementation"
+        / "implementation_notes"
+        / "run_config"
+        / "run_config_utils.py"
+    )
+    spec = importlib.util.spec_from_file_location("run_config_utils", module_path)
+    if spec is None or spec.loader is None:
+        raise RuntimeError(f"Unable to load run-config utilities from {module_path}")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+def emit_run_config_artifact_pair(
+    root: Path,
+    run_id: str,
+    run_config_path: Path | None,
+    artifact_dir: Path,
+    generated_at_utc: str,
+) -> dict[str, object]:
+    run_config_utils = load_run_config_utils_module(root)
+    return run_config_utils.write_run_config_artifact_pair(
+        run_id=run_id,
+        output_dir=artifact_dir,
+        run_config_path=run_config_path,
+        generated_at_utc=generated_at_utc,
+    )
+
+
 def run_stage(
     python_executable: str,
     stage_id: str,
     script_path: Path,
     root: Path,
     run_config_path: Path | None,
+    run_intent_path: Path | None,
+    run_effective_config_path: Path | None,
 ) -> dict[str, object]:
     command = [python_executable, str(script_path)]
     stage_env = os.environ.copy()
     if run_config_path is not None:
         stage_env["BL_RUN_CONFIG_PATH"] = str(run_config_path)
+    if run_intent_path is not None:
+        stage_env["BL_RUN_INTENT_PATH"] = str(run_intent_path)
+    if run_effective_config_path is not None:
+        stage_env["BL_RUN_EFFECTIVE_CONFIG_PATH"] = str(run_effective_config_path)
     started = time.time()
     process = subprocess.run(
         command,
@@ -146,6 +193,8 @@ def run_stage(
         "script_path": script_path.relative_to(root).as_posix(),
         "command": command,
         "run_config_path": str(run_config_path) if run_config_path else None,
+        "run_intent_path": str(run_intent_path) if run_intent_path else None,
+        "run_effective_config_path": str(run_effective_config_path) if run_effective_config_path else None,
         "return_code": process.returncode,
         "status": "pass" if process.returncode == 0 else "fail",
         "elapsed_seconds": elapsed,
@@ -158,6 +207,8 @@ def run_bl003_seed_refresh(
     python_executable: str,
     root: Path,
     run_config_path: Path | None,
+    run_intent_path: Path | None,
+    run_effective_config_path: Path | None,
 ) -> dict[str, object]:
     script_path = root / BL003_SCRIPT
     if not script_path.exists():
@@ -166,6 +217,8 @@ def run_bl003_seed_refresh(
             "script_path": BL003_SCRIPT,
             "command": [python_executable, BL003_SCRIPT],
             "run_config_path": str(run_config_path) if run_config_path else None,
+            "run_intent_path": str(run_intent_path) if run_intent_path else None,
+            "run_effective_config_path": str(run_effective_config_path) if run_effective_config_path else None,
             "return_code": 127,
             "status": "fail",
             "elapsed_seconds": 0.0,
@@ -179,6 +232,8 @@ def run_bl003_seed_refresh(
         script_path=script_path,
         root=root,
         run_config_path=run_config_path,
+        run_intent_path=run_intent_path,
+        run_effective_config_path=run_effective_config_path,
     )
 
 
@@ -195,12 +250,28 @@ def main() -> None:
 
     run_id = f"BL013-ENTRYPOINT-{datetime.now(timezone.utc).strftime('%Y%m%d-%H%M%S-%f')}"
     generated_at_utc = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    run_config_artifact_dir = (root / args.run_config_artifact_dir).resolve()
+    run_config_artifacts = emit_run_config_artifact_pair(
+        root=root,
+        run_id=run_id,
+        run_config_path=run_config_path,
+        artifact_dir=run_config_artifact_dir,
+        generated_at_utc=generated_at_utc,
+    )
+    run_intent_path = Path(run_config_artifacts["run_intent"]["path"])
+    run_effective_config_path = Path(run_config_artifacts["run_effective_config"]["path"])
 
     stage_results: list[dict[str, object]] = []
     pipeline_started = time.time()
 
     if args.refresh_seed:
-        seed_result = run_bl003_seed_refresh(args.python, root, run_config_path)
+        seed_result = run_bl003_seed_refresh(
+            args.python,
+            root,
+            run_config_path,
+            run_intent_path,
+            run_effective_config_path,
+        )
         stage_results.append(seed_result)
         if seed_result["status"] == "fail" and not args.continue_on_error:
             elapsed_pipeline = round(time.time() - pipeline_started, 3)
@@ -213,6 +284,7 @@ def main() -> None:
                 "continue_on_error": bool(args.continue_on_error),
                 "python_executable": args.python,
                 "run_config_path": str(run_config_path) if run_config_path else None,
+                "canonical_run_config_artifacts": run_config_artifacts,
                 "refresh_seed": bool(args.refresh_seed),
                 "requested_stage_order": stage_order,
                 "executed_stage_count": len(stage_results),
@@ -257,7 +329,15 @@ def main() -> None:
                 break
             continue
 
-        result = run_stage(args.python, stage_id, script_path, root, run_config_path)
+        result = run_stage(
+            args.python,
+            stage_id,
+            script_path,
+            root,
+            run_config_path,
+            run_intent_path,
+            run_effective_config_path,
+        )
         stage_results.append(result)
 
         if result["status"] == "fail" and not args.continue_on_error:
@@ -278,6 +358,7 @@ def main() -> None:
         "continue_on_error": bool(args.continue_on_error),
         "python_executable": args.python,
         "run_config_path": str(run_config_path) if run_config_path else None,
+        "canonical_run_config_artifacts": run_config_artifacts,
         "refresh_seed": bool(args.refresh_seed),
         "requested_stage_order": stage_order,
         "executed_stage_count": len(stage_results),

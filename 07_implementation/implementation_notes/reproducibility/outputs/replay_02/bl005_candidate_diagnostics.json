@@ -1,0 +1,102 @@
+{
+  "run_id": "BL005-FILTER-20260324-234339-214777",
+  "task": "BL-005",
+  "generated_at_utc": "2026-03-24T23:43:42Z",
+  "input_artifacts": {
+    "profile_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\profile\\outputs\\bl004_preference_profile.json",
+    "profile_sha256": "f687b187c31a90251a2e2cf6e691725f2b9b7aa8f793a6e2159cff5e8b7bd56a",
+    "seed_trace_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\profile\\outputs\\bl004_seed_trace.csv",
+    "seed_trace_sha256": "2cfcbece4c0009a514c90dcfcc8c8c4a003fb68491c6b735d2d4a54d7c1c4793",
+    "candidate_stub_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\data_layer\\outputs\\ds001_working_candidate_dataset.csv",
+    "candidate_stub_sha256": "296331ca6390d2c111aa336c7eb154b69ec7060604312ac8a274f545b68a04ef"
+  },
+  "config": {
+    "top_lead_genre_limit": 6,
+    "top_tag_limit": 10,
+    "top_genre_limit": 8,
+    "numeric_thresholds": {
+      "tempo": 20.0,
+      "key": 2.0,
+      "mode": 0.5,
+      "duration_ms": 45000.0
+    },
+    "numeric_feature_mapping": {
+      "tempo": "tempo",
+      "key": "key",
+      "mode": "mode",
+      "duration_ms": "duration_ms"
+    },
+    "numeric_features_enabled": true,
+    "keep_rule": "keep if not seed and (semantic_score >= 2 or (semantic_score >= 1 and numeric_pass_count >= 1))",
+    "semantic_source": "ds001_tags_and_genres_columns"
+  },
+  "counts": {
+    "candidate_rows_total": 109269,
+    "seed_tracks_excluded": 221,
+    "kept_candidates": 58831,
+    "rejected_non_seed_candidates": 50217
+  },
+  "rule_hits": {
+    "semantic_rule_hits": {
+      "lead_genre_match": 22391,
+      "genre_overlap": 53692,
+      "tag_overlap": 53406
+    },
+    "numeric_rule_hits": {
+      "tempo": 54751,
+      "key": 43325,
+      "mode": 68257,
+      "duration_ms": 60647
+    }
+  },
+  "decision_path_counts": {
+    "keep_strong_semantic": 49670,
+    "reject_no_signal": 3398,
+    "reject_numeric_without_semantic_support": 46232,
+    "keep_semantic_numeric_supported": 9161,
+    "reject_semantic_without_numeric_support": 587,
+    "reject_seed_track": 221
+  },
+  "score_distributions": {
+    "semantic_score": {
+      "0": 49660,
+      "1": 9755,
+      "2": 29828,
+      "3": 20026
+    },
+    "numeric_pass_count": {
+      "0": 5986,
+      "1": 25207,
+      "2": 40637,
+      "3": 29257,
+      "4": 8182
+    }
+  },
+  "top_kept_track_ids": [
+    "0009fFIM1eYThaPg",
+    "002Jyd0vN4HyCpqL",
+    "00IeldeA9ijZOL0P",
+    "00KSCJkYb8JKa4Y3",
+    "00LuPWdOccBb09bW",
+    "00P2bHdWFkghmDqz",
+    "00XWljDxNBgBKEEA",
+    "00b6fV3nx5z2b8Ls",
+    "00hFmpewuNvc4dRL",
+    "00i0OB17z3m3yamO",
+    "00mLjKFmaTv9MdaB",
+    "00uLdNEc6yXbIxyW",
+    "00wqHIO65EtRyRQM",
+    "013BFFjvohJT9dW9",
+    "013QDoTqbexEwkHr"
+  ],
+  "elapsed_seconds": 3.72,
+  "output_files": {
+    "filtered_candidates_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\retrieval\\outputs\\bl005_filtered_candidates.csv",
+    "candidate_decisions_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\retrieval\\outputs\\bl005_candidate_decisions.csv"
+  },
+  "output_hashes_sha256": {
+    "bl005_filtered_candidates.csv": "679f4cd6821c4eeb23555e59dd4b4cb045558ad2c23830e525ccf65d3bb5c96e",
+    "bl005_candidate_decisions.csv": "48ff9a54bd374a2c675fb499ae8f417009c622babf77b840cdfbcf8c576c1428"
+  },
+  "diagnostics_hash_note": "diagnostics file does not store its own hash to avoid recursive self-reference"
+}

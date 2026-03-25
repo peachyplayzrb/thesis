@@ -3897,3 +3897,72 @@ Do NOT download: audio files (.mp3), id_incp/id_resnet/id_vgg19 (video features)
 - backlog_status_recommendation: BL-021 can move to pass-ready for the actuation + evidence slice.
 
 
+## EXP-043
+- date: 2026-03-24
+- backlog_link: `BL-011`, `BL-013`
+- owner: Timothy + AI
+- status: pass
+- related_test_id: `EP-CTRL-001`, `EP-CTRL-002`, `EP-CTRL-003`
+
+### Objective
+- Align BL-011 controllability with the active BL-004..BL-009 implementation path and re-validate controllability scenarios end-to-end.
+
+### Scope Check
+- In-scope confirmation: BL-011 execution-path alignment and baseline verification.
+- Protected items affected? no
+
+### Inputs
+- source_data:
+  - `07_implementation/implementation_notes/reproducibility/outputs/bl010_reproducibility_config_snapshot.json`
+  - `07_implementation/implementation_notes/profile/outputs/bl004_seed_trace.csv`
+  - `07_implementation/implementation_notes/data_layer/outputs/ds001_working_candidate_dataset.csv`
+- config_or_parameters: 5-scenario controllability matrix (baseline + 4 variants)
+- code_or_script_path:
+  - `07_implementation/implementation_notes/controllability/run_bl011_controllability_check.py`
+  - `07_implementation/implementation_notes/entrypoint/run_bl013_pipeline_entrypoint.py`
+- dependency assumptions: BL-010 aligned baseline and BL-013 passing chain available.
+
+### Expected Evidence
+- primary_output_artifact:
+  - `07_implementation/implementation_notes/controllability/outputs/bl011_controllability_report.json`
+- secondary_output_artifacts:
+  - `07_implementation/implementation_notes/controllability/outputs/bl011_controllability_run_matrix.csv`
+  - `07_implementation/implementation_notes/controllability/outputs/bl011_controllability_config_snapshot.json`
+  - `07_implementation/implementation_notes/entrypoint/outputs/bl013_orchestration_run_latest.json`
+- success_condition: BL-011 status pass with all scenario checks true, followed by BL-013 pass.
+
+### Run Record
+- command_or_execution_method: direct CLI execution in project venv for BL-011, then BL-013 orchestration run.
+- run_id: `BL011-CTRL-20260324-235114` (BL-011), `BL013-ENTRYPOINT-20260324-235248-642823` (BL-013)
+- start_state_summary: BL-011 initially failed due to legacy BL-016/BL-017 hard dependencies and schema/path mismatches.
+- end_state_summary: BL-011 aligned and passing; BL-013 revalidated pass.
+
+### Results
+- outcome_summary: pass - BL-011 controllability fully operational on active pipeline; BL-013 remains green after integration changes.
+- key_metrics:
+  - `scenario_count=5`
+  - `all_scenarios_repeat_consistent=true`
+  - `all_variant_shifts_observable=true`
+  - `all_variant_directions_met=true`
+  - `bl013.overall_status=pass`
+- deterministic_repeat_checked: yes (scenario repeat consistency checks in BL-011)
+- output_paths:
+  - `07_implementation/implementation_notes/controllability/outputs/bl011_controllability_report.json`
+  - `07_implementation/implementation_notes/controllability/outputs/bl011_controllability_run_matrix.csv`
+  - `07_implementation/implementation_notes/entrypoint/outputs/bl013_orchestration_run_latest.json`
+
+### Issues And Limits
+- failures_or_anomalies: resolved runtime blockers during alignment (`track_id` normalization, scoring-weight schema key variance, strict float-sum check).
+- likely_cause: BL-011 retained assumptions from older bootstrap schema/contracts.
+- bounded_mvp_limitation_or_bug: controllability remains bounded to defined scenario set; not an exhaustive parameter-space sensitivity audit.
+
+### Thesis Traceability
+- chapter4_relevance: controlled scenario evidence for controllability claims under active implementation path.
+- chapter5_relevance: documents resolved integration risk from legacy dependency assumptions and remaining bounded evaluation limits.
+- quality_control_files_to_update: `07_implementation/IMPLEMENTATION_STATE_2026-03-24.md`, `07_implementation/implementation_notes/controllability/bl011_state_log_2026-03-24.md`.
+
+### Next Action
+- immediate_follow_up: keep this as current baseline and proceed to any remaining quality/report packaging tasks.
+- backlog_status_recommendation: BL-011 remains done; BL-013 remains done.
+
+

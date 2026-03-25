@@ -1,45 +1,32 @@
 {
-  "run_id": "BL011-LOOSER_THRESHOLDS-BL004-20260320-235345-308380",
+  "run_id": "BL011-LOOSER_THRESHOLDS-BL004-20260324-235211-063493",
   "task": "BL-004",
-  "generated_at_utc": "2026-03-20T23:53:45Z",
-  "user_id": "synthetic_user_001",
+  "generated_at_utc": "2026-03-24T23:52:11Z",
+  "user_id": "active_user",
   "scenario_id": "looser_thresholds",
   "input_artifacts": {
-    "aligned_events_path": "07_implementation/implementation_notes/test_assets/bl016_synthetic_aligned_events.jsonl",
-    "candidate_stub_path": "07_implementation/implementation_notes/test_assets/bl016_candidate_stub.csv"
+    "aligned_events_path": "07_implementation/implementation_notes/profile/outputs/bl004_seed_trace.csv",
+    "candidate_stub_path": "07_implementation/implementation_notes/data_layer/outputs/ds001_working_candidate_dataset.csv"
   },
   "config": {
     "effective_weight_rule": "effective_weight = preference_weight",
     "numeric_feature_columns": [
-      "lowlevel.average_loudness",
-      "lowlevel.loudness_ebu128.integrated",
-      "rhythm.danceability",
-      "rhythm.bpm",
-      "rhythm.onset_rate",
-      "rhythm.beats_count",
-      "rhythm.beats_loudness.mean",
-      "lowlevel.spectral_energy.mean",
-      "lowlevel.spectral_centroid.mean",
-      "lowlevel.spectral_complexity.mean",
-      "tonal.chords_changes_rate",
-      "tonal.key_edma.strength",
-      "tonal.key_krumhansl.strength",
-      "tonal.key_temperley.strength",
-      "V_mean",
-      "A_mean",
-      "D_mean",
-      "P_mean",
-      "V_std",
-      "A_std",
-      "D_std"
+      "danceability",
+      "energy",
+      "valence",
+      "tempo",
+      "key",
+      "mode",
+      "popularity",
+      "duration_ms"
     ],
     "top_tag_limit": 10,
     "top_genre_limit": 10,
     "top_lead_genre_limit": 10,
     "aggregation_rules": {
-      "numeric": "weighted mean over matched seeds",
-      "tags": "sum(preference_weight * tag_weight)",
-      "genres": "sum(preference_weight * genre_score)",
+      "numeric": "weighted mean over numeric columns embedded in the BL-003 enriched seed table; key uses weighted circular mean on the 12-semitone wheel",
+      "tags": "sum(preference_weight) over DS-001 tag labels",
+      "genres": "sum(preference_weight) over DS-001 genre labels",
       "lead_genres": "sum(preference_weight)"
     },
     "include_interaction_types": [
@@ -48,160 +35,379 @@
     ]
   },
   "diagnostics": {
-    "events_total": 11,
-    "matched_seed_count": 11,
+    "events_total": 221,
+    "matched_seed_count": 221,
     "missing_seed_count": 0,
     "missing_track_ids": [],
-    "candidate_rows_total": 60,
-    "total_effective_weight": 16.0276,
+    "candidate_rows_total": 109269,
+    "total_effective_weight": 594.516574,
     "weight_by_interaction_type": {
-      "history": 11.9776,
-      "influence": 4.05
+      "history": 594.516574
     }
   },
   "seed_summary": {
     "counts_by_interaction_type": {
-      "history": 8,
-      "influence": 3
+      "history": 221
     },
     "matched_track_ids": [
-      "0ng9VQtWuSjd0arq",
-      "lJKIbZNzpS6IsNgh",
-      "yfm7RER1PWTqgjIp",
-      "io7RYSOjKB4YpBKy",
-      "L4lGOjfg9lTLXh3U",
-      "zp4zYVjiH2Tm3gTM",
-      "lZDk11KaRskQqhWf",
-      "wQ4RdMXUKj1ry4p6",
-      "cDf6FcmbzmqAMZXB",
-      "KxryDZFfi0mkMMiM",
-      "o2LcK38b4mFLa55g"
+      "22YI5YceDuG0QoOj",
+      "JHJusOYsaL3zLGtA",
+      "bbRubPkT5bxwLQpH",
+      "l05MaeKgw6wjJxLs",
+      "rI5G12llOXXzgocS",
+      "wYoJBT9Lg1bBf8Nd",
+      "xsAC7LEsEv3vlz4p",
+      "0SZzDlqkVto82lT8",
+      "0qV2T61m2AvCSw88",
+      "12jXnbQrbvSWYgp7",
+      "15CxeKsD9DvqCVhY",
+      "166TJqR8YtaoibkS",
+      "1EhoPstBUguE4Btf",
+      "1GngSVshm9HPaMVa",
+      "2PflxozrqQJVQchQ",
+      "2UbyfJ2ads4YvskN",
+      "2eQ2zwD8LOR5Oj9m",
+      "3UfIu7IgRBza12y2",
+      "4xYdj1WQYnfLCl11",
+      "4yJQAF5ZuAuzs24P",
+      "5G6OktV6MQZjl2LQ",
+      "5YjeA9RnddUgDFjI",
+      "6M4XbtDIOtPeDA06",
+      "6MJkge2anZHEYvjl",
+      "6Op0YXj5bEEcScnz",
+      "6qNbHN2lGfuVydmr",
+      "79gGvHv2KqAvswk8",
+      "7LfUFSaaFyxcITaK",
+      "8TauRq2Dzjuqlen8",
+      "8amnHzBUPrdIQp6A",
+      "8e1XAO305okHTnbt",
+      "8xE82ySWCYSxN8TD",
+      "9CLTmq6Ps7WVseF2",
+      "9PUnKxg2n1co5JI1",
+      "9S6X7coXdb927q9L",
+      "9emO9FRFYFQesS1g",
+      "AeEKbcGeUG3kIp41",
+      "BoDfJUleKTckWpiW",
+      "BurkN8hwXKYLo8xS",
+      "CV1cYS3ulclC2pwO",
+      "D6fkJpDr6KTNzDpL",
+      "EP4cXLGgw90hzP3O",
+      "EluJPZ1gvKeMbf3X",
+      "EoM9b6SAT1D9Ytq1",
+      "F8vAvaC1LW5E8DOU",
+      "FKCVBKj4lauIUFna",
+      "FeRInaEhXdfN0VZv",
+      "FrjEAGwfV6qohKmJ",
+      "FvmUxqDYcskY1E1q",
+      "GGVEhXe864IozrMK",
+      "GbbYeHso7KMaXXZk",
+      "HNN3N9MY2Okf4kfQ",
+      "HhnTUIZ040LnpSZm",
+      "IAzZGYyHfsmexzGi",
+      "IQHIVdQXeQ7dk3So",
+      "JTbvJI8lNUTib1O5",
+      "JZrvucFQ56izpI9f",
+      "K01Mxf5XW4k9jAIt",
+      "K2InLHoJqZgf5Opi",
+      "LP8SxUB1bOG1Ra3P",
+      "MDKgaD6aiKpqk7cz",
+      "ME9AVNcYwpF1WPYG",
+      "MkVbtlOpm2Q2D41x",
+      "N4dWQMEKRaUONlaP",
+      "N9SjyAdz5ogvctSR",
+      "NPOsbL3fobizZyEs",
+      "NQbNKyYkv5MxNeQy",
+      "NfSfEoxJmTd2T2Aj",
+      "NnPChlLXcE8YETJS",
+      "OK8VmZrhLaWmW2R7",
+      "OUkZI66QebyJvgIS",
+      "OxCTebk8s4Ex3yBg",
+      "P2S6M5e4PN1JubTp",
+      "PibkyDY19wIzhvpc",
+      "QXkYgalw42rz4k5X",
+      "QjxUmiXnnXxYDt72",
+      "QolCFgn0lRVqdc9N",
+      "QrsNJaTFIN7k6GvQ",
+      "QvYpogJ5qMDGPvsw",
+      "R3ZB7V3mgBeG2SSh",
+      "ROm2Vv0rig9S5d6E",
+      "RRH8Atb65rb6xiy6",
+      "RdFRnRnYEQazgtcd",
+      "RfyZW9445WyeHPgN",
+      "RmMSHhTryKoZYEjZ",
+      "RudvUvHOOal4SOD7",
+      "SAA2SBcmpbhFsB8Y",
+      "SS0WjBrVPOgSw8HC",
+      "StuJducbhXoaFIYJ",
+      "Sui4UkxqCn3z4n2Q",
+      "TKCScJ2KJ78HCRcB",
+      "TwVNNHVqSPdJFaqz",
+      "Usy1B96bUQGLjrjx",
+      "UxnfrRn4Sonejy8X",
+      "VDhvqsjG56T7t8jr",
+      "VOqPgoGT5vVkLa3n",
+      "Ve257XDVBwPNUg7K",
+      "WOWxCR8vLzQt33x5",
+      "XPhsdXhKGswGFS85",
+      "XQrflLn70qYnXiw1",
+      "XkxP8SKGduJBalHe",
+      "Ydh9qUkrroIymncM",
+      "Yh6WQXVEjRQbrnFB",
+      "YpFT73HDtV6wY1Zs",
+      "ZVqMzQ2HXZQ0czai",
+      "ZayNF6UdzLYKhbpE",
+      "ZdJ9xQO7UXEtKKOG",
+      "ZhIEXl61ad4ZIeHw",
+      "a2jdDPn2s274JB4E",
+      "a9BhHylJgyqIxBWe",
+      "aETTFyZbufNqw9Pu",
+      "adG7LBliQbcLS3eM",
+      "bXUtXEansZmn31Bl",
+      "c0VlO6Z7FmfIJLVV",
+      "cEHfOhOsSTSVgSpF",
+      "cZXcA0XJNGeXkzgu",
+      "czL4cbRM6xXV2itL",
+      "d1bPxFltzwLJuBYc",
+      "dgrUz3f0xTL2gCGE",
+      "dt2rHqDjy0925YZa",
+      "eJQFqTOFGOIqtbql",
+      "eZ8zvGe1lJxaAiM5",
+      "f0HiP8dEZqJXmcnW",
+      "f9mg0ghupKNjfeLG",
+      "fJJCD6DJfQyDgjyh",
+      "fhNjQgeL91zroEEG",
+      "gKnKZ0Ax7LFtdo0D",
+      "gQbivAeNzh1daC1x",
+      "h6ZdpBDUURD99Ofa",
+      "hSeeghyPuOovg4ED",
+      "i82ar0zt90BSEhdS",
+      "idAM9CbU70mtINrG",
+      "ihJzcgC098p5jeUR",
+      "jINYnPgqIQJ6mmMl",
+      "jSx0se2IcyE1i8by",
+      "jnW0htumn57RO9M1",
+      "jwsubef8YSRz8SAo",
+      "jxaHjCUQsD444nrk",
+      "kISjOqvgqlS11n7f",
+      "kIUFIR4QDKMTWyY3",
+      "kOIoaM8eyUi56jtt",
+      "kRaJL2dcpl3iRVtQ",
+      "kWs0fdHRRBQrla8u",
+      "kb7H6FbRLXnCra6z",
+      "kiTxoyOhsiHSvrUJ",
+      "kpgL9YkG2TykW9gd",
+      "lw4m9PxzySLxDSl2",
+      "meMTxddMEzfnTqD7",
+      "mhen6zCPqULPXTed",
+      "mi8js8zk212SNqLa",
+      "nJamJt72j4tlle1g",
+      "nM7CF8cIbWP2xY67",
+      "nhe8AL94tqlw7X7b",
+      "nrJdjUOX50wfkdDX",
+      "nwFf2NmOZwlcjrfr",
+      "ny24slisveRoUbHG",
+      "oDaxi00bIoYlesLx",
+      "oFJO85A0ZhnelznP",
+      "ovL1QVHmIMQnjULe",
+      "ovqSpdUbgFRRGdyi",
+      "p7A20RSXaA6h4DNY",
+      "p9Tw7i7fN4LeGSBR",
+      "pKa8r2L0a8LJ1I2K",
+      "q1pYqQ7pabjiPLiK",
+      "q6eGnEvANi2I0NEp",
+      "qAKGvFq9liu9CBNq",
+      "qhZKUL9jq5qIYlE2",
+      "qiptUsLxxafOMF2P",
+      "ql0ehFkXrSeNq2gU",
+      "rKhKGhLTw5HRbpZ7",
+      "rSZ71tsqQD5GsgSN",
+      "rcOwnwKuHxrByrNx",
+      "sHQ4NOxkSvefPKL8",
+      "sW2G2sUK5IhR6srj",
+      "t79ZBHGAN1A2NbOg",
+      "tSBoahjUECeByewg",
+      "tXrpzpClM4wLWosU",
+      "teHrRVv3boBd5myT",
+      "tuA9OQatzhlFyO8d",
+      "twTZiJnIkFnPHEF7",
+      "u0eiYoYYMGrIcAEG",
+      "u37Ou4VTCKu3G8M9",
+      "u7B64d0Vtw9LSy7s",
+      "uj7iH69jmruknJ9V",
+      "ulMPRuWan46llLA0",
+      "umwmt9WBlxEWLrE7",
+      "v8APALdGAhTc4hdo",
+      "vh5gcly9V14bYFlF",
+      "w0lG1tWinVrGp5xK",
+      "wLsNwj3xRaEkb36J",
+      "wWr87YN3j07FWo5d",
+      "wYdW8jGnrLfB8PhF",
+      "wi20guqqLvHXZvTu",
+      "wpyLLsDEjbhFrTRt",
+      "wynbXLf0gt4hfRby",
+      "wzBQapgHuYmDanR9",
+      "x0NWP5jCon9IHrG0",
+      "x2AFbVbFJ8Na3lQg",
+      "xT64RcWqBTj2zDCC",
+      "y8AxY885GUWQuyCR",
+      "y8D6klsSSV37sR3E",
+      "yWRhfm4JZ4VqIuS8",
+      "yiNlhVBKm5rEIWXf",
+      "yqNY16s5yT0amiRZ",
+      "z6cWTXD9qNglPS4w",
+      "zJB6BWFhqkPeY8OA",
+      "zMtZubmfy3SOxtgg",
+      "zVe3ALTXIuXPDoCc",
+      "zeGyVR3p3GQ8a7gv",
+      "zjAaPKwKnysMKLhT",
+      "zxkjK9m2IBpYzqWl",
+      "QAxhAZhljYgVKGuB",
+      "sUzn7GZix4mpeUK4",
+      "UCCManHYx1CyyHpG",
+      "TEnAcMdffxfWONyl",
+      "AjhBBHOd3OCtwjoN",
+      "iglBkItdGVz3tOAG",
+      "1NSrxYWqrIUfYJlG",
+      "iB4aqqnGw5d3hmq2",
+      "S9NHB8tncOFLjyYh",
+      "zp0LFbOG09bow7VL"
     ]
   },
   "numeric_feature_profile": {
-    "lowlevel.average_loudness": 0.910836,
-    "lowlevel.loudness_ebu128.integrated": -15.322141,
-    "rhythm.danceability": 1.190363,
-    "rhythm.bpm": 117.84215,
-    "rhythm.onset_rate": 3.656946,
-    "rhythm.beats_count": 58.138573,
-    "rhythm.beats_loudness.mean": 0.054882,
-    "lowlevel.spectral_energy.mean": 0.041164,
-    "lowlevel.spectral_centroid.mean": 1098.959047,
-    "lowlevel.spectral_complexity.mean": 18.211184,
-    "tonal.chords_changes_rate": 0.061326,
-    "tonal.key_edma.strength": 0.677007,
-    "tonal.key_krumhansl.strength": 0.680892,
-    "tonal.key_temperley.strength": 0.688476,
-    "V_mean": 5.741829,
-    "A_mean": 4.278339,
-    "D_mean": 5.371368,
-    "P_mean": 0.070704,
-    "V_std": 1.317147,
-    "A_std": 0.973427,
-    "D_std": 0.911383
+    "danceability": 0.550561,
+    "energy": 0.553168,
+    "valence": 0.562421,
+    "tempo": 122.32724,
+    "key": 4.274682,
+    "mode": 0.780214,
+    "popularity": 55.182237,
+    "duration_ms": 233657.126329
   },
   "semantic_profile": {
     "top_tags": [
       {
-        "label": "indie",
-        "weight": 915.5389
-      },
-      {
-        "label": "alternative",
-        "weight": 743.4579
-      },
-      {
         "label": "rock",
-        "weight": 733.035
+        "weight": 351.43324
+      },
+      {
+        "label": "classic rock",
+        "weight": 320.361811
       },
       {
         "label": "pop",
-        "weight": 478.9434
+        "weight": 293.857843
       },
       {
-        "label": "alternative rock",
-        "weight": 426.8445
+        "label": "80s",
+        "weight": 162.916667
       },
       {
-        "label": "indie rock",
-        "weight": 326.1647
+        "label": "60s",
+        "weight": 140.718954
       },
       {
-        "label": "indie pop",
-        "weight": 308.7735
+        "label": "british",
+        "weight": 120.441176
       },
       {
-        "label": "electronic",
-        "weight": 163.5811
+        "label": "the beatles",
+        "weight": 82.941176
+      },
+      {
+        "label": "singer-songwriter",
+        "weight": 78.571429
       },
       {
         "label": "female vocalists",
-        "weight": 155.0982
+        "weight": 72.738096
       },
       {
-        "label": "imagine dragons",
-        "weight": 138.378
+        "label": "70s",
+        "weight": 60.0
       }
     ],
     "top_genres": [
       {
-        "label": "indie rock",
-        "weight": 10.721713
-      },
-      {
-        "label": "indie pop",
-        "weight": 10.169745
-      },
-      {
         "label": "rock",
-        "weight": 8.539655
+        "weight": 351.43324
+      },
+      {
+        "label": "classic rock",
+        "weight": 320.361811
       },
       {
         "label": "pop",
-        "weight": 7.328026
+        "weight": 293.857843
       },
       {
-        "label": "alternative rock",
-        "weight": 6.853586
+        "label": "singer-songwriter",
+        "weight": 78.571429
       },
       {
-        "label": "trip hop",
-        "weight": 5.460021
+        "label": "progressive rock",
+        "weight": 55.0
       },
       {
-        "label": "electronic",
-        "weight": 4.637955
+        "label": "hard rock",
+        "weight": 40.0
       },
       {
-        "label": "grunge",
-        "weight": 1.525316
+        "label": "folk",
+        "weight": 38.571429
+      },
+      {
+        "label": "soul",
+        "weight": 32.5
+      },
+      {
+        "label": "psychedelic rock",
+        "weight": 24.166667
+      },
+      {
+        "label": "jazz",
+        "weight": 22.5
       }
     ],
     "top_lead_genres": [
       {
-        "label": "indie rock",
-        "weight": 4.5488
-      },
-      {
-        "label": "alternative rock",
-        "weight": 4.0825
-      },
-      {
-        "label": "indie pop",
-        "weight": 3.0552
-      },
-      {
-        "label": "electronic",
-        "weight": 1.4957
-      },
-      {
-        "label": "trip hop",
-        "weight": 1.4521
+        "label": "classic rock",
+        "weight": 215.441176
       },
       {
         "label": "pop",
-        "weight": 1.3933
+        "weight": 115.416667
+      },
+      {
+        "label": "rock",
+        "weight": 52.142857
+      },
+      {
+        "label": "progressive rock",
+        "weight": 50.0
+      },
+      {
+        "label": "folk",
+        "weight": 36.071429
+      },
+      {
+        "label": "soul",
+        "weight": 17.5
+      },
+      {
+        "label": "new wave",
+        "weight": 15.0
+      },
+      {
+        "label": "soundtrack",
+        "weight": 10.0
+      },
+      {
+        "label": "baroque pop",
+        "weight": 7.777778
+      },
+      {
+        "label": "classical",
+        "weight": 7.5
       }
     ]
   }

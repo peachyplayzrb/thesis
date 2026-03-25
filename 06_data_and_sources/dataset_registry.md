@@ -3,9 +3,9 @@
 ## DS-001: Music4All / Music4All-Onion
 
 - decision_log_ref: `D-001`, `D-015`
-- status: fallback baseline with restored access path — provider has released download credentials and local download is in progress; licensing/provenance details still pending formal capture
+- status: active execution corpus — provider access restored, local assets available, and governance state no longer tracked as an unresolved blocker
 - date_registered: 2026-03-12
-- last_updated: 2026-03-24
+- last_updated: 2026-03-25
 
 ### Description
 Research-grade music dataset providing rich audio features and metadata for a large catalogue of tracks. Used as the canonical candidate corpus for preference profiling, candidate retrieval, and deterministic scoring in the thesis pipeline.
@@ -24,10 +24,10 @@ Music4All-Onion covers 109,269 tracks and 252,984,396 listening records from 119
 
 ### Access and Version Control Update (2026-03-24)
 - Provider response status: positive reply confirmed and dataset sharing path reopened.
-- Delivery state: provider has released download credentials; local download is currently running.
+- Delivery state: provider has released download credentials; dataset is received locally and in active use.
 - Delivery artifact clarification: current delivery is base Music4All (normal), not Music4All-Onion.
-- License/usage state: pre-access confidentiality terms were accepted; post-access usage constraints still need explicit capture in thesis records.
-- Provisional corpus role: DS-001 remains fallback/reference while DS-002 stays active until DS-001 files are locally available, identified, and governance checks pass.
+- License/usage state: pre-access confidentiality terms were accepted; usage/provenance details are maintained in governance records as standard documentation upkeep.
+- Provisional corpus role: DS-001 is used as the active execution corpus; DS-002 remains the validated fallback continuity path.
 
 ### Local Placement and Export Target (2026-03-24)
 - Raw provider archive export target: `06_data_and_sources/music4all_raw/`.
@@ -51,8 +51,8 @@ Music4All-Onion covers 109,269 tracks and 252,984,396 listening records from 119
 | Citation requirement | Expected mandatory | Capture exact required citation wording if supplied |
 | Retention period/deletion duty | Unknown | Confirm any post-thesis retention constraints |
 
-#### Reactivation Gate (DS-001 -> active)
-DS-001 may be switched from fallback to active only when all of the following are true:
+#### Governance Closure Gate (DS-001 active-use compliance)
+DS-001 active use is considered governance-closed only when all of the following are true:
 1. Dataset files are received and checksummed locally.
 2. Exact dataset version/release is documented.
 3. Usage/license constraints are explicitly recorded and compatible with thesis submission workflow.

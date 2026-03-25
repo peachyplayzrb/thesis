@@ -1,23 +1,25 @@
 {
-  "run_id": "BL004-PROFILE-20260324-221335-715210",
+  "run_id": "BL004-PROFILE-20260325-001946-358865",
   "task": "BL-004",
   "user_id": "21zsn42xecjhogne4kghyw5hq",
-  "config_source": "run_config",
-  "run_config_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\run_config\\run_config_bl021_probe_v1.json",
-  "run_config_schema_version": "run-config-v1",
+  "config_source": "environment",
+  "run_config_path": null,
+  "run_config_schema_version": null,
   "input_scope": {
     "source_family": "spotify_api_export",
     "include_top_tracks": true,
     "top_time_ranges": [
-      "short_term"
+      "short_term",
+      "medium_term",
+      "long_term"
     ],
-    "include_saved_tracks": false,
-    "saved_tracks_limit": 25,
+    "include_saved_tracks": true,
+    "saved_tracks_limit": null,
     "include_playlists": true,
-    "playlists_limit": 3,
-    "playlist_items_per_playlist_limit": 20,
+    "playlists_limit": null,
+    "playlist_items_per_playlist_limit": null,
     "include_recently_played": true,
-    "recently_played_limit": 15
+    "recently_played_limit": 50
   },
   "matched_seed_count": 221,
   "total_effective_weight": 594.516574,

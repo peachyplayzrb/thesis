@@ -1,35 +1,28 @@
 {
-  "run_id": "BL011-NO_INFLUENCE_TRACKS-BL004-20260320-235345-254875",
+  "run_id": "BL011-NO_INFLUENCE_TRACKS-BL004-20260324-235129-328570",
   "scenario_id": "no_influence_tracks",
-  "matched_seed_count": 8,
-  "total_effective_weight": 11.9776,
+  "matched_seed_count": 221,
+  "total_effective_weight": 594.516574,
   "dominant_lead_genres": [
-    "indie rock",
-    "indie pop",
-    "electronic",
-    "trip hop",
-    "pop"
+    "classic rock",
+    "pop",
+    "rock",
+    "progressive rock",
+    "folk"
   ],
   "dominant_tags": [
-    "indie",
-    "alternative",
     "rock",
+    "classic rock",
     "pop",
-    "indie rock"
+    "80s",
+    "60s"
   ],
   "dominant_genres": [
-    "indie rock",
-    "indie pop",
+    "rock",
+    "classic rock",
     "pop",
-    "trip hop",
-    "rock"
+    "singer-songwriter",
+    "progressive rock"
   ],
-  "feature_centers": {
-    "rhythm.bpm": 119.286325,
-    "rhythm.danceability": 1.227668,
-    "lowlevel.loudness_ebu128.integrated": -15.642515,
-    "V_mean": 5.702962,
-    "A_mean": 4.264279,
-    "D_mean": 5.365435
-  }
+  "feature_centers": {}
 }

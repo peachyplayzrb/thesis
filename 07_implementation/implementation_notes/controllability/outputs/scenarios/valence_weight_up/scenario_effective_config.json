@@ -2,40 +2,27 @@
   "scenario_id": "valence_weight_up",
   "test_id": "EP-CTRL-002",
   "control_surface": "feature_weight",
-  "description": "Increase the raw valence weight from 0.12 to 0.20, then renormalize all score weights to preserve a 1.0 total.",
-  "expected_effect": "tracks with stronger valence fit should gain score contribution and rank position",
+  "description": "Increase one score-component raw weight and renormalize all score weights to preserve a 1.0 total.",
+  "expected_effect": "tracks with stronger fit on the boosted component should gain score contribution and rank position",
   "profile": {
     "effective_weight_rule": "effective_weight = preference_weight",
     "numeric_feature_columns": [
-      "lowlevel.average_loudness",
-      "lowlevel.loudness_ebu128.integrated",
-      "rhythm.danceability",
-      "rhythm.bpm",
-      "rhythm.onset_rate",
-      "rhythm.beats_count",
-      "rhythm.beats_loudness.mean",
-      "lowlevel.spectral_energy.mean",
-      "lowlevel.spectral_centroid.mean",
-      "lowlevel.spectral_complexity.mean",
-      "tonal.chords_changes_rate",
-      "tonal.key_edma.strength",
-      "tonal.key_krumhansl.strength",
-      "tonal.key_temperley.strength",
-      "V_mean",
-      "A_mean",
-      "D_mean",
-      "P_mean",
-      "V_std",
-      "A_std",
-      "D_std"
+      "danceability",
+      "energy",
+      "valence",
+      "tempo",
+      "key",
+      "mode",
+      "popularity",
+      "duration_ms"
     ],
     "top_tag_limit": 10,
     "top_genre_limit": 10,
     "top_lead_genre_limit": 10,
     "aggregation_rules": {
-      "numeric": "weighted mean over matched seeds",
-      "tags": "sum(preference_weight * tag_weight)",
-      "genres": "sum(preference_weight * genre_score)",
+      "numeric": "weighted mean over numeric columns embedded in the BL-003 enriched seed table; key uses weighted circular mean on the 12-semitone wheel",
+      "tags": "sum(preference_weight) over DS-001 tag labels",
+      "genres": "sum(preference_weight) over DS-001 genre labels",
       "lead_genres": "sum(preference_weight)"
     },
     "include_interaction_types": [
@@ -49,37 +36,31 @@
     "top_genre_limit": 8,
     "threshold_scale": 1.0,
     "numeric_thresholds": {
-      "rhythm.bpm": 20.0,
-      "rhythm.danceability": 0.4,
-      "lowlevel.loudness_ebu128.integrated": 6.0,
-      "V_mean": 0.8,
-      "A_mean": 0.9,
-      "D_mean": 0.8
+      "tempo": 20.0,
+      "key": 2.0,
+      "mode": 0.5,
+      "duration_ms": 45000.0
     },
-    "keep_rule": "keep if not seed and ((semantic_score >= 2 and numeric_pass_count >= 4) or (semantic_score == 3 and numeric_pass_count >= 3))"
+    "keep_rule": "keep if not seed and (semantic_score >= 2 or (semantic_score >= 1 and numeric_pass_count >= 1))"
   },
   "scoring": {
     "numeric_thresholds": {
-      "rhythm.bpm": 20.0,
-      "rhythm.danceability": 0.4,
-      "lowlevel.loudness_ebu128.integrated": 6.0,
-      "V_mean": 0.8,
-      "A_mean": 0.9,
-      "D_mean": 0.8
+      "tempo": 20.0,
+      "key": 2.0,
+      "mode": 0.5,
+      "duration_ms": 45000.0
     },
     "component_weights": {
-      "rhythm.bpm": 0.092593,
-      "rhythm.danceability": 0.092593,
-      "lowlevel.loudness_ebu128.integrated": 0.074074,
-      "V_mean": 0.185185,
-      "A_mean": 0.074074,
-      "D_mean": 0.074074,
-      "lead_genre": 0.111111,
-      "genre_overlap": 0.148148,
+      "tempo": 0.259259,
+      "duration_ms": 0.12037,
+      "key": 0.12037,
+      "mode": 0.083333,
+      "lead_genre": 0.157407,
+      "genre_overlap": 0.111111,
       "tag_overlap": 0.148148
     },
-    "weight_override_component": "V_mean",
-    "raw_override_value": 0.2
+    "weight_override_component": "tempo",
+    "raw_override_value": 0.28
   },
   "assembly": {
     "target_size": 10,

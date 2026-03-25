@@ -10,14 +10,14 @@ Single-user deterministic playlist generation pipeline with transparent scoring,
 
 ## Current Baseline (As Implemented)
 - Ingestion path: Spotify listening-history import (BL-002) with optional manual influence tracks.
-- User-side alignment approach: semantic enrichment on imported tracks using Last.fm tags (BL-003 active path).
-- Candidate corpus: DS-002 (`MSD subset + Last.fm tags`) as active operational corpus.
+- User-side alignment approach: deterministic metadata/identifier alignment against DS-001 records (BL-003 active path).
+- Candidate corpus: DS-001 (Music4All base) as active operational corpus.
 - Source-scope controllability: implemented via canonical run-config `input_scope`, with effective scope persisted in BL-004 and BL-009 outputs.
 - Pipeline stages: BL-003 through BL-009 complete with deterministic artifacts and BL-014 sanity checks in place.
 
 ## Core Functionality (Must Exist)
 1. Data ingestion for one selected listening-history source format (single adapter path) plus optional manual seed/influence tracks.
-2. Deterministic preference-signal construction from imported history via semantic enrichment and bounded metadata handling.
+2. Deterministic preference-signal construction from imported history via bounded metadata/identifier handling.
 3. Deterministic preference profile construction from enriched inputs with auditable seed trace outputs.
 4. Deterministic candidate filtering and scoring with explicit feature/semantic weights and documented adjustment rules.
 5. Playlist assembly stage with at least three playlist-level constraints:
@@ -38,7 +38,7 @@ Single-user deterministic playlist generation pipeline with transparent scoring,
 - Advanced UI with many control widgets.
 - Rich visualization dashboard for observability.
 - Automated hyperparameter exploration.
-- Extended fallback matching heuristics beyond the active semantic-enrichment path.
+- Extended fallback matching heuristics beyond the active DS-001 alignment path.
 
 ## Explicit Out Of Scope
 - Collaborative filtering or deep neural recommendation models.

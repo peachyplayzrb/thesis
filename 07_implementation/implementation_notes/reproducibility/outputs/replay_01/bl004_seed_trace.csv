@@ -1,0 +1,222 @@
+event_id,track_id,spotify_track_id,spotify_artist,spotify_title,interaction_type,signal_source,seed_rank,interaction_count,preference_weight,effective_weight,lead_genre,top_tag,numeric_feature_coverage,lastfm_status
+ds001_seed_000001,0SZzDlqkVto82lT8,3DK6m7It6Pw857FcQftMds,Kanye West,Runaway,history,ds001_seed_table,1,25,2.5,2.5,hip hop,hip-hop,1,not_applicable_ds001
+ds001_seed_000002,0qV2T61m2AvCSw88,31SBMFpLi1x0KNlGenfnQ1,James Morrison,Precious Love,history,ds001_seed_table,2,25,2.5,2.5,soul,soul,1,not_applicable_ds001
+ds001_seed_000003,12jXnbQrbvSWYgp7,3g2fYZW5v2od8KIF7VktT0,Simon & Garfunkel,Scarborough Fair,history,ds001_seed_table,3,25,2.5,2.5,folk,folk,1,not_applicable_ds001
+ds001_seed_000004,15CxeKsD9DvqCVhY,3KfbEIOC7YIv90FIfNSZpo,The Beatles,In My Life,history,ds001_seed_table,4,25,2.5,2.5,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000005,166TJqR8YtaoibkS,1jD811OG5DyS459iFxNKmm,Nancy Sinatra,Bang Bang,history,ds001_seed_table,5,25,2.5,2.5,soundtrack,soundtrack,1,not_applicable_ds001
+ds001_seed_000006,1EhoPstBUguE4Btf,6ALpCzjVWFQJRwKIM8he8F,Fred Astaire,The Way You Look Tonight,history,ds001_seed_table,6,25,2.5,2.5,swing,swing,1,not_applicable_ds001
+ds001_seed_000007,1GngSVshm9HPaMVa,1h04XMpzGzmAudoI6VHBgA,The Beatles,Penny Lane,history,ds001_seed_table,7,25,2.5,2.5,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000008,1NSrxYWqrIUfYJlG,7zMUCLm1TN9o9JlLISztxO,Elvis Presley,Burning Love,history,ds001_seed_table,8,71,7.142857,7.142857,rock,rock n roll,1,not_applicable_ds001
+ds001_seed_000009,22YI5YceDuG0QoOj,64hZX40A8Z14efLfF0JjwT,Moby,Lift Me Up,history,ds001_seed_table,9,5,0.5,0.5,electronic,electronic,1,not_applicable_ds001
+ds001_seed_000010,2PflxozrqQJVQchQ,5Uene4exc7GwWYDN6X3Ihd,Jethro Tull,Bouree,history,ds001_seed_table,10,25,2.5,2.5,progressive rock,progressive rock,1,not_applicable_ds001
+ds001_seed_000011,2UbyfJ2ads4YvskN,6kCJMxv445L2okuTiou1fR,Billy Joel,Tell Her About It,history,ds001_seed_table,11,25,2.5,2.5,pop,80s,1,not_applicable_ds001
+ds001_seed_000012,2eQ2zwD8LOR5Oj9m,29CJGwJt5wyo7Sjje87Cy8,Triumph,Lay It On The Line,history,ds001_seed_table,12,25,2.5,2.5,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000013,3UfIu7IgRBza12y2,3idqWaBn3mRdsIodCU6uBi,The Beatles,Roll over Beethoven,history,ds001_seed_table,13,25,2.5,2.5,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000014,4xYdj1WQYnfLCl11,0Xam0zVac3hKWWN4OQ5Gdr,Tears for Fears,Pale Shelter,history,ds001_seed_table,14,25,2.5,2.5,new wave,80s,1,not_applicable_ds001
+ds001_seed_000015,4yJQAF5ZuAuzs24P,7t3qBNw37k2P2OmgK0MilM,Fred Astaire,Puttin' On The Ritz,history,ds001_seed_table,15,25,2.5,2.5,swing,swing,1,not_applicable_ds001
+ds001_seed_000016,5G6OktV6MQZjl2LQ,7MrjAyGcYhIY8i6EBUpxnN,Rush,Distant Early Warning,history,ds001_seed_table,16,25,2.5,2.5,progressive rock,progressive rock,1,not_applicable_ds001
+ds001_seed_000017,5YjeA9RnddUgDFjI,4PRGxHpCpF2yoOHYKQIEwD,Led Zeppelin,Rock and Roll,history,ds001_seed_table,17,25,2.5,2.5,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000018,6M4XbtDIOtPeDA06,1H5IfYyIIAlgDX8zguUzns,Elvis Presley,Suspicious Minds,history,ds001_seed_table,18,25,2.5,2.5,classic rock,60s,1,not_applicable_ds001
+ds001_seed_000019,6MJkge2anZHEYvjl,4jhsuQCUCJKA5f0bXb6XdJ,Talk Talk,It's My Life,history,ds001_seed_table,19,25,2.5,2.5,new wave,80s,1,not_applicable_ds001
+ds001_seed_000020,6Op0YXj5bEEcScnz,1hR3TNe1neCWRQatSVOFfX,Walter Murphy,A Fifth of Beethoven,history,ds001_seed_table,20,25,2.5,2.5,disco,fip,1,not_applicable_ds001
+ds001_seed_000021,6qNbHN2lGfuVydmr,2DVkYfl2YuOMlRfC98srEG,Pink Floyd,Waiting for the Worms,history,ds001_seed_table,21,25,2.5,2.5,progressive rock,progressive rock,1,not_applicable_ds001
+ds001_seed_000022,79gGvHv2KqAvswk8,1TaDWN9kixXxE7eYx1Cctd,ABBA,I Let the Music Speak,history,ds001_seed_table,22,25,2.5,2.5,pop,pop,1,not_applicable_ds001
+ds001_seed_000023,7LfUFSaaFyxcITaK,2FAL6hxj5Qxuj0kWOkEOsF,Cyndi Lauper,She Bop,history,ds001_seed_table,23,25,2.5,2.5,pop,80s,1,not_applicable_ds001
+ds001_seed_000024,8TauRq2Dzjuqlen8,70gbuMqwNBE2Y5rkQJE9By,Led Zeppelin,Going to California,history,ds001_seed_table,24,25,2.5,2.5,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000025,8amnHzBUPrdIQp6A,268MYoRM1f8rPRoCmW5NAN,Rush,The Body Electric,history,ds001_seed_table,25,25,2.5,2.5,progressive rock,progressive rock,1,not_applicable_ds001
+ds001_seed_000026,8e1XAO305okHTnbt,5lEpCOAChEETXFWY9SmIuu,Rush,Kid Gloves,history,ds001_seed_table,26,25,2.5,2.5,progressive rock,progressive rock,1,not_applicable_ds001
+ds001_seed_000027,8xE82ySWCYSxN8TD,2TUzU4IkfH8kcvY2MUlsd2,James Morrison,I Won't Let You Go,history,ds001_seed_table,27,25,2.5,2.5,soul,british,1,not_applicable_ds001
+ds001_seed_000028,9CLTmq6Ps7WVseF2,5Ih9gbqyxCzTJ43nuSuKnC,Aerosmith,Dream On,history,ds001_seed_table,28,25,2.5,2.5,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000029,9PUnKxg2n1co5JI1,6g4vHtdGqD5eEgpf7nKISk,Billy Joel,Don't Ask Me Why,history,ds001_seed_table,29,25,2.5,2.5,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000030,9S6X7coXdb927q9L,6bFsQ6yOp3z5mGNkhWP0P1,James Morrison,You Give Me Something,history,ds001_seed_table,30,25,2.5,2.5,soul,soul,1,not_applicable_ds001
+ds001_seed_000031,9emO9FRFYFQesS1g,62vx6uOYO7PrqKqKTKg9RY,Tears for Fears,Sowing The Seeds Of Love,history,ds001_seed_table,31,25,2.5,2.5,new wave,80s,1,not_applicable_ds001
+ds001_seed_000032,AeEKbcGeUG3kIp41,6yjKlmm7vOszkXEUku1EM1,Billy Joel,New York State Of Mind,history,ds001_seed_table,32,25,2.5,2.5,singer-songwriter,piano,1,not_applicable_ds001
+ds001_seed_000033,AjhBBHOd3OCtwjoN,4OZbWCJ3xPqWiIzxeNltq6,Steve Winwood,Higher Love,history,ds001_seed_table,33,50,5.0,5.0,classic rock,80s,1,not_applicable_ds001
+ds001_seed_000034,BoDfJUleKTckWpiW,6rHh8urosEFRI67xVa6fzU,The Beatles,The Fool On The Hill - Remastered 2009,history,ds001_seed_table,34,25,2.5,2.5,classic rock,psychedelic peppermint,1,not_applicable_ds001
+ds001_seed_000035,BurkN8hwXKYLo8xS,45GTwVJoDDLGEAYkB5NOrT,Tracy Chapman,Mountains O' Things,history,ds001_seed_table,35,25,2.5,2.5,folk,folk,1,not_applicable_ds001
+ds001_seed_000036,CV1cYS3ulclC2pwO,7Aobt67JnaF7qN8jCCKvHq,The Beatles,Do You Want to Know a Secret,history,ds001_seed_table,36,25,2.5,2.5,rock,60s,1,not_applicable_ds001
+ds001_seed_000037,D6fkJpDr6KTNzDpL,3R9LrKCdEcgECnrVFA1Flz,Fred Astaire,Cheek To Cheek,history,ds001_seed_table,37,25,2.5,2.5,swing,swing,1,not_applicable_ds001
+ds001_seed_000038,EP4cXLGgw90hzP3O,4rr0gWiMrF4sOIefs3IEvZ,Elvis Presley,A Little Less Conversation,history,ds001_seed_table,38,25,2.5,2.5,classic rock,rock n roll,1,not_applicable_ds001
+ds001_seed_000039,EluJPZ1gvKeMbf3X,6a98mDyXTsYugJhUs1tZr4,The Beatles,Fixing A Hole - Remix,history,ds001_seed_table,39,25,2.5,2.5,baroque pop,baroque pop,1,not_applicable_ds001
+ds001_seed_000040,EoM9b6SAT1D9Ytq1,06IsyJksK6vgJX66rU77Ij,Sting,Fortress Around Your Heart,history,ds001_seed_table,40,25,2.5,2.5,rock,rock,1,not_applicable_ds001
+ds001_seed_000041,F8vAvaC1LW5E8DOU,7yFvSYKk3g5g8e7Ffl16ws,Bob Marley & The Wailers,Three Little Birds,history,ds001_seed_table,41,25,2.5,2.5,reggae,reggae,1,not_applicable_ds001
+ds001_seed_000042,FKCVBKj4lauIUFna,64Ny7djQ6rNJspquof2KoX,Elvis Presley,Hound Dog,history,ds001_seed_table,42,25,2.5,2.5,classic rock,rock n roll,1,not_applicable_ds001
+ds001_seed_000043,FeRInaEhXdfN0VZv,3xr8COed4nPPn6XWZ0iCGr,Yiruma,River Flows in You,history,ds001_seed_table,43,25,2.5,2.5,classical,piano,1,not_applicable_ds001
+ds001_seed_000044,FrjEAGwfV6qohKmJ,52Lz3HKBItvMWuSNDBixq3,Yes,It Can Happen,history,ds001_seed_table,44,25,2.5,2.5,progressive rock,progressive rock,1,not_applicable_ds001
+ds001_seed_000045,FvmUxqDYcskY1E1q,1MUsWVRPLaC7ANKcEiMRCl,Elvis Presley,Don't Be Cruel,history,ds001_seed_table,45,25,2.5,2.5,classic rock,rock n roll,1,not_applicable_ds001
+ds001_seed_000046,GGVEhXe864IozrMK,5HNCy40Ni5BZJFw1TKzRsC,Pink Floyd,Comfortably Numb,history,ds001_seed_table,46,25,2.5,2.5,progressive rock,progressive rock,1,not_applicable_ds001
+ds001_seed_000047,GbbYeHso7KMaXXZk,1vOgunupwdkhGjoB7SK2Va,ABBA,Two for the Price of One,history,ds001_seed_table,47,25,2.5,2.5,pop,pop,1,not_applicable_ds001
+ds001_seed_000048,HNN3N9MY2Okf4kfQ,40IHflbrHcOuC8ZcYxUSAC,ABBA,One of Us,history,ds001_seed_table,48,25,2.5,2.5,pop,pop,1,not_applicable_ds001
+ds001_seed_000049,HhnTUIZ040LnpSZm,5DH7nDryMhpixm4G4B7RP9,Billy Joel,The Longest Time,history,ds001_seed_table,49,25,2.5,2.5,pop,80s,1,not_applicable_ds001
+ds001_seed_000050,IAzZGYyHfsmexzGi,3U5JVgI2x4rDyHGObzJfNf,Natasha Bedingfield,Unwritten,history,ds001_seed_table,50,25,2.5,2.5,pop,pop,1,not_applicable_ds001
+ds001_seed_000051,IQHIVdQXeQ7dk3So,3UDmHZcBTQp8Iu8droNtUl,The Beatles,Revolution,history,ds001_seed_table,51,25,2.5,2.5,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000052,JHJusOYsaL3zLGtA,3KdNyeEZPSND2Eii1O2lNf,Moby,Everloving,history,ds001_seed_table,52,5,0.5,0.5,electronic,chillout,1,not_applicable_ds001
+ds001_seed_000053,JTbvJI8lNUTib1O5,0q6kL6JEfoGbozD1rjG7NY,Rush,Mission,history,ds001_seed_table,53,25,2.5,2.5,progressive rock,progressive rock,1,not_applicable_ds001
+ds001_seed_000054,JZrvucFQ56izpI9f,6Pq9MmkDQYZiiCDpxnvrf6,The Beatles,I Am the Walrus,history,ds001_seed_table,54,25,2.5,2.5,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000055,K01Mxf5XW4k9jAIt,0hCB0YR03f6AmQaHbwWDe8,Led Zeppelin,Whole Lotta Love,history,ds001_seed_table,55,25,2.5,2.5,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000056,K2InLHoJqZgf5Opi,1H7gMYGykdtwZOV6s1N0by,The Beatles,Norwegian Wood (This Bird Has Flown),history,ds001_seed_table,56,25,2.5,2.5,classic rock,60s,1,not_applicable_ds001
+ds001_seed_000057,LP8SxUB1bOG1Ra3P,1aOzDhi5a1RWWRy5dmYA8I,The Beatles,Revolution 1,history,ds001_seed_table,57,25,2.5,2.5,classic rock,60s,1,not_applicable_ds001
+ds001_seed_000058,MDKgaD6aiKpqk7cz,0XHGKdViVybbZKqEZ2tXqV,Midnight Oil,Beds Are Burning,history,ds001_seed_table,58,25,2.5,2.5,rock,80s,1,not_applicable_ds001
+ds001_seed_000059,ME9AVNcYwpF1WPYG,30qVCFYKBtAENjTIBA8FPZ,Billy Joel,The River of Dreams,history,ds001_seed_table,59,25,2.5,2.5,pop,pop,1,not_applicable_ds001
+ds001_seed_000060,MkVbtlOpm2Q2D41x,7cb2SdLm1UMLwdUoWwrZN1,The Beatles,Baby's in Black,history,ds001_seed_table,60,25,2.5,2.5,rock,60s,1,not_applicable_ds001
+ds001_seed_000061,N4dWQMEKRaUONlaP,3JQWLa88R35d971o5bIImd,The Beatles,Chains,history,ds001_seed_table,61,25,2.5,2.5,classic rock,60s,1,not_applicable_ds001
+ds001_seed_000062,N9SjyAdz5ogvctSR,6tQvjqDIK9GXWIC6mejms8,The Beatles,Girl - Remastered,history,ds001_seed_table,62,25,2.5,2.5,folk,folk,1,not_applicable_ds001
+ds001_seed_000063,NPOsbL3fobizZyEs,3lKN03PDeBnXZS7sDukRBt,ABBA,"Money, Money, Money",history,ds001_seed_table,63,25,2.5,2.5,pop,pop,1,not_applicable_ds001
+ds001_seed_000064,NQbNKyYkv5MxNeQy,5Wj1rJnCLpMHdLaxsFtJLs,Elton John,Bennie And The Jets (Remastered 2014),history,ds001_seed_table,64,25,2.5,2.5,pop,pop,1,not_applicable_ds001
+ds001_seed_000065,NfSfEoxJmTd2T2Aj,16GUMo6u3D2qo9a19AkYct,Billy Joel,Movin' Out (Anthony's Song),history,ds001_seed_table,65,25,2.5,2.5,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000066,NnPChlLXcE8YETJS,7529Z6b1rlGZFFPWjHPeV5,The Beatles,Ask Me Why,history,ds001_seed_table,66,25,2.5,2.5,classic rock,60s,1,not_applicable_ds001
+ds001_seed_000067,OK8VmZrhLaWmW2R7,18qhv7DD1sEpgWffovGnhn,The Beatles,A Day In The Life - remix,history,ds001_seed_table,67,25,2.5,2.5,psychedelic rock,psychedelic rock,1,not_applicable_ds001
+ds001_seed_000068,OUkZI66QebyJvgIS,1wXE6zvNWRz8GuMfEUgETz,Nazareth,Hair of the Dog,history,ds001_seed_table,68,25,2.5,2.5,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000069,OxCTebk8s4Ex3yBg,78lgmZwycJ3nzsdgmPPGNx,Led Zeppelin,Immigrant Song,history,ds001_seed_table,69,25,2.5,2.5,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000070,P2S6M5e4PN1JubTp,503OTo2dSqe7qk76rgsbep,Dr. Dre,Still D.R.E.,history,ds001_seed_table,70,25,2.5,2.5,rap,hip-hop,1,not_applicable_ds001
+ds001_seed_000071,PibkyDY19wIzhvpc,4lShKS7ee6aoC8hbUVOhYG,Rush,Circumstances,history,ds001_seed_table,71,25,2.5,2.5,progressive rock,progressive rock,1,not_applicable_ds001
+ds001_seed_000072,QAxhAZhljYgVKGuB,4Ggjly9D6YlPfywZOViMaG,The Beatles,She's Leaving Home - Remix,history,ds001_seed_table,72,28,2.777778,2.777778,baroque pop,baroque pop,1,not_applicable_ds001
+ds001_seed_000073,QXkYgalw42rz4k5X,3XkXJNMHJB0UiKiVz83yD7,Tracy Chapman,Across the Lines,history,ds001_seed_table,73,25,2.5,2.5,folk,folk,1,not_applicable_ds001
+ds001_seed_000074,QjxUmiXnnXxYDt72,3BFRqZFLSrqtQr6cjHbAxU,Fats Waller,Ain't Misbehavin',history,ds001_seed_table,74,25,2.5,2.5,jazz,jazz,1,not_applicable_ds001
+ds001_seed_000075,QolCFgn0lRVqdc9N,1v7L65Lzy0j0vdpRjJewt1,Eminem,Lose Yourself,history,ds001_seed_table,75,25,2.5,2.5,rap,rap,1,not_applicable_ds001
+ds001_seed_000076,QrsNJaTFIN7k6GvQ,3M8FzayQWtkvOhqMn2V4T2,Bill Withers,Lean on Me,history,ds001_seed_table,76,25,2.5,2.5,soul,soul,1,not_applicable_ds001
+ds001_seed_000077,QvYpogJ5qMDGPvsw,17W8bZBSty1TJ4CRG4GGJK,Tracy Chapman,For My Lover,history,ds001_seed_table,77,25,2.5,2.5,folk,folk,1,not_applicable_ds001
+ds001_seed_000078,R3ZB7V3mgBeG2SSh,5vl0sRtrQM1BTSAxQZFqEN,The Beatles,Not a Second Time,history,ds001_seed_table,78,25,2.5,2.5,rock,60s,1,not_applicable_ds001
+ds001_seed_000079,ROm2Vv0rig9S5d6E,2CIDqYfIYfl9vx02wIyCG9,Cyndi Lauper,All Through the Night,history,ds001_seed_table,79,25,2.5,2.5,pop,80s,1,not_applicable_ds001
+ds001_seed_000080,RRH8Atb65rb6xiy6,3pVnCDD8Qqpw9NdBhbua1a,Rush,Red Lenses,history,ds001_seed_table,80,25,2.5,2.5,progressive rock,progressive rock,1,not_applicable_ds001
+ds001_seed_000081,RdFRnRnYEQazgtcd,5RgFlk1fcClZd0Y4SGYhqH,Billy Joel,She's Always a Woman,history,ds001_seed_table,81,25,2.5,2.5,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000082,RfyZW9445WyeHPgN,3J0AoQhAufniMrznCRJASD,Cyndi Lauper,I Drove All Night,history,ds001_seed_table,82,25,2.5,2.5,pop,80s,1,not_applicable_ds001
+ds001_seed_000083,RmMSHhTryKoZYEjZ,3qT4bUD1MaWpGrTwcvguhb,Led Zeppelin,Black Dog,history,ds001_seed_table,83,25,2.5,2.5,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000084,RudvUvHOOal4SOD7,4fQMGlCawbTkH9yPPZ49kP,Booker T. & The M.G.'s,Green Onions,history,ds001_seed_table,84,25,2.5,2.5,soul,soul,1,not_applicable_ds001
+ds001_seed_000085,S9NHB8tncOFLjyYh,6to7uMMtCgtONKQxrzZ0F3,Cyndi Lauper,True Colors,history,ds001_seed_table,85,167,16.666667,16.666667,pop,80s,1,not_applicable_ds001
+ds001_seed_000086,SAA2SBcmpbhFsB8Y,5boJKR3VLBW0dc5167wKDE,ABBA,Head Over Heels,history,ds001_seed_table,86,25,2.5,2.5,pop,pop,1,not_applicable_ds001
+ds001_seed_000087,SS0WjBrVPOgSw8HC,2VmB1rF9FtfKUmFHDVnq8Q,The Beatles,Baby It's You,history,ds001_seed_table,87,25,2.5,2.5,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000088,StuJducbhXoaFIYJ,05ZVTnFGjDTnzQHMxK0Bir,James Morrison,Please Don't Stop the Rain,history,ds001_seed_table,88,25,2.5,2.5,pop,pop,1,not_applicable_ds001
+ds001_seed_000089,Sui4UkxqCn3z4n2Q,1Yw6ViCo3tuufI0Hg4mzSU,James Morrison,You Make It Real,history,ds001_seed_table,89,25,2.5,2.5,pop,pop,1,not_applicable_ds001
+ds001_seed_000090,TEnAcMdffxfWONyl,2iIRl5jf9beA2ExZWzn2nt,The Beatles,Lucy in the sky with diamonds - Remix,history,ds001_seed_table,90,42,4.166667,4.166667,psychedelic rock,psychedelic rock,1,not_applicable_ds001
+ds001_seed_000091,TKCScJ2KJ78HCRcB,0Qv7xi6uPSqH2k82tOkGSt,Tears for Fears,Mad World,history,ds001_seed_table,91,25,2.5,2.5,new wave,80s,1,not_applicable_ds001
+ds001_seed_000092,TwVNNHVqSPdJFaqz,00OMaIm4VEsUcXad5Pf1Qe,Tracy Chapman,Behind the Wall,history,ds001_seed_table,92,25,2.5,2.5,folk,female vocalists,1,not_applicable_ds001
+ds001_seed_000093,UCCManHYx1CyyHpG,0YMFcrMtBowDdD5bPz0cgy,Tracy Chapman,Talkin' Bout a Revolution,history,ds001_seed_table,93,36,3.571429,3.571429,folk,folk,1,not_applicable_ds001
+ds001_seed_000094,Usy1B96bUQGLjrjx,5By7Pzgl6TMuVJG168VWzS,The Beatles,Michelle - Remastered,history,ds001_seed_table,94,25,2.5,2.5,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000095,UxnfrRn4Sonejy8X,4MLBqAEzNN89o2M9h92Z26,The Beatles,Get Back,history,ds001_seed_table,95,25,2.5,2.5,rock,rock,1,not_applicable_ds001
+ds001_seed_000096,VDhvqsjG56T7t8jr,2QlPByrmEO9XciNBXCrawR,Steve Winwood,Roll With It,history,ds001_seed_table,96,25,2.5,2.5,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000097,VOqPgoGT5vVkLa3n,1Gg14U26oq94uWcG7khccX,Billy Joel,An Innocent Man,history,ds001_seed_table,97,25,2.5,2.5,pop,80s,1,not_applicable_ds001
+ds001_seed_000098,Ve257XDVBwPNUg7K,3MsQJQPi172pXgXcYGlenx,ABBA,Under Attack,history,ds001_seed_table,98,25,2.5,2.5,pop,pop,1,not_applicable_ds001
+ds001_seed_000099,WOWxCR8vLzQt33x5,01SfTM5nfCou5gQL70r6gs,The Beatles,Golden Slumbers - Remastered,history,ds001_seed_table,99,25,2.5,2.5,rock,rock,1,not_applicable_ds001
+ds001_seed_000100,XPhsdXhKGswGFS85,64UioB4Nmwgn2f4cbIpAkl,Billy Joel,It's Still Rock and Roll to Me,history,ds001_seed_table,100,25,2.5,2.5,rock,rock,1,not_applicable_ds001
+ds001_seed_000101,XQrflLn70qYnXiw1,5jgFfDIR6FR0gvlA56Nakr,The Beatles,Blackbird - Remastered 2009,history,ds001_seed_table,101,25,2.5,2.5,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000102,XkxP8SKGduJBalHe,3XiFWZoHQtGUYIdtShPwPD,Glenn Miller,Moonlight Serenade,history,ds001_seed_table,102,25,2.5,2.5,big band,big band,1,not_applicable_ds001
+ds001_seed_000103,Ydh9qUkrroIymncM,3utq2FgD1pkmIoaWfjXWAU,Billy Joel,Scenes from an Italian Restaurant,history,ds001_seed_table,103,25,2.5,2.5,rock,rock,1,not_applicable_ds001
+ds001_seed_000104,Yh6WQXVEjRQbrnFB,7iN1s7xHE4ifF5povM6A48,The Beatles,Let It Be,history,ds001_seed_table,104,25,2.5,2.5,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000105,YpFT73HDtV6wY1Zs,3XVBdLihbNbxUwZosxcGuJ,Alicia Keys,Diary,history,ds001_seed_table,105,25,2.5,2.5,soul,soul,1,not_applicable_ds001
+ds001_seed_000106,ZVqMzQ2HXZQ0czai,3aAuIvgJGdp4wWd60riWfB,Steve Winwood,Valerie,history,ds001_seed_table,106,25,2.5,2.5,classic rock,80s,1,not_applicable_ds001
+ds001_seed_000107,ZayNF6UdzLYKhbpE,2DjWsDGgL1xNbhnr7f6t5F,Tracy Chapman,Baby Can I Hold You,history,ds001_seed_table,107,25,2.5,2.5,folk,female vocalists,1,not_applicable_ds001
+ds001_seed_000108,ZdJ9xQO7UXEtKKOG,2DQ5r0crvortwaNRYcninK,Elvis Presley,Love Me,history,ds001_seed_table,108,25,2.5,2.5,rock,rock,1,not_applicable_ds001
+ds001_seed_000109,ZhIEXl61ad4ZIeHw,0AvygKcKeMyZlFmDzbqcYK,The Beatles,When I'm Sixty-Four - Remix,history,ds001_seed_table,109,25,2.5,2.5,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000110,a2jdDPn2s274JB4E,2ue1KRstSKHF8jQkIJZiNC,The Beatles,It's Only Love,history,ds001_seed_table,110,25,2.5,2.5,classic rock,60s,1,not_applicable_ds001
+ds001_seed_000111,a9BhHylJgyqIxBWe,50xwQXPtfNZFKFeZ0XePWc,The Beatles,Yellow Submarine,history,ds001_seed_table,111,25,2.5,2.5,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000112,aETTFyZbufNqw9Pu,0nH4SKCFlfnypKLKlNBT1c,ABBA,I Am the City,history,ds001_seed_table,112,25,2.5,2.5,pop,pop,1,not_applicable_ds001
+ds001_seed_000113,adG7LBliQbcLS3eM,6L5BZEcZmD6RBJnimzlyKr,The Moody Blues,Nights in White Satin,history,ds001_seed_table,113,25,2.5,2.5,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000114,bXUtXEansZmn31Bl,34K50Idx5EKBEVWkmHZ2IZ,Elvis Presley,Reconsider Baby,history,ds001_seed_table,114,25,2.5,2.5,blues,fip,1,not_applicable_ds001
+ds001_seed_000115,bbRubPkT5bxwLQpH,7EXMu7qI9Hv5PlMgtmfjES,Moby,We Are All Made of Stars,history,ds001_seed_table,115,5,0.5,0.5,electronic,electronic,1,not_applicable_ds001
+ds001_seed_000116,c0VlO6Z7FmfIJLVV,2M9ro2krNb7nr7HSprkEgo,Tracy Chapman,Fast Car,history,ds001_seed_table,116,25,2.5,2.5,folk,folk,1,not_applicable_ds001
+ds001_seed_000117,cEHfOhOsSTSVgSpF,3Cx4yrFaX8CeHwBMReOWXI,Billy Joel,We Didn't Start the Fire,history,ds001_seed_table,117,25,2.5,2.5,rock,80s,1,not_applicable_ds001
+ds001_seed_000118,cZXcA0XJNGeXkzgu,1xOXXYh6lTW8laxlW7JP2J,Billy Joel,Only the Good Die Young,history,ds001_seed_table,118,25,2.5,2.5,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000119,czL4cbRM6xXV2itL,08rAnrICc7QJl2FxaW45WO,ABBA,Like An Angel Passing Through My Room,history,ds001_seed_table,119,25,2.5,2.5,pop,pop,1,not_applicable_ds001
+ds001_seed_000120,d1bPxFltzwLJuBYc,61xvgZVz1DiR628nmGtsZH,Tracy Chapman,She's Got Her Ticket,history,ds001_seed_table,120,25,2.5,2.5,folk,female vocalists,1,not_applicable_ds001
+ds001_seed_000121,dgrUz3f0xTL2gCGE,24iBrOJoRFiQygVJgkWBRl,Tracy Chapman,For You,history,ds001_seed_table,121,25,2.5,2.5,folk,female vocalists,1,not_applicable_ds001
+ds001_seed_000122,dt2rHqDjy0925YZa,4ZoBC5MhSEzuknIgAkBaoT,Billy Joel,My Life,history,ds001_seed_table,122,25,2.5,2.5,pop,pop,1,not_applicable_ds001
+ds001_seed_000123,eJQFqTOFGOIqtbql,6DWIm1TfM9WiCNQeLbbAsd,Scott Joplin,The Entertainer,history,ds001_seed_table,123,25,2.5,2.5,ragtime,ragtime,1,not_applicable_ds001
+ds001_seed_000124,eZ8zvGe1lJxaAiM5,6PrKZUXJPmBiobMN44yR8Y,Ennio Morricone,The Ecstasy of Gold,history,ds001_seed_table,124,25,2.5,2.5,soundtrack,soundtrack,1,not_applicable_ds001
+ds001_seed_000125,f0HiP8dEZqJXmcnW,65vdMBskhx3akkG9vQlSH1,The Beatles,And I Love Her,history,ds001_seed_table,125,25,2.5,2.5,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000126,f9mg0ghupKNjfeLG,3mlMpmY8oZIBFc39D9zLbh,The Beatles,The Long and Winding Road,history,ds001_seed_table,126,25,2.5,2.5,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000127,fJJCD6DJfQyDgjyh,4U45aEWtQhrm8A5mxPaFZ7,Billy Joel,Vienna,history,ds001_seed_table,127,25,2.5,2.5,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000128,fhNjQgeL91zroEEG,0M8Xggmk34Ntg1wY5wd5A3,Tracy Chapman,Why?,history,ds001_seed_table,128,25,2.5,2.5,folk,folk,1,not_applicable_ds001
+ds001_seed_000129,gKnKZ0Ax7LFtdo0D,4F1AgKpuFRMLEgtPETVwZk,The Beatles,You've Got to Hide Your Love Away,history,ds001_seed_table,129,25,2.5,2.5,classic rock,60s,1,not_applicable_ds001
+ds001_seed_000130,gQbivAeNzh1daC1x,2CvOqDpQIMw69cCzWqr5yr,Beyoncé,Halo,history,ds001_seed_table,130,25,2.5,2.5,pop,pop,1,not_applicable_ds001
+ds001_seed_000131,h6ZdpBDUURD99Ofa,7MsL9a98WUHN76Wks49Zeq,James Morrison,Too Late For Lullabies,history,ds001_seed_table,131,25,2.5,2.5,singer-songwriter,singer-songwriter,1,not_applicable_ds001
+ds001_seed_000132,hSeeghyPuOovg4ED,3SdingSsFcZDZAyvcJbgAw,The Beatles,Can't Buy Me Love,history,ds001_seed_table,132,25,2.5,2.5,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000133,i82ar0zt90BSEhdS,5Qawpf7n2qDIcTaBDK67Sb,ABBA,Cassandra,history,ds001_seed_table,133,25,2.5,2.5,pop,pop,1,not_applicable_ds001
+ds001_seed_000134,iB4aqqnGw5d3hmq2,4lC9s3vwDa16w2G33KfF9C,ABBA,The Visitors,history,ds001_seed_table,134,87,8.75,8.75,pop,pop,1,not_applicable_ds001
+ds001_seed_000135,idAM9CbU70mtINrG,5SUlhldQJtOhUr2GzH5RI7,The Beatles,Nowhere Man - Remastered 2009,history,ds001_seed_table,135,25,2.5,2.5,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000136,iglBkItdGVz3tOAG,3BQHpFgAp4l80e1XslIjNI,The Beatles,Help! - Remastered 2009,history,ds001_seed_table,136,50,5.0,5.0,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000137,ihJzcgC098p5jeUR,4dkoqJrP0L8FXftrMZongF,The Beatles,Across the Universe - Remastered,history,ds001_seed_table,137,25,2.5,2.5,psychedelic folk,psychedelic folk,1,not_applicable_ds001
+ds001_seed_000138,jINYnPgqIQJ6mmMl,43T696K5X1s1mtxIuuUvvz,ABBA,When All Is Said and Done,history,ds001_seed_table,138,25,2.5,2.5,pop,pop,1,not_applicable_ds001
+ds001_seed_000139,jSx0se2IcyE1i8by,68BTFws92cRztMS1oQ7Ewj,The Beatles,All You Need Is Love - Remastered 2009,history,ds001_seed_table,139,25,2.5,2.5,rock,rock,1,not_applicable_ds001
+ds001_seed_000140,jnW0htumn57RO9M1,5YsrGiOhGUGzW89RXrLYGV,Rush,Red Sector A,history,ds001_seed_table,140,25,2.5,2.5,progressive rock,progressive rock,1,not_applicable_ds001
+ds001_seed_000141,jwsubef8YSRz8SAo,2QLQ8R0UbYX5iNNTgmR7V6,Rush,Open Secrets,history,ds001_seed_table,141,25,2.5,2.5,progressive rock,progressive rock,1,not_applicable_ds001
+ds001_seed_000142,jxaHjCUQsD444nrk,788U1Sqej9M6c4iikuDGxO,The Beatles,I've Just Seen a Face,history,ds001_seed_table,142,25,2.5,2.5,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000143,kISjOqvgqlS11n7f,385rLznnaUjxlbQR1oAiU6,Steve Winwood,The Finer Things,history,ds001_seed_table,143,25,2.5,2.5,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000144,kIUFIR4QDKMTWyY3,1Bj6YgjjPbEb4jhQ50T8tJ,Steve Winwood,Back In The High Life Again,history,ds001_seed_table,144,25,2.5,2.5,classic rock,80s,1,not_applicable_ds001
+ds001_seed_000145,kOIoaM8eyUi56jtt,6jBUP2KCe821yqf1hiBqPR,James Morrison,Broken Strings,history,ds001_seed_table,145,25,2.5,2.5,pop,pop,1,not_applicable_ds001
+ds001_seed_000146,kRaJL2dcpl3iRVtQ,2wPTuonKLuHOc3034E7lLY,Peter Gabriel,Steam,history,ds001_seed_table,146,25,2.5,2.5,progressive rock,progressive rock,1,not_applicable_ds001
+ds001_seed_000147,kWs0fdHRRBQrla8u,6EHuOufBeL6vk3TvVJB5qo,The Beatles,Please Please Me - Remastered 2009,history,ds001_seed_table,147,25,2.5,2.5,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000148,kb7H6FbRLXnCra6z,6EXi6ZqTITKGtVBKqbphjL,Moby,Porcelain,history,ds001_seed_table,148,25,2.5,2.5,electronic,chillout,1,not_applicable_ds001
+ds001_seed_000149,kiTxoyOhsiHSvrUJ,20wsyOBewHFZXJdV75vt9K,Isaac Hayes,Run Fay Run,history,ds001_seed_table,149,25,2.5,2.5,funk,funk,1,not_applicable_ds001
+ds001_seed_000150,kpgL9YkG2TykW9gd,40qXGg5nRbcWzcFb26KWkQ,The Beatles,Misery,history,ds001_seed_table,150,25,2.5,2.5,classic rock,60s,1,not_applicable_ds001
+ds001_seed_000151,l05MaeKgw6wjJxLs,1dcphLLksiA99xOQujqUAa,Moby,Honey,history,ds001_seed_table,151,5,0.5,0.5,electronic,electronic,1,not_applicable_ds001
+ds001_seed_000152,lw4m9PxzySLxDSl2,5KXTDunEgNVBnuSBDzsm6x,Genesis,Turn It On Again,history,ds001_seed_table,152,25,2.5,2.5,progressive rock,progressive rock,1,not_applicable_ds001
+ds001_seed_000153,meMTxddMEzfnTqD7,6W26h4KbGUnEaav5VWIyJm,ABBA,The Day Before You Came,history,ds001_seed_table,153,25,2.5,2.5,pop,pop,1,not_applicable_ds001
+ds001_seed_000154,mhen6zCPqULPXTed,6OKUhXuJMvoVPde9fMJJzy,Suzanne Vega,Solitude Standing,history,ds001_seed_table,154,25,2.5,2.5,folk,female vocalists,1,not_applicable_ds001
+ds001_seed_000155,mi8js8zk212SNqLa,5J2CHimS7dWYMImCHkEFaJ,The Beatles,A Hard Day's Night - Remastered,history,ds001_seed_table,155,25,2.5,2.5,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000156,nJamJt72j4tlle1g,4DK3JpX2NkEMhCnltUEvUg,Mason Williams,Classical Gas,history,ds001_seed_table,156,25,2.5,2.5,classic rock,instrumental,1,not_applicable_ds001
+ds001_seed_000157,nM7CF8cIbWP2xY67,1qRA5BS78u3gME0loMl9AA,Buffalo Springfield,For What It's Worth,history,ds001_seed_table,157,25,2.5,2.5,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000158,nhe8AL94tqlw7X7b,7Msq9qojB7yORuJvz49iUy,The Beatles,P.S. I Love You - Remastered 2009,history,ds001_seed_table,158,25,2.5,2.5,rock,rock,1,not_applicable_ds001
+ds001_seed_000159,nrJdjUOX50wfkdDX,3Am0IbOxmvlSXro7N5iSfZ,The Beatles,Magical Mystery Tour,history,ds001_seed_table,159,25,2.5,2.5,classic rock,60s,1,not_applicable_ds001
+ds001_seed_000160,nwFf2NmOZwlcjrfr,7wBf5LhqfF6A9AVHILTJWi,Tracy Chapman,If Not Now...,history,ds001_seed_table,160,25,2.5,2.5,folk,female vocalists,1,not_applicable_ds001
+ds001_seed_000161,ny24slisveRoUbHG,7JxGM1R32ZqfwZou3VtnTg,The Beatles,Boys,history,ds001_seed_table,161,25,2.5,2.5,classic rock,60s,1,not_applicable_ds001
+ds001_seed_000162,oDaxi00bIoYlesLx,1dxbAIfCASqv6jix2R1Taj,The Beatles,Your Mother Should Know,history,ds001_seed_table,162,25,2.5,2.5,classic rock,60s,1,not_applicable_ds001
+ds001_seed_000163,oFJO85A0ZhnelznP,7CIoJE0JfVFcmmUY3fFojH,Franz Liszt,Hungarian Rhapsody No. 2,history,ds001_seed_table,163,25,2.5,2.5,classical,classical,1,not_applicable_ds001
+ds001_seed_000164,ovL1QVHmIMQnjULe,06ypiqmILMdVeaiErMFA91,The Beatles,Drive My Car - remastered,history,ds001_seed_table,164,25,2.5,2.5,rock,rock,1,not_applicable_ds001
+ds001_seed_000165,ovqSpdUbgFRRGdyi,0EaLRxrtnq7Mqhdf8q9txr,Pink Floyd,Run Like Hell,history,ds001_seed_table,165,25,2.5,2.5,progressive rock,progressive rock,1,not_applicable_ds001
+ds001_seed_000166,p7A20RSXaA6h4DNY,1gFNm7cXfG1vSMcxPpSxec,The Beatles,"Ob-La-Di, Ob-La-Da",history,ds001_seed_table,166,25,2.5,2.5,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000167,p9Tw7i7fN4LeGSBR,4QNpBfC0zvjKqPJcyqBy9W,Pitbull,Give Me Everything,history,ds001_seed_table,167,25,2.5,2.5,pop,dance,1,not_applicable_ds001
+ds001_seed_000168,pKa8r2L0a8LJ1I2K,2W2mN3qRAvF172TlNdr71e,James Morrison,Wonderful World,history,ds001_seed_table,168,25,2.5,2.5,pop,pop,1,not_applicable_ds001
+ds001_seed_000169,q1pYqQ7pabjiPLiK,7KWoeBqSdZHEloYKVxssfG,Elvis Presley,In the Ghetto,history,ds001_seed_table,169,25,2.5,2.5,classic rock,60s,1,not_applicable_ds001
+ds001_seed_000170,q6eGnEvANi2I0NEp,3evG0BIqEFMMP7lVJh1cSf,The Beatles,Don't Let Me Down - Remastered 2009,history,ds001_seed_table,170,25,2.5,2.5,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000171,qAKGvFq9liu9CBNq,452KBpASS5lZLeJWX9Ixub,Elvis Presley,Jailhouse Rock,history,ds001_seed_table,171,25,2.5,2.5,classic rock,rock n roll,1,not_applicable_ds001
+ds001_seed_000172,qhZKUL9jq5qIYlE2,1JSIWsJfxOji0FrxFcxdCK,Ennio Morricone,"The Good, The Bad and The Ugly - Main Title",history,ds001_seed_table,172,25,2.5,2.5,soundtrack,soundtrack,1,not_applicable_ds001
+ds001_seed_000173,qiptUsLxxafOMF2P,1GEOSS415bZVHNuXWlCT6b,Pink Floyd,Mother,history,ds001_seed_table,173,25,2.5,2.5,progressive rock,progressive rock,1,not_applicable_ds001
+ds001_seed_000174,ql0ehFkXrSeNq2gU,3wowK80ug94yqlI86A9Ej9,Talk Talk,Happiness Is Easy - 1997 Remaster,history,ds001_seed_table,174,25,2.5,2.5,new wave,new wave,1,not_applicable_ds001
+ds001_seed_000175,rI5G12llOXXzgocS,08hBmJsQarUreIlbhT1GJ0,Moby,The Whispering Wind,history,ds001_seed_table,175,5,0.5,0.5,ambient,ambient,1,not_applicable_ds001
+ds001_seed_000176,rKhKGhLTw5HRbpZ7,5lkpeJwmQKgY3bX2zChjxX,Adele,Someone Like You,history,ds001_seed_table,176,25,2.5,2.5,soul,soul,1,not_applicable_ds001
+ds001_seed_000177,rSZ71tsqQD5GsgSN,7o9uu2GDtVDr9nsR7ZRN73,Cyndi Lauper,Time After Time,history,ds001_seed_table,177,25,2.5,2.5,pop,80s,1,not_applicable_ds001
+ds001_seed_000178,rcOwnwKuHxrByrNx,1HmwvKA2TLUh5QlY7QGLzt,ABBA,You Owe Me One,history,ds001_seed_table,178,25,2.5,2.5,pop,pop,1,not_applicable_ds001
+ds001_seed_000179,sHQ4NOxkSvefPKL8,2EqlS6tkEnglzr7tkKAAYD,The Beatles,Come Together (Remastered 2009),history,ds001_seed_table,179,25,2.5,2.5,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000180,sUzn7GZix4mpeUK4,3jR8Xw0qPyGGv8bvFtNmDw,The Beatles,Getting Better,history,ds001_seed_table,180,29,2.941176,2.941176,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000181,sW2G2sUK5IhR6srj,17i5jLpzndlQhbS4SrTd0B,Johann Sebastian Bach,"Cello Suite No. 1 in G Major, BWV 1007: I. Prélude",history,ds001_seed_table,181,25,2.5,2.5,classical,classical,1,not_applicable_ds001
+ds001_seed_000182,t79ZBHGAN1A2NbOg,5aBPCuLgtWxOt53xcMZVKW,Rush,The Enemy Within,history,ds001_seed_table,182,25,2.5,2.5,progressive rock,progressive rock,1,not_applicable_ds001
+ds001_seed_000183,tSBoahjUECeByewg,6JRLFiX9NJSoRRKxowlBYr,Bob Marley & The Wailers,Kaya,history,ds001_seed_table,183,25,2.5,2.5,reggae,reggae,1,not_applicable_ds001
+ds001_seed_000184,tXrpzpClM4wLWosU,2baEFuU0gQon0hgVRioI1o,The Beatles,Anna (Go to Him),history,ds001_seed_table,184,25,2.5,2.5,classic rock,60s,1,not_applicable_ds001
+ds001_seed_000185,teHrRVv3boBd5myT,2de98HzQLgj4mN9X68IjAu,Yes,Wonderous Stories,history,ds001_seed_table,185,25,2.5,2.5,progressive rock,progressive rock,1,not_applicable_ds001
+ds001_seed_000186,tuA9OQatzhlFyO8d,70C4NyhjD5OZUMzvWZ3njJ,Billy Joel,Piano Man,history,ds001_seed_table,186,25,2.5,2.5,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000187,twTZiJnIkFnPHEF7,5GjPQ0eI7AgmOnADn1EO6Q,The Beatles,Eleanor Rigby - Remastered,history,ds001_seed_table,187,25,2.5,2.5,baroque pop,baroque pop,1,not_applicable_ds001
+ds001_seed_000188,u0eiYoYYMGrIcAEG,2HyPrPSANTIPkR6CfiytwY,Doris Day,Dream a Little Dream of Me,history,ds001_seed_table,188,25,2.5,2.5,jazz,female vocalists,1,not_applicable_ds001
+ds001_seed_000189,u37Ou4VTCKu3G8M9,0j3p1p06deJ7f9xmJ9yG22,The Beatles,Back In The U.S.S.R. - Remastered,history,ds001_seed_table,189,25,2.5,2.5,hard rock,hard rock,1,not_applicable_ds001
+ds001_seed_000190,u7B64d0Vtw9LSy7s,1Dg4dFJr3HW7sbA7vPejre,The Beatles,Eight Days a Week,history,ds001_seed_table,190,25,2.5,2.5,rock,rock,1,not_applicable_ds001
+ds001_seed_000191,uj7iH69jmruknJ9V,49MHCPzvMLXhRjDantBMVH,Billy Joel,Just The Way You Are,history,ds001_seed_table,191,25,2.5,2.5,pop,70s,1,not_applicable_ds001
+ds001_seed_000192,ulMPRuWan46llLA0,7xxZUTxxlkiFEMzL6lYXtF,Rush,Cygnus X-1,history,ds001_seed_table,192,25,2.5,2.5,progressive rock,progressive rock,1,not_applicable_ds001
+ds001_seed_000193,umwmt9WBlxEWLrE7,4gMgiXfqyzZLMhsksGmbQV,Pink Floyd,"Another Brick in the Wall, Pt. 2",history,ds001_seed_table,193,25,2.5,2.5,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000194,v8APALdGAhTc4hdo,5XMJBKj01EU7asjQCAlYhu,"Harry Connick, Jr.",A Wink and a Smile,history,ds001_seed_table,194,25,2.5,2.5,jazz,jazz,1,not_applicable_ds001
+ds001_seed_000195,vh5gcly9V14bYFlF,7gMOe0gXYcELUoVugfMmHP,Billy Joel,You May Be Right,history,ds001_seed_table,195,25,2.5,2.5,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000196,w0lG1tWinVrGp5xK,1B5Tp2Ml9nLlmTSJx8xVfI,Elvis Presley,Always On My Mind,history,ds001_seed_table,196,25,2.5,2.5,classic rock,oldies,1,not_applicable_ds001
+ds001_seed_000197,wLsNwj3xRaEkb36J,7CZiDzGVjUssMSOXrDNYHL,The Beatles,Ticket to Ride,history,ds001_seed_table,197,25,2.5,2.5,classic rock,60s,1,not_applicable_ds001
+ds001_seed_000198,wWr87YN3j07FWo5d,34E0Higz6fFVXlbVsn6TIW,Billy Joel,Honesty,history,ds001_seed_table,198,25,2.5,2.5,pop,70s,1,not_applicable_ds001
+ds001_seed_000199,wYdW8jGnrLfB8PhF,7pKfPomDEeI4TPT6EOYjn9,John Lennon,Imagine,history,ds001_seed_table,199,25,2.5,2.5,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000200,wYoJBT9Lg1bBf8Nd,2UoxRLlTWbVnH1xvXOKfrE,Moby,One Of These Mornings,history,ds001_seed_table,200,5,0.5,0.5,electronic,electronic,1,not_applicable_ds001
+ds001_seed_000201,wi20guqqLvHXZvTu,2JhIaeltCDCcp02K936tgx,Tears for Fears,Change,history,ds001_seed_table,201,25,2.5,2.5,new wave,80s,1,not_applicable_ds001
+ds001_seed_000202,wpyLLsDEjbhFrTRt,1V15l05snHYHYVxerjMFGo,The Police,King of Pain,history,ds001_seed_table,202,25,2.5,2.5,rock,rock,1,not_applicable_ds001
+ds001_seed_000203,wynbXLf0gt4hfRby,4AE032Y0x1WPOi5CsmggnU,Scott Joplin,Maple Leaf Rag,history,ds001_seed_table,203,25,2.5,2.5,ragtime,ragtime,1,not_applicable_ds001
+ds001_seed_000204,wzBQapgHuYmDanR9,4joiWvli4qJVEW6qZV2i2J,The Beatles,All My Loving,history,ds001_seed_table,204,25,2.5,2.5,classic rock,60s,1,not_applicable_ds001
+ds001_seed_000205,x0NWP5jCon9IHrG0,762B4bOcXF7I2Y8UlKTyTy,ABBA,Chiquitita,history,ds001_seed_table,205,25,2.5,2.5,pop,pop,1,not_applicable_ds001
+ds001_seed_000206,x2AFbVbFJ8Na3lQg,6J212smZzpeOCYQ9DITMSC,Billy Joel,A Matter Of Trust,history,ds001_seed_table,206,25,2.5,2.5,rock,rock,1,not_applicable_ds001
+ds001_seed_000207,xT64RcWqBTj2zDCC,3MODES4TNtygekLl146Dxd,Led Zeppelin,Ramble On,history,ds001_seed_table,207,25,2.5,2.5,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000208,xsAC7LEsEv3vlz4p,7uCnDfUGb0vtjonHaSv6ka,Moby,In This World,history,ds001_seed_table,208,5,0.5,0.5,electronic,electronic,1,not_applicable_ds001
+ds001_seed_000209,y8AxY885GUWQuyCR,5ZBeML7Lf3FMEVviTyvi8l,The Beatles,Twist and Shout,history,ds001_seed_table,209,25,2.5,2.5,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000210,y8D6klsSSV37sR3E,1PHBBJNH4WFuDBlAuVKWMA,Elton John,Have Mercy On The Criminal,history,ds001_seed_table,210,25,2.5,2.5,pop,pop,1,not_applicable_ds001
+ds001_seed_000211,yWRhfm4JZ4VqIuS8,5zA8vzDGqPl2AzZkEYQGKh,Billy Joel,Uptown Girl,history,ds001_seed_table,211,25,2.5,2.5,pop,80s,1,not_applicable_ds001
+ds001_seed_000212,yiNlhVBKm5rEIWXf,4w1lzcaoZ1IC2K5TwjalRP,Vanessa Carlton,A Thousand Miles,history,ds001_seed_table,212,25,2.5,2.5,pop,pop,1,not_applicable_ds001
+ds001_seed_000213,yqNY16s5yT0amiRZ,0BCPKOYdS2jbQ8iyB56Zns,Coldplay,Clocks,history,ds001_seed_table,213,25,2.5,2.5,rock,rock,1,not_applicable_ds001
+ds001_seed_000214,z6cWTXD9qNglPS4w,1JLn8RhQzHz3qDqsChcmBl,Foreigner,I Want to Know What Love Is,history,ds001_seed_table,214,25,2.5,2.5,classic rock,80s,1,not_applicable_ds001
+ds001_seed_000215,zJB6BWFhqkPeY8OA,6TI91Un4sxz3ehEhguwKuc,ABBA,Soldiers,history,ds001_seed_table,215,25,2.5,2.5,pop,pop,1,not_applicable_ds001
+ds001_seed_000216,zMtZubmfy3SOxtgg,6iLzFJhs4ATwJn7P1utZIJ,Ramin Djawadi,Light of the Seven,history,ds001_seed_table,216,25,2.5,2.5,soundtrack,game of thrones,1,not_applicable_ds001
+ds001_seed_000217,zVe3ALTXIuXPDoCc,5cHnoalJPx909Umw8EoroV,Rush,The Trees,history,ds001_seed_table,217,25,2.5,2.5,progressive rock,progressive rock,1,not_applicable_ds001
+ds001_seed_000218,zeGyVR3p3GQ8a7gv,3KiexfmhxHvG5IgAElmTkd,The Beatles,I Saw Her Standing There,history,ds001_seed_table,218,25,2.5,2.5,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000219,zjAaPKwKnysMKLhT,2B4Y9u4ERAFiMo13XPJyGP,The Beatles,"Here, There and Everywhere",history,ds001_seed_table,219,25,2.5,2.5,classic rock,60s,1,not_applicable_ds001
+ds001_seed_000220,zp0LFbOG09bow7VL,4tFumK7mnlcpNeHCNEQ4wc,Steve Winwood,While You See a Chance,history,ds001_seed_table,220,250,25.0,25.0,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000221,zxkjK9m2IBpYzqWl,5wQnmLuC1W7ATsArWACrgW,My Chemical Romance,Romance,history,ds001_seed_table,221,25,2.5,2.5,emo,instrumental,1,not_applicable_ds001

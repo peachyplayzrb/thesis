@@ -94,12 +94,12 @@ status: open
 id: MQ-008
 date: 2026-03-21
 topic: Candidate corpus size and Music4All access
-question: The current candidate corpus (DS-002) has 9,330 tracks from the MSD 10 K subset + Last.fm subset join. The full MSD core is inaccessible locally and full Last.fm integration was deferred as a future improvement. Is DS-002 corpus size sufficient for a convincing and well-marked thesis demonstration? Does the department or institution have existing access to the Music4All-Onion dataset (109,269 tracks, zenodo.org/records/15394646) that could be shared, or is a direct email to the dataset authors the correct route?
-why_it_matters: Determines whether corpus size is a marking risk and whether Music4All access can be obtained faster through institutional channels rather than a cold email to the dataset authors (which may have a slower or uncertain response time).
+question: The active candidate corpus is now DS-001 (Music4All base, 109,269 tracks). Is this corpus size and coverage sufficient for a convincing and well-marked thesis demonstration, and are there any institutional restrictions we should explicitly document in the report regarding dataset usage, retention, and redistribution?
+why_it_matters: Determines whether current DS-001 corpus posture is assessment-safe and whether any mentor-specified governance constraints should be added before submission hardening.
 affected_files:
 - 06_data_and_sources/dataset_registry.md
-- 07_implementation/implementation_notes/data_layer/full_dataset_acquisition_checklist_2026-03-21.md
-- 00_admin/decision_log.md (D-020)
+- 00_admin/thesis_state.md
+- 00_admin/decision_log.md (D-028)
 urgency: medium
 status: deferred
-deferred_reason: Access-route subquestion is operationally progressed (author email path executed and provider response received). Remaining mentor input concerns corpus sufficiency judgment, which is review-stage rather than run-stage blocking.
+deferred_reason: Access route is closed operationally (credentials released and DS-001 active). Remaining mentor input concerns corpus-sufficiency and governance-interpretation judgment, which is review-stage rather than run-stage blocking.

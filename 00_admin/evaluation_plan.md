@@ -45,7 +45,7 @@ Use Table EP-1 as the execution contract between design intent and Chapter 4 evi
 | `EP-RULE-001` | Playlist length rule | Vary target playlist length | `actual_playlist_length` | playlist output + rule logs | Output length equals configured target or explicit violation logged |
 | `EP-RULE-002` | Artist repetition limit | Lower max repeats per artist | `max_artist_repeats_observed` | playlist output + rule logs | Observed repeats do not exceed configured limit |
 | `EP-OBS-001` | Run observability completeness | Execute full pipeline run | required-field completeness over run schema | run metadata + stage diagnostics | All required run sections present (metadata, config, alignment, scoring, assembly, output) |
-| `EP-ALIGN-001` | Enrichment/alignment behavior visibility | Semantic enrichment with source-scope filtering enabled | `tagged_events`, `no_tags_rate`, `enrichment_error_rate`, `effective_scope_recorded` | enrichment summary + scope manifest + diagnostics | Coverage, no-tag/error categories, and effective scope are all reported with traceable artifacts |
+| `EP-ALIGN-001` | Alignment behavior visibility | DS-001 direct alignment with source-scope filtering enabled | `matched_events`, `unmatched_rate`, `match_method_counts`, `effective_scope_recorded` | alignment summary + scope manifest + diagnostics | Match/unmatched categories, method counts, and effective scope are all reported with traceable artifacts |
 
 ## Measurement Rules
 
