@@ -125,6 +125,42 @@ def last_n_genres(playlist: list, n: int) -> list:
     return [t["lead_genre"] for t in playlist[-n:]]
 
 
+def build_undersized_diagnostics(
+    target_size: int,
+    playlist_size: int,
+    candidates_evaluated: int,
+    trace_rows: list[dict],
+) -> dict:
+    is_undersized = playlist_size < target_size
+    exclusion_counts = Counter(
+        str(row.get("exclusion_reason") or "")
+        for row in trace_rows
+        if row.get("decision") == "excluded" and row.get("exclusion_reason")
+    )
+
+    reasons: list[str] = []
+    if is_undersized:
+        shortfall = target_size - playlist_size
+        reasons.append(
+            f"final playlist length is {playlist_size}/{target_size} (shortfall={shortfall})"
+        )
+        if candidates_evaluated < target_size:
+            reasons.append(
+                f"candidate pool is smaller than target size ({candidates_evaluated} < {target_size})"
+            )
+        for reason, count in exclusion_counts.most_common(3):
+            reasons.append(f"exclusion pressure: {reason} ({count} rows)")
+
+    return {
+        "is_undersized": is_undersized,
+        "target_size": target_size,
+        "actual_size": playlist_size,
+        "shortfall": max(0, target_size - playlist_size),
+        "exclusion_reason_counts": dict(exclusion_counts),
+        "reasons": reasons,
+    }
+
+
 # ---------------------------------------------------------------------------
 # Main
 # ---------------------------------------------------------------------------
@@ -242,6 +278,12 @@ def main() -> None:
     included    = [r for r in trace_rows if r["decision"] == "included"]
     excluded    = [r for r in trace_rows if r["decision"] != "included"]
     genre_mix   = Counter(t["lead_genre"] for t in playlist)
+    undersized_diagnostics = build_undersized_diagnostics(
+        target_size=target_size,
+        playlist_size=len(playlist),
+        candidates_evaluated=len(candidates),
+        trace_rows=trace_rows,
+    )
 
     report_path = OUTPUT_DIR / "bl007_assembly_report.json"
     report = {
@@ -255,10 +297,11 @@ def main() -> None:
             "tracks_excluded":      len(excluded),
         },
         "rule_hits":              dict(rule_hits),
+        "undersized_playlist_warning": undersized_diagnostics,
         "playlist_genre_mix":     dict(genre_mix),
         "playlist_score_range": {
-            "max": round(max(t["final_score"] for t in playlist), 6),
-            "min": round(min(t["final_score"] for t in playlist), 6),
+            "max": round(max(t["final_score"] for t in playlist), 6) if playlist else None,
+            "min": round(min(t["final_score"] for t in playlist), 6) if playlist else None,
         },
         "input_artifact_hashes": {
             "bl006_scored_candidates.csv": sha256(SCORED_CANDIDATES_PATH),
@@ -273,6 +316,10 @@ def main() -> None:
     print(f"BL-007 playlist assembly complete.  Playlist: {len(playlist)}/{target_size} tracks")
     print(f"Run ID : {run_id}")
     print(f"Genre mix : {dict(genre_mix)}")
+    if undersized_diagnostics["is_undersized"]:
+        print("WARNING: BL-007 produced an undersized playlist.")
+        for reason in undersized_diagnostics["reasons"]:
+            print(f"  - {reason}")
 
 
 if __name__ == "__main__":

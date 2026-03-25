@@ -79,7 +79,6 @@ def main() -> int:
         "bl008_summary": REPO_ROOT / "07_implementation/implementation_notes/transparency/outputs/bl008_explanation_summary.json",
         "bl009_log": REPO_ROOT / "07_implementation/implementation_notes/observability/outputs/bl009_run_observability_log.json",
         "bl009_index": REPO_ROOT / "07_implementation/implementation_notes/observability/outputs/bl009_run_index.csv",
-        "bl019_dataset": REPO_ROOT / "07_implementation/implementation_notes/data_layer/outputs/bl019_ds002_integrated_candidate_dataset.csv",
         "bl004_seed_trace": REPO_ROOT / "07_implementation/implementation_notes/profile/outputs/bl004_seed_trace.csv",
     }
 
@@ -105,6 +104,7 @@ def main() -> int:
     hashes = {name: sha256_file(path) for name, path in artifacts.items()}
 
     checks: list[dict[str, Any]] = []
+    advisories: list[dict[str, Any]] = []
 
     def check(check_id: str, passed: bool, details: str) -> None:
         checks.append({"id": check_id, "status": "pass" if passed else "fail", "details": details})
@@ -130,15 +130,20 @@ def main() -> int:
 
     filtered_required_cols = {
         "track_id",
-        "artist_name",
-        "title",
-        "tags_json",
-        "tag_count",
+        "id",
+        "artist",
+        "song",
+        "tags",
+        "genres",
         "tempo",
-        "loudness",
+        "duration_ms",
         "key",
         "mode",
     }
+    candidate_stub_path = Path(bl005_diag["input_artifacts"]["candidate_stub_path"])
+    ensure_exists(candidate_stub_path)
+    candidate_stub_hash = sha256_file(candidate_stub_path)
+
     check(
         "schema_bl005_filtered_csv",
         filtered_required_cols.issubset(set(csv_header(artifacts["bl005_filtered"]))),
@@ -213,8 +218,8 @@ def main() -> int:
     )
     check(
         "hash_bl005_input_dataset",
-        bl005_diag["input_artifacts"]["candidate_stub_sha256"].upper() == hashes["bl019_dataset"],
-        "BL-005 references BL-019 candidate dataset hash correctly",
+        bl005_diag["input_artifacts"]["candidate_stub_sha256"].upper() == candidate_stub_hash,
+        "BL-005 references candidate dataset hash correctly",
     )
     check(
         "hash_bl005_outputs",
@@ -279,6 +284,9 @@ def main() -> int:
     )
 
     playlist_len = int(bl007_playlist["playlist_length"])
+    bl007_target_size = int((bl007_playlist.get("config") or {}).get("target_size", playlist_len))
+    undersized_shortfall = max(0, bl007_target_size - playlist_len)
+    undersized_playlist = undersized_shortfall > 0
     explanations_len = int(bl008_payloads["playlist_track_count"])
     check(
         "continuity_bl007_bl008_counts",
@@ -305,6 +313,18 @@ def main() -> int:
         "BL-009 index run_ids match upstream stage run_ids",
     )
 
+    if undersized_playlist:
+        advisories.append(
+            {
+                "id": "advisory_bl007_undersized_playlist",
+                "details": (
+                    f"BL-007 produced {playlist_len}/{bl007_target_size} tracks "
+                    f"(shortfall={undersized_shortfall}). Review BL-007 assembly report "
+                    "undersized_playlist_warning for exclusion pressures."
+                ),
+            }
+        )
+
     passed = sum(1 for item in checks if item["status"] == "pass")
     failed = len(checks) - passed
     overall_status = "pass" if failed == 0 else "fail"
@@ -321,6 +341,8 @@ def main() -> int:
         "checks_total": len(checks),
         "checks_passed": passed,
         "checks_failed": failed,
+        "advisories_total": len(advisories),
+        "advisories": advisories,
         "artifact_hashes_sha256": {k: v for k, v in hashes.items()},
         "checks": checks,
     }
@@ -350,6 +372,7 @@ def main() -> int:
             "BL-005 kept count matches filtered rows",
             "BL-006 scored count matches scored rows",
             "BL-007 playlist count aligns with BL-008 explanations",
+            "BL-007 undersized playlist advisory flagging",
             "BL-009 index counts align with upstream stage outputs",
             "BL-009 run_id linkage aligns with upstream stage summaries",
         ],
@@ -381,6 +404,9 @@ def main() -> int:
                 "bl005_kept_candidates",
                 "bl006_candidates_scored",
                 "playlist_length",
+                "bl007_target_size",
+                "undersized_playlist",
+                "undersized_shortfall",
                 "explanation_count",
                 "bl009_run_id",
                 "bl007_playlist_sha256",
@@ -400,6 +426,9 @@ def main() -> int:
                 "bl005_kept_candidates": bl005_kept,
                 "bl006_candidates_scored": bl006_scored_count,
                 "playlist_length": playlist_len,
+                "bl007_target_size": bl007_target_size,
+                "undersized_playlist": str(undersized_playlist).lower(),
+                "undersized_shortfall": undersized_shortfall,
                 "explanation_count": explanations_len,
                 "bl009_run_id": bl009_index["run_id"],
                 "bl007_playlist_sha256": hashes["bl007_playlist"],

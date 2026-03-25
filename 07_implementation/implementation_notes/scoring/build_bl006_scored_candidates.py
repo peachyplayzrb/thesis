@@ -88,7 +88,7 @@ def apply_numeric_threshold_overrides(specs: dict[str, dict[str, object]]) -> No
 def build_active_component_weights(
     active_numeric_components: set[str],
     component_weights: dict[str, float],
-) -> dict[str, float]:
+) -> tuple[dict[str, float], dict[str, object]]:
     active = {
         component: weight
         for component, weight in component_weights.items()
@@ -97,7 +97,23 @@ def build_active_component_weights(
     total = sum(active.values())
     if total <= 0:
         raise RuntimeError("BL-006 requires at least one active scoring component")
-    return {component: weight / total for component, weight in active.items()}
+
+    normalized = {component: weight / total for component, weight in active.items()}
+    rebalanced = abs(total - 1.0) > 1e-9
+    diagnostics = {
+        "rebalanced": rebalanced,
+        "active_weight_sum_pre_normalization": round(total, 6),
+        "active_component_count": len(active),
+        "inactive_components": sorted(set(component_weights) - set(active)),
+        "original_active_component_weights": {k: round(v, 6) for k, v in active.items()},
+        "normalized_active_component_weights": {k: round(v, 6) for k, v in normalized.items()},
+        "warning": (
+            "BL-006 rebalanced active component weights to sum to 1.0"
+            if rebalanced
+            else None
+        ),
+    }
+    return normalized, diagnostics
 
 
 def repo_root() -> Path:
@@ -233,6 +249,14 @@ def parse_csv_labels(raw_value: str) -> list[str]:
     return labels
 
 
+def resolve_lead_genre(candidate_genres: list[str], candidate_tags: list[str]) -> str:
+    if candidate_genres:
+        return candidate_genres[0]
+    if candidate_tags:
+        return candidate_tags[0]
+    return ""
+
+
 def normalize_weight_map(items: list[dict[str, object]], top_k: int) -> tuple[dict[str, float], float]:
     subset = items[:top_k]
     weight_map: dict[str, float] = {}
@@ -349,7 +373,10 @@ def main() -> None:
         if profile_column in profile["numeric_feature_profile"]
         and resolved_column is not None
     }
-    active_component_weights = build_active_component_weights(set(active_numeric_specs), effective_component_weights)
+    active_component_weights, weight_rebalance_diagnostics = build_active_component_weights(
+        set(active_numeric_specs),
+        effective_component_weights,
+    )
     if round(sum(active_component_weights.values()), 6) != 1.0:
         raise RuntimeError("BL-006 active component weights must sum to 1.0")
 
@@ -366,12 +393,7 @@ def main() -> None:
         # DS-001 semantic labels are provided as explicit CSV lists.
         candidate_tags = parse_csv_labels(row.get("tags", ""))
         candidate_genres = parse_csv_labels(row.get("genres", ""))
-        if candidate_tags:
-            lead_genre = candidate_tags[0]
-        elif candidate_genres:
-            lead_genre = candidate_genres[0]
-        else:
-            lead_genre = ""
+        lead_genre = resolve_lead_genre(candidate_genres, candidate_tags)
 
         component_similarity: dict[str, float] = {}
         component_contribution: dict[str, float] = {}
@@ -494,6 +516,7 @@ def main() -> None:
             "base_component_weights": effective_component_weights,
             "active_component_weights": {key: round(value, 6) for key, value in active_component_weights.items()},
             "inactive_components": sorted(set(effective_component_weights) - set(active_component_weights)),
+            "weight_rebalance_diagnostics": weight_rebalance_diagnostics,
             "lead_genre_normalization": "candidate lead genre weight divided by max profile lead-genre weight",
             "genre_overlap_normalization": "sum overlapping profile genre weights / sum top profile genre weights",
             "tag_overlap_normalization": "sum overlapping profile tag weights / sum top profile tag weights",
@@ -532,6 +555,12 @@ def main() -> None:
         json.dump(summary, handle, indent=2, ensure_ascii=True)
 
     print("BL-006 candidate scoring complete.")
+    if weight_rebalance_diagnostics["rebalanced"]:
+        print("WARNING: BL-006 rebalanced component weights.")
+        print(
+            "  original_active_weight_sum="
+            f"{weight_rebalance_diagnostics['active_weight_sum_pre_normalization']}"
+        )
     print(f"scored_candidates={scored_path}")
     print(f"score_summary={summary_path}")
 

@@ -34,6 +34,8 @@ STABLE_ARTIFACTS = {
     "bl007_assembly_trace": "07_implementation/implementation_notes/playlist/outputs/bl007_assembly_trace.csv",
 }
 
+BL003_SUMMARY_PATH = "07_implementation/implementation_notes/alignment/outputs/bl003_ds001_spotify_summary.json"
+
 
 def repo_root() -> Path:
     return Path(__file__).resolve().parents[3]
@@ -112,6 +114,93 @@ def sha256_of_file(path: Path) -> str:
         for chunk in iter(lambda: handle.read(1024 * 1024), b""):
             digest.update(chunk)
     return digest.hexdigest().upper()
+
+
+def load_json(path: Path) -> dict[str, object]:
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
+def _normalized_contract_from_effective(run_effective_config_path: Path) -> dict[str, object]:
+    payload = load_json(run_effective_config_path)
+    effective = payload.get("effective_config") or {}
+    if not isinstance(effective, dict):
+        effective = {}
+
+    input_scope = effective.get("input_scope") or {}
+    influence = effective.get("influence_tracks") or {}
+    if not isinstance(input_scope, dict):
+        input_scope = {}
+    if not isinstance(influence, dict):
+        influence = {}
+
+    return {
+        "input_scope": input_scope,
+        "influence_tracks": {
+            "enabled": bool(influence.get("enabled", False)),
+            "track_ids": list(influence.get("track_ids") or []),
+            "preference_weight": float(influence.get("preference_weight") or 1.0),
+        },
+    }
+
+
+def _normalized_contract_from_bl003_summary(summary_path: Path) -> dict[str, object]:
+    payload = load_json(summary_path)
+    inputs = payload.get("inputs") or {}
+    if not isinstance(inputs, dict):
+        raise RuntimeError("BL-003 summary malformed: inputs block missing")
+
+    seed_contract = inputs.get("seed_contract") or {}
+    if isinstance(seed_contract, dict) and seed_contract:
+        input_scope = seed_contract.get("input_scope") or {}
+        influence = seed_contract.get("influence_tracks") or {}
+    else:
+        # Backward-compat for older summaries before seed_contract was introduced.
+        input_scope = inputs.get("input_scope") or {}
+        influence = inputs.get("influence_tracks") or {}
+
+    if not isinstance(input_scope, dict):
+        input_scope = {}
+    if not isinstance(influence, dict):
+        influence = {}
+
+    return {
+        "config_source": str(inputs.get("config_source") or ""),
+        "run_config_path": inputs.get("run_config_path"),
+        "input_scope": input_scope,
+        "influence_tracks": {
+            "enabled": bool(influence.get("enabled", False)),
+            "track_ids": list(influence.get("track_ids") or []),
+            "preference_weight": float(influence.get("preference_weight") or 1.0),
+        },
+    }
+
+
+def validate_bl003_seed_freshness(
+    root: Path,
+    run_config_path: Path,
+    run_effective_config_path: Path,
+) -> tuple[bool, str]:
+    summary_path = root / BL003_SUMMARY_PATH
+    if not summary_path.exists():
+        return False, "BL-003 summary missing; cannot validate seed freshness"
+
+    expected = _normalized_contract_from_effective(run_effective_config_path)
+    observed = _normalized_contract_from_bl003_summary(summary_path)
+
+    if observed["config_source"] != "run_config":
+        return False, "BL-003 seed was not built in run_config mode"
+
+    observed_path = observed.get("run_config_path")
+    if observed_path and str(Path(str(observed_path)).resolve()) != str(run_config_path.resolve()):
+        return False, "BL-003 seed was built with a different run_config path"
+
+    if observed["input_scope"] != expected["input_scope"]:
+        return False, "BL-003 input_scope does not match current effective run_config"
+
+    if observed["influence_tracks"] != expected["influence_tracks"]:
+        return False, "BL-003 influence_tracks contract does not match current effective run_config"
+
+    return True, "ok"
 
 
 def compute_stable_artifact_hashes(root: Path) -> tuple[dict[str, str], list[str]]:
@@ -263,6 +352,65 @@ def main() -> None:
 
     stage_results: list[dict[str, object]] = []
     pipeline_started = time.time()
+
+    if run_config_path is not None and not args.refresh_seed:
+        is_fresh, reason = validate_bl003_seed_freshness(
+            root=root,
+            run_config_path=run_config_path,
+            run_effective_config_path=run_effective_config_path,
+        )
+        if not is_fresh:
+            guard_result = {
+                "stage_id": "BL-003-FRESHNESS-GUARD",
+                "script_path": BL003_SCRIPT,
+                "command": [args.python, BL003_SCRIPT],
+                "run_config_path": str(run_config_path),
+                "run_intent_path": str(run_intent_path),
+                "run_effective_config_path": str(run_effective_config_path),
+                "return_code": 2,
+                "status": "fail",
+                "elapsed_seconds": 0.0,
+                "stdout": "",
+                "stderr": (
+                    f"Seed freshness guard failed: {reason}. "
+                    "Run BL-013 with --refresh-seed when using --run-config."
+                ),
+            }
+            stage_results.append(guard_result)
+            elapsed_pipeline = round(time.time() - pipeline_started, 3)
+            stable_hashes, missing_stable = compute_stable_artifact_hashes(root)
+            summary = {
+                "run_id": run_id,
+                "task": "BL-013",
+                "generated_at_utc": generated_at_utc,
+                "overall_status": "fail",
+                "continue_on_error": bool(args.continue_on_error),
+                "python_executable": args.python,
+                "run_config_path": str(run_config_path),
+                "canonical_run_config_artifacts": run_config_artifacts,
+                "refresh_seed": bool(args.refresh_seed),
+                "requested_stage_order": stage_order,
+                "executed_stage_count": len(stage_results),
+                "failed_stage_count": 1,
+                "elapsed_seconds": elapsed_pipeline,
+                "stage_results": stage_results,
+                "stable_artifact_hashes": stable_hashes,
+                "missing_stable_artifacts": missing_stable,
+                "notes": {
+                    "purpose": "Lightweight wrapper to run existing BL-004..BL-009 scripts in one command.",
+                    "repeatability_check_guidance": "Compare stable_artifact_hashes between repeated runs under unchanged inputs/config.",
+                },
+            }
+            summary_path = output_dir / f"{args.summary_prefix}_{run_id}.json"
+            summary_path.write_text(json.dumps(summary, indent=2, ensure_ascii=True), encoding="utf-8")
+            latest_path = output_dir / f"{args.summary_prefix}_latest.json"
+            latest_path.write_text(json.dumps(summary, indent=2, ensure_ascii=True), encoding="utf-8")
+            print("BL-013 orchestration complete: status=fail")
+            print(f"run_id={run_id}")
+            print(f"summary={summary_path}")
+            print(f"latest={latest_path}")
+            print("failed_stage=BL-003-FRESHNESS-GUARD return_code=2")
+            raise SystemExit(1)
 
     if args.refresh_seed:
         seed_result = run_bl003_seed_refresh(

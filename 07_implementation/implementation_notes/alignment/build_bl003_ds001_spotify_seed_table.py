@@ -74,6 +74,7 @@ SEED_TABLE_FIELDNAMES = [
     "preference_weight_max",
     "source_types",
     "spotify_track_ids",
+    "interaction_types",
 ]
 
 
@@ -297,6 +298,11 @@ def sha256_of_file(path: Path) -> str:
         for chunk in iter(lambda: handle.read(1024 * 1024), b""):
             digest.update(chunk)
     return digest.hexdigest().upper()
+
+
+def canonical_json_hash(payload: object) -> str:
+    text = json.dumps(payload, sort_keys=True, ensure_ascii=True, separators=(",", ":"))
+    return hashlib.sha256(text.encode("utf-8")).hexdigest().upper()
 
 
 def normalize_text(value: str) -> str:
@@ -537,6 +543,7 @@ def main() -> None:
 
     ds001_rows = load_csv(ds001_path)
     by_spotify_id, by_title_artist = build_ds001_indices(ds001_rows)
+    by_ds001_id: dict[str, dict[str, str]] = {str(row.get("id", "")).strip(): row for row in ds001_rows if row.get("id", "").strip()}
 
     events: list[dict[str, str]] = []
     events.extend(to_event_rows("top_tracks", selected_rows["top_tracks"]))
@@ -665,9 +672,65 @@ def main() -> None:
             "lang": matched_row.get("lang", ""),
             "preference_weight": weight,
             "interaction_count": max(1, int(round(weight * 10))),
+            "interaction_type": "history",
         }
         matched_events.append(matched_event)
         trace_rows.append(trace)
+
+    # --- Influence track injection ---
+    run_config_path_infl = os.environ.get("BL_RUN_CONFIG_PATH", "").strip() or None
+    influence_injected_count = 0
+    influence_skipped_ids: list[str] = []
+    if run_config_path_infl:
+        _rc_utils = load_run_config_utils_module()
+        infl = _rc_utils.resolve_bl003_influence_controls(run_config_path_infl)
+        if infl["influence_enabled"] and infl["influence_track_ids"]:
+            infl_weight = float(infl["influence_preference_weight"])
+            existing_ds001_ids = {str(e["ds001_id"]) for e in matched_events}
+            for track_id in infl["influence_track_ids"]:
+                candidate = by_ds001_id.get(track_id)
+                if candidate is None:
+                    influence_skipped_ids.append(track_id)
+                    continue
+                if track_id in existing_ds001_ids:
+                    for ev in matched_events:
+                        if str(ev["ds001_id"]) == track_id:
+                            ev["interaction_type"] = "history,influence"
+                else:
+                    infl_event = {
+                        "event_id": f"ds001_influence_{influence_injected_count + 1:06d}",
+                        "source_type": "influence",
+                        "source_row_index": 0,
+                        "source_timestamp": "",
+                        "spotify_track_id": candidate.get("spotify_id", ""),
+                        "spotify_isrc": "",
+                        "spotify_track_name": candidate.get("song", ""),
+                        "spotify_artist_names": candidate.get("artist", ""),
+                        "match_method": "influence_direct",
+                        "duration_delta_ms": None,
+                        "ds001_id": candidate.get("id", ""),
+                        "ds001_spotify_id": candidate.get("spotify_id", ""),
+                        "artist": candidate.get("artist", ""),
+                        "song": candidate.get("song", ""),
+                        "release": candidate.get("release", ""),
+                        "duration_ms": candidate.get("duration_ms", ""),
+                        "popularity": candidate.get("popularity", ""),
+                        "danceability": candidate.get("danceability", ""),
+                        "energy": candidate.get("energy", ""),
+                        "key": candidate.get("key", ""),
+                        "mode": candidate.get("mode", ""),
+                        "valence": candidate.get("valence", ""),
+                        "tempo": candidate.get("tempo", ""),
+                        "genres": candidate.get("genres", ""),
+                        "tags": candidate.get("tags", ""),
+                        "lang": candidate.get("lang", ""),
+                        "preference_weight": infl_weight,
+                        "interaction_count": max(1, int(round(infl_weight * 10))),
+                        "interaction_type": "influence",
+                    }
+                    matched_events.append(infl_event)
+                    existing_ds001_ids.add(track_id)
+                influence_injected_count += 1
 
     aggregated: dict[str, dict[str, object]] = {}
 
@@ -697,6 +760,7 @@ def main() -> None:
                 "preference_weight_sum": 0.0,
                 "preference_weight_max": 0.0,
                 "source_types": set(),
+                "interaction_types": set(),
                 "spotify_track_ids": set(),
             }
             aggregated[ds001_id] = agg
@@ -708,6 +772,10 @@ def main() -> None:
         agg["source_types"].add(str(event["source_type"]))
         if event["spotify_track_id"]:
             agg["spotify_track_ids"].add(str(event["spotify_track_id"]))
+        for itype in str(event.get("interaction_type", "history")).split(","):
+            itype = itype.strip()
+            if itype:
+                agg["interaction_types"].add(itype)
 
     output_dir.mkdir(parents=True, exist_ok=True)
 
@@ -751,6 +819,7 @@ def main() -> None:
                     "preference_weight_sum": f"{float(agg['preference_weight_sum']):.6f}",
                     "preference_weight_max": f"{float(agg['preference_weight_max']):.6f}",
                     "source_types": "|".join(sorted(agg["source_types"])),
+                    "interaction_types": "|".join(sorted(agg["interaction_types"])) if agg["interaction_types"] else "history",
                     "spotify_track_ids": "|".join(sorted(agg["spotify_track_ids"])),
                 }
             )
@@ -779,7 +848,55 @@ def main() -> None:
         encoding="utf-8",
     )
 
+    # --- Match-rate validation (CRI-001 mitigation) ---
+    match_rate_min_threshold = 0.0  # Default: no threshold (validation disabled)
+    if runtime_scope["config_source"] == "run_config" and runtime_scope.get("run_config_path"):
+        try:
+            _rc_utils = load_run_config_utils_module()
+            with open(runtime_scope["run_config_path"]) as f:
+                run_config = json.load(f)
+            match_rate_min_threshold = float(run_config.get("seed_controls", {}).get("match_rate_min_threshold", 0.0))
+        except (FileNotFoundError, json.JSONDecodeError, KeyError, ValueError):
+            pass  # Use default if seed_controls not present
+
+    if summary_counts["input_event_rows"] > 0 and match_rate_min_threshold > 0.0:
+        match_rate = summary_counts["matched_by_spotify_id"] + summary_counts["matched_by_metadata"]
+        match_rate /= summary_counts["input_event_rows"]
+        if match_rate < match_rate_min_threshold:
+            raise RuntimeError(
+                f"BL-003 match-rate validation failed: {match_rate:.1%} matched ({match_rate * summary_counts['input_event_rows']:.0f} events), "
+                f"below minimum threshold {match_rate_min_threshold:.1%}. "
+                f"This indicates high bias in the preference profile (built from only {match_rate:.1%} of imported history). "
+                f"Either increase the match-rate threshold in seed_controls if this is expected, "
+                f"or investigate DS-001 corpus coverage and import data quality."
+            )
+
     elapsed_seconds = round(time.time() - t0, 3)
+
+    influence_contract = {
+        "enabled": False,
+        "track_ids": [],
+        "preference_weight": 1.0,
+        "injected_count": influence_injected_count,
+        "skipped_track_ids": influence_skipped_ids,
+    }
+    if run_config_path_infl:
+        influence_contract = {
+            "enabled": bool(infl.get("influence_enabled", False)),
+            "track_ids": list(infl.get("influence_track_ids") or []),
+            "preference_weight": float(infl.get("influence_preference_weight") or 1.0),
+            "injected_count": influence_injected_count,
+            "skipped_track_ids": influence_skipped_ids,
+        }
+
+    seed_contract = {
+        "input_scope": input_scope,
+        "influence_tracks": {
+            "enabled": influence_contract["enabled"],
+            "track_ids": influence_contract["track_ids"],
+            "preference_weight": influence_contract["preference_weight"],
+        },
+    }
 
     summary = {
         "task": "BL-003-DS001-spotify-seed-build",
@@ -800,6 +917,11 @@ def main() -> None:
             "run_config_path": runtime_scope["run_config_path"],
             "run_config_schema_version": runtime_scope["run_config_schema_version"],
             "input_scope": input_scope,
+            "influence_tracks": influence_contract,
+            "seed_contract": {
+                **seed_contract,
+                "contract_hash": canonical_json_hash(seed_contract),
+            },
             "selected_sources_expected": expected_sources,
             "selected_sources_available": available_sources,
             "missing_selected_sources": missing_selected_sources,
@@ -813,6 +935,17 @@ def main() -> None:
             "seed_table_rows": len(aggregated),
             "trace_rows": len(trace_rows),
             "unmatched_rows": len(unmatched_rows),
+            "match_rate_validation": {
+                "threshold_enforced": match_rate_min_threshold > 0.0,
+                "min_threshold": round(match_rate_min_threshold, 4),
+                "actual_match_rate": round(
+                    (summary_counts["matched_by_spotify_id"] + summary_counts["matched_by_metadata"]) / summary_counts["input_event_rows"]
+                    if summary_counts["input_event_rows"] > 0
+                    else 0.0,
+                    4,
+                ),
+                "status": "pass" if summary_counts["input_event_rows"] == 0 or (summary_counts["matched_by_spotify_id"] + summary_counts["matched_by_metadata"]) / summary_counts["input_event_rows"] >= match_rate_min_threshold else "fail",
+            },
         },
         "outputs": {
             "matched_events_jsonl": str(matched_jsonl_path),
@@ -847,6 +980,7 @@ def main() -> None:
     print(f"trace_rows={len(trace_rows)}")
     print(f"unmatched_rows={len(unmatched_rows)}")
     print(f"summary_path={summary_path}")
+
 
 
 if __name__ == "__main__":

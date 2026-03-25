@@ -33,6 +33,7 @@ SUMMARY_FEATURE_COLUMNS: list[str] = [
 DEFAULT_TOP_TAG_LIMIT = 10
 DEFAULT_TOP_GENRE_LIMIT = 10
 DEFAULT_TOP_LEAD_GENRE_LIMIT = 10
+DEFAULT_INCLUDE_INTERACTION_TYPES: list[str] = ["history", "influence"]
 DEFAULT_USER_ID = "21zsn42xecjhogne4kghyw5hq"
 DEFAULT_INPUT_SCOPE: dict[str, object] = {
     "source_family": "spotify_api_export",
@@ -96,6 +97,7 @@ def resolve_bl004_runtime_controls() -> dict[str, object]:
             "top_genre_limit": int(controls["top_genre_limit"]),
             "top_lead_genre_limit": int(controls["top_lead_genre_limit"]),
             "user_id": user_id,
+            "include_interaction_types": list(controls.get("include_interaction_types") or DEFAULT_INCLUDE_INTERACTION_TYPES),
         }
 
     return {
@@ -107,6 +109,7 @@ def resolve_bl004_runtime_controls() -> dict[str, object]:
         "top_genre_limit": env_int("BL004_TOP_GENRE_LIMIT", DEFAULT_TOP_GENRE_LIMIT),
         "top_lead_genre_limit": env_int("BL004_TOP_LEAD_GENRE_LIMIT", DEFAULT_TOP_LEAD_GENRE_LIMIT),
         "user_id": env_str("BL004_USER_ID", DEFAULT_USER_ID),
+        "include_interaction_types": list(DEFAULT_INCLUDE_INTERACTION_TYPES),
     }
 
 
@@ -211,6 +214,14 @@ def parse_event_weighted_list(raw_value: object) -> list[tuple[str, float]]:
     return items
 
 
+def resolve_lead_genre(genres: list[str], tags: list[str]) -> str:
+    if genres:
+        return genres[0]
+    if tags:
+        return tags[0]
+    return ""
+
+
 def sorted_weight_map(weight_map: dict[str, float], limit: int) -> list[dict[str, float | str]]:
     ordered = sorted(weight_map.items(), key=lambda item: (-item[1], item[0]))
     return [
@@ -248,6 +259,7 @@ def main() -> None:
     top_tag_limit = int(runtime_controls["top_tag_limit"])
     top_genre_limit = int(runtime_controls["top_genre_limit"])
     top_lead_genre_limit = int(runtime_controls["top_lead_genre_limit"])
+    include_interaction_types = set(runtime_controls["include_interaction_types"])
 
     start_time = time.time()
     run_id = f"BL004-PROFILE-{datetime.now(timezone.utc).strftime('%Y%m%d-%H%M%S-%f')}"
@@ -271,7 +283,13 @@ def main() -> None:
         track_id = str(row.get("ds001_id", "")).strip()
         spotify_ids = str(row.get("spotify_track_ids", "")).strip().split("|")
         spotify_id = next((item for item in spotify_ids if item), "")
-        interaction_type = "history"
+        # Read interaction_type from seed table; fall back to "history" for backward compat with older seed files
+        raw_itypes = str(row.get("interaction_types", "") or row.get("interaction_type", "")).strip()
+        row_interaction_types = {t.strip() for t in raw_itypes.split("|") if t.strip()} if raw_itypes else {"history"}
+        if not row_interaction_types.intersection(include_interaction_types):
+            continue
+        # Use the most specific single interaction_type label for trace/summary (prefer "influence" if present)
+        interaction_type = "influence" if "influence" in row_interaction_types else "history"
         preference_weight = parse_float(str(row.get("preference_weight_sum", ""))) or 0.0
         if preference_weight <= 0:
             continue
@@ -306,7 +324,7 @@ def main() -> None:
         if not row_has_numeric_value:
             missing_numeric_track_ids.append(track_id)
 
-        lead_genre = genres[0] if genres else (tags[0] if tags else "")
+        lead_genre = resolve_lead_genre(genres, tags)
         if lead_genre:
             lead_genre_weights[lead_genre] = lead_genre_weights.get(lead_genre, 0.0) + effective_weight
 

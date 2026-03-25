@@ -182,6 +182,14 @@ def normalize_candidate_row(row: dict[str, str]) -> dict[str, str]:
     return normalized
 
 
+def resolve_lead_genre(candidate_genres: list[str], candidate_tags: list[str]) -> str:
+    if candidate_genres:
+        return candidate_genres[0]
+    if candidate_tags:
+        return candidate_tags[0]
+    return ""
+
+
 def keep_decision(
     is_seed_track: bool,
     semantic_score: int,
@@ -301,13 +309,9 @@ def main() -> None:
         is_seed_track = track_id in seed_track_ids
 
         # DS-001 provides explicit tags and genres columns.
-        lead_genre = ""
         candidate_tags = parse_csv_labels(row.get("tags", ""))
         candidate_genres = parse_csv_labels(row.get("genres", ""))
-        if candidate_tags:
-            lead_genre = candidate_tags[0]   # top tag acts as lead genre
-        elif candidate_genres:
-            lead_genre = candidate_genres[0]
+        lead_genre = resolve_lead_genre(candidate_genres, candidate_tags)
 
         lead_genre_match = lead_genre in top_lead_genres if lead_genre else False
         genre_overlap = len(top_genres.intersection(candidate_genres))

@@ -34,6 +34,7 @@ DEFAULT_RUN_CONFIG: dict[str, Any] = {
     "influence_tracks": {
         "enabled": True,
         "track_ids": [],
+        "preference_weight": 1.0,
         "source": None,
     },
     "profile_controls": {
@@ -138,6 +139,164 @@ def _coerce_optional_str(value: Any) -> str | None:
         return None
     text = str(value).strip()
     return text or None
+
+def _validate_positive_thresholds(thresholds: dict[str, Any] | None, context: str) -> dict[str, float]:
+    """Validate that all numeric thresholds in the dict are positive (> 0).
+    
+    Args:
+        thresholds: Dictionary of threshold name -> value
+        context: Description of where thresholds come from (for error messages)
+    
+    Returns:
+        The validated thresholds as float values
+        
+    Raises:
+        RunConfigError if any threshold is <= 0 or non-numeric
+    """
+    if not thresholds:
+        return {}
+    
+    validated = {}
+    for key, value in thresholds.items():
+        try:
+            float_val = float(value)
+        except (TypeError, ValueError):
+            raise RunConfigError(
+                f"{context}: threshold '{key}' must be numeric, got {type(value).__name__}: {value!r}"
+            )
+        if float_val <= 0:
+            raise RunConfigError(
+                f"{context}: threshold '{key}' must be positive (> 0), got {float_val}"
+            )
+        validated[key] = float_val
+    
+    return validated
+
+
+def _validate_positive_float(value: Any, param_name: str) -> float:
+    """Validate that a single threshold value is a positive float (> 0).
+    
+    Args:
+        value: The value to validate
+        param_name: Name of the parameter (for error messages)
+        
+    Returns:
+        The validated float value
+        
+    Raises:
+        RunConfigError if value is <= 0 or non-numeric
+    """
+    try:
+        float_val = float(value)
+    except (TypeError, ValueError):
+        raise RunConfigError(
+            f"{param_name} must be numeric, got {type(value).__name__}: {value!r}"
+        )
+    if float_val <= 0:
+        raise RunConfigError(
+            f"{param_name} must be positive (> 0), got {float_val}"
+        )
+    return float_val
+
+
+def _enforce_numeric_threshold_coupling(
+    retrieval_thresholds: dict[str, float],
+    scoring_thresholds: dict[str, float],
+) -> None:
+    """Ensure BL-005 and BL-006 numeric thresholds remain semantically coupled."""
+    if retrieval_thresholds == scoring_thresholds:
+        return
+
+    retrieval_only = sorted(set(retrieval_thresholds) - set(scoring_thresholds))
+    scoring_only = sorted(set(scoring_thresholds) - set(retrieval_thresholds))
+    mismatched_values = []
+    for key in sorted(set(retrieval_thresholds) & set(scoring_thresholds)):
+        if retrieval_thresholds[key] != scoring_thresholds[key]:
+            mismatched_values.append(
+                f"{key}: retrieval={retrieval_thresholds[key]} vs scoring={scoring_thresholds[key]}"
+            )
+
+    detail_parts: list[str] = []
+    if retrieval_only:
+        detail_parts.append(
+            "keys only in retrieval_controls.numeric_thresholds=" + ", ".join(retrieval_only)
+        )
+    if scoring_only:
+        detail_parts.append(
+            "keys only in scoring_controls.numeric_thresholds=" + ", ".join(scoring_only)
+        )
+    if mismatched_values:
+        detail_parts.append("value mismatches=" + "; ".join(mismatched_values))
+
+    suffix = ". " + " | ".join(detail_parts) if detail_parts else ""
+    raise RunConfigError(
+        "run_config numeric threshold coupling violation: "
+        "retrieval_controls.numeric_thresholds must exactly match "
+        "scoring_controls.numeric_thresholds"
+        + suffix
+    )
+
+
+def _enforce_profile_retrieval_limit_constraints(
+    profile_controls: dict[str, int],
+    retrieval_controls: dict[str, int],
+) -> None:
+    """Ensure BL-005 retrieval limits never exceed BL-004 profile dimensions."""
+    comparisons = [
+        ("top_tag_limit", "profile_top_tag_limit"),
+        ("top_genre_limit", "profile_top_genre_limit"),
+        ("top_lead_genre_limit", "profile_top_lead_genre_limit"),
+    ]
+
+    violations: list[str] = []
+    for profile_key, retrieval_key in comparisons:
+        profile_limit = int(profile_controls[profile_key])
+        retrieval_limit = int(retrieval_controls[retrieval_key])
+        if retrieval_limit > profile_limit:
+            violations.append(
+                f"{retrieval_key}={retrieval_limit} exceeds profile_controls.{profile_key}={profile_limit}"
+            )
+
+    if violations:
+        raise RunConfigError(
+            "run_config profile-retrieval limit constraint violation: "
+            "retrieval profile limits must be <= corresponding profile_controls limits. "
+            + " | ".join(violations)
+        )
+
+
+def _validate_component_weights(
+    component_weights: dict[str, Any] | None,
+    context: str,
+    *,
+    tolerance: float = 0.01,
+) -> dict[str, float]:
+    """Validate scoring component weights are numeric, non-negative, and sum to 1.0 (+/- tolerance)."""
+    if not component_weights:
+        return {}
+
+    validated: dict[str, float] = {}
+    total = 0.0
+    for key, value in component_weights.items():
+        try:
+            weight = float(value)
+        except (TypeError, ValueError):
+            raise RunConfigError(
+                f"{context}: component weight '{key}' must be numeric, got {type(value).__name__}: {value!r}"
+            )
+        if weight < 0:
+            raise RunConfigError(
+                f"{context}: component weight '{key}' must be >= 0, got {weight}"
+            )
+        validated[str(key)] = weight
+        total += weight
+
+    if abs(total - 1.0) > tolerance:
+        raise RunConfigError(
+            f"{context}: component weights must sum to 1.0 (+/- {tolerance}). Got {total:.6f}"
+        )
+
+    return validated
 
 
 def _sha256_of_file(path: Path) -> str:
@@ -259,6 +418,74 @@ def resolve_effective_run_config(run_config_path: str | Path | None) -> tuple[di
         DEFAULT_RUN_CONFIG["profile_controls"]["top_lead_genre_limit"],
     )
 
+    interaction_scope = effective.setdefault("interaction_scope", {})
+    if not isinstance(interaction_scope, dict):
+        interaction_scope = {}
+        effective["interaction_scope"] = interaction_scope
+    allowed_types = {"history", "influence"}
+    raw_types = interaction_scope.get("include_interaction_types")
+    if isinstance(raw_types, list):
+        normalized = [str(t).strip() for t in raw_types if str(t).strip() in allowed_types]
+        interaction_scope["include_interaction_types"] = normalized if normalized else list(DEFAULT_RUN_CONFIG["interaction_scope"]["include_interaction_types"])
+    else:
+        interaction_scope["include_interaction_types"] = list(DEFAULT_RUN_CONFIG["interaction_scope"]["include_interaction_types"])
+
+    influence_tracks = effective.setdefault("influence_tracks", {})
+    if not isinstance(influence_tracks, dict):
+        influence_tracks = {}
+        effective["influence_tracks"] = influence_tracks
+    influence_defaults = DEFAULT_RUN_CONFIG["influence_tracks"]
+    influence_tracks["enabled"] = _coerce_bool(influence_tracks.get("enabled"), bool(influence_defaults["enabled"]))
+    raw_ids = influence_tracks.get("track_ids")
+    influence_tracks["track_ids"] = [str(t).strip() for t in raw_ids if str(t).strip()] if isinstance(raw_ids, list) else []
+    raw_pw = influence_tracks.get("preference_weight")
+    try:
+        pw = float(raw_pw) if raw_pw is not None else float(influence_defaults["preference_weight"])
+    except (TypeError, ValueError):
+        pw = float(influence_defaults["preference_weight"])
+    influence_tracks["preference_weight"] = pw if pw > 0 else float(influence_defaults["preference_weight"])
+    influence_tracks["source"] = _coerce_optional_str(influence_tracks.get("source"))
+
+    retrieval_controls = effective.setdefault("retrieval_controls", {})
+    if not isinstance(retrieval_controls, dict):
+        raise RunConfigError("run_config.retrieval_controls must be an object")
+    retrieval_defaults = DEFAULT_RUN_CONFIG["retrieval_controls"]
+    retrieval_controls["profile_top_tag_limit"] = _coerce_positive_int(
+        retrieval_controls.get("profile_top_tag_limit"),
+        retrieval_defaults["profile_top_tag_limit"],
+    )
+    retrieval_controls["profile_top_genre_limit"] = _coerce_positive_int(
+        retrieval_controls.get("profile_top_genre_limit"),
+        retrieval_defaults["profile_top_genre_limit"],
+    )
+    retrieval_controls["profile_top_lead_genre_limit"] = _coerce_positive_int(
+        retrieval_controls.get("profile_top_lead_genre_limit"),
+        retrieval_defaults["profile_top_lead_genre_limit"],
+    )
+
+    scoring_controls = effective.setdefault("scoring_controls", {})
+    if not isinstance(scoring_controls, dict):
+        raise RunConfigError("run_config.scoring_controls must be an object")
+    scoring_defaults = DEFAULT_RUN_CONFIG["scoring_controls"]
+    validated_component_weights = _validate_component_weights(
+        scoring_controls.get("component_weights") or scoring_defaults["component_weights"],
+        "scoring_controls.component_weights",
+    )
+    scoring_controls["component_weights"] = validated_component_weights
+
+    retrieval_thresholds = _validate_positive_thresholds(
+        retrieval_controls.get("numeric_thresholds") or DEFAULT_RUN_CONFIG["retrieval_controls"]["numeric_thresholds"],
+        "retrieval_controls.numeric_thresholds",
+    )
+    scoring_thresholds = _validate_positive_thresholds(
+        scoring_controls.get("numeric_thresholds") or DEFAULT_RUN_CONFIG["scoring_controls"]["numeric_thresholds"],
+        "scoring_controls.numeric_thresholds",
+    )
+    _enforce_numeric_threshold_coupling(retrieval_thresholds, scoring_thresholds)
+    retrieval_controls["numeric_thresholds"] = retrieval_thresholds
+    scoring_controls["numeric_thresholds"] = scoring_thresholds
+    _enforce_profile_retrieval_limit_constraints(profile_controls, retrieval_controls)
+
     return effective, path
 
 
@@ -266,6 +493,8 @@ def resolve_bl004_controls(run_config_path: str | Path | None) -> dict[str, Any]
     effective, resolved_path = resolve_effective_run_config(run_config_path)
     user_context = effective["user_context"]
     profile_controls = effective["profile_controls"]
+    interaction_scope = effective["interaction_scope"]
+    influence = effective["influence_tracks"]
     return {
         "config_path": str(resolved_path) if resolved_path else None,
         "schema_version": effective["schema_version"],
@@ -274,6 +503,10 @@ def resolve_bl004_controls(run_config_path: str | Path | None) -> dict[str, Any]
         "top_tag_limit": profile_controls["top_tag_limit"],
         "top_genre_limit": profile_controls["top_genre_limit"],
         "top_lead_genre_limit": profile_controls["top_lead_genre_limit"],
+        "include_interaction_types": list(interaction_scope["include_interaction_types"]),
+        "influence_enabled": bool(influence["enabled"]),
+        "influence_track_ids": list(influence["track_ids"]),
+        "influence_preference_weight": float(influence["preference_weight"]),
     }
 
 
@@ -283,6 +516,18 @@ def resolve_input_scope_controls(run_config_path: str | Path | None) -> dict[str
         "config_path": str(resolved_path) if resolved_path else None,
         "schema_version": effective["schema_version"],
         "input_scope": dict(effective["input_scope"]),
+    }
+
+
+def resolve_bl003_influence_controls(run_config_path: str | Path | None) -> dict[str, Any]:
+    effective, resolved_path = resolve_effective_run_config(run_config_path)
+    influence = effective["influence_tracks"]
+    return {
+        "config_path": str(resolved_path) if resolved_path else None,
+        "schema_version": effective["schema_version"],
+        "influence_enabled": bool(influence["enabled"]),
+        "influence_track_ids": list(influence["track_ids"]),
+        "influence_preference_weight": float(influence["preference_weight"]),
     }
 
 
@@ -317,8 +562,9 @@ def resolve_bl005_controls(run_config_path: str | Path | None) -> dict[str, Any]
             retrieval.get("numeric_support_min_pass"),
             defaults["numeric_support_min_pass"],
         ),
-        "numeric_thresholds": dict(
-            retrieval.get("numeric_thresholds") or defaults["numeric_thresholds"]
+        "numeric_thresholds": _validate_positive_thresholds(
+            retrieval.get("numeric_thresholds") or defaults["numeric_thresholds"],
+            "retrieval_controls.numeric_thresholds"
         ),
     }
 
@@ -330,11 +576,13 @@ def resolve_bl006_controls(run_config_path: str | Path | None) -> dict[str, Any]
     return {
         "config_path": str(resolved_path) if resolved_path else None,
         "schema_version": effective["schema_version"],
-        "component_weights": dict(
-            scoring.get("component_weights") or defaults["component_weights"]
+        "component_weights": _validate_component_weights(
+            scoring.get("component_weights") or defaults["component_weights"],
+            "scoring_controls.component_weights",
         ),
-        "numeric_thresholds": dict(
-            scoring.get("numeric_thresholds") or defaults["numeric_thresholds"]
+        "numeric_thresholds": _validate_positive_thresholds(
+            scoring.get("numeric_thresholds") or defaults["numeric_thresholds"],
+            "scoring_controls.numeric_thresholds"
         ),
     }
 
@@ -351,8 +599,9 @@ def resolve_bl007_controls(run_config_path: str | Path | None) -> dict[str, Any]
             assembly.get("target_size"),
             defaults["target_size"],
         ),
-        "min_score_threshold": float(
-            min_threshold if min_threshold is not None else defaults["min_score_threshold"]
+        "min_score_threshold": _validate_positive_float(
+            min_threshold if min_threshold is not None else defaults["min_score_threshold"],
+            "assembly_controls.min_score_threshold"
         ),
         "max_per_genre": _coerce_positive_int(
             assembly.get("max_per_genre"),

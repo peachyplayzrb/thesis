@@ -508,6 +508,13 @@ def main() -> None:
                 "counts": bl006_summary["counts"],
                 "score_statistics": bl006_summary["score_statistics"],
                 "top_candidates": bl006_summary["top_candidates"],
+                "weight_rebalance_diagnostics": (
+                    bl006_summary.get("config", {}).get("weight_rebalance_diagnostics")
+                    or {
+                        "status": "not_available",
+                        "reason": "BL-006 summary does not include weight_rebalance_diagnostics",
+                    }
+                ),
             },
             "assembly": {
                 "task": "BL-007",

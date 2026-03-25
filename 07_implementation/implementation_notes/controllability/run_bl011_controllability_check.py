@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import argparse
 import csv
 import hashlib
 import io
@@ -21,6 +22,21 @@ LEGACY_NUMERIC_COLUMNS = {
 
 def repo_root() -> Path:
     return Path(__file__).resolve().parents[3]
+
+
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(
+        description="BL-011 controllability evaluation for BL-004 to BL-007 behavior shifts."
+    )
+    parser.add_argument(
+        "--allow-legacy-surrogate-inputs",
+        action="store_true",
+        help=(
+            "Opt in to legacy surrogate assets (BL-016/BL-017) when available. "
+            "Default uses active pipeline outputs only."
+        ),
+    )
+    return parser.parse_args()
 
 
 def relpath(path: Path, root: Path) -> str:
@@ -180,8 +196,8 @@ def candidate_weight_pairs(row: dict[str, str], label_type: str) -> list[tuple[s
     return [(label, 1.0) for label in parse_csv_labels(row.get("tags", ""))]
 
 
-def resolve_legacy_mode(paths: dict[str, Path]) -> bool:
-    return paths["legacy_events"].exists() and paths["legacy_candidates"].exists()
+def resolve_legacy_mode(paths: dict[str, Path], allow_legacy_surrogate_inputs: bool) -> bool:
+    return bool(allow_legacy_surrogate_inputs) and paths["legacy_events"].exists() and paths["legacy_candidates"].exists()
 
 
 def sorted_weight_map(weight_map: dict[str, float], limit: int) -> list[dict[str, float | str]]:
@@ -254,9 +270,9 @@ def build_paths(root: Path) -> dict[str, Path]:
     }
 
 
-def ensure_required_inputs(paths: dict[str, Path], root: Path) -> None:
+def ensure_required_inputs(paths: dict[str, Path], root: Path, allow_legacy_surrogate_inputs: bool) -> None:
     required = ["baseline_snapshot"]
-    if resolve_legacy_mode(paths):
+    if resolve_legacy_mode(paths, allow_legacy_surrogate_inputs):
         required.extend(["legacy_events", "legacy_candidates"])
     else:
         required.extend(["active_seed_trace", "active_candidates"])
@@ -314,7 +330,7 @@ def build_scenarios(baseline_snapshot: dict) -> list[dict[str, object]]:
             "scenario_id": "no_influence_tracks",
             "test_id": "EP-CTRL-001",
             "control_surface": "influence_tracks",
-            "description": "Remove the three synthetic influence tracks while keeping all other inputs and parameters fixed.",
+            "description": "Disable influence-track interactions while keeping all other inputs and parameters fixed.",
             "profile": {
                 **base_profile,
                 "include_interaction_types": ["history"],
@@ -1157,10 +1173,11 @@ def compare_to_baseline(baseline_result: dict[str, object], scenario_result: dic
 
 
 def main() -> None:
+    args = parse_args()
     root = repo_root()
     paths = build_paths(root)
-    ensure_required_inputs(paths, root)
-    legacy_mode = resolve_legacy_mode(paths)
+    ensure_required_inputs(paths, root, bool(args.allow_legacy_surrogate_inputs))
+    legacy_mode = resolve_legacy_mode(paths, bool(args.allow_legacy_surrogate_inputs))
 
     output_dir = paths["output_dir"]
     output_dir.mkdir(parents=True, exist_ok=True)

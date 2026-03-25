@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import argparse
 import csv
 import hashlib
 import json
@@ -22,6 +23,21 @@ LEGACY_FIXED_INPUT_KEYS = [
 
 def repo_root() -> Path:
     return Path(__file__).resolve().parents[3]
+
+
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(
+        description="BL-010 reproducibility replay for BL-004 to BL-009 outputs."
+    )
+    parser.add_argument(
+        "--allow-legacy-surrogate-inputs",
+        action="store_true",
+        help=(
+            "Opt in to legacy surrogate assets (BL-016/BL-017) when available. "
+            "Default uses active pipeline outputs only."
+        ),
+    )
+    return parser.parse_args()
 
 
 def relpath(path: Path, root: Path) -> str:
@@ -99,14 +115,14 @@ def ensure_required_inputs(paths: dict[str, Path], root: Path) -> None:
         raise FileNotFoundError(f"BL-010 missing required inputs: {missing}")
 
 
-def build_config_snapshot(paths: dict[str, Path], root: Path) -> dict:
+def build_config_snapshot(paths: dict[str, Path], root: Path, allow_legacy_surrogate_inputs: bool) -> dict:
     bl004_profile = load_json(paths["bl004_profile"])
     bl005_diagnostics = load_json(paths["bl005_diagnostics"])
     bl006_summary = load_json(paths["bl006_summary"])
     bl007_report = load_json(paths["bl007_report"])
     bl008_summary = load_json(paths["bl008_summary"])
 
-    has_legacy_fixed_inputs = all(paths[key].exists() for key in LEGACY_FIXED_INPUT_KEYS)
+    has_legacy_fixed_inputs = allow_legacy_surrogate_inputs and all(paths[key].exists() for key in LEGACY_FIXED_INPUT_KEYS)
     if has_legacy_fixed_inputs:
         fixed_input_source = "legacy_surrogate_assets"
         fixed_input_keys = list(LEGACY_FIXED_INPUT_KEYS)
@@ -356,6 +372,7 @@ def first_mismatch(stable_hashes_by_run: list[dict[str, str]]) -> str | None:
 
 
 def main() -> None:
+    args = parse_args()
     root = repo_root()
     output_dir = root / "07_implementation" / "implementation_notes" / "reproducibility" / "outputs"
     output_dir.mkdir(parents=True, exist_ok=True)
@@ -363,7 +380,11 @@ def main() -> None:
     paths = build_paths(root)
     ensure_required_inputs(paths, root)
 
-    config_snapshot = build_config_snapshot(paths, root)
+    config_snapshot = build_config_snapshot(
+        paths,
+        root,
+        allow_legacy_surrogate_inputs=bool(args.allow_legacy_surrogate_inputs),
+    )
     config_hash = canonical_json_hash(config_snapshot)
     config_path = output_dir / "bl010_reproducibility_config_snapshot.json"
     config_path.write_text(json.dumps(config_snapshot, indent=2, ensure_ascii=True), encoding="utf-8")
