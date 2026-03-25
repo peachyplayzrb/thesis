@@ -53,3 +53,17 @@ spotify_env_template.ps1
 
 # Old script reference copy (archived locally, not for version control)
 10_resources/old_script
+
+# Local run/probe console output captures
+bl002_export_refresh_output*.txt
+bl003_probe_v*_allow_missing_output.txt
+bl013_probe_v*_after_allow_output.txt
+bl013_probe_v*_after_cleanup_output.txt
+bl013_probe_v*_post_auth_output.txt
+bl014_after_allow_output.txt
+bl014_after_cleanup_output.txt
+bl014_post_auth_output.txt
+bl014_run_output.txt
+pipeline_run_output.txt
+pipeline_run_probe_v*_output.txt
+pipeline_run_probe_v*_refresh_output.txt
