@@ -1,53 +1,58 @@
 ﻿# Implementation Plan
 
+Last updated: 2026-03-25
+
 ## Delivery Strategy
 - Follow the locked MVP scope: single-user, deterministic, content-based playlist generation with transparency and controllability.
 - Build incrementally from ingestion -> alignment -> scoring -> assembly -> evaluation artifacts.
 - Produce evidence artifacts during implementation, not after it.
 
 ## Phases
-1. Phase A: Synthetic data bootstrap and core pipeline development
-- Create synthetic pre-aligned data assets (BL-016): a hand-crafted aligned JSONL and a candidate stub CSV that match the schemas defined in `06_data_and_sources/schema_notes.md`.
-- Use these assets to drive BL-004 through BL-012 without real ingestion.
-- Real ingestion and alignment (BL-001, BL-002, BL-003) are deferred to Phase A-Real (see below).
-- BL-019 planning addendum (2026-03-21): implement the DS-002 candidate-corpus workflow (`MSD subset + Last.fm tags`; optional MusicBrainz metadata) with deterministic joins, manifest output, and quality-gate checks before downstream reruns.
-- Rationale: unblocks core pipeline implementation immediately; see decision_log.md D-005.
-- Corpus note (2026-03-21 update): use DS-002 as the active real-data corpus strategy for BL-019 planning and implementation. Keep prior Onion artifacts as historical baseline evidence only.
 
-1a. Phase A-Real: Ingestion and data alignment (deferred)
-- Define and validate one real ingestion path (BL-001, BL-002).
-- Implement ISRC-first matching and fallback metadata logic (BL-003).
-- Output alignment diagnostics and unmatched-track reporting.
-- Resume after the core pipeline (Phases B–D) is proven end-to-end on synthetic data.
+### Phase A: Synthetic data bootstrap and core pipeline development — COMPLETE
+- Synthetic pre-aligned data assets (BL-016) were created as a hand-crafted aligned JSONL and candidate stub CSV.
+- These assets drove BL-004 through BL-012 while real ingestion was deferred.
+- DS-002 candidate corpus (`MSD subset + Last.fm tags`) built and verified via BL-019 (9,330 tracks; quality gates pass; determinism confirmed — EXP-016).
 
-2. Phase B: Deterministic preference and candidate scoring
-- Construct deterministic preference profile from imported history and influence tracks.
-- Filter candidate tracks from the DS-002 integrated corpus feature space.
-- Compute deterministic similarity scores with explicit component weights.
+### Phase A-Real: Ingestion and data alignment — COMPLETE
+- Real Spotify API export implemented (BL-002): 5,592 unique tracks from top tracks and saved history.
+- BL-003 active alignment uses direct DS-001 metadata/identifier mapping for imported Spotify records; ISRC-first matching with fallback metadata logic.
+- Source-scope control (BL-021) implemented: canonical run-config `input_scope` contract applied at BL-003 with scope manifest evidence (`bl003_source_scope_manifest.json`).
 
-3. Phase C: Playlist assembly and controllability controls
-- Assemble playlists using explicit rules for diversity, coherence, and ordering.
-- Expose key parameters for controllability experiments.
-- Ensure deterministic outputs for identical input/configuration.
+### Phase B: Deterministic preference and candidate scoring — COMPLETE
+- BL-004 ✅: Deterministic preference profile from imported history and optionally influence tracks; outputs `bl004_preference_profile.json`, `bl004_profile_summary.json`, `bl004_seed_trace.csv`.
+- BL-005 ✅: Candidate filtering against DS-001 corpus (1,740 kept candidates) with semantic and numeric proximity gating.
+- BL-006 ✅: Deterministic multi-component scoring with explicit component weights; outputs `bl006_scored_candidates.csv`, `bl006_score_summary.json`.
 
-4. Phase D: Transparency, observability, and evaluation
-- Generate per-track explanation outputs (component contributions and adjustments).
-- Capture run logs: config, inputs, outputs, and diagnostics.
-- Execute reproducibility and parameter-sensitivity tests.
+### Phase C: Playlist assembly and controllability — COMPLETE
+- BL-007 ✅: Rule-based assembly; 10-track playlist with genre diversity and ordering constraints; score range 0.596–0.771.
+- BL-010 ✅: Reproducibility validated — identical outputs across three replayed runs.
+- BL-011 ✅: Controllability validated — five parameter scenarios with measurable output deltas.
+- Canonical run-config system (BL-013, `run_config_utils.py`): single JSON contract drives all stages; all controls configurable without code changes.
 
-## Definition Of Done (MVP)
-- End-to-end run succeeds on at least one real user data import path.
-- Deterministic reruns produce identical playlist outputs under fixed configuration.
-- Explanation and run-log artifacts are generated for each evaluation run.
-- Rule compliance and controllability tests are documented in implementation and quality-control notes.
+### Phase D: Transparency, observability, and evaluation — COMPLETE
+- BL-008 ✅: Per-track explanation payloads with component contribution breakdowns and rule-effect traces.
+- BL-009 ✅: Versioned observability log (`bl009-observability-v1`) with stage traceability, artifact hashes, execution scope summary, and canonical config artifact pair links.
+- BL-013 ✅: Lightweight orchestrator; emits canonical run-intent/run-effective-config artifact pair (`run-intent-v1` / `run-effective-config-v1`) before every run.
+- BL-014 ✅: Automated sanity checks; 21/21 checks pass (schema validation, cross-stage hash integrity, count/run-id continuity).
+- Semantic control-layer map: `07_implementation/implementation_notes/run_config/semantic_control_map.md` — seven semantic groups map every run-config field to stage, resolver, and output artifacts.
+
+## Definition Of Done (MVP) — ALL MET
+- ✅ End-to-end run succeeds on a real user data import path (BL013-ENTRYPOINT-20260325-001946-187550).
+- ✅ Deterministic reruns produce identical playlist outputs under fixed configuration (BL-010 reproducibility pass).
+- ✅ Explanation and run-log artifacts are generated for each evaluation run.
+- ✅ Rule compliance and controllability tests are documented (BL-011, EXP series, TC series).
+
+## Current Execution Posture
+- All pipeline stages (BL-003 to BL-009) and evaluation stages (BL-010, BL-011, BL-013, BL-014) are stable and validated.
+- Active work is bounded to thesis writing hardening (Chapters 1–5) and citation-package closure (UI-003).
+- No scope expansion beyond locked MVP; backlog items remain deferred per `07_implementation/backlog.md`.
 
 ## Risks And Controls
-- Data mismatch risk: Track alignment may fail for part of imported data.
-	- Control: explicit unmatched reporting and fallback matching path.
-- Corpus volatility risk: the canonical candidate dataset may change while implementation is in progress.
-	- Control: lock BL-019 to DS-002 source contracts (`MSD subset`, `Last.fm tags`; optional MusicBrainz metadata) and record manifest hashes for each refresh run.
+- Data mismatch risk: some imported tracks may not match the DS-001 corpus.
+	- Control: explicit unmatched reporting in BL-003/BL-004 diagnostics; missing-seed count tracked per run.
 - Over-scope risk: Feature creep beyond MVP.
 	- Control: backlog priority enforcement (P0 first, P1/P2 deferred).
 - Evidence gap risk: claims without traceable outputs.
-	- Control: require artifact links for each completed backlog item.
+	- Control: all completed items carry artifact links; BL-009 observability log is the canonical per-run audit record.
 
