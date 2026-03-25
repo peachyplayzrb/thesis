@@ -8,7 +8,7 @@ Ordering convention (standardized 2026-03-24):
 - New entries must be appended at the end; historical entries remain unchanged except for explicit correction records.
 
 Maintenance snapshot (2026-03-25):
-- Highest change ID currently present: `C-167`
+- Highest change ID currently present: `C-170`
 - Known legacy correction applied in this file: prior duplicate `C-079` entry has been normalized to `C-135` for unique-ID compliance.
 
 ## C-001
@@ -22,6 +22,7 @@ Maintenance snapshot (2026-03-25):
 | C-167 | 2026-03-25 15:20 | Copilot | Executed a full admin-control sync pass to remove stale freshness-tail wording and align open-item/handoff snapshots to the current unresolved issue set. |
 | C-168 | 2026-03-25 16:15 | Copilot | Logged end-to-end profile-switch validation session: A/B harness add-and-revert history, retained cache/user-id code fixes, temporary threshold config usage, and regenerated BL-002 to BL-014 evidence surfaces for next-day regression check. |
 | C-169 | 2026-03-25 16:35 | Copilot | Executed fail-fast high-risk regression run, fixed BL-013 command path in checklist, resolved continuity mismatch by rerunning full BL-013 chain, and reconfirmed BL-014 plus active freshness pass. |
+| C-170 | 2026-03-25 16:45 | Copilot | Removed temporary ops log artifacts on user request and consolidated final handoff state directly in changelog to preserve traceability before chat switch. |
 ## C-162
 - date: 2026-03-25
 - proposed_by: Copilot
@@ -101,6 +102,16 @@ Maintenance snapshot (2026-03-25):
 - evidence_basis: BL-013 pass `BL013-ENTRYPOINT-20260325-151555-244335`; BL-014 pass `BL014-SANITY-20260325-151612-236386` (`21/21` checks); active freshness suite report pass; run report `00_admin/ops_logs/high_risk_regression_run_2026-03-25.md`.
 - affected_components: `00_admin/ops_logs/high_risk_regression_checklist_2026-03-25.md`, `00_admin/ops_logs/high_risk_regression_run_2026-03-25.md`, `07_implementation/implementation_notes/entrypoint/outputs/bl013_orchestration_run_latest.json`, `07_implementation/implementation_notes/quality/outputs/bl014_sanity_report.json`, `07_implementation/implementation_notes/quality/outputs/bl_active_freshness_suite_report.json`, `00_admin/change_log.md`
 - impact_assessment: High-positive. Confirms no newly observed code-level regression on the exercised path and hardens operator workflow by correcting the BL-013 command in the checklist.
+- approval_record: Requested by user in chat on 2026-03-25.
+## C-170
+- date: 2026-03-25
+- proposed_by: Copilot
+- status: accepted
+- change_summary: Deleted `00_admin/ops_logs/` artifacts and preserved final regression/handoff state in changelog for chat transition.
+- reason: User requested ops log cleanup while keeping an auditable final state before switching to another chat.
+- evidence_basis: `00_admin/ops_logs/` removed; last validated state remains BL-013 pass (`BL013-ENTRYPOINT-20260325-151555-244335`), BL-014 pass (`BL014-SANITY-20260325-151612-236386`, `21/21`), and active freshness suite pass recorded in quality output reports.
+- affected_components: `00_admin/ops_logs/*` (deleted), `00_admin/change_log.md`
+- impact_assessment: Neutral-to-positive. Reduces admin artifact clutter while retaining essential operational traceability in the canonical log.
 - approval_record: Requested by user in chat on 2026-03-25.
 ## C-006
 
