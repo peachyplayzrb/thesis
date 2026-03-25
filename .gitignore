@@ -38,10 +38,8 @@ tmp_terminal_probe.txt
 # Local OAuth token cache (Spotify ingestion)
 07_implementation/implementation_notes/ingestion/outputs/spotify_api_export/spotify_token_cache.json
 
-# Spotify credentials files (local, non-tracked)
+# Spotify credentials file
 spotify_env_template.ps1
-spotify_env_profiles.local.ps1
-*.local.ps1
 
 # Spotify credentials env files (any bare env file)
 07_implementation/implementation_notes/ingestion/env
