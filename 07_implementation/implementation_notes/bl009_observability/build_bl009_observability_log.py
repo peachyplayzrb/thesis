@@ -2,12 +2,23 @@ from __future__ import annotations
 
 import csv
 import hashlib
-import importlib.util
 import json
 import os
 import time
 from datetime import datetime, timezone
 from pathlib import Path
+
+import sys
+
+sys.path.insert(0, str(Path(__file__).parent.parent))
+
+from bl000_shared_utils.config_loader import load_run_config_utils_module
+from bl000_shared_utils.io_utils import (
+    load_csv_rows,
+    load_json,
+    sha256_of_file as sha256_of_file_shared,
+)
+from bl000_shared_utils.path_utils import repo_root
 
 
 BL009_OBSERVABILITY_SCHEMA_VERSION = "bl009-observability-v1"
@@ -26,25 +37,8 @@ DEFAULT_INPUT_SCOPE: dict[str, object] = {
 }
 
 
-def repo_root() -> Path:
-    return Path(__file__).resolve().parents[3]
-
-
-def load_json(path: Path) -> dict:
-    return json.loads(path.read_text(encoding="utf-8"))
-
-
-def load_csv_rows(path: Path) -> list[dict[str, str]]:
-    with path.open("r", encoding="utf-8", newline="") as handle:
-        return list(csv.DictReader(handle))
-
-
 def sha256_of_file(path: Path) -> str:
-    digest = hashlib.sha256()
-    with path.open("rb") as handle:
-        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
-            digest.update(chunk)
-    return digest.hexdigest().upper()
+    return sha256_of_file_shared(path).upper()
 
 
 def relpath(path: Path, root: Path) -> str:
@@ -117,22 +111,6 @@ def ensure_required_sections(run_log: dict) -> None:
     missing = [key for key in required_keys if key not in run_log]
     if missing:
         raise RuntimeError(f"BL-009 run log missing required sections: {missing}")
-
-
-def load_run_config_utils_module():
-    module_path = (
-        repo_root()
-        / "07_implementation"
-        / "implementation_notes"
-        / "bl000_run_config"
-        / "run_config_utils.py"
-    )
-    spec = importlib.util.spec_from_file_location("run_config_utils", module_path)
-    if spec is None or spec.loader is None:
-        raise RuntimeError(f"Unable to load run-config utilities from {module_path}")
-    module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
-    return module
 
 
 def resolve_bl009_runtime_controls() -> dict[str, object]:

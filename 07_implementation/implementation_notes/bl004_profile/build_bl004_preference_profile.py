@@ -1,14 +1,26 @@
 from __future__ import annotations
 
 import csv
-import hashlib
-import importlib.util
 import json
 import math
 import os
 import time
 from datetime import datetime, timezone
 from pathlib import Path
+
+import sys
+
+sys.path.insert(0, str(Path(__file__).parent.parent))
+
+from bl000_shared_utils.config_loader import load_run_config_utils_module
+from bl000_shared_utils.io_utils import (
+    load_csv_rows,
+    load_jsonl,
+    parse_csv_labels,
+    parse_float,
+    sha256_of_file,
+)
+from bl000_shared_utils.path_utils import repo_root
 
 
 # Hybrid profile: semantic labels + numeric centers from DS-001 candidate dataset.
@@ -88,20 +100,6 @@ def infer_user_id_from_ingestion(root: Path) -> str | None:
     return None
 
 
-def repo_root() -> Path:
-    return Path(__file__).resolve().parents[3]
-
-
-def load_run_config_utils_module():
-    module_path = repo_root() / "07_implementation" / "implementation_notes" / "bl000_run_config" / "run_config_utils.py"
-    spec = importlib.util.spec_from_file_location("run_config_utils", module_path)
-    if spec is None or spec.loader is None:
-        raise RuntimeError(f"Unable to load run-config utilities from {module_path}")
-    module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
-    return module
-
-
 def resolve_bl004_runtime_controls() -> dict[str, object]:
     root = repo_root()
     run_config_path = os.environ.get("BL_RUN_CONFIG_PATH", "").strip() or None
@@ -146,52 +144,8 @@ def resolve_bl004_runtime_controls() -> dict[str, object]:
     }
 
 
-def sha256_of_file(path: Path) -> str:
-    digest = hashlib.sha256()
-    with path.open("rb") as handle:
-        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
-            digest.update(chunk)
-    return digest.hexdigest()
-
-
-def load_jsonl(path: Path) -> list[dict[str, object]]:
-    rows: list[dict[str, object]] = []
-    with path.open("r", encoding="utf-8") as handle:
-        for line in handle:
-            text = line.strip()
-            if not text:
-                continue
-            rows.append(json.loads(text))
-    return rows
-
-
 def load_csv(path: Path) -> list[dict[str, str]]:
-    with path.open("r", encoding="utf-8", newline="") as handle:
-        return list(csv.DictReader(handle))
-
-
-def parse_float(value: str) -> float | None:
-    text = value.strip()
-    if not text:
-        return None
-    try:
-        return float(text)
-    except ValueError:
-        return None
-
-
-def parse_csv_labels(raw_value: str) -> list[str]:
-    if not raw_value:
-        return []
-    labels: list[str] = []
-    seen: set[str] = set()
-    for piece in raw_value.split(","):
-        text = piece.strip().lower()
-        if not text or text in seen:
-            continue
-        seen.add(text)
-        labels.append(text)
-    return labels
+    return load_csv_rows(path)
 
 
 def parse_weighted_list(raw_value: str, key_name: str, score_name: str) -> list[tuple[str, float]]:
