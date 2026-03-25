@@ -7,13 +7,13 @@ Define the deterministic join strategy from Spotify user data to DS-001 candidat
 ## Inputs
 
 DS-001 prepared table:
-- 07_implementation/implementation_notes/data_layer/outputs/ds001_working_candidate_dataset.csv
+- 07_implementation/implementation_notes/bl000_data_layer/outputs/ds001_working_candidate_dataset.csv
 
 Spotify user exports (any available subset):
-- 07_implementation/implementation_notes/ingestion/outputs/spotify_api_export/spotify_top_tracks_flat.csv
-- 07_implementation/implementation_notes/ingestion/outputs/spotify_api_export/spotify_saved_tracks_flat.csv
-- 07_implementation/implementation_notes/ingestion/outputs/spotify_api_export/spotify_playlist_items_flat.csv
-- 07_implementation/implementation_notes/ingestion/outputs/spotify_api_export/spotify_recently_played_flat.csv
+- 07_implementation/implementation_notes/bl001_bl002_ingestion/outputs/spotify_api_export/spotify_top_tracks_flat.csv
+- 07_implementation/implementation_notes/bl001_bl002_ingestion/outputs/spotify_api_export/spotify_saved_tracks_flat.csv
+- 07_implementation/implementation_notes/bl001_bl002_ingestion/outputs/spotify_api_export/spotify_playlist_items_flat.csv
+- 07_implementation/implementation_notes/bl001_bl002_ingestion/outputs/spotify_api_export/spotify_recently_played_flat.csv
 
 ## Primary Join Strategy
 
@@ -76,18 +76,18 @@ If track_id is missing in a Spotify source row:
 Run from repo root:
 
 ```powershell
-".venv/Scripts/python.exe" "07_implementation/implementation_notes/alignment/build_bl003_ds001_spotify_seed_table.py"
+".venv/Scripts/python.exe" "07_implementation/implementation_notes/bl003_alignment/build_bl003_ds001_spotify_seed_table.py"
 ```
 
 ## Full Logging Artifacts
 
 The implementation writes both matched and unmatched evidence for complete auditability:
 
-- `07_implementation/implementation_notes/alignment/outputs/bl003_ds001_spotify_summary.json`
-- `07_implementation/implementation_notes/alignment/outputs/bl003_ds001_spotify_trace.csv`
-- `07_implementation/implementation_notes/alignment/outputs/bl003_ds001_spotify_unmatched.csv`
-- `07_implementation/implementation_notes/alignment/outputs/bl003_ds001_spotify_matched_events.jsonl`
-- `07_implementation/implementation_notes/alignment/outputs/bl003_ds001_spotify_seed_table.csv`
+- `07_implementation/implementation_notes/bl003_alignment/outputs/bl003_ds001_spotify_summary.json`
+- `07_implementation/implementation_notes/bl003_alignment/outputs/bl003_ds001_spotify_trace.csv`
+- `07_implementation/implementation_notes/bl003_alignment/outputs/bl003_ds001_spotify_unmatched.csv`
+- `07_implementation/implementation_notes/bl003_alignment/outputs/bl003_ds001_spotify_matched_events.jsonl`
+- `07_implementation/implementation_notes/bl003_alignment/outputs/bl003_ds001_spotify_seed_table.csv`
 
 Logging behavior:
 

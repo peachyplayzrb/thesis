@@ -1,4 +1,4 @@
-﻿# Experiment Log
+# Experiment Log
 
 Use this file to record each implementation run as soon as it happens. The goal is to make every build step produce thesis evidence that can later be cited in Chapter 4 and Chapter 5.
 
@@ -88,7 +88,7 @@ Copy the block below for each new run.
 ### Inputs
 - source_data: `07_implementation/implementation_notes/test_assets/sample_listening_history.csv`
 - config_or_parameters: `--ingest-run-id TC001-RUN1 --source-platform spotify_export`
-- code_or_script_path: `07_implementation/implementation_notes/ingestion/ingest_history_parser.py`
+- code_or_script_path: `07_implementation/implementation_notes/bl001_bl002_ingestion/ingest_history_parser.py`
 - dependency assumptions: Python stdlib only; no external packages required.
 
 ### Expected Evidence
@@ -145,7 +145,7 @@ Copy the block below for each new run.
 ### Inputs
 - source_data: `07_implementation/implementation_notes/run_outputs/tc001_normalized_events.jsonl`; `07_implementation/implementation_notes/test_assets/sample_music4all_candidates.csv`
 - config_or_parameters: default (skip hard-invalid rows)
-- code_or_script_path: `07_implementation/implementation_notes/alignment/align_tracks.py`
+- code_or_script_path: `07_implementation/implementation_notes/bl003_alignment/align_tracks.py`
 - dependency assumptions: Python stdlib only; normalized events from EXP-001 must exist.
 
 ### Expected Evidence
@@ -311,7 +311,7 @@ Do NOT download: audio files (.mp3), id_incp/id_resnet/id_vgg19 (video features)
 - dependency assumptions: previously audited Onion files and current thesis-state constraints remain accurate
 
 ### Expected Evidence
-- primary_output_artifact: `07_implementation/implementation_notes/data_layer/candidate_corpus_feasibility_review_2026-03-19.md`
+- primary_output_artifact: `07_implementation/implementation_notes/bl000_data_layer/candidate_corpus_feasibility_review_2026-03-19.md`
 - secondary_output_artifacts: synchronized governance updates in `decision_log.md`, `change_log.md`, `unresolved_issues.md`, `dataset_registry.md`, and `backlog.md`
 - success_condition: produce a documented keep/switch/fallback recommendation and remove corpus ambiguity before BL-017
 
@@ -326,7 +326,7 @@ Do NOT download: audio files (.mp3), id_incp/id_resnet/id_vgg19 (video features)
 - key_metrics: `recommended_option=keep_onion_only`, `switch_to_msd=no`, `protected_state_rewrite_required=no`
 - deterministic_repeat_checked: yes
 - output_paths:
-  - `07_implementation/implementation_notes/data_layer/candidate_corpus_feasibility_review_2026-03-19.md`
+  - `07_implementation/implementation_notes/bl000_data_layer/candidate_corpus_feasibility_review_2026-03-19.md`
   - `00_admin/decision_log.md`
   - `06_data_and_sources/dataset_registry.md`
 
@@ -371,14 +371,14 @@ Do NOT download: audio files (.mp3), id_incp/id_resnet/id_vgg19 (video features)
   - `top_tags=10`
   - `top_genres=8`
   - uncapped production run (full files)
-- code_or_script_path: `07_implementation/implementation_notes/data_layer/build_onion_canonical_layer.py`
+- code_or_script_path: `07_implementation/implementation_notes/bl000_data_layer/build_onion_canonical_layer.py`
 - dependency assumptions: Python stdlib only (`argparse`, `bz2`, `csv`, `json`, `ast`, etc.)
 
 ### Expected Evidence
-- primary_output_artifact: `07_implementation/implementation_notes/data_layer/outputs/onion_canonical_track_table.csv`
+- primary_output_artifact: `07_implementation/implementation_notes/bl000_data_layer/outputs/onion_canonical_track_table.csv`
 - secondary_output_artifacts:
-  - `07_implementation/implementation_notes/data_layer/outputs/onion_join_coverage_report.json`
-  - `07_implementation/implementation_notes/data_layer/outputs/onion_selected_column_manifest.json`
+  - `07_implementation/implementation_notes/bl000_data_layer/outputs/onion_join_coverage_report.json`
+  - `07_implementation/implementation_notes/bl000_data_layer/outputs/onion_selected_column_manifest.json`
 - success_condition: outputs are generated deterministically with stable schema and file hashes.
 
 ### Run Record
@@ -417,9 +417,9 @@ Do NOT download: audio files (.mp3), id_incp/id_resnet/id_vgg19 (video features)
   - `sha256.onion_selected_column_manifest.json=814a8e27fcea77e92743077f4e3521b69e59f966df993464e3c095d20a177bd3`
 - deterministic_repeat_checked: no
 - output_paths:
-  - `07_implementation/implementation_notes/data_layer/outputs/onion_canonical_track_table.csv`
-  - `07_implementation/implementation_notes/data_layer/outputs/onion_join_coverage_report.json`
-  - `07_implementation/implementation_notes/data_layer/outputs/onion_selected_column_manifest.json`
+  - `07_implementation/implementation_notes/bl000_data_layer/outputs/onion_canonical_track_table.csv`
+  - `07_implementation/implementation_notes/bl000_data_layer/outputs/onion_join_coverage_report.json`
+  - `07_implementation/implementation_notes/bl000_data_layer/outputs/onion_selected_column_manifest.json`
 
 ### Validation Checks
 - Coverage/missingness check:
@@ -465,7 +465,7 @@ Do NOT download: audio files (.mp3), id_incp/id_resnet/id_vgg19 (video features)
 
 ### Inputs
 - source_data:
-  - `07_implementation/implementation_notes/data_layer/outputs/onion_canonical_track_table.csv`
+  - `07_implementation/implementation_notes/bl000_data_layer/outputs/onion_canonical_track_table.csv`
 - config_or_parameters:
   - `full_coverage_required=True`
   - `history_target=8`
@@ -492,7 +492,7 @@ Do NOT download: audio files (.mp3), id_incp/id_resnet/id_vgg19 (video features)
 - end_state_summary: generator script added; three BL-016 asset files created and validated.
 
 ### Execution Trace
-- Source selection base: BL-017 canonical table at `07_implementation/implementation_notes/data_layer/outputs/onion_canonical_track_table.csv`
+- Source selection base: BL-017 canonical table at `07_implementation/implementation_notes/bl000_data_layer/outputs/onion_canonical_track_table.csv`
 - Selection constraints applied before any seed choice:
   - full source coverage required for all seed tracks
   - sort by `playcount_sum desc`, then `track_id asc`
@@ -584,14 +584,14 @@ Do NOT download: audio files (.mp3), id_incp/id_resnet/id_vgg19 (video features)
   - `top_lead_genre_limit=10`
   - numeric aggregation via weighted mean over matched seeds
   - semantic aggregation via weighted sums over tag weights and genre scores
-- code_or_script_path: `07_implementation/implementation_notes/profile/build_bl004_preference_profile.py`
+- code_or_script_path: `07_implementation/implementation_notes/bl004_profile/build_bl004_preference_profile.py`
 - dependency assumptions: Python stdlib only; BL-016 assets must already exist and contain one synthetic user.
 
 ### Expected Evidence
-- primary_output_artifact: `07_implementation/implementation_notes/profile/outputs/bl004_preference_profile.json`
+- primary_output_artifact: `07_implementation/implementation_notes/bl004_profile/outputs/bl004_preference_profile.json`
 - secondary_output_artifacts:
-  - `07_implementation/implementation_notes/profile/outputs/bl004_profile_summary.json`
-  - `07_implementation/implementation_notes/profile/outputs/bl004_seed_trace.csv`
+  - `07_implementation/implementation_notes/bl004_profile/outputs/bl004_profile_summary.json`
+  - `07_implementation/implementation_notes/bl004_profile/outputs/bl004_seed_trace.csv`
 - success_condition: all synthetic seeds match candidate rows and yield a stable, inspectable profile for one test user.
 
 ### Run Record
@@ -642,9 +642,9 @@ Do NOT download: audio files (.mp3), id_incp/id_resnet/id_vgg19 (video features)
   - `sha256.bl004_seed_trace.csv=C47D4FBC6F0D9CCDD33699AF2D62AA37368FE335883FFCE96CEACC1D0DA55584`
 - deterministic_repeat_checked: no
 - output_paths:
-  - `07_implementation/implementation_notes/profile/outputs/bl004_preference_profile.json`
-  - `07_implementation/implementation_notes/profile/outputs/bl004_profile_summary.json`
-  - `07_implementation/implementation_notes/profile/outputs/bl004_seed_trace.csv`
+  - `07_implementation/implementation_notes/bl004_profile/outputs/bl004_preference_profile.json`
+  - `07_implementation/implementation_notes/bl004_profile/outputs/bl004_profile_summary.json`
+  - `07_implementation/implementation_notes/bl004_profile/outputs/bl004_seed_trace.csv`
 
 ### Validation Checks
 - Join integrity check:
@@ -702,8 +702,8 @@ Do NOT download: audio files (.mp3), id_incp/id_resnet/id_vgg19 (video features)
 
 ### Inputs
 - source_data:
-  - `07_implementation/implementation_notes/profile/outputs/bl004_preference_profile.json`
-  - `07_implementation/implementation_notes/profile/outputs/bl004_seed_trace.csv`
+  - `07_implementation/implementation_notes/bl004_profile/outputs/bl004_preference_profile.json`
+  - `07_implementation/implementation_notes/bl004_profile/outputs/bl004_seed_trace.csv`
   - `07_implementation/implementation_notes/test_assets/bl016_candidate_stub.csv`
 - config_or_parameters:
   - `top_lead_genre_limit=6`
@@ -711,14 +711,14 @@ Do NOT download: audio files (.mp3), id_incp/id_resnet/id_vgg19 (video features)
   - `top_genre_limit=8`
   - `numeric_thresholds={bpm:20.0, danceability:0.4, loudness:6.0, V_mean:0.8, A_mean:0.9, D_mean:0.8}`
   - `keep_rule=keep if not seed and ((semantic_score >= 2 and numeric_pass_count >= 4) or (semantic_score == 3 and numeric_pass_count >= 3))`
-- code_or_script_path: `07_implementation/implementation_notes/retrieval/build_bl005_candidate_filter.py`
+- code_or_script_path: `07_implementation/implementation_notes/bl005_retrieval/build_bl005_candidate_filter.py`
 - dependency assumptions: Python stdlib only; BL-004 profile and BL-016 candidate stub must already exist.
 
 ### Expected Evidence
-- primary_output_artifact: `07_implementation/implementation_notes/retrieval/outputs/bl005_filtered_candidates.csv`
+- primary_output_artifact: `07_implementation/implementation_notes/bl005_retrieval/outputs/bl005_filtered_candidates.csv`
 - secondary_output_artifacts:
-  - `07_implementation/implementation_notes/retrieval/outputs/bl005_candidate_decisions.csv`
-  - `07_implementation/implementation_notes/retrieval/outputs/bl005_candidate_diagnostics.json`
+  - `07_implementation/implementation_notes/bl005_retrieval/outputs/bl005_candidate_decisions.csv`
+  - `07_implementation/implementation_notes/bl005_retrieval/outputs/bl005_candidate_diagnostics.json`
 - success_condition: seed tracks are excluded, filtered candidates are a proper subset of the stub, and all decisions are traceable.
 
 ### Run Record
@@ -767,9 +767,9 @@ Do NOT download: audio files (.mp3), id_incp/id_resnet/id_vgg19 (video features)
   - `sha256.bl005_candidate_diagnostics.json=867402AE26522A723D237F5755D30F66AF0811DEA665DB6DE580D9268EDA4686`
 - deterministic_repeat_checked: no
 - output_paths:
-  - `07_implementation/implementation_notes/retrieval/outputs/bl005_filtered_candidates.csv`
-  - `07_implementation/implementation_notes/retrieval/outputs/bl005_candidate_decisions.csv`
-  - `07_implementation/implementation_notes/retrieval/outputs/bl005_candidate_diagnostics.json`
+  - `07_implementation/implementation_notes/bl005_retrieval/outputs/bl005_filtered_candidates.csv`
+  - `07_implementation/implementation_notes/bl005_retrieval/outputs/bl005_candidate_decisions.csv`
+  - `07_implementation/implementation_notes/bl005_retrieval/outputs/bl005_candidate_diagnostics.json`
 
 ### Validation Checks
 - Subset check:
@@ -816,20 +816,20 @@ Do NOT download: audio files (.mp3), id_incp/id_resnet/id_vgg19 (video features)
 
 ### Inputs
 - source_data:
-  - `07_implementation/implementation_notes/profile/outputs/bl004_preference_profile.json`
-  - `07_implementation/implementation_notes/retrieval/outputs/bl005_filtered_candidates.csv`
+  - `07_implementation/implementation_notes/bl004_profile/outputs/bl004_preference_profile.json`
+  - `07_implementation/implementation_notes/bl005_retrieval/outputs/bl005_filtered_candidates.csv`
 - config_or_parameters:
   - `numeric_thresholds={bpm:20.0, danceability:0.4, loudness:6.0, V_mean:0.8, A_mean:0.9, D_mean:0.8}`
   - `component_weights={bpm:0.10, danceability:0.10, loudness:0.08, V_mean:0.12, A_mean:0.08, D_mean:0.08, lead_genre:0.12, genre_overlap:0.16, tag_overlap:0.16}`
   - `numeric_similarity=max(0, 1 - abs(diff)/threshold)`
   - ranking order = `final_score desc`, then `track_id asc`
-- code_or_script_path: `07_implementation/implementation_notes/scoring/build_bl006_scored_candidates.py`
+- code_or_script_path: `07_implementation/implementation_notes/bl006_scoring/build_bl006_scored_candidates.py`
 - dependency assumptions: Python stdlib only; BL-004 profile and BL-005 filtered candidates must already exist.
 
 ### Expected Evidence
-- primary_output_artifact: `07_implementation/implementation_notes/scoring/outputs/bl006_scored_candidates.csv`
+- primary_output_artifact: `07_implementation/implementation_notes/bl006_scoring/outputs/bl006_scored_candidates.csv`
 - secondary_output_artifacts:
-  - `07_implementation/implementation_notes/scoring/outputs/bl006_score_summary.json`
+  - `07_implementation/implementation_notes/bl006_scoring/outputs/bl006_score_summary.json`
 - success_condition: all BL-005 candidates are scored, ranked, and accompanied by transparent component contributions.
 
 ### Run Record
@@ -873,8 +873,8 @@ Do NOT download: audio files (.mp3), id_incp/id_resnet/id_vgg19 (video features)
   - `sha256.bl006_score_summary.json=64CF9165AFB670E40E450C363A7DB61BA188A682226C1A73B2957077AA6F2A51`
 - deterministic_repeat_checked: no
 - output_paths:
-  - `07_implementation/implementation_notes/scoring/outputs/bl006_scored_candidates.csv`
-  - `07_implementation/implementation_notes/scoring/outputs/bl006_score_summary.json`
+  - `07_implementation/implementation_notes/bl006_scoring/outputs/bl006_scored_candidates.csv`
+  - `07_implementation/implementation_notes/bl006_scoring/outputs/bl006_score_summary.json`
 
 ### Validation Checks
 - Ranking-integrity check:
@@ -921,21 +921,21 @@ Do NOT download: audio files (.mp3), id_incp/id_resnet/id_vgg19 (video features)
 
 ### Inputs
 - source_data:
-  - `07_implementation/implementation_notes/scoring/outputs/bl006_scored_candidates.csv`
+  - `07_implementation/implementation_notes/bl006_scoring/outputs/bl006_scored_candidates.csv`
 - config_or_parameters:
   - `target_size=10`
   - `min_score_threshold=0.35`
   - `max_per_genre=4`
   - `max_consecutive=2`
   - rule traversal order: R1 (score) → R2 (genre cap) → R3 (consecutive run) → R4 (length cap)
-- code_or_script_path: `07_implementation/implementation_notes/playlist/build_bl007_playlist.py`
+- code_or_script_path: `07_implementation/implementation_notes/bl007_playlist/build_bl007_playlist.py`
 - dependency assumptions: Python stdlib only; BL-006 scored candidates must already exist.
 
 ### Expected Evidence
-- primary_output_artifact: `07_implementation/implementation_notes/playlist/outputs/bl007_playlist.json`
+- primary_output_artifact: `07_implementation/implementation_notes/bl007_playlist/outputs/bl007_playlist.json`
 - secondary_output_artifacts:
-  - `07_implementation/implementation_notes/playlist/outputs/bl007_assembly_trace.csv`
-  - `07_implementation/implementation_notes/playlist/outputs/bl007_assembly_report.json`
+  - `07_implementation/implementation_notes/bl007_playlist/outputs/bl007_assembly_trace.csv`
+  - `07_implementation/implementation_notes/bl007_playlist/outputs/bl007_assembly_report.json`
 - success_condition: 10-track playlist assembled deterministically; every candidate has a decision trace row; genre mix is diversified away from a pure indie-rock list.
 
 ### Run Record
@@ -984,9 +984,9 @@ Do NOT download: audio files (.mp3), id_incp/id_resnet/id_vgg19 (video features)
   - `sha256.bl007_assembly_report.json=9975141AF1C3E3A33D2298A07148E6584056588EE5CDD3884DA4C17B85DF2333`
 - deterministic_repeat_checked: no
 - output_paths:
-  - `07_implementation/implementation_notes/playlist/outputs/bl007_playlist.json`
-  - `07_implementation/implementation_notes/playlist/outputs/bl007_assembly_trace.csv`
-  - `07_implementation/implementation_notes/playlist/outputs/bl007_assembly_report.json`
+  - `07_implementation/implementation_notes/bl007_playlist/outputs/bl007_playlist.json`
+  - `07_implementation/implementation_notes/bl007_playlist/outputs/bl007_assembly_trace.csv`
+  - `07_implementation/implementation_notes/bl007_playlist/outputs/bl007_assembly_report.json`
 
 ### Validation Checks
 - Length check:
@@ -1085,20 +1085,20 @@ Do NOT download: audio files (.mp3), id_incp/id_resnet/id_vgg19 (video features)
 
 ### Inputs
 - source_data:
-  - `07_implementation/implementation_notes/scoring/outputs/bl006_scored_candidates.csv`
-  - `07_implementation/implementation_notes/playlist/outputs/bl007_playlist.json`
-  - `07_implementation/implementation_notes/playlist/outputs/bl007_assembly_trace.csv`
+  - `07_implementation/implementation_notes/bl006_scoring/outputs/bl006_scored_candidates.csv`
+  - `07_implementation/implementation_notes/bl007_playlist/outputs/bl007_playlist.json`
+  - `07_implementation/implementation_notes/bl007_playlist/outputs/bl007_assembly_trace.csv`
 - config_or_parameters:
   - 9 named scoring components: bpm, danceability, loudness, V_mean (valence), A_mean (arousal), D_mean (dominance), lead_genre, genre_overlap, tag_overlap
   - top_contributors = top 3 by weighted contribution value
   - why_selected sentence derived from top 3 contributors and playlist position
-- code_or_script_path: `07_implementation/implementation_notes/transparency/build_bl008_explanation_payloads.py`
+- code_or_script_path: `07_implementation/implementation_notes/bl008_transparency/build_bl008_explanation_payloads.py`
 - dependency assumptions: Python stdlib only; BL-006 and BL-007 artifacts must already exist.
 
 ### Expected Evidence
-- primary_output_artifact: `07_implementation/implementation_notes/transparency/outputs/bl008_explanation_payloads.json`
+- primary_output_artifact: `07_implementation/implementation_notes/bl008_transparency/outputs/bl008_explanation_payloads.json`
 - secondary_output_artifacts:
-  - `07_implementation/implementation_notes/transparency/outputs/bl008_explanation_summary.json`
+  - `07_implementation/implementation_notes/bl008_transparency/outputs/bl008_explanation_summary.json`
 - success_condition: one payload per playlist track (10 total); each payload contains score breakdown, top contributors, assembly context, and why_selected sentence; summary records input hashes and top-contributor distribution.
 
 ### Run Record
@@ -1133,8 +1133,8 @@ Do NOT download: audio files (.mp3), id_incp/id_resnet/id_vgg19 (video features)
   - `sha256.bl008_explanation_summary.json=49CAC879496E1AEEA4821BF97A5FE09FE30FC16DEDBA629E4DD3861A7D0A431E`
 - deterministic_repeat_checked: no
 - output_paths:
-  - `07_implementation/implementation_notes/transparency/outputs/bl008_explanation_payloads.json`
-  - `07_implementation/implementation_notes/transparency/outputs/bl008_explanation_summary.json`
+  - `07_implementation/implementation_notes/bl008_transparency/outputs/bl008_explanation_payloads.json`
+  - `07_implementation/implementation_notes/bl008_transparency/outputs/bl008_explanation_summary.json`
 
 ### Validation Checks
 - Payload completeness check:
@@ -1201,40 +1201,40 @@ Do NOT download: audio files (.mp3), id_incp/id_resnet/id_vgg19 (video features)
 
 ### Inputs
 - source_data:
-  - `07_implementation/implementation_notes/data_layer/outputs/onion_join_coverage_report.json`
+  - `07_implementation/implementation_notes/bl000_data_layer/outputs/onion_join_coverage_report.json`
   - `07_implementation/implementation_notes/test_assets/bl016_asset_manifest.json`
   - `07_implementation/implementation_notes/test_assets/bl016_synthetic_aligned_events.jsonl`
   - `07_implementation/implementation_notes/test_assets/bl016_candidate_stub.csv`
-  - `07_implementation/implementation_notes/profile/outputs/bl004_preference_profile.json`
-  - `07_implementation/implementation_notes/profile/outputs/bl004_profile_summary.json`
-  - `07_implementation/implementation_notes/profile/outputs/bl004_seed_trace.csv`
-  - `07_implementation/implementation_notes/retrieval/outputs/bl005_candidate_diagnostics.json`
-  - `07_implementation/implementation_notes/retrieval/outputs/bl005_candidate_decisions.csv`
-  - `07_implementation/implementation_notes/retrieval/outputs/bl005_filtered_candidates.csv`
-  - `07_implementation/implementation_notes/scoring/outputs/bl006_score_summary.json`
-  - `07_implementation/implementation_notes/scoring/outputs/bl006_scored_candidates.csv`
-  - `07_implementation/implementation_notes/playlist/outputs/bl007_assembly_report.json`
-  - `07_implementation/implementation_notes/playlist/outputs/bl007_assembly_trace.csv`
-  - `07_implementation/implementation_notes/playlist/outputs/bl007_playlist.json`
-  - `07_implementation/implementation_notes/transparency/outputs/bl008_explanation_summary.json`
-  - `07_implementation/implementation_notes/transparency/outputs/bl008_explanation_payloads.json`
+  - `07_implementation/implementation_notes/bl004_profile/outputs/bl004_preference_profile.json`
+  - `07_implementation/implementation_notes/bl004_profile/outputs/bl004_profile_summary.json`
+  - `07_implementation/implementation_notes/bl004_profile/outputs/bl004_seed_trace.csv`
+  - `07_implementation/implementation_notes/bl005_retrieval/outputs/bl005_candidate_diagnostics.json`
+  - `07_implementation/implementation_notes/bl005_retrieval/outputs/bl005_candidate_decisions.csv`
+  - `07_implementation/implementation_notes/bl005_retrieval/outputs/bl005_filtered_candidates.csv`
+  - `07_implementation/implementation_notes/bl006_scoring/outputs/bl006_score_summary.json`
+  - `07_implementation/implementation_notes/bl006_scoring/outputs/bl006_scored_candidates.csv`
+  - `07_implementation/implementation_notes/bl007_playlist/outputs/bl007_assembly_report.json`
+  - `07_implementation/implementation_notes/bl007_playlist/outputs/bl007_assembly_trace.csv`
+  - `07_implementation/implementation_notes/bl007_playlist/outputs/bl007_playlist.json`
+  - `07_implementation/implementation_notes/bl008_transparency/outputs/bl008_explanation_summary.json`
+  - `07_implementation/implementation_notes/bl008_transparency/outputs/bl008_explanation_payloads.json`
 - config_or_parameters:
   - bootstrap mode = `true`
   - required top-level sections: `run_metadata`, `run_config`, `ingestion_alignment_diagnostics`, `stage_diagnostics`, `exclusion_diagnostics`, `output_artifacts`
   - `dataset_version` = deterministic combined hash of bootstrap data components
   - `pipeline_version` = deterministic combined hash of participating stage scripts
   - representative exclusion samples capped per reason group
-- code_or_script_path: `07_implementation/implementation_notes/observability/build_bl009_observability_log.py`
+- code_or_script_path: `07_implementation/implementation_notes/bl009_observability/build_bl009_observability_log.py`
 - dependency assumptions: Python stdlib only; all upstream BL-017 to BL-008 artifacts must exist.
 
 ### Expected Evidence
-- primary_output_artifact: `07_implementation/implementation_notes/observability/outputs/bl009_run_observability_log.json`
+- primary_output_artifact: `07_implementation/implementation_notes/bl009_observability/outputs/bl009_run_observability_log.json`
 - secondary_output_artifacts:
-  - `07_implementation/implementation_notes/observability/outputs/bl009_run_index.csv`
+  - `07_implementation/implementation_notes/bl009_observability/outputs/bl009_run_index.csv`
 - success_condition: one canonical run log is produced with complete required sections, linked upstream run ids, concrete artifact hashes, deferred BL-001 to BL-003 status, and a compact CSV index row for quick replay lookup.
 
 ### Run Record
-- command_or_execution_method: CLI via `python 07_implementation/implementation_notes/observability/build_bl009_observability_log.py`
+- command_or_execution_method: CLI via `python 07_implementation/implementation_notes/bl009_observability/build_bl009_observability_log.py`
 - run_id: `BL009-OBSERVE-20260320-232943`
 - start_state_summary: BL-009 had no observability implementation, no run-level audit log, and no run index for the bootstrap artifact chain.
 - end_state_summary: logger script implemented; run log and run index generated successfully.
@@ -1273,8 +1273,8 @@ Do NOT download: audio files (.mp3), id_incp/id_resnet/id_vgg19 (video features)
   - `sha256.bl009_run_index.csv=EC5D3D72B1DE5D483E7EAA3C614075FD5CD2994C5304DC60520BFB7390A01811`
 - deterministic_repeat_checked: no
 - output_paths:
-  - `07_implementation/implementation_notes/observability/outputs/bl009_run_observability_log.json`
-  - `07_implementation/implementation_notes/observability/outputs/bl009_run_index.csv`
+  - `07_implementation/implementation_notes/bl009_observability/outputs/bl009_run_observability_log.json`
+  - `07_implementation/implementation_notes/bl009_observability/outputs/bl009_run_index.csv`
 
 ### Validation Checks
 - Structure check:
@@ -1325,26 +1325,26 @@ Do NOT download: audio files (.mp3), id_incp/id_resnet/id_vgg19 (video features)
   - `07_implementation/implementation_notes/test_assets/bl016_synthetic_aligned_events.jsonl`
   - `07_implementation/implementation_notes/test_assets/bl016_candidate_stub.csv`
   - `07_implementation/implementation_notes/test_assets/bl016_asset_manifest.json`
-  - `07_implementation/implementation_notes/data_layer/outputs/onion_join_coverage_report.json`
+  - `07_implementation/implementation_notes/bl000_data_layer/outputs/onion_join_coverage_report.json`
 - config_or_parameters:
   - replay count = `3`
   - bootstrap mode = `true`
   - stage order = `BL-004` -> `BL-005` -> `BL-006` -> `BL-007` -> `BL-008` -> `BL-009`
   - stable comparison artifacts = `profile_semantic_hash`, `seed_trace_hash`, `filtered_candidates_hash`, `candidate_decisions_hash`, `ranked_output_hash`, `assembly_trace_hash`, `playlist_output_hash`, `explanation_output_hash`, `observability_output_hash`
   - volatile raw artifacts tracked separately = `bl007_playlist.json`, `bl008_explanation_payloads.json`, `bl009_run_observability_log.json`
-- code_or_script_path: `07_implementation/implementation_notes/reproducibility/run_bl010_reproducibility_check.py`
+- code_or_script_path: `07_implementation/implementation_notes/bl010_reproducibility/run_bl010_reproducibility_check.py`
 - dependency assumptions: Python stdlib only; BL-016 and BL-017 inputs already present; BL-004 to BL-009 stage scripts executable from repo root.
 
 ### Expected Evidence
-- primary_output_artifact: `07_implementation/implementation_notes/reproducibility/outputs/bl010_reproducibility_report.json`
+- primary_output_artifact: `07_implementation/implementation_notes/bl010_reproducibility/outputs/bl010_reproducibility_report.json`
 - secondary_output_artifacts:
-  - `07_implementation/implementation_notes/reproducibility/outputs/bl010_reproducibility_run_matrix.csv`
-  - `07_implementation/implementation_notes/reproducibility/outputs/bl010_reproducibility_config_snapshot.json`
-  - archived replay directories `07_implementation/implementation_notes/reproducibility/outputs/replay_01/`, `replay_02/`, `replay_03/`
+  - `07_implementation/implementation_notes/bl010_reproducibility/outputs/bl010_reproducibility_run_matrix.csv`
+  - `07_implementation/implementation_notes/bl010_reproducibility/outputs/bl010_reproducibility_config_snapshot.json`
+  - archived replay directories `07_implementation/implementation_notes/bl010_reproducibility/outputs/replay_01/`, `replay_02/`, `replay_03/`
 - success_condition: all three replays produce identical stable output hashes and matching playlist/explanation content under one fixed config hash, while any raw-hash variation caused by run metadata is explicitly recorded.
 
 ### Run Record
-- command_or_execution_method: CLI via `python 07_implementation/implementation_notes/reproducibility/run_bl010_reproducibility_check.py`
+- command_or_execution_method: CLI via `python 07_implementation/implementation_notes/bl010_reproducibility/run_bl010_reproducibility_check.py`
 - run_id: `BL010-REPRO-20260320-233937`
 - start_state_summary: BL-010 had no reproducibility runner, no replay matrix, and no normalized comparison layer for timestamped BL-007 to BL-009 artifacts.
 - end_state_summary: replay runner implemented; stage run-id precision hardened; three archived replays completed; stable hashes matched across all replays.
@@ -1390,9 +1390,9 @@ Do NOT download: audio files (.mp3), id_incp/id_resnet/id_vgg19 (video features)
   - `sha256.bl010_reproducibility_config_snapshot.json=0A3737348AAE95960D52AF0671A62530A2CDAC3B148A75DDB2DBD8354315428F`
 - deterministic_repeat_checked: yes
 - output_paths:
-  - `07_implementation/implementation_notes/reproducibility/outputs/bl010_reproducibility_report.json`
-  - `07_implementation/implementation_notes/reproducibility/outputs/bl010_reproducibility_run_matrix.csv`
-  - `07_implementation/implementation_notes/reproducibility/outputs/bl010_reproducibility_config_snapshot.json`
+  - `07_implementation/implementation_notes/bl010_reproducibility/outputs/bl010_reproducibility_report.json`
+  - `07_implementation/implementation_notes/bl010_reproducibility/outputs/bl010_reproducibility_run_matrix.csv`
+  - `07_implementation/implementation_notes/bl010_reproducibility/outputs/bl010_reproducibility_config_snapshot.json`
 
 ### Validation Checks
 - Stable replay check:
@@ -1447,25 +1447,25 @@ Do NOT download: audio files (.mp3), id_incp/id_resnet/id_vgg19 (video features)
 - source_data:
   - `07_implementation/implementation_notes/test_assets/bl016_synthetic_aligned_events.jsonl`
   - `07_implementation/implementation_notes/test_assets/bl016_candidate_stub.csv`
-  - `07_implementation/implementation_notes/reproducibility/outputs/bl010_reproducibility_config_snapshot.json`
+  - `07_implementation/implementation_notes/bl010_reproducibility/outputs/bl010_reproducibility_config_snapshot.json`
   - current BL-004 to BL-009 stage scripts and baseline outputs
 - config_or_parameters:
   - one-factor-at-a-time variants for `EP-CTRL-001`, `EP-CTRL-002`, and `EP-CTRL-003`
   - baseline fixed from BL-010 config snapshot
-  - scenario outputs archived under `07_implementation/implementation_notes/controllability/outputs/`
-- code_or_script_path: `07_implementation/implementation_notes/controllability/run_bl011_controllability_check.py`
+  - scenario outputs archived under `07_implementation/implementation_notes/bl011_controllability/outputs/`
+- code_or_script_path: `07_implementation/implementation_notes/bl011_controllability/run_bl011_controllability_check.py`
 - dependency assumptions: Python stdlib only; BL-010 baseline artifacts remain valid and stage semantics remain unchanged outside targeted parameter overrides.
 
 ### Expected Evidence
-- primary_output_artifact: `07_implementation/implementation_notes/controllability/outputs/bl011_controllability_report.json`
+- primary_output_artifact: `07_implementation/implementation_notes/bl011_controllability/outputs/bl011_controllability_report.json`
 - secondary_output_artifacts:
-  - `07_implementation/implementation_notes/controllability/outputs/bl011_controllability_run_matrix.csv`
-  - per-scenario archived outputs under `07_implementation/implementation_notes/controllability/outputs/scenarios/`
+  - `07_implementation/implementation_notes/bl011_controllability/outputs/bl011_controllability_run_matrix.csv`
+  - per-scenario archived outputs under `07_implementation/implementation_notes/bl011_controllability/outputs/scenarios/`
   - optional config snapshot for the BL-011 scenario plan
 - success_condition: each targeted control change produces an interpretable downstream effect while non-target parameters remain fixed and all scenario differences remain traceable to profile, retrieval, scoring, or playlist evidence.
 
 ### Run Record
-- command_or_execution_method: CLI via `python 07_implementation/implementation_notes/controllability/run_bl011_controllability_check.py`
+- command_or_execution_method: CLI via `python 07_implementation/implementation_notes/bl011_controllability/run_bl011_controllability_check.py`
 - run_id: `BL011-CTRL-20260320-235345`
 - start_state_summary: BL-011 has no controllability runner, no comparative run matrix, and no archived parameter-sensitivity evidence.
 - end_state_summary: controllability runner implemented; baseline plus four archived OFAT scenarios executed successfully; each scenario repeated twice with matching stable hashes.
@@ -1501,10 +1501,10 @@ Do NOT download: audio files (.mp3), id_incp/id_resnet/id_vgg19 (video features)
   - `sha256.bl011_controllability_config_snapshot.json=B92CDB560D9600E0059E66A72B433C0D454F90A496E7CB87AB308C0D3A9725C1`
 - deterministic_repeat_checked: yes
 - output_paths:
-  - `07_implementation/implementation_notes/controllability/outputs/bl011_controllability_report.json`
-  - `07_implementation/implementation_notes/controllability/outputs/bl011_controllability_run_matrix.csv`
-  - `07_implementation/implementation_notes/controllability/outputs/bl011_controllability_config_snapshot.json`
-  - `07_implementation/implementation_notes/controllability/outputs/scenarios/`
+  - `07_implementation/implementation_notes/bl011_controllability/outputs/bl011_controllability_report.json`
+  - `07_implementation/implementation_notes/bl011_controllability/outputs/bl011_controllability_run_matrix.csv`
+  - `07_implementation/implementation_notes/bl011_controllability/outputs/bl011_controllability_config_snapshot.json`
+  - `07_implementation/implementation_notes/bl011_controllability/outputs/scenarios/`
 
 ### Issues And Limits
 - failures_or_anomalies:
@@ -1542,8 +1542,8 @@ Do NOT download: audio files (.mp3), id_incp/id_resnet/id_vgg19 (video features)
 - source_data:
   - `07_implementation/experiment_log.md` (`EXP-012`, `EXP-013`)
   - `07_implementation/test_notes.md` (`TC-REPRO-001`, `TC-005`, `TC-006`, `TC-007`)
-  - `07_implementation/implementation_notes/reproducibility/outputs/bl010_reproducibility_report.json`
-  - `07_implementation/implementation_notes/controllability/outputs/bl011_controllability_report.json`
+  - `07_implementation/implementation_notes/bl010_reproducibility/outputs/bl010_reproducibility_report.json`
+  - `07_implementation/implementation_notes/bl011_controllability/outputs/bl011_controllability_report.json`
 - config_or_parameters:
   - synthesis rule: include only limitations grounded in executed evidence or locked scope constraints
   - wording rule: each limitation must state its effect on interpretation
@@ -1610,25 +1610,25 @@ Do NOT download: audio files (.mp3), id_incp/id_resnet/id_vgg19 (video features)
 
 ### Inputs
 - source_data:
-  - existing stage scripts under `07_implementation/implementation_notes/profile/`, `retrieval/`, `scoring/`, `playlist/`, `transparency/`, and `observability/`
+  - existing stage scripts under `07_implementation/implementation_notes/bl004_profile/`, `retrieval/`, `scoring/`, `playlist/`, `transparency/`, and `observability/`
   - current bootstrap assets from `07_implementation/implementation_notes/test_assets/`
 - config_or_parameters:
   - default stage order: BL-004 -> BL-005 -> BL-006 -> BL-007 -> BL-008 -> BL-009
   - fail-fast orchestration with optional stage subset support
 - code_or_script_path:
-  - planned new orchestrator: `07_implementation/implementation_notes/entrypoint/run_bl013_pipeline_entrypoint.py`
-  - planned run-command documentation: `07_implementation/implementation_notes/entrypoint/bl013_run_command.md`
+  - planned new orchestrator: `07_implementation/implementation_notes/bl013_entrypoint/run_bl013_pipeline_entrypoint.py`
+  - planned run-command documentation: `07_implementation/implementation_notes/bl013_entrypoint/bl013_run_command.md`
 - dependency assumptions: Python runtime available; required upstream scripts and bootstrap inputs exist.
 
 ### Expected Evidence
-- primary_output_artifact: `07_implementation/implementation_notes/entrypoint/bl013_run_command.md`
+- primary_output_artifact: `07_implementation/implementation_notes/bl013_entrypoint/bl013_run_command.md`
 - secondary_output_artifacts:
-  - `07_implementation/implementation_notes/entrypoint/run_bl013_pipeline_entrypoint.py`
-  - one orchestration run summary under `07_implementation/implementation_notes/entrypoint/outputs/`
+  - `07_implementation/implementation_notes/bl013_entrypoint/run_bl013_pipeline_entrypoint.py`
+  - one orchestration run summary under `07_implementation/implementation_notes/bl013_entrypoint/outputs/`
 - success_condition: a single command executes configured stages in order, stops on stage failure, and emits a machine-readable run summary.
 
 ### Run Record
-- command_or_execution_method: CLI via `python 07_implementation/implementation_notes/entrypoint/run_bl013_pipeline_entrypoint.py` (executed twice)
+- command_or_execution_method: CLI via `python 07_implementation/implementation_notes/bl013_entrypoint/run_bl013_pipeline_entrypoint.py` (executed twice)
 - run_id: `BL013-ENTRYPOINT-20260321-001004-434656`
 - start_state_summary: BL-013 changed to in-progress; no unified pipeline entrypoint exists yet.
 - end_state_summary: new lightweight orchestrator implemented; both execution runs completed all six stages (`BL-004` to `BL-009`) with zero failures and matching stable artifact hashes.
@@ -1651,11 +1651,11 @@ Do NOT download: audio files (.mp3), id_incp/id_resnet/id_vgg19 (video features)
   - `sha256.run_summary_2=E98D5B905546B3D31CC23A5E1E99BB40487FD4DAE36AD5E668F76730811B5CB7`
 - deterministic_repeat_checked: yes
 - output_paths:
-  - `07_implementation/implementation_notes/entrypoint/run_bl013_pipeline_entrypoint.py`
-  - `07_implementation/implementation_notes/entrypoint/bl013_run_command.md`
-  - `07_implementation/implementation_notes/entrypoint/outputs/bl013_orchestration_run_BL013-ENTRYPOINT-20260321-000958-043140.json`
-  - `07_implementation/implementation_notes/entrypoint/outputs/bl013_orchestration_run_BL013-ENTRYPOINT-20260321-001004-434656.json`
-  - `07_implementation/implementation_notes/entrypoint/outputs/bl013_orchestration_run_latest.json`
+  - `07_implementation/implementation_notes/bl013_entrypoint/run_bl013_pipeline_entrypoint.py`
+  - `07_implementation/implementation_notes/bl013_entrypoint/bl013_run_command.md`
+  - `07_implementation/implementation_notes/bl013_entrypoint/outputs/bl013_orchestration_run_BL013-ENTRYPOINT-20260321-000958-043140.json`
+  - `07_implementation/implementation_notes/bl013_entrypoint/outputs/bl013_orchestration_run_BL013-ENTRYPOINT-20260321-001004-434656.json`
+  - `07_implementation/implementation_notes/bl013_entrypoint/outputs/bl013_orchestration_run_latest.json`
 
 ### Issues And Limits
 - failures_or_anomalies:
@@ -1702,18 +1702,18 @@ Do NOT download: audio files (.mp3), id_incp/id_resnet/id_vgg19 (video features)
   - planned determinism check: two integration runs with stable content hash comparison
   - planned Spotify alignment policy for DS-002: metadata-first on normalized title + artist with duration/release tie-breaks; no corpus-side ISRC dependency assumed
 - code_or_script_path:
-  - planned: `07_implementation/implementation_notes/data_layer/build_bl019_ds002_dataset.py`
+  - planned: `07_implementation/implementation_notes/bl000_data_layer/build_bl019_ds002_dataset.py`
 - dependency assumptions: confirmed local assets can be joined deterministically on `track_id`; HDF5 extraction is now available in the environment (`h5py` installed); candidate-side track-level ISRC is not currently assumed.
 
 ### Expected Evidence
-- primary_output_artifact: `07_implementation/implementation_notes/data_layer/outputs/bl019_ds002_integration_report.json`
+- primary_output_artifact: `07_implementation/implementation_notes/bl000_data_layer/outputs/bl019_ds002_integration_report.json`
 - secondary_output_artifacts:
-  - `07_implementation/implementation_notes/data_layer/outputs/bl019_ds002_dataset_manifest.json`
-  - `07_implementation/implementation_notes/data_layer/outputs/bl019_ds002_quality_checks.csv`
+  - `07_implementation/implementation_notes/bl000_data_layer/outputs/bl019_ds002_dataset_manifest.json`
+  - `07_implementation/implementation_notes/bl000_data_layer/outputs/bl019_ds002_quality_checks.csv`
 - success_condition: planned workflow can be executed end to end with deterministic repeat behavior, explicit pass/fail quality gates, and clear join diagnostics across all three DS-002 sources.
 
 ### Run Record
-- command_or_execution_method: `python 07_implementation/implementation_notes/data_layer/build_bl019_ds002_dataset.py` (two identical runs)
+- command_or_execution_method: `python 07_implementation/implementation_notes/bl000_data_layer/build_bl019_ds002_dataset.py` (two identical runs)
 - run_1_id: `BL019-RUN1-20260321-014520`
 - run_2_id: `BL019-RUN2-20260321-014922`
 - start_state_summary: DS-002 corpus sources confirmed locally (10k HDF5, 1M SQLite rows, 9330 Last.fm JSON). Intersection join mode, streaming tar.gz extraction.
@@ -1746,10 +1746,10 @@ Do NOT download: audio files (.mp3), id_incp/id_resnet/id_vgg19 (video features)
   - msd_tar: `2591a85c097a5d4ca6590f7496bdbf724e7fa5d36f79c8fcdf031219445a77b7`
   - lastfm_zip: `fdf41ed3741ea736947e870abadc65f91681768f362204454e428d0bf0cd6d5b`
 - output_paths:
-  - `07_implementation/implementation_notes/data_layer/outputs/bl019_ds002_integrated_candidate_dataset.csv`
-  - `07_implementation/implementation_notes/data_layer/outputs/bl019_ds002_dataset_manifest.json`
-  - `07_implementation/implementation_notes/data_layer/outputs/bl019_ds002_quality_checks.csv`
-  - `07_implementation/implementation_notes/data_layer/outputs/bl019_ds002_integration_report.json`
+  - `07_implementation/implementation_notes/bl000_data_layer/outputs/bl019_ds002_integrated_candidate_dataset.csv`
+  - `07_implementation/implementation_notes/bl000_data_layer/outputs/bl019_ds002_dataset_manifest.json`
+  - `07_implementation/implementation_notes/bl000_data_layer/outputs/bl019_ds002_quality_checks.csv`
+  - `07_implementation/implementation_notes/bl000_data_layer/outputs/bl019_ds002_integration_report.json`
 
 ### Issues And Limits
 - failures_or_anomalies: source inspection showed no confirmed corpus-side track-level ISRC field and no confirmed track-level MusicBrainz recording ID in the currently available DS-002 assets.
@@ -1859,9 +1859,9 @@ Do NOT download: audio files (.mp3), id_incp/id_resnet/id_vgg19 (video features)
   - pagination: `limit=50` with offset traversal for all supported endpoints
   - retry policy: HTTP 429 retry-after and transient network retries
 - code_or_script_path:
-  - `07_implementation/implementation_notes/ingestion/export_spotify_max_dataset.py`
-  - `07_implementation/implementation_notes/ingestion/spotify_api_ingestion_runbook.md`
-  - `07_implementation/implementation_notes/ingestion/spotify_env_template.ps1`
+  - `07_implementation/implementation_notes/bl001_bl002_ingestion/export_spotify_max_dataset.py`
+  - `07_implementation/implementation_notes/bl001_bl002_ingestion/docs/spotify_api_ingestion_runbook.md`
+  - `07_implementation/implementation_notes/bl001_bl002_ingestion/configs/templates/spotify_env_template.ps1`
 - dependency assumptions: Python stdlib only; user must complete local browser OAuth consent.
 
 ### Expected Evidence
@@ -1874,8 +1874,8 @@ Do NOT download: audio files (.mp3), id_incp/id_resnet/id_vgg19 (video features)
 
 ### Run Record
 - command_or_execution_method:
-  - `python -m py_compile 07_implementation/implementation_notes/ingestion/export_spotify_max_dataset.py`
-  - `python 07_implementation/implementation_notes/ingestion/export_spotify_max_dataset.py --help`
+  - `python -m py_compile 07_implementation/implementation_notes/bl001_bl002_ingestion/export_spotify_max_dataset.py`
+  - `python 07_implementation/implementation_notes/bl001_bl002_ingestion/export_spotify_max_dataset.py --help`
 - run_id: `SPOTIFY-EXPORT-IMPLEMENT-20260321`
 - start_state_summary: BL-002 parser existed; no Spotify API bulk-ingestion exporter in repo.
 - end_state_summary: exporter implemented and validated for syntax/CLI; interactive authenticated run still pending local OAuth browser approval.
@@ -1889,9 +1889,9 @@ Do NOT download: audio files (.mp3), id_incp/id_resnet/id_vgg19 (video features)
   - `authenticated_export_run=not_executed_in_this_session`
 - deterministic_repeat_checked: no
 - output_paths:
-  - `07_implementation/implementation_notes/ingestion/export_spotify_max_dataset.py`
-  - `07_implementation/implementation_notes/ingestion/spotify_api_ingestion_runbook.md`
-  - `07_implementation/implementation_notes/ingestion/spotify_env_template.ps1`
+  - `07_implementation/implementation_notes/bl001_bl002_ingestion/export_spotify_max_dataset.py`
+  - `07_implementation/implementation_notes/bl001_bl002_ingestion/docs/spotify_api_ingestion_runbook.md`
+  - `07_implementation/implementation_notes/bl001_bl002_ingestion/configs/templates/spotify_env_template.ps1`
 
 ### Issues And Limits
 - failures_or_anomalies: none in script validation.
@@ -1935,18 +1935,18 @@ Do NOT download: audio files (.mp3), id_incp/id_resnet/id_vgg19 (video features)
   - `max_requests_per_minute=60`
   - `max_retries=10`
   - `max_retry_after_seconds=120`
-- code_or_script_path: `07_implementation/implementation_notes/ingestion/export_spotify_max_dataset.py`
+- code_or_script_path: `07_implementation/implementation_notes/bl001_bl002_ingestion/export_spotify_max_dataset.py`
 - dependency assumptions: valid Spotify OAuth token cache available.
 
 ### Expected Evidence
-- primary_output_artifact: `07_implementation/implementation_notes/ingestion/outputs/spotify_api_export/spotify_export_run_summary.json`
+- primary_output_artifact: `07_implementation/implementation_notes/bl001_bl002_ingestion/outputs/spotify_api_export/spotify_export_run_summary.json`
 - secondary_output_artifacts:
-  - exported endpoint files under `07_implementation/implementation_notes/ingestion/outputs/spotify_api_export/`
+  - exported endpoint files under `07_implementation/implementation_notes/bl001_bl002_ingestion/outputs/spotify_api_export/`
   - request log and token cache
 - success_condition: one authenticated run completes with non-empty endpoint outputs and summary hashes.
 
 ### Run Record
-- command_or_execution_method: `python 07_implementation/implementation_notes/ingestion/export_spotify_max_dataset.py --max-retry-after-seconds 120 --batch-size-top-tracks 25 --batch-size-saved-tracks 25 --batch-size-playlists 25 --batch-size-playlist-items 25 --batch-pause-ms 500 --min-request-interval-ms 700 --max-requests-per-minute 60 --max-retries 10`
+- command_or_execution_method: `python 07_implementation/implementation_notes/bl001_bl002_ingestion/export_spotify_max_dataset.py --max-retry-after-seconds 120 --batch-size-top-tracks 25 --batch-size-saved-tracks 25 --batch-size-playlists 25 --batch-size-playlist-items 25 --batch-pause-ms 500 --min-request-interval-ms 700 --max-requests-per-minute 60 --max-retries 10`
 - run_id: `SPOTIFY-EXPORT-20260321-030550-407798`
 - start_state_summary: authenticated token present; exporter configured for conservative request cadence.
 - end_state_summary: run blocked on initial `/me` request by a provider-side cooldown window; block-report artifact written.
@@ -1962,8 +1962,8 @@ Do NOT download: audio files (.mp3), id_incp/id_resnet/id_vgg19 (video features)
   - `block_report_written=yes`
 - deterministic_repeat_checked: no
 - output_paths:
-  - `07_implementation/implementation_notes/ingestion/outputs/spotify_api_export/spotify_rate_limit_block.json`
-  - `07_implementation/implementation_notes/ingestion/outputs/spotify_api_export/spotify_token_cache.json`
+  - `07_implementation/implementation_notes/bl001_bl002_ingestion/outputs/spotify_api_export/spotify_rate_limit_block.json`
+  - `07_implementation/implementation_notes/bl001_bl002_ingestion/outputs/spotify_api_export/spotify_token_cache.json`
 
 ### Issues And Limits
 - failures_or_anomalies: provider-side long cooldown returned in `Retry-After` header despite conservative local request policy.
@@ -2074,18 +2074,18 @@ Do NOT download: audio files (.mp3), id_incp/id_resnet/id_vgg19 (video features)
 
 ### Inputs
 - source_data:
-  - `07_implementation/implementation_notes/data_layer/build_bl019_ds002_dataset.py`
-  - `07_implementation/implementation_notes/data_layer/outputs/bl019_ds002_dataset_manifest.json`
-  - `07_implementation/implementation_notes/data_layer/outputs/bl019_ds002_integration_report.json`
+  - `07_implementation/implementation_notes/bl000_data_layer/build_bl019_ds002_dataset.py`
+  - `07_implementation/implementation_notes/bl000_data_layer/outputs/bl019_ds002_dataset_manifest.json`
+  - `07_implementation/implementation_notes/bl000_data_layer/outputs/bl019_ds002_integration_report.json`
 - config_or_parameters:
   - current DS-002 path uses `millionsongsubset.tar.gz` + `lastfm_subset.zip`
   - target path requires full MSD core + full Last.fm train/test assets
 - code_or_script_path:
-  - `07_implementation/implementation_notes/data_layer/full_dataset_acquisition_checklist_2026-03-21.md`
+  - `07_implementation/implementation_notes/bl000_data_layer/full_dataset_acquisition_checklist_2026-03-21.md`
 - dependency assumptions: official MSD and Last.fm endpoints remain reachable; enough local storage is available for full data.
 
 ### Expected Evidence
-- primary_output_artifact: `07_implementation/implementation_notes/data_layer/full_dataset_acquisition_checklist_2026-03-21.md`
+- primary_output_artifact: `07_implementation/implementation_notes/bl000_data_layer/full_dataset_acquisition_checklist_2026-03-21.md`
 - secondary_output_artifacts:
   - `00_admin/change_log.md` (C-062)
   - this experiment entry
@@ -2109,7 +2109,7 @@ Do NOT download: audio files (.mp3), id_incp/id_resnet/id_vgg19 (video features)
   - `planning_artifacts_created=1`
 - deterministic_repeat_checked: no
 - output_paths:
-  - `07_implementation/implementation_notes/data_layer/full_dataset_acquisition_checklist_2026-03-21.md`
+  - `07_implementation/implementation_notes/bl000_data_layer/full_dataset_acquisition_checklist_2026-03-21.md`
 
 ### Issues And Limits
 - failures_or_anomalies: none in planning phase.
@@ -2142,21 +2142,21 @@ Do NOT download: audio files (.mp3), id_incp/id_resnet/id_vgg19 (video features)
 
 ### Inputs
 - source_data:
-  - `07_implementation/implementation_notes/ingestion/outputs/spotify_api_export/spotify_export_run_summary.json`
-  - `07_implementation/implementation_notes/ingestion/outputs/spotify_api_export/spotify_top_tracks_flat.csv`
-  - `07_implementation/implementation_notes/ingestion/outputs/spotify_api_export/spotify_saved_tracks_flat.csv`
-  - `07_implementation/implementation_notes/data_layer/outputs/bl019_ds002_integrated_candidate_dataset.csv`
+  - `07_implementation/implementation_notes/bl001_bl002_ingestion/outputs/spotify_api_export/spotify_export_run_summary.json`
+  - `07_implementation/implementation_notes/bl001_bl002_ingestion/outputs/spotify_api_export/spotify_top_tracks_flat.csv`
+  - `07_implementation/implementation_notes/bl001_bl002_ingestion/outputs/spotify_api_export/spotify_saved_tracks_flat.csv`
+  - `07_implementation/implementation_notes/bl000_data_layer/outputs/bl019_ds002_integrated_candidate_dataset.csv`
 - config_or_parameters:
   - real Spotify export run id: `SPOTIFY-EXPORT-20260321-192533-881299`
   - initial fuzzy alignment variants tested: `WRatio/82`, then `token_sort_ratio/88`
   - semantic fallback API: Last.fm `track.getTopTags`
   - semantic-only BL-004/005/006/008 path enabled because Spotify audio-feature endpoints are deprecated
 - code_or_script_path:
-  - `07_implementation/implementation_notes/alignment/bl003_align_spotify_api_to_ds002.py`
-  - `07_implementation/implementation_notes/profile/build_bl004_preference_profile.py`
-  - `07_implementation/implementation_notes/retrieval/build_bl005_candidate_filter.py`
-  - `07_implementation/implementation_notes/scoring/build_bl006_scored_candidates.py`
-  - `07_implementation/implementation_notes/transparency/build_bl008_explanation_payloads.py`
+  - `07_implementation/implementation_notes/bl003_alignment/bl003_align_spotify_api_to_ds002.py`
+  - `07_implementation/implementation_notes/bl004_profile/build_bl004_preference_profile.py`
+  - `07_implementation/implementation_notes/bl005_retrieval/build_bl005_candidate_filter.py`
+  - `07_implementation/implementation_notes/bl006_scoring/build_bl006_scored_candidates.py`
+  - `07_implementation/implementation_notes/bl008_transparency/build_bl008_explanation_payloads.py`
 - dependency assumptions:
   - Last.fm public API remains reachable for tag enrichment
   - DS-002 remains the active candidate corpus unless a later corpus decision supersedes D-015/D-021
@@ -2164,7 +2164,7 @@ Do NOT download: audio files (.mp3), id_incp/id_resnet/id_vgg19 (video features)
 ### Expected Evidence
 - primary_output_artifact: replacement `bl020_aligned_events.jsonl` and `bl020_alignment_report.json` generated by Last.fm tag enrichment rather than DS-002 fuzzy alignment
 - secondary_output_artifacts:
-  - `07_implementation/implementation_notes/ingestion/outputs/bl020_lastfm_tag_cache.json`
+  - `07_implementation/implementation_notes/bl001_bl002_ingestion/outputs/bl020_lastfm_tag_cache.json`
   - code updates to BL-003/004/005/006/008
   - this experiment entry
 - success_condition: real Spotify data is ingested into BL-003, seed evidence is valid, and downstream BL-004 through BL-009 can be rerun from regenerated BL-003 outputs.
@@ -2216,12 +2216,12 @@ Do NOT download: audio files (.mp3), id_incp/id_resnet/id_vgg19 (video features)
   - `bl004_run_id=BL004-PROFILE-20260322-020511-252947`
 - deterministic_repeat_checked: yes (full run confirmed completion with clean exit, no interruption)
 - output_paths:
-  - `07_implementation/implementation_notes/ingestion/outputs/bl020_alignment_report.json`
-  - `07_implementation/implementation_notes/ingestion/outputs/bl020_aligned_events.jsonl` (5.9 MB)
-  - `07_implementation/implementation_notes/ingestion/outputs/bl020_lastfm_tag_cache.json` (5.4 MB)
-  - `07_implementation/implementation_notes/profile/outputs/bl004_preference_profile.json`
-  - `07_implementation/implementation_notes/profile/outputs/bl004_profile_summary.json`
-  - `07_implementation/implementation_notes/profile/outputs/bl004_seed_trace.csv`
+  - `07_implementation/implementation_notes/bl001_bl002_ingestion/outputs/bl020_alignment_report.json`
+  - `07_implementation/implementation_notes/bl001_bl002_ingestion/outputs/bl020_aligned_events.jsonl` (5.9 MB)
+  - `07_implementation/implementation_notes/bl001_bl002_ingestion/outputs/bl020_lastfm_tag_cache.json` (5.4 MB)
+  - `07_implementation/implementation_notes/bl004_profile/outputs/bl004_preference_profile.json`
+  - `07_implementation/implementation_notes/bl004_profile/outputs/bl004_profile_summary.json`
+  - `07_implementation/implementation_notes/bl004_profile/outputs/bl004_seed_trace.csv`
 
 ### Issues And Limits
 - failures_or_anomalies:
@@ -2261,16 +2261,16 @@ Do NOT download: audio files (.mp3), id_incp/id_resnet/id_vgg19 (video features)
 
 ### Inputs
 - source_data:
-  - `07_implementation/implementation_notes/ingestion/outputs/spotify_api_export/spotify_top_tracks_flat.csv`
-  - `07_implementation/implementation_notes/ingestion/outputs/spotify_api_export/spotify_saved_tracks_flat.csv`
-  - deleted and rebuilt `07_implementation/implementation_notes/ingestion/outputs/bl020_lastfm_tag_cache.json` (fresh start)
+  - `07_implementation/implementation_notes/bl001_bl002_ingestion/outputs/spotify_api_export/spotify_top_tracks_flat.csv`
+  - `07_implementation/implementation_notes/bl001_bl002_ingestion/outputs/spotify_api_export/spotify_saved_tracks_flat.csv`
+  - deleted and rebuilt `07_implementation/implementation_notes/bl001_bl002_ingestion/outputs/bl020_lastfm_tag_cache.json` (fresh start)
 - config_or_parameters:
   - Last.fm enrichment with fallback chain enabled
   - cache schema migration via `CACHE_SCHEMA_VERSION=2`
   - visible progress printing during enrichment loop
   - cache reset before execution
 - code_or_script_path:
-  - `07_implementation/implementation_notes/alignment/bl003_align_spotify_api_to_ds002.py`
+  - `07_implementation/implementation_notes/bl003_alignment/bl003_align_spotify_api_to_ds002.py`
   - updated narrative/alignment docs: `00_admin/thesis_state.md`, `02_foundation/limitations.md`, `05_design/architecture.md`, `05_design/system_architecture.md`, `08_writing/chapter5.md`
 - dependency assumptions:
   - Last.fm methods `track.getTopTags`, `track.search`, `artist.getTopTags` remain accessible
@@ -2315,10 +2315,10 @@ Do NOT download: audio files (.mp3), id_incp/id_resnet/id_vgg19 (video features)
   - `bl004_run_seconds=<1`
 - deterministic_repeat_checked: yes (completion verified with clean exit and output file integrity)
 - output_paths:
-  - `07_implementation/implementation_notes/alignment/bl003_align_spotify_api_to_ds002.py` (patched version)
-  - `07_implementation/implementation_notes/ingestion/outputs/bl020_alignment_report.json`
-  - `07_implementation/implementation_notes/ingestion/outputs/bl020_aligned_events.jsonl`
-  - `07_implementation/implementation_notes/ingestion/outputs/bl020_lastfm_tag_cache.json`
+  - `07_implementation/implementation_notes/bl003_alignment/bl003_align_spotify_api_to_ds002.py` (patched version)
+  - `07_implementation/implementation_notes/bl001_bl002_ingestion/outputs/bl020_alignment_report.json`
+  - `07_implementation/implementation_notes/bl001_bl002_ingestion/outputs/bl020_aligned_events.jsonl`
+  - `07_implementation/implementation_notes/bl001_bl002_ingestion/outputs/bl020_lastfm_tag_cache.json`
   - `00_admin/thesis_state.md`
   - `02_foundation/limitations.md`
   - `05_design/architecture.md`
@@ -2363,7 +2363,7 @@ Do NOT download: audio files (.mp3), id_incp/id_resnet/id_vgg19 (video features)
 - Protected items affected? no
 
 ### Inputs
-- source_data: existing BL-002 Spotify API export artifacts under `07_implementation/implementation_notes/ingestion/outputs/spotify_api_export/`
+- source_data: existing BL-002 Spotify API export artifacts under `07_implementation/implementation_notes/bl001_bl002_ingestion/outputs/spotify_api_export/`
 - config_or_parameters: planned source-scope controls (source toggles + per-source limits + optional time-range selection)
 - code_or_script_path: to be defined in BL-021 implementation
 - dependency assumptions: BL-020 baseline outputs available for before/after comparison
@@ -2417,29 +2417,29 @@ Do NOT download: audio files (.mp3), id_incp/id_resnet/id_vgg19 (video features)
 
 ### Inputs
 - source_data:
-  - `07_implementation/implementation_notes/ingestion/outputs/spotify_api_export/spotify_top_tracks_flat.csv`
-  - `07_implementation/implementation_notes/ingestion/outputs/spotify_api_export/spotify_saved_tracks_flat.csv`
-  - `07_implementation/implementation_notes/ingestion/outputs/bl020_lastfm_tag_cache.json`
+  - `07_implementation/implementation_notes/bl001_bl002_ingestion/outputs/spotify_api_export/spotify_top_tracks_flat.csv`
+  - `07_implementation/implementation_notes/bl001_bl002_ingestion/outputs/spotify_api_export/spotify_saved_tracks_flat.csv`
+  - `07_implementation/implementation_notes/bl001_bl002_ingestion/outputs/bl020_lastfm_tag_cache.json`
 - config_or_parameters: partial-build from current cache + interruption-safe BL-003 behavior
 - code_or_script_path:
-  - `07_implementation/implementation_notes/alignment/bl003_align_spotify_api_to_ds002.py`
-  - `07_implementation/implementation_notes/alignment/build_bl003_partial_from_cache.py`
+  - `07_implementation/implementation_notes/bl003_alignment/bl003_align_spotify_api_to_ds002.py`
+  - `07_implementation/implementation_notes/bl003_alignment/build_bl003_partial_from_cache.py`
 - dependency assumptions: BL-002 export artifacts available; Last.fm cache contains non-empty entries
 
 ### Expected Evidence
-- primary_output_artifact: `07_implementation/implementation_notes/ingestion/outputs/bl020_aligned_events_partial_from_cache.jsonl`
+- primary_output_artifact: `07_implementation/implementation_notes/bl001_bl002_ingestion/outputs/bl020_aligned_events_partial_from_cache.jsonl`
 - secondary_output_artifacts:
-  - `07_implementation/implementation_notes/ingestion/outputs/bl020_alignment_report_partial_from_cache.json`
-  - `07_implementation/implementation_notes/ingestion/outputs/bl020_aligned_events.pre_partial_backup_20260322-001050.jsonl`
-  - `07_implementation/implementation_notes/profile/outputs/bl004_profile_summary.json`
+  - `07_implementation/implementation_notes/bl001_bl002_ingestion/outputs/bl020_alignment_report_partial_from_cache.json`
+  - `07_implementation/implementation_notes/bl001_bl002_ingestion/outputs/bl020_aligned_events.pre_partial_backup_20260322-001050.jsonl`
+  - `07_implementation/implementation_notes/bl004_profile/outputs/bl004_profile_summary.json`
 - success_condition: partial aligned events are generated and BL-004 runs successfully against them
 
 ### Run Record
 - command_or_execution_method:
-  - `python 07_implementation/implementation_notes/alignment/build_bl003_partial_from_cache.py`
+  - `python 07_implementation/implementation_notes/bl003_alignment/build_bl003_partial_from_cache.py`
   - replace active `bl020_aligned_events.jsonl` with partial file (after backup)
-  - `python 07_implementation/implementation_notes/profile/build_bl004_preference_profile.py`
-  - `python -m py_compile 07_implementation/implementation_notes/alignment/bl003_align_spotify_api_to_ds002.py`
+  - `python 07_implementation/implementation_notes/bl004_profile/build_bl004_preference_profile.py`
+  - `python -m py_compile 07_implementation/implementation_notes/bl003_alignment/bl003_align_spotify_api_to_ds002.py`
 - run_id: `BL020-PARTIAL-CACHE-20260322`
 - start_state_summary: Last.fm run interrupted by keyboard interrupt during network read; cache had partial progress and downstream run readiness was uncertain.
 - end_state_summary: partial aligned-events/report generated, active input swapped with backup retained, BL-004 profile successfully regenerated, BL-003 patched for graceful interruption.
@@ -2457,12 +2457,12 @@ Do NOT download: audio files (.mp3), id_incp/id_resnet/id_vgg19 (video features)
   - `bl004.total_effective_weight=639.721055`
 - deterministic_repeat_checked: no
 - output_paths:
-  - `07_implementation/implementation_notes/ingestion/outputs/bl020_aligned_events_partial_from_cache.jsonl`
-  - `07_implementation/implementation_notes/ingestion/outputs/bl020_alignment_report_partial_from_cache.json`
-  - `07_implementation/implementation_notes/ingestion/outputs/bl020_aligned_events.pre_partial_backup_20260322-001050.jsonl`
-  - `07_implementation/implementation_notes/profile/outputs/bl004_preference_profile.json`
-  - `07_implementation/implementation_notes/profile/outputs/bl004_profile_summary.json`
-  - `07_implementation/implementation_notes/profile/outputs/bl004_seed_trace.csv`
+  - `07_implementation/implementation_notes/bl001_bl002_ingestion/outputs/bl020_aligned_events_partial_from_cache.jsonl`
+  - `07_implementation/implementation_notes/bl001_bl002_ingestion/outputs/bl020_alignment_report_partial_from_cache.json`
+  - `07_implementation/implementation_notes/bl001_bl002_ingestion/outputs/bl020_aligned_events.pre_partial_backup_20260322-001050.jsonl`
+  - `07_implementation/implementation_notes/bl004_profile/outputs/bl004_preference_profile.json`
+  - `07_implementation/implementation_notes/bl004_profile/outputs/bl004_profile_summary.json`
+  - `07_implementation/implementation_notes/bl004_profile/outputs/bl004_seed_trace.csv`
 
 ### Issues And Limits
 - failures_or_anomalies:
@@ -2499,9 +2499,9 @@ Do NOT download: audio files (.mp3), id_incp/id_resnet/id_vgg19 (video features)
 
 ### Inputs
 - source_data:
-  - `07_implementation/implementation_notes/profile/outputs/bl004_preference_profile.json` (BL-004 run_id=`BL004-PROFILE-20260322-020511-252947`, 5,592 enriched seed events)
-  - `07_implementation/implementation_notes/profile/outputs/bl004_seed_trace.csv` (seed track ID list)
-  - `07_implementation/implementation_notes/data_layer/outputs/bl019_ds002_integrated_candidate_dataset.csv` (9,330 candidate tracks with semantic tags/genres + numeric audio features)
+  - `07_implementation/implementation_notes/bl004_profile/outputs/bl004_preference_profile.json` (BL-004 run_id=`BL004-PROFILE-20260322-020511-252947`, 5,592 enriched seed events)
+  - `07_implementation/implementation_notes/bl004_profile/outputs/bl004_seed_trace.csv` (seed track ID list)
+  - `07_implementation/implementation_notes/bl000_data_layer/outputs/bl019_ds002_integrated_candidate_dataset.csv` (9,330 candidate tracks with semantic tags/genres + numeric audio features)
 - config_or_parameters:
   - `top_lead_genre_limit=6` (use top 6 lead genres from profile)
   - `top_tag_limit=10` (use top 10 tags from profile)
@@ -2510,17 +2510,17 @@ Do NOT download: audio files (.mp3), id_incp/id_resnet/id_vgg19 (video features)
   - `numeric_features_enabled=false` (BL-004 profile has no numeric centers due to Spotify audio-feature deprecation)
   - `keep_rule`: keep if not seed track AND semantic_score >= 1 (since numeric features disabled)
 - code_or_script_path:
-  - `07_implementation/implementation_notes/retrieval/build_bl005_candidate_filter.py`
+  - `07_implementation/implementation_notes/bl005_retrieval/build_bl005_candidate_filter.py`
 - dependency assumptions:
   - BL-004 profile contains valid top genres/tags/leads
   - DS-002 candidate corpus contains valid genre/tag JSON columns
   - Seed traces available to exclude matched seeds from candidate output
 
 ### Expected Evidence
-- primary_output_artifact: `07_implementation/implementation_notes/retrieval/outputs/bl005_filtered_candidates.csv` (kept candidates ready for BL-006 scoring)
+- primary_output_artifact: `07_implementation/implementation_notes/bl005_retrieval/outputs/bl005_filtered_candidates.csv` (kept candidates ready for BL-006 scoring)
 - secondary_output_artifacts:
-  - `07_implementation/implementation_notes/retrieval/outputs/bl005_candidate_decisions.csv` (full audit trail showing decision reason for every candidate)
-  - `07_implementation/implementation_notes/retrieval/outputs/bl005_candidate_diagnostics.json` (run metadata, rule hit counts, hashes)
+  - `07_implementation/implementation_notes/bl005_retrieval/outputs/bl005_candidate_decisions.csv` (full audit trail showing decision reason for every candidate)
+  - `07_implementation/implementation_notes/bl005_retrieval/outputs/bl005_candidate_diagnostics.json` (run metadata, rule hit counts, hashes)
 - success_condition: deterministic semantic filtering produces a manageable candidate subset (target: 10-30% of DS-002 kept) with transparent decision auditability and support for downstream scoring stage.
 
 ### Run Record
@@ -2557,9 +2557,9 @@ Do NOT download: audio files (.mp3), id_incp/id_resnet/id_vgg19 (video features)
   - `candidate_input_hash=b9c729a2...` (BL-019 output)
 - deterministic_repeat_checked: yes (script ran to completion with stable output hashes)
 - output_paths:
-  - `07_implementation/implementation_notes/retrieval/outputs/bl005_filtered_candidates.csv` (SHA256: 3a476cf8...)
-  - `07_implementation/implementation_notes/retrieval/outputs/bl005_candidate_decisions.csv` (SHA256: 5fdbfac2...)
-  - `07_implementation/implementation_notes/retrieval/outputs/bl005_candidate_diagnostics.json`
+  - `07_implementation/implementation_notes/bl005_retrieval/outputs/bl005_filtered_candidates.csv` (SHA256: 3a476cf8...)
+  - `07_implementation/implementation_notes/bl005_retrieval/outputs/bl005_candidate_decisions.csv` (SHA256: 5fdbfac2...)
+  - `07_implementation/implementation_notes/bl005_retrieval/outputs/bl005_candidate_diagnostics.json`
 
 ### Issues And Limits
 - failures_or_anomalies: none observed
@@ -2593,24 +2593,24 @@ Do NOT download: audio files (.mp3), id_incp/id_resnet/id_vgg19 (video features)
 
 ### Inputs
 - source_data:
-  - `07_implementation/implementation_notes/profile/outputs/bl004_preference_profile.json` (run_id=`BL004-PROFILE-20260322-020511-252947`, semantic profile with top lead genres, genres, tags; numeric centers absent/null)
-  - `07_implementation/implementation_notes/retrieval/outputs/bl005_filtered_candidates.csv` (1,740 filtered candidates with genre/tag/numeric feature columns)
+  - `07_implementation/implementation_notes/bl004_profile/outputs/bl004_preference_profile.json` (run_id=`BL004-PROFILE-20260322-020511-252947`, semantic profile with top lead genres, genres, tags; numeric centers absent/null)
+  - `07_implementation/implementation_notes/bl005_retrieval/outputs/bl005_filtered_candidates.csv` (1,740 filtered candidates with genre/tag/numeric feature columns)
 - config_or_parameters:
   - Numeric thresholds: tempo ±20 BPM, loudness ±6 dB, key ±2 semitones, mode 0.5
   - Base component weights: tempo 0.18, loudness 0.12, key 0.10, mode 0.05, lead_genre 0.20, genre_overlap 0.17, tag_overlap 0.18
   - Weight normalization: active weights re-summed to 1.0 when numeric components absent (semantic-only mode)
   - Semantic similarity: normalized by profile weight sums for each semantic dimension
 - code_or_script_path:
-  - `07_implementation/implementation_notes/scoring/build_bl006_scored_candidates.py`
+  - `07_implementation/implementation_notes/bl006_scoring/build_bl006_scored_candidates.py`
 - dependency assumptions:
   - BL-004 profile contains valid semantic sections (top_lead_genres, top_genres, top_tags)
   - BL-005 candidates contain valid genre/tag and (optional) numeric feature columns
   - Numeric feature centers in BL-004 are null/empty (Spotify audio-feature deprecation)
 
 ### Expected Evidence
-- primary_output_artifact: `07_implementation/implementation_notes/scoring/outputs/bl006_scored_candidates.csv` (ranked candidates, 0.0–1.0 scores, component breakdowns)
+- primary_output_artifact: `07_implementation/implementation_notes/bl006_scoring/outputs/bl006_scored_candidates.csv` (ranked candidates, 0.0–1.0 scores, component breakdowns)
 - secondary_output_artifacts:
-  - `07_implementation/implementation_notes/scoring/outputs/bl006_score_summary.json` (run metadata, score statistics, top 10 list, input hashes)
+  - `07_implementation/implementation_notes/bl006_scoring/outputs/bl006_score_summary.json` (run metadata, score statistics, top 10 list, input hashes)
 - success_condition: deterministic semantic scoring produces well-distributed ranked candidate set with transparent component contributions and support for playlist assembly (BL-007).
 
 ### Run Record
@@ -2651,8 +2651,8 @@ Do NOT download: audio files (.mp3), id_incp/id_resnet/id_vgg19 (video features)
   - `candidates_input_hash=3a476cf8...` (BL-005 output)
 - deterministic_repeat_checked: yes (script completed with stable output hash)
 - output_paths:
-  - `07_implementation/implementation_notes/scoring/outputs/bl006_scored_candidates.csv` (SHA256: 3faeb6d4...)
-  - `07_implementation/implementation_notes/scoring/outputs/bl006_score_summary.json`
+  - `07_implementation/implementation_notes/bl006_scoring/outputs/bl006_scored_candidates.csv` (SHA256: 3faeb6d4...)
+  - `07_implementation/implementation_notes/bl006_scoring/outputs/bl006_score_summary.json`
 
 ### Issues And Limits
 - failures_or_anomalies: none observed
@@ -2686,23 +2686,23 @@ Do NOT download: audio files (.mp3), id_incp/id_resnet/id_vgg19 (video features)
 
 ### Inputs
 - source_data:
-  - `07_implementation/implementation_notes/scoring/outputs/bl006_scored_candidates.csv` (1,740 score-ranked candidates with lead_genre, final_score, score_rank columns)
+  - `07_implementation/implementation_notes/bl006_scoring/outputs/bl006_scored_candidates.csv` (1,740 score-ranked candidates with lead_genre, final_score, score_rank columns)
 - config_or_parameters:
   - `target_size=10` (fixed-length output)
   - `min_score_threshold=0.35` (R1: exclude low-scoring candidates)
   - `max_per_genre=4` (R2: cap identical lead_genre)
   - `max_consecutive=2` (R3: avoid 3+ consecutive same-genre tracks)
 - code_or_script_path:
-  - `07_implementation/implementation_notes/playlist/build_bl007_playlist.py`
+  - `07_implementation/implementation_notes/bl007_playlist/build_bl007_playlist.py`
 - dependency assumptions:
   - BL-006 candidates sorted by final_score descending (retained from BL-006 output)
   - All 1,740 candidates have valid lead_genre and final_score fields
 
 ### Expected Evidence
-- primary_output_artifact: `07_implementation/implementation_notes/playlist/outputs/bl007_playlist.json` (final 10-track playlist with positions, track_ids, genres, scores)
+- primary_output_artifact: `07_implementation/implementation_notes/bl007_playlist/outputs/bl007_playlist.json` (final 10-track playlist with positions, track_ids, genres, scores)
 - secondary_output_artifacts:
-  - `07_implementation/implementation_notes/playlist/outputs/bl007_assembly_trace.csv` (decision audit trail for all 1,740 candidates: included/excluded + reason)
-  - `07_implementation/implementation_notes/playlist/outputs/bl007_assembly_report.json` (config, rule hits, genre mix, score range, deterministic hashes)
+  - `07_implementation/implementation_notes/bl007_playlist/outputs/bl007_assembly_trace.csv` (decision audit trail for all 1,740 candidates: included/excluded + reason)
+  - `07_implementation/implementation_notes/bl007_playlist/outputs/bl007_assembly_report.json` (config, rule hits, genre mix, score range, deterministic hashes)
 - success_condition: deterministic greedy assembly rules produce a coherent 10-track playlist with transparent diversity constraints and audit trail.
 
 ### Run Record
@@ -2743,9 +2743,9 @@ Do NOT download: audio files (.mp3), id_incp/id_resnet/id_vgg19 (video features)
   - `output_hash_bl007_assembly_trace.csv=933F7C69...`
 - deterministic_repeat_checked: yes (script completed with stable output hashes)
 - output_paths:
-  - `07_implementation/implementation_notes/playlist/outputs/bl007_playlist.json`
-  - `07_implementation/implementation_notes/playlist/outputs/bl007_assembly_trace.csv`
-  - `07_implementation/implementation_notes/playlist/outputs/bl007_assembly_report.json`
+  - `07_implementation/implementation_notes/bl007_playlist/outputs/bl007_playlist.json`
+  - `07_implementation/implementation_notes/bl007_playlist/outputs/bl007_assembly_trace.csv`
+  - `07_implementation/implementation_notes/bl007_playlist/outputs/bl007_assembly_report.json`
 
 ### Issues And Limits
 - failures_or_anomalies: none observed
@@ -2779,21 +2779,21 @@ Do NOT download: audio files (.mp3), id_incp/id_resnet/id_vgg19 (video features)
 
 ### Inputs
 - source_data:
-  - `07_implementation/implementation_notes/scoring/outputs/bl006_scored_candidates.csv` (1,740 candidates with all component similarities for each track)
-  - `07_implementation/implementation_notes/scoring/outputs/bl006_score_summary.json` (active component weights and configuration)
-  - `07_implementation/implementation_notes/playlist/outputs/bl007_playlist.json` (final 10-track playlist with positions and final scores)
-  - `07_implementation/implementation_notes/playlist/outputs/bl007_assembly_trace.csv` (decision audit trail with rule applications)
+  - `07_implementation/implementation_notes/bl006_scoring/outputs/bl006_scored_candidates.csv` (1,740 candidates with all component similarities for each track)
+  - `07_implementation/implementation_notes/bl006_scoring/outputs/bl006_score_summary.json` (active component weights and configuration)
+  - `07_implementation/implementation_notes/bl007_playlist/outputs/bl007_playlist.json` (final 10-track playlist with positions and final scores)
+  - `07_implementation/implementation_notes/bl007_playlist/outputs/bl007_assembly_trace.csv` (decision audit trail with rule applications)
 - code_or_script_path:
-  - `07_implementation/implementation_notes/transparency/build_bl008_explanation_payloads.py`
+  - `07_implementation/implementation_notes/bl008_transparency/build_bl008_explanation_payloads.py`
 - dependency assumptions:
   - BL-006 artifacts contain all component columns (weights, similarities) for all candidates
   - BL-007 artifacts contain complete playlist with track IDs and scores
   - Active weights from BL-006 match actual scoring configuration
 
 ### Expected Evidence
-- primary_output_artifact: `07_implementation/implementation_notes/transparency/outputs/bl008_explanation_payloads.json` (10 explanation payloads with why_selected, top contributors, and score breakdowns)
+- primary_output_artifact: `07_implementation/implementation_notes/bl008_transparency/outputs/bl008_explanation_payloads.json` (10 explanation payloads with why_selected, top contributors, and score breakdowns)
 - secondary_output_artifacts:
-  - `07_implementation/implementation_notes/transparency/outputs/bl008_explanation_summary.json` (run metadata, top contributor distribution, input/output hashes)
+  - `07_implementation/implementation_notes/bl008_transparency/outputs/bl008_explanation_summary.json` (run metadata, top contributor distribution, input/output hashes)
 - success_condition: deterministic transparency generation produces complete score component explanations for all playlist tracks with human-readable and machine-readable formats supporting user comprehension and system auditability.
 
 ### Run Record
@@ -2838,8 +2838,8 @@ Do NOT download: audio files (.mp3), id_incp/id_resnet/id_vgg19 (video features)
   - `output_hash_bl008_explanation_payloads.json=D1ED9567...`
 - deterministic_repeat_checked: yes (script completed with stable output hash)
 - output_paths:
-  - `07_implementation/implementation_notes/transparency/outputs/bl008_explanation_payloads.json`
-  - `07_implementation/implementation_notes/transparency/outputs/bl008_explanation_summary.json`
+  - `07_implementation/implementation_notes/bl008_transparency/outputs/bl008_explanation_payloads.json`
+  - `07_implementation/implementation_notes/bl008_transparency/outputs/bl008_explanation_summary.json`
 
 ### Issues And Limits
 - failures_or_anomalies: none observed
@@ -2873,13 +2873,13 @@ Do NOT download: audio files (.mp3), id_incp/id_resnet/id_vgg19 (video features)
 
 ### Inputs
 - source_data: All upstream stage artifacts (BL-004 profile, BL-005 decisions, BL-006 scores, BL-007 playlist, BL-008 explanations)
-- code_or_script_path: `07_implementation/implementation_notes/observability/build_bl009_observability_log.py`
+- code_or_script_path: `07_implementation/implementation_notes/bl009_observability/build_bl009_observability_log.py`
 - dependency assumptions: All prior stage artifacts exist and are readable; upstream run IDs embedded in metadata
 
 ### Expected Evidence
 - primary_output_artifacts:
-  - `07_implementation/implementation_notes/observability/outputs/bl009_run_observability_log.json` (structured audit log with full run metadata and stage diagnostics)
-  - `07_implementation/implementation_notes/observability/outputs/bl009_run_index.csv` (quick-lookup index for reproducibility)
+  - `07_implementation/implementation_notes/bl009_observability/outputs/bl009_run_observability_log.json` (structured audit log with full run metadata and stage diagnostics)
+  - `07_implementation/implementation_notes/bl009_observability/outputs/bl009_run_index.csv` (quick-lookup index for reproducibility)
 - success_condition: deterministic observability generation produces comprehensive run-level documentation enabling full pipeline traceability and artifact connectivity verification.
 
 ### Run Record
@@ -2905,8 +2905,8 @@ Do NOT download: audio files (.mp3), id_incp/id_resnet/id_vgg19 (video features)
   - `output_hash_bl009_run_observability_log.json=664FE972...`
 - deterministic_repeat_checked: yes
 - output_paths:
-  - `07_implementation/implementation_notes/observability/outputs/bl009_run_observability_log.json`
-  - `07_implementation/implementation_notes/observability/outputs/bl009_run_index.csv`
+  - `07_implementation/implementation_notes/bl009_observability/outputs/bl009_run_observability_log.json`
+  - `07_implementation/implementation_notes/bl009_observability/outputs/bl009_run_index.csv`
 
 ### Issues And Limits
 - failures_or_anomalies: none
@@ -2940,37 +2940,37 @@ Do NOT download: audio files (.mp3), id_incp/id_resnet/id_vgg19 (video features)
 
 ### Inputs
 - source_data:
-  - `07_implementation/implementation_notes/profile/outputs/bl004_preference_profile.json`
-  - `07_implementation/implementation_notes/profile/outputs/bl004_profile_summary.json`
-  - `07_implementation/implementation_notes/profile/outputs/bl004_seed_trace.csv`
-  - `07_implementation/implementation_notes/retrieval/outputs/bl005_filtered_candidates.csv`
-  - `07_implementation/implementation_notes/retrieval/outputs/bl005_candidate_decisions.csv`
-  - `07_implementation/implementation_notes/retrieval/outputs/bl005_candidate_diagnostics.json`
-  - `07_implementation/implementation_notes/scoring/outputs/bl006_scored_candidates.csv`
-  - `07_implementation/implementation_notes/scoring/outputs/bl006_score_summary.json`
-  - `07_implementation/implementation_notes/playlist/outputs/bl007_playlist.json`
-  - `07_implementation/implementation_notes/playlist/outputs/bl007_assembly_trace.csv`
-  - `07_implementation/implementation_notes/playlist/outputs/bl007_assembly_report.json`
-  - `07_implementation/implementation_notes/transparency/outputs/bl008_explanation_payloads.json`
-  - `07_implementation/implementation_notes/transparency/outputs/bl008_explanation_summary.json`
-  - `07_implementation/implementation_notes/observability/outputs/bl009_run_observability_log.json`
-  - `07_implementation/implementation_notes/observability/outputs/bl009_run_index.csv`
+  - `07_implementation/implementation_notes/bl004_profile/outputs/bl004_preference_profile.json`
+  - `07_implementation/implementation_notes/bl004_profile/outputs/bl004_profile_summary.json`
+  - `07_implementation/implementation_notes/bl004_profile/outputs/bl004_seed_trace.csv`
+  - `07_implementation/implementation_notes/bl005_retrieval/outputs/bl005_filtered_candidates.csv`
+  - `07_implementation/implementation_notes/bl005_retrieval/outputs/bl005_candidate_decisions.csv`
+  - `07_implementation/implementation_notes/bl005_retrieval/outputs/bl005_candidate_diagnostics.json`
+  - `07_implementation/implementation_notes/bl006_scoring/outputs/bl006_scored_candidates.csv`
+  - `07_implementation/implementation_notes/bl006_scoring/outputs/bl006_score_summary.json`
+  - `07_implementation/implementation_notes/bl007_playlist/outputs/bl007_playlist.json`
+  - `07_implementation/implementation_notes/bl007_playlist/outputs/bl007_assembly_trace.csv`
+  - `07_implementation/implementation_notes/bl007_playlist/outputs/bl007_assembly_report.json`
+  - `07_implementation/implementation_notes/bl008_transparency/outputs/bl008_explanation_payloads.json`
+  - `07_implementation/implementation_notes/bl008_transparency/outputs/bl008_explanation_summary.json`
+  - `07_implementation/implementation_notes/bl009_observability/outputs/bl009_run_observability_log.json`
+  - `07_implementation/implementation_notes/bl009_observability/outputs/bl009_run_index.csv`
 - config_or_parameters:
   - schema checks = required keys/columns for BL-004 through BL-009 artifacts
   - hash checks = upstream/downstream hash references must equal actual artifact SHA256 values
   - continuity checks = row counts and run_ids must align across BL-005, BL-006, BL-007, BL-008, BL-009
-- code_or_script_path: `07_implementation/implementation_notes/quality/run_bl014_sanity_checks.py`
+- code_or_script_path: `07_implementation/implementation_notes/bl014_quality/run_bl014_sanity_checks.py`
 - dependency assumptions: Python stdlib only; BL-020 artifacts exist and are readable.
 
 ### Expected Evidence
-- primary_output_artifact: `07_implementation/implementation_notes/quality/outputs/bl014_sanity_report.json`
+- primary_output_artifact: `07_implementation/implementation_notes/bl014_quality/outputs/bl014_sanity_report.json`
 - secondary_output_artifacts:
-  - `07_implementation/implementation_notes/quality/outputs/bl014_sanity_run_matrix.csv`
-  - `07_implementation/implementation_notes/quality/outputs/bl014_sanity_config_snapshot.json`
+  - `07_implementation/implementation_notes/bl014_quality/outputs/bl014_sanity_run_matrix.csv`
+  - `07_implementation/implementation_notes/bl014_quality/outputs/bl014_sanity_config_snapshot.json`
 - success_condition: all checks pass and output artifacts are generated with deterministic hashes.
 
 ### Run Record
-- command_or_execution_method: `python 07_implementation/implementation_notes/quality/run_bl014_sanity_checks.py`
+- command_or_execution_method: `python 07_implementation/implementation_notes/bl014_quality/run_bl014_sanity_checks.py`
 - run_id: `BL014-SANITY-20260322-024523-652281`
 - start_state_summary: BL-014 was pending with no automated script and no quality outputs.
 - end_state_summary: checker implemented and executed; report, run matrix, and config snapshot generated successfully.
@@ -3012,34 +3012,34 @@ Do NOT download: audio files (.mp3), id_incp/id_resnet/id_vgg19 (video features)
 
 ### Inputs
 - source_data:
-  - `07_implementation/implementation_notes/profile/outputs/bl004_preference_profile.json` (`run_id=BL004-PROFILE-20260324-180708-238627`)
-  - `07_implementation/implementation_notes/profile/outputs/bl004_seed_trace.csv`
-  - `07_implementation/implementation_notes/data_layer/outputs/bl019_ds002_integrated_candidate_dataset.csv` (9,330 candidate tracks)
+  - `07_implementation/implementation_notes/bl004_profile/outputs/bl004_preference_profile.json` (`run_id=BL004-PROFILE-20260324-180708-238627`)
+  - `07_implementation/implementation_notes/bl004_profile/outputs/bl004_seed_trace.csv`
+  - `07_implementation/implementation_notes/bl000_data_layer/outputs/bl019_ds002_integrated_candidate_dataset.csv` (9,330 candidate tracks)
   - prior BL-005 diagnostics baseline showing `kept_candidates=6604` under the looser numeric-pass rule
 - config_or_parameters:
   - numeric thresholds retained: `tempo<=20.0`, `key<=2.0`, `mode<=0.5`, `duration_ms<=45000.0`
   - new keep rule: keep if not seed and `(semantic_score >= 2 or (semantic_score >= 1 and numeric_pass_count >= 1))`
   - reject numeric-only rows even when `numeric_pass_count >= 2`
 - code_or_script_path:
-  - `07_implementation/implementation_notes/retrieval/build_bl005_candidate_filter.py`
-  - `07_implementation/implementation_notes/scoring/build_bl006_scored_candidates.py` (rerun only; no logic change in this task)
+  - `07_implementation/implementation_notes/bl005_retrieval/build_bl005_candidate_filter.py`
+  - `07_implementation/implementation_notes/bl006_scoring/build_bl006_scored_candidates.py` (rerun only; no logic change in this task)
 - dependency assumptions:
   - BL-004 profile and seed trace are valid and current
   - DS-002 candidate dataset remains unchanged from the latest BL-005/BL-006 alignment run
 
 ### Expected Evidence
-- primary_output_artifact: `07_implementation/implementation_notes/retrieval/outputs/bl005_candidate_diagnostics.json`
+- primary_output_artifact: `07_implementation/implementation_notes/bl005_retrieval/outputs/bl005_candidate_diagnostics.json`
 - secondary_output_artifacts:
-  - `07_implementation/implementation_notes/retrieval/outputs/bl005_filtered_candidates.csv`
-  - `07_implementation/implementation_notes/retrieval/outputs/bl005_candidate_decisions.csv`
-  - `07_implementation/implementation_notes/scoring/outputs/bl006_scored_candidates.csv`
-  - `07_implementation/implementation_notes/scoring/outputs/bl006_score_summary.json`
+  - `07_implementation/implementation_notes/bl005_retrieval/outputs/bl005_filtered_candidates.csv`
+  - `07_implementation/implementation_notes/bl005_retrieval/outputs/bl005_candidate_decisions.csv`
+  - `07_implementation/implementation_notes/bl006_scoring/outputs/bl006_scored_candidates.csv`
+  - `07_implementation/implementation_notes/bl006_scoring/outputs/bl006_score_summary.json`
 - success_condition: BL-005 retained volume falls to a more credible retrieval range, explicit decision pathways are logged, and BL-006 scores exactly the hardened retained subset.
 
 ### Run Record
 - command_or_execution_method:
-  - run `07_implementation/implementation_notes/retrieval/build_bl005_candidate_filter.py`
-  - rerun `07_implementation/implementation_notes/scoring/build_bl006_scored_candidates.py` on the hardened BL-005 output
+  - run `07_implementation/implementation_notes/bl005_retrieval/build_bl005_candidate_filter.py`
+  - rerun `07_implementation/implementation_notes/bl006_scoring/build_bl006_scored_candidates.py` on the hardened BL-005 output
 - run_id:
   - `BL005-FILTER-20260324-182142-419959`
   - downstream validation rerun `BL006-SCORE-20260324-182143-804380`
@@ -3070,11 +3070,11 @@ Do NOT download: audio files (.mp3), id_incp/id_resnet/id_vgg19 (video features)
   - `sha256.bl006_score_summary.json=CD8CA2BA81D12268B3A3A6743F0ABBB194CDB07811EF155FD079CD2944FED804`
 - deterministic_repeat_checked: no
 - output_paths:
-  - `07_implementation/implementation_notes/retrieval/outputs/bl005_filtered_candidates.csv`
-  - `07_implementation/implementation_notes/retrieval/outputs/bl005_candidate_decisions.csv`
-  - `07_implementation/implementation_notes/retrieval/outputs/bl005_candidate_diagnostics.json`
-  - `07_implementation/implementation_notes/scoring/outputs/bl006_scored_candidates.csv`
-  - `07_implementation/implementation_notes/scoring/outputs/bl006_score_summary.json`
+  - `07_implementation/implementation_notes/bl005_retrieval/outputs/bl005_filtered_candidates.csv`
+  - `07_implementation/implementation_notes/bl005_retrieval/outputs/bl005_candidate_decisions.csv`
+  - `07_implementation/implementation_notes/bl005_retrieval/outputs/bl005_candidate_diagnostics.json`
+  - `07_implementation/implementation_notes/bl006_scoring/outputs/bl006_scored_candidates.csv`
+  - `07_implementation/implementation_notes/bl006_scoring/outputs/bl006_score_summary.json`
 
 ### Issues And Limits
 - failures_or_anomalies: no execution failures observed.
@@ -3108,28 +3108,28 @@ Do NOT download: audio files (.mp3), id_incp/id_resnet/id_vgg19 (video features)
 
 ### Inputs
 - source_data:
-  - `07_implementation/implementation_notes/profile/outputs/bl004_preference_profile.json`
-  - `07_implementation/implementation_notes/retrieval/outputs/bl005_filtered_candidates.csv` (`1938` rows)
+  - `07_implementation/implementation_notes/bl004_profile/outputs/bl004_preference_profile.json`
+  - `07_implementation/implementation_notes/bl005_retrieval/outputs/bl005_filtered_candidates.csv` (`1938` rows)
   - prior BL-006 run summary `BL006-SCORE-20260324-182143-804380` for before/after comparison
 - config_or_parameters:
   - prior weights: `tempo=0.16`, `duration_ms=0.10`, `key=0.09`, `mode=0.05`, `lead_genre=0.20`, `genre_overlap=0.18`, `tag_overlap=0.22`
   - retuned weights: `tempo=0.18`, `duration_ms=0.11`, `key=0.11`, `mode=0.07`, `lead_genre=0.18`, `genre_overlap=0.15`, `tag_overlap=0.20`
   - goal: modest numeric uplift plus small semantic debias without large ranking instability
 - code_or_script_path:
-  - `07_implementation/implementation_notes/scoring/build_bl006_scored_candidates.py`
+  - `07_implementation/implementation_notes/bl006_scoring/build_bl006_scored_candidates.py`
 - dependency assumptions:
   - BL-005 tightened candidate set is current and valid
   - numeric similarity logic remains unchanged; only component weights are retuned
 
 ### Expected Evidence
-- primary_output_artifact: `07_implementation/implementation_notes/scoring/outputs/bl006_score_summary.json`
+- primary_output_artifact: `07_implementation/implementation_notes/bl006_scoring/outputs/bl006_score_summary.json`
 - secondary_output_artifacts:
-  - `07_implementation/implementation_notes/scoring/outputs/bl006_scored_candidates.csv`
+  - `07_implementation/implementation_notes/bl006_scoring/outputs/bl006_scored_candidates.csv`
   - updated active test note in `07_implementation/test_notes.md`
 - success_condition: BL-006 reruns successfully, top-ranked numeric contribution increases, and the ranking remains broadly stable.
 
 ### Run Record
-- command_or_execution_method: run `07_implementation/implementation_notes/scoring/build_bl006_scored_candidates.py` after updating `BASE_COMPONENT_WEIGHTS`
+- command_or_execution_method: run `07_implementation/implementation_notes/bl006_scoring/build_bl006_scored_candidates.py` after updating `BASE_COMPONENT_WEIGHTS`
 - run_id: `BL006-SCORE-20260324-182702-117298`
 - start_state_summary: BL-006 was functioning correctly on the tightened BL-005 set, but top-ranked rows remained strongly semantic-dominated (`top100_mean_numeric=0.162864`, `top100_mean_semantic=0.410939`).
 - end_state_summary: BL-006 reran successfully with retuned weights; top-ranked rows now show materially higher numeric contribution while preserving broad ranking continuity.
@@ -3148,8 +3148,8 @@ Do NOT download: audio files (.mp3), id_incp/id_resnet/id_vgg19 (video features)
   - `sha256.bl006_score_summary.json=448635ACD6D5CFE3996B1CCB784809D5B8FCD513234CF33B8997E6E1BE8538CA`
 - deterministic_repeat_checked: no
 - output_paths:
-  - `07_implementation/implementation_notes/scoring/outputs/bl006_scored_candidates.csv`
-  - `07_implementation/implementation_notes/scoring/outputs/bl006_score_summary.json`
+  - `07_implementation/implementation_notes/bl006_scoring/outputs/bl006_scored_candidates.csv`
+  - `07_implementation/implementation_notes/bl006_scoring/outputs/bl006_score_summary.json`
 
 ### Issues And Limits
 - failures_or_anomalies: no execution failures observed.
@@ -3183,25 +3183,25 @@ Do NOT download: audio files (.mp3), id_incp/id_resnet/id_vgg19 (video features)
 
 ### Inputs
 - source_data:
-  - `07_implementation/implementation_notes/ingestion/outputs/spotify_api_export/spotify_export_run_summary.json`
-  - `07_implementation/implementation_notes/data_layer/outputs/ds001_working_candidate_dataset.csv`
-  - `07_implementation/implementation_notes/profile/outputs/bl004_preference_profile.json`
+  - `07_implementation/implementation_notes/bl001_bl002_ingestion/outputs/spotify_api_export/spotify_export_run_summary.json`
+  - `07_implementation/implementation_notes/bl000_data_layer/outputs/ds001_working_candidate_dataset.csv`
+  - `07_implementation/implementation_notes/bl004_profile/outputs/bl004_preference_profile.json`
 - config_or_parameters:
   - BL-003 selected-source strict check enabled by default
   - BL-005/BL-006 semantic source set to DS-001 columns (`tags`, `genres`)
   - duration mapping resolves `duration_ms` first, with `duration` fallback for compatibility
 - code_or_script_path:
-  - `07_implementation/implementation_notes/alignment/build_bl003_ds001_spotify_seed_table.py`
-  - `07_implementation/implementation_notes/retrieval/build_bl005_candidate_filter.py`
-  - `07_implementation/implementation_notes/scoring/build_bl006_scored_candidates.py`
+  - `07_implementation/implementation_notes/bl003_alignment/build_bl003_ds001_spotify_seed_table.py`
+  - `07_implementation/implementation_notes/bl005_retrieval/build_bl005_candidate_filter.py`
+  - `07_implementation/implementation_notes/bl006_scoring/build_bl006_scored_candidates.py`
 - dependency assumptions:
   - BL-002 export summary reflects the selected ingestion sources for this run
 
 ### Expected Evidence
-- primary_output_artifact: `07_implementation/implementation_notes/retrieval/outputs/bl005_candidate_diagnostics.json`
+- primary_output_artifact: `07_implementation/implementation_notes/bl005_retrieval/outputs/bl005_candidate_diagnostics.json`
 - secondary_output_artifacts:
-  - `07_implementation/implementation_notes/alignment/outputs/bl003_ds001_spotify_summary.json`
-  - `07_implementation/implementation_notes/scoring/outputs/bl006_score_summary.json`
+  - `07_implementation/implementation_notes/bl003_alignment/outputs/bl003_ds001_spotify_summary.json`
+  - `07_implementation/implementation_notes/bl006_scoring/outputs/bl006_score_summary.json`
 - success_condition: BL-003 strict source validation passes; BL-005 and BL-006 both report DS-001 semantic source and produce coherent row counts.
 
 ### Run Record
@@ -3228,9 +3228,9 @@ Do NOT download: audio files (.mp3), id_incp/id_resnet/id_vgg19 (video features)
   - `sha256.bl006_scored_candidates.csv=C822C15A2867BA9F9A9C044AF27561403FEE8A9AA4362586AF2AAC1A616CEDD9`
 - deterministic_repeat_checked: no
 - output_paths:
-  - `07_implementation/implementation_notes/alignment/outputs/bl003_ds001_spotify_summary.json`
-  - `07_implementation/implementation_notes/retrieval/outputs/bl005_candidate_diagnostics.json`
-  - `07_implementation/implementation_notes/scoring/outputs/bl006_score_summary.json`
+  - `07_implementation/implementation_notes/bl003_alignment/outputs/bl003_ds001_spotify_summary.json`
+  - `07_implementation/implementation_notes/bl005_retrieval/outputs/bl005_candidate_diagnostics.json`
+  - `07_implementation/implementation_notes/bl006_scoring/outputs/bl006_score_summary.json`
 
 ### Issues And Limits
 - failures_or_anomalies: one transient BL-006 KeyError during migration due legacy duration column assumption; fixed by dynamic duration column resolution.
@@ -3264,28 +3264,28 @@ Do NOT download: audio files (.mp3), id_incp/id_resnet/id_vgg19 (video features)
 
 ### Inputs
 - source_data:
-  - `07_implementation/implementation_notes/profile/outputs/bl004_preference_profile.json`
-  - `07_implementation/implementation_notes/retrieval/outputs/bl005_filtered_candidates.csv`
-  - `07_implementation/implementation_notes/scoring/outputs/bl006_scored_candidates_pre_retune.csv`
-  - `07_implementation/implementation_notes/scoring/outputs/bl006_score_summary_pre_retune.json`
+  - `07_implementation/implementation_notes/bl004_profile/outputs/bl004_preference_profile.json`
+  - `07_implementation/implementation_notes/bl005_retrieval/outputs/bl005_filtered_candidates.csv`
+  - `07_implementation/implementation_notes/bl006_scoring/outputs/bl006_scored_candidates_pre_retune.csv`
+  - `07_implementation/implementation_notes/bl006_scoring/outputs/bl006_score_summary_pre_retune.json`
 - config_or_parameters:
   - active weights: `tempo=0.20`, `duration_ms=0.13`, `key=0.13`, `mode=0.09`, `lead_genre=0.17`, `genre_overlap=0.12`, `tag_overlap=0.16`
   - diagnostics: `component_balance` (all candidates, top-100, top-500)
 - code_or_script_path:
-  - `07_implementation/implementation_notes/scoring/build_bl006_scored_candidates.py`
+  - `07_implementation/implementation_notes/bl006_scoring/build_bl006_scored_candidates.py`
 - dependency assumptions:
   - BL-005 filtered candidate contract is current and deterministic
 
 ### Expected Evidence
-- primary_output_artifact: `07_implementation/implementation_notes/scoring/outputs/bl006_score_summary.json`
+- primary_output_artifact: `07_implementation/implementation_notes/bl006_scoring/outputs/bl006_score_summary.json`
 - secondary_output_artifacts:
-  - `07_implementation/implementation_notes/scoring/outputs/bl006_scored_candidates.csv`
-  - `07_implementation/implementation_notes/scoring/bl006_state_log_2026-03-24.md`
-  - `07_implementation/implementation_notes/scoring/bl006_top50_quality_snapshot_2026-03-24.md`
+  - `07_implementation/implementation_notes/bl006_scoring/outputs/bl006_scored_candidates.csv`
+  - `07_implementation/implementation_notes/bl006_scoring/bl006_state_log_2026-03-24.md`
+  - `07_implementation/implementation_notes/bl006_scoring/bl006_top50_quality_snapshot_2026-03-24.md`
 - success_condition: BL-006 rerun succeeds, top-10 remains broadly stable versus baseline, and top-ranked contribution balance remains numeric-led.
 
 ### Run Record
-- command_or_execution_method: run `07_implementation/implementation_notes/scoring/build_bl006_scored_candidates.py`, then compare pre/post outputs and compute top-50 quality snapshot.
+- command_or_execution_method: run `07_implementation/implementation_notes/bl006_scoring/build_bl006_scored_candidates.py`, then compare pre/post outputs and compute top-50 quality snapshot.
 - run_id: `BL006-SCORE-20260324-190145-197533`
 - start_state_summary: BL-006 already retuned and instrumented with component-balance diagnostics; pre-retune baseline artifacts retained.
 - end_state_summary: BL-006 closure checks pass with stable ranking and numeric-led top-rank contribution profile; closure artifacts and logs updated.
@@ -3304,10 +3304,10 @@ Do NOT download: audio files (.mp3), id_incp/id_resnet/id_vgg19 (video features)
   - `sha256.bl006_score_summary.json=748755F1596205B3D0B46C88D71A5BF7DE3537C79AA32A9342A410A7B7E5F896`
 - deterministic_repeat_checked: no
 - output_paths:
-  - `07_implementation/implementation_notes/scoring/outputs/bl006_scored_candidates.csv`
-  - `07_implementation/implementation_notes/scoring/outputs/bl006_score_summary.json`
-  - `07_implementation/implementation_notes/scoring/bl006_state_log_2026-03-24.md`
-  - `07_implementation/implementation_notes/scoring/bl006_top50_quality_snapshot_2026-03-24.md`
+  - `07_implementation/implementation_notes/bl006_scoring/outputs/bl006_scored_candidates.csv`
+  - `07_implementation/implementation_notes/bl006_scoring/outputs/bl006_score_summary.json`
+  - `07_implementation/implementation_notes/bl006_scoring/bl006_state_log_2026-03-24.md`
+  - `07_implementation/implementation_notes/bl006_scoring/bl006_top50_quality_snapshot_2026-03-24.md`
 
 ### Issues And Limits
 - failures_or_anomalies: no runtime failures in closure run.
@@ -3341,7 +3341,7 @@ Do NOT download: audio files (.mp3), id_incp/id_resnet/id_vgg19 (video features)
 
 ### Inputs
 - source_data:
-  - `07_implementation/implementation_notes/scoring/outputs/bl006_scored_candidates.csv`
+  - `07_implementation/implementation_notes/bl006_scoring/outputs/bl006_scored_candidates.csv`
 - config_or_parameters:
   - `target_size=10`
   - `min_score_threshold=0.35`
@@ -3349,20 +3349,20 @@ Do NOT download: audio files (.mp3), id_incp/id_resnet/id_vgg19 (video features)
   - `max_consecutive=2`
   - rule traversal: `R1 -> R2 -> R3 -> R4`
 - code_or_script_path:
-  - `07_implementation/implementation_notes/playlist/build_bl007_playlist.py`
+  - `07_implementation/implementation_notes/bl007_playlist/build_bl007_playlist.py`
 - dependency assumptions:
   - BL-006 finalized baseline (`EXP-035`) is current and hash-stable.
 
 ### Expected Evidence
-- primary_output_artifact: `07_implementation/implementation_notes/playlist/outputs/bl007_assembly_report.json`
+- primary_output_artifact: `07_implementation/implementation_notes/bl007_playlist/outputs/bl007_assembly_report.json`
 - secondary_output_artifacts:
-  - `07_implementation/implementation_notes/playlist/outputs/bl007_playlist.json`
-  - `07_implementation/implementation_notes/playlist/outputs/bl007_assembly_trace.csv`
-  - `07_implementation/implementation_notes/playlist/bl007_state_log_2026-03-24.md`
+  - `07_implementation/implementation_notes/bl007_playlist/outputs/bl007_playlist.json`
+  - `07_implementation/implementation_notes/bl007_playlist/outputs/bl007_assembly_trace.csv`
+  - `07_implementation/implementation_notes/bl007_playlist/bl007_state_log_2026-03-24.md`
 - success_condition: playlist assembles to target length with deterministic rule trace and BL-006 input-hash alignment.
 
 ### Run Record
-- command_or_execution_method: run `07_implementation/implementation_notes/playlist/build_bl007_playlist.py`
+- command_or_execution_method: run `07_implementation/implementation_notes/bl007_playlist/build_bl007_playlist.py`
 - run_id: `BL007-ASSEMBLE-20260324-195257-583625`
 - start_state_summary: BL-007 outputs were present but stale relative to finalized BL-006 artifacts.
 - end_state_summary: BL-007 outputs regenerated and now aligned to the finalized BL-006 hash baseline.
@@ -3386,10 +3386,10 @@ Do NOT download: audio files (.mp3), id_incp/id_resnet/id_vgg19 (video features)
   - `sha256.bl007_assembly_report.json=7F9B176E44AD29517F80D8904CB3A8E0E2B3111D217C5A64ED0FF67694489ADE`
 - deterministic_repeat_checked: no
 - output_paths:
-  - `07_implementation/implementation_notes/playlist/outputs/bl007_playlist.json`
-  - `07_implementation/implementation_notes/playlist/outputs/bl007_assembly_trace.csv`
-  - `07_implementation/implementation_notes/playlist/outputs/bl007_assembly_report.json`
-  - `07_implementation/implementation_notes/playlist/bl007_state_log_2026-03-24.md`
+  - `07_implementation/implementation_notes/bl007_playlist/outputs/bl007_playlist.json`
+  - `07_implementation/implementation_notes/bl007_playlist/outputs/bl007_assembly_trace.csv`
+  - `07_implementation/implementation_notes/bl007_playlist/outputs/bl007_assembly_report.json`
+  - `07_implementation/implementation_notes/bl007_playlist/bl007_state_log_2026-03-24.md`
 
 ### Issues And Limits
 - failures_or_anomalies: no runtime failures.
@@ -3423,27 +3423,27 @@ Do NOT download: audio files (.mp3), id_incp/id_resnet/id_vgg19 (video features)
 
 ### Inputs
 - source_data:
-  - `07_implementation/implementation_notes/scoring/outputs/bl006_scored_candidates.csv`
-  - `07_implementation/implementation_notes/scoring/outputs/bl006_score_summary.json`
-  - `07_implementation/implementation_notes/playlist/outputs/bl007_playlist.json`
-  - `07_implementation/implementation_notes/playlist/outputs/bl007_assembly_trace.csv`
+  - `07_implementation/implementation_notes/bl006_scoring/outputs/bl006_scored_candidates.csv`
+  - `07_implementation/implementation_notes/bl006_scoring/outputs/bl006_score_summary.json`
+  - `07_implementation/implementation_notes/bl007_playlist/outputs/bl007_playlist.json`
+  - `07_implementation/implementation_notes/bl007_playlist/outputs/bl007_assembly_trace.csv`
 - config_or_parameters:
   - dynamic component extraction from BL-006 `active_component_weights`
   - component label map for known active components
 - code_or_script_path:
-  - `07_implementation/implementation_notes/transparency/build_bl008_explanation_payloads.py`
+  - `07_implementation/implementation_notes/bl008_transparency/build_bl008_explanation_payloads.py`
 - dependency assumptions:
   - BL-006 and BL-007 refresh runs are current and hash-stable.
 
 ### Expected Evidence
-- primary_output_artifact: `07_implementation/implementation_notes/transparency/outputs/bl008_explanation_payloads.json`
+- primary_output_artifact: `07_implementation/implementation_notes/bl008_transparency/outputs/bl008_explanation_payloads.json`
 - secondary_output_artifacts:
-  - `07_implementation/implementation_notes/transparency/outputs/bl008_explanation_summary.json`
-  - `07_implementation/implementation_notes/transparency/bl008_state_log_2026-03-24.md`
+  - `07_implementation/implementation_notes/bl008_transparency/outputs/bl008_explanation_summary.json`
+  - `07_implementation/implementation_notes/bl008_transparency/bl008_state_log_2026-03-24.md`
 - success_condition: BL-008 rerun succeeds; explanations use active BL-006 components; hashes and run metadata are updated.
 
 ### Run Record
-- command_or_execution_method: run `07_implementation/implementation_notes/transparency/build_bl008_explanation_payloads.py` after component-mapping fix.
+- command_or_execution_method: run `07_implementation/implementation_notes/bl008_transparency/build_bl008_explanation_payloads.py` after component-mapping fix.
 - run_id: `BL008-EXPLAIN-20260324-195641-957331`
 - start_state_summary: BL-008 script contained stale DS-002-era hardcoded component list (`loudness` present, `duration_ms` absent).
 - end_state_summary: BL-008 script updated to dynamic active-component mapping and outputs regenerated successfully.
@@ -3459,9 +3459,9 @@ Do NOT download: audio files (.mp3), id_incp/id_resnet/id_vgg19 (video features)
   - `input_hash.bl007_playlist=6E9E7D2CB82901E87CF64C13536E6469EAD9F8AF25B88C38331476B3E74A4473`
 - deterministic_repeat_checked: no
 - output_paths:
-  - `07_implementation/implementation_notes/transparency/outputs/bl008_explanation_payloads.json`
-  - `07_implementation/implementation_notes/transparency/outputs/bl008_explanation_summary.json`
-  - `07_implementation/implementation_notes/transparency/bl008_state_log_2026-03-24.md`
+  - `07_implementation/implementation_notes/bl008_transparency/outputs/bl008_explanation_payloads.json`
+  - `07_implementation/implementation_notes/bl008_transparency/outputs/bl008_explanation_summary.json`
+  - `07_implementation/implementation_notes/bl008_transparency/bl008_state_log_2026-03-24.md`
 
 ### Issues And Limits
 - failures_or_anomalies: no runtime failures.
@@ -3495,27 +3495,27 @@ Do NOT download: audio files (.mp3), id_incp/id_resnet/id_vgg19 (video features)
 
 ### Inputs
 - source_data:
-  - `07_implementation/implementation_notes/scoring/outputs/bl006_score_summary.json`
-  - `07_implementation/implementation_notes/playlist/outputs/bl007_assembly_report.json`
-  - `07_implementation/implementation_notes/transparency/outputs/bl008_explanation_summary.json`
+  - `07_implementation/implementation_notes/bl006_scoring/outputs/bl006_score_summary.json`
+  - `07_implementation/implementation_notes/bl007_playlist/outputs/bl007_assembly_report.json`
+  - `07_implementation/implementation_notes/bl008_transparency/outputs/bl008_explanation_summary.json`
   - other required BL-004 to BL-008 artifacts consumed by BL-009 script
 - config_or_parameters:
   - default BL-009 observability schema
   - bootstrap_mode=true
 - code_or_script_path:
-  - `07_implementation/implementation_notes/observability/build_bl009_observability_log.py`
+  - `07_implementation/implementation_notes/bl009_observability/build_bl009_observability_log.py`
 - dependency assumptions:
   - refreshed BL-006 through BL-008 artifacts are present and hash-stable.
 
 ### Expected Evidence
-- primary_output_artifact: `07_implementation/implementation_notes/observability/outputs/bl009_run_observability_log.json`
+- primary_output_artifact: `07_implementation/implementation_notes/bl009_observability/outputs/bl009_run_observability_log.json`
 - secondary_output_artifacts:
-  - `07_implementation/implementation_notes/observability/outputs/bl009_run_index.csv`
-  - `07_implementation/implementation_notes/observability/bl009_state_log_2026-03-24.md`
+  - `07_implementation/implementation_notes/bl009_observability/outputs/bl009_run_index.csv`
+  - `07_implementation/implementation_notes/bl009_observability/bl009_state_log_2026-03-24.md`
 - success_condition: BL-009 rerun succeeds, upstream run IDs are current, and run-index/hash fields are consistent.
 
 ### Run Record
-- command_or_execution_method: run `07_implementation/implementation_notes/observability/build_bl009_observability_log.py`
+- command_or_execution_method: run `07_implementation/implementation_notes/bl009_observability/build_bl009_observability_log.py`
 - run_id: `BL009-OBSERVE-20260324-195859-875091`
 - start_state_summary: BL-009 outputs existed but predated BL-008 refresh and needed chain alignment.
 - end_state_summary: BL-009 outputs regenerated and now reference the current BL-006 -> BL-007 -> BL-008 run IDs and hashes.
@@ -3536,9 +3536,9 @@ Do NOT download: audio files (.mp3), id_incp/id_resnet/id_vgg19 (video features)
   - `sha256.bl009_run_index.csv=840CA55DC9845A88157352EA9C5A011C7CA6C7D5EFBC72F61E3FF1D3A9F4F332`
 - deterministic_repeat_checked: no
 - output_paths:
-  - `07_implementation/implementation_notes/observability/outputs/bl009_run_observability_log.json`
-  - `07_implementation/implementation_notes/observability/outputs/bl009_run_index.csv`
-  - `07_implementation/implementation_notes/observability/bl009_state_log_2026-03-24.md`
+  - `07_implementation/implementation_notes/bl009_observability/outputs/bl009_run_observability_log.json`
+  - `07_implementation/implementation_notes/bl009_observability/outputs/bl009_run_index.csv`
+  - `07_implementation/implementation_notes/bl009_observability/bl009_state_log_2026-03-24.md`
 
 ### Issues And Limits
 - failures_or_anomalies: no runtime failures.
@@ -3554,9 +3554,9 @@ Do NOT download: audio files (.mp3), id_incp/id_resnet/id_vgg19 (video features)
 - immediate_follow_up: proceed to BL-010 reproducibility refresh using the updated BL-009 baseline.
 - backlog_status_recommendation: keep `BL-009` status done and treat this run as the active observability baseline.
 - output_paths:
-  - `07_implementation/implementation_notes/quality/outputs/bl014_sanity_report.json`
-  - `07_implementation/implementation_notes/quality/outputs/bl014_sanity_run_matrix.csv`
-  - `07_implementation/implementation_notes/quality/outputs/bl014_sanity_config_snapshot.json`
+  - `07_implementation/implementation_notes/bl014_quality/outputs/bl014_sanity_report.json`
+  - `07_implementation/implementation_notes/bl014_quality/outputs/bl014_sanity_run_matrix.csv`
+  - `07_implementation/implementation_notes/bl014_quality/outputs/bl014_sanity_config_snapshot.json`
 
 ### Issues And Limits
 - failures_or_anomalies:
@@ -3592,32 +3592,32 @@ Do NOT download: audio files (.mp3), id_incp/id_resnet/id_vgg19 (video features)
 
 ### Inputs
 - source_data:
-  - `07_implementation/implementation_notes/profile/outputs/bl004_preference_profile.json`
-  - `07_implementation/implementation_notes/retrieval/outputs/bl005_candidate_diagnostics.json`
-  - `07_implementation/implementation_notes/scoring/outputs/bl006_score_summary.json`
-  - `07_implementation/implementation_notes/playlist/outputs/bl007_assembly_report.json`
-  - `07_implementation/implementation_notes/transparency/outputs/bl008_explanation_summary.json`
-  - `07_implementation/implementation_notes/observability/outputs/bl009_run_observability_log.json`
+  - `07_implementation/implementation_notes/bl004_profile/outputs/bl004_preference_profile.json`
+  - `07_implementation/implementation_notes/bl005_retrieval/outputs/bl005_candidate_diagnostics.json`
+  - `07_implementation/implementation_notes/bl006_scoring/outputs/bl006_score_summary.json`
+  - `07_implementation/implementation_notes/bl007_playlist/outputs/bl007_assembly_report.json`
+  - `07_implementation/implementation_notes/bl008_transparency/outputs/bl008_explanation_summary.json`
+  - `07_implementation/implementation_notes/bl009_observability/outputs/bl009_run_observability_log.json`
   - fixed assets from BL-016 and BL-017 consumed by BL-010 config snapshot
 - config_or_parameters:
   - `replay_count=3`
   - `bootstrap_mode=true`
   - stage order: BL-004 -> BL-005 -> BL-006 -> BL-007 -> BL-008 -> BL-009
 - code_or_script_path:
-  - `07_implementation/implementation_notes/reproducibility/run_bl010_reproducibility_check.py`
+  - `07_implementation/implementation_notes/bl010_reproducibility/run_bl010_reproducibility_check.py`
 - dependency assumptions:
   - current BL-004 to BL-009 scripts and required upstream artifacts are available and executable.
 
 ### Expected Evidence
-- primary_output_artifact: `07_implementation/implementation_notes/reproducibility/outputs/bl010_reproducibility_report.json`
+- primary_output_artifact: `07_implementation/implementation_notes/bl010_reproducibility/outputs/bl010_reproducibility_report.json`
 - secondary_output_artifacts:
-  - `07_implementation/implementation_notes/reproducibility/outputs/bl010_reproducibility_run_matrix.csv`
-  - `07_implementation/implementation_notes/reproducibility/outputs/bl010_reproducibility_config_snapshot.json`
-  - `07_implementation/implementation_notes/reproducibility/bl010_state_log_2026-03-24.md`
+  - `07_implementation/implementation_notes/bl010_reproducibility/outputs/bl010_reproducibility_run_matrix.csv`
+  - `07_implementation/implementation_notes/bl010_reproducibility/outputs/bl010_reproducibility_config_snapshot.json`
+  - `07_implementation/implementation_notes/bl010_reproducibility/bl010_state_log_2026-03-24.md`
 - success_condition: deterministic_match remains true across all stable replay comparison artifacts and refreshed hashes are recorded.
 
 ### Run Record
-- command_or_execution_method: run `07_implementation/implementation_notes/reproducibility/run_bl010_reproducibility_check.py`
+- command_or_execution_method: run `07_implementation/implementation_notes/bl010_reproducibility/run_bl010_reproducibility_check.py`
 - run_id: `BL010-REPRO-20260324-200214`
 - start_state_summary: BL-010 outputs existed from earlier baseline and needed refresh after BL-006, BL-007, BL-008, and BL-009 updates.
 - end_state_summary: BL-010 outputs regenerated; 3 replay runs completed with stable-hash equality and deterministic pass status.
@@ -3640,13 +3640,13 @@ Do NOT download: audio files (.mp3), id_incp/id_resnet/id_vgg19 (video features)
   - `sha256.bl010_reproducibility_config_snapshot.json=9D9EA949CE944AE75CE13F499FBDE1F6F2EAA017E39A67AB871353CFAF04BF98`
 - deterministic_repeat_checked: yes
 - output_paths:
-  - `07_implementation/implementation_notes/reproducibility/outputs/bl010_reproducibility_report.json`
-  - `07_implementation/implementation_notes/reproducibility/outputs/bl010_reproducibility_run_matrix.csv`
-  - `07_implementation/implementation_notes/reproducibility/outputs/bl010_reproducibility_config_snapshot.json`
-  - `07_implementation/implementation_notes/reproducibility/outputs/replay_01/`
-  - `07_implementation/implementation_notes/reproducibility/outputs/replay_02/`
-  - `07_implementation/implementation_notes/reproducibility/outputs/replay_03/`
-  - `07_implementation/implementation_notes/reproducibility/bl010_state_log_2026-03-24.md`
+  - `07_implementation/implementation_notes/bl010_reproducibility/outputs/bl010_reproducibility_report.json`
+  - `07_implementation/implementation_notes/bl010_reproducibility/outputs/bl010_reproducibility_run_matrix.csv`
+  - `07_implementation/implementation_notes/bl010_reproducibility/outputs/bl010_reproducibility_config_snapshot.json`
+  - `07_implementation/implementation_notes/bl010_reproducibility/outputs/replay_01/`
+  - `07_implementation/implementation_notes/bl010_reproducibility/outputs/replay_02/`
+  - `07_implementation/implementation_notes/bl010_reproducibility/outputs/replay_03/`
+  - `07_implementation/implementation_notes/bl010_reproducibility/bl010_state_log_2026-03-24.md`
 
 ### Issues And Limits
 - failures_or_anomalies:
@@ -3683,7 +3683,7 @@ Do NOT download: audio files (.mp3), id_incp/id_resnet/id_vgg19 (video features)
 - source_data:
   - existing BL-003/BL-019-backed pipeline artifacts consumed by BL-004 through BL-009
 - config_or_parameters:
-  - `--run-config 07_implementation/implementation_notes/run_config/run_config_bl021_probe_v1.json`
+  - `--run-config 07_implementation/implementation_notes/bl000_run_config/run_config_bl021_probe_v1.json`
   - probe input scope:
     - `top_time_ranges=["short_term"]`
     - `include_saved_tracks=false`
@@ -3692,16 +3692,16 @@ Do NOT download: audio files (.mp3), id_incp/id_resnet/id_vgg19 (video features)
     - `playlist_items_per_playlist_limit=20`
     - `recently_played_limit=15`
 - code_or_script_path:
-  - `07_implementation/implementation_notes/entrypoint/run_bl013_pipeline_entrypoint.py`
+  - `07_implementation/implementation_notes/bl013_entrypoint/run_bl013_pipeline_entrypoint.py`
 - dependency assumptions:
   - current BL-004 through BL-009 scripts compile and execute under repo-local Python venv.
 
 ### Expected Evidence
-- primary_output_artifact: `07_implementation/implementation_notes/observability/outputs/bl009_run_observability_log.json`
+- primary_output_artifact: `07_implementation/implementation_notes/bl009_observability/outputs/bl009_run_observability_log.json`
 - secondary_output_artifacts:
-  - `07_implementation/implementation_notes/profile/outputs/bl004_preference_profile.json`
-  - `07_implementation/implementation_notes/profile/outputs/bl004_profile_summary.json`
-  - `07_implementation/implementation_notes/entrypoint/outputs/bl013_orchestration_run_latest.json`
+  - `07_implementation/implementation_notes/bl004_profile/outputs/bl004_preference_profile.json`
+  - `07_implementation/implementation_notes/bl004_profile/outputs/bl004_profile_summary.json`
+  - `07_implementation/implementation_notes/bl013_entrypoint/outputs/bl013_orchestration_run_latest.json`
 - success_condition: identical probe `input_scope` values are visible in BL-004 config and BL-009 run_config sections, with run metadata showing `config_source=run_config`.
 
 ### Run Record
@@ -3723,10 +3723,10 @@ Do NOT download: audio files (.mp3), id_incp/id_resnet/id_vgg19 (video features)
   - `bl009.run_config.input_scope.include_saved_tracks=false`
 - deterministic_repeat_checked: no
 - output_paths:
-  - `07_implementation/implementation_notes/entrypoint/outputs/bl013_orchestration_run_latest.json`
-  - `07_implementation/implementation_notes/profile/outputs/bl004_preference_profile.json`
-  - `07_implementation/implementation_notes/profile/outputs/bl004_profile_summary.json`
-  - `07_implementation/implementation_notes/observability/outputs/bl009_run_observability_log.json`
+  - `07_implementation/implementation_notes/bl013_entrypoint/outputs/bl013_orchestration_run_latest.json`
+  - `07_implementation/implementation_notes/bl004_profile/outputs/bl004_preference_profile.json`
+  - `07_implementation/implementation_notes/bl004_profile/outputs/bl004_profile_summary.json`
+  - `07_implementation/implementation_notes/bl009_observability/outputs/bl009_run_observability_log.json`
 
 ### Issues And Limits
 - failures_or_anomalies: none observed during this execution.
@@ -3761,20 +3761,20 @@ Do NOT download: audio files (.mp3), id_incp/id_resnet/id_vgg19 (video features)
 - source_data:
   - existing BL-003 seed table and downstream BL-005..BL-009 artifacts regenerated through BL-013.
 - config_or_parameters:
-  - probe-A config: `07_implementation/implementation_notes/run_config/run_config_bl021_probe_v1.json`
-  - probe-B config: `07_implementation/implementation_notes/run_config/run_config_bl021_probe_v2.json`
+  - probe-A config: `07_implementation/implementation_notes/bl000_run_config/run_config_bl021_probe_v1.json`
+  - probe-B config: `07_implementation/implementation_notes/bl000_run_config/run_config_bl021_probe_v2.json`
   - BL-013 command: `--run-config ...run_config_bl021_probe_v2.json`
 - code_or_script_path:
-  - `07_implementation/implementation_notes/entrypoint/run_bl013_pipeline_entrypoint.py`
+  - `07_implementation/implementation_notes/bl013_entrypoint/run_bl013_pipeline_entrypoint.py`
 - dependency assumptions:
   - Phase R2 code wiring is present in run-config utils, BL-004, and BL-009.
 
 ### Expected Evidence
-- primary_output_artifact: `07_implementation/implementation_notes/run_config/probe_comparison_outputs/bl021_probe_comparison_summary.json`
+- primary_output_artifact: `07_implementation/implementation_notes/bl000_run_config/probe_comparison_outputs/bl021_probe_comparison_summary.json`
 - secondary_output_artifacts:
-  - `07_implementation/implementation_notes/entrypoint/outputs/bl013_orchestration_run_latest.json`
-  - `07_implementation/implementation_notes/profile/outputs/bl004_profile_summary.json`
-  - `07_implementation/implementation_notes/observability/outputs/bl009_run_observability_log.json`
+  - `07_implementation/implementation_notes/bl013_entrypoint/outputs/bl013_orchestration_run_latest.json`
+  - `07_implementation/implementation_notes/bl004_profile/outputs/bl004_profile_summary.json`
+  - `07_implementation/implementation_notes/bl009_observability/outputs/bl009_run_observability_log.json`
 - success_condition: probe-B run passes, run-config provenance remains explicit, and A/B deltas can be computed for scope + profile metrics.
 
 ### Run Record
@@ -3801,10 +3801,10 @@ Do NOT download: audio files (.mp3), id_incp/id_resnet/id_vgg19 (video features)
   - `feature_center_deltas={danceability:0.0, energy:0.0, valence:0.0, tempo:0.0}`
 - deterministic_repeat_checked: no
 - output_paths:
-  - `07_implementation/implementation_notes/run_config/probe_comparison_outputs/bl021_probe_comparison_summary.json`
-  - `07_implementation/implementation_notes/entrypoint/outputs/bl013_orchestration_run_latest.json`
-  - `07_implementation/implementation_notes/profile/outputs/bl004_profile_summary.json`
-  - `07_implementation/implementation_notes/observability/outputs/bl009_run_observability_log.json`
+  - `07_implementation/implementation_notes/bl000_run_config/probe_comparison_outputs/bl021_probe_comparison_summary.json`
+  - `07_implementation/implementation_notes/bl013_entrypoint/outputs/bl013_orchestration_run_latest.json`
+  - `07_implementation/implementation_notes/bl004_profile/outputs/bl004_profile_summary.json`
+  - `07_implementation/implementation_notes/bl009_observability/outputs/bl009_run_observability_log.json`
 
 ### Issues And Limits
 - failures_or_anomalies: none during probe-B execution.
@@ -3837,24 +3837,24 @@ Do NOT download: audio files (.mp3), id_incp/id_resnet/id_vgg19 (video features)
 
 ### Inputs
 - source_data:
-  - Spotify export flat files under `07_implementation/implementation_notes/ingestion/outputs/spotify_api_export/`
+  - Spotify export flat files under `07_implementation/implementation_notes/bl001_bl002_ingestion/outputs/spotify_api_export/`
   - DS-001 working candidate dataset
 - config_or_parameters:
-  - probe-A: `07_implementation/implementation_notes/run_config/run_config_bl021_probe_v1.json`
-  - probe-B: `07_implementation/implementation_notes/run_config/run_config_bl021_probe_v2.json`
+  - probe-A: `07_implementation/implementation_notes/bl000_run_config/run_config_bl021_probe_v1.json`
+  - probe-B: `07_implementation/implementation_notes/bl000_run_config/run_config_bl021_probe_v2.json`
   - BL-003 run with `BL_RUN_CONFIG_PATH` for each probe before BL-013.
 - code_or_script_path:
-  - `07_implementation/implementation_notes/alignment/build_bl003_ds001_spotify_seed_table.py`
-  - `07_implementation/implementation_notes/entrypoint/run_bl013_pipeline_entrypoint.py`
+  - `07_implementation/implementation_notes/bl003_alignment/build_bl003_ds001_spotify_seed_table.py`
+  - `07_implementation/implementation_notes/bl013_entrypoint/run_bl013_pipeline_entrypoint.py`
 - dependency assumptions:
   - run-config `input_scope` resolution is available in run-config utilities.
 
 ### Expected Evidence
-- primary_output_artifact: `07_implementation/implementation_notes/run_config/probe_comparison_outputs/bl021_probe_comparison_actuated_summary.json`
+- primary_output_artifact: `07_implementation/implementation_notes/bl000_run_config/probe_comparison_outputs/bl021_probe_comparison_actuated_summary.json`
 - secondary_output_artifacts:
-  - `07_implementation/implementation_notes/alignment/outputs/bl003_source_scope_manifest.json`
-  - `07_implementation/implementation_notes/profile/outputs/bl004_profile_summary.json`
-  - `07_implementation/implementation_notes/observability/outputs/bl009_run_observability_log.json`
+  - `07_implementation/implementation_notes/bl003_alignment/outputs/bl003_source_scope_manifest.json`
+  - `07_implementation/implementation_notes/bl004_profile/outputs/bl004_profile_summary.json`
+  - `07_implementation/implementation_notes/bl009_observability/outputs/bl009_run_observability_log.json`
 - success_condition: probe-A vs probe-B differences produce non-zero BL-003 and BL-004 deltas while preserving config provenance in BL-009.
 
 ### Run Record
@@ -3877,10 +3877,10 @@ Do NOT download: audio files (.mp3), id_incp/id_resnet/id_vgg19 (video features)
   - `BL009.run_metadata.config_source=run_config` (both probes)
 - deterministic_repeat_checked: no
 - output_paths:
-  - `07_implementation/implementation_notes/run_config/probe_comparison_outputs/bl021_probe_comparison_actuated_summary.json`
-  - `07_implementation/implementation_notes/run_config/probe_comparison_outputs/bl003_summary_probeA_actuated.json`
-  - `07_implementation/implementation_notes/run_config/probe_comparison_outputs/bl003_source_scope_manifest_probeA_actuated.json`
-  - `07_implementation/implementation_notes/alignment/outputs/bl003_source_scope_manifest.json`
+  - `07_implementation/implementation_notes/bl000_run_config/probe_comparison_outputs/bl021_probe_comparison_actuated_summary.json`
+  - `07_implementation/implementation_notes/bl000_run_config/probe_comparison_outputs/bl003_summary_probeA_actuated.json`
+  - `07_implementation/implementation_notes/bl000_run_config/probe_comparison_outputs/bl003_source_scope_manifest_probeA_actuated.json`
+  - `07_implementation/implementation_notes/bl003_alignment/outputs/bl003_source_scope_manifest.json`
 
 ### Issues And Limits
 - failures_or_anomalies: none during final execution sequence.
@@ -3913,22 +3913,22 @@ Do NOT download: audio files (.mp3), id_incp/id_resnet/id_vgg19 (video features)
 
 ### Inputs
 - source_data:
-  - `07_implementation/implementation_notes/reproducibility/outputs/bl010_reproducibility_config_snapshot.json`
-  - `07_implementation/implementation_notes/profile/outputs/bl004_seed_trace.csv`
-  - `07_implementation/implementation_notes/data_layer/outputs/ds001_working_candidate_dataset.csv`
+  - `07_implementation/implementation_notes/bl010_reproducibility/outputs/bl010_reproducibility_config_snapshot.json`
+  - `07_implementation/implementation_notes/bl004_profile/outputs/bl004_seed_trace.csv`
+  - `07_implementation/implementation_notes/bl000_data_layer/outputs/ds001_working_candidate_dataset.csv`
 - config_or_parameters: 5-scenario controllability matrix (baseline + 4 variants)
 - code_or_script_path:
-  - `07_implementation/implementation_notes/controllability/run_bl011_controllability_check.py`
-  - `07_implementation/implementation_notes/entrypoint/run_bl013_pipeline_entrypoint.py`
+  - `07_implementation/implementation_notes/bl011_controllability/run_bl011_controllability_check.py`
+  - `07_implementation/implementation_notes/bl013_entrypoint/run_bl013_pipeline_entrypoint.py`
 - dependency assumptions: BL-010 aligned baseline and BL-013 passing chain available.
 
 ### Expected Evidence
 - primary_output_artifact:
-  - `07_implementation/implementation_notes/controllability/outputs/bl011_controllability_report.json`
+  - `07_implementation/implementation_notes/bl011_controllability/outputs/bl011_controllability_report.json`
 - secondary_output_artifacts:
-  - `07_implementation/implementation_notes/controllability/outputs/bl011_controllability_run_matrix.csv`
-  - `07_implementation/implementation_notes/controllability/outputs/bl011_controllability_config_snapshot.json`
-  - `07_implementation/implementation_notes/entrypoint/outputs/bl013_orchestration_run_latest.json`
+  - `07_implementation/implementation_notes/bl011_controllability/outputs/bl011_controllability_run_matrix.csv`
+  - `07_implementation/implementation_notes/bl011_controllability/outputs/bl011_controllability_config_snapshot.json`
+  - `07_implementation/implementation_notes/bl013_entrypoint/outputs/bl013_orchestration_run_latest.json`
 - success_condition: BL-011 status pass with all scenario checks true, followed by BL-013 pass.
 
 ### Run Record
@@ -3947,9 +3947,9 @@ Do NOT download: audio files (.mp3), id_incp/id_resnet/id_vgg19 (video features)
   - `bl013.overall_status=pass`
 - deterministic_repeat_checked: yes (scenario repeat consistency checks in BL-011)
 - output_paths:
-  - `07_implementation/implementation_notes/controllability/outputs/bl011_controllability_report.json`
-  - `07_implementation/implementation_notes/controllability/outputs/bl011_controllability_run_matrix.csv`
-  - `07_implementation/implementation_notes/entrypoint/outputs/bl013_orchestration_run_latest.json`
+  - `07_implementation/implementation_notes/bl011_controllability/outputs/bl011_controllability_report.json`
+  - `07_implementation/implementation_notes/bl011_controllability/outputs/bl011_controllability_run_matrix.csv`
+  - `07_implementation/implementation_notes/bl013_entrypoint/outputs/bl013_orchestration_run_latest.json`
 
 ### Issues And Limits
 - failures_or_anomalies: resolved runtime blockers during alignment (`track_id` normalization, scoring-weight schema key variance, strict float-sum check).
@@ -3959,7 +3959,7 @@ Do NOT download: audio files (.mp3), id_incp/id_resnet/id_vgg19 (video features)
 ### Thesis Traceability
 - chapter4_relevance: controlled scenario evidence for controllability claims under active implementation path.
 - chapter5_relevance: documents resolved integration risk from legacy dependency assumptions and remaining bounded evaluation limits.
-- quality_control_files_to_update: `07_implementation/IMPLEMENTATION_STATE_2026-03-24.md`, `07_implementation/implementation_notes/controllability/bl011_state_log_2026-03-24.md`.
+- quality_control_files_to_update: `07_implementation/IMPLEMENTATION_STATE_2026-03-24.md`, `07_implementation/implementation_notes/bl011_controllability/bl011_state_log_2026-03-24.md`.
 
 ### Next Action
 - immediate_follow_up: keep this as current baseline and proceed to any remaining quality/report packaging tasks.

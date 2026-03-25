@@ -331,7 +331,7 @@ Launcher behavior:
 Outcome:
 - Local website startup is now deterministic.
 - Root URL and explicit import page URL both resolve correctly.
-- Website import flow continues to read live Spotify export artifacts from `implementation_notes/ingestion/outputs/spotify_api_export/`.
+- Website import flow continues to read live Spotify export artifacts from `implementation_notes/bl001_bl002_ingestion/outputs/spotify_api_export/`.
 
 ## Real Spotify Ingestion Integration Log
 
@@ -563,7 +563,7 @@ Status: Completed
 
 Changes:
 - Added a "Latest Spotify Export" status card to `import.html` with run id, UTC generation time, key counts, and a refresh button.
-- Updated `app.js` to load real artifacts from `07_implementation/implementation_notes/ingestion/outputs/spotify_api_export/`:
+- Updated `app.js` to load real artifacts from `07_implementation/implementation_notes/bl001_bl002_ingestion/outputs/spotify_api_export/`:
    - `spotify_export_run_summary.json`
    - `spotify_top_tracks_flat.csv`
    - `spotify_saved_tracks_flat.csv`
@@ -759,10 +759,10 @@ Validation notes:
 - Playlist diagnostics confirmed 4 playlists listed, with item rows available only for the owner-accessible playlist in current token context.
 
 Files touched in this phase:
-- `07_implementation/implementation_notes/ingestion/export_spotify_max_dataset.py`
-- `07_implementation/implementation_notes/ingestion/spotify_mapping.py`
-- `07_implementation/implementation_notes/ingestion/spotify_artifacts.py`
-- `07_implementation/implementation_notes/ingestion/spotify_schema_reference.md`
+- `07_implementation/implementation_notes/bl001_bl002_ingestion/export_spotify_max_dataset.py`
+- `07_implementation/implementation_notes/bl001_bl002_ingestion/spotify_mapping.py`
+- `07_implementation/implementation_notes/bl001_bl002_ingestion/spotify_artifacts.py`
+- `07_implementation/implementation_notes/bl001_bl002_ingestion/docs/spotify_schema_reference.md`
 - `07_implementation/setup/website_api_server.py`
 - `07_implementation/website/import.html`
 - `07_implementation/website/app.js`
@@ -981,11 +981,11 @@ User-visible behavior:
 Files touched in this phase:
 - `07_implementation/setup/website_api_server.py`
 - `07_implementation/website/stage_page.js`
-- `07_implementation/implementation_notes/retrieval/build_bl005_candidate_filter.py`
-- `07_implementation/implementation_notes/scoring/build_bl006_scored_candidates.py`
-- `07_implementation/implementation_notes/playlist/build_bl007_playlist.py`
-- `07_implementation/implementation_notes/transparency/build_bl008_explanation_payloads.py`
-- `07_implementation/implementation_notes/observability/build_bl009_observability_log.py`
+- `07_implementation/implementation_notes/bl005_retrieval/build_bl005_candidate_filter.py`
+- `07_implementation/implementation_notes/bl006_scoring/build_bl006_scored_candidates.py`
+- `07_implementation/implementation_notes/bl007_playlist/build_bl007_playlist.py`
+- `07_implementation/implementation_notes/bl008_transparency/build_bl008_explanation_payloads.py`
+- `07_implementation/implementation_notes/bl009_observability/build_bl009_observability_log.py`
 
 ## BL-004 Parameter Tunability Extension
 
@@ -1011,7 +1011,7 @@ User-visible behavior:
 Files touched in this phase:
 - `07_implementation/website/stage_page.js`
 - `07_implementation/setup/website_api_server.py`
-- `07_implementation/implementation_notes/profile/build_bl004_preference_profile.py`
+- `07_implementation/implementation_notes/bl004_profile/build_bl004_preference_profile.py`
 
 ## Website Runtime Hardening Pass
 

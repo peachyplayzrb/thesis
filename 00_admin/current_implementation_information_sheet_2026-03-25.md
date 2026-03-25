@@ -14,8 +14,8 @@ The current system is a deterministic single-user playlist generation pipeline t
 - Active sanity-check harness: BL-014
 - Recommendation logic type: deterministic, content-based, hybrid semantic + numeric-feature scoring
 - Current canonical validation status:
-  - BL-013 pass: `BL013-ENTRYPOINT-20260325-015002-805278`
-  - BL-014 pass: `BL014-SANITY-20260325-014516-905552` (`21/21` checks)
+  - BL-013 pass: `BL013-ENTRYPOINT-20260325-163713-079187`
+  - BL-014 pass: `BL014-SANITY-20260325-163738-023840` (`21/21` checks)
 
 ## High-Level Flow
 1. Spotify export data is collected and normalized.
@@ -32,7 +32,7 @@ The current system is a deterministic single-user playlist generation pipeline t
 
 ### Canonical Run Configuration
 The active implementation uses a canonical run-config resolved through:
-- `07_implementation/implementation_notes/run_config/run_config_utils.py`
+- `07_implementation/implementation_notes/bl000_run_config/run_config_utils.py`
 
 This control layer normalizes and validates:
 - input scope
@@ -87,7 +87,7 @@ Operational note:
 
 ### BL-003 — Alignment / Seed Construction
 Script:
-- `07_implementation/implementation_notes/alignment/build_bl003_ds001_spotify_seed_table.py`
+- `07_implementation/implementation_notes/bl003_alignment/build_bl003_ds001_spotify_seed_table.py`
 
 Role:
 - Align imported Spotify events to DS-001 candidate rows.
@@ -110,10 +110,10 @@ Key outputs:
 - `bl003_source_scope_manifest.json`
 
 Current observed behavior:
-- Input events: 8997
-- Matched events: 2898
-- Seed table rows: 1563
-- Match-rate validation: `32.21%` vs threshold `30.0%` -> pass
+- Input events: 12083
+- Matched events: 1886
+- Seed table rows: 1058
+- Match-rate validation: `15.61%` vs threshold `15.0%` -> pass
 
 Why it matters:
 - BL-003 defines the evidence actually available to the downstream profile.
@@ -121,7 +121,7 @@ Why it matters:
 
 ### BL-004 — Preference Profile Construction
 Script:
-- `07_implementation/implementation_notes/profile/build_bl004_preference_profile.py`
+- `07_implementation/implementation_notes/bl004_profile/build_bl004_preference_profile.py`
 
 Role:
 - Convert aligned seeds into a deterministic user preference profile.
@@ -144,14 +144,14 @@ Key outputs:
 - `bl004_seed_trace.csv`
 
 Current observed behavior:
-- Matched seeds used: 1563
+- Matched seeds used: 1058
 
 Why it matters:
 - BL-004 is the canonical user-preference representation consumed by retrieval and scoring.
 
 ### BL-005 — Candidate Retrieval / Filtering
 Script:
-- `07_implementation/implementation_notes/retrieval/build_bl005_candidate_filter.py`
+- `07_implementation/implementation_notes/bl005_retrieval/build_bl005_candidate_filter.py`
 
 Role:
 - Filter the full candidate dataset into a smaller, defensible candidate pool before scoring.
@@ -178,15 +178,15 @@ Key outputs:
 - `bl005_candidate_diagnostics.json`
 
 Current observed behavior:
-- Kept candidates: 56700
-- Rejected non-seed candidates: 51006
+- Kept candidates: 72463
+- Rejected non-seed candidates: 35748
 
 Why it matters:
 - BL-005 is the first stage that constrains what can ever appear in the final playlist.
 
 ### BL-006 — Candidate Scoring
 Script:
-- `07_implementation/implementation_notes/scoring/build_bl006_scored_candidates.py`
+- `07_implementation/implementation_notes/bl006_scoring/build_bl006_scored_candidates.py`
 
 Role:
 - Score retrieved candidates with a deterministic hybrid similarity function.
@@ -213,9 +213,9 @@ What it does:
 - Emits explicit diagnostics when rebalancing occurs.
 
 Current canonical run behavior:
-- Candidates scored: 56700
-- Mean score: 0.241022
-- Max score: 0.817654
+- Candidates scored: 72463
+- Mean score: 0.245727
+- Max score: 0.787428
 - Weight rebalance flag in latest canonical run: false
 
 Key outputs:
@@ -227,7 +227,7 @@ Why it matters:
 
 ### BL-007 — Playlist Assembly
 Script:
-- `07_implementation/implementation_notes/playlist/build_bl007_playlist.py`
+- `07_implementation/implementation_notes/bl007_playlist/build_bl007_playlist.py`
 
 Role:
 - Convert ranked candidates into a final playlist using explicit rule-based assembly.
@@ -258,7 +258,7 @@ Why it matters:
 
 ### BL-008 — Transparency / Explanation Generation
 Script:
-- `07_implementation/implementation_notes/transparency/build_bl008_explanation_payloads.py`
+- `07_implementation/implementation_notes/bl008_transparency/build_bl008_explanation_payloads.py`
 
 Role:
 - Generate human-readable and machine-readable explanations for every track in the final playlist.
@@ -284,7 +284,7 @@ Why it matters:
 
 ### BL-009 — Observability / Audit Logging
 Script:
-- `07_implementation/implementation_notes/observability/build_bl009_observability_log.py`
+- `07_implementation/implementation_notes/bl009_observability/build_bl009_observability_log.py`
 
 Role:
 - Consolidate the entire run into a structured audit log.
@@ -334,7 +334,7 @@ Why it matters:
 
 ### BL-013 — End-to-End Orchestration
 Script:
-- `07_implementation/implementation_notes/entrypoint/run_bl013_pipeline_entrypoint.py`
+- `07_implementation/implementation_notes/bl013_entrypoint/run_bl013_pipeline_entrypoint.py`
 
 Role:
 - Run the active implementation end to end from BL-003 refresh through BL-009.
@@ -352,7 +352,7 @@ Why it matters:
 
 ### BL-014 — Sanity Check Harness
 Script:
-- `07_implementation/implementation_notes/quality/run_bl014_sanity_checks.py`
+- `07_implementation/implementation_notes/bl014_quality/run_bl014_sanity_checks.py`
 
 Role:
 - Validate that the outputs from BL-004 to BL-009 are structurally coherent.
@@ -388,15 +388,15 @@ Therefore, the live system is best described as:
 - hybrid semantic-plus-feature recommendation pipeline
 
 ## Current Run Snapshot (Canonical)
-- BL-013 run ID: `BL013-ENTRYPOINT-20260325-015002-805278`
+- BL-013 run ID: `BL013-ENTRYPOINT-20260325-151555-244335`
 - overall status: pass
-- elapsed: 9.232 seconds
+- elapsed: 15.123 seconds
 
 Stage snapshot:
-- BL-003 match rate: `32.21%` (`pass` against `30.0%` minimum)
-- BL-004 seeds used: `1563`
-- BL-005 kept candidates: `56700`
-- BL-006 scored candidates: `56700`
+- BL-003 match rate: `15.61%` (`pass` against `15.0%` minimum)
+- BL-004 seeds used: `1058`
+- BL-005 kept candidates: `72463`
+- BL-006 scored candidates: `72463`
 - BL-007 final playlist: `10/10`
 - BL-008 explanations: `10`
 - BL-009 weight rebalance diagnostics: `false` in the latest canonical run
@@ -418,23 +418,23 @@ Stage snapshot:
 
 ## Best Files to Read If You Want to Understand the System Quickly
 - BL-013 orchestration summary:
-  - `07_implementation/implementation_notes/entrypoint/outputs/bl013_orchestration_run_latest.json`
+  - `07_implementation/implementation_notes/bl013_entrypoint/outputs/bl013_orchestration_run_latest.json`
 - BL-003 alignment summary:
-  - `07_implementation/implementation_notes/alignment/outputs/bl003_ds001_spotify_summary.json`
+  - `07_implementation/implementation_notes/bl003_alignment/outputs/bl003_ds001_spotify_summary.json`
 - BL-004 profile summary:
-  - `07_implementation/implementation_notes/profile/outputs/bl004_profile_summary.json`
+  - `07_implementation/implementation_notes/bl004_profile/outputs/bl004_profile_summary.json`
 - BL-005 retrieval diagnostics:
-  - `07_implementation/implementation_notes/retrieval/outputs/bl005_candidate_diagnostics.json`
+  - `07_implementation/implementation_notes/bl005_retrieval/outputs/bl005_candidate_diagnostics.json`
 - BL-006 score summary:
-  - `07_implementation/implementation_notes/scoring/outputs/bl006_score_summary.json`
+  - `07_implementation/implementation_notes/bl006_scoring/outputs/bl006_score_summary.json`
 - BL-007 assembly report:
-  - `07_implementation/implementation_notes/playlist/outputs/bl007_assembly_report.json`
+  - `07_implementation/implementation_notes/bl007_playlist/outputs/bl007_assembly_report.json`
 - BL-008 explanation summary:
-  - `07_implementation/implementation_notes/transparency/outputs/bl008_explanation_summary.json`
+  - `07_implementation/implementation_notes/bl008_transparency/outputs/bl008_explanation_summary.json`
 - BL-009 observability log:
-  - `07_implementation/implementation_notes/observability/outputs/bl009_run_observability_log.json`
+  - `07_implementation/implementation_notes/bl009_observability/outputs/bl009_run_observability_log.json`
 - BL-014 sanity report:
-  - `07_implementation/implementation_notes/quality/outputs/bl014_sanity_report.json`
+  - `07_implementation/implementation_notes/bl014_quality/outputs/bl014_sanity_report.json`
 
 ## Final Interpretation
 The current implementation is not just a conceptual prototype. It is an operational deterministic pipeline with explicit configuration control, evidence-producing stage outputs, and integrated validation. Its main trade-off is not lack of implementation depth; it is the bounded quality and coverage of the available aligned user-history signal.

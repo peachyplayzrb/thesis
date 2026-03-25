@@ -21,22 +21,22 @@ The workspace has **ingestion schema locked**, **canonical dataset ready** (DS-0
 - **Quality flags**: Detects missing ISRC, invalid timestamp, negative ms_played
 - **Documentation**: 
   - Mapping details in `06_data_and_sources/schema_notes.md`
-  - Input/output mapping: `07_implementation/implementation_notes/ingestion/bl001_spotify_input_output_mapping.md`
+  - Input/output mapping: `07_implementation/implementation_notes/bl001_bl002_ingestion/bl001_spotify_input_output_mapping.md`
 
 ### BL-002: Ingestion Scripts (✅ IMPLEMENTED)
 Two paths available:
 
 #### CSV Parser
-- **Script**: `07_implementation/implementation_notes/ingestion/ingest_history_parser.py`
+- **Script**: `07_implementation/implementation_notes/bl001_bl002_ingestion/ingest_history_parser.py`
 - **Function**: Deterministic parser for Spotify CSV export
 - **Tested**: Yes (sample output shows rows_total=7, rows_valid=4, rows_invalid=3)
 - **Output format**: Normalized JSONL or CSV with quality flags
 
 #### Web API Exporter
-- **Script**: `07_implementation/implementation_notes/ingestion/export_spotify_max_dataset.py`
+- **Script**: `07_implementation/implementation_notes/bl001_bl002_ingestion/export_spotify_max_dataset.py`
 - **Function**: Collects from Spotify API — top tracks, saved tracks, playlists, playlist items
 - **Auth**: OAuth2 + pagination support
-- **Runbook**: `07_implementation/implementation_notes/ingestion/spotify_api_ingestion_runbook.md`
+- **Runbook**: `07_implementation/implementation_notes/bl001_bl002_ingestion/docs/spotify_api_ingestion_runbook.md`
 - **Status**: Ready to run (requires OAuth token + cooldown window per UI-007)
 - **Test outputs**: Available in `ingestion/outputs/spotify_api_export/`
 
@@ -52,7 +52,7 @@ Two paths available:
 
 ### BL-019: DS-002 Integrated Dataset (✅ COMPLETED 2026-03-21)
 
-**Location**: `07_implementation/implementation_notes/data_layer/outputs/`
+**Location**: `07_implementation/implementation_notes/bl000_data_layer/outputs/`
 
 #### Main Artifact
 - **File**: `bl019_ds002_integrated_candidate_dataset.csv`
@@ -96,8 +96,8 @@ All pipeline components have implemented scripts **and test outputs exist** (but
 | **Controllability** (BL-011) | `run_bl011_controllability_check.py` | `controllability/outputs/` | Stale test scenarios: `baseline/`, `no_influence_tracks/`, `valence_weight_up/`, etc. |
 
 ### Pipeline Entrypoint
-- **Script**: `07_implementation/implementation_notes/entrypoint/run_bl013_pipeline_entrypoint.py`
-- **Documentation**: `07_implementation/implementation_notes/entrypoint/bl013_run_command.md`
+- **Script**: `07_implementation/implementation_notes/bl013_entrypoint/run_bl013_pipeline_entrypoint.py`
+- **Documentation**: `07_implementation/implementation_notes/bl013_entrypoint/bl013_run_command.md`
 - **Status**: ✅ Ready to run (will invoke the full BL-004 → BL-013 chain)
 
 ### ⚠️ ARTIFACT INVALIDATION NOTICE
@@ -107,7 +107,7 @@ When you run BL-020, you will:
 1. **Delete or archive** stale output folders
 2. **Re-run** all components with:
    - Real ingestion events (from BL-001 or BL-002)
-   - New canonical dataset: [bl019_ds002_integrated_candidate_dataset.csv](../implementation_notes/data_layer/outputs/bl019_ds002_integrated_candidate_dataset.csv)
+   - New canonical dataset: [bl019_ds002_integrated_candidate_dataset.csv](../implementation_notes/bl000_data_layer/outputs/bl019_ds002_integrated_candidate_dataset.csv)
 3. **Regenerate** all artifacts (profile, candidates, scores, playlist, explanations, logs, test matrices)
 
 ---
@@ -179,13 +179,13 @@ spotipy==2.23.0         (Spotify API client)
 | Topic | File | Purpose |
 | --- | --- | --- |
 | **Schema** | `06_data_and_sources/schema_notes.md` | Ingestion schema definition |
-| **Ingestion I/O** | `07_implementation/implementation_notes/ingestion/bl001_spotify_input_output_mapping.md` | Field mapping reference |
-| **CSV Parser** | `07_implementation/implementation_notes/ingestion/ingest_history_parser.py` | Ready to use |
-| **Web API Exporter** | `07_implementation/implementation_notes/ingestion/export_spotify_max_dataset.py` + runbook | Requires OAuth restart |
-| **Candidate Dataset** | `07_implementation/implementation_notes/data_layer/outputs/bl019_ds002_integrated_candidate_dataset.csv` | Feed to profile builder |
-| **Feasibility Review** | `07_implementation/implementation_notes/data_layer/candidate_corpus_feasibility_review_2026-03-19.md` | Context for DC-D-015 decision |
-| **Pipeline Entrypoint** | `07_implementation/implementation_notes/entrypoint/run_bl013_pipeline_entrypoint.py` | Run full BL-004→BL-013 chain |
-| **Run Command Docs** | `07_implementation/implementation_notes/entrypoint/bl013_run_command.md` | How to invoke the pipeline |
+| **Ingestion I/O** | `07_implementation/implementation_notes/bl001_bl002_ingestion/bl001_spotify_input_output_mapping.md` | Field mapping reference |
+| **CSV Parser** | `07_implementation/implementation_notes/bl001_bl002_ingestion/ingest_history_parser.py` | Ready to use |
+| **Web API Exporter** | `07_implementation/implementation_notes/bl001_bl002_ingestion/export_spotify_max_dataset.py` + runbook | Requires OAuth restart |
+| **Candidate Dataset** | `07_implementation/implementation_notes/bl000_data_layer/outputs/bl019_ds002_integrated_candidate_dataset.csv` | Feed to profile builder |
+| **Feasibility Review** | `07_implementation/implementation_notes/bl000_data_layer/candidate_corpus_feasibility_review_2026-03-19.md` | Context for DC-D-015 decision |
+| **Pipeline Entrypoint** | `07_implementation/implementation_notes/bl013_entrypoint/run_bl013_pipeline_entrypoint.py` | Run full BL-004→BL-013 chain |
+| **Run Command Docs** | `07_implementation/implementation_notes/bl013_entrypoint/bl013_run_command.md` | How to invoke the pipeline |
 | **Backlog** | `07_implementation/backlog.md` | Master task tracker |
 | **Change Log** | `00_admin/change_log.md` | All recorded changes (latest: C-065) |
 | **Decision Log** | `00_admin/decision_log.md` | All decisions (latest: D-020) |

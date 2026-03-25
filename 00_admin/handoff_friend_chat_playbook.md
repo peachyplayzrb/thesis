@@ -58,7 +58,7 @@ Governance sync note: UI-010 freshness controls are closed/operational; UI-003 r
 1. BL-013 entrypoint command docs:
    - `07_implementation/implementation_notes/bl013_entrypoint/bl013_run_command.md`
 2. Spotify API ingestion runbook:
-   - `07_implementation/implementation_notes/bl001_bl002_ingestion/spotify_api_ingestion_runbook.md`
+   - `07_implementation/implementation_notes/bl001_bl002_ingestion/docs/spotify_api_ingestion_runbook.md`
 
 ## Session Close Checklist
 1. `07_implementation/backlog.md` reflects real status.

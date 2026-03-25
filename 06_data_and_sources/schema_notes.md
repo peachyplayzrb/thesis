@@ -1,4 +1,4 @@
-﻿# Schema Notes
+# Schema Notes
 
 ## BL-001 Ingestion Schema (Spotify MVP)
 
@@ -127,7 +127,7 @@ One row per synthetic preference signal for a single test user.
 
 ### Candidate Stub CSV
 - The candidate stub CSV reuses the BL-017 canonical table schema so downstream stages can read the same feature columns later used by the full corpus.
-- Expected columns are the canonical-layer output columns from `07_implementation/implementation_notes/data_layer/outputs/onion_canonical_track_table.csv`.
+- Expected columns are the canonical-layer output columns from `07_implementation/implementation_notes/bl000_data_layer/outputs/onion_canonical_track_table.csv`.
 - Additional bootstrap selection metadata should be written to a separate manifest file, not appended to the candidate stub schema.
 
 ### Bootstrap Constraints

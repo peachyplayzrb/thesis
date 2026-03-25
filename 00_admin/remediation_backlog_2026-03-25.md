@@ -41,7 +41,7 @@ These 5 issues must be resolved before thesis final hardening to prevent submiss
   - Add BL-014 sanity check
 - **Thesis Impact**: Without this, undetected misconfigurations could invalidate results
 - **Files to Modify**:
-  - `07_implementation/implementation_notes/run_config/run_config_utils.py`
+  - `07_implementation/implementation_notes/bl000_run_config/run_config_utils.py`
   - `07_implementation/implementation_notes/sanity_check/run_bl014_sanity_checks.py`
 - **Evidence for Fix**: Configuration validation tests
 
@@ -60,10 +60,10 @@ These 5 issues must be resolved before thesis final hardening to prevent submiss
   - Add test case verifying enforcement
 - **Thesis Impact**: Prevents silent config drift that breaks reproducibility claims
 - **Files to Modify**:
-  - `07_implementation/implementation_notes/run_config/run_config_template_v1.json`
-  - `07_implementation/implementation_notes/run_config/run_config_utils.py`
-  - `07_implementation/implementation_notes/retrieval/build_bl005_candidate_filter.py`
-  - `07_implementation/implementation_notes/scoring/build_bl006_scored_candidates.py`
+  - `07_implementation/implementation_notes/bl000_run_config/run_config_template_v1.json`
+  - `07_implementation/implementation_notes/bl000_run_config/run_config_utils.py`
+  - `07_implementation/implementation_notes/bl005_retrieval/build_bl005_candidate_filter.py`
+  - `07_implementation/implementation_notes/bl006_scoring/build_bl006_scored_candidates.py`
 - **Evidence for Fix**: BL-013 orchestration with forced threshold mismatch (should fail)
 - **Completion Evidence**:
   - BL-013 standard run passes with matched thresholds (`BL013-ENTRYPOINT-20260325-013331-903943`)
@@ -86,9 +86,9 @@ These 5 issues must be resolved before thesis final hardening to prevent submiss
   - Add BL-014 check flagging undersized results
 - **Thesis Impact**: Prevents claims that "system produces 10-track playlists" without caveat
 - **Files to Modify**:
-  - `07_implementation/implementation_notes/playlist/build_bl007_playlist.py`
+  - `07_implementation/implementation_notes/bl007_playlist/build_bl007_playlist.py`
   - `08_writing/chapter4.md` (evaluation results section)
-  - `07_implementation/implementation_notes/quality/run_bl014_sanity_checks.py`
+  - `07_implementation/implementation_notes/bl014_quality/run_bl014_sanity_checks.py`
 - **Evidence for Fix**: BL-013 run with strict assembly controls (document undersized output)
 - **Completion Evidence**:
   - BL-013 strict-controls run produces undersized playlist with explicit warning diagnostics (`BL013-ENTRYPOINT-20260325-013610-197098`)
@@ -114,8 +114,8 @@ These 5 issues must be resolved before thesis final hardening to prevent submiss
   - Add test case
 - **Thesis Impact**: Prevents undefined behavior in candidate filtering
 - **Files to Modify**:
-  - `07_implementation/implementation_notes/run_config/run_config_utils.py`
-  - `07_implementation/implementation_notes/run_config/run_config_template_v1.json` (add comment)
+  - `07_implementation/implementation_notes/bl000_run_config/run_config_utils.py`
+  - `07_implementation/implementation_notes/bl000_run_config/run_config_template_v1.json` (add comment)
 - **Evidence for Fix**: Config validation test with mismatched limits
 - **Completion Evidence**:
   - BL-013 canonical run passes (`BL013-ENTRYPOINT-20260325-013848-150034`)
@@ -139,9 +139,9 @@ These 5 issues must be resolved before thesis final hardening to prevent submiss
   - Add BL-014 check for weight normalization alerts
 - **Thesis Impact**: Ensures scoring transparency and prevents hidden weight drift
 - **Files to Modify**:
-  - `07_implementation/implementation_notes/run_config/run_config_utils.py`
-  - `07_implementation/implementation_notes/scoring/build_bl006_scored_candidates.py`
-  - `07_implementation/implementation_notes/observability/build_bl009_observability_log.py`
+  - `07_implementation/implementation_notes/bl000_run_config/run_config_utils.py`
+  - `07_implementation/implementation_notes/bl006_scoring/build_bl006_scored_candidates.py`
+  - `07_implementation/implementation_notes/bl009_observability/build_bl009_observability_log.py`
 - **Evidence for Fix**: BL-013 run with edge-case weights; log shows rebalancing warning
 - **Completion Evidence**:
   - Invalid sum config (1.10) fails fast with explicit tolerance error

@@ -107,7 +107,7 @@ Summary file now includes:
 {
   "resilience": {
     "cache_enabled": true,
-    "cache_db_path": "07_implementation/implementation_notes/ingestion/outputs/spotify_api_export/spotify_resilience_cache.sqlite",
+    "cache_db_path": "07_implementation/implementation_notes/bl001_bl002_ingestion/outputs/spotify_api_export/spotify_resilience_cache.sqlite",
     "cache_note": "SQLite cache with 24-hour TTL for static endpoints; enables fast re-runs"
   }
 }
@@ -172,7 +172,7 @@ Output:
 To force a fresh fetch:
 
 ```powershell
-Remove-Item "07_implementation/implementation_notes/ingestion/outputs/spotify_api_export/spotify_resilience_cache.sqlite"
+Remove-Item "07_implementation/implementation_notes/bl001_bl002_ingestion/outputs/spotify_api_export/spotify_resilience_cache.sqlite"
 ```
 
 ---

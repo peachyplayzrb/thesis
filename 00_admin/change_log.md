@@ -1,4 +1,4 @@
-﻿# Change Log
+# Change Log
 
 Use schema from `00_admin/operating_protocol.md`.
 
@@ -605,8 +605,8 @@ Maintenance snapshot (2026-03-25):
 - status: accepted
 - change_summary: Implement a Spotify Web API maximum-ingestion exporter for BL-002 (top tracks, saved tracks, playlists, playlist items) with OAuth authorization-code flow, pagination, retry/rate-limit handling, flattened exports, request logs, and run-summary hashing; synchronize backlog/test/experiment/decision records accordingly.
 - reason: User requested: "build a script that gets the maximum from my spotify (top tracks, saved tracks, playlists) ... and implement and log everything."
-- evidence_basis: `07_implementation/implementation_notes/bl001_bl002_ingestion/export_spotify_max_dataset.py`; `07_implementation/implementation_notes/bl001_bl002_ingestion/spotify_api_ingestion_runbook.md`; `07_implementation/implementation_notes/bl001_bl002_ingestion/spotify_env_template.ps1`; `07_implementation/experiment_log.md` (`EXP-018`); `07_implementation/test_notes.md` (`TC-SPOTIFY-API-001`).
-- affected_components: `00_admin/change_log.md`, `00_admin/decision_log.md`, `07_implementation/backlog.md`, `07_implementation/experiment_log.md`, `07_implementation/test_notes.md`, `07_implementation/implementation_notes/bl001_bl002_ingestion/export_spotify_max_dataset.py`, `07_implementation/implementation_notes/bl001_bl002_ingestion/spotify_api_ingestion_runbook.md`, `07_implementation/implementation_notes/bl001_bl002_ingestion/spotify_env_template.ps1`, `.gitignore`
+- evidence_basis: `07_implementation/implementation_notes/bl001_bl002_ingestion/export_spotify_max_dataset.py`; `07_implementation/implementation_notes/bl001_bl002_ingestion/docs/spotify_api_ingestion_runbook.md`; `07_implementation/implementation_notes/bl001_bl002_ingestion/configs/templates/spotify_env_template.ps1`; `07_implementation/experiment_log.md` (`EXP-018`); `07_implementation/test_notes.md` (`TC-SPOTIFY-API-001`).
+- affected_components: `00_admin/change_log.md`, `00_admin/decision_log.md`, `07_implementation/backlog.md`, `07_implementation/experiment_log.md`, `07_implementation/test_notes.md`, `07_implementation/implementation_notes/bl001_bl002_ingestion/export_spotify_max_dataset.py`, `07_implementation/implementation_notes/bl001_bl002_ingestion/docs/spotify_api_ingestion_runbook.md`, `07_implementation/implementation_notes/bl001_bl002_ingestion/configs/templates/spotify_env_template.ps1`, `.gitignore`
 - impact_assessment: High-positive. Establishes a practical, auditable Spotify API ingestion path with broader coverage than sample CSV parsing alone, while preserving deterministic artifact logging and credential hygiene controls.
 - approval_record: Requested by user in chat on 2026-03-21.
 
@@ -617,7 +617,7 @@ Maintenance snapshot (2026-03-25):
 - change_summary: Harden Spotify API ingestion against provider throttling by adding endpoint-specific batch controls, proactive request-rate throttling, visible 429 telemetry, and fail-fast cooldown handling that writes a structured blocker artifact (`spotify_rate_limit_block.json`).
 - reason: Live authenticated runs repeatedly hit long Spotify `Retry-After` cooldown windows and user requested robust rate-limit and batching behavior.
 - evidence_basis: `07_implementation/implementation_notes/bl001_bl002_ingestion/export_spotify_max_dataset.py` updates (`--batch-size-*`, `--batch-pause-ms`, `--min-request-interval-ms`, `--max-requests-per-minute`, `--max-retry-after-seconds`); blocked run artifact `07_implementation/implementation_notes/bl001_bl002_ingestion/outputs/spotify_api_export/spotify_rate_limit_block.json`; `07_implementation/experiment_log.md` (`EXP-019`); `07_implementation/test_notes.md` (`TC-SPOTIFY-API-001`).
-- affected_components: `00_admin/change_log.md`, `00_admin/decision_log.md`, `00_admin/unresolved_issues.md`, `06_data_and_sources/dataset_registry.md`, `07_implementation/experiment_log.md`, `07_implementation/test_notes.md`, `07_implementation/implementation_notes/bl001_bl002_ingestion/export_spotify_max_dataset.py`, `07_implementation/implementation_notes/bl001_bl002_ingestion/spotify_api_ingestion_runbook.md`
+- affected_components: `00_admin/change_log.md`, `00_admin/decision_log.md`, `00_admin/unresolved_issues.md`, `06_data_and_sources/dataset_registry.md`, `07_implementation/experiment_log.md`, `07_implementation/test_notes.md`, `07_implementation/implementation_notes/bl001_bl002_ingestion/export_spotify_max_dataset.py`, `07_implementation/implementation_notes/bl001_bl002_ingestion/docs/spotify_api_ingestion_runbook.md`
 - impact_assessment: Medium-positive. Improves operational resilience and observability under external API throttling, though full export remains temporarily blocked by provider cooldown.
 - approval_record: Requested by user in chat on 2026-03-21.
 
@@ -751,7 +751,7 @@ Maintenance snapshot (2026-03-25):
 - change_summary: Fix `spotify_env_template.ps1` format to use correct `$env:` prefix on all credential lines so the script's regex parser can read them; add file to `.gitignore` to prevent accidental credential commit.
 - reason: Script's `parse_ps1_env_file()` regex expects `$env:VAR = "value"` format but the file had bare `VAR = "value"` lines, causing credentials to be silently ignored and a missing-credentials error on every run. File was also not gitignored despite containing real Spotify app credentials.
 - evidence_basis: `parse_ps1_env_file()` regex in `export_spotify_max_dataset.py` line 239; confirmed credentials now parsed correctly; `.gitignore` updated with `spotify_env_template.ps1` entry.
-- affected_components: `07_implementation/implementation_notes/bl001_bl002_ingestion/spotify_env_template.ps1`, `.gitignore`
+- affected_components: `07_implementation/implementation_notes/bl001_bl002_ingestion/configs/templates/spotify_env_template.ps1`, `.gitignore`
 - impact_assessment: Medium-positive. Fixes silent credential-load failure; protects real credentials from accidental version-control exposure.
 - approval_record: Diagnosed and fixed during live Spotify ingestion test on 2026-03-21.
 
@@ -1188,7 +1188,7 @@ Maintenance snapshot (2026-03-25):
 - change_summary: Remove unsupported Spotify endpoints (`/recommendations`, top artists) from ingestion/export/API/UI flows; restructure Profile Basis to match import-page shell; prioritize full export data on Profile Basis; add playlist/item visibility safeguards and messaging when no playlist tracks are ingested.
 - reason: User requested removal of unsupported endpoints, asked for Profile Basis structure parity with Import, and raised mismatch concerns when playlists appeared without usable ingested playlist-track rows.
 - evidence_basis: End-to-end code removals in exporter, API server, schema/docs, and website controls; refreshed export runs (`SPOTIFY-EXPORT-20260324-010411-637251`, `SPOTIFY-EXPORT-20260324-011716-200279`); diagnostics checks returned no errors for touched files; local page health checks returned 200 for import/profile pages.
-- affected_components: `07_implementation/implementation_notes/bl001_bl002_ingestion/export_spotify_max_dataset.py`, `07_implementation/implementation_notes/bl001_bl002_ingestion/spotify_mapping.py`, `07_implementation/implementation_notes/bl001_bl002_ingestion/spotify_artifacts.py`, `07_implementation/implementation_notes/bl001_bl002_ingestion/spotify_schema_reference.md`, `07_implementation/setup/website_api_server.py`, `07_implementation/website/import.html`, `07_implementation/website/app.js`, `07_implementation/website/profile_basis.html`, `07_implementation/website/profile_basis.js`, `07_implementation/website/style.css`, `07_implementation/website.md`, `07_implementation/implementation_notes/bl001_bl002_ingestion/outputs/spotify_api_export/*`, `00_admin/change_log.md`
+- affected_components: `07_implementation/implementation_notes/bl001_bl002_ingestion/export_spotify_max_dataset.py`, `07_implementation/implementation_notes/bl001_bl002_ingestion/spotify_mapping.py`, `07_implementation/implementation_notes/bl001_bl002_ingestion/spotify_artifacts.py`, `07_implementation/implementation_notes/bl001_bl002_ingestion/docs/spotify_schema_reference.md`, `07_implementation/setup/website_api_server.py`, `07_implementation/website/import.html`, `07_implementation/website/app.js`, `07_implementation/website/profile_basis.html`, `07_implementation/website/profile_basis.js`, `07_implementation/website/style.css`, `07_implementation/website.md`, `07_implementation/implementation_notes/bl001_bl002_ingestion/outputs/spotify_api_export/*`, `00_admin/change_log.md`
 - impact_assessment: High-positive. Aligns UI/runtime capabilities with supported API behavior, reduces operator confusion around unavailable playlist-item payloads, and improves handoff clarity with explicit visibility rules.
 - approval_record: Requested and iteratively confirmed by user in chat on 2026-03-24.
 
@@ -1220,8 +1220,8 @@ Maintenance snapshot (2026-03-25):
 - status: accepted
 - change_summary: Add a comprehensive BL-001 current-state governance audit log that consolidates completion status, contract scope, evidence links, drift check, risk snapshot, and bounded next actions.
 - reason: User requested confirmation that BL-001 is coherent and up to date, plus a standalone comprehensive log explicitly describing BL-001 current state.
-- evidence_basis: Newly created audit artifact `07_implementation/implementation_notes/bl001_bl002_ingestion/bl001_state_log_2026-03-24.md`, plus reconciled references to `07_implementation/backlog.md`, `06_data_and_sources/schema_notes.md`, and `07_implementation/implementation_notes/bl001_bl002_ingestion/bl001_spotify_input_output_mapping.md`.
-- affected_components: `07_implementation/implementation_notes/bl001_bl002_ingestion/bl001_state_log_2026-03-24.md`, `00_admin/change_log.md`
+- evidence_basis: Newly created audit artifact `07_implementation/implementation_notes/bl001_bl002_ingestion/docs/bl001_state_log_2026-03-24.md`, plus reconciled references to `07_implementation/backlog.md`, `06_data_and_sources/schema_notes.md`, and `07_implementation/implementation_notes/bl001_bl002_ingestion/bl001_spotify_input_output_mapping.md`.
+- affected_components: `07_implementation/implementation_notes/bl001_bl002_ingestion/docs/bl001_state_log_2026-03-24.md`, `00_admin/change_log.md`
 - impact_assessment: Medium-positive. Improves governance traceability and reduces ambiguity about BL-001 current truth without changing runtime behavior.
 - approval_record: Requested and confirmed by user in chat on 2026-03-24.
 
@@ -1231,8 +1231,8 @@ Maintenance snapshot (2026-03-25):
 - status: accepted
 - change_summary: Add a comprehensive BL-002 current-state governance audit log consolidating implementation scope, active runtime evidence, artifact inventory, contract-vs-practice check, and bounded follow-up actions.
 - reason: User requested a BL-002 file matching the comprehensive BL-001 state-log style and asked to formalize it in governance tracking.
-- evidence_basis: Newly created audit artifact `07_implementation/implementation_notes/bl001_bl002_ingestion/bl002_state_log_2026-03-24.md`, reconciled against `07_implementation/backlog.md`, `07_implementation/implementation_notes/bl001_bl002_ingestion/ingest_history_parser.py`, `07_implementation/implementation_notes/bl001_bl002_ingestion/export_spotify_max_dataset.py`, and latest run summary `07_implementation/implementation_notes/bl001_bl002_ingestion/outputs/spotify_api_export/spotify_export_run_summary.json`.
-- affected_components: `07_implementation/implementation_notes/bl001_bl002_ingestion/bl002_state_log_2026-03-24.md`, `00_admin/change_log.md`
+- evidence_basis: Newly created audit artifact `07_implementation/implementation_notes/bl001_bl002_ingestion/docs/bl002_state_log_2026-03-24.md`, reconciled against `07_implementation/backlog.md`, `07_implementation/implementation_notes/bl001_bl002_ingestion/ingest_history_parser.py`, `07_implementation/implementation_notes/bl001_bl002_ingestion/export_spotify_max_dataset.py`, and latest run summary `07_implementation/implementation_notes/bl001_bl002_ingestion/outputs/spotify_api_export/spotify_export_run_summary.json`.
+- affected_components: `07_implementation/implementation_notes/bl001_bl002_ingestion/docs/bl002_state_log_2026-03-24.md`, `00_admin/change_log.md`
 - impact_assessment: Medium-positive. Strengthens BL-002 traceability and confirms stage readiness with current evidence while keeping scope unchanged.
 - approval_record: Requested and confirmed by user in chat on 2026-03-24.
 
@@ -1341,8 +1341,8 @@ Maintenance snapshot (2026-03-25):
 - status: accepted
 - change_summary: Standardize BL-001 through BL-005 state logs into a common comprehensive format, refresh BL-003 and BL-004 evidence to latest DS-001-only reruns, and create missing BL-005 state log with current diagnostics and hashes.
 - reason: User requested that BL-001 to BL-005 logs be similar and comprehensive so stage status and evidence can be audited consistently.
-- evidence_basis: Updated `07_implementation/implementation_notes/bl001_bl002_ingestion/bl001_state_log_2026-03-24.md`, `07_implementation/implementation_notes/bl001_bl002_ingestion/bl002_state_log_2026-03-24.md`, `07_implementation/implementation_notes/bl003_alignment/bl003_state_log_2026-03-24.md`, `07_implementation/implementation_notes/bl004_profile/bl004_state_log_2026-03-24.md`; created `07_implementation/implementation_notes/bl005_retrieval/bl005_state_log_2026-03-24.md`; all entries now include aligned sections (purpose, contract, run evidence, hashes, risks, conclusions).
-- affected_components: `07_implementation/implementation_notes/bl001_bl002_ingestion/bl001_state_log_2026-03-24.md`, `07_implementation/implementation_notes/bl001_bl002_ingestion/bl002_state_log_2026-03-24.md`, `07_implementation/implementation_notes/bl003_alignment/bl003_state_log_2026-03-24.md`, `07_implementation/implementation_notes/bl004_profile/bl004_state_log_2026-03-24.md`, `07_implementation/implementation_notes/bl005_retrieval/bl005_state_log_2026-03-24.md`, `00_admin/change_log.md`
+- evidence_basis: Updated `07_implementation/implementation_notes/bl001_bl002_ingestion/docs/bl001_state_log_2026-03-24.md`, `07_implementation/implementation_notes/bl001_bl002_ingestion/docs/bl002_state_log_2026-03-24.md`, `07_implementation/implementation_notes/bl003_alignment/bl003_state_log_2026-03-24.md`, `07_implementation/implementation_notes/bl004_profile/bl004_state_log_2026-03-24.md`; created `07_implementation/implementation_notes/bl005_retrieval/bl005_state_log_2026-03-24.md`; all entries now include aligned sections (purpose, contract, run evidence, hashes, risks, conclusions).
+- affected_components: `07_implementation/implementation_notes/bl001_bl002_ingestion/docs/bl001_state_log_2026-03-24.md`, `07_implementation/implementation_notes/bl001_bl002_ingestion/docs/bl002_state_log_2026-03-24.md`, `07_implementation/implementation_notes/bl003_alignment/bl003_state_log_2026-03-24.md`, `07_implementation/implementation_notes/bl004_profile/bl004_state_log_2026-03-24.md`, `07_implementation/implementation_notes/bl005_retrieval/bl005_state_log_2026-03-24.md`, `00_admin/change_log.md`
 - impact_assessment: Medium-to-high positive. Improves governance readability and reduces audit friction by making BL-stage state evidence structure uniform.
 - approval_record: Requested by user in chat on 2026-03-24.
 
@@ -1352,8 +1352,8 @@ Maintenance snapshot (2026-03-25):
 - status: accepted
 - change_summary: Reclassify BL-003 unmatched-event coverage and BL-002 external API dependency items as accepted operational constraints in stage state logs, and keep focus on remaining active issues.
 - reason: User explicitly confirmed that DS-001 coverage-driven unmatched Spotify events are expected and that BL-002 external dependency risk is acceptable.
-- evidence_basis: Updated risk/constraint wording in `07_implementation/implementation_notes/bl003_alignment/bl003_state_log_2026-03-24.md` and `07_implementation/implementation_notes/bl001_bl002_ingestion/bl002_state_log_2026-03-24.md` to mark both items as accepted constraints rather than unresolved defects.
-- affected_components: `07_implementation/implementation_notes/bl003_alignment/bl003_state_log_2026-03-24.md`, `07_implementation/implementation_notes/bl001_bl002_ingestion/bl002_state_log_2026-03-24.md`, `00_admin/change_log.md`
+- evidence_basis: Updated risk/constraint wording in `07_implementation/implementation_notes/bl003_alignment/bl003_state_log_2026-03-24.md` and `07_implementation/implementation_notes/bl001_bl002_ingestion/docs/bl002_state_log_2026-03-24.md` to mark both items as accepted constraints rather than unresolved defects.
+- affected_components: `07_implementation/implementation_notes/bl003_alignment/bl003_state_log_2026-03-24.md`, `07_implementation/implementation_notes/bl001_bl002_ingestion/docs/bl002_state_log_2026-03-24.md`, `00_admin/change_log.md`
 - impact_assessment: Medium-positive. Reduces governance ambiguity by separating accepted constraints from active remediation items.
 - approval_record: Confirmed by user in chat on 2026-03-24.
 

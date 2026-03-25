@@ -1,4 +1,4 @@
-﻿# Unresolved Issues
+# Unresolved Issues
 
 Last updated: 2026-03-25 15:20 UTC
 
@@ -25,19 +25,19 @@ Active-set sync note (2026-03-25 15:20 UTC): UI-003 remains the only open unreso
 - UI-010 (2026-03-25): Control-evaluation artifacts risk drift from current live data baselines.
 	- resolution: Closed. BL-010 and BL-011 evidence was regenerated after the lead-genre fix, freshness expectations were recorded in test notes, and a dedicated quality check now fails when BL-010/BL-011 evidence no longer matches the current active baseline contracts.
 	- evidence:
-		1. `07_implementation/implementation_notes/reproducibility/run_bl010_reproducibility_check.py` defaults to active pipeline outputs unless legacy mode is explicitly enabled.
-		2. `07_implementation/implementation_notes/controllability/run_bl011_controllability_check.py` defaults to active pipeline outputs unless legacy mode is explicitly enabled.
+		1. `07_implementation/implementation_notes/bl010_reproducibility/run_bl010_reproducibility_check.py` defaults to active pipeline outputs unless legacy mode is explicitly enabled.
+		2. `07_implementation/implementation_notes/bl011_controllability/run_bl011_controllability_check.py` defaults to active pipeline outputs unless legacy mode is explicitly enabled.
 		3. BL-010 reproducibility refresh passed (`BL010-REPRO-20260325-020749`, `deterministic_match=true`, `fixed_input_source=active_pipeline_outputs`).
 		4. BL-011 controllability refresh passed (`BL011-CTRL-20260325-020828`, `all_scenarios_repeat_consistent=true`, `all_variant_shifts_observable=true`, `status=pass`).
-		5. `07_implementation/implementation_notes/quality/check_bl010_bl011_freshness.py` passed on 2026-03-25 (`BL-FRESHNESS-20260325-021237`, `9/9` checks).
-		6. `07_implementation/implementation_notes/quality/run_active_freshness_suite.py` passed on 2026-03-25 (`BL-FRESHNESS-SUITE-20260325-021510`, `6/6` checks), consolidating active freshness checks for BL-013, BL-014, and BL-010/BL-011.
+		5. `07_implementation/implementation_notes/bl014_quality/check_bl010_bl011_freshness.py` passed on 2026-03-25 (`BL-FRESHNESS-20260325-021237`, `9/9` checks).
+		6. `07_implementation/implementation_notes/bl014_quality/run_active_freshness_suite.py` passed on 2026-03-25 (`BL-FRESHNESS-SUITE-20260325-021510`, `6/6` checks), consolidating active freshness checks for BL-013, BL-014, and BL-010/BL-011.
 
 - UI-012 (2026-03-25): Lead-genre semantic contract was inconsistent across BL-004, BL-005, and BL-006.
 	- resolution: Closed. BL-004, BL-005, and BL-006 now use one canonical lead-genre rule: prefer the first `genres` label and only fall back to the first `tags` label when no genre is present.
 	- evidence:
-		1. `07_implementation/implementation_notes/profile/build_bl004_preference_profile.py` now resolves lead genre with the canonical genre-first rule.
-		2. `07_implementation/implementation_notes/retrieval/build_bl005_candidate_filter.py` now uses the same genre-first rule for `lead_genre_match`.
-		3. `07_implementation/implementation_notes/scoring/build_bl006_scored_candidates.py` now uses the same genre-first rule for `lead_genre_similarity`.
+		1. `07_implementation/implementation_notes/bl004_profile/build_bl004_preference_profile.py` now resolves lead genre with the canonical genre-first rule.
+		2. `07_implementation/implementation_notes/bl005_retrieval/build_bl005_candidate_filter.py` now uses the same genre-first rule for `lead_genre_match`.
+		3. `07_implementation/implementation_notes/bl006_scoring/build_bl006_scored_candidates.py` now uses the same genre-first rule for `lead_genre_similarity`.
 		4. BL-013 canonical rerun passed (`BL013-ENTRYPOINT-20260325-020526-881730`).
 		5. BL-014 sanity suite passed (`BL014-SANITY-20260325-020553-870468`, `21/21` checks).
 
@@ -51,8 +51,8 @@ Active-set sync note (2026-03-25 15:20 UTC): UI-003 remains the only open unreso
 - UI-009 (2026-03-25): BL-013 stale-seed false-pass risk under run-config execution.
 	- resolution: Implemented a BL-003 freshness guard in BL-013. When `--run-config` is supplied without `--refresh-seed`, BL-013 now fails fast on seed-contract mismatch and instructs the operator to refresh BL-003.
 	- evidence:
-		1. `07_implementation/implementation_notes/entrypoint/run_bl013_pipeline_entrypoint.py` includes `BL-003-FRESHNESS-GUARD` preflight validation.
-		2. `07_implementation/implementation_notes/alignment/build_bl003_ds001_spotify_seed_table.py` now emits `inputs.seed_contract` + contract hash for comparison.
+		1. `07_implementation/implementation_notes/bl013_entrypoint/run_bl013_pipeline_entrypoint.py` includes `BL-003-FRESHNESS-GUARD` preflight validation.
+		2. `07_implementation/implementation_notes/bl003_alignment/build_bl003_ds001_spotify_seed_table.py` now emits `inputs.seed_contract` + contract hash for comparison.
 		3. Validation run on 2026-03-25: fail without refresh, pass with `--refresh-seed`.
 
 - UI-008 (2026-03-22): Music4All governance-closure tracking item.
@@ -69,7 +69,7 @@ Active-set sync note (2026-03-25 15:20 UTC): UI-003 remains the only open unreso
 
 - UI-007 (2026-03-21): Spotify API ingestion was temporarily blocked by provider-side long cooldown (`HTTP 429`) on `/me`.
 	- resolution: Subsequent authenticated export completed successfully (run_id `SPOTIFY-EXPORT-20260321-192533-881299`), generating full BL-002 artifacts and enabling real-data BL-020 execution.
-	- evidence: `07_implementation/implementation_notes/ingestion/outputs/spotify_api_export/spotify_export_run_summary.json`; `07_implementation/experiment_log.md` (`EXP-022`); `00_admin/change_log.md` (`C-071`).
+	- evidence: `07_implementation/implementation_notes/bl001_bl002_ingestion/outputs/spotify_api_export/spotify_export_run_summary.json`; `07_implementation/experiment_log.md` (`EXP-022`); `00_admin/change_log.md` (`C-071`).
 
 ## Resolved (Historical)
 
@@ -83,7 +83,7 @@ Active-set sync note (2026-03-25 15:20 UTC): UI-003 remains the only open unreso
 
 - UI-004 (2026-03-19): Candidate corpus change review between Music4All-Onion and `MSD subset + Last.fm Tag Dataset + MusicBrainz mapping`.
 	- resolution: BL-018 feasibility review completed. Result: do not switch corpus; retain MSD-based option as fallback only.
-	- evidence: `07_implementation/implementation_notes/data_layer/candidate_corpus_feasibility_review_2026-03-19.md`; `00_admin/decision_log.md` (`D-008`).
+	- evidence: `07_implementation/implementation_notes/bl000_data_layer/candidate_corpus_feasibility_review_2026-03-19.md`; `00_admin/decision_log.md` (`D-008`).
 
 - UI-001 (2026-03-15): Parser mismatch between author-year Chapter 2 style and key-based claim extractor.
 	- resolution: Extended `09_quality_control/run_ch2_verbatim_audit.py` to map author-year citations to source-index keys and regenerate non-zero claim extraction.

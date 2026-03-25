@@ -19,7 +19,7 @@ from pathlib import Path
 
 def test_cache_database_exists():
     """✓ Cache database file exists"""
-    cache_db = Path(__file__).parent / "implementation_notes/ingestion/outputs/spotify_api_export/spotify_resilience_cache.sqlite"
+    cache_db = Path(__file__).parent / "implementation_notes/bl001_bl002_ingestion/outputs/spotify_api_export/spotify_resilience_cache.sqlite"
     
     if cache_db.exists():
         print(f"✓ Cache database exists: {cache_db}")
@@ -133,7 +133,7 @@ def test_job_progress(cache_db_path):
 
 def test_export_summary():
     """✓ Export summary mentions caching"""
-    summary_path = Path(__file__).parent / "implementation_notes/ingestion/outputs/spotify_api_export/spotify_export_run_summary.json"
+    summary_path = Path(__file__).parent / "implementation_notes/bl001_bl002_ingestion/outputs/spotify_api_export/spotify_export_run_summary.json"
     
     if not summary_path.exists():
         print(f"\n✗ Summary file not found: {summary_path}")

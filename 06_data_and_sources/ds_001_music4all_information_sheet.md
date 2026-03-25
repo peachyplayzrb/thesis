@@ -327,19 +327,19 @@ This gives you a compact, thesis-appropriate candidate dataset without losing ra
 The DS-001 working-layer build assets are now present in the repository:
 
 - Working schema spec: `06_data_and_sources/ds_001_prepared_working_schema.md`
-- Build script: `07_implementation/implementation_notes/data_layer/build_ds001_working_dataset.py`
-- DS-001 to Spotify join plan: `07_implementation/implementation_notes/alignment/ds001_spotify_join_plan.md`
+- Build script: `07_implementation/implementation_notes/bl000_data_layer/build_ds001_working_dataset.py`
+- DS-001 to Spotify join plan: `07_implementation/implementation_notes/bl003_alignment/ds001_spotify_join_plan.md`
 
 Run command from repo root:
 
 ```powershell
-".venv/Scripts/python.exe" "07_implementation/implementation_notes/data_layer/build_ds001_working_dataset.py"
+".venv/Scripts/python.exe" "07_implementation/implementation_notes/bl000_data_layer/build_ds001_working_dataset.py"
 ```
 
 Generated outputs:
 
-- `07_implementation/implementation_notes/data_layer/outputs/ds001_working_candidate_dataset.csv`
-- `07_implementation/implementation_notes/data_layer/outputs/ds001_working_candidate_dataset_manifest.json`
+- `07_implementation/implementation_notes/bl000_data_layer/outputs/ds001_working_candidate_dataset.csv`
+- `07_implementation/implementation_notes/bl000_data_layer/outputs/ds001_working_candidate_dataset_manifest.json`
 
 Latest run snapshot (2026-03-24):
 

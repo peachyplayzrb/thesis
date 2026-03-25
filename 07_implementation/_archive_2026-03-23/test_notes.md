@@ -1,4 +1,4 @@
-﻿# Test Notes
+# Test Notes
 
 ## Test Case TC-001: Ingestion Schema Validation (MVP)
 
@@ -29,7 +29,7 @@
 
 ### Actual Result
 - Status: pass
-- Run evidence: `07_implementation/implementation_notes/ingestion/ingest_history_parser.py` + `07_implementation/implementation_notes/run_outputs/tc001_validation_summary.json`
+- Run evidence: `07_implementation/implementation_notes/bl001_bl002_ingestion/ingest_history_parser.py` + `07_implementation/implementation_notes/run_outputs/tc001_validation_summary.json`
 - Observed metrics:
 	- `ingest_run_id=BL002-INGEST-C87E2315871F`
 	- `rows_total=7`
@@ -123,7 +123,7 @@
 - Candidate stub:
 	- `07_implementation/implementation_notes/test_assets/bl016_candidate_stub.csv`
 - Output directory:
-	- `07_implementation/implementation_notes/profile/outputs/`
+	- `07_implementation/implementation_notes/bl004_profile/outputs/`
 
 ### Expected Output
 - All 11 events match candidate rows.
@@ -170,9 +170,9 @@
 
 ### Inputs
 - Preference profile:
-	- `07_implementation/implementation_notes/profile/outputs/bl004_preference_profile.json`
+	- `07_implementation/implementation_notes/bl004_profile/outputs/bl004_preference_profile.json`
 - Seed trace:
-	- `07_implementation/implementation_notes/profile/outputs/bl004_seed_trace.csv`
+	- `07_implementation/implementation_notes/bl004_profile/outputs/bl004_seed_trace.csv`
 - Candidate stub:
 	- `07_implementation/implementation_notes/test_assets/bl016_candidate_stub.csv`
 
@@ -210,11 +210,11 @@
 
 ### Inputs
 - Preference profile:
-	- `07_implementation/implementation_notes/profile/outputs/bl004_preference_profile.json`
+	- `07_implementation/implementation_notes/bl004_profile/outputs/bl004_preference_profile.json`
 - Filtered candidates:
-	- `07_implementation/implementation_notes/retrieval/outputs/bl005_filtered_candidates.csv`
+	- `07_implementation/implementation_notes/bl005_retrieval/outputs/bl005_filtered_candidates.csv`
 - Output directory:
-	- `07_implementation/implementation_notes/scoring/outputs/`
+	- `07_implementation/implementation_notes/bl006_scoring/outputs/`
 
 ### Expected Output
 - All 42 BL-005 retained candidates are scored.
@@ -254,9 +254,9 @@
 
 ### Inputs
 - Scored candidates:
-	- `07_implementation/implementation_notes/scoring/outputs/bl006_scored_candidates.csv`
+	- `07_implementation/implementation_notes/bl006_scoring/outputs/bl006_scored_candidates.csv`
 - Output directory:
-	- `07_implementation/implementation_notes/playlist/outputs/`
+	- `07_implementation/implementation_notes/bl007_playlist/outputs/`
 
 ### Expected Output
 - Playlist contains exactly `target_size=10` tracks.
@@ -312,7 +312,7 @@
 	- rank=10 xr1HkbplUycZcEZX indie rock 0.602369
 	- rank=12 CiLFjUJvYWGmyr2d indie rock 0.583893
 - R4 exclusion boundary: rank=20 (B7SJXdcP0HhDMyfm, indie rock, 0.507858) was first track cut by length cap
-- script artifact path: `07_implementation/implementation_notes/playlist/build_bl007_playlist.py`
+- script artifact path: `07_implementation/implementation_notes/bl007_playlist/build_bl007_playlist.py`
 
 ## Test Case TC-EXPLAIN-001: Transparency Explanation Payloads
 
@@ -322,13 +322,13 @@
 
 ### Inputs
 - Scored candidates:
-	- `07_implementation/implementation_notes/scoring/outputs/bl006_scored_candidates.csv`
+	- `07_implementation/implementation_notes/bl006_scoring/outputs/bl006_scored_candidates.csv`
 - Playlist:
-	- `07_implementation/implementation_notes/playlist/outputs/bl007_playlist.json`
+	- `07_implementation/implementation_notes/bl007_playlist/outputs/bl007_playlist.json`
 - Assembly trace:
-	- `07_implementation/implementation_notes/playlist/outputs/bl007_assembly_trace.csv`
+	- `07_implementation/implementation_notes/bl007_playlist/outputs/bl007_assembly_trace.csv`
 - Output directory:
-	- `07_implementation/implementation_notes/transparency/outputs/`
+	- `07_implementation/implementation_notes/bl008_transparency/outputs/`
 
 ### Expected Output
 - One payload per playlist track (10 total).
@@ -363,7 +363,7 @@
 	- `bl008_explanation_summary.json=748 bytes`
 	- `sha256.payloads=C9AA6D930D11295E458C6C5B516AE9FFDF8AD2136E6057AD8A181C1BC0B50F24`
 	- `sha256.summary=49CAC879496E1AEEA4821BF97A5FE09FE30FC16DEDBA629E4DD3861A7D0A431E`
-- script artifact path: `07_implementation/implementation_notes/transparency/build_bl008_explanation_payloads.py`
+- script artifact path: `07_implementation/implementation_notes/bl008_transparency/build_bl008_explanation_payloads.py`
 
 ## Test Case TC-OBS-001: Run-Level Observability Logging
 
@@ -373,19 +373,19 @@
 
 ### Inputs
 - Data-layer coverage report:
-	- `07_implementation/implementation_notes/data_layer/outputs/onion_join_coverage_report.json`
+	- `07_implementation/implementation_notes/bl000_data_layer/outputs/onion_join_coverage_report.json`
 - Bootstrap manifest and inputs:
 	- `07_implementation/implementation_notes/test_assets/bl016_asset_manifest.json`
 	- `07_implementation/implementation_notes/test_assets/bl016_synthetic_aligned_events.jsonl`
 	- `07_implementation/implementation_notes/test_assets/bl016_candidate_stub.csv`
 - Upstream stage outputs:
-	- `07_implementation/implementation_notes/profile/outputs/bl004_preference_profile.json`
-	- `07_implementation/implementation_notes/retrieval/outputs/bl005_candidate_diagnostics.json`
-	- `07_implementation/implementation_notes/scoring/outputs/bl006_score_summary.json`
-	- `07_implementation/implementation_notes/playlist/outputs/bl007_assembly_report.json`
-	- `07_implementation/implementation_notes/transparency/outputs/bl008_explanation_summary.json`
+	- `07_implementation/implementation_notes/bl004_profile/outputs/bl004_preference_profile.json`
+	- `07_implementation/implementation_notes/bl005_retrieval/outputs/bl005_candidate_diagnostics.json`
+	- `07_implementation/implementation_notes/bl006_scoring/outputs/bl006_score_summary.json`
+	- `07_implementation/implementation_notes/bl007_playlist/outputs/bl007_assembly_report.json`
+	- `07_implementation/implementation_notes/bl008_transparency/outputs/bl008_explanation_summary.json`
 - Output directory:
-	- `07_implementation/implementation_notes/observability/outputs/`
+	- `07_implementation/implementation_notes/bl009_observability/outputs/`
 
 ### Expected Output
 - One canonical JSON run log with required top-level sections.
@@ -426,7 +426,7 @@
 	- CSV `playlist_sha256=8B53B03D23F241EB102AD48E98395C34140356BCE3640348F2AF4C7EC44009FB` matches BL-007
 	- CSV `explanation_payloads_sha256=C9AA6D930D11295E458C6C5B516AE9FFDF8AD2136E6057AD8A181C1BC0B50F24` matches BL-008
 	- CSV `observability_log_sha256` matches actual JSON log hash
-- script artifact path: `07_implementation/implementation_notes/observability/build_bl009_observability_log.py`
+- script artifact path: `07_implementation/implementation_notes/bl009_observability/build_bl009_observability_log.py`
 
 ## Test Case TC-REPRO-001: Bootstrap Pipeline Replay Determinism
 
@@ -439,12 +439,12 @@
 	- `07_implementation/implementation_notes/test_assets/bl016_synthetic_aligned_events.jsonl`
 	- `07_implementation/implementation_notes/test_assets/bl016_candidate_stub.csv`
 	- `07_implementation/implementation_notes/test_assets/bl016_asset_manifest.json`
-	- `07_implementation/implementation_notes/data_layer/outputs/onion_join_coverage_report.json`
+	- `07_implementation/implementation_notes/bl000_data_layer/outputs/onion_join_coverage_report.json`
 - Config artifact:
-	- `07_implementation/implementation_notes/reproducibility/outputs/bl010_reproducibility_config_snapshot.json`
+	- `07_implementation/implementation_notes/bl010_reproducibility/outputs/bl010_reproducibility_config_snapshot.json`
 	- `config_hash=B259CD10A428DD8DC5CF2EA8255807D28B6E771BDEDC24C32733982A6D47386F`
 - Replay runner:
-	- `07_implementation/implementation_notes/reproducibility/run_bl010_reproducibility_check.py`
+	- `07_implementation/implementation_notes/bl010_reproducibility/run_bl010_reproducibility_check.py`
 
 ### Expected Output
 - Three archived replay directories with BL-004 to BL-009 outputs.
@@ -488,7 +488,7 @@
 	- replay matrix rows 1 to 3 have different raw hashes for `bl007_playlist.json`, `bl008_explanation_payloads.json`, and `bl009_run_observability_log.json`, which matches the report note about run-specific metadata volatility
 	- archived replay directories exist for `replay_01`, `replay_02`, and `replay_03`
 	- stage run ids are unique after the BL-004 to BL-009 run-id precision fix
-- script artifact path: `07_implementation/implementation_notes/reproducibility/run_bl010_reproducibility_check.py`
+- script artifact path: `07_implementation/implementation_notes/bl010_reproducibility/run_bl010_reproducibility_check.py`
 
 ## Reusable Evaluation Templates (Chapter 4)
 
@@ -660,7 +660,7 @@ Use these as the next priority run set. Keep artifacts under `07_implementation/
 	- playlist removed tracks: `j8qrlsfqWAPqzqD9`, `0X9aluHlz6iKWBMR`, `ql2191d6uNCVM932`
 	- mean absolute rank shift across common candidates = `2.619`
 	- Result: pass. Influence-track removal produced a visible and explainable profile/ranking/playlist shift.
-	- Run evidence: `07_implementation/experiment_log.md` `EXP-013`; archived scenario `07_implementation/implementation_notes/controllability/outputs/scenarios/no_influence_tracks/`
+	- Run evidence: `07_implementation/experiment_log.md` `EXP-013`; archived scenario `07_implementation/implementation_notes/bl011_controllability/outputs/scenarios/no_influence_tracks/`
 
 ## Test Case TC-006: Feature Weight Sensitivity (EP-CTRL-002)
 
@@ -685,7 +685,7 @@ Use these as the next priority run set. Keep artifacts under `07_implementation/
 	- mean component delta for `V_mean` = `+0.038908`
 	- mean absolute rank shift across common candidates = `1.048`
 	- Result: pass. Raising valence emphasis increased valence contribution and changed score ordering in the expected direction.
-	- Run evidence: `07_implementation/experiment_log.md` `EXP-013`; archived scenario `07_implementation/implementation_notes/controllability/outputs/scenarios/valence_weight_up/`
+	- Run evidence: `07_implementation/experiment_log.md` `EXP-013`; archived scenario `07_implementation/implementation_notes/bl011_controllability/outputs/scenarios/valence_weight_up/`
 
 ## Test Case TC-007: Candidate Threshold Sensitivity (EP-CTRL-003)
 
@@ -706,7 +706,7 @@ Use these as the next priority run set. Keep artifacts under `07_implementation/
 	- looser thresholds (`1.25x` baseline numeric thresholds) increased the candidate pool from `42` to `44` (`delta=+2`) and produced a mean absolute rank shift of `0.024`
 	- top-10 overlap remained `10/10` and playlist overlap remained `10/10` for both threshold variants
 	- Result: pass with bounded effect. Threshold direction changed the candidate pool exactly as expected, but downstream playlist membership stayed fixed under the current synthetic bootstrap candidate stub.
-	- Run evidence: `07_implementation/experiment_log.md` `EXP-013`; archived scenarios `07_implementation/implementation_notes/controllability/outputs/scenarios/stricter_thresholds/` and `.../looser_thresholds/`
+	- Run evidence: `07_implementation/experiment_log.md` `EXP-013`; archived scenarios `07_implementation/implementation_notes/bl011_controllability/outputs/scenarios/stricter_thresholds/` and `.../looser_thresholds/`
 
 ## Test Case TC-008: Playlist Rule Compliance (EP-RULE-001 / EP-RULE-002)
 
@@ -794,8 +794,8 @@ Use these as the next priority run set. Keep artifacts under `07_implementation/
 - Evidence sources:
 	- `07_implementation/experiment_log.md` (`EXP-012`, `EXP-013`, `EXP-014`)
 	- `07_implementation/test_notes.md` (`TC-REPRO-001`, `TC-005`, `TC-006`, `TC-007`)
-	- `07_implementation/implementation_notes/reproducibility/outputs/bl010_reproducibility_report.json`
-	- `07_implementation/implementation_notes/controllability/outputs/bl011_controllability_report.json`
+	- `07_implementation/implementation_notes/bl010_reproducibility/outputs/bl010_reproducibility_report.json`
+	- `07_implementation/implementation_notes/bl011_controllability/outputs/bl011_controllability_report.json`
 - Target documentation artifacts:
 	- `02_foundation/limitations.md`
 	- `08_writing/chapter5.md`
@@ -828,7 +828,7 @@ Use these as the next priority run set. Keep artifacts under `07_implementation/
 
 ### Inputs
 - Builder script:
-	- `07_implementation/implementation_notes/data_layer/build_bl019_ds002_dataset.py`
+	- `07_implementation/implementation_notes/bl000_data_layer/build_bl019_ds002_dataset.py`
 - Source data:
 	- `06_data_and_sources/millionsongsubset.tar.gz` (10000 HDF5 files)
 	- `06_data_and_sources/track_metadata.db` (1000000 rows, `songs` table)
@@ -879,11 +879,11 @@ Use these as the next priority run set. Keep artifacts under `07_implementation/
 
 ### Inputs
 - Entrypoint script:
-	- `07_implementation/implementation_notes/entrypoint/run_bl013_pipeline_entrypoint.py`
+	- `07_implementation/implementation_notes/bl013_entrypoint/run_bl013_pipeline_entrypoint.py`
 - Command documentation:
-	- `07_implementation/implementation_notes/entrypoint/bl013_run_command.md`
+	- `07_implementation/implementation_notes/bl013_entrypoint/bl013_run_command.md`
 - Execution command:
-	- `python 07_implementation/implementation_notes/entrypoint/run_bl013_pipeline_entrypoint.py`
+	- `python 07_implementation/implementation_notes/bl013_entrypoint/run_bl013_pipeline_entrypoint.py`
 
 ### Expected Output
 - Two successful orchestration summaries from repeated default runs.
@@ -921,16 +921,16 @@ Use these as the next priority run set. Keep artifacts under `07_implementation/
 
 ### Inputs
 - Export script:
-	- `07_implementation/implementation_notes/ingestion/export_spotify_max_dataset.py`
+	- `07_implementation/implementation_notes/bl001_bl002_ingestion/export_spotify_max_dataset.py`
 - Runbook:
-	- `07_implementation/implementation_notes/ingestion/spotify_api_ingestion_runbook.md`
+	- `07_implementation/implementation_notes/bl001_bl002_ingestion/docs/spotify_api_ingestion_runbook.md`
 - Config:
 	- scopes: `user-top-read user-library-read playlist-read-private playlist-read-collaborative user-read-private`
 	- redirect URI: `http://127.0.0.1:8001/spotify/auth/callback`
 
 ### Expected Output
 - OAuth authorization succeeds with requested scopes.
-- Export artifacts are produced under `07_implementation/implementation_notes/ingestion/outputs/spotify_api_export/`.
+- Export artifacts are produced under `07_implementation/implementation_notes/bl001_bl002_ingestion/outputs/spotify_api_export/`.
 - Summary includes endpoint counts and artifact hashes.
 
 ### Pass Criteria
@@ -940,7 +940,7 @@ Use these as the next priority run set. Keep artifacts under `07_implementation/
 
 ### Actual Result
 - Status: pass
-- Run evidence: `07_implementation/implementation_notes/ingestion/outputs/spotify_api_export/spotify_export_run_summary.json` (run_id=`SPOTIFY-EXPORT-20260321-192533-881299`)
+- Run evidence: `07_implementation/implementation_notes/bl001_bl002_ingestion/outputs/spotify_api_export/spotify_export_run_summary.json` (run_id=`SPOTIFY-EXPORT-20260321-192533-881299`)
 - Observed metrics:
 	- `oauth.scope_granted=playlist-read-private|playlist-read-collaborative|user-library-read|user-top-read|user-read-private`
 	- `top_tracks_short_term=598`
@@ -954,15 +954,15 @@ Use these as the next priority run set. Keep artifacts under `07_implementation/
 	- `request_log_present=yes`
 	- `resilience_cache_enabled=yes`
 - Output artifacts confirmed:
-	- `07_implementation/implementation_notes/ingestion/outputs/spotify_api_export/spotify_profile.json`
-	- `07_implementation/implementation_notes/ingestion/outputs/spotify_api_export/spotify_top_tracks_by_range.json`
-	- `07_implementation/implementation_notes/ingestion/outputs/spotify_api_export/spotify_top_tracks_flat.csv`
-	- `07_implementation/implementation_notes/ingestion/outputs/spotify_api_export/spotify_saved_tracks_flat.csv`
-	- `07_implementation/implementation_notes/ingestion/outputs/spotify_api_export/spotify_playlists.json`
-	- `07_implementation/implementation_notes/ingestion/outputs/spotify_api_export/spotify_playlists_flat.csv`
-	- `07_implementation/implementation_notes/ingestion/outputs/spotify_api_export/spotify_playlist_items_flat.csv`
-	- `07_implementation/implementation_notes/ingestion/outputs/spotify_api_export/spotify_playlist_items_flat.jsonl`
-	- `07_implementation/implementation_notes/ingestion/outputs/spotify_api_export/spotify_request_log.jsonl`
+	- `07_implementation/implementation_notes/bl001_bl002_ingestion/outputs/spotify_api_export/spotify_profile.json`
+	- `07_implementation/implementation_notes/bl001_bl002_ingestion/outputs/spotify_api_export/spotify_top_tracks_by_range.json`
+	- `07_implementation/implementation_notes/bl001_bl002_ingestion/outputs/spotify_api_export/spotify_top_tracks_flat.csv`
+	- `07_implementation/implementation_notes/bl001_bl002_ingestion/outputs/spotify_api_export/spotify_saved_tracks_flat.csv`
+	- `07_implementation/implementation_notes/bl001_bl002_ingestion/outputs/spotify_api_export/spotify_playlists.json`
+	- `07_implementation/implementation_notes/bl001_bl002_ingestion/outputs/spotify_api_export/spotify_playlists_flat.csv`
+	- `07_implementation/implementation_notes/bl001_bl002_ingestion/outputs/spotify_api_export/spotify_playlist_items_flat.csv`
+	- `07_implementation/implementation_notes/bl001_bl002_ingestion/outputs/spotify_api_export/spotify_playlist_items_flat.jsonl`
+	- `07_implementation/implementation_notes/bl001_bl002_ingestion/outputs/spotify_api_export/spotify_request_log.jsonl`
 
 ---
 
@@ -974,17 +974,17 @@ Use these as the next priority run set. Keep artifacts under `07_implementation/
 
 ### Inputs
 - Real ingestion artifacts:
-	- `07_implementation/implementation_notes/ingestion/outputs/spotify_api_export/spotify_export_run_summary.json`
-	- `07_implementation/implementation_notes/ingestion/outputs/spotify_api_export/spotify_top_tracks_flat.csv`
-	- `07_implementation/implementation_notes/ingestion/outputs/spotify_api_export/spotify_saved_tracks_flat.csv`
+	- `07_implementation/implementation_notes/bl001_bl002_ingestion/outputs/spotify_api_export/spotify_export_run_summary.json`
+	- `07_implementation/implementation_notes/bl001_bl002_ingestion/outputs/spotify_api_export/spotify_top_tracks_flat.csv`
+	- `07_implementation/implementation_notes/bl001_bl002_ingestion/outputs/spotify_api_export/spotify_saved_tracks_flat.csv`
 - Active candidate corpus:
-	- `07_implementation/implementation_notes/data_layer/outputs/bl019_ds002_integrated_candidate_dataset.csv`
+	- `07_implementation/implementation_notes/bl000_data_layer/outputs/bl019_ds002_integrated_candidate_dataset.csv`
 - BL-020 code under test:
-	- `07_implementation/implementation_notes/alignment/bl003_align_spotify_api_to_ds002.py`
-	- `07_implementation/implementation_notes/profile/build_bl004_preference_profile.py`
-	- `07_implementation/implementation_notes/retrieval/build_bl005_candidate_filter.py`
-	- `07_implementation/implementation_notes/scoring/build_bl006_scored_candidates.py`
-	- `07_implementation/implementation_notes/transparency/build_bl008_explanation_payloads.py`
+	- `07_implementation/implementation_notes/bl003_alignment/bl003_align_spotify_api_to_ds002.py`
+	- `07_implementation/implementation_notes/bl004_profile/build_bl004_preference_profile.py`
+	- `07_implementation/implementation_notes/bl005_retrieval/build_bl005_candidate_filter.py`
+	- `07_implementation/implementation_notes/bl006_scoring/build_bl006_scored_candidates.py`
+	- `07_implementation/implementation_notes/bl008_transparency/build_bl008_explanation_payloads.py`
 
 ### Expected Output
 - Either:
@@ -1025,11 +1025,11 @@ Use these as the next priority run set. Keep artifacts under `07_implementation/
 
 ### Inputs
 - Script under test:
-	- `07_implementation/implementation_notes/alignment/bl003_align_spotify_api_to_ds002.py`
+	- `07_implementation/implementation_notes/bl003_alignment/bl003_align_spotify_api_to_ds002.py`
 - Data inputs:
-	- `07_implementation/implementation_notes/ingestion/outputs/spotify_api_export/spotify_top_tracks_flat.csv`
-	- `07_implementation/implementation_notes/ingestion/outputs/spotify_api_export/spotify_saved_tracks_flat.csv`
-	- existing `07_implementation/implementation_notes/ingestion/outputs/bl020_lastfm_tag_cache.json`
+	- `07_implementation/implementation_notes/bl001_bl002_ingestion/outputs/spotify_api_export/spotify_top_tracks_flat.csv`
+	- `07_implementation/implementation_notes/bl001_bl002_ingestion/outputs/spotify_api_export/spotify_saved_tracks_flat.csv`
+	- existing `07_implementation/implementation_notes/bl001_bl002_ingestion/outputs/bl020_lastfm_tag_cache.json`
 - Runtime dependencies:
 	- Last.fm API key
 	- Last.fm methods `track.getTopTags`, `track.search`, `artist.getTopTags`
@@ -1068,7 +1068,7 @@ Use these as the next priority run set. Keep artifacts under `07_implementation/
 
 ### Inputs
 - Baseline export artifacts:
-	- `07_implementation/implementation_notes/ingestion/outputs/spotify_api_export/`
+	- `07_implementation/implementation_notes/bl001_bl002_ingestion/outputs/spotify_api_export/`
 - Planned control presets:
 	- `preset_fast_top_tracks_only`
 	- `preset_balanced_top_plus_saved`
@@ -1098,14 +1098,14 @@ Use these as the next priority run set. Keep artifacts under `07_implementation/
 
 ### Inputs
 - Last.fm cache snapshot:
-	- `07_implementation/implementation_notes/ingestion/outputs/bl020_lastfm_tag_cache.json`
+	- `07_implementation/implementation_notes/bl001_bl002_ingestion/outputs/bl020_lastfm_tag_cache.json`
 - Spotify export inputs:
-	- `07_implementation/implementation_notes/ingestion/outputs/spotify_api_export/spotify_top_tracks_flat.csv`
-	- `07_implementation/implementation_notes/ingestion/outputs/spotify_api_export/spotify_saved_tracks_flat.csv`
+	- `07_implementation/implementation_notes/bl001_bl002_ingestion/outputs/spotify_api_export/spotify_top_tracks_flat.csv`
+	- `07_implementation/implementation_notes/bl001_bl002_ingestion/outputs/spotify_api_export/spotify_saved_tracks_flat.csv`
 - Script paths:
-	- `07_implementation/implementation_notes/alignment/build_bl003_partial_from_cache.py`
-	- `07_implementation/implementation_notes/alignment/bl003_align_spotify_api_to_ds002.py`
-	- `07_implementation/implementation_notes/profile/build_bl004_preference_profile.py`
+	- `07_implementation/implementation_notes/bl003_alignment/build_bl003_partial_from_cache.py`
+	- `07_implementation/implementation_notes/bl003_alignment/bl003_align_spotify_api_to_ds002.py`
+	- `07_implementation/implementation_notes/bl004_profile/build_bl004_preference_profile.py`
 
 ### Expected Output
 - Partial aligned-events JSONL can be generated from cache without full Last.fm rerun.
@@ -1143,12 +1143,12 @@ Use these as the next priority run set. Keep artifacts under `07_implementation/
 
 ### Inputs
 - Preference profile:
-	- `07_implementation/implementation_notes/profile/outputs/bl004_preference_profile.json` (run_id=`BL004-PROFILE-20260322-020511-252947`, 5,592 enriched seeds)
-	- `07_implementation/implementation_notes/profile/outputs/bl004_seed_trace.csv` (seed track IDs)
+	- `07_implementation/implementation_notes/bl004_profile/outputs/bl004_preference_profile.json` (run_id=`BL004-PROFILE-20260322-020511-252947`, 5,592 enriched seeds)
+	- `07_implementation/implementation_notes/bl004_profile/outputs/bl004_seed_trace.csv` (seed track IDs)
 - Candidate corpus:
-	- `07_implementation/implementation_notes/data_layer/outputs/bl019_ds002_integrated_candidate_dataset.csv` (9,330 tracks with semantic tags/genres)
+	- `07_implementation/implementation_notes/bl000_data_layer/outputs/bl019_ds002_integrated_candidate_dataset.csv` (9,330 tracks with semantic tags/genres)
 - Script under test:
-	- `07_implementation/implementation_notes/retrieval/build_bl005_candidate_filter.py`
+	- `07_implementation/implementation_notes/bl005_retrieval/build_bl005_candidate_filter.py`
 - Configuration:
 	- numeric_features_enabled=false (BL-004 profile has no numeric centers)
 	- keep_rule: keep if not seed and semantic_score >= 1
@@ -1202,12 +1202,12 @@ Use these as the next priority run set. Keep artifacts under `07_implementation/
 
 ### Inputs
 - Preference profile:
-	- `07_implementation/implementation_notes/profile/outputs/bl004_preference_profile.json` (run_id=`BL004-PROFILE-20260322-020511-252947`, semantic centers only, numeric centers null/empty)
+	- `07_implementation/implementation_notes/bl004_profile/outputs/bl004_preference_profile.json` (run_id=`BL004-PROFILE-20260322-020511-252947`, semantic centers only, numeric centers null/empty)
 	- Profile dominant genres: classical (1019.05), classic rock (778.89), progressive rock (755.93), pop (522.76), rock (321.15)
 - Candidate set:
-	- `07_implementation/implementation_notes/retrieval/outputs/bl005_filtered_candidates.csv` (1,740 filtered candidates with genre/tag columns)
+	- `07_implementation/implementation_notes/bl005_retrieval/outputs/bl005_filtered_candidates.csv` (1,740 filtered candidates with genre/tag columns)
 - Script under test:
-	- `07_implementation/implementation_notes/scoring/build_bl006_scored_candidates.py`
+	- `07_implementation/implementation_notes/bl006_scoring/build_bl006_scored_candidates.py`
 - Configuration:
 	- mode: semantic-only (numeric feature centers absent)
 	- base_weights: tempo 0.18, loudness 0.12, key 0.10, mode 0.05, lead_genre 0.20, genre_overlap 0.17, tag_overlap 0.18
@@ -1268,9 +1268,9 @@ Use these as the next priority run set. Keep artifacts under `07_implementation/
 
 ### Inputs
 - Scored candidates:
-	- `07_implementation/implementation_notes/scoring/outputs/bl006_scored_candidates.csv` (1,740 candidates ranked by final_score, with lead_genre and component scores)
+	- `07_implementation/implementation_notes/bl006_scoring/outputs/bl006_scored_candidates.csv` (1,740 candidates ranked by final_score, with lead_genre and component scores)
 - Script under test:
-	- `07_implementation/implementation_notes/playlist/build_bl007_playlist.py`
+	- `07_implementation/implementation_notes/bl007_playlist/build_bl007_playlist.py`
 - Configuration:
 	- target_size=10 (fixed-length output)
 	- min_score_threshold=0.35 (R1: score-based exclusion)
@@ -1334,12 +1334,12 @@ Use these as the next priority run set. Keep artifacts under `07_implementation/
 
 ### Inputs
 - Playlist and scoring artifacts:
-	- `07_implementation/implementation_notes/scoring/outputs/bl006_scored_candidates.csv` (all component data for candidate lookup)
-	- `07_implementation/implementation_notes/scoring/outputs/bl006_score_summary.json` (active component weights and configuration)
-	- `07_implementation/implementation_notes/playlist/outputs/bl007_playlist.json` (10-track final playlist)
-	- `07_implementation/implementation_notes/playlist/outputs/bl007_assembly_trace.csv` (rule application trace)
+	- `07_implementation/implementation_notes/bl006_scoring/outputs/bl006_scored_candidates.csv` (all component data for candidate lookup)
+	- `07_implementation/implementation_notes/bl006_scoring/outputs/bl006_score_summary.json` (active component weights and configuration)
+	- `07_implementation/implementation_notes/bl007_playlist/outputs/bl007_playlist.json` (10-track final playlist)
+	- `07_implementation/implementation_notes/bl007_playlist/outputs/bl007_assembly_trace.csv` (rule application trace)
 - Script under test:
-	- `07_implementation/implementation_notes/transparency/build_bl008_explanation_payloads.py`
+	- `07_implementation/implementation_notes/bl008_transparency/build_bl008_explanation_payloads.py`
 - Configuration:
 	- Semantic-only component mode (4 numeric components inactive; 3 semantic active with redistributed weights)
 
@@ -1397,7 +1397,7 @@ Use these as the next priority run set. Keep artifacts under `07_implementation/
 
 ### Inputs
 - All upstream stage artifacts (BL-004–BL-008) plus supporting dataset/bootstrap assets
-- Script under test: `07_implementation/implementation_notes/observability/build_bl009_observability_log.py`
+- Script under test: `07_implementation/implementation_notes/bl009_observability/build_bl009_observability_log.py`
 - Configuration: bootstrap_mode=true
 
 ### Expected Output
@@ -1452,7 +1452,7 @@ Use these as the next priority run set. Keep artifacts under `07_implementation/
 
 ### Inputs
 - Script under test:
-	- `07_implementation/implementation_notes/quality/run_bl014_sanity_checks.py`
+	- `07_implementation/implementation_notes/bl014_quality/run_bl014_sanity_checks.py`
 - Artifact set under validation:
 	- BL-004 profile + summary + seed trace
 	- BL-005 filtered candidates + decisions + diagnostics

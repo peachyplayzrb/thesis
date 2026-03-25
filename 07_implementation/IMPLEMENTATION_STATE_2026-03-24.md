@@ -42,7 +42,7 @@ Run-config layer:
 | Property | Value |
 |---|---|
 | Source | Music4All-Onion (accessed 2026-03-24) |
-| Script | `implementation_notes/data_layer/build_ds001_working_dataset.py` |
+| Script | `implementation_notes/bl000_data_layer/build_ds001_working_dataset.py` |
 | Output | `data_layer/outputs/ds001_working_candidate_dataset.csv` |
 | Manifest | `data_layer/outputs/ds001_working_candidate_dataset_manifest.json` |
 | Track count | 109,269 |
@@ -64,15 +64,15 @@ Raw source files are in `06_data_and_sources/music4all_raw/`.
 ## 3. Stage-by-Stage Reference
 
 ### BL-001 — Ingestion Schema Definition
-- **Script**: `implementation_notes/ingestion/ingest_history_parser.py`
+- **Script**: `implementation_notes/bl001_bl002_ingestion/ingest_history_parser.py`
 - **Module files**: `spotify_auth.py`, `spotify_client.py`, `spotify_resilience.py`, `spotify_artifacts.py`, `spotify_mapping.py`, `spotify_io.py`
 - **Purpose**: Defines the canonical listening-event schema and CSV ingestion parser for offline-format history files
 - **Status**: Complete. Used as reference schema and in Spotify export normalization
-- **State log**: `implementation_notes/ingestion/bl001_state_log_2026-03-24.md`
+- **State log**: `implementation_notes/bl001_bl002_ingestion/bl001_state_log_2026-03-24.md`
 
 ### BL-002 — Spotify API Export
-- **Script**: `implementation_notes/ingestion/export_spotify_max_dataset.py`
-- **Output dir**: `implementation_notes/ingestion/outputs/spotify_api_export/`
+- **Script**: `implementation_notes/bl001_bl002_ingestion/export_spotify_max_dataset.py`
+- **Output dir**: `implementation_notes/bl001_bl002_ingestion/outputs/spotify_api_export/`
 - **Latest run ID**: `SPOTIFY-EXPORT-20260324-210031-788770`
 - **Key stats** (latest export, 2026-03-24T21:01Z):
 
@@ -94,12 +94,12 @@ Raw source files are in `06_data_and_sources/music4all_raw/`.
   - `spotify_export_run_summary.json` — run metadata + counts
 - **Ingestion features**: OAuth PKCE flow, pagination for all endpoints, SQLite resilience cache with 24h TTL, fail-fast on extreme Retry-After windows, full request log
 - **Status**: Complete — real data available
-- **State log**: `implementation_notes/ingestion/bl002_state_log_2026-03-24.md`
-- **Runbook**: `implementation_notes/ingestion/spotify_api_ingestion_runbook.md`
+- **State log**: `implementation_notes/bl001_bl002_ingestion/bl002_state_log_2026-03-24.md`
+- **Runbook**: `implementation_notes/bl001_bl002_ingestion/spotify_api_ingestion_runbook.md`
 
 ### BL-003 — DS-001 Spotify Seed Builder
-- **Script**: `implementation_notes/alignment/build_bl003_ds001_spotify_seed_table.py`
-- **Output dir**: `implementation_notes/alignment/outputs/`
+- **Script**: `implementation_notes/bl003_alignment/build_bl003_ds001_spotify_seed_table.py`
+- **Output dir**: `implementation_notes/bl003_alignment/outputs/`
 - **Purpose**: Joins exported Spotify tracks against DS-001 candidate corpus using two alignment strategies (Spotify ID exact match, then normalized title+artist metadata match). Filters by `input_scope` from run-config to control which source types are used. Emits a source-scope manifest.
 - **Latest run** (via BL-013 refresh-seed, 2026-03-24T22:13Z):
 
@@ -124,11 +124,11 @@ Raw source files are in `06_data_and_sources/music4all_raw/`.
   - `include_playlists` + `playlists_limit` + `playlist_items_per_playlist_limit`
   - `include_recently_played` + `recently_played_limit`
 - **Status**: Complete. DS-001 path active; BL-021 scope actuation confirmed via EXP-042
-- **State log**: `implementation_notes/alignment/bl003_state_log_2026-03-24.md`
+- **State log**: `implementation_notes/bl003_alignment/bl003_state_log_2026-03-24.md`
 
 ### BL-004 — Preference Profile
-- **Script**: `implementation_notes/profile/build_bl004_preference_profile.py`
-- **Output dir**: `implementation_notes/profile/outputs/`
+- **Script**: `implementation_notes/bl004_profile/build_bl004_preference_profile.py`
+- **Output dir**: `implementation_notes/bl004_profile/outputs/`
 - **Purpose**: Builds a weighted preference profile from BL-003 seed events. Derives lead genres, genre distribution, tag distribution, and audio-feature centers. Persists effective input scope and run-config provenance.
 - **Latest run ID**: `BL004-PROFILE-20260324-221335-715210`
 - **Key outputs** (current):
@@ -146,11 +146,11 @@ Raw source files are in `06_data_and_sources/music4all_raw/`.
   - `bl004_seed_trace.csv` — 36 KB, per-seed weight trace
 - **Run-config controls**: `user_id`, `top_tag_limit`, `top_genre_limit`, `top_lead_genre_limit`, `influence_track_boost`, `recency_decay_rate`
 - **Status**: Complete
-- **State log**: `implementation_notes/profile/bl004_state_log_2026-03-24.md`
+- **State log**: `implementation_notes/bl004_profile/bl004_state_log_2026-03-24.md`
 
 ### BL-005 — Candidate Filter
-- **Script**: `implementation_notes/retrieval/build_bl005_candidate_filter.py`
-- **Output dir**: `implementation_notes/retrieval/outputs/`
+- **Script**: `implementation_notes/bl005_retrieval/build_bl005_candidate_filter.py`
+- **Output dir**: `implementation_notes/bl005_retrieval/outputs/`
 - **Purpose**: Filters DS-001 109,269 candidates down to a candidate pool. Keep rule: `not seed AND (semantic_score >= 2 OR (semantic_score >= 1 AND numeric_pass_count >= 1))`. Uses profile lead genres, tag sets, and audio feature proximity.
 - **Latest run ID**: `BL005-FILTER-20260324-220924-588977`
 - **Key stats**:
@@ -167,11 +167,11 @@ Raw source files are in `06_data_and_sources/music4all_raw/`.
   - `bl005_candidate_diagnostics.json` — run metadata + filter stats
 - **Numeric thresholds** (from run-config): tempo ±20, key ±2, mode ±0.5, duration_ms ±45000
 - **Status**: Complete
-- **State log**: `implementation_notes/retrieval/bl005_state_log_2026-03-24.md`
+- **State log**: `implementation_notes/bl005_retrieval/bl005_state_log_2026-03-24.md`
 
 ### BL-006 — Candidate Scoring
-- **Script**: `implementation_notes/scoring/build_bl006_scored_candidates.py`
-- **Output dir**: `implementation_notes/scoring/outputs/`
+- **Script**: `implementation_notes/bl006_scoring/build_bl006_scored_candidates.py`
+- **Output dir**: `implementation_notes/bl006_scoring/outputs/`
 - **Purpose**: Scores all 56,700 filtered candidates against the preference profile using weighted component similarity. Active weight set is post-retune (numeric-leading in top-100).
 - **Latest run ID**: `BL006-SCORE-20260324-220927-040002`
 - **Active component weights**:
@@ -201,12 +201,12 @@ Raw source files are in `06_data_and_sources/music4all_raw/`.
   - `bl006_scored_candidates.csv` — 8.4 MB, all scored candidates ranked
   - `bl006_score_summary.json` — stats, component balance diagnostics, top-10
 - **Status**: Complete. Post-retune baseline locked
-- **State log**: `implementation_notes/scoring/bl006_state_log_2026-03-24.md`
-- **Quality snapshot**: `implementation_notes/scoring/bl006_top50_quality_snapshot_2026-03-24.md`
+- **State log**: `implementation_notes/bl006_scoring/bl006_state_log_2026-03-24.md`
+- **Quality snapshot**: `implementation_notes/bl006_scoring/bl006_top50_quality_snapshot_2026-03-24.md`
 
 ### BL-007 — Playlist Assembly
-- **Script**: `implementation_notes/playlist/build_bl007_playlist.py`
-- **Output dir**: `implementation_notes/playlist/outputs/`
+- **Script**: `implementation_notes/bl007_playlist/build_bl007_playlist.py`
+- **Output dir**: `implementation_notes/bl007_playlist/outputs/`
 - **Purpose**: Assembles a 10-track playlist from scored candidates using deterministic rule-based selection: score threshold (0.35), genre diversity cap (max 4 per genre), consecutive genre cap (max 2), target size (10).
 - **Latest run ID**: `BL007-ASSEMBLE-20260324-220929-541533`
 - **Key stats**:
@@ -224,22 +224,22 @@ Raw source files are in `06_data_and_sources/music4all_raw/`.
   - `bl007_assembly_report.json` — counts, rule hits, genre mix
 - **Run-config controls**: `target_size`, `min_score_threshold`, `max_per_genre`, `max_consecutive`
 - **Status**: Complete
-- **State log**: `implementation_notes/playlist/bl007_state_log_2026-03-24.md`
+- **State log**: `implementation_notes/bl007_playlist/bl007_state_log_2026-03-24.md`
 
 ### BL-008 — Transparency Explanations
-- **Script**: `implementation_notes/transparency/build_bl008_explanation_payloads.py`
-- **Output dir**: `implementation_notes/transparency/outputs/`
+- **Script**: `implementation_notes/bl008_transparency/build_bl008_explanation_payloads.py`
+- **Output dir**: `implementation_notes/bl008_transparency/outputs/`
 - **Purpose**: Generates per-track explanation payloads for each playlist track. Each payload includes a natural-language `why_selected` sentence and a score breakdown showing each component's contribution. Derives component list dynamically from BL-006 active weights (no hardcoded components).
 - **Latest run ID**: `BL008-EXPLAIN-20260324-195641-957331`
 - **Outputs**:
   - `bl008_explanation_payloads.json` — 25 KB, 10 explanation objects
   - `bl008_explanation_summary.json` — metadata, top-contributor distribution
 - **Status**: Complete
-- **State log**: `implementation_notes/transparency/bl008_state_log_2026-03-24.md`
+- **State log**: `implementation_notes/bl008_transparency/bl008_state_log_2026-03-24.md`
 
 ### BL-009 — Observability Log
-- **Script**: `implementation_notes/observability/build_bl009_observability_log.py`
-- **Output dir**: `implementation_notes/observability/outputs/`
+- **Script**: `implementation_notes/bl009_observability/build_bl009_observability_log.py`
+- **Output dir**: `implementation_notes/bl009_observability/outputs/`
 - **Purpose**: Captures comprehensive run-level observability: stage run IDs, artifact hashes, configuration snapshots, counts, and provenance. Persists effective input_scope and run-config details. Produces canonical JSON log and flat CSV index.
 - **Latest run ID**: `BL009-OBSERVE-20260324-220931-086881`
 - **Recorded upstream run IDs**:
@@ -250,11 +250,11 @@ Raw source files are in `06_data_and_sources/music4all_raw/`.
   - `bl009_run_observability_log.json` — 24 KB, full run log
   - `bl009_run_index.csv` — single-row run summary for fast lookup
 - **Status**: Complete
-- **State log**: `implementation_notes/observability/bl009_state_log_2026-03-24.md`
+- **State log**: `implementation_notes/bl009_observability/bl009_state_log_2026-03-24.md`
 
 ### BL-010 — Reproducibility Check
-- **Script**: `implementation_notes/reproducibility/run_bl010_reproducibility_check.py`
-- **Output dir**: `implementation_notes/reproducibility/outputs/`
+- **Script**: `implementation_notes/bl010_reproducibility/run_bl010_reproducibility_check.py`
+- **Output dir**: `implementation_notes/bl010_reproducibility/outputs/`
 - **Purpose**: Verifies deterministic reproducibility by running BL-004 through BL-009 three times against fixed inputs and comparing stable content fingerprints. Report covers per-stage and per-artifact determinism.
 - **Latest run ID**: `BL010-REPRO-20260324-200214`
 - **Result**: `deterministic_match=true`, `first_mismatch_artifact=null`, all 3 replays pass
@@ -265,11 +265,11 @@ Raw source files are in `06_data_and_sources/music4all_raw/`.
   - `bl010_reproducibility_run_matrix.csv` — per-stage pass/fail matrix
   - `bl010_reproducibility_config_snapshot.json` — fixed input hashes
 - **Status**: Complete. Determinism confirmed on current baseline
-- **State log**: `implementation_notes/reproducibility/bl010_state_log_2026-03-24.md`
+- **State log**: `implementation_notes/bl010_reproducibility/bl010_state_log_2026-03-24.md`
 
 ### BL-011 — Controllability Check
-- **Script**: `implementation_notes/controllability/run_bl011_controllability_check.py`
-- **Output dir**: `implementation_notes/controllability/outputs/`
+- **Script**: `implementation_notes/bl011_controllability/run_bl011_controllability_check.py`
+- **Output dir**: `implementation_notes/bl011_controllability/outputs/`
 - **Purpose**: Verifies behavioral sensitivity to control-surface changes by running 5 pre-defined scenarios (baseline, no_influence_tracks, valence_weight_up, stricter_thresholds, looser_thresholds) and comparing candidate pool, ranking, and playlist outcomes.
 - **Latest run**: 2026-03-21T19:08Z (run from within controllability runner)
 - **Scenarios**:
@@ -287,8 +287,8 @@ Raw source files are in `06_data_and_sources/music4all_raw/`.
 - **State log**: covered by backlog BL-011 done entry
 
 ### BL-013 — Pipeline Orchestrator
-- **Script**: `implementation_notes/entrypoint/run_bl013_pipeline_entrypoint.py`
-- **Output dir**: `implementation_notes/entrypoint/outputs/`
+- **Script**: `implementation_notes/bl013_entrypoint/run_bl013_pipeline_entrypoint.py`
+- **Output dir**: `implementation_notes/bl013_entrypoint/outputs/`
 - **Purpose**: Thin Python orchestrator that invokes BL-004 through BL-009 in order. Supports optional stage subset selection and structured JSON run summary. Supports `--refresh-seed` flag to pre-run BL-003 before selected stages.
 - **Latest run ID**: `BL013-ENTRYPOINT-20260324-221334-097740`
 - **Latest run result**: `overall_status=pass`, 2 stages (BL-003 + BL-004), 0 failures
@@ -305,11 +305,11 @@ Raw source files are in `06_data_and_sources/music4all_raw/`.
   - `bl013_orchestration_run_latest.json` — symlink-style latest alias
   - `bl013_orchestration_run_{RUN_ID}.json` — per-run results
 - **Status**: Complete
-- **Docs**: `implementation_notes/entrypoint/bl013_run_command.md`
+- **Docs**: `implementation_notes/bl013_entrypoint/bl013_run_command.md`
 
 ### BL-014 — Sanity Checks
-- **Script**: `implementation_notes/quality/run_bl014_sanity_checks.py`
-- **Output dir**: `implementation_notes/quality/outputs/`
+- **Script**: `implementation_notes/bl014_quality/run_bl014_sanity_checks.py`
+- **Output dir**: `implementation_notes/bl014_quality/outputs/`
 - **Purpose**: Automated post-run artifact audit. 21 checks across: schema validation, cross-stage artifact hash continuity, count consistency, run-id format, and required-field presence.
 - **Last run**: 2026-03-22T03:45Z (against BL-020 DS-002 baseline; still valid for artifact structure)
 - **Result**: 21/21 checks passed
@@ -337,8 +337,8 @@ Raw source files are in `06_data_and_sources/music4all_raw/`.
 **Schema version**: `run-config-v1`  
 **Transport**: `BL_RUN_CONFIG_PATH` environment variable  
 **Merge strategy**: run-config deepmerges over stage defaults; unknown keys rejected  
-**Utility module**: `implementation_notes/run_config/run_config_utils.py`  
-**Template**: `implementation_notes/run_config/run_config_template_v1.json`
+**Utility module**: `implementation_notes/bl000_run_config/run_config_utils.py`  
+**Template**: `implementation_notes/bl000_run_config/run_config_template_v1.json`
 
 ### Resolved controls per stage:
 - **BL-003**: `input_scope` (source selection + limits)
@@ -368,7 +368,7 @@ Raw source files are in `06_data_and_sources/music4all_raw/`.
 ```
 
 ### Evidence artifacts (BL-021 A/B probes):
-Located in `implementation_notes/run_config/probe_comparison_outputs/`
+Located in `implementation_notes/bl000_run_config/probe_comparison_outputs/`
 - `bl021_probe_comparison_actuated_summary.json` — non-zero deltas confirming behavioral control
 - `bl003_source_scope_manifest_probeA_actuated.json` — scope manifest from actuated run
 - Profile + observability snapshots for probe A (baseline) and A-actuated (scope-filtered)
@@ -473,97 +473,97 @@ setup/smoke_website_api.ps1        — API smoke test
 
 ### Data layer
 ```
-implementation_notes/data_layer/build_ds001_working_dataset.py          — DS-001 builder (ACTIVE)
-implementation_notes/data_layer/outputs/ds001_working_candidate_dataset.csv       — 23.2 MB (ACTIVE)
-implementation_notes/data_layer/outputs/ds001_working_candidate_dataset_manifest.json  — (ACTIVE)
+implementation_notes/bl000_data_layer/build_ds001_working_dataset.py          — DS-001 builder (ACTIVE)
+implementation_notes/bl000_data_layer/outputs/ds001_working_candidate_dataset.csv       — 23.2 MB (ACTIVE)
+implementation_notes/bl000_data_layer/outputs/ds001_working_candidate_dataset_manifest.json  — (ACTIVE)
 ```
 
 ### Ingestion (BL-001, BL-002)
 ```
-implementation_notes/ingestion/ingest_history_parser.py       — BL-001 CSV parser
-implementation_notes/ingestion/export_spotify_max_dataset.py  — BL-002 API exporter
-implementation_notes/ingestion/spotify_auth.py                — OAuth module
-implementation_notes/ingestion/spotify_client.py              — API client module
-implementation_notes/ingestion/spotify_resilience.py          — cache + rate-limit module
-implementation_notes/ingestion/spotify_artifacts.py           — artifact serialization
-implementation_notes/ingestion/spotify_mapping.py             — field mapping
-implementation_notes/ingestion/spotify_io.py                  — file I/O helpers
-implementation_notes/ingestion/spotify_env_template.ps1       — env var template
-implementation_notes/ingestion/spotify_schema_reference.md    — schema reference
-implementation_notes/ingestion/spotify_api_ingestion_runbook.md  — runbook
-implementation_notes/ingestion/bl001_state_log_2026-03-24.md
-implementation_notes/ingestion/bl002_state_log_2026-03-24.md
-implementation_notes/ingestion/outputs/spotify_api_export/    — current export artifacts
+implementation_notes/bl001_bl002_ingestion/ingest_history_parser.py       — BL-001 CSV parser
+implementation_notes/bl001_bl002_ingestion/export_spotify_max_dataset.py  — BL-002 API exporter
+implementation_notes/bl001_bl002_ingestion/spotify_auth.py                — OAuth module
+implementation_notes/bl001_bl002_ingestion/spotify_client.py              — API client module
+implementation_notes/bl001_bl002_ingestion/spotify_resilience.py          — cache + rate-limit module
+implementation_notes/bl001_bl002_ingestion/spotify_artifacts.py           — artifact serialization
+implementation_notes/bl001_bl002_ingestion/spotify_mapping.py             — field mapping
+implementation_notes/bl001_bl002_ingestion/spotify_io.py                  — file I/O helpers
+implementation_notes/bl001_bl002_ingestion/spotify_env_template.ps1       — env var template
+implementation_notes/bl001_bl002_ingestion/spotify_schema_reference.md    — schema reference
+implementation_notes/bl001_bl002_ingestion/spotify_api_ingestion_runbook.md  — runbook
+implementation_notes/bl001_bl002_ingestion/bl001_state_log_2026-03-24.md
+implementation_notes/bl001_bl002_ingestion/bl002_state_log_2026-03-24.md
+implementation_notes/bl001_bl002_ingestion/outputs/spotify_api_export/    — current export artifacts
 ```
 
 ### Alignment (BL-003)
 ```
-implementation_notes/alignment/build_bl003_ds001_spotify_seed_table.py  — active (ACTIVE)
-implementation_notes/alignment/bl003_state_log_2026-03-24.md
-implementation_notes/alignment/outputs/bl003_ds001_spotify_seed_table.csv
-implementation_notes/alignment/outputs/bl003_ds001_spotify_matched_events.jsonl
-implementation_notes/alignment/outputs/bl003_ds001_spotify_trace.csv
-implementation_notes/alignment/outputs/bl003_ds001_spotify_unmatched.csv
-implementation_notes/alignment/outputs/bl003_ds001_spotify_summary.json
-implementation_notes/alignment/outputs/bl003_source_scope_manifest.json
+implementation_notes/bl003_alignment/build_bl003_ds001_spotify_seed_table.py  — active (ACTIVE)
+implementation_notes/bl003_alignment/bl003_state_log_2026-03-24.md
+implementation_notes/bl003_alignment/outputs/bl003_ds001_spotify_seed_table.csv
+implementation_notes/bl003_alignment/outputs/bl003_ds001_spotify_matched_events.jsonl
+implementation_notes/bl003_alignment/outputs/bl003_ds001_spotify_trace.csv
+implementation_notes/bl003_alignment/outputs/bl003_ds001_spotify_unmatched.csv
+implementation_notes/bl003_alignment/outputs/bl003_ds001_spotify_summary.json
+implementation_notes/bl003_alignment/outputs/bl003_source_scope_manifest.json
 ```
 
 ### Profile / Retrieval / Scoring / Playlist / Transparency / Observability (BL-004..009)
 ```
-implementation_notes/profile/build_bl004_preference_profile.py
-implementation_notes/profile/bl004_state_log_2026-03-24.md
-implementation_notes/profile/outputs/bl004_preference_profile.json
-implementation_notes/profile/outputs/bl004_profile_summary.json
-implementation_notes/profile/outputs/bl004_seed_trace.csv
+implementation_notes/bl004_profile/build_bl004_preference_profile.py
+implementation_notes/bl004_profile/bl004_state_log_2026-03-24.md
+implementation_notes/bl004_profile/outputs/bl004_preference_profile.json
+implementation_notes/bl004_profile/outputs/bl004_profile_summary.json
+implementation_notes/bl004_profile/outputs/bl004_seed_trace.csv
 
-implementation_notes/retrieval/build_bl005_candidate_filter.py
-implementation_notes/retrieval/bl005_state_log_2026-03-24.md
-implementation_notes/retrieval/outputs/bl005_filtered_candidates.csv
-implementation_notes/retrieval/outputs/bl005_candidate_decisions.csv
-implementation_notes/retrieval/outputs/bl005_candidate_diagnostics.json
+implementation_notes/bl005_retrieval/build_bl005_candidate_filter.py
+implementation_notes/bl005_retrieval/bl005_state_log_2026-03-24.md
+implementation_notes/bl005_retrieval/outputs/bl005_filtered_candidates.csv
+implementation_notes/bl005_retrieval/outputs/bl005_candidate_decisions.csv
+implementation_notes/bl005_retrieval/outputs/bl005_candidate_diagnostics.json
 
-implementation_notes/scoring/build_bl006_scored_candidates.py
-implementation_notes/scoring/bl006_state_log_2026-03-24.md
-implementation_notes/scoring/bl006_top50_quality_snapshot_2026-03-24.md
-implementation_notes/scoring/outputs/bl006_scored_candidates.csv
-implementation_notes/scoring/outputs/bl006_score_summary.json
+implementation_notes/bl006_scoring/build_bl006_scored_candidates.py
+implementation_notes/bl006_scoring/bl006_state_log_2026-03-24.md
+implementation_notes/bl006_scoring/bl006_top50_quality_snapshot_2026-03-24.md
+implementation_notes/bl006_scoring/outputs/bl006_scored_candidates.csv
+implementation_notes/bl006_scoring/outputs/bl006_score_summary.json
 
-implementation_notes/playlist/build_bl007_playlist.py
-implementation_notes/playlist/bl007_state_log_2026-03-24.md
-implementation_notes/playlist/outputs/bl007_playlist.json
-implementation_notes/playlist/outputs/bl007_assembly_trace.csv
-implementation_notes/playlist/outputs/bl007_assembly_report.json
+implementation_notes/bl007_playlist/build_bl007_playlist.py
+implementation_notes/bl007_playlist/bl007_state_log_2026-03-24.md
+implementation_notes/bl007_playlist/outputs/bl007_playlist.json
+implementation_notes/bl007_playlist/outputs/bl007_assembly_trace.csv
+implementation_notes/bl007_playlist/outputs/bl007_assembly_report.json
 
-implementation_notes/transparency/build_bl008_explanation_payloads.py
-implementation_notes/transparency/bl008_state_log_2026-03-24.md
-implementation_notes/transparency/outputs/bl008_explanation_payloads.json
-implementation_notes/transparency/outputs/bl008_explanation_summary.json
+implementation_notes/bl008_transparency/build_bl008_explanation_payloads.py
+implementation_notes/bl008_transparency/bl008_state_log_2026-03-24.md
+implementation_notes/bl008_transparency/outputs/bl008_explanation_payloads.json
+implementation_notes/bl008_transparency/outputs/bl008_explanation_summary.json
 
-implementation_notes/observability/build_bl009_observability_log.py
-implementation_notes/observability/bl009_state_log_2026-03-24.md
-implementation_notes/observability/outputs/bl009_run_observability_log.json
-implementation_notes/observability/outputs/bl009_run_index.csv
+implementation_notes/bl009_observability/build_bl009_observability_log.py
+implementation_notes/bl009_observability/bl009_state_log_2026-03-24.md
+implementation_notes/bl009_observability/outputs/bl009_run_observability_log.json
+implementation_notes/bl009_observability/outputs/bl009_run_index.csv
 ```
 
 ### Evaluation stages (BL-010, BL-011, BL-014)
 ```
-implementation_notes/reproducibility/run_bl010_reproducibility_check.py
-implementation_notes/reproducibility/bl010_state_log_2026-03-24.md
-implementation_notes/reproducibility/outputs/bl010_reproducibility_report.json
-implementation_notes/reproducibility/outputs/bl010_reproducibility_run_matrix.csv
-implementation_notes/reproducibility/outputs/bl010_reproducibility_config_snapshot.json
+implementation_notes/bl010_reproducibility/run_bl010_reproducibility_check.py
+implementation_notes/bl010_reproducibility/bl010_state_log_2026-03-24.md
+implementation_notes/bl010_reproducibility/outputs/bl010_reproducibility_report.json
+implementation_notes/bl010_reproducibility/outputs/bl010_reproducibility_run_matrix.csv
+implementation_notes/bl010_reproducibility/outputs/bl010_reproducibility_config_snapshot.json
 
-implementation_notes/controllability/run_bl011_controllability_check.py
-implementation_notes/controllability/bl011_state_log_2026-03-24.md
-implementation_notes/controllability/outputs/bl011_controllability_report.json
-implementation_notes/controllability/outputs/bl011_controllability_run_matrix.csv
-implementation_notes/controllability/outputs/bl011_controllability_config_snapshot.json
-implementation_notes/controllability/outputs/scenarios/  — 5 scenario sub-folders
+implementation_notes/bl011_controllability/run_bl011_controllability_check.py
+implementation_notes/bl011_controllability/bl011_state_log_2026-03-24.md
+implementation_notes/bl011_controllability/outputs/bl011_controllability_report.json
+implementation_notes/bl011_controllability/outputs/bl011_controllability_run_matrix.csv
+implementation_notes/bl011_controllability/outputs/bl011_controllability_config_snapshot.json
+implementation_notes/bl011_controllability/outputs/scenarios/  — 5 scenario sub-folders
 
-implementation_notes/quality/run_bl014_sanity_checks.py
-implementation_notes/quality/outputs/bl014_sanity_report.json
-implementation_notes/quality/outputs/bl014_sanity_run_matrix.csv
-implementation_notes/quality/outputs/bl014_sanity_config_snapshot.json
+implementation_notes/bl014_quality/run_bl014_sanity_checks.py
+implementation_notes/bl014_quality/outputs/bl014_sanity_report.json
+implementation_notes/bl014_quality/outputs/bl014_sanity_run_matrix.csv
+implementation_notes/bl014_quality/outputs/bl014_sanity_config_snapshot.json
 ```
 
 ### Bootstrap test assets (BL-016)
@@ -574,19 +574,19 @@ implementation_notes/quality/outputs/bl014_sanity_config_snapshot.json
 
 ### Run config (BL-021)
 ```
-implementation_notes/run_config/run_config_utils.py
-implementation_notes/run_config/run_config_template_v1.json
-implementation_notes/run_config/run_config_bl021_probe_v1.json
-implementation_notes/run_config/run_config_bl021_probe_v2.json
-implementation_notes/run_config/probe_comparison_outputs/          — BL-021 evidence artifacts
+implementation_notes/bl000_run_config/run_config_utils.py
+implementation_notes/bl000_run_config/run_config_template_v1.json
+implementation_notes/bl000_run_config/run_config_bl021_probe_v1.json
+implementation_notes/bl000_run_config/run_config_bl021_probe_v2.json
+implementation_notes/bl000_run_config/probe_comparison_outputs/          — BL-021 evidence artifacts
 ```
 
 ### Pipeline entrypoint (BL-013)
 ```
-implementation_notes/entrypoint/run_bl013_pipeline_entrypoint.py
-implementation_notes/entrypoint/bl013_run_command.md
-implementation_notes/entrypoint/outputs/bl013_orchestration_run_latest.json
-implementation_notes/entrypoint/outputs/bl013_orchestration_run_BL013-ENTRYPOINT-20260324-*.json
+implementation_notes/bl013_entrypoint/run_bl013_pipeline_entrypoint.py
+implementation_notes/bl013_entrypoint/bl013_run_command.md
+implementation_notes/bl013_entrypoint/outputs/bl013_orchestration_run_latest.json
+implementation_notes/bl013_entrypoint/outputs/bl013_orchestration_run_BL013-ENTRYPOINT-20260324-*.json
 ```
 
 ### Website frontend

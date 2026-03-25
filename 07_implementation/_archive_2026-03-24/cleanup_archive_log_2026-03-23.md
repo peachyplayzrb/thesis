@@ -2,58 +2,58 @@
 
 ## Scope
 Archive non-active ingestion files into a safekeep folder and keep only active runtime files under:
-- `07_implementation/implementation_notes/ingestion/`
+- `07_implementation/implementation_notes/bl001_bl002_ingestion/`
 
 ## Archive Folder
-- `07_implementation/implementation_notes/ingestion/_safekeep_unused_2026-03-23/`
+- `07_implementation/implementation_notes/bl001_bl002_ingestion/_safekeep_unused_2026-03-23/`
 
 ## Kept In Active Ingestion Folder
-- `07_implementation/implementation_notes/ingestion/bl001_spotify_input_output_mapping.md`
-- `07_implementation/implementation_notes/ingestion/export_spotify_max_dataset.py`
-- `07_implementation/implementation_notes/ingestion/ingest_history_parser.py`
-- `07_implementation/implementation_notes/ingestion/spotify_api_ingestion_runbook.md`
-- `07_implementation/implementation_notes/ingestion/spotify_env_template.ps1`
-- `07_implementation/implementation_notes/ingestion/cleanup_archive_log_2026-03-23.md`
-- `07_implementation/implementation_notes/ingestion/outputs/bl020_aligned_events.jsonl`
-- `07_implementation/implementation_notes/ingestion/outputs/bl020_alignment_report.json`
-- `07_implementation/implementation_notes/ingestion/outputs/bl020_lastfm_tag_cache.json`
-- `07_implementation/implementation_notes/ingestion/outputs/spotify_api_export/spotify_export_run_summary.json`
-- `07_implementation/implementation_notes/ingestion/outputs/spotify_api_export/spotify_top_tracks_flat.csv`
-- `07_implementation/implementation_notes/ingestion/outputs/spotify_api_export/spotify_saved_tracks_flat.csv`
-- `07_implementation/implementation_notes/ingestion/outputs/spotify_api_export/spotify_playlist_items_flat.csv`
-- `07_implementation/implementation_notes/ingestion/outputs/spotify_api_export/spotify_token_cache.json`
+- `07_implementation/implementation_notes/bl001_bl002_ingestion/bl001_spotify_input_output_mapping.md`
+- `07_implementation/implementation_notes/bl001_bl002_ingestion/export_spotify_max_dataset.py`
+- `07_implementation/implementation_notes/bl001_bl002_ingestion/ingest_history_parser.py`
+- `07_implementation/implementation_notes/bl001_bl002_ingestion/docs/spotify_api_ingestion_runbook.md`
+- `07_implementation/implementation_notes/bl001_bl002_ingestion/configs/templates/spotify_env_template.ps1`
+- `07_implementation/implementation_notes/bl001_bl002_ingestion/cleanup_archive_log_2026-03-23.md`
+- `07_implementation/implementation_notes/bl001_bl002_ingestion/outputs/bl020_aligned_events.jsonl`
+- `07_implementation/implementation_notes/bl001_bl002_ingestion/outputs/bl020_alignment_report.json`
+- `07_implementation/implementation_notes/bl001_bl002_ingestion/outputs/bl020_lastfm_tag_cache.json`
+- `07_implementation/implementation_notes/bl001_bl002_ingestion/outputs/spotify_api_export/spotify_export_run_summary.json`
+- `07_implementation/implementation_notes/bl001_bl002_ingestion/outputs/spotify_api_export/spotify_top_tracks_flat.csv`
+- `07_implementation/implementation_notes/bl001_bl002_ingestion/outputs/spotify_api_export/spotify_saved_tracks_flat.csv`
+- `07_implementation/implementation_notes/bl001_bl002_ingestion/outputs/spotify_api_export/spotify_playlist_items_flat.csv`
+- `07_implementation/implementation_notes/bl001_bl002_ingestion/outputs/spotify_api_export/spotify_token_cache.json`
 
 ## Moved To Safekeep Archive
-- `07_implementation/implementation_notes/ingestion/env`
-- `07_implementation/implementation_notes/ingestion/__pycache__/export_spotify_max_dataset.cpython-312.pyc`
-- `07_implementation/implementation_notes/ingestion/__pycache__/`
-- `07_implementation/implementation_notes/ingestion/outputs/bl003_lastfm_rerun.log`
-- `07_implementation/implementation_notes/ingestion/outputs/bl020_aligned_events.pre_partial_backup_20260322-001050.jsonl`
-- `07_implementation/implementation_notes/ingestion/outputs/bl020_aligned_events_partial_from_cache.jsonl`
-- `07_implementation/implementation_notes/ingestion/outputs/bl020_alignment_report_partial_from_cache.json`
-- `07_implementation/implementation_notes/ingestion/outputs/spotify_api_export/spotify_profile.json`
-- `07_implementation/implementation_notes/ingestion/outputs/spotify_api_export/spotify_top_tracks_by_range.json`
-- `07_implementation/implementation_notes/ingestion/outputs/spotify_api_export/spotify_saved_tracks.json`
-- `07_implementation/implementation_notes/ingestion/outputs/spotify_api_export/spotify_playlists.json`
-- `07_implementation/implementation_notes/ingestion/outputs/spotify_api_export/spotify_playlists_flat.csv`
-- `07_implementation/implementation_notes/ingestion/outputs/spotify_api_export/spotify_playlist_items_flat.jsonl`
-- `07_implementation/implementation_notes/ingestion/outputs/spotify_api_export/spotify_request_log.jsonl`
-- `07_implementation/implementation_notes/ingestion/outputs/spotify_api_export/spotify_rate_limit_block.json`
-- `07_implementation/implementation_notes/ingestion/outputs/spotify_api_export/spotify_resilience_cache.sqlite`
+- `07_implementation/implementation_notes/bl001_bl002_ingestion/env`
+- `07_implementation/implementation_notes/bl001_bl002_ingestion/__pycache__/export_spotify_max_dataset.cpython-312.pyc`
+- `07_implementation/implementation_notes/bl001_bl002_ingestion/__pycache__/`
+- `07_implementation/implementation_notes/bl001_bl002_ingestion/outputs/bl003_lastfm_rerun.log`
+- `07_implementation/implementation_notes/bl001_bl002_ingestion/outputs/bl020_aligned_events.pre_partial_backup_20260322-001050.jsonl`
+- `07_implementation/implementation_notes/bl001_bl002_ingestion/outputs/bl020_aligned_events_partial_from_cache.jsonl`
+- `07_implementation/implementation_notes/bl001_bl002_ingestion/outputs/bl020_alignment_report_partial_from_cache.json`
+- `07_implementation/implementation_notes/bl001_bl002_ingestion/outputs/spotify_api_export/spotify_profile.json`
+- `07_implementation/implementation_notes/bl001_bl002_ingestion/outputs/spotify_api_export/spotify_top_tracks_by_range.json`
+- `07_implementation/implementation_notes/bl001_bl002_ingestion/outputs/spotify_api_export/spotify_saved_tracks.json`
+- `07_implementation/implementation_notes/bl001_bl002_ingestion/outputs/spotify_api_export/spotify_playlists.json`
+- `07_implementation/implementation_notes/bl001_bl002_ingestion/outputs/spotify_api_export/spotify_playlists_flat.csv`
+- `07_implementation/implementation_notes/bl001_bl002_ingestion/outputs/spotify_api_export/spotify_playlist_items_flat.jsonl`
+- `07_implementation/implementation_notes/bl001_bl002_ingestion/outputs/spotify_api_export/spotify_request_log.jsonl`
+- `07_implementation/implementation_notes/bl001_bl002_ingestion/outputs/spotify_api_export/spotify_rate_limit_block.json`
+- `07_implementation/implementation_notes/bl001_bl002_ingestion/outputs/spotify_api_export/spotify_resilience_cache.sqlite`
 
 ## Archive Path Convention
 Files were moved under preserved relative paths, for example:
 - From:
-  - `07_implementation/implementation_notes/ingestion/outputs/spotify_api_export/spotify_profile.json`
+  - `07_implementation/implementation_notes/bl001_bl002_ingestion/outputs/spotify_api_export/spotify_profile.json`
 - To:
-  - `07_implementation/implementation_notes/ingestion/_safekeep_unused_2026-03-23/07_implementation/implementation_notes/ingestion/outputs/spotify_api_export/spotify_profile.json`
+  - `07_implementation/implementation_notes/bl001_bl002_ingestion/_safekeep_unused_2026-03-23/07_implementation/implementation_notes/bl001_bl002_ingestion/outputs/spotify_api_export/spotify_profile.json`
 
 ## Restore Procedure
 Use PowerShell from repository root:
 
 ```powershell
-$archive = "07_implementation/implementation_notes/ingestion/_safekeep_unused_2026-03-23/07_implementation/implementation_notes/ingestion"
-Copy-Item "$archive\*" "07_implementation/implementation_notes/ingestion" -Recurse -Force
+$archive = "07_implementation/implementation_notes/bl001_bl002_ingestion/_safekeep_unused_2026-03-23/07_implementation/implementation_notes/bl001_bl002_ingestion"
+Copy-Item "$archive\*" "07_implementation/implementation_notes/bl001_bl002_ingestion" -Recurse -Force
 ```
 
 ## Post-Cleanup Validation Plan
@@ -91,7 +91,7 @@ Broader project-wide cleanup requested by user to move all unused/scratch files 
 
 ### Active Files Confirmed After Cleanup
 
-**Ingestion package** (`07_implementation/implementation_notes/ingestion/`):
+**Ingestion package** (`07_implementation/implementation_notes/bl001_bl002_ingestion/`):
 - `__init__.py`, `export_spotify_max_dataset.py`, `spotify_artifacts.py`, `spotify_auth.py`, `spotify_client.py`, `spotify_io.py`, `spotify_mapping.py`, `spotify_env_template.ps1`, `ingest_history_parser.py`
 
 **Website** (`07_implementation/website/`):

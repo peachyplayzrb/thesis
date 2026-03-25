@@ -9,20 +9,20 @@
     "dataset_version": "2648A3237AA62F9E4C667C93178D482A5ACCDA0461299472E4FC1697786A993B",
     "pipeline_version": "4E90899F05BF270F8E6C614BDF96F64D8363674DB1F32E0796A7C3CB7F0DB613",
     "dataset_component_hashes": {
-      "07_implementation/implementation_notes/data_layer/outputs/onion_join_coverage_report.json": "071A76D683921BE4FC08F58D28E5F0421C57BA517878D2FF899D7FFB852DC9BF",
+      "07_implementation/implementation_notes/bl000_data_layer/outputs/onion_join_coverage_report.json": "071A76D683921BE4FC08F58D28E5F0421C57BA517878D2FF899D7FFB852DC9BF",
       "07_implementation/implementation_notes/test_assets/bl016_asset_manifest.json": "8D7BF7193777681DA9D9CD476EC2FE6D23B3541E29347F854413FD87ACF266EC",
       "07_implementation/implementation_notes/test_assets/bl016_synthetic_aligned_events.jsonl": "F22C31F512CB9DC1708858419923C46E8D65895CB582BFE019F869CF34333771",
       "07_implementation/implementation_notes/test_assets/bl016_candidate_stub.csv": "66505924A3BC9A627122310B6C4108BD397F4DD3E5FF9924991977A4C9574678"
     },
     "pipeline_script_hashes": {
-      "07_implementation/implementation_notes/data_layer/build_onion_canonical_layer.py": "A32CE842F2CAA37F87F31F4756BF517048467422372479495BE74EAC22404F63",
+      "07_implementation/implementation_notes/bl000_data_layer/build_onion_canonical_layer.py": "A32CE842F2CAA37F87F31F4756BF517048467422372479495BE74EAC22404F63",
       "07_implementation/implementation_notes/test_assets/build_bl016_synthetic_assets.py": "FB5C7728B0E286EFB7BEC05ED400E8277A1BA448D82EF40BE6BC086768A8D63C",
-      "07_implementation/implementation_notes/profile/build_bl004_preference_profile.py": "92ACD4F0A010ED9D5C017691C13AFEDB99A2043345C94F48D060AF4BA43DA3EC",
-      "07_implementation/implementation_notes/retrieval/build_bl005_candidate_filter.py": "FE8F1BC1C5F90E4BF12A2B9CD77AAE214DF19414C95557866DEC727652346FD5",
-      "07_implementation/implementation_notes/scoring/build_bl006_scored_candidates.py": "29164E533F0B3F243629F9C94CEE3B6BEFF5B634B11D0CF50360204E7F310EFF",
-      "07_implementation/implementation_notes/playlist/build_bl007_playlist.py": "30F1DB047B3F5E07BED3646C80ACD2EACD7BC98A3D696B04D30B52BC1379430A",
-      "07_implementation/implementation_notes/transparency/build_bl008_explanation_payloads.py": "398F49739C0B15088841D24A167816353FE342CD7FD05895745688DB19B84390",
-      "07_implementation/implementation_notes/observability/build_bl009_observability_log.py": "14D7BC576DBA5EFD578B7AF3C5CF0E1C0796D62094CDFFD14A4BBF972A91CBFD"
+      "07_implementation/implementation_notes/bl004_profile/build_bl004_preference_profile.py": "92ACD4F0A010ED9D5C017691C13AFEDB99A2043345C94F48D060AF4BA43DA3EC",
+      "07_implementation/implementation_notes/bl005_retrieval/build_bl005_candidate_filter.py": "FE8F1BC1C5F90E4BF12A2B9CD77AAE214DF19414C95557866DEC727652346FD5",
+      "07_implementation/implementation_notes/bl006_scoring/build_bl006_scored_candidates.py": "29164E533F0B3F243629F9C94CEE3B6BEFF5B634B11D0CF50360204E7F310EFF",
+      "07_implementation/implementation_notes/bl007_playlist/build_bl007_playlist.py": "30F1DB047B3F5E07BED3646C80ACD2EACD7BC98A3D696B04D30B52BC1379430A",
+      "07_implementation/implementation_notes/bl008_transparency/build_bl008_explanation_payloads.py": "398F49739C0B15088841D24A167816353FE342CD7FD05895745688DB19B84390",
+      "07_implementation/implementation_notes/bl009_observability/build_bl009_observability_log.py": "14D7BC576DBA5EFD578B7AF3C5CF0E1C0796D62094CDFFD14A4BBF972A91CBFD"
     },
     "upstream_stage_run_ids": {
       "BL-004": "BL004-PROFILE-20260324-200225-460265",
@@ -586,37 +586,37 @@
   "output_artifacts": {
     "primary_outputs": {
       "playlist": {
-        "path": "07_implementation/implementation_notes/playlist/outputs/bl007_playlist.json",
+        "path": "07_implementation/implementation_notes/bl007_playlist/outputs/bl007_playlist.json",
         "sha256": "791698269D4EF37D31B3AA9C35405A1D8B4E147E5BE2A4EFD0F99E879B0498FB",
         "size_bytes": 2028
       },
       "explanation_payloads": {
-        "path": "07_implementation/implementation_notes/transparency/outputs/bl008_explanation_payloads.json",
+        "path": "07_implementation/implementation_notes/bl008_transparency/outputs/bl008_explanation_payloads.json",
         "sha256": "AA1A8B6B8F284C160D8F377371C1DB3D45F0305994A1F4724294C88BE5772ABF",
         "size_bytes": 25734
       }
     },
     "trace_outputs": {
       "seed_trace": {
-        "path": "07_implementation/implementation_notes/profile/outputs/bl004_seed_trace.csv",
+        "path": "07_implementation/implementation_notes/bl004_profile/outputs/bl004_seed_trace.csv",
         "sha256": "6378F963A43ADAACE2818945E1F5216323D1880853085446FDB74D00CD7B525C"
       },
       "candidate_decisions": {
-        "path": "07_implementation/implementation_notes/retrieval/outputs/bl005_candidate_decisions.csv",
+        "path": "07_implementation/implementation_notes/bl005_retrieval/outputs/bl005_candidate_decisions.csv",
         "sha256": "BA58B95A7D1B7F2C8CED25944C64335F9610A51980066D64657ECC2532A2209C"
       },
       "scored_candidates": {
-        "path": "07_implementation/implementation_notes/scoring/outputs/bl006_scored_candidates.csv",
+        "path": "07_implementation/implementation_notes/bl006_scoring/outputs/bl006_scored_candidates.csv",
         "sha256": "189C3DCF575D69736CFD855CE5D456AB5C391AD58EA20DEA803A216D35F8CE7C"
       },
       "assembly_trace": {
-        "path": "07_implementation/implementation_notes/playlist/outputs/bl007_assembly_trace.csv",
+        "path": "07_implementation/implementation_notes/bl007_playlist/outputs/bl007_assembly_trace.csv",
         "sha256": "692A1F4DE6BD32DE0D785A3D5952D901CDF98966C264A1C8D72FF1926B6DDB9E"
       }
     },
     "supporting_outputs": {
       "data_layer_coverage": {
-        "path": "07_implementation/implementation_notes/data_layer/outputs/onion_join_coverage_report.json",
+        "path": "07_implementation/implementation_notes/bl000_data_layer/outputs/onion_join_coverage_report.json",
         "sha256": "071A76D683921BE4FC08F58D28E5F0421C57BA517878D2FF899D7FFB852DC9BF"
       },
       "bootstrap_manifest": {
@@ -624,23 +624,23 @@
         "sha256": "8D7BF7193777681DA9D9CD476EC2FE6D23B3541E29347F854413FD87ACF266EC"
       },
       "profile": {
-        "path": "07_implementation/implementation_notes/profile/outputs/bl004_preference_profile.json",
+        "path": "07_implementation/implementation_notes/bl004_profile/outputs/bl004_preference_profile.json",
         "sha256": "4C7A03ED65117CF20468AF5F3AAAE02709A0732D7A01936A224AF15ED1FC7219"
       },
       "retrieval_diagnostics": {
-        "path": "07_implementation/implementation_notes/retrieval/outputs/bl005_candidate_diagnostics.json",
+        "path": "07_implementation/implementation_notes/bl005_retrieval/outputs/bl005_candidate_diagnostics.json",
         "sha256": "C6D5B18C11650E6671AE58BD3C3EC7CDC38FD4EB0C1F14C3EC4D6C2BDF88D482"
       },
       "score_summary": {
-        "path": "07_implementation/implementation_notes/scoring/outputs/bl006_score_summary.json",
+        "path": "07_implementation/implementation_notes/bl006_scoring/outputs/bl006_score_summary.json",
         "sha256": "2C5AFB870B6DC8794BF2950B1A72DED6253135C209CDB59B2282BFDDEBB9ADC8"
       },
       "assembly_report": {
-        "path": "07_implementation/implementation_notes/playlist/outputs/bl007_assembly_report.json",
+        "path": "07_implementation/implementation_notes/bl007_playlist/outputs/bl007_assembly_report.json",
         "sha256": "FC740818E0729B8C9022718C08135E16777EB943C3AC5BE36B8786A7B13F2AE0"
       },
       "explanation_summary": {
-        "path": "07_implementation/implementation_notes/transparency/outputs/bl008_explanation_summary.json",
+        "path": "07_implementation/implementation_notes/bl008_transparency/outputs/bl008_explanation_summary.json",
         "sha256": "0B76A9EB61E4C29FCAFCAAFB33E24D0BB251A3408898853017CFA142F305D7D8"
       }
     }

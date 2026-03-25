@@ -105,7 +105,7 @@ This endpoint set gives the broadest user-preference coverage while staying with
 evidence_basis:
 - Spotify Web API docs: Authorization Code flow, Get User's Top Items, Get User's Saved Tracks, Get Current User's Playlists, Get Playlist Items
 - `07_implementation/implementation_notes/bl001_bl002_ingestion/export_spotify_max_dataset.py`
-- `07_implementation/implementation_notes/bl001_bl002_ingestion/spotify_api_ingestion_runbook.md`
+- `07_implementation/implementation_notes/bl001_bl002_ingestion/docs/spotify_api_ingestion_runbook.md`
 - `07_implementation/experiment_log.md` (`EXP-018`)
 
 impacted_files:
@@ -115,7 +115,7 @@ impacted_files:
 - `07_implementation/experiment_log.md`
 - `07_implementation/test_notes.md`
 - `07_implementation/implementation_notes/bl001_bl002_ingestion/export_spotify_max_dataset.py`
-- `07_implementation/implementation_notes/bl001_bl002_ingestion/spotify_api_ingestion_runbook.md`
+- `07_implementation/implementation_notes/bl001_bl002_ingestion/docs/spotify_api_ingestion_runbook.md`
 
 review_date:
 none

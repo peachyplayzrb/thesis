@@ -19,18 +19,18 @@
 - observability_output_hash: 02245616FB0434F39817EDC91858A5B282EDCB622E9C4BC0F3D246D5BB5D7FB6
 
 ## Freeze Evidence Artifacts
-- [ ] 07_implementation/implementation_notes/scoring/bl006_state_log_2026-03-24.md
-- [ ] 07_implementation/implementation_notes/scoring/bl006_top50_quality_snapshot_2026-03-24.md
-- [ ] 07_implementation/implementation_notes/playlist/bl007_state_log_2026-03-24.md
-- [ ] 07_implementation/implementation_notes/transparency/bl008_state_log_2026-03-24.md
-- [ ] 07_implementation/implementation_notes/observability/bl009_state_log_2026-03-24.md
-- [ ] 07_implementation/implementation_notes/reproducibility/bl010_state_log_2026-03-24.md
-- [ ] 07_implementation/implementation_notes/reproducibility/outputs/bl010_reproducibility_report.json
-- [ ] 07_implementation/implementation_notes/reproducibility/outputs/bl010_reproducibility_run_matrix.csv
-- [ ] 07_implementation/implementation_notes/reproducibility/outputs/bl010_reproducibility_config_snapshot.json
-- [ ] 07_implementation/implementation_notes/reproducibility/outputs/replay_01/
-- [ ] 07_implementation/implementation_notes/reproducibility/outputs/replay_02/
-- [ ] 07_implementation/implementation_notes/reproducibility/outputs/replay_03/
+- [ ] 07_implementation/implementation_notes/bl006_scoring/bl006_state_log_2026-03-24.md
+- [ ] 07_implementation/implementation_notes/bl006_scoring/bl006_top50_quality_snapshot_2026-03-24.md
+- [ ] 07_implementation/implementation_notes/bl007_playlist/bl007_state_log_2026-03-24.md
+- [ ] 07_implementation/implementation_notes/bl008_transparency/bl008_state_log_2026-03-24.md
+- [ ] 07_implementation/implementation_notes/bl009_observability/bl009_state_log_2026-03-24.md
+- [ ] 07_implementation/implementation_notes/bl010_reproducibility/bl010_state_log_2026-03-24.md
+- [ ] 07_implementation/implementation_notes/bl010_reproducibility/outputs/bl010_reproducibility_report.json
+- [ ] 07_implementation/implementation_notes/bl010_reproducibility/outputs/bl010_reproducibility_run_matrix.csv
+- [ ] 07_implementation/implementation_notes/bl010_reproducibility/outputs/bl010_reproducibility_config_snapshot.json
+- [ ] 07_implementation/implementation_notes/bl010_reproducibility/outputs/replay_01/
+- [ ] 07_implementation/implementation_notes/bl010_reproducibility/outputs/replay_02/
+- [ ] 07_implementation/implementation_notes/bl010_reproducibility/outputs/replay_03/
 
 ## Governance Synchronization
 - [ ] 07_implementation/experiment_log.md includes EXP-039

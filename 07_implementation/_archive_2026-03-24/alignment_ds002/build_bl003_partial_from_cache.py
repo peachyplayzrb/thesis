@@ -8,27 +8,27 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 TOP_TRACKS_CSV = (
-    "07_implementation/implementation_notes/ingestion/outputs"
+    "07_implementation/implementation_notes/bl001_bl002_ingestion/outputs"
     "/spotify_api_export/spotify_top_tracks_flat.csv"
 )
 SAVED_TRACKS_CSV = (
-    "07_implementation/implementation_notes/ingestion/outputs"
+    "07_implementation/implementation_notes/bl001_bl002_ingestion/outputs"
     "/spotify_api_export/spotify_saved_tracks_flat.csv"
 )
 EXPORT_SUMMARY_JSON = (
-    "07_implementation/implementation_notes/ingestion/outputs"
+    "07_implementation/implementation_notes/bl001_bl002_ingestion/outputs"
     "/spotify_api_export/spotify_export_run_summary.json"
 )
 CACHE_JSON = (
-    "07_implementation/implementation_notes/ingestion/outputs"
+    "07_implementation/implementation_notes/bl001_bl002_ingestion/outputs"
     "/bl020_lastfm_tag_cache.json"
 )
 OUTPUT_JSONL = (
-    "07_implementation/implementation_notes/ingestion/outputs"
+    "07_implementation/implementation_notes/bl001_bl002_ingestion/outputs"
     "/bl020_aligned_events_partial_from_cache.jsonl"
 )
 OUTPUT_REPORT = (
-    "07_implementation/implementation_notes/ingestion/outputs"
+    "07_implementation/implementation_notes/bl001_bl002_ingestion/outputs"
     "/bl020_alignment_report_partial_from_cache.json"
 )
 

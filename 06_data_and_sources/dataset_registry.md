@@ -1,4 +1,4 @@
-﻿# Dataset Registry
+# Dataset Registry
 
 ## DS-001: Music4All / Music4All-Onion
 
@@ -284,7 +284,7 @@ Reference artifact:
 - Current handling decision: implement DS-002 joins and quality-gated dataset build as the active track; use metadata-first Spotify matching with duration/release tie-breaks and retain DS-001 as fallback baseline.
 
 ### Build Completion Record (2026-03-21)
-- Builder script: `07_implementation/implementation_notes/data_layer/build_bl019_ds002_dataset.py`
+- Builder script: `07_implementation/implementation_notes/bl000_data_layer/build_bl019_ds002_dataset.py`
 - Join mode: intersection — only tracks present in all three sources (HDF5 ∩ SQLite ∩ Last.fm)
 - Output rows: 9330 (670 of 10000 HDF5 tracks excluded — no Last.fm match)
 - All quality gates: pass
@@ -298,6 +298,6 @@ Reference artifact:
 - Latest observed cooldown evidence:
 	- `retry_after_seconds=84882`
 	- `retry_at_utc=2026-03-22T02:40:32Z`
-	- blocker artifact: `07_implementation/implementation_notes/ingestion/outputs/spotify_api_export/spotify_rate_limit_block.json`
+	- blocker artifact: `07_implementation/implementation_notes/bl001_bl002_ingestion/outputs/spotify_api_export/spotify_rate_limit_block.json`
 - Operational handling: fail fast when cooldown exceeds threshold (`--max-retry-after-seconds`) and retry after cooldown expiry or with rotated app credentials.
 

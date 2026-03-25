@@ -11,14 +11,14 @@
 
 ### Inputs
 - Preference profile:
-	- `07_implementation/implementation_notes/profile/outputs/bl004_preference_profile.json`
+	- `07_implementation/implementation_notes/bl004_profile/outputs/bl004_preference_profile.json`
 - Seed trace:
-	- `07_implementation/implementation_notes/profile/outputs/bl004_seed_trace.csv`
+	- `07_implementation/implementation_notes/bl004_profile/outputs/bl004_seed_trace.csv`
 - Candidate dataset:
-	- `07_implementation/implementation_notes/data_layer/outputs/bl019_ds002_integrated_candidate_dataset.csv`
+	- `07_implementation/implementation_notes/bl000_data_layer/outputs/bl019_ds002_integrated_candidate_dataset.csv`
 - Scripts:
-	- `07_implementation/implementation_notes/retrieval/build_bl005_candidate_filter.py`
-	- `07_implementation/implementation_notes/scoring/build_bl006_scored_candidates.py`
+	- `07_implementation/implementation_notes/bl005_retrieval/build_bl005_candidate_filter.py`
+	- `07_implementation/implementation_notes/bl006_scoring/build_bl006_scored_candidates.py`
 
 ### Expected Output
 - BL-005 keep rule becomes semantic-first rather than numeric-only permissive.
@@ -62,11 +62,11 @@
 
 ### Inputs
 - Preference profile:
-	- `07_implementation/implementation_notes/profile/outputs/bl004_preference_profile.json`
+	- `07_implementation/implementation_notes/bl004_profile/outputs/bl004_preference_profile.json`
 - Tightened BL-005 candidate set:
-	- `07_implementation/implementation_notes/retrieval/outputs/bl005_filtered_candidates.csv`
+	- `07_implementation/implementation_notes/bl005_retrieval/outputs/bl005_filtered_candidates.csv`
 - Script:
-	- `07_implementation/implementation_notes/scoring/build_bl006_scored_candidates.py`
+	- `07_implementation/implementation_notes/bl006_scoring/build_bl006_scored_candidates.py`
 
 ### Expected Output
 - BL-006 uses the new bounded weight mix.
@@ -103,13 +103,13 @@
 
 ### Inputs
 - BL-002 export summary:
-	- `07_implementation/implementation_notes/ingestion/outputs/spotify_api_export/spotify_export_run_summary.json`
+	- `07_implementation/implementation_notes/bl001_bl002_ingestion/outputs/spotify_api_export/spotify_export_run_summary.json`
 - DS-001 candidate dataset:
-	- `07_implementation/implementation_notes/data_layer/outputs/ds001_working_candidate_dataset.csv`
+	- `07_implementation/implementation_notes/bl000_data_layer/outputs/ds001_working_candidate_dataset.csv`
 - Scripts:
-	- `07_implementation/implementation_notes/alignment/build_bl003_ds001_spotify_seed_table.py`
-	- `07_implementation/implementation_notes/retrieval/build_bl005_candidate_filter.py`
-	- `07_implementation/implementation_notes/scoring/build_bl006_scored_candidates.py`
+	- `07_implementation/implementation_notes/bl003_alignment/build_bl003_ds001_spotify_seed_table.py`
+	- `07_implementation/implementation_notes/bl005_retrieval/build_bl005_candidate_filter.py`
+	- `07_implementation/implementation_notes/bl006_scoring/build_bl006_scored_candidates.py`
 
 ### Pass Criteria
 - BL-003 completes with selected-source strict check enabled (default behavior).
@@ -142,14 +142,14 @@
 
 ### Inputs
 - BL-004 profile:
-	- `07_implementation/implementation_notes/profile/outputs/bl004_preference_profile.json`
+	- `07_implementation/implementation_notes/bl004_profile/outputs/bl004_preference_profile.json`
 - BL-005 filtered candidates:
-	- `07_implementation/implementation_notes/retrieval/outputs/bl005_filtered_candidates.csv`
+	- `07_implementation/implementation_notes/bl005_retrieval/outputs/bl005_filtered_candidates.csv`
 - BL-006 pre-retune baselines:
-	- `07_implementation/implementation_notes/scoring/outputs/bl006_scored_candidates_pre_retune.csv`
-	- `07_implementation/implementation_notes/scoring/outputs/bl006_score_summary_pre_retune.json`
+	- `07_implementation/implementation_notes/bl006_scoring/outputs/bl006_scored_candidates_pre_retune.csv`
+	- `07_implementation/implementation_notes/bl006_scoring/outputs/bl006_score_summary_pre_retune.json`
 - Script:
-	- `07_implementation/implementation_notes/scoring/build_bl006_scored_candidates.py`
+	- `07_implementation/implementation_notes/bl006_scoring/build_bl006_scored_candidates.py`
 
 ### Pass Criteria
 - BL-006 rerun completes with no runtime errors.
@@ -174,8 +174,8 @@
 	- `sha256.bl006_score_summary=748755F1596205B3D0B46C88D71A5BF7DE3537C79AA32A9342A410A7B7E5F896`
 
 ### Closure Evidence Artifacts
-- `07_implementation/implementation_notes/scoring/bl006_state_log_2026-03-24.md`
-- `07_implementation/implementation_notes/scoring/bl006_top50_quality_snapshot_2026-03-24.md`
+- `07_implementation/implementation_notes/bl006_scoring/bl006_state_log_2026-03-24.md`
+- `07_implementation/implementation_notes/bl006_scoring/bl006_top50_quality_snapshot_2026-03-24.md`
 
 ## Test Case TC-BL007-REFRESH-001: BL-007 Refresh on Finalized BL-006 Baseline
 
@@ -185,9 +185,9 @@
 
 ### Inputs
 - BL-006 scored candidates:
-	- `07_implementation/implementation_notes/scoring/outputs/bl006_scored_candidates.csv`
+	- `07_implementation/implementation_notes/bl006_scoring/outputs/bl006_scored_candidates.csv`
 - Script:
-	- `07_implementation/implementation_notes/playlist/build_bl007_playlist.py`
+	- `07_implementation/implementation_notes/bl007_playlist/build_bl007_playlist.py`
 
 ### Pass Criteria
 - BL-007 run completes without errors.
@@ -217,10 +217,10 @@
 	- `sha256.bl007_assembly_report=7F9B176E44AD29517F80D8904CB3A8E0E2B3111D217C5A64ED0FF67694489ADE`
 
 ### Closure Evidence Artifacts
-- `07_implementation/implementation_notes/playlist/bl007_state_log_2026-03-24.md`
-- `07_implementation/implementation_notes/playlist/outputs/bl007_playlist.json`
-- `07_implementation/implementation_notes/playlist/outputs/bl007_assembly_trace.csv`
-- `07_implementation/implementation_notes/playlist/outputs/bl007_assembly_report.json`
+- `07_implementation/implementation_notes/bl007_playlist/bl007_state_log_2026-03-24.md`
+- `07_implementation/implementation_notes/bl007_playlist/outputs/bl007_playlist.json`
+- `07_implementation/implementation_notes/bl007_playlist/outputs/bl007_assembly_trace.csv`
+- `07_implementation/implementation_notes/bl007_playlist/outputs/bl007_assembly_report.json`
 
 ## Test Case TC-BL008-REFRESH-001: BL-008 Transparency Refresh on Current Pipeline Baseline
 
@@ -230,14 +230,14 @@
 
 ### Inputs
 - BL-006 scored candidates:
-	- `07_implementation/implementation_notes/scoring/outputs/bl006_scored_candidates.csv`
+	- `07_implementation/implementation_notes/bl006_scoring/outputs/bl006_scored_candidates.csv`
 - BL-006 score summary:
-	- `07_implementation/implementation_notes/scoring/outputs/bl006_score_summary.json`
+	- `07_implementation/implementation_notes/bl006_scoring/outputs/bl006_score_summary.json`
 - BL-007 playlist and trace:
-	- `07_implementation/implementation_notes/playlist/outputs/bl007_playlist.json`
-	- `07_implementation/implementation_notes/playlist/outputs/bl007_assembly_trace.csv`
+	- `07_implementation/implementation_notes/bl007_playlist/outputs/bl007_playlist.json`
+	- `07_implementation/implementation_notes/bl007_playlist/outputs/bl007_assembly_trace.csv`
 - Script:
-	- `07_implementation/implementation_notes/transparency/build_bl008_explanation_payloads.py`
+	- `07_implementation/implementation_notes/bl008_transparency/build_bl008_explanation_payloads.py`
 
 ### Pass Criteria
 - BL-008 run completes without runtime errors.
@@ -266,11 +266,11 @@
 
 ### Inputs
 - Scripts:
-	- `07_implementation/implementation_notes/profile/build_bl004_preference_profile.py`
-	- `07_implementation/implementation_notes/retrieval/build_bl005_candidate_filter.py`
-	- `07_implementation/implementation_notes/scoring/build_bl006_scored_candidates.py`
+	- `07_implementation/implementation_notes/bl004_profile/build_bl004_preference_profile.py`
+	- `07_implementation/implementation_notes/bl005_retrieval/build_bl005_candidate_filter.py`
+	- `07_implementation/implementation_notes/bl006_scoring/build_bl006_scored_candidates.py`
 - Canonical run-config:
-	- `07_implementation/implementation_notes/run_config/run_config_template_v1.json`
+	- `07_implementation/implementation_notes/bl000_run_config/run_config_template_v1.json`
 
 ### Pass Criteria
 - BL-004, BL-005, and BL-006 all resolve `lead_genre` with the same canonical rule.
@@ -288,9 +288,9 @@
 	- static analysis status: no errors in BL-004, BL-005, BL-006 after patch
 
 ### Closure Evidence Artifacts
-- `07_implementation/implementation_notes/transparency/bl008_state_log_2026-03-24.md`
-- `07_implementation/implementation_notes/transparency/outputs/bl008_explanation_payloads.json`
-- `07_implementation/implementation_notes/transparency/outputs/bl008_explanation_summary.json`
+- `07_implementation/implementation_notes/bl008_transparency/bl008_state_log_2026-03-24.md`
+- `07_implementation/implementation_notes/bl008_transparency/outputs/bl008_explanation_payloads.json`
+- `07_implementation/implementation_notes/bl008_transparency/outputs/bl008_explanation_summary.json`
 
 ## Test Case TC-BL009-REFRESH-001: BL-009 Observability Refresh on Current Run Chain
 
@@ -300,11 +300,11 @@
 
 ### Inputs
 - BL-009 script:
-	- `07_implementation/implementation_notes/observability/build_bl009_observability_log.py`
+	- `07_implementation/implementation_notes/bl009_observability/build_bl009_observability_log.py`
 - Upstream artifacts:
-	- `07_implementation/implementation_notes/scoring/outputs/bl006_score_summary.json`
-	- `07_implementation/implementation_notes/playlist/outputs/bl007_assembly_report.json`
-	- `07_implementation/implementation_notes/transparency/outputs/bl008_explanation_summary.json`
+	- `07_implementation/implementation_notes/bl006_scoring/outputs/bl006_score_summary.json`
+	- `07_implementation/implementation_notes/bl007_playlist/outputs/bl007_assembly_report.json`
+	- `07_implementation/implementation_notes/bl008_transparency/outputs/bl008_explanation_summary.json`
 
 ### Pass Criteria
 - BL-009 run completes without runtime errors.
@@ -329,9 +329,9 @@
 	- `sha256.bl009_run_index=840CA55DC9845A88157352EA9C5A011C7CA6C7D5EFBC72F61E3FF1D3A9F4F332`
 
 ### Closure Evidence Artifacts
-- `07_implementation/implementation_notes/observability/bl009_state_log_2026-03-24.md`
-- `07_implementation/implementation_notes/observability/outputs/bl009_run_observability_log.json`
-- `07_implementation/implementation_notes/observability/outputs/bl009_run_index.csv`
+- `07_implementation/implementation_notes/bl009_observability/bl009_state_log_2026-03-24.md`
+- `07_implementation/implementation_notes/bl009_observability/outputs/bl009_run_observability_log.json`
+- `07_implementation/implementation_notes/bl009_observability/outputs/bl009_run_index.csv`
 
 ## Test Case TC-BL010-REFRESH-001: BL-010 Reproducibility Refresh on Current Run Chain
 
@@ -341,14 +341,14 @@
 
 ### Inputs
 - BL-010 script:
-	- `07_implementation/implementation_notes/reproducibility/run_bl010_reproducibility_check.py`
+	- `07_implementation/implementation_notes/bl010_reproducibility/run_bl010_reproducibility_check.py`
 - Upstream stage artifacts consumed by BL-010:
-	- `07_implementation/implementation_notes/profile/outputs/bl004_preference_profile.json`
-	- `07_implementation/implementation_notes/retrieval/outputs/bl005_candidate_diagnostics.json`
-	- `07_implementation/implementation_notes/scoring/outputs/bl006_score_summary.json`
-	- `07_implementation/implementation_notes/playlist/outputs/bl007_assembly_report.json`
-	- `07_implementation/implementation_notes/transparency/outputs/bl008_explanation_summary.json`
-	- `07_implementation/implementation_notes/observability/outputs/bl009_run_observability_log.json`
+	- `07_implementation/implementation_notes/bl004_profile/outputs/bl004_preference_profile.json`
+	- `07_implementation/implementation_notes/bl005_retrieval/outputs/bl005_candidate_diagnostics.json`
+	- `07_implementation/implementation_notes/bl006_scoring/outputs/bl006_score_summary.json`
+	- `07_implementation/implementation_notes/bl007_playlist/outputs/bl007_assembly_report.json`
+	- `07_implementation/implementation_notes/bl008_transparency/outputs/bl008_explanation_summary.json`
+	- `07_implementation/implementation_notes/bl009_observability/outputs/bl009_run_observability_log.json`
 
 ### Pass Criteria
 - BL-010 run completes without runtime failure.
@@ -377,13 +377,13 @@
 	- `sha256.bl010_reproducibility_config_snapshot=9D9EA949CE944AE75CE13F499FBDE1F6F2EAA017E39A67AB871353CFAF04BF98`
 
 ### Closure Evidence Artifacts
-- `07_implementation/implementation_notes/reproducibility/bl010_state_log_2026-03-24.md`
-- `07_implementation/implementation_notes/reproducibility/outputs/bl010_reproducibility_report.json`
-- `07_implementation/implementation_notes/reproducibility/outputs/bl010_reproducibility_run_matrix.csv`
-- `07_implementation/implementation_notes/reproducibility/outputs/bl010_reproducibility_config_snapshot.json`
-- `07_implementation/implementation_notes/reproducibility/outputs/replay_01/`
-- `07_implementation/implementation_notes/reproducibility/outputs/replay_02/`
-- `07_implementation/implementation_notes/reproducibility/outputs/replay_03/`
+- `07_implementation/implementation_notes/bl010_reproducibility/bl010_state_log_2026-03-24.md`
+- `07_implementation/implementation_notes/bl010_reproducibility/outputs/bl010_reproducibility_report.json`
+- `07_implementation/implementation_notes/bl010_reproducibility/outputs/bl010_reproducibility_run_matrix.csv`
+- `07_implementation/implementation_notes/bl010_reproducibility/outputs/bl010_reproducibility_config_snapshot.json`
+- `07_implementation/implementation_notes/bl010_reproducibility/outputs/replay_01/`
+- `07_implementation/implementation_notes/bl010_reproducibility/outputs/replay_02/`
+- `07_implementation/implementation_notes/bl010_reproducibility/outputs/replay_03/`
 
 ## Test Case TC-BL010-FRESHNESS-001: BL-010 Refresh After Lead-Genre Contract Fix
 
@@ -393,13 +393,13 @@
 
 ### Inputs
 - BL-010 script:
-	- `07_implementation/implementation_notes/reproducibility/run_bl010_reproducibility_check.py`
+	- `07_implementation/implementation_notes/bl010_reproducibility/run_bl010_reproducibility_check.py`
 - Active fixed-input baseline:
-	- `07_implementation/implementation_notes/profile/outputs/bl004_seed_trace.csv`
-	- `07_implementation/implementation_notes/retrieval/outputs/bl005_filtered_candidates.csv`
-	- `07_implementation/implementation_notes/retrieval/outputs/bl005_candidate_decisions.csv`
-	- `07_implementation/implementation_notes/scoring/outputs/bl006_scored_candidates.csv`
-	- `07_implementation/implementation_notes/playlist/outputs/bl007_assembly_trace.csv`
+	- `07_implementation/implementation_notes/bl004_profile/outputs/bl004_seed_trace.csv`
+	- `07_implementation/implementation_notes/bl005_retrieval/outputs/bl005_filtered_candidates.csv`
+	- `07_implementation/implementation_notes/bl005_retrieval/outputs/bl005_candidate_decisions.csv`
+	- `07_implementation/implementation_notes/bl006_scoring/outputs/bl006_scored_candidates.csv`
+	- `07_implementation/implementation_notes/bl007_playlist/outputs/bl007_assembly_trace.csv`
 
 ### Pass Criteria
 - BL-010 completes without runtime failure.
@@ -421,12 +421,12 @@
 	- `stable.observability_output_hash=BACCF8B1107429C90EBAA5BA5F8B828B2BB3E57BAC2A0A59E36CD31A8875BB60`
 
 ### Closure Evidence Artifacts
-- `07_implementation/implementation_notes/reproducibility/outputs/bl010_reproducibility_report.json`
-- `07_implementation/implementation_notes/reproducibility/outputs/bl010_reproducibility_run_matrix.csv`
-- `07_implementation/implementation_notes/reproducibility/outputs/bl010_reproducibility_config_snapshot.json`
-- `07_implementation/implementation_notes/reproducibility/outputs/replay_01/`
-- `07_implementation/implementation_notes/reproducibility/outputs/replay_02/`
-- `07_implementation/implementation_notes/reproducibility/outputs/replay_03/`
+- `07_implementation/implementation_notes/bl010_reproducibility/outputs/bl010_reproducibility_report.json`
+- `07_implementation/implementation_notes/bl010_reproducibility/outputs/bl010_reproducibility_run_matrix.csv`
+- `07_implementation/implementation_notes/bl010_reproducibility/outputs/bl010_reproducibility_config_snapshot.json`
+- `07_implementation/implementation_notes/bl010_reproducibility/outputs/replay_01/`
+- `07_implementation/implementation_notes/bl010_reproducibility/outputs/replay_02/`
+- `07_implementation/implementation_notes/bl010_reproducibility/outputs/replay_03/`
 
 ## Test Case TC-BL011-FRESHNESS-001: BL-011 Refresh After Lead-Genre Contract Fix
 
@@ -436,9 +436,9 @@
 
 ### Inputs
 - BL-011 script:
-	- `07_implementation/implementation_notes/controllability/run_bl011_controllability_check.py`
+	- `07_implementation/implementation_notes/bl011_controllability/run_bl011_controllability_check.py`
 - Refreshed BL-010 baseline snapshot:
-	- `07_implementation/implementation_notes/reproducibility/outputs/bl010_reproducibility_config_snapshot.json`
+	- `07_implementation/implementation_notes/bl010_reproducibility/outputs/bl010_reproducibility_config_snapshot.json`
 
 ### Pass Criteria
 - BL-011 completes without runtime failure.
@@ -459,14 +459,14 @@
 	- `all_variant_directions_met=true`
 
 ### Closure Evidence Artifacts
-- `07_implementation/implementation_notes/controllability/outputs/bl011_controllability_report.json`
-- `07_implementation/implementation_notes/controllability/outputs/bl011_controllability_run_matrix.csv`
-- `07_implementation/implementation_notes/controllability/outputs/bl011_controllability_config_snapshot.json`
-- `07_implementation/implementation_notes/controllability/outputs/scenarios/baseline/`
-- `07_implementation/implementation_notes/controllability/outputs/scenarios/no_influence_tracks/`
-- `07_implementation/implementation_notes/controllability/outputs/scenarios/valence_weight_up/`
-- `07_implementation/implementation_notes/controllability/outputs/scenarios/stricter_thresholds/`
-- `07_implementation/implementation_notes/controllability/outputs/scenarios/looser_thresholds/`
+- `07_implementation/implementation_notes/bl011_controllability/outputs/bl011_controllability_report.json`
+- `07_implementation/implementation_notes/bl011_controllability/outputs/bl011_controllability_run_matrix.csv`
+- `07_implementation/implementation_notes/bl011_controllability/outputs/bl011_controllability_config_snapshot.json`
+- `07_implementation/implementation_notes/bl011_controllability/outputs/scenarios/baseline/`
+- `07_implementation/implementation_notes/bl011_controllability/outputs/scenarios/no_influence_tracks/`
+- `07_implementation/implementation_notes/bl011_controllability/outputs/scenarios/valence_weight_up/`
+- `07_implementation/implementation_notes/bl011_controllability/outputs/scenarios/stricter_thresholds/`
+- `07_implementation/implementation_notes/bl011_controllability/outputs/scenarios/looser_thresholds/`
 
 ## Test Case TC-FRESHNESS-GUARD-001: BL-010 / BL-011 Evidence Freshness Enforcement
 
@@ -476,12 +476,12 @@
 
 ### Inputs
 - Freshness script:
-	- `07_implementation/implementation_notes/quality/check_bl010_bl011_freshness.py`
+	- `07_implementation/implementation_notes/bl014_quality/check_bl010_bl011_freshness.py`
 - Evidence artifacts:
-	- `07_implementation/implementation_notes/reproducibility/outputs/bl010_reproducibility_config_snapshot.json`
-	- `07_implementation/implementation_notes/reproducibility/outputs/bl010_reproducibility_report.json`
-	- `07_implementation/implementation_notes/controllability/outputs/bl011_controllability_config_snapshot.json`
-	- `07_implementation/implementation_notes/controllability/outputs/bl011_controllability_report.json`
+	- `07_implementation/implementation_notes/bl010_reproducibility/outputs/bl010_reproducibility_config_snapshot.json`
+	- `07_implementation/implementation_notes/bl010_reproducibility/outputs/bl010_reproducibility_report.json`
+	- `07_implementation/implementation_notes/bl011_controllability/outputs/bl011_controllability_config_snapshot.json`
+	- `07_implementation/implementation_notes/bl011_controllability/outputs/bl011_controllability_report.json`
 
 ### Pass Criteria
 - The freshness script completes without runtime failure.
@@ -502,9 +502,9 @@
 	- `bl011_active_mode_check=pass`
 
 ### Closure Evidence Artifacts
-- `07_implementation/implementation_notes/quality/check_bl010_bl011_freshness.py`
-- `07_implementation/implementation_notes/quality/outputs/bl010_bl011_freshness_report.json`
-- `07_implementation/implementation_notes/quality/outputs/bl010_bl011_freshness_matrix.csv`
+- `07_implementation/implementation_notes/bl014_quality/check_bl010_bl011_freshness.py`
+- `07_implementation/implementation_notes/bl014_quality/outputs/bl010_bl011_freshness_report.json`
+- `07_implementation/implementation_notes/bl014_quality/outputs/bl010_bl011_freshness_matrix.csv`
 
 ## Test Case TC-ACTIVE-FRESHNESS-SUITE-001: Consolidated Active Freshness Validation
 
@@ -514,11 +514,11 @@
 
 ### Inputs
 - Suite script:
-	- `07_implementation/implementation_notes/quality/run_active_freshness_suite.py`
+	- `07_implementation/implementation_notes/bl014_quality/run_active_freshness_suite.py`
 - Required evidence artifacts:
-	- `07_implementation/implementation_notes/entrypoint/outputs/bl013_orchestration_run_latest.json`
-	- `07_implementation/implementation_notes/quality/outputs/bl014_sanity_report.json`
-	- `07_implementation/implementation_notes/quality/outputs/bl010_bl011_freshness_report.json`
+	- `07_implementation/implementation_notes/bl013_entrypoint/outputs/bl013_orchestration_run_latest.json`
+	- `07_implementation/implementation_notes/bl014_quality/outputs/bl014_sanity_report.json`
+	- `07_implementation/implementation_notes/bl014_quality/outputs/bl010_bl011_freshness_report.json`
 
 ### Pass Criteria
 - Suite script exits successfully.
@@ -542,9 +542,9 @@
 	- `bl010_bl011_freshness_status=pass`
 
 ### Closure Evidence Artifacts
-- `07_implementation/implementation_notes/quality/run_active_freshness_suite.py`
-- `07_implementation/implementation_notes/quality/outputs/bl_active_freshness_suite_report.json`
-- `07_implementation/implementation_notes/quality/outputs/bl_active_freshness_suite_matrix.csv`
+- `07_implementation/implementation_notes/bl014_quality/run_active_freshness_suite.py`
+- `07_implementation/implementation_notes/bl014_quality/outputs/bl_active_freshness_suite_report.json`
+- `07_implementation/implementation_notes/bl014_quality/outputs/bl_active_freshness_suite_matrix.csv`
 
 ## Test Case TC-BL021-R2-001: Source-Scope Contract Persistence Probe
 
@@ -554,13 +554,13 @@
 
 ### Inputs
 - Probe run config:
-	- `07_implementation/implementation_notes/run_config/run_config_bl021_probe_v1.json`
+	- `07_implementation/implementation_notes/bl000_run_config/run_config_bl021_probe_v1.json`
 - Entrypoint:
-	- `07_implementation/implementation_notes/entrypoint/run_bl013_pipeline_entrypoint.py`
+	- `07_implementation/implementation_notes/bl013_entrypoint/run_bl013_pipeline_entrypoint.py`
 - Target evidence outputs:
-	- `07_implementation/implementation_notes/profile/outputs/bl004_preference_profile.json`
-	- `07_implementation/implementation_notes/profile/outputs/bl004_profile_summary.json`
-	- `07_implementation/implementation_notes/observability/outputs/bl009_run_observability_log.json`
+	- `07_implementation/implementation_notes/bl004_profile/outputs/bl004_preference_profile.json`
+	- `07_implementation/implementation_notes/bl004_profile/outputs/bl004_profile_summary.json`
+	- `07_implementation/implementation_notes/bl009_observability/outputs/bl009_run_observability_log.json`
 
 ### Pass Criteria
 - BL-013 completes pass with `--run-config` probe file.
@@ -586,10 +586,10 @@
 	- `bl009.run_config.input_scope.recently_played_limit=15`
 
 ### Closure Evidence Artifacts
-- `07_implementation/implementation_notes/entrypoint/outputs/bl013_orchestration_run_latest.json`
-- `07_implementation/implementation_notes/profile/outputs/bl004_preference_profile.json`
-- `07_implementation/implementation_notes/profile/outputs/bl004_profile_summary.json`
-- `07_implementation/implementation_notes/observability/outputs/bl009_run_observability_log.json`
+- `07_implementation/implementation_notes/bl013_entrypoint/outputs/bl013_orchestration_run_latest.json`
+- `07_implementation/implementation_notes/bl004_profile/outputs/bl004_preference_profile.json`
+- `07_implementation/implementation_notes/bl004_profile/outputs/bl004_profile_summary.json`
+- `07_implementation/implementation_notes/bl009_observability/outputs/bl009_run_observability_log.json`
 
 ## Test Case TC-BL021-R2-002: Source-Scope A/B Probe Comparison
 
@@ -599,13 +599,13 @@
 
 ### Inputs
 - Probe-A config:
-	- `07_implementation/implementation_notes/run_config/run_config_bl021_probe_v1.json`
+	- `07_implementation/implementation_notes/bl000_run_config/run_config_bl021_probe_v1.json`
 - Probe-B config:
-	- `07_implementation/implementation_notes/run_config/run_config_bl021_probe_v2.json`
+	- `07_implementation/implementation_notes/bl000_run_config/run_config_bl021_probe_v2.json`
 - Entrypoint:
-	- `07_implementation/implementation_notes/entrypoint/run_bl013_pipeline_entrypoint.py`
+	- `07_implementation/implementation_notes/bl013_entrypoint/run_bl013_pipeline_entrypoint.py`
 - Comparison artifact output:
-	- `07_implementation/implementation_notes/run_config/probe_comparison_outputs/bl021_probe_comparison_summary.json`
+	- `07_implementation/implementation_notes/bl000_run_config/probe_comparison_outputs/bl021_probe_comparison_summary.json`
 
 ### Pass Criteria
 - Probe-B BL-013 run passes with explicit run-config provenance.
@@ -636,11 +636,11 @@
 - Behavioral profile deltas are currently zero under this pipeline path, consistent with source-scope actuation not yet wired into upstream ingestion/alignment selection.
 
 ### Closure Evidence Artifacts
-- `07_implementation/implementation_notes/run_config/probe_comparison_outputs/bl004_profile_summary_probeA.json`
-- `07_implementation/implementation_notes/run_config/probe_comparison_outputs/bl004_preference_profile_probeA.json`
-- `07_implementation/implementation_notes/run_config/probe_comparison_outputs/bl009_run_observability_log_probeA.json`
-- `07_implementation/implementation_notes/run_config/probe_comparison_outputs/bl021_probe_comparison_summary.json`
-- `07_implementation/implementation_notes/entrypoint/outputs/bl013_orchestration_run_latest.json`
+- `07_implementation/implementation_notes/bl000_run_config/probe_comparison_outputs/bl004_profile_summary_probeA.json`
+- `07_implementation/implementation_notes/bl000_run_config/probe_comparison_outputs/bl004_preference_profile_probeA.json`
+- `07_implementation/implementation_notes/bl000_run_config/probe_comparison_outputs/bl009_run_observability_log_probeA.json`
+- `07_implementation/implementation_notes/bl000_run_config/probe_comparison_outputs/bl021_probe_comparison_summary.json`
+- `07_implementation/implementation_notes/bl013_entrypoint/outputs/bl013_orchestration_run_latest.json`
 
 ## Test Case TC-BL021-R2-003: Source-Scope Actuation A/B Verification
 
@@ -650,14 +650,14 @@
 
 ### Inputs
 - Probe-A config:
-	- `07_implementation/implementation_notes/run_config/run_config_bl021_probe_v1.json`
+	- `07_implementation/implementation_notes/bl000_run_config/run_config_bl021_probe_v1.json`
 - Probe-B config:
-	- `07_implementation/implementation_notes/run_config/run_config_bl021_probe_v2.json`
+	- `07_implementation/implementation_notes/bl000_run_config/run_config_bl021_probe_v2.json`
 - Scripts:
-	- `07_implementation/implementation_notes/alignment/build_bl003_ds001_spotify_seed_table.py`
-	- `07_implementation/implementation_notes/entrypoint/run_bl013_pipeline_entrypoint.py`
+	- `07_implementation/implementation_notes/bl003_alignment/build_bl003_ds001_spotify_seed_table.py`
+	- `07_implementation/implementation_notes/bl013_entrypoint/run_bl013_pipeline_entrypoint.py`
 - Comparison artifact:
-	- `07_implementation/implementation_notes/run_config/probe_comparison_outputs/bl021_probe_comparison_actuated_summary.json`
+	- `07_implementation/implementation_notes/bl000_run_config/probe_comparison_outputs/bl021_probe_comparison_actuated_summary.json`
 
 ### Pass Criteria
 - BL-003 run metrics differ between probe-A and probe-B in line with scope limits.
@@ -683,12 +683,12 @@
 - Remaining gap is orchestration convenience: BL-003 must currently be invoked before BL-013 when scope changes.
 
 ### Closure Evidence Artifacts
-- `07_implementation/implementation_notes/run_config/probe_comparison_outputs/bl003_summary_probeA_actuated.json`
-- `07_implementation/implementation_notes/run_config/probe_comparison_outputs/bl003_source_scope_manifest_probeA_actuated.json`
-- `07_implementation/implementation_notes/run_config/probe_comparison_outputs/bl004_profile_summary_probeA_actuated.json`
-- `07_implementation/implementation_notes/run_config/probe_comparison_outputs/bl009_run_observability_log_probeA_actuated.json`
-- `07_implementation/implementation_notes/run_config/probe_comparison_outputs/bl021_probe_comparison_actuated_summary.json`
-- `07_implementation/implementation_notes/alignment/outputs/bl003_source_scope_manifest.json`
+- `07_implementation/implementation_notes/bl000_run_config/probe_comparison_outputs/bl003_summary_probeA_actuated.json`
+- `07_implementation/implementation_notes/bl000_run_config/probe_comparison_outputs/bl003_source_scope_manifest_probeA_actuated.json`
+- `07_implementation/implementation_notes/bl000_run_config/probe_comparison_outputs/bl004_profile_summary_probeA_actuated.json`
+- `07_implementation/implementation_notes/bl000_run_config/probe_comparison_outputs/bl009_run_observability_log_probeA_actuated.json`
+- `07_implementation/implementation_notes/bl000_run_config/probe_comparison_outputs/bl021_probe_comparison_actuated_summary.json`
+- `07_implementation/implementation_notes/bl003_alignment/outputs/bl003_source_scope_manifest.json`
 
 ## Test Case TC-CRI004-001: Positive Threshold Validation
 
@@ -846,7 +846,7 @@ Date: 2026-03-25
 - `exclusion pressure: genre_cap_exceeded (275 rows)`
 
 **BL-007 report diagnostics (persisted)**
-- File: `07_implementation/implementation_notes/playlist/outputs/bl007_assembly_report.json`
+- File: `07_implementation/implementation_notes/bl007_playlist/outputs/bl007_assembly_report.json`
 - Field: `undersized_playlist_warning`
 - Values:
 	- `is_undersized=true`
@@ -858,7 +858,7 @@ Date: 2026-03-25
 ### BL-014 Note
 - BL-014 code now includes undersized advisory flagging and run-matrix columns (`undersized_playlist`, `undersized_shortfall`).
 - Runtime validation in this workspace is currently blocked by missing artifact:
-	- `07_implementation/implementation_notes/data_layer/outputs/bl019_ds002_integrated_candidate_dataset.csv`
+	- `07_implementation/implementation_notes/bl000_data_layer/outputs/bl019_ds002_integrated_candidate_dataset.csv`
 
 ### Pass Criteria
 1. BL-007 warns when `playlist_length < target_size` ✓
@@ -1021,9 +1021,9 @@ Tier-1 control stack validated as coherent and operational:
 
 **When evaluating controllability or reproducibility**:
 - All BL-010 and BL-011 evidence artifacts (reproducibility report, run matrix, config snapshot, controllability scenario runs) must be generated on the **same day as or after** any code changes to:
-  - `07_implementation/implementation_notes/alignment/build_bl003_ds001_spotify_seed_table.py` (seed construction logic)
-  - `07_implementation/implementation_notes/profile/build_bl004_preference_profile.py` (profile feature extraction or weighting)
-  - `07_implementation/implementation_notes/run_config/` (any run-config schema or control-surface definition that affects downstream behavior)
+  - `07_implementation/implementation_notes/bl003_alignment/build_bl003_ds001_spotify_seed_table.py` (seed construction logic)
+  - `07_implementation/implementation_notes/bl004_profile/build_bl004_preference_profile.py` (profile feature extraction or weighting)
+  - `07_implementation/implementation_notes/bl000_run_config/` (any run-config schema or control-surface definition that affects downstream behavior)
 
 **Rationale**: Changing BL-003/BL-004 semantics requires fresh BL-010 reproducibility baseline and BL-011 control baselines to remain valid. Stale evidence cannot confirm that new code exhibits correct deterministic replay or control response.
 
@@ -1040,8 +1040,8 @@ Tier-1 control stack validated as coherent and operational:
 
 ### Evidence Trail
 
-- Latest BL-010 evidence: `07_implementation/implementation_notes/reproducibility/outputs/bl010_reproducibility_report.json` (generated 2026-03-25 10:00 UTC, run_id=BL010-REPRO-20260325-xxx)
-- Latest BL-011 evidence: `07_implementation/implementation_notes/controllability/outputs/bl011_controllability_report.json` (generated 2026-03-25 10:15 UTC, run_id=BL011-CTRL-20260325-xxx)
+- Latest BL-010 evidence: `07_implementation/implementation_notes/bl010_reproducibility/outputs/bl010_reproducibility_report.json` (generated 2026-03-25 10:00 UTC, run_id=BL010-REPRO-20260325-xxx)
+- Latest BL-011 evidence: `07_implementation/implementation_notes/bl011_controllability/outputs/bl011_controllability_report.json` (generated 2026-03-25 10:15 UTC, run_id=BL011-CTRL-20260325-xxx)
 - Relevant code commits (all pre-evidence):
   - BL-003 seed-contract emission: 2026-03-25 08:00 UTC
   - BL-003 influence-injection fix: 2026-03-25 08:02 UTC

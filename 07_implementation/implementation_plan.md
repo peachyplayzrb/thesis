@@ -1,4 +1,4 @@
-﻿# Implementation Plan
+# Implementation Plan
 
 Last updated: 2026-03-25
 
@@ -35,7 +35,7 @@ Last updated: 2026-03-25
 - BL-009 ✅: Versioned observability log (`bl009-observability-v1`) with stage traceability, artifact hashes, execution scope summary, and canonical config artifact pair links.
 - BL-013 ✅: Lightweight orchestrator; emits canonical run-intent/run-effective-config artifact pair (`run-intent-v1` / `run-effective-config-v1`) before every run.
 - BL-014 ✅: Automated sanity checks; 21/21 checks pass (schema validation, cross-stage hash integrity, count/run-id continuity).
-- Semantic control-layer map: `07_implementation/implementation_notes/run_config/semantic_control_map.md` — seven semantic groups map every run-config field to stage, resolver, and output artifacts.
+- Semantic control-layer map: `07_implementation/implementation_notes/bl000_run_config/semantic_control_map.md` — seven semantic groups map every run-config field to stage, resolver, and output artifacts.
 
 ## Definition Of Done (MVP) — ALL MET
 - ✅ End-to-end run succeeds on a real user data import path (BL013-ENTRYPOINT-20260325-001946-187550).

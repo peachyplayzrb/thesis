@@ -23,7 +23,7 @@ This schema is derived from the raw Music4All base files and keeps only the fiel
 ## Output Table
 
 Suggested output path:
-- 07_implementation/implementation_notes/data_layer/outputs/ds001_working_candidate_dataset.csv
+- 07_implementation/implementation_notes/bl000_data_layer/outputs/ds001_working_candidate_dataset.csv
 
 Columns:
 

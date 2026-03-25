@@ -97,11 +97,11 @@ Resolution:
 - Re-ran BL-014 to full pass (`21/21`).
 
 ## Evidence Artifact Locations
-- BL-013 summaries: `07_implementation/implementation_notes/entrypoint/outputs/`
-- BL-006 summary (rebalance diagnostics): `07_implementation/implementation_notes/scoring/outputs/bl006_score_summary.json`
-- BL-007 assembly diagnostics: `07_implementation/implementation_notes/playlist/outputs/bl007_assembly_report.json`
-- BL-009 observability log (rebalance diagnostics): `07_implementation/implementation_notes/observability/outputs/bl009_run_observability_log.json`
-- BL-014 report/matrix/snapshot: `07_implementation/implementation_notes/quality/outputs/`
+- BL-013 summaries: `07_implementation/implementation_notes/bl013_entrypoint/outputs/`
+- BL-006 summary (rebalance diagnostics): `07_implementation/implementation_notes/bl006_scoring/outputs/bl006_score_summary.json`
+- BL-007 assembly diagnostics: `07_implementation/implementation_notes/bl007_playlist/outputs/bl007_assembly_report.json`
+- BL-009 observability log (rebalance diagnostics): `07_implementation/implementation_notes/bl009_observability/outputs/bl009_run_observability_log.json`
+- BL-014 report/matrix/snapshot: `07_implementation/implementation_notes/bl014_quality/outputs/`
 
 ## Governance and Documentation Updates
 - `07_implementation/test_notes.md`
