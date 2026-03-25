@@ -1,6 +1,6 @@
 # Friend Handoff Playbook
 
-Last updated: 2026-03-25
+Last updated: 2026-03-25 (post-migration stabilization)
 
 ## Purpose
 This file gives a collaborator the exact way to use chat in this thesis repo so work quality, logging, and governance remain consistent.
@@ -48,11 +48,17 @@ Use one of these patterns for every task:
 Current sprint state note: Day 4 is active as of 2026-03-25.
 Governance sync note: UI-010 freshness controls are closed/operational; UI-003 remains the only active unresolved issue.
 
+## Technical Snapshot (Before Chat Switch)
+1. Implementation-notes folder naming is canonicalized to BL-ordered names (`bl000_*` through `bl014_*`) and path consumers were hardened.
+2. Latest orchestration pass: `BL013-ENTRYPOINT-20260325-163713-079187` (pass).
+3. Latest sanity pass: `BL014-SANITY-20260325-163738-023840` (21/21 pass).
+4. Known caveat for quick reruns: `run_config_profile_test_threshold_015.json` currently requests `include_recently_played=true`; if Spotify export artifacts do not include recently-played data, BL-003 strict source checks can fail unless scope is adjusted or missing-source tolerance is explicitly enabled for that run.
+
 ## Run References
 1. BL-013 entrypoint command docs:
-   - `07_implementation/implementation_notes/entrypoint/bl013_run_command.md`
+   - `07_implementation/implementation_notes/bl013_entrypoint/bl013_run_command.md`
 2. Spotify API ingestion runbook:
-   - `07_implementation/implementation_notes/ingestion/spotify_api_ingestion_runbook.md`
+   - `07_implementation/implementation_notes/bl001_bl002_ingestion/spotify_api_ingestion_runbook.md`
 
 ## Session Close Checklist
 1. `07_implementation/backlog.md` reflects real status.

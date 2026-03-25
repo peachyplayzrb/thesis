@@ -1,4 +1,4 @@
-﻿# Decision Log
+# Decision Log
 
 Ordering convention (standardized 2026-03-24):
 - This log is append-only for auditability.
@@ -6,9 +6,9 @@ Ordering convention (standardized 2026-03-24):
 - New entries must be appended at the end and may include `superseded_by` when a prior decision is replaced.
 
 Maintenance snapshot (2026-03-25):
-- Highest decision ID currently present: `D-028`
-- Total decision entries: 28
-- Status distribution: accepted=24, superseded=3, rejected=1
+- Highest decision ID currently present: `D-029`
+- Total decision entries: 29
+- Status distribution: accepted=25, superseded=3, rejected=1
 - ID integrity check: no duplicate decision IDs detected
 
 Current posture snapshot (2026-03-25):
@@ -16,6 +16,7 @@ Current posture snapshot (2026-03-25):
 - Implemented source-scope closure: deferred source-scope design is now baseline behavior (`D-027`; supersedes `D-023`).
 - Freeze-first strategy was temporary and is now historical (`D-026` superseded by `D-027`).
 - Deferred enhancement still tracked: deterministic corpus-path switching fallback (`D-025`).
+- Implementation-notes naming contract is BL-ordered and canonical (`D-029`); stage/path references must use `bl000_*` ... `bl014_*` folder names.
 
 id: D-001
 date: 2026-03-12
@@ -66,8 +67,8 @@ rationale:
 Fail-fast with explicit cooldown reporting preserves operational clarity, avoids multi-hour terminal hangs, and creates concrete evidence for implementation traceability. It also keeps the pipeline resilient for normal short 429 windows while surfacing provider-side long cooldowns as bounded external blockers.
 
 evidence_basis:
-- `07_implementation/implementation_notes/ingestion/export_spotify_max_dataset.py`
-- `07_implementation/implementation_notes/ingestion/outputs/spotify_api_export/spotify_rate_limit_block.json`
+- `07_implementation/implementation_notes/bl001_bl002_ingestion/export_spotify_max_dataset.py`
+- `07_implementation/implementation_notes/bl001_bl002_ingestion/outputs/spotify_api_export/spotify_rate_limit_block.json`
 - `07_implementation/experiment_log.md` (`EXP-019`)
 - terminal evidence: `/me` returned `retry_after_seconds=84882`
 
@@ -77,7 +78,7 @@ impacted_files:
 - `00_admin/unresolved_issues.md`
 - `07_implementation/experiment_log.md`
 - `07_implementation/test_notes.md`
-- `07_implementation/implementation_notes/ingestion/export_spotify_max_dataset.py`
+- `07_implementation/implementation_notes/bl001_bl002_ingestion/export_spotify_max_dataset.py`
 
 review_date:
 none
@@ -103,8 +104,8 @@ This endpoint set gives the broadest user-preference coverage while staying with
 
 evidence_basis:
 - Spotify Web API docs: Authorization Code flow, Get User's Top Items, Get User's Saved Tracks, Get Current User's Playlists, Get Playlist Items
-- `07_implementation/implementation_notes/ingestion/export_spotify_max_dataset.py`
-- `07_implementation/implementation_notes/ingestion/spotify_api_ingestion_runbook.md`
+- `07_implementation/implementation_notes/bl001_bl002_ingestion/export_spotify_max_dataset.py`
+- `07_implementation/implementation_notes/bl001_bl002_ingestion/spotify_api_ingestion_runbook.md`
 - `07_implementation/experiment_log.md` (`EXP-018`)
 
 impacted_files:
@@ -113,8 +114,8 @@ impacted_files:
 - `07_implementation/backlog.md`
 - `07_implementation/experiment_log.md`
 - `07_implementation/test_notes.md`
-- `07_implementation/implementation_notes/ingestion/export_spotify_max_dataset.py`
-- `07_implementation/implementation_notes/ingestion/spotify_api_ingestion_runbook.md`
+- `07_implementation/implementation_notes/bl001_bl002_ingestion/export_spotify_max_dataset.py`
+- `07_implementation/implementation_notes/bl001_bl002_ingestion/spotify_api_ingestion_runbook.md`
 
 review_date:
 none
@@ -175,17 +176,17 @@ One canonical JSON log keeps the bootstrap run state in a single auditable locat
 evidence_basis:
 - `05_design/observability_design.md`
 - `00_admin/decision_log.md` (`D-005` bootstrap-first strategy)
-- upstream artifacts from `07_implementation/implementation_notes/data_layer/outputs/`, `07_implementation/implementation_notes/test_assets/`, `07_implementation/implementation_notes/profile/outputs/`, `07_implementation/implementation_notes/retrieval/outputs/`, `07_implementation/implementation_notes/scoring/outputs/`, `07_implementation/implementation_notes/playlist/outputs/`, and `07_implementation/implementation_notes/transparency/outputs/`
-- generated BL-009 artifacts in `07_implementation/implementation_notes/observability/outputs/`
+- upstream artifacts from `07_implementation/implementation_notes/bl000_data_layer/outputs/`, `07_implementation/implementation_notes/test_assets/`, `07_implementation/implementation_notes/bl004_profile/outputs/`, `07_implementation/implementation_notes/bl005_retrieval/outputs/`, `07_implementation/implementation_notes/bl006_scoring/outputs/`, `07_implementation/implementation_notes/bl007_playlist/outputs/`, and `07_implementation/implementation_notes/bl008_transparency/outputs/`
+- generated BL-009 artifacts in `07_implementation/implementation_notes/bl009_observability/outputs/`
 
 impacted_files:
 - `06_data_and_sources/schema_notes.md`
 - `07_implementation/backlog.md`
 - `07_implementation/experiment_log.md`
 - `07_implementation/test_notes.md`
-- `07_implementation/implementation_notes/observability/build_bl009_observability_log.py`
-- `07_implementation/implementation_notes/observability/outputs/bl009_run_observability_log.json`
-- `07_implementation/implementation_notes/observability/outputs/bl009_run_index.csv`
+- `07_implementation/implementation_notes/bl009_observability/build_bl009_observability_log.py`
+- `07_implementation/implementation_notes/bl009_observability/outputs/bl009_run_observability_log.json`
+- `07_implementation/implementation_notes/bl009_observability/outputs/bl009_run_index.csv`
 
 review_date:
 none
@@ -212,18 +213,18 @@ Raw hash equality is too strict for audit-oriented JSON artifacts that intention
 evidence_basis:
 - `00_admin/evaluation_plan.md` (`EP-REPRO-001`)
 - `05_design/observability_design.md`
-- `07_implementation/implementation_notes/reproducibility/outputs/bl010_reproducibility_report.json`
-- `07_implementation/implementation_notes/reproducibility/outputs/bl010_reproducibility_run_matrix.csv`
+- `07_implementation/implementation_notes/bl010_reproducibility/outputs/bl010_reproducibility_report.json`
+- `07_implementation/implementation_notes/bl010_reproducibility/outputs/bl010_reproducibility_run_matrix.csv`
 - `07_implementation/experiment_log.md` (`EXP-012`)
 
 impacted_files:
-- `07_implementation/implementation_notes/profile/build_bl004_preference_profile.py`
-- `07_implementation/implementation_notes/retrieval/build_bl005_candidate_filter.py`
-- `07_implementation/implementation_notes/scoring/build_bl006_scored_candidates.py`
-- `07_implementation/implementation_notes/playlist/build_bl007_playlist.py`
-- `07_implementation/implementation_notes/transparency/build_bl008_explanation_payloads.py`
-- `07_implementation/implementation_notes/observability/build_bl009_observability_log.py`
-- `07_implementation/implementation_notes/reproducibility/run_bl010_reproducibility_check.py`
+- `07_implementation/implementation_notes/bl004_profile/build_bl004_preference_profile.py`
+- `07_implementation/implementation_notes/bl005_retrieval/build_bl005_candidate_filter.py`
+- `07_implementation/implementation_notes/bl006_scoring/build_bl006_scored_candidates.py`
+- `07_implementation/implementation_notes/bl007_playlist/build_bl007_playlist.py`
+- `07_implementation/implementation_notes/bl008_transparency/build_bl008_explanation_payloads.py`
+- `07_implementation/implementation_notes/bl009_observability/build_bl009_observability_log.py`
+- `07_implementation/implementation_notes/bl010_reproducibility/run_bl010_reproducibility_check.py`
 - `07_implementation/experiment_log.md`
 - `07_implementation/test_notes.md`
 - `07_implementation/backlog.md`
@@ -253,14 +254,14 @@ An isolated runner keeps BL-011 evaluation traceable without destabilizing the c
 evidence_basis:
 - `00_admin/evaluation_plan.md` (`EP-CTRL-001`, `EP-CTRL-002`, `EP-CTRL-003`)
 - `05_design/controllability_design.md`
-- `07_implementation/implementation_notes/reproducibility/outputs/bl010_reproducibility_config_snapshot.json`
-- `07_implementation/implementation_notes/controllability/outputs/bl011_controllability_report.json`
-- `07_implementation/implementation_notes/controllability/outputs/bl011_controllability_run_matrix.csv`
+- `07_implementation/implementation_notes/bl010_reproducibility/outputs/bl010_reproducibility_config_snapshot.json`
+- `07_implementation/implementation_notes/bl011_controllability/outputs/bl011_controllability_report.json`
+- `07_implementation/implementation_notes/bl011_controllability/outputs/bl011_controllability_run_matrix.csv`
 - `07_implementation/experiment_log.md` (`EXP-013`)
 
 impacted_files:
-- `07_implementation/implementation_notes/controllability/run_bl011_controllability_check.py`
-- `07_implementation/implementation_notes/controllability/outputs/`
+- `07_implementation/implementation_notes/bl011_controllability/run_bl011_controllability_check.py`
+- `07_implementation/implementation_notes/bl011_controllability/outputs/`
 - `07_implementation/experiment_log.md`
 - `07_implementation/test_notes.md`
 - `07_implementation/backlog.md`
@@ -288,17 +289,17 @@ A thin orchestrator improves repeatability with minimal risk because it reuses a
 
 evidence_basis:
 - `07_implementation/backlog.md` (`BL-013`)
-- `07_implementation/implementation_notes/profile/build_bl004_preference_profile.py`
-- `07_implementation/implementation_notes/retrieval/build_bl005_candidate_filter.py`
-- `07_implementation/implementation_notes/scoring/build_bl006_scored_candidates.py`
-- `07_implementation/implementation_notes/playlist/build_bl007_playlist.py`
-- `07_implementation/implementation_notes/transparency/build_bl008_explanation_payloads.py`
-- `07_implementation/implementation_notes/observability/build_bl009_observability_log.py`
+- `07_implementation/implementation_notes/bl004_profile/build_bl004_preference_profile.py`
+- `07_implementation/implementation_notes/bl005_retrieval/build_bl005_candidate_filter.py`
+- `07_implementation/implementation_notes/bl006_scoring/build_bl006_scored_candidates.py`
+- `07_implementation/implementation_notes/bl007_playlist/build_bl007_playlist.py`
+- `07_implementation/implementation_notes/bl008_transparency/build_bl008_explanation_payloads.py`
+- `07_implementation/implementation_notes/bl009_observability/build_bl009_observability_log.py`
 
 impacted_files:
-- `07_implementation/implementation_notes/entrypoint/run_bl013_pipeline_entrypoint.py`
-- `07_implementation/implementation_notes/entrypoint/bl013_run_command.md`
-- `07_implementation/implementation_notes/entrypoint/outputs/`
+- `07_implementation/implementation_notes/bl013_entrypoint/run_bl013_pipeline_entrypoint.py`
+- `07_implementation/implementation_notes/bl013_entrypoint/bl013_run_command.md`
+- `07_implementation/implementation_notes/bl013_entrypoint/outputs/`
 - `07_implementation/backlog.md`
 - `07_implementation/experiment_log.md`
 - `07_implementation/test_notes.md`
@@ -330,9 +331,9 @@ The active MVP path is Onion-only. A deterministic refresh workflow with manifes
 evidence_basis:
 - `07_implementation/backlog.md` (`BL-019` activation)
 - `07_implementation/experiment_log.md` (`EXP-016` planned)
-- `07_implementation/implementation_notes/data_layer/outputs/onion_canonical_track_table.csv`
-- `07_implementation/implementation_notes/data_layer/outputs/onion_join_coverage_report.json`
-- `07_implementation/implementation_notes/data_layer/outputs/onion_selected_column_manifest.json`
+- `07_implementation/implementation_notes/bl000_data_layer/outputs/onion_canonical_track_table.csv`
+- `07_implementation/implementation_notes/bl000_data_layer/outputs/onion_join_coverage_report.json`
+- `07_implementation/implementation_notes/bl000_data_layer/outputs/onion_selected_column_manifest.json`
 
 impacted_files:
 - `00_admin/decision_log.md`
@@ -556,7 +557,7 @@ The proposed MSD-based construction is attractive because it is well known in MI
 evidence_basis:
 - `06_data_and_sources/dataset_registry.md` (DS-001 current accepted corpus; DS-002 proposed alternative)
 - `07_implementation/experiment_log.md` (EXP-DA-001 Music4All-Onion acquisition and current blocker context)
-- `07_implementation/implementation_notes/data_layer/candidate_corpus_feasibility_review_2026-03-19.md`
+- `07_implementation/implementation_notes/bl000_data_layer/candidate_corpus_feasibility_review_2026-03-19.md`
 - user-provided dataset construction sheet dated 2026-03-19
 
 impacted_files:
@@ -593,7 +594,7 @@ This preserves useful planning work without creating current implementation drag
 evidence_basis:
 - `06_data_and_sources/ds_002_msd_information_sheet.md`
 - `06_data_and_sources/dataset_registry.md`
-- `07_implementation/implementation_notes/data_layer/candidate_corpus_feasibility_review_2026-03-19.md`
+- `07_implementation/implementation_notes/bl000_data_layer/candidate_corpus_feasibility_review_2026-03-19.md`
 - user instruction in chat on 2026-03-19 to leave this data engineering for later and save the information sheet for future reference
 
 impacted_files:
@@ -650,7 +651,7 @@ context:
 BL-002 Spotify API export script (`export_spotify_max_dataset.py`) currently fetches data on every execution regardless of whether the parameters are identical to a previous run. Live authenticated runs experience 30-60 second latencies and rate-limiting blocks on repeat invocations despite requesting the same data. Caching would reduce quota consumption and improve iteration speed for testing and evaluation.
 
 decision:
-Implement optional SQLite-backed endpoint caching with 24-hour TTL for static Spotify endpoints (user top tracks, saved tracks, playlists, playlist items). Integrate via optional `cached_fetch()` wrapper function with graceful fallback so caching is available but not required. Cache key format: `spotify:{endpoint_path}:{SHA256(request_params)[:8]}`. Store cache in `07_implementation/implementation_notes/ingestion/outputs/spotify_api_export/spotify_resilience_cache.sqlite` with WAL mode and automatic cleanup of expired entries.
+Implement optional SQLite-backed endpoint caching with 24-hour TTL for static Spotify endpoints (user top tracks, saved tracks, playlists, playlist items). Integrate via optional `cached_fetch()` wrapper function with graceful fallback so caching is available but not required. Cache key format: `spotify:{endpoint_path}:{SHA256(request_params)[:8]}`. Store cache in `07_implementation/implementation_notes/bl001_bl002_ingestion/outputs/spotify_api_export/spotify_resilience_cache.sqlite` with WAL mode and automatic cleanup of expired entries.
 
 alternatives_considered:
 - Use Spotipy library (rejected: existing script uses urllib, refactoring not justified for single optimization)
@@ -668,7 +669,7 @@ evidence_basis:
 - Test suite created (`test_resilience_integration.py`): Validates cache existence, entry validity, TTL enforcement, job progress tracking, metadata presence
 
 impacted_files:
-- `07_implementation/implementation_notes/ingestion/export_spotify_max_dataset.py`
+- `07_implementation/implementation_notes/bl001_bl002_ingestion/export_spotify_max_dataset.py`
 - `07_implementation/spotify_resilience.py`
 - `07_implementation/SPOTIFY_INTEGRATION.md`
 - `07_implementation/test_resilience_integration.py`
@@ -694,7 +695,40 @@ impacted_files:
 - 00_admin/decision_log.md
 - 00_admin/change_log.md (C-063)
 - 00_admin/mentor_question_log.md (MQ-008)
-- 07_implementation/implementation_notes/data_layer/full_dataset_acquisition_checklist_2026-03-21.md
+- 07_implementation/implementation_notes/bl000_data_layer/full_dataset_acquisition_checklist_2026-03-21.md
+review_date: none
+
+---
+
+id: D-029
+date: 2026-03-25
+status: accepted
+context: Folder names under `07_implementation/implementation_notes/` were migrated to BL-ordered names, but runtime breakages appeared because many scripts built paths with split path-segment expressions (`Path / "segment"`) that were not fully updated by earlier literal-string replacement passes.
+decision: Adopt BL-ordered folder names as the canonical implementation-notes path contract and require all stage code, quality runners, and orchestration scripts to reference only the BL-prefixed folders (`bl000_run_config`, `bl001_bl002_ingestion`, `bl003_alignment`, `bl004_profile`, `bl005_retrieval`, `bl006_scoring`, `bl007_playlist`, `bl008_transparency`, `bl009_observability`, `bl010_reproducibility`, `bl011_controllability`, `bl013_entrypoint`, `bl014_quality`).
+alternatives_considered:
+- Keep old folder names and revert migration (rejected: user requested BL-order canonicalization)
+- Keep mixed old/new naming with compatibility shims (rejected: increases drift and maintenance cost)
+- Update only top-level string literals and ignore split path expressions (rejected: causes runtime failures)
+rationale: A single naming contract aligned to pipeline order improves traceability and onboarding, and full runtime-path normalization removes hidden execution failures after structural refactors.
+evidence_basis: BL-013 pass `BL013-ENTRYPOINT-20260325-163713-079187`; BL-014 pass `BL014-SANITY-20260325-163738-023840` (`21/21` checks); fixed path resolution failures observed in BL-013/BL-003 during migration hardening.
+impacted_files:
+- `00_admin/decision_log.md`
+- `00_admin/change_log.md` (`C-171`)
+- `00_admin/current_implementation_information_sheet_2026-03-25.md`
+- `00_admin/thesis_state.md`
+- `00_admin/handoff_friend_chat_playbook.md`
+- `07_implementation/implementation_notes/bl013_entrypoint/run_bl013_pipeline_entrypoint.py`
+- `07_implementation/implementation_notes/bl003_alignment/build_bl003_ds001_spotify_seed_table.py`
+- `07_implementation/implementation_notes/bl004_profile/build_bl004_preference_profile.py`
+- `07_implementation/implementation_notes/bl005_retrieval/build_bl005_candidate_filter.py`
+- `07_implementation/implementation_notes/bl006_scoring/build_bl006_scored_candidates.py`
+- `07_implementation/implementation_notes/bl007_playlist/build_bl007_playlist.py`
+- `07_implementation/implementation_notes/bl008_transparency/build_bl008_explanation_payloads.py`
+- `07_implementation/implementation_notes/bl009_observability/build_bl009_observability_log.py`
+- `07_implementation/implementation_notes/bl010_reproducibility/run_bl010_reproducibility_check.py`
+- `07_implementation/implementation_notes/bl011_controllability/run_bl011_controllability_check.py`
+- `07_implementation/implementation_notes/bl014_quality/check_bl010_bl011_freshness.py`
+- `07_implementation/implementation_notes/bl014_quality/run_active_freshness_suite.py`
 review_date: none
 
 ---
@@ -713,7 +747,7 @@ evidence_basis: Updated `bl003_align_spotify_api_to_ds002.py`; compile/error che
 impacted_files:
 - `00_admin/decision_log.md`
 - `00_admin/change_log.md` (C-067)
-- `07_implementation/implementation_notes/alignment/bl003_align_spotify_api_to_ds002.py`
+- `07_implementation/implementation_notes/bl003_alignment/bl003_align_spotify_api_to_ds002.py`
 - `07_implementation/experiment_log.md` (EXP-023)
 - `07_implementation/test_notes.md` (TC-BL020-002)
 - `00_admin/thesis_state.md`
@@ -735,16 +769,16 @@ alternatives_considered:
 - Continue assuming Spotify Web API can provide audio features for user tracks (rejected: endpoint deprecated; no longer dependable for thesis evidence)
 - Pause BL-020 until Music4All or a larger corpus becomes available (rejected: blocks progress; semantic/tag path yields a feasible interim evidence track)
 rationale: The root problem is corpus mismatch, not fuzzy-threshold tuning. Last.fm tags provide a viable, non-deprecated semantic bridge from real Spotify listening data into the DS-002 candidate corpus, and the downstream scoring pipeline can still produce auditable evidence if numeric user-side components are explicitly disabled and the remaining weights are renormalized. This keeps BL-020 moving while preserving traceability about the limitation.
-evidence_basis: `07_implementation/implementation_notes/ingestion/outputs/spotify_api_export/spotify_export_run_summary.json`; `07_implementation/implementation_notes/ingestion/outputs/bl020_alignment_report.json` (old DS-002 fuzzy report); `07_implementation/implementation_notes/ingestion/outputs/bl020_aligned_events.jsonl` (false-positive fuzzy events); `07_implementation/implementation_notes/ingestion/outputs/bl020_lastfm_tag_cache.json` (partial Last.fm run); code updates in BL-003/004/005/006/008; `07_implementation/experiment_log.md` (`EXP-022`); `07_implementation/test_notes.md` (`TC-BL020-001`).
+evidence_basis: `07_implementation/implementation_notes/bl001_bl002_ingestion/outputs/spotify_api_export/spotify_export_run_summary.json`; `07_implementation/implementation_notes/bl001_bl002_ingestion/outputs/bl020_alignment_report.json` (old DS-002 fuzzy report); `07_implementation/implementation_notes/bl001_bl002_ingestion/outputs/bl020_aligned_events.jsonl` (false-positive fuzzy events); `07_implementation/implementation_notes/bl001_bl002_ingestion/outputs/bl020_lastfm_tag_cache.json` (partial Last.fm run); code updates in BL-003/004/005/006/008; `07_implementation/experiment_log.md` (`EXP-022`); `07_implementation/test_notes.md` (`TC-BL020-001`).
 impacted_files:
 - `00_admin/decision_log.md`
 - `00_admin/change_log.md` (C-066)
 - `07_implementation/backlog.md`
-- `07_implementation/implementation_notes/alignment/bl003_align_spotify_api_to_ds002.py`
-- `07_implementation/implementation_notes/profile/build_bl004_preference_profile.py`
-- `07_implementation/implementation_notes/retrieval/build_bl005_candidate_filter.py`
-- `07_implementation/implementation_notes/scoring/build_bl006_scored_candidates.py`
-- `07_implementation/implementation_notes/transparency/build_bl008_explanation_payloads.py`
+- `07_implementation/implementation_notes/bl003_alignment/bl003_align_spotify_api_to_ds002.py`
+- `07_implementation/implementation_notes/bl004_profile/build_bl004_preference_profile.py`
+- `07_implementation/implementation_notes/bl005_retrieval/build_bl005_candidate_filter.py`
+- `07_implementation/implementation_notes/bl006_scoring/build_bl006_scored_candidates.py`
+- `07_implementation/implementation_notes/bl008_transparency/build_bl008_explanation_payloads.py`
 - `07_implementation/experiment_log.md`
 - `07_implementation/test_notes.md`
 review_date: none
@@ -783,12 +817,12 @@ alternatives_considered:
 - Continue with traceback-on-interrupt behavior and rely only on cache snapshots
 - Manually craft ad-hoc partial JSONL files each time interruption is needed
 rationale: Checkpointable interruption preserves operator control, reduces wasted runtime, and improves evidence continuity. A deterministic cache-to-partial conversion path allows controlled BL-004/BL-005/BL-006 dry runs while full enrichment continues later.
-evidence_basis: `07_implementation/implementation_notes/alignment/bl003_align_spotify_api_to_ds002.py`; `07_implementation/implementation_notes/alignment/build_bl003_partial_from_cache.py`; partial report `07_implementation/implementation_notes/ingestion/outputs/bl020_alignment_report_partial_from_cache.json` (`tracks_with_cache=398`, `tagged_with_lastfm=375`); BL-004 summary `07_implementation/implementation_notes/profile/outputs/bl004_profile_summary.json` (`matched_seed_count=398`).
+evidence_basis: `07_implementation/implementation_notes/bl003_alignment/bl003_align_spotify_api_to_ds002.py`; `07_implementation/implementation_notes/bl003_alignment/build_bl003_partial_from_cache.py`; partial report `07_implementation/implementation_notes/bl001_bl002_ingestion/outputs/bl020_alignment_report_partial_from_cache.json` (`tracks_with_cache=398`, `tagged_with_lastfm=375`); BL-004 summary `07_implementation/implementation_notes/bl004_profile/outputs/bl004_profile_summary.json` (`matched_seed_count=398`).
 impacted_files:
 - `00_admin/decision_log.md`
 - `00_admin/change_log.md` (C-069)
-- `07_implementation/implementation_notes/alignment/bl003_align_spotify_api_to_ds002.py`
-- `07_implementation/implementation_notes/alignment/build_bl003_partial_from_cache.py`
+- `07_implementation/implementation_notes/bl003_alignment/bl003_align_spotify_api_to_ds002.py`
+- `07_implementation/implementation_notes/bl003_alignment/build_bl003_partial_from_cache.py`
 - `07_implementation/experiment_log.md`
 - `07_implementation/test_notes.md`
 review_date: none
@@ -852,10 +886,10 @@ evidence_basis:
 - `00_admin/thesis_state.md` (BL-021 completion update section)
 - `07_implementation/experiment_log.md` (`EXP-040`, `EXP-041`, `EXP-042`)
 - `07_implementation/test_notes.md` (`TC-BL021-R2-001`, `TC-BL021-R2-002`, `TC-BL021-R2-003`)
-- `07_implementation/implementation_notes/alignment/build_bl003_ds001_spotify_seed_table.py`
-- `07_implementation/implementation_notes/profile/build_bl004_preference_profile.py`
-- `07_implementation/implementation_notes/observability/build_bl009_observability_log.py`
-- `07_implementation/implementation_notes/entrypoint/run_bl013_pipeline_entrypoint.py`
+- `07_implementation/implementation_notes/bl003_alignment/build_bl003_ds001_spotify_seed_table.py`
+- `07_implementation/implementation_notes/bl004_profile/build_bl004_preference_profile.py`
+- `07_implementation/implementation_notes/bl009_observability/build_bl009_observability_log.py`
+- `07_implementation/implementation_notes/bl013_entrypoint/run_bl013_pipeline_entrypoint.py`
 impacted_files:
 - `00_admin/decision_log.md`
 - `00_admin/change_log.md`
@@ -876,9 +910,9 @@ alternatives_considered:
 - Rewrite historical decisions to match current state (rejected: harms chronology and auditability)
 rationale: This keeps governance wording aligned with implemented behavior while preserving historical traceability. It reduces ambiguity in thesis control files and prevents evaluation/reporting drift.
 evidence_basis:
-- `07_implementation/implementation_notes/alignment/bl003_state_log_2026-03-24.md`
-- `07_implementation/implementation_notes/alignment/build_bl003_ds001_spotify_seed_table.py`
-- `07_implementation/implementation_notes/profile/build_bl004_preference_profile.py` (`lastfm_status=not_applicable_ds001`)
+- `07_implementation/implementation_notes/bl003_alignment/bl003_state_log_2026-03-24.md`
+- `07_implementation/implementation_notes/bl003_alignment/build_bl003_ds001_spotify_seed_table.py`
+- `07_implementation/implementation_notes/bl004_profile/build_bl004_preference_profile.py` (`lastfm_status=not_applicable_ds001`)
 - `00_admin/thesis_state.md`
 impacted_files:
 - `00_admin/decision_log.md`

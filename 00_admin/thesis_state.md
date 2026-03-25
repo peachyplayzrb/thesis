@@ -1,6 +1,6 @@
-﻿# Thesis State
+# Thesis State
 
-Last updated: 2026-03-25 15:00 UTC
+Last updated: 2026-03-25 16:45 UTC
 
 ## Official Current State
 
@@ -82,7 +82,8 @@ Priority status checkpoint (2026-03-25 15:00 UTC): Tier-1 pipeline remediation p
 - **Transparency Explanations** (BL-008 ✅): Transparency explanation payload generation remains active with mechanism-linked score breakdowns and rule-effect traces for playlist outputs.
 - **Observability** (BL-009 ✅): Canonical run-level observability completed on 2026-03-22. Output: `bl009_run_observability_log.json` and `bl009_run_index.csv` with stage traceability, configuration snapshots, diagnostics, and artifact hashes. Evidence in EXP-030/TC-BL020-009.
 - **Pipeline Completion**: BL-020 is fully complete (BL-003 through BL-009 executed, logged, and test-documented).
-- **Quality Automation** (BL-014 ✅): Automated sanity checks remain green after Tier-1 hardening updates. Latest integrated run on 2026-03-25 (`BL014-SANITY-20260325-014516-905552`) passed 21/21 checks.
+- **Quality Automation** (BL-014 ✅): Automated sanity checks remain green after Tier-1 hardening and post-migration stabilization updates. Latest run on 2026-03-25 (`BL014-SANITY-20260325-163738-023840`) passed 21/21 checks.
+- **Post-Migration Stabilization** (2026-03-25 ✅): BL-ordered folder migration is now runtime-stable across BL-003 through BL-014 path consumers. Latest orchestration pass: `BL013-ENTRYPOINT-20260325-163713-079187`.
 - **Tier-1 Hardening Closure** (2026-03-25 ✅): CRI-004, CRI-002, HIGH-003, HIGH-004, and CRI-003 are implemented, validated, and logged in `00_admin/tier1_hardening_execution_log_2026-03-25.md`.
 - **Current Execution Focus** (2026-03-25 14:35 UTC): thesis-writing hardening, citation-package closure, and bounded website integration stabilization; no new scope expansion.
 - **Active Risk**: Citation-package closure (UI-003) remains the main governance dependency before submission hardening; BL-010/BL-011 freshness controls are now active and passing.
@@ -95,7 +96,7 @@ Priority status checkpoint (2026-03-25 15:00 UTC): Tier-1 pipeline remediation p
 
 ### Artefact Refinement Cycle State (as of 2026-03-25) — ALL COMPLETE
 - R1 ✅: Every BL-013 run emits `run_intent_<timestamp>.json` (schema `run-intent-v1`) and `run_effective_config_<timestamp>.json` (schema `run-effective-config-v1`) as a deterministic pair before any stage executes. Both are linked from BL-009 with SHA256 verification. Validated in BL013-ENTRYPOINT-20260325-001946-187550.
-- R2 ✅: Semantic control-layer map produced at `07_implementation/implementation_notes/run_config/semantic_control_map.md`. Seven semantic groups (Input Composition, Profile Construction, Retrieval Filtering, Scoring, Playlist Assembly, Transparency, Observability) map every run-config field to consuming stage, resolver function, and output artifacts.
+- R2 ✅: Semantic control-layer map produced at `07_implementation/implementation_notes/bl000_run_config/semantic_control_map.md`. Seven semantic groups (Input Composition, Profile Construction, Retrieval Filtering, Scoring, Playlist Assembly, Transparency, Observability) map every run-config field to consuming stage, resolver function, and output artifacts.
 - R3 ✅: BL-009 observability log promoted to versioned schema (`BL009_OBSERVABILITY_SCHEMA_VERSION = "bl009-observability-v1"`). `execution_scope_summary` top-level block added with source family, interaction types, seed count, influence participation flag, and canonical artifact pair availability. Validated in BL013-ENTRYPOINT-20260325-001552-538292.
 
 ### Detailed Audit
@@ -104,10 +105,10 @@ See: `07_implementation/BL020_HANDOFF_AUDIT_2026-03-21.md` for comprehensive pre
 ## Update Control
 
 - Last updated:
-2026-03-25 15:00 UTC
+2026-03-25 16:45 UTC
 
 - Reason for last update:
-(1) Synchronize thesis-state execution snapshot with completed Tier-1 remediation package and integrated validation pass (`BL-013` pass, `BL-014` pass 21/21). (2) Refresh open-priority list to reflect post-hardening governance focus and milestone-state recalibration. (3) Align active-risk wording with current unresolved issue posture after UI-010 closure.
+(1) Record post-migration runtime stabilization after BL-ordered implementation-notes rename. (2) Update latest passing BL-013 and BL-014 run evidence (`BL013-ENTRYPOINT-20260325-163713-079187`; `BL014-SANITY-20260325-163738-023840`, `21/21`). (3) Preserve handoff clarity before chat transition.
 
 ## Locked Definitions
 - Artefact scope lock: `00_admin/Artefact_MVP_definition.md`
