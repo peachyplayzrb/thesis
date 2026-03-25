@@ -1,0 +1,70 @@
+{
+  "run_id": "BL013-ENTRYPOINT-20260325-025010-908221",
+  "task": "BL-013",
+  "generated_at_utc": "2026-03-25T02:50:10Z",
+  "overall_status": "fail",
+  "continue_on_error": false,
+  "python_executable": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\.venv\\Scripts\\python.exe",
+  "run_config_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\run_config\\run_config_template_v1.json",
+  "canonical_run_config_artifacts": {
+    "run_id": "BL013-ENTRYPOINT-20260325-025010-908221",
+    "generated_at_utc": "2026-03-25T02:50:10Z",
+    "output_dir": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\run_config\\outputs",
+    "run_intent": {
+      "path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\run_config\\outputs\\run_intent_20260325-025010-915859.json",
+      "sha256": "FAA9E4B564F3406791182AB156FA3BE0E3F31632C504765BBBD34825F46FFC99",
+      "artifact_schema_version": "run-intent-v1"
+    },
+    "run_effective_config": {
+      "path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\run_config\\outputs\\run_effective_config_20260325-025010-915859.json",
+      "sha256": "1AC7BC48468C5E72565CFC8897B77DC6C4235EF9D3F3E475F71C5D8EBA6DE640",
+      "artifact_schema_version": "run-effective-config-v1"
+    },
+    "latest": {
+      "run_intent": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\run_config\\outputs\\run_intent_latest.json",
+      "run_effective_config": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\run_config\\outputs\\run_effective_config_latest.json"
+    }
+  },
+  "refresh_seed": true,
+  "requested_stage_order": [
+    "BL-004",
+    "BL-005",
+    "BL-006",
+    "BL-007",
+    "BL-008",
+    "BL-009"
+  ],
+  "executed_stage_count": 1,
+  "failed_stage_count": 1,
+  "elapsed_seconds": 0.711,
+  "stage_results": [
+    {
+      "stage_id": "BL-003",
+      "script_path": "07_implementation/implementation_notes/alignment/build_bl003_ds001_spotify_seed_table.py",
+      "command": [
+        "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\.venv\\Scripts\\python.exe",
+        "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\alignment\\build_bl003_ds001_spotify_seed_table.py"
+      ],
+      "run_config_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\run_config\\run_config_template_v1.json",
+      "run_intent_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\run_config\\outputs\\run_intent_20260325-025010-915859.json",
+      "run_effective_config_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\run_config\\outputs\\run_effective_config_20260325-025010-915859.json",
+      "return_code": 1,
+      "status": "fail",
+      "elapsed_seconds": 0.71,
+      "stdout": "",
+      "stderr": "Traceback (most recent call last):\n  File \"C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\alignment\\build_bl003_ds001_spotify_seed_table.py\", line 987, in <module>\n    main()\n    ~~~~^^\n  File \"C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\alignment\\build_bl003_ds001_spotify_seed_table.py\", line 539, in main\n    raise RuntimeError(\n    ...<2 lines>...\n    )\nRuntimeError: BL-003 strict selected-source check failed. Missing required source files from BL-002 selection: recently_played. Re-run BL-002 export or pass --allow-missing-selected-sources to continue."
+    }
+  ],
+  "stable_artifact_hashes": {
+    "bl004_seed_trace": "6378F963A43ADAACE2818945E1F5216323D1880853085446FDB74D00CD7B525C",
+    "bl005_filtered_candidates": "77AE5D53D3D2A1682787127D508897C89BAF6043F7442624516BCACBEBEDA505",
+    "bl005_candidate_decisions": "768D2A6EBF6E55C56907A74AB4BC1EBB7C83837F547DD1DA3F97149EBD1E69E8",
+    "bl006_scored_candidates": "128F7E4CD5C485EA7B31E5B68F9EC496DB1D263B56C27713C58DF674717E2145",
+    "bl007_assembly_trace": "46ACA139C57AF326843FBDF96A2C2DE4D40525C41BAE112E17B3AD05E4B66EF4"
+  },
+  "missing_stable_artifacts": [],
+  "notes": {
+    "purpose": "Lightweight wrapper to run existing BL-004..BL-009 scripts in one command.",
+    "repeatability_check_guidance": "Compare stable_artifact_hashes between repeated runs under unchanged inputs/config."
+  }
+}
