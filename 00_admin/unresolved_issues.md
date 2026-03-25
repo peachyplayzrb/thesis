@@ -1,6 +1,6 @@
 # Unresolved Issues
 
-Last updated: 2026-03-25 15:20 UTC
+Last updated: 2026-03-25 18:25 UTC
 
 ## Active
 
@@ -18,7 +18,21 @@ Last updated: 2026-03-25 15:20 UTC
 	- status: open
 	- due_window: 2026-03-19 to 2026-03-29
 
-Active-set sync note (2026-03-25 15:20 UTC): UI-003 remains the only open unresolved issue after milestone-state recalibration and freshness-control closure.
+- UI-013 (2026-03-25): Pipeline optimization and evidence-hygiene package is not yet closed on the active BL baseline.
+	- impact: If left unresolved, final thesis claims remain operationally valid but weaker on precision/coverage quality, explanation richness, and evidence readability.
+	- progress_summary:
+		1. Comprehensive implementation issue register was consolidated in `07_implementation/IMPLEMENTATION_STATE_2026-03-24.md`.
+		2. Runtime and assurance stages are passing, but optimization debt remains visible in BL-003/BL-005/BL-006/BL-008 and governance-hygiene drift remains in BL-010/BL-011 path semantics.
+	- next_action:
+		1. Define target thresholds for BL-003 match-rate and BL-005 kept-candidate volume.
+		2. Run one controlled tuning sweep for BL-005/BL-006 weight and gate settings with BL-009 diagnostic comparison.
+		3. Normalize BL-010/BL-011 report path semantics to BL-prefixed canonical rendering.
+		4. Log closure evidence and map unresolved items to Chapter 4 limitation language if deferred.
+	- owner: AI + user
+	- status: open
+	- due_window: 2026-03-25 to 2026-03-31
+
+Active-set sync note (2026-03-25 18:25 UTC): Open items are UI-003 (citation package closure) and UI-013 (pipeline optimization and evidence-hygiene closure).
 
 ## Resolved (Recent)
 

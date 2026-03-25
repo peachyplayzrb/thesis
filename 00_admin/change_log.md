@@ -1,4 +1,4 @@
-# Change Log
+﻿# Change Log
 
 Use schema from `00_admin/operating_protocol.md`.
 
@@ -24,6 +24,7 @@ Maintenance snapshot (2026-03-25):
 | C-169 | 2026-03-25 16:35 | Copilot | Executed fail-fast high-risk regression run, fixed BL-013 command path in checklist, resolved continuity mismatch by rerunning full BL-013 chain, and reconfirmed BL-014 plus active freshness pass. |
 | C-170 | 2026-03-25 16:45 | Copilot | Removed temporary ops log artifacts on user request and consolidated final handoff state directly in changelog to preserve traceability before chat switch. |
 | C-171 | 2026-03-25 16:40 | Copilot | Completed BL-ordered implementation-notes path migration hardening, fixed missed path-construction references across stage scripts, reran BL-013 to pass, reran BL-014 to 21/21 pass, and updated handoff-critical admin state for chat transition. |
+| C-172 | 2026-03-25 18:25 | Copilot | Expanded implementation state into a comprehensive issue-focused health report and synchronized admin control files (`thesis_state.md`, `unresolved_issues.md`) to track active optimization and evidence-hygiene risks. |
 ## C-162
 - date: 2026-03-25
 - proposed_by: Copilot
@@ -125,6 +126,17 @@ Maintenance snapshot (2026-03-25):
 - affected_components: `07_implementation/implementation_notes/bl013_entrypoint/run_bl013_pipeline_entrypoint.py`, `07_implementation/implementation_notes/bl003_alignment/build_bl003_ds001_spotify_seed_table.py`, `07_implementation/implementation_notes/bl004_profile/build_bl004_preference_profile.py`, `07_implementation/implementation_notes/bl005_retrieval/build_bl005_candidate_filter.py`, `07_implementation/implementation_notes/bl006_scoring/build_bl006_scored_candidates.py`, `07_implementation/implementation_notes/bl007_playlist/build_bl007_playlist.py`, `07_implementation/implementation_notes/bl008_transparency/build_bl008_explanation_payloads.py`, `07_implementation/implementation_notes/bl009_observability/build_bl009_observability_log.py`, `07_implementation/implementation_notes/bl010_reproducibility/run_bl010_reproducibility_check.py`, `07_implementation/implementation_notes/bl011_controllability/run_bl011_controllability_check.py`, `07_implementation/implementation_notes/bl014_quality/check_bl010_bl011_freshness.py`, `07_implementation/implementation_notes/bl014_quality/run_active_freshness_suite.py`, `00_admin/current_implementation_information_sheet_2026-03-25.md`, `00_admin/thesis_state.md`, `00_admin/handoff_friend_chat_playbook.md`, `00_admin/change_log.md`
 - impact_assessment: High-positive. Removes post-rename execution drift risk and preserves a clean handoff baseline with fresh passing run evidence.
 - approval_record: Requested by user in chat on 2026-03-25.
+
+## C-172
+- date: 2026-03-25
+- proposed_by: Copilot
+- status: accepted
+- change_summary: Replaced the implementation-state snapshot with a comprehensive issue-focused health report and synchronized admin tracking files to reflect active implementation-quality and governance risks.
+- reason: User requested a more comprehensive implementation assessment that explicitly identifies current issues and then asked to update admin files accordingly.
+- evidence_basis: `07_implementation/IMPLEMENTATION_STATE_2026-03-24.md` now includes an explicit issue register (BL-003 through BL-013 risk items), prioritized action plan, and cross-cutting technical debt summary; `00_admin/unresolved_issues.md` now tracks UI-013; `00_admin/thesis_state.md` now reflects the updated open-risk posture.
+- affected_components: `07_implementation/IMPLEMENTATION_STATE_2026-03-24.md`, `00_admin/unresolved_issues.md`, `00_admin/thesis_state.md`, `00_admin/change_log.md`
+- impact_assessment: High-positive for governance clarity. Preserves passing operational baseline while making unresolved optimization and evidence-hygiene debt explicit and auditable for Chapter 4/5 limitation framing.
+- approval_record: Requested and confirmed by user in chat on 2026-03-25.
 ## C-006
 
 ## C-002

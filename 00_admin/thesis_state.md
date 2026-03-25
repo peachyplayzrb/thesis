@@ -1,6 +1,6 @@
 # Thesis State
 
-Last updated: 2026-03-25 16:45 UTC
+Last updated: 2026-03-25 18:25 UTC
 
 ## Official Current State
 
@@ -67,7 +67,7 @@ The active execution corpus is DS-001 (Music4All base path). DS-002 (`MSD subset
 3. Keep website integration under bounded hardening only (`WP-WEBINT-001`): bug fixes, observability clarity, and orchestration reliability without scope expansion.
 4. Keep M3/M4 execution status synchronized with implementation reality and package evidence for M5 evaluation consolidation.
 
-Priority status checkpoint (2026-03-25 15:00 UTC): Tier-1 pipeline remediation package is fully complete and integrated validation passed (`BL-013` pass + `BL-014` pass 21/21). UI-010 freshness automation is closed and operational; UI-003 remains the main thesis-writing governance dependency.
+Priority status checkpoint (2026-03-25 18:25 UTC): Tier-1 pipeline remediation package remains complete and integrated validation remains passing on the BL-prefixed baseline. A comprehensive implementation issue register is now published in `07_implementation/IMPLEMENTATION_STATE_2026-03-24.md`; active open dependencies are UI-003 (citation package closure) and UI-013 (pipeline optimization and evidence-hygiene closure).
 
 ## Current Implementation Status
 
@@ -86,7 +86,8 @@ Priority status checkpoint (2026-03-25 15:00 UTC): Tier-1 pipeline remediation p
 - **Post-Migration Stabilization** (2026-03-25 ✅): BL-ordered folder migration is now runtime-stable across BL-003 through BL-014 path consumers. Latest orchestration pass: `BL013-ENTRYPOINT-20260325-163713-079187`.
 - **Tier-1 Hardening Closure** (2026-03-25 ✅): CRI-004, CRI-002, HIGH-003, HIGH-004, and CRI-003 are implemented, validated, and logged in `00_admin/tier1_hardening_execution_log_2026-03-25.md`.
 - **Current Execution Focus** (2026-03-25 14:35 UTC): thesis-writing hardening, citation-package closure, and bounded website integration stabilization; no new scope expansion.
-- **Active Risk**: Citation-package closure (UI-003) remains the main governance dependency before submission hardening; BL-010/BL-011 freshness controls are now active and passing.
+- **Active Risk (Governance)**: Citation-package closure (UI-003) remains a submission-hardening dependency.
+- **Active Risk (Implementation Quality)**: Pipeline optimization and evidence-hygiene closure (UI-013) is open: BL-003 match coverage remains constrained, BL-005 retrieval breadth remains high, BL-006 numeric dominance remains visible, and BL-010/BL-011 report semantics still include minor legacy-style path rendering.
 
 ### BL-021 Source-Scope Control State (as of 2026-03-25)
 - Source-scope contract is baseline behavior (no longer deferred): implemented, validated, and traceable in run artifacts.
