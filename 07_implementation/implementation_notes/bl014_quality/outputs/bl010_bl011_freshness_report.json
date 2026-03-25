@@ -1,0 +1,69 @@
+{
+  "run_metadata": {
+    "run_id": "BL-FRESHNESS-20260325-151614",
+    "task": "BL-010/011 freshness check",
+    "generated_at_utc": "2026-03-25T15:16:14Z",
+    "elapsed_seconds": 0.202,
+    "overall_status": "pass",
+    "checks_total": 9,
+    "checks_passed": 9,
+    "checks_failed": 0
+  },
+  "current_contract_hashes": {
+    "bl010_config_hash": "A355BE084C101D0E9468097DCC83C074C29E14C974113520519C643A45D4FAED",
+    "bl011_config_hash": "244E066B1C8AC2D4655306B9C358D6C5E261DB9EA602C398C19AB920919EA94E"
+  },
+  "evidence_paths": {
+    "bl010_config_snapshot": "07_implementation/implementation_notes/bl010_reproducibility/outputs/bl010_reproducibility_config_snapshot.json",
+    "bl010_report": "07_implementation/implementation_notes/bl010_reproducibility/outputs/bl010_reproducibility_report.json",
+    "bl011_config_snapshot": "07_implementation/implementation_notes/bl011_controllability/outputs/bl011_controllability_config_snapshot.json",
+    "bl011_report": "07_implementation/implementation_notes/bl011_controllability/outputs/bl011_controllability_report.json"
+  },
+  "checks": [
+    {
+      "id": "bl010_snapshot_matches_current_contract",
+      "status": "pass",
+      "details": "BL-010 config snapshot matches the current active-pipeline reproducibility contract"
+    },
+    {
+      "id": "bl010_report_hash_matches_current_contract",
+      "status": "pass",
+      "details": "BL-010 report config_hash matches the current active-pipeline reproducibility contract"
+    },
+    {
+      "id": "bl010_fixed_input_hashes_match_current",
+      "status": "pass",
+      "details": "BL-010 fixed input hashes match the current active pipeline outputs"
+    },
+    {
+      "id": "bl010_stage_script_hashes_match_current",
+      "status": "pass",
+      "details": "BL-010 stage script hashes match the current BL-004 to BL-009 code"
+    },
+    {
+      "id": "bl010_active_mode",
+      "status": "pass",
+      "details": "BL-010 evidence is using active pipeline outputs rather than legacy surrogate inputs"
+    },
+    {
+      "id": "bl011_snapshot_matches_current_contract",
+      "status": "pass",
+      "details": "BL-011 config snapshot matches the current active controllability contract"
+    },
+    {
+      "id": "bl011_baseline_hash_matches_current_bl010",
+      "status": "pass",
+      "details": "BL-011 baseline_config_hash matches the current BL-010 baseline snapshot"
+    },
+    {
+      "id": "bl011_fixed_input_hashes_match_current",
+      "status": "pass",
+      "details": "BL-011 fixed input hashes match the current active controllability inputs"
+    },
+    {
+      "id": "bl011_active_mode",
+      "status": "pass",
+      "details": "BL-011 evidence is using active pipeline outputs rather than legacy surrogate inputs"
+    }
+  ]
+}

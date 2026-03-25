@@ -1,0 +1,136 @@
+{
+  "run_id": "BL014-SANITY-20260325-173421-745910",
+  "task": "BL-014",
+  "generated_at_utc": "2026-03-25T17:34:22Z",
+  "elapsed_seconds": 0.541,
+  "overall_status": "pass",
+  "checks_total": 21,
+  "checks_passed": 21,
+  "checks_failed": 0,
+  "advisories_total": 0,
+  "advisories": [],
+  "artifact_hashes_sha256": {
+    "bl004_profile": "685987A43A22AC1E70153C6D6BAF28F8D038F64EE7E06C3C3E83C312E75AA593",
+    "bl004_summary": "7D680A31AFB13ED18037F461A3A20140F9BED859C4A23414782EE4822A46FD28",
+    "bl005_filtered": "1D2D16814E6F201FD15ED135150C24EE8271A319934772EA4D54448A69E8B66F",
+    "bl005_decisions": "AE904B5D90E02BDC9AB15CFD8FAD9A2997D86F8BF303CBF607CBEB2D48EDA7CD",
+    "bl005_diag": "64E2CA85392980DD26F7F353AB98CC8B96FC7F0E42727DBBAF94B7FB70767B8D",
+    "bl006_scored": "791F11ED608F60BAAC7FD76791EEBE3380A2BC025A52FBF2874A80393D6603FA",
+    "bl006_summary": "382E2FF16681668A03FFE8B12AE83DFD1C9D331017CC4D56F8F3B70CF27F8451",
+    "bl007_playlist": "B24F0BD83E09A1F520DB4F2AF7FC0D41D63B1BEEB7C32CFF626EF0382F0260E1",
+    "bl007_trace": "2E6AC40C864ACBD422D09CF74FB8917D9B780CBEF40B61F280358DD38440C9D9",
+    "bl007_report": "4563AC4013F925133D674BC8B885F1C14E59741BFFACEB2592FA8396B2073798",
+    "bl008_payloads": "083D86FCFBA5A81BCF8E4D1D2DE1148CA1646C4346D7C1E36069E6B436A27EC5",
+    "bl008_summary": "7B22BB638A0F4F2D6A542CC3C42C4C84891822328E5F1EA3A8CA318DDDFC9D42",
+    "bl009_log": "9AA47103189F31DBCB28C552874E3F5B820DE27B32850A30DEA196FFF519FA9D",
+    "bl009_index": "1FE434C487A95E7C7AAA1E7F6C80F4AD71BE874A7895BFDB9193E81BD718A4E1",
+    "bl004_seed_trace": "3EAE680FE68D1E2951B96B3DE9107A7E298ECD867498FF5E9259FC09BCC6B6A4"
+  },
+  "checks": [
+    {
+      "id": "schema_bl004_summary",
+      "status": "pass",
+      "details": "BL-004 summary contains required top-level keys"
+    },
+    {
+      "id": "schema_bl005_filtered_csv",
+      "status": "pass",
+      "details": "BL-005 filtered candidates CSV contains required columns"
+    },
+    {
+      "id": "schema_bl005_decisions_csv",
+      "status": "pass",
+      "details": "BL-005 decision trace CSV contains required columns"
+    },
+    {
+      "id": "schema_bl006_scored_csv",
+      "status": "pass",
+      "details": "BL-006 scored candidates CSV contains required columns"
+    },
+    {
+      "id": "schema_bl007_playlist_json",
+      "status": "pass",
+      "details": "BL-007 playlist JSON tracks length matches playlist_length"
+    },
+    {
+      "id": "schema_bl008_payloads_json",
+      "status": "pass",
+      "details": "BL-008 payload JSON explanation count matches playlist_track_count"
+    },
+    {
+      "id": "schema_bl009_observability_log",
+      "status": "pass",
+      "details": "BL-009 observability log contains required sections"
+    },
+    {
+      "id": "hash_bl005_input_profile",
+      "status": "pass",
+      "details": "BL-005 references BL-004 profile hash correctly"
+    },
+    {
+      "id": "hash_bl005_input_seed_trace",
+      "status": "pass",
+      "details": "BL-005 references BL-004 seed trace hash correctly"
+    },
+    {
+      "id": "hash_bl005_input_dataset",
+      "status": "pass",
+      "details": "BL-005 references candidate dataset hash correctly"
+    },
+    {
+      "id": "hash_bl005_outputs",
+      "status": "pass",
+      "details": "BL-005 output hashes match actual files"
+    },
+    {
+      "id": "hash_bl006_inputs",
+      "status": "pass",
+      "details": "BL-006 input hashes match BL-004 and BL-005 outputs"
+    },
+    {
+      "id": "hash_bl006_output",
+      "status": "pass",
+      "details": "BL-006 output hash matches actual scored CSV"
+    },
+    {
+      "id": "hash_bl007_links",
+      "status": "pass",
+      "details": "BL-007 report links to BL-006 input and BL-007 outputs correctly"
+    },
+    {
+      "id": "hash_bl008_links",
+      "status": "pass",
+      "details": "BL-008 summary links to upstream inputs and output hash correctly"
+    },
+    {
+      "id": "hash_bl009_index",
+      "status": "pass",
+      "details": "BL-009 index hashes match playlist, explanation payloads, and observability log"
+    },
+    {
+      "id": "continuity_bl005_count",
+      "status": "pass",
+      "details": "BL-005 kept_candidates (72496) equals filtered CSV rows (72496)"
+    },
+    {
+      "id": "continuity_bl006_count",
+      "status": "pass",
+      "details": "BL-006 candidates_scored (72496) equals scored CSV rows (72496)"
+    },
+    {
+      "id": "continuity_bl007_bl008_counts",
+      "status": "pass",
+      "details": "BL-007 playlist length and BL-008 explanation count are aligned"
+    },
+    {
+      "id": "continuity_bl009_index_counts",
+      "status": "pass",
+      "details": "BL-009 index counts match BL-005/006/007/008 outputs"
+    },
+    {
+      "id": "continuity_bl009_run_ids",
+      "status": "pass",
+      "details": "BL-009 index run_ids match upstream stage run_ids"
+    }
+  ]
+}

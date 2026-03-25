@@ -1,0 +1,49 @@
+{
+  "run_id": "BL007-ASSEMBLE-20260325-173419-108739",
+  "generated_at_utc": "2026-03-25T17:34:19Z",
+  "elapsed_seconds": 0.572,
+  "config": {
+    "target_size": 10,
+    "min_score_threshold": 0.35,
+    "max_per_genre": 4,
+    "max_consecutive": 2
+  },
+  "counts": {
+    "candidates_evaluated": 72496,
+    "tracks_included": 10,
+    "tracks_excluded": 72486
+  },
+  "rule_hits": {
+    "R3_consecutive_run": 14,
+    "R2_genre_cap": 57,
+    "R4_length_cap": 72415
+  },
+  "undersized_playlist_warning": {
+    "is_undersized": false,
+    "target_size": 10,
+    "actual_size": 10,
+    "shortfall": 0,
+    "exclusion_reason_counts": {
+      "consecutive_genre_run": 14,
+      "genre_cap_exceeded": 57,
+      "length_cap_reached": 72415
+    },
+    "reasons": []
+  },
+  "playlist_genre_mix": {
+    "pop": 4,
+    "classic rock": 4,
+    "rock": 2
+  },
+  "playlist_score_range": {
+    "max": 0.784769,
+    "min": 0.64449
+  },
+  "input_artifact_hashes": {
+    "bl006_scored_candidates.csv": "791F11ED608F60BAAC7FD76791EEBE3380A2BC025A52FBF2874A80393D6603FA"
+  },
+  "output_artifact_hashes": {
+    "bl007_playlist.json": "B24F0BD83E09A1F520DB4F2AF7FC0D41D63B1BEEB7C32CFF626EF0382F0260E1",
+    "bl007_assembly_trace.csv": "2E6AC40C864ACBD422D09CF74FB8917D9B780CBEF40B61F280358DD38440C9D9"
+  }
+}
