@@ -92,6 +92,18 @@ def env_int(name: str, default: int) -> int:
         return default
 
 
+def env_bool(name: str, default: bool) -> bool:
+    raw = os.environ.get(name)
+    if raw is None:
+        return default
+    token = str(raw).strip().lower()
+    if token in {"1", "true", "yes", "on"}:
+        return True
+    if token in {"0", "false", "no", "off"}:
+        return False
+    return default
+
+
 def ensure_required_sections(run_log: dict) -> None:
     required_keys = [
         "run_metadata",
@@ -135,26 +147,36 @@ def resolve_bl009_runtime_controls() -> dict[str, object]:
             "config_source": "run_config",
             "run_config_path": controls.get("config_path"),
             "run_config_schema_version": controls.get("schema_version"),
+            "control_mode": dict(controls.get("control_mode") or {}),
             "run_intent_path": run_intent_path,
             "run_effective_config_path": run_effective_config_path,
             "input_scope": dict(input_scope_controls.get("input_scope") or DEFAULT_INPUT_SCOPE),
             "diagnostic_sample_limit": int(controls["diagnostic_sample_limit"]),
+            "bootstrap_mode": bool(controls.get("bootstrap_mode", True)),
         }
     return {
         "config_source": "environment",
         "run_config_path": None,
         "run_config_schema_version": None,
+        "control_mode": {
+            "validation_profile": "strict",
+            "allow_threshold_decoupling": False,
+            "allow_weight_auto_normalization": False,
+        },
         "run_intent_path": run_intent_path,
         "run_effective_config_path": run_effective_config_path,
         "input_scope": dict(DEFAULT_INPUT_SCOPE),
         "diagnostic_sample_limit": max(1, env_int("BL009_DIAGNOSTIC_SAMPLE_LIMIT", 5)),
+        "bootstrap_mode": env_bool("BL009_BOOTSTRAP_MODE", True),
     }
 
 
 def main() -> None:
     runtime_controls = resolve_bl009_runtime_controls()
+    control_mode = dict(runtime_controls.get("control_mode") or {})
     input_scope = dict(runtime_controls["input_scope"])
     diagnostic_sample_limit = int(runtime_controls["diagnostic_sample_limit"])
+    bootstrap_mode = bool(runtime_controls.get("bootstrap_mode", True))
     root = repo_root()
     output_dir = root / "07_implementation" / "implementation_notes" / "bl009_observability" / "outputs"
     output_dir.mkdir(parents=True, exist_ok=True)
@@ -358,7 +380,7 @@ def main() -> None:
             "elapsed_seconds": None,
             "observability_schema_version": BL009_OBSERVABILITY_SCHEMA_VERSION,
             "observability_scope": "artifact-level deterministic audit log",
-            "bootstrap_mode": True,
+            "bootstrap_mode": bootstrap_mode,
             "dataset_version": dataset_version,
             "dataset_version_source": dataset_version_source,
             "pipeline_version": pipeline_version,
@@ -398,6 +420,7 @@ def main() -> None:
             ),
         },
         "run_config": {
+            "control_mode": control_mode,
             "input_scope": input_scope,
             "canonical_config_artifacts": canonical_config_artifacts,
             "data_layer": (

@@ -1,6 +1,6 @@
 # Thesis State
 
-Last updated: 2026-03-25 18:25 UTC
+Last updated: 2026-03-25 22:55 UTC
 
 ## Official Current State
 
@@ -67,7 +67,7 @@ The active execution corpus is DS-001 (Music4All base path). DS-002 (`MSD subset
 3. Keep website integration under bounded hardening only (`WP-WEBINT-001`): bug fixes, observability clarity, and orchestration reliability without scope expansion.
 4. Keep M3/M4 execution status synchronized with implementation reality and package evidence for M5 evaluation consolidation.
 
-Priority status checkpoint (2026-03-25 18:25 UTC): Tier-1 pipeline remediation package remains complete and integrated validation remains passing on the BL-prefixed baseline. A comprehensive implementation issue register is now published in `07_implementation/IMPLEMENTATION_STATE_2026-03-24.md`; active open dependencies are UI-003 (citation package closure) and UI-013 (pipeline optimization and evidence-hygiene closure).
+Priority status checkpoint (2026-03-25 22:55 UTC): Tier-1 pipeline remediation package remains complete and integrated validation remains passing on the BL-prefixed baseline. UI-013 progressed with config-surface control uplift (explicit `control_mode` governance switches and config-driven BL-009 `bootstrap_mode`), while optimization-quality closure work remains open.
 
 ## Current Implementation Status
 
@@ -87,7 +87,7 @@ Priority status checkpoint (2026-03-25 18:25 UTC): Tier-1 pipeline remediation p
 - **Tier-1 Hardening Closure** (2026-03-25 ✅): CRI-004, CRI-002, HIGH-003, HIGH-004, and CRI-003 are implemented, validated, and logged in `00_admin/tier1_hardening_execution_log_2026-03-25.md`.
 - **Current Execution Focus** (2026-03-25 14:35 UTC): thesis-writing hardening, citation-package closure, and bounded website integration stabilization; no new scope expansion.
 - **Active Risk (Governance)**: Citation-package closure (UI-003) remains a submission-hardening dependency.
-- **Active Risk (Implementation Quality)**: Pipeline optimization and evidence-hygiene closure (UI-013) is open: BL-003 match coverage remains constrained, BL-005 retrieval breadth remains high, BL-006 numeric dominance remains visible, and BL-010/BL-011 report semantics still include minor legacy-style path rendering.
+- **Active Risk (Implementation Quality)**: Pipeline optimization and evidence-hygiene closure (UI-013) remains open: BL-003 match coverage remains constrained, BL-005 retrieval breadth remains high, BL-006 numeric dominance remains visible, and BL-010/BL-011 report semantics still include minor legacy-style path rendering.
 
 ### BL-021 Source-Scope Control State (as of 2026-03-25)
 - Source-scope contract is baseline behavior (no longer deferred): implemented, validated, and traceable in run artifacts.
@@ -106,10 +106,10 @@ See: `07_implementation/BL020_HANDOFF_AUDIT_2026-03-21.md` for comprehensive pre
 ## Update Control
 
 - Last updated:
-2026-03-25 16:45 UTC
+2026-03-25 22:55 UTC
 
 - Reason for last update:
-(1) Record post-migration runtime stabilization after BL-ordered implementation-notes rename. (2) Update latest passing BL-013 and BL-014 run evidence (`BL013-ENTRYPOINT-20260325-163713-079187`; `BL014-SANITY-20260325-163738-023840`, `21/21`). (3) Preserve handoff clarity before chat transition.
+(1) Record UI-013 control-surface uplift where run-config now exposes explicit governance switches (`control_mode`) and BL-009 `bootstrap_mode` is config-driven. (2) Synchronize implementation/admin state files and stage logs to the latest control-layer evidence.
 
 ## Locked Definitions
 - Artefact scope lock: `00_admin/Artefact_MVP_definition.md`

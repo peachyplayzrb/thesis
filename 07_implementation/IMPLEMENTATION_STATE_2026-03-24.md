@@ -144,6 +144,15 @@ Control/config layer:
   - run_intent_latest hash: `F1D0F50C07C7598D96C8C84BFE01ADE02D5914EC11A956C28B0819A9A5078FB9`
   - run_effective_config_latest hash: `58F55650EC0E029AEBB3A983BD90DC8971D61F6C56E2BD99B9ECE6B207D81563`
 
+### 3.4 Control-surface uplift (2026-03-25)
+
+- Run-config now includes explicit governance controls:
+  - `control_mode.validation_profile` (`strict` | `explore`)
+  - `control_mode.allow_threshold_decoupling`
+  - `control_mode.allow_weight_auto_normalization`
+- BL-009 now records `control_mode` and uses config-driven `observability_controls.bootstrap_mode` instead of hardcoded bootstrap metadata behavior.
+- Outcome: operator control is more explicit and auditable at run-config level while preserving existing strict defaults.
+
 ---
 
 ## 4. Current Implementation Issues
@@ -213,11 +222,12 @@ This section tracks concrete implementation issues visible in current logs.
 ### 4.6 Observability payload interpretation friction (BL-009)
 
 - Evidence:
-  - large payload plus legacy-influenced `bootstrap_mode` semantics noted in stage log
+  - large payload remains high-volume for manual triage
+  - `bootstrap_mode` is now config-driven, but historical legacy semantics still exist in prior evidence surfaces
 - Current impact:
   - manual triage is slower
   - mode semantics can be misread by operators
-- Risk level: medium
+- Risk level: medium-low
 - Mitigation direction:
   - add focused summary slices for triage
   - refine mode semantics in a schema revision while keeping compatibility
@@ -292,6 +302,7 @@ Priority 3 (governance hygiene):
 
 1. Normalize BL-010/BL-011 path reporting and scenario semantics.
 2. Preserve run-specific BL-013 evidence usage discipline.
+3. Use one canonical run-config profile per controlled test sweep and keep `control_mode` explicit in report interpretation.
 
 ---
 

@@ -1,6 +1,6 @@
 # Unresolved Issues
 
-Last updated: 2026-03-25 18:25 UTC
+Last updated: 2026-03-25 22:55 UTC
 
 ## Active
 
@@ -18,13 +18,15 @@ Last updated: 2026-03-25 18:25 UTC
 	- status: open
 	- due_window: 2026-03-19 to 2026-03-29
 
+
 - UI-013 (2026-03-25): Pipeline optimization and evidence-hygiene package is not yet closed on the active BL baseline.
 	- impact: If left unresolved, final thesis claims remain operationally valid but weaker on precision/coverage quality, explanation richness, and evidence readability.
 	- progress_summary:
 		1. Comprehensive implementation issue register was consolidated in `07_implementation/IMPLEMENTATION_STATE_2026-03-24.md`.
 		2. Runtime and assurance stages are passing, but optimization debt remains visible in BL-003/BL-005/BL-006/BL-008 and governance-hygiene drift remains in BL-010/BL-011 path semantics.
+		3. Config-surface control uplift implemented: run-config now exposes explicit `control_mode` governance switches (`validation_profile`, `allow_threshold_decoupling`, `allow_weight_auto_normalization`) and BL-009 observability `bootstrap_mode` is now config-driven instead of hardcoded.
 	- next_action:
-		1. Define target thresholds for BL-003 match-rate and BL-005 kept-candidate volume.
+		1. Define target thresholds for BL-003 match-rate and BL-005 kept-candidate volume under one canonical tuning config.
 		2. Run one controlled tuning sweep for BL-005/BL-006 weight and gate settings with BL-009 diagnostic comparison.
 		3. Normalize BL-010/BL-011 report path semantics to BL-prefixed canonical rendering.
 		4. Log closure evidence and map unresolved items to Chapter 4 limitation language if deferred.
@@ -33,6 +35,7 @@ Last updated: 2026-03-25 18:25 UTC
 	- due_window: 2026-03-25 to 2026-03-31
 
 Active-set sync note (2026-03-25 18:25 UTC): Open items are UI-003 (citation package closure) and UI-013 (pipeline optimization and evidence-hygiene closure).
+Active-set sync note (2026-03-25 22:55 UTC): Open items remain UI-003 (citation package closure) and UI-013 (pipeline optimization and evidence-hygiene closure); UI-013 control-surface uplift is implemented, optimization tuning closure is pending.
 
 ## Resolved (Recent)
 

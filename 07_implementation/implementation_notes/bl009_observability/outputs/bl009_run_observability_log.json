@@ -1,15 +1,15 @@
 {
   "run_metadata": {
-    "run_id": "BL009-OBSERVE-20260325-173421-285623",
+    "run_id": "BL009-OBSERVE-20260325-223955-934863",
     "task": "BL-009",
-    "generated_at_utc": "2026-03-25T17:34:21Z",
-    "elapsed_seconds": 0.83,
+    "generated_at_utc": "2026-03-25T22:39:55Z",
+    "elapsed_seconds": 0.698,
     "observability_schema_version": "bl009-observability-v1",
     "observability_scope": "artifact-level deterministic audit log",
     "bootstrap_mode": true,
     "dataset_version": "063C1F9BB3EF1C4E768F0EB88FE75980D2B25C7E8B2A6810635527B8509B7E69",
     "dataset_version_source": "active_pipeline_outputs",
-    "pipeline_version": "9C3DD264E4446A25FBCBBDC43B260FC4AC6D0C7B66AA3CEA90D7B8AB5E318384",
+    "pipeline_version": "440449A9023BC2C1A679007110BDCEC9C6E22635F7820598DC8639CC51F3B2A9",
     "dataset_component_hashes": {
       "07_implementation/implementation_notes/bl004_profile/outputs/bl004_seed_trace.csv": "3EAE680FE68D1E2951B96B3DE9107A7E298ECD867498FF5E9259FC09BCC6B6A4",
       "07_implementation/implementation_notes/bl005_retrieval/outputs/bl005_filtered_candidates.csv": "1D2D16814E6F201FD15ED135150C24EE8271A319934772EA4D54448A69E8B66F",
@@ -21,7 +21,7 @@
       "07_implementation/implementation_notes/bl006_scoring/build_bl006_scored_candidates.py": "4D12B087009A5C61243B24F58FB9D68AFE29F6A0E13CF4DD3CA488F9BD18E6FD",
       "07_implementation/implementation_notes/bl007_playlist/build_bl007_playlist.py": "D12201608D392C60AEEBAE82559417F71EDBA3314EA82EF93C42BE1D84BE1F3E",
       "07_implementation/implementation_notes/bl008_transparency/build_bl008_explanation_payloads.py": "A45BC52C68C276A89CF4C4480EBCF607E7942F3AE6DF98F3A8DD72C8BD78B2A8",
-      "07_implementation/implementation_notes/bl009_observability/build_bl009_observability_log.py": "F0F71C2CB7EFFECAF121D4ECAD66BAD89DCC9138E9424AF7ABC03DBBA776CED6"
+      "07_implementation/implementation_notes/bl009_observability/build_bl009_observability_log.py": "A19DC2256549DD49E11CCF0E170864C68BC0A5DCEBF7E009C67DC6B48031B327"
     },
     "optional_dependency_availability": {
       "bl016_candidates": {
@@ -57,10 +57,10 @@
       "BL-008": "BL008-EXPLAIN-20260325-173420-362077"
     },
     "config_source": "run_config",
-    "run_config_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl000_run_config\\configs\\profiles\\run_config_bl021_probe_v2.json",
+    "run_config_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl000_run_config\\outputs\\run_config_profile_test_threshold_015.json",
     "run_config_schema_version": "run-config-v1",
-    "run_intent_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl000_run_config\\outputs\\run_intent_20260325-173409-106246.json",
-    "run_effective_config_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl000_run_config\\outputs\\run_effective_config_20260325-173409-106246.json"
+    "run_intent_path": null,
+    "run_effective_config_path": null
   },
   "execution_scope_summary": {
     "observability_schema_version": "bl009-observability-v1",
@@ -75,9 +75,14 @@
     "history_track_count": 1026,
     "influence_tracks_included": false,
     "influence_track_count": 0,
-    "canonical_config_artifact_pair_available": true
+    "canonical_config_artifact_pair_available": false
   },
   "run_config": {
+    "control_mode": {
+      "validation_profile": "strict",
+      "allow_threshold_decoupling": false,
+      "allow_weight_auto_normalization": false
+    },
     "input_scope": {
       "source_family": "spotify_api_export",
       "include_top_tracks": true,
@@ -87,23 +92,23 @@
         "long_term"
       ],
       "include_saved_tracks": true,
-      "saved_tracks_limit": 200,
+      "saved_tracks_limit": null,
       "include_playlists": true,
-      "playlists_limit": 12,
-      "playlist_items_per_playlist_limit": 100,
+      "playlists_limit": null,
+      "playlist_items_per_playlist_limit": null,
       "include_recently_played": true,
       "recently_played_limit": 50
     },
     "canonical_config_artifacts": {
       "run_intent": {
-        "path": "07_implementation/implementation_notes/bl000_run_config/outputs/run_intent_20260325-173409-106246.json",
-        "available": true,
-        "sha256": "F1D0F50C07C7598D96C8C84BFE01ADE02D5914EC11A956C28B0819A9A5078FB9"
+        "path": null,
+        "available": false,
+        "sha256": null
       },
       "run_effective_config": {
-        "path": "07_implementation/implementation_notes/bl000_run_config/outputs/run_effective_config_20260325-173409-106246.json",
-        "available": true,
-        "sha256": "58F55650EC0E029AEBB3A983BD90DC8971D61F6C56E2BD99B9ECE6B207D81563"
+        "path": null,
+        "available": false,
+        "sha256": null
       }
     },
     "data_layer": {

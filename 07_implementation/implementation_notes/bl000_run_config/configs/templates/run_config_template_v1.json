@@ -1,5 +1,13 @@
 {
   "schema_version": "run-config-v1",
+  "control_mode": {
+    "validation_profile": "strict",
+    "validation_profile_comment": "strict keeps full guardrails enabled. explore allows more experimentation when explicit control flags are enabled.",
+    "allow_threshold_decoupling": false,
+    "allow_threshold_decoupling_comment": "When true, BL-005 retrieval numeric_thresholds and BL-006 scoring numeric_thresholds may differ. Default false for strict semantic consistency.",
+    "allow_weight_auto_normalization": false,
+    "allow_weight_auto_normalization_comment": "When true, scoring component weights are allowed to sum != 1.0 and BL-006 normalizes active weights at runtime."
+  },
   "user_context": {
     "user_id": null
   },
@@ -85,6 +93,8 @@
     "top_contributor_limit": 3
   },
   "observability_controls": {
-    "diagnostic_sample_limit": 5
+    "diagnostic_sample_limit": 5,
+    "bootstrap_mode": true,
+    "bootstrap_mode_comment": "Config-driven observability mode flag recorded in BL-009 metadata."
   }
 }

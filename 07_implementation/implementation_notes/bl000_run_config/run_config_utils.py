@@ -13,6 +13,11 @@ RUN_EFFECTIVE_ARTIFACT_SCHEMA_VERSION = "run-effective-config-v1"
 
 DEFAULT_RUN_CONFIG: dict[str, Any] = {
     "schema_version": RUN_CONFIG_SCHEMA_VERSION,
+    "control_mode": {
+        "validation_profile": "strict",
+        "allow_threshold_decoupling": False,
+        "allow_weight_auto_normalization": False,
+    },
     "user_context": {
         "user_id": None,
     },
@@ -87,6 +92,7 @@ DEFAULT_RUN_CONFIG: dict[str, Any] = {
     },
     "observability_controls": {
         "diagnostic_sample_limit": 5,
+        "bootstrap_mode": True,
     },
 }
 
@@ -142,6 +148,15 @@ def _coerce_optional_str(value: Any) -> str | None:
         return None
     text = str(value).strip()
     return text or None
+
+
+def _coerce_validation_profile(value: Any, default: str) -> str:
+    allowed = {"strict", "explore"}
+    if isinstance(value, str):
+        token = value.strip().lower()
+        if token in allowed:
+            return token
+    return default
 
 def _validate_positive_thresholds(thresholds: dict[str, Any] | None, context: str) -> dict[str, float]:
     """Validate that all numeric thresholds in the dict are positive (> 0).
@@ -283,6 +298,7 @@ def _validate_component_weights(
     context: str,
     *,
     tolerance: float = 0.01,
+    enforce_sum: bool = True,
 ) -> dict[str, float]:
     """Validate scoring component weights are numeric, non-negative, and sum to 1.0 (+/- tolerance)."""
     if not component_weights:
@@ -304,7 +320,7 @@ def _validate_component_weights(
         validated[str(key)] = weight
         total += weight
 
-    if abs(total - 1.0) > tolerance:
+    if enforce_sum and abs(total - 1.0) > tolerance:
         raise RunConfigError(
             f"{context}: component weights must sum to 1.0 (+/- {tolerance}). Got {total:.6f}"
         )
@@ -363,6 +379,23 @@ def resolve_effective_run_config(run_config_path: str | Path | None) -> tuple[di
     if not isinstance(user_context, dict):
         raise RunConfigError("run_config.user_context must be an object")
     user_context["user_id"] = _coerce_optional_str(user_context.get("user_id"))
+
+    control_mode = effective.setdefault("control_mode", {})
+    if not isinstance(control_mode, dict):
+        raise RunConfigError("run_config.control_mode must be an object")
+    control_defaults = DEFAULT_RUN_CONFIG["control_mode"]
+    control_mode["validation_profile"] = _coerce_validation_profile(
+        control_mode.get("validation_profile"),
+        str(control_defaults["validation_profile"]),
+    )
+    control_mode["allow_threshold_decoupling"] = _coerce_bool(
+        control_mode.get("allow_threshold_decoupling"),
+        bool(control_defaults["allow_threshold_decoupling"]),
+    )
+    control_mode["allow_weight_auto_normalization"] = _coerce_bool(
+        control_mode.get("allow_weight_auto_normalization"),
+        bool(control_defaults["allow_weight_auto_normalization"]),
+    )
 
     input_scope = effective.setdefault("input_scope", {})
     if not isinstance(input_scope, dict):
@@ -492,6 +525,7 @@ def resolve_effective_run_config(run_config_path: str | Path | None) -> tuple[di
     validated_component_weights = _validate_component_weights(
         scoring_controls.get("component_weights") or scoring_defaults["component_weights"],
         "scoring_controls.component_weights",
+        enforce_sum=not bool(control_mode["allow_weight_auto_normalization"]),
     )
     scoring_controls["component_weights"] = validated_component_weights
 
@@ -503,10 +537,24 @@ def resolve_effective_run_config(run_config_path: str | Path | None) -> tuple[di
         scoring_controls.get("numeric_thresholds") or DEFAULT_RUN_CONFIG["scoring_controls"]["numeric_thresholds"],
         "scoring_controls.numeric_thresholds",
     )
-    _enforce_numeric_threshold_coupling(retrieval_thresholds, scoring_thresholds)
+    if not bool(control_mode["allow_threshold_decoupling"]):
+        _enforce_numeric_threshold_coupling(retrieval_thresholds, scoring_thresholds)
     retrieval_controls["numeric_thresholds"] = retrieval_thresholds
     scoring_controls["numeric_thresholds"] = scoring_thresholds
     _enforce_profile_retrieval_limit_constraints(profile_controls, retrieval_controls)
+
+    observability_controls = effective.setdefault("observability_controls", {})
+    if not isinstance(observability_controls, dict):
+        raise RunConfigError("run_config.observability_controls must be an object")
+    observability_defaults = DEFAULT_RUN_CONFIG["observability_controls"]
+    observability_controls["diagnostic_sample_limit"] = _coerce_positive_int(
+        observability_controls.get("diagnostic_sample_limit"),
+        int(observability_defaults["diagnostic_sample_limit"]),
+    )
+    observability_controls["bootstrap_mode"] = _coerce_bool(
+        observability_controls.get("bootstrap_mode"),
+        bool(observability_defaults["bootstrap_mode"]),
+    )
 
     return effective, path
 
@@ -604,14 +652,17 @@ def resolve_bl005_controls(run_config_path: str | Path | None) -> dict[str, Any]
 def resolve_bl006_controls(run_config_path: str | Path | None) -> dict[str, Any]:
     effective, resolved_path = resolve_effective_run_config(run_config_path)
     scoring = effective["scoring_controls"]
+    control_mode = effective.get("control_mode") or {}
     defaults = DEFAULT_RUN_CONFIG["scoring_controls"]
+    component_weights = _validate_component_weights(
+        scoring.get("component_weights") or defaults["component_weights"],
+        "scoring_controls.component_weights",
+        enforce_sum=not bool(control_mode.get("allow_weight_auto_normalization", False)),
+    )
     return {
         "config_path": str(resolved_path) if resolved_path else None,
         "schema_version": effective["schema_version"],
-        "component_weights": _validate_component_weights(
-            scoring.get("component_weights") or defaults["component_weights"],
-            "scoring_controls.component_weights",
-        ),
+        "component_weights": component_weights,
         "numeric_thresholds": _validate_positive_thresholds(
             scoring.get("numeric_thresholds") or defaults["numeric_thresholds"],
             "scoring_controls.numeric_thresholds"
@@ -663,13 +714,23 @@ def resolve_bl008_controls(run_config_path: str | Path | None) -> dict[str, Any]
 def resolve_bl009_controls(run_config_path: str | Path | None) -> dict[str, Any]:
     effective, resolved_path = resolve_effective_run_config(run_config_path)
     observability = effective["observability_controls"]
+    control_mode = effective.get("control_mode") or {}
     defaults = DEFAULT_RUN_CONFIG["observability_controls"]
     return {
         "config_path": str(resolved_path) if resolved_path else None,
         "schema_version": effective["schema_version"],
+        "control_mode": {
+            "validation_profile": str(control_mode.get("validation_profile", "strict")),
+            "allow_threshold_decoupling": bool(control_mode.get("allow_threshold_decoupling", False)),
+            "allow_weight_auto_normalization": bool(control_mode.get("allow_weight_auto_normalization", False)),
+        },
         "diagnostic_sample_limit": _coerce_positive_int(
             observability.get("diagnostic_sample_limit"),
             defaults["diagnostic_sample_limit"],
+        ),
+        "bootstrap_mode": _coerce_bool(
+            observability.get("bootstrap_mode"),
+            bool(defaults["bootstrap_mode"]),
         ),
     }
 

@@ -15,6 +15,12 @@ Schema and artifacts:
 - Intent artifact schema: `run-intent-v1`
 - Effective artifact schema: `run-effective-config-v1`
 
+Config-governance surface (new on 2026-03-25):
+- `control_mode.validation_profile` (`strict` | `explore`)
+- `control_mode.allow_threshold_decoupling` (bool)
+- `control_mode.allow_weight_auto_normalization` (bool)
+- `observability_controls.bootstrap_mode` (bool)
+
 Canonical configuration surfaces:
 - Template: `07_implementation/implementation_notes/bl000_run_config/configs/templates/run_config_template_v1.json`
 - Resolver/validator module: `07_implementation/implementation_notes/bl000_run_config/run_config_utils.py`
@@ -56,11 +62,20 @@ Entrypoint propagation:
   - `retrieval.profile_top_genre_limit <= profile.top_genre_limit`
   - `retrieval.profile_top_lead_genre_limit <= profile.top_lead_genre_limit`
 
+Control-mode behavior notes:
+- `strict` profile keeps threshold-coupling and strict weight-sum validation enabled.
+- `allow_threshold_decoupling=true` permits retrieval/scoring numeric threshold maps to differ.
+- `allow_weight_auto_normalization=true` permits component weights to sum outside `1.0 +/- 0.01` and defers normalization warning behavior to BL-006 runtime diagnostics.
+- BL-009 bootstrap metadata is now control-driven through run-config (`observability_controls.bootstrap_mode`) rather than hardcoded.
+
 ## 5. Artifact Evidence (2026-03-25)
 Core run-config files:
 - `configs/templates/run_config_template_v1.json`
-  - size_bytes: `2875`
-  - sha256: `50CA44EA049B708061DB07B5215DB604ABE170EB0DF70997EBF2E9A687FD2AF6`
+  - size_bytes: `3663`
+  - sha256: `EDC39CE8D50A943419E7BF38935D790CFDE2EAC14389AD1ADC68C99D695C54AD`
+- `outputs/run_config_profile_test_threshold_015.json`
+  - size_bytes: `2811`
+  - sha256: `06D57DA824590B07040D2471274CEF8E1EE75BFB6CDEF59723705AABC0B18895`
 - `configs/profiles/run_config_bl021_probe_v1.json`
   - size_bytes: `429`
   - sha256: `B2157835E1C854E13961CABDC049B32486E076F65C497E70E1211C1511EA75FB`
@@ -68,11 +83,11 @@ Core run-config files:
   - size_bytes: `459`
   - sha256: `31E4117A5D4DD334A6F7A738BB026559BD9DE90A455654C059E006D36582C8B1`
 - `run_config_utils.py`
-  - size_bytes: `29883`
-  - sha256: `806CE24A438913E1DE08A48D2A6B7F04E547600483AEEA7A2D5734504269CDF7`
+  - size_bytes: `33986`
+  - sha256: `C879DFC58778D2BF9FA6B5BE112378B69FD6E9669F74BEC5C6E117AB54CABF1E`
 - `docs/semantic_control_map.md`
-  - size_bytes: `13218`
-  - sha256: `821C750BD06E8D86C61CC33F0EB63E38DFB2966BECE93A722C493A1A2AED2FE5`
+  - size_bytes: `14039`
+  - sha256: `0EC2CDEB8F599280E822C63763BF92C19F02C3F6C8033C9D347857702F49DF11`
 
 Latest canonical artifact pair:
 - `outputs/run_intent_latest.json`
@@ -100,6 +115,7 @@ Latest artifact intent source:
 Operational impact:
 - No blocking issues detected in current run-config contract behavior.
 - Prior `seed_controls` normalization caveat is closed.
+- Config-driven control/governance surface is now explicit in the schema, reducing hardcoded behavior in downstream observability semantics.
 
 ## 7. Completion Validation (This Log Update)
 Checks executed for this state log:

@@ -1,5 +1,10 @@
 {
   "schema_version": "run-config-v1",
+  "control_mode": {
+    "validation_profile": "strict",
+    "allow_threshold_decoupling": false,
+    "allow_weight_auto_normalization": false
+  },
   "user_context": {
     "user_id": null
   },
@@ -85,6 +90,7 @@
     "top_contributor_limit": 3
   },
   "observability_controls": {
-    "diagnostic_sample_limit": 5
+    "diagnostic_sample_limit": 5,
+    "bootstrap_mode": true
   }
 }

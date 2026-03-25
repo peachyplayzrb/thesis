@@ -8,7 +8,7 @@ Ordering convention (standardized 2026-03-24):
 - New entries must be appended at the end; historical entries remain unchanged except for explicit correction records.
 
 Maintenance snapshot (2026-03-25):
-- Highest change ID currently present: `C-171`
+- Highest change ID currently present: `C-173`
 - Known legacy correction applied in this file: prior duplicate `C-079` entry has been normalized to `C-135` for unique-ID compliance.
 
 ## C-001
@@ -25,6 +25,7 @@ Maintenance snapshot (2026-03-25):
 | C-170 | 2026-03-25 16:45 | Copilot | Removed temporary ops log artifacts on user request and consolidated final handoff state directly in changelog to preserve traceability before chat switch. |
 | C-171 | 2026-03-25 16:40 | Copilot | Completed BL-ordered implementation-notes path migration hardening, fixed missed path-construction references across stage scripts, reran BL-013 to pass, reran BL-014 to 21/21 pass, and updated handoff-critical admin state for chat transition. |
 | C-172 | 2026-03-25 18:25 | Copilot | Expanded implementation state into a comprehensive issue-focused health report and synchronized admin control files (`thesis_state.md`, `unresolved_issues.md`) to track active optimization and evidence-hygiene risks. |
+| C-173 | 2026-03-25 22:55 | Copilot | Implemented config-surface control uplift (`control_mode` + config-driven BL-009 bootstrap mode), refreshed BL-000/BL-009 state logs and implementation state, and synchronized admin tracking files for UI-013 progress evidence. |
 ## C-162
 - date: 2026-03-25
 - proposed_by: Copilot
@@ -136,6 +137,17 @@ Maintenance snapshot (2026-03-25):
 - evidence_basis: `07_implementation/IMPLEMENTATION_STATE_2026-03-24.md` now includes an explicit issue register (BL-003 through BL-013 risk items), prioritized action plan, and cross-cutting technical debt summary; `00_admin/unresolved_issues.md` now tracks UI-013; `00_admin/thesis_state.md` now reflects the updated open-risk posture.
 - affected_components: `07_implementation/IMPLEMENTATION_STATE_2026-03-24.md`, `00_admin/unresolved_issues.md`, `00_admin/thesis_state.md`, `00_admin/change_log.md`
 - impact_assessment: High-positive for governance clarity. Preserves passing operational baseline while making unresolved optimization and evidence-hygiene debt explicit and auditable for Chapter 4/5 limitation framing.
+- approval_record: Requested and confirmed by user in chat on 2026-03-25.
+
+## C-173
+- date: 2026-03-25
+- proposed_by: Copilot
+- status: accepted
+- change_summary: Implemented config-driven control-surface uplift for UI-013 (new `control_mode` governance switches and config-driven BL-009 bootstrap mode), then synchronized stage/admin logs and implementation-state evidence.
+- reason: User requested stronger operator control through configuration and then requested that all implementation/admin logs be updated and committed to reflect these implementation changes.
+- evidence_basis: `run_config_utils.py` now resolves `control_mode` fields (`validation_profile`, `allow_threshold_decoupling`, `allow_weight_auto_normalization`) and `observability_controls.bootstrap_mode`; BL-009 run log includes `run_config.control_mode` and config-driven `run_metadata.bootstrap_mode`; BL-000 and BL-009 stage state logs plus `IMPLEMENTATION_STATE_2026-03-24.md` were updated to reflect this baseline.
+- affected_components: `07_implementation/implementation_notes/bl000_run_config/run_config_utils.py`, `07_implementation/implementation_notes/bl009_observability/build_bl009_observability_log.py`, `07_implementation/implementation_notes/bl000_run_config/configs/templates/run_config_template_v1.json`, `07_implementation/implementation_notes/bl000_run_config/outputs/run_config_profile_test_threshold_015.json`, `07_implementation/implementation_notes/bl000_run_config/docs/bl000_run_config_state_log_2026-03-25.md`, `07_implementation/implementation_notes/bl009_observability/bl009_state_log_2026-03-24.md`, `07_implementation/IMPLEMENTATION_STATE_2026-03-24.md`, `00_admin/thesis_state.md`, `00_admin/unresolved_issues.md`, `00_admin/change_log.md`
+- impact_assessment: High-positive for controllability and governance clarity. Moves behavior-selection decisions from hardcoded defaults into explicit run-config controls while preserving strict-safe defaults.
 - approval_record: Requested and confirmed by user in chat on 2026-03-25.
 ## C-006
 
