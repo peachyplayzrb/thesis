@@ -1,0 +1,594 @@
+{
+  "run_metadata": {
+    "run_id": "BL010-REPRO-20260325-231041",
+    "task": "BL-010",
+    "generated_at_utc": "2026-03-25T23:10:41Z",
+    "elapsed_seconds": 37.87,
+    "replay_count": 3,
+    "bootstrap_mode": false,
+    "config_hash": "1607A65349BA4920E65B52598AEA18BFB59BF7E1268D1776F95600092B55F094",
+    "fixed_input_source": "active_pipeline_outputs"
+  },
+  "inputs": {
+    "config_snapshot_path": "07_implementation/implementation_notes/bl010_reproducibility/outputs/bl010_reproducibility_config_snapshot.json",
+    "fixed_input_hashes": {
+      "07_implementation/implementation_notes/bl004_profile/outputs/bl004_seed_trace.csv": "3EAE680FE68D1E2951B96B3DE9107A7E298ECD867498FF5E9259FC09BCC6B6A4",
+      "07_implementation/implementation_notes/bl005_retrieval/outputs/bl005_filtered_candidates.csv": "BEE2DAE05606DECF378F430B50023EA796F2774DBA120B10856B4C02B4579186",
+      "07_implementation/implementation_notes/bl005_retrieval/outputs/bl005_candidate_decisions.csv": "45E47BC51F38B4230A9C06EC16A99F7E3694F7E7237C2BB3A64A57730D3D1DAC",
+      "07_implementation/implementation_notes/bl006_scoring/outputs/bl006_scored_candidates.csv": "1B7BA98F48E1CDA181D9EF4CD51E320A94F0E80341E287AAF6EFA1E992AE227D",
+      "07_implementation/implementation_notes/bl007_playlist/outputs/bl007_assembly_trace.csv": "2EA5B2C2398600650C4A9AF099CECD6A10B8ACED1FCFC2CF4CFA41FEE970E75B"
+    },
+    "stage_scripts": {
+      "07_implementation/implementation_notes/bl004_profile/build_bl004_preference_profile.py": "9CDAA5726A63ADF4F9D72527DA178AA6E0194AB516A432F1B04DA48D865E94A6",
+      "07_implementation/implementation_notes/bl005_retrieval/build_bl005_candidate_filter.py": "20DCAF2C132FE915BFABCA191AB8A4C336FA66320B3F900CCA7D2D36D9C7EC66",
+      "07_implementation/implementation_notes/bl006_scoring/build_bl006_scored_candidates.py": "4D12B087009A5C61243B24F58FB9D68AFE29F6A0E13CF4DD3CA488F9BD18E6FD",
+      "07_implementation/implementation_notes/bl007_playlist/build_bl007_playlist.py": "D12201608D392C60AEEBAE82559417F71EDBA3314EA82EF93C42BE1D84BE1F3E",
+      "07_implementation/implementation_notes/bl008_transparency/build_bl008_explanation_payloads.py": "E23B72A9781AC2B617C020813C7B703E23DC2FD4240E267AFD365FF3A75E2F5D",
+      "07_implementation/implementation_notes/bl009_observability/build_bl009_observability_log.py": "A19DC2256549DD49E11CCF0E170864C68BC0A5DCEBF7E009C67DC6B48031B327"
+    }
+  },
+  "replay_scope": {
+    "stage_order": [
+      "BL-004",
+      "BL-005",
+      "BL-006",
+      "BL-007",
+      "BL-008",
+      "BL-009"
+    ],
+    "stable_comparison_artifacts": [
+      "profile_semantic_hash",
+      "seed_trace_hash",
+      "filtered_candidates_hash",
+      "candidate_decisions_hash",
+      "ranked_output_hash",
+      "assembly_trace_hash",
+      "playlist_output_hash",
+      "explanation_output_hash",
+      "observability_output_hash"
+    ],
+    "volatile_raw_artifacts": [
+      "bl007_playlist.json",
+      "bl008_explanation_payloads.json",
+      "bl009_run_observability_log.json"
+    ]
+  },
+  "replays": [
+    {
+      "replay_number": 1,
+      "stage_runs": [
+        {
+          "stage": "BL-004",
+          "script": "build_bl004_preference_profile.py",
+          "script_path": "07_implementation/implementation_notes/bl004_profile/build_bl004_preference_profile.py",
+          "command": "python 07_implementation/implementation_notes/bl004_profile/build_bl004_preference_profile.py",
+          "elapsed_seconds": 0.19,
+          "stdout": [
+            "BL-004 preference profile created.",
+            "profile=07_implementation/implementation_notes/bl004_profile/outputs/bl004_preference_profile.json",
+            "summary=07_implementation/implementation_notes/bl004_profile/outputs/bl004_profile_summary.json",
+            "seed_trace=07_implementation/implementation_notes/bl004_profile/outputs/bl004_seed_trace.csv"
+          ]
+        },
+        {
+          "stage": "BL-005",
+          "script": "build_bl005_candidate_filter.py",
+          "script_path": "07_implementation/implementation_notes/bl005_retrieval/build_bl005_candidate_filter.py",
+          "command": "python 07_implementation/implementation_notes/bl005_retrieval/build_bl005_candidate_filter.py",
+          "elapsed_seconds": 5.493,
+          "stdout": [
+            "BL-005 candidate filtering complete.",
+            "filtered_candidates=07_implementation/implementation_notes/bl005_retrieval/outputs/bl005_filtered_candidates.csv",
+            "decisions=07_implementation/implementation_notes/bl005_retrieval/outputs/bl005_candidate_decisions.csv",
+            "diagnostics=07_implementation/implementation_notes/bl005_retrieval/outputs/bl005_candidate_diagnostics.json"
+          ]
+        },
+        {
+          "stage": "BL-006",
+          "script": "build_bl006_scored_candidates.py",
+          "script_path": "07_implementation/implementation_notes/bl006_scoring/build_bl006_scored_candidates.py",
+          "command": "python 07_implementation/implementation_notes/bl006_scoring/build_bl006_scored_candidates.py",
+          "elapsed_seconds": 4.735,
+          "stdout": [
+            "BL-006 candidate scoring complete.",
+            "scored_candidates=07_implementation/implementation_notes/bl006_scoring/outputs/bl006_scored_candidates.csv",
+            "score_summary=07_implementation/implementation_notes/bl006_scoring/outputs/bl006_score_summary.json"
+          ]
+        },
+        {
+          "stage": "BL-007",
+          "script": "build_bl007_playlist.py",
+          "script_path": "07_implementation/implementation_notes/bl007_playlist/build_bl007_playlist.py",
+          "command": "python 07_implementation/implementation_notes/bl007_playlist/build_bl007_playlist.py",
+          "elapsed_seconds": 1.287,
+          "stdout": [
+            "BL-007 playlist assembly complete.  Playlist: 10/10 tracks",
+            "Run ID : BL007-ASSEMBLE-20260325-231053-055729",
+            "Genre mix : {'pop': 4, 'classic rock': 4, 'rock': 2}"
+          ]
+        },
+        {
+          "stage": "BL-008",
+          "script": "build_bl008_explanation_payloads.py",
+          "script_path": "07_implementation/implementation_notes/bl008_transparency/build_bl008_explanation_payloads.py",
+          "command": "python 07_implementation/implementation_notes/bl008_transparency/build_bl008_explanation_payloads.py",
+          "elapsed_seconds": 1.011,
+          "stdout": [
+            "BL-008 explanation payloads complete. Tracks explained: 10",
+            "Run ID: BL008-EXPLAIN-20260325-231054-428348",
+            "pos= 1  C9oA7Glm1TItxpQA  top=Lead genre match",
+            "pos= 2  7dYk0TCGZqev3LJD  top=Tag overlap",
+            "pos= 3  3ltMH5jik02hVLDF  top=Genre overlap",
+            "pos= 4  D8u1nCspnPIixiZa  top=Lead genre match",
+            "pos= 5  op7gT9GOpqOk7wc8  top=Lead genre match",
+            "pos= 6  8fDlJsjie4DoFMV0  top=Lead genre match",
+            "pos= 7  xx7AjP300BpGG3CX  top=Lead genre match",
+            "pos= 8  STQQY9CB4ccv4qWQ  top=Tag overlap",
+            "pos= 9  8QjULlOeyqMiCPMr  top=Genre overlap",
+            "pos=10  klFSyJqiipFN08TK  top=Tag overlap"
+          ]
+        },
+        {
+          "stage": "BL-009",
+          "script": "build_bl009_observability_log.py",
+          "script_path": "07_implementation/implementation_notes/bl009_observability/build_bl009_observability_log.py",
+          "command": "python 07_implementation/implementation_notes/bl009_observability/build_bl009_observability_log.py",
+          "elapsed_seconds": 1.61,
+          "stdout": [
+            "BL-009 observability logging complete.",
+            "run_log=07_implementation/implementation_notes/bl009_observability/outputs/bl009_run_observability_log.json",
+            "run_index=07_implementation/implementation_notes/bl009_observability/outputs/bl009_run_index.csv",
+            "run_id=BL009-OBSERVE-20260325-231055-785930"
+          ]
+        }
+      ],
+      "stage_run_ids": {
+        "BL-004": "BL004-PROFILE-20260325-231041-980099",
+        "BL-005": "BL005-FILTER-20260325-231043-187154",
+        "BL-006": "BL006-SCORE-20260325-231048-320258",
+        "BL-007": "BL007-ASSEMBLE-20260325-231053-055729",
+        "BL-008": "BL008-EXPLAIN-20260325-231054-428348",
+        "BL-009": "BL009-OBSERVE-20260325-231055-785930"
+      },
+      "raw_hashes": {
+        "bl004_seed_trace": "3EAE680FE68D1E2951B96B3DE9107A7E298ECD867498FF5E9259FC09BCC6B6A4",
+        "bl005_filtered": "BEE2DAE05606DECF378F430B50023EA796F2774DBA120B10856B4C02B4579186",
+        "bl005_decisions": "45E47BC51F38B4230A9C06EC16A99F7E3694F7E7237C2BB3A64A57730D3D1DAC",
+        "bl006_scored": "1B7BA98F48E1CDA181D9EF4CD51E320A94F0E80341E287AAF6EFA1E992AE227D",
+        "bl007_trace": "2EA5B2C2398600650C4A9AF099CECD6A10B8ACED1FCFC2CF4CFA41FEE970E75B",
+        "bl007_playlist": "A0B2F1C3FF9C480518F80B7267E39823369B8470CD050905F36505FE2FCB8475",
+        "bl008_payloads": "63967AA025601451017C88638B3BADB2B6FE57F08BC46BB5FC21BE6C74E641CF",
+        "bl009_log": "3EEAF28F4FEA89A707ABCA2AD88B259FFF534EEF9958CAE794968D710C2B02A9",
+        "bl009_index": "4B14A65A1F75568F5EF81BF5C16CB607B6307091CBD25DF13F14F5D6C2956DCA"
+      },
+      "stable_hashes": {
+        "profile_semantic_hash": "FDFAF1AC85927981DE3C7E7539E504F19B70A5AD0A15EB3F86E26029D20D0500",
+        "ranked_output_hash": "1B7BA98F48E1CDA181D9EF4CD51E320A94F0E80341E287AAF6EFA1E992AE227D",
+        "playlist_output_hash": "E7744B7B366C51FE7811BD4272A90472500E4A807584C06A46076B417F8254C5",
+        "explanation_output_hash": "9E20AEF6BD98D94794298C4F078F345D5682EF1CDB8534BBF2EA41729D5B376C",
+        "observability_output_hash": "E458092D61DF7F39EE79449D5B58F249A1EECEEC438E79090850994A18A49821",
+        "seed_trace_hash": "3EAE680FE68D1E2951B96B3DE9107A7E298ECD867498FF5E9259FC09BCC6B6A4",
+        "candidate_decisions_hash": "45E47BC51F38B4230A9C06EC16A99F7E3694F7E7237C2BB3A64A57730D3D1DAC",
+        "filtered_candidates_hash": "BEE2DAE05606DECF378F430B50023EA796F2774DBA120B10856B4C02B4579186",
+        "assembly_trace_hash": "2EA5B2C2398600650C4A9AF099CECD6A10B8ACED1FCFC2CF4CFA41FEE970E75B"
+      },
+      "semantic_snapshots": {
+        "playlist_track_ids": [
+          "C9oA7Glm1TItxpQA",
+          "7dYk0TCGZqev3LJD",
+          "3ltMH5jik02hVLDF",
+          "D8u1nCspnPIixiZa",
+          "op7gT9GOpqOk7wc8",
+          "8fDlJsjie4DoFMV0",
+          "xx7AjP300BpGG3CX",
+          "STQQY9CB4ccv4qWQ",
+          "8QjULlOeyqMiCPMr",
+          "klFSyJqiipFN08TK"
+        ],
+        "explanation_track_ids": [
+          "C9oA7Glm1TItxpQA",
+          "7dYk0TCGZqev3LJD",
+          "3ltMH5jik02hVLDF",
+          "D8u1nCspnPIixiZa",
+          "op7gT9GOpqOk7wc8",
+          "8fDlJsjie4DoFMV0",
+          "xx7AjP300BpGG3CX",
+          "STQQY9CB4ccv4qWQ",
+          "8QjULlOeyqMiCPMr",
+          "klFSyJqiipFN08TK"
+        ],
+        "observability_dataset_version": "1F363591C9ED1128DE714378C02B9CE0D4CAAA700BD5FA477512995603269A46",
+        "observability_pipeline_version": "BAF601823F6BC0FA01C689902B5DDBCC54A127CAF52C28D4EAD535075B8EAEAC",
+        "observability_index_row": {
+          "run_id": "BL009-OBSERVE-20260325-231055-785930",
+          "generated_at_utc": "2026-03-25T23:10:55Z",
+          "dataset_version": "1F363591C9ED1128DE714378C02B9CE0D4CAAA700BD5FA477512995603269A46",
+          "pipeline_version": "BAF601823F6BC0FA01C689902B5DDBCC54A127CAF52C28D4EAD535075B8EAEAC",
+          "bootstrap_mode": "1",
+          "profile_run_id": "BL004-PROFILE-20260325-231041-980099",
+          "retrieval_run_id": "BL005-FILTER-20260325-231043-187154",
+          "scoring_run_id": "BL006-SCORE-20260325-231048-320258",
+          "assembly_run_id": "BL007-ASSEMBLE-20260325-231053-055729",
+          "transparency_run_id": "BL008-EXPLAIN-20260325-231054-428348",
+          "kept_candidates": "55643",
+          "candidates_scored": "55643",
+          "playlist_length": "10",
+          "explanation_count": "10",
+          "playlist_sha256": "A0B2F1C3FF9C480518F80B7267E39823369B8470CD050905F36505FE2FCB8475",
+          "explanation_payloads_sha256": "63967AA025601451017C88638B3BADB2B6FE57F08BC46BB5FC21BE6C74E641CF",
+          "observability_log_sha256": "3EEAF28F4FEA89A707ABCA2AD88B259FFF534EEF9958CAE794968D710C2B02A9"
+        }
+      },
+      "archive_dir": "07_implementation/implementation_notes/bl010_reproducibility/outputs/replay_01"
+    },
+    {
+      "replay_number": 2,
+      "stage_runs": [
+        {
+          "stage": "BL-004",
+          "script": "build_bl004_preference_profile.py",
+          "script_path": "07_implementation/implementation_notes/bl004_profile/build_bl004_preference_profile.py",
+          "command": "python 07_implementation/implementation_notes/bl004_profile/build_bl004_preference_profile.py",
+          "elapsed_seconds": 0.221,
+          "stdout": [
+            "BL-004 preference profile created.",
+            "profile=07_implementation/implementation_notes/bl004_profile/outputs/bl004_preference_profile.json",
+            "summary=07_implementation/implementation_notes/bl004_profile/outputs/bl004_profile_summary.json",
+            "seed_trace=07_implementation/implementation_notes/bl004_profile/outputs/bl004_seed_trace.csv"
+          ]
+        },
+        {
+          "stage": "BL-005",
+          "script": "build_bl005_candidate_filter.py",
+          "script_path": "07_implementation/implementation_notes/bl005_retrieval/build_bl005_candidate_filter.py",
+          "command": "python 07_implementation/implementation_notes/bl005_retrieval/build_bl005_candidate_filter.py",
+          "elapsed_seconds": 4.767,
+          "stdout": [
+            "BL-005 candidate filtering complete.",
+            "filtered_candidates=07_implementation/implementation_notes/bl005_retrieval/outputs/bl005_filtered_candidates.csv",
+            "decisions=07_implementation/implementation_notes/bl005_retrieval/outputs/bl005_candidate_decisions.csv",
+            "diagnostics=07_implementation/implementation_notes/bl005_retrieval/outputs/bl005_candidate_diagnostics.json"
+          ]
+        },
+        {
+          "stage": "BL-006",
+          "script": "build_bl006_scored_candidates.py",
+          "script_path": "07_implementation/implementation_notes/bl006_scoring/build_bl006_scored_candidates.py",
+          "command": "python 07_implementation/implementation_notes/bl006_scoring/build_bl006_scored_candidates.py",
+          "elapsed_seconds": 3.662,
+          "stdout": [
+            "BL-006 candidate scoring complete.",
+            "scored_candidates=07_implementation/implementation_notes/bl006_scoring/outputs/bl006_scored_candidates.csv",
+            "score_summary=07_implementation/implementation_notes/bl006_scoring/outputs/bl006_score_summary.json"
+          ]
+        },
+        {
+          "stage": "BL-007",
+          "script": "build_bl007_playlist.py",
+          "script_path": "07_implementation/implementation_notes/bl007_playlist/build_bl007_playlist.py",
+          "command": "python 07_implementation/implementation_notes/bl007_playlist/build_bl007_playlist.py",
+          "elapsed_seconds": 1.131,
+          "stdout": [
+            "BL-007 playlist assembly complete.  Playlist: 10/10 tracks",
+            "Run ID : BL007-ASSEMBLE-20260325-231105-828971",
+            "Genre mix : {'pop': 4, 'classic rock': 4, 'rock': 2}"
+          ]
+        },
+        {
+          "stage": "BL-008",
+          "script": "build_bl008_explanation_payloads.py",
+          "script_path": "07_implementation/implementation_notes/bl008_transparency/build_bl008_explanation_payloads.py",
+          "command": "python 07_implementation/implementation_notes/bl008_transparency/build_bl008_explanation_payloads.py",
+          "elapsed_seconds": 0.891,
+          "stdout": [
+            "BL-008 explanation payloads complete. Tracks explained: 10",
+            "Run ID: BL008-EXPLAIN-20260325-231107-027661",
+            "pos= 1  C9oA7Glm1TItxpQA  top=Lead genre match",
+            "pos= 2  7dYk0TCGZqev3LJD  top=Tag overlap",
+            "pos= 3  3ltMH5jik02hVLDF  top=Genre overlap",
+            "pos= 4  D8u1nCspnPIixiZa  top=Lead genre match",
+            "pos= 5  op7gT9GOpqOk7wc8  top=Lead genre match",
+            "pos= 6  8fDlJsjie4DoFMV0  top=Lead genre match",
+            "pos= 7  xx7AjP300BpGG3CX  top=Lead genre match",
+            "pos= 8  STQQY9CB4ccv4qWQ  top=Tag overlap",
+            "pos= 9  8QjULlOeyqMiCPMr  top=Genre overlap",
+            "pos=10  klFSyJqiipFN08TK  top=Tag overlap"
+          ]
+        },
+        {
+          "stage": "BL-009",
+          "script": "build_bl009_observability_log.py",
+          "script_path": "07_implementation/implementation_notes/bl009_observability/build_bl009_observability_log.py",
+          "command": "python 07_implementation/implementation_notes/bl009_observability/build_bl009_observability_log.py",
+          "elapsed_seconds": 1.137,
+          "stdout": [
+            "BL-009 observability logging complete.",
+            "run_log=07_implementation/implementation_notes/bl009_observability/outputs/bl009_run_observability_log.json",
+            "run_index=07_implementation/implementation_notes/bl009_observability/outputs/bl009_run_index.csv",
+            "run_id=BL009-OBSERVE-20260325-231107-992120"
+          ]
+        }
+      ],
+      "stage_run_ids": {
+        "BL-004": "BL004-PROFILE-20260325-231056-612165",
+        "BL-005": "BL005-FILTER-20260325-231057-795884",
+        "BL-006": "BL006-SCORE-20260325-231101-985823",
+        "BL-007": "BL007-ASSEMBLE-20260325-231105-828971",
+        "BL-008": "BL008-EXPLAIN-20260325-231107-027661",
+        "BL-009": "BL009-OBSERVE-20260325-231107-992120"
+      },
+      "raw_hashes": {
+        "bl004_seed_trace": "3EAE680FE68D1E2951B96B3DE9107A7E298ECD867498FF5E9259FC09BCC6B6A4",
+        "bl005_filtered": "BEE2DAE05606DECF378F430B50023EA796F2774DBA120B10856B4C02B4579186",
+        "bl005_decisions": "45E47BC51F38B4230A9C06EC16A99F7E3694F7E7237C2BB3A64A57730D3D1DAC",
+        "bl006_scored": "1B7BA98F48E1CDA181D9EF4CD51E320A94F0E80341E287AAF6EFA1E992AE227D",
+        "bl007_trace": "2EA5B2C2398600650C4A9AF099CECD6A10B8ACED1FCFC2CF4CFA41FEE970E75B",
+        "bl007_playlist": "B398F11BA061CC5AA3BFBD3C1196693A1356C8AA9875CF5E5E47E742B586581E",
+        "bl008_payloads": "53FB22C10D69B27E0CA79E64C139190B74C361AC4D3F6B14A7204165CEA0A098",
+        "bl009_log": "19A44EBC7C12B2E2B8464BBD2FDE692C8D032CE9043BBD87DA0CAAE4BECC9191",
+        "bl009_index": "D3CB1E62BA22D70C50E7D553AF39258E220D674955254634D2970F6D28A71269"
+      },
+      "stable_hashes": {
+        "profile_semantic_hash": "FDFAF1AC85927981DE3C7E7539E504F19B70A5AD0A15EB3F86E26029D20D0500",
+        "ranked_output_hash": "1B7BA98F48E1CDA181D9EF4CD51E320A94F0E80341E287AAF6EFA1E992AE227D",
+        "playlist_output_hash": "E7744B7B366C51FE7811BD4272A90472500E4A807584C06A46076B417F8254C5",
+        "explanation_output_hash": "9E20AEF6BD98D94794298C4F078F345D5682EF1CDB8534BBF2EA41729D5B376C",
+        "observability_output_hash": "E458092D61DF7F39EE79449D5B58F249A1EECEEC438E79090850994A18A49821",
+        "seed_trace_hash": "3EAE680FE68D1E2951B96B3DE9107A7E298ECD867498FF5E9259FC09BCC6B6A4",
+        "candidate_decisions_hash": "45E47BC51F38B4230A9C06EC16A99F7E3694F7E7237C2BB3A64A57730D3D1DAC",
+        "filtered_candidates_hash": "BEE2DAE05606DECF378F430B50023EA796F2774DBA120B10856B4C02B4579186",
+        "assembly_trace_hash": "2EA5B2C2398600650C4A9AF099CECD6A10B8ACED1FCFC2CF4CFA41FEE970E75B"
+      },
+      "semantic_snapshots": {
+        "playlist_track_ids": [
+          "C9oA7Glm1TItxpQA",
+          "7dYk0TCGZqev3LJD",
+          "3ltMH5jik02hVLDF",
+          "D8u1nCspnPIixiZa",
+          "op7gT9GOpqOk7wc8",
+          "8fDlJsjie4DoFMV0",
+          "xx7AjP300BpGG3CX",
+          "STQQY9CB4ccv4qWQ",
+          "8QjULlOeyqMiCPMr",
+          "klFSyJqiipFN08TK"
+        ],
+        "explanation_track_ids": [
+          "C9oA7Glm1TItxpQA",
+          "7dYk0TCGZqev3LJD",
+          "3ltMH5jik02hVLDF",
+          "D8u1nCspnPIixiZa",
+          "op7gT9GOpqOk7wc8",
+          "8fDlJsjie4DoFMV0",
+          "xx7AjP300BpGG3CX",
+          "STQQY9CB4ccv4qWQ",
+          "8QjULlOeyqMiCPMr",
+          "klFSyJqiipFN08TK"
+        ],
+        "observability_dataset_version": "1F363591C9ED1128DE714378C02B9CE0D4CAAA700BD5FA477512995603269A46",
+        "observability_pipeline_version": "BAF601823F6BC0FA01C689902B5DDBCC54A127CAF52C28D4EAD535075B8EAEAC",
+        "observability_index_row": {
+          "run_id": "BL009-OBSERVE-20260325-231107-992120",
+          "generated_at_utc": "2026-03-25T23:11:07Z",
+          "dataset_version": "1F363591C9ED1128DE714378C02B9CE0D4CAAA700BD5FA477512995603269A46",
+          "pipeline_version": "BAF601823F6BC0FA01C689902B5DDBCC54A127CAF52C28D4EAD535075B8EAEAC",
+          "bootstrap_mode": "1",
+          "profile_run_id": "BL004-PROFILE-20260325-231056-612165",
+          "retrieval_run_id": "BL005-FILTER-20260325-231057-795884",
+          "scoring_run_id": "BL006-SCORE-20260325-231101-985823",
+          "assembly_run_id": "BL007-ASSEMBLE-20260325-231105-828971",
+          "transparency_run_id": "BL008-EXPLAIN-20260325-231107-027661",
+          "kept_candidates": "55643",
+          "candidates_scored": "55643",
+          "playlist_length": "10",
+          "explanation_count": "10",
+          "playlist_sha256": "B398F11BA061CC5AA3BFBD3C1196693A1356C8AA9875CF5E5E47E742B586581E",
+          "explanation_payloads_sha256": "53FB22C10D69B27E0CA79E64C139190B74C361AC4D3F6B14A7204165CEA0A098",
+          "observability_log_sha256": "19A44EBC7C12B2E2B8464BBD2FDE692C8D032CE9043BBD87DA0CAAE4BECC9191"
+        }
+      },
+      "archive_dir": "07_implementation/implementation_notes/bl010_reproducibility/outputs/replay_02"
+    },
+    {
+      "replay_number": 3,
+      "stage_runs": [
+        {
+          "stage": "BL-004",
+          "script": "build_bl004_preference_profile.py",
+          "script_path": "07_implementation/implementation_notes/bl004_profile/build_bl004_preference_profile.py",
+          "command": "python 07_implementation/implementation_notes/bl004_profile/build_bl004_preference_profile.py",
+          "elapsed_seconds": 0.254,
+          "stdout": [
+            "BL-004 preference profile created.",
+            "profile=07_implementation/implementation_notes/bl004_profile/outputs/bl004_preference_profile.json",
+            "summary=07_implementation/implementation_notes/bl004_profile/outputs/bl004_profile_summary.json",
+            "seed_trace=07_implementation/implementation_notes/bl004_profile/outputs/bl004_seed_trace.csv"
+          ]
+        },
+        {
+          "stage": "BL-005",
+          "script": "build_bl005_candidate_filter.py",
+          "script_path": "07_implementation/implementation_notes/bl005_retrieval/build_bl005_candidate_filter.py",
+          "command": "python 07_implementation/implementation_notes/bl005_retrieval/build_bl005_candidate_filter.py",
+          "elapsed_seconds": 4.333,
+          "stdout": [
+            "BL-005 candidate filtering complete.",
+            "filtered_candidates=07_implementation/implementation_notes/bl005_retrieval/outputs/bl005_filtered_candidates.csv",
+            "decisions=07_implementation/implementation_notes/bl005_retrieval/outputs/bl005_candidate_decisions.csv",
+            "diagnostics=07_implementation/implementation_notes/bl005_retrieval/outputs/bl005_candidate_diagnostics.json"
+          ]
+        },
+        {
+          "stage": "BL-006",
+          "script": "build_bl006_scored_candidates.py",
+          "script_path": "07_implementation/implementation_notes/bl006_scoring/build_bl006_scored_candidates.py",
+          "command": "python 07_implementation/implementation_notes/bl006_scoring/build_bl006_scored_candidates.py",
+          "elapsed_seconds": 3.335,
+          "stdout": [
+            "BL-006 candidate scoring complete.",
+            "scored_candidates=07_implementation/implementation_notes/bl006_scoring/outputs/bl006_scored_candidates.csv",
+            "score_summary=07_implementation/implementation_notes/bl006_scoring/outputs/bl006_score_summary.json"
+          ]
+        },
+        {
+          "stage": "BL-007",
+          "script": "build_bl007_playlist.py",
+          "script_path": "07_implementation/implementation_notes/bl007_playlist/build_bl007_playlist.py",
+          "command": "python 07_implementation/implementation_notes/bl007_playlist/build_bl007_playlist.py",
+          "elapsed_seconds": 1.037,
+          "stdout": [
+            "BL-007 playlist assembly complete.  Playlist: 10/10 tracks",
+            "Run ID : BL007-ASSEMBLE-20260325-231117-070939",
+            "Genre mix : {'pop': 4, 'classic rock': 4, 'rock': 2}"
+          ]
+        },
+        {
+          "stage": "BL-008",
+          "script": "build_bl008_explanation_payloads.py",
+          "script_path": "07_implementation/implementation_notes/bl008_transparency/build_bl008_explanation_payloads.py",
+          "command": "python 07_implementation/implementation_notes/bl008_transparency/build_bl008_explanation_payloads.py",
+          "elapsed_seconds": 0.808,
+          "stdout": [
+            "BL-008 explanation payloads complete. Tracks explained: 10",
+            "Run ID: BL008-EXPLAIN-20260325-231118-168680",
+            "pos= 1  C9oA7Glm1TItxpQA  top=Lead genre match",
+            "pos= 2  7dYk0TCGZqev3LJD  top=Tag overlap",
+            "pos= 3  3ltMH5jik02hVLDF  top=Genre overlap",
+            "pos= 4  D8u1nCspnPIixiZa  top=Lead genre match",
+            "pos= 5  op7gT9GOpqOk7wc8  top=Lead genre match",
+            "pos= 6  8fDlJsjie4DoFMV0  top=Lead genre match",
+            "pos= 7  xx7AjP300BpGG3CX  top=Lead genre match",
+            "pos= 8  STQQY9CB4ccv4qWQ  top=Tag overlap",
+            "pos= 9  8QjULlOeyqMiCPMr  top=Genre overlap",
+            "pos=10  klFSyJqiipFN08TK  top=Tag overlap"
+          ]
+        },
+        {
+          "stage": "BL-009",
+          "script": "build_bl009_observability_log.py",
+          "script_path": "07_implementation/implementation_notes/bl009_observability/build_bl009_observability_log.py",
+          "command": "python 07_implementation/implementation_notes/bl009_observability/build_bl009_observability_log.py",
+          "elapsed_seconds": 1.205,
+          "stdout": [
+            "BL-009 observability logging complete.",
+            "run_log=07_implementation/implementation_notes/bl009_observability/outputs/bl009_run_observability_log.json",
+            "run_index=07_implementation/implementation_notes/bl009_observability/outputs/bl009_run_index.csv",
+            "run_id=BL009-OBSERVE-20260325-231119-192377"
+          ]
+        }
+      ],
+      "stage_run_ids": {
+        "BL-004": "BL004-PROFILE-20260325-231108-710145",
+        "BL-005": "BL005-FILTER-20260325-231109-819400",
+        "BL-006": "BL006-SCORE-20260325-231113-599882",
+        "BL-007": "BL007-ASSEMBLE-20260325-231117-070939",
+        "BL-008": "BL008-EXPLAIN-20260325-231118-168680",
+        "BL-009": "BL009-OBSERVE-20260325-231119-192377"
+      },
+      "raw_hashes": {
+        "bl004_seed_trace": "3EAE680FE68D1E2951B96B3DE9107A7E298ECD867498FF5E9259FC09BCC6B6A4",
+        "bl005_filtered": "BEE2DAE05606DECF378F430B50023EA796F2774DBA120B10856B4C02B4579186",
+        "bl005_decisions": "45E47BC51F38B4230A9C06EC16A99F7E3694F7E7237C2BB3A64A57730D3D1DAC",
+        "bl006_scored": "1B7BA98F48E1CDA181D9EF4CD51E320A94F0E80341E287AAF6EFA1E992AE227D",
+        "bl007_trace": "2EA5B2C2398600650C4A9AF099CECD6A10B8ACED1FCFC2CF4CFA41FEE970E75B",
+        "bl007_playlist": "DC91CF0EDDEE9574AF60E8CC40AA39162A1B345EBBA4B3107727E16E73191598",
+        "bl008_payloads": "243DB15569BE669E7EB7C3F58410093481EC49B25B90D44C806A3B452368FB90",
+        "bl009_log": "E95757F55FE376E2A0F96BF74FAAD5030C2C8A3ADD8DC285F6CE024BB7BFD0A0",
+        "bl009_index": "515CB7FBCC5545979DCC99FD7E7686F05C442A9D35A82A0D69C67E4E33DA0A9E"
+      },
+      "stable_hashes": {
+        "profile_semantic_hash": "FDFAF1AC85927981DE3C7E7539E504F19B70A5AD0A15EB3F86E26029D20D0500",
+        "ranked_output_hash": "1B7BA98F48E1CDA181D9EF4CD51E320A94F0E80341E287AAF6EFA1E992AE227D",
+        "playlist_output_hash": "E7744B7B366C51FE7811BD4272A90472500E4A807584C06A46076B417F8254C5",
+        "explanation_output_hash": "9E20AEF6BD98D94794298C4F078F345D5682EF1CDB8534BBF2EA41729D5B376C",
+        "observability_output_hash": "E458092D61DF7F39EE79449D5B58F249A1EECEEC438E79090850994A18A49821",
+        "seed_trace_hash": "3EAE680FE68D1E2951B96B3DE9107A7E298ECD867498FF5E9259FC09BCC6B6A4",
+        "candidate_decisions_hash": "45E47BC51F38B4230A9C06EC16A99F7E3694F7E7237C2BB3A64A57730D3D1DAC",
+        "filtered_candidates_hash": "BEE2DAE05606DECF378F430B50023EA796F2774DBA120B10856B4C02B4579186",
+        "assembly_trace_hash": "2EA5B2C2398600650C4A9AF099CECD6A10B8ACED1FCFC2CF4CFA41FEE970E75B"
+      },
+      "semantic_snapshots": {
+        "playlist_track_ids": [
+          "C9oA7Glm1TItxpQA",
+          "7dYk0TCGZqev3LJD",
+          "3ltMH5jik02hVLDF",
+          "D8u1nCspnPIixiZa",
+          "op7gT9GOpqOk7wc8",
+          "8fDlJsjie4DoFMV0",
+          "xx7AjP300BpGG3CX",
+          "STQQY9CB4ccv4qWQ",
+          "8QjULlOeyqMiCPMr",
+          "klFSyJqiipFN08TK"
+        ],
+        "explanation_track_ids": [
+          "C9oA7Glm1TItxpQA",
+          "7dYk0TCGZqev3LJD",
+          "3ltMH5jik02hVLDF",
+          "D8u1nCspnPIixiZa",
+          "op7gT9GOpqOk7wc8",
+          "8fDlJsjie4DoFMV0",
+          "xx7AjP300BpGG3CX",
+          "STQQY9CB4ccv4qWQ",
+          "8QjULlOeyqMiCPMr",
+          "klFSyJqiipFN08TK"
+        ],
+        "observability_dataset_version": "1F363591C9ED1128DE714378C02B9CE0D4CAAA700BD5FA477512995603269A46",
+        "observability_pipeline_version": "BAF601823F6BC0FA01C689902B5DDBCC54A127CAF52C28D4EAD535075B8EAEAC",
+        "observability_index_row": {
+          "run_id": "BL009-OBSERVE-20260325-231119-192377",
+          "generated_at_utc": "2026-03-25T23:11:19Z",
+          "dataset_version": "1F363591C9ED1128DE714378C02B9CE0D4CAAA700BD5FA477512995603269A46",
+          "pipeline_version": "BAF601823F6BC0FA01C689902B5DDBCC54A127CAF52C28D4EAD535075B8EAEAC",
+          "bootstrap_mode": "1",
+          "profile_run_id": "BL004-PROFILE-20260325-231108-710145",
+          "retrieval_run_id": "BL005-FILTER-20260325-231109-819400",
+          "scoring_run_id": "BL006-SCORE-20260325-231113-599882",
+          "assembly_run_id": "BL007-ASSEMBLE-20260325-231117-070939",
+          "transparency_run_id": "BL008-EXPLAIN-20260325-231118-168680",
+          "kept_candidates": "55643",
+          "candidates_scored": "55643",
+          "playlist_length": "10",
+          "explanation_count": "10",
+          "playlist_sha256": "DC91CF0EDDEE9574AF60E8CC40AA39162A1B345EBBA4B3107727E16E73191598",
+          "explanation_payloads_sha256": "243DB15569BE669E7EB7C3F58410093481EC49B25B90D44C806A3B452368FB90",
+          "observability_log_sha256": "E95757F55FE376E2A0F96BF74FAAD5030C2C8A3ADD8DC285F6CE024BB7BFD0A0"
+        }
+      },
+      "archive_dir": "07_implementation/implementation_notes/bl010_reproducibility/outputs/replay_03"
+    }
+  ],
+  "results": {
+    "deterministic_match": true,
+    "status": "pass",
+    "first_mismatch_artifact": null,
+    "stable_hash_reference": {
+      "profile_semantic_hash": "FDFAF1AC85927981DE3C7E7539E504F19B70A5AD0A15EB3F86E26029D20D0500",
+      "ranked_output_hash": "1B7BA98F48E1CDA181D9EF4CD51E320A94F0E80341E287AAF6EFA1E992AE227D",
+      "playlist_output_hash": "E7744B7B366C51FE7811BD4272A90472500E4A807584C06A46076B417F8254C5",
+      "explanation_output_hash": "9E20AEF6BD98D94794298C4F078F345D5682EF1CDB8534BBF2EA41729D5B376C",
+      "observability_output_hash": "E458092D61DF7F39EE79449D5B58F249A1EECEEC438E79090850994A18A49821",
+      "seed_trace_hash": "3EAE680FE68D1E2951B96B3DE9107A7E298ECD867498FF5E9259FC09BCC6B6A4",
+      "candidate_decisions_hash": "45E47BC51F38B4230A9C06EC16A99F7E3694F7E7237C2BB3A64A57730D3D1DAC",
+      "filtered_candidates_hash": "BEE2DAE05606DECF378F430B50023EA796F2774DBA120B10856B4C02B4579186",
+      "assembly_trace_hash": "2EA5B2C2398600650C4A9AF099CECD6A10B8ACED1FCFC2CF4CFA41FEE970E75B"
+    },
+    "raw_metadata_hash_checks": {
+      "bl007_playlist_raw_hash_match": false,
+      "bl008_payloads_raw_hash_match": false,
+      "bl009_log_raw_hash_match": false
+    },
+    "observed_reason_for_raw_hash_variation": "run_id, generated_at_utc, elapsed_seconds, and upstream run linkage fields vary across identical replays even when stable recommendation content remains unchanged",
+    "playlist_track_ids_match": true,
+    "explanation_track_ids_match": true,
+    "dataset_version_match": true,
+    "pipeline_version_match": true
+  },
+  "output_artifacts": {
+    "config_snapshot_path": "07_implementation/implementation_notes/bl010_reproducibility/outputs/bl010_reproducibility_config_snapshot.json",
+    "run_matrix_path": "07_implementation/implementation_notes/bl010_reproducibility/outputs/bl010_reproducibility_run_matrix.csv",
+    "archived_replay_dirs": [
+      "07_implementation/implementation_notes/bl010_reproducibility/outputs/replay_01",
+      "07_implementation/implementation_notes/bl010_reproducibility/outputs/replay_02",
+      "07_implementation/implementation_notes/bl010_reproducibility/outputs/replay_03"
+    ]
+  }
+}

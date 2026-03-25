@@ -1,0 +1,100 @@
+{
+  "artifact_schema_version": "run-effective-config-v1",
+  "artifact_type": "run_effective_config",
+  "effective_config": {
+    "assembly_controls": {
+      "max_consecutive": 2,
+      "max_per_genre": 4,
+      "min_score_threshold": 0.35,
+      "target_size": 10
+    },
+    "influence_tracks": {
+      "enabled": true,
+      "preference_weight": 1.0,
+      "source": null,
+      "track_ids": []
+    },
+    "input_scope": {
+      "include_playlists": true,
+      "include_recently_played": true,
+      "include_saved_tracks": true,
+      "include_top_tracks": true,
+      "playlist_items_per_playlist_limit": null,
+      "playlists_limit": null,
+      "recently_played_limit": 50,
+      "saved_tracks_limit": null,
+      "source_family": "spotify_api_export",
+      "top_time_ranges": [
+        "short_term",
+        "medium_term",
+        "long_term"
+      ]
+    },
+    "interaction_scope": {
+      "include_interaction_types": [
+        "history",
+        "influence"
+      ]
+    },
+    "observability_controls": {
+      "diagnostic_sample_limit": 5
+    },
+    "profile_controls": {
+      "top_genre_limit": 10,
+      "top_lead_genre_limit": 10,
+      "top_tag_limit": 10
+    },
+    "retrieval_controls": {
+      "numeric_support_min_pass": 1,
+      "numeric_thresholds": {
+        "duration_ms": 45000.0,
+        "key": 2.0,
+        "mode": 0.5,
+        "tempo": 20.0
+      },
+      "profile_top_genre_limit": 8,
+      "profile_top_genre_limit_comment": "Must be <= profile_controls.top_genre_limit.",
+      "profile_top_lead_genre_limit": 6,
+      "profile_top_lead_genre_limit_comment": "Must be <= profile_controls.top_lead_genre_limit.",
+      "profile_top_tag_limit": 10,
+      "profile_top_tag_limit_comment": "Must be <= profile_controls.top_tag_limit. Retrieval cannot request more profile tags than BL-004 produces.",
+      "semantic_min_keep_score": 1,
+      "semantic_strong_keep_score": 2
+    },
+    "schema_version": "run-config-v1",
+    "scoring_controls": {
+      "component_weights": {
+        "duration_ms": 0.13,
+        "genre_overlap": 0.12,
+        "key": 0.13,
+        "lead_genre": 0.17,
+        "mode": 0.09,
+        "tag_overlap": 0.16,
+        "tempo": 0.2
+      },
+      "component_weights_sum_rule_comment": "Component weights must sum to 1.0 within +/-0.01 tolerance. BL-006 logs a warning if active weights are rebalanced to normalize to 1.0.",
+      "numeric_thresholds": {
+        "duration_ms": 45000.0,
+        "key": 2.0,
+        "mode": 0.5,
+        "tempo": 20.0
+      }
+    },
+    "seed_controls": {
+      "match_rate_min_threshold": 0.15,
+      "match_rate_min_threshold_comment": "Temporary profile-test threshold for low DS-001 coverage account (auto-generated)."
+    },
+    "transparency_controls": {
+      "top_contributor_limit": 3
+    },
+    "user_context": {
+      "user_id": null
+    }
+  },
+  "generated_at_utc": "2026-03-25T03:22:54Z",
+  "resolved_from": {
+    "run_config_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\run_config\\outputs\\run_config_profile_test_threshold_015.json",
+    "run_intent_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\run_config\\outputs\\run_intent_20260325-032254-134115.json"
+  },
+  "run_id": "BL013-ENTRYPOINT-20260325-032254-125881"
+}

@@ -1,0 +1,1157 @@
+{
+  "run_metadata": {
+    "run_id": "BL011-CTRL-20260325-231130",
+    "task": "BL-011",
+    "generated_at_utc": "2026-03-25T23:11:58Z",
+    "elapsed_seconds": 27.106,
+    "baseline_config_hash": "1607A65349BA4920E65B52598AEA18BFB59BF7E1268D1776F95600092B55F094",
+    "scenario_count": 5
+  },
+  "inputs": {
+    "baseline_snapshot_path": "07_implementation/implementation_notes/bl010_reproducibility/outputs/bl010_reproducibility_config_snapshot.json",
+    "controllability_config_snapshot_path": "07_implementation/implementation_notes/bl011_controllability/outputs/bl011_controllability_config_snapshot.json",
+    "fixed_input_hashes": {
+      "07_implementation/implementation_notes/bl004_profile/outputs/bl004_seed_trace.csv": "3EAE680FE68D1E2951B96B3DE9107A7E298ECD867498FF5E9259FC09BCC6B6A4",
+      "07_implementation/implementation_notes/bl000_data_layer/outputs/ds001_working_candidate_dataset.csv": "296331CA6390D2C111AA336C7EB154B69EC7060604312AC8A274F545B68A04EF"
+    }
+  },
+  "scope": {
+    "evaluation_tests": [
+      "EP-CTRL-001",
+      "EP-CTRL-002",
+      "EP-CTRL-003"
+    ],
+    "scenario_ids": [
+      "baseline",
+      "no_influence_tracks",
+      "valence_weight_up",
+      "stricter_thresholds",
+      "looser_thresholds"
+    ],
+    "stage_scope": [
+      "BL-004",
+      "BL-005",
+      "BL-006",
+      "BL-007"
+    ],
+    "repeat_method": "each scenario was executed twice with identical parameters and compared via stable stage hashes"
+  },
+  "scenario_results": [
+    {
+      "scenario_id": "baseline",
+      "test_id": "baseline",
+      "control_surface": "fixed_bl010_baseline",
+      "description": "BL-010 fixed baseline carried forward unchanged for BL-011 comparisons.",
+      "expected_effect": "reference",
+      "repeat_consistent": true,
+      "config_hash": "DD1B20CE69A12BD3164CF83A98D4EBE4BB512B932D851A4657FFB1B1EA54F753",
+      "effective_config": {
+        "scenario_id": "baseline",
+        "test_id": "baseline",
+        "control_surface": "fixed_bl010_baseline",
+        "description": "BL-010 fixed baseline carried forward unchanged for BL-011 comparisons.",
+        "expected_effect": "reference",
+        "profile": {
+          "effective_weight_rule": "effective_weight = preference_weight",
+          "numeric_feature_columns": [
+            "danceability",
+            "energy",
+            "valence",
+            "tempo",
+            "key",
+            "mode",
+            "popularity",
+            "duration_ms"
+          ],
+          "top_tag_limit": 10,
+          "top_genre_limit": 10,
+          "top_lead_genre_limit": 10,
+          "aggregation_rules": {
+            "numeric": "weighted mean over numeric columns embedded in the BL-003 enriched seed table; key uses weighted circular mean on the 12-semitone wheel",
+            "tags": "sum(preference_weight) over DS-001 tag labels",
+            "genres": "sum(preference_weight) over DS-001 genre labels",
+            "lead_genres": "sum(preference_weight)"
+          },
+          "include_interaction_types": [
+            "history",
+            "influence"
+          ]
+        },
+        "retrieval": {
+          "top_lead_genre_limit": 6,
+          "top_tag_limit": 10,
+          "top_genre_limit": 8,
+          "threshold_scale": 1.0,
+          "numeric_thresholds": {
+            "tempo": 15.0,
+            "key": 1.5,
+            "mode": 0.5,
+            "duration_ms": 30000.0
+          },
+          "keep_rule": "keep if not seed and (semantic_score >= 3 or (semantic_score >= 1 and numeric_pass_count >= 2))"
+        },
+        "scoring": {
+          "numeric_thresholds": {
+            "tempo": 15.0,
+            "key": 1.5,
+            "mode": 0.5,
+            "duration_ms": 30000.0
+          },
+          "component_weights": {
+            "tempo": 0.12,
+            "duration_ms": 0.08,
+            "key": 0.08,
+            "mode": 0.07,
+            "lead_genre": 0.23,
+            "genre_overlap": 0.19,
+            "tag_overlap": 0.23
+          },
+          "weight_override_component": null,
+          "raw_override_value": null
+        },
+        "assembly": {
+          "target_size": 10,
+          "min_score_threshold": 0.35,
+          "max_per_genre": 4,
+          "max_consecutive": 2
+        }
+      },
+      "stable_hashes": {
+        "profile_semantic_hash": "6C48FC9EA4E69A170E2A163C464D9955857152F3E37EAE7C7F8766CB6D389A51",
+        "seed_trace_hash": "BFF625FF9169F7925782B65A6A2BA5FDC530BFE9107B84D89FBD0300E6623CA5",
+        "filtered_candidates_hash": "8D38C3DCC17AD5EC99B34AB80A02C8F8F5A417D3491509BB66385053917F9CB4",
+        "candidate_decisions_hash": "E752EF3FBBD8DCBFB78F0213B85A3465D549B8A26B3AFE0DBE4A70FB23C9F8C7",
+        "ranked_output_hash": "34AF1224330B028055E623CECCA521DBD5003FD35BC298407B1F71CA087A199B",
+        "assembly_trace_hash": "8BC998EBD9E9314CA162F71B2BE44EF1285F33BA4721817D20D48029E35C45CD",
+        "playlist_output_hash": "591FC7B1792B51CF0343C01EDA3D7FB9C31BA9EC4F63C4F86F89E1310D128DF6"
+      },
+      "metrics": {
+        "selected_event_count": 1026,
+        "matched_seed_count": 1026,
+        "candidate_pool_size": 5059,
+        "scored_candidate_count": 5059,
+        "playlist_length": 10,
+        "top10_track_ids": [
+          "CaR8UnowNJUR5Dib",
+          "yEz9rqTTulkiDDm7",
+          "hU7yckCKoiTkHjwi",
+          "C9oA7Glm1TItxpQA",
+          "M3ApGs7RGZwXHqs4",
+          "lGnkOkQSUQO175Qg",
+          "rqeIltq5ixzHA5EG",
+          "kJa0UEVtgRvCJiXS",
+          "CZOYJJKuyuUosACw",
+          "o27WwIo8F6fMirMs"
+        ],
+        "playlist_track_ids": [
+          "CaR8UnowNJUR5Dib",
+          "yEz9rqTTulkiDDm7",
+          "hU7yckCKoiTkHjwi",
+          "C9oA7Glm1TItxpQA",
+          "CZOYJJKuyuUosACw",
+          "o27WwIo8F6fMirMs",
+          "phL12CBijBqwQ9qB",
+          "8WnHV12FDAeaQwkd",
+          "qob8Z8qGt0UR4JAs",
+          "zC9ANQtT16TAaER0"
+        ],
+        "dominant_lead_genres": [
+          "pop",
+          "classic rock",
+          "rock",
+          "electronic",
+          "rap"
+        ],
+        "dominant_tags": [
+          "rock",
+          "pop",
+          "classic rock",
+          "70s",
+          "80s"
+        ],
+        "mean_component_contributions": {
+          "tempo": 0.056628,
+          "duration_ms": 0.035919,
+          "key": 0.022636,
+          "mode": 0.017298,
+          "lead_genre": 0.149779,
+          "genre_overlap": 0.052504,
+          "tag_overlap": 0.056951
+        },
+        "playlist_genre_mix": {
+          "classic rock": 4,
+          "pop": 4,
+          "rock": 2
+        }
+      },
+      "comparison_to_baseline": {
+        "observable_shift": false,
+        "expected_direction_met": true,
+        "candidate_pool_size_delta": 0,
+        "playlist_length_delta": 0,
+        "top10_overlap_count": 10,
+        "top10_overlap_ratio": 1.0,
+        "playlist_overlap_count": 10,
+        "playlist_overlap_ratio": 1.0,
+        "top10_added_track_ids": [],
+        "top10_removed_track_ids": [],
+        "playlist_added_track_ids": [],
+        "playlist_removed_track_ids": [],
+        "profile_lead_genres_before": [
+          "pop",
+          "classic rock",
+          "rock",
+          "electronic",
+          "rap"
+        ],
+        "profile_lead_genres_after": [
+          "pop",
+          "classic rock",
+          "rock",
+          "electronic",
+          "rap"
+        ],
+        "component_mean_delta": {
+          "tempo": 0.0,
+          "duration_ms": 0.0,
+          "key": 0.0,
+          "mode": 0.0,
+          "lead_genre": 0.0,
+          "genre_overlap": 0.0,
+          "tag_overlap": 0.0
+        },
+        "rank_shift_summary": {
+          "common_candidate_count": 5059,
+          "mean_abs_rank_delta": 0.0,
+          "max_rank_improvement": 0,
+          "max_rank_drop": 0,
+          "top_risers": [],
+          "top_fallers": []
+        }
+      },
+      "archive_dir": "07_implementation/implementation_notes/bl011_controllability/outputs/scenarios/baseline"
+    },
+    {
+      "scenario_id": "no_influence_tracks",
+      "test_id": "EP-CTRL-001",
+      "control_surface": "influence_tracks",
+      "description": "Disable influence-track interactions while keeping all other inputs and parameters fixed.",
+      "expected_effect": "profile and ranking shift away from influence-steered indie/alternative emphasis",
+      "repeat_consistent": true,
+      "config_hash": "77E1CC99FE517B0FB72C5A400946327278FFA16FF329131582B7A501E42F4E13",
+      "effective_config": {
+        "scenario_id": "no_influence_tracks",
+        "test_id": "EP-CTRL-001",
+        "control_surface": "influence_tracks",
+        "description": "Disable influence-track interactions while keeping all other inputs and parameters fixed.",
+        "expected_effect": "profile and ranking shift away from influence-steered indie/alternative emphasis",
+        "profile": {
+          "effective_weight_rule": "effective_weight = preference_weight",
+          "numeric_feature_columns": [
+            "danceability",
+            "energy",
+            "valence",
+            "tempo",
+            "key",
+            "mode",
+            "popularity",
+            "duration_ms"
+          ],
+          "top_tag_limit": 10,
+          "top_genre_limit": 10,
+          "top_lead_genre_limit": 10,
+          "aggregation_rules": {
+            "numeric": "weighted mean over numeric columns embedded in the BL-003 enriched seed table; key uses weighted circular mean on the 12-semitone wheel",
+            "tags": "sum(preference_weight) over DS-001 tag labels",
+            "genres": "sum(preference_weight) over DS-001 genre labels",
+            "lead_genres": "sum(preference_weight)"
+          },
+          "include_interaction_types": [
+            "history"
+          ]
+        },
+        "retrieval": {
+          "top_lead_genre_limit": 6,
+          "top_tag_limit": 10,
+          "top_genre_limit": 8,
+          "threshold_scale": 1.0,
+          "numeric_thresholds": {
+            "tempo": 15.0,
+            "key": 1.5,
+            "mode": 0.5,
+            "duration_ms": 30000.0
+          },
+          "keep_rule": "keep if not seed and (semantic_score >= 3 or (semantic_score >= 1 and numeric_pass_count >= 2))"
+        },
+        "scoring": {
+          "numeric_thresholds": {
+            "tempo": 15.0,
+            "key": 1.5,
+            "mode": 0.5,
+            "duration_ms": 30000.0
+          },
+          "component_weights": {
+            "tempo": 0.12,
+            "duration_ms": 0.08,
+            "key": 0.08,
+            "mode": 0.07,
+            "lead_genre": 0.23,
+            "genre_overlap": 0.19,
+            "tag_overlap": 0.23
+          },
+          "weight_override_component": null,
+          "raw_override_value": null
+        },
+        "assembly": {
+          "target_size": 10,
+          "min_score_threshold": 0.35,
+          "max_per_genre": 4,
+          "max_consecutive": 2
+        }
+      },
+      "stable_hashes": {
+        "profile_semantic_hash": "B12DCC4CC7A44F56C81BA625BD6C5D4806EA45DDA2B7EDA649418424B2BFE5FE",
+        "seed_trace_hash": "BFF625FF9169F7925782B65A6A2BA5FDC530BFE9107B84D89FBD0300E6623CA5",
+        "filtered_candidates_hash": "8D38C3DCC17AD5EC99B34AB80A02C8F8F5A417D3491509BB66385053917F9CB4",
+        "candidate_decisions_hash": "E752EF3FBBD8DCBFB78F0213B85A3465D549B8A26B3AFE0DBE4A70FB23C9F8C7",
+        "ranked_output_hash": "34AF1224330B028055E623CECCA521DBD5003FD35BC298407B1F71CA087A199B",
+        "assembly_trace_hash": "8BC998EBD9E9314CA162F71B2BE44EF1285F33BA4721817D20D48029E35C45CD",
+        "playlist_output_hash": "591FC7B1792B51CF0343C01EDA3D7FB9C31BA9EC4F63C4F86F89E1310D128DF6"
+      },
+      "metrics": {
+        "selected_event_count": 1026,
+        "matched_seed_count": 1026,
+        "candidate_pool_size": 5059,
+        "scored_candidate_count": 5059,
+        "playlist_length": 10,
+        "top10_track_ids": [
+          "CaR8UnowNJUR5Dib",
+          "yEz9rqTTulkiDDm7",
+          "hU7yckCKoiTkHjwi",
+          "C9oA7Glm1TItxpQA",
+          "M3ApGs7RGZwXHqs4",
+          "lGnkOkQSUQO175Qg",
+          "rqeIltq5ixzHA5EG",
+          "kJa0UEVtgRvCJiXS",
+          "CZOYJJKuyuUosACw",
+          "o27WwIo8F6fMirMs"
+        ],
+        "playlist_track_ids": [
+          "CaR8UnowNJUR5Dib",
+          "yEz9rqTTulkiDDm7",
+          "hU7yckCKoiTkHjwi",
+          "C9oA7Glm1TItxpQA",
+          "CZOYJJKuyuUosACw",
+          "o27WwIo8F6fMirMs",
+          "phL12CBijBqwQ9qB",
+          "8WnHV12FDAeaQwkd",
+          "qob8Z8qGt0UR4JAs",
+          "zC9ANQtT16TAaER0"
+        ],
+        "dominant_lead_genres": [
+          "pop",
+          "classic rock",
+          "rock",
+          "electronic",
+          "rap"
+        ],
+        "dominant_tags": [
+          "rock",
+          "pop",
+          "classic rock",
+          "70s",
+          "80s"
+        ],
+        "mean_component_contributions": {
+          "tempo": 0.056628,
+          "duration_ms": 0.035919,
+          "key": 0.022636,
+          "mode": 0.017298,
+          "lead_genre": 0.149779,
+          "genre_overlap": 0.052504,
+          "tag_overlap": 0.056951
+        },
+        "playlist_genre_mix": {
+          "classic rock": 4,
+          "pop": 4,
+          "rock": 2
+        }
+      },
+      "comparison_to_baseline": {
+        "observable_shift": true,
+        "expected_direction_met": true,
+        "candidate_pool_size_delta": 0,
+        "playlist_length_delta": 0,
+        "top10_overlap_count": 10,
+        "top10_overlap_ratio": 1.0,
+        "playlist_overlap_count": 10,
+        "playlist_overlap_ratio": 1.0,
+        "top10_added_track_ids": [],
+        "top10_removed_track_ids": [],
+        "playlist_added_track_ids": [],
+        "playlist_removed_track_ids": [],
+        "profile_lead_genres_before": [
+          "pop",
+          "classic rock",
+          "rock",
+          "electronic",
+          "rap"
+        ],
+        "profile_lead_genres_after": [
+          "pop",
+          "classic rock",
+          "rock",
+          "electronic",
+          "rap"
+        ],
+        "component_mean_delta": {
+          "duration_ms": 0.0,
+          "genre_overlap": 0.0,
+          "key": 0.0,
+          "lead_genre": 0.0,
+          "mode": 0.0,
+          "tag_overlap": 0.0,
+          "tempo": 0.0
+        },
+        "rank_shift_summary": {
+          "common_candidate_count": 5059,
+          "mean_abs_rank_delta": 0.0,
+          "max_rank_improvement": 0,
+          "max_rank_drop": 0,
+          "top_risers": [],
+          "top_fallers": []
+        }
+      },
+      "archive_dir": "07_implementation/implementation_notes/bl011_controllability/outputs/scenarios/no_influence_tracks"
+    },
+    {
+      "scenario_id": "valence_weight_up",
+      "test_id": "EP-CTRL-002",
+      "control_surface": "feature_weight",
+      "description": "Increase one score-component raw weight and renormalize all score weights to preserve a 1.0 total.",
+      "expected_effect": "tracks with stronger fit on the boosted component should gain score contribution and rank position",
+      "repeat_consistent": true,
+      "config_hash": "8DD77B0CA9FF71E60D0E2ADED561E860FE9337937F31FAC8142D1F7626CE9DE8",
+      "effective_config": {
+        "scenario_id": "valence_weight_up",
+        "test_id": "EP-CTRL-002",
+        "control_surface": "feature_weight",
+        "description": "Increase one score-component raw weight and renormalize all score weights to preserve a 1.0 total.",
+        "expected_effect": "tracks with stronger fit on the boosted component should gain score contribution and rank position",
+        "profile": {
+          "effective_weight_rule": "effective_weight = preference_weight",
+          "numeric_feature_columns": [
+            "danceability",
+            "energy",
+            "valence",
+            "tempo",
+            "key",
+            "mode",
+            "popularity",
+            "duration_ms"
+          ],
+          "top_tag_limit": 10,
+          "top_genre_limit": 10,
+          "top_lead_genre_limit": 10,
+          "aggregation_rules": {
+            "numeric": "weighted mean over numeric columns embedded in the BL-003 enriched seed table; key uses weighted circular mean on the 12-semitone wheel",
+            "tags": "sum(preference_weight) over DS-001 tag labels",
+            "genres": "sum(preference_weight) over DS-001 genre labels",
+            "lead_genres": "sum(preference_weight)"
+          },
+          "include_interaction_types": [
+            "history",
+            "influence"
+          ]
+        },
+        "retrieval": {
+          "top_lead_genre_limit": 6,
+          "top_tag_limit": 10,
+          "top_genre_limit": 8,
+          "threshold_scale": 1.0,
+          "numeric_thresholds": {
+            "tempo": 15.0,
+            "key": 1.5,
+            "mode": 0.5,
+            "duration_ms": 30000.0
+          },
+          "keep_rule": "keep if not seed and (semantic_score >= 3 or (semantic_score >= 1 and numeric_pass_count >= 2))"
+        },
+        "scoring": {
+          "numeric_thresholds": {
+            "tempo": 15.0,
+            "key": 1.5,
+            "mode": 0.5,
+            "duration_ms": 30000.0
+          },
+          "component_weights": {
+            "tempo": 0.185185,
+            "duration_ms": 0.074074,
+            "key": 0.074074,
+            "mode": 0.064815,
+            "lead_genre": 0.212963,
+            "genre_overlap": 0.175926,
+            "tag_overlap": 0.212963
+          },
+          "weight_override_component": "tempo",
+          "raw_override_value": 0.2
+        },
+        "assembly": {
+          "target_size": 10,
+          "min_score_threshold": 0.35,
+          "max_per_genre": 4,
+          "max_consecutive": 2
+        }
+      },
+      "stable_hashes": {
+        "profile_semantic_hash": "6C48FC9EA4E69A170E2A163C464D9955857152F3E37EAE7C7F8766CB6D389A51",
+        "seed_trace_hash": "BFF625FF9169F7925782B65A6A2BA5FDC530BFE9107B84D89FBD0300E6623CA5",
+        "filtered_candidates_hash": "8D38C3DCC17AD5EC99B34AB80A02C8F8F5A417D3491509BB66385053917F9CB4",
+        "candidate_decisions_hash": "E752EF3FBBD8DCBFB78F0213B85A3465D549B8A26B3AFE0DBE4A70FB23C9F8C7",
+        "ranked_output_hash": "FD6D4D3ADDBF892EE717B03C665611376887F1352374BBD9288A198796108E7D",
+        "assembly_trace_hash": "154C2236067D1D2591DDB1653F609C21168D5B3D9B0F8356E631300B1D37AE1D",
+        "playlist_output_hash": "2C984226F7143CC3715EF36E4A3171A53660311838B530730572F64746F6D03C"
+      },
+      "metrics": {
+        "selected_event_count": 1026,
+        "matched_seed_count": 1026,
+        "candidate_pool_size": 5059,
+        "scored_candidate_count": 5059,
+        "playlist_length": 10,
+        "top10_track_ids": [
+          "CaR8UnowNJUR5Dib",
+          "yEz9rqTTulkiDDm7",
+          "hU7yckCKoiTkHjwi",
+          "C9oA7Glm1TItxpQA",
+          "M3ApGs7RGZwXHqs4",
+          "rqeIltq5ixzHA5EG",
+          "lGnkOkQSUQO175Qg",
+          "o27WwIo8F6fMirMs",
+          "CZOYJJKuyuUosACw",
+          "kJa0UEVtgRvCJiXS"
+        ],
+        "playlist_track_ids": [
+          "CaR8UnowNJUR5Dib",
+          "yEz9rqTTulkiDDm7",
+          "hU7yckCKoiTkHjwi",
+          "C9oA7Glm1TItxpQA",
+          "o27WwIo8F6fMirMs",
+          "CZOYJJKuyuUosACw",
+          "kJa0UEVtgRvCJiXS",
+          "8WnHV12FDAeaQwkd",
+          "zC9ANQtT16TAaER0",
+          "GZqOUaE4cfJhNgmN"
+        ],
+        "dominant_lead_genres": [
+          "pop",
+          "classic rock",
+          "rock",
+          "electronic",
+          "rap"
+        ],
+        "dominant_tags": [
+          "rock",
+          "pop",
+          "classic rock",
+          "70s",
+          "80s"
+        ],
+        "mean_component_contributions": {
+          "tempo": 0.087388,
+          "duration_ms": 0.033258,
+          "key": 0.02096,
+          "mode": 0.016016,
+          "lead_genre": 0.138685,
+          "genre_overlap": 0.048615,
+          "tag_overlap": 0.052732
+        },
+        "playlist_genre_mix": {
+          "classic rock": 4,
+          "pop": 4,
+          "rock": 2
+        }
+      },
+      "comparison_to_baseline": {
+        "observable_shift": true,
+        "expected_direction_met": true,
+        "candidate_pool_size_delta": 0,
+        "playlist_length_delta": 0,
+        "top10_overlap_count": 10,
+        "top10_overlap_ratio": 1.0,
+        "playlist_overlap_count": 8,
+        "playlist_overlap_ratio": 0.8,
+        "top10_added_track_ids": [],
+        "top10_removed_track_ids": [],
+        "playlist_added_track_ids": [
+          "kJa0UEVtgRvCJiXS",
+          "GZqOUaE4cfJhNgmN"
+        ],
+        "playlist_removed_track_ids": [
+          "phL12CBijBqwQ9qB",
+          "qob8Z8qGt0UR4JAs"
+        ],
+        "profile_lead_genres_before": [
+          "pop",
+          "classic rock",
+          "rock",
+          "electronic",
+          "rap"
+        ],
+        "profile_lead_genres_after": [
+          "pop",
+          "classic rock",
+          "rock",
+          "electronic",
+          "rap"
+        ],
+        "component_mean_delta": {
+          "duration_ms": -0.002661,
+          "genre_overlap": -0.003889,
+          "key": -0.001676,
+          "lead_genre": -0.011094,
+          "mode": -0.001282,
+          "tag_overlap": -0.004219,
+          "tempo": 0.03076
+        },
+        "rank_shift_summary": {
+          "common_candidate_count": 5059,
+          "mean_abs_rank_delta": 240.1,
+          "max_rank_improvement": 857,
+          "max_rank_drop": -747,
+          "top_risers": [
+            {
+              "track_id": "ZDMr0LWg3Lhuoixp",
+              "baseline_rank": 2966,
+              "scenario_rank": 2109,
+              "rank_delta": 857
+            },
+            {
+              "track_id": "so8LzAN23l88VjmJ",
+              "baseline_rank": 2731,
+              "scenario_rank": 1879,
+              "rank_delta": 852
+            },
+            {
+              "track_id": "mGyvjtxdbwyR2rXi",
+              "baseline_rank": 2645,
+              "scenario_rank": 1795,
+              "rank_delta": 850
+            },
+            {
+              "track_id": "q3Zgz5WfNXoX6LHA",
+              "baseline_rank": 2837,
+              "scenario_rank": 1991,
+              "rank_delta": 846
+            },
+            {
+              "track_id": "purbfXLKpyRJRi6L",
+              "baseline_rank": 3119,
+              "scenario_rank": 2278,
+              "rank_delta": 841
+            }
+          ],
+          "top_fallers": [
+            {
+              "track_id": "jIenUVz3iAKJK4O4",
+              "baseline_rank": 592,
+              "scenario_rank": 1339,
+              "rank_delta": -747
+            },
+            {
+              "track_id": "2OOlw2broNTpkhFn",
+              "baseline_rank": 627,
+              "scenario_rank": 1367,
+              "rank_delta": -740
+            },
+            {
+              "track_id": "BimsuUMb4vB5f2KO",
+              "baseline_rank": 730,
+              "scenario_rank": 1469,
+              "rank_delta": -739
+            },
+            {
+              "track_id": "TeLJ0nKnLIhhzhQF",
+              "baseline_rank": 570,
+              "scenario_rank": 1309,
+              "rank_delta": -739
+            },
+            {
+              "track_id": "7tCkIkOHjvGnjTbF",
+              "baseline_rank": 647,
+              "scenario_rank": 1384,
+              "rank_delta": -737
+            }
+          ]
+        }
+      },
+      "archive_dir": "07_implementation/implementation_notes/bl011_controllability/outputs/scenarios/valence_weight_up"
+    },
+    {
+      "scenario_id": "stricter_thresholds",
+      "test_id": "EP-CTRL-003",
+      "control_surface": "candidate_threshold",
+      "description": "Tighten all numeric retrieval thresholds by multiplying them by 0.75.",
+      "expected_effect": "candidate pool should shrink and playlist overlap should reduce or reorder",
+      "repeat_consistent": true,
+      "config_hash": "87D9E954E183338F355D850E66FB6561F949AD9F9DE364B3C969228851750E62",
+      "effective_config": {
+        "scenario_id": "stricter_thresholds",
+        "test_id": "EP-CTRL-003",
+        "control_surface": "candidate_threshold",
+        "description": "Tighten all numeric retrieval thresholds by multiplying them by 0.75.",
+        "expected_effect": "candidate pool should shrink and playlist overlap should reduce or reorder",
+        "profile": {
+          "effective_weight_rule": "effective_weight = preference_weight",
+          "numeric_feature_columns": [
+            "danceability",
+            "energy",
+            "valence",
+            "tempo",
+            "key",
+            "mode",
+            "popularity",
+            "duration_ms"
+          ],
+          "top_tag_limit": 10,
+          "top_genre_limit": 10,
+          "top_lead_genre_limit": 10,
+          "aggregation_rules": {
+            "numeric": "weighted mean over numeric columns embedded in the BL-003 enriched seed table; key uses weighted circular mean on the 12-semitone wheel",
+            "tags": "sum(preference_weight) over DS-001 tag labels",
+            "genres": "sum(preference_weight) over DS-001 genre labels",
+            "lead_genres": "sum(preference_weight)"
+          },
+          "include_interaction_types": [
+            "history",
+            "influence"
+          ]
+        },
+        "retrieval": {
+          "top_lead_genre_limit": 6,
+          "top_tag_limit": 10,
+          "top_genre_limit": 8,
+          "threshold_scale": 0.75,
+          "numeric_thresholds": {
+            "tempo": 11.25,
+            "key": 1.125,
+            "mode": 0.375,
+            "duration_ms": 22500.0
+          },
+          "keep_rule": "keep if not seed and (semantic_score >= 3 or (semantic_score >= 1 and numeric_pass_count >= 2))"
+        },
+        "scoring": {
+          "numeric_thresholds": {
+            "tempo": 15.0,
+            "key": 1.5,
+            "mode": 0.5,
+            "duration_ms": 30000.0
+          },
+          "component_weights": {
+            "tempo": 0.12,
+            "duration_ms": 0.08,
+            "key": 0.08,
+            "mode": 0.07,
+            "lead_genre": 0.23,
+            "genre_overlap": 0.19,
+            "tag_overlap": 0.23
+          },
+          "weight_override_component": null,
+          "raw_override_value": null
+        },
+        "assembly": {
+          "target_size": 10,
+          "min_score_threshold": 0.35,
+          "max_per_genre": 4,
+          "max_consecutive": 2
+        }
+      },
+      "stable_hashes": {
+        "profile_semantic_hash": "6C48FC9EA4E69A170E2A163C464D9955857152F3E37EAE7C7F8766CB6D389A51",
+        "seed_trace_hash": "BFF625FF9169F7925782B65A6A2BA5FDC530BFE9107B84D89FBD0300E6623CA5",
+        "filtered_candidates_hash": "C045B267CBBC1EE4AB130DEEE47EAF886C59512C3AD5193FE676B5294BC5B953",
+        "candidate_decisions_hash": "34EEDD70E709BA21A59CB694CBE67B6362952DDB75EF5FC9EDB80C612C126603",
+        "ranked_output_hash": "D852EEB7F2864FDC455ADB93ACF9CC7167B8CE067E7E31AD56C93D653CE57338",
+        "assembly_trace_hash": "48C0A9ECDB8421ACA374C14C82D5123B45BAA2F7B69621CBF9D440936E93A9B0",
+        "playlist_output_hash": "25DCACCBC0864DC7B641971C41DF9155FA6D2B618085D1D679A7B8641301F0B3"
+      },
+      "metrics": {
+        "selected_event_count": 1026,
+        "matched_seed_count": 1026,
+        "candidate_pool_size": 2874,
+        "scored_candidate_count": 2874,
+        "playlist_length": 10,
+        "top10_track_ids": [
+          "CaR8UnowNJUR5Dib",
+          "yEz9rqTTulkiDDm7",
+          "hU7yckCKoiTkHjwi",
+          "C9oA7Glm1TItxpQA",
+          "M3ApGs7RGZwXHqs4",
+          "lGnkOkQSUQO175Qg",
+          "rqeIltq5ixzHA5EG",
+          "kJa0UEVtgRvCJiXS",
+          "CZOYJJKuyuUosACw",
+          "o27WwIo8F6fMirMs"
+        ],
+        "playlist_track_ids": [
+          "CaR8UnowNJUR5Dib",
+          "yEz9rqTTulkiDDm7",
+          "hU7yckCKoiTkHjwi",
+          "C9oA7Glm1TItxpQA",
+          "CZOYJJKuyuUosACw",
+          "o27WwIo8F6fMirMs",
+          "phL12CBijBqwQ9qB",
+          "8WnHV12FDAeaQwkd",
+          "qob8Z8qGt0UR4JAs",
+          "zC9ANQtT16TAaER0"
+        ],
+        "dominant_lead_genres": [
+          "pop",
+          "classic rock",
+          "rock",
+          "electronic",
+          "rap"
+        ],
+        "dominant_tags": [
+          "rock",
+          "pop",
+          "classic rock",
+          "70s",
+          "80s"
+        ],
+        "mean_component_contributions": {
+          "tempo": 0.066604,
+          "duration_ms": 0.043594,
+          "key": 0.028059,
+          "mode": 0.017829,
+          "lead_genre": 0.156908,
+          "genre_overlap": 0.051142,
+          "tag_overlap": 0.05611
+        },
+        "playlist_genre_mix": {
+          "classic rock": 4,
+          "pop": 4,
+          "rock": 2
+        }
+      },
+      "comparison_to_baseline": {
+        "observable_shift": true,
+        "expected_direction_met": true,
+        "candidate_pool_size_delta": -2185,
+        "playlist_length_delta": 0,
+        "top10_overlap_count": 10,
+        "top10_overlap_ratio": 1.0,
+        "playlist_overlap_count": 10,
+        "playlist_overlap_ratio": 1.0,
+        "top10_added_track_ids": [],
+        "top10_removed_track_ids": [],
+        "playlist_added_track_ids": [],
+        "playlist_removed_track_ids": [],
+        "profile_lead_genres_before": [
+          "pop",
+          "classic rock",
+          "rock",
+          "electronic",
+          "rap"
+        ],
+        "profile_lead_genres_after": [
+          "pop",
+          "classic rock",
+          "rock",
+          "electronic",
+          "rap"
+        ],
+        "component_mean_delta": {
+          "duration_ms": 0.007675,
+          "genre_overlap": -0.001362,
+          "key": 0.005423,
+          "lead_genre": 0.007129,
+          "mode": 0.000531,
+          "tag_overlap": -0.000841,
+          "tempo": 0.009976
+        },
+        "rank_shift_summary": {
+          "common_candidate_count": 2874,
+          "mean_abs_rank_delta": 705.053,
+          "max_rank_improvement": 2111,
+          "max_rank_drop": 0,
+          "top_risers": [
+            {
+              "track_id": "6gPDSQih9KZjFekU",
+              "baseline_rank": 4985,
+              "scenario_rank": 2874,
+              "rank_delta": 2111
+            },
+            {
+              "track_id": "57hhYSWbdr5US8in",
+              "baseline_rank": 4982,
+              "scenario_rank": 2873,
+              "rank_delta": 2109
+            },
+            {
+              "track_id": "ywiMfplNrk1KC2zE",
+              "baseline_rank": 4974,
+              "scenario_rank": 2872,
+              "rank_delta": 2102
+            },
+            {
+              "track_id": "NTquyDICj3GXZZeg",
+              "baseline_rank": 4968,
+              "scenario_rank": 2871,
+              "rank_delta": 2097
+            },
+            {
+              "track_id": "Tcm4axrmvn3WbNqB",
+              "baseline_rank": 4966,
+              "scenario_rank": 2870,
+              "rank_delta": 2096
+            }
+          ],
+          "top_fallers": []
+        }
+      },
+      "archive_dir": "07_implementation/implementation_notes/bl011_controllability/outputs/scenarios/stricter_thresholds"
+    },
+    {
+      "scenario_id": "looser_thresholds",
+      "test_id": "EP-CTRL-003",
+      "control_surface": "candidate_threshold",
+      "description": "Loosen all numeric retrieval thresholds by multiplying them by 1.25.",
+      "expected_effect": "candidate pool should expand and downstream ranking or playlist composition should change",
+      "repeat_consistent": true,
+      "config_hash": "CA75A6EE2CE61B2DC03F8DDC45571128DF7278873660880A5AEBA55CFCC1ED2C",
+      "effective_config": {
+        "scenario_id": "looser_thresholds",
+        "test_id": "EP-CTRL-003",
+        "control_surface": "candidate_threshold",
+        "description": "Loosen all numeric retrieval thresholds by multiplying them by 1.25.",
+        "expected_effect": "candidate pool should expand and downstream ranking or playlist composition should change",
+        "profile": {
+          "effective_weight_rule": "effective_weight = preference_weight",
+          "numeric_feature_columns": [
+            "danceability",
+            "energy",
+            "valence",
+            "tempo",
+            "key",
+            "mode",
+            "popularity",
+            "duration_ms"
+          ],
+          "top_tag_limit": 10,
+          "top_genre_limit": 10,
+          "top_lead_genre_limit": 10,
+          "aggregation_rules": {
+            "numeric": "weighted mean over numeric columns embedded in the BL-003 enriched seed table; key uses weighted circular mean on the 12-semitone wheel",
+            "tags": "sum(preference_weight) over DS-001 tag labels",
+            "genres": "sum(preference_weight) over DS-001 genre labels",
+            "lead_genres": "sum(preference_weight)"
+          },
+          "include_interaction_types": [
+            "history",
+            "influence"
+          ]
+        },
+        "retrieval": {
+          "top_lead_genre_limit": 6,
+          "top_tag_limit": 10,
+          "top_genre_limit": 8,
+          "threshold_scale": 1.25,
+          "numeric_thresholds": {
+            "tempo": 18.75,
+            "key": 1.875,
+            "mode": 0.625,
+            "duration_ms": 37500.0
+          },
+          "keep_rule": "keep if not seed and (semantic_score >= 3 or (semantic_score >= 1 and numeric_pass_count >= 2))"
+        },
+        "scoring": {
+          "numeric_thresholds": {
+            "tempo": 15.0,
+            "key": 1.5,
+            "mode": 0.5,
+            "duration_ms": 30000.0
+          },
+          "component_weights": {
+            "tempo": 0.12,
+            "duration_ms": 0.08,
+            "key": 0.08,
+            "mode": 0.07,
+            "lead_genre": 0.23,
+            "genre_overlap": 0.19,
+            "tag_overlap": 0.23
+          },
+          "weight_override_component": null,
+          "raw_override_value": null
+        },
+        "assembly": {
+          "target_size": 10,
+          "min_score_threshold": 0.35,
+          "max_per_genre": 4,
+          "max_consecutive": 2
+        }
+      },
+      "stable_hashes": {
+        "profile_semantic_hash": "6C48FC9EA4E69A170E2A163C464D9955857152F3E37EAE7C7F8766CB6D389A51",
+        "seed_trace_hash": "BFF625FF9169F7925782B65A6A2BA5FDC530BFE9107B84D89FBD0300E6623CA5",
+        "filtered_candidates_hash": "02E46EAE2EF2A83B7D3A8ECCF1EC2FB1F708187C7AF4D763E7CF906BEB6CAAB4",
+        "candidate_decisions_hash": "AF9AC6A032BDEBD1D9745276356649FE2A18774C0665EFE3BAFBD5B490A7EEF7",
+        "ranked_output_hash": "D86B0C5D4AA7B18F39A2498D048E5B4BB0CD9D9F37C789B0C2C020F3A9F6567D",
+        "assembly_trace_hash": "D520B85666A49BB005C0B3FE2D2B27D26F211D5ADCCC70702897F46F8A29AB0C",
+        "playlist_output_hash": "1CA66EF7D1EA25168AF674374EDAC60E13E7973FAD7ABB652359DA899E4D5F16"
+      },
+      "metrics": {
+        "selected_event_count": 1026,
+        "matched_seed_count": 1026,
+        "candidate_pool_size": 8511,
+        "scored_candidate_count": 8511,
+        "playlist_length": 10,
+        "top10_track_ids": [
+          "CaR8UnowNJUR5Dib",
+          "yEz9rqTTulkiDDm7",
+          "hU7yckCKoiTkHjwi",
+          "C9oA7Glm1TItxpQA",
+          "M3ApGs7RGZwXHqs4",
+          "lGnkOkQSUQO175Qg",
+          "rqeIltq5ixzHA5EG",
+          "kJa0UEVtgRvCJiXS",
+          "CZOYJJKuyuUosACw",
+          "o27WwIo8F6fMirMs"
+        ],
+        "playlist_track_ids": [
+          "CaR8UnowNJUR5Dib",
+          "yEz9rqTTulkiDDm7",
+          "hU7yckCKoiTkHjwi",
+          "C9oA7Glm1TItxpQA",
+          "CZOYJJKuyuUosACw",
+          "o27WwIo8F6fMirMs",
+          "phL12CBijBqwQ9qB",
+          "8WnHV12FDAeaQwkd",
+          "qob8Z8qGt0UR4JAs",
+          "zC9ANQtT16TAaER0"
+        ],
+        "dominant_lead_genres": [
+          "pop",
+          "classic rock",
+          "rock",
+          "electronic",
+          "rap"
+        ],
+        "dominant_tags": [
+          "rock",
+          "pop",
+          "classic rock",
+          "70s",
+          "80s"
+        ],
+        "mean_component_contributions": {
+          "tempo": 0.04804,
+          "duration_ms": 0.029427,
+          "key": 0.016783,
+          "mode": 0.017206,
+          "lead_genre": 0.136727,
+          "genre_overlap": 0.052136,
+          "tag_overlap": 0.056293
+        },
+        "playlist_genre_mix": {
+          "classic rock": 4,
+          "pop": 4,
+          "rock": 2
+        }
+      },
+      "comparison_to_baseline": {
+        "observable_shift": true,
+        "expected_direction_met": true,
+        "candidate_pool_size_delta": 3452,
+        "playlist_length_delta": 0,
+        "top10_overlap_count": 10,
+        "top10_overlap_ratio": 1.0,
+        "playlist_overlap_count": 10,
+        "playlist_overlap_ratio": 1.0,
+        "top10_added_track_ids": [],
+        "top10_removed_track_ids": [],
+        "playlist_added_track_ids": [],
+        "playlist_removed_track_ids": [],
+        "profile_lead_genres_before": [
+          "pop",
+          "classic rock",
+          "rock",
+          "electronic",
+          "rap"
+        ],
+        "profile_lead_genres_after": [
+          "pop",
+          "classic rock",
+          "rock",
+          "electronic",
+          "rap"
+        ],
+        "component_mean_delta": {
+          "duration_ms": -0.006492,
+          "genre_overlap": -0.000368,
+          "key": -0.005853,
+          "lead_genre": -0.013052,
+          "mode": -9.2e-05,
+          "tag_overlap": -0.000658,
+          "tempo": -0.008588
+        },
+        "rank_shift_summary": {
+          "common_candidate_count": 5059,
+          "mean_abs_rank_delta": 1008.545,
+          "max_rank_improvement": 0,
+          "max_rank_drop": -3431,
+          "top_risers": [],
+          "top_fallers": [
+            {
+              "track_id": "GrzYDdXYVdjC9v8F",
+              "baseline_rank": 5058,
+              "scenario_rank": 8489,
+              "rank_delta": -3431
+            },
+            {
+              "track_id": "f30zcZrlqhA387MT",
+              "baseline_rank": 5059,
+              "scenario_rank": 8490,
+              "rank_delta": -3431
+            },
+            {
+              "track_id": "Am3gXfVE0dZovO4d",
+              "baseline_rank": 5057,
+              "scenario_rank": 8459,
+              "rank_delta": -3402
+            },
+            {
+              "track_id": "akpfejkAf7W9l0eO",
+              "baseline_rank": 5056,
+              "scenario_rank": 8440,
+              "rank_delta": -3384
+            },
+            {
+              "track_id": "qzWlfILpyBklJFPE",
+              "baseline_rank": 5055,
+              "scenario_rank": 8438,
+              "rank_delta": -3383
+            }
+          ]
+        }
+      },
+      "archive_dir": "07_implementation/implementation_notes/bl011_controllability/outputs/scenarios/looser_thresholds"
+    }
+  ],
+  "results": {
+    "all_scenarios_repeat_consistent": true,
+    "all_variant_shifts_observable": true,
+    "all_variant_directions_met": true,
+    "status": "pass"
+  },
+  "output_artifacts": {
+    "config_snapshot_path": "07_implementation/implementation_notes/bl011_controllability/outputs/bl011_controllability_config_snapshot.json",
+    "run_matrix_path": "07_implementation/implementation_notes/bl011_controllability/outputs/bl011_controllability_run_matrix.csv",
+    "scenario_dirs": [
+      "07_implementation/implementation_notes/bl011_controllability/outputs/scenarios/baseline",
+      "07_implementation/implementation_notes/bl011_controllability/outputs/scenarios/no_influence_tracks",
+      "07_implementation/implementation_notes/bl011_controllability/outputs/scenarios/valence_weight_up",
+      "07_implementation/implementation_notes/bl011_controllability/outputs/scenarios/stricter_thresholds",
+      "07_implementation/implementation_notes/bl011_controllability/outputs/scenarios/looser_thresholds"
+    ]
+  }
+}

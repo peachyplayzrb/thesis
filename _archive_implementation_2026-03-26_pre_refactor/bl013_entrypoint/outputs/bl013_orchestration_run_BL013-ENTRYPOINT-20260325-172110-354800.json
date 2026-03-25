@@ -1,0 +1,70 @@
+{
+  "run_id": "BL013-ENTRYPOINT-20260325-172110-354800",
+  "task": "BL-013",
+  "generated_at_utc": "2026-03-25T17:21:10Z",
+  "overall_status": "fail",
+  "continue_on_error": false,
+  "python_executable": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\.venv\\Scripts\\python.exe",
+  "run_config_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl000_run_config\\run_config_bl021_probe_v2.json",
+  "canonical_run_config_artifacts": {
+    "run_id": "BL013-ENTRYPOINT-20260325-172110-354800",
+    "generated_at_utc": "2026-03-25T17:21:10Z",
+    "output_dir": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl000_run_config\\outputs",
+    "run_intent": {
+      "path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl000_run_config\\outputs\\run_intent_20260325-172110-359329.json",
+      "sha256": "1529FA63E8873CAD2B6EF92927A8B2DD455F0EEF73C0941AAAD07E17DDEBEC62",
+      "artifact_schema_version": "run-intent-v1"
+    },
+    "run_effective_config": {
+      "path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl000_run_config\\outputs\\run_effective_config_20260325-172110-359329.json",
+      "sha256": "F9B8AA042D7AA3BC3DA7E3E8AD3AB53E028A78199F2E7D3B8B4250BB126A0646",
+      "artifact_schema_version": "run-effective-config-v1"
+    },
+    "latest": {
+      "run_intent": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl000_run_config\\outputs\\run_intent_latest.json",
+      "run_effective_config": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl000_run_config\\outputs\\run_effective_config_latest.json"
+    }
+  },
+  "refresh_seed": false,
+  "requested_stage_order": [
+    "BL-004",
+    "BL-005",
+    "BL-006",
+    "BL-007",
+    "BL-008",
+    "BL-009"
+  ],
+  "executed_stage_count": 1,
+  "failed_stage_count": 1,
+  "elapsed_seconds": 0.126,
+  "stage_results": [
+    {
+      "stage_id": "BL-004",
+      "script_path": "07_implementation/implementation_notes/bl004_profile/build_bl004_preference_profile.py",
+      "command": [
+        "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\.venv\\Scripts\\python.exe",
+        "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl004_profile\\build_bl004_preference_profile.py"
+      ],
+      "run_config_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl000_run_config\\run_config_bl021_probe_v2.json",
+      "run_intent_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl000_run_config\\outputs\\run_intent_20260325-172110-359329.json",
+      "run_effective_config_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl000_run_config\\outputs\\run_effective_config_20260325-172110-359329.json",
+      "return_code": 1,
+      "status": "fail",
+      "elapsed_seconds": 0.11,
+      "stdout": "",
+      "stderr": "Traceback (most recent call last):\n  File \"C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl004_profile\\build_bl004_preference_profile.py\", line 495, in <module>\n    main()\n    ~~~~^^\n  File \"C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl004_profile\\build_bl004_preference_profile.py\", line 287, in main\n    raise RuntimeError(\"No DS-001 seed rows found for BL-004 input\")\nRuntimeError: No DS-001 seed rows found for BL-004 input"
+    }
+  ],
+  "stable_artifact_hashes": {
+    "bl004_seed_trace": "CCC8B1824BC40AB7B5668040434E7ABC910ABB541858CC0996741BEC02A75FB9",
+    "bl005_filtered_candidates": "8B5B19EB1257CF4116E9D166FAC96859A4AC502CDCBF78728074F1A8A4C0FBCD",
+    "bl005_candidate_decisions": "5E91AE05F3E9E0255997D880E24F811B2A42C74CD162F7F93C1D1FB9137B71FF",
+    "bl006_scored_candidates": "64F7FB2C3D6389479A40D5B075F25DD1D14413E1F19B49A8E43BA4BA533E9C70",
+    "bl007_assembly_trace": "7F5FC6AD951C6066CA9EBF8597D51EB68D73A8EF5DB557D1752DFFBC5E7D4D42"
+  },
+  "missing_stable_artifacts": [],
+  "notes": {
+    "purpose": "Lightweight wrapper to run existing BL-004..BL-009 scripts in one command.",
+    "repeatability_check_guidance": "Compare stable_artifact_hashes between repeated runs under unchanged inputs/config."
+  }
+}

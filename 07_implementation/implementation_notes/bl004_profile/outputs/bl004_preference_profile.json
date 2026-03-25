@@ -1,11 +1,11 @@
 {
-  "run_id": "BL004-PROFILE-20260325-173411-326059",
+  "run_id": "BL004-PROFILE-20260325-234049-816592",
   "task": "BL-004",
-  "generated_at_utc": "2026-03-25T17:34:11Z",
+  "generated_at_utc": "2026-03-25T23:40:49Z",
   "user_id": "214f23jw73wgv4vdpcjabds2a",
-  "config_source": "run_config",
-  "run_config_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl000_run_config\\configs\\profiles\\run_config_bl021_probe_v2.json",
-  "run_config_schema_version": "run-config-v1",
+  "config_source": "environment",
+  "run_config_path": null,
+  "run_config_schema_version": null,
   "input_artifacts": {
     "seed_table_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl003_alignment\\outputs\\bl003_ds001_spotify_seed_table.csv",
     "seed_table_sha256": "5b90129c759ca783ab7da21a7b8d885cfff42bfc4f8b3249e365c25f6a407eff"
@@ -20,10 +20,10 @@
         "long_term"
       ],
       "include_saved_tracks": true,
-      "saved_tracks_limit": 200,
+      "saved_tracks_limit": null,
       "include_playlists": true,
-      "playlists_limit": 12,
-      "playlist_items_per_playlist_limit": 100,
+      "playlists_limit": null,
+      "playlist_items_per_playlist_limit": null,
       "include_recently_played": true,
       "recently_played_limit": 50
     },
@@ -67,7 +67,7 @@
     },
     "key_aggregation_method": "weighted_circular_mean",
     "total_effective_weight": 2197.198246,
-    "elapsed_seconds": 0.02
+    "elapsed_seconds": 0.038
   },
   "seed_summary": {
     "counts_by_interaction_type": {

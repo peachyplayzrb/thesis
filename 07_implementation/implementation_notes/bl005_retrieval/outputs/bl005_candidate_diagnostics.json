@@ -1,10 +1,10 @@
 {
-  "run_id": "BL005-FILTER-20260325-173412-221325",
+  "run_id": "BL005-FILTER-20260325-234051-545527",
   "task": "BL-005",
-  "generated_at_utc": "2026-03-25T17:34:14Z",
+  "generated_at_utc": "2026-03-25T23:40:55Z",
   "input_artifacts": {
     "profile_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl004_profile\\outputs\\bl004_preference_profile.json",
-    "profile_sha256": "685987a43a22ac1e70153c6d6baf28f8d038f64ee7e06c3c3e83c312e75aa593",
+    "profile_sha256": "e4c474b74e4ec933b6517e446c165f1e504e9dbf91acc5130f0f2dd40bd0cc83",
     "seed_trace_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl004_profile\\outputs\\bl004_seed_trace.csv",
     "seed_trace_sha256": "3eae680fe68d1e2951b96b3de9107a7e298ecd867498ff5e9259fc09bcc6b6a4",
     "candidate_stub_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl000_data_layer\\outputs\\ds001_working_candidate_dataset.csv",
@@ -89,7 +89,7 @@
     "00wqHIO65EtRyRQM",
     "013BFFjvohJT9dW9"
   ],
-  "elapsed_seconds": 2.385,
+  "elapsed_seconds": 4.024,
   "output_files": {
     "filtered_candidates_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl005_retrieval\\outputs\\bl005_filtered_candidates.csv",
     "candidate_decisions_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl005_retrieval\\outputs\\bl005_candidate_decisions.csv"

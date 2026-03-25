@@ -1,70 +1,47 @@
 from __future__ import annotations
 
 import csv
-import hashlib
-import importlib.util
 import json
 import os
 import time
 from datetime import datetime, timezone
 from pathlib import Path
+from sys import path as sys_path
 
+# Add shared utilities to path
+sys_path.insert(0, str(Path(__file__).resolve().parents[3] / "07_implementation" / "implementation_notes"))
 
-def env_int(name: str, default: int) -> int:
-    raw = os.environ.get(name)
-    if raw is None or not str(raw).strip():
-        return default
-    try:
-        return int(raw)
-    except ValueError:
-        return default
+from bl000_shared_utils.config_loader import load_run_config_utils_module
+from bl000_shared_utils.constants import (
+    DEFAULT_NUMERIC_SUPPORT_MIN_PASS,
+    DEFAULT_PROFILE_TOP_GENRE_LIMIT,
+    DEFAULT_PROFILE_TOP_LEAD_GENRE_LIMIT,
+    DEFAULT_PROFILE_TOP_TAG_LIMIT,
+    DEFAULT_SEMANTIC_MIN_KEEP_SCORE,
+    DEFAULT_SEMANTIC_STRONG_KEEP_SCORE,
+    NUMERIC_FEATURE_SPECS,
+)
+from bl000_shared_utils.env_utils import env_int
+from bl000_shared_utils.io_utils import (
+    load_csv_rows,
+    load_json,
+    parse_csv_labels,
+    parse_float,
+    sha256_of_file,
+)
+from bl000_shared_utils.path_utils import repo_root
 
-
-DEFAULT_PROFILE_TOP_LEAD_GENRE_LIMIT = 6
-DEFAULT_PROFILE_TOP_TAG_LIMIT = 10
-DEFAULT_PROFILE_TOP_GENRE_LIMIT = 8
-DEFAULT_SEMANTIC_STRONG_KEEP_SCORE = 2
-DEFAULT_SEMANTIC_MIN_KEEP_SCORE = 1
-DEFAULT_NUMERIC_SUPPORT_MIN_PASS = 1
-
-# Numeric features that are valid only when both the BL-004 profile and the
-# candidate dataset provide comparable values.
-NUMERIC_FEATURE_SPECS = {
-    "tempo": {
-        "candidate_column": "tempo",
-        "threshold": 20.0,
-        "circular": False,
-    },
-    "key": {
-        "candidate_column": "key",
-        "threshold": 2.0,
-        "circular": True,
-    },
-    "mode": {
-        "candidate_column": "mode",
-        "threshold": 0.5,
-        "circular": False,
-    },
-    "duration_ms": {
-        "candidate_column": "duration_ms",
-        "threshold": 45000.0,
-        "circular": False,
-    },
-}
-
-
-def repo_root() -> Path:
-    return Path(__file__).resolve().parents[3]
-
-
-def load_run_config_utils_module():
-    module_path = repo_root() / "07_implementation" / "implementation_notes" / "bl000_run_config" / "run_config_utils.py"
-    spec = importlib.util.spec_from_file_location("run_config_utils", module_path)
-    if spec is None or spec.loader is None:
-        raise RuntimeError(f"Unable to load run-config utilities from {module_path}")
-    module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
-    return module
+# Import modularized BL-005 components
+from candidate_parser import (
+    candidate_numeric_value,
+    normalize_candidate_row,
+    parse_list,
+    resolve_candidate_column,
+    resolve_lead_genre,
+)
+from decision_tracker import DecisionTracker
+from decision_tracker import DecisionTracker
+from filtering_logic import decision_reason, keep_decision
 
 
 def resolve_bl005_runtime_controls() -> dict[str, object]:
@@ -96,140 +73,6 @@ def resolve_bl005_runtime_controls() -> dict[str, object]:
         "numeric_support_min_pass": env_int("BL005_NUMERIC_SUPPORT_MIN_PASS", DEFAULT_NUMERIC_SUPPORT_MIN_PASS),
         "numeric_thresholds": {},
     }
-
-
-def sha256_of_file(path: Path) -> str:
-    digest = hashlib.sha256()
-    with path.open("rb") as handle:
-        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
-            digest.update(chunk)
-    return digest.hexdigest()
-
-
-def load_json(path: Path) -> dict:
-    return json.loads(path.read_text(encoding="utf-8"))
-
-
-def load_csv_rows(path: Path) -> list[dict[str, str]]:
-    with path.open("r", encoding="utf-8", newline="") as handle:
-        return list(csv.DictReader(handle))
-
-
-def parse_float(value: str) -> float | None:
-    text = value.strip()
-    if not text:
-        return None
-    try:
-        return float(text)
-    except ValueError:
-        return None
-
-
-def parse_csv_labels(raw_value: str) -> list[str]:
-    if not raw_value:
-        return []
-    labels: list[str] = []
-    seen: set[str] = set()
-    for piece in raw_value.split(","):
-        label = piece.strip().lower()
-        if not label or label in seen:
-            continue
-        seen.add(label)
-        labels.append(label)
-    return labels
-
-
-def candidate_numeric_value(row: dict[str, str], profile_column: str, candidate_column: str) -> float | None:
-    value = parse_float(row.get(candidate_column, ""))
-    if value is None:
-        return None
-    if profile_column == "duration_ms" and candidate_column == "duration":
-        return value * 1000.0
-    return value
-
-
-def resolve_candidate_column(profile_column: str, preferred_column: str, candidate_columns: set[str]) -> str | None:
-    if preferred_column in candidate_columns:
-        return preferred_column
-    if profile_column == "duration_ms" and "duration" in candidate_columns:
-        return "duration"
-    return None
-
-
-def parse_list(raw_value: str, label_key: str) -> list[str]:
-    if not raw_value:
-        return []
-    try:
-        payload = json.loads(raw_value)
-    except json.JSONDecodeError:
-        return []
-    result: list[str] = []
-    for item in payload:
-        if not isinstance(item, dict):
-            continue
-        label = item.get(label_key)
-        if isinstance(label, str) and label.strip():
-            result.append(label.strip())
-    return result
-
-
-def normalize_candidate_row(row: dict[str, str]) -> dict[str, str]:
-    normalized = dict(row)
-    track_id = (normalized.get("track_id") or "").strip()
-    if not track_id:
-        track_id = (normalized.get("id") or "").strip()
-    normalized["track_id"] = track_id
-    return normalized
-
-
-def resolve_lead_genre(candidate_genres: list[str], candidate_tags: list[str]) -> str:
-    if candidate_genres:
-        return candidate_genres[0]
-    if candidate_tags:
-        return candidate_tags[0]
-    return ""
-
-
-def keep_decision(
-    is_seed_track: bool,
-    semantic_score: int,
-    numeric_pass_count: int,
-    numeric_features_enabled: bool,
-    semantic_strong_keep_score: int,
-    semantic_min_keep_score: int,
-    numeric_support_min_pass: int,
-) -> tuple[bool, str]:
-    if is_seed_track:
-        return False, "reject_seed_track"
-    if not numeric_features_enabled:
-        if semantic_score >= semantic_min_keep_score:
-            return True, "keep_semantic_only"
-        return False, "reject_insufficient_semantic"
-    if semantic_score >= semantic_strong_keep_score:
-        return True, "keep_strong_semantic"
-    if semantic_score >= semantic_min_keep_score and numeric_pass_count >= numeric_support_min_pass:
-        return True, "keep_semantic_numeric_supported"
-    if semantic_score >= semantic_min_keep_score:
-        return False, "reject_semantic_without_numeric_support"
-    if numeric_pass_count > 0:
-        return False, "reject_numeric_without_semantic_support"
-    return False, "reject_no_signal"
-
-
-def decision_reason(decision_path: str, semantic_score: int, numeric_pass_count: int) -> str:
-    if decision_path == "reject_seed_track":
-        return "reject: seed track excluded from retrieval output"
-    if decision_path == "keep_semantic_only":
-        return f"keep: semantic_score={semantic_score} with semantic-only mode"
-    if decision_path == "keep_strong_semantic":
-        return f"keep: semantic_score={semantic_score} meets strong semantic threshold"
-    if decision_path == "keep_semantic_numeric_supported":
-        return f"keep: semantic_score={semantic_score} with numeric_pass_count={numeric_pass_count}"
-    if decision_path == "reject_semantic_without_numeric_support":
-        return f"reject: semantic_score={semantic_score} lacks numeric support (numeric_pass_count={numeric_pass_count})"
-    if decision_path == "reject_numeric_without_semantic_support":
-        return f"reject: numeric_pass_count={numeric_pass_count} without semantic evidence"
-    return f"reject: semantic_score={semantic_score}, numeric_pass_count={numeric_pass_count} below keep threshold"
 
 
 def main() -> None:
@@ -284,23 +127,8 @@ def main() -> None:
     }
     numeric_features_enabled = bool(numeric_centers)
 
-    decisions: list[dict[str, object]] = []
-    kept_rows: list[dict[str, str]] = []
-    decision_counts = {
-        "seed_excluded": 0,
-        "kept_candidates": 0,
-        "rejected_threshold": 0,
-    }
-    decision_path_counts: dict[str, int] = {}
-    semantic_rule_hits = {
-        "lead_genre_match": 0,
-        "genre_overlap": 0,
-        "tag_overlap": 0,
-    }
-    numeric_rule_hits = {key: 0 for key in active_numeric_specs}
-    semantic_score_distribution = {str(score): 0 for score in range(4)}
-    numeric_pass_distribution = {str(score): 0 for score in range(len(active_numeric_specs) + 1)}
-
+    # Initialize decision tracker
+    tracker = DecisionTracker(active_numeric_specs)
     start_time = time.time()
     run_id = f"BL005-FILTER-{datetime.now(timezone.utc).strftime('%Y%m%d-%H%M%S-%f')}"
 
@@ -317,54 +145,52 @@ def main() -> None:
         genre_overlap = len(top_genres.intersection(candidate_genres))
         tag_overlap = len(top_tags.intersection(candidate_tags))
 
-        if lead_genre_match:
-            semantic_rule_hits["lead_genre_match"] += 1
-        if genre_overlap > 0:
-            semantic_rule_hits["genre_overlap"] += 1
-        if tag_overlap > 0:
-            semantic_rule_hits["tag_overlap"] += 1
-
         semantic_score = 0
         semantic_score += 1 if lead_genre_match else 0
         semantic_score += 1 if genre_overlap > 0 else 0
         semantic_score += 1 if tag_overlap > 0 else 0
-        semantic_score_distribution[str(semantic_score)] = semantic_score_distribution.get(str(semantic_score), 0) + 1
 
+        # Track semantic scores
+        tracker.record_semantic_scores(semantic_score, lead_genre_match, genre_overlap, tag_overlap)
+
+        # Compute numeric distances and pass counts
         numeric_pass_count = 0
         numeric_distances: dict[str, float | None] = {}
+        numeric_rule_hits_this_candidate: dict[str, bool] = {}
+        
         for profile_column, spec in active_numeric_specs.items():
             value = candidate_numeric_value(row, profile_column, str(spec["candidate_column"]))
-            if value is None:
-                numeric_distances[profile_column] = None
-                continue
-            center = numeric_centers.get(profile_column)
-            if center is None:
-                numeric_distances[profile_column] = None
-                continue
-            if bool(spec["circular"]):
-                raw_diff = abs(value - center)
-                distance = min(raw_diff, 12.0 - raw_diff)
+            passed = False
+            
+            if value is not None:
+                center = numeric_centers.get(profile_column)
+                if center is not None:
+                    if bool(spec["circular"]):
+                        raw_diff = abs(value - center)
+                        distance = min(raw_diff, 12.0 - raw_diff)
+                    else:
+                        distance = abs(value - center)
+                    numeric_distances[profile_column] = round(distance, 6)
+                    if distance <= float(spec["threshold"]):
+                        numeric_pass_count += 1
+                        passed = True
+                else:
+                    numeric_distances[profile_column] = None
             else:
-                distance = abs(value - center)
-            numeric_distances[profile_column] = round(distance, 6)
-            if distance <= float(spec["threshold"]):
-                numeric_pass_count += 1
-                numeric_rule_hits[profile_column] += 1
-        numeric_pass_distribution[str(numeric_pass_count)] = numeric_pass_distribution.get(str(numeric_pass_count), 0) + 1
+                numeric_distances[profile_column] = None
+            
+            numeric_rule_hits_this_candidate[profile_column] = passed
 
+        # Track numeric scores
+        tracker.record_numeric_scores(numeric_pass_count, numeric_rule_hits_this_candidate)
+
+        # Make filtering decision
         kept, decision_path = keep_decision(
             is_seed_track, semantic_score, numeric_pass_count, numeric_features_enabled,
             semantic_strong_keep_score, semantic_min_keep_score, numeric_support_min_pass,
         )
-        decision_path_counts[decision_path] = decision_path_counts.get(decision_path, 0) + 1
 
-        if is_seed_track:
-            decision_counts["seed_excluded"] += 1
-        elif kept:
-            decision_counts["kept_candidates"] += 1
-        else:
-            decision_counts["rejected_threshold"] += 1
-
+        # Build decision record
         decision_row = {
             "track_id": track_id,
             "is_seed_track": int(is_seed_track),
@@ -382,9 +208,21 @@ def main() -> None:
             "decision_path": decision_path,
             "decision_reason": decision_reason(decision_path, semantic_score, numeric_pass_count),
         }
-        decisions.append(decision_row)
-        if kept:
-            kept_rows.append(row)
+
+        # Record decision in tracker
+        tracker.record_decision(
+            track_id,
+            is_seed_track,
+            kept,
+            decision_path,
+            decision_row,
+            row if kept else None,
+        )
+
+    # Get tracked summaries
+    summary = tracker.get_summary()
+    decisions = tracker.decisions
+    kept_rows = tracker.kept_rows
 
     filtered_path = output_dir / "bl005_filtered_candidates.csv"
     with filtered_path.open("w", encoding="utf-8", newline="") as handle:
@@ -433,18 +271,18 @@ def main() -> None:
         },
         "counts": {
             "candidate_rows_total": len(candidate_rows),
-            "seed_tracks_excluded": decision_counts["seed_excluded"],
+            "seed_tracks_excluded": summary["decision_counts"]["seed_excluded"],
             "kept_candidates": len(kept_rows),
-            "rejected_non_seed_candidates": decision_counts["rejected_threshold"],
+            "rejected_non_seed_candidates": summary["decision_counts"]["rejected_threshold"],
         },
         "rule_hits": {
-            "semantic_rule_hits": semantic_rule_hits,
-            "numeric_rule_hits": numeric_rule_hits,
+            "semantic_rule_hits": summary["semantic_rule_hits"],
+            "numeric_rule_hits": summary["numeric_rule_hits"],
         },
-        "decision_path_counts": decision_path_counts,
+        "decision_path_counts": summary["decision_path_counts"],
         "score_distributions": {
-            "semantic_score": semantic_score_distribution,
-            "numeric_pass_count": numeric_pass_distribution,
+            "semantic_score": summary["semantic_score_distribution"],
+            "numeric_pass_count": summary["numeric_pass_distribution"],
         },
         "top_kept_track_ids": [row["track_id"] for row in kept_rows[:15]],
         "elapsed_seconds": round(time.time() - start_time, 3),

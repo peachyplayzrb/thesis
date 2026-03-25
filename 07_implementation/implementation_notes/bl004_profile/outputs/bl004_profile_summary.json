@@ -1,10 +1,10 @@
 {
-  "run_id": "BL004-PROFILE-20260325-173411-326059",
+  "run_id": "BL004-PROFILE-20260325-234049-816592",
   "task": "BL-004",
   "user_id": "214f23jw73wgv4vdpcjabds2a",
-  "config_source": "run_config",
-  "run_config_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl000_run_config\\configs\\profiles\\run_config_bl021_probe_v2.json",
-  "run_config_schema_version": "run-config-v1",
+  "config_source": "environment",
+  "run_config_path": null,
+  "run_config_schema_version": null,
   "input_scope": {
     "source_family": "spotify_api_export",
     "include_top_tracks": true,
@@ -14,10 +14,10 @@
       "long_term"
     ],
     "include_saved_tracks": true,
-    "saved_tracks_limit": 200,
+    "saved_tracks_limit": null,
     "include_playlists": true,
-    "playlists_limit": 12,
-    "playlist_items_per_playlist_limit": 100,
+    "playlists_limit": null,
+    "playlist_items_per_playlist_limit": null,
     "include_recently_played": true,
     "recently_played_limit": 50
   },

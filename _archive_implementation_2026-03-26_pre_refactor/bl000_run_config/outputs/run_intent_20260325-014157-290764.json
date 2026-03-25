@@ -1,0 +1,38 @@
+{
+  "artifact_schema_version": "run-intent-v1",
+  "artifact_type": "run_intent",
+  "generated_at_utc": "2026-03-25T01:41:57Z",
+  "intent_source": {
+    "mode": "explicit_run_config",
+    "run_config_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\run_config\\test_invalid_component_weights_sum.json"
+  },
+  "requested_config": {
+    "retrieval_controls": {
+      "numeric_thresholds": {
+        "duration_ms": 45000.0,
+        "key": 2.0,
+        "mode": 0.5,
+        "tempo": 20.0
+      }
+    },
+    "schema_version": "run-config-v1",
+    "scoring_controls": {
+      "component_weights": {
+        "duration_ms": 0.13,
+        "genre_overlap": 0.12,
+        "key": 0.13,
+        "lead_genre": 0.17,
+        "mode": 0.09,
+        "tag_overlap": 0.21,
+        "tempo": 0.25
+      },
+      "numeric_thresholds": {
+        "duration_ms": 45000.0,
+        "key": 2.0,
+        "mode": 0.5,
+        "tempo": 20.0
+      }
+    }
+  },
+  "run_id": "BL013-ENTRYPOINT-20260325-014157-254484"
+}

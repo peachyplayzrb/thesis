@@ -1,0 +1,125 @@
+{
+  "probe_a": {
+    "bl003": {
+      "input_event_rows": 637,
+      "matched_events_rows": 224,
+      "seed_table_rows": 221,
+      "run_config_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\run_config\\run_config_bl021_probe_v1.json"
+    },
+    "bl004": {
+      "run_id": "BL004-PROFILE-20260324-220858-982521",
+      "matched_seed_count": 221,
+      "total_effective_weight": 594.516574,
+      "feature_centers": {
+        "danceability": 0.550561,
+        "energy": 0.553168,
+        "valence": 0.562421,
+        "tempo": 122.32724
+      },
+      "input_scope": {
+        "source_family": "spotify_api_export",
+        "include_top_tracks": true,
+        "top_time_ranges": [
+          "short_term"
+        ],
+        "include_saved_tracks": false,
+        "saved_tracks_limit": 25,
+        "include_playlists": true,
+        "playlists_limit": 3,
+        "playlist_items_per_playlist_limit": 20,
+        "include_recently_played": true,
+        "recently_played_limit": 15
+      }
+    },
+    "bl009": {
+      "run_id": "BL009-OBSERVE-20260324-220907-027010",
+      "run_config_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\run_config\\run_config_bl021_probe_v1.json",
+      "input_scope": {
+        "source_family": "spotify_api_export",
+        "include_top_tracks": true,
+        "top_time_ranges": [
+          "short_term"
+        ],
+        "include_saved_tracks": false,
+        "saved_tracks_limit": 25,
+        "include_playlists": true,
+        "playlists_limit": 3,
+        "playlist_items_per_playlist_limit": 20,
+        "include_recently_played": true,
+        "recently_played_limit": 15
+      }
+    }
+  },
+  "probe_b": {
+    "bl003": {
+      "input_event_rows": 8997,
+      "matched_events_rows": 2898,
+      "seed_table_rows": 1563,
+      "run_config_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\run_config\\run_config_bl021_probe_v2.json"
+    },
+    "bl004": {
+      "run_id": "BL004-PROFILE-20260324-220923-730004",
+      "matched_seed_count": 1563,
+      "total_effective_weight": 3777.667577,
+      "feature_centers": {
+        "danceability": 0.555602,
+        "energy": 0.597241,
+        "valence": 0.553157,
+        "tempo": 120.785257
+      },
+      "input_scope": {
+        "source_family": "spotify_api_export",
+        "include_top_tracks": true,
+        "top_time_ranges": [
+          "short_term",
+          "medium_term",
+          "long_term"
+        ],
+        "include_saved_tracks": true,
+        "saved_tracks_limit": 200,
+        "include_playlists": true,
+        "playlists_limit": 12,
+        "playlist_items_per_playlist_limit": 100,
+        "include_recently_played": true,
+        "recently_played_limit": 50
+      }
+    },
+    "bl009": {
+      "run_id": "BL009-OBSERVE-20260324-220931-086881",
+      "run_config_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\run_config\\run_config_bl021_probe_v2.json",
+      "input_scope": {
+        "source_family": "spotify_api_export",
+        "include_top_tracks": true,
+        "top_time_ranges": [
+          "short_term",
+          "medium_term",
+          "long_term"
+        ],
+        "include_saved_tracks": true,
+        "saved_tracks_limit": 200,
+        "include_playlists": true,
+        "playlists_limit": 12,
+        "playlist_items_per_playlist_limit": 100,
+        "include_recently_played": true,
+        "recently_played_limit": 50
+      }
+    }
+  },
+  "delta": {
+    "bl003": {
+      "input_event_rows_delta": 8360,
+      "matched_events_rows_delta": 2674,
+      "seed_table_rows_delta": 1342
+    },
+    "bl004": {
+      "matched_seed_count_delta": 1342,
+      "total_effective_weight_delta": 3183.151003,
+      "feature_center_deltas": {
+        "danceability": 0.005041,
+        "energy": 0.044073,
+        "valence": -0.009264,
+        "tempo": -1.541983
+      }
+    }
+  }
+}

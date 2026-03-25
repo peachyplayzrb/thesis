@@ -1,10 +1,10 @@
 {
-  "run_id": "BL006-SCORE-20260325-173415-304312",
+  "run_id": "BL006-SCORE-20260325-234056-595541",
   "task": "BL-006",
-  "generated_at_utc": "2026-03-25T17:34:17Z",
+  "generated_at_utc": "2026-03-25T23:40:59Z",
   "input_artifacts": {
     "profile_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl004_profile\\outputs\\bl004_preference_profile.json",
-    "profile_sha256": "685987a43a22ac1e70153c6d6baf28f8d038f64ee7e06c3c3e83c312e75aa593",
+    "profile_sha256": "e4c474b74e4ec933b6517e446c165f1e504e9dbf91acc5130f0f2dd40bd0cc83",
     "filtered_candidates_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl005_retrieval\\outputs\\bl005_filtered_candidates.csv",
     "filtered_candidates_sha256": "1d2d16814e6f201fd15ed135150c24ee8271a319934772ea4d54448a69e8b66f"
   },
@@ -196,7 +196,7 @@
       "matched_tags": "pop|rock|female vocalists|dance"
     }
   ],
-  "elapsed_seconds": 2.884,
+  "elapsed_seconds": 3.845,
   "output_files": {
     "scored_candidates_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl006_scoring\\outputs\\bl006_scored_candidates.csv"
   },
