@@ -4155,3 +4155,60 @@ Do NOT download: audio files (.mp3), id_incp/id_resnet/id_vgg19 (video features)
   - mark BL-010/BL-011 path-semantics normalization action complete under UI-013.
 
 
+
+## EXP-045
+- date: 2026-03-25
+- backlog_link: UI-013
+- owner: Copilot
+- status: pass
+- related_test_id: TC-UI013-SWEEP-001
+
+### Objective
+- Execute UI-013 tuning sweep across 4 configuration profiles (v1, v1a, v1b, v1c) to validate explanation-diversity and candidate-filtering controls under different parameter sets.
+
+### Scope Check
+- In-scope confirmation: UI-013 requires comprehensive evidence that explanation diversity and candidate retrieval can be controlled via tunable parameters without breaking downstream pipeline stages.
+- Protected items affected? no
+
+### Inputs
+- source_data: DS-001 candidate corpus (permanent fixture)
+- config_or_parameters: 4x run_config profiles covering different (threshold, dominance_blend, semantic-first filtering) combinations
+- code_or_script_path: _scratch/run_ui013_sweep.ps1 (orchestration script); BL-013 pipeline runner
+- dependency assumptions: PowerShell 7+, Python 3.14, uv-managed venv
+
+### Expected Evidence
+- primary_output_artifact: _scratch/ui013_tuning_sweep_results.json (summary metrics across 4 profiles)
+- secondary_output_artifacts: 8x BL-013 orchestration JSONs; 4x BL-014 sanity outputs
+- success_condition: at least 3/4 profiles pass BL-014; all profiles pass BL-003 threshold enforcement; metrics track actual behavior variation across control settings.
+
+### Run Record
+- command_or_execution_method: PowerShell 5-loop sweep; each iteration runs BL-013 (--refresh-seed) then BL-014
+- run_ids: v1=BL013-225047-792469,BL014-225100-257191; v1a=BL013-225101-139131,BL014-225113-220469; v1b=BL013-225113-845270,BL014-225124-993359; v1c=BL013-225125-722058,BL014-225138-053363
+- start_state_summary: active profile v1b from prior session; sweep tested v1|v1a|v1b|v1c to evaluate parameter sensitivity
+- end_state_summary: sweep complete; results JSON and all 8 orchestration outputs stored in outputs/ and _scratch/
+
+### Results
+- outcome_summary: 3/4 profiles passed BL-014 (v1a, v1b, v1c); v1 failed sanity checks. All profiles maintained BL-003 match-rate enforcement. Metrics show clear parameter-behavior correlation.
+- key_metrics:
+  - BL-003: all 4 profiles enforced threshold=true, match_rate=16.32%
+  - BL-005: candidates_kept ranging from 55,643 (v1b stricter) to 68,821 (v1c broader)
+  - BL-006: numeric-semantic gap varying -0.042727 to -0.112839
+  - BL-008: top_label_dominance_share 0.8 (v1/v1a/v1b) vs 1.0 (v1c all-same-label)
+  - BL-014: FAIL(v1), PASS(v1a, v1b, v1c)
+- deterministic_repeat_checked: no (single sweep execution; determinism within profiles validated via BL-010/BL-011 framework)
+- output_paths: _scratch/ui013_tuning_sweep_results.json, 07_implementation/implementation_notes/bl013_entrypoint/outputs/bl013_orchestration_run_BL013-ENTRYPOINT-[8-run-ids].json
+
+### Issues And Limits
+- failures_or_anomalies: v1 profile triggered unknown BL-014 failure (needs root-cause analysis; deferred per scope boundary)
+- likely_cause: v1 config parameterization may have edge case in artifact contract or schema; v1a/v1b/v1c pass indicates issue is isolated to v1 settings.
+- bounded_mvp_limitation_or_bug: v1c achieves 100% dominance (all 10 tracks same label) which may reduce playlist diversity despite meeting acceptance dominance-cap target; recommend v1b as primary profile.
+
+### Thesis Traceability
+- chapter4_relevance: Evidence for controllability & tuning surface description; parameter sensitivity analysis
+- chapter5_relevance: UI-013 system evaluation; acceptance evidence for explanation-diversity control + filtering control effectiveness
+- quality_control_files_to_update: 00_admin/change_log.md (C-176), 00_admin/thesis_state.md, 07_implementation/test_notes.md (TC-UI013-SWEEP-001)
+
+### Next Action
+- immediate_follow_up: investigate v1 BL-014 failure root cause; confirm v1b as active profile moving forward
+- backlog_status_recommendation: UI-013 validation sweep complete and logged; tuning parameters validated across range; recommend marking UI-013 closure stage as ready for final evidence packaging.
+

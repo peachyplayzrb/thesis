@@ -1,6 +1,6 @@
 # Thesis State
 
-Last updated: 2026-03-25 23:10 UTC
+Last updated: 2026-03-25 22:57 UTC (tuning sweep complete; v1b profile selected)
 
 ## Official Current State
 
@@ -67,7 +67,7 @@ The active execution corpus is DS-001 (Music4All base path). DS-002 (`MSD subset
 3. Keep website integration under bounded hardening only (`WP-WEBINT-001`): bug fixes, observability clarity, and orchestration reliability without scope expansion.
 4. Keep M3/M4 execution status synchronized with implementation reality and package evidence for M5 evaluation consolidation.
 
-Priority status checkpoint (2026-03-25 23:10 UTC): Tier-1 pipeline remediation package remains complete and integrated validation remains passing on the BL-prefixed baseline. UI-013 progressed further with BL-008 explanation-diversity control uplift and BL-010/BL-011 path-semantics normalization both validated (`BL010-REPRO-20260325-231041`, `BL011-CTRL-20260325-231130`, freshness `BL-FRESHNESS-20260325-231159`, BL-014 pass), leaving final evidence packaging as the remaining optimization-quality closure step.
+Priority status checkpoint (2026-03-25 22:57 UTC): Tier-1 pipeline remediation complete. UI-013 tuning sweep validated 4 profiles (v1, v1a, v1b, v1c); v1b selected as active profile per decision D-032 (stricter filtering, improved semantic-numeric balance, all QA checks pass). Prior path-semantics normalization (BL-010/BL-011) and diversity controls (BL-008) remain validated. Next immediate action: final UI-013 evidence package assembly citing v1b sweep validation and all prior closure metrics.
 
 ## Current Implementation Status
 

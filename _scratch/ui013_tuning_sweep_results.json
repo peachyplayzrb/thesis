@@ -1,0 +1,62 @@
+[
+  {
+    "config": "run_config_ui013_tuning_v1.json",
+    "bl013_exit": 0,
+    "bl014_exit": 1,
+    "bl013_run_id": "BL013-ENTRYPOINT-20260325-225047-792469",
+    "bl014_run_id": "BL014-SANITY-20260325-225100-257191",
+    "bl003_threshold_enforced": true,
+    "bl003_match_rate": 0.1632,
+    "bl005_kept_candidates": 61799,
+    "bl006_numeric_mean": 0.112884,
+    "bl006_semantic_mean": 0.155611,
+    "bl006_gap_numeric_minus_semantic": -0.042727,
+    "bl008_top_label_dominance_share": 0.8,
+    "bl014_overall_status": "fail"
+  },
+  {
+    "config": "run_config_ui013_tuning_v1a.json",
+    "bl013_exit": 0,
+    "bl014_exit": 0,
+    "bl013_run_id": "BL013-ENTRYPOINT-20260325-225101-139131",
+    "bl014_run_id": "BL014-SANITY-20260325-225113-220469",
+    "bl003_threshold_enforced": true,
+    "bl003_match_rate": 0.1632,
+    "bl005_kept_candidates": 61799,
+    "bl006_numeric_mean": 0.112884,
+    "bl006_semantic_mean": 0.155611,
+    "bl006_gap_numeric_minus_semantic": -0.042727,
+    "bl008_top_label_dominance_share": 0.8,
+    "bl014_overall_status": "pass"
+  },
+  {
+    "config": "run_config_ui013_tuning_v1b.json",
+    "bl013_exit": 0,
+    "bl014_exit": 0,
+    "bl013_run_id": "BL013-ENTRYPOINT-20260325-225113-845270",
+    "bl014_run_id": "BL014-SANITY-20260325-225124-993359",
+    "bl003_threshold_enforced": true,
+    "bl003_match_rate": 0.1632,
+    "bl005_kept_candidates": 55643,
+    "bl006_numeric_mean": 0.074876,
+    "bl006_semantic_mean": 0.187715,
+    "bl006_gap_numeric_minus_semantic": -0.112839,
+    "bl008_top_label_dominance_share": 0.8,
+    "bl014_overall_status": "pass"
+  },
+  {
+    "config": "run_config_ui013_tuning_v1c.json",
+    "bl013_exit": 0,
+    "bl014_exit": 0,
+    "bl013_run_id": "BL013-ENTRYPOINT-20260325-225125-722058",
+    "bl014_run_id": "BL014-SANITY-20260325-225138-053363",
+    "bl003_threshold_enforced": true,
+    "bl003_match_rate": 0.1632,
+    "bl005_kept_candidates": 68821,
+    "bl006_numeric_mean": 0.097299,
+    "bl006_semantic_mean": 0.150401,
+    "bl006_gap_numeric_minus_semantic": -0.053102,
+    "bl008_top_label_dominance_share": 1.0,
+    "bl014_overall_status": "pass"
+  }
+]

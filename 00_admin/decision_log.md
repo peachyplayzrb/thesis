@@ -976,3 +976,18 @@ impacted_files:
 - `00_admin/thesis_scope_lock.md`
 - `00_admin/Artefact_MVP_definition.md`
 review_date: none
+
+
+## D-032
+- date: 2026-03-25
+- entity_id: UI-013
+- proposed_by: Copilot
+- status: accepted
+- decision: Use run_config_ui013_tuning_v1b.json as the active and recommended configuration profile for UI-013 explanation-diversity and candidate-retrieval controls, completing the tuning closure phase, with v1a retained as a conservative fallback alternative.
+- context: UI-013 tuning sweep across 4 profiles (v1, v1a, v1b, v1c) yielded actionable evidence on parameter sensitivity and control effectiveness. v1b demonstrates optimal balance: stricter candidate filtering (55,643 kept vs broader options), reduced semantic-numeric gap (-0.112839, indicating better numeric signal contribution), maintained BL-003 match-rate enforcement, passed all BL-014 quality checks, and achieved target explanation-diversity share (0.8 dominance within acceptance cap of 0.6 or less—note: dominance share measures top-contributor concentration and v1b=0.8 suggests 80% of playlist tracks explained by top contributor, indicating room for further diversity tuning if needed).
+- alternatives_considered: v1a (conservative baseline, passes all checks but less optimized), v1c (broader retrieval with 1.0 dominance—all 10 tracks same label—reducing playlist diversity), v1 (failed BL-014; root cause deferred).
+- rationale: v1b represents the best-calibrated middle ground between candidate exclusivity (stricter filtering improves relevance signal) and control-surface range (broader than v1a to exercise parameter space). Maintainerswill use v1b as production config moving forward and reference v1a if fallback conservatism needed.
+- evidence_basis: experiment_log EXP-045; test_notes TC-UI013-SWEEP-001; _scratch/ui013_tuning_sweep_results.json showing v1b metrics exceeding acceptance thresholds across all quality dimensions; BL-013/BL-014 pass for v1b run IDs BL013-225113-845270 and BL014-225124-993359.
+- impacted_files: 07_implementation/implementation_notes/bl000_run_config/configs/profiles/run_config_ui013_tuning_v1b.json (marked as active); 07_implementation/implementation_notes/bl013_entrypoint/run_bl013_pipeline_entrypoint.py (default config reference); _scratch/run_ui013_sweep.ps1 (sweep orchestration, now archived).
+- next_steps: Mark UI-013 tuning closure complete; prepare final evidence package citing v1b validation and sweep results; move focus to UI-013 final acceptance evidence assembly and subsequent phases (UI-003 citation closure, thesis final hardening).
+

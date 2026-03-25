@@ -1922,3 +1922,5 @@ Maintenance snapshot (2026-03-25):
 - affected_components: `00_admin/unresolved_issues.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`, `00_admin/change_log.md`
 - impact_assessment: High-positive for governance consistency and handoff clarity. Admin records now align with implemented code/test reality.
 - approval_record: Requested by user in chat ("make all the admin files up to date") on 2026-03-25.
+
+| C-176 | 2026-03-25 22:57 | Copilot | Executed UI-013 tuning profile sweep (v1, v1a, v1b, v1c) to validate explanation-diversity and candidate-filtering controls; 3/4 profiles passed BL-014; v1b selected as optimal profile (stricter filtering, improved semantic-numeric balance); sweep results and all orchestration outputs archived in _scratch/ and implementation_notes/; updated experiment_log (EXP-045) and test_notes (TC-UI013-SWEEP-001). |
