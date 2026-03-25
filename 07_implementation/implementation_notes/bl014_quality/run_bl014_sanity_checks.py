@@ -15,31 +15,30 @@ Outputs are written to:
 from __future__ import annotations
 
 import csv
-import hashlib
 import json
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
+import sys
 
-REPO_ROOT = Path(__file__).resolve().parents[3]
+sys.path.insert(0, str(Path(__file__).parent.parent))
+
+from bl000_shared_utils.io_utils import load_json as load_json_shared
+from bl000_shared_utils.io_utils import sha256_of_file
+from bl000_shared_utils.path_utils import repo_root
+
+
+REPO_ROOT = repo_root()
 OUTPUT_DIR = Path(__file__).resolve().parent / "outputs"
 
 
 def sha256_file(path: Path) -> str:
-    digest = hashlib.sha256()
-    with path.open("rb") as handle:
-        while True:
-            chunk = handle.read(65536)
-            if not chunk:
-                break
-            digest.update(chunk)
-    return digest.hexdigest().upper()
+    return sha256_of_file(path).upper()
 
 
 def load_json(path: Path) -> dict[str, Any]:
-    with path.open("r", encoding="utf-8") as handle:
-        return json.load(handle)
+    return load_json_shared(path)
 
 
 def csv_header(path: Path) -> list[str]:

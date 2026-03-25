@@ -21,13 +21,19 @@ Outputs
 """
 
 import csv
-import hashlib
-import importlib.util
 import json
 import os
 import time
 from datetime import datetime, timezone
 from pathlib import Path
+
+import sys
+
+sys.path.insert(0, str(Path(__file__).parent.parent))
+
+from bl000_shared_utils.config_loader import load_run_config_utils_module
+from bl000_shared_utils.io_utils import sha256_of_file, write_json
+from bl000_shared_utils.path_utils import repo_root
 
 # ---------------------------------------------------------------------------
 # Paths
@@ -82,26 +88,6 @@ def env_int(name: str, default: int) -> int:
 DEFAULT_TOP_CONTRIBUTOR_LIMIT = 3
 
 
-def repo_root() -> Path:
-    return Path(__file__).resolve().parents[3]
-
-
-def load_run_config_utils_module():
-    module_path = (
-        repo_root()
-        / "07_implementation"
-        / "implementation_notes"
-        / "bl000_run_config"
-        / "run_config_utils.py"
-    )
-    spec = importlib.util.spec_from_file_location("run_config_utils", module_path)
-    if spec is None or spec.loader is None:
-        raise RuntimeError(f"Unable to load run-config utilities from {module_path}")
-    module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
-    return module
-
-
 def resolve_bl008_runtime_controls() -> dict[str, object]:
     run_config_path = os.environ.get("BL_RUN_CONFIG_PATH", "").strip() or None
     if run_config_path:
@@ -129,13 +115,7 @@ def resolve_bl008_runtime_controls() -> dict[str, object]:
 # Helpers
 # ---------------------------------------------------------------------------
 def sha256(path: Path) -> str:
-    h = hashlib.sha256()
-    h.update(path.read_bytes())
-    return h.hexdigest().upper()
-
-
-def write_json(path: Path, obj) -> None:
-    path.write_text(json.dumps(obj, indent=2, ensure_ascii=False), encoding="utf-8")
+    return sha256_of_file(path).upper()
 
 
 def build_why_selected(track_id: str, lead_genre: str, final_score: float,
