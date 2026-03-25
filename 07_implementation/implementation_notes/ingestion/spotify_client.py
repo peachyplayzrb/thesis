@@ -235,9 +235,19 @@ def cached_api_get(
     if cache_db is None:
         return client.api_get(path=path, params=params)
 
+    # Scope cache keys by profile to avoid reusing /me/* pages across different Spotify users.
+    # Prefer explicit profile namespace (set after /me), then refresh_token fingerprint.
+    cache_namespace = getattr(client, "cache_namespace", None)
+    if not cache_namespace:
+        refresh_token = str(client.token_payload.get("refresh_token", ""))
+        if refresh_token:
+            cache_namespace = f"rt:{hashlib.sha256(refresh_token.encode('utf-8')).hexdigest()[:12]}"
+        else:
+            cache_namespace = "anonymous"
+
     params_str = json.dumps(params, sort_keys=True, separators=(",", ":"))
     params_hash = hashlib.sha256(params_str.encode("utf-8")).hexdigest()[:8]
-    cache_key = f"spotify:{path}:{params_hash}"
+    cache_key = f"spotify:{cache_namespace}:{path}:{params_hash}"
 
     cached = cache_db.cache_get(cache_key)
     if cached is not None:

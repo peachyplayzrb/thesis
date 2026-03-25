@@ -34,7 +34,6 @@ DEFAULT_TOP_TAG_LIMIT = 10
 DEFAULT_TOP_GENRE_LIMIT = 10
 DEFAULT_TOP_LEAD_GENRE_LIMIT = 10
 DEFAULT_INCLUDE_INTERACTION_TYPES: list[str] = ["history", "influence"]
-DEFAULT_USER_ID = "21zsn42xecjhogne4kghyw5hq"
 DEFAULT_INPUT_SCOPE: dict[str, object] = {
     "source_family": "spotify_api_export",
     "include_top_tracks": True,
@@ -67,6 +66,28 @@ def env_str(name: str, default: str) -> str:
     return value if value else default
 
 
+def infer_user_id_from_ingestion(root: Path) -> str | None:
+    profile_path = (
+        root
+        / "07_implementation"
+        / "implementation_notes"
+        / "ingestion"
+        / "outputs"
+        / "spotify_api_export"
+        / "spotify_profile.json"
+    )
+    if not profile_path.exists():
+        return None
+    try:
+        payload = json.loads(profile_path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return None
+    user_id = payload.get("id") if isinstance(payload, dict) else None
+    if isinstance(user_id, str) and user_id.strip():
+        return user_id.strip()
+    return None
+
+
 def repo_root() -> Path:
     return Path(__file__).resolve().parents[3]
 
@@ -82,12 +103,24 @@ def load_run_config_utils_module():
 
 
 def resolve_bl004_runtime_controls() -> dict[str, object]:
+    root = repo_root()
     run_config_path = os.environ.get("BL_RUN_CONFIG_PATH", "").strip() or None
+    env_user_id = env_str("BL004_USER_ID", "")
+    inferred_user_id = infer_user_id_from_ingestion(root)
+
+    def resolve_user_id(candidate: object) -> str:
+        if isinstance(candidate, str) and candidate.strip():
+            return candidate.strip()
+        if env_user_id:
+            return env_user_id
+        if inferred_user_id:
+            return inferred_user_id
+        return "unknown_user"
 
     if run_config_path:
         run_config_utils = load_run_config_utils_module()
         controls = run_config_utils.resolve_bl004_controls(run_config_path)
-        user_id = controls.get("user_id") or env_str("BL004_USER_ID", DEFAULT_USER_ID)
+        user_id = resolve_user_id(controls.get("user_id"))
         return {
             "config_source": "run_config",
             "run_config_path": controls.get("config_path"),
@@ -108,7 +141,7 @@ def resolve_bl004_runtime_controls() -> dict[str, object]:
         "top_tag_limit": env_int("BL004_TOP_TAG_LIMIT", DEFAULT_TOP_TAG_LIMIT),
         "top_genre_limit": env_int("BL004_TOP_GENRE_LIMIT", DEFAULT_TOP_GENRE_LIMIT),
         "top_lead_genre_limit": env_int("BL004_TOP_LEAD_GENRE_LIMIT", DEFAULT_TOP_LEAD_GENRE_LIMIT),
-        "user_id": env_str("BL004_USER_ID", DEFAULT_USER_ID),
+        "user_id": resolve_user_id(None),
         "include_interaction_types": list(DEFAULT_INCLUDE_INTERACTION_TYPES),
     }
 

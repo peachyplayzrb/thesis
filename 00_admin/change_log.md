@@ -20,6 +20,8 @@ Maintenance snapshot (2026-03-25):
 | C-165 | 2026-03-25 02:16 | Copilot | Added and validated an active freshness suite runner that executes BL-014 and BL-010/BL-011 freshness checks, and corrected the UI-003 due-window regression in unresolved issues. |
 | C-166 | 2026-03-25 15:00 | Copilot | Recalibrated milestone execution status in timeline governance (M3/M4 moved to in progress) and synchronized thesis-state priority/risk wording after UI-010 closure. |
 | C-167 | 2026-03-25 15:20 | Copilot | Executed a full admin-control sync pass to remove stale freshness-tail wording and align open-item/handoff snapshots to the current unresolved issue set. |
+| C-168 | 2026-03-25 16:15 | Copilot | Logged end-to-end profile-switch validation session: A/B harness add-and-revert history, retained cache/user-id code fixes, temporary threshold config usage, and regenerated BL-002 to BL-014 evidence surfaces for next-day regression check. |
+| C-169 | 2026-03-25 16:35 | Copilot | Executed fail-fast high-risk regression run, fixed BL-013 command path in checklist, resolved continuity mismatch by rerunning full BL-013 chain, and reconfirmed BL-014 plus active freshness pass. |
 ## C-162
 - date: 2026-03-25
 - proposed_by: Copilot
@@ -80,6 +82,26 @@ Maintenance snapshot (2026-03-25):
 - affected_components: `00_admin/current_implementation_information_sheet_2026-03-25.md`, `00_admin/unresolved_issues.md`, `00_admin/README.md`, `00_admin/handoff_friend_chat_playbook.md`, `00_admin/change_log.md`
 - impact_assessment: Medium-positive. Improves handoff reliability and reduces state drift risk across operational control surfaces.
 - approval_record: Requested and confirmed by user in chat on 2026-03-25.
+## C-168
+- date: 2026-03-25
+- proposed_by: Copilot
+- status: accepted
+- change_summary: Logged complete profile-switch test cycle and rollback cycle, including retained ingestion/profile hardening fixes and regenerated run artifacts used for final all-green checks.
+- reason: User requested a full auditable log of what changed so breakage can be checked tomorrow against a known baseline.
+- evidence_basis: Commit ledger on 2026-03-25 includes A/B harness creation and explicit reverts (`237d766`, `703e1c0`, `5402fd2`, `38c5d1e`, `64b5d1f`, `8b5a95e`); latest successful orchestration run `BL013-ENTRYPOINT-20260325-033853-801126`; BL-014 sanity pass and active freshness pass in quality outputs.
+- affected_components: `07_implementation/implementation_notes/ingestion/spotify_client.py`, `07_implementation/implementation_notes/ingestion/export_spotify_max_dataset.py`, `07_implementation/implementation_notes/profile/build_bl004_preference_profile.py`, `07_implementation/implementation_notes/run_config/outputs/run_config_profile_test_threshold_015.json`, `07_implementation/implementation_notes/alignment/outputs/*`, `07_implementation/implementation_notes/profile/outputs/*`, `07_implementation/implementation_notes/retrieval/outputs/*`, `07_implementation/implementation_notes/scoring/outputs/*`, `07_implementation/implementation_notes/playlist/outputs/*`, `07_implementation/implementation_notes/transparency/outputs/*`, `07_implementation/implementation_notes/observability/outputs/*`, `07_implementation/implementation_notes/quality/outputs/*`, `07_implementation/implementation_notes/entrypoint/outputs/*`, `07_implementation/implementation_notes/run_config/outputs/*`, `00_admin/change_log.md`
+- impact_assessment: High-positive for auditability and reproducibility. Session now has a single control-log anchor that distinguishes reverted work from active fixes and identifies the exact temporary threshold context (`match_rate_min_threshold=0.15`) used in the latest passing profile run.
+- approval_record: Requested by user in chat on 2026-03-25.
+## C-169
+- date: 2026-03-25
+- proposed_by: Copilot
+- status: accepted
+- change_summary: Ran the next-day fail-fast regression plan, identified a non-code continuity failure after partial reruns, reran BL-013 end-to-end to restore hash/run-id continuity, and revalidated BL-014 plus active freshness to all-pass.
+- reason: User requested execution of the next-day fix plan and asked for a practical, auditable resolution path.
+- evidence_basis: BL-013 pass `BL013-ENTRYPOINT-20260325-151555-244335`; BL-014 pass `BL014-SANITY-20260325-151612-236386` (`21/21` checks); active freshness suite report pass; run report `00_admin/ops_logs/high_risk_regression_run_2026-03-25.md`.
+- affected_components: `00_admin/ops_logs/high_risk_regression_checklist_2026-03-25.md`, `00_admin/ops_logs/high_risk_regression_run_2026-03-25.md`, `07_implementation/implementation_notes/entrypoint/outputs/bl013_orchestration_run_latest.json`, `07_implementation/implementation_notes/quality/outputs/bl014_sanity_report.json`, `07_implementation/implementation_notes/quality/outputs/bl_active_freshness_suite_report.json`, `00_admin/change_log.md`
+- impact_assessment: High-positive. Confirms no newly observed code-level regression on the exercised path and hardens operator workflow by correcting the BL-013 command in the checklist.
+- approval_record: Requested by user in chat on 2026-03-25.
 ## C-006
 
 ## C-002

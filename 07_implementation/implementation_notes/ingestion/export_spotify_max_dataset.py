@@ -134,6 +134,8 @@ def _fetch_all_data(
     args: argparse.Namespace,
 ) -> Dict[str, Any]:
     profile = client.api_get(path="/me", params={})
+    if isinstance(profile, dict) and profile.get("id"):
+        client.cache_namespace = f"uid:{profile.get('id')}"
     print(f"[profile] user_id={profile.get('id')}", flush=True)
 
     top_tracks_by_range: Dict[str, List[Dict[str, Any]]] = {}
