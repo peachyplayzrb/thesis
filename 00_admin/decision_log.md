@@ -6,9 +6,9 @@ Ordering convention (standardized 2026-03-24):
 - New entries must be appended at the end and may include `superseded_by` when a prior decision is replaced.
 
 Maintenance snapshot (2026-03-25):
-- Highest decision ID currently present: `D-029`
-- Total decision entries: 29
-- Status distribution: accepted=25, superseded=3, rejected=1
+- Highest decision ID currently present: `D-031`
+- Total decision entries: 31
+- Status distribution: accepted=27, superseded=3, rejected=1
 - ID integrity check: no duplicate decision IDs detected
 
 Current posture snapshot (2026-03-25):
@@ -723,6 +723,33 @@ impacted_files:
 - `07_implementation/implementation_notes/bl008_transparency/bl008_state_log_2026-03-24.md`
 - `07_implementation/experiment_log.md`
 - `07_implementation/test_notes.md`
+review_date: none
+
+---
+
+id: D-031
+date: 2026-03-25
+status: accepted
+context: After BL-008 dominance closure, UI-013 remained open on governance hygiene because BL-010 replay logs still exposed machine-local absolute command paths and stale path semantics in evidence interpretation. The requirement was to normalize BL-010/BL-011 reporting to canonical BL-prefixed rendering and refresh evidence.
+decision: Standardize BL-010 replay command reporting to canonical relative BL-prefixed form (`python 07_implementation/...`) with explicit `stage` and `script_path` fields, then immediately refresh BL-010/BL-011/freshness/BL-014 evidence on the same active baseline run window.
+alternatives_considered:
+- Keep absolute command-path emission and document it as acceptable (rejected: weak audit portability and readability)
+- Normalize only state logs without regenerating machine-readable evidence (rejected: leaves contract drift between docs and artifacts)
+- Defer normalization until broader UI-013 tuning closure (rejected: avoidable governance tail remains open)
+rationale: Canonical relative command paths remove machine-specific leakage and make reproducibility evidence portable across environments while preserving deterministic semantics. Immediate evidence refresh ensures state logs, freshness checks, and admin governance reflect the same normalized contract.
+evidence_basis: `07_implementation/implementation_notes/bl010_reproducibility/run_bl010_reproducibility_check.py`; BL-010 pass `BL010-REPRO-20260325-231041`; BL-011 pass `BL011-CTRL-20260325-231130`; freshness pass `BL-FRESHNESS-20260325-231159`; BL-014 pass `BL014-SANITY-20260325-231204-534293`.
+impacted_files:
+- `00_admin/decision_log.md`
+- `00_admin/change_log.md`
+- `00_admin/unresolved_issues.md`
+- `00_admin/thesis_state.md`
+- `07_implementation/IMPLEMENTATION_STATE_2026-03-24.md`
+- `07_implementation/implementation_notes/bl010_reproducibility/run_bl010_reproducibility_check.py`
+- `07_implementation/implementation_notes/bl010_reproducibility/outputs/bl010_reproducibility_report.json`
+- `07_implementation/implementation_notes/bl011_controllability/outputs/bl011_controllability_report.json`
+- `07_implementation/implementation_notes/bl014_quality/outputs/bl010_bl011_freshness_report.json`
+- `07_implementation/implementation_notes/bl010_reproducibility/bl010_state_log_2026-03-24.md`
+- `07_implementation/implementation_notes/bl011_controllability/bl011_state_log_2026-03-24.md`
 review_date: none
 
 ---

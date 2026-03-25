@@ -23,7 +23,7 @@ Last updated: 2026-03-25 23:00 UTC
 	- impact: If left unresolved, final thesis claims remain operationally valid but weaker on precision/coverage quality, explanation richness, and evidence readability.
 	- progress_summary:
 		1. Comprehensive implementation issue register was consolidated in `07_implementation/IMPLEMENTATION_STATE_2026-03-24.md`.
-		2. Runtime and assurance stages are passing, but optimization debt remains visible in BL-003/BL-005/BL-006/BL-008 and governance-hygiene drift remains in BL-010/BL-011 path semantics.
+		2. Runtime and assurance stages are passing; optimization debt remains visible in BL-003/BL-005/BL-006/BL-008 while the BL-010/BL-011 path-semantics hygiene slice is now normalized and revalidated.
 		3. Config-surface control uplift implemented: run-config now exposes explicit `control_mode` governance switches (`validation_profile`, `allow_threshold_decoupling`, `allow_weight_auto_normalization`) and BL-009 observability `bootstrap_mode` is now config-driven instead of hardcoded.
 		4. Canonical UI-013 tuning baseline is now fixed at `07_implementation/implementation_notes/bl000_run_config/configs/profiles/run_config_ui013_tuning_v1.json`.
 		5. Controlled sweep executed (`v1`, `v1a`, `v1b`, `v1c`) with BL-013 + BL-014 and metric extraction in `_scratch/ui013_tuning_sweep_results.json`.
@@ -37,8 +37,7 @@ Last updated: 2026-03-25 23:00 UTC
 			- BL-005: `kept_candidates <= 65000`
 			- BL-006: `numeric_contribution_mean - semantic_contribution_mean <= 0.015`
 			- BL-008: no single top-contributor label accounts for > 60% of playlist explanations
-		4. Normalize BL-010/BL-011 report path semantics to BL-prefixed canonical rendering.
-		5. Log closure evidence and map unresolved items to Chapter 4 limitation language if deferred.
+		4. Package final UI-013 closure evidence (acceptance table + run IDs + metric snapshots) and map any deferred items to Chapter 4 limitation language.
 	- owner: AI + user
 	- status: open
 	- due_window: 2026-03-25 to 2026-03-31
@@ -46,6 +45,7 @@ Last updated: 2026-03-25 23:00 UTC
 Active-set sync note (2026-03-25 18:25 UTC): Open items are UI-003 (citation package closure) and UI-013 (pipeline optimization and evidence-hygiene closure).
 Active-set sync note (2026-03-25 22:55 UTC): Open items remain UI-003 (citation package closure) and UI-013 (pipeline optimization and evidence-hygiene closure); UI-013 control-surface uplift is implemented, optimization tuning closure is pending.
 Active-set sync note (2026-03-25 23:00 UTC): Open items remain UI-003 and UI-013; UI-013 BL-008 explanation-dominance criterion is now passing under the v1b profile, with remaining closure work centered on BL-010/BL-011 path-semantics normalization and final evidence packaging.
+Active-set sync note (2026-03-25 23:10 UTC): Open items remain UI-003 and UI-013; UI-013 path-semantics normalization for BL-010/BL-011 is now implemented and revalidated (`BL010-REPRO-20260325-231041`, `BL011-CTRL-20260325-231130`, freshness `BL-FRESHNESS-20260325-231159`), leaving final evidence packaging as the remaining closure step.
 
 ## Resolved (Recent)
 

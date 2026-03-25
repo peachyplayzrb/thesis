@@ -319,7 +319,18 @@ def fingerprint_outputs(paths: dict[str, Path]) -> dict[str, object]:
     }
 
 
-def run_stage(script_path: Path, root: Path) -> dict[str, object]:
+def _canonicalize_stage_stdout_lines(stdout: str, root: Path) -> list[str]:
+    root_with_sep = str(root) + "\\"
+    canonical_lines: list[str] = []
+    for line in stdout.strip().splitlines():
+        normalized = line.strip()
+        normalized = normalized.replace(root_with_sep, "")
+        normalized = normalized.replace("\\", "/")
+        canonical_lines.append(normalized)
+    return canonical_lines
+
+
+def run_stage(stage_id: str, script_path: Path, root: Path) -> dict[str, object]:
     started = time.time()
     command = [sys.executable, str(script_path)]
     completed = subprocess.run(
@@ -329,11 +340,14 @@ def run_stage(script_path: Path, root: Path) -> dict[str, object]:
         text=True,
         check=True,
     )
+    canonical_script_path = relpath(script_path, root)
     return {
+        "stage": stage_id,
         "script": script_path.name,
-        "command": " ".join(command),
+        "script_path": canonical_script_path,
+        "command": f"python {canonical_script_path}",
         "elapsed_seconds": round(time.time() - started, 3),
-        "stdout": completed.stdout.strip().splitlines(),
+        "stdout": _canonicalize_stage_stdout_lines(completed.stdout, root),
     }
 
 
@@ -395,16 +409,16 @@ def main() -> None:
     started = time.time()
 
     stage_sequence = [
-        paths["bl004_script"],
-        paths["bl005_script"],
-        paths["bl006_script"],
-        paths["bl007_script"],
-        paths["bl008_script"],
-        paths["bl009_script"],
+        ("BL-004", paths["bl004_script"]),
+        ("BL-005", paths["bl005_script"]),
+        ("BL-006", paths["bl006_script"]),
+        ("BL-007", paths["bl007_script"]),
+        ("BL-008", paths["bl008_script"]),
+        ("BL-009", paths["bl009_script"]),
     ]
 
     for replay_number in range(1, REPLAY_COUNT + 1):
-        stage_runs = [run_stage(script_path, root) for script_path in stage_sequence]
+        stage_runs = [run_stage(stage_id, script_path, root) for stage_id, script_path in stage_sequence]
         fingerprints = fingerprint_outputs(paths)
 
         replay_dir = output_dir / f"replay_{replay_number:02d}"

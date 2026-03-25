@@ -29,6 +29,16 @@ UI-013 focused delta (2026-03-25 23:00 UTC):
   - BL-008 primary-driver distribution: `{Lead genre match:5, Tag overlap:3, Genre overlap:2}`
   - BL-008 top-label dominance share: `0.5` (target `<= 0.6`)
 
+UI-013 focused delta (2026-03-25 23:10 UTC):
+
+- BL-010/BL-011 path-semantics normalization completed and revalidated.
+- BL-010 replay stage logs now emit canonical BL-prefixed relative command paths (`python 07_implementation/...`) with explicit `stage` + `script_path` fields.
+- Fresh evidence chain passed:
+  - BL-010: `BL010-REPRO-20260325-231041`
+  - BL-011: `BL011-CTRL-20260325-231130`
+  - BL-010/BL-011 freshness: `BL-FRESHNESS-20260325-231159`
+  - BL-014 sanity: `BL014-SANITY-20260325-231204-534293`
+
 ---
 
 ## 2. Active Architecture
@@ -122,20 +132,20 @@ Control/config layer:
   - failed_stage_count: `0`
 
 - BL-010 reproducibility
-  - run_id: `BL010-REPRO-20260325-033555`
+  - run_id: `BL010-REPRO-20260325-231041`
   - replay_count: `3`
   - deterministic_match: `true`
   - status: `pass`
 
 - BL-011 controllability
-  - run_id: `BL011-CTRL-20260325-033637`
+  - run_id: `BL011-CTRL-20260325-231130`
   - all_scenarios_repeat_consistent: `true`
   - all_variant_shifts_observable: `true`
   - all_variant_directions_met: `true`
   - status: `pass`
 
 - BL-014 quality
-  - run_id: `BL014-SANITY-20260325-173421-745910`
+  - run_id: `BL014-SANITY-20260325-231204-534293`
   - overall_status: `pass`
   - checks_passed: `21/21`
   - advisories_total: `0`
@@ -243,17 +253,17 @@ This section tracks concrete implementation issues visible in current logs.
   - add focused summary slices for triage
   - refine mode semantics in a schema revision while keeping compatibility
 
-### 4.7 Reproducibility report hygiene gaps (BL-010)
+### 4.7 Reproducibility report hygiene (BL-010)
 
 - Evidence:
-  - some replay command paths still legacy-style in report payload
-  - stable-vs-volatile hash distinction still easy to misread
+  - replay stage logs now emit canonical BL-prefixed relative command paths and explicit `stage`/`script_path` fields (`BL010-REPRO-20260325-231041`).
+  - stable-vs-volatile hash distinction remains documented and validated by freshness checks.
 - Current impact:
-  - audit readability issue, potential false alarm interpretation
-- Risk level: low-medium
+  - prior path-rendering readability risk is closed; residual risk is low and mainly interpretation-oriented.
+- Risk level: low
 - Mitigation direction:
-  - normalize command path reporting to BL-prefixed structure
-  - keep explicit stable/volatile sections in docs and report outputs
+  - keep explicit stable/volatile sections in docs and report outputs.
+  - keep freshness checks in routine post-change validation.
 
 ### 4.8 Controllability naming/semantics drift (BL-011)
 
@@ -290,7 +300,7 @@ This section tracks concrete implementation issues visible in current logs.
 
 ## 5. Cross-Cutting Technical Debt
 
-- Mixed legacy and canonical path rendering persists in some generated evidence payloads.
+- Some historical generated evidence still uses prior wording/formatting, but active reproducibility/controllability path rendering is now canonical and BL-prefixed.
 - Some quality controls are policy/tuning based rather than adaptive.
 - High candidate volume propagates cost and noise across BL-005 to BL-007.
 - Historical/archive context is well-preserved but can still confuse readers without explicit active-vs-historical framing.
@@ -311,7 +321,7 @@ Priority 2 (ranking/explanations):
 
 Priority 3 (governance hygiene):
 
-1. Normalize BL-010/BL-011 path reporting and scenario semantics.
+1. Resolve BL-011 scenario-label semantics (`valence_weight_up` naming versus actual override component) for clearer governance interpretation.
 2. Preserve run-specific BL-013 evidence usage discipline.
 3. Use one canonical run-config profile per controlled test sweep and keep `control_mode` explicit in report interpretation.
 

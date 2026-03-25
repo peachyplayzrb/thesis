@@ -1095,3 +1095,49 @@ Tier-1 control stack validated as coherent and operational:
 - `07_implementation/implementation_notes/bl008_transparency/outputs/bl008_explanation_summary.json`
 - `07_implementation/implementation_notes/bl008_transparency/outputs/bl008_explanation_payloads.json`
 - `_scratch/ui013_v1b_bl008_focus_result.json`
+## Test Case TC-UI013-BL010-BL011-PATHS-001: Canonical Path-Semantics Refresh
+
+- Date: 2026-03-25
+- Backlog link: `BL-010`, `BL-011`, `UI-013`
+- Purpose: Verify BL-010/BL-011 evidence refresh after canonical path-semantics normalization and confirm freshness/sanity controls remain passing.
+
+### Inputs
+- Scripts:
+- `07_implementation/implementation_notes/bl010_reproducibility/run_bl010_reproducibility_check.py`
+- `07_implementation/implementation_notes/bl011_controllability/run_bl011_controllability_check.py`
+- `07_implementation/implementation_notes/bl014_quality/check_bl010_bl011_freshness.py`
+- `07_implementation/implementation_notes/bl014_quality/run_bl014_sanity_checks.py`
+- Active baseline artifacts:
+- `07_implementation/implementation_notes/bl004_profile/outputs/bl004_seed_trace.csv`
+- `07_implementation/implementation_notes/bl000_data_layer/outputs/ds001_working_candidate_dataset.csv`
+
+### Pass Criteria
+- BL-010 completes pass with `deterministic_match=true`.
+- BL-011 completes pass with all scenario consistency/shift checks true.
+- BL-010 replay `stage_runs.command` entries are canonical relative BL-prefixed commands (no machine-local absolute command paths).
+- BL-010/BL-011 freshness check passes (`9/9`).
+- BL-014 sanity suite remains pass (`21/21`).
+
+### Actual Result
+- Status: pass
+- Observed metrics:
+- `bl010_run_id=BL010-REPRO-20260325-231041`
+- `bl010_deterministic_match=true`
+- `bl011_run_id=BL011-CTRL-20260325-231130`
+- `bl011_status=pass`
+- `bl011_all_scenarios_repeat_consistent=true`
+- `bl011_all_variant_shifts_observable=true`
+- `bl_freshness_run_id=BL-FRESHNESS-20260325-231159`
+- `bl_freshness_overall_status=pass`
+- `bl_freshness_checks_passed=9/9`
+- `bl014_run_id=BL014-SANITY-20260325-231204-534293`
+- `bl014_overall_status=pass`
+- `bl014_checks_passed=21/21`
+
+### Evidence Artifacts
+- `07_implementation/implementation_notes/bl010_reproducibility/outputs/bl010_reproducibility_report.json`
+- `07_implementation/implementation_notes/bl010_reproducibility/outputs/bl010_reproducibility_run_matrix.csv`
+- `07_implementation/implementation_notes/bl011_controllability/outputs/bl011_controllability_report.json`
+- `07_implementation/implementation_notes/bl011_controllability/outputs/bl011_controllability_run_matrix.csv`
+- `07_implementation/implementation_notes/bl014_quality/outputs/bl010_bl011_freshness_report.json`
+- `07_implementation/implementation_notes/bl014_quality/outputs/bl014_sanity_report.json`

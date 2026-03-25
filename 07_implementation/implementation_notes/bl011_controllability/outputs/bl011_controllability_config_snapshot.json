@@ -1,10 +1,10 @@
 {
   "task": "BL-011",
   "generated_from": "07_implementation/implementation_notes/bl010_reproducibility/outputs/bl010_reproducibility_config_snapshot.json",
-  "baseline_config_hash": "A355BE084C101D0E9468097DCC83C074C29E14C974113520519C643A45D4FAED",
+  "baseline_config_hash": "1607A65349BA4920E65B52598AEA18BFB59BF7E1268D1776F95600092B55F094",
   "input_source": "active_pipeline_outputs",
   "fixed_inputs": {
-    "07_implementation/implementation_notes/bl004_profile/outputs/bl004_seed_trace.csv": "CCC8B1824BC40AB7B5668040434E7ABC910ABB541858CC0996741BEC02A75FB9",
+    "07_implementation/implementation_notes/bl004_profile/outputs/bl004_seed_trace.csv": "3EAE680FE68D1E2951B96B3DE9107A7E298ECD867498FF5E9259FC09BCC6B6A4",
     "07_implementation/implementation_notes/bl000_data_layer/outputs/ds001_working_candidate_dataset.csv": "296331CA6390D2C111AA336C7EB154B69EC7060604312AC8A274F545B68A04EF"
   },
   "optional_dependency_availability": {
@@ -72,10 +72,10 @@
         "top_tag_limit": 10,
         "top_genre_limit": 8,
         "numeric_thresholds": {
-          "tempo": 20.0,
-          "key": 2.0,
+          "tempo": 15.0,
+          "key": 1.5,
           "mode": 0.5,
-          "duration_ms": 45000.0
+          "duration_ms": 30000.0
         },
         "numeric_feature_mapping": {
           "tempo": "tempo",
@@ -84,16 +84,16 @@
           "duration_ms": "duration_ms"
         },
         "numeric_features_enabled": true,
-        "keep_rule": "keep if not seed and (semantic_score >= 2 or (semantic_score >= 1 and numeric_pass_count >= 1))",
+        "keep_rule": "keep if not seed and (semantic_score >= 3 or (semantic_score >= 1 and numeric_pass_count >= 2))",
         "semantic_source": "ds001_tags_and_genres_columns",
         "threshold_scale": 1.0
       },
       "scoring": {
         "numeric_thresholds": {
-          "tempo": 20.0,
-          "key": 2.0,
+          "tempo": 15.0,
+          "key": 1.5,
           "mode": 0.5,
-          "duration_ms": 45000.0
+          "duration_ms": 30000.0
         },
         "numeric_feature_mapping": {
           "tempo": "tempo",
@@ -102,22 +102,22 @@
           "duration_ms": "duration_ms"
         },
         "base_component_weights": {
-          "tempo": 0.2,
-          "duration_ms": 0.13,
-          "key": 0.13,
-          "mode": 0.09,
-          "lead_genre": 0.17,
-          "genre_overlap": 0.12,
-          "tag_overlap": 0.16
+          "tempo": 0.12,
+          "duration_ms": 0.08,
+          "key": 0.08,
+          "mode": 0.07,
+          "lead_genre": 0.23,
+          "genre_overlap": 0.19,
+          "tag_overlap": 0.23
         },
         "active_component_weights": {
-          "tempo": 0.2,
-          "duration_ms": 0.13,
-          "key": 0.13,
-          "mode": 0.09,
-          "lead_genre": 0.17,
-          "genre_overlap": 0.12,
-          "tag_overlap": 0.16
+          "tempo": 0.12,
+          "duration_ms": 0.08,
+          "key": 0.08,
+          "mode": 0.07,
+          "lead_genre": 0.23,
+          "genre_overlap": 0.19,
+          "tag_overlap": 0.23
         },
         "inactive_components": [],
         "weight_rebalance_diagnostics": {
@@ -126,22 +126,22 @@
           "active_component_count": 7,
           "inactive_components": [],
           "original_active_component_weights": {
-            "tempo": 0.2,
-            "duration_ms": 0.13,
-            "key": 0.13,
-            "mode": 0.09,
-            "lead_genre": 0.17,
-            "genre_overlap": 0.12,
-            "tag_overlap": 0.16
+            "tempo": 0.12,
+            "duration_ms": 0.08,
+            "key": 0.08,
+            "mode": 0.07,
+            "lead_genre": 0.23,
+            "genre_overlap": 0.19,
+            "tag_overlap": 0.23
           },
           "normalized_active_component_weights": {
-            "tempo": 0.2,
-            "duration_ms": 0.13,
-            "key": 0.13,
-            "mode": 0.09,
-            "lead_genre": 0.17,
-            "genre_overlap": 0.12,
-            "tag_overlap": 0.16
+            "tempo": 0.12,
+            "duration_ms": 0.08,
+            "key": 0.08,
+            "mode": 0.07,
+            "lead_genre": 0.23,
+            "genre_overlap": 0.19,
+            "tag_overlap": 0.23
           },
           "warning": null
         },
@@ -212,10 +212,10 @@
         "top_tag_limit": 10,
         "top_genre_limit": 8,
         "numeric_thresholds": {
-          "tempo": 20.0,
-          "key": 2.0,
+          "tempo": 15.0,
+          "key": 1.5,
           "mode": 0.5,
-          "duration_ms": 45000.0
+          "duration_ms": 30000.0
         },
         "numeric_feature_mapping": {
           "tempo": "tempo",
@@ -224,16 +224,16 @@
           "duration_ms": "duration_ms"
         },
         "numeric_features_enabled": true,
-        "keep_rule": "keep if not seed and (semantic_score >= 2 or (semantic_score >= 1 and numeric_pass_count >= 1))",
+        "keep_rule": "keep if not seed and (semantic_score >= 3 or (semantic_score >= 1 and numeric_pass_count >= 2))",
         "semantic_source": "ds001_tags_and_genres_columns",
         "threshold_scale": 1.0
       },
       "scoring": {
         "numeric_thresholds": {
-          "tempo": 20.0,
-          "key": 2.0,
+          "tempo": 15.0,
+          "key": 1.5,
           "mode": 0.5,
-          "duration_ms": 45000.0
+          "duration_ms": 30000.0
         },
         "numeric_feature_mapping": {
           "tempo": "tempo",
@@ -242,22 +242,22 @@
           "duration_ms": "duration_ms"
         },
         "base_component_weights": {
-          "tempo": 0.2,
-          "duration_ms": 0.13,
-          "key": 0.13,
-          "mode": 0.09,
-          "lead_genre": 0.17,
-          "genre_overlap": 0.12,
-          "tag_overlap": 0.16
+          "tempo": 0.12,
+          "duration_ms": 0.08,
+          "key": 0.08,
+          "mode": 0.07,
+          "lead_genre": 0.23,
+          "genre_overlap": 0.19,
+          "tag_overlap": 0.23
         },
         "active_component_weights": {
-          "tempo": 0.2,
-          "duration_ms": 0.13,
-          "key": 0.13,
-          "mode": 0.09,
-          "lead_genre": 0.17,
-          "genre_overlap": 0.12,
-          "tag_overlap": 0.16
+          "tempo": 0.12,
+          "duration_ms": 0.08,
+          "key": 0.08,
+          "mode": 0.07,
+          "lead_genre": 0.23,
+          "genre_overlap": 0.19,
+          "tag_overlap": 0.23
         },
         "inactive_components": [],
         "weight_rebalance_diagnostics": {
@@ -266,22 +266,22 @@
           "active_component_count": 7,
           "inactive_components": [],
           "original_active_component_weights": {
-            "tempo": 0.2,
-            "duration_ms": 0.13,
-            "key": 0.13,
-            "mode": 0.09,
-            "lead_genre": 0.17,
-            "genre_overlap": 0.12,
-            "tag_overlap": 0.16
+            "tempo": 0.12,
+            "duration_ms": 0.08,
+            "key": 0.08,
+            "mode": 0.07,
+            "lead_genre": 0.23,
+            "genre_overlap": 0.19,
+            "tag_overlap": 0.23
           },
           "normalized_active_component_weights": {
-            "tempo": 0.2,
-            "duration_ms": 0.13,
-            "key": 0.13,
-            "mode": 0.09,
-            "lead_genre": 0.17,
-            "genre_overlap": 0.12,
-            "tag_overlap": 0.16
+            "tempo": 0.12,
+            "duration_ms": 0.08,
+            "key": 0.08,
+            "mode": 0.07,
+            "lead_genre": 0.23,
+            "genre_overlap": 0.19,
+            "tag_overlap": 0.23
           },
           "warning": null
         },
@@ -353,10 +353,10 @@
         "top_tag_limit": 10,
         "top_genre_limit": 8,
         "numeric_thresholds": {
-          "tempo": 20.0,
-          "key": 2.0,
+          "tempo": 15.0,
+          "key": 1.5,
           "mode": 0.5,
-          "duration_ms": 45000.0
+          "duration_ms": 30000.0
         },
         "numeric_feature_mapping": {
           "tempo": "tempo",
@@ -365,16 +365,16 @@
           "duration_ms": "duration_ms"
         },
         "numeric_features_enabled": true,
-        "keep_rule": "keep if not seed and (semantic_score >= 2 or (semantic_score >= 1 and numeric_pass_count >= 1))",
+        "keep_rule": "keep if not seed and (semantic_score >= 3 or (semantic_score >= 1 and numeric_pass_count >= 2))",
         "semantic_source": "ds001_tags_and_genres_columns",
         "threshold_scale": 1.0
       },
       "scoring": {
         "numeric_thresholds": {
-          "tempo": 20.0,
-          "key": 2.0,
+          "tempo": 15.0,
+          "key": 1.5,
           "mode": 0.5,
-          "duration_ms": 45000.0
+          "duration_ms": 30000.0
         },
         "numeric_feature_mapping": {
           "tempo": "tempo",
@@ -383,22 +383,22 @@
           "duration_ms": "duration_ms"
         },
         "base_component_weights": {
-          "tempo": 0.2,
-          "duration_ms": 0.13,
-          "key": 0.13,
-          "mode": 0.09,
-          "lead_genre": 0.17,
-          "genre_overlap": 0.12,
-          "tag_overlap": 0.16
+          "tempo": 0.12,
+          "duration_ms": 0.08,
+          "key": 0.08,
+          "mode": 0.07,
+          "lead_genre": 0.23,
+          "genre_overlap": 0.19,
+          "tag_overlap": 0.23
         },
         "active_component_weights": {
-          "tempo": 0.2,
-          "duration_ms": 0.13,
-          "key": 0.13,
-          "mode": 0.09,
-          "lead_genre": 0.17,
-          "genre_overlap": 0.12,
-          "tag_overlap": 0.16
+          "tempo": 0.12,
+          "duration_ms": 0.08,
+          "key": 0.08,
+          "mode": 0.07,
+          "lead_genre": 0.23,
+          "genre_overlap": 0.19,
+          "tag_overlap": 0.23
         },
         "inactive_components": [],
         "weight_rebalance_diagnostics": {
@@ -407,22 +407,22 @@
           "active_component_count": 7,
           "inactive_components": [],
           "original_active_component_weights": {
-            "tempo": 0.2,
-            "duration_ms": 0.13,
-            "key": 0.13,
-            "mode": 0.09,
-            "lead_genre": 0.17,
-            "genre_overlap": 0.12,
-            "tag_overlap": 0.16
+            "tempo": 0.12,
+            "duration_ms": 0.08,
+            "key": 0.08,
+            "mode": 0.07,
+            "lead_genre": 0.23,
+            "genre_overlap": 0.19,
+            "tag_overlap": 0.23
           },
           "normalized_active_component_weights": {
-            "tempo": 0.2,
-            "duration_ms": 0.13,
-            "key": 0.13,
-            "mode": 0.09,
-            "lead_genre": 0.17,
-            "genre_overlap": 0.12,
-            "tag_overlap": 0.16
+            "tempo": 0.12,
+            "duration_ms": 0.08,
+            "key": 0.08,
+            "mode": 0.07,
+            "lead_genre": 0.23,
+            "genre_overlap": 0.19,
+            "tag_overlap": 0.23
           },
           "warning": null
         },
@@ -431,16 +431,16 @@
         "tag_overlap_normalization": "sum overlapping profile tag weights / sum top profile tag weights",
         "semantic_source": "ds001_tags_and_genres_columns",
         "component_weights": {
-          "tempo": 0.259259,
-          "duration_ms": 0.12037,
-          "key": 0.12037,
-          "mode": 0.083333,
-          "lead_genre": 0.157407,
-          "genre_overlap": 0.111111,
-          "tag_overlap": 0.148148
+          "tempo": 0.185185,
+          "duration_ms": 0.074074,
+          "key": 0.074074,
+          "mode": 0.064815,
+          "lead_genre": 0.212963,
+          "genre_overlap": 0.175926,
+          "tag_overlap": 0.212963
         },
         "weight_override_component": "tempo",
-        "raw_override_value": 0.28
+        "raw_override_value": 0.2
       },
       "assembly": {
         "target_size": 10,
@@ -503,10 +503,10 @@
         "top_tag_limit": 10,
         "top_genre_limit": 8,
         "numeric_thresholds": {
-          "tempo": 20.0,
-          "key": 2.0,
+          "tempo": 15.0,
+          "key": 1.5,
           "mode": 0.5,
-          "duration_ms": 45000.0
+          "duration_ms": 30000.0
         },
         "numeric_feature_mapping": {
           "tempo": "tempo",
@@ -515,16 +515,16 @@
           "duration_ms": "duration_ms"
         },
         "numeric_features_enabled": true,
-        "keep_rule": "keep if not seed and (semantic_score >= 2 or (semantic_score >= 1 and numeric_pass_count >= 1))",
+        "keep_rule": "keep if not seed and (semantic_score >= 3 or (semantic_score >= 1 and numeric_pass_count >= 2))",
         "semantic_source": "ds001_tags_and_genres_columns",
         "threshold_scale": 0.75
       },
       "scoring": {
         "numeric_thresholds": {
-          "tempo": 20.0,
-          "key": 2.0,
+          "tempo": 15.0,
+          "key": 1.5,
           "mode": 0.5,
-          "duration_ms": 45000.0
+          "duration_ms": 30000.0
         },
         "numeric_feature_mapping": {
           "tempo": "tempo",
@@ -533,22 +533,22 @@
           "duration_ms": "duration_ms"
         },
         "base_component_weights": {
-          "tempo": 0.2,
-          "duration_ms": 0.13,
-          "key": 0.13,
-          "mode": 0.09,
-          "lead_genre": 0.17,
-          "genre_overlap": 0.12,
-          "tag_overlap": 0.16
+          "tempo": 0.12,
+          "duration_ms": 0.08,
+          "key": 0.08,
+          "mode": 0.07,
+          "lead_genre": 0.23,
+          "genre_overlap": 0.19,
+          "tag_overlap": 0.23
         },
         "active_component_weights": {
-          "tempo": 0.2,
-          "duration_ms": 0.13,
-          "key": 0.13,
-          "mode": 0.09,
-          "lead_genre": 0.17,
-          "genre_overlap": 0.12,
-          "tag_overlap": 0.16
+          "tempo": 0.12,
+          "duration_ms": 0.08,
+          "key": 0.08,
+          "mode": 0.07,
+          "lead_genre": 0.23,
+          "genre_overlap": 0.19,
+          "tag_overlap": 0.23
         },
         "inactive_components": [],
         "weight_rebalance_diagnostics": {
@@ -557,22 +557,22 @@
           "active_component_count": 7,
           "inactive_components": [],
           "original_active_component_weights": {
-            "tempo": 0.2,
-            "duration_ms": 0.13,
-            "key": 0.13,
-            "mode": 0.09,
-            "lead_genre": 0.17,
-            "genre_overlap": 0.12,
-            "tag_overlap": 0.16
+            "tempo": 0.12,
+            "duration_ms": 0.08,
+            "key": 0.08,
+            "mode": 0.07,
+            "lead_genre": 0.23,
+            "genre_overlap": 0.19,
+            "tag_overlap": 0.23
           },
           "normalized_active_component_weights": {
-            "tempo": 0.2,
-            "duration_ms": 0.13,
-            "key": 0.13,
-            "mode": 0.09,
-            "lead_genre": 0.17,
-            "genre_overlap": 0.12,
-            "tag_overlap": 0.16
+            "tempo": 0.12,
+            "duration_ms": 0.08,
+            "key": 0.08,
+            "mode": 0.07,
+            "lead_genre": 0.23,
+            "genre_overlap": 0.19,
+            "tag_overlap": 0.23
           },
           "warning": null
         },
@@ -644,10 +644,10 @@
         "top_tag_limit": 10,
         "top_genre_limit": 8,
         "numeric_thresholds": {
-          "tempo": 20.0,
-          "key": 2.0,
+          "tempo": 15.0,
+          "key": 1.5,
           "mode": 0.5,
-          "duration_ms": 45000.0
+          "duration_ms": 30000.0
         },
         "numeric_feature_mapping": {
           "tempo": "tempo",
@@ -656,16 +656,16 @@
           "duration_ms": "duration_ms"
         },
         "numeric_features_enabled": true,
-        "keep_rule": "keep if not seed and (semantic_score >= 2 or (semantic_score >= 1 and numeric_pass_count >= 1))",
+        "keep_rule": "keep if not seed and (semantic_score >= 3 or (semantic_score >= 1 and numeric_pass_count >= 2))",
         "semantic_source": "ds001_tags_and_genres_columns",
         "threshold_scale": 1.25
       },
       "scoring": {
         "numeric_thresholds": {
-          "tempo": 20.0,
-          "key": 2.0,
+          "tempo": 15.0,
+          "key": 1.5,
           "mode": 0.5,
-          "duration_ms": 45000.0
+          "duration_ms": 30000.0
         },
         "numeric_feature_mapping": {
           "tempo": "tempo",
@@ -674,22 +674,22 @@
           "duration_ms": "duration_ms"
         },
         "base_component_weights": {
-          "tempo": 0.2,
-          "duration_ms": 0.13,
-          "key": 0.13,
-          "mode": 0.09,
-          "lead_genre": 0.17,
-          "genre_overlap": 0.12,
-          "tag_overlap": 0.16
+          "tempo": 0.12,
+          "duration_ms": 0.08,
+          "key": 0.08,
+          "mode": 0.07,
+          "lead_genre": 0.23,
+          "genre_overlap": 0.19,
+          "tag_overlap": 0.23
         },
         "active_component_weights": {
-          "tempo": 0.2,
-          "duration_ms": 0.13,
-          "key": 0.13,
-          "mode": 0.09,
-          "lead_genre": 0.17,
-          "genre_overlap": 0.12,
-          "tag_overlap": 0.16
+          "tempo": 0.12,
+          "duration_ms": 0.08,
+          "key": 0.08,
+          "mode": 0.07,
+          "lead_genre": 0.23,
+          "genre_overlap": 0.19,
+          "tag_overlap": 0.23
         },
         "inactive_components": [],
         "weight_rebalance_diagnostics": {
@@ -698,22 +698,22 @@
           "active_component_count": 7,
           "inactive_components": [],
           "original_active_component_weights": {
-            "tempo": 0.2,
-            "duration_ms": 0.13,
-            "key": 0.13,
-            "mode": 0.09,
-            "lead_genre": 0.17,
-            "genre_overlap": 0.12,
-            "tag_overlap": 0.16
+            "tempo": 0.12,
+            "duration_ms": 0.08,
+            "key": 0.08,
+            "mode": 0.07,
+            "lead_genre": 0.23,
+            "genre_overlap": 0.19,
+            "tag_overlap": 0.23
           },
           "normalized_active_component_weights": {
-            "tempo": 0.2,
-            "duration_ms": 0.13,
-            "key": 0.13,
-            "mode": 0.09,
-            "lead_genre": 0.17,
-            "genre_overlap": 0.12,
-            "tag_overlap": 0.16
+            "tempo": 0.12,
+            "duration_ms": 0.08,
+            "key": 0.08,
+            "mode": 0.07,
+            "lead_genre": 0.23,
+            "genre_overlap": 0.19,
+            "tag_overlap": 0.23
           },
           "warning": null
         },

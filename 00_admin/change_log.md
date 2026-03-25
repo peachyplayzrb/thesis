@@ -8,7 +8,7 @@ Ordering convention (standardized 2026-03-24):
 - New entries must be appended at the end; historical entries remain unchanged except for explicit correction records.
 
 Maintenance snapshot (2026-03-25):
-- Highest change ID currently present: `C-173`
+- Highest change ID currently present: `C-175`
 - Known legacy correction applied in this file: prior duplicate `C-079` entry has been normalized to `C-135` for unique-ID compliance.
 
 ## C-001
@@ -27,6 +27,7 @@ Maintenance snapshot (2026-03-25):
 | C-172 | 2026-03-25 18:25 | Copilot | Expanded implementation state into a comprehensive issue-focused health report and synchronized admin control files (`thesis_state.md`, `unresolved_issues.md`) to track active optimization and evidence-hygiene risks. |
 | C-173 | 2026-03-25 22:55 | Copilot | Implemented config-surface control uplift (`control_mode` + config-driven BL-009 bootstrap mode), refreshed BL-000/BL-009 state logs and implementation state, and synchronized admin tracking files for UI-013 progress evidence. |
 | C-174 | 2026-03-25 23:00 | Copilot | Implemented and validated BL-008 explanation-diversity control uplift (near-tie primary-driver blending), updated stage/test/admin logs, and confirmed UI-013 BL-008 dominance target pass on v1b (`0.5` <= `0.6`) with BL-014 pass. |
+| C-175 | 2026-03-25 23:10 | Copilot | Normalized BL-010 replay command path semantics to canonical BL-prefixed rendering, refreshed BL-010/BL-011 evidence with freshness and BL-014 passes, and synchronized implementation/admin logs for UI-013 closure progress. |
 ## C-162
 - date: 2026-03-25
 - proposed_by: Copilot
@@ -160,6 +161,17 @@ Maintenance snapshot (2026-03-25):
 - evidence_basis: BL-013 pass `BL013-ENTRYPOINT-20260325-225725-328263`; BL-014 pass `BL014-SANITY-20260325-225735-601840`; BL-008 distribution `Lead genre match:5, Tag overlap:3, Genre overlap:2`; dominance share `0.5`; focused evidence artifact `_scratch/ui013_v1b_bl008_focus_result.json`.
 - affected_components: `07_implementation/implementation_notes/bl000_run_config/run_config_utils.py`, `07_implementation/implementation_notes/bl008_transparency/build_bl008_explanation_payloads.py`, `07_implementation/implementation_notes/bl000_run_config/configs/profiles/run_config_ui013_tuning_v1b.json`, `07_implementation/implementation_notes/bl000_run_config/docs/bl000_run_config_state_log_2026-03-25.md`, `07_implementation/implementation_notes/bl008_transparency/bl008_state_log_2026-03-24.md`, `07_implementation/experiment_log.md`, `07_implementation/test_notes.md`, `07_implementation/IMPLEMENTATION_STATE_2026-03-24.md`, `00_admin/unresolved_issues.md`, `00_admin/thesis_state.md`, `00_admin/change_log.md`, `00_admin/decision_log.md`
 - impact_assessment: High-positive. Clears the remaining BL-008 UI-013 acceptance gate while preserving strict run-config governance and BL-014 quality pass status.
+- approval_record: Requested and confirmed by user in chat on 2026-03-25.
+
+## C-175
+- date: 2026-03-25
+- proposed_by: Copilot
+- status: accepted
+- change_summary: Normalized BL-010 replay command path semantics to canonical BL-prefixed relative rendering, refreshed BL-010/BL-011 evidence on the active baseline, and synchronized implementation/admin logs for UI-013 closure progress.
+- reason: UI-013 still tracked BL-010/BL-011 path-semantics as the remaining governance-hygiene tail after BL-008 acceptance passed.
+- evidence_basis: BL-010 pass `BL010-REPRO-20260325-231041` (replay `stage_runs.command` canonicalized); BL-011 pass `BL011-CTRL-20260325-231130`; freshness pass `BL-FRESHNESS-20260325-231159` (`9/9` checks); BL-014 pass `BL014-SANITY-20260325-231204-534293` (`21/21` checks).
+- affected_components: `07_implementation/implementation_notes/bl010_reproducibility/run_bl010_reproducibility_check.py`, `07_implementation/implementation_notes/bl010_reproducibility/outputs/bl010_reproducibility_report.json`, `07_implementation/implementation_notes/bl010_reproducibility/outputs/bl010_reproducibility_run_matrix.csv`, `07_implementation/implementation_notes/bl010_reproducibility/outputs/bl010_reproducibility_config_snapshot.json`, `07_implementation/implementation_notes/bl011_controllability/outputs/bl011_controllability_report.json`, `07_implementation/implementation_notes/bl011_controllability/outputs/bl011_controllability_run_matrix.csv`, `07_implementation/implementation_notes/bl011_controllability/outputs/bl011_controllability_config_snapshot.json`, `07_implementation/implementation_notes/bl014_quality/outputs/bl010_bl011_freshness_report.json`, `07_implementation/implementation_notes/bl014_quality/outputs/bl010_bl011_freshness_matrix.csv`, `07_implementation/implementation_notes/bl014_quality/outputs/bl014_sanity_report.json`, `07_implementation/implementation_notes/bl010_reproducibility/bl010_state_log_2026-03-24.md`, `07_implementation/implementation_notes/bl011_controllability/bl011_state_log_2026-03-24.md`, `07_implementation/experiment_log.md`, `07_implementation/test_notes.md`, `07_implementation/IMPLEMENTATION_STATE_2026-03-24.md`, `00_admin/unresolved_issues.md`, `00_admin/thesis_state.md`, `00_admin/change_log.md`, `00_admin/decision_log.md`
+- impact_assessment: High-positive. Closes the remaining BL-010/BL-011 path-rendering governance gap and leaves UI-013 focused on final evidence packaging.
 - approval_record: Requested and confirmed by user in chat on 2026-03-25.
 ## C-006
 

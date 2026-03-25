@@ -1,17 +1,17 @@
 {
   "run_metadata": {
-    "run_id": "BL-FRESHNESS-20260325-151614",
+    "run_id": "BL-FRESHNESS-20260325-231159",
     "task": "BL-010/011 freshness check",
-    "generated_at_utc": "2026-03-25T15:16:14Z",
-    "elapsed_seconds": 0.202,
+    "generated_at_utc": "2026-03-25T23:11:59Z",
+    "elapsed_seconds": 0.277,
     "overall_status": "pass",
     "checks_total": 9,
     "checks_passed": 9,
     "checks_failed": 0
   },
   "current_contract_hashes": {
-    "bl010_config_hash": "A355BE084C101D0E9468097DCC83C074C29E14C974113520519C643A45D4FAED",
-    "bl011_config_hash": "244E066B1C8AC2D4655306B9C358D6C5E261DB9EA602C398C19AB920919EA94E"
+    "bl010_config_hash": "1607A65349BA4920E65B52598AEA18BFB59BF7E1268D1776F95600092B55F094",
+    "bl011_config_hash": "A8787D4BD7E5215F382B6E3D8159359CC7D85DD6F3424ADDD12CA74E79A05C46"
   },
   "evidence_paths": {
     "bl010_config_snapshot": "07_implementation/implementation_notes/bl010_reproducibility/outputs/bl010_reproducibility_config_snapshot.json",

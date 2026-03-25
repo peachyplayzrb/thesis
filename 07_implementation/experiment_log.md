@@ -4059,4 +4059,99 @@ Do NOT download: audio files (.mp3), id_incp/id_resnet/id_vgg19 (video features)
 - backlog_status_recommendation:
   - Mark BL-008 diversity-focused UI-013 action as complete.
 
+---
+
+## EXP-044
+- date: 2026-03-25
+- backlog_link: `BL-010`, `BL-011`, `UI-013`
+- owner: AI + user
+- status: pass
+- related_test_id: `TC-UI013-BL010-BL011-PATHS-001`
+
+### Objective
+- Close the remaining UI-013 governance-hygiene tail by normalizing BL-010/BL-011 report path semantics to canonical BL-prefixed rendering and refreshing assurance evidence.
+
+### Scope Check
+- In-scope confirmation: yes, this is the final BL-010/BL-011 evidence-hygiene closure slice under UI-013.
+- Protected items affected? no
+
+### Inputs
+- source_data:
+  - `07_implementation/implementation_notes/bl004_profile/outputs/bl004_seed_trace.csv`
+  - `07_implementation/implementation_notes/bl000_data_layer/outputs/ds001_working_candidate_dataset.csv`
+- config_or_parameters:
+  - BL-010 default replay count `3`, active mode (`allow_legacy_surrogate_inputs=false`)
+- code_or_script_path:
+  - `07_implementation/implementation_notes/bl010_reproducibility/run_bl010_reproducibility_check.py`
+  - `07_implementation/implementation_notes/bl011_controllability/run_bl011_controllability_check.py`
+  - `07_implementation/implementation_notes/bl014_quality/check_bl010_bl011_freshness.py`
+- dependency assumptions:
+  - BL-004 through BL-009 outputs are present and current on the active v1b lineage.
+
+### Expected Evidence
+- primary_output_artifact:
+  - `07_implementation/implementation_notes/bl010_reproducibility/outputs/bl010_reproducibility_report.json`
+- secondary_output_artifacts:
+  - `07_implementation/implementation_notes/bl011_controllability/outputs/bl011_controllability_report.json`
+  - `07_implementation/implementation_notes/bl014_quality/outputs/bl010_bl011_freshness_report.json`
+  - `07_implementation/implementation_notes/bl014_quality/outputs/bl014_sanity_report.json`
+- success_condition:
+  - BL-010 and BL-011 pass; freshness check passes; BL-010 replay `stage_runs.command` renders canonical relative BL-prefixed paths.
+
+### Run Record
+- command_or_execution_method:
+  - `python 07_implementation/implementation_notes/bl010_reproducibility/run_bl010_reproducibility_check.py`
+  - `python 07_implementation/implementation_notes/bl011_controllability/run_bl011_controllability_check.py`
+  - `python 07_implementation/implementation_notes/bl014_quality/check_bl010_bl011_freshness.py`
+  - `python 07_implementation/implementation_notes/bl014_quality/run_bl014_sanity_checks.py`
+- run_id:
+  - `BL010-REPRO-20260325-231041`
+  - `BL011-CTRL-20260325-231130`
+  - `BL-FRESHNESS-20260325-231159`
+  - `BL014-SANITY-20260325-231204-534293`
+- start_state_summary:
+  - BL-010 state log still recorded legacy/absolute replay-command path semantics as an open hygiene issue.
+- end_state_summary:
+  - BL-010 now emits `stage`, `script_path`, and canonical `command` (`python 07_implementation/...`) in replay stage logs; refreshed BL-011, freshness, and BL-014 all pass.
+
+### Results
+- outcome_summary:
+  - UI-013 BL-010/BL-011 path-semantics normalization slice passed with refreshed evidence and no quality regressions.
+- key_metrics:
+  - `bl010_deterministic_match=true`
+  - `bl011_status=pass`
+  - `bl011_all_scenarios_repeat_consistent=true`
+  - `bl011_all_variant_shifts_observable=true`
+  - `bl_freshness_overall_status=pass (9/9)`
+  - `bl014_overall_status=pass (21/21)`
+- deterministic_repeat_checked: yes
+- output_paths:
+  - `07_implementation/implementation_notes/bl010_reproducibility/outputs/bl010_reproducibility_report.json`
+  - `07_implementation/implementation_notes/bl011_controllability/outputs/bl011_controllability_report.json`
+  - `07_implementation/implementation_notes/bl014_quality/outputs/bl010_bl011_freshness_report.json`
+
+### Issues And Limits
+- failures_or_anomalies:
+  - none.
+- likely_cause:
+  - n/a
+- bounded_mvp_limitation_or_bug:
+  - BL-011 scenario label semantics (`valence_weight_up` versus active override component) remains a separate readability item but is outside this path-normalization slice.
+
+### Thesis Traceability
+- chapter4_relevance:
+  - strengthens reproducibility/controllability evidence readability by removing machine-local path leakage from replay command records.
+- chapter5_relevance:
+  - narrows governance-evidence limitations; remaining limits focus on optimization quality and bounded controllability scenario semantics.
+- quality_control_files_to_update:
+  - `07_implementation/test_notes.md`
+  - `07_implementation/IMPLEMENTATION_STATE_2026-03-24.md`
+  - `00_admin/unresolved_issues.md`
+
+### Next Action
+- immediate_follow_up:
+  - complete final UI-013 evidence packaging for acceptance summary.
+- backlog_status_recommendation:
+  - mark BL-010/BL-011 path-semantics normalization action complete under UI-013.
+
 
