@@ -1,23 +1,23 @@
 {
-  "run_id": "BL013-ENTRYPOINT-20260325-024524-619968",
+  "run_id": "BL013-ENTRYPOINT-20260325-024402-779036",
   "task": "BL-013",
-  "generated_at_utc": "2026-03-25T02:45:24Z",
+  "generated_at_utc": "2026-03-25T02:44:02Z",
   "overall_status": "fail",
   "continue_on_error": false,
   "python_executable": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\.venv\\Scripts\\python.exe",
   "run_config_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\run_config\\run_config_template_v1.json",
   "canonical_run_config_artifacts": {
-    "run_id": "BL013-ENTRYPOINT-20260325-024524-619968",
-    "generated_at_utc": "2026-03-25T02:45:24Z",
+    "run_id": "BL013-ENTRYPOINT-20260325-024402-779036",
+    "generated_at_utc": "2026-03-25T02:44:02Z",
     "output_dir": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\run_config\\outputs",
     "run_intent": {
-      "path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\run_config\\outputs\\run_intent_20260325-024524-627113.json",
-      "sha256": "2A7ACBAA3C2B088B8315880AF65D636C236D1170225278DAE19067EDD2C6B843",
+      "path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\run_config\\outputs\\run_intent_20260325-024402-786112.json",
+      "sha256": "B1DB4597F58788644CCA1E6F38A1FC131D825A97A263D68335E960757E86A3E8",
       "artifact_schema_version": "run-intent-v1"
     },
     "run_effective_config": {
-      "path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\run_config\\outputs\\run_effective_config_20260325-024524-627113.json",
-      "sha256": "1D90082A7999FE450E1DA425B6F7B24ED78A932C11BC1DA2D5784DF20A039601",
+      "path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\run_config\\outputs\\run_effective_config_20260325-024402-786112.json",
+      "sha256": "1376AA75969B8DCBE5E0E95E4E814652BE464CE92F20B2276F50164A8A022C58",
       "artifact_schema_version": "run-effective-config-v1"
     },
     "latest": {
@@ -36,7 +36,7 @@
   ],
   "executed_stage_count": 1,
   "failed_stage_count": 1,
-  "elapsed_seconds": 0.38,
+  "elapsed_seconds": 0.419,
   "stage_results": [
     {
       "stage_id": "BL-003",
@@ -46,11 +46,11 @@
         "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\alignment\\build_bl003_ds001_spotify_seed_table.py"
       ],
       "run_config_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\run_config\\run_config_template_v1.json",
-      "run_intent_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\run_config\\outputs\\run_intent_20260325-024524-627113.json",
-      "run_effective_config_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\run_config\\outputs\\run_effective_config_20260325-024524-627113.json",
+      "run_intent_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\run_config\\outputs\\run_intent_20260325-024402-786112.json",
+      "run_effective_config_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\run_config\\outputs\\run_effective_config_20260325-024402-786112.json",
       "return_code": 1,
       "status": "fail",
-      "elapsed_seconds": 0.379,
+      "elapsed_seconds": 0.419,
       "stdout": "",
       "stderr": "Traceback (most recent call last):\n  File \"C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\alignment\\build_bl003_ds001_spotify_seed_table.py\", line 987, in <module>\n    main()\n    ~~~~^^\n  File \"C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\alignment\\build_bl003_ds001_spotify_seed_table.py\", line 539, in main\n    raise RuntimeError(\n    ...<2 lines>...\n    )\nRuntimeError: BL-003 strict selected-source check failed. Missing required source files from BL-002 selection: recently_played. Re-run BL-002 export or pass --allow-missing-selected-sources to continue."
     }
