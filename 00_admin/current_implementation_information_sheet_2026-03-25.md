@@ -12,10 +12,14 @@ The current system is a deterministic single-user playlist generation pipeline t
 - Active candidate corpus: DS-001 working candidate dataset
 - Active orchestration entrypoint: BL-013
 - Active sanity-check harness: BL-014
-- Recommendation logic type: deterministic, content-based, hybrid semantic + numeric-feature scoring
+- Active run config: `run_config_ui013_tuning_v1f.json`
+- Recommendation logic type: deterministic, content-based, hybrid semantic + numeric-feature scoring (10 active components)
 - Current canonical validation status:
-  - BL-013 pass: `BL013-ENTRYPOINT-20260325-163713-079187`
-  - BL-014 pass: `BL014-SANITY-20260325-163738-023840` (`21/21` checks)
+  - BL-013 pass: `BL013-ENTRYPOINT-20260326-215741-269303`
+  - BL-014 pass: `BL014-SANITY-20260326-215800-844786` (`22/22` checks)
+  - BL-010 pass: `BL010-REPRO-20260326-215557` (`deterministic_match=true`)
+  - BL-011 pass: `BL011-CTRL-20260326-215213` (`status=pass`, 5 scenarios)
+  - Active freshness suite: `BL-FRESHNESS-SUITE-20260326-215801` (`7/7`)
 
 ## High-Level Flow
 1. Spotify export data is collected and normalized.
@@ -178,8 +182,9 @@ Key outputs:
 - `bl005_candidate_diagnostics.json`
 
 Current observed behavior:
-- Kept candidates: 72463
-- Rejected non-seed candidates: 35748
+Current observed behavior (v1f):
+- Kept candidates: 46,776
+- Total DS-001 corpus: 109,269 tracks
 
 Why it matters:
 - BL-005 is the first stage that constrains what can ever appear in the final playlist.
@@ -191,12 +196,15 @@ Script:
 Role:
 - Score retrieved candidates with a deterministic hybrid similarity function.
 
-Scoring components:
+Scoring components (v1f — 10 active):
 - Numeric components:
   - tempo
   - duration_ms
   - key
   - mode
+  - danceability
+  - energy
+  - valence
 - Semantic components:
   - lead_genre
   - genre_overlap
@@ -212,10 +220,9 @@ What it does:
 - Re-normalizes active component weights when required.
 - Emits explicit diagnostics when rebalancing occurs.
 
-Current canonical run behavior:
-- Candidates scored: 72463
-- Mean score: 0.245727
-- Max score: 0.787428
+Current canonical run behavior (v1f):
+- Candidates scored: 46,776
+- Active component count: 10 (7 numeric + 3 semantic)
 - Weight rebalance flag in latest canonical run: false
 
 Key outputs:
@@ -366,7 +373,7 @@ What it checks:
 - advisory conditions such as undersized playlists
 
 Current observed behavior:
-- Latest run passed `21/21` checks
+- Latest run passed `22/22` checks
 
 Why it matters:
 - BL-014 is the quickest way to confirm that the pipeline outputs are internally consistent after code or config changes.
@@ -387,19 +394,40 @@ Therefore, the live system is best described as:
 - content-based
 - hybrid semantic-plus-feature recommendation pipeline
 
-## Current Run Snapshot (Canonical)
-- BL-013 run ID: `BL013-ENTRYPOINT-20260325-151555-244335`
+## Current Run Snapshot (Canonical — v1f)
+- BL-013 run ID: `BL013-ENTRYPOINT-20260326-215741-269303`
+- active config: `run_config_ui013_tuning_v1f.json`
 - overall status: pass
-- elapsed: 15.123 seconds
 
 Stage snapshot:
-- BL-003 match rate: `15.61%` (`pass` against `15.0%` minimum)
-- BL-004 seeds used: `1058`
-- BL-005 kept candidates: `72463`
-- BL-006 scored candidates: `72463`
+- BL-003 match rate: `~15.6%` (above `15.0%` minimum threshold)
+- BL-004 seeds used: `1064`
+- BL-005 kept candidates: `46,776`
+- BL-006 scored candidates: `46,776` (10 active components)
 - BL-007 final playlist: `10/10`
 - BL-008 explanations: `10`
-- BL-009 weight rebalance diagnostics: `false` in the latest canonical run
+- BL-009 weight rebalance diagnostics: `false`
+- BL-010 reproducibility: `BL010-REPRO-20260326-215557` (`deterministic_match=true`)
+- BL-011 controllability: `BL011-CTRL-20260326-215213` (`status=pass`, 5 scenarios)
+- BL-014 sanity: `22/22` (`BL014-SANITY-20260326-215800-844786`)
+- Active freshness suite: `7/7` (`BL-FRESHNESS-SUITE-20260326-215801`)
+
+## Resolved Canonical v1f Playlist (BL007-ASSEMBLE-20260326-215757-053177)
+
+| Pos | Artist | Title | Year | Score | Pool rank | Lead genre |
+|-----|--------|-------|------|-------|-----------|------------|
+| 1 | Elton John | Candle in the Wind | 1973 | 0.7269 | 1 | pop |
+| 2 | Bruce Hornsby | The Way It Is | 1986 | 0.7229 | 2 | pop |
+| 3 | The Cars | Drive | 1984 | 0.4672 | 3,910 | new wave |
+| 4 | Fernando Milagros | Otra Vida | 2017 | 0.4672 | 3,911 | pop |
+| 5 | Maria Mena | Sorry | 2004 | 0.4672 | 3,912 | pop |
+| 6 | Supertramp | It's Raining Again | 1982 | 0.4660 | 4,089 | classic rock |
+| 7 | Loverboy | Turn Me Loose | 1980 | 0.4539 | 5,808 | classic rock |
+| 8 | Billy Joel | I Go to Extremes | 1989 | 0.4533 | 5,910 | rock |
+| 9 | U2 | Book of Your Heart | 2017 | 0.4485 | 6,638 | rock |
+| 10 | Bruce Hornsby | The Valley Road | 1988 | 0.4476 | 6,776 | singer-songwriter |
+
+Notes: Bruce Hornsby appears at positions 2 and 10 (no `max_per_artist` assembly rule configured — known limitation). Rank cliff between positions 2 and 3 (pool ranks 2 → 3,910) reflects genre-diversity forcing in BL-007. BL-010/BL-011 internal config-snapshot candidate counts differ from canonical v1f (70,680 and 33,096 respectively; see thesis_state.md checkpoint 2026-03-26 22:30).
 
 ## Main Strengths of the Current Implementation
 - Deterministic stage structure

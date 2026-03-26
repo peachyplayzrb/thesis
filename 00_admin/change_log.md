@@ -8,7 +8,7 @@ Ordering convention (standardized 2026-03-24):
 - New entries must be appended at the end; historical entries remain unchanged except for explicit correction records.
 
 Maintenance snapshot (2026-03-26):
-- Highest change ID currently present: `C-181`
+- Highest change ID currently present: `C-182`
 - Known legacy correction applied in this file: prior duplicate `C-079` entry has been normalized to `C-135` for unique-ID compliance.
 
 ## C-001
@@ -34,6 +34,7 @@ Maintenance snapshot (2026-03-26):
 | C-179 | 2026-03-26 | Copilot | Refreshed UI-013 v1b acceptance evidence on the corrected BL-006 baseline, updated control/test artifacts, and closed UI-013 after reconfirming all thresholds with BL-013 and BL-014 passes. |
 | C-180 | 2026-03-26 21:03 | Copilot | Implemented v1f numeric retune (danceability, energy, valence activated end-to-end in BL-005 and BL-006), applied Windows WinError 1224 fix in BL-010, restored live pipeline to v1f, and updated all stage state logs and CODEBASE_ISSUES_CURRENT.md with a next-steps section and issue register. |
 | C-181 | 2026-03-26 21:27 | Copilot | Completed freshness re-alignment on the active v1f baseline (BL-010, BL-011, BL-013 restore, BL-014 freshness suite), returning active freshness status to pass and synchronizing CODEBASE_ISSUES_CURRENT.md plus admin state files. |
+| C-182 | 2026-03-26 22:30 | Copilot | Completed evidence audit for the canonical v1f baseline: resolved all 10 playlist track titles from DS-001 CSV, documented BL-010/BL-011 config-snapshot candidate-count divergence (70,680 / 33,096 vs 46,776 v1f), packaged dissertation claims by strength, and updated all admin/state logs to reflect v1f canonical evidence. |
 ## C-162
 - date: 2026-03-25
 - proposed_by: Copilot
@@ -244,6 +245,17 @@ Maintenance snapshot (2026-03-26):
 - evidence_basis: BL-010 pass `BL010-REPRO-20260326-212523` (`deterministic_match=true`); BL-011 pass `BL011-CTRL-20260326-212611` (`status=pass`); BL-013 restore pass `BL013-ENTRYPOINT-20260326-212711-234744`; BL-014 sanity pass `BL014-SANITY-20260326-212725-976781` (`22/22` checks); active freshness suite pass `BL-FRESHNESS-SUITE-20260326-212726` (`7/7` checks); BL-010/BL-011 freshness report pass `BL-FRESHNESS-20260326-212726` (`9/9` checks).
 - affected_components: `07_implementation/implementation_notes/bl000_run_config/outputs/run_intent_latest.json`, `07_implementation/implementation_notes/bl000_run_config/outputs/run_effective_config_latest.json`, `07_implementation/implementation_notes/bl003_alignment/outputs/*`, `07_implementation/implementation_notes/bl004_profile/outputs/*`, `07_implementation/implementation_notes/bl005_retrieval/outputs/*`, `07_implementation/implementation_notes/bl006_scoring/outputs/*`, `07_implementation/implementation_notes/bl007_playlist/outputs/*`, `07_implementation/implementation_notes/bl008_transparency/outputs/*`, `07_implementation/implementation_notes/bl009_observability/outputs/*`, `07_implementation/implementation_notes/bl010_reproducibility/outputs/*`, `07_implementation/implementation_notes/bl011_controllability/outputs/*`, `07_implementation/implementation_notes/bl013_entrypoint/outputs/bl013_orchestration_run_latest.json`, `07_implementation/implementation_notes/bl014_quality/outputs/*`, `07_implementation/implementation_notes/CODEBASE_ISSUES_CURRENT.md`, `00_admin/unresolved_issues.md`, `00_admin/thesis_state.md`, `00_admin/change_log.md`
 - impact_assessment: Medium-positive. Removes the last active freshness caveat from the live v1f baseline and restores a clean all-green operations indicator without changing functional recommendation behavior.
+- approval_record: Requested and confirmed by user in chat on 2026-03-26.
+
+## C-182
+- date: 2026-03-26
+- proposed_by: Copilot
+- status: accepted
+- change_summary: Completed evidence audit for the canonical v1f baseline: resolved all 10 playlist track titles from DS-001 candidate CSV, documented BL-010/BL-011 config-snapshot candidate-count divergence, packaged dissertation claims by strength for Chapter 4/5 use, and updated all admin and state logs (thesis_state.md, current_implementation_information_sheet, unresolved_issues.md, change_log.md, experiment_log.md) to reflect v1f canonical evidence.
+- reason: Admin logs and the implementation information sheet contained stale 2026-03-25 numbers (v1b/default candidate counts 72,463; old BL-013/BL-014 run IDs; 21/21 sanity checks; unresolved playlist track names). After the v1f migration the BL-020 section and current run snapshot required updating to preserve accuracy as chapter-writing reference material.
+- evidence_basis: Resolved playlist from `07_implementation/implementation_notes/bl000_data_layer/outputs/ds001_working_candidate_dataset.csv`; canonical v1f run chain `BL013-ENTRYPOINT-20260326-215741-269303`, `BL007-ASSEMBLE-20260326-215757-053177`, `BL008-EXPLAIN-20260326-215758-211757`, `BL009-OBSERVE-20260326-215759-414232`, `BL014-SANITY-20260326-215800-844786` (`22/22`), `BL-FRESHNESS-SUITE-20260326-215801` (`7/7`), `BL010-REPRO-20260326-215557` (`deterministic_match=true`), `BL011-CTRL-20260326-215213` (`status=pass`).
+- affected_components: `00_admin/thesis_state.md`, `00_admin/current_implementation_information_sheet_2026-03-25.md`, `00_admin/unresolved_issues.md`, `00_admin/change_log.md`, `07_implementation/experiment_log.md`
+- impact_assessment: Medium-positive. Restores accuracy of primary chapter-writing reference documents and provides the first human-readable resolved playlist record in any admin governance file.
 - approval_record: Requested and confirmed by user in chat on 2026-03-26.
 
 ## C-006

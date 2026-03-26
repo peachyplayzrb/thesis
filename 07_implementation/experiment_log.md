@@ -68,6 +68,91 @@ Copy the block below for each new run.
 - backlog_status_recommendation:
 
 ---
+## EXP-048
+- date: 2026-03-26
+- backlog_link: `BL-007`, `BL-008`, `BL-010`, `BL-011`
+- owner: Timothy + AI
+- status: pass
+- related_test_id: `TC-EVAL-AUDIT-001`
+
+### Objective
+- Conduct a full evidence audit of the canonical v1f baseline: resolve all 10 playlist track titles to human-readable form, surface the BL-010/BL-011 config-snapshot divergence, and produce dissertation-ready claims tables by strength.
+
+### Scope Check
+- In-scope confirmation: yes — read-only audit against existing v1f artifacts; no implementation changes.
+- Protected items affected? no
+
+### Inputs
+- source_data:
+  - `07_implementation/implementation_notes/bl000_data_layer/outputs/ds001_working_candidate_dataset.csv`
+  - `07_implementation/implementation_notes/bl007_playlist/outputs/bl007_playlist.json`
+  - `07_implementation/implementation_notes/bl008_transparency/outputs/bl008_explanation_payloads.json`
+  - `07_implementation/implementation_notes/bl010_reproducibility/outputs/bl010_reproducibility_report.json`
+  - `07_implementation/implementation_notes/bl011_controllability/outputs/bl011_controllability_report.json`
+  - `07_implementation/implementation_notes/bl009_observability/outputs/bl009_run_observability_log.json`
+  - `07_implementation/implementation_notes/bl014_quality/outputs/bl014_sanity_report.json`
+- config_or_parameters: canonical v1f run (`run_config_ui013_tuning_v1f.json`)
+- code_or_script_path: no scripts executed — artifact inspection only
+- dependency assumptions: all v1f canonical artifacts present and consistent with BL-014 22/22 pass
+
+### Expected Evidence
+- primary_output_artifact: resolved playlist record in admin governance logs
+- secondary_output_artifacts: dissertation claims by strength; BL-010/BL-011 divergence note; updated admin logs
+- success_condition: all 10 track IDs resolved to human-readable names; BL-010/BL-011 divergence documented; admin logs updated
+
+### Run Record
+- command_or_execution_method: artifact inspection via grep on `ds001_working_candidate_dataset.csv` and file reads
+- run_id: `EXP-048-AUDIT-20260326`
+- start_state_summary: v1f canonical artifacts existed with run IDs but all playlist entries were ID-only (no human-readable titles in any governance file)
+- end_state_summary: all 10 playlist track titles resolved; BL-010/BL-011 config-snapshot divergence documented; admin logs updated
+
+### Results
+- outcome_summary: pass — all 10 playlist track IDs resolved and recorded in governance files for the first time
+- key_metrics:
+  - `playlist_run_id=BL007-ASSEMBLE-20260326-215757-053177`
+  - `bl005_kept_candidates=46776`
+  - `bl006_active_components=10`
+  - `bl014_checks=22/22`
+  - `bl_freshness=7/7`
+  - `bl010_candidate_count_internal=70680` (config-snapshot divergence from v1f 46,776)
+  - `bl011_candidate_count_internal=33096` (config-snapshot divergence from v1f 46,776)
+  - `rank_cliff_position=3` (pool rank 3,910 — diversity forcing)
+  - `artist_repeat_position=2_and_10` (Bruce Hornsby — no max_per_artist rule)
+- deterministic_repeat_checked: n/a (read-only audit)
+- output_paths:
+  - `00_admin/thesis_state.md` (checkpoint 22:30)
+  - `00_admin/current_implementation_information_sheet_2026-03-25.md` (v1f snapshot + resolved playlist table)
+  - `00_admin/unresolved_issues.md` (sync note 22:30)
+  - `00_admin/change_log.md` (C-182)
+
+### Issues And Limits
+- failures_or_anomalies:
+  - BL-010 internal replay config snapshot uses 70,680 candidates; BL-011 baseline scenario uses 33,096; neither matches the canonical v1f 46,776
+- likely_cause:
+  - BL-010 and BL-011 each pin their own config snapshot at execution time; both were run before the v1f config was finalised, so their pinned snapshots reflect earlier profile-limit settings
+- bounded_mvp_limitation_or_bug:
+  - `deterministic_match=true` and `all_variant_shifts_observable=true` are valid claims for their respective pinned states; they do not constitute formal v1f-specific reproducibility/controllability evidence. A v1f-specific BL-010 rerun would strengthen this claim. Bruce Hornsby appearing at both positions 2 and 10 is a known limitation (no `max_per_artist` rule in current assembly config).
+
+### Thesis Traceability
+- chapter4_relevance:
+  - Resolved playlist is the concrete evidence of pipeline output quality; BL-010/BL-011 divergence note should appear in the evaluation methodology section as a scope-of-evidence caveat
+- chapter5_relevance:
+  - Rank cliff (position 3 = pool rank 3,910), artist repetition, and BL-010/BL-011 config-snapshot divergence are all Chapter 5 limitation discussion points
+- quality_control_files_to_update:
+  - `00_admin/thesis_state.md` ✅
+  - `00_admin/current_implementation_information_sheet_2026-03-25.md` ✅
+  - `00_admin/unresolved_issues.md` ✅
+  - `00_admin/change_log.md` ✅
+
+### Next Action
+- immediate_follow_up:
+  - UI-003 citation closure (primary submission-hardening dependency)
+  - Optional: re-run BL-010 against v1f effective config to produce v1f-specific reproducibility evidence
+  - Chapter text alignment to v1f counts (46,776 candidates, 10 components, 22/22 checks)
+- backlog_status_recommendation:
+  - no backlog status changes; all BL items remain as logged
+
+---
 
 ## EXP-047
 - date: 2026-03-26
