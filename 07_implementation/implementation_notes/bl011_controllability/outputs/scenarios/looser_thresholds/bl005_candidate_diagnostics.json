@@ -1,5 +1,5 @@
 {
-  "run_id": "BL011-LOOSER_THRESHOLDS-BL005-20260325-231154-095304",
+  "run_id": "BL011-LOOSER_THRESHOLDS-BL005-20260326-060008-759746",
   "task": "BL-005",
   "scenario_id": "looser_thresholds",
   "config": {
@@ -8,47 +8,47 @@
     "top_genre_limit": 8,
     "threshold_scale": 1.25,
     "numeric_thresholds": {
-      "tempo": 18.75,
-      "key": 1.875,
+      "tempo": 25.0,
+      "key": 2.5,
       "mode": 0.625,
-      "duration_ms": 37500.0
+      "duration_ms": 56250.0
     },
-    "keep_rule": "keep if not seed and (semantic_score >= 3 or (semantic_score >= 1 and numeric_pass_count >= 2))"
+    "keep_rule": "keep if not seed and (semantic_score >= 2 or (semantic_score >= 1 and numeric_pass_count >= 1))"
   },
   "counts": {
     "candidate_rows_total": 109269,
-    "seed_tracks_excluded": 1026,
-    "kept_candidates": 8511,
-    "rejected_non_seed_candidates": 99732
+    "seed_tracks_excluded": 1064,
+    "kept_candidates": 70431,
+    "rejected_non_seed_candidates": 37774
   },
   "rule_hits": {
     "semantic_rule_hits": {
-      "lead_genre_match": 23936,
+      "lead_genre_match": 37604,
       "genre_overlap": 62883,
-      "tag_overlap": 67276
+      "tag_overlap": 65787
     },
     "numeric_rule_hits": {
-      "tempo": 51126,
-      "key": 37653,
+      "tempo": 65724,
+      "key": 40970,
       "mode": 68257,
-      "duration_ms": 50564
+      "duration_ms": 69134
     }
   },
   "top_kept_track_ids": [
     "0009fFIM1eYThaPg",
+    "002Jyd0vN4HyCpqL",
+    "00CH4HJdxQQQbJfu",
+    "00DZ3XCAQb2FdCc6",
     "00IeldeA9ijZOL0P",
     "00KSCJkYb8JKa4Y3",
     "00LuPWdOccBb09bW",
-    "01OcWE6ZDS0RAb4I",
-    "01oEzhZwXGG8os3W",
-    "031W8ollPLnlC7mE",
-    "04FGELz6IwgzTFKA",
-    "05CDlw5x1u6DiCU4",
-    "05UIyptPzMsGBJUu",
-    "06SC55N0G2GjCNuS",
-    "079yVaWfDrL7ulec",
-    "07ZlFqYMMkcui1ha",
-    "07bR4m5Oo4lvHJFW",
-    "089LVMgimaHdtHoB"
+    "00XWljDxNBgBKEEA",
+    "00b6fV3nx5z2b8Ls",
+    "00hFmpewuNvc4dRL",
+    "00i0OB17z3m3yamO",
+    "00mLjKFmaTv9MdaB",
+    "00uLdNEc6yXbIxyW",
+    "00wqHIO65EtRyRQM",
+    "013BFFjvohJT9dW9"
   ]
 }

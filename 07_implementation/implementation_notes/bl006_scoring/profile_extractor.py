@@ -7,6 +7,34 @@ needed for candidate scoring.
 
 from typing import Any
 
+from bl000_shared_utils.constants import DEFAULT_SCORING_COMPONENT_WEIGHTS, NUMERIC_FEATURE_SPECS
+
+
+def _build_weight_map(items: list[dict[str, Any]]) -> dict[str, float]:
+    labels: list[str] = []
+    weighted_entries: list[tuple[str, float]] = []
+    for item in items:
+        label = item.get("label")
+        if not isinstance(label, str) or not label:
+            continue
+        labels.append(label)
+        raw_weight = item.get("weight")
+        if isinstance(raw_weight, (int, float)) and float(raw_weight) > 0:
+            weighted_entries.append((label, float(raw_weight)))
+
+    if weighted_entries:
+        total = sum(weight for _, weight in weighted_entries)
+        if total > 0:
+            return {
+                label: round(weight / total, 6)
+                for label, weight in weighted_entries
+            }
+
+    if not labels:
+        return {}
+    uniform_weight = round(1.0 / len(labels), 6)
+    return {label: uniform_weight for label in labels}
+
 
 def extract_profile_scoring_data(
     profile: dict[str, Any],
@@ -63,16 +91,14 @@ def extract_profile_scoring_data(
     lead_genre = top_lead_genres[0]["label"] if top_lead_genres else ""
     scoring_data["lead_genre"] = lead_genre
     
-    # Genre weights: convert list of dicts to weight dict
+    # Genre weights: prefer BL-004 weights; fallback to uniform weights.
     top_genres = semantic_profile.get("top_genres", [])
-    genre_weights = {item["label"]: 1.0 / len(top_genres) 
-                     for item in top_genres} if top_genres else {}
+    genre_weights = _build_weight_map(top_genres)
     scoring_data["genre_weights"] = genre_weights
     
-    # Tag weights: convert list of dicts to weight dict
+    # Tag weights: prefer BL-004 weights; fallback to uniform weights.
     top_tags = semantic_profile.get("top_tags", [])
-    tag_weights = {item["label"]: 1.0 / len(top_tags) 
-                   for item in top_tags} if top_tags else {}
+    tag_weights = _build_weight_map(top_tags)
     scoring_data["tag_weights"] = tag_weights
     
     return scoring_data
@@ -96,13 +122,13 @@ def build_component_weights() -> dict[str, float]:
         - Tag overlap (16%): weighted jaccard similarity
     """
     return {
-        "tempo_score": 0.20,
-        "duration_ms_score": 0.13,
-        "key_score": 0.13,
-        "mode_score": 0.09,
-        "lead_genre_score": 0.17,
-        "genre_overlap_score": 0.12,
-        "tag_overlap_score": 0.16,
+        "tempo_score": DEFAULT_SCORING_COMPONENT_WEIGHTS["tempo"],
+        "duration_ms_score": DEFAULT_SCORING_COMPONENT_WEIGHTS["duration_ms"],
+        "key_score": DEFAULT_SCORING_COMPONENT_WEIGHTS["key"],
+        "mode_score": DEFAULT_SCORING_COMPONENT_WEIGHTS["mode"],
+        "lead_genre_score": DEFAULT_SCORING_COMPONENT_WEIGHTS["lead_genre"],
+        "genre_overlap_score": DEFAULT_SCORING_COMPONENT_WEIGHTS["genre_overlap"],
+        "tag_overlap_score": DEFAULT_SCORING_COMPONENT_WEIGHTS["tag_overlap"],
     }
 
 
@@ -121,19 +147,19 @@ def build_numeric_specs() -> dict[str, dict[str, object]]:
     """
     return {
         "tempo": {
-            "threshold": 20.0,
-            "circular": False,
+            "threshold": float(NUMERIC_FEATURE_SPECS["tempo"]["threshold"]),
+            "circular": bool(NUMERIC_FEATURE_SPECS["tempo"]["circular"]),
         },
         "key": {
-            "threshold": 2.0,
-            "circular": True,  # 0-11 wraps around
+            "threshold": float(NUMERIC_FEATURE_SPECS["key"]["threshold"]),
+            "circular": bool(NUMERIC_FEATURE_SPECS["key"]["circular"]),
         },
         "mode": {
-            "threshold": 0.5,
-            "circular": False,
+            "threshold": float(NUMERIC_FEATURE_SPECS["mode"]["threshold"]),
+            "circular": bool(NUMERIC_FEATURE_SPECS["mode"]["circular"]),
         },
         "duration_ms": {
-            "threshold": 45000.0,
-            "circular": False,
+            "threshold": float(NUMERIC_FEATURE_SPECS["duration_ms"]["threshold"]),
+            "circular": bool(NUMERIC_FEATURE_SPECS["duration_ms"]["circular"]),
         },
     }

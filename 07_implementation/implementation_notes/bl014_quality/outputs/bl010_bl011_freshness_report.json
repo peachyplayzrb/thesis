@@ -1,23 +1,21 @@
 {
   "run_metadata": {
-    "run_id": "BL-FRESHNESS-20260325-231159",
+    "run_id": "BL-FRESHNESS-20260326-060441",
     "task": "BL-010/011 freshness check",
-    "generated_at_utc": "2026-03-25T23:11:59Z",
-    "elapsed_seconds": 0.277,
+    "generated_at_utc": "2026-03-26T06:04:41Z",
+    "elapsed_seconds": 0.126,
     "overall_status": "pass",
     "checks_total": 9,
     "checks_passed": 9,
     "checks_failed": 0
   },
-  "current_contract_hashes": {
-    "bl010_config_hash": "1607A65349BA4920E65B52598AEA18BFB59BF7E1268D1776F95600092B55F094",
-    "bl011_config_hash": "A8787D4BD7E5215F382B6E3D8159359CC7D85DD6F3424ADDD12CA74E79A05C46"
-  },
   "evidence_paths": {
     "bl010_config_snapshot": "07_implementation/implementation_notes/bl010_reproducibility/outputs/bl010_reproducibility_config_snapshot.json",
     "bl010_report": "07_implementation/implementation_notes/bl010_reproducibility/outputs/bl010_reproducibility_report.json",
     "bl011_config_snapshot": "07_implementation/implementation_notes/bl011_controllability/outputs/bl011_controllability_config_snapshot.json",
-    "bl011_report": "07_implementation/implementation_notes/bl011_controllability/outputs/bl011_controllability_report.json"
+    "bl011_report": "07_implementation/implementation_notes/bl011_controllability/outputs/bl011_controllability_report.json",
+    "bl010_config_hash": "9683E779E0F2226E8D017B4229A6BBB117F092BEFE6D8B8CEC81CD42C501210D",
+    "bl011_config_hash": "6030B0F303FD5F920CD58C054A069EFCD08B613A5D50A3BFAC13188522A009B5"
   },
   "checks": [
     {
@@ -43,7 +41,7 @@
     {
       "id": "bl010_active_mode",
       "status": "pass",
-      "details": "BL-010 evidence is using active pipeline outputs rather than legacy surrogate inputs"
+      "details": "BL-010 evidence mode matches requested freshness mode input source"
     },
     {
       "id": "bl011_snapshot_matches_current_contract",
@@ -63,7 +61,11 @@
     {
       "id": "bl011_active_mode",
       "status": "pass",
-      "details": "BL-011 evidence is using active pipeline outputs rather than legacy surrogate inputs"
+      "details": "BL-011 evidence mode matches requested freshness mode input source"
     }
-  ]
+  ],
+  "current_contract_hashes": {
+    "bl010_config_hash": "9683E779E0F2226E8D017B4229A6BBB117F092BEFE6D8B8CEC81CD42C501210D",
+    "bl011_config_hash": "6030B0F303FD5F920CD58C054A069EFCD08B613A5D50A3BFAC13188522A009B5"
+  }
 }

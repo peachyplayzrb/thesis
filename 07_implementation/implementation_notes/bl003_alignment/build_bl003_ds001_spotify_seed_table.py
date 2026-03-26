@@ -4,7 +4,6 @@ import argparse
 import csv
 import hashlib
 import json
-import math
 import os
 import re
 import time
@@ -19,20 +18,17 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from bl000_shared_utils.config_loader import load_run_config_utils_module
 from bl000_shared_utils.io_utils import load_csv_rows, sha256_of_file as sha256_of_file_shared
-from bl000_shared_utils.path_utils import repo_root
+from bl000_shared_utils.io_utils import open_text_write
+from bl000_shared_utils.constants import (
+    DEFAULT_TOP_RANGE_WEIGHTS,
+    DEFAULT_SOURCE_BASE_WEIGHTS,
+    DEFAULT_SOURCE_BASE_WEIGHT_FALLBACK,
+)
 
-TOP_RANGE_WEIGHTS = {
-    "short_term": 0.50,
-    "medium_term": 0.30,
-    "long_term": 0.20,
-}
-
-SOURCE_BASE_WEIGHTS = {
-    "top_tracks": 1.00,
-    "saved_tracks": 0.60,
-    "playlist_items": 0.40,
-    "recently_played": 0.50,
-}
+# Default weights; will be overridden by run_config if available
+_DEFAULT_TOP_RANGE_WEIGHTS = DEFAULT_TOP_RANGE_WEIGHTS
+_DEFAULT_SOURCE_BASE_WEIGHTS = DEFAULT_SOURCE_BASE_WEIGHTS
+_DEFAULT_SOURCE_BASE_WEIGHT_FALLBACK = DEFAULT_SOURCE_BASE_WEIGHT_FALLBACK
 
 TRACE_FIELDNAMES = [
     "source_type",
@@ -312,21 +308,8 @@ def parse_int(value: str) -> int | None:
         return None
     try:
         return int(float(text))
-    except ValueError:
+    except (TypeError, ValueError):
         return None
-
-
-def parse_float(value: str) -> float | None:
-    text = (value or "").strip()
-    if not text:
-        return None
-    try:
-        number = float(text)
-    except ValueError:
-        return None
-    if not math.isfinite(number):
-        return None
-    return number
 
 
 def load_csv(path: Path) -> list[dict[str, str]]:
@@ -337,6 +320,13 @@ def load_optional_csv(path: Path) -> tuple[list[dict[str, str]], bool]:
     if not path.exists():
         return [], False
     return load_csv(path), True
+
+
+def write_csv_rows(path: Path, fieldnames: list[str], rows: list[dict[str, object | str]]) -> None:
+    with open_text_write(path, newline="") as handle:
+        writer = csv.DictWriter(handle, fieldnames=fieldnames)
+        writer.writeheader()
+        writer.writerows(rows)
 
 
 def load_export_selection(spotify_export_dir: Path) -> dict[str, object]:
@@ -353,14 +343,14 @@ def load_export_selection(spotify_export_dir: Path) -> dict[str, object]:
     return {}
 
 
-def compute_weight(event: dict[str, str]) -> float:
+def compute_weight(event: dict[str, str], top_range_weights: dict, source_base_weights: dict) -> float:
     source_type = event["source_type"]
-    base = SOURCE_BASE_WEIGHTS.get(source_type, 0.25)
+    base = source_base_weights.get(source_type, _DEFAULT_SOURCE_BASE_WEIGHT_FALLBACK)
 
     if source_type == "top_tracks":
         rank = parse_int(event.get("rank", ""))
         rank = rank if (rank is not None and rank > 0) else 50
-        range_weight = TOP_RANGE_WEIGHTS.get(event.get("time_range", ""), 0.20)
+        range_weight = top_range_weights.get(event.get("time_range", ""), 0.20)
         rank_score = max(0.05, 1.0 / rank)
         return round(base * range_weight * rank_score * 100.0, 6)
 
@@ -481,6 +471,17 @@ def main() -> None:
 
     runtime_scope = resolve_bl003_runtime_scope()
     input_scope = dict(runtime_scope["input_scope"])
+    
+    # Load seed controls (weights, validation thresholds)
+    top_range_weights = _DEFAULT_TOP_RANGE_WEIGHTS.copy()
+    source_base_weights = _DEFAULT_SOURCE_BASE_WEIGHTS.copy()
+    match_rate_min_threshold = 0.0
+    if runtime_scope["config_source"] == "run_config" and runtime_scope.get("run_config_path"):
+        _rc_utils = load_run_config_utils_module()
+        seed_controls = _rc_utils.resolve_bl003_seed_controls(runtime_scope["run_config_path"])
+        top_range_weights = dict(seed_controls.get("top_range_weights", _DEFAULT_TOP_RANGE_WEIGHTS))
+        source_base_weights = dict(seed_controls.get("source_base_weights", _DEFAULT_SOURCE_BASE_WEIGHTS))
+        match_rate_min_threshold = float(seed_controls.get("match_rate_min_threshold", 0.0))
 
     selected_rows, scope_filter_stats = apply_input_scope_filters(
         top_rows,
@@ -575,7 +576,7 @@ def main() -> None:
         artist_names = event["artist_names"]
         artist_primary = first_artist(artist_names)
         event_duration = parse_int(event["duration_ms"])
-        weight = compute_weight(event)
+        weight = compute_weight(event, top_range_weights, source_base_weights)
 
         trace = dict(event)
         trace["match_status"] = ""
@@ -669,7 +670,12 @@ def main() -> None:
         if infl["influence_enabled"] and infl["influence_track_ids"]:
             infl_weight = float(infl["influence_preference_weight"])
             existing_ds001_ids = {str(e["ds001_id"]) for e in matched_events}
+            seen_influence_track_ids: set[str] = set()
             for track_id in infl["influence_track_ids"]:
+                track_id = str(track_id).strip()
+                if not track_id or track_id in seen_influence_track_ids:
+                    continue
+                seen_influence_track_ids.add(track_id)
                 candidate = by_ds001_id.get(track_id)
                 if candidate is None:
                     influence_skipped_ids.append(track_id)
@@ -768,53 +774,44 @@ def main() -> None:
     summary_path = output_dir / "bl003_ds001_spotify_summary.json"
     source_scope_manifest_path = output_dir / "bl003_source_scope_manifest.json"
 
-    with matched_jsonl_path.open("w", encoding="utf-8") as handle:
+    with open_text_write(matched_jsonl_path) as handle:
         for row in matched_events:
             handle.write(json.dumps(row, ensure_ascii=True) + "\n")
 
-    with seed_table_path.open("w", encoding="utf-8", newline="") as handle:
-        writer = csv.DictWriter(handle, fieldnames=SEED_TABLE_FIELDNAMES)
-        writer.writeheader()
+    seed_rows_output: list[dict[str, object | str]] = []
+    for ds001_id in sorted(aggregated.keys()):
+        agg = aggregated[ds001_id]
+        seed_rows_output.append(
+            {
+                "ds001_id": agg["ds001_id"],
+                "spotify_id": agg["spotify_id"],
+                "song": agg["song"],
+                "artist": agg["artist"],
+                "release": agg["release"],
+                "duration_ms": agg["duration_ms"],
+                "popularity": agg["popularity"],
+                "danceability": agg["danceability"],
+                "energy": agg["energy"],
+                "key": agg["key"],
+                "mode": agg["mode"],
+                "valence": agg["valence"],
+                "tempo": agg["tempo"],
+                "genres": agg["genres"],
+                "tags": agg["tags"],
+                "lang": agg["lang"],
+                "matched_event_count": agg["matched_event_count"],
+                "interaction_count_sum": agg["interaction_count_sum"],
+                "preference_weight_sum": f"{float(agg['preference_weight_sum']):.6f}",
+                "preference_weight_max": f"{float(agg['preference_weight_max']):.6f}",
+                "source_types": "|".join(sorted(agg["source_types"])),
+                "interaction_types": "|".join(sorted(agg["interaction_types"])) if agg["interaction_types"] else "history",
+                "spotify_track_ids": "|".join(sorted(agg["spotify_track_ids"])),
+            }
+        )
 
-        for ds001_id in sorted(aggregated.keys()):
-            agg = aggregated[ds001_id]
-            writer.writerow(
-                {
-                    "ds001_id": agg["ds001_id"],
-                    "spotify_id": agg["spotify_id"],
-                    "song": agg["song"],
-                    "artist": agg["artist"],
-                    "release": agg["release"],
-                    "duration_ms": agg["duration_ms"],
-                    "popularity": agg["popularity"],
-                    "danceability": agg["danceability"],
-                    "energy": agg["energy"],
-                    "key": agg["key"],
-                    "mode": agg["mode"],
-                    "valence": agg["valence"],
-                    "tempo": agg["tempo"],
-                    "genres": agg["genres"],
-                    "tags": agg["tags"],
-                    "lang": agg["lang"],
-                    "matched_event_count": agg["matched_event_count"],
-                    "interaction_count_sum": agg["interaction_count_sum"],
-                    "preference_weight_sum": f"{float(agg['preference_weight_sum']):.6f}",
-                    "preference_weight_max": f"{float(agg['preference_weight_max']):.6f}",
-                    "source_types": "|".join(sorted(agg["source_types"])),
-                    "interaction_types": "|".join(sorted(agg["interaction_types"])) if agg["interaction_types"] else "history",
-                    "spotify_track_ids": "|".join(sorted(agg["spotify_track_ids"])),
-                }
-            )
-
-    with trace_path.open("w", encoding="utf-8", newline="") as handle:
-        writer = csv.DictWriter(handle, fieldnames=TRACE_FIELDNAMES)
-        writer.writeheader()
-        writer.writerows(trace_rows)
-
-    with unmatched_path.open("w", encoding="utf-8", newline="") as handle:
-        writer = csv.DictWriter(handle, fieldnames=TRACE_FIELDNAMES)
-        writer.writeheader()
-        writer.writerows(unmatched_rows)
+    write_csv_rows(seed_table_path, SEED_TABLE_FIELDNAMES, seed_rows_output)
+    write_csv_rows(trace_path, TRACE_FIELDNAMES, trace_rows)
+    write_csv_rows(unmatched_path, TRACE_FIELDNAMES, unmatched_rows)
 
     source_scope_manifest = {
         "generated_at_utc": utc_now(),
@@ -825,18 +822,10 @@ def main() -> None:
         "rows_available": scope_filter_stats["rows_available"],
         "rows_selected": scope_filter_stats["rows_selected"],
     }
-    source_scope_manifest_path.write_text(
-        json.dumps(source_scope_manifest, indent=2, ensure_ascii=True),
-        encoding="utf-8",
-    )
+    with open_text_write(source_scope_manifest_path) as handle:
+        json.dump(source_scope_manifest, handle, indent=2, ensure_ascii=True)
 
     # --- Match-rate validation (CRI-001 mitigation) ---
-    match_rate_min_threshold = 0.0  # Default: no threshold (validation disabled)
-    if runtime_scope["config_source"] == "run_config" and runtime_scope.get("run_config_path"):
-        _rc_utils = load_run_config_utils_module()
-        seed_controls = _rc_utils.resolve_bl003_seed_controls(runtime_scope["run_config_path"])
-        match_rate_min_threshold = float(seed_controls.get("match_rate_min_threshold", 0.0))
-
     if summary_counts["input_event_rows"] > 0 and match_rate_min_threshold > 0.0:
         match_rate = summary_counts["matched_by_spotify_id"] + summary_counts["matched_by_metadata"]
         match_rate /= summary_counts["input_event_rows"]
@@ -947,7 +936,8 @@ def main() -> None:
         },
     }
 
-    summary_path.write_text(json.dumps(summary, indent=2, ensure_ascii=True), encoding="utf-8")
+    with open_text_write(summary_path) as handle:
+        json.dump(summary, handle, indent=2, ensure_ascii=True)
 
     print(f"input_event_rows={summary_counts['input_event_rows']}")
     print(f"matched_by_spotify_id={summary_counts['matched_by_spotify_id']}")

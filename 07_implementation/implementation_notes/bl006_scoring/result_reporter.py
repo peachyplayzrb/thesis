@@ -6,6 +6,7 @@ output JSON for downstream consumption.
 """
 
 from typing import Any
+from bl000_shared_utils.constants import DEFAULT_PERFECT_SCORE_THRESHOLD, DEFAULT_ABOVE_THRESHOLD_SCORE
 
 
 def initialize_scoring_report() -> dict[str, object]:
@@ -35,6 +36,8 @@ def initialize_scoring_report() -> dict[str, object]:
 def add_result_to_report(
     report: dict[str, object],
     scored_candidate: dict[str, Any],
+    perfect_score_threshold: float = DEFAULT_PERFECT_SCORE_THRESHOLD,
+    above_threshold_score: float = DEFAULT_ABOVE_THRESHOLD_SCORE,
 ) -> None:
     """
     Add a single scored candidate result to the report.
@@ -53,16 +56,18 @@ def add_result_to_report(
                     ...
                 }
             }
+        perfect_score_threshold: Score threshold for "perfect" category (default 0.99)
+        above_threshold_score: Score threshold for "above threshold" category (default 0.50)
     """
     final_score = scored_candidate.get("final_score", 0.0)
     
     # Update counters
     report["total_candidates_scored"] = int(report["total_candidates_scored"]) + 1
     
-    if final_score >= 0.99:
+    if final_score >= perfect_score_threshold:
         report["candidates_with_perfect_scores"] = int(report["candidates_with_perfect_scores"]) + 1
     
-    if final_score >= 0.50:
+    if final_score >= above_threshold_score:
         report["candidates_above_threshold"] = int(report["candidates_above_threshold"]) + 1
     
     # Add to distribution
@@ -157,12 +162,16 @@ def candidates_to_json(
 
 def generate_summary_report(
     report: dict[str, object],
+    perfect_score_threshold: float = DEFAULT_PERFECT_SCORE_THRESHOLD,
+    above_threshold_score: float = DEFAULT_ABOVE_THRESHOLD_SCORE,
 ) -> str:
     """
     Generate a human-readable text summary of the report.
     
     Args:
         report: Finalized report dict
+        perfect_score_threshold: Score threshold for "perfect" category (default 0.99)
+        above_threshold_score: Score threshold for "above threshold" category (default 0.50)
     
     Returns:
         Formatted text summary
@@ -176,8 +185,8 @@ def generate_summary_report(
     lines = [
         "=== BL-006 Scoring Report ===",
         f"Total candidates scored: {total}",
-        f"Perfect scores (≥0.99): {perfect}",
-        f"Above threshold (≥0.50): {above_thresh}",
+        f"Perfect scores (≥{perfect_score_threshold:.2f}): {perfect}",
+        f"Above threshold (≥{above_threshold_score:.2f}): {above_thresh}",
         "",
         "Score Distribution:",
         f"  Min: {stats.get('min', 0.0):.3f}",

@@ -1,5 +1,5 @@
 {
-  "run_id": "BL011-NO_INFLUENCE_TRACKS-BL007-20260325-231140-609848",
+  "run_id": "BL011-NO_INFLUENCE_TRACKS-BL007-20260326-055934-111518",
   "task": "BL-007",
   "scenario_id": "no_influence_tracks",
   "config": {
@@ -14,71 +14,71 @@
       "playlist_position": 1,
       "track_id": "CaR8UnowNJUR5Dib",
       "lead_genre": "pop",
-      "final_score": 0.730538,
+      "final_score": 0.753687,
       "score_rank": 1
     },
     {
       "playlist_position": 2,
-      "track_id": "yEz9rqTTulkiDDm7",
-      "lead_genre": "classic rock",
-      "final_score": 0.721925,
+      "track_id": "hU7yckCKoiTkHjwi",
+      "lead_genre": "pop",
+      "final_score": 0.752482,
       "score_rank": 2
     },
     {
       "playlist_position": 3,
-      "track_id": "hU7yckCKoiTkHjwi",
-      "lead_genre": "pop",
-      "final_score": 0.707407,
+      "track_id": "yEz9rqTTulkiDDm7",
+      "lead_genre": "classic rock",
+      "final_score": 0.749034,
       "score_rank": 3
     },
     {
       "playlist_position": 4,
-      "track_id": "C9oA7Glm1TItxpQA",
+      "track_id": "rqeIltq5ixzHA5EG",
       "lead_genre": "pop",
-      "final_score": 0.702624,
+      "final_score": 0.731205,
       "score_rank": 4
     },
     {
       "playlist_position": 5,
-      "track_id": "CZOYJJKuyuUosACw",
-      "lead_genre": "classic rock",
-      "final_score": 0.67218,
-      "score_rank": 9
+      "track_id": "M3ApGs7RGZwXHqs4",
+      "lead_genre": "pop",
+      "final_score": 0.728229,
+      "score_rank": 5
     },
     {
       "playlist_position": 6,
       "track_id": "o27WwIo8F6fMirMs",
       "lead_genre": "classic rock",
-      "final_score": 0.669722,
-      "score_rank": 10
+      "final_score": 0.727687,
+      "score_rank": 6
     },
     {
       "playlist_position": 7,
-      "track_id": "phL12CBijBqwQ9qB",
-      "lead_genre": "pop",
-      "final_score": 0.666952,
+      "track_id": "dv1r49qWV1haZtYv",
+      "lead_genre": "classic rock",
+      "final_score": 0.702038,
       "score_rank": 11
     },
     {
       "playlist_position": 8,
-      "track_id": "8WnHV12FDAeaQwkd",
-      "lead_genre": "classic rock",
-      "final_score": 0.650675,
-      "score_rank": 15
+      "track_id": "rS5ARhXgTnEK4gwS",
+      "lead_genre": "rock",
+      "final_score": 0.682201,
+      "score_rank": 23
     },
     {
       "playlist_position": 9,
-      "track_id": "qob8Z8qGt0UR4JAs",
+      "track_id": "V1eO74AwUM3SBovw",
       "lead_genre": "rock",
-      "final_score": 0.608079,
-      "score_rank": 72
+      "final_score": 0.676156,
+      "score_rank": 27
     },
     {
       "playlist_position": 10,
-      "track_id": "zC9ANQtT16TAaER0",
-      "lead_genre": "rock",
-      "final_score": 0.593703,
-      "score_rank": 101
+      "track_id": "Xh9f0R2Q7wJMaxhy",
+      "lead_genre": "classic rock",
+      "final_score": 0.672601,
+      "score_rank": 31
     }
   ]
 }

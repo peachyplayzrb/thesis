@@ -10,6 +10,7 @@ import sys
 import time
 from datetime import datetime, timezone
 from pathlib import Path
+from typing import Any
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
@@ -301,6 +302,30 @@ def run_stage(
     }
 
 
+def build_missing_script_result(
+    *,
+    stage_id: str,
+    script_relpath: str,
+    python_executable: str,
+    run_config_path: Path | None,
+    run_intent_path: Path | None,
+    run_effective_config_path: Path | None,
+) -> dict[str, object]:
+    return {
+        "stage_id": stage_id,
+        "script_path": script_relpath,
+        "command": [python_executable, script_relpath],
+        "run_config_path": str(run_config_path) if run_config_path else None,
+        "run_intent_path": str(run_intent_path) if run_intent_path else None,
+        "run_effective_config_path": str(run_effective_config_path) if run_effective_config_path else None,
+        "return_code": 127,
+        "status": "fail",
+        "elapsed_seconds": 0.0,
+        "stdout": "",
+        "stderr": f"Missing stage script: {script_relpath}",
+    }
+
+
 def run_bl003_seed_refresh(
     python_executable: str,
     root: Path,
@@ -395,6 +420,97 @@ def print_run_footer(*, overall_status: str, run_id: str, summary_path: Path, la
     print(f"latest={latest_path}")
 
 
+def finalize_run(
+    *,
+    output_dir: Path,
+    summary_prefix: str,
+    run_id: str,
+    generated_at_utc: str,
+    continue_on_error: bool,
+    python_executable: str,
+    run_config_path: Path | None,
+    run_config_artifacts: dict[str, object],
+    refresh_seed: bool,
+    stage_order: list[str],
+    stage_results: list[dict[str, object]],
+    pipeline_started: float,
+    root: Path,
+) -> tuple[dict[str, Any], Path, Path]:
+    elapsed_pipeline = round(time.time() - pipeline_started, 3)
+    failed = [item for item in stage_results if item["status"] == "fail"]
+    expected_stage_count = len(stage_order) + (1 if refresh_seed else 0)
+    overall_status = "pass" if not failed and len(stage_results) == expected_stage_count else "fail"
+
+    stable_hashes, missing_stable = compute_stable_artifact_hashes(root)
+    summary = build_summary(
+        run_id=run_id,
+        generated_at_utc=generated_at_utc,
+        continue_on_error=continue_on_error,
+        python_executable=python_executable,
+        run_config_path=run_config_path,
+        run_config_artifacts=run_config_artifacts,
+        refresh_seed=refresh_seed,
+        stage_order=stage_order,
+        stage_results=stage_results,
+        elapsed_seconds=elapsed_pipeline,
+        overall_status=overall_status,
+        failed_stage_count=len(failed),
+        stable_hashes=stable_hashes,
+        missing_stable=missing_stable,
+    )
+
+    summary_path, latest_path = write_summary_artifacts(
+        output_dir=output_dir,
+        summary_prefix=summary_prefix,
+        run_id=run_id,
+        summary=summary,
+    )
+    return summary, summary_path, latest_path
+
+
+def emit_and_exit_failure(
+    *,
+    output_dir: Path,
+    summary_prefix: str,
+    run_id: str,
+    generated_at_utc: str,
+    continue_on_error: bool,
+    python_executable: str,
+    run_config_path: Path | None,
+    run_config_artifacts: dict[str, object],
+    refresh_seed: bool,
+    stage_order: list[str],
+    stage_results: list[dict[str, object]],
+    pipeline_started: float,
+    root: Path,
+) -> None:
+    summary, summary_path, latest_path = finalize_run(
+        output_dir=output_dir,
+        summary_prefix=summary_prefix,
+        run_id=run_id,
+        generated_at_utc=generated_at_utc,
+        continue_on_error=continue_on_error,
+        python_executable=python_executable,
+        run_config_path=run_config_path,
+        run_config_artifacts=run_config_artifacts,
+        refresh_seed=refresh_seed,
+        stage_order=stage_order,
+        stage_results=stage_results,
+        pipeline_started=pipeline_started,
+        root=root,
+    )
+    print_run_footer(
+        overall_status=str(summary["overall_status"]),
+        run_id=run_id,
+        summary_path=summary_path,
+        latest_path=latest_path,
+    )
+    failed = [item for item in stage_results if item["status"] == "fail"]
+    for item in failed:
+        print(f"failed_stage={item['stage_id']} return_code={item['return_code']}")
+    raise SystemExit(1)
+
+
 def main() -> None:
     args = parse_args()
     root = repo_root()
@@ -446,9 +562,9 @@ def main() -> None:
                 ),
             }
             stage_results.append(guard_result)
-            elapsed_pipeline = round(time.time() - pipeline_started, 3)
-            stable_hashes, missing_stable = compute_stable_artifact_hashes(root)
-            summary = build_summary(
+            emit_and_exit_failure(
+                output_dir=output_dir,
+                summary_prefix=args.summary_prefix,
                 run_id=run_id,
                 generated_at_utc=generated_at_utc,
                 continue_on_error=bool(args.continue_on_error),
@@ -458,26 +574,9 @@ def main() -> None:
                 refresh_seed=bool(args.refresh_seed),
                 stage_order=stage_order,
                 stage_results=stage_results,
-                elapsed_seconds=elapsed_pipeline,
-                overall_status="fail",
-                failed_stage_count=1,
-                stable_hashes=stable_hashes,
-                missing_stable=missing_stable,
+                pipeline_started=pipeline_started,
+                root=root,
             )
-            summary_path, latest_path = write_summary_artifacts(
-                output_dir=output_dir,
-                summary_prefix=args.summary_prefix,
-                run_id=run_id,
-                summary=summary,
-            )
-            print_run_footer(
-                overall_status="fail",
-                run_id=run_id,
-                summary_path=summary_path,
-                latest_path=latest_path,
-            )
-            print("failed_stage=BL-003-FRESHNESS-GUARD return_code=2")
-            raise SystemExit(1)
 
     if args.refresh_seed:
         seed_result = run_bl003_seed_refresh(
@@ -489,9 +588,9 @@ def main() -> None:
         )
         stage_results.append(seed_result)
         if seed_result["status"] == "fail" and not args.continue_on_error:
-            elapsed_pipeline = round(time.time() - pipeline_started, 3)
-            stable_hashes, missing_stable = compute_stable_artifact_hashes(root)
-            summary = build_summary(
+            emit_and_exit_failure(
+                output_dir=output_dir,
+                summary_prefix=args.summary_prefix,
                 run_id=run_id,
                 generated_at_utc=generated_at_utc,
                 continue_on_error=bool(args.continue_on_error),
@@ -501,42 +600,23 @@ def main() -> None:
                 refresh_seed=bool(args.refresh_seed),
                 stage_order=stage_order,
                 stage_results=stage_results,
-                elapsed_seconds=elapsed_pipeline,
-                overall_status="fail",
-                failed_stage_count=1,
-                stable_hashes=stable_hashes,
-                missing_stable=missing_stable,
+                pipeline_started=pipeline_started,
+                root=root,
             )
-            summary_path, latest_path = write_summary_artifacts(
-                output_dir=output_dir,
-                summary_prefix=args.summary_prefix,
-                run_id=run_id,
-                summary=summary,
-            )
-            print_run_footer(
-                overall_status="fail",
-                run_id=run_id,
-                summary_path=summary_path,
-                latest_path=latest_path,
-            )
-            print(f"failed_stage={seed_result['stage_id']} return_code={seed_result['return_code']}")
-            raise SystemExit(1)
 
     for stage_id in stage_order:
         script_relpath = STAGES[stage_id]
         script_path = root / script_relpath
         if not script_path.exists():
             stage_results.append(
-                {
-                    "stage_id": stage_id,
-                    "script_path": script_relpath,
-                    "command": [args.python, script_relpath],
-                    "return_code": 127,
-                    "status": "fail",
-                    "elapsed_seconds": 0.0,
-                    "stdout": "",
-                    "stderr": f"Missing stage script: {script_relpath}",
-                }
+                build_missing_script_result(
+                    stage_id=stage_id,
+                    script_relpath=script_relpath,
+                    python_executable=args.python,
+                    run_config_path=run_config_path,
+                    run_intent_path=run_intent_path,
+                    run_effective_config_path=run_effective_config_path,
+                )
             )
             if not args.continue_on_error:
                 break
@@ -556,14 +636,9 @@ def main() -> None:
         if result["status"] == "fail" and not args.continue_on_error:
             break
 
-    elapsed_pipeline = round(time.time() - pipeline_started, 3)
-    failed = [item for item in stage_results if item["status"] == "fail"]
-    expected_stage_count = len(stage_order) + (1 if args.refresh_seed else 0)
-    overall_status = "pass" if not failed and len(stage_results) == expected_stage_count else "fail"
-
-    stable_hashes, missing_stable = compute_stable_artifact_hashes(root)
-
-    summary = build_summary(
+    summary, summary_path, latest_path = finalize_run(
+        output_dir=output_dir,
+        summary_prefix=args.summary_prefix,
         run_id=run_id,
         generated_at_utc=generated_at_utc,
         continue_on_error=bool(args.continue_on_error),
@@ -573,27 +648,18 @@ def main() -> None:
         refresh_seed=bool(args.refresh_seed),
         stage_order=stage_order,
         stage_results=stage_results,
-        elapsed_seconds=elapsed_pipeline,
-        overall_status=overall_status,
-        failed_stage_count=len(failed),
-        stable_hashes=stable_hashes,
-        missing_stable=missing_stable,
-    )
-
-    summary_path, latest_path = write_summary_artifacts(
-        output_dir=output_dir,
-        summary_prefix=args.summary_prefix,
-        run_id=run_id,
-        summary=summary,
+        pipeline_started=pipeline_started,
+        root=root,
     )
 
     print_run_footer(
-        overall_status=overall_status,
+        overall_status=str(summary["overall_status"]),
         run_id=run_id,
         summary_path=summary_path,
         latest_path=latest_path,
     )
 
+    failed = [item for item in stage_results if item["status"] == "fail"]
     if failed:
         for item in failed:
             print(f"failed_stage={item['stage_id']} return_code={item['return_code']}")

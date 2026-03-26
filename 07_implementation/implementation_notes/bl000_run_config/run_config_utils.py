@@ -5,7 +5,21 @@ from copy import deepcopy
 from datetime import datetime, timezone
 import hashlib
 from pathlib import Path
+import sys
 from typing import Any
+
+from bl000_shared_utils.constants import (
+    DEFAULT_PROFILE_TOP_GENRE_LIMIT,
+    DEFAULT_PROFILE_TOP_LEAD_GENRE_LIMIT,
+    DEFAULT_PROFILE_TOP_TAG_LIMIT,
+    DEFAULT_SCORING_COMPONENT_WEIGHTS,
+)
+
+try:
+    from bl000_shared_utils.io_utils import open_text_write
+except ImportError:
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+    from bl000_shared_utils.io_utils import open_text_write
 
 RUN_CONFIG_SCHEMA_VERSION = "run-config-v1"
 RUN_INTENT_ARTIFACT_SCHEMA_VERSION = "run-intent-v1"
@@ -44,11 +58,28 @@ DEFAULT_RUN_CONFIG: dict[str, Any] = {
     },
     "seed_controls": {
         "match_rate_min_threshold": 0.0,
+        "top_range_weights": {
+            "short_term": 0.50,
+            "medium_term": 0.30,
+            "long_term": 0.20,
+        },
+        "source_base_weights": {
+            "top_tracks": 1.00,
+            "saved_tracks": 0.60,
+            "playlist_items": 0.40,
+            "recently_played": 0.50,
+        },
+    },
+    "ingestion_controls": {
+        "cache_ttl_seconds": 86400,
+        "throttle_sleep_seconds": 0.12,
+        "max_retries": 6,
+        "base_backoff_delay_seconds": 1.0,
     },
     "profile_controls": {
-        "top_tag_limit": 10,
-        "top_genre_limit": 10,
-        "top_lead_genre_limit": 10,
+        "top_tag_limit": DEFAULT_PROFILE_TOP_TAG_LIMIT,
+        "top_genre_limit": DEFAULT_PROFILE_TOP_GENRE_LIMIT,
+        "top_lead_genre_limit": DEFAULT_PROFILE_TOP_LEAD_GENRE_LIMIT,
     },
     "retrieval_controls": {
         "profile_top_tag_limit": 10,
@@ -65,15 +96,7 @@ DEFAULT_RUN_CONFIG: dict[str, Any] = {
         },
     },
     "scoring_controls": {
-        "component_weights": {
-            "tempo": 0.20,
-            "duration_ms": 0.13,
-            "key": 0.13,
-            "mode": 0.09,
-            "lead_genre": 0.17,
-            "genre_overlap": 0.12,
-            "tag_overlap": 0.16,
-        },
+        "component_weights": dict(DEFAULT_SCORING_COMPONENT_WEIGHTS),
         "numeric_thresholds": {
             "tempo": 20.0,
             "key": 2.0,
@@ -96,7 +119,21 @@ DEFAULT_RUN_CONFIG: dict[str, Any] = {
         "diagnostic_sample_limit": 5,
         "bootstrap_mode": True,
     },
+    "reporting_controls": {
+        "score_thresholds": {
+            "perfect_score": 0.99,
+            "above_threshold": 0.50,
+        },
+    },
+    "controllability_controls": {
+        "weight_override_value_if_component_present": 0.20,
+        "weight_override_increment_fallback": 0.08,
+        "weight_override_cap_fallback": 0.35,
+        "stricter_threshold_scale": 0.75,
+        "looser_threshold_scale": 1.25,
+    },
 }
+
 
 
 class RunConfigError(RuntimeError):
@@ -167,6 +204,31 @@ def _coerce_non_negative_float(value: Any, default: float) -> float:
     except (TypeError, ValueError):
         return default
     return parsed if parsed >= 0 else default
+
+
+def _coerce_min_positive_float(value: Any, default: float, *, min_value: float = 0.001) -> float:
+    """Coerce to float and clamp to a minimum positive value, falling back on parse errors."""
+    try:
+        parsed = float(value)
+    except (TypeError, ValueError):
+        parsed = default
+    return max(min_value, parsed)
+
+
+def _normalize_allowed_tokens(raw_values: Any, allowed: set[str], defaults: list[str]) -> list[str]:
+    """Normalize list values to allowed tokens with stable-order de-duplication."""
+    if not isinstance(raw_values, list):
+        return list(defaults)
+
+    normalized: list[str] = []
+    seen: set[str] = set()
+    for item in raw_values:
+        token = str(item).strip()
+        if token not in allowed or token in seen:
+            continue
+        seen.add(token)
+        normalized.append(token)
+    return normalized or list(defaults)
 
 def _validate_positive_thresholds(thresholds: dict[str, Any] | None, context: str) -> dict[str, float]:
     """Validate that all numeric thresholds in the dict are positive (> 0).
@@ -418,17 +480,11 @@ def resolve_effective_run_config(run_config_path: str | Path | None) -> tuple[di
         input_scope.get("include_top_tracks"),
         bool(input_defaults["include_top_tracks"]),
     )
-    raw_time_ranges = input_scope.get("top_time_ranges")
-    if isinstance(raw_time_ranges, list):
-        allowed = {"short_term", "medium_term", "long_term"}
-        normalized = [
-            str(item).strip()
-            for item in raw_time_ranges
-            if str(item).strip() in allowed
-        ]
-        input_scope["top_time_ranges"] = normalized or list(input_defaults["top_time_ranges"])
-    else:
-        input_scope["top_time_ranges"] = list(input_defaults["top_time_ranges"])
+    input_scope["top_time_ranges"] = _normalize_allowed_tokens(
+        input_scope.get("top_time_ranges"),
+        {"short_term", "medium_term", "long_term"},
+        list(input_defaults["top_time_ranges"]),
+    )
     input_scope["include_saved_tracks"] = _coerce_bool(
         input_scope.get("include_saved_tracks"),
         bool(input_defaults["include_saved_tracks"]),
@@ -478,13 +534,11 @@ def resolve_effective_run_config(run_config_path: str | Path | None) -> tuple[di
     if not isinstance(interaction_scope, dict):
         interaction_scope = {}
         effective["interaction_scope"] = interaction_scope
-    allowed_types = {"history", "influence"}
-    raw_types = interaction_scope.get("include_interaction_types")
-    if isinstance(raw_types, list):
-        normalized = [str(t).strip() for t in raw_types if str(t).strip() in allowed_types]
-        interaction_scope["include_interaction_types"] = normalized if normalized else list(DEFAULT_RUN_CONFIG["interaction_scope"]["include_interaction_types"])
-    else:
-        interaction_scope["include_interaction_types"] = list(DEFAULT_RUN_CONFIG["interaction_scope"]["include_interaction_types"])
+    interaction_scope["include_interaction_types"] = _normalize_allowed_tokens(
+        interaction_scope.get("include_interaction_types"),
+        {"history", "influence"},
+        list(DEFAULT_RUN_CONFIG["interaction_scope"]["include_interaction_types"]),
+    )
 
     influence_tracks = effective.setdefault("influence_tracks", {})
     if not isinstance(influence_tracks, dict):
@@ -493,7 +547,18 @@ def resolve_effective_run_config(run_config_path: str | Path | None) -> tuple[di
     influence_defaults = DEFAULT_RUN_CONFIG["influence_tracks"]
     influence_tracks["enabled"] = _coerce_bool(influence_tracks.get("enabled"), bool(influence_defaults["enabled"]))
     raw_ids = influence_tracks.get("track_ids")
-    influence_tracks["track_ids"] = [str(t).strip() for t in raw_ids if str(t).strip()] if isinstance(raw_ids, list) else []
+    if isinstance(raw_ids, list):
+        track_ids: list[str] = []
+        seen_track_ids: set[str] = set()
+        for item in raw_ids:
+            track_id = str(item).strip()
+            if not track_id or track_id in seen_track_ids:
+                continue
+            seen_track_ids.add(track_id)
+            track_ids.append(track_id)
+        influence_tracks["track_ids"] = track_ids
+    else:
+        influence_tracks["track_ids"] = []
     raw_pw = influence_tracks.get("preference_weight")
     try:
         pw = float(raw_pw) if raw_pw is not None else float(influence_defaults["preference_weight"])
@@ -509,6 +574,73 @@ def resolve_effective_run_config(run_config_path: str | Path | None) -> tuple[di
     seed_controls["match_rate_min_threshold"] = _coerce_fraction_zero_to_one(
         seed_controls.get("match_rate_min_threshold"),
         float(seed_defaults["match_rate_min_threshold"]),
+    )
+    
+    # Resolve weight dicts for seed controls (env override support via direct access)
+    if "top_range_weights" not in seed_controls or not isinstance(seed_controls.get("top_range_weights"), dict):
+        seed_controls["top_range_weights"] = seed_defaults["top_range_weights"].copy()
+    if "source_base_weights" not in seed_controls or not isinstance(seed_controls.get("source_base_weights"), dict):
+        seed_controls["source_base_weights"] = seed_defaults["source_base_weights"].copy()
+
+    ingestion_controls = effective.setdefault("ingestion_controls", {})
+    if not isinstance(ingestion_controls, dict):
+        raise RunConfigError("run_config.ingestion_controls must be an object")
+    ingestion_defaults = DEFAULT_RUN_CONFIG["ingestion_controls"]
+    ingestion_controls["cache_ttl_seconds"] = _coerce_positive_int(
+        ingestion_controls.get("cache_ttl_seconds"),
+        ingestion_defaults["cache_ttl_seconds"],
+    )
+    ingestion_controls["throttle_sleep_seconds"] = _coerce_min_positive_float(
+        ingestion_controls.get("throttle_sleep_seconds"),
+        float(ingestion_defaults["throttle_sleep_seconds"]),
+    )
+    ingestion_controls["max_retries"] = _coerce_positive_int(
+        ingestion_controls.get("max_retries"),
+        ingestion_defaults["max_retries"],
+    )
+    ingestion_controls["base_backoff_delay_seconds"] = _coerce_min_positive_float(
+        ingestion_controls.get("base_backoff_delay_seconds"),
+        float(ingestion_defaults["base_backoff_delay_seconds"]),
+    )
+
+    controllability_controls = effective.setdefault("controllability_controls", {})
+    if not isinstance(controllability_controls, dict):
+        raise RunConfigError("run_config.controllability_controls must be an object")
+    controllability_defaults = DEFAULT_RUN_CONFIG["controllability_controls"]
+    controllability_controls["weight_override_value_if_component_present"] = _validate_positive_float(
+        controllability_controls.get(
+            "weight_override_value_if_component_present",
+            controllability_defaults["weight_override_value_if_component_present"],
+        ),
+        "controllability_controls.weight_override_value_if_component_present",
+    )
+    controllability_controls["weight_override_increment_fallback"] = _validate_positive_float(
+        controllability_controls.get(
+            "weight_override_increment_fallback",
+            controllability_defaults["weight_override_increment_fallback"],
+        ),
+        "controllability_controls.weight_override_increment_fallback",
+    )
+    controllability_controls["weight_override_cap_fallback"] = _validate_positive_float(
+        controllability_controls.get(
+            "weight_override_cap_fallback",
+            controllability_defaults["weight_override_cap_fallback"],
+        ),
+        "controllability_controls.weight_override_cap_fallback",
+    )
+    controllability_controls["stricter_threshold_scale"] = _validate_positive_float(
+        controllability_controls.get(
+            "stricter_threshold_scale",
+            controllability_defaults["stricter_threshold_scale"],
+        ),
+        "controllability_controls.stricter_threshold_scale",
+    )
+    controllability_controls["looser_threshold_scale"] = _validate_positive_float(
+        controllability_controls.get(
+            "looser_threshold_scale",
+            controllability_defaults["looser_threshold_scale"],
+        ),
+        "controllability_controls.looser_threshold_scale",
     )
 
     retrieval_controls = effective.setdefault("retrieval_controls", {})
@@ -635,6 +767,35 @@ def resolve_bl003_seed_controls(run_config_path: str | Path | None) -> dict[str,
         "config_path": str(resolved_path) if resolved_path else None,
         "schema_version": effective["schema_version"],
         "match_rate_min_threshold": float(seed["match_rate_min_threshold"]),
+        "top_range_weights": dict(seed["top_range_weights"]),
+        "source_base_weights": dict(seed["source_base_weights"]),
+    }
+
+
+def resolve_ingestion_controls(run_config_path: str | Path | None) -> dict[str, Any]:
+    effective, resolved_path = resolve_effective_run_config(run_config_path)
+    ingestion = effective["ingestion_controls"]
+    return {
+        "config_path": str(resolved_path) if resolved_path else None,
+        "schema_version": effective["schema_version"],
+        "cache_ttl_seconds": int(ingestion["cache_ttl_seconds"]),
+        "throttle_sleep_seconds": float(ingestion["throttle_sleep_seconds"]),
+        "max_retries": int(ingestion["max_retries"]),
+        "base_backoff_delay_seconds": float(ingestion["base_backoff_delay_seconds"]),
+    }
+
+
+def resolve_bl011_controls(run_config_path: str | Path | None) -> dict[str, Any]:
+    effective, resolved_path = resolve_effective_run_config(run_config_path)
+    controls = effective["controllability_controls"]
+    return {
+        "config_path": str(resolved_path) if resolved_path else None,
+        "schema_version": effective["schema_version"],
+        "weight_override_value_if_component_present": float(controls["weight_override_value_if_component_present"]),
+        "weight_override_increment_fallback": float(controls["weight_override_increment_fallback"]),
+        "weight_override_cap_fallback": float(controls["weight_override_cap_fallback"]),
+        "stricter_threshold_scale": float(controls["stricter_threshold_scale"]),
+        "looser_threshold_scale": float(controls["looser_threshold_scale"]),
     }
 
 
@@ -832,10 +993,9 @@ def write_run_config_artifact_pair(
         run_config_path=run_config_path,
         generated_at_utc=generated_at_utc,
     )
-    intent_path.write_text(
-        json.dumps(intent_payload, indent=2, ensure_ascii=True, sort_keys=True),
-        encoding="utf-8",
-    )
+    intent_json = json.dumps(intent_payload, indent=2, ensure_ascii=True, sort_keys=True)
+    with open_text_write(intent_path) as handle:
+        handle.write(intent_json)
 
     effective_payload = build_run_effective_payload(
         run_id=run_id,
@@ -843,15 +1003,16 @@ def write_run_config_artifact_pair(
         run_intent_path=intent_path,
         generated_at_utc=generated_at_utc,
     )
-    effective_path.write_text(
-        json.dumps(effective_payload, indent=2, ensure_ascii=True, sort_keys=True),
-        encoding="utf-8",
-    )
+    effective_json = json.dumps(effective_payload, indent=2, ensure_ascii=True, sort_keys=True)
+    with open_text_write(effective_path) as handle:
+        handle.write(effective_json)
 
     latest_intent_path = resolved_output_dir / "run_intent_latest.json"
     latest_effective_path = resolved_output_dir / "run_effective_config_latest.json"
-    latest_intent_path.write_text(intent_path.read_text(encoding="utf-8"), encoding="utf-8")
-    latest_effective_path.write_text(effective_path.read_text(encoding="utf-8"), encoding="utf-8")
+    with open_text_write(latest_intent_path) as handle:
+        handle.write(intent_json)
+    with open_text_write(latest_effective_path) as handle:
+        handle.write(effective_json)
 
     return {
         "run_id": run_id,

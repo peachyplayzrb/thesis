@@ -1,0 +1,133 @@
+{
+  "artifact_schema_version": "run-effective-config-v1",
+  "artifact_type": "run_effective_config",
+  "effective_config": {
+    "assembly_controls": {
+      "max_consecutive": 2,
+      "max_per_genre": 4,
+      "min_score_threshold": 0.35,
+      "target_size": 10
+    },
+    "control_mode": {
+      "allow_threshold_decoupling": false,
+      "allow_weight_auto_normalization": false,
+      "validation_profile": "strict"
+    },
+    "controllability_controls": {
+      "looser_threshold_scale": 1.25,
+      "stricter_threshold_scale": 0.75,
+      "weight_override_cap_fallback": 0.35,
+      "weight_override_increment_fallback": 0.08,
+      "weight_override_value_if_component_present": 0.2
+    },
+    "influence_tracks": {
+      "enabled": true,
+      "preference_weight": 1.0,
+      "source": null,
+      "track_ids": []
+    },
+    "ingestion_controls": {
+      "base_backoff_delay_seconds": 1.0,
+      "cache_ttl_seconds": 86400,
+      "max_retries": 6,
+      "throttle_sleep_seconds": 0.12
+    },
+    "input_scope": {
+      "include_playlists": true,
+      "include_recently_played": true,
+      "include_saved_tracks": true,
+      "include_top_tracks": true,
+      "playlist_items_per_playlist_limit": null,
+      "playlists_limit": null,
+      "recently_played_limit": 50,
+      "saved_tracks_limit": null,
+      "source_family": "spotify_api_export",
+      "top_time_ranges": [
+        "short_term",
+        "medium_term",
+        "long_term"
+      ]
+    },
+    "interaction_scope": {
+      "include_interaction_types": [
+        "history",
+        "influence"
+      ]
+    },
+    "observability_controls": {
+      "bootstrap_mode": true,
+      "diagnostic_sample_limit": 5
+    },
+    "profile_controls": {
+      "top_genre_limit": 8,
+      "top_lead_genre_limit": 6,
+      "top_tag_limit": 10
+    },
+    "reporting_controls": {
+      "score_thresholds": {
+        "above_threshold": 0.5,
+        "perfect_score": 0.99
+      }
+    },
+    "retrieval_controls": {
+      "numeric_support_min_pass": 1,
+      "numeric_thresholds": {
+        "duration_ms": 45000.0,
+        "key": 2.0,
+        "mode": 0.5,
+        "tempo": 20.0
+      },
+      "profile_top_genre_limit": 8,
+      "profile_top_lead_genre_limit": 6,
+      "profile_top_tag_limit": 10,
+      "semantic_min_keep_score": 1,
+      "semantic_strong_keep_score": 2
+    },
+    "schema_version": "run-config-v1",
+    "scoring_controls": {
+      "component_weights": {
+        "duration_ms": 0.13,
+        "genre_overlap": 0.12,
+        "key": 0.13,
+        "lead_genre": 0.17,
+        "mode": 0.09,
+        "tag_overlap": 0.16,
+        "tempo": 0.2
+      },
+      "numeric_thresholds": {
+        "duration_ms": 45000.0,
+        "key": 2.0,
+        "mode": 0.5,
+        "tempo": 20.0
+      }
+    },
+    "seed_controls": {
+      "match_rate_min_threshold": 0.0,
+      "source_base_weights": {
+        "playlist_items": 0.4,
+        "recently_played": 0.5,
+        "saved_tracks": 0.6,
+        "top_tracks": 1.0
+      },
+      "top_range_weights": {
+        "long_term": 0.2,
+        "medium_term": 0.3,
+        "short_term": 0.5
+      }
+    },
+    "transparency_controls": {
+      "blend_primary_contributor_on_near_tie": false,
+      "primary_contributor_tie_delta": 0.02,
+      "top_contributor_limit": 3
+    },
+    "user_context": {
+      "user_id": null
+    }
+  },
+  "generated_at_utc": "2026-03-26T04:51:00Z",
+  "resolved_from": {
+    "run_config_path": null,
+    "run_intent_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl000_run_config\\outputs\\run_intent_20260326-045100-993109.json"
+  },
+  "run_id": "BL013-ENTRYPOINT-20260326-045100-988387"
+}

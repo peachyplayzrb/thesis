@@ -25,8 +25,8 @@ from bl000_shared_utils.env_utils import env_int
 from bl000_shared_utils.io_utils import (
     load_csv_rows,
     load_json,
+    open_text_write,
     parse_csv_labels,
-    parse_float,
     sha256_of_file,
 )
 from bl000_shared_utils.path_utils import repo_root
@@ -35,7 +35,6 @@ from bl000_shared_utils.path_utils import repo_root
 from candidate_parser import (
     candidate_numeric_value,
     normalize_candidate_row,
-    parse_list,
     resolve_candidate_column,
     resolve_lead_genre,
 )
@@ -43,35 +42,126 @@ from decision_tracker import DecisionTracker
 from filtering_logic import decision_reason, keep_decision
 
 
+DECISION_FIELDS = [
+    "track_id",
+    "is_seed_track",
+    "lead_genre",
+    "semantic_score",
+    "lead_genre_match",
+    "genre_overlap_count",
+    "tag_overlap_count",
+    "numeric_pass_count",
+    "tempo_distance",
+    "duration_ms_distance",
+    "key_distance",
+    "mode_distance",
+    "decision",
+    "decision_path",
+    "decision_reason",
+]
+
+
+def ensure_paths_exist(paths: list[Path]) -> None:
+    missing = [str(path) for path in paths if not path.exists()]
+    if missing:
+        raise FileNotFoundError(
+            "BL-005 missing required input artifact(s): " + ", ".join(missing)
+        )
+
+
+def build_profile_label_set(
+    profile: dict[str, object],
+    semantic_key: str,
+    limit: int,
+) -> set[str]:
+    semantic_profile = profile.get("semantic_profile")
+    if not isinstance(semantic_profile, dict):
+        return set()
+    items = semantic_profile.get(semantic_key)
+    if not isinstance(items, list):
+        return set()
+
+    labels: set[str] = set()
+    for item in items[:limit]:
+        if not isinstance(item, dict):
+            continue
+        label = item.get("label")
+        if isinstance(label, str) and label.strip():
+            labels.add(label.strip().lower())
+    return labels
+
+
+def build_active_numeric_specs(
+    profile: dict[str, object],
+    effective_numeric_specs: dict[str, dict[str, object]],
+    candidate_columns: set[str],
+) -> dict[str, dict[str, object]]:
+    numeric_profile = profile.get("numeric_feature_profile")
+    if not isinstance(numeric_profile, dict):
+        return {}
+
+    active_specs: dict[str, dict[str, object]] = {}
+    for profile_column, spec in effective_numeric_specs.items():
+        if profile_column not in numeric_profile:
+            continue
+        resolved_column = resolve_candidate_column(
+            profile_column,
+            str(spec["candidate_column"]),
+            candidate_columns,
+        )
+        if resolved_column is None:
+            continue
+        active_specs[profile_column] = {
+            **spec,
+            "candidate_column": resolved_column,
+        }
+    return active_specs
+
+
 def resolve_bl005_runtime_controls() -> dict[str, object]:
+    def sanitize_controls(controls: dict[str, object]) -> dict[str, object]:
+        controls["profile_top_lead_genre_limit"] = max(1, int(controls["profile_top_lead_genre_limit"]))
+        controls["profile_top_tag_limit"] = max(1, int(controls["profile_top_tag_limit"]))
+        controls["profile_top_genre_limit"] = max(1, int(controls["profile_top_genre_limit"]))
+        controls["semantic_strong_keep_score"] = max(0, min(3, int(controls["semantic_strong_keep_score"])))
+        controls["semantic_min_keep_score"] = max(0, min(3, int(controls["semantic_min_keep_score"])))
+        controls["numeric_support_min_pass"] = max(0, int(controls["numeric_support_min_pass"]))
+        if controls["semantic_min_keep_score"] > controls["semantic_strong_keep_score"]:
+            controls["semantic_min_keep_score"] = controls["semantic_strong_keep_score"]
+        return controls
+
     run_config_path = os.environ.get("BL_RUN_CONFIG_PATH", "").strip() or None
     if run_config_path:
         run_config_utils = load_run_config_utils_module()
         controls = run_config_utils.resolve_bl005_controls(run_config_path)
-        return {
-            "config_source": "run_config",
-            "run_config_path": controls.get("config_path"),
-            "run_config_schema_version": controls.get("schema_version"),
-            "profile_top_lead_genre_limit": int(controls["profile_top_lead_genre_limit"]),
-            "profile_top_tag_limit": int(controls["profile_top_tag_limit"]),
-            "profile_top_genre_limit": int(controls["profile_top_genre_limit"]),
-            "semantic_strong_keep_score": int(controls["semantic_strong_keep_score"]),
-            "semantic_min_keep_score": int(controls["semantic_min_keep_score"]),
-            "numeric_support_min_pass": int(controls["numeric_support_min_pass"]),
-            "numeric_thresholds": controls.get("numeric_thresholds") or {},
+        return sanitize_controls(
+            {
+                "config_source": "run_config",
+                "run_config_path": controls.get("config_path"),
+                "run_config_schema_version": controls.get("schema_version"),
+                "profile_top_lead_genre_limit": int(controls["profile_top_lead_genre_limit"]),
+                "profile_top_tag_limit": int(controls["profile_top_tag_limit"]),
+                "profile_top_genre_limit": int(controls["profile_top_genre_limit"]),
+                "semantic_strong_keep_score": int(controls["semantic_strong_keep_score"]),
+                "semantic_min_keep_score": int(controls["semantic_min_keep_score"]),
+                "numeric_support_min_pass": int(controls["numeric_support_min_pass"]),
+                "numeric_thresholds": controls.get("numeric_thresholds") or {},
+            }
+        )
+    return sanitize_controls(
+        {
+            "config_source": "environment",
+            "run_config_path": None,
+            "run_config_schema_version": None,
+            "profile_top_lead_genre_limit": env_int("BL005_PROFILE_TOP_LEAD_GENRE_LIMIT", DEFAULT_PROFILE_TOP_LEAD_GENRE_LIMIT),
+            "profile_top_tag_limit": env_int("BL005_PROFILE_TOP_TAG_LIMIT", DEFAULT_PROFILE_TOP_TAG_LIMIT),
+            "profile_top_genre_limit": env_int("BL005_PROFILE_TOP_GENRE_LIMIT", DEFAULT_PROFILE_TOP_GENRE_LIMIT),
+            "semantic_strong_keep_score": env_int("BL005_SEMANTIC_STRONG_KEEP_SCORE", DEFAULT_SEMANTIC_STRONG_KEEP_SCORE),
+            "semantic_min_keep_score": env_int("BL005_SEMANTIC_MIN_KEEP_SCORE", DEFAULT_SEMANTIC_MIN_KEEP_SCORE),
+            "numeric_support_min_pass": env_int("BL005_NUMERIC_SUPPORT_MIN_PASS", DEFAULT_NUMERIC_SUPPORT_MIN_PASS),
+            "numeric_thresholds": {},
         }
-    return {
-        "config_source": "environment",
-        "run_config_path": None,
-        "run_config_schema_version": None,
-        "profile_top_lead_genre_limit": env_int("BL005_PROFILE_TOP_LEAD_GENRE_LIMIT", DEFAULT_PROFILE_TOP_LEAD_GENRE_LIMIT),
-        "profile_top_tag_limit": env_int("BL005_PROFILE_TOP_TAG_LIMIT", DEFAULT_PROFILE_TOP_TAG_LIMIT),
-        "profile_top_genre_limit": env_int("BL005_PROFILE_TOP_GENRE_LIMIT", DEFAULT_PROFILE_TOP_GENRE_LIMIT),
-        "semantic_strong_keep_score": env_int("BL005_SEMANTIC_STRONG_KEEP_SCORE", DEFAULT_SEMANTIC_STRONG_KEEP_SCORE),
-        "semantic_min_keep_score": env_int("BL005_SEMANTIC_MIN_KEEP_SCORE", DEFAULT_SEMANTIC_MIN_KEEP_SCORE),
-        "numeric_support_min_pass": env_int("BL005_NUMERIC_SUPPORT_MIN_PASS", DEFAULT_NUMERIC_SUPPORT_MIN_PASS),
-        "numeric_thresholds": {},
-    }
+    )
 
 
 def main() -> None:
@@ -84,6 +174,7 @@ def main() -> None:
     )
     output_dir = root / "07_implementation" / "implementation_notes" / "bl005_retrieval" / "outputs"
     output_dir.mkdir(parents=True, exist_ok=True)
+    ensure_paths_exist([profile_path, seed_trace_path, candidate_path])
 
     runtime_controls = resolve_bl005_runtime_controls()
     profile_top_lead_genre_limit = int(runtime_controls["profile_top_lead_genre_limit"])
@@ -100,26 +191,33 @@ def main() -> None:
 
     profile = load_json(profile_path)
     candidate_rows_raw = load_csv_rows(candidate_path)
+    if not candidate_rows_raw:
+        raise RuntimeError("BL-005 candidate corpus is empty; cannot build retrieval outputs")
     candidate_rows = [normalize_candidate_row(row) for row in candidate_rows_raw]
     seed_trace_rows = load_csv_rows(seed_trace_path)
 
     seed_track_ids = {row["track_id"] for row in seed_trace_rows}
     candidate_columns = set(candidate_rows[0].keys()) if candidate_rows else set()
-    top_lead_genres = {item["label"] for item in profile["semantic_profile"]["top_lead_genres"][:profile_top_lead_genre_limit]}
-    top_tags = {item["label"] for item in profile["semantic_profile"]["top_tags"][:profile_top_tag_limit]}
-    top_genres = {item["label"] for item in profile["semantic_profile"]["top_genres"][:profile_top_genre_limit]}
-    active_numeric_specs = {
-        profile_column: {
-            **spec,
-            "candidate_column": resolved_column,
-        }
-        for profile_column, spec in effective_numeric_specs.items()
-        for resolved_column in [
-            resolve_candidate_column(profile_column, str(spec["candidate_column"]), candidate_columns)
-        ]
-        if profile_column in profile["numeric_feature_profile"]
-        and resolved_column is not None
-    }
+    top_lead_genres = build_profile_label_set(
+        profile,
+        "top_lead_genres",
+        profile_top_lead_genre_limit,
+    )
+    top_tags = build_profile_label_set(
+        profile,
+        "top_tags",
+        profile_top_tag_limit,
+    )
+    top_genres = build_profile_label_set(
+        profile,
+        "top_genres",
+        profile_top_genre_limit,
+    )
+    active_numeric_specs = build_active_numeric_specs(
+        profile,
+        effective_numeric_specs,
+        candidate_columns,
+    )
     numeric_centers = {
         profile_column: float(profile["numeric_feature_profile"][profile_column])
         for profile_column in active_numeric_specs
@@ -224,14 +322,14 @@ def main() -> None:
     kept_rows = tracker.kept_rows
 
     filtered_path = output_dir / "bl005_filtered_candidates.csv"
-    with filtered_path.open("w", encoding="utf-8", newline="") as handle:
+    with open_text_write(filtered_path, newline="") as handle:
         writer = csv.DictWriter(handle, fieldnames=list(candidate_rows[0].keys()), lineterminator="\n")
         writer.writeheader()
         writer.writerows(kept_rows)
 
     decisions_path = output_dir / "bl005_candidate_decisions.csv"
-    with decisions_path.open("w", encoding="utf-8", newline="") as handle:
-        writer = csv.DictWriter(handle, fieldnames=list(decisions[0].keys()), lineterminator="\n")
+    with open_text_write(decisions_path, newline="") as handle:
+        writer = csv.DictWriter(handle, fieldnames=DECISION_FIELDS, lineterminator="\n")
         writer.writeheader()
         writer.writerows(decisions)
 
@@ -292,7 +390,7 @@ def main() -> None:
     }
 
     diagnostics_path = output_dir / "bl005_candidate_diagnostics.json"
-    with diagnostics_path.open("w", encoding="utf-8") as handle:
+    with open_text_write(diagnostics_path) as handle:
         json.dump(diagnostics, handle, indent=2, ensure_ascii=True)
 
     diagnostics["output_hashes_sha256"] = {
@@ -300,7 +398,7 @@ def main() -> None:
         "bl005_candidate_decisions.csv": sha256_of_file(decisions_path),
     }
     diagnostics["diagnostics_hash_note"] = "diagnostics file does not store its own hash to avoid recursive self-reference"
-    with diagnostics_path.open("w", encoding="utf-8") as handle:
+    with open_text_write(diagnostics_path) as handle:
         json.dump(diagnostics, handle, indent=2, ensure_ascii=True)
 
     print("BL-005 candidate filtering complete.")

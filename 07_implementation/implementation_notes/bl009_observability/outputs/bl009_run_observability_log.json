@@ -1,66 +1,41 @@
 {
   "run_metadata": {
-    "run_id": "BL009-OBSERVE-20260326-034329-585817",
+    "run_id": "BL009-OBSERVE-20260326-060428-434480",
     "task": "BL-009",
-    "generated_at_utc": "2026-03-26T03:43:29Z",
-    "elapsed_seconds": 1.221,
+    "generated_at_utc": "2026-03-26T06:04:28Z",
+    "elapsed_seconds": 0.939,
     "observability_schema_version": "bl009-observability-v1",
     "observability_scope": "artifact-level deterministic audit log",
     "bootstrap_mode": true,
-    "dataset_version": "3A3948E9AB9C5156ED2DE7ACE98177CFF4AB58212D02DDEEC685052993682964",
+    "dataset_version": "67F5D233852D79F0591F6E95658D9D60B388EC8A9C82EDED9B3E530241F10C19",
     "dataset_version_source": "active_pipeline_outputs",
-    "pipeline_version": "5E18807B4BC6413236E2662530FFD6699E48FE6D15404306C57DD08C5D7E2DA0",
+    "pipeline_version": "8ADDB977354DA9C5C0759B4B04F040F4BEAFAA1E7FAF6BA2A11721AAFE068888",
     "dataset_component_hashes": {
-      "07_implementation/implementation_notes/bl004_profile/outputs/bl004_seed_trace.csv": "3EAE680FE68D1E2951B96B3DE9107A7E298ECD867498FF5E9259FC09BCC6B6A4",
-      "07_implementation/implementation_notes/bl005_retrieval/outputs/bl005_filtered_candidates.csv": "1D2D16814E6F201FD15ED135150C24EE8271A319934772EA4D54448A69E8B66F",
-      "07_implementation/implementation_notes/bl006_scoring/outputs/bl006_scored_candidates.csv": "BCB80DEE56DEA71F0328BE4A42763733D0D9AF61B518BAB4279D9C462C0E6A39"
+      "07_implementation/implementation_notes/bl004_profile/outputs/bl004_seed_trace.csv": "AFE227D05077A35D970973E060EB6C95DC6FD62E17081E0666DF9CD2D5D6BEC2",
+      "07_implementation/implementation_notes/bl005_retrieval/outputs/bl005_filtered_candidates.csv": "367A528541AA29A8BC9CED0CA6A54AB708F912DB705285E5F5A51275D438A8E4",
+      "07_implementation/implementation_notes/bl006_scoring/outputs/bl006_scored_candidates.csv": "96AE241D5C6195F148455919DAA1D479A40B75CCA25381E2EBEFC35C3E489BD0"
     },
     "pipeline_script_hashes": {
-      "07_implementation/implementation_notes/bl004_profile/build_bl004_preference_profile.py": "DA414E44B5025B4B754BCA323CA23A1AC1BEA95F0003BBCB91F53174E2446C17",
-      "07_implementation/implementation_notes/bl005_retrieval/build_bl005_candidate_filter.py": "E4D022A52B722AAD7A70723926374CF4080A4EA751C1519D2EDE6D374C287589",
-      "07_implementation/implementation_notes/bl006_scoring/build_bl006_scored_candidates.py": "A5F895ACEF02ED386DA69E8A281F3F01C66AE7C2712F8BB3461A0AEA26565AAA",
-      "07_implementation/implementation_notes/bl007_playlist/build_bl007_playlist.py": "40DF5F60B4B8341C5A6FD2655313B62479526A62DBE556F8974E5B3D7D1C1018",
-      "07_implementation/implementation_notes/bl008_transparency/build_bl008_explanation_payloads.py": "FF708A75BB0A193D360A53DEDDA4EF62030C82FCB5909D48041542202A586678",
-      "07_implementation/implementation_notes/bl009_observability/build_bl009_observability_log.py": "305CA428300467672FD7AEAEB0F1812746F07E61379EB06ADC696EA50F74CB91"
+      "07_implementation/implementation_notes/bl004_profile/build_bl004_preference_profile.py": "8DF5D27B1206070C2ED16062E6028EA7E9FA66441707A73594E04C581A66580D",
+      "07_implementation/implementation_notes/bl005_retrieval/build_bl005_candidate_filter.py": "D4BAC12203D8B161EBAE9017F6343954D90BBA53E9D6F139AFD49015A72A4A9C",
+      "07_implementation/implementation_notes/bl006_scoring/build_bl006_scored_candidates.py": "57260D2638A1017D2058DC7137439A68F3E39A4777A9AFDA21A6A19B9EA3B516",
+      "07_implementation/implementation_notes/bl007_playlist/build_bl007_playlist.py": "36A3188CAE188E38EDABE01726DC5E31025AFA4619D899711ECAC7783CB39452",
+      "07_implementation/implementation_notes/bl008_transparency/build_bl008_explanation_payloads.py": "84248B5C0D680BCF7370DF17163932CDCE2BD6907B1068220815DC570DBBDC0D",
+      "07_implementation/implementation_notes/bl009_observability/build_bl009_observability_log.py": "446D3F7957E6989A949DF6835970C9D61A32D2E7A7A9A035D101ECCE01176FF2"
     },
-    "optional_dependency_availability": {
-      "bl016_candidates": {
-        "path": "07_implementation/implementation_notes/test_assets/bl016_candidate_stub.csv",
-        "available": false
-      },
-      "bl016_events": {
-        "path": "07_implementation/implementation_notes/test_assets/bl016_synthetic_aligned_events.jsonl",
-        "available": false
-      },
-      "bl016_manifest": {
-        "path": "07_implementation/implementation_notes/test_assets/bl016_asset_manifest.json",
-        "available": false
-      },
-      "bl016_script": {
-        "path": "07_implementation/implementation_notes/test_assets/build_bl016_synthetic_assets.py",
-        "available": false
-      },
-      "bl017_coverage": {
-        "path": "07_implementation/implementation_notes/bl000_data_layer/outputs/onion_join_coverage_report.json",
-        "available": false
-      },
-      "bl017_script": {
-        "path": "07_implementation/implementation_notes/bl000_data_layer/build_onion_canonical_layer.py",
-        "available": false
-      }
-    },
+    "optional_dependency_availability": {},
     "upstream_stage_run_ids": {
-      "BL-004": "BL004-PROFILE-20260326-034059-960557",
-      "BL-005": "BL005-FILTER-20260326-034101-175742",
-      "BL-006": "BL006-SCORE-20260326-034224-824432",
-      "BL-007": "BL007-ASSEMBLE-20260326-034229-414617",
-      "BL-008": "BL008-EXPLAIN-20260326-034328-376645"
+      "BL-004": "BL004-PROFILE-20260326-060417-022483",
+      "BL-005": "BL005-FILTER-20260326-060418-067774",
+      "BL-006": "BL006-SCORE-20260326-060422-221223",
+      "BL-007": "BL007-ASSEMBLE-20260326-060426-289386",
+      "BL-008": "BL008-EXPLAIN-20260326-060427-462906"
     },
     "config_source": "environment",
     "run_config_path": null,
     "run_config_schema_version": null,
-    "run_intent_path": null,
-    "run_effective_config_path": null
+    "run_intent_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl000_run_config\\outputs\\run_intent_20260326-060416-891361.json",
+    "run_effective_config_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl000_run_config\\outputs\\run_effective_config_20260326-060416-891361.json"
   },
   "execution_scope_summary": {
     "observability_schema_version": "bl009-observability-v1",
@@ -71,11 +46,11 @@
       "playlists",
       "recently_played"
     ],
-    "total_seed_count": 1026,
-    "history_track_count": 1026,
+    "total_seed_count": 1064,
+    "history_track_count": 1064,
     "influence_tracks_included": false,
     "influence_track_count": 0,
-    "canonical_config_artifact_pair_available": false
+    "canonical_config_artifact_pair_available": true
   },
   "run_config": {
     "control_mode": {
@@ -101,23 +76,23 @@
     },
     "canonical_config_artifacts": {
       "run_intent": {
-        "path": null,
-        "available": false,
-        "sha256": null
+        "path": "07_implementation/implementation_notes/bl000_run_config/outputs/run_intent_20260326-060416-891361.json",
+        "available": true,
+        "sha256": "31AF697448158ABCA88B63A9A66167307ACD4CD2F5C6B96541A09113A0458917"
       },
       "run_effective_config": {
-        "path": null,
-        "available": false,
-        "sha256": null
+        "path": "07_implementation/implementation_notes/bl000_run_config/outputs/run_effective_config_20260326-060416-891361.json",
+        "available": true,
+        "sha256": "0C26B37D90DC757360CE5A763FBF95C41B6327EE5C3EB171C01BCD9926B7E42C"
       }
     },
     "data_layer": {
-      "status": "not_available_in_current_pipeline",
-      "expected_path": "07_implementation/implementation_notes/bl000_data_layer/outputs/onion_join_coverage_report.json"
+      "status": "active_mode_not_required",
+      "reason": "BL-009 uses active BL-004..BL-008 artifacts for observability diagnostics."
     },
     "bootstrap_assets": {
-      "status": "not_available_in_current_pipeline",
-      "expected_path": "07_implementation/implementation_notes/test_assets/bl016_asset_manifest.json"
+      "status": "active_mode_not_required",
+      "reason": "Legacy synthetic bootstrap assets are no longer part of active BL-009 execution."
     },
     "profile": {
       "input_scope": {
@@ -149,8 +124,8 @@
       ],
       "profile_mode": "hybrid_semantic_numeric_from_bl003_enriched_seed_table",
       "top_tag_limit": 10,
-      "top_genre_limit": 10,
-      "top_lead_genre_limit": 10,
+      "top_genre_limit": 8,
+      "top_lead_genre_limit": 6,
       "aggregation_rules": {
         "numeric": "weighted mean over numeric columns embedded in the BL-003 enriched seed table; key uses weighted circular mean on the 12-semitone wheel",
         "tags": "sum(preference_weight) over DS-001 tag labels",
@@ -250,8 +225,8 @@
       "playlist_track_count": 10,
       "top_contributor_distribution": {
         "Lead genre match": 4,
-        "Tempo (BPM)": 5,
-        "Duration match": 1
+        "Duration match": 2,
+        "Tempo (BPM)": 4
       },
       "explanation_payload_rule": "top 3 contributors by weighted contribution; sentence derived from top contributors and playlist position"
     }
@@ -274,49 +249,49 @@
   "stage_diagnostics": {
     "data_layer": {
       "task": "BL-017",
-      "status": "not_available_in_current_pipeline",
-      "expected_path": "07_implementation/implementation_notes/bl000_data_layer/outputs/onion_join_coverage_report.json"
+      "status": "inactive_in_active_mode",
+      "reason": "BL-009 observability does not require BL-017 in active mode."
     },
     "bootstrap_assets": {
       "task": "BL-016",
-      "status": "not_available_in_current_pipeline",
-      "expected_path": "07_implementation/implementation_notes/test_assets/bl016_asset_manifest.json"
+      "status": "inactive_in_active_mode",
+      "reason": "BL-009 observability does not require BL-016 in active mode."
     },
     "profile": {
       "task": "BL-004",
-      "run_id": "BL004-PROFILE-20260326-034059-960557",
+      "run_id": "BL004-PROFILE-20260326-060417-022483",
       "user_id": "214f23jw73wgv4vdpcjabds2a",
       "diagnostics": {
-        "events_total": 1026,
-        "matched_seed_count": 1026,
+        "events_total": 1064,
+        "matched_seed_count": 1064,
         "missing_seed_count": 0,
         "missing_track_ids": [],
-        "candidate_rows_total": 1026,
+        "candidate_rows_total": 1064,
         "numeric_observations": {
-          "danceability": 1026,
-          "energy": 1026,
-          "valence": 1026,
-          "tempo": 1026,
-          "key": 1026,
-          "mode": 1026,
-          "popularity": 1026,
-          "duration_ms": 1026
+          "danceability": 1064,
+          "energy": 1064,
+          "valence": 1064,
+          "tempo": 1064,
+          "key": 1064,
+          "mode": 1064,
+          "popularity": 1064,
+          "duration_ms": 1064
         },
         "key_aggregation_method": "weighted_circular_mean",
-        "total_effective_weight": 2197.198246,
-        "elapsed_seconds": 0.026
+        "total_effective_weight": 2322.377778,
+        "elapsed_seconds": 0.025
       },
       "seed_summary": {
         "counts_by_interaction_type": {
-          "history": 1026,
+          "history": 1064,
           "influence": 0
         },
         "weight_by_interaction_type": {
-          "history": 2197.198246,
+          "history": 2322.377778,
           "influence": 0.0
         },
         "interaction_count_sum_by_interaction_type": {
-          "history": 21972,
+          "history": 23224,
           "influence": 0
         },
         "seed_trace_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl004_profile\\outputs\\bl004_seed_trace.csv"
@@ -324,68 +299,68 @@
       "dominant_lead_genres": [
         {
           "label": "pop",
-          "weight": 383.5
+          "weight": 397.7
         },
         {
           "label": "classic rock",
-          "weight": 337.631579
+          "weight": 344.377778
         },
         {
           "label": "rock",
-          "weight": 237.5
+          "weight": 258.5
         },
         {
           "label": "electronic",
-          "weight": 139.5
+          "weight": 149.7
         },
         {
           "label": "rap",
-          "weight": 123.1
+          "weight": 136.9
         }
       ],
       "dominant_tags": [
         {
           "label": "rock",
-          "weight": 943.731579
+          "weight": 987.577778
         },
         {
           "label": "pop",
-          "weight": 717.198246
+          "weight": 738.977778
         },
         {
           "label": "classic rock",
-          "weight": 599.231579
+          "weight": 610.777778
         },
         {
           "label": "70s",
-          "weight": 333.931579
+          "weight": 342.477778
         },
         {
-          "label": "80s",
-          "weight": 299.3
+          "label": "alternative",
+          "weight": 306.6
         }
       ]
     },
     "retrieval": {
       "task": "BL-005",
-      "run_id": "BL005-FILTER-20260326-034101-175742",
+      "run_id": "BL005-FILTER-20260326-060418-067774",
       "counts": {
         "candidate_rows_total": 109269,
-        "seed_tracks_excluded": 1026,
-        "kept_candidates": 72496,
-        "rejected_non_seed_candidates": 35747
+        "seed_tracks_excluded": 1064,
+        "kept_candidates": 70282,
+        "rejected_non_seed_candidates": 37923
       },
       "rule_hits": {
         "semantic_rule_hits": {
           "lead_genre_match": 37604,
           "genre_overlap": 62883,
-          "tag_overlap": 67276
+          "tag_overlap": 65787
         },
         "numeric_rule_hits": {
-          "tempo": 54859,
+          "tempo": 54842,
           "key": 40093,
           "mode": 68257,
-          "duration_ms": 58875
+          "duration_ms": 58469
         }
       },
       "top_kept_track_ids": [
@@ -408,94 +383,94 @@
     },
     "scoring": {
       "task": "BL-006",
-      "run_id": "BL006-SCORE-20260326-034224-824432",
+      "run_id": "BL006-SCORE-20260326-060422-221223",
       "counts": {
-        "candidates_scored": 72496
+        "candidates_scored": 70282
       },
       "score_statistics": {
-        "max_score": 0.692496,
-        "min_score": 0.012,
-        "mean_score": 0.204141,
-        "median_score": 0.187208
+        "max_score": 0.78176,
+        "min_score": 0.00462,
+        "mean_score": 0.220792,
+        "median_score": 0.205605
       },
       "top_candidates": [
         {
           "rank": 1,
           "track_id": "C9oA7Glm1TItxpQA",
           "lead_genre": "pop",
-          "final_score": 0.692496,
+          "final_score": 0.78176,
           "matched_genres": "",
           "matched_tags": ""
         },
         {
           "rank": 2,
-          "track_id": "I2K0KDtgE2eZhPRw",
+          "track_id": "7dYk0TCGZqev3LJD",
           "lead_genre": "pop",
-          "final_score": 0.68256,
+          "final_score": 0.73493,
           "matched_genres": "",
           "matched_tags": ""
         },
         {
           "rank": 3,
-          "track_id": "36zZsq0r6BMf2VfX",
+          "track_id": "I2K0KDtgE2eZhPRw",
           "lead_genre": "pop",
-          "final_score": 0.675757,
+          "final_score": 0.726619,
           "matched_genres": "",
           "matched_tags": ""
         },
         {
           "rank": 4,
-          "track_id": "EEA8SGPJqL4QLnW5",
+          "track_id": "Oa3WjjG6GreWw3Bf",
           "lead_genre": "pop",
-          "final_score": 0.674579,
+          "final_score": 0.723516,
           "matched_genres": "",
           "matched_tags": ""
         },
         {
           "rank": 5,
-          "track_id": "0QCmPylIo20WvNeg",
+          "track_id": "5c9fu0pBIl9QUmed",
           "lead_genre": "pop",
-          "final_score": 0.670526,
+          "final_score": 0.723244,
           "matched_genres": "",
           "matched_tags": ""
         },
         {
           "rank": 6,
-          "track_id": "sjsJ6A5tDgBXGeaf",
+          "track_id": "36zZsq0r6BMf2VfX",
           "lead_genre": "pop",
-          "final_score": 0.661681,
+          "final_score": 0.722085,
           "matched_genres": "",
           "matched_tags": ""
         },
         {
           "rank": 7,
-          "track_id": "uVjVJPDReJa85GZM",
+          "track_id": "pTle20sjv0uVIr2o",
           "lead_genre": "pop",
-          "final_score": 0.660107,
+          "final_score": 0.708332,
           "matched_genres": "",
           "matched_tags": ""
         },
         {
           "rank": 8,
-          "track_id": "Oa3WjjG6GreWw3Bf",
+          "track_id": "op7gT9GOpqOk7wc8",
           "lead_genre": "pop",
-          "final_score": 0.659119,
+          "final_score": 0.693133,
           "matched_genres": "",
           "matched_tags": ""
         },
         {
           "rank": 9,
-          "track_id": "kO6K4VUEcFRTLj4Q",
+          "track_id": "ZBzCrWWH35yTPv8P",
           "lead_genre": "pop",
-          "final_score": 0.657703,
+          "final_score": 0.691217,
           "matched_genres": "",
           "matched_tags": ""
         },
         {
           "rank": 10,
-          "track_id": "MsU54i2ZFFhNRkw3",
+          "track_id": "h2e5nNsGSAuOyTfw",
           "lead_genre": "pop",
-          "final_score": 0.656757,
+          "final_score": 0.685949,
           "matched_genres": "",
           "matched_tags": ""
         }
@@ -528,47 +503,46 @@
     },
     "assembly": {
       "task": "BL-007",
-      "run_id": "BL007-ASSEMBLE-20260326-034229-414617",
+      "run_id": "BL007-ASSEMBLE-20260326-060426-289386",
       "counts": {
-        "candidates_evaluated": 72496,
+        "candidates_evaluated": 70282,
         "tracks_included": 10,
-        "tracks_excluded": 72486
+        "tracks_excluded": 70272
       },
       "rule_hits": {
-        "R3_consecutive_run": 635,
-        "R2_genre_cap": 883,
-        "R4_length_cap": 70968
+        "R3_consecutive_run": 99,
+        "R2_genre_cap": 666,
+        "R4_length_cap": 69507
       },
       "playlist_genre_mix": {
         "pop": 4,
         "soundtrack": 1,
-        "electronic": 2,
-        "singer-songwriter": 1,
+        "classic rock": 2,
         "soul": 1,
-        "new wave": 1
+        "rock": 2
       },
       "playlist_score_range": {
-        "max": 0.692496,
-        "min": 0.486205
+        "max": 0.78176,
+        "min": 0.542766
       },
       "playlist_length": 10
     },
     "transparency": {
       "task": "BL-008",
-      "run_id": "BL008-EXPLAIN-20260326-034328-376645",
+      "run_id": "BL008-EXPLAIN-20260326-060427-462906",
       "playlist_track_count": 10,
       "top_contributor_distribution": {
         "Lead genre match": 4,
-        "Tempo (BPM)": 5,
-        "Duration match": 1
+        "Duration match": 2,
+        "Tempo (BPM)": 4
       },
       "explanation_count": 10
     }
   },
   "exclusion_diagnostics": {
     "retrieval": {
-      "seed_tracks_excluded": 1026,
-      "rejected_non_seed_candidates": 35747,
+      "seed_tracks_excluded": 1064,
+      "rejected_non_seed_candidates": 37923,
       "sample_rejected_non_seed_rows": [
         {
           "track_id": "0010xmHR6UICBOYT",
@@ -608,113 +582,113 @@
       ]
     },
     "assembly": {
-      "tracks_excluded": 72486,
+      "tracks_excluded": 70272,
       "rule_hits": {
-        "R3_consecutive_run": 635,
-        "R2_genre_cap": 883,
-        "R4_length_cap": 70968
+        "R3_consecutive_run": 99,
+        "R2_genre_cap": 666,
+        "R4_length_cap": 69507
       },
       "first_length_cap_boundary": {
-        "score_rank": 1529,
-        "track_id": "jq0qbkNtgsGNsWR5",
+        "score_rank": 776,
+        "track_id": "wVUwAtLZzSpDVYJk",
         "lead_genre": "pop",
-        "final_score": 0.486194
+        "final_score": 0.542754
       },
       "sample_exclusions_by_rule": {
         "consecutive_genre_run": [
           {
             "score_rank": 3,
-            "track_id": "36zZsq0r6BMf2VfX",
+            "track_id": "I2K0KDtgE2eZhPRw",
             "lead_genre": "pop",
-            "final_score": 0.675757
+            "final_score": 0.726619
           },
           {
             "score_rank": 4,
-            "track_id": "EEA8SGPJqL4QLnW5",
+            "track_id": "Oa3WjjG6GreWw3Bf",
             "lead_genre": "pop",
-            "final_score": 0.674579
+            "final_score": 0.723516
           },
           {
             "score_rank": 5,
-            "track_id": "0QCmPylIo20WvNeg",
+            "track_id": "5c9fu0pBIl9QUmed",
             "lead_genre": "pop",
-            "final_score": 0.670526
+            "final_score": 0.723244
           },
           {
             "score_rank": 6,
-            "track_id": "sjsJ6A5tDgBXGeaf",
+            "track_id": "36zZsq0r6BMf2VfX",
             "lead_genre": "pop",
-            "final_score": 0.661681
+            "final_score": 0.722085
           },
           {
             "score_rank": 7,
-            "track_id": "uVjVJPDReJa85GZM",
+            "track_id": "pTle20sjv0uVIr2o",
             "lead_genre": "pop",
-            "final_score": 0.660107
+            "final_score": 0.708332
           }
         ],
         "genre_cap_exceeded": [
           {
-            "score_rank": 641,
-            "track_id": "wVUwAtLZzSpDVYJk",
+            "score_rank": 105,
+            "track_id": "Brity0gQtyRfpcqQ",
             "lead_genre": "pop",
-            "final_score": 0.530509
+            "final_score": 0.623782
           },
           {
-            "score_rank": 642,
-            "track_id": "qvOoa7s9Kgd1MeIp",
+            "score_rank": 106,
+            "track_id": "G0XyvurMeplWHYcQ",
             "lead_genre": "pop",
-            "final_score": 0.530436
+            "final_score": 0.623616
           },
           {
-            "score_rank": 643,
-            "track_id": "jh70tHB5WFu21lVt",
+            "score_rank": 107,
+            "track_id": "2njIoYzejCWlTYa3",
             "lead_genre": "pop",
-            "final_score": 0.530167
+            "final_score": 0.623334
           },
           {
-            "score_rank": 644,
-            "track_id": "j9D3sa27wrX96G1t",
+            "score_rank": 108,
+            "track_id": "3kCXmmlJydRDLRL9",
             "lead_genre": "pop",
-            "final_score": 0.530154
+            "final_score": 0.623151
           },
           {
-            "score_rank": 645,
-            "track_id": "5v0wXFK4i1fwS2cF",
+            "score_rank": 109,
+            "track_id": "tBpf5ISQNNE8rC8V",
             "lead_genre": "pop",
-            "final_score": 0.530096
+            "final_score": 0.623105
           }
         ],
         "length_cap_reached": [
           {
-            "score_rank": 1529,
-            "track_id": "jq0qbkNtgsGNsWR5",
+            "score_rank": 776,
+            "track_id": "wVUwAtLZzSpDVYJk",
             "lead_genre": "pop",
-            "final_score": 0.486194
+            "final_score": 0.542754
           },
           {
-            "score_rank": 1530,
-            "track_id": "AIbMf9wL8g5JbIjF",
+            "score_rank": 777,
+            "track_id": "jxYmnXCxlmIdiZhh",
             "lead_genre": "pop",
-            "final_score": 0.48616
+            "final_score": 0.542744
           },
           {
-            "score_rank": 1531,
-            "track_id": "6b0eNW1yEwuhm57I",
+            "score_rank": 778,
+            "track_id": "GFwfG6UfyxJLzVmL",
             "lead_genre": "pop",
-            "final_score": 0.486156
+            "final_score": 0.542614
           },
           {
-            "score_rank": 1532,
-            "track_id": "5QCSQhMhV2TnRJe0",
+            "score_rank": 779,
+            "track_id": "K9dfc6t708T717aC",
             "lead_genre": "pop",
-            "final_score": 0.486093
+            "final_score": 0.542503
           },
           {
-            "score_rank": 1533,
-            "track_id": "sgXj32xoEToOHNhp",
+            "score_rank": 780,
+            "track_id": "xouZJX7YveSAIbpi",
             "lead_genre": "pop",
-            "final_score": 0.486062
+            "final_score": 0.542219
           }
         ]
       }
@@ -724,61 +698,61 @@
     "primary_outputs": {
       "playlist": {
         "path": "07_implementation/implementation_notes/bl007_playlist/outputs/bl007_playlist.json",
-        "sha256": "DC4E6A7D5000E6C18D50E9C7E90297679BC865003A51FC76C8EAD985771CBEE5",
-        "size_bytes": 2050
+        "sha256": "59BCC9DCB26D5DF3E6A00A655D3EC211B55E02AEE77047515E45C50FBC1409BE",
+        "size_bytes": 2032
       },
       "explanation_payloads": {
         "path": "07_implementation/implementation_notes/bl008_transparency/outputs/bl008_explanation_payloads.json",
-        "sha256": "B0492B6E0C2EB5FE4920F144D601D30EB78747094EE2C5B2BDC21B154EE377F4",
-        "size_bytes": 27503
+        "sha256": "8316D02304CD687F5B6C0B74964BC3161A9993C9FED4CC6B061F3E72D7FF580C",
+        "size_bytes": 27621
       }
     },
     "trace_outputs": {
       "seed_trace": {
         "path": "07_implementation/implementation_notes/bl004_profile/outputs/bl004_seed_trace.csv",
-        "sha256": "3EAE680FE68D1E2951B96B3DE9107A7E298ECD867498FF5E9259FC09BCC6B6A4"
+        "sha256": "AFE227D05077A35D970973E060EB6C95DC6FD62E17081E0666DF9CD2D5D6BEC2"
       },
       "candidate_decisions": {
         "path": "07_implementation/implementation_notes/bl005_retrieval/outputs/bl005_candidate_decisions.csv",
-        "sha256": "AE904B5D90E02BDC9AB15CFD8FAD9A2997D86F8BF303CBF607CBEB2D48EDA7CD"
+        "sha256": "7F231CE18E7446FFD2121866FDF727A332600603A19DEBD4379AF4A9EFFDEDBC"
       },
       "scored_candidates": {
         "path": "07_implementation/implementation_notes/bl006_scoring/outputs/bl006_scored_candidates.csv",
-        "sha256": "BCB80DEE56DEA71F0328BE4A42763733D0D9AF61B518BAB4279D9C462C0E6A39"
+        "sha256": "96AE241D5C6195F148455919DAA1D479A40B75CCA25381E2EBEFC35C3E489BD0"
       },
       "assembly_trace": {
         "path": "07_implementation/implementation_notes/bl007_playlist/outputs/bl007_assembly_trace.csv",
-        "sha256": "15D24477C7880D3A3C447861AE12EE7D4F1DE156608B03D3722A3D8B655F9538"
+        "sha256": "44C84A2E381837A92FE6273BA5673247F1EAB3435B1E76BDE51AFEC6E90F2090"
       }
     },
     "supporting_outputs": {
       "profile": {
         "path": "07_implementation/implementation_notes/bl004_profile/outputs/bl004_preference_profile.json",
-        "sha256": "83ACA030F2D86360785204839B1F5BB73166FA3BA97181FF47362911203C30BF"
+        "sha256": "97505F2882886FAD888D532786D27F0048CC59A74BFA013F1BC9F3FFD0395F7E"
       },
       "retrieval_diagnostics": {
         "path": "07_implementation/implementation_notes/bl005_retrieval/outputs/bl005_candidate_diagnostics.json",
-        "sha256": "8D73F1F23A59E486D770D18C73C536D6F142DCA4FA15259024D88294B13977F9"
+        "sha256": "3FDA7AAA5885EB1B621D3029E4E8FABC4844FB68FFB04F266904620EE236A6CB"
       },
       "score_summary": {
         "path": "07_implementation/implementation_notes/bl006_scoring/outputs/bl006_score_summary.json",
-        "sha256": "83A9AC3BCDBA75385A293BA110E5C9D274A6A01B5299BBC0638D07B37606681B"
+        "sha256": "E3342B1285DC40A5815761A0A4ABA7693180C37B757C7B27B499D55656AB92B0"
       },
       "assembly_report": {
         "path": "07_implementation/implementation_notes/bl007_playlist/outputs/bl007_assembly_report.json",
-        "sha256": "5E6A165CACECDE32723E2D43D83E273A2AD0BA015ACB487BDCB61C4876B41B8A"
+        "sha256": "208398A535EBFF52AAD7A96EC0DA9987DDB253BD81C050F0FACF274833DA2DD3"
       },
       "explanation_summary": {
         "path": "07_implementation/implementation_notes/bl008_transparency/outputs/bl008_explanation_summary.json",
-        "sha256": "9AA717DE02E006A9650DCC9A5C8E6BC56789DA1D05A13F0B09B20DBA68F24831"
+        "sha256": "3AA5696DDC76AE62CFE0109EC768DAFD8B4F45B564B7EA9F19F6F84D54CD59EB"
       },
       "data_layer_coverage": {
-        "path": "07_implementation/implementation_notes/bl000_data_layer/outputs/onion_join_coverage_report.json",
-        "status": "not_available_in_current_pipeline"
+        "path": null,
+        "status": "inactive_in_active_mode"
       },
       "bootstrap_manifest": {
-        "path": "07_implementation/implementation_notes/test_assets/bl016_asset_manifest.json",
-        "status": "not_available_in_current_pipeline"
+        "path": null,
+        "status": "inactive_in_active_mode"
       }
     }
   }

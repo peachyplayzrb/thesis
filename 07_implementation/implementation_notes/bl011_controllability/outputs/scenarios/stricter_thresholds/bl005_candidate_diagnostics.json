@@ -1,5 +1,5 @@
 {
-  "run_id": "BL011-STRICTER_THRESHOLDS-BL005-20260325-231149-570001",
+  "run_id": "BL011-STRICTER_THRESHOLDS-BL005-20260326-055955-799228",
   "task": "BL-005",
   "scenario_id": "stricter_thresholds",
   "config": {
@@ -8,47 +8,47 @@
     "top_genre_limit": 8,
     "threshold_scale": 0.75,
     "numeric_thresholds": {
-      "tempo": 11.25,
-      "key": 1.125,
+      "tempo": 15.0,
+      "key": 1.5,
       "mode": 0.375,
-      "duration_ms": 22500.0
+      "duration_ms": 33750.0
     },
-    "keep_rule": "keep if not seed and (semantic_score >= 3 or (semantic_score >= 1 and numeric_pass_count >= 2))"
+    "keep_rule": "keep if not seed and (semantic_score >= 2 or (semantic_score >= 1 and numeric_pass_count >= 1))"
   },
   "counts": {
     "candidate_rows_total": 109269,
-    "seed_tracks_excluded": 1026,
-    "kept_candidates": 2874,
-    "rejected_non_seed_candidates": 105369
+    "seed_tracks_excluded": 1064,
+    "kept_candidates": 69838,
+    "rejected_non_seed_candidates": 38367
   },
   "rule_hits": {
     "semantic_rule_hits": {
-      "lead_genre_match": 23936,
+      "lead_genre_match": 37604,
       "genre_overlap": 62883,
-      "tag_overlap": 67276
+      "tag_overlap": 65787
     },
     "numeric_rule_hits": {
-      "tempo": 34813,
-      "key": 15987,
+      "tempo": 43163,
+      "key": 25267,
       "mode": 68257,
-      "duration_ms": 31630
+      "duration_ms": 45671
     }
   },
   "top_kept_track_ids": [
     "0009fFIM1eYThaPg",
-    "079yVaWfDrL7ulec",
-    "07ZlFqYMMkcui1ha",
-    "089LVMgimaHdtHoB",
-    "08IqqLAe7gGB9bDJ",
-    "0D8X8Iq01Uh5HCqS",
-    "0DLh1XyzcsQU0zK5",
-    "0IhIecOb9mrGD2rd",
-    "0J9UQ9GC3VO4l3oU",
-    "0KBJrLAvOGjlI8lQ",
-    "0LKmbA8Jhf0HyVJ9",
-    "0Lgc4YsFJTKIOTZQ",
-    "0MnallLFUgbX73Lm",
-    "0NrlrPdfndyaKNaj",
-    "0OaHE7959m4rf2mK"
+    "002Jyd0vN4HyCpqL",
+    "00CH4HJdxQQQbJfu",
+    "00DZ3XCAQb2FdCc6",
+    "00IeldeA9ijZOL0P",
+    "00KSCJkYb8JKa4Y3",
+    "00LuPWdOccBb09bW",
+    "00XWljDxNBgBKEEA",
+    "00b6fV3nx5z2b8Ls",
+    "00hFmpewuNvc4dRL",
+    "00i0OB17z3m3yamO",
+    "00mLjKFmaTv9MdaB",
+    "00uLdNEc6yXbIxyW",
+    "00wqHIO65EtRyRQM",
+    "013BFFjvohJT9dW9"
   ]
 }

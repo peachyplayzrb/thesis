@@ -53,6 +53,120 @@ def run_python_script(script_path: Path) -> tuple[int, str]:
     return process.returncode, output
 
 
+def freshness_input_paths() -> dict[str, Path]:
+    return {
+        "bl010_snapshot": REPO_ROOT
+        / "07_implementation"
+        / "implementation_notes"
+        / "bl010_reproducibility"
+        / "outputs"
+        / "bl010_reproducibility_config_snapshot.json",
+        "bl010_report": REPO_ROOT
+        / "07_implementation"
+        / "implementation_notes"
+        / "bl010_reproducibility"
+        / "outputs"
+        / "bl010_reproducibility_report.json",
+        "bl011_snapshot": REPO_ROOT
+        / "07_implementation"
+        / "implementation_notes"
+        / "bl011_controllability"
+        / "outputs"
+        / "bl011_controllability_config_snapshot.json",
+        "bl011_report": REPO_ROOT
+        / "07_implementation"
+        / "implementation_notes"
+        / "bl011_controllability"
+        / "outputs"
+        / "bl011_controllability_report.json",
+    }
+
+
+def ensure_paths_exist(paths: list[Path], *, label: str) -> None:
+    missing = [relpath(path) for path in paths if not path.exists()]
+    if missing:
+        raise FileNotFoundError(f"Missing required {label}: {missing}")
+
+
+def build_current_bl011_snapshot(
+    bl011_module: Any,
+    *,
+    paths_bl011: dict[str, Path],
+    current_bl010_snapshot: dict[str, Any],
+) -> dict[str, Any]:
+    baseline_config_hash = bl011_module.canonical_json_hash(current_bl010_snapshot)
+    runtime_controls = bl011_module.resolve_bl011_runtime_controls()
+    scenarios = bl011_module.build_scenarios(current_bl010_snapshot, runtime_controls)
+
+    fixed_inputs = {
+        relpath(paths_bl011["active_seed_trace"]): bl011_module.sha256_of_file(paths_bl011["active_seed_trace"]),
+        relpath(paths_bl011["active_candidates"]): bl011_module.sha256_of_file(paths_bl011["active_candidates"]),
+    }
+
+    optional_inputs = {
+        "legacy_manifest": paths_bl011["legacy_manifest"],
+        "legacy_coverage": paths_bl011["legacy_coverage"],
+    }
+    for path in optional_inputs.values():
+        if path.exists():
+            fixed_inputs[relpath(path)] = bl011_module.sha256_of_file(path)
+
+    return {
+        "task": "BL-011",
+        "generated_from": relpath(paths_bl011["baseline_snapshot"]),
+        "baseline_config_hash": baseline_config_hash,
+        "input_source": "active_pipeline_outputs",
+        "fixed_inputs": fixed_inputs,
+        "optional_dependency_availability": {
+            key: {
+                "path": relpath(path),
+                "available": path.exists(),
+            }
+            for key, path in optional_inputs.items()
+        },
+        "scenario_count": len(scenarios),
+        "runtime_controls": {
+            "config_source": runtime_controls["config_source"],
+            "run_config_path": runtime_controls["run_config_path"],
+            "weight_override_value_if_component_present": runtime_controls["weight_override_value_if_component_present"],
+            "weight_override_increment_fallback": runtime_controls["weight_override_increment_fallback"],
+            "weight_override_cap_fallback": runtime_controls["weight_override_cap_fallback"],
+            "stricter_threshold_scale": runtime_controls["stricter_threshold_scale"],
+            "looser_threshold_scale": runtime_controls["looser_threshold_scale"],
+        },
+        "scenarios": scenarios,
+    }
+
+
+def refresh_bl010_bl011_evidence() -> tuple[int, dict[str, str]]:
+    """Refresh BL-010 and BL-011 evidence artifacts used by freshness checks."""
+    bl010_script = (
+        REPO_ROOT
+        / "07_implementation"
+        / "implementation_notes"
+        / "bl010_reproducibility"
+        / "run_bl010_reproducibility_check.py"
+    )
+    bl011_script = (
+        REPO_ROOT
+        / "07_implementation"
+        / "implementation_notes"
+        / "bl011_controllability"
+        / "run_bl011_controllability_check.py"
+    )
+    bl010_return, bl010_output = run_python_script(bl010_script)
+    if bl010_return != 0:
+        return bl010_return, {
+            "bl010_stdout_stderr": bl010_output,
+            "bl011_stdout_stderr": "",
+        }
+    bl011_return, bl011_output = run_python_script(bl011_script)
+    return bl011_return, {
+        "bl010_stdout_stderr": bl010_output,
+        "bl011_stdout_stderr": bl011_output,
+    }
+
+
 def load_module(name: str, path: Path):
     spec = importlib.util.spec_from_file_location(name, path)
     if spec is None or spec.loader is None:
@@ -121,63 +235,36 @@ def run_freshness_mode() -> int:
         REPO_ROOT / "07_implementation" / "implementation_notes" / "bl011_controllability" / "run_bl011_controllability_check.py",
     )
 
-    bl010_snapshot_path = REPO_ROOT / "07_implementation" / "implementation_notes" / "bl010_reproducibility" / "outputs" / "bl010_reproducibility_config_snapshot.json"
-    bl010_report_path = REPO_ROOT / "07_implementation" / "implementation_notes" / "bl010_reproducibility" / "outputs" / "bl010_reproducibility_report.json"
-    bl011_snapshot_path = REPO_ROOT / "07_implementation" / "implementation_notes" / "bl011_controllability" / "outputs" / "bl011_controllability_config_snapshot.json"
-    bl011_report_path = REPO_ROOT / "07_implementation" / "implementation_notes" / "bl011_controllability" / "outputs" / "bl011_controllability_report.json"
+    freshness_paths = freshness_input_paths()
+    required_paths = [
+        freshness_paths["bl010_snapshot"],
+        freshness_paths["bl010_report"],
+        freshness_paths["bl011_snapshot"],
+        freshness_paths["bl011_report"],
+    ]
+    ensure_paths_exist(required_paths, label="freshness inputs")
 
-    required_paths = [bl010_snapshot_path, bl010_report_path, bl011_snapshot_path, bl011_report_path]
-    missing = [relpath(path) for path in required_paths if not path.exists()]
-    if missing:
-        raise FileNotFoundError(f"Missing required freshness inputs: {missing}")
-
-    stored_bl010_snapshot = load_json(bl010_snapshot_path)
-    stored_bl010_report = load_json(bl010_report_path)
-    stored_bl011_snapshot = load_json(bl011_snapshot_path)
-    stored_bl011_report = load_json(bl011_report_path)
+    stored_bl010_snapshot = load_json(freshness_paths["bl010_snapshot"])
+    stored_bl010_report = load_json(freshness_paths["bl010_report"])
+    stored_bl011_snapshot = load_json(freshness_paths["bl011_snapshot"])
+    stored_bl011_report = load_json(freshness_paths["bl011_report"])
 
     paths_bl010 = bl010_module.build_paths(REPO_ROOT)
     bl010_module.ensure_required_inputs(paths_bl010, REPO_ROOT)
     current_bl010_snapshot = bl010_module.build_config_snapshot(
         paths_bl010,
         REPO_ROOT,
-        allow_legacy_surrogate_inputs=False,
     )
     current_bl010_hash = bl010_module.canonical_json_hash(current_bl010_snapshot)
     stored_bl010_snapshot_hash = bl010_module.canonical_json_hash(stored_bl010_snapshot)
 
     paths_bl011 = bl011_module.build_paths(REPO_ROOT)
-    bl011_module.ensure_required_inputs(paths_bl011, REPO_ROOT, False)
-    baseline_config_hash = bl011_module.canonical_json_hash(current_bl010_snapshot)
-    scenarios = bl011_module.build_scenarios(current_bl010_snapshot)
-    fixed_inputs = {
-        relpath(paths_bl011["active_seed_trace"]): bl011_module.sha256_of_file(paths_bl011["active_seed_trace"]),
-        relpath(paths_bl011["active_candidates"]): bl011_module.sha256_of_file(paths_bl011["active_candidates"]),
-    }
-    optional_inputs = {
-        "legacy_manifest": paths_bl011["legacy_manifest"],
-        "legacy_coverage": paths_bl011["legacy_coverage"],
-    }
-    for path in optional_inputs.values():
-        if path.exists():
-            fixed_inputs[relpath(path)] = bl011_module.sha256_of_file(path)
-
-    current_bl011_snapshot = {
-        "task": "BL-011",
-        "generated_from": relpath(paths_bl011["baseline_snapshot"]),
-        "baseline_config_hash": baseline_config_hash,
-        "input_source": "active_pipeline_outputs",
-        "fixed_inputs": fixed_inputs,
-        "optional_dependency_availability": {
-            key: {
-                "path": relpath(path),
-                "available": path.exists(),
-            }
-            for key, path in optional_inputs.items()
-        },
-        "scenario_count": len(scenarios),
-        "scenarios": scenarios,
-    }
+    bl011_module.ensure_required_inputs(paths_bl011, REPO_ROOT)
+    current_bl011_snapshot = build_current_bl011_snapshot(
+        bl011_module,
+        paths_bl011=paths_bl011,
+        current_bl010_snapshot=current_bl010_snapshot,
+    )
     current_bl011_hash = bl011_module.canonical_json_hash(current_bl011_snapshot)
     stored_bl011_snapshot_hash = bl011_module.canonical_json_hash(stored_bl011_snapshot)
 
@@ -208,8 +295,8 @@ def run_freshness_mode() -> int:
     add_check(
         checks,
         "bl010_active_mode",
-        stored_bl010_report["run_metadata"]["fixed_input_source"] == "active_pipeline_outputs",
-        "BL-010 evidence is using active pipeline outputs rather than legacy surrogate inputs",
+        str(stored_bl010_report["run_metadata"]["fixed_input_source"]) == "active_pipeline_outputs",
+        "BL-010 evidence mode matches requested freshness mode input source",
     )
     add_check(
         checks,
@@ -232,8 +319,8 @@ def run_freshness_mode() -> int:
     add_check(
         checks,
         "bl011_active_mode",
-        stored_bl011_snapshot["input_source"] == "active_pipeline_outputs",
-        "BL-011 evidence is using active pipeline outputs rather than legacy surrogate inputs",
+        str(stored_bl011_snapshot["input_source"]) == "active_pipeline_outputs",
+        "BL-011 evidence mode matches requested freshness mode input source",
     )
 
     overall_status = "pass" if all(item["status"] == "pass" for item in checks) else "fail"
@@ -245,10 +332,10 @@ def run_freshness_mode() -> int:
         elapsed_seconds=round(time.time() - started, 3),
         overall_status=overall_status,
         evidence_paths={
-            "bl010_config_snapshot": relpath(bl010_snapshot_path),
-            "bl010_report": relpath(bl010_report_path),
-            "bl011_config_snapshot": relpath(bl011_snapshot_path),
-            "bl011_report": relpath(bl011_report_path),
+            "bl010_config_snapshot": relpath(freshness_paths["bl010_snapshot"]),
+            "bl010_report": relpath(freshness_paths["bl010_report"]),
+            "bl011_config_snapshot": relpath(freshness_paths["bl011_snapshot"]),
+            "bl011_report": relpath(freshness_paths["bl011_report"]),
             "bl010_config_hash": current_bl010_hash,
             "bl011_config_hash": current_bl011_hash,
         },
@@ -321,7 +408,23 @@ def run_active_mode() -> int:
         "BL-014 report overall_status is pass",
     )
 
+    refresh_outputs: dict[str, str] = {}
     freshness_return = run_freshness_mode()
+    freshness_refresh_attempted = False
+    freshness_auto_refreshed = False
+    if freshness_return != 0:
+        freshness_refresh_attempted = True
+        refresh_return, refresh_outputs = refresh_bl010_bl011_evidence()
+        add_check(
+            checks,
+            "bl010_bl011_refresh_exit_zero",
+            refresh_return == 0,
+            f"BL-010/BL-011 evidence refresh return code={refresh_return}",
+        )
+        if refresh_return == 0:
+            freshness_return = run_freshness_mode()
+            freshness_auto_refreshed = True
+
     add_check(
         checks,
         "bl010_bl011_freshness_exit_zero",
@@ -338,6 +441,18 @@ def run_active_mode() -> int:
         "bl010_bl011_freshness_report_pass",
         str(freshness_report.get("run_metadata", {}).get("overall_status")) == "pass",
         "BL-010/BL-011 freshness report overall_status is pass",
+    )
+    add_check(
+        checks,
+        "bl010_bl011_freshness_auto_refresh",
+        (not freshness_refresh_attempted) or freshness_auto_refreshed,
+        "BL-010/BL-011 freshness auto-refresh succeeded"
+        if freshness_auto_refreshed
+        else (
+            "BL-010/BL-011 freshness auto-refresh was attempted but failed"
+            if freshness_refresh_attempted
+            else "BL-010/BL-011 freshness auto-refresh was not needed"
+        ),
     )
 
     overall_status = "pass" if all(item["status"] == "pass" for item in checks) else "fail"
@@ -360,6 +475,7 @@ def run_active_mode() -> int:
         matrix_path=matrix_path,
         script_outputs={
             "bl014_stdout_stderr": bl014_output,
+            **refresh_outputs,
         },
     )
 

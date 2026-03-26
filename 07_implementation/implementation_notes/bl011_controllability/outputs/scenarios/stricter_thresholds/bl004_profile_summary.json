@@ -1,8 +1,8 @@
 {
-  "run_id": "BL011-STRICTER_THRESHOLDS-BL004-20260325-231148-456336",
+  "run_id": "BL011-STRICTER_THRESHOLDS-BL004-20260326-055954-441753",
   "scenario_id": "stricter_thresholds",
-  "matched_seed_count": 1026,
-  "total_effective_weight": 2197.198246,
+  "matched_seed_count": 1064,
+  "total_effective_weight": 2322.377778,
   "dominant_lead_genres": [
     "pop",
     "classic rock",
@@ -15,7 +15,7 @@
     "pop",
     "classic rock",
     "70s",
-    "80s"
+    "alternative"
   ],
   "dominant_genres": [
     "rock",

@@ -1,19 +1,19 @@
 {
-  "run_id": "BL006-SCORE-20260325-231048-320258",
+  "run_id": "BL006-SCORE-20260326-055841-008640",
   "task": "BL-006",
-  "generated_at_utc": "2026-03-25T23:10:51Z",
+  "generated_at_utc": "2026-03-26T05:58:43Z",
   "input_artifacts": {
     "profile_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl004_profile\\outputs\\bl004_preference_profile.json",
-    "profile_sha256": "b439b1d6967b6e6116c869c136ed6cf486ccf67194a619ab1ef3bfc6a01ac522",
+    "profile_sha256": "117d11a93f113c63d36f69a69e570e0e63409b0c0c765403c686bf3d467a483b",
     "filtered_candidates_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl005_retrieval\\outputs\\bl005_filtered_candidates.csv",
-    "filtered_candidates_sha256": "bee2dae05606decf378f430b50023ea796f2774dba120b10856b4c02b4579186"
+    "filtered_candidates_sha256": "367a528541aa29a8bc9ced0ca6a54ab708f912db705285e5f5a51275d438a8e4"
   },
   "config": {
     "numeric_thresholds": {
-      "tempo": 15.0,
-      "key": 1.5,
+      "tempo": 20.0,
+      "key": 2.0,
       "mode": 0.5,
-      "duration_ms": 30000.0
+      "duration_ms": 45000.0
     },
     "numeric_feature_mapping": {
       "tempo": "tempo",
@@ -22,22 +22,22 @@
       "duration_ms": "duration_ms"
     },
     "base_component_weights": {
-      "tempo": 0.12,
-      "duration_ms": 0.08,
-      "key": 0.08,
-      "mode": 0.07,
-      "lead_genre": 0.23,
-      "genre_overlap": 0.19,
-      "tag_overlap": 0.23
+      "tempo_score": 0.2,
+      "duration_ms_score": 0.13,
+      "key_score": 0.13,
+      "mode_score": 0.09,
+      "lead_genre_score": 0.17,
+      "genre_overlap_score": 0.12,
+      "tag_overlap_score": 0.16
     },
     "active_component_weights": {
-      "tempo": 0.12,
-      "duration_ms": 0.08,
-      "key": 0.08,
-      "mode": 0.07,
-      "lead_genre": 0.23,
-      "genre_overlap": 0.19,
-      "tag_overlap": 0.23
+      "tempo_score": 0.2,
+      "duration_ms_score": 0.13,
+      "key_score": 0.13,
+      "mode_score": 0.09,
+      "lead_genre_score": 0.17,
+      "genre_overlap_score": 0.12,
+      "tag_overlap_score": 0.16
     },
     "inactive_components": [],
     "weight_rebalance_diagnostics": {
@@ -46,22 +46,22 @@
       "active_component_count": 7,
       "inactive_components": [],
       "original_active_component_weights": {
-        "tempo": 0.12,
-        "duration_ms": 0.08,
-        "key": 0.08,
-        "mode": 0.07,
-        "lead_genre": 0.23,
-        "genre_overlap": 0.19,
-        "tag_overlap": 0.23
+        "tempo_score": 0.2,
+        "duration_ms_score": 0.13,
+        "key_score": 0.13,
+        "mode_score": 0.09,
+        "lead_genre_score": 0.17,
+        "genre_overlap_score": 0.12,
+        "tag_overlap_score": 0.16
       },
       "normalized_active_component_weights": {
-        "tempo": 0.12,
-        "duration_ms": 0.08,
-        "key": 0.08,
-        "mode": 0.07,
-        "lead_genre": 0.23,
-        "genre_overlap": 0.19,
-        "tag_overlap": 0.23
+        "tempo_score": 0.2,
+        "duration_ms_score": 0.13,
+        "key_score": 0.13,
+        "mode_score": 0.09,
+        "lead_genre_score": 0.17,
+        "genre_overlap_score": 0.12,
+        "tag_overlap_score": 0.16
       },
       "warning": null
     },
@@ -71,47 +71,47 @@
     "semantic_source": "ds001_tags_and_genres_columns"
   },
   "counts": {
-    "candidates_scored": 55643
+    "candidates_scored": 70282
   },
   "score_statistics": {
-    "max_score": 0.757612,
-    "min_score": 0.010163,
-    "mean_score": 0.262591,
-    "median_score": 0.25469
+    "max_score": 0.78176,
+    "min_score": 0.00462,
+    "mean_score": 0.220792,
+    "median_score": 0.205605
   },
   "component_balance": {
     "all_candidates": {
-      "numeric_contribution_mean": 0.074876,
-      "semantic_contribution_mean": 0.187715,
-      "tempo_mean": 0.032551,
-      "duration_ms_mean": 0.020146,
-      "key_mean": 0.008821,
-      "mode_mean": 0.013358,
-      "lead_genre_mean": 0.099783,
-      "genre_overlap_mean": 0.041578,
-      "tag_overlap_mean": 0.046354
+      "numeric_contribution_mean": 0.921851,
+      "semantic_contribution_mean": 0.587889,
+      "tempo_mean": 0.287484,
+      "duration_ms_mean": 0.300628,
+      "key_mean": 0.162728,
+      "mode_mean": 0.171011,
+      "lead_genre_mean": 0.191443,
+      "genre_overlap_mean": 0.207707,
+      "tag_overlap_mean": 0.188739
     },
     "top_100": {
-      "numeric_contribution_mean": 0.171164,
-      "semantic_contribution_mean": 0.466863,
-      "tempo_mean": 0.092262,
-      "duration_ms_mean": 0.0433,
-      "key_mean": 0.020783,
-      "mode_mean": 0.014819,
-      "lead_genre_mean": 0.220097,
-      "genre_overlap_mean": 0.120407,
-      "tag_overlap_mean": 0.126359
+      "numeric_contribution_mean": 2.562436,
+      "semantic_contribution_mean": 1.696585,
+      "tempo_mean": 0.898781,
+      "duration_ms_mean": 0.805897,
+      "key_mean": 0.632585,
+      "mode_mean": 0.225173,
+      "lead_genre_mean": 1.0,
+      "genre_overlap_mean": 0.369514,
+      "tag_overlap_mean": 0.327071
     },
     "top_500": {
-      "numeric_contribution_mean": 0.155942,
-      "semantic_contribution_mean": 0.430945,
-      "tempo_mean": 0.08292,
-      "duration_ms_mean": 0.038326,
-      "key_mean": 0.020219,
-      "mode_mean": 0.014477,
-      "lead_genre_mean": 0.216359,
-      "genre_overlap_mean": 0.104046,
-      "tag_overlap_mean": 0.11054
+      "numeric_contribution_mean": 2.238055,
+      "semantic_contribution_mean": 1.641512,
+      "tempo_mean": 0.838907,
+      "duration_ms_mean": 0.730669,
+      "key_mean": 0.487281,
+      "mode_mean": 0.181198,
+      "lead_genre_mean": 0.996,
+      "genre_overlap_mean": 0.342562,
+      "tag_overlap_mean": 0.30295
     }
   },
   "top_candidates": [
@@ -119,89 +119,89 @@
       "rank": 1,
       "track_id": "C9oA7Glm1TItxpQA",
       "lead_genre": "pop",
-      "final_score": 0.757612,
-      "matched_genres": "pop|rock|classic rock",
-      "matched_tags": "pop|rock|classic rock"
+      "final_score": 0.78176,
+      "matched_genres": "",
+      "matched_tags": ""
     },
     {
       "rank": 2,
       "track_id": "7dYk0TCGZqev3LJD",
       "lead_genre": "pop",
-      "final_score": 0.729966,
-      "matched_genres": "pop|classic rock|rock",
-      "matched_tags": "80s|pop|classic rock|rock"
+      "final_score": 0.73493,
+      "matched_genres": "",
+      "matched_tags": ""
     },
     {
       "rank": 3,
       "track_id": "I2K0KDtgE2eZhPRw",
       "lead_genre": "pop",
-      "final_score": 0.710987,
-      "matched_genres": "pop|rock",
-      "matched_tags": "pop|rock|70s|80s|female vocalists"
+      "final_score": 0.726619,
+      "matched_genres": "",
+      "matched_tags": ""
     },
     {
       "rank": 4,
-      "track_id": "36zZsq0r6BMf2VfX",
+      "track_id": "Oa3WjjG6GreWw3Bf",
       "lead_genre": "pop",
-      "final_score": 0.696441,
-      "matched_genres": "pop|rock",
-      "matched_tags": "80s|pop|female vocalists|rock"
+      "final_score": 0.723516,
+      "matched_genres": "",
+      "matched_tags": ""
     },
     {
       "rank": 5,
-      "track_id": "3ltMH5jik02hVLDF",
-      "lead_genre": "classic rock",
-      "final_score": 0.69514,
-      "matched_genres": "classic rock|rock|pop",
-      "matched_tags": "classic rock|rock|70s|pop"
+      "track_id": "5c9fu0pBIl9QUmed",
+      "lead_genre": "pop",
+      "final_score": 0.723244,
+      "matched_genres": "",
+      "matched_tags": ""
     },
     {
       "rank": 6,
-      "track_id": "D8u1nCspnPIixiZa",
-      "lead_genre": "classic rock",
-      "final_score": 0.692542,
-      "matched_genres": "classic rock|rock|pop",
-      "matched_tags": "80s|classic rock|rock|pop"
+      "track_id": "36zZsq0r6BMf2VfX",
+      "lead_genre": "pop",
+      "final_score": 0.722085,
+      "matched_genres": "",
+      "matched_tags": ""
     },
     {
       "rank": 7,
-      "track_id": "op7gT9GOpqOk7wc8",
+      "track_id": "pTle20sjv0uVIr2o",
       "lead_genre": "pop",
-      "final_score": 0.687446,
-      "matched_genres": "pop|classic rock|rock",
-      "matched_tags": "80s|pop|classic rock|rock"
+      "final_score": 0.708332,
+      "matched_genres": "",
+      "matched_tags": ""
     },
     {
       "rank": 8,
-      "track_id": "8fDlJsjie4DoFMV0",
+      "track_id": "op7gT9GOpqOk7wc8",
       "lead_genre": "pop",
-      "final_score": 0.687296,
-      "matched_genres": "pop|classic rock|rock",
-      "matched_tags": "pop|classic rock|rock"
+      "final_score": 0.693133,
+      "matched_genres": "",
+      "matched_tags": ""
     },
     {
       "rank": 9,
       "track_id": "ZBzCrWWH35yTPv8P",
       "lead_genre": "pop",
-      "final_score": 0.686533,
-      "matched_genres": "pop|classic rock|rock",
-      "matched_tags": "pop|80s|classic rock|rock"
+      "final_score": 0.691217,
+      "matched_genres": "",
+      "matched_tags": ""
     },
     {
       "rank": 10,
-      "track_id": "Oa3WjjG6GreWw3Bf",
+      "track_id": "h2e5nNsGSAuOyTfw",
       "lead_genre": "pop",
-      "final_score": 0.684299,
-      "matched_genres": "pop|rock",
-      "matched_tags": "indie|alternative|pop|rock"
+      "final_score": 0.685949,
+      "matched_genres": "",
+      "matched_tags": ""
     }
   ],
-  "elapsed_seconds": 3.739,
+  "elapsed_seconds": 3.357,
   "output_files": {
     "scored_candidates_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl006_scoring\\outputs\\bl006_scored_candidates.csv"
   },
   "output_hashes_sha256": {
-    "bl006_scored_candidates.csv": "1b7ba98f48e1cda181d9ef4cd51e320a94f0e80341e287aaf6efa1e992ae227d"
+    "bl006_scored_candidates.csv": "96ae241d5c6195f148455919daa1d479a40b75cca25381e2ebefc35c3e489bd0"
   },
   "summary_hash_note": "summary file hash collected separately in experiment logging to avoid recursive self-reference"
 }

@@ -4,6 +4,7 @@ import argparse
 import csv
 import hashlib
 import json
+import os
 import time
 from datetime import datetime, timezone
 from pathlib import Path
@@ -12,6 +13,7 @@ import sys
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
+from bl000_shared_utils.config_loader import load_run_config_utils_module
 from bl000_shared_utils.report_utils import render_csv_text, write_text
 
 
@@ -32,14 +34,6 @@ def repo_root() -> Path:
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description="BL-011 controllability evaluation for BL-004 to BL-007 behavior shifts."
-    )
-    parser.add_argument(
-        "--allow-legacy-surrogate-inputs",
-        action="store_true",
-        help=(
-            "Opt in to legacy surrogate assets (BL-016/BL-017) when available. "
-            "Default uses active pipeline outputs only."
-        ),
     )
     return parser.parse_args()
 
@@ -74,16 +68,6 @@ def csv_text(fieldnames: list[str], rows: list[dict[str, object]]) -> str:
 
 def load_json(path: Path) -> dict:
     return json.loads(path.read_text(encoding="utf-8"))
-
-
-def load_jsonl(path: Path) -> list[dict[str, object]]:
-    rows: list[dict[str, object]] = []
-    with path.open("r", encoding="utf-8") as handle:
-        for line in handle:
-            text = line.strip()
-            if text:
-                rows.append(json.loads(text))
-    return rows
 
 
 def load_csv_rows(path: Path) -> list[dict[str, str]]:
@@ -192,10 +176,6 @@ def candidate_weight_pairs(row: dict[str, str], label_type: str) -> list[tuple[s
     return [(label, 1.0) for label in parse_csv_labels(row.get("tags", ""))]
 
 
-def resolve_legacy_mode(paths: dict[str, Path], allow_legacy_surrogate_inputs: bool) -> bool:
-    return bool(allow_legacy_surrogate_inputs) and paths["legacy_events"].exists() and paths["legacy_candidates"].exists()
-
-
 def sorted_weight_map(weight_map: dict[str, float], limit: int) -> list[dict[str, float | str]]:
     ordered = sorted(weight_map.items(), key=lambda item: (-item[1], item[0]))
     return [{"label": label, "weight": round(weight, 6)} for label, weight in ordered[:limit]]
@@ -277,8 +257,6 @@ def decision_reason(is_seed_track: bool, semantic_score: int, numeric_pass_count
 
 def build_paths(root: Path) -> dict[str, Path]:
     return {
-        "legacy_events": root / "07_implementation" / "implementation_notes" / "test_assets" / "bl016_synthetic_aligned_events.jsonl",
-        "legacy_candidates": root / "07_implementation" / "implementation_notes" / "test_assets" / "bl016_candidate_stub.csv",
         "legacy_manifest": root / "07_implementation" / "implementation_notes" / "test_assets" / "bl016_asset_manifest.json",
         "legacy_coverage": root / "07_implementation" / "implementation_notes" / "bl000_data_layer" / "outputs" / "onion_join_coverage_report.json",
         "active_seed_trace": root / "07_implementation" / "implementation_notes" / "bl004_profile" / "outputs" / "bl004_seed_trace.csv",
@@ -288,18 +266,30 @@ def build_paths(root: Path) -> dict[str, Path]:
     }
 
 
-def ensure_required_inputs(paths: dict[str, Path], root: Path, allow_legacy_surrogate_inputs: bool) -> None:
-    required = ["baseline_snapshot"]
-    if resolve_legacy_mode(paths, allow_legacy_surrogate_inputs):
-        required.extend(["legacy_events", "legacy_candidates"])
-    else:
-        required.extend(["active_seed_trace", "active_candidates"])
+def resolve_bl011_runtime_controls() -> dict[str, object]:
+    rc_utils = load_run_config_utils_module()
+    controls: dict[str, object] = {
+        "config_source": "defaults",
+        "run_config_path": None,
+        **rc_utils.resolve_bl011_controls(None),
+    }
+    run_config_path = os.environ.get("BL_RUN_CONFIG_PATH", "").strip() or None
+    if run_config_path:
+        resolved = rc_utils.resolve_bl011_controls(run_config_path)
+        controls.update(resolved)
+        controls["config_source"] = "run_config"
+        controls["run_config_path"] = run_config_path
+    return controls
+
+
+def ensure_required_inputs(paths: dict[str, Path], root: Path) -> None:
+    required = ["baseline_snapshot", "active_seed_trace", "active_candidates"]
     missing = [relpath(paths[key], root) for key in required if not paths[key].exists()]
     if missing:
         raise FileNotFoundError(f"BL-011 missing required inputs: {missing}")
 
 
-def build_scenarios(baseline_snapshot: dict) -> list[dict[str, object]]:
+def build_scenarios(baseline_snapshot: dict, runtime_controls: dict[str, object]) -> list[dict[str, object]]:
     base_profile = baseline_snapshot["stage_configs"]["profile"]
     base_retrieval = baseline_snapshot["stage_configs"]["retrieval"]
     base_scoring = baseline_snapshot["stage_configs"]["scoring"]
@@ -313,15 +303,20 @@ def build_scenarios(baseline_snapshot: dict) -> list[dict[str, object]]:
     scoring_weights = normalize_component_weight_keys(scoring_weights)
     if not scoring_weights:
         raise RuntimeError("BL-011 could not resolve scoring component weights from baseline snapshot")
+    override_if_present = float(runtime_controls["weight_override_value_if_component_present"])
+    override_increment_fallback = float(runtime_controls["weight_override_increment_fallback"])
+    override_cap_fallback = float(runtime_controls["weight_override_cap_fallback"])
+    stricter_threshold_scale = float(runtime_controls["stricter_threshold_scale"])
+    looser_threshold_scale = float(runtime_controls["looser_threshold_scale"])
     if "valence" in scoring_weights:
         override_component = "valence"
-        override_raw_value = 0.20
+        override_raw_value = override_if_present
     elif "V_mean" in scoring_weights:
         override_component = "V_mean"
-        override_raw_value = 0.20
+        override_raw_value = override_if_present
     else:
         override_component = next(iter(scoring_weights.keys()))
-        override_raw_value = min(0.35, float(scoring_weights[override_component]) + 0.08)
+        override_raw_value = min(override_cap_fallback, float(scoring_weights[override_component]) + override_increment_fallback)
 
     return [
         {
@@ -392,14 +387,14 @@ def build_scenarios(baseline_snapshot: dict) -> list[dict[str, object]]:
             "scenario_id": "stricter_thresholds",
             "test_id": "EP-CTRL-003",
             "control_surface": "candidate_threshold",
-            "description": "Tighten all numeric retrieval thresholds by multiplying them by 0.75.",
+            "description": f"Tighten all numeric retrieval thresholds by multiplying them by {stricter_threshold_scale:.2f}.",
             "profile": {
                 **base_profile,
                 "include_interaction_types": ["history", "influence"],
             },
             "retrieval": {
                 **base_retrieval,
-                "threshold_scale": 0.75,
+                "threshold_scale": stricter_threshold_scale,
             },
             "scoring": {
                 **base_scoring,
@@ -413,14 +408,14 @@ def build_scenarios(baseline_snapshot: dict) -> list[dict[str, object]]:
             "scenario_id": "looser_thresholds",
             "test_id": "EP-CTRL-003",
             "control_surface": "candidate_threshold",
-            "description": "Loosen all numeric retrieval thresholds by multiplying them by 1.25.",
+            "description": f"Loosen all numeric retrieval thresholds by multiplying them by {looser_threshold_scale:.2f}.",
             "profile": {
                 **base_profile,
                 "include_interaction_types": ["history", "influence"],
             },
             "retrieval": {
                 **base_retrieval,
-                "threshold_scale": 1.25,
+                "threshold_scale": looser_threshold_scale,
             },
             "scoring": {
                 **base_scoring,
@@ -1116,29 +1111,6 @@ def merge_stage_maps(*maps: dict[str, str]) -> dict[str, str]:
     return merged
 
 
-def build_fixed_input_hashes(
-    *,
-    paths: dict[str, Path],
-    root: Path,
-    legacy_mode: bool,
-    input_artifacts: dict[str, str],
-) -> dict[str, str]:
-    fixed_inputs = build_fixed_input_hashes(
-        paths=paths,
-        root=root,
-        legacy_mode=legacy_mode,
-        input_artifacts=input_artifacts,
-    )
-    optional_inputs = {
-        "legacy_manifest": paths["legacy_manifest"],
-        "legacy_coverage": paths["legacy_coverage"],
-    }
-    for path in optional_inputs.values():
-        if path.exists():
-            fixed_inputs[relpath(path, root)] = sha256_of_file(path)
-    return fixed_inputs
-
-
 def build_rank_shift_summary(baseline_rank_map: dict[str, int], scenario_rank_map: dict[str, int]) -> dict[str, object]:
     common_ids = sorted(set(baseline_rank_map).intersection(scenario_rank_map))
     if not common_ids:
@@ -1235,63 +1207,97 @@ def compare_to_baseline(baseline_result: dict[str, object], scenario_result: dic
     }
 
 
+def build_baseline_comparison(baseline_result: dict[str, object]) -> dict[str, object]:
+    baseline_metrics = baseline_result["metrics"]
+    top10_count = len(baseline_metrics["top10_track_ids"])
+    playlist_len = int(baseline_metrics["playlist_length"])
+    return {
+        "observable_shift": False,
+        "expected_direction_met": True,
+        "candidate_pool_size_delta": 0,
+        "playlist_length_delta": 0,
+        "top10_overlap_count": top10_count,
+        "top10_overlap_ratio": 1.0,
+        "playlist_overlap_count": playlist_len,
+        "playlist_overlap_ratio": 1.0,
+        "top10_added_track_ids": [],
+        "top10_removed_track_ids": [],
+        "playlist_added_track_ids": [],
+        "playlist_removed_track_ids": [],
+        "profile_lead_genres_before": baseline_metrics["dominant_lead_genres"],
+        "profile_lead_genres_after": baseline_metrics["dominant_lead_genres"],
+        "component_mean_delta": {key: 0.0 for key in baseline_metrics["mean_component_contributions"]},
+        "rank_shift_summary": build_rank_shift_summary(baseline_metrics["rank_map"], baseline_metrics["rank_map"]),
+    }
+
+
+def build_active_seed_events(seed_rows: list[dict[str, str]]) -> list[dict[str, object]]:
+    events: list[dict[str, object]] = []
+    for idx, row in enumerate(seed_rows, start=1):
+        events.append(
+            {
+                "event_id": str(row.get("event_id") or f"seed_event_{idx:06d}"),
+                "track_id": str(row.get("track_id", "")),
+                "interaction_type": str(row.get("interaction_type") or "history"),
+                "signal_source": str(row.get("signal_source") or "seed_trace"),
+                "seed_rank": int(float(row.get("interaction_count") or idx)),
+                "interaction_count": int(float(row.get("interaction_count") or 1)),
+                "preference_weight": float(row.get("preference_weight") or row.get("effective_weight") or 1.0),
+                "user_id": str(row.get("user_id") or "active_user"),
+                "lead_genre": str(row.get("lead_genre") or ""),
+                "top_tag": str(row.get("top_tag") or ""),
+            }
+        )
+    return events
+
+
+def evaluate_results_status(scenario_records: list[dict[str, object]]) -> dict[str, object]:
+    non_baseline_records = [record for record in scenario_records if record["scenario_id"] != "baseline"]
+    all_repeat = all(record["repeat_consistent"] for record in scenario_records)
+    all_shift = all(record["comparison_to_baseline"]["observable_shift"] for record in non_baseline_records)
+    all_direction = all(record["comparison_to_baseline"]["expected_direction_met"] for record in non_baseline_records)
+    return {
+        "all_scenarios_repeat_consistent": all_repeat,
+        "all_variant_shifts_observable": all_shift,
+        "all_variant_directions_met": all_direction,
+        "status": "pass" if all_repeat and all_shift and all_direction else "bounded-risk",
+    }
+
+
 def main() -> None:
-    args = parse_args()
+    parse_args()
     root = repo_root()
+    runtime_controls = resolve_bl011_runtime_controls()
     paths = build_paths(root)
-    ensure_required_inputs(paths, root, bool(args.allow_legacy_surrogate_inputs))
-    legacy_mode = resolve_legacy_mode(paths, bool(args.allow_legacy_surrogate_inputs))
+    ensure_required_inputs(paths, root)
 
     output_dir = paths["output_dir"]
     output_dir.mkdir(parents=True, exist_ok=True)
     (output_dir / "scenarios").mkdir(parents=True, exist_ok=True)
 
     baseline_snapshot = load_json(paths["baseline_snapshot"])
-    if legacy_mode:
-        events = load_jsonl(paths["legacy_events"])
-        candidate_rows = [normalize_candidate_row(row) for row in load_csv_rows(paths["legacy_candidates"])]
-        input_artifacts = {
-            "aligned_events_path": relpath(paths["legacy_events"], root),
-            "candidate_stub_path": relpath(paths["legacy_candidates"], root),
-        }
-    else:
-        seed_rows = load_csv_rows(paths["active_seed_trace"])
-        events = []
-        for idx, row in enumerate(seed_rows, start=1):
-            events.append(
-                {
-                    "event_id": str(row.get("event_id") or f"seed_event_{idx:06d}"),
-                    "track_id": str(row.get("track_id", "")),
-                    "interaction_type": str(row.get("interaction_type") or "history"),
-                    "signal_source": str(row.get("signal_source") or "seed_trace"),
-                    "seed_rank": int(float(row.get("interaction_count") or idx)),
-                    "interaction_count": int(float(row.get("interaction_count") or 1)),
-                    "preference_weight": float(row.get("preference_weight") or row.get("effective_weight") or 1.0),
-                    "user_id": str(row.get("user_id") or "active_user"),
-                    "lead_genre": str(row.get("lead_genre") or ""),
-                    "top_tag": str(row.get("top_tag") or ""),
-                }
-            )
-        candidate_rows = [normalize_candidate_row(row) for row in load_csv_rows(paths["active_candidates"])]
-        input_artifacts = {
-            "aligned_events_path": relpath(paths["active_seed_trace"], root),
-            "candidate_stub_path": relpath(paths["active_candidates"], root),
-        }
+    seed_rows = load_csv_rows(paths["active_seed_trace"])
+    events = build_active_seed_events(seed_rows)
+    candidate_rows = [normalize_candidate_row(row) for row in load_csv_rows(paths["active_candidates"])]
+    input_artifacts = {
+        "aligned_events_path": relpath(paths["active_seed_trace"], root),
+        "candidate_stub_path": relpath(paths["active_candidates"], root),
+    }
 
     candidate_rows_by_id = {row["track_id"]: row for row in candidate_rows}
 
     baseline_config_hash = canonical_json_hash(baseline_snapshot)
-    scenarios = build_scenarios(baseline_snapshot)
+    scenarios = build_scenarios(baseline_snapshot, runtime_controls)
 
     fixed_inputs = {
-        input_artifacts["aligned_events_path"]: sha256_of_file(paths["legacy_events"] if legacy_mode else paths["active_seed_trace"]),
-        input_artifacts["candidate_stub_path"]: sha256_of_file(paths["legacy_candidates"] if legacy_mode else paths["active_candidates"]),
+        input_artifacts["aligned_events_path"]: sha256_of_file(paths["active_seed_trace"]),
+        input_artifacts["candidate_stub_path"]: sha256_of_file(paths["active_candidates"]),
     }
     optional_inputs = {
         "legacy_manifest": paths["legacy_manifest"],
         "legacy_coverage": paths["legacy_coverage"],
     }
-    for key, path in optional_inputs.items():
+    for path in optional_inputs.values():
         if path.exists():
             fixed_inputs[relpath(path, root)] = sha256_of_file(path)
 
@@ -1299,7 +1305,7 @@ def main() -> None:
         "task": "BL-011",
         "generated_from": relpath(paths["baseline_snapshot"], root),
         "baseline_config_hash": baseline_config_hash,
-        "input_source": "legacy_surrogate_assets" if legacy_mode else "active_pipeline_outputs",
+        "input_source": "active_pipeline_outputs",
         "fixed_inputs": fixed_inputs,
         "optional_dependency_availability": {
             key: {
@@ -1309,6 +1315,15 @@ def main() -> None:
             for key, path in optional_inputs.items()
         },
         "scenario_count": len(scenarios),
+        "runtime_controls": {
+            "config_source": runtime_controls["config_source"],
+            "run_config_path": runtime_controls["run_config_path"],
+            "weight_override_value_if_component_present": runtime_controls["weight_override_value_if_component_present"],
+            "weight_override_increment_fallback": runtime_controls["weight_override_increment_fallback"],
+            "weight_override_cap_fallback": runtime_controls["weight_override_cap_fallback"],
+            "stricter_threshold_scale": runtime_controls["stricter_threshold_scale"],
+            "looser_threshold_scale": runtime_controls["looser_threshold_scale"],
+        },
         "scenarios": scenarios,
     }
     config_snapshot_path = output_dir / "bl011_controllability_config_snapshot.json"
@@ -1336,24 +1351,7 @@ def main() -> None:
     baseline_result = next(record for record in scenario_records if record["scenario_id"] == "baseline")
     for record in scenario_records:
         if record["scenario_id"] == "baseline":
-            record["comparison_to_baseline"] = {
-                "observable_shift": False,
-                "expected_direction_met": True,
-                "candidate_pool_size_delta": 0,
-                "playlist_length_delta": 0,
-                "top10_overlap_count": 10,
-                "top10_overlap_ratio": 1.0,
-                "playlist_overlap_count": baseline_result["metrics"]["playlist_length"],
-                "playlist_overlap_ratio": 1.0,
-                "top10_added_track_ids": [],
-                "top10_removed_track_ids": [],
-                "playlist_added_track_ids": [],
-                "playlist_removed_track_ids": [],
-                "profile_lead_genres_before": baseline_result["metrics"]["dominant_lead_genres"],
-                "profile_lead_genres_after": baseline_result["metrics"]["dominant_lead_genres"],
-                "component_mean_delta": {key: 0.0 for key in baseline_result["metrics"]["mean_component_contributions"]},
-                "rank_shift_summary": build_rank_shift_summary(baseline_result["metrics"]["rank_map"], baseline_result["metrics"]["rank_map"]),
-            }
+            record["comparison_to_baseline"] = build_baseline_comparison(baseline_result)
         else:
             record["comparison_to_baseline"] = compare_to_baseline(baseline_result, record)
 
@@ -1406,7 +1404,7 @@ def main() -> None:
             }
         )
 
-    non_baseline_records = [record for record in scenario_records if record["scenario_id"] != "baseline"]
+    results_summary = evaluate_results_status(scenario_records)
     report = {
         "run_metadata": {
             "run_id": run_id,
@@ -1428,12 +1426,7 @@ def main() -> None:
             "repeat_method": "each scenario was executed twice with identical parameters and compared via stable stage hashes",
         },
         "scenario_results": scenario_report_records,
-        "results": {
-            "all_scenarios_repeat_consistent": all(record["repeat_consistent"] for record in scenario_records),
-            "all_variant_shifts_observable": all(record["comparison_to_baseline"]["observable_shift"] for record in non_baseline_records),
-            "all_variant_directions_met": all(record["comparison_to_baseline"]["expected_direction_met"] for record in non_baseline_records),
-            "status": "pass" if all(record["repeat_consistent"] for record in scenario_records) and all(record["comparison_to_baseline"]["observable_shift"] for record in non_baseline_records) and all(record["comparison_to_baseline"]["expected_direction_met"] for record in non_baseline_records) else "bounded-risk",
-        },
+        "results": results_summary,
         "output_artifacts": {
             "config_snapshot_path": relpath(config_snapshot_path, root),
             "run_matrix_path": relpath(run_matrix_path, root),

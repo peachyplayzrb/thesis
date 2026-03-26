@@ -1,8 +1,8 @@
 {
-  "generated_at_utc": "2026-03-25T22:57:27Z",
-  "config_source": "run_config",
-  "run_config_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl000_run_config\\configs\\profiles\\run_config_ui013_tuning_v1b.json",
-  "run_config_schema_version": "run-config-v1",
+  "generated_at_utc": "2026-03-26T05:58:23Z",
+  "config_source": "export_selection",
+  "run_config_path": null,
+  "run_config_schema_version": null,
   "input_scope": {
     "source_family": "spotify_api_export",
     "include_top_tracks": true,
@@ -20,15 +20,15 @@
     "recently_played_limit": 50
   },
   "rows_available": {
-    "top_tracks": 10001,
-    "saved_tracks": 200,
-    "playlist_items": 279,
+    "top_tracks": 9998,
+    "saved_tracks": 1306,
+    "playlist_items": 581,
     "recently_played": 50
   },
   "rows_selected": {
-    "top_tracks": 10001,
-    "saved_tracks": 200,
-    "playlist_items": 279,
+    "top_tracks": 9998,
+    "saved_tracks": 1306,
+    "playlist_items": 581,
     "recently_played": 50
   }
 }

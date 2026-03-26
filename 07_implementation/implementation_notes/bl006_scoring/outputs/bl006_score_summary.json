@@ -1,12 +1,12 @@
 {
-  "run_id": "BL006-SCORE-20260326-034224-824432",
+  "run_id": "BL006-SCORE-20260326-060422-221223",
   "task": "BL-006",
-  "generated_at_utc": "2026-03-26T03:42:28Z",
+  "generated_at_utc": "2026-03-26T06:04:25Z",
   "input_artifacts": {
     "profile_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl004_profile\\outputs\\bl004_preference_profile.json",
-    "profile_sha256": "83aca030f2d86360785204839b1f5bb73166fa3ba97181ff47362911203c30bf",
+    "profile_sha256": "97505f2882886fad888d532786d27f0048cc59a74bfa013f1bc9f3ffd0395f7e",
     "filtered_candidates_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl005_retrieval\\outputs\\bl005_filtered_candidates.csv",
-    "filtered_candidates_sha256": "1d2d16814e6f201fd15ed135150c24ee8271a319934772ea4d54448a69e8b66f"
+    "filtered_candidates_sha256": "367a528541aa29a8bc9ced0ca6a54ab708f912db705285e5f5a51275d438a8e4"
   },
   "config": {
     "numeric_thresholds": {
@@ -71,47 +71,47 @@
     "semantic_source": "ds001_tags_and_genres_columns"
   },
   "counts": {
-    "candidates_scored": 72496
+    "candidates_scored": 70282
   },
   "score_statistics": {
-    "max_score": 0.692496,
-    "min_score": 0.012,
-    "mean_score": 0.204141,
-    "median_score": 0.187208
+    "max_score": 0.78176,
+    "min_score": 0.00462,
+    "mean_score": 0.220792,
+    "median_score": 0.205605
   },
   "component_balance": {
     "all_candidates": {
-      "numeric_contribution_mean": 0.929457,
-      "semantic_contribution_mean": 0.456956,
-      "tempo_mean": 0.286073,
-      "duration_ms_mean": 0.304983,
-      "key_mean": 0.163137,
-      "mode_mean": 0.175264,
-      "lead_genre_mean": 0.185693,
-      "genre_overlap_mean": 0.116819,
-      "tag_overlap_mean": 0.154444
+      "numeric_contribution_mean": 0.921851,
+      "semantic_contribution_mean": 0.587889,
+      "tempo_mean": 0.287484,
+      "duration_ms_mean": 0.300628,
+      "key_mean": 0.162728,
+      "mode_mean": 0.171011,
+      "lead_genre_mean": 0.191443,
+      "genre_overlap_mean": 0.207707,
+      "tag_overlap_mean": 0.188739
     },
     "top_100": {
-      "numeric_contribution_mean": 2.632821,
-      "semantic_contribution_mean": 1.408,
-      "tempo_mean": 0.906622,
-      "duration_ms_mean": 0.82121,
-      "key_mean": 0.706861,
-      "mode_mean": 0.198128,
+      "numeric_contribution_mean": 2.562436,
+      "semantic_contribution_mean": 1.696585,
+      "tempo_mean": 0.898781,
+      "duration_ms_mean": 0.805897,
+      "key_mean": 0.632585,
+      "mode_mean": 0.225173,
       "lead_genre_mean": 1.0,
-      "genre_overlap_mean": 0.144,
-      "tag_overlap_mean": 0.264
+      "genre_overlap_mean": 0.369514,
+      "tag_overlap_mean": 0.327071
     },
     "top_500": {
-      "numeric_contribution_mean": 2.288132,
-      "semantic_contribution_mean": 1.3914,
-      "tempo_mean": 0.858292,
-      "duration_ms_mean": 0.760167,
-      "key_mean": 0.484573,
-      "mode_mean": 0.1851,
-      "lead_genre_mean": 1.0,
-      "genre_overlap_mean": 0.1428,
-      "tag_overlap_mean": 0.2486
+      "numeric_contribution_mean": 2.238055,
+      "semantic_contribution_mean": 1.641512,
+      "tempo_mean": 0.838907,
+      "duration_ms_mean": 0.730669,
+      "key_mean": 0.487281,
+      "mode_mean": 0.181198,
+      "lead_genre_mean": 0.996,
+      "genre_overlap_mean": 0.342562,
+      "tag_overlap_mean": 0.30295
     }
   },
   "top_candidates": [
@@ -119,89 +119,89 @@
       "rank": 1,
       "track_id": "C9oA7Glm1TItxpQA",
       "lead_genre": "pop",
-      "final_score": 0.692496,
+      "final_score": 0.78176,
       "matched_genres": "",
       "matched_tags": ""
     },
     {
       "rank": 2,
-      "track_id": "I2K0KDtgE2eZhPRw",
+      "track_id": "7dYk0TCGZqev3LJD",
       "lead_genre": "pop",
-      "final_score": 0.68256,
+      "final_score": 0.73493,
       "matched_genres": "",
       "matched_tags": ""
     },
     {
       "rank": 3,
-      "track_id": "36zZsq0r6BMf2VfX",
+      "track_id": "I2K0KDtgE2eZhPRw",
       "lead_genre": "pop",
-      "final_score": 0.675757,
+      "final_score": 0.726619,
       "matched_genres": "",
       "matched_tags": ""
     },
     {
       "rank": 4,
-      "track_id": "EEA8SGPJqL4QLnW5",
+      "track_id": "Oa3WjjG6GreWw3Bf",
       "lead_genre": "pop",
-      "final_score": 0.674579,
+      "final_score": 0.723516,
       "matched_genres": "",
       "matched_tags": ""
     },
     {
       "rank": 5,
-      "track_id": "0QCmPylIo20WvNeg",
+      "track_id": "5c9fu0pBIl9QUmed",
       "lead_genre": "pop",
-      "final_score": 0.670526,
+      "final_score": 0.723244,
       "matched_genres": "",
       "matched_tags": ""
     },
     {
       "rank": 6,
-      "track_id": "sjsJ6A5tDgBXGeaf",
+      "track_id": "36zZsq0r6BMf2VfX",
       "lead_genre": "pop",
-      "final_score": 0.661681,
+      "final_score": 0.722085,
       "matched_genres": "",
       "matched_tags": ""
     },
     {
       "rank": 7,
-      "track_id": "uVjVJPDReJa85GZM",
+      "track_id": "pTle20sjv0uVIr2o",
       "lead_genre": "pop",
-      "final_score": 0.660107,
+      "final_score": 0.708332,
       "matched_genres": "",
       "matched_tags": ""
     },
     {
       "rank": 8,
-      "track_id": "Oa3WjjG6GreWw3Bf",
+      "track_id": "op7gT9GOpqOk7wc8",
       "lead_genre": "pop",
-      "final_score": 0.659119,
+      "final_score": 0.693133,
       "matched_genres": "",
       "matched_tags": ""
     },
     {
       "rank": 9,
-      "track_id": "kO6K4VUEcFRTLj4Q",
+      "track_id": "ZBzCrWWH35yTPv8P",
       "lead_genre": "pop",
-      "final_score": 0.657703,
+      "final_score": 0.691217,
       "matched_genres": "",
       "matched_tags": ""
     },
     {
       "rank": 10,
-      "track_id": "MsU54i2ZFFhNRkw3",
+      "track_id": "h2e5nNsGSAuOyTfw",
       "lead_genre": "pop",
-      "final_score": 0.656757,
+      "final_score": 0.685949,
       "matched_genres": "",
       "matched_tags": ""
     }
   ],
-  "elapsed_seconds": 3.818,
+  "elapsed_seconds": 3.377,
   "output_files": {
     "scored_candidates_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl006_scoring\\outputs\\bl006_scored_candidates.csv"
   },
   "output_hashes_sha256": {
-    "bl006_scored_candidates.csv": "bcb80dee56dea71f0328be4a42763733d0d9af61b518bab4279d9c462c0e6a39"
+    "bl006_scored_candidates.csv": "96ae241d5c6195f148455919daa1d479a40b75cca25381e2ebefc35c3e489bd0"
   },
   "summary_hash_note": "summary file hash collected separately in experiment logging to avoid recursive self-reference"
 }

@@ -12,6 +12,14 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 from pathlib import Path
 from typing import Any, Dict, Optional, Tuple
 
+import sys
+
+try:
+    from bl000_shared_utils.io_utils import open_text_write
+except ImportError:
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+    from bl000_shared_utils.io_utils import open_text_write
+
 ACCOUNTS_BASE_URL = "https://accounts.spotify.com"
 
 
@@ -100,7 +108,8 @@ def load_token_cache(path: Path) -> Dict[str, Any]:
 
 def save_token_cache(path: Path, token_payload: Dict[str, Any]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(token_payload, indent=2, ensure_ascii=True), encoding="utf-8")
+    with open_text_write(path) as handle:
+        json.dump(token_payload, handle, indent=2, ensure_ascii=True)
 
 
 def token_is_usable(token_payload: Dict[str, Any]) -> bool:

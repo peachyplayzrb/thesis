@@ -15,14 +15,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 from bl000_shared_utils.report_utils import write_csv_rows, write_json_ascii
 
 
-REPLAY_COUNT = 3
-
-LEGACY_FIXED_INPUT_KEYS = [
-    "bl016_events",
-    "bl016_candidates",
-    "bl016_manifest",
-    "bl017_coverage",
-]
+DEFAULT_REPLAY_COUNT = 3
 
 
 def repo_root() -> Path:
@@ -34,14 +27,28 @@ def parse_args() -> argparse.Namespace:
         description="BL-010 reproducibility replay for BL-004 to BL-009 outputs."
     )
     parser.add_argument(
-        "--allow-legacy-surrogate-inputs",
-        action="store_true",
-        help=(
-            "Opt in to legacy surrogate assets (BL-016/BL-017) when available. "
-            "Default uses active pipeline outputs only."
-        ),
+        "--replay-count",
+        type=int,
+        default=DEFAULT_REPLAY_COUNT,
+        help="Number of BL-004..BL-009 replay cycles to execute (default: 3).",
+    )
+    parser.add_argument(
+        "--python",
+        default=sys.executable,
+        help="Python executable used to run stage scripts.",
+    )
+    parser.add_argument(
+        "--output-dir",
+        default="07_implementation/implementation_notes/bl010_reproducibility/outputs",
+        help="Directory for reproducibility report artifacts.",
     )
     return parser.parse_args()
+
+
+def ensure_positive_replay_count(value: int) -> int:
+    if value < 1:
+        raise ValueError(f"--replay-count must be >= 1, got {value}")
+    return value
 
 
 def relpath(path: Path, root: Path) -> str:
@@ -84,10 +91,6 @@ def build_file_hash_map(paths: dict[str, Path], keys: list[str]) -> dict[str, st
 
 def build_paths(root: Path) -> dict[str, Path]:
     return {
-        "bl016_events": root / "07_implementation" / "implementation_notes" / "test_assets" / "bl016_synthetic_aligned_events.jsonl",
-        "bl016_candidates": root / "07_implementation" / "implementation_notes" / "test_assets" / "bl016_candidate_stub.csv",
-        "bl016_manifest": root / "07_implementation" / "implementation_notes" / "test_assets" / "bl016_asset_manifest.json",
-        "bl017_coverage": root / "07_implementation" / "implementation_notes" / "bl000_data_layer" / "outputs" / "onion_join_coverage_report.json",
         "bl004_script": root / "07_implementation" / "implementation_notes" / "bl004_profile" / "build_bl004_preference_profile.py",
         "bl005_script": root / "07_implementation" / "implementation_notes" / "bl005_retrieval" / "build_bl005_candidate_filter.py",
         "bl006_script": root / "07_implementation" / "implementation_notes" / "bl006_scoring" / "build_bl006_scored_candidates.py",
@@ -113,36 +116,31 @@ def build_paths(root: Path) -> dict[str, Path]:
 
 
 def ensure_required_inputs(paths: dict[str, Path], root: Path) -> None:
-    required_keys = [
-        key
-        for key in paths
-        if key not in LEGACY_FIXED_INPUT_KEYS
-    ]
+    required_keys = list(paths.keys())
     missing = [relpath(paths[key], root) for key in required_keys if not paths[key].exists()]
     if missing:
         raise FileNotFoundError(f"BL-010 missing required inputs: {missing}")
 
 
-def build_config_snapshot(paths: dict[str, Path], root: Path, allow_legacy_surrogate_inputs: bool) -> dict:
+def build_config_snapshot(
+    paths: dict[str, Path],
+    root: Path,
+    replay_count: int = DEFAULT_REPLAY_COUNT,
+) -> dict:
     bl004_profile = load_json(paths["bl004_profile"])
     bl005_diagnostics = load_json(paths["bl005_diagnostics"])
     bl006_summary = load_json(paths["bl006_summary"])
     bl007_report = load_json(paths["bl007_report"])
     bl008_summary = load_json(paths["bl008_summary"])
 
-    has_legacy_fixed_inputs = allow_legacy_surrogate_inputs and all(paths[key].exists() for key in LEGACY_FIXED_INPUT_KEYS)
-    if has_legacy_fixed_inputs:
-        fixed_input_source = "legacy_surrogate_assets"
-        fixed_input_keys = list(LEGACY_FIXED_INPUT_KEYS)
-    else:
-        fixed_input_source = "active_pipeline_outputs"
-        fixed_input_keys = [
-            "bl004_seed_trace",
-            "bl005_filtered",
-            "bl005_decisions",
-            "bl006_scored",
-            "bl007_trace",
-        ]
+    fixed_input_source = "active_pipeline_outputs"
+    fixed_input_keys = [
+        "bl004_seed_trace",
+        "bl005_filtered",
+        "bl005_decisions",
+        "bl006_scored",
+        "bl007_trace",
+    ]
 
     fixed_inputs = {
         relpath(paths[key], root): sha256_of_file(paths[key])
@@ -156,17 +154,11 @@ def build_config_snapshot(paths: dict[str, Path], root: Path, allow_legacy_surro
 
     return {
         "task": "BL-010",
-        "bootstrap_mode": has_legacy_fixed_inputs,
+        "bootstrap_mode": False,
         "fixed_input_source": fixed_input_source,
-        "replay_count": REPLAY_COUNT,
+        "replay_count": int(replay_count),
         "fixed_inputs": fixed_inputs,
-        "optional_dependency_availability": {
-            key: {
-                "path": relpath(paths[key], root),
-                "available": paths[key].exists(),
-            }
-            for key in LEGACY_FIXED_INPUT_KEYS
-        },
+        "optional_dependency_availability": {},
         "stage_scripts": stage_scripts,
         "stage_order": ["BL-004", "BL-005", "BL-006", "BL-007", "BL-008", "BL-009"],
         "stage_configs": {
@@ -354,16 +346,30 @@ def _canonicalize_stage_stdout_lines(stdout: str, root: Path) -> list[str]:
     return canonical_lines
 
 
-def run_stage(stage_id: str, script_path: Path, root: Path) -> dict[str, object]:
+def run_stage(stage_id: str, script_path: Path, root: Path, python_executable: str) -> dict[str, object]:
     started = time.time()
-    command = [sys.executable, str(script_path)]
-    completed = subprocess.run(
-        command,
-        cwd=root,
-        capture_output=True,
-        text=True,
-        check=True,
-    )
+    command = [python_executable, str(script_path)]
+    completed: subprocess.CompletedProcess[str] | None = None
+    for attempt in range(1, 4):
+        completed = subprocess.run(
+            command,
+            cwd=root,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        if completed.returncode == 0:
+            break
+        if attempt < 3:
+            time.sleep(0.1)
+    if completed is None or completed.returncode != 0:
+        stderr_text = (completed.stderr if completed is not None else "") or ""
+        stdout_text = (completed.stdout if completed is not None else "") or ""
+        raise RuntimeError(
+            f"BL-010 stage {stage_id} failed after retries: {script_path.name}\n"
+            f"stdout:\n{stdout_text}\n"
+            f"stderr:\n{stderr_text}"
+        )
     canonical_script_path = relpath(script_path, root)
     return {
         "stage": stage_id,
@@ -373,6 +379,52 @@ def run_stage(stage_id: str, script_path: Path, root: Path) -> dict[str, object]
         "elapsed_seconds": round(time.time() - started, 3),
         "stdout": _canonicalize_stage_stdout_lines(completed.stdout, root),
     }
+
+
+def build_stage_sequence(paths: dict[str, Path]) -> list[tuple[str, Path]]:
+    return [
+        ("BL-004", paths["bl004_script"]),
+        ("BL-005", paths["bl005_script"]),
+        ("BL-006", paths["bl006_script"]),
+        ("BL-007", paths["bl007_script"]),
+        ("BL-008", paths["bl008_script"]),
+        ("BL-009", paths["bl009_script"]),
+    ]
+
+
+def execute_replays(
+    *,
+    replay_count: int,
+    stage_sequence: list[tuple[str, Path]],
+    python_executable: str,
+    root: Path,
+    output_dir: Path,
+    paths: dict[str, Path],
+) -> list[dict[str, object]]:
+    replay_records: list[dict[str, object]] = []
+    for replay_number in range(1, replay_count + 1):
+        stage_runs = [
+            run_stage(stage_id, script_path, root, python_executable)
+            for stage_id, script_path in stage_sequence
+        ]
+        fingerprints = fingerprint_outputs(paths)
+
+        replay_dir = output_dir / f"replay_{replay_number:02d}"
+        replay_dir.mkdir(parents=True, exist_ok=True)
+        archive_replay_outputs(paths, replay_dir)
+
+        replay_records.append(
+            {
+                "replay_number": replay_number,
+                "stage_runs": stage_runs,
+                "stage_run_ids": fingerprints["stage_run_ids"],
+                "raw_hashes": fingerprints["raw_hashes"],
+                "stable_hashes": fingerprints["stable_hashes"],
+                "semantic_snapshots": fingerprints["semantic_snapshots"],
+                "archive_dir": relpath(replay_dir, root),
+            }
+        )
+    return replay_records
 
 
 def archive_replay_outputs(paths: dict[str, Path], replay_dir: Path) -> None:
@@ -412,7 +464,8 @@ def first_mismatch(stable_hashes_by_run: list[dict[str, str]]) -> str | None:
 def main() -> None:
     args = parse_args()
     root = repo_root()
-    output_dir = root / "07_implementation" / "implementation_notes" / "bl010_reproducibility" / "outputs"
+    replay_count = ensure_positive_replay_count(int(args.replay_count))
+    output_dir = (root / args.output_dir).resolve()
     output_dir.mkdir(parents=True, exist_ok=True)
 
     paths = build_paths(root)
@@ -421,45 +474,25 @@ def main() -> None:
     config_snapshot = build_config_snapshot(
         paths,
         root,
-        allow_legacy_surrogate_inputs=bool(args.allow_legacy_surrogate_inputs),
+        replay_count=replay_count,
     )
     config_hash = canonical_json_hash(config_snapshot)
     config_path = output_dir / "bl010_reproducibility_config_snapshot.json"
     write_json_ascii(config_path, config_snapshot)
 
-    replay_records: list[dict[str, object]] = []
     run_started_at = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
     run_id = f"BL010-REPRO-{time.strftime('%Y%m%d-%H%M%S', time.gmtime())}"
     started = time.time()
 
-    stage_sequence = [
-        ("BL-004", paths["bl004_script"]),
-        ("BL-005", paths["bl005_script"]),
-        ("BL-006", paths["bl006_script"]),
-        ("BL-007", paths["bl007_script"]),
-        ("BL-008", paths["bl008_script"]),
-        ("BL-009", paths["bl009_script"]),
-    ]
-
-    for replay_number in range(1, REPLAY_COUNT + 1):
-        stage_runs = [run_stage(stage_id, script_path, root) for stage_id, script_path in stage_sequence]
-        fingerprints = fingerprint_outputs(paths)
-
-        replay_dir = output_dir / f"replay_{replay_number:02d}"
-        replay_dir.mkdir(parents=True, exist_ok=True)
-        archive_replay_outputs(paths, replay_dir)
-
-        replay_records.append(
-            {
-                "replay_number": replay_number,
-                "stage_runs": stage_runs,
-                "stage_run_ids": fingerprints["stage_run_ids"],
-                "raw_hashes": fingerprints["raw_hashes"],
-                "stable_hashes": fingerprints["stable_hashes"],
-                "semantic_snapshots": fingerprints["semantic_snapshots"],
-                "archive_dir": relpath(replay_dir, root),
-            }
-        )
+    stage_sequence = build_stage_sequence(paths)
+    replay_records = execute_replays(
+        replay_count=replay_count,
+        stage_sequence=stage_sequence,
+        python_executable=str(args.python),
+        root=root,
+        output_dir=output_dir,
+        paths=paths,
+    )
 
     stable_hashes_by_run = [record["stable_hashes"] for record in replay_records]
     baseline_stable = stable_hashes_by_run[0]
@@ -502,7 +535,7 @@ def main() -> None:
             "task": "BL-010",
             "generated_at_utc": run_started_at,
             "elapsed_seconds": round(time.time() - started, 3),
-            "replay_count": REPLAY_COUNT,
+            "replay_count": replay_count,
             "bootstrap_mode": bool(config_snapshot["bootstrap_mode"]),
             "config_hash": config_hash,
             "fixed_input_source": config_snapshot["fixed_input_source"],

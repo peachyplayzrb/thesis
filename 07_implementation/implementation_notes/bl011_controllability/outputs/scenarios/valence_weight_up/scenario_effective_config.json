@@ -17,8 +17,8 @@
       "duration_ms"
     ],
     "top_tag_limit": 10,
-    "top_genre_limit": 10,
-    "top_lead_genre_limit": 10,
+    "top_genre_limit": 8,
+    "top_lead_genre_limit": 6,
     "aggregation_rules": {
       "numeric": "weighted mean over numeric columns embedded in the BL-003 enriched seed table; key uses weighted circular mean on the 12-semitone wheel",
       "tags": "sum(preference_weight) over DS-001 tag labels",
@@ -36,31 +36,31 @@
     "top_genre_limit": 8,
     "threshold_scale": 1.0,
     "numeric_thresholds": {
-      "tempo": 15.0,
-      "key": 1.5,
+      "tempo": 20.0,
+      "key": 2.0,
       "mode": 0.5,
-      "duration_ms": 30000.0
+      "duration_ms": 45000.0
     },
-    "keep_rule": "keep if not seed and (semantic_score >= 3 or (semantic_score >= 1 and numeric_pass_count >= 2))"
+    "keep_rule": "keep if not seed and (semantic_score >= 2 or (semantic_score >= 1 and numeric_pass_count >= 1))"
   },
   "scoring": {
     "numeric_thresholds": {
-      "tempo": 15.0,
-      "key": 1.5,
+      "tempo": 20.0,
+      "key": 2.0,
       "mode": 0.5,
-      "duration_ms": 30000.0
+      "duration_ms": 45000.0
     },
     "component_weights": {
-      "tempo": 0.185185,
-      "duration_ms": 0.074074,
-      "key": 0.074074,
-      "mode": 0.064815,
-      "lead_genre": 0.212963,
-      "genre_overlap": 0.175926,
-      "tag_overlap": 0.212963
+      "tempo": 0.25926,
+      "duration_ms": 0.12037,
+      "key": 0.12037,
+      "mode": 0.083333,
+      "lead_genre": 0.157407,
+      "genre_overlap": 0.111111,
+      "tag_overlap": 0.148148
     },
     "weight_override_component": "tempo",
-    "raw_override_value": 0.2
+    "raw_override_value": 0.28
   },
   "assembly": {
     "target_size": 10,

@@ -11,8 +11,29 @@ Provides functions for:
 import csv
 import hashlib
 import json
+import os
+import time
 from pathlib import Path
 from typing import Any
+
+
+def open_text_write(path: Path, *, newline: str | None = None):
+    """Open a text file for writing with a small Windows retry/fallback guard."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    last_error: OSError | None = None
+    for _ in range(3):
+        try:
+            return path.open("w", encoding="utf-8", newline=newline)
+        except OSError as exc:
+            last_error = exc
+            if os.name != "nt" or exc.errno != 22:
+                raise
+            time.sleep(0.05)
+
+    if last_error is not None and os.name == "nt" and last_error.errno == 22:
+        normalized = os.path.normpath(str(path.resolve()))
+        return open(normalized, "w", encoding="utf-8", newline=newline)
+    raise last_error if last_error is not None else RuntimeError("Unexpected file open failure")
 
 
 def sha256_of_file(path: Path) -> str:

@@ -5,9 +5,6 @@ Handles transformation of raw candidate CSV rows into normalized, structured dat
 suitable for semantic and numeric scoring.
 """
 
-import json
-from typing import Any
-
 from sys import path as sys_path
 from pathlib import Path
 
@@ -98,39 +95,6 @@ def resolve_candidate_column(
         return "duration"
     
     return None
-
-
-def parse_list(raw_value: str, label_key: str) -> list[str]:
-    """
-    Parse a JSON-encoded list from a CSV cell, extracting a specific key.
-    
-    Expected format:
-        [{"label": "Rock", ...}, {"label": "Alternative", ...}, ...]
-    
-    Args:
-        raw_value: Raw string value from CSV cell (should be JSON array)
-        label_key: Key to extract from each item (e.g., "label")
-    
-    Returns:
-        List of extracted label values, or empty list if parsing fails
-    """
-    if not raw_value:
-        return []
-    
-    try:
-        payload = json.loads(raw_value)
-    except json.JSONDecodeError:
-        return []
-    
-    result: list[str] = []
-    for item in payload:
-        if not isinstance(item, dict):
-            continue
-        label = item.get(label_key)
-        if isinstance(label, str) and label.strip():
-            result.append(label.strip())
-    
-    return result
 
 
 def resolve_lead_genre(candidate_genres: list[str], candidate_tags: list[str]) -> str:

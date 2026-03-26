@@ -31,22 +31,38 @@ import sys
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from bl000_shared_utils.config_loader import load_run_config_utils_module
-from bl000_shared_utils.env_utils import env_float, env_int
-from bl000_shared_utils.io_utils import sha256_of_file, write_json
+from bl000_shared_utils.env_utils import env_float, env_int, env_str
+from bl000_shared_utils.io_utils import open_text_write, sha256_of_file, write_json
 from bl000_shared_utils.path_utils import repo_root
 
 # ---------------------------------------------------------------------------
 # Config
 # ---------------------------------------------------------------------------
-SCORED_CANDIDATES_PATH = Path(
+DEFAULT_SCORED_CANDIDATES_PATH = Path(
     "07_implementation/implementation_notes/bl006_scoring/outputs/bl006_scored_candidates.csv"
 )
-OUTPUT_DIR = Path("07_implementation/implementation_notes/bl007_playlist/outputs")
+DEFAULT_OUTPUT_DIR = Path("07_implementation/implementation_notes/bl007_playlist/outputs")
 
 DEFAULT_TARGET_SIZE         = 10
 DEFAULT_MIN_SCORE_THRESHOLD = 0.35
 DEFAULT_MAX_PER_GENRE       = 4
 DEFAULT_MAX_CONSECUTIVE     = 2
+REQUIRED_CANDIDATE_COLUMNS = ("rank", "track_id", "lead_genre", "final_score")
+
+
+def _env_path(name: str, default_relative: Path) -> Path:
+    raw = env_str(name, "")
+    if raw:
+        return Path(raw)
+    return repo_root() / default_relative
+
+
+def _sanitize_bl007_controls(controls: dict[str, object]) -> dict[str, object]:
+    controls["target_size"] = max(1, int(controls["target_size"]))
+    controls["min_score_threshold"] = max(0.0, min(1.0, float(controls["min_score_threshold"])))
+    controls["max_per_genre"] = max(1, int(controls["max_per_genre"]))
+    controls["max_consecutive"] = max(1, int(controls["max_consecutive"]))
+    return controls
 
 
 def resolve_bl007_runtime_controls() -> dict[str, object]:
@@ -54,7 +70,7 @@ def resolve_bl007_runtime_controls() -> dict[str, object]:
     if run_config_path:
         run_config_utils = load_run_config_utils_module()
         controls = run_config_utils.resolve_bl007_controls(run_config_path)
-        return {
+        return _sanitize_bl007_controls({
             "config_source": "run_config",
             "run_config_path": controls.get("config_path"),
             "run_config_schema_version": controls.get("schema_version"),
@@ -62,8 +78,8 @@ def resolve_bl007_runtime_controls() -> dict[str, object]:
             "min_score_threshold": float(controls["min_score_threshold"]),
             "max_per_genre": int(controls["max_per_genre"]),
             "max_consecutive": int(controls["max_consecutive"]),
-        }
-    return {
+        })
+    return _sanitize_bl007_controls({
         "config_source": "environment",
         "run_config_path": None,
         "run_config_schema_version": None,
@@ -71,7 +87,7 @@ def resolve_bl007_runtime_controls() -> dict[str, object]:
         "min_score_threshold": env_float("BL007_MIN_SCORE_THRESHOLD", DEFAULT_MIN_SCORE_THRESHOLD),
         "max_per_genre": env_int("BL007_MAX_PER_GENRE", DEFAULT_MAX_PER_GENRE),
         "max_consecutive": env_int("BL007_MAX_CONSECUTIVE", DEFAULT_MAX_CONSECUTIVE),
-    }
+    })
 
 
 # ---------------------------------------------------------------------------
@@ -121,12 +137,84 @@ def build_undersized_diagnostics(
     }
 
 
+def ensure_paths_exist(paths: list[Path]) -> None:
+    missing = [str(path) for path in paths if not path.exists()]
+    if missing:
+        raise FileNotFoundError(
+            "BL-007 missing required input artifact(s): " + ", ".join(missing)
+        )
+
+
+def safe_float(value: object, default: float = 0.0) -> float:
+    try:
+        return float(value)
+    except (TypeError, ValueError):
+        return default
+
+
+def safe_int(value: object, default: int = 0) -> int:
+    try:
+        return int(value)
+    except (TypeError, ValueError):
+        return default
+
+
+def read_scored_candidates(path: Path) -> list[dict[str, str]]:
+    with path.open("r", encoding="utf-8", newline="") as handle:
+        reader = csv.DictReader(handle)
+        if reader.fieldnames is None:
+            raise ValueError("BL-007 scored candidates CSV has no header row.")
+        missing_columns = [
+            column for column in REQUIRED_CANDIDATE_COLUMNS if column not in set(reader.fieldnames)
+        ]
+        if missing_columns:
+            raise ValueError(
+                "BL-007 scored candidates CSV is missing required column(s): "
+                + ", ".join(missing_columns)
+            )
+        return list(reader)
+
+
+def decide_candidate(
+    *,
+    playlist: list[dict],
+    lead_genre: str,
+    final_score: float,
+    target_size: int,
+    min_score_threshold: float,
+    max_per_genre: int,
+    max_consecutive: int,
+    rule_hits: Counter,
+) -> tuple[str, str]:
+    if len(playlist) >= target_size:
+        rule_hits["R4_length_cap"] += 1
+        return "excluded", "length_cap_reached"
+
+    if final_score < min_score_threshold:
+        rule_hits["R1_score_threshold"] += 1
+        return "excluded", "below_score_threshold"
+
+    if sum(1 for track in playlist if track["lead_genre"] == lead_genre) >= max_per_genre:
+        rule_hits["R2_genre_cap"] += 1
+        return "excluded", "genre_cap_exceeded"
+
+    if len(playlist) >= max_consecutive and all(
+        genre == lead_genre for genre in last_n_genres(playlist, max_consecutive)
+    ):
+        rule_hits["R3_consecutive_run"] += 1
+        return "excluded", "consecutive_genre_run"
+
+    return "included", ""
+
+
 # ---------------------------------------------------------------------------
 # Main
 # ---------------------------------------------------------------------------
 def main() -> None:
     t0 = time.time()
-    OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+    scored_candidates_path = _env_path("BL007_SCORED_CANDIDATES_PATH", DEFAULT_SCORED_CANDIDATES_PATH)
+    output_dir = _env_path("BL007_OUTPUT_DIR", DEFAULT_OUTPUT_DIR)
+    output_dir.mkdir(parents=True, exist_ok=True)
 
     runtime_controls    = resolve_bl007_runtime_controls()
     target_size         = int(runtime_controls["target_size"])
@@ -134,48 +222,29 @@ def main() -> None:
     max_per_genre       = int(runtime_controls["max_per_genre"])
     max_consecutive     = int(runtime_controls["max_consecutive"])
 
-    candidates = list(
-        csv.DictReader(
-            SCORED_CANDIDATES_PATH.open(encoding="utf-8", newline="")
-        )
-    )
+    ensure_paths_exist([scored_candidates_path])
+    candidates = read_scored_candidates(scored_candidates_path)
 
     playlist: list[dict] = []
     trace_rows: list[dict] = []
     rule_hits: Counter = Counter()
 
     for cand in candidates:
-        track_id    = cand["track_id"]
-        lead_genre  = cand["lead_genre"]
-        final_score = float(cand["final_score"])
-        score_rank  = int(cand["rank"])
+        track_id = str(cand.get("track_id", ""))
+        lead_genre = str(cand.get("lead_genre", ""))
+        final_score = safe_float(cand.get("final_score"), 0.0)
+        score_rank = safe_int(cand.get("rank"), 0)
 
-        decision         = "included"
-        exclusion_reason = ""
-
-        if len(playlist) >= target_size:
-            # R4 checked first so we still log remaining candidates as excluded
-            decision         = "excluded"
-            exclusion_reason = "length_cap_reached"
-            rule_hits["R4_length_cap"] += 1
-
-        elif final_score < min_score_threshold:
-            decision         = "excluded"
-            exclusion_reason = "below_score_threshold"
-            rule_hits["R1_score_threshold"] += 1
-
-        elif sum(1 for t in playlist if t["lead_genre"] == lead_genre) >= max_per_genre:
-            decision         = "excluded"
-            exclusion_reason = "genre_cap_exceeded"
-            rule_hits["R2_genre_cap"] += 1
-
-        elif (
-            len(playlist) >= max_consecutive
-            and all(g == lead_genre for g in last_n_genres(playlist, max_consecutive))
-        ):
-            decision         = "excluded"
-            exclusion_reason = "consecutive_genre_run"
-            rule_hits["R3_consecutive_run"] += 1
+        decision, exclusion_reason = decide_candidate(
+            playlist=playlist,
+            lead_genre=lead_genre,
+            final_score=final_score,
+            target_size=target_size,
+            min_score_threshold=min_score_threshold,
+            max_per_genre=max_per_genre,
+            max_consecutive=max_consecutive,
+            rule_hits=rule_hits,
+        )
 
         playlist_position: int | None = None
         if decision == "included":
@@ -207,7 +276,7 @@ def main() -> None:
     run_id  = f"BL007-ASSEMBLE-{now}"
 
     # ---- playlist JSON --------------------------------------------------------
-    playlist_path = OUTPUT_DIR / "bl007_playlist.json"
+    playlist_path = output_dir / "bl007_playlist.json"
     playlist_obj = {
         "run_id":            run_id,
         "generated_at_utc":  datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
@@ -224,12 +293,12 @@ def main() -> None:
     write_json(playlist_path, playlist_obj)
 
     # ---- assembly trace CSV --------------------------------------------------
-    trace_path   = OUTPUT_DIR / "bl007_assembly_trace.csv"
+    trace_path   = output_dir / "bl007_assembly_trace.csv"
     trace_fields = [
         "score_rank", "track_id", "lead_genre", "final_score",
         "decision", "playlist_position", "exclusion_reason",
     ]
-    with trace_path.open("w", encoding="utf-8", newline="") as f:
+    with open_text_write(trace_path, newline="") as f:
         w = csv.DictWriter(f, fieldnames=trace_fields)
         w.writeheader()
         w.writerows(trace_rows)
@@ -245,7 +314,7 @@ def main() -> None:
         trace_rows=trace_rows,
     )
 
-    report_path = OUTPUT_DIR / "bl007_assembly_report.json"
+    report_path = output_dir / "bl007_assembly_report.json"
     report = {
         "run_id":             run_id,
         "generated_at_utc":   playlist_obj["generated_at_utc"],
@@ -264,7 +333,7 @@ def main() -> None:
             "min": round(min(t["final_score"] for t in playlist), 6) if playlist else None,
         },
         "input_artifact_hashes": {
-            "bl006_scored_candidates.csv": sha256(SCORED_CANDIDATES_PATH),
+            "bl006_scored_candidates.csv": sha256(scored_candidates_path),
         },
         "output_artifact_hashes": {
             "bl007_playlist.json":       sha256(playlist_path),

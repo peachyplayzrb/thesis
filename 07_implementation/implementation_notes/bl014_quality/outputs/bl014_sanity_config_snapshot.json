@@ -1,7 +1,7 @@
 {
   "task": "BL-014",
   "description": "Automated sanity checks for BL-020 artifact schema, hash linkage, and count continuity",
-  "run_id": "BL014-SANITY-20260325-231204-534293",
+  "run_id": "BL014-SANITY-20260326-060440-455541",
   "required_artifacts": {
     "bl004_profile": "07_implementation\\implementation_notes\\bl004_profile\\outputs\\bl004_preference_profile.json",
     "bl004_summary": "07_implementation\\implementation_notes\\bl004_profile\\outputs\\bl004_profile_summary.json",
@@ -39,7 +39,7 @@
     "BL-005 kept count matches filtered rows",
     "BL-006 scored count matches scored rows",
     "BL-007 playlist count aligns with BL-008 explanations",
-    "BL-007 undersized playlist advisory flagging",
+    "BL-007 playlist meets configured target size",
     "BL-009 index counts align with upstream stage outputs",
     "BL-009 run_id linkage aligns with upstream stage summaries"
   ]

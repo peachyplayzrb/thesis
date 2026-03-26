@@ -1,5 +1,5 @@
 {
-  "run_id": "BL011-NO_INFLUENCE_TRACKS-BL007-20260325-231140-609848",
+  "run_id": "BL011-NO_INFLUENCE_TRACKS-BL007-20260326-055934-111518",
   "task": "BL-007",
   "scenario_id": "no_influence_tracks",
   "config": {
@@ -9,15 +9,15 @@
     "max_consecutive": 2
   },
   "counts": {
-    "candidates_evaluated": 5059,
+    "candidates_evaluated": 70212,
     "tracks_included": 10,
-    "tracks_excluded": 5049
+    "tracks_excluded": 70202
   },
   "rule_hits": {
     "R1_score_threshold": 0,
-    "R2_genre_cap": 87,
+    "R2_genre_cap": 17,
     "R3_consecutive_run": 4,
-    "R4_length_cap": 4958
+    "R4_length_cap": 70181
   },
   "playlist_genre_mix": {
     "classic rock": 4,
@@ -25,7 +25,7 @@
     "rock": 2
   },
   "playlist_score_range": {
-    "max": 0.730538,
-    "min": 0.593703
+    "max": 0.753687,
+    "min": 0.672601
   }
 }

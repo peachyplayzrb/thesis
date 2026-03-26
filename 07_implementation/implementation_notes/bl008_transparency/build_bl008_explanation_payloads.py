@@ -24,6 +24,7 @@ import csv
 import json
 import os
 import time
+from collections import Counter
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -32,18 +33,18 @@ import sys
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from bl000_shared_utils.config_loader import load_run_config_utils_module
-from bl000_shared_utils.env_utils import env_int
+from bl000_shared_utils.env_utils import env_bool, env_float, env_int, env_str
 from bl000_shared_utils.io_utils import sha256_of_file, write_json
 from bl000_shared_utils.path_utils import repo_root
 
 # ---------------------------------------------------------------------------
 # Paths
 # ---------------------------------------------------------------------------
-SCORED_CSV   = Path("07_implementation/implementation_notes/bl006_scoring/outputs/bl006_scored_candidates.csv")
-SCORE_SUMMARY_JSON = Path("07_implementation/implementation_notes/bl006_scoring/outputs/bl006_score_summary.json")
-PLAYLIST_JSON = Path("07_implementation/implementation_notes/bl007_playlist/outputs/bl007_playlist.json")
-TRACE_CSV    = Path("07_implementation/implementation_notes/bl007_playlist/outputs/bl007_assembly_trace.csv")
-OUTPUT_DIR   = Path("07_implementation/implementation_notes/bl008_transparency/outputs")
+DEFAULT_SCORED_CSV = Path("07_implementation/implementation_notes/bl006_scoring/outputs/bl006_scored_candidates.csv")
+DEFAULT_SCORE_SUMMARY_JSON = Path("07_implementation/implementation_notes/bl006_scoring/outputs/bl006_score_summary.json")
+DEFAULT_PLAYLIST_JSON = Path("07_implementation/implementation_notes/bl007_playlist/outputs/bl007_playlist.json")
+DEFAULT_TRACE_CSV = Path("07_implementation/implementation_notes/bl007_playlist/outputs/bl007_assembly_trace.csv")
+DEFAULT_OUTPUT_DIR = Path("07_implementation/implementation_notes/bl008_transparency/outputs")
 
 # Human labels for known BL-006 scoring components.
 COMPONENT_LABELS = {
@@ -79,27 +80,41 @@ RULE_LABELS = {
 DEFAULT_TOP_CONTRIBUTOR_LIMIT = 3
 
 
+def _env_path(name: str, default_relative: Path) -> Path:
+    raw = env_str(name, "")
+    if raw:
+        return Path(raw)
+    return repo_root() / default_relative
+
+
+def _sanitize_bl008_controls(controls: dict[str, object]) -> dict[str, object]:
+    controls["top_contributor_limit"] = max(1, int(controls["top_contributor_limit"]))
+    controls["blend_primary_contributor_on_near_tie"] = bool(controls["blend_primary_contributor_on_near_tie"])
+    controls["primary_contributor_tie_delta"] = max(0.0, min(1.0, float(controls["primary_contributor_tie_delta"])))
+    return controls
+
+
 def resolve_bl008_runtime_controls() -> dict[str, object]:
     run_config_path = os.environ.get("BL_RUN_CONFIG_PATH", "").strip() or None
     if run_config_path:
         run_config_utils = load_run_config_utils_module()
         controls = run_config_utils.resolve_bl008_controls(run_config_path)
-        return {
+        return _sanitize_bl008_controls({
             "config_source": "run_config",
             "run_config_path": controls.get("config_path"),
             "run_config_schema_version": controls.get("schema_version"),
             "top_contributor_limit": int(controls["top_contributor_limit"]),
             "blend_primary_contributor_on_near_tie": bool(controls.get("blend_primary_contributor_on_near_tie", False)),
             "primary_contributor_tie_delta": float(controls.get("primary_contributor_tie_delta", 0.02)),
-        }
-    return {
+        })
+    return _sanitize_bl008_controls({
         "config_source": "environment",
         "run_config_path": None,
         "run_config_schema_version": None,
         "top_contributor_limit": max(1, env_int("BL008_TOP_CONTRIBUTOR_LIMIT", DEFAULT_TOP_CONTRIBUTOR_LIMIT)),
-        "blend_primary_contributor_on_near_tie": False,
-        "primary_contributor_tie_delta": 0.02,
-    }
+        "blend_primary_contributor_on_near_tie": env_bool("BL008_BLEND_PRIMARY_CONTRIBUTOR_ON_NEAR_TIE", False),
+        "primary_contributor_tie_delta": env_float("BL008_PRIMARY_CONTRIBUTOR_TIE_DELTA", 0.02),
+    })
 
 
 # ---------------------------------------------------------------------------
@@ -107,6 +122,20 @@ def resolve_bl008_runtime_controls() -> dict[str, object]:
 # ---------------------------------------------------------------------------
 def sha256(path: Path) -> str:
     return sha256_of_file(path).upper()
+
+
+def ensure_paths_exist(paths: dict[str, Path]) -> None:
+    missing = [label for label, path in paths.items() if not path.exists()]
+    if missing:
+        details = ", ".join(f"{label}={paths[label]}" for label in missing)
+        raise FileNotFoundError(f"BL-008 missing required input artifacts: {details}")
+
+
+def safe_float(value: object, default: float = 0.0) -> float:
+    try:
+        return float(value)
+    except (TypeError, ValueError):
+        return default
 
 
 def canonical_component_name(name: str) -> str:
@@ -124,6 +153,46 @@ def build_why_selected(track_id: str, lead_genre: str, final_score: float,
         f"on {contributors_str}. "
         f"Lead genre is '{lead_genre}'."
     )
+
+
+def read_csv_index(path: Path, key_field: str) -> dict[str, dict]:
+    index: dict[str, dict] = {}
+    for row in csv.DictReader(path.open(encoding="utf-8", newline="")):
+        key = (row.get(key_field) or "").strip()
+        if key:
+            index[key] = row
+    return index
+
+
+def build_ordered_components(active_weights: dict[str, object]) -> list[str]:
+    ordered_components: list[str] = []
+    active_keys = list(active_weights.keys())
+    for canonical in COMPONENT_ORDER:
+        for component in active_keys:
+            if canonical_component_name(component) == canonical and component not in ordered_components:
+                ordered_components.append(component)
+    ordered_set = set(ordered_components)
+    ordered_components.extend(sorted(component for component in active_keys if component not in ordered_set))
+    return ordered_components
+
+
+def build_score_breakdown(scored_row: dict[str, object], ordered_components: list[str],
+                          active_weights: dict[str, object]) -> list[dict[str, object]]:
+    score_breakdown: list[dict[str, object]] = []
+    for component in ordered_components:
+        canonical = canonical_component_name(component)
+        sim_key = f"{canonical}_similarity"
+        cont_key = f"{canonical}_contribution"
+        similarity = safe_float(scored_row.get(sim_key, 0.0))
+        contribution = safe_float(scored_row.get(cont_key, 0.0))
+        score_breakdown.append({
+            "component": canonical,
+            "label": COMPONENT_LABELS.get(canonical, canonical.replace("_", " ").title()),
+            "weight": round(safe_float(active_weights.get(component, active_weights.get(canonical, 0.0))), 6),
+            "similarity": round(similarity, 6),
+            "contribution": round(contribution, 6),
+        })
+    return score_breakdown
 
 
 def select_primary_explanation_driver(
@@ -164,66 +233,51 @@ def select_primary_explanation_driver(
 # ---------------------------------------------------------------------------
 def main() -> None:
     t0 = time.time()
-    OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+    scored_csv = _env_path("BL008_SCORED_CSV_PATH", DEFAULT_SCORED_CSV)
+    score_summary_json = _env_path("BL008_SCORE_SUMMARY_PATH", DEFAULT_SCORE_SUMMARY_JSON)
+    playlist_json = _env_path("BL008_PLAYLIST_PATH", DEFAULT_PLAYLIST_JSON)
+    trace_csv = _env_path("BL008_TRACE_CSV_PATH", DEFAULT_TRACE_CSV)
+    output_dir = _env_path("BL008_OUTPUT_DIR", DEFAULT_OUTPUT_DIR)
+    output_dir.mkdir(parents=True, exist_ok=True)
 
     runtime_controls = resolve_bl008_runtime_controls()
     top_contributor_limit = int(runtime_controls["top_contributor_limit"])
     blend_primary_contributor_on_near_tie = bool(runtime_controls["blend_primary_contributor_on_near_tie"])
     primary_contributor_tie_delta = float(runtime_controls["primary_contributor_tie_delta"])
 
+    ensure_paths_exist({
+        "scored_csv": scored_csv,
+        "score_summary_json": score_summary_json,
+        "playlist_json": playlist_json,
+        "trace_csv": trace_csv,
+    })
+
     # Load BL-006 scored candidates keyed by track_id
-    scored_index: dict[str, dict] = {}
-    for row in csv.DictReader(SCORED_CSV.open(encoding="utf-8", newline="")):
-        scored_index[row["track_id"]] = row
-    score_summary = json.loads(SCORE_SUMMARY_JSON.read_text(encoding="utf-8"))
+    scored_index = read_csv_index(scored_csv, "track_id")
+    score_summary = json.loads(score_summary_json.read_text(encoding="utf-8"))
     active_weights = score_summary.get("config", {}).get("active_component_weights", {})
+    ordered_components = build_ordered_components(active_weights)
 
     # Load BL-007 playlist (ordered)
-    playlist_data = json.loads(PLAYLIST_JSON.read_text(encoding="utf-8"))
+    playlist_data = json.loads(playlist_json.read_text(encoding="utf-8"))
     playlist_tracks = playlist_data["tracks"]
 
     # Load BL-007 assembly trace keyed by track_id
-    trace_index: dict[str, dict] = {}
-    for row in csv.DictReader(TRACE_CSV.open(encoding="utf-8", newline="")):
-        trace_index[row["track_id"]] = row
+    trace_index = read_csv_index(trace_csv, "track_id")
 
     payloads = []
 
     for pt in playlist_tracks:
         track_id         = pt["track_id"]
         playlist_pos     = pt["playlist_position"]
-        final_score      = pt["final_score"]
+        final_score      = safe_float(pt.get("final_score", 0.0))
         score_rank       = pt["score_rank"]
         lead_genre       = pt["lead_genre"]
 
         scored_row  = scored_index.get(track_id, {})
         trace_row   = trace_index.get(track_id, {})
 
-        # Build score breakdown
-        score_breakdown = []
-        ordered_components: list[str] = []
-        active_keys = list(active_weights.keys())
-        for canonical in COMPONENT_ORDER:
-            for component in active_keys:
-                if canonical_component_name(component) == canonical and component not in ordered_components:
-                    ordered_components.append(component)
-        ordered_components.extend(
-            sorted(component for component in active_keys if component not in set(ordered_components))
-        )
-
-        for component in ordered_components:
-            canonical = canonical_component_name(component)
-            sim_key  = f"{canonical}_similarity"
-            cont_key = f"{canonical}_contribution"
-            similarity   = float(scored_row.get(sim_key, 0))
-            contribution = float(scored_row.get(cont_key, 0))
-            score_breakdown.append({
-                "component":    canonical,
-                "label":        COMPONENT_LABELS.get(canonical, canonical.replace("_", " ").title()),
-                "weight":       round(float(active_weights.get(component, active_weights.get(canonical, 0.0))), 6),
-                "similarity":   round(similarity, 6),
-                "contribution": round(contribution, 6),
-            })
+        score_breakdown = build_score_breakdown(scored_row, ordered_components, active_weights)
 
         # Top-N contributors by contribution value.
         top_contributors = sorted(score_breakdown, key=lambda x: x["contribution"], reverse=True)[:top_contributor_limit]
@@ -265,7 +319,7 @@ def main() -> None:
     run_id  = f"BL008-EXPLAIN-{now}"
 
     # ---- explanation payloads JSON ----------------------------------------
-    payloads_path = OUTPUT_DIR / "bl008_explanation_payloads.json"
+    payloads_path = output_dir / "bl008_explanation_payloads.json"
     payloads_obj  = {
         "run_id":           run_id,
         "generated_at_utc": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
@@ -276,7 +330,7 @@ def main() -> None:
     write_json(payloads_path, payloads_obj)
 
     # ---- explanation summary JSON -----------------------------------------
-    summary_path = OUTPUT_DIR / "bl008_explanation_summary.json"
+    summary_path = output_dir / "bl008_explanation_summary.json"
     summary = {
         "run_id":           run_id,
         "generated_at_utc": payloads_obj["generated_at_utc"],
@@ -284,10 +338,10 @@ def main() -> None:
         "playlist_track_count": len(payloads),
         "top_contributor_distribution": _top_contributor_counts(payloads),
         "input_artifact_hashes": {
-            "bl006_scored_candidates.csv":   sha256(SCORED_CSV),
-            "bl006_score_summary.json":      sha256(SCORE_SUMMARY_JSON),
-            "bl007_playlist.json":           sha256(PLAYLIST_JSON),
-            "bl007_assembly_trace.csv":      sha256(TRACE_CSV),
+            "bl006_scored_candidates.csv":   sha256(scored_csv),
+            "bl006_score_summary.json":      sha256(score_summary_json),
+            "bl007_playlist.json":           sha256(playlist_json),
+            "bl007_assembly_trace.csv":      sha256(trace_csv),
         },
         "output_artifact_hashes": {
             "bl008_explanation_payloads.json": sha256(payloads_path),
@@ -302,7 +356,6 @@ def main() -> None:
 
 
 def _top_contributor_counts(payloads: list) -> dict:
-    from collections import Counter
     c: Counter = Counter()
     for p in payloads:
         primary = p.get("primary_explanation_driver") or {}

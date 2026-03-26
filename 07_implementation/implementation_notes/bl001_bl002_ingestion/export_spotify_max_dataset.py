@@ -9,29 +9,54 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any, Dict, List
 
-from .spotify_auth import complete_oauth_flow, load_token_cache, save_token_cache, token_is_usable
-from .spotify_client import (
-    RESILIENCE_AVAILABLE,
-    CacheDB,
-    RateLimitCooldownError,
-    SpotifyApiClient,
-    SpotifyApiError,
-    fetch_all_offset_pages,
-)
-from .spotify_io import clamp_page_size, now_utc, repo_root, sha256_of_file, write_csv, write_json, write_jsonl
-from .spotify_artifacts import build_export_artifact_paths, build_support_file_paths
-from .spotify_mapping import (
-    PLAYLISTS_FIELDS,
-    PLAYLIST_ITEMS_FIELDS,
-    RECENTLY_PLAYED_FIELDS,
-    SAVED_TRACKS_FIELDS,
-    TOP_TRACKS_FIELDS,
-    build_playlist_item_rows,
-    build_playlist_rows,
-    build_recently_played_rows,
-    build_saved_track_rows,
-    build_top_track_rows,
-)
+try:
+    from .spotify_auth import complete_oauth_flow, load_token_cache, save_token_cache, token_is_usable
+    from .spotify_client import (
+        RESILIENCE_AVAILABLE,
+        CacheDB,
+        RateLimitCooldownError,
+        SpotifyApiClient,
+        SpotifyApiError,
+        fetch_all_offset_pages,
+    )
+    from .spotify_io import clamp_page_size, now_utc, repo_root, sha256_of_file, write_csv, write_json, write_jsonl
+    from .spotify_artifacts import build_export_artifact_paths, build_support_file_paths
+    from .spotify_mapping import (
+        PLAYLISTS_FIELDS,
+        PLAYLIST_ITEMS_FIELDS,
+        RECENTLY_PLAYED_FIELDS,
+        SAVED_TRACKS_FIELDS,
+        TOP_TRACKS_FIELDS,
+        build_playlist_item_rows,
+        build_playlist_rows,
+        build_recently_played_rows,
+        build_saved_track_rows,
+        build_top_track_rows,
+    )
+except ImportError:
+    from spotify_auth import complete_oauth_flow, load_token_cache, save_token_cache, token_is_usable
+    from spotify_client import (
+        RESILIENCE_AVAILABLE,
+        CacheDB,
+        RateLimitCooldownError,
+        SpotifyApiClient,
+        SpotifyApiError,
+        fetch_all_offset_pages,
+    )
+    from spotify_io import clamp_page_size, now_utc, repo_root, sha256_of_file, write_csv, write_json, write_jsonl
+    from spotify_artifacts import build_export_artifact_paths, build_support_file_paths
+    from spotify_mapping import (
+        PLAYLISTS_FIELDS,
+        PLAYLIST_ITEMS_FIELDS,
+        RECENTLY_PLAYED_FIELDS,
+        SAVED_TRACKS_FIELDS,
+        TOP_TRACKS_FIELDS,
+        build_playlist_item_rows,
+        build_playlist_rows,
+        build_recently_played_rows,
+        build_saved_track_rows,
+        build_top_track_rows,
+    )
 
 DEFAULT_SCOPES = [
     "user-top-read",
@@ -187,10 +212,15 @@ def _fetch_all_data(
     playlist_item_batches: List[Dict[str, Any]] = []
     if args.include_playlists:
         market = profile.get("country") if isinstance(profile, dict) else None
+        seen_playlist_ids: set[str] = set()
         for playlist in playlists:
             playlist_id = playlist.get("id")
             if not playlist_id:
                 continue
+            playlist_id = str(playlist_id)
+            if playlist_id in seen_playlist_ids:
+                continue
+            seen_playlist_ids.add(playlist_id)
             playlist_params: Dict[str, Any] = {"additional_types": "track"}
             if isinstance(market, str) and market:
                 playlist_params["market"] = market

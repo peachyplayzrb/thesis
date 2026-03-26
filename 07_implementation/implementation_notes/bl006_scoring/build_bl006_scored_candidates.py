@@ -26,18 +26,39 @@ from pathlib import Path
 import sys
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from bl000_shared_utils.io_utils import sha256_of_file, load_json, load_csv_rows
+from bl000_shared_utils.io_utils import open_text_write, sha256_of_file, load_json, load_csv_rows
 from bl000_shared_utils.path_utils import repo_root
 from bl000_shared_utils.config_loader import load_run_config_utils_module
 from bl006_scoring.scoring_engine import compute_component_scores, compute_final_score
 from bl006_scoring.candidate_parsed import parse_candidate_attributes
 from bl006_scoring.profile_extractor import extract_profile_scoring_data, build_component_weights, build_numeric_specs
-from bl006_scoring.result_reporter import initialize_scoring_report, add_result_to_report, finalize_report, generate_summary_report
 
 
 # Numeric feature specifications for comparison between profile and candidates
 NUMERIC_FEATURE_SPECS = build_numeric_specs()
 NUMERIC_COMPONENTS = {"tempo", "duration_ms", "key", "mode"}
+SCORED_CANDIDATE_FIELDS = [
+    "rank",
+    "track_id",
+    "lead_genre",
+    "matched_genres",
+    "matched_tags",
+    "final_score",
+    "tempo_similarity",
+    "tempo_contribution",
+    "duration_ms_similarity",
+    "duration_ms_contribution",
+    "key_similarity",
+    "key_contribution",
+    "mode_similarity",
+    "mode_contribution",
+    "lead_genre_similarity",
+    "lead_genre_contribution",
+    "genre_overlap_similarity",
+    "genre_overlap_contribution",
+    "tag_overlap_similarity",
+    "tag_overlap_contribution",
+]
 
 
 def load_component_weight_overrides(defaults: dict[str, float]) -> dict[str, float]:
@@ -57,23 +78,6 @@ def load_component_weight_overrides(defaults: dict[str, float]) -> dict[str, flo
         if key in merged and isinstance(value, (int, float)) and value >= 0:
             merged[key] = float(value)
     return merged
-
-
-def apply_numeric_threshold_overrides(specs: dict[str, dict[str, object]]) -> None:
-    """Apply numeric threshold overrides from environment."""
-    raw = os.environ.get("BL006_NUMERIC_THRESHOLDS_JSON", "").strip()
-    if not raw:
-        return
-    try:
-        payload = json.loads(raw)
-    except json.JSONDecodeError:
-        return
-    if not isinstance(payload, dict):
-        return
-
-    for feature_name, threshold in payload.items():
-        if feature_name in specs and isinstance(threshold, (int, float)) and threshold > 0:
-            specs[feature_name]["threshold"] = float(threshold)
 
 
 def build_active_component_weights(
@@ -155,27 +159,12 @@ def resolve_bl006_runtime_controls() -> dict[str, object]:
     }
 
 
-def normalize_weight_map(items: list[dict[str, object]], top_k: int) -> tuple[dict[str, float], float]:
-    """
-    Normalize profile weight maps (genres, tags, lead genres).
-    
-    Extracts top-k items and creates a weight map for overlap calculations.
-    """
-    subset = items[:top_k]
-    weight_map: dict[str, float] = {}
-    total = 0.0
-    for item in subset:
-        label = item.get("label")
-        weight = item.get("weight")
-        if not isinstance(label, str):
-            continue
-        try:
-            numeric_weight = float(weight)
-        except (TypeError, ValueError):
-            continue
-        weight_map[label] = numeric_weight
-        total += numeric_weight
-    return weight_map, total
+def ensure_paths_exist(paths: list[Path]) -> None:
+    missing = [str(path) for path in paths if not path.exists()]
+    if missing:
+        raise FileNotFoundError(
+            "BL-006 missing required input artifact(s): " + ", ".join(missing)
+        )
 
 
 def contribution_breakdown(rows: list[dict[str, object]]) -> dict[str, float]:
@@ -228,6 +217,7 @@ def main() -> None:
     output_dir = root / "07_implementation" / "implementation_notes" / "bl006_scoring" / "outputs"
     output_dir.mkdir(parents=True, exist_ok=True)
 
+    ensure_paths_exist([profile_path, filtered_candidates_path])
     profile = load_json(profile_path)
     candidates = load_csv_rows(filtered_candidates_path)
     if not candidates:
@@ -303,30 +293,8 @@ def main() -> None:
         row["rank"] = index
 
     scored_path = output_dir / "bl006_scored_candidates.csv"
-    with scored_path.open("w", encoding="utf-8", newline="") as handle:
-        fieldnames = [
-            "rank",
-            "track_id",
-            "lead_genre",
-            "matched_genres",
-            "matched_tags",
-            "final_score",
-            "tempo_similarity",
-            "tempo_contribution",
-            "duration_ms_similarity",
-            "duration_ms_contribution",
-            "key_similarity",
-            "key_contribution",
-            "mode_similarity",
-            "mode_contribution",
-            "lead_genre_similarity",
-            "lead_genre_contribution",
-            "genre_overlap_similarity",
-            "genre_overlap_contribution",
-            "tag_overlap_similarity",
-            "tag_overlap_contribution",
-        ]
-        writer = csv.DictWriter(handle, fieldnames=fieldnames, lineterminator="\n")
+    with open_text_write(scored_path, newline="") as handle:
+        writer = csv.DictWriter(handle, fieldnames=SCORED_CANDIDATE_FIELDS, lineterminator="\n")
         writer.writeheader()
         writer.writerows(scored_rows)
 
@@ -394,15 +362,12 @@ def main() -> None:
         },
     }
 
-    summary_path = output_dir / "bl006_score_summary.json"
-    with summary_path.open("w", encoding="utf-8") as handle:
-        json.dump(summary, handle, indent=2, ensure_ascii=True)
-
     summary["output_hashes_sha256"] = {
         "bl006_scored_candidates.csv": sha256_of_file(scored_path),
     }
     summary["summary_hash_note"] = "summary file hash collected separately in experiment logging to avoid recursive self-reference"
-    with summary_path.open("w", encoding="utf-8") as handle:
+    summary_path = output_dir / "bl006_score_summary.json"
+    with open_text_write(summary_path) as handle:
         json.dump(summary, handle, indent=2, ensure_ascii=True)
 
     print("BL-006 candidate scoring complete.")

@@ -3,8 +3,8 @@ bl010_snapshot_matches_current_contract,pass,BL-010 config snapshot matches the 
 bl010_report_hash_matches_current_contract,pass,BL-010 report config_hash matches the current active-pipeline reproducibility contract
 bl010_fixed_input_hashes_match_current,pass,BL-010 fixed input hashes match the current active pipeline outputs
 bl010_stage_script_hashes_match_current,pass,BL-010 stage script hashes match the current BL-004 to BL-009 code
-bl010_active_mode,pass,BL-010 evidence is using active pipeline outputs rather than legacy surrogate inputs
+bl010_active_mode,pass,BL-010 evidence mode matches requested freshness mode input source
 bl011_snapshot_matches_current_contract,pass,BL-011 config snapshot matches the current active controllability contract
 bl011_baseline_hash_matches_current_bl010,pass,BL-011 baseline_config_hash matches the current BL-010 baseline snapshot
 bl011_fixed_input_hashes_match_current,pass,BL-011 fixed input hashes match the current active controllability inputs
-bl011_active_mode,pass,BL-011 evidence is using active pipeline outputs rather than legacy surrogate inputs
+bl011_active_mode,pass,BL-011 evidence mode matches requested freshness mode input source

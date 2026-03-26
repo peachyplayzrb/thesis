@@ -16,12 +16,17 @@ from bl000_shared_utils.config_loader import load_run_config_utils_module
 from bl000_shared_utils.env_utils import env_int, env_str
 from bl000_shared_utils.io_utils import (
     load_csv_rows,
-    load_jsonl,
+    open_text_write,
     parse_csv_labels,
     parse_float,
     sha256_of_file,
 )
 from bl000_shared_utils.path_utils import repo_root
+from bl000_shared_utils.constants import (
+    DEFAULT_PROFILE_TOP_TAG_LIMIT,
+    DEFAULT_PROFILE_TOP_GENRE_LIMIT,
+    DEFAULT_PROFILE_TOP_LEAD_GENRE_LIMIT,
+)
 
 
 # Hybrid profile: semantic labels + numeric centers from DS-001 candidate dataset.
@@ -43,9 +48,7 @@ SUMMARY_FEATURE_COLUMNS: list[str] = [
     "tempo",
 ]
 
-DEFAULT_TOP_TAG_LIMIT = 10
-DEFAULT_TOP_GENRE_LIMIT = 10
-DEFAULT_TOP_LEAD_GENRE_LIMIT = 10
+# Use shared defaults from BL000 utilities (canonical source for profile limits)
 DEFAULT_INCLUDE_INTERACTION_TYPES: list[str] = ["history", "influence"]
 DEFAULT_INPUT_SCOPE: dict[str, object] = {
     "source_family": "spotify_api_export",
@@ -98,90 +101,51 @@ def resolve_bl004_runtime_controls() -> dict[str, object]:
             return inferred_user_id
         return "unknown_user"
 
+    def sanitize_controls(controls: dict[str, object]) -> dict[str, object]:
+        controls["top_tag_limit"] = max(1, int(controls["top_tag_limit"]))
+        controls["top_genre_limit"] = max(1, int(controls["top_genre_limit"]))
+        controls["top_lead_genre_limit"] = max(1, int(controls["top_lead_genre_limit"]))
+        include_types = [
+            str(v).strip()
+            for v in list(controls.get("include_interaction_types") or [])
+            if str(v).strip()
+        ]
+        controls["include_interaction_types"] = include_types or list(DEFAULT_INCLUDE_INTERACTION_TYPES)
+        return controls
+
     if run_config_path:
         run_config_utils = load_run_config_utils_module()
         controls = run_config_utils.resolve_bl004_controls(run_config_path)
         user_id = resolve_user_id(controls.get("user_id"))
-        return {
-            "config_source": "run_config",
-            "run_config_path": controls.get("config_path"),
-            "run_config_schema_version": controls.get("schema_version"),
-            "input_scope": dict(controls.get("input_scope") or DEFAULT_INPUT_SCOPE),
-            "top_tag_limit": int(controls["top_tag_limit"]),
-            "top_genre_limit": int(controls["top_genre_limit"]),
-            "top_lead_genre_limit": int(controls["top_lead_genre_limit"]),
-            "user_id": user_id,
-            "include_interaction_types": list(controls.get("include_interaction_types") or DEFAULT_INCLUDE_INTERACTION_TYPES),
+        return sanitize_controls(
+            {
+                "config_source": "run_config",
+                "run_config_path": controls.get("config_path"),
+                "run_config_schema_version": controls.get("schema_version"),
+                "input_scope": dict(controls.get("input_scope") or DEFAULT_INPUT_SCOPE),
+                "top_tag_limit": int(controls["top_tag_limit"]),
+                "top_genre_limit": int(controls["top_genre_limit"]),
+                "top_lead_genre_limit": int(controls["top_lead_genre_limit"]),
+                "user_id": user_id,
+                "include_interaction_types": list(
+                    controls.get("include_interaction_types") or DEFAULT_INCLUDE_INTERACTION_TYPES
+                ),
+            }
+        )
+
+    return sanitize_controls(
+        {
+            "config_source": "environment",
+            "run_config_path": None,
+            "run_config_schema_version": None,
+            "input_scope": dict(DEFAULT_INPUT_SCOPE),
+            "top_tag_limit": env_int("BL004_TOP_TAG_LIMIT", DEFAULT_PROFILE_TOP_TAG_LIMIT),
+            "top_genre_limit": env_int("BL004_TOP_GENRE_LIMIT", DEFAULT_PROFILE_TOP_GENRE_LIMIT),
+            "top_lead_genre_limit": env_int("BL004_TOP_LEAD_GENRE_LIMIT", DEFAULT_PROFILE_TOP_LEAD_GENRE_LIMIT),
+            "user_id": resolve_user_id(None),
+            "include_interaction_types": list(DEFAULT_INCLUDE_INTERACTION_TYPES),
         }
-
-    return {
-        "config_source": "environment",
-        "run_config_path": None,
-        "run_config_schema_version": None,
-        "input_scope": dict(DEFAULT_INPUT_SCOPE),
-        "top_tag_limit": env_int("BL004_TOP_TAG_LIMIT", DEFAULT_TOP_TAG_LIMIT),
-        "top_genre_limit": env_int("BL004_TOP_GENRE_LIMIT", DEFAULT_TOP_GENRE_LIMIT),
-        "top_lead_genre_limit": env_int("BL004_TOP_LEAD_GENRE_LIMIT", DEFAULT_TOP_LEAD_GENRE_LIMIT),
-        "user_id": resolve_user_id(None),
-        "include_interaction_types": list(DEFAULT_INCLUDE_INTERACTION_TYPES),
-    }
-
-
-def load_csv(path: Path) -> list[dict[str, str]]:
-    return load_csv_rows(path)
-
-
-def parse_weighted_list(raw_value: str, key_name: str, score_name: str) -> list[tuple[str, float]]:
-    if not raw_value:
-        return []
-    try:
-        payload = json.loads(raw_value)
-    except json.JSONDecodeError:
-        return []
-
-    items: list[tuple[str, float]] = []
-    for item in payload:
-        if not isinstance(item, dict):
-            continue
-        label = item.get(key_name)
-        score = item.get(score_name)
-        if not isinstance(label, str) or not label.strip():
-            continue
-        try:
-            score_value = float(score)
-        except (TypeError, ValueError):
-            continue
-        items.append((label.strip(), score_value))
-    return items
-
-
-def parse_event_weighted_list(raw_value: object) -> list[tuple[str, float]]:
-    if isinstance(raw_value, str):
-        if not raw_value.strip():
-            return []
-        try:
-            payload = json.loads(raw_value)
-        except json.JSONDecodeError:
-            return []
-    elif isinstance(raw_value, list):
-        payload = raw_value
-    else:
-        return []
-
-    items: list[tuple[str, float]] = []
-    for item in payload:
-        if not isinstance(item, dict):
-            continue
-        label = item.get("tag")
-        score = item.get("weight")
-        if not isinstance(label, str) or not label.strip():
-            continue
-        try:
-            score_value = float(score)
-        except (TypeError, ValueError):
-            continue
-        items.append((label.strip(), score_value))
-    return items
+    )
 
 
 def resolve_lead_genre(genres: list[str], tags: list[str]) -> str:
@@ -219,7 +183,7 @@ def main() -> None:
         / "bl003_alignment" / "outputs" / "bl003_ds001_spotify_seed_table.csv"
     )
 
-    seed_rows = load_csv(seed_table_path)
+    seed_rows = load_csv_rows(seed_table_path)
     if not seed_rows:
         raise RuntimeError("No DS-001 seed rows found for BL-004 input")
 
@@ -320,6 +284,12 @@ def main() -> None:
 
     total_effective_weight = sum(weight_by_type.values())
     matched_seed_count = len(seed_trace_rows)
+    if not seed_trace_rows:
+        requested_types = sorted(include_interaction_types)
+        raise RuntimeError(
+            "BL-004 produced no seed events after interaction-type filtering. "
+            f"requested_include_interaction_types={requested_types}"
+        )
 
     numeric_profile: dict[str, float] = {}
     for column in NUMERIC_FEATURE_COLUMNS:
@@ -336,7 +306,7 @@ def main() -> None:
     seed_trace_rows.sort(key=lambda row: int(row["seed_rank"]))
 
     seed_trace_path = output_dir / "bl004_seed_trace.csv"
-    with seed_trace_path.open("w", encoding="utf-8", newline="") as handle:
+    with open_text_write(seed_trace_path, newline="") as handle:
         writer = csv.DictWriter(handle, fieldnames=list(seed_trace_rows[0].keys()), lineterminator="\n")
         writer.writeheader()
         writer.writerows(seed_trace_rows)
@@ -394,7 +364,7 @@ def main() -> None:
     }
 
     profile_path = output_dir / "bl004_preference_profile.json"
-    with profile_path.open("w", encoding="utf-8") as handle:
+    with open_text_write(profile_path) as handle:
         json.dump(profile, handle, indent=2, ensure_ascii=True)
 
     summary = {
@@ -410,7 +380,11 @@ def main() -> None:
         "dominant_lead_genres": profile["semantic_profile"]["top_lead_genres"][:5],
         "dominant_tags": profile["semantic_profile"]["top_tags"][:5],
         "dominant_genres": profile["semantic_profile"]["top_genres"][:5],
-        "feature_centers": {column: numeric_profile[column] for column in SUMMARY_FEATURE_COLUMNS},
+        "feature_centers": {
+            column: numeric_profile[column]
+            for column in SUMMARY_FEATURE_COLUMNS
+            if column in numeric_profile
+        },
         "artifact_paths": {
             "profile_path": str(profile_path),
             "seed_trace_path": str(seed_trace_path),
@@ -419,7 +393,7 @@ def main() -> None:
     }
 
     summary_path = output_dir / "bl004_profile_summary.json"
-    with summary_path.open("w", encoding="utf-8") as handle:
+    with open_text_write(summary_path) as handle:
         json.dump(summary, handle, indent=2, ensure_ascii=True)
 
     print("BL-004 preference profile created.")

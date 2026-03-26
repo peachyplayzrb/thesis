@@ -154,3 +154,39 @@ Latest canonical artifact pair (focused validation run):
 
 Outcome linkage:
 - BL-008 top-label dominance share reduced to `0.5` on v1b-focused rerun, satisfying UI-013 target (`<= 0.6`) while BL-014 remains pass.
+
+---
+
+## 10. Structural Cleanup and Validation Update (2026-03-26)
+Objective:
+- Clean and harden BL-000 resolver/writer behavior while preserving the active run-config contract.
+
+Implemented refactor and issue fixes:
+- `run_config_utils.py` cleanup:
+  - Added package/direct-script fallback import for shared write utility (`open_text_write`) to improve execution parity.
+  - Extracted `_coerce_min_positive_float` and used it for ingestion float controls to prevent `ValueError` crashes on malformed numeric input and preserve safe defaults.
+  - Extracted `_normalize_allowed_tokens` and applied it to list controls (`input_scope.top_time_ranges`, `interaction_scope.include_interaction_types`) with stable-order de-duplication.
+  - De-duplicated `influence_tracks.track_ids` during canonicalization to prevent redundant downstream influence processing.
+  - Migrated run-config artifact writes (`run_intent*`, `run_effective_config*`) to shared Windows-safe writer path.
+
+Contract impact:
+- No schema change (`run-config-v1` unchanged).
+- No control-surface removal.
+- Invariant enforcement (threshold coupling, profile/retrieval limits, component-weight checks) remains intact.
+
+Validation evidence:
+- BL-000 direct smoke check (resolver + artifact writer): pass
+  - run_id: `BL000-SMOKE-20260326-REF`
+  - artifacts written:
+    - `outputs/run_intent_20260326-060435-501919.json`
+    - `outputs/run_effective_config_20260326-060435-501919.json`
+- BL-013 orchestration after BL-000 cleanup: pass
+  - run_id: `BL013-ENTRYPOINT-20260326-060416-877007`
+  - failed_stage_count: `0`
+- BL-014 active freshness suite after BL-000 cleanup: pass
+  - run_id: `BL-FRESHNESS-SUITE-20260326-060441`
+  - checks_passed: `7/7`
+
+Status:
+- BL-000 run-config remains operational and downstream-compatible.
+- Cleanup closed with no observed regressions in BL-013/BL-014 validation path.

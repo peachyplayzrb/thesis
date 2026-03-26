@@ -9,6 +9,14 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
+import sys
+
+try:
+    from bl000_shared_utils.io_utils import open_text_write
+except ImportError:
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+    from bl000_shared_utils.io_utils import open_text_write
+
 
 REQUIRED_LOGICAL_FIELDS = ["track_name", "artist_name", "played_at", "ms_played"]
 RAW_COLUMN_ALIASES = {
@@ -67,6 +75,25 @@ def sha256_of_file(path: Path) -> str:
         for chunk in iter(lambda: handle.read(1024 * 1024), b""):
             digest.update(chunk)
     return digest.hexdigest().upper()
+
+
+def write_json(path: Path, payload: dict[str, Any]) -> None:
+    with open_text_write(path) as handle:
+        json.dump(payload, handle, indent=2, ensure_ascii=True)
+
+
+def write_jsonl(path: Path, rows: list[dict[str, Any]]) -> None:
+    with open_text_write(path, newline="") as handle:
+        for row in rows:
+            handle.write(json.dumps(row, ensure_ascii=True) + "\n")
+
+
+def write_invalid_rows_csv(path: Path, rows: list[dict[str, Any]], fieldnames: list[str]) -> None:
+    with open_text_write(path, newline="") as handle:
+        writer = csv.DictWriter(handle, fieldnames=fieldnames)
+        writer.writeheader()
+        for row in rows:
+            writer.writerow(row)
 
 
 def first_present(row: dict[str, Any], aliases: list[str]) -> str:
@@ -277,9 +304,7 @@ def main() -> None:
                 }
             )
 
-    with output_path.open("w", encoding="utf-8", newline="") as handle:
-        for event in normalized_events:
-            handle.write(json.dumps(event, ensure_ascii=True) + "\n")
+    write_jsonl(output_path, normalized_events)
 
     invalid_fieldnames = [
         "row_number",
@@ -291,18 +316,14 @@ def main() -> None:
         "ms_played_raw",
         "isrc_raw",
     ]
-    with invalid_rows_path.open("w", encoding="utf-8", newline="") as handle:
-        writer = csv.DictWriter(handle, fieldnames=invalid_fieldnames)
-        writer.writeheader()
-        for row in invalid_rows:
-            writer.writerow(row)
+    write_invalid_rows_csv(invalid_rows_path, invalid_rows, invalid_fieldnames)
 
     summary["output_jsonl"] = args.output_jsonl
     summary["invalid_rows_csv"] = args.invalid_rows_csv
     summary["output_jsonl_sha256"] = sha256_of_file(output_path)
     summary["invalid_rows_sha256"] = sha256_of_file(invalid_rows_path)
 
-    summary_path.write_text(json.dumps(summary, indent=2, ensure_ascii=True), encoding="utf-8")
+    write_json(summary_path, summary)
 
     print(f"BL-002 ingestion complete: ingest_run_id={ingest_run_id}")
     print(f"rows_total={summary['rows_total']}")

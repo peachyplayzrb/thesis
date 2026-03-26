@@ -2,24 +2,28 @@ from __future__ import annotations
 
 import hashlib
 import json
-import sys
 import time
 import urllib.error
 import urllib.parse
 import urllib.request
 from collections import deque
-from pathlib import Path
 from typing import Any, Dict, List, Optional
 
 try:
-    from .spotify_resilience import CacheDB
+    from . import spotify_resilience as _spotify_resilience
+    CacheDB = _spotify_resilience.CacheDB
     RESILIENCE_AVAILABLE: bool = True
 except ImportError:
     CacheDB = None  # type: ignore[assignment,misc]
+    _spotify_resilience = None
     RESILIENCE_AVAILABLE = False
 
-from .spotify_auth import request_token  # noqa: E402
-from .spotify_io import now_utc  # noqa: E402
+try:
+    from .spotify_auth import request_token  # noqa: E402
+    from .spotify_io import now_utc  # noqa: E402
+except ImportError:
+    from spotify_auth import request_token  # type: ignore[no-redef]
+    from spotify_io import now_utc  # type: ignore[no-redef]
 
 API_BASE_URL = "https://api.spotify.com/v1"
 
@@ -230,8 +234,11 @@ def cached_api_get(
     cache_db: Any,
     path: str,
     params: Dict[str, Any],
-    ttl_seconds: int = 86400,
+    ttl_seconds: Optional[int] = None,
 ) -> Dict[str, Any]:
+    if ttl_seconds is None:
+        ttl_seconds = int(getattr(_spotify_resilience, "DEFAULT_TTL_SECONDS", 86400))
+
     if cache_db is None:
         return client.api_get(path=path, params=params)
 

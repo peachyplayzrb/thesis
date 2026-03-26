@@ -41,12 +41,29 @@
   },
   "seed_controls": {
     "match_rate_min_threshold": 0.3,
-    "match_rate_min_threshold_comment": "Minimum acceptable match rate (0.0-1.0) for imported tracks against DS-001 corpus. Set to 0.3 (30%) based on empirical data showing 32.2% match rate with current corpus. Known limitation: DS-001 has limited coverage of user's import history - preference profiles built from incomplete data. See Chapter 3 for bias documentation."
+    "match_rate_min_threshold_comment": "Minimum acceptable match rate (0.0-1.0) for imported tracks against DS-001 corpus. Set to 0.3 (30%) based on empirical data showing 32.2% match rate with current corpus. Known limitation: DS-001 has limited coverage of user's import history - preference profiles built from incomplete data. See Chapter 3 for bias documentation.",
+    "top_range_weights": {
+      "short_term": 0.5,
+      "medium_term": 0.3,
+      "long_term": 0.2
+    },
+    "source_base_weights": {
+      "top_tracks": 1.0,
+      "saved_tracks": 0.6,
+      "playlist_items": 0.4,
+      "recently_played": 0.5
+    }
+  },
+  "ingestion_controls": {
+    "cache_ttl_seconds": 86400,
+    "throttle_sleep_seconds": 0.12,
+    "max_retries": 6,
+    "base_backoff_delay_seconds": 1.0
   },
   "profile_controls": {
     "top_tag_limit": 10,
-    "top_genre_limit": 10,
-    "top_lead_genre_limit": 10
+    "top_genre_limit": 8,
+    "top_lead_genre_limit": 6
   },
   "retrieval_controls": {
     "profile_top_tag_limit": 10,
@@ -90,11 +107,26 @@
     "max_consecutive": 2
   },
   "transparency_controls": {
-    "top_contributor_limit": 3
+    "top_contributor_limit": 3,
+    "blend_primary_contributor_on_near_tie": false,
+    "primary_contributor_tie_delta": 0.02
   },
   "observability_controls": {
     "diagnostic_sample_limit": 5,
     "bootstrap_mode": true,
     "bootstrap_mode_comment": "Config-driven observability mode flag recorded in BL-009 metadata."
+  },
+  "reporting_controls": {
+    "score_thresholds": {
+      "perfect_score": 0.99,
+      "above_threshold": 0.5
+    }
+  },
+  "controllability_controls": {
+    "weight_override_value_if_component_present": 0.2,
+    "weight_override_increment_fallback": 0.08,
+    "weight_override_cap_fallback": 0.35,
+    "stricter_threshold_scale": 0.75,
+    "looser_threshold_scale": 1.25
   }
 }

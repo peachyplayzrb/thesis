@@ -13,14 +13,41 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any, Callable, Dict, Optional, Tuple
 
+import sys
+sys.path.insert(0, str(Path(__file__).parent.parent))
 
-# -------------------------
-# Configuration
-# -------------------------
-DEFAULT_TTL_SECONDS = 60 * 60 * 24  # 24-hour cache by default
-SLEEP_BETWEEN_CALLS_SEC = 0.12      # 120ms throttle between API calls
-MAX_RETRIES = 6
-BASE_DELAY_SEC = 1.0
+from bl000_shared_utils.constants import (
+    DEFAULT_API_CACHE_TTL_SECONDS,
+    DEFAULT_API_THROTTLE_SLEEP_SEC,
+    DEFAULT_API_MAX_RETRIES,
+    DEFAULT_API_BASE_DELAY_SEC,
+)
+
+
+# Module-level configuration variables (mutable for testing/run_config override)
+DEFAULT_TTL_SECONDS = DEFAULT_API_CACHE_TTL_SECONDS  # 24-hour cache by default
+SLEEP_BETWEEN_CALLS_SEC = DEFAULT_API_THROTTLE_SLEEP_SEC      # 120ms throttle between API calls
+MAX_RETRIES = DEFAULT_API_MAX_RETRIES
+BASE_DELAY_SEC = DEFAULT_API_BASE_DELAY_SEC
+
+
+def apply_ingestion_controls(ingestion_config: dict) -> None:
+    """Apply ingestion controls from run_config to module-level defaults.
+    
+    This allows users to override resilience behavior via run_config.ingestion_controls
+    without modifying this source file.
+    
+    Args:
+        ingestion_config: Dict with keys cache_ttl_seconds, throttle_sleep_seconds,
+                         max_retries, base_backoff_delay_seconds
+    """
+    global DEFAULT_TTL_SECONDS, SLEEP_BETWEEN_CALLS_SEC, MAX_RETRIES, BASE_DELAY_SEC
+    
+    if ingestion_config:
+        DEFAULT_TTL_SECONDS = int(ingestion_config.get("cache_ttl_seconds", DEFAULT_TTL_SECONDS))
+        SLEEP_BETWEEN_CALLS_SEC = float(ingestion_config.get("throttle_sleep_seconds", SLEEP_BETWEEN_CALLS_SEC))
+        MAX_RETRIES = int(ingestion_config.get("max_retries", MAX_RETRIES))
+        BASE_DELAY_SEC = float(ingestion_config.get("base_backoff_delay_seconds", BASE_DELAY_SEC))
 
 
 # -------------------------
@@ -245,8 +272,11 @@ class JobProgress:
 # -------------------------
 # Retry + Backoff
 # -------------------------
-def safe_call(fn: Callable, max_retries: int = MAX_RETRIES,
-              base_delay: float = BASE_DELAY_SEC) -> Tuple[bool, Optional[Any], int, Optional[str]]:
+def safe_call(
+    fn: Callable,
+    max_retries: Optional[int] = None,
+    base_delay: Optional[float] = None,
+) -> Tuple[bool, Optional[Any], int, Optional[str]]:
     """
     Execute fn with exponential backoff on transient errors.
 
@@ -254,8 +284,9 @@ def safe_call(fn: Callable, max_retries: int = MAX_RETRIES,
     """
     from spotipy.exceptions import SpotifyException
 
-    delay = base_delay
-    for attempt in range(max_retries):
+    retries = int(max_retries) if max_retries is not None else int(MAX_RETRIES)
+    delay = float(base_delay) if base_delay is not None else float(BASE_DELAY_SEC)
+    for attempt in range(retries):
         try:
             data = fn()
             return True, data, 200, None
@@ -265,7 +296,7 @@ def safe_call(fn: Callable, max_retries: int = MAX_RETRIES,
 
             # Retry only on transient errors
             if status in (429, 500, 502, 503, 504):
-                if attempt < max_retries - 1:
+                if attempt < retries - 1:
                     time.sleep(delay)
                     delay = min(delay * 2, 20.0)  # Cap at 20 seconds
                     continue

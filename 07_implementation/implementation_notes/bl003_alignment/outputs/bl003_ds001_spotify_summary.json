@@ -1,7 +1,7 @@
 {
   "task": "BL-003-DS001-spotify-seed-build",
-  "generated_at_utc": "2026-03-25T22:57:27Z",
-  "elapsed_seconds": 1.478,
+  "generated_at_utc": "2026-03-26T05:58:23Z",
+  "elapsed_seconds": 1.521,
   "inputs": {
     "ds001_candidates": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl000_data_layer\\outputs\\ds001_working_candidate_dataset.csv",
     "ds001_candidates_sha256": "296331CA6390D2C111AA336C7EB154B69EC7060604312AC8A274F545B68A04EF",
@@ -27,14 +27,14 @@
         "medium_term": null,
         "long_term": null
       },
-      "saved_max_items": 200,
-      "playlists_max_items": 12,
-      "playlist_items_max_per_playlist": 100,
+      "saved_max_items": null,
+      "playlists_max_items": null,
+      "playlist_items_max_per_playlist": null,
       "recently_played_limit": 50
     },
-    "config_source": "run_config",
-    "run_config_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl000_run_config\\configs\\profiles\\run_config_ui013_tuning_v1b.json",
-    "run_config_schema_version": "run-config-v1",
+    "config_source": "export_selection",
+    "run_config_path": null,
+    "run_config_schema_version": null,
     "input_scope": {
       "source_family": "spotify_api_export",
       "include_top_tracks": true,
@@ -52,7 +52,7 @@
       "recently_played_limit": 50
     },
     "influence_tracks": {
-      "enabled": true,
+      "enabled": false,
       "track_ids": [],
       "preference_weight": 1.0,
       "injected_count": 0,
@@ -76,11 +76,11 @@
         "recently_played_limit": 50
       },
       "influence_tracks": {
-        "enabled": true,
+        "enabled": false,
         "track_ids": [],
         "preference_weight": 1.0
       },
-      "contract_hash": "3B61594634963C00431EA23F14B652CFA03871229F91219436417387F99BF139"
+      "contract_hash": "C1814B46E56A858A6D6820840ACCC44A195258B032F7BE4AF5A5FD666F2EC0D8"
     },
     "selected_sources_expected": {
       "top_tracks": true,
@@ -100,18 +100,18 @@
   "source_stats": {
     "top_tracks": {
       "file_present": true,
-      "rows_available": 10001,
-      "rows_selected": 10001
+      "rows_available": 9998,
+      "rows_selected": 9998
     },
     "saved_tracks": {
       "file_present": true,
-      "rows_available": 200,
-      "rows_selected": 200
+      "rows_available": 1306,
+      "rows_selected": 1306
     },
     "playlist_items": {
       "file_present": true,
-      "rows_available": 279,
-      "rows_selected": 279
+      "rows_available": 581,
+      "rows_selected": 581
     },
     "recently_played": {
       "file_present": true,
@@ -143,33 +143,33 @@
       "recently_played_limit": 50
     },
     "rows_available": {
-      "top_tracks": 10001,
-      "saved_tracks": 200,
-      "playlist_items": 279,
+      "top_tracks": 9998,
+      "saved_tracks": 1306,
+      "playlist_items": 581,
       "recently_played": 50
     },
     "rows_selected": {
-      "top_tracks": 10001,
-      "saved_tracks": 200,
-      "playlist_items": 279,
+      "top_tracks": 9998,
+      "saved_tracks": 1306,
+      "playlist_items": 581,
       "recently_played": 50
     }
   },
   "counts": {
-    "input_event_rows": 10530,
-    "matched_by_spotify_id": 1001,
-    "matched_by_metadata": 717,
-    "unmatched": 8812,
-    "unmatched_missing_keys": 279,
-    "unmatched_no_candidate": 8533,
-    "matched_events_rows": 1718,
-    "seed_table_rows": 1026,
-    "trace_rows": 10530,
-    "unmatched_rows": 8812,
+    "input_event_rows": 11935,
+    "matched_by_spotify_id": 1098,
+    "matched_by_metadata": 806,
+    "unmatched": 10031,
+    "unmatched_missing_keys": 581,
+    "unmatched_no_candidate": 9450,
+    "matched_events_rows": 1904,
+    "seed_table_rows": 1064,
+    "trace_rows": 11935,
+    "unmatched_rows": 10031,
     "match_rate_validation": {
-      "threshold_enforced": true,
-      "min_threshold": 0.15,
-      "actual_match_rate": 0.1632,
+      "threshold_enforced": false,
+      "min_threshold": 0.0,
+      "actual_match_rate": 0.1595,
       "status": "pass"
     }
   },
@@ -181,11 +181,11 @@
     "summary_json": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl003_alignment\\outputs\\bl003_ds001_spotify_summary.json",
     "source_scope_manifest_json": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl003_alignment\\outputs\\bl003_source_scope_manifest.json",
     "sha256": {
-      "matched_events_jsonl": "98E3407995D7E1E014F9288B657BEC6242BF9C1A86CD1FBF858603F3993DB64D",
-      "seed_table_csv": "5B90129C759CA783AB7DA21A7B8D885CFFF42BFC4F8B3249E365C25F6A407EFF",
-      "trace_csv": "113C03906C235F35A034D86260318B3D3F4D1F7D6709201074A938776EC496BB",
-      "unmatched_csv": "A8C69534A8D0261F71B50F86B63F2079D6A84A0E79EBF2E5E7509B691977EE87",
-      "source_scope_manifest_json": "C466B9285C59F99286E216120C7D0D729F148F528DE436B23D6C6AEAA181672D"
+      "matched_events_jsonl": "BF3AE464D187863D8B44010E6DB6AE2088016FB0FAC108608837B23378CB5DCF",
+      "seed_table_csv": "21AFA5F89DF0EB1B5B1AD9ADE76FF7DCA2B528B69F19DD259EF048EAA9CC6928",
+      "trace_csv": "9AD5605ED2AED0BBFEBCB05F1FB202A00C477E084B3981EA2388D3D40449E960",
+      "unmatched_csv": "4B984D63A8463E314AE10C1B7747043CBB5E885C6F5E37B87B6E0773B1B06CDA",
+      "source_scope_manifest_json": "C65E776F07AF531C389B46749747016BE788E598713E3F0E4323EE758A7B79D1"
     }
   },
   "notes": {

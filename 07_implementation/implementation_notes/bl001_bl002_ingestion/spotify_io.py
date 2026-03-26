@@ -7,6 +7,14 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, List
 
+import sys
+
+try:
+    from bl000_shared_utils.io_utils import open_text_write
+except ImportError:
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+    from bl000_shared_utils.io_utils import open_text_write
+
 
 def repo_root() -> Path:
     return Path(__file__).resolve().parents[3]
@@ -26,19 +34,20 @@ def sha256_of_file(path: Path) -> str:
 
 def write_json(path: Path, payload: Any) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(payload, indent=2, ensure_ascii=True), encoding="utf-8")
+    with open_text_write(path) as handle:
+        json.dump(payload, handle, indent=2, ensure_ascii=True)
 
 
 def write_jsonl(path: Path, rows: List[Dict[str, Any]]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    with path.open("w", encoding="utf-8", newline="") as handle:
+    with open_text_write(path, newline="") as handle:
         for row in rows:
             handle.write(json.dumps(row, ensure_ascii=True) + "\n")
 
 
 def write_csv(path: Path, rows: List[Dict[str, Any]], fieldnames: List[str]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    with path.open("w", encoding="utf-8", newline="") as handle:
+    with open_text_write(path, newline="") as handle:
         writer = csv.DictWriter(handle, fieldnames=fieldnames)
         writer.writeheader()
         for row in rows:
