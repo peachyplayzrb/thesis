@@ -86,11 +86,12 @@ def build_active_component_weights(
     Drops numeric components not present in active set and re-normalizes
     remaining weights to sum to 1.0. Generates diagnostics about rebalancing.
     """
-    active = {
-        component: weight
-        for component, weight in component_weights.items()
-        if component not in NUMERIC_COMPONENTS or component in active_numeric_components
-    }
+    active = {}
+    for component, weight in component_weights.items():
+        component_name = component.removesuffix("_score")
+        if component_name in NUMERIC_COMPONENTS and component_name not in active_numeric_components:
+            continue
+        active[component] = weight
     total = sum(active.values())
     if total <= 0:
         raise RuntimeError("BL-006 requires at least one active scoring component")
