@@ -335,12 +335,16 @@ def load_export_selection(spotify_export_dir: Path) -> dict[str, object]:
         return {}
     try:
         payload = json.loads(summary_path.read_text(encoding="utf-8"))
-    except json.JSONDecodeError:
-        return {}
+    except (OSError, json.JSONDecodeError) as exc:
+        raise RuntimeError(
+            f"BL-003 could not parse BL-002 export summary: {summary_path}"
+        ) from exc
     selection = payload.get("selection")
-    if isinstance(selection, dict):
-        return selection
-    return {}
+    if not isinstance(selection, dict):
+        raise RuntimeError(
+            f"BL-003 export summary missing required selection block: {summary_path}"
+        )
+    return selection
 
 
 def compute_weight(event: dict[str, str], top_range_weights: dict, source_base_weights: dict) -> float:

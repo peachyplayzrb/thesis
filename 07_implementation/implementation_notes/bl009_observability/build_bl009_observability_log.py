@@ -7,6 +7,7 @@ import os
 import time
 from datetime import datetime, timezone
 from pathlib import Path
+from typing import Any
 
 import sys
 
@@ -76,6 +77,24 @@ def parse_exclusion_samples(rows: list[dict[str, str]], field: str, limit: int) 
             continue
         grouped[key].append(row)
     return grouped
+
+
+def load_required_json(path: Path, *, label: str) -> dict[str, Any]:
+    try:
+        payload = load_json(path)
+    except OSError as exc:
+        raise RuntimeError(f"BL-009 could not read {label}: {path}") from exc
+    except json.JSONDecodeError as exc:
+        raise RuntimeError(f"BL-009 could not parse {label} as valid JSON: {path}") from exc
+    if not isinstance(payload, dict):
+        raise RuntimeError(f"BL-009 expected {label} to be a JSON object: {path}")
+    return payload
+
+
+def ensure_required_keys(payload: dict[str, Any], keys: list[str], *, label: str) -> None:
+    missing = [key for key in keys if key not in payload]
+    if missing:
+        raise RuntimeError(f"BL-009 {label} missing required keys: {missing}")
 
 
 def ensure_required_sections(run_log: dict) -> None:
@@ -219,17 +238,26 @@ def main() -> None:
     start_time = time.time()
 
     paths = dict(required_paths)
-    bl004_profile = load_json(paths["bl004_profile"])
-    bl004_summary = load_json(paths["bl004_summary"])
-    bl005_diagnostics = load_json(paths["bl005_diagnostics"])
-    bl006_summary = load_json(paths["bl006_summary"])
-    bl007_report = load_json(paths["bl007_report"])
-    bl008_summary = load_json(paths["bl008_summary"])
+    bl004_profile = load_required_json(paths["bl004_profile"], label="BL-004 profile")
+    bl004_summary = load_required_json(paths["bl004_summary"], label="BL-004 profile summary")
+    bl005_diagnostics = load_required_json(paths["bl005_diagnostics"], label="BL-005 diagnostics")
+    bl006_summary = load_required_json(paths["bl006_summary"], label="BL-006 score summary")
+    bl007_report = load_required_json(paths["bl007_report"], label="BL-007 assembly report")
+    bl008_summary = load_required_json(paths["bl008_summary"], label="BL-008 explanation summary")
+
+    ensure_required_keys(bl004_profile, ["run_id", "user_id", "diagnostics", "seed_summary", "config"], label="BL-004 profile")
+    ensure_required_keys(bl004_summary, ["dominant_lead_genres", "dominant_tags"], label="BL-004 profile summary")
+    ensure_required_keys(bl005_diagnostics, ["run_id", "counts", "rule_hits", "top_kept_track_ids", "config"], label="BL-005 diagnostics")
+    ensure_required_keys(bl006_summary, ["run_id", "counts", "score_statistics", "top_candidates", "config"], label="BL-006 score summary")
+    ensure_required_keys(bl007_report, ["run_id", "counts", "rule_hits", "playlist_genre_mix", "playlist_score_range", "config"], label="BL-007 assembly report")
+    ensure_required_keys(bl008_summary, ["run_id", "playlist_track_count", "top_contributor_distribution"], label="BL-008 explanation summary")
 
     bl005_decisions = load_csv_rows(paths["bl005_decisions"])
     bl007_trace = load_csv_rows(paths["bl007_trace"])
-    bl007_playlist = load_json(paths["bl007_playlist"])
-    bl008_payloads = load_json(paths["bl008_payloads"])
+    bl007_playlist = load_required_json(paths["bl007_playlist"], label="BL-007 playlist")
+    bl008_payloads = load_required_json(paths["bl008_payloads"], label="BL-008 explanation payloads")
+    ensure_required_keys(bl007_playlist, ["playlist_length"], label="BL-007 playlist")
+    ensure_required_keys(bl008_payloads, ["explanations"], label="BL-008 explanation payloads")
 
     generated_at_utc = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
     run_id = f"BL009-OBSERVE-{datetime.now(timezone.utc).strftime('%Y%m%d-%H%M%S-%f')}"

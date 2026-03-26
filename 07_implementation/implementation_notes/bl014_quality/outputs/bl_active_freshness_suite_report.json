@@ -1,9 +1,9 @@
 {
   "run_metadata": {
-    "run_id": "BL-FRESHNESS-SUITE-20260326-060441",
+    "run_id": "BL-FRESHNESS-SUITE-20260326-173252",
     "task": "active freshness suite",
-    "generated_at_utc": "2026-03-26T06:04:41Z",
-    "elapsed_seconds": 0.827,
+    "generated_at_utc": "2026-03-26T17:32:52Z",
+    "elapsed_seconds": 1.022,
     "overall_status": "pass",
     "checks_total": 7,
     "checks_passed": 7,
@@ -52,6 +52,6 @@
     }
   ],
   "script_outputs": {
-    "bl014_stdout_stderr": "[BL-014] run_id=BL014-SANITY-20260326-060440-455541\n[BL-014] overall_status=pass checks_passed=22/22\n[BL-014] report=C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl014_quality\\outputs\\bl014_sanity_report.json\n[BL-014] run_matrix=C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl014_quality\\outputs\\bl014_sanity_run_matrix.csv\n[BL-014] config_snapshot=C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl014_quality\\outputs\\bl014_sanity_config_snapshot.json"
+    "bl014_stdout_stderr": "[BL-014] run_id=BL014-SANITY-20260326-173251-980845\n[BL-014] overall_status=pass checks_passed=22/22\n[BL-014] report=C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl014_quality\\outputs\\bl014_sanity_report.json\n[BL-014] run_matrix=C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl014_quality\\outputs\\bl014_sanity_run_matrix.csv\n[BL-014] config_snapshot=C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl014_quality\\outputs\\bl014_sanity_config_snapshot.json"
   }
 }

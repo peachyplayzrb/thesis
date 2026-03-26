@@ -66,8 +66,30 @@ def csv_text(fieldnames: list[str], rows: list[dict[str, object]]) -> str:
     return render_csv_text(fieldnames, rows)
 
 
-def load_json(path: Path) -> dict:
-    return json.loads(path.read_text(encoding="utf-8"))
+def load_required_json(path: Path, *, label: str) -> dict:
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except OSError as exc:
+        raise RuntimeError(f"BL-011 could not read {label}: {path}") from exc
+    except json.JSONDecodeError as exc:
+        raise RuntimeError(f"BL-011 could not parse {label} as valid JSON: {path}") from exc
+    if not isinstance(payload, dict):
+        raise RuntimeError(f"BL-011 expected {label} to be a JSON object: {path}")
+    return payload
+
+
+def ensure_required_keys(payload: dict, keys: list[str], *, label: str) -> None:
+    missing = [key for key in keys if key not in payload]
+    if missing:
+        raise RuntimeError(f"BL-011 {label} missing required keys: {missing}")
+
+
+def ensure_baseline_snapshot_shape(snapshot: dict) -> None:
+    ensure_required_keys(snapshot, ["stage_configs"], label="baseline snapshot")
+    stage_configs = snapshot.get("stage_configs")
+    if not isinstance(stage_configs, dict):
+        raise RuntimeError("BL-011 baseline snapshot field stage_configs must be a JSON object")
+    ensure_required_keys(stage_configs, ["profile", "retrieval", "scoring", "assembly"], label="baseline stage_configs")
 
 
 def load_csv_rows(path: Path) -> list[dict[str, str]]:
@@ -1275,7 +1297,8 @@ def main() -> None:
     output_dir.mkdir(parents=True, exist_ok=True)
     (output_dir / "scenarios").mkdir(parents=True, exist_ok=True)
 
-    baseline_snapshot = load_json(paths["baseline_snapshot"])
+    baseline_snapshot = load_required_json(paths["baseline_snapshot"], label="BL-010 baseline snapshot")
+    ensure_baseline_snapshot_shape(baseline_snapshot)
     seed_rows = load_csv_rows(paths["active_seed_trace"])
     events = build_active_seed_events(seed_rows)
     candidate_rows = [normalize_candidate_row(row) for row in load_csv_rows(paths["active_candidates"])]

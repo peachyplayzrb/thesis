@@ -1,7 +1,7 @@
 {
   "task": "BL-011",
   "generated_from": "07_implementation/implementation_notes/bl010_reproducibility/outputs/bl010_reproducibility_config_snapshot.json",
-  "baseline_config_hash": "9683E779E0F2226E8D017B4229A6BBB117F092BEFE6D8B8CEC81CD42C501210D",
+  "baseline_config_hash": "C5B02AEB8F125DF859E964774175EFA613ED2FC6E3529E03AACF374389DCF1B2",
   "input_source": "active_pipeline_outputs",
   "fixed_inputs": {
     "07_implementation/implementation_notes/bl004_profile/outputs/bl004_seed_trace.csv": "AFE227D05077A35D970973E060EB6C95DC6FD62E17081E0666DF9CD2D5D6BEC2",

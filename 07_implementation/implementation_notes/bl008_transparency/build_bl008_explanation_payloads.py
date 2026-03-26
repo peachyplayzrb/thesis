@@ -87,6 +87,15 @@ def _env_path(name: str, default_relative: Path) -> Path:
     return repo_root() / default_relative
 
 
+def load_required_json(path: Path, *, label: str) -> dict | list:
+    try:
+        return json.loads(path.read_text(encoding="utf-8"))
+    except OSError as exc:
+        raise RuntimeError(f"BL-008 could not read {label}: {path}") from exc
+    except json.JSONDecodeError as exc:
+        raise RuntimeError(f"BL-008 could not parse {label} as valid JSON: {path}") from exc
+
+
 def _sanitize_bl008_controls(controls: dict[str, object]) -> dict[str, object]:
     controls["top_contributor_limit"] = max(1, int(controls["top_contributor_limit"]))
     controls["blend_primary_contributor_on_near_tie"] = bool(controls["blend_primary_contributor_on_near_tie"])
@@ -254,12 +263,12 @@ def main() -> None:
 
     # Load BL-006 scored candidates keyed by track_id
     scored_index = read_csv_index(scored_csv, "track_id")
-    score_summary = json.loads(score_summary_json.read_text(encoding="utf-8"))
+    score_summary = load_required_json(score_summary_json, label="BL-006 score summary")
     active_weights = score_summary.get("config", {}).get("active_component_weights", {})
     ordered_components = build_ordered_components(active_weights)
 
     # Load BL-007 playlist (ordered)
-    playlist_data = json.loads(playlist_json.read_text(encoding="utf-8"))
+    playlist_data = load_required_json(playlist_json, label="BL-007 playlist")
     playlist_tracks = playlist_data["tracks"]
 
     # Load BL-007 assembly trace keyed by track_id

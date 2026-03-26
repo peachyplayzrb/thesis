@@ -115,6 +115,17 @@ This report summarizes known structural, maintenance, and cleanup issues in the 
   - BL-000 resolver/artifact smoke check pass (`BL000-SMOKE-20260326-REF`)
   - BL-013 orchestration pass (`BL013-ENTRYPOINT-20260326-060416-877007`)
   - BL-014 active freshness suite pass (`BL-FRESHNESS-SUITE-20260326-060441`)
+- Hardened artifact-load validation across BL-003, BL-008, BL-009, BL-010, BL-011, and DS-001:
+  - Added `load_required_json()` helpers with labeled `OSError`/`JSONDecodeError` handling and `isinstance` guards in BL-008, BL-009, BL-011
+  - Added `ensure_required_keys()` schema validators in BL-009 and BL-011 checking all required top-level keys for each loaded artifact
+  - BL-003 `load_export_selection()` now raises `RuntimeError` on malformed/missing BL-002 summary or absent `selection` key instead of silently returning `{}`
+  - BL-010 `run_stage()` now records per-attempt history; report includes `attempt_count`, `had_retry`, `attempts`, `all_stage_runs_succeeded_without_retry`, `replay_count_with_retries`, `stages_requiring_retry`
+  - DS-001 CSV and manifest writes replaced with `open_text_write()` to use shared Windows-safe writer
+  - BL-010 pass `BL010-REPRO-20260326-062024`, BL-011 pass `BL011-CTRL-20260326-062103`, BL-014 pass (`overall_status=pass`) confirmed on updated baseline
+- Fixed BL-006 scoring engine empty lead-genre false match:
+  - `lead_genre_similarity` in `scoring_engine.py` now requires both sides to be non-empty before treating the comparison as a match
+  - Prevents spurious perfect lead-genre scores for tracks/profiles where `lead_genre` is absent
+  - BL-014 pass confirmed post-fix (`overall_status=pass`)
 
 ## Current Known Issues
 
@@ -167,9 +178,9 @@ Recommended action:
 
 ## Operational Health Snapshot (After Refactor)
 - BL-013 orchestration: pass
-- BL-010 reproducibility: pass
-- BL-011 controllability: pass
-- BL-014 active freshness suite: pass
+- BL-010 reproducibility: pass (`BL010-REPRO-20260326-062024`, retry fields active)
+- BL-011 controllability: pass (`BL011-CTRL-20260326-062103`, schema guards active)
+- BL-014 active freshness suite: pass (post BL-006 scoring fix)
 - BL-002 ingestion export: pass
 - BL-003 alignment (latest direct run): pass
 - BL-000 run-config resolver/artifact writer: pass

@@ -46,6 +46,7 @@ Active-set sync note (2026-03-25 18:25 UTC): Open items are UI-003 (citation pac
 Active-set sync note (2026-03-25 22:55 UTC): Open items remain UI-003 (citation package closure) and UI-013 (pipeline optimization and evidence-hygiene closure); UI-013 control-surface uplift is implemented, optimization tuning closure is pending.
 Active-set sync note (2026-03-25 23:00 UTC): Open items remain UI-003 and UI-013; UI-013 BL-008 explanation-dominance criterion is now passing under the v1b profile, with remaining closure work centered on BL-010/BL-011 path-semantics normalization and final evidence packaging.
 Active-set sync note (2026-03-25 23:10 UTC): Open items remain UI-003 and UI-013; UI-013 path-semantics normalization for BL-010/BL-011 is now implemented and revalidated (`BL010-REPRO-20260325-231041`, `BL011-CTRL-20260325-231130`, freshness `BL-FRESHNESS-20260325-231159`), leaving final evidence packaging as the remaining closure step.
+Active-set sync note (2026-03-26 UTC): Open items remain UI-003 and UI-013. Implementation hardening pass completed (C-176/C-177): artifact-load validation hardened across BL-003/BL-008/BL-009/BL-010/BL-011/DS-001 with fail-fast helpers and schema guards; BL-006 scoring engine empty lead-genre false match fixed. BL-010/BL-011/BL-014 all pass on updated baseline. UI-013 remaining work is final evidence packaging and BL-005/BL-006 tuning sweep closure.
 
 ## Resolved (Recent)
 

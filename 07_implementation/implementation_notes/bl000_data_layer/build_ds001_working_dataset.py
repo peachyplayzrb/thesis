@@ -7,6 +7,12 @@ import json
 import time
 from pathlib import Path
 
+import sys
+
+sys.path.insert(0, str(Path(__file__).parent.parent))
+
+from bl000_shared_utils.io_utils import open_text_write
+
 OUTPUT_FIELDNAMES = [
     "id",
     "spotify_id",
@@ -155,7 +161,7 @@ def main() -> None:
     rows_written = 0
     null_spotify_id = 0
 
-    with dataset_output_path.open("w", encoding="utf-8", newline="") as handle:
+    with open_text_write(dataset_output_path, newline="") as handle:
         writer = csv.DictWriter(handle, fieldnames=OUTPUT_FIELDNAMES)
         writer.writeheader()
 
@@ -208,7 +214,8 @@ def main() -> None:
         },
     }
 
-    manifest_output_path.write_text(json.dumps(manifest, indent=2, ensure_ascii=True), encoding="utf-8")
+    with open_text_write(manifest_output_path) as handle:
+        json.dump(manifest, handle, indent=2, ensure_ascii=True)
 
     print(f"rows_written={rows_written}")
     print(f"null_spotify_id_rows={null_spotify_id}")

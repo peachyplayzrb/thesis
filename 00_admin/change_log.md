@@ -7,8 +7,8 @@ Ordering convention (standardized 2026-03-24):
 - Entry order reflects historical insertion timing and may not be numerically contiguous in older sections.
 - New entries must be appended at the end; historical entries remain unchanged except for explicit correction records.
 
-Maintenance snapshot (2026-03-25):
-- Highest change ID currently present: `C-175`
+Maintenance snapshot (2026-03-26):
+- Highest change ID currently present: `C-177`
 - Known legacy correction applied in this file: prior duplicate `C-079` entry has been normalized to `C-135` for unique-ID compliance.
 
 ## C-001
@@ -28,6 +28,8 @@ Maintenance snapshot (2026-03-25):
 | C-173 | 2026-03-25 22:55 | Copilot | Implemented config-surface control uplift (`control_mode` + config-driven BL-009 bootstrap mode), refreshed BL-000/BL-009 state logs and implementation state, and synchronized admin tracking files for UI-013 progress evidence. |
 | C-174 | 2026-03-25 23:00 | Copilot | Implemented and validated BL-008 explanation-diversity control uplift (near-tie primary-driver blending), updated stage/test/admin logs, and confirmed UI-013 BL-008 dominance target pass on v1b (`0.5` <= `0.6`) with BL-014 pass. |
 | C-175 | 2026-03-25 23:10 | Copilot | Normalized BL-010 replay command path semantics to canonical BL-prefixed rendering, refreshed BL-010/BL-011 evidence with freshness and BL-014 passes, and synchronized implementation/admin logs for UI-013 closure progress. |
+| C-176 | 2026-03-26 | Copilot | Hardened artifact-load validation across BL-003, BL-008, BL-009, BL-010, BL-011, and DS-001: added fail-fast `load_required_json()` helpers, schema guards, and retry-transparency fields; confirmed BL-010/BL-011/BL-014 pass on updated baseline. |
+| C-177 | 2026-03-26 | Copilot | Fixed BL-006 scoring engine empty lead-genre false match: added non-empty guard to `lead_genre_similarity` so tracks without genre data no longer receive spurious perfect scores; BL-014 pass confirmed post-fix. |
 ## C-162
 - date: 2026-03-25
 - proposed_by: Copilot
@@ -173,6 +175,29 @@ Maintenance snapshot (2026-03-25):
 - affected_components: `07_implementation/implementation_notes/bl010_reproducibility/run_bl010_reproducibility_check.py`, `07_implementation/implementation_notes/bl010_reproducibility/outputs/bl010_reproducibility_report.json`, `07_implementation/implementation_notes/bl010_reproducibility/outputs/bl010_reproducibility_run_matrix.csv`, `07_implementation/implementation_notes/bl010_reproducibility/outputs/bl010_reproducibility_config_snapshot.json`, `07_implementation/implementation_notes/bl011_controllability/outputs/bl011_controllability_report.json`, `07_implementation/implementation_notes/bl011_controllability/outputs/bl011_controllability_run_matrix.csv`, `07_implementation/implementation_notes/bl011_controllability/outputs/bl011_controllability_config_snapshot.json`, `07_implementation/implementation_notes/bl014_quality/outputs/bl010_bl011_freshness_report.json`, `07_implementation/implementation_notes/bl014_quality/outputs/bl010_bl011_freshness_matrix.csv`, `07_implementation/implementation_notes/bl014_quality/outputs/bl014_sanity_report.json`, `07_implementation/implementation_notes/bl010_reproducibility/bl010_state_log_2026-03-24.md`, `07_implementation/implementation_notes/bl011_controllability/bl011_state_log_2026-03-24.md`, `07_implementation/experiment_log.md`, `07_implementation/test_notes.md`, `07_implementation/IMPLEMENTATION_STATE_2026-03-24.md`, `00_admin/unresolved_issues.md`, `00_admin/thesis_state.md`, `00_admin/change_log.md`, `00_admin/decision_log.md`
 - impact_assessment: High-positive. Closes the remaining BL-010/BL-011 path-rendering governance gap and leaves UI-013 focused on final evidence packaging.
 - approval_record: Requested and confirmed by user in chat on 2026-03-25.
+
+## C-176
+- date: 2026-03-26
+- proposed_by: Copilot
+- status: accepted
+- change_summary: Hardened artifact-load validation across BL-003, BL-008, BL-009, BL-010, BL-011, and DS-001 with fail-fast helpers, schema guards, and retry-transparency reporting.
+- reason: A focused implementation review identified silent degradation paths: BL-003 returned `{}` on malformed BL-002 summary, BL-008/BL-009/BL-011 performed raw dict loads with no schema checks, BL-010 hid retry-induced instability behind aggregate success, and DS-001 bypassed the shared Windows-safe writer.
+- evidence_basis: BL-010 pass `BL010-REPRO-20260326-062024` (`deterministic_match=true`, `all_stage_runs_succeeded_without_retry=true`); BL-011 pass `BL011-CTRL-20260326-062103` (`status=pass`); BL-014 active suite pass (`overall_status=pass`, `7/7` checks).
+- affected_components: `07_implementation/implementation_notes/bl003_alignment/build_bl003_ds001_spotify_seed_table.py`, `07_implementation/implementation_notes/bl008_transparency/build_bl008_explanation_payloads.py`, `07_implementation/implementation_notes/bl009_observability/build_bl009_observability_log.py`, `07_implementation/implementation_notes/bl010_reproducibility/run_bl010_reproducibility_check.py`, `07_implementation/implementation_notes/bl011_controllability/run_bl011_controllability_check.py`, `07_implementation/implementation_notes/bl000_data_layer/build_ds001_working_dataset.py`, `00_admin/change_log.md`
+- impact_assessment: High-positive. Converts six silent failure paths into explicit, labeled runtime errors with structured diagnostics, reducing the risk of masked upstream issues propagating to evaluation results.
+- approval_record: Requested and confirmed by user in chat on 2026-03-26.
+
+## C-177
+- date: 2026-03-26
+- proposed_by: Copilot
+- status: accepted
+- change_summary: Fixed BL-006 scoring engine empty lead-genre false match bug: added non-empty guard so `lead_genre_similarity` is only `1.0` when both candidate and profile have non-empty genre strings.
+- reason: When both candidate and profile lacked a `lead_genre` value, the comparison `"" == ""` evaluated to `True`, awarding a spurious perfect lead-genre similarity score to genre-less tracks. This silently inflated scores for unclassified candidates.
+- evidence_basis: Bug confirmed by direct read of `scoring_engine.py` lines 116-118; fix applied and verified clean (`py_compile` pass); BL-014 pass confirmed post-fix (`overall_status=pass`).
+- affected_components: `07_implementation/implementation_notes/bl006_scoring/scoring_engine.py`, `00_admin/change_log.md`
+- impact_assessment: Medium-positive. Removes a real scoring inaccuracy that could have inflated genre-less candidate rankings, improving result internal validity. Scoring output artifacts will differ marginally from pre-fix runs for candidates without genre data.
+- approval_record: Requested and confirmed by user in chat on 2026-03-26.
+
 ## C-006
 
 ## C-002

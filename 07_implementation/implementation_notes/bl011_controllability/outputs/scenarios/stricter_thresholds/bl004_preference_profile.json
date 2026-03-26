@@ -1,7 +1,7 @@
 {
-  "run_id": "BL011-STRICTER_THRESHOLDS-BL004-20260326-055954-441753",
+  "run_id": "BL011-STRICTER_THRESHOLDS-BL004-20260326-062147-670870",
   "task": "BL-004",
-  "generated_at_utc": "2026-03-26T05:59:54Z",
+  "generated_at_utc": "2026-03-26T06:21:47Z",
   "user_id": "active_user",
   "scenario_id": "stricter_thresholds",
   "input_artifacts": {

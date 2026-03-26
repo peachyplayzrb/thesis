@@ -350,7 +350,9 @@ def run_stage(stage_id: str, script_path: Path, root: Path, python_executable: s
     started = time.time()
     command = [python_executable, str(script_path)]
     completed: subprocess.CompletedProcess[str] | None = None
+    attempts: list[dict[str, object]] = []
     for attempt in range(1, 4):
+        attempt_started = time.time()
         completed = subprocess.run(
             command,
             cwd=root,
@@ -358,26 +360,38 @@ def run_stage(stage_id: str, script_path: Path, root: Path, python_executable: s
             text=True,
             check=False,
         )
+        attempts.append(
+            {
+                "attempt_number": attempt,
+                "return_code": completed.returncode,
+                "elapsed_seconds": round(time.time() - attempt_started, 3),
+                "stdout": _canonicalize_stage_stdout_lines(completed.stdout or "", root),
+                "stderr": _canonicalize_stage_stdout_lines(completed.stderr or "", root),
+            }
+        )
         if completed.returncode == 0:
             break
         if attempt < 3:
             time.sleep(0.1)
     if completed is None or completed.returncode != 0:
-        stderr_text = (completed.stderr if completed is not None else "") or ""
-        stdout_text = (completed.stdout if completed is not None else "") or ""
+        serialized_attempts = json.dumps(attempts, indent=2, ensure_ascii=True)
         raise RuntimeError(
             f"BL-010 stage {stage_id} failed after retries: {script_path.name}\n"
-            f"stdout:\n{stdout_text}\n"
-            f"stderr:\n{stderr_text}"
+            f"attempts:\n{serialized_attempts}"
         )
     canonical_script_path = relpath(script_path, root)
+    final_attempt = attempts[-1]
     return {
         "stage": stage_id,
         "script": script_path.name,
         "script_path": canonical_script_path,
         "command": f"python {canonical_script_path}",
         "elapsed_seconds": round(time.time() - started, 3),
-        "stdout": _canonicalize_stage_stdout_lines(completed.stdout, root),
+        "stdout": list(final_attempt["stdout"]),
+        "stderr": list(final_attempt["stderr"]),
+        "attempt_count": len(attempts),
+        "had_retry": len(attempts) > 1,
+        "attempts": attempts,
     }
 
 
@@ -502,9 +516,21 @@ def main() -> None:
     raw_playlist_hash_match = len({record["raw_hashes"]["bl007_playlist"] for record in replay_records}) == 1
     raw_explanation_hash_match = len({record["raw_hashes"]["bl008_payloads"] for record in replay_records}) == 1
     raw_observability_hash_match = len({record["raw_hashes"]["bl009_log"] for record in replay_records}) == 1
+    all_stage_runs = [stage_run for record in replay_records for stage_run in record["stage_runs"]]
+    stage_runs_with_retries = [
+        {
+            "replay_number": record["replay_number"],
+            "stage": stage_run["stage"],
+            "attempt_count": stage_run["attempt_count"],
+        }
+        for record in replay_records
+        for stage_run in record["stage_runs"]
+        if bool(stage_run.get("had_retry"))
+    ]
 
     summary_rows: list[dict[str, object]] = []
     for record in replay_records:
+        retry_count = sum(1 for stage_run in record["stage_runs"] if bool(stage_run.get("had_retry")))
         row = {
             "replay_number": record["replay_number"],
             "bl004_run_id": record["stage_run_ids"]["BL-004"],
@@ -522,6 +548,7 @@ def main() -> None:
             "raw_observability_hash": record["raw_hashes"]["bl009_log"],
             "dataset_version": record["semantic_snapshots"]["observability_dataset_version"],
             "pipeline_version": record["semantic_snapshots"]["observability_pipeline_version"],
+            "stage_retry_count": retry_count,
             "archive_dir": record["archive_dir"],
         }
         summary_rows.append(row)
@@ -580,6 +607,9 @@ def main() -> None:
             "explanation_track_ids_match": len({tuple(record["semantic_snapshots"]["explanation_track_ids"]) for record in replay_records}) == 1,
             "dataset_version_match": len({record["semantic_snapshots"]["observability_dataset_version"] for record in replay_records}) == 1,
             "pipeline_version_match": len({record["semantic_snapshots"]["observability_pipeline_version"] for record in replay_records}) == 1,
+            "all_stage_runs_succeeded_without_retry": all(not bool(stage_run.get("had_retry")) for stage_run in all_stage_runs),
+            "replay_count_with_retries": len({item["replay_number"] for item in stage_runs_with_retries}),
+            "stages_requiring_retry": stage_runs_with_retries,
         },
         "output_artifacts": {
             "config_snapshot_path": relpath(config_path, root),

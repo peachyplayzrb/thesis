@@ -115,7 +115,7 @@ def compute_component_scores(
     # Lead genre: direct match vs profile lead genre
     candidate_lead_genre = candidate_attrs.get("lead_genre", "").lower()
     profile_lead_genre = profile_data.get("lead_genre", "").lower()
-    lead_genre_similarity = 1.0 if candidate_lead_genre == profile_lead_genre else 0.0
+    lead_genre_similarity = 1.0 if (candidate_lead_genre and profile_lead_genre and candidate_lead_genre == profile_lead_genre) else 0.0
     scores["lead_genre_similarity"] = lead_genre_similarity
     scores["lead_genre_contribution"] = lead_genre_similarity
     

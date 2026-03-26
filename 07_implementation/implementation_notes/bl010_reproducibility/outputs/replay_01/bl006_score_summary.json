@@ -1,10 +1,10 @@
 {
-  "run_id": "BL006-SCORE-20260326-055841-008640",
+  "run_id": "BL006-SCORE-20260326-062029-331598",
   "task": "BL-006",
-  "generated_at_utc": "2026-03-26T05:58:43Z",
+  "generated_at_utc": "2026-03-26T06:20:31Z",
   "input_artifacts": {
     "profile_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl004_profile\\outputs\\bl004_preference_profile.json",
-    "profile_sha256": "117d11a93f113c63d36f69a69e570e0e63409b0c0c765403c686bf3d467a483b",
+    "profile_sha256": "dd6e4e9ae54d8a0af84ff1de9ee09d1c27365934253f864bb02220241b258a56",
     "filtered_candidates_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl005_retrieval\\outputs\\bl005_filtered_candidates.csv",
     "filtered_candidates_sha256": "367a528541aa29a8bc9ced0ca6a54ab708f912db705285e5f5a51275d438a8e4"
   },
@@ -196,7 +196,7 @@
       "matched_tags": ""
     }
   ],
-  "elapsed_seconds": 3.357,
+  "elapsed_seconds": 3.055,
   "output_files": {
     "scored_candidates_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl006_scoring\\outputs\\bl006_scored_candidates.csv"
   },

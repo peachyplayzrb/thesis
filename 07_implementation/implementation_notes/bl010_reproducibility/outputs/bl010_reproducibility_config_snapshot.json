@@ -16,8 +16,8 @@
     "07_implementation/implementation_notes/bl005_retrieval/build_bl005_candidate_filter.py": "D4BAC12203D8B161EBAE9017F6343954D90BBA53E9D6F139AFD49015A72A4A9C",
     "07_implementation/implementation_notes/bl006_scoring/build_bl006_scored_candidates.py": "57260D2638A1017D2058DC7137439A68F3E39A4777A9AFDA21A6A19B9EA3B516",
     "07_implementation/implementation_notes/bl007_playlist/build_bl007_playlist.py": "36A3188CAE188E38EDABE01726DC5E31025AFA4619D899711ECAC7783CB39452",
-    "07_implementation/implementation_notes/bl008_transparency/build_bl008_explanation_payloads.py": "84248B5C0D680BCF7370DF17163932CDCE2BD6907B1068220815DC570DBBDC0D",
-    "07_implementation/implementation_notes/bl009_observability/build_bl009_observability_log.py": "446D3F7957E6989A949DF6835970C9D61A32D2E7A7A9A035D101ECCE01176FF2"
+    "07_implementation/implementation_notes/bl008_transparency/build_bl008_explanation_payloads.py": "DFFE61EF32734DB6E57B4E570B85D9720F8FF62EC8BB6F72837AC1D0CA98898D",
+    "07_implementation/implementation_notes/bl009_observability/build_bl009_observability_log.py": "62D374B427E937E12BDAC0BE31A93E4722B2EA54D86D90B17CFBDED2C73C14F8"
   },
   "stage_order": [
     "BL-004",
