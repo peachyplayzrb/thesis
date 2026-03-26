@@ -26,7 +26,7 @@ python 07_implementation/implementation_notes/bl013_entrypoint/run_bl013_pipelin
 Refresh BL-003 seed-table before running BL-004 to BL-009 (recommended when source scope changes):
 
 ```powershell
-python 07_implementation/implementation_notes/bl013_entrypoint/run_bl013_pipeline_entrypoint.py --refresh-seed --run-config 07_implementation/implementation_notes/bl000_run_config/configs/profiles/run_config_bl021_probe_v1.json
+python 07_implementation/implementation_notes/bl013_entrypoint/run_bl013_pipeline_entrypoint.py --refresh-seed --run-config 07_implementation/implementation_notes/bl000_run_config/configs/profiles/run_config_ui013_tuning_v1f.json
 ```
 
 ## Output artifacts

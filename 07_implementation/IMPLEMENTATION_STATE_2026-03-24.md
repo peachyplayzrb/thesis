@@ -1,6 +1,6 @@
-# Implementation State - 2026-03-25 (Comprehensive + Issue Focus)
+# Implementation State - 2026-03-26 (Current Baseline)
 
-This document consolidates the current implementation state using the latest BL stage logs and explicitly identifies active implementation issues, their impact, and mitigation direction.
+This document summarizes the current implementation state using the latest active artifacts and run outputs.
 
 ---
 
@@ -8,36 +8,24 @@ This document consolidates the current implementation state using the latest BL 
 
 Current status:
 
-- Core runtime (BL-002 through BL-009): operational and passing
-- Orchestration (BL-013): pass (`BL013-ENTRYPOINT-20260325-173409-100435`)
-- Reproducibility (BL-010): pass (`deterministic_match=true`)
-- Controllability (BL-011): pass (all scenario checks true)
-- Sanity quality (BL-014): pass (`21/21` checks)
+- Core runtime (BL-003 through BL-009): operational and passing
+- Orchestration (BL-013): pass (`BL013-ENTRYPOINT-20260326-215741-269303`)
+- Reproducibility (BL-010): pass (`BL010-REPRO-20260326-215557`, `deterministic_match=true`)
+- Controllability (BL-011): pass (`BL011-CTRL-20260326-215213`)
+- Sanity quality (BL-014): pass (`BL014-SANITY-20260326-215415-562794`, `22/22`)
+- Active freshness suite: pass (`BL-FRESHNESS-SUITE-20260326-215416`, `7/7`)
 
 Overall health:
 
 - Functional health: strong
-- Governance health: strong
-- Optimization health: moderate (precision/coverage/explanation quality issues remain)
+- Governance/evidence health: strong
+- Optimization health: moderate (data coverage and retrieval breadth remain the main limits)
 
-UI-013 focused delta (2026-03-25 23:00 UTC):
+Active runtime baseline:
 
-- BL-008 explanation-diversity control uplift implemented and validated.
-- v1b focused rerun passed BL-013 and BL-014 with dominance target met:
-  - BL-013: `BL013-ENTRYPOINT-20260325-225725-328263`
-  - BL-014: `BL014-SANITY-20260325-225735-601840`
-  - BL-008 primary-driver distribution: `{Lead genre match:5, Tag overlap:3, Genre overlap:2}`
-  - BL-008 top-label dominance share: `0.5` (target `<= 0.6`)
-
-UI-013 focused delta (2026-03-25 23:10 UTC):
-
-- BL-010/BL-011 path-semantics normalization completed and revalidated.
-- BL-010 replay stage logs now emit canonical BL-prefixed relative command paths (`python 07_implementation/...`) with explicit `stage` + `script_path` fields.
-- Fresh evidence chain passed:
-  - BL-010: `BL010-REPRO-20260325-231041`
-  - BL-011: `BL011-CTRL-20260325-231130`
-  - BL-010/BL-011 freshness: `BL-FRESHNESS-20260325-231159`
-  - BL-014 sanity: `BL014-SANITY-20260325-231204-534293`
+- Active profile: `run_config_ui013_tuning_v1f.json`
+- Scoring surface: 10 active components (7 numeric + 3 semantic)
+- Retrieval keep rule: `semantic_score >= 3 or (semantic_score >= 1 and numeric_pass_count >= 4)`
 
 ---
 
@@ -46,7 +34,7 @@ UI-013 focused delta (2026-03-25 23:10 UTC):
 Runtime chain:
 
 - BL-000 data layer -> `bl000_data_layer/outputs/ds001_working_candidate_dataset.csv`
-- BL-001 ingestion schema contract (non-runtime policy layer)
+- BL-001 ingestion schema contract (policy layer)
 - BL-002 Spotify export -> `bl001_bl002_ingestion/outputs/spotify_api_export/`
 - BL-003 alignment -> `bl003_alignment/outputs/`
 - BL-004 profile -> `bl004_profile/outputs/`
@@ -61,294 +49,177 @@ Assurance layers:
 - BL-010 reproducibility -> `bl010_reproducibility/outputs/`
 - BL-011 controllability -> `bl011_controllability/outputs/`
 - BL-013 entrypoint orchestration -> `bl013_entrypoint/outputs/`
-- BL-014 sanity checks -> `bl014_quality/outputs/`
+- BL-014 quality/freshness -> `bl014_quality/outputs/`
 
 Control/config layer:
 
 - BL-000 run-config utility: `bl000_run_config/run_config_utils.py`
-- schema version: `run-config-v1`
-- canonical artifacts: `run_intent_*.json`, `run_effective_config_*.json`
+- Schema version: `run-config-v1`
+- Canonical artifacts: `run_intent_*.json`, `run_effective_config_*.json`
 
 ---
 
-## 3. Baseline Evidence Snapshot
+## 3. Current Evidence Snapshot (Latest Active Artifacts)
 
-### 3.1 Core chain (latest stage evidence)
+### 3.1 BL-013 Orchestration (latest)
 
-- BL-002
-  - run_id: `SPOTIFY-EXPORT-20260325-172748-663696`
-  - generated_at_utc: `2026-03-25T17:28:44Z`
-  - counts: short/medium/long top tracks `1131/2645/6225`, saved `200`, playlists `12`, playlist_items `279`, recently_played `50`
+- run_id: `BL013-ENTRYPOINT-20260326-215741-269303`
+- generated_at_utc: `2026-03-26T21:27:11Z`
+- overall_status: `pass`
+- executed_stage_count: `7`
+- failed_stage_count: `0`
+- run_config_path: `.../run_config_ui013_tuning_v1f.json`
+- refresh_seed: `true`
 
-- BL-003
-  - generated_at_utc: `2026-03-25T17:34:10Z`
-  - input_event_rows: `10530`
-  - matched_events_rows: `1718`
-  - seed_table_rows: `1026`
-  - status: `pass`
+### 3.2 BL-003 to BL-009 runtime shape (same active cycle)
 
-- BL-004
-  - run_id: `BL004-PROFILE-20260325-173411-326059`
-  - generated_at_utc: `2026-03-25T17:34:11Z`
-  - matched_seed_count: `1026`
-  - total_effective_weight: `2197.198246`
+- BL-003 alignment (from BL-013 stage output)
+  - input_event_rows: `11935`
+  - matched_events_rows: `1904`
+  - seed_table_rows: `1064`
+  - unmatched_rows: `10031`
 
-- BL-005
-  - run_id: `BL005-FILTER-20260325-173412-221325`
-  - generated_at_utc: `2026-03-25T17:34:14Z`
-  - kept_candidates: `72496`
+- BL-005 retrieval (`BL005-FILTER-20260326-212714-860487`)
+  - candidate_rows_total: `109269`
+  - seed_tracks_excluded: `1064`
+  - kept_candidates: `46776`
+  - rejected_non_seed_candidates: `61429`
 
-- BL-006
-  - run_id: `BL006-SCORE-20260325-173415-304312`
-  - generated_at_utc: `2026-03-25T17:34:17Z`
-  - candidates_scored: `72496`
-  - mean_score: `0.246034`
+- BL-006 scoring (`BL006-SCORE-20260326-212719-126492`)
+  - candidates_scored: `46776`
+  - score range: min `0.014819`, max `0.726929`
+  - active_component_count: `10`
+  - component balance (all candidates):
+    - numeric mean: `0.046346`
+    - semantic mean: `0.196449`
 
-- BL-007
-  - run_id: `BL007-ASSEMBLE-20260325-173419-108739`
-  - generated_at_utc: `2026-03-25T17:34:19Z`
+- BL-007 assembly (`BL007-ASSEMBLE-20260326-212723-308375`)
   - tracks_included: `10`
-  - tracks_excluded: `72486`
+  - tracks_excluded: `46766`
+  - rule hits: R2 `2859`, R3 `3907`, R4 `40000`
+  - playlist_genre_mix: pop `4`, new wave `1`, classic rock `2`, rock `2`, singer-songwriter `1`
 
-- BL-008
-  - run_id: `BL008-EXPLAIN-20260325-173420-362077`
-  - generated_at_utc: `2026-03-25T17:34:20Z`
+- BL-008 transparency (`BL008-EXPLAIN-20260326-212724-246202`)
   - playlist_track_count: `10`
+  - top_contributor_distribution: lead genre match `4`, tag overlap `3`, genre overlap `3`
 
-- BL-009
-  - run_id: `BL009-OBSERVE-20260325-173421-285623`
-  - generated_at_utc: `2026-03-25T17:34:21Z`
-  - kept_candidates: `72496`
-  - candidates_scored: `72496`
-  - playlist_length: `10`
-  - explanation_count: `10`
+- BL-009 observability (`BL009-OBSERVE-20260326-212725-262453`)
+  - observability_schema_version: `bl009-observability-v1`
+  - config_source: `run_config`
+  - run_config_path: `.../run_config_ui013_tuning_v1f.json`
+  - canonical config artifact pair available: `true`
 
-### 3.2 Orchestration and assurance evidence
-
-- BL-013 orchestration
-  - run_id: `BL013-ENTRYPOINT-20260325-173409-100435`
-  - overall_status: `pass`
-  - executed_stage_count: `7`
-  - failed_stage_count: `0`
+### 3.3 Assurance layer evidence (latest)
 
 - BL-010 reproducibility
-  - run_id: `BL010-REPRO-20260325-231041`
-  - replay_count: `3`
-  - deterministic_match: `true`
+  - run_id: `BL010-REPRO-20260326-215557`
   - status: `pass`
+  - deterministic_match: `true`
+  - replay_count: `3`
+  - fixed_input_source: `active_pipeline_outputs`
 
 - BL-011 controllability
-  - run_id: `BL011-CTRL-20260325-231130`
-  - all_scenarios_repeat_consistent: `true`
-  - all_variant_shifts_observable: `true`
-  - all_variant_directions_met: `true`
+  - run_id: `BL011-CTRL-20260326-215213`
   - status: `pass`
+  - scenario_count: `5`
+  - stage_scope: BL-004 through BL-007
+  - baseline_config_hash: `99C9672FE67C112A4679F900CD8904792EF69C7E6970C03B6CA8D495E12BFFA2`
 
-- BL-014 quality
-  - run_id: `BL014-SANITY-20260325-231204-534293`
+- BL-014 sanity
+  - run_id: `BL014-SANITY-20260326-215415-562794`
   - overall_status: `pass`
-  - checks_passed: `21/21`
-  - advisories_total: `0`
+  - checks_passed: `22/22`
 
-### 3.3 Data and config baseline
+- BL-014 active freshness suite
+  - run_id: `BL-FRESHNESS-SUITE-20260326-215416`
+  - overall_status: `pass`
+  - checks_passed: `7/7`
 
-- BL-000 data layer
-  - dataset rows: `109269`
-  - sha256: `296331CA6390D2C111AA336C7EB154B69EC7060604312AC8A274F545B68A04EF`
-  - manifest generated_at_utc: `2026-03-25T16:55:16Z`
-
-- BL-000 run-config
-  - schema_version: `run-config-v1`
-  - latest canonical run_id: `BL013-ENTRYPOINT-20260325-173409-100435`
-  - run_intent_latest hash: `F1D0F50C07C7598D96C8C84BFE01ADE02D5914EC11A956C28B0819A9A5078FB9`
-  - run_effective_config_latest hash: `58F55650EC0E029AEBB3A983BD90DC8971D61F6C56E2BD99B9ECE6B207D81563`
-
-### 3.4 Control-surface uplift (2026-03-25)
-
-- Run-config now includes explicit governance controls:
-  - `control_mode.validation_profile` (`strict` | `explore`)
-  - `control_mode.allow_threshold_decoupling`
-  - `control_mode.allow_weight_auto_normalization`
-- BL-009 now records `control_mode` and uses config-driven `observability_controls.bootstrap_mode` instead of hardcoded bootstrap metadata behavior.
-- Outcome: operator control is more explicit and auditable at run-config level while preserving existing strict defaults.
+- BL-010/BL-011 freshness report
+  - run_id: `BL-FRESHNESS-20260326-215416`
+  - overall_status: `pass`
+  - checks_passed: `9/9`
 
 ---
 
-## 4. Current Implementation Issues
+## 4. Current Implementation Issues (Active)
 
-This section tracks concrete implementation issues visible in current logs.
+### 4.1 High alignment miss volume (BL-003)
 
-### 4.1 High alignment miss rate (BL-003)
+- Evidence: `10031` unmatched from `11935` input events.
+- Impact: profile is built from matched seed evidence only (`1064` seeds), limiting personalization coverage.
+- Risk level: high.
+- Mitigation direction: improve DS-001 coverage/normalization and continue enforcing match-rate guardrails.
 
-- Evidence:
-  - BL-003 input_event_rows `10530`, unmatched `8812`, matched_events_rows `1718`
-- Current impact:
-  - profile input coverage is constrained before BL-004
-  - downstream retrieval/scoring quality ceiling is lowered
-- Risk level: high
-- Mitigation direction:
-  - improve DS-001 coverage/normalization
-  - enforce non-zero `seed_controls.match_rate_min_threshold` when stricter gating is required
+### 4.2 Retrieval breadth remains large (BL-005)
 
-### 4.2 Retrieval breadth is still very large (BL-005)
+- Evidence: `46776` kept candidates.
+- Impact: high scoring workload and broader candidate noise surface.
+- Risk level: high.
+- Mitigation direction: tighten retrieval controls or introduce stricter policy mode when approved.
 
-- Evidence:
-  - kept_candidates `72496` from non-seed total `108243`
-- Current impact:
-  - large BL-006 scoring workload
-  - higher noise exposure and weaker precision
-- Risk level: high
-- Mitigation direction:
-  - tighten BL-005 thresholds and numeric support requirements
-  - proceed with planned policy-mode controls once approved for implementation
+### 4.3 BL-007 R1 selectivity remains effectively inactive
 
-### 4.3 Numeric dominance in scoring behavior (BL-006)
+- Evidence: no `min_score_threshold` rejection path observed in active assembly summary; exclusions are dominated by R4 length cap and diversity rules.
+- Impact: assembly threshold contributes less than intended under current ranking/pool shape.
+- Risk level: medium.
+- Mitigation direction: raise threshold and/or narrow upstream pool to activate score-threshold discrimination.
 
-- Evidence:
-  - all-candidate mean contribution numeric `0.133845` vs semantic `0.112190`
-  - top-rank segments also numeric-leading
-- Current impact:
-  - style/semantic intent may be under-expressed in ranking
-- Risk level: medium
-- Mitigation direction:
-  - recalibrate component weights via run-config
-  - improve upstream semantic signal quality (tags/genres quality)
+### 4.4 Observability payload is comprehensive but heavy for manual triage
 
-### 4.4 Assembly signal collapse under length-cap (BL-007)
-
-- Evidence:
-  - R4 length-cap hits `72415` (dominant exclusion reason)
-  - R1 score-threshold hits `0`
-- Current impact:
-  - effective selection pressure is concentrated near top ranks
-  - limited visibility into meaningful rejection causes
-- Risk level: medium
-- Mitigation direction:
-  - tune BL-005/BL-006 so BL-007 receives a narrower, cleaner pool
-  - adjust threshold/diversity controls with run-level diagnostics
-
-### 4.5 Explanation diversity was narrow (BL-008)
-
-- Evidence:
-  - historical runs showed concentration in one top label.
-  - focused v1b rerun now reports `Lead genre match:5`, `Tag overlap:3`, `Genre overlap:2`.
-- Current impact:
-  - baseline concentration risk is materially reduced on the active v1b profile.
-- Risk level: medium
-  - updated status: controlled (profile- and parameter-dependent)
-- Mitigation direction:
-  - keep near-tie blending controls in run-config for tuned profiles.
-  - continue explanation-template enrichment for contextual variety.
-
-### 4.6 Observability payload interpretation friction (BL-009)
-
-- Evidence:
-  - large payload remains high-volume for manual triage
-  - `bootstrap_mode` is now config-driven, but historical legacy semantics still exist in prior evidence surfaces
-- Current impact:
-  - manual triage is slower
-  - mode semantics can be misread by operators
-- Risk level: medium-low
-- Mitigation direction:
-  - add focused summary slices for triage
-  - refine mode semantics in a schema revision while keeping compatibility
-
-### 4.7 Reproducibility report hygiene (BL-010)
-
-- Evidence:
-  - replay stage logs now emit canonical BL-prefixed relative command paths and explicit `stage`/`script_path` fields (`BL010-REPRO-20260325-231041`).
-  - stable-vs-volatile hash distinction remains documented and validated by freshness checks.
-- Current impact:
-  - prior path-rendering readability risk is closed; residual risk is low and mainly interpretation-oriented.
-- Risk level: low
-- Mitigation direction:
-  - keep explicit stable/volatile sections in docs and report outputs.
-  - keep freshness checks in routine post-change validation.
-
-### 4.8 Controllability naming/semantics drift (BL-011)
-
-- Evidence:
-  - scenario label `valence_weight_up` currently maps to a tempo-focused override in active config
-- Current impact:
-  - scenario interpretation ambiguity in governance review
-- Risk level: medium
-- Mitigation direction:
-  - rename scenario or emit explicit overridden component in matrix summaries
-
-### 4.9 Orchestration evidence mutability risk (BL-013)
-
-- Evidence:
-  - `bl013_orchestration_run_latest.json` is mutable by design
-- Current impact:
-  - accidental use as immutable evidence can weaken audit rigor
-- Risk level: low-medium
-- Mitigation direction:
-  - treat run-specific files as canonical evidence, latest pointer as convenience only
-
-### 4.10 External dependency fragility (BL-002)
-
-- Evidence:
-  - OAuth/API policy/rate-limit constraints explicitly documented
-- Current impact:
-  - export reliability can vary independent of internal logic quality
-- Risk level: medium
-- Mitigation direction:
-  - continue resilience controls and operational monitoring
-  - keep runbook and auth policy checks current
+- Evidence: BL-009 payload remains high-detail and hash-dense.
+- Impact: manual review speed can be slow.
+- Risk level: low-medium.
+- Mitigation direction: add compact triage slices while preserving current full audit artifact.
 
 ---
 
-## 5. Cross-Cutting Technical Debt
+## 5. Resolved / Stabilized Since Prior Snapshot
 
-- Some historical generated evidence still uses prior wording/formatting, but active reproducibility/controllability path rendering is now canonical and BL-prefixed.
-- Some quality controls are policy/tuning based rather than adaptive.
-- High candidate volume propagates cost and noise across BL-005 to BL-007.
-- Historical/archive context is well-preserved but can still confuse readers without explicit active-vs-historical framing.
+- UI-013 closure path is complete and runtime is now on v1f baseline (not v1b).
+- Freshness mismatch from earlier post-restore state is resolved.
+- BL-010/BL-011 plus freshness suite now pass on the same active contract.
+- Scoring surface includes `danceability`, `energy`, and `valence` end-to-end in BL-005 and BL-006.
 
 ---
 
 ## 6. Recommended Prioritized Actions
 
-Priority 1 (quality/precision):
+Priority 1 (quality/coverage):
 
-1. Tighten BL-003 and BL-005 gates (non-zero match-rate threshold where appropriate, stricter retrieval controls).
-2. Reduce BL-005 kept volume before BL-006 scoring.
+1. Reduce BL-003 unmatched volume through dataset coverage and normalization improvements.
+2. Continue candidate-pool reduction work in BL-005 to improve precision and runtime cost.
 
-Priority 2 (ranking/explanations):
+Priority 2 (selection behavior):
 
-1. Rebalance BL-006 component weights toward desired semantic behavior.
-2. Expand BL-008 explanation context beyond repeated top-contributor patterns.
+1. Re-tune BL-007 threshold efficacy (activate meaningful R1 rejection) while preserving diversity constraints.
+2. Keep monitoring BL-008 contributor distribution for stability under future tuning.
 
 Priority 3 (governance hygiene):
 
-1. Resolve BL-011 scenario-label semantics (`valence_weight_up` naming versus actual override component) for clearer governance interpretation.
-2. Preserve run-specific BL-013 evidence usage discipline.
-3. Use one canonical run-config profile per controlled test sweep and keep `control_mode` explicit in report interpretation.
+1. Preserve run-specific artifacts as canonical evidence (use `*_latest` pointers as convenience only).
+2. Keep one active profile baseline (`run_config_ui013_tuning_v1f.json`) for operational reporting.
 
 ---
 
-## 7. Canonical Stage Log Index
+## 7. Canonical Log/Artifact Index
 
-Use these files as source of truth:
+Use these as source of truth for the current baseline:
 
-- `07_implementation/implementation_notes/bl000_data_layer/bl000_state_log_2026-03-25.md`
-- `07_implementation/implementation_notes/bl000_run_config/docs/bl000_run_config_state_log_2026-03-25.md`
-- `07_implementation/implementation_notes/bl001_bl002_ingestion/docs/bl001_state_log_2026-03-24.md`
-- `07_implementation/implementation_notes/bl001_bl002_ingestion/docs/bl002_state_log_2026-03-24.md`
-- `07_implementation/implementation_notes/bl003_alignment/bl003_state_log_2026-03-24.md`
-- `07_implementation/implementation_notes/bl004_profile/bl004_state_log_2026-03-24.md`
-- `07_implementation/implementation_notes/bl005_retrieval/bl005_state_log_2026-03-24.md`
-- `07_implementation/implementation_notes/bl006_scoring/bl006_state_log_2026-03-24.md`
-- `07_implementation/implementation_notes/bl007_playlist/bl007_state_log_2026-03-24.md`
-- `07_implementation/implementation_notes/bl008_transparency/bl008_state_log_2026-03-24.md`
-- `07_implementation/implementation_notes/bl009_observability/bl009_state_log_2026-03-24.md`
-- `07_implementation/implementation_notes/bl010_reproducibility/bl010_state_log_2026-03-24.md`
-- `07_implementation/implementation_notes/bl011_controllability/bl011_state_log_2026-03-24.md`
-- `07_implementation/implementation_notes/bl013_entrypoint/bl013_state_log_2026-03-24.md`
-- `07_implementation/implementation_notes/bl014_quality/bl014_state_log_2026-03-24.md`
+- `07_implementation/implementation_notes/bl013_entrypoint/outputs/bl013_orchestration_run_latest.json`
+- `07_implementation/implementation_notes/bl010_reproducibility/outputs/bl010_reproducibility_report.json`
+- `07_implementation/implementation_notes/bl011_controllability/outputs/bl011_controllability_report.json`
+- `07_implementation/implementation_notes/bl014_quality/outputs/bl014_sanity_report.json`
+- `07_implementation/implementation_notes/bl014_quality/outputs/bl_active_freshness_suite_report.json`
+- `07_implementation/implementation_notes/bl014_quality/outputs/bl010_bl011_freshness_report.json`
+- `07_implementation/implementation_notes/bl005_retrieval/outputs/bl005_candidate_diagnostics.json`
+- `07_implementation/implementation_notes/bl006_scoring/outputs/bl006_score_summary.json`
+- `07_implementation/implementation_notes/bl007_playlist/outputs/bl007_assembly_report.json`
+- `07_implementation/implementation_notes/bl008_transparency/outputs/bl008_explanation_summary.json`
+- `07_implementation/implementation_notes/bl009_observability/outputs/bl009_run_observability_log.json`
 
 ---
 
 ## 8. Conclusion
 
-Implementation status is operationally strong, with all major runtime and assurance stages passing. The BL-008 UI-013 dominance criterion is now met in the active v1b tuning profile; remaining optimization and governance-quality work is concentrated in alignment coverage, retrieval precision, scoring-balance tuning policy, and evidence readability/path-semantics hygiene.
+The implementation is currently stable on the v1f baseline with end-to-end runtime, reproducibility, controllability, sanity, and freshness checks all passing on a consistent active contract. The main remaining technical limitations are data alignment coverage and retrieval breadth, not pipeline correctness.
