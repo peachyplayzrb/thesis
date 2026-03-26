@@ -156,8 +156,9 @@ def compute_final_score(
     """
     total = 0.0
     for component, weight in component_weights.items():
-        # Map component name to score key (e.g., "tempo" -> "tempo_similarity")
-        score_key = f"{component}_similarity"
+        # Accept both historical names (tempo_score) and canonical names (tempo).
+        component_name = component.removesuffix("_score")
+        score_key = f"{component_name}_similarity"
         similarity = float(component_scores.get(score_key, 0.0))
         contribution = round(similarity * weight, 6)
         total += contribution

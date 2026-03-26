@@ -1,7 +1,7 @@
 {
-  "run_id": "BL007-ASSEMBLE-20260325-234101-426786",
-  "generated_at_utc": "2026-03-25T23:41:01Z",
-  "elapsed_seconds": 0.623,
+  "run_id": "BL007-ASSEMBLE-20260326-034229-414617",
+  "generated_at_utc": "2026-03-26T03:42:29Z",
+  "elapsed_seconds": 0.484,
   "config": {
     "target_size": 10,
     "min_score_threshold": 0.35,
@@ -14,9 +14,9 @@
     "tracks_excluded": 72486
   },
   "rule_hits": {
-    "R3_consecutive_run": 14,
-    "R2_genre_cap": 57,
-    "R4_length_cap": 72415
+    "R3_consecutive_run": 635,
+    "R2_genre_cap": 883,
+    "R4_length_cap": 70968
   },
   "undersized_playlist_warning": {
     "is_undersized": false,
@@ -24,26 +24,29 @@
     "actual_size": 10,
     "shortfall": 0,
     "exclusion_reason_counts": {
-      "consecutive_genre_run": 14,
-      "genre_cap_exceeded": 57,
-      "length_cap_reached": 72415
+      "consecutive_genre_run": 635,
+      "genre_cap_exceeded": 883,
+      "length_cap_reached": 70968
     },
     "reasons": []
   },
   "playlist_genre_mix": {
     "pop": 4,
-    "classic rock": 4,
-    "rock": 2
+    "soundtrack": 1,
+    "electronic": 2,
+    "singer-songwriter": 1,
+    "soul": 1,
+    "new wave": 1
   },
   "playlist_score_range": {
-    "max": 0.784769,
-    "min": 0.64449
+    "max": 0.692496,
+    "min": 0.486205
   },
   "input_artifact_hashes": {
-    "bl006_scored_candidates.csv": "791F11ED608F60BAAC7FD76791EEBE3380A2BC025A52FBF2874A80393D6603FA"
+    "bl006_scored_candidates.csv": "BCB80DEE56DEA71F0328BE4A42763733D0D9AF61B518BAB4279D9C462C0E6A39"
   },
   "output_artifact_hashes": {
-    "bl007_playlist.json": "00A8B3BC1472AA6C144C7476BD9E6E24CF8181961FC34330D49ABBF7BC0F9634",
-    "bl007_assembly_trace.csv": "2E6AC40C864ACBD422D09CF74FB8917D9B780CBEF40B61F280358DD38440C9D9"
+    "bl007_playlist.json": "DC4E6A7D5000E6C18D50E9C7E90297679BC865003A51FC76C8EAD985771CBEE5",
+    "bl007_assembly_trace.csv": "15D24477C7880D3A3C447861AE12EE7D4F1DE156608B03D3722A3D8B655F9538"
   }
 }

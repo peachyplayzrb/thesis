@@ -1,7 +1,7 @@
 {
-  "run_id": "BL007-ASSEMBLE-20260325-234101-426786",
-  "generated_at_utc": "2026-03-25T23:41:01Z",
-  "elapsed_seconds": 0.623,
+  "run_id": "BL007-ASSEMBLE-20260326-034229-414617",
+  "generated_at_utc": "2026-03-26T03:42:29Z",
+  "elapsed_seconds": 0.484,
   "config": {
     "target_size": 10,
     "min_score_threshold": 0.35,
@@ -14,71 +14,71 @@
       "playlist_position": 1,
       "track_id": "C9oA7Glm1TItxpQA",
       "lead_genre": "pop",
-      "final_score": 0.784769,
+      "final_score": 0.692496,
       "score_rank": 1
     },
     {
       "playlist_position": 2,
-      "track_id": "7dYk0TCGZqev3LJD",
+      "track_id": "I2K0KDtgE2eZhPRw",
       "lead_genre": "pop",
-      "final_score": 0.741808,
+      "final_score": 0.68256,
       "score_rank": 2
     },
     {
       "playlist_position": 3,
-      "track_id": "3ltMH5jik02hVLDF",
-      "lead_genre": "classic rock",
-      "final_score": 0.720983,
-      "score_rank": 5
+      "track_id": "mSXCa0G0ZaZXH6kO",
+      "lead_genre": "soundtrack",
+      "final_score": 0.53057,
+      "score_rank": 638
     },
     {
       "playlist_position": 4,
-      "track_id": "5c9fu0pBIl9QUmed",
+      "track_id": "x7OmRoPTURulOH3a",
       "lead_genre": "pop",
-      "final_score": 0.719912,
-      "score_rank": 6
+      "final_score": 0.530568,
+      "score_rank": 639
     },
     {
       "playlist_position": 5,
-      "track_id": "Oa3WjjG6GreWw3Bf",
+      "track_id": "sf84lVKcbnZhyhfT",
       "lead_genre": "pop",
-      "final_score": 0.719818,
-      "score_rank": 7
+      "final_score": 0.530555,
+      "score_rank": 640
     },
     {
       "playlist_position": 6,
-      "track_id": "D8u1nCspnPIixiZa",
-      "lead_genre": "classic rock",
-      "final_score": 0.710547,
-      "score_rank": 9
+      "track_id": "TmJ0ulLgxxwzyIuh",
+      "lead_genre": "electronic",
+      "final_score": 0.501929,
+      "score_rank": 1139
     },
     {
       "playlist_position": 7,
-      "track_id": "xx7AjP300BpGG3CX",
-      "lead_genre": "classic rock",
-      "final_score": 0.691629,
-      "score_rank": 13
+      "track_id": "xsuR9W4d86WApJ8Q",
+      "lead_genre": "singer-songwriter",
+      "final_score": 0.490902,
+      "score_rank": 1410
     },
     {
       "playlist_position": 8,
-      "track_id": "RSBByZhshMFZd3yf",
-      "lead_genre": "rock",
-      "final_score": 0.647706,
-      "score_rank": 73
+      "track_id": "dC9gMzjprO4FqgX1",
+      "lead_genre": "electronic",
+      "final_score": 0.489791,
+      "score_rank": 1435
     },
     {
       "playlist_position": 9,
-      "track_id": "3T4bhuhIQTEHhcFg",
-      "lead_genre": "rock",
-      "final_score": 0.646969,
-      "score_rank": 74
+      "track_id": "ESNcdaYAmbezwRLO",
+      "lead_genre": "soul",
+      "final_score": 0.487617,
+      "score_rank": 1492
     },
     {
       "playlist_position": 10,
-      "track_id": "HdUv68biqGdrv08d",
-      "lead_genre": "classic rock",
-      "final_score": 0.64449,
-      "score_rank": 81
+      "track_id": "4luBg3qjlGN2Tqkv",
+      "lead_genre": "new wave",
+      "final_score": 0.486205,
+      "score_rank": 1528
     }
   ]
 }

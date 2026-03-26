@@ -109,6 +109,10 @@ def sha256(path: Path) -> str:
     return sha256_of_file(path).upper()
 
 
+def canonical_component_name(name: str) -> str:
+    return name.removesuffix("_score")
+
+
 def build_why_selected(track_id: str, lead_genre: str, final_score: float,
                        top_contributors: list, playlist_position: int,
                        top_contributor_limit: int) -> str:
@@ -197,24 +201,26 @@ def main() -> None:
 
         # Build score breakdown
         score_breakdown = []
-        ordered_components = [
-            component
-            for component in COMPONENT_ORDER
-            if component in active_weights
-        ]
+        ordered_components: list[str] = []
+        active_keys = list(active_weights.keys())
+        for canonical in COMPONENT_ORDER:
+            for component in active_keys:
+                if canonical_component_name(component) == canonical and component not in ordered_components:
+                    ordered_components.append(component)
         ordered_components.extend(
-            sorted(component for component in active_weights if component not in set(ordered_components))
+            sorted(component for component in active_keys if component not in set(ordered_components))
         )
 
-        for prefix in ordered_components:
-            sim_key  = f"{prefix}_similarity"
-            cont_key = f"{prefix}_contribution"
+        for component in ordered_components:
+            canonical = canonical_component_name(component)
+            sim_key  = f"{canonical}_similarity"
+            cont_key = f"{canonical}_contribution"
             similarity   = float(scored_row.get(sim_key, 0))
             contribution = float(scored_row.get(cont_key, 0))
             score_breakdown.append({
-                "component":    prefix,
-                "label":        COMPONENT_LABELS.get(prefix, prefix.replace("_", " ").title()),
-                "weight":       round(float(active_weights.get(prefix, 0.0)), 6),
+                "component":    canonical,
+                "label":        COMPONENT_LABELS.get(canonical, canonical.replace("_", " ").title()),
+                "weight":       round(float(active_weights.get(component, active_weights.get(canonical, 0.0))), 6),
                 "similarity":   round(similarity, 6),
                 "contribution": round(contribution, 6),
             })
