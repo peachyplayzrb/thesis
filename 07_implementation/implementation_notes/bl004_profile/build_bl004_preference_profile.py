@@ -13,6 +13,7 @@ import sys
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from bl000_shared_utils.config_loader import load_run_config_utils_module
+from bl000_shared_utils.env_utils import env_int, env_str
 from bl000_shared_utils.io_utils import (
     load_csv_rows,
     load_jsonl,
@@ -58,24 +59,6 @@ DEFAULT_INPUT_SCOPE: dict[str, object] = {
     "include_recently_played": True,
     "recently_played_limit": 50,
 }
-
-
-def env_int(name: str, default: int) -> int:
-    raw = os.environ.get(name)
-    if raw is None or not str(raw).strip():
-        return default
-    try:
-        return int(raw)
-    except ValueError:
-        return default
-
-
-def env_str(name: str, default: str) -> str:
-    raw = os.environ.get(name)
-    if raw is None:
-        return default
-    value = str(raw).strip()
-    return value if value else default
 
 
 def infer_user_id_from_ingestion(root: Path) -> str | None:

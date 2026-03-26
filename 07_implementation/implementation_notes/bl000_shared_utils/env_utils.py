@@ -77,3 +77,28 @@ def env_str(name: str, default: str) -> str:
         return default
     value = str(raw).strip()
     return value if value else default
+
+
+def env_bool(name: str, default: bool) -> bool:
+    """
+    Get an environment variable as a boolean, with a default.
+
+    Truthy values: 1, true, yes, on
+    Falsy values:  0, false, no, off
+
+    Args:
+        name: Environment variable name
+        default: Default value if variable not set or invalid
+
+    Returns:
+        Bool value from environment or default
+    """
+    raw = os.environ.get(name)
+    if raw is None:
+        return default
+    token = str(raw).strip().lower()
+    if token in {"1", "true", "yes", "on"}:
+        return True
+    if token in {"0", "false", "no", "off"}:
+        return False
+    return default

@@ -32,6 +32,7 @@ import sys
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from bl000_shared_utils.config_loader import load_run_config_utils_module
+from bl000_shared_utils.env_utils import env_int
 from bl000_shared_utils.io_utils import sha256_of_file, write_json
 from bl000_shared_utils.path_utils import repo_root
 
@@ -73,16 +74,6 @@ RULE_LABELS = {
     "consecutive_genre_run": "R3 — consecutive genre run",
     "length_cap_reached":    "R4 — length cap reached",
 }
-
-
-def env_int(name: str, default: int) -> int:
-    raw = os.environ.get(name)
-    if raw is None or not str(raw).strip():
-        return default
-    try:
-        return int(raw)
-    except ValueError:
-        return default
 
 
 DEFAULT_TOP_CONTRIBUTOR_LIMIT = 3

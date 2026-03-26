@@ -13,6 +13,7 @@ import sys
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from bl000_shared_utils.config_loader import load_run_config_utils_module
+from bl000_shared_utils.env_utils import env_bool, env_int
 from bl000_shared_utils.io_utils import (
     load_csv_rows,
     load_json,
@@ -74,28 +75,6 @@ def parse_exclusion_samples(rows: list[dict[str, str]], field: str, limit: int) 
             continue
         grouped[key].append(row)
     return grouped
-
-
-def env_int(name: str, default: int) -> int:
-    raw = os.environ.get(name)
-    if raw is None or not str(raw).strip():
-        return default
-    try:
-        return int(raw)
-    except ValueError:
-        return default
-
-
-def env_bool(name: str, default: bool) -> bool:
-    raw = os.environ.get(name)
-    if raw is None:
-        return default
-    token = str(raw).strip().lower()
-    if token in {"1", "true", "yes", "on"}:
-        return True
-    if token in {"0", "false", "no", "off"}:
-        return False
-    return default
 
 
 def ensure_required_sections(run_log: dict) -> None:

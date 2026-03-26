@@ -31,6 +31,7 @@ import sys
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from bl000_shared_utils.config_loader import load_run_config_utils_module
+from bl000_shared_utils.env_utils import env_float, env_int
 from bl000_shared_utils.io_utils import sha256_of_file, write_json
 from bl000_shared_utils.path_utils import repo_root
 
@@ -41,26 +42,6 @@ SCORED_CANDIDATES_PATH = Path(
     "07_implementation/implementation_notes/bl006_scoring/outputs/bl006_scored_candidates.csv"
 )
 OUTPUT_DIR = Path("07_implementation/implementation_notes/bl007_playlist/outputs")
-
-def env_int(name: str, default: int) -> int:
-    raw = os.environ.get(name)
-    if raw is None or not str(raw).strip():
-        return default
-    try:
-        return int(raw)
-    except ValueError:
-        return default
-
-
-def env_float(name: str, default: float) -> float:
-    raw = os.environ.get(name)
-    if raw is None or not str(raw).strip():
-        return default
-    try:
-        return float(raw)
-    except ValueError:
-        return default
-
 
 DEFAULT_TARGET_SIZE         = 10
 DEFAULT_MIN_SCORE_THRESHOLD = 0.35

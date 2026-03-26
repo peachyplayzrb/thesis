@@ -40,7 +40,6 @@ from candidate_parser import (
     resolve_lead_genre,
 )
 from decision_tracker import DecisionTracker
-from decision_tracker import DecisionTracker
 from filtering_logic import decision_reason, keep_decision
 
 
