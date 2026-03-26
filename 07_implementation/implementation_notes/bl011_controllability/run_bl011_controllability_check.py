@@ -3,11 +3,16 @@ from __future__ import annotations
 import argparse
 import csv
 import hashlib
-import io
 import json
 import time
 from datetime import datetime, timezone
 from pathlib import Path
+
+import sys
+
+sys.path.insert(0, str(Path(__file__).parent.parent))
+
+from bl000_shared_utils.report_utils import render_csv_text, write_text
 
 
 LEGACY_NUMERIC_COLUMNS = {
@@ -64,16 +69,7 @@ def json_text(payload: object) -> str:
 
 
 def csv_text(fieldnames: list[str], rows: list[dict[str, object]]) -> str:
-    buffer = io.StringIO()
-    writer = csv.DictWriter(buffer, fieldnames=fieldnames, lineterminator="\n")
-    writer.writeheader()
-    writer.writerows(rows)
-    return buffer.getvalue()
-
-
-def write_text(path: Path, text: str) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(text, encoding="utf-8")
+    return render_csv_text(fieldnames, rows)
 
 
 def load_json(path: Path) -> dict:
@@ -1063,17 +1059,19 @@ def execute_scenario(
         "assembly": playlist_stage["playlist"]["config"],
     }
 
-    texts = {}
-    texts.update(profile_stage["texts"])
-    texts.update(retrieval_stage["texts"])
-    texts.update(scoring_stage["texts"])
-    texts.update(playlist_stage["texts"])
+    texts = merge_stage_maps(
+        profile_stage["texts"],
+        retrieval_stage["texts"],
+        scoring_stage["texts"],
+        playlist_stage["texts"],
+    )
 
-    stable_hashes = {}
-    stable_hashes.update(profile_stage["stable_hashes"])
-    stable_hashes.update(retrieval_stage["stable_hashes"])
-    stable_hashes.update(scoring_stage["stable_hashes"])
-    stable_hashes.update(playlist_stage["stable_hashes"])
+    stable_hashes = merge_stage_maps(
+        profile_stage["stable_hashes"],
+        retrieval_stage["stable_hashes"],
+        scoring_stage["stable_hashes"],
+        playlist_stage["stable_hashes"],
+    )
 
     return {
         "scenario_id": scenario["scenario_id"],
@@ -1109,6 +1107,36 @@ def write_scenario_outputs(output_dir: Path, scenario_result: dict[str, object])
         write_text(scenario_dir / filename, text)
     config_path = scenario_dir / "scenario_effective_config.json"
     write_text(config_path, json_text(scenario_result["effective_config"]))
+
+
+def merge_stage_maps(*maps: dict[str, str]) -> dict[str, str]:
+    merged: dict[str, str] = {}
+    for item in maps:
+        merged.update(item)
+    return merged
+
+
+def build_fixed_input_hashes(
+    *,
+    paths: dict[str, Path],
+    root: Path,
+    legacy_mode: bool,
+    input_artifacts: dict[str, str],
+) -> dict[str, str]:
+    fixed_inputs = build_fixed_input_hashes(
+        paths=paths,
+        root=root,
+        legacy_mode=legacy_mode,
+        input_artifacts=input_artifacts,
+    )
+    optional_inputs = {
+        "legacy_manifest": paths["legacy_manifest"],
+        "legacy_coverage": paths["legacy_coverage"],
+    }
+    for path in optional_inputs.values():
+        if path.exists():
+            fixed_inputs[relpath(path, root)] = sha256_of_file(path)
+    return fixed_inputs
 
 
 def build_rank_shift_summary(baseline_rank_map: dict[str, int], scenario_rank_map: dict[str, int]) -> dict[str, object]:

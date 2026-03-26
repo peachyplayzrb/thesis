@@ -15,7 +15,6 @@ Outputs are written to:
 from __future__ import annotations
 
 import csv
-import json
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
@@ -27,6 +26,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 from bl000_shared_utils.io_utils import load_json as load_json_shared
 from bl000_shared_utils.io_utils import sha256_of_file
 from bl000_shared_utils.path_utils import repo_root
+from bl000_shared_utils.report_utils import write_csv_rows, write_json_ascii
 
 
 REPO_ROOT = repo_root()
@@ -388,39 +388,11 @@ def main() -> int:
     config_path = OUTPUT_DIR / "bl014_sanity_config_snapshot.json"
     matrix_path = OUTPUT_DIR / "bl014_sanity_run_matrix.csv"
 
-    with report_path.open("w", encoding="utf-8", newline="") as handle:
-        json.dump(report, handle, indent=2)
-        handle.write("\n")
-
-    with config_path.open("w", encoding="utf-8", newline="") as handle:
-        json.dump(config_snapshot, handle, indent=2)
-        handle.write("\n")
-
-    with matrix_path.open("w", encoding="utf-8", newline="") as handle:
-        writer = csv.DictWriter(
-            handle,
-            fieldnames=[
-                "run_id",
-                "generated_at_utc",
-                "overall_status",
-                "checks_total",
-                "checks_passed",
-                "checks_failed",
-                "bl005_kept_candidates",
-                "bl006_candidates_scored",
-                "playlist_length",
-                "bl007_target_size",
-                "undersized_playlist",
-                "undersized_shortfall",
-                "explanation_count",
-                "bl009_run_id",
-                "bl007_playlist_sha256",
-                "bl008_payloads_sha256",
-                "bl009_log_sha256",
-            ],
-        )
-        writer.writeheader()
-        writer.writerow(
+    write_json_ascii(report_path, report)
+    write_json_ascii(config_path, config_snapshot)
+    write_csv_rows(
+        matrix_path,
+        [
             {
                 "run_id": run_id,
                 "generated_at_utc": report["generated_at_utc"],
@@ -440,7 +412,8 @@ def main() -> int:
                 "bl008_payloads_sha256": hashes["bl008_payloads"],
                 "bl009_log_sha256": hashes["bl009_log"],
             }
-        )
+        ],
+    )
 
     print(f"[BL-014] run_id={run_id}")
     print(f"[BL-014] overall_status={overall_status} checks_passed={passed}/{len(checks)}")

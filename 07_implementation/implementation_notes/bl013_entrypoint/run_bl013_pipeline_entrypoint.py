@@ -11,6 +11,10 @@ import time
 from datetime import datetime, timezone
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).parent.parent))
+
+from bl000_shared_utils.report_utils import write_json_ascii
+
 
 STAGES = {
     "BL-004": "07_implementation/implementation_notes/bl004_profile/build_bl004_preference_profile.py",
@@ -35,6 +39,11 @@ STABLE_ARTIFACTS = {
 }
 
 BL003_SUMMARY_PATH = "07_implementation/implementation_notes/bl003_alignment/outputs/bl003_ds001_spotify_summary.json"
+
+SUMMARY_NOTES = {
+    "purpose": "Lightweight wrapper to run existing BL-004..BL-009 scripts in one command.",
+    "repeatability_check_guidance": "Compare stable_artifact_hashes between repeated runs under unchanged inputs/config.",
+}
 
 
 def repo_root() -> Path:
@@ -326,6 +335,66 @@ def run_bl003_seed_refresh(
     )
 
 
+def build_summary(
+    *,
+    run_id: str,
+    generated_at_utc: str,
+    continue_on_error: bool,
+    python_executable: str,
+    run_config_path: Path | None,
+    run_config_artifacts: dict[str, object],
+    refresh_seed: bool,
+    stage_order: list[str],
+    stage_results: list[dict[str, object]],
+    elapsed_seconds: float,
+    overall_status: str,
+    failed_stage_count: int,
+    stable_hashes: dict[str, str],
+    missing_stable: list[str],
+) -> dict[str, object]:
+    return {
+        "run_id": run_id,
+        "task": "BL-013",
+        "generated_at_utc": generated_at_utc,
+        "overall_status": overall_status,
+        "continue_on_error": continue_on_error,
+        "python_executable": python_executable,
+        "run_config_path": str(run_config_path) if run_config_path else None,
+        "canonical_run_config_artifacts": run_config_artifacts,
+        "refresh_seed": refresh_seed,
+        "requested_stage_order": stage_order,
+        "executed_stage_count": len(stage_results),
+        "failed_stage_count": failed_stage_count,
+        "elapsed_seconds": elapsed_seconds,
+        "stage_results": stage_results,
+        "stable_artifact_hashes": stable_hashes,
+        "missing_stable_artifacts": missing_stable,
+        "notes": SUMMARY_NOTES,
+    }
+
+
+def write_summary_artifacts(
+    *,
+    output_dir: Path,
+    summary_prefix: str,
+    run_id: str,
+    summary: dict[str, object],
+) -> tuple[Path, Path]:
+    summary_path = output_dir / f"{summary_prefix}_{run_id}.json"
+    write_json_ascii(summary_path, summary)
+
+    latest_path = output_dir / f"{summary_prefix}_latest.json"
+    write_json_ascii(latest_path, summary)
+    return summary_path, latest_path
+
+
+def print_run_footer(*, overall_status: str, run_id: str, summary_path: Path, latest_path: Path) -> None:
+    print(f"BL-013 orchestration complete: status={overall_status}")
+    print(f"run_id={run_id}")
+    print(f"summary={summary_path}")
+    print(f"latest={latest_path}")
+
+
 def main() -> None:
     args = parse_args()
     root = repo_root()
@@ -379,36 +448,34 @@ def main() -> None:
             stage_results.append(guard_result)
             elapsed_pipeline = round(time.time() - pipeline_started, 3)
             stable_hashes, missing_stable = compute_stable_artifact_hashes(root)
-            summary = {
-                "run_id": run_id,
-                "task": "BL-013",
-                "generated_at_utc": generated_at_utc,
-                "overall_status": "fail",
-                "continue_on_error": bool(args.continue_on_error),
-                "python_executable": args.python,
-                "run_config_path": str(run_config_path),
-                "canonical_run_config_artifacts": run_config_artifacts,
-                "refresh_seed": bool(args.refresh_seed),
-                "requested_stage_order": stage_order,
-                "executed_stage_count": len(stage_results),
-                "failed_stage_count": 1,
-                "elapsed_seconds": elapsed_pipeline,
-                "stage_results": stage_results,
-                "stable_artifact_hashes": stable_hashes,
-                "missing_stable_artifacts": missing_stable,
-                "notes": {
-                    "purpose": "Lightweight wrapper to run existing BL-004..BL-009 scripts in one command.",
-                    "repeatability_check_guidance": "Compare stable_artifact_hashes between repeated runs under unchanged inputs/config.",
-                },
-            }
-            summary_path = output_dir / f"{args.summary_prefix}_{run_id}.json"
-            summary_path.write_text(json.dumps(summary, indent=2, ensure_ascii=True), encoding="utf-8")
-            latest_path = output_dir / f"{args.summary_prefix}_latest.json"
-            latest_path.write_text(json.dumps(summary, indent=2, ensure_ascii=True), encoding="utf-8")
-            print("BL-013 orchestration complete: status=fail")
-            print(f"run_id={run_id}")
-            print(f"summary={summary_path}")
-            print(f"latest={latest_path}")
+            summary = build_summary(
+                run_id=run_id,
+                generated_at_utc=generated_at_utc,
+                continue_on_error=bool(args.continue_on_error),
+                python_executable=args.python,
+                run_config_path=run_config_path,
+                run_config_artifacts=run_config_artifacts,
+                refresh_seed=bool(args.refresh_seed),
+                stage_order=stage_order,
+                stage_results=stage_results,
+                elapsed_seconds=elapsed_pipeline,
+                overall_status="fail",
+                failed_stage_count=1,
+                stable_hashes=stable_hashes,
+                missing_stable=missing_stable,
+            )
+            summary_path, latest_path = write_summary_artifacts(
+                output_dir=output_dir,
+                summary_prefix=args.summary_prefix,
+                run_id=run_id,
+                summary=summary,
+            )
+            print_run_footer(
+                overall_status="fail",
+                run_id=run_id,
+                summary_path=summary_path,
+                latest_path=latest_path,
+            )
             print("failed_stage=BL-003-FRESHNESS-GUARD return_code=2")
             raise SystemExit(1)
 
@@ -424,36 +491,34 @@ def main() -> None:
         if seed_result["status"] == "fail" and not args.continue_on_error:
             elapsed_pipeline = round(time.time() - pipeline_started, 3)
             stable_hashes, missing_stable = compute_stable_artifact_hashes(root)
-            summary = {
-                "run_id": run_id,
-                "task": "BL-013",
-                "generated_at_utc": generated_at_utc,
-                "overall_status": "fail",
-                "continue_on_error": bool(args.continue_on_error),
-                "python_executable": args.python,
-                "run_config_path": str(run_config_path) if run_config_path else None,
-                "canonical_run_config_artifacts": run_config_artifacts,
-                "refresh_seed": bool(args.refresh_seed),
-                "requested_stage_order": stage_order,
-                "executed_stage_count": len(stage_results),
-                "failed_stage_count": 1,
-                "elapsed_seconds": elapsed_pipeline,
-                "stage_results": stage_results,
-                "stable_artifact_hashes": stable_hashes,
-                "missing_stable_artifacts": missing_stable,
-                "notes": {
-                    "purpose": "Lightweight wrapper to run existing BL-004..BL-009 scripts in one command.",
-                    "repeatability_check_guidance": "Compare stable_artifact_hashes between repeated runs under unchanged inputs/config.",
-                },
-            }
-            summary_path = output_dir / f"{args.summary_prefix}_{run_id}.json"
-            summary_path.write_text(json.dumps(summary, indent=2, ensure_ascii=True), encoding="utf-8")
-            latest_path = output_dir / f"{args.summary_prefix}_latest.json"
-            latest_path.write_text(json.dumps(summary, indent=2, ensure_ascii=True), encoding="utf-8")
-            print("BL-013 orchestration complete: status=fail")
-            print(f"run_id={run_id}")
-            print(f"summary={summary_path}")
-            print(f"latest={latest_path}")
+            summary = build_summary(
+                run_id=run_id,
+                generated_at_utc=generated_at_utc,
+                continue_on_error=bool(args.continue_on_error),
+                python_executable=args.python,
+                run_config_path=run_config_path,
+                run_config_artifacts=run_config_artifacts,
+                refresh_seed=bool(args.refresh_seed),
+                stage_order=stage_order,
+                stage_results=stage_results,
+                elapsed_seconds=elapsed_pipeline,
+                overall_status="fail",
+                failed_stage_count=1,
+                stable_hashes=stable_hashes,
+                missing_stable=missing_stable,
+            )
+            summary_path, latest_path = write_summary_artifacts(
+                output_dir=output_dir,
+                summary_prefix=args.summary_prefix,
+                run_id=run_id,
+                summary=summary,
+            )
+            print_run_footer(
+                overall_status="fail",
+                run_id=run_id,
+                summary_path=summary_path,
+                latest_path=latest_path,
+            )
             print(f"failed_stage={seed_result['stage_id']} return_code={seed_result['return_code']}")
             raise SystemExit(1)
 
@@ -498,39 +563,36 @@ def main() -> None:
 
     stable_hashes, missing_stable = compute_stable_artifact_hashes(root)
 
-    summary = {
-        "run_id": run_id,
-        "task": "BL-013",
-        "generated_at_utc": generated_at_utc,
-        "overall_status": overall_status,
-        "continue_on_error": bool(args.continue_on_error),
-        "python_executable": args.python,
-        "run_config_path": str(run_config_path) if run_config_path else None,
-        "canonical_run_config_artifacts": run_config_artifacts,
-        "refresh_seed": bool(args.refresh_seed),
-        "requested_stage_order": stage_order,
-        "executed_stage_count": len(stage_results),
-        "failed_stage_count": len(failed),
-        "elapsed_seconds": elapsed_pipeline,
-        "stage_results": stage_results,
-        "stable_artifact_hashes": stable_hashes,
-        "missing_stable_artifacts": missing_stable,
-        "notes": {
-            "purpose": "Lightweight wrapper to run existing BL-004..BL-009 scripts in one command.",
-            "repeatability_check_guidance": "Compare stable_artifact_hashes between repeated runs under unchanged inputs/config.",
-        },
-    }
+    summary = build_summary(
+        run_id=run_id,
+        generated_at_utc=generated_at_utc,
+        continue_on_error=bool(args.continue_on_error),
+        python_executable=args.python,
+        run_config_path=run_config_path,
+        run_config_artifacts=run_config_artifacts,
+        refresh_seed=bool(args.refresh_seed),
+        stage_order=stage_order,
+        stage_results=stage_results,
+        elapsed_seconds=elapsed_pipeline,
+        overall_status=overall_status,
+        failed_stage_count=len(failed),
+        stable_hashes=stable_hashes,
+        missing_stable=missing_stable,
+    )
 
-    summary_path = output_dir / f"{args.summary_prefix}_{run_id}.json"
-    summary_path.write_text(json.dumps(summary, indent=2, ensure_ascii=True), encoding="utf-8")
+    summary_path, latest_path = write_summary_artifacts(
+        output_dir=output_dir,
+        summary_prefix=args.summary_prefix,
+        run_id=run_id,
+        summary=summary,
+    )
 
-    latest_path = output_dir / f"{args.summary_prefix}_latest.json"
-    latest_path.write_text(json.dumps(summary, indent=2, ensure_ascii=True), encoding="utf-8")
-
-    print(f"BL-013 orchestration complete: status={overall_status}")
-    print(f"run_id={run_id}")
-    print(f"summary={summary_path}")
-    print(f"latest={latest_path}")
+    print_run_footer(
+        overall_status=overall_status,
+        run_id=run_id,
+        summary_path=summary_path,
+        latest_path=latest_path,
+    )
 
     if failed:
         for item in failed:

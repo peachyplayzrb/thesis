@@ -10,6 +10,10 @@ import sys
 import time
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).parent.parent))
+
+from bl000_shared_utils.report_utils import write_csv_rows, write_json_ascii
+
 
 REPLAY_COUNT = 3
 
@@ -72,6 +76,10 @@ def load_csv_rows(path: Path) -> list[dict[str, str]]:
 def copy_file(src: Path, dst: Path) -> None:
     dst.parent.mkdir(parents=True, exist_ok=True)
     shutil.copy2(src, dst)
+
+
+def build_file_hash_map(paths: dict[str, Path], keys: list[str]) -> dict[str, str]:
+    return {key: sha256_of_file(paths[key]) for key in keys}
 
 
 def build_paths(root: Path) -> dict[str, Path]:
@@ -140,9 +148,10 @@ def build_config_snapshot(paths: dict[str, Path], root: Path, allow_legacy_surro
         relpath(paths[key], root): sha256_of_file(paths[key])
         for key in fixed_input_keys
     }
+    stage_script_keys = ["bl004_script", "bl005_script", "bl006_script", "bl007_script", "bl008_script", "bl009_script"]
     stage_scripts = {
-        relpath(paths[key], root): sha256_of_file(paths[key])
-        for key in ["bl004_script", "bl005_script", "bl006_script", "bl007_script", "bl008_script", "bl009_script"]
+        relpath(paths[key], root): digest
+        for key, digest in build_file_hash_map(paths, stage_script_keys).items()
     }
 
     return {
@@ -278,6 +287,21 @@ def fingerprint_outputs(paths: dict[str, Path]) -> dict[str, object]:
         explanations_stable_hash=explanation_stable_hash,
     )
 
+    raw_hash_map = build_file_hash_map(
+        paths,
+        [
+            "bl004_seed_trace",
+            "bl005_filtered",
+            "bl005_decisions",
+            "bl006_scored",
+            "bl007_trace",
+            "bl007_playlist",
+            "bl008_payloads",
+            "bl009_log",
+            "bl009_index",
+        ],
+    )
+
     return {
         "stage_run_ids": {
             "BL-004": bl004_profile["run_id"],
@@ -288,26 +312,26 @@ def fingerprint_outputs(paths: dict[str, Path]) -> dict[str, object]:
             "BL-009": bl009_log["run_metadata"]["run_id"],
         },
         "raw_hashes": {
-            "bl004_seed_trace": sha256_of_file(paths["bl004_seed_trace"]),
-            "bl005_filtered": sha256_of_file(paths["bl005_filtered"]),
-            "bl005_decisions": sha256_of_file(paths["bl005_decisions"]),
-            "bl006_scored": sha256_of_file(paths["bl006_scored"]),
-            "bl007_trace": sha256_of_file(paths["bl007_trace"]),
-            "bl007_playlist": sha256_of_file(paths["bl007_playlist"]),
-            "bl008_payloads": sha256_of_file(paths["bl008_payloads"]),
-            "bl009_log": sha256_of_file(paths["bl009_log"]),
-            "bl009_index": sha256_of_file(paths["bl009_index"]),
+            "bl004_seed_trace": raw_hash_map["bl004_seed_trace"],
+            "bl005_filtered": raw_hash_map["bl005_filtered"],
+            "bl005_decisions": raw_hash_map["bl005_decisions"],
+            "bl006_scored": raw_hash_map["bl006_scored"],
+            "bl007_trace": raw_hash_map["bl007_trace"],
+            "bl007_playlist": raw_hash_map["bl007_playlist"],
+            "bl008_payloads": raw_hash_map["bl008_payloads"],
+            "bl009_log": raw_hash_map["bl009_log"],
+            "bl009_index": raw_hash_map["bl009_index"],
         },
         "stable_hashes": {
             "profile_semantic_hash": stable_profile_fingerprint(bl004_profile, bl004_summary),
-            "ranked_output_hash": sha256_of_file(paths["bl006_scored"]),
+            "ranked_output_hash": raw_hash_map["bl006_scored"],
             "playlist_output_hash": playlist_stable_hash,
             "explanation_output_hash": explanation_stable_hash,
             "observability_output_hash": observability_stable_hash,
-            "seed_trace_hash": sha256_of_file(paths["bl004_seed_trace"]),
-            "candidate_decisions_hash": sha256_of_file(paths["bl005_decisions"]),
-            "filtered_candidates_hash": sha256_of_file(paths["bl005_filtered"]),
-            "assembly_trace_hash": sha256_of_file(paths["bl007_trace"]),
+            "seed_trace_hash": raw_hash_map["bl004_seed_trace"],
+            "candidate_decisions_hash": raw_hash_map["bl005_decisions"],
+            "filtered_candidates_hash": raw_hash_map["bl005_filtered"],
+            "assembly_trace_hash": raw_hash_map["bl007_trace"],
         },
         "semantic_snapshots": {
             "playlist_track_ids": playlist_track_ids,
@@ -401,7 +425,7 @@ def main() -> None:
     )
     config_hash = canonical_json_hash(config_snapshot)
     config_path = output_dir / "bl010_reproducibility_config_snapshot.json"
-    config_path.write_text(json.dumps(config_snapshot, indent=2, ensure_ascii=True), encoding="utf-8")
+    write_json_ascii(config_path, config_snapshot)
 
     replay_records: list[dict[str, object]] = []
     run_started_at = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
@@ -470,10 +494,7 @@ def main() -> None:
         summary_rows.append(row)
 
     summary_csv_path = output_dir / "bl010_reproducibility_run_matrix.csv"
-    with summary_csv_path.open("w", encoding="utf-8", newline="") as handle:
-        writer = csv.DictWriter(handle, fieldnames=list(summary_rows[0].keys()), lineterminator="\n")
-        writer.writeheader()
-        writer.writerows(summary_rows)
+    write_csv_rows(summary_csv_path, summary_rows)
 
     report = {
         "run_metadata": {
@@ -535,7 +556,7 @@ def main() -> None:
     }
 
     report_path = output_dir / "bl010_reproducibility_report.json"
-    report_path.write_text(json.dumps(report, indent=2, ensure_ascii=True), encoding="utf-8")
+    write_json_ascii(report_path, report)
 
     print("BL-010 reproducibility replay complete.")
     print(f"run_id={run_id}")

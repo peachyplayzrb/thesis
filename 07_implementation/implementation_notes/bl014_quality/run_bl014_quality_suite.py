@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import argparse
-import csv
 import importlib.util
 import json
 import subprocess
@@ -11,6 +10,10 @@ import sys
 import time
 from pathlib import Path
 from typing import Any
+
+sys.path.insert(0, str(Path(__file__).parent.parent))
+
+from bl000_shared_utils.report_utils import write_csv_rows, write_json_ascii
 
 
 REPO_ROOT = Path(__file__).resolve().parents[3]
@@ -59,17 +62,48 @@ def load_module(name: str, path: Path):
     return module
 
 
-def write_json(path: Path, payload: dict[str, Any]) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(payload, indent=2, ensure_ascii=True), encoding="utf-8")
+def check_counts(checks: list[dict[str, str]]) -> tuple[int, int]:
+    passed = sum(1 for item in checks if item["status"] == "pass")
+    failed = len(checks) - passed
+    return passed, failed
 
 
-def write_csv(path: Path, rows: list[dict[str, object]]) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    with path.open("w", encoding="utf-8", newline="") as handle:
-        writer = csv.DictWriter(handle, fieldnames=list(rows[0].keys()), lineterminator="\n")
-        writer.writeheader()
-        writer.writerows(rows)
+def write_suite_artifacts(
+    *,
+    run_id: str,
+    task: str,
+    elapsed_seconds: float,
+    overall_status: str,
+    evidence_paths: dict[str, str],
+    checks: list[dict[str, str]],
+    report_path: Path,
+    matrix_path: Path,
+    script_outputs: dict[str, str] | None = None,
+    extra_sections: dict[str, Any] | None = None,
+) -> None:
+    checks_passed, checks_failed = check_counts(checks)
+    report: dict[str, Any] = {
+        "run_metadata": {
+            "run_id": run_id,
+            "task": task,
+            "generated_at_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+            "elapsed_seconds": elapsed_seconds,
+            "overall_status": overall_status,
+            "checks_total": len(checks),
+            "checks_passed": checks_passed,
+            "checks_failed": checks_failed,
+        },
+        "evidence_paths": evidence_paths,
+        "checks": checks,
+    }
+    if script_outputs:
+        report["script_outputs"] = script_outputs
+    if extra_sections:
+        report.update(extra_sections)
+
+    matrix_rows = [{"check_id": item["id"], "status": item["status"], "details": item["details"]} for item in checks]
+    write_json_ascii(report_path, report)
+    write_csv_rows(matrix_path, matrix_rows)
 
 
 def run_freshness_mode() -> int:
@@ -203,36 +237,31 @@ def run_freshness_mode() -> int:
     )
 
     overall_status = "pass" if all(item["status"] == "pass" for item in checks) else "fail"
-    report = {
-        "run_metadata": {
-            "run_id": f"BL-FRESHNESS-{time.strftime('%Y%m%d-%H%M%S', time.gmtime())}",
-            "task": "BL-010/011 freshness check",
-            "generated_at_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
-            "elapsed_seconds": round(time.time() - started, 3),
-            "overall_status": overall_status,
-            "checks_total": len(checks),
-            "checks_passed": sum(1 for item in checks if item["status"] == "pass"),
-            "checks_failed": sum(1 for item in checks if item["status"] == "fail"),
-        },
-        "evidence_paths": {
+    report_path = OUTPUT_DIR / "bl010_bl011_freshness_report.json"
+    matrix_path = OUTPUT_DIR / "bl010_bl011_freshness_matrix.csv"
+    write_suite_artifacts(
+        run_id=f"BL-FRESHNESS-{time.strftime('%Y%m%d-%H%M%S', time.gmtime())}",
+        task="BL-010/011 freshness check",
+        elapsed_seconds=round(time.time() - started, 3),
+        overall_status=overall_status,
+        evidence_paths={
             "bl010_config_snapshot": relpath(bl010_snapshot_path),
             "bl010_report": relpath(bl010_report_path),
             "bl011_config_snapshot": relpath(bl011_snapshot_path),
             "bl011_report": relpath(bl011_report_path),
-        },
-        "current_contract_hashes": {
             "bl010_config_hash": current_bl010_hash,
             "bl011_config_hash": current_bl011_hash,
         },
-        "checks": checks,
-    }
-
-    matrix_rows = [{"check_id": item["id"], "status": item["status"], "details": item["details"]} for item in checks]
-
-    report_path = OUTPUT_DIR / "bl010_bl011_freshness_report.json"
-    matrix_path = OUTPUT_DIR / "bl010_bl011_freshness_matrix.csv"
-    write_json(report_path, report)
-    write_csv(matrix_path, matrix_rows)
+        checks=checks,
+        report_path=report_path,
+        matrix_path=matrix_path,
+        extra_sections={
+            "current_contract_hashes": {
+                "bl010_config_hash": current_bl010_hash,
+                "bl011_config_hash": current_bl011_hash,
+            }
+        },
+    )
 
     print("BL-010/BL-011 freshness check complete.")
     print(f"overall_status={overall_status}")
@@ -314,41 +343,25 @@ def run_active_mode() -> int:
     overall_status = "pass" if all(item["status"] == "pass" for item in checks) else "fail"
     run_id = f"BL-FRESHNESS-SUITE-{time.strftime('%Y%m%d-%H%M%S', time.gmtime())}"
 
-    report = {
-        "run_metadata": {
-            "run_id": run_id,
-            "task": "active freshness suite",
-            "generated_at_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
-            "elapsed_seconds": round(time.time() - started, 3),
-            "overall_status": overall_status,
-            "checks_total": len(checks),
-            "checks_passed": sum(1 for item in checks if item["status"] == "pass"),
-            "checks_failed": sum(1 for item in checks if item["status"] == "fail"),
-        },
-        "evidence_paths": {
+    report_path = OUTPUT_DIR / "bl_active_freshness_suite_report.json"
+    matrix_path = OUTPUT_DIR / "bl_active_freshness_suite_matrix.csv"
+    write_suite_artifacts(
+        run_id=run_id,
+        task="active freshness suite",
+        elapsed_seconds=round(time.time() - started, 3),
+        overall_status=overall_status,
+        evidence_paths={
             "bl013_latest_summary": relpath(bl013_latest_path),
             "bl014_report": relpath(bl014_report_path),
             "bl010_bl011_freshness_report": relpath(freshness_report_path),
         },
-        "script_outputs": {
+        checks=checks,
+        report_path=report_path,
+        matrix_path=matrix_path,
+        script_outputs={
             "bl014_stdout_stderr": bl014_output,
         },
-        "checks": checks,
-    }
-
-    matrix_rows = [
-        {
-            "check_id": item["id"],
-            "status": item["status"],
-            "details": item["details"],
-        }
-        for item in checks
-    ]
-
-    report_path = OUTPUT_DIR / "bl_active_freshness_suite_report.json"
-    matrix_path = OUTPUT_DIR / "bl_active_freshness_suite_matrix.csv"
-    write_json(report_path, report)
-    write_csv(matrix_path, matrix_rows)
+    )
 
     print("Active freshness suite complete.")
     print(f"overall_status={overall_status}")
