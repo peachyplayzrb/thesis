@@ -8,7 +8,7 @@ Ordering convention (standardized 2026-03-24):
 - New entries must be appended at the end; historical entries remain unchanged except for explicit correction records.
 
 Maintenance snapshot (2026-03-26):
-- Highest change ID currently present: `C-177`
+- Highest change ID currently present: `C-179`
 - Known legacy correction applied in this file: prior duplicate `C-079` entry has been normalized to `C-135` for unique-ID compliance.
 
 ## C-001
@@ -30,6 +30,8 @@ Maintenance snapshot (2026-03-26):
 | C-175 | 2026-03-25 23:10 | Copilot | Normalized BL-010 replay command path semantics to canonical BL-prefixed rendering, refreshed BL-010/BL-011 evidence with freshness and BL-014 passes, and synchronized implementation/admin logs for UI-013 closure progress. |
 | C-176 | 2026-03-26 | Copilot | Hardened artifact-load validation across BL-003, BL-008, BL-009, BL-010, BL-011, and DS-001: added fail-fast `load_required_json()` helpers, schema guards, and retry-transparency fields; confirmed BL-010/BL-011/BL-014 pass on updated baseline. |
 | C-177 | 2026-03-26 | Copilot | Fixed BL-006 scoring engine empty lead-genre false match: added non-empty guard to `lead_genre_similarity` so tracks without genre data no longer receive spurious perfect scores; BL-014 pass confirmed post-fix. |
+| C-178 | 2026-03-26 | Copilot | Corrected BL-006 weighted-contribution semantics and matched-label propagation, then refreshed BL-007 through BL-009 lineage and reconfirmed BL-014 pass on the corrected baseline. |
+| C-179 | 2026-03-26 | Copilot | Refreshed UI-013 v1b acceptance evidence on the corrected BL-006 baseline, updated control/test artifacts, and closed UI-013 after reconfirming all thresholds with BL-013 and BL-014 passes. |
 ## C-162
 - date: 2026-03-25
 - proposed_by: Copilot
@@ -196,6 +198,28 @@ Maintenance snapshot (2026-03-26):
 - evidence_basis: Bug confirmed by direct read of `scoring_engine.py` lines 116-118; fix applied and verified clean (`py_compile` pass); BL-014 pass confirmed post-fix (`overall_status=pass`).
 - affected_components: `07_implementation/implementation_notes/bl006_scoring/scoring_engine.py`, `00_admin/change_log.md`
 - impact_assessment: Medium-positive. Removes a real scoring inaccuracy that could have inflated genre-less candidate rankings, improving result internal validity. Scoring output artifacts will differ marginally from pre-fix runs for candidates without genre data.
+- approval_record: Requested and confirmed by user in chat on 2026-03-26.
+
+## C-178
+- date: 2026-03-26
+- proposed_by: Copilot
+- status: accepted
+- change_summary: Corrected BL-006 so persisted `*_contribution` fields now store true weighted contributions instead of raw similarities, restored matched genre/tag propagation into BL-006 outputs, updated BL-006 summary wording for the real lead-genre rule, then regenerated BL-007 to BL-009 and reconfirmed BL-014 pass.
+- reason: A focused review found that BL-006 wrote raw similarities into `*_contribution` fields while BL-006 diagnostics and BL-008 explanation ranking interpreted those fields as weighted contributions. This made transparency outputs and component-balance reporting semantically incorrect even though final score aggregation remained deterministic.
+- evidence_basis: BL-006 pass `BL006-SCORE-20260326-175531-101302`; BL-007 pass `BL007-ASSEMBLE-20260326-175552-183434`; BL-008 pass `BL008-EXPLAIN-20260326-175552-995824`; BL-009 pass `BL009-OBSERVE-20260326-175553-758828`; BL-014 pass `BL014-SANITY-20260326-175554-065408` (`22/22` checks). Updated BL-006 top candidates now include non-empty `matched_genres` / `matched_tags`, and BL-006 `component_balance` now reports weighted contributions.
+- affected_components: `07_implementation/implementation_notes/bl006_scoring/scoring_engine.py`, `07_implementation/implementation_notes/bl006_scoring/build_bl006_scored_candidates.py`, `07_implementation/implementation_notes/bl006_scoring/outputs/*`, `07_implementation/implementation_notes/bl007_playlist/outputs/*`, `07_implementation/implementation_notes/bl008_transparency/outputs/*`, `07_implementation/implementation_notes/bl009_observability/outputs/*`, `07_implementation/implementation_notes/bl014_quality/outputs/bl014_sanity_report.json`, `07_implementation/experiment_log.md`, `00_admin/unresolved_issues.md`, `00_admin/change_log.md`
+- impact_assessment: High-positive for transparency correctness and evidence integrity. The fix removes a real semantics bug in BL-006/BL-008 reporting, but it also means prior BL-008 primary-driver distribution evidence must be interpreted carefully and refreshed under the corrected weighted-contribution contract.
+- approval_record: Requested and confirmed by user in chat on 2026-03-26.
+
+## C-179
+- date: 2026-03-26
+- proposed_by: Copilot
+- status: accepted
+- change_summary: Refreshed the UI-013 v1b acceptance evidence on the corrected BL-006 weighted-contribution baseline, updated the scratch/test/admin evidence package, and closed UI-013 after reconfirming all thresholds with BL-013 and BL-014 passes.
+- reason: After C-178 / EXP-046, the earlier UI-013 BL-008 diversity evidence could no longer be cited safely because it had been generated before the corrected weighted-contribution contract. A focused rerun was required to determine whether the tuned v1b profile still met the acceptance thresholds on the corrected baseline.
+- evidence_basis: BL-013 pass `BL013-ENTRYPOINT-20260326-180047-134553`; BL-014 pass `BL014-SANITY-20260326-180057-357905` (`22/22` checks); refreshed metrics `bl003_match_rate=0.1595`, `bl005_kept_candidates=54402`, `bl006_numeric_minus_semantic=-0.068775`, `bl008_top_label_dominance_share=0.3`; refreshed BL-008 top-contributor distribution `{Lead genre match:3, Tag overlap:3, Tempo (BPM):3, Genre overlap:1}` in `_scratch/ui013_v1b_bl008_focus_result.json`.
+- affected_components: `_scratch/ui013_v1b_bl008_focus_result.json`, `07_implementation/test_notes.md`, `07_implementation/experiment_log.md`, `00_admin/unresolved_issues.md`, `00_admin/thesis_state.md`, `00_admin/change_log.md`
+- impact_assessment: High-positive. Converts UI-013 from a stale-evidence risk into a closed, traceable acceptance package on the corrected active baseline and narrows the remaining open dependency set to UI-003 citation closure.
 - approval_record: Requested and confirmed by user in chat on 2026-03-26.
 
 ## C-006

@@ -1081,15 +1081,16 @@ Tier-1 control stack validated as coherent and operational:
 ### Actual Result
 - Status: pass
 - Observed metrics:
-	- `bl013_run_id=BL013-ENTRYPOINT-20260325-225725-328263`
-	- `bl014_run_id=BL014-SANITY-20260325-225735-601840`
+	- `bl013_run_id=BL013-ENTRYPOINT-20260326-180047-134553`
+	- `bl014_run_id=BL014-SANITY-20260326-180057-357905`
 	- `bl014_overall_status=pass`
 	- `bl003_threshold_enforced=true`
-	- `bl003_match_rate=0.1632`
-	- `bl005_kept_candidates=55643`
-	- `bl006_gap_numeric_minus_semantic=-0.112839`
-	- `bl008_top_contributor_distribution={Lead genre match:5, Tag overlap:3, Genre overlap:2}`
-	- `bl008_top_label_dominance_share=0.5`
+	- `bl003_match_rate=0.1595`
+	- `bl005_kept_candidates=54402`
+	- `bl006_gap_numeric_minus_semantic=-0.068775`
+	- `bl008_top_contributor_distribution={Lead genre match:3, Tag overlap:3, Tempo (BPM):3, Genre overlap:1}`
+	- `bl008_top_label_dominance_share=0.3`
+	- `refresh_note=This result supersedes the 2026-03-25 pre-BL-006-contract-fix evidence; historical run details remain logged in EXP-043.`
 
 ### Evidence Artifacts
 - `07_implementation/implementation_notes/bl008_transparency/outputs/bl008_explanation_summary.json`

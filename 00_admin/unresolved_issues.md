@@ -1,6 +1,6 @@
 # Unresolved Issues
 
-Last updated: 2026-03-25 23:00 UTC
+Last updated: 2026-03-26 18:06 UTC
 
 ## Active
 
@@ -19,36 +19,26 @@ Last updated: 2026-03-25 23:00 UTC
 	- due_window: 2026-03-19 to 2026-03-29
 
 
-- UI-013 (2026-03-25): Pipeline optimization and evidence-hygiene package is not yet closed on the active BL baseline.
-	- impact: If left unresolved, final thesis claims remain operationally valid but weaker on precision/coverage quality, explanation richness, and evidence readability.
-	- progress_summary:
-		1. Comprehensive implementation issue register was consolidated in `07_implementation/IMPLEMENTATION_STATE_2026-03-24.md`.
-		2. Runtime and assurance stages are passing; optimization debt remains visible in BL-003/BL-005/BL-006/BL-008 while the BL-010/BL-011 path-semantics hygiene slice is now normalized and revalidated.
-		3. Config-surface control uplift implemented: run-config now exposes explicit `control_mode` governance switches (`validation_profile`, `allow_threshold_decoupling`, `allow_weight_auto_normalization`) and BL-009 observability `bootstrap_mode` is now config-driven instead of hardcoded.
-		4. Canonical UI-013 tuning baseline is now fixed at `07_implementation/implementation_notes/bl000_run_config/configs/profiles/run_config_ui013_tuning_v1.json`.
-		5. Controlled sweep executed (`v1`, `v1a`, `v1b`, `v1c`) with BL-013 + BL-014 and metric extraction in `_scratch/ui013_tuning_sweep_results.json`.
-		6. Interim best candidate for precision/scoring balance is `run_config_ui013_tuning_v1b.json` (`kept_candidates=55643`, `numeric_minus_semantic=-0.112839`, BL-014 pass).
-		7. Focused BL-008 diversity pass completed: `run_config_ui013_tuning_v1b.json` now enables near-tie primary-driver blending (`primary_contributor_tie_delta=0.09`), producing `top_contributor_distribution={Lead genre match:5, Tag overlap:3, Genre overlap:2}` and dominance share `0.5` (target <= 0.6 met).
-	- next_action:
-		1. Execute all UI-013 tuning runs using only `run_config_ui013_tuning_v1.json` as the baseline lineage source.
-		2. Run one controlled BL-005/BL-006 tuning sweep (max 3 variants) and compare BL-009 diagnostics against the baseline.
-		3. Evaluate acceptance targets:
-			- BL-003: `match_rate_validation.threshold_enforced=true` and `actual_match_rate >= 0.15`
-			- BL-005: `kept_candidates <= 65000`
-			- BL-006: `numeric_contribution_mean - semantic_contribution_mean <= 0.015`
-			- BL-008: no single top-contributor label accounts for > 60% of playlist explanations
-		4. Package final UI-013 closure evidence (acceptance table + run IDs + metric snapshots) and map any deferred items to Chapter 4 limitation language.
-	- owner: AI + user
-	- status: open
-	- due_window: 2026-03-25 to 2026-03-31
-
 Active-set sync note (2026-03-25 18:25 UTC): Open items are UI-003 (citation package closure) and UI-013 (pipeline optimization and evidence-hygiene closure).
 Active-set sync note (2026-03-25 22:55 UTC): Open items remain UI-003 (citation package closure) and UI-013 (pipeline optimization and evidence-hygiene closure); UI-013 control-surface uplift is implemented, optimization tuning closure is pending.
 Active-set sync note (2026-03-25 23:00 UTC): Open items remain UI-003 and UI-013; UI-013 BL-008 explanation-dominance criterion is now passing under the v1b profile, with remaining closure work centered on BL-010/BL-011 path-semantics normalization and final evidence packaging.
 Active-set sync note (2026-03-25 23:10 UTC): Open items remain UI-003 and UI-013; UI-013 path-semantics normalization for BL-010/BL-011 is now implemented and revalidated (`BL010-REPRO-20260325-231041`, `BL011-CTRL-20260325-231130`, freshness `BL-FRESHNESS-20260325-231159`), leaving final evidence packaging as the remaining closure step.
 Active-set sync note (2026-03-26 UTC): Open items remain UI-003 and UI-013. Implementation hardening pass completed (C-176/C-177): artifact-load validation hardened across BL-003/BL-008/BL-009/BL-010/BL-011/DS-001 with fail-fast helpers and schema guards; BL-006 scoring engine empty lead-genre false match fixed. BL-010/BL-011/BL-014 all pass on updated baseline. UI-013 remaining work is final evidence packaging and BL-005/BL-006 tuning sweep closure.
+Active-set sync note (2026-03-26 17:56 UTC): Open items remain UI-003 and UI-013. BL-006 contribution semantics are now corrected and BL-007 to BL-009 lineage has been refreshed (`BL006-SCORE-20260326-175531-101302`, `BL007-ASSEMBLE-20260326-175552-183434`, `BL008-EXPLAIN-20260326-175552-995824`, `BL009-OBSERVE-20260326-175553-758828`, `BL014-SANITY-20260326-175554-065408`). This fixes a real transparency/evidence bug, but BL-008 diversity evidence must be regenerated under the corrected weighted-contribution contract before UI-013 can be closed.
+Active-set sync note (2026-03-26 18:06 UTC): Open items now reduce to UI-003 only. UI-013 is closed after refreshed v1b acceptance evidence on the corrected BL-006 weighted-contribution contract passed all thresholds (`BL013-ENTRYPOINT-20260326-180047-134553`, `BL014-SANITY-20260326-180057-357905`; BL-008 dominance `0.3`, BL-005 kept `54402`, BL-003 match rate `0.1595`).
 
 ## Resolved (Recent)
+
+- UI-013 (2026-03-25): Pipeline optimization and evidence-hygiene package closure on the active BL baseline.
+	- resolution: Closed. The controlled tuning sweep, BL-010/BL-011 path-semantics normalization, BL-006 transparency-contract correction, and refreshed v1b acceptance evidence now all align on one corrected active baseline.
+	- evidence:
+		1. Canonical UI-013 tuning baseline remains `07_implementation/implementation_notes/bl000_run_config/configs/profiles/run_config_ui013_tuning_v1.json`, with `run_config_ui013_tuning_v1b.json` retained as the active recommended profile per D-032.
+		2. Controlled sweep across `v1`, `v1a`, `v1b`, `v1c` remains logged in `_scratch/ui013_tuning_sweep_results.json`.
+		3. BL-010 / BL-011 path-semantics normalization and freshness evidence remains passing from 2026-03-25.
+		4. BL-006 transparency-contract correction completed on 2026-03-26 (`C-178`, `EXP-046`).
+		5. Refreshed v1b acceptance pass on corrected semantics succeeded (`BL013-ENTRYPOINT-20260326-180047-134553`, `BL014-SANITY-20260326-180057-357905`).
+		6. Acceptance metrics now satisfy all UI-013 thresholds on the corrected baseline: `bl003_match_rate=0.1595`, `bl005_kept_candidates=54402`, `bl006_numeric_minus_semantic=-0.068775`, `bl008_top_label_dominance_share=0.3`.
+		7. Refreshed BL-008 top-contributor distribution is `{Lead genre match:3, Tag overlap:3, Tempo (BPM):3, Genre overlap:1}` in `_scratch/ui013_v1b_bl008_focus_result.json`.
 
 - UI-010 (2026-03-25): Control-evaluation artifacts risk drift from current live data baselines.
 	- resolution: Closed. BL-010 and BL-011 evidence was regenerated after the lead-genre fix, freshness expectations were recorded in test notes, and a dedicated quality check now fails when BL-010/BL-011 evidence no longer matches the current active baseline contracts.

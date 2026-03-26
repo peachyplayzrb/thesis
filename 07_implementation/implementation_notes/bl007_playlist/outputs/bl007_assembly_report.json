@@ -1,7 +1,7 @@
 {
-  "run_id": "BL007-ASSEMBLE-20260326-062054-628091",
-  "generated_at_utc": "2026-03-26T06:20:54Z",
-  "elapsed_seconds": 0.503,
+  "run_id": "BL007-ASSEMBLE-20260326-180055-306884",
+  "generated_at_utc": "2026-03-26T18:00:55Z",
+  "elapsed_seconds": 0.348,
   "config": {
     "target_size": 10,
     "min_score_threshold": 0.35,
@@ -9,14 +9,14 @@
     "max_consecutive": 2
   },
   "counts": {
-    "candidates_evaluated": 70282,
+    "candidates_evaluated": 54402,
     "tracks_included": 10,
-    "tracks_excluded": 70272
+    "tracks_excluded": 54392
   },
   "rule_hits": {
-    "R3_consecutive_run": 99,
-    "R2_genre_cap": 666,
-    "R4_length_cap": 69507
+    "R3_consecutive_run": 479,
+    "R2_genre_cap": 1989,
+    "R4_length_cap": 51924
   },
   "undersized_playlist_warning": {
     "is_undersized": false,
@@ -24,28 +24,29 @@
     "actual_size": 10,
     "shortfall": 0,
     "exclusion_reason_counts": {
-      "consecutive_genre_run": 99,
-      "genre_cap_exceeded": 666,
-      "length_cap_reached": 69507
+      "consecutive_genre_run": 479,
+      "genre_cap_exceeded": 1989,
+      "length_cap_reached": 51924
     },
     "reasons": []
   },
   "playlist_genre_mix": {
     "pop": 4,
     "soundtrack": 1,
+    "singer-songwriter": 1,
     "classic rock": 2,
-    "soul": 1,
-    "rock": 2
+    "new wave": 1,
+    "rock": 1
   },
   "playlist_score_range": {
-    "max": 0.78176,
-    "min": 0.542766
+    "max": 0.74413,
+    "min": 0.45395
   },
   "input_artifact_hashes": {
-    "bl006_scored_candidates.csv": "96AE241D5C6195F148455919DAA1D479A40B75CCA25381E2EBEFC35C3E489BD0"
+    "bl006_scored_candidates.csv": "A39314E55452FCC4C5F9DC84EDB75787EFF7F38D2754CBF09205AA35CA3FADAE"
   },
   "output_artifact_hashes": {
-    "bl007_playlist.json": "B4D743525FA774BA21531CF4071C71AF66904456CDBDB18FBBBE5F0AC584A94D",
-    "bl007_assembly_trace.csv": "44C84A2E381837A92FE6273BA5673247F1EAB3435B1E76BDE51AFEC6E90F2090"
+    "bl007_playlist.json": "C3800EF3B147D5C363327411FADB9717C53A51037C8E0B7E26F1433391DBA346",
+    "bl007_assembly_trace.csv": "F1572C4DF0AF929F6DB99C6F8D77FD4C144F0712A7CEAFBDD90DC208CC94F10F"
   }
 }

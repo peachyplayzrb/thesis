@@ -80,14 +80,14 @@ def compute_component_scores(
         active_numeric_specs: Active numeric specs dict mapping dimensions to their thresholds
     
     Returns:
-        Dict with all similarities and contributions:
-        - "tempo_similarity", "tempo_contribution"
-        - "duration_ms_similarity", "duration_ms_contribution"
-        - "key_similarity", "key_contribution"
-        - "mode_similarity", "mode_contribution"
-        - "lead_genre_similarity", "lead_genre_contribution"
-        - "genre_overlap_similarity", "genre_overlap_contribution"
-        - "tag_overlap_similarity", "tag_overlap_contribution"
+        Dict with raw component similarities plus semantic match traces:
+        - "tempo_similarity"
+        - "duration_ms_similarity"
+        - "key_similarity"
+        - "mode_similarity"
+        - "lead_genre_similarity"
+        - "genre_overlap_similarity"
+        - "tag_overlap_similarity"
         - "matched_genres", "matched_tags" (for output)
     """
     scores: dict[str, object] = {}
@@ -107,37 +107,46 @@ def compute_component_scores(
                                            float(threshold), 
                                            circular)
             scores[f"{dimension}_similarity"] = similarity
-            scores[f"{dimension}_contribution"] = similarity
         else:
             scores[f"{dimension}_similarity"] = 0.0
-            scores[f"{dimension}_contribution"] = 0.0
     
     # Lead genre: direct match vs profile lead genre
     candidate_lead_genre = candidate_attrs.get("lead_genre", "").lower()
     profile_lead_genre = profile_data.get("lead_genre", "").lower()
     lead_genre_similarity = 1.0 if (candidate_lead_genre and profile_lead_genre and candidate_lead_genre == profile_lead_genre) else 0.0
     scores["lead_genre_similarity"] = lead_genre_similarity
-    scores["lead_genre_contribution"] = lead_genre_similarity
     
     # Genre overlap: weighted Jaccard similarity
     candidate_genres = candidate_attrs.get("genres", [])
     genre_weights = profile_data.get("genre_weights", {})
     genre_overlap_similarity = weighted_overlap(candidate_genres, genre_weights)
     scores["genre_overlap_similarity"] = genre_overlap_similarity
-    scores["genre_overlap_contribution"] = genre_overlap_similarity
     
     # Tag overlap: weighted Jaccard similarity
     candidate_tags = candidate_attrs.get("tags", [])
     tag_weights = profile_data.get("tag_weights", {})
     tag_overlap_similarity = weighted_overlap(candidate_tags, tag_weights)
     scores["tag_overlap_similarity"] = tag_overlap_similarity
-    scores["tag_overlap_contribution"] = tag_overlap_similarity
     
     # Also capture matched genres/tags for output
     scores["matched_genres"] = [g for g in candidate_genres if g in genre_weights]
     scores["matched_tags"] = [t for t in candidate_tags if t in tag_weights]
     
     return scores
+
+
+def compute_weighted_contributions(
+    component_scores: dict[str, object],
+    component_weights: dict[str, float],
+) -> dict[str, float]:
+    """Convert raw component similarities into weighted score contributions."""
+    contributions: dict[str, float] = {}
+    for component, weight in component_weights.items():
+        component_name = component.removesuffix("_score")
+        score_key = f"{component_name}_similarity"
+        similarity = float(component_scores.get(score_key, 0.0))
+        contributions[f"{component_name}_contribution"] = round(similarity * weight, 6)
+    return contributions
 
 
 def compute_final_score(
@@ -154,13 +163,5 @@ def compute_final_score(
     Returns:
         Final weighted score (0.0 to 1.0)
     """
-    total = 0.0
-    for component, weight in component_weights.items():
-        # Accept both historical names (tempo_score) and canonical names (tempo).
-        component_name = component.removesuffix("_score")
-        score_key = f"{component_name}_similarity"
-        similarity = float(component_scores.get(score_key, 0.0))
-        contribution = round(similarity * weight, 6)
-        total += contribution
-    
+    total = sum(compute_weighted_contributions(component_scores, component_weights).values())
     return round(total, 6)

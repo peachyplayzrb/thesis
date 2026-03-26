@@ -29,7 +29,11 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 from bl000_shared_utils.io_utils import open_text_write, sha256_of_file, load_json, load_csv_rows
 from bl000_shared_utils.path_utils import repo_root
 from bl000_shared_utils.config_loader import load_run_config_utils_module
-from bl006_scoring.scoring_engine import compute_component_scores, compute_final_score
+from bl006_scoring.scoring_engine import (
+    compute_component_scores,
+    compute_final_score,
+    compute_weighted_contributions,
+)
 from bl006_scoring.candidate_parsed import parse_candidate_attributes
 from bl006_scoring.profile_extractor import extract_profile_scoring_data, build_component_weights, build_numeric_specs
 
@@ -260,6 +264,10 @@ def main() -> None:
             profile_scoring_data,
             active_numeric_specs,
         )
+        weighted_contributions = compute_weighted_contributions(
+            component_scores,
+            active_component_weights,
+        )
         
         # Compute final score via weighted aggregation
         final_score = compute_final_score(component_scores, active_component_weights)
@@ -268,23 +276,23 @@ def main() -> None:
             {
                 "track_id": row.get("track_id", ""),
                 "lead_genre": candidate_attrs.get("lead_genre", ""),
-                "matched_genres": "|".join(candidate_attrs.get("matched_genres", [])),
-                "matched_tags": "|".join(candidate_attrs.get("matched_tags", [])),
+                "matched_genres": "|".join(component_scores.get("matched_genres", [])),
+                "matched_tags": "|".join(component_scores.get("matched_tags", [])),
                 "final_score": final_score,
                 "tempo_similarity":        component_scores.get("tempo_similarity", 0.0),
-                "tempo_contribution":      component_scores.get("tempo_contribution", 0.0),
+                "tempo_contribution":      weighted_contributions.get("tempo_contribution", 0.0),
                 "duration_ms_similarity":  component_scores.get("duration_ms_similarity", 0.0),
-                "duration_ms_contribution": component_scores.get("duration_ms_contribution", 0.0),
+                "duration_ms_contribution": weighted_contributions.get("duration_ms_contribution", 0.0),
                 "key_similarity":          component_scores.get("key_similarity", 0.0),
-                "key_contribution":        component_scores.get("key_contribution", 0.0),
+                "key_contribution":        weighted_contributions.get("key_contribution", 0.0),
                 "mode_similarity":         component_scores.get("mode_similarity", 0.0),
-                "mode_contribution":       component_scores.get("mode_contribution", 0.0),
+                "mode_contribution":       weighted_contributions.get("mode_contribution", 0.0),
                 "lead_genre_similarity":   component_scores.get("lead_genre_similarity", 0.0),
-                "lead_genre_contribution": component_scores.get("lead_genre_contribution", 0.0),
+                "lead_genre_contribution": weighted_contributions.get("lead_genre_contribution", 0.0),
                 "genre_overlap_similarity": component_scores.get("genre_overlap_similarity", 0.0),
-                "genre_overlap_contribution": component_scores.get("genre_overlap_contribution", 0.0),
+                "genre_overlap_contribution": weighted_contributions.get("genre_overlap_contribution", 0.0),
                 "tag_overlap_similarity":  component_scores.get("tag_overlap_similarity", 0.0),
-                "tag_overlap_contribution": component_scores.get("tag_overlap_contribution", 0.0),
+                "tag_overlap_contribution": weighted_contributions.get("tag_overlap_contribution", 0.0),
             }
         )
 
@@ -336,7 +344,7 @@ def main() -> None:
             "active_component_weights": {key: round(value, 6) for key, value in active_component_weights.items()},
             "inactive_components": sorted(set(effective_component_weights) - set(active_component_weights)),
             "weight_rebalance_diagnostics": weight_rebalance_diagnostics,
-            "lead_genre_normalization": "candidate lead genre weight divided by max profile lead-genre weight",
+            "lead_genre_normalization": "binary exact match against non-empty profile lead genre",
             "genre_overlap_normalization": "sum overlapping profile genre weights / sum top profile genre weights",
             "tag_overlap_normalization": "sum overlapping profile tag weights / sum top profile tag weights",
             "semantic_source": "ds001_tags_and_genres_columns",

@@ -69,6 +69,196 @@ Copy the block below for each new run.
 
 ---
 
+## EXP-047
+- date: 2026-03-26
+- backlog_link: `BL-003`, `BL-005`, `BL-006`, `BL-008`, `BL-009`, `BL-013`, `BL-014`, `UI-013`
+- owner: Timothy + AI
+- status: pass
+- related_test_id: `TC-UI013-BL008-DIVERSITY-001`
+
+### Objective
+- Refresh the v1b UI-013 acceptance evidence on the corrected BL-006 weighted-contribution contract and determine whether the evidence-hygiene package can now be closed.
+
+### Scope Check
+- In-scope confirmation: yes, this is the required evidence-refresh pass for UI-013 after the BL-006 transparency-contract fix.
+- Protected items affected? no
+
+### Inputs
+- source_data:
+  - `07_implementation/implementation_notes/bl001_bl002_ingestion/outputs/spotify_api_export/*`
+  - `07_implementation/implementation_notes/bl000_data_layer/outputs/ds001_working_candidate_dataset.csv`
+- config_or_parameters:
+  - profile: `run_config_ui013_tuning_v1b.json`
+  - `transparency_controls.top_contributor_limit=3`
+  - `transparency_controls.blend_primary_contributor_on_near_tie=true`
+  - `transparency_controls.primary_contributor_tie_delta=0.09`
+  - BL-013 executed with `--refresh-seed`
+- code_or_script_path:
+  - `07_implementation/implementation_notes/bl013_entrypoint/run_bl013_pipeline_entrypoint.py`
+  - `07_implementation/implementation_notes/bl014_quality/run_bl014_sanity_checks.py`
+- dependency assumptions:
+  - corrected BL-006 weighted-contribution semantics are already live from C-178 / EXP-046
+
+### Expected Evidence
+- primary_output_artifact:
+  - `_scratch/ui013_v1b_bl008_focus_result.json`
+- secondary_output_artifacts:
+  - `07_implementation/implementation_notes/bl013_entrypoint/outputs/bl013_orchestration_run_BL013-ENTRYPOINT-20260326-180047-134553.json`
+  - `07_implementation/implementation_notes/bl008_transparency/outputs/bl008_explanation_summary.json`
+  - `07_implementation/implementation_notes/bl006_scoring/outputs/bl006_score_summary.json`
+  - `07_implementation/implementation_notes/bl014_quality/outputs/bl014_sanity_report.json`
+- success_condition:
+  - refreshed v1b evidence still satisfies all UI-013 acceptance thresholds under corrected weighted semantics and BL-014 remains pass
+
+### Run Record
+- command_or_execution_method:
+  - `python 07_implementation/implementation_notes/bl013_entrypoint/run_bl013_pipeline_entrypoint.py --refresh-seed --run-config C:/Users/peach/Desktop/thesis-main (3)/thesis-main/thesis-main/07_implementation/implementation_notes/bl000_run_config/configs/profiles/run_config_ui013_tuning_v1b.json`
+  - `python 07_implementation/implementation_notes/bl014_quality/run_bl014_sanity_checks.py`
+- run_id:
+  - `BL013-ENTRYPOINT-20260326-180047-134553`
+  - `BL014-SANITY-20260326-180057-357905`
+- start_state_summary:
+  - UI-013 diversity evidence existed only on pre-BL-006-contract semantics and could not be reused safely after EXP-046.
+- end_state_summary:
+  - refreshed v1b evidence remains comfortably within all UI-013 acceptance thresholds, with stronger BL-008 diversity than the pre-fix evidence package.
+
+### Results
+- outcome_summary:
+  - pass — UI-013 acceptance evidence is now refreshed on the corrected BL-006 baseline. The v1b profile still passes BL-003, BL-005, BL-006, BL-008, and BL-014 thresholds, and BL-008 dominance improved from `0.5` to `0.3`.
+- key_metrics:
+  - `bl013_run_id=BL013-ENTRYPOINT-20260326-180047-134553`
+  - `bl014_run_id=BL014-SANITY-20260326-180057-357905`
+  - `bl003_threshold_enforced=true`
+  - `bl003_match_rate=0.1595`
+  - `bl005_kept_candidates=54402`
+  - `bl006_numeric_contribution_mean=0.074013`
+  - `bl006_semantic_contribution_mean=0.142788`
+  - `bl006_gap_numeric_minus_semantic=-0.068775`
+  - `bl008_top_contributor_distribution={Lead genre match:3, Tag overlap:3, Tempo (BPM):3, Genre overlap:1}`
+  - `bl008_top_label_dominance_share=0.3`
+  - `bl014_overall_status=pass`
+- deterministic_repeat_checked: no
+- output_paths:
+  - `_scratch/ui013_v1b_bl008_focus_result.json`
+  - `07_implementation/implementation_notes/bl013_entrypoint/outputs/bl013_orchestration_run_BL013-ENTRYPOINT-20260326-180047-134553.json`
+  - `07_implementation/implementation_notes/bl008_transparency/outputs/bl008_explanation_summary.json`
+  - `07_implementation/implementation_notes/bl008_transparency/outputs/bl008_explanation_payloads.json`
+  - `07_implementation/implementation_notes/bl014_quality/outputs/bl014_sanity_report.json`
+
+### Issues And Limits
+- failures_or_anomalies:
+  - initial rerun attempt failed only because the BL-013 `--run-config` path was passed in repo-relative form from one directory above the repo root
+- likely_cause:
+  - BL-013 resolves run-config paths relative to repo root, so the prefixed `thesis-main/...` argument doubled the path
+- bounded_mvp_limitation_or_bug:
+  - refreshed evidence closes UI-013 on the active baseline, but the result remains profile-specific to v1b and should not be generalized to untuned profiles without separate evidence
+
+### Thesis Traceability
+- chapter4_relevance:
+  - provides corrected, current acceptance evidence that explanation-diversity and retrieval/scoring controls remain tunable and valid after a transparency-contract fix
+- chapter5_relevance:
+  - narrows the remaining implementation-risk surface by closing the evidence-hygiene package and leaving citation closure as the primary open submission-hardening dependency
+- quality_control_files_to_update:
+  - `07_implementation/test_notes.md`
+  - `00_admin/unresolved_issues.md`
+  - `00_admin/thesis_state.md`
+  - `00_admin/change_log.md`
+
+### Next Action
+- immediate_follow_up:
+  - close UI-013 in control files and shift open-priority focus to UI-003 citation closure
+- backlog_status_recommendation:
+  - mark UI-013 closed; retain v1b as the active profile per D-032
+
+---
+
+## EXP-046
+- date: 2026-03-26
+- backlog_link: `BL-006`, `BL-008`, `BL-009`, `BL-014`
+- owner: Timothy + AI
+- status: pass
+- related_test_id: `TC-BL014-001`
+
+### Objective
+- Correct the BL-006 scoring transparency contract so persisted contribution fields represent true weighted contributions, semantic match traces are preserved in BL-006 outputs, and downstream BL-008 / BL-009 evidence is regenerated on the corrected baseline.
+
+### Scope Check
+- In-scope confirmation: yes, this is a bounded implementation-correctness fix within the locked deterministic scoring/transparency/observability pipeline.
+- Protected items affected? no
+
+### Inputs
+- source_data:
+  - `07_implementation/implementation_notes/bl004_profile/outputs/bl004_preference_profile.json`
+  - `07_implementation/implementation_notes/bl005_retrieval/outputs/bl005_filtered_candidates.csv`
+  - existing BL-007 / BL-008 / BL-009 downstream artifact set
+- config_or_parameters:
+  - active default component weights (`tempo=0.20`, `duration_ms=0.13`, `key=0.13`, `mode=0.09`, `lead_genre=0.17`, `genre_overlap=0.12`, `tag_overlap=0.16`)
+  - no run-config override; environment baseline only
+- code_or_script_path:
+  - `07_implementation/implementation_notes/bl006_scoring/scoring_engine.py`
+  - `07_implementation/implementation_notes/bl006_scoring/build_bl006_scored_candidates.py`
+  - validation chain via BL-007, BL-008, BL-009, BL-014 stage scripts
+- dependency assumptions: BL-004 and BL-005 artifacts remain current and valid; BL-007 to BL-009 can be refreshed deterministically from the corrected BL-006 output.
+
+### Expected Evidence
+- primary_output_artifact: `07_implementation/implementation_notes/bl006_scoring/outputs/bl006_score_summary.json`
+- secondary_output_artifacts:
+  - `07_implementation/implementation_notes/bl006_scoring/outputs/bl006_scored_candidates.csv`
+  - `07_implementation/implementation_notes/bl008_transparency/outputs/bl008_explanation_summary.json`
+  - `07_implementation/implementation_notes/bl009_observability/outputs/bl009_run_observability_log.json`
+  - `07_implementation/implementation_notes/bl014_quality/outputs/bl014_sanity_report.json`
+- success_condition: BL-006 writes weighted contributions and matched semantic labels correctly, BL-007 to BL-009 lineage is refreshed, and BL-014 returns pass on the corrected baseline.
+
+### Run Record
+- command_or_execution_method:
+  - initial refresh: BL-006 -> BL-008 -> BL-014
+  - remediation refresh after expected lineage drift: BL-007 -> BL-008 -> BL-009 -> BL-014
+- run_id: `EXP-046-BL006-CONTRACT-20260326`
+- start_state_summary: BL-006 final-score ranking was deterministic, but the persisted `*_contribution` fields were raw similarities rather than weighted contributions; BL-008 explanation-driver ranking and BL-006 component-balance diagnostics therefore overstated components with large raw similarity values.
+- end_state_summary: BL-006 now persists weighted contributions, top-candidate semantic matches are present in output summaries, BL-007 through BL-009 lineage was refreshed, and BL-014 passes 22/22 on the corrected baseline.
+
+### Results
+- outcome_summary: pass — the scoring transparency contract is corrected at the source. BL-006 summary output now reports weighted component balance, top candidates include non-empty `matched_genres` / `matched_tags`, and refreshed BL-008 / BL-009 artifacts align with the corrected BL-006 hashes and run IDs.
+- key_metrics:
+  - `bl006_run_id=BL006-SCORE-20260326-175531-101302`
+  - `bl007_run_id=BL007-ASSEMBLE-20260326-175552-183434`
+  - `bl008_run_id=BL008-EXPLAIN-20260326-175552-995824`
+  - `bl009_run_id=BL009-OBSERVE-20260326-175553-758828`
+  - `bl014_run_id=BL014-SANITY-20260326-175554-065408`
+  - `candidates_scored=70282`
+  - `bl006_component_balance.all_candidates.numeric_contribution_mean=0.133125`
+  - `bl006_component_balance.all_candidates.semantic_contribution_mean=0.087668`
+  - `bl008_top_contributor_distribution={Tempo (BPM):9, Lead genre match:1}`
+  - `bl014_checks_passed=22/22`
+- deterministic_repeat_checked: no
+- output_paths:
+  - `07_implementation/implementation_notes/bl006_scoring/outputs/bl006_scored_candidates.csv`
+  - `07_implementation/implementation_notes/bl006_scoring/outputs/bl006_score_summary.json`
+  - `07_implementation/implementation_notes/bl007_playlist/outputs/bl007_playlist.json`
+  - `07_implementation/implementation_notes/bl007_playlist/outputs/bl007_assembly_report.json`
+  - `07_implementation/implementation_notes/bl008_transparency/outputs/bl008_explanation_payloads.json`
+  - `07_implementation/implementation_notes/bl008_transparency/outputs/bl008_explanation_summary.json`
+  - `07_implementation/implementation_notes/bl009_observability/outputs/bl009_run_observability_log.json`
+  - `07_implementation/implementation_notes/bl014_quality/outputs/bl014_sanity_report.json`
+
+### Issues And Limits
+- failures_or_anomalies:
+  - the first BL-014 rerun failed as expected because BL-007 and BL-009 still referenced pre-fix BL-006 hashes and run IDs
+- likely_cause:
+  - downstream lineage artifacts were stale after BL-006 regeneration and required a bounded BL-007 -> BL-009 refresh
+- bounded_mvp_limitation_or_bug: the corrected weighted-contribution contract changes BL-008 primary-driver distributions materially under the default baseline (`Tempo (BPM)` dominates 9 of 10 playlist explanations), so prior BL-008 diversity evidence must be refreshed under the corrected semantics before it is reused for UI-013 closure claims.
+
+### Thesis Traceability
+- chapter4_relevance: strengthens transparency-validity claims by ensuring the emitted contribution fields and explanation-driver labels now reflect the actual weighted score composition used by BL-006.
+- chapter5_relevance: adds a concrete implementation limitation/correction note: pre-fix explanation-driver evidence overstated raw similarities and should not be cited without referencing the corrected baseline.
+- quality_control_files_to_update: `00_admin/change_log.md`, `00_admin/unresolved_issues.md`
+
+### Next Action
+- immediate_follow_up: rerun any BL-008 / UI-013 acceptance evidence that relied on pre-fix contribution semantics, especially top-contributor diversity checks under tuned run-config profiles.
+- backlog_status_recommendation: keep `BL-006`, `BL-008`, `BL-009`, and `BL-014` as done; track only evidence-refresh follow-up under `UI-013`.
+
+---
+
 ---
 
 ## EXP-001

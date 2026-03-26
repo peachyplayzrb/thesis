@@ -67,7 +67,7 @@ The active execution corpus is DS-001 (Music4All base path). DS-002 (`MSD subset
 3. Keep website integration under bounded hardening only (`WP-WEBINT-001`): bug fixes, observability clarity, and orchestration reliability without scope expansion.
 4. Keep M3/M4 execution status synchronized with implementation reality and package evidence for M5 evaluation consolidation.
 
-Priority status checkpoint (2026-03-25 22:57 UTC): Tier-1 pipeline remediation complete. UI-013 tuning sweep validated 4 profiles (v1, v1a, v1b, v1c); v1b selected as active profile per decision D-032 (stricter filtering, improved semantic-numeric balance, all QA checks pass). Prior path-semantics normalization (BL-010/BL-011) and diversity controls (BL-008) remain validated. Next immediate action: final UI-013 evidence package assembly citing v1b sweep validation and all prior closure metrics.
+Priority status checkpoint (2026-03-26 18:06 UTC): Tier-1 pipeline remediation remains complete. UI-013 is now closed on the active baseline: the v1b profile remains the active configuration per decision D-032, refreshed acceptance evidence passed on corrected BL-006 weighted semantics (`bl003_match_rate=0.1595`, `bl005_kept_candidates=54402`, `bl006_numeric_minus_semantic=-0.068775`, `bl008_top_label_dominance_share=0.3`, BL-014 pass), and the primary remaining submission-hardening dependency is UI-003 citation closure.
 
 ## Current Implementation Status
 
@@ -87,7 +87,7 @@ Priority status checkpoint (2026-03-25 22:57 UTC): Tier-1 pipeline remediation c
 - **Tier-1 Hardening Closure** (2026-03-25 ✅): CRI-004, CRI-002, HIGH-003, HIGH-004, and CRI-003 are implemented, validated, and logged in `00_admin/tier1_hardening_execution_log_2026-03-25.md`.
 - **Current Execution Focus** (2026-03-25 14:35 UTC): thesis-writing hardening, citation-package closure, and bounded website integration stabilization; no new scope expansion.
 - **Active Risk (Governance)**: Citation-package closure (UI-003) remains a submission-hardening dependency.
-- **Active Risk (Implementation Quality)**: Pipeline optimization and evidence-hygiene closure (UI-013) remains open: BL-003 match coverage remains constrained, BL-005 retrieval breadth remains high, BL-006 numeric dominance remains visible, and final acceptance evidence packaging remains outstanding after BL-010/BL-011 path-semantics normalization.
+- **Implementation Quality Status**: UI-013 is closed on the active baseline after refreshed v1b acceptance evidence confirmed all thresholds on corrected BL-006 weighted semantics. Remaining implementation work is bounded hardening rather than open closure risk.
 
 ### BL-021 Source-Scope Control State (as of 2026-03-25)
 - Source-scope contract is baseline behavior (no longer deferred): implemented, validated, and traceable in run artifacts.
@@ -106,10 +106,10 @@ See: `07_implementation/BL020_HANDOFF_AUDIT_2026-03-21.md` for comprehensive pre
 ## Update Control
 
 - Last updated:
-2026-03-25 23:10 UTC
+2026-03-26 18:06 UTC
 
 - Reason for last update:
-(1) Record UI-013 BL-010/BL-011 path-semantics normalization completion with refreshed reproducibility/controllability/freshness evidence. (2) Synchronize implementation/admin state files and stage logs to the latest run evidence.
+(1) Record refreshed UI-013 v1b acceptance evidence on the corrected BL-006 weighted-contribution baseline and close UI-013. (2) Synchronize implementation/admin state files to the latest validated evidence so UI-003 remains the primary open dependency.
 
 ## Locked Definitions
 - Artefact scope lock: `00_admin/Artefact_MVP_definition.md`
