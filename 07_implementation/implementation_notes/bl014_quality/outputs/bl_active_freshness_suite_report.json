@@ -1,13 +1,13 @@
 {
   "run_metadata": {
-    "run_id": "BL-FRESHNESS-SUITE-20260326-210015",
+    "run_id": "BL-FRESHNESS-SUITE-20260326-212726",
     "task": "active freshness suite",
-    "generated_at_utc": "2026-03-26T21:00:15Z",
-    "elapsed_seconds": 103.183,
-    "overall_status": "fail",
-    "checks_total": 8,
-    "checks_passed": 6,
-    "checks_failed": 2
+    "generated_at_utc": "2026-03-26T21:27:26Z",
+    "elapsed_seconds": 1.012,
+    "overall_status": "pass",
+    "checks_total": 7,
+    "checks_passed": 7,
+    "checks_failed": 0
   },
   "evidence_paths": {
     "bl013_latest_summary": "07_implementation/implementation_notes/bl013_entrypoint/outputs/bl013_orchestration_run_latest.json",
@@ -36,29 +36,22 @@
       "details": "BL-014 report overall_status is pass"
     },
     {
-      "id": "bl010_bl011_refresh_exit_zero",
-      "status": "pass",
-      "details": "BL-010/BL-011 evidence refresh return code=0"
-    },
-    {
       "id": "bl010_bl011_freshness_exit_zero",
-      "status": "fail",
-      "details": "BL-010/BL-011 freshness script return code=1"
+      "status": "pass",
+      "details": "BL-010/BL-011 freshness script return code=0"
     },
     {
       "id": "bl010_bl011_freshness_report_pass",
-      "status": "fail",
+      "status": "pass",
       "details": "BL-010/BL-011 freshness report overall_status is pass"
     },
     {
       "id": "bl010_bl011_freshness_auto_refresh",
       "status": "pass",
-      "details": "BL-010/BL-011 freshness auto-refresh succeeded"
+      "details": "BL-010/BL-011 freshness auto-refresh was not needed"
     }
   ],
   "script_outputs": {
-    "bl014_stdout_stderr": "[BL-014] run_id=BL014-SANITY-20260326-205833-025552\n[BL-014] overall_status=pass checks_passed=22/22\n[BL-014] report=C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl014_quality\\outputs\\bl014_sanity_report.json\n[BL-014] run_matrix=C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl014_quality\\outputs\\bl014_sanity_run_matrix.csv\n[BL-014] config_snapshot=C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl014_quality\\outputs\\bl014_sanity_config_snapshot.json",
-    "bl010_stdout_stderr": "BL-010 reproducibility replay complete.\nrun_id=BL010-REPRO-20260326-205834\ndeterministic_match=True\nconfig_hash=99C9672FE67C112A4679F900CD8904792EF69C7E6970C03B6CA8D495E12BFFA2\nreport=C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl010_reproducibility\\outputs\\bl010_reproducibility_report.json\nrun_matrix=C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl010_reproducibility\\outputs\\bl010_reproducibility_run_matrix.csv",
-    "bl011_stdout_stderr": "BL-011 controllability evaluation complete.\nrun_id=BL011-CTRL-20260326-205932\nstatus=pass\nreport=C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl011_controllability\\outputs\\bl011_controllability_report.json\nrun_matrix=C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl011_controllability\\outputs\\bl011_controllability_run_matrix.csv"
+    "bl014_stdout_stderr": "[BL-014] run_id=BL014-SANITY-20260326-212725-976781\n[BL-014] overall_status=pass checks_passed=22/22\n[BL-014] report=C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl014_quality\\outputs\\bl014_sanity_report.json\n[BL-014] run_matrix=C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl014_quality\\outputs\\bl014_sanity_run_matrix.csv\n[BL-014] config_snapshot=C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl014_quality\\outputs\\bl014_sanity_config_snapshot.json"
   }
 }

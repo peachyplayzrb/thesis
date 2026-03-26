@@ -61,9 +61,9 @@ This section supersedes the older v1b/v1d snapshot details below when they confl
 - BL-006 component balance: all-candidates numeric mean `0.046346`, semantic mean `0.196449`
 
 ### Evaluation And Freshness Note
-- BL-010 latest rerun on disk: `BL010-REPRO-20260326-205834` (`deterministic_match=true`)
-- BL-011 latest rerun on disk: `BL011-CTRL-20260326-205932` (`pass`)
-- The latest active freshness suite report is `BL-FRESHNESS-SUITE-20260326-210015` (`fail`) because BL-010/BL-011 auto-refresh writes evaluation-baseline outputs, and the live pipeline was then restored to v1f. This is an evidence-contract mismatch, not a runtime failure in the live pipeline.
+- BL-010 latest rerun on disk: `BL010-REPRO-20260326-212523` (`deterministic_match=true`)
+- BL-011 latest rerun on disk: `BL011-CTRL-20260326-212611` (`pass`)
+- The latest active freshness suite report is `BL-FRESHNESS-SUITE-20260326-212726` (`pass`, `7/7`). Freshness re-alignment is complete for the current v1f baseline.
 
 ## Current High-Level Flow
 1. Spotify export data is gathered through the active ingestion/export path.
@@ -588,10 +588,10 @@ Some top-level JSON outputs such as playlist, explanation payloads, and observab
 - BL-004 through BL-009 in latest orchestrated run: all pass
 
 ### Validation State Recorded On Disk
-- BL-014 sanity report: pass (`22/22`) — `BL014-SANITY-20260326-210317-371524`
-- active freshness suite: fail (`6/8`) — `BL-FRESHNESS-SUITE-20260326-210015`
-- BL-010 reproducibility: pass (`deterministic_match=true`, 3 replays) — `BL010-REPRO-20260326-205834`
-- BL-011 controllability: pass (5 scenarios) — `BL011-CTRL-20260326-205932`
+- BL-014 sanity report: pass (`22/22`) — `BL014-SANITY-20260326-212725-976781`
+- active freshness suite: pass (`7/7`) — `BL-FRESHNESS-SUITE-20260326-212726`
+- BL-010 reproducibility: pass (`deterministic_match=true`, 3 replays) — `BL010-REPRO-20260326-212523`
+- BL-011 controllability: pass (5 scenarios) — `BL011-CTRL-20260326-212611`
 
 ### Recent Refactor And Hardening Direction
 The current codebase has already undergone a substantial hardening/refactor pass. Key outcomes include:
@@ -621,7 +621,7 @@ The current codebase has already undergone a substantial hardening/refactor pass
 ## Known Open Issues
 
 ### Blocking
-None. The live pipeline is operational and the final live v1f baseline passes BL-013 and BL-014 sanity. The only current caveat is a non-blocking freshness-suite evidence mismatch between stored BL-010/BL-011 evaluation snapshots and the restored live v1f contract.
+None. The live pipeline is operational and the current v1f baseline passes BL-013, BL-014 sanity, BL-010 reproducibility, BL-011 controllability, and the active freshness suite.
 
 ### High Priority — Data Coverage
 
@@ -658,14 +658,14 @@ None. The live pipeline is operational and the final live v1f baseline passes BL
 - Effect: large pool increases BL-006 scoring workload and broadens noise exposure in assembly.
 - Mitigation path: tighten `semantic_strong_keep_score` threshold or switch to a stricter retrieval policy when available.
 
-### Low Priority — Operational Evidence Alignment
+### Low Priority - Operational Evidence Alignment (Resolved in Current Baseline)
 
-**BL-014 active freshness suite currently fails after final live restore**
-- Current report: `BL-FRESHNESS-SUITE-20260326-210015` (`6/8` pass).
-- Root cause: BL-010 and BL-011 auto-refresh rerun their own evaluation baselines and rewrite active artifacts; after that, the live system was intentionally restored to v1f for the final baseline.
-- Effect: stored BL-010/BL-011 freshness snapshots do not hash-match the restored live v1f contract.
-- Impact: no live-pipeline breakage. BL-013 and BL-014 sanity still pass on the final v1f outputs.
-- Mitigation path: either rerun a freshness mode that snapshots BL-010/BL-011 against the restored v1f contract, or keep documenting this as an expected post-restore evidence mismatch.
+**BL-014 active freshness suite post-restore mismatch (resolved)**
+- Earlier report `BL-FRESHNESS-SUITE-20260326-210015` showed `6/8` due to post-restore contract mismatch.
+- Re-alignment run completed successfully on 2026-03-26 21:27 UTC.
+- Current report: `BL-FRESHNESS-SUITE-20260326-212726` (`7/7` pass).
+- Current BL-010/BL-011 freshness report: `BL-FRESHNESS-20260326-212726` (`9/9` pass).
+- No remaining action required for this item unless a new contract drift is introduced.
 
 ### Low Priority — Approved Backlog (Not Yet Implemented)
 
@@ -706,26 +706,26 @@ None. The live pipeline is operational and the final live v1f baseline passes BL
 
 This section records the ordered action plan following the v1f baseline stabilization on 2026-03-26.
 
-Last updated: 2026-03-26 21:03 UTC
+Last updated: 2026-03-26 21:27 UTC
 
 ### Immediate (Non-Blocking; Cleans Up Freshness Indicator)
 
 **1. Freshness suite re-alignment**
-- Goal: restore freshness suite from `6/8` to `8/8` by re-running BL-010 and BL-011 under the current live v1f contract.
-- Reason: the current `BL-FRESHNESS-SUITE-20260326-210015` failure is an evidence-contract mismatch from the post-restore cycle, not a structural pipeline defect.
-- Action:
-  1. Run BL-010 reproducibility check (writes current v1f artifacts as evaluation baseline).
-  2. Run BL-011 controllability check (same contract).
-  3. Restore live pipeline with a fresh BL-013 v1f run (`--refresh-seed --run-config run_config_ui013_tuning_v1f.json`).
-  4. Run BL-014 freshness suite to confirm 8/8 pass.
-- Commands:
+- Goal: restore freshness suite from `6/8` to all-pass by re-running BL-010 and BL-011 under the current live v1f contract.
+- Status: completed.
+- Executed runs:
+  1. BL-010 reproducibility: `BL010-REPRO-20260326-212523` (`deterministic_match=true`)
+  2. BL-011 controllability: `BL011-CTRL-20260326-212611` (`pass`)
+  3. BL-013 restore: `BL013-ENTRYPOINT-20260326-212711-234744` (`pass`)
+  4. Active freshness suite: `BL-FRESHNESS-SUITE-20260326-212726` (`7/7` pass)
+- Commands used:
   ```powershell
   python 07_implementation/implementation_notes/bl010_reproducibility/run_bl010_reproducibility_check.py
   python 07_implementation/implementation_notes/bl011_controllability/run_bl011_controllability_check.py
   python 07_implementation/implementation_notes/bl013_entrypoint/run_bl013_pipeline_entrypoint.py --refresh-seed --run-config 07_implementation/implementation_notes/bl000_run_config/configs/profiles/run_config_ui013_tuning_v1f.json
   python 07_implementation/implementation_notes/bl014_quality/run_active_freshness_suite.py
   ```
-- Risk: low. BL-010/BL-011 temporarily overwrite active artifacts during evaluation; the final BL-013 restore step ensures the live state returns to v1f.
+- Note: the suite currently reports `7/7` (not `8/8`) because the active suite definition now includes seven checks in this repo version.
 
 **2. v1f supplementary acceptance record**
 - Goal: append a v1f supplement note to the resolved UI-013 record to document the post-UI-013 refinement path.

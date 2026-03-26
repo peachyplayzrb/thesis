@@ -1,10 +1,10 @@
 {
-  "run_id": "BL006-SCORE-20260326-210311-856887",
+  "run_id": "BL006-SCORE-20260326-212719-126492",
   "task": "BL-006",
-  "generated_at_utc": "2026-03-26T21:03:14Z",
+  "generated_at_utc": "2026-03-26T21:27:22Z",
   "input_artifacts": {
     "profile_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl004_profile\\outputs\\bl004_preference_profile.json",
-    "profile_sha256": "8c4b53e238fa80fafc5fbd62a53294e74feee81b422f1a17de86f9e95f7ea7ad",
+    "profile_sha256": "accbade5d5da493816daac674426ac6feae5e5d0b9da7cbf212c010e086c4b8c",
     "filtered_candidates_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl005_retrieval\\outputs\\bl005_filtered_candidates.csv",
     "filtered_candidates_sha256": "fb8f549a3b6386968dae822dc8ec8c909bd3cd2c74a8afcd3e5d499e824011f1"
   },
@@ -223,7 +223,7 @@
       "matched_tags": "80s|pop|classic rock|rock"
     }
   ],
-  "elapsed_seconds": 2.596,
+  "elapsed_seconds": 3.519,
   "output_files": {
     "scored_candidates_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl006_scoring\\outputs\\bl006_scored_candidates.csv"
   },

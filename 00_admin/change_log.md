@@ -8,7 +8,7 @@ Ordering convention (standardized 2026-03-24):
 - New entries must be appended at the end; historical entries remain unchanged except for explicit correction records.
 
 Maintenance snapshot (2026-03-26):
-- Highest change ID currently present: `C-180`
+- Highest change ID currently present: `C-181`
 - Known legacy correction applied in this file: prior duplicate `C-079` entry has been normalized to `C-135` for unique-ID compliance.
 
 ## C-001
@@ -33,6 +33,7 @@ Maintenance snapshot (2026-03-26):
 | C-178 | 2026-03-26 | Copilot | Corrected BL-006 weighted-contribution semantics and matched-label propagation, then refreshed BL-007 through BL-009 lineage and reconfirmed BL-014 pass on the corrected baseline. |
 | C-179 | 2026-03-26 | Copilot | Refreshed UI-013 v1b acceptance evidence on the corrected BL-006 baseline, updated control/test artifacts, and closed UI-013 after reconfirming all thresholds with BL-013 and BL-014 passes. |
 | C-180 | 2026-03-26 21:03 | Copilot | Implemented v1f numeric retune (danceability, energy, valence activated end-to-end in BL-005 and BL-006), applied Windows WinError 1224 fix in BL-010, restored live pipeline to v1f, and updated all stage state logs and CODEBASE_ISSUES_CURRENT.md with a next-steps section and issue register. |
+| C-181 | 2026-03-26 21:27 | Copilot | Completed freshness re-alignment on the active v1f baseline (BL-010, BL-011, BL-013 restore, BL-014 freshness suite), returning active freshness status to pass and synchronizing CODEBASE_ISSUES_CURRENT.md plus admin state files. |
 ## C-162
 - date: 2026-03-25
 - proposed_by: Copilot
@@ -232,6 +233,17 @@ Maintenance snapshot (2026-03-26):
 - evidence_basis: BL-013 restore pass `BL013-ENTRYPOINT-20260326-210305-914179`; BL-014 sanity pass `BL014-SANITY-20260326-210317-371524` (`22/22` checks); BL-010 pass `BL010-REPRO-20260326-205834` (`deterministic_match=true`, 3 replays); BL-011 pass `BL011-CTRL-20260326-205932` (5 scenarios, `status=pass`); active freshness suite `BL-FRESHNESS-SUITE-20260326-210015` (`6/8`, non-blocking evidence-alignment mismatch documented).
 - affected_components: `07_implementation/implementation_notes/bl000_run_config/configs/profiles/run_config_ui013_tuning_v1f.json`, `07_implementation/implementation_notes/bl010_reproducibility/run_bl010_reproducibility_check.py`, `07_implementation/implementation_notes/bl000_run_config/docs/bl000_run_config_state_log_2026-03-25.md`, `07_implementation/implementation_notes/bl003_alignment/bl003_state_log_2026-03-24.md`, `07_implementation/implementation_notes/bl004_profile/bl004_state_log_2026-03-24.md`, `07_implementation/implementation_notes/bl005_retrieval/bl005_state_log_2026-03-24.md`, `07_implementation/implementation_notes/bl006_scoring/bl006_state_log_2026-03-24.md`, `07_implementation/implementation_notes/bl007_playlist/bl007_state_log_2026-03-24.md`, `07_implementation/implementation_notes/bl008_transparency/bl008_state_log_2026-03-24.md`, `07_implementation/implementation_notes/bl009_observability/bl009_state_log_2026-03-24.md`, `07_implementation/implementation_notes/bl010_reproducibility/bl010_state_log_2026-03-24.md`, `07_implementation/implementation_notes/bl011_controllability/bl011_state_log_2026-03-24.md`, `07_implementation/implementation_notes/bl013_entrypoint/bl013_state_log_2026-03-24.md`, `07_implementation/implementation_notes/bl014_quality/bl014_state_log_2026-03-24.md`, `07_implementation/implementation_notes/CODEBASE_ISSUES_CURRENT.md`, `00_admin/unresolved_issues.md`, `00_admin/thesis_state.md`, `00_admin/change_log.md`
 - impact_assessment: High-positive. Completes the intended 10-component scoring surface, hardens BL-010 for Windows environments, and establishes a fully documented v1f baseline with a forward-looking next-steps register.
+- approval_record: Requested and confirmed by user in chat on 2026-03-26.
+
+## C-181
+- date: 2026-03-26
+- proposed_by: Copilot
+- status: accepted
+- change_summary: Executed planned freshness re-alignment on the active v1f baseline by rerunning BL-010 reproducibility, BL-011 controllability, restoring live outputs via BL-013, and running the active BL-014 freshness suite; then synchronized implementation/admin governance docs to reflect the now-green freshness state.
+- reason: C-180 intentionally documented a non-blocking post-restore freshness mismatch (`6/8`) as an operational caveat. The first planned next step was to realign BL-010/BL-011 snapshots to the current live v1f contract so the active freshness indicator returns to all-pass.
+- evidence_basis: BL-010 pass `BL010-REPRO-20260326-212523` (`deterministic_match=true`); BL-011 pass `BL011-CTRL-20260326-212611` (`status=pass`); BL-013 restore pass `BL013-ENTRYPOINT-20260326-212711-234744`; BL-014 sanity pass `BL014-SANITY-20260326-212725-976781` (`22/22` checks); active freshness suite pass `BL-FRESHNESS-SUITE-20260326-212726` (`7/7` checks); BL-010/BL-011 freshness report pass `BL-FRESHNESS-20260326-212726` (`9/9` checks).
+- affected_components: `07_implementation/implementation_notes/bl000_run_config/outputs/run_intent_latest.json`, `07_implementation/implementation_notes/bl000_run_config/outputs/run_effective_config_latest.json`, `07_implementation/implementation_notes/bl003_alignment/outputs/*`, `07_implementation/implementation_notes/bl004_profile/outputs/*`, `07_implementation/implementation_notes/bl005_retrieval/outputs/*`, `07_implementation/implementation_notes/bl006_scoring/outputs/*`, `07_implementation/implementation_notes/bl007_playlist/outputs/*`, `07_implementation/implementation_notes/bl008_transparency/outputs/*`, `07_implementation/implementation_notes/bl009_observability/outputs/*`, `07_implementation/implementation_notes/bl010_reproducibility/outputs/*`, `07_implementation/implementation_notes/bl011_controllability/outputs/*`, `07_implementation/implementation_notes/bl013_entrypoint/outputs/bl013_orchestration_run_latest.json`, `07_implementation/implementation_notes/bl014_quality/outputs/*`, `07_implementation/implementation_notes/CODEBASE_ISSUES_CURRENT.md`, `00_admin/unresolved_issues.md`, `00_admin/thesis_state.md`, `00_admin/change_log.md`
+- impact_assessment: Medium-positive. Removes the last active freshness caveat from the live v1f baseline and restores a clean all-green operations indicator without changing functional recommendation behavior.
 - approval_record: Requested and confirmed by user in chat on 2026-03-26.
 
 ## C-006
