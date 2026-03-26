@@ -1,10 +1,10 @@
 {
-  "run_id": "BL006-SCORE-20260326-212600-937252",
+  "run_id": "BL006-SCORE-20260326-215646-918212",
   "task": "BL-006",
-  "generated_at_utc": "2026-03-26T21:26:05Z",
+  "generated_at_utc": "2026-03-26T21:56:51Z",
   "input_artifacts": {
     "profile_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl004_profile\\outputs\\bl004_preference_profile.json",
-    "profile_sha256": "176b2f3b440b76764e378d4d412bb91b32aed7370ca974a545a66c3fde65e0f0",
+    "profile_sha256": "8dcc34a232fb4edde44c6a5d2a371259203b3349fa54d9aac17de68d0a6122d4",
     "filtered_candidates_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl005_retrieval\\outputs\\bl005_filtered_candidates.csv",
     "filtered_candidates_sha256": "f4b06c299884e662dc8fdcc85ce0fe1de7f30513906d68dc835399c7b4ae6211"
   },
@@ -223,7 +223,7 @@
       "matched_tags": "pop|electronic"
     }
   ],
-  "elapsed_seconds": 5.171,
+  "elapsed_seconds": 5.327,
   "output_files": {
     "scored_candidates_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl006_scoring\\outputs\\bl006_scored_candidates.csv"
   },

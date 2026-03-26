@@ -1,9 +1,9 @@
 {
   "run_metadata": {
-    "run_id": "BL-FRESHNESS-20260326-212726",
+    "run_id": "BL-FRESHNESS-20260326-215801",
     "task": "BL-010/011 freshness check",
-    "generated_at_utc": "2026-03-26T21:27:26Z",
-    "elapsed_seconds": 0.215,
+    "generated_at_utc": "2026-03-26T21:58:01Z",
+    "elapsed_seconds": 0.208,
     "overall_status": "pass",
     "checks_total": 9,
     "checks_passed": 9,

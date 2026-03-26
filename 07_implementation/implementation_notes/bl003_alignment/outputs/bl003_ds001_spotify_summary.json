@@ -1,7 +1,7 @@
 {
   "task": "BL-003-DS001-spotify-seed-build",
-  "generated_at_utc": "2026-03-26T21:27:13Z",
-  "elapsed_seconds": 1.89,
+  "generated_at_utc": "2026-03-26T21:57:44Z",
+  "elapsed_seconds": 3.046,
   "inputs": {
     "ds001_candidates": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl000_data_layer\\outputs\\ds001_working_candidate_dataset.csv",
     "ds001_candidates_sha256": "296331CA6390D2C111AA336C7EB154B69EC7060604312AC8A274F545B68A04EF",
@@ -185,7 +185,7 @@
       "seed_table_csv": "21AFA5F89DF0EB1B5B1AD9ADE76FF7DCA2B528B69F19DD259EF048EAA9CC6928",
       "trace_csv": "9AD5605ED2AED0BBFEBCB05F1FB202A00C477E084B3981EA2388D3D40449E960",
       "unmatched_csv": "4B984D63A8463E314AE10C1B7747043CBB5E885C6F5E37B87B6E0773B1B06CDA",
-      "source_scope_manifest_json": "23451FAE6728F88AA3B072B03EB62125FB3FF1E3D2A3681675B2917F86A2B016"
+      "source_scope_manifest_json": "4E7119194E4E29F0A32863D8E06453C728CA8D36A05574A8750B708FC626D783"
     }
   },
   "notes": {

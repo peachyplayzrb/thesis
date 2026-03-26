@@ -1,9 +1,9 @@
 {
   "run_metadata": {
-    "run_id": "BL011-CTRL-20260326-212611",
+    "run_id": "BL011-CTRL-20260326-215213",
     "task": "BL-011",
-    "generated_at_utc": "2026-03-26T21:27:10Z",
-    "elapsed_seconds": 59.178,
+    "generated_at_utc": "2026-03-26T21:53:23Z",
+    "elapsed_seconds": 69.73,
     "baseline_config_hash": "99C9672FE67C112A4679F900CD8904792EF69C7E6970C03B6CA8D495E12BFFA2",
     "scenario_count": 5
   },

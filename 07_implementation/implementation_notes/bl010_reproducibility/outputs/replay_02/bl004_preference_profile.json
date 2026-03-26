@@ -1,7 +1,7 @@
 {
-  "run_id": "BL004-PROFILE-20260326-212539-901744",
+  "run_id": "BL004-PROFILE-20260326-215625-223200",
   "task": "BL-004",
-  "generated_at_utc": "2026-03-26T21:25:39Z",
+  "generated_at_utc": "2026-03-26T21:56:25Z",
   "user_id": "214f23jw73wgv4vdpcjabds2a",
   "config_source": "environment",
   "run_config_path": null,
@@ -67,7 +67,7 @@
     },
     "key_aggregation_method": "weighted_circular_mean",
     "total_effective_weight": 2322.377778,
-    "elapsed_seconds": 0.027
+    "elapsed_seconds": 0.03
   },
   "seed_summary": {
     "counts_by_interaction_type": {
