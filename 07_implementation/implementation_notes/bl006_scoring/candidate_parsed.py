@@ -23,6 +23,9 @@ def parse_candidate_attributes(row: dict[str, str]) -> dict[str, object]:
     Returns:
         Dict with parsed/extracted attributes:
         - "track_id": str
+        - "danceability": float | None
+        - "energy": float | None
+        - "valence": float | None
         - "tempo": float | None
         - "duration_ms": float | None
         - "key": float | None (0-11, musical semitones)
@@ -35,6 +38,9 @@ def parse_candidate_attributes(row: dict[str, str]) -> dict[str, object]:
     track_id = (row.get("track_id") or row.get("id") or "").strip()
     
     # Numeric attributes (with None-safe parsing)
+    danceability = parse_float(row.get("danceability", ""))
+    energy = parse_float(row.get("energy", ""))
+    valence = parse_float(row.get("valence", ""))
     tempo = parse_float(row.get("tempo", ""))
     duration_ms = parse_float(row.get("duration_ms", ""))
     key = parse_float(row.get("key", ""))
@@ -49,6 +55,9 @@ def parse_candidate_attributes(row: dict[str, str]) -> dict[str, object]:
     
     return {
         "track_id": track_id,
+        "danceability": danceability,
+        "energy": energy,
+        "valence": valence,
         "tempo": tempo,
         "duration_ms": duration_ms,
         "key": key,

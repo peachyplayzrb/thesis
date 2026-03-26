@@ -1,10 +1,10 @@
 {
-  "run_id": "BL004-PROFILE-20260326-180048-951965",
+  "run_id": "BL004-PROFILE-20260326-210307-814997",
   "task": "BL-004",
-  "generated_at_utc": "2026-03-26T18:00:48Z",
+  "generated_at_utc": "2026-03-26T21:03:07Z",
   "user_id": "214f23jw73wgv4vdpcjabds2a",
   "config_source": "run_config",
-  "run_config_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl000_run_config\\configs\\profiles\\run_config_ui013_tuning_v1b.json",
+  "run_config_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl000_run_config\\configs\\profiles\\run_config_ui013_tuning_v1f.json",
   "run_config_schema_version": "run-config-v1",
   "input_artifacts": {
     "seed_table_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl003_alignment\\outputs\\bl003_ds001_spotify_seed_table.csv",
@@ -67,7 +67,7 @@
     },
     "key_aggregation_method": "weighted_circular_mean",
     "total_effective_weight": 2322.377778,
-    "elapsed_seconds": 0.019
+    "elapsed_seconds": 0.023
   },
   "seed_summary": {
     "counts_by_interaction_type": {

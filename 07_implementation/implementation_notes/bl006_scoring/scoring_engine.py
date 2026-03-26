@@ -94,21 +94,20 @@ def compute_component_scores(
     numeric_centers = profile_data.get("numeric_centers", {})
     numeric_thresholds = profile_data.get("numeric_thresholds", {})
     
-    # Numeric components: tempo, duration_ms, key, mode
-    for dimension in ["tempo", "duration_ms", "key", "mode"]:
-        if dimension in active_numeric_specs:
-            value = candidate_attrs.get(dimension)
-            center = numeric_centers.get(dimension)
-            threshold = numeric_thresholds.get(dimension, 1.0)
-            circular = active_numeric_specs[dimension].get("circular", False)
-            
-            similarity = numeric_similarity(float(value) if value is not None else None, 
-                                           float(center) if center is not None else 0.0, 
-                                           float(threshold), 
-                                           circular)
-            scores[f"{dimension}_similarity"] = similarity
-        else:
-            scores[f"{dimension}_similarity"] = 0.0
+    # Numeric components are driven by active_numeric_specs so BL-006 stays aligned to shared config.
+    for dimension, spec in active_numeric_specs.items():
+        value = candidate_attrs.get(dimension)
+        center = numeric_centers.get(dimension)
+        threshold = numeric_thresholds.get(dimension, 1.0)
+        circular = spec.get("circular", False)
+
+        similarity = numeric_similarity(
+            float(value) if value is not None else None,
+            float(center) if center is not None else 0.0,
+            float(threshold),
+            circular,
+        )
+        scores[f"{dimension}_similarity"] = similarity
     
     # Lead genre: direct match vs profile lead genre
     candidate_lead_genre = candidate_attrs.get("lead_genre", "").lower()

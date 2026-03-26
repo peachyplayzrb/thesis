@@ -89,6 +89,9 @@ DEFAULT_RUN_CONFIG: dict[str, Any] = {
         "semantic_min_keep_score": 1,
         "numeric_support_min_pass": 1,
         "numeric_thresholds": {
+            "danceability": 0.20,
+            "energy": 0.20,
+            "valence": 0.20,
             "tempo": 20.0,
             "key": 2.0,
             "mode": 0.5,
@@ -98,6 +101,9 @@ DEFAULT_RUN_CONFIG: dict[str, Any] = {
     "scoring_controls": {
         "component_weights": dict(DEFAULT_SCORING_COMPONENT_WEIGHTS),
         "numeric_thresholds": {
+            "danceability": 0.20,
+            "energy": 0.20,
+            "valence": 0.20,
             "tempo": 20.0,
             "key": 2.0,
             "mode": 0.5,

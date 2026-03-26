@@ -122,13 +122,8 @@ def build_component_weights() -> dict[str, float]:
         - Tag overlap (16%): weighted jaccard similarity
     """
     return {
-        "tempo_score": DEFAULT_SCORING_COMPONENT_WEIGHTS["tempo"],
-        "duration_ms_score": DEFAULT_SCORING_COMPONENT_WEIGHTS["duration_ms"],
-        "key_score": DEFAULT_SCORING_COMPONENT_WEIGHTS["key"],
-        "mode_score": DEFAULT_SCORING_COMPONENT_WEIGHTS["mode"],
-        "lead_genre_score": DEFAULT_SCORING_COMPONENT_WEIGHTS["lead_genre"],
-        "genre_overlap_score": DEFAULT_SCORING_COMPONENT_WEIGHTS["genre_overlap"],
-        "tag_overlap_score": DEFAULT_SCORING_COMPONENT_WEIGHTS["tag_overlap"],
+        f"{component}_score": weight
+        for component, weight in DEFAULT_SCORING_COMPONENT_WEIGHTS.items()
     }
 
 
@@ -146,20 +141,9 @@ def build_numeric_specs() -> dict[str, dict[str, object]]:
         Dict of numeric dimension specs
     """
     return {
-        "tempo": {
-            "threshold": float(NUMERIC_FEATURE_SPECS["tempo"]["threshold"]),
-            "circular": bool(NUMERIC_FEATURE_SPECS["tempo"]["circular"]),
-        },
-        "key": {
-            "threshold": float(NUMERIC_FEATURE_SPECS["key"]["threshold"]),
-            "circular": bool(NUMERIC_FEATURE_SPECS["key"]["circular"]),
-        },
-        "mode": {
-            "threshold": float(NUMERIC_FEATURE_SPECS["mode"]["threshold"]),
-            "circular": bool(NUMERIC_FEATURE_SPECS["mode"]["circular"]),
-        },
-        "duration_ms": {
-            "threshold": float(NUMERIC_FEATURE_SPECS["duration_ms"]["threshold"]),
-            "circular": bool(NUMERIC_FEATURE_SPECS["duration_ms"]["circular"]),
-        },
+        dimension: {
+            "threshold": float(spec["threshold"]),
+            "circular": bool(spec["circular"]),
+        }
+        for dimension, spec in NUMERIC_FEATURE_SPECS.items()
     }

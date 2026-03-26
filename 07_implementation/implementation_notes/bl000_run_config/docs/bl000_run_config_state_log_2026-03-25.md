@@ -190,3 +190,42 @@ Validation evidence:
 Status:
 - BL-000 run-config remains operational and downstream-compatible.
 - Cleanup closed with no observed regressions in BL-013/BL-014 validation path.
+
+## Update - 2026-03-26 19:15 UTC (Current Pipeline Sync)
+
+### Current Active Evidence
+- Latest canonical run-config artifacts now point to the explicit v1b profile run:
+  - BL-013 run_id: `BL013-ENTRYPOINT-20260326-191529-313858`
+  - `run_intent_latest.json` generated_at_utc: `2026-03-26T19:15:29Z`
+  - `run_effective_config_latest.json` generated_at_utc: `2026-03-26T19:15:29Z`
+- Latest explicit config path:
+  - `07_implementation/implementation_notes/bl000_run_config/configs/profiles/run_config_ui013_tuning_v1b.json`
+
+### Effective Control Snapshot
+- profile limits: top_genre `10`, top_lead_genre `10`, top_tag `10`
+- retrieval thresholds: tempo `15.0`, key `1.5`, mode `0.5`, duration_ms `30000.0`
+- scoring weights: lead_genre `0.23`, genre_overlap `0.19`, tag_overlap `0.23`, tempo `0.12`
+- transparency controls: near-tie blending enabled, tie delta `0.09`
+
+### Status
+- BL-000 run-config is current, actively driving the latest orchestration run, and remains consistent with downstream BL-003 through BL-009 evidence.
+
+## Update - 2026-03-26 21:03 UTC (v1f Baseline Promotion)
+
+### Current Active Evidence
+- Latest canonical run-config artifacts now point to the explicit v1f profile run:
+  - BL-013 run_id: `BL013-ENTRYPOINT-20260326-210305-914179`
+  - `run_intent_latest.json` generated_at_utc: `2026-03-26T21:03:05Z`
+  - `run_effective_config_latest.json` generated_at_utc: `2026-03-26T21:03:05Z`
+- Latest explicit config path:
+  - `07_implementation/implementation_notes/bl000_run_config/configs/profiles/run_config_ui013_tuning_v1f.json`
+
+### Effective Control Snapshot
+- profile limits: top_genre `10`, top_lead_genre `10`, top_tag `10`
+- retrieval thresholds: danceability `0.15`, energy `0.15`, valence `0.15`, tempo `15.0`, key `1.5`, mode `0.5`, duration_ms `30000.0`
+- retrieval keep rule: `semantic_score >= 3 or (semantic_score >= 1 and numeric_pass_count >= 4)`
+- scoring weights: danceability `0.04`, energy `0.03`, valence `0.03`, tempo `0.03`, duration_ms `0.02`, key `0.02`, mode `0.01`, lead_genre `0.29`, genre_overlap `0.24`, tag_overlap `0.29`
+- transparency controls: near-tie blending enabled, tie delta `0.09`
+
+### Status
+- BL-000 run-config is current, and the active canonical contract now reflects the post-seven-feature BL-005 retune (`v1f`) rather than the earlier v1b/v1d snapshots.

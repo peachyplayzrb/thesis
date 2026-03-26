@@ -5,16 +5,16 @@
   "replay_count": 3,
   "fixed_inputs": {
     "07_implementation/implementation_notes/bl004_profile/outputs/bl004_seed_trace.csv": "AFE227D05077A35D970973E060EB6C95DC6FD62E17081E0666DF9CD2D5D6BEC2",
-    "07_implementation/implementation_notes/bl005_retrieval/outputs/bl005_filtered_candidates.csv": "367A528541AA29A8BC9CED0CA6A54AB708F912DB705285E5F5A51275D438A8E4",
-    "07_implementation/implementation_notes/bl005_retrieval/outputs/bl005_candidate_decisions.csv": "7F231CE18E7446FFD2121866FDF727A332600603A19DEBD4379AF4A9EFFDEDBC",
-    "07_implementation/implementation_notes/bl006_scoring/outputs/bl006_scored_candidates.csv": "96AE241D5C6195F148455919DAA1D479A40B75CCA25381E2EBEFC35C3E489BD0",
-    "07_implementation/implementation_notes/bl007_playlist/outputs/bl007_assembly_trace.csv": "44C84A2E381837A92FE6273BA5673247F1EAB3435B1E76BDE51AFEC6E90F2090"
+    "07_implementation/implementation_notes/bl005_retrieval/outputs/bl005_filtered_candidates.csv": "FB8F549A3B6386968DAE822DC8EC8C909BD3CD2C74A8AFCD3E5D499E824011F1",
+    "07_implementation/implementation_notes/bl005_retrieval/outputs/bl005_candidate_decisions.csv": "6A07CF1DCD39045C0725C7ED4D69CEC2CF9D102D9BED38DEC527F91C021AEBC0",
+    "07_implementation/implementation_notes/bl006_scoring/outputs/bl006_scored_candidates.csv": "0EDA8EC6521E13873227A4387D8EA1290F13F324C61E5344AAEC46A5353EF302",
+    "07_implementation/implementation_notes/bl007_playlist/outputs/bl007_assembly_trace.csv": "404FA9124B052AB53B4D3FB6C2F729126EF288A753ED0C0881954034C4CC761D"
   },
   "optional_dependency_availability": {},
   "stage_scripts": {
     "07_implementation/implementation_notes/bl004_profile/build_bl004_preference_profile.py": "8DF5D27B1206070C2ED16062E6028EA7E9FA66441707A73594E04C581A66580D",
-    "07_implementation/implementation_notes/bl005_retrieval/build_bl005_candidate_filter.py": "D4BAC12203D8B161EBAE9017F6343954D90BBA53E9D6F139AFD49015A72A4A9C",
-    "07_implementation/implementation_notes/bl006_scoring/build_bl006_scored_candidates.py": "57260D2638A1017D2058DC7137439A68F3E39A4777A9AFDA21A6A19B9EA3B516",
+    "07_implementation/implementation_notes/bl005_retrieval/build_bl005_candidate_filter.py": "A0D8A20DA741687FB377BD20E3CE40691375E31F6283E752A119BFA267FDFF74",
+    "07_implementation/implementation_notes/bl006_scoring/build_bl006_scored_candidates.py": "54F555CF9560C8228E25C2B22DD91138E462FE5AC8B23FC84FA6A4973D6A77BC",
     "07_implementation/implementation_notes/bl007_playlist/build_bl007_playlist.py": "36A3188CAE188E38EDABE01726DC5E31025AFA4619D899711ECAC7783CB39452",
     "07_implementation/implementation_notes/bl008_transparency/build_bl008_explanation_payloads.py": "DFFE61EF32734DB6E57B4E570B85D9720F8FF62EC8BB6F72837AC1D0CA98898D",
     "07_implementation/implementation_notes/bl009_observability/build_bl009_observability_log.py": "62D374B427E937E12BDAC0BE31A93E4722B2EA54D86D90B17CFBDED2C73C14F8"
@@ -58,8 +58,8 @@
       ],
       "profile_mode": "hybrid_semantic_numeric_from_bl003_enriched_seed_table",
       "top_tag_limit": 10,
-      "top_genre_limit": 8,
-      "top_lead_genre_limit": 6,
+      "top_genre_limit": 10,
+      "top_lead_genre_limit": 10,
       "aggregation_rules": {
         "numeric": "weighted mean over numeric columns embedded in the BL-003 enriched seed table; key uses weighted circular mean on the 12-semitone wheel",
         "tags": "sum(preference_weight) over DS-001 tag labels",
@@ -72,79 +72,103 @@
       "top_tag_limit": 10,
       "top_genre_limit": 8,
       "numeric_thresholds": {
-        "tempo": 20.0,
-        "key": 2.0,
+        "danceability": 0.15,
+        "energy": 0.15,
+        "valence": 0.15,
+        "tempo": 15.0,
+        "key": 1.5,
         "mode": 0.5,
-        "duration_ms": 45000.0
+        "duration_ms": 30000.0
       },
       "numeric_feature_mapping": {
+        "danceability": "danceability",
+        "energy": "energy",
+        "valence": "valence",
         "tempo": "tempo",
         "key": "key",
         "mode": "mode",
         "duration_ms": "duration_ms"
       },
       "numeric_features_enabled": true,
-      "keep_rule": "keep if not seed and (semantic_score >= 2 or (semantic_score >= 1 and numeric_pass_count >= 1))",
+      "keep_rule": "keep if not seed and (semantic_score >= 3 or (semantic_score >= 1 and numeric_pass_count >= 4))",
       "semantic_source": "ds001_tags_and_genres_columns"
     },
     "scoring": {
       "numeric_thresholds": {
-        "tempo": 20.0,
-        "key": 2.0,
+        "danceability": 0.15,
+        "energy": 0.15,
+        "valence": 0.15,
+        "tempo": 15.0,
+        "key": 1.5,
         "mode": 0.5,
-        "duration_ms": 45000.0
+        "duration_ms": 30000.0
       },
       "numeric_feature_mapping": {
+        "danceability": "danceability",
+        "energy": "energy",
+        "valence": "valence",
         "tempo": "tempo",
         "key": "key",
         "mode": "mode",
         "duration_ms": "duration_ms"
       },
       "base_component_weights": {
-        "tempo_score": 0.2,
-        "duration_ms_score": 0.13,
-        "key_score": 0.13,
-        "mode_score": 0.09,
-        "lead_genre_score": 0.17,
-        "genre_overlap_score": 0.12,
-        "tag_overlap_score": 0.16
+        "danceability": 0.04,
+        "energy": 0.03,
+        "valence": 0.03,
+        "tempo": 0.03,
+        "duration_ms": 0.02,
+        "key": 0.02,
+        "mode": 0.01,
+        "lead_genre": 0.29,
+        "genre_overlap": 0.24,
+        "tag_overlap": 0.29
       },
       "active_component_weights": {
-        "tempo_score": 0.2,
-        "duration_ms_score": 0.13,
-        "key_score": 0.13,
-        "mode_score": 0.09,
-        "lead_genre_score": 0.17,
-        "genre_overlap_score": 0.12,
-        "tag_overlap_score": 0.16
+        "danceability": 0.04,
+        "energy": 0.03,
+        "valence": 0.03,
+        "tempo": 0.03,
+        "duration_ms": 0.02,
+        "key": 0.02,
+        "mode": 0.01,
+        "lead_genre": 0.29,
+        "genre_overlap": 0.24,
+        "tag_overlap": 0.29
       },
       "inactive_components": [],
       "weight_rebalance_diagnostics": {
         "rebalanced": false,
         "active_weight_sum_pre_normalization": 1.0,
-        "active_component_count": 7,
+        "active_component_count": 10,
         "inactive_components": [],
         "original_active_component_weights": {
-          "tempo_score": 0.2,
-          "duration_ms_score": 0.13,
-          "key_score": 0.13,
-          "mode_score": 0.09,
-          "lead_genre_score": 0.17,
-          "genre_overlap_score": 0.12,
-          "tag_overlap_score": 0.16
+          "danceability": 0.04,
+          "energy": 0.03,
+          "valence": 0.03,
+          "tempo": 0.03,
+          "duration_ms": 0.02,
+          "key": 0.02,
+          "mode": 0.01,
+          "lead_genre": 0.29,
+          "genre_overlap": 0.24,
+          "tag_overlap": 0.29
         },
         "normalized_active_component_weights": {
-          "tempo_score": 0.2,
-          "duration_ms_score": 0.13,
-          "key_score": 0.13,
-          "mode_score": 0.09,
-          "lead_genre_score": 0.17,
-          "genre_overlap_score": 0.12,
-          "tag_overlap_score": 0.16
+          "danceability": 0.04,
+          "energy": 0.03,
+          "valence": 0.03,
+          "tempo": 0.03,
+          "duration_ms": 0.02,
+          "key": 0.02,
+          "mode": 0.01,
+          "lead_genre": 0.29,
+          "genre_overlap": 0.24,
+          "tag_overlap": 0.29
         },
         "warning": null
       },
-      "lead_genre_normalization": "candidate lead genre weight divided by max profile lead-genre weight",
+      "lead_genre_normalization": "binary exact match against non-empty profile lead genre",
       "genre_overlap_normalization": "sum overlapping profile genre weights / sum top profile genre weights",
       "tag_overlap_normalization": "sum overlapping profile tag weights / sum top profile tag weights",
       "semantic_source": "ds001_tags_and_genres_columns"
@@ -159,8 +183,8 @@
       "playlist_track_count": 10,
       "top_contributor_distribution": {
         "Lead genre match": 4,
-        "Duration match": 2,
-        "Tempo (BPM)": 4
+        "Tag overlap": 3,
+        "Genre overlap": 3
       }
     }
   }

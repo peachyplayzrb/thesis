@@ -1,36 +1,36 @@
 {
   "run_metadata": {
-    "run_id": "BL-FRESHNESS-20260326-173252",
+    "run_id": "BL-FRESHNESS-20260326-210015",
     "task": "BL-010/011 freshness check",
-    "generated_at_utc": "2026-03-26T17:32:52Z",
-    "elapsed_seconds": 0.288,
-    "overall_status": "pass",
+    "generated_at_utc": "2026-03-26T21:00:15Z",
+    "elapsed_seconds": 0.148,
+    "overall_status": "fail",
     "checks_total": 9,
-    "checks_passed": 9,
-    "checks_failed": 0
+    "checks_passed": 4,
+    "checks_failed": 5
   },
   "evidence_paths": {
     "bl010_config_snapshot": "07_implementation/implementation_notes/bl010_reproducibility/outputs/bl010_reproducibility_config_snapshot.json",
     "bl010_report": "07_implementation/implementation_notes/bl010_reproducibility/outputs/bl010_reproducibility_report.json",
     "bl011_config_snapshot": "07_implementation/implementation_notes/bl011_controllability/outputs/bl011_controllability_config_snapshot.json",
     "bl011_report": "07_implementation/implementation_notes/bl011_controllability/outputs/bl011_controllability_report.json",
-    "bl010_config_hash": "C5B02AEB8F125DF859E964774175EFA613ED2FC6E3529E03AACF374389DCF1B2",
-    "bl011_config_hash": "C532F77F6B0317539129D993E9E25ED7E80408487B63A1B00D4D646CEE6F6207"
+    "bl010_config_hash": "2B842BAFCED547F1F7D1CE0A8B40AED3499DF88C88A2D759CEACC236E20F86EC",
+    "bl011_config_hash": "A14F479888EA2B271E584CFA13DAC53A84FA41401956FD21ADEFD4F15338AADB"
   },
   "checks": [
     {
       "id": "bl010_snapshot_matches_current_contract",
-      "status": "pass",
+      "status": "fail",
       "details": "BL-010 config snapshot matches the current active-pipeline reproducibility contract"
     },
     {
       "id": "bl010_report_hash_matches_current_contract",
-      "status": "pass",
+      "status": "fail",
       "details": "BL-010 report config_hash matches the current active-pipeline reproducibility contract"
     },
     {
       "id": "bl010_fixed_input_hashes_match_current",
-      "status": "pass",
+      "status": "fail",
       "details": "BL-010 fixed input hashes match the current active pipeline outputs"
     },
     {
@@ -45,12 +45,12 @@
     },
     {
       "id": "bl011_snapshot_matches_current_contract",
-      "status": "pass",
+      "status": "fail",
       "details": "BL-011 config snapshot matches the current active controllability contract"
     },
     {
       "id": "bl011_baseline_hash_matches_current_bl010",
-      "status": "pass",
+      "status": "fail",
       "details": "BL-011 baseline_config_hash matches the current BL-010 baseline snapshot"
     },
     {
@@ -65,7 +65,7 @@
     }
   ],
   "current_contract_hashes": {
-    "bl010_config_hash": "C5B02AEB8F125DF859E964774175EFA613ED2FC6E3529E03AACF374389DCF1B2",
-    "bl011_config_hash": "C532F77F6B0317539129D993E9E25ED7E80408487B63A1B00D4D646CEE6F6207"
+    "bl010_config_hash": "2B842BAFCED547F1F7D1CE0A8B40AED3499DF88C88A2D759CEACC236E20F86EC",
+    "bl011_config_hash": "A14F479888EA2B271E584CFA13DAC53A84FA41401956FD21ADEFD4F15338AADB"
   }
 }

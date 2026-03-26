@@ -82,7 +82,13 @@ def load_csv_rows(path: Path) -> list[dict[str, str]]:
 
 def copy_file(src: Path, dst: Path) -> None:
     dst.parent.mkdir(parents=True, exist_ok=True)
-    shutil.copy2(src, dst)
+    try:
+        shutil.copy2(src, dst)
+    except OSError as exc:
+        if os.name != "nt" or getattr(exc, "winerror", None) != 1224:
+            raise
+        dst.write_bytes(src.read_bytes())
+        shutil.copystat(src, dst)
 
 
 def build_file_hash_map(paths: dict[str, Path], keys: list[str]) -> dict[str, str]:

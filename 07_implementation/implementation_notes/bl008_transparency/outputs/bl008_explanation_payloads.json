@@ -1,95 +1,116 @@
 {
-  "run_id": "BL008-EXPLAIN-20260326-180056-125279",
-  "generated_at_utc": "2026-03-26T18:00:56Z",
-  "elapsed_seconds": 0.43,
+  "run_id": "BL008-EXPLAIN-20260326-210315-723481",
+  "generated_at_utc": "2026-03-26T21:03:15Z",
+  "elapsed_seconds": 0.405,
   "playlist_track_count": 10,
   "explanations": [
     {
       "playlist_position": 1,
-      "track_id": "C9oA7Glm1TItxpQA",
+      "track_id": "phL12CBijBqwQ9qB",
       "lead_genre": "pop",
-      "final_score": 0.74413,
+      "final_score": 0.726929,
       "score_rank": 1,
-      "why_selected": "Selected at playlist position 1 (score 0.7441) because it strongly matches the preference profile on Lead genre match, Tag overlap, Genre overlap. Lead genre is 'pop'.",
+      "why_selected": "Selected at playlist position 1 (score 0.7269) because it strongly matches the preference profile on Lead genre match, Tag overlap, Genre overlap. Lead genre is 'pop'.",
       "primary_explanation_driver": {
         "component": "lead_genre",
         "label": "Lead genre match",
-        "weight": 0.23,
+        "weight": 0.29,
         "similarity": 1.0,
-        "contribution": 0.23
+        "contribution": 0.29
       },
       "top_score_contributors": [
         {
           "component": "lead_genre",
           "label": "Lead genre match",
-          "weight": 0.23,
+          "weight": 0.29,
           "similarity": 1.0,
-          "contribution": 0.23
+          "contribution": 0.29
         },
         {
           "component": "tag_overlap",
           "label": "Tag overlap",
-          "weight": 0.23,
+          "weight": 0.29,
           "similarity": 0.552941,
-          "contribution": 0.127176
+          "contribution": 0.160353
         },
         {
           "component": "genre_overlap",
           "label": "Genre overlap",
-          "weight": 0.19,
+          "weight": 0.24,
           "similarity": 0.665752,
-          "contribution": 0.126493
+          "contribution": 0.15978
         }
       ],
       "score_breakdown": [
         {
           "component": "tempo",
           "label": "Tempo (BPM)",
-          "weight": 0.12,
-          "similarity": 0.910482,
-          "contribution": 0.109258
+          "weight": 0.03,
+          "similarity": 0.779816,
+          "contribution": 0.023394
         },
         {
           "component": "duration_ms",
           "label": "Duration match",
-          "weight": 0.08,
-          "similarity": 0.966952,
-          "contribution": 0.077356
+          "weight": 0.02,
+          "similarity": 0.598052,
+          "contribution": 0.011961
         },
         {
           "component": "key",
           "label": "Musical key",
-          "weight": 0.08,
-          "similarity": 0.691285,
-          "contribution": 0.055303
+          "weight": 0.02,
+          "similarity": 0.0,
+          "contribution": 0.0
         },
         {
           "component": "mode",
           "label": "Mode (major/minor)",
-          "weight": 0.07,
+          "weight": 0.01,
           "similarity": 0.26491,
-          "contribution": 0.018544
+          "contribution": 0.002649
         },
         {
           "component": "lead_genre",
           "label": "Lead genre match",
-          "weight": 0.23,
+          "weight": 0.29,
           "similarity": 1.0,
-          "contribution": 0.23
+          "contribution": 0.29
         },
         {
           "component": "genre_overlap",
           "label": "Genre overlap",
-          "weight": 0.19,
+          "weight": 0.24,
           "similarity": 0.665752,
-          "contribution": 0.126493
+          "contribution": 0.15978
         },
         {
           "component": "tag_overlap",
           "label": "Tag overlap",
-          "weight": 0.23,
+          "weight": 0.29,
           "similarity": 0.552941,
-          "contribution": 0.127176
+          "contribution": 0.160353
+        },
+        {
+          "component": "danceability",
+          "label": "Danceability",
+          "weight": 0.04,
+          "similarity": 0.858373,
+          "contribution": 0.034335
+        },
+        {
+          "component": "energy",
+          "label": "Energy",
+          "weight": 0.03,
+          "similarity": 0.500313,
+          "contribution": 0.015009
+        },
+        {
+          "component": "valence",
+          "label": "Valence",
+          "weight": 0.03,
+          "similarity": 0.981587,
+          "contribution": 0.029448
         }
       ],
       "assembly_context": {
@@ -100,90 +121,111 @@
     },
     {
       "playlist_position": 2,
-      "track_id": "7dYk0TCGZqev3LJD",
+      "track_id": "2rf5nW2Fb8gMnz9l",
       "lead_genre": "pop",
-      "final_score": 0.712945,
+      "final_score": 0.722913,
       "score_rank": 2,
-      "why_selected": "Selected at playlist position 2 (score 0.7129) because it strongly matches the preference profile on Lead genre match, Tag overlap, Genre overlap. Lead genre is 'pop'.",
+      "why_selected": "Selected at playlist position 2 (score 0.7229) because it strongly matches the preference profile on Lead genre match, Tag overlap, Genre overlap. Lead genre is 'pop'.",
       "primary_explanation_driver": {
-        "component": "tag_overlap",
-        "label": "Tag overlap",
-        "weight": 0.23,
-        "similarity": 0.624314,
-        "contribution": 0.143592
+        "component": "lead_genre",
+        "label": "Lead genre match",
+        "weight": 0.29,
+        "similarity": 1.0,
+        "contribution": 0.29
       },
       "top_score_contributors": [
         {
           "component": "lead_genre",
           "label": "Lead genre match",
-          "weight": 0.23,
+          "weight": 0.29,
           "similarity": 1.0,
-          "contribution": 0.23
+          "contribution": 0.29
         },
         {
           "component": "tag_overlap",
           "label": "Tag overlap",
-          "weight": 0.23,
+          "weight": 0.29,
           "similarity": 0.624314,
-          "contribution": 0.143592
+          "contribution": 0.181051
         },
         {
           "component": "genre_overlap",
           "label": "Genre overlap",
-          "weight": 0.19,
+          "weight": 0.24,
           "similarity": 0.665752,
-          "contribution": 0.126493
+          "contribution": 0.15978
         }
       ],
       "score_breakdown": [
         {
           "component": "tempo",
           "label": "Tempo (BPM)",
-          "weight": 0.12,
-          "similarity": 0.764051,
-          "contribution": 0.091686
+          "weight": 0.03,
+          "similarity": 0.327384,
+          "contribution": 0.009822
         },
         {
           "component": "duration_ms",
           "label": "Duration match",
-          "weight": 0.08,
-          "similarity": 0.823385,
-          "contribution": 0.065871
-        },
-        {
-          "component": "key",
-          "label": "Musical key",
-          "weight": 0.08,
-          "similarity": 0.691285,
-          "contribution": 0.055303
-        },
-        {
-          "component": "mode",
-          "label": "Mode (major/minor)",
-          "weight": 0.07,
+          "weight": 0.02,
           "similarity": 0.0,
           "contribution": 0.0
         },
         {
+          "component": "key",
+          "label": "Musical key",
+          "weight": 0.02,
+          "similarity": 0.0,
+          "contribution": 0.0
+        },
+        {
+          "component": "mode",
+          "label": "Mode (major/minor)",
+          "weight": 0.01,
+          "similarity": 0.26491,
+          "contribution": 0.002649
+        },
+        {
           "component": "lead_genre",
           "label": "Lead genre match",
-          "weight": 0.23,
+          "weight": 0.29,
           "similarity": 1.0,
-          "contribution": 0.23
+          "contribution": 0.29
         },
         {
           "component": "genre_overlap",
           "label": "Genre overlap",
-          "weight": 0.19,
+          "weight": 0.24,
           "similarity": 0.665752,
-          "contribution": 0.126493
+          "contribution": 0.15978
         },
         {
           "component": "tag_overlap",
           "label": "Tag overlap",
-          "weight": 0.23,
+          "weight": 0.29,
           "similarity": 0.624314,
-          "contribution": 0.143592
+          "contribution": 0.181051
+        },
+        {
+          "component": "danceability",
+          "label": "Danceability",
+          "weight": 0.04,
+          "similarity": 0.991707,
+          "contribution": 0.039668
+        },
+        {
+          "component": "energy",
+          "label": "Energy",
+          "weight": 0.03,
+          "similarity": 0.479687,
+          "contribution": 0.014391
+        },
+        {
+          "component": "valence",
+          "label": "Valence",
+          "weight": 0.03,
+          "similarity": 0.851747,
+          "contribution": 0.025552
         }
       ],
       "assembly_context": {
@@ -194,184 +236,226 @@
     },
     {
       "playlist_position": 3,
-      "track_id": "mSXCa0G0ZaZXH6kO",
-      "lead_genre": "soundtrack",
-      "final_score": 0.525517,
-      "score_rank": 481,
-      "why_selected": "Selected at playlist position 3 (score 0.5255) because it strongly matches the preference profile on Tag overlap, Genre overlap, Tempo (BPM). Lead genre is 'soundtrack'.",
+      "track_id": "OXpfWulhlXVd17aK",
+      "lead_genre": "new wave",
+      "final_score": 0.467245,
+      "score_rank": 3910,
+      "why_selected": "Selected at playlist position 3 (score 0.4672) because it strongly matches the preference profile on Tag overlap, Genre overlap, Danceability. Lead genre is 'new wave'.",
       "primary_explanation_driver": {
-        "component": "tempo",
-        "label": "Tempo (BPM)",
-        "weight": 0.12,
-        "similarity": 0.983816,
-        "contribution": 0.118058
+        "component": "tag_overlap",
+        "label": "Tag overlap",
+        "weight": 0.29,
+        "similarity": 0.624314,
+        "contribution": 0.181051
       },
       "top_score_contributors": [
         {
           "component": "tag_overlap",
           "label": "Tag overlap",
-          "weight": 0.23,
-          "similarity": 0.552941,
-          "contribution": 0.127176
+          "weight": 0.29,
+          "similarity": 0.624314,
+          "contribution": 0.181051
         },
         {
           "component": "genre_overlap",
           "label": "Genre overlap",
-          "weight": 0.19,
+          "weight": 0.24,
           "similarity": 0.665752,
-          "contribution": 0.126493
+          "contribution": 0.15978
         },
         {
-          "component": "tempo",
-          "label": "Tempo (BPM)",
-          "weight": 0.12,
-          "similarity": 0.983816,
-          "contribution": 0.118058
+          "component": "danceability",
+          "label": "Danceability",
+          "weight": 0.04,
+          "similarity": 0.991707,
+          "contribution": 0.039668
         }
       ],
       "score_breakdown": [
         {
           "component": "tempo",
           "label": "Tempo (BPM)",
-          "weight": 0.12,
-          "similarity": 0.983816,
-          "contribution": 0.118058
+          "weight": 0.03,
+          "similarity": 0.345718,
+          "contribution": 0.010372
         },
         {
           "component": "duration_ms",
           "label": "Duration match",
-          "weight": 0.08,
-          "similarity": 0.999282,
-          "contribution": 0.079943
+          "weight": 0.02,
+          "similarity": 0.783385,
+          "contribution": 0.015668
         },
         {
           "component": "key",
           "label": "Musical key",
-          "weight": 0.08,
-          "similarity": 0.691285,
-          "contribution": 0.055303
+          "weight": 0.02,
+          "similarity": 0.0,
+          "contribution": 0.0
         },
         {
           "component": "mode",
           "label": "Mode (major/minor)",
-          "weight": 0.07,
+          "weight": 0.01,
           "similarity": 0.26491,
-          "contribution": 0.018544
+          "contribution": 0.002649
         },
         {
           "component": "lead_genre",
           "label": "Lead genre match",
-          "weight": 0.23,
+          "weight": 0.29,
           "similarity": 0.0,
           "contribution": 0.0
         },
         {
           "component": "genre_overlap",
           "label": "Genre overlap",
-          "weight": 0.19,
+          "weight": 0.24,
           "similarity": 0.665752,
-          "contribution": 0.126493
+          "contribution": 0.15978
         },
         {
           "component": "tag_overlap",
           "label": "Tag overlap",
-          "weight": 0.23,
-          "similarity": 0.552941,
-          "contribution": 0.127176
+          "weight": 0.29,
+          "similarity": 0.624314,
+          "contribution": 0.181051
+        },
+        {
+          "component": "danceability",
+          "label": "Danceability",
+          "weight": 0.04,
+          "similarity": 0.991707,
+          "contribution": 0.039668
+        },
+        {
+          "component": "energy",
+          "label": "Energy",
+          "weight": 0.03,
+          "similarity": 0.96698,
+          "contribution": 0.029009
+        },
+        {
+          "component": "valence",
+          "label": "Valence",
+          "weight": 0.03,
+          "similarity": 0.968253,
+          "contribution": 0.029048
         }
       ],
       "assembly_context": {
         "decision": "included",
         "admission_rule": "Admitted on first evaluation",
-        "genre_at_position": "soundtrack"
+        "genre_at_position": "new wave"
       }
     },
     {
       "playlist_position": 4,
-      "track_id": "PLalhmFP4RTXE7zC",
+      "track_id": "vB2cVrDH6izhfany",
       "lead_genre": "pop",
-      "final_score": 0.525475,
-      "score_rank": 482,
-      "why_selected": "Selected at playlist position 4 (score 0.5255) because it strongly matches the preference profile on Lead genre match, Tempo (BPM), Tag overlap. Lead genre is 'pop'.",
+      "final_score": 0.467226,
+      "score_rank": 3911,
+      "why_selected": "Selected at playlist position 4 (score 0.4672) because it strongly matches the preference profile on Lead genre match, Genre overlap, Tag overlap. Lead genre is 'pop'.",
       "primary_explanation_driver": {
         "component": "lead_genre",
         "label": "Lead genre match",
-        "weight": 0.23,
+        "weight": 0.29,
         "similarity": 1.0,
-        "contribution": 0.23
+        "contribution": 0.29
       },
       "top_score_contributors": [
         {
           "component": "lead_genre",
           "label": "Lead genre match",
-          "weight": 0.23,
+          "weight": 0.29,
           "similarity": 1.0,
-          "contribution": 0.23
+          "contribution": 0.29
         },
         {
-          "component": "tempo",
-          "label": "Tempo (BPM)",
-          "weight": 0.12,
-          "similarity": 0.884349,
-          "contribution": 0.106122
+          "component": "genre_overlap",
+          "label": "Genre overlap",
+          "weight": 0.24,
+          "similarity": 0.321343,
+          "contribution": 0.077122
         },
         {
           "component": "tag_overlap",
           "label": "Tag overlap",
-          "weight": 0.23,
-          "similarity": 0.408451,
-          "contribution": 0.093944
+          "weight": 0.29,
+          "similarity": 0.237132,
+          "contribution": 0.068768
         }
       ],
       "score_breakdown": [
         {
           "component": "tempo",
           "label": "Tempo (BPM)",
-          "weight": 0.12,
-          "similarity": 0.884349,
-          "contribution": 0.106122
+          "weight": 0.03,
+          "similarity": 0.0,
+          "contribution": 0.0
         },
         {
           "component": "duration_ms",
           "label": "Duration match",
-          "weight": 0.08,
-          "similarity": 0.0,
-          "contribution": 0.0
+          "weight": 0.02,
+          "similarity": 0.311418,
+          "contribution": 0.006228
         },
         {
           "component": "key",
           "label": "Musical key",
-          "weight": 0.08,
-          "similarity": 0.024619,
-          "contribution": 0.00197
-        },
-        {
-          "component": "mode",
-          "label": "Mode (major/minor)",
-          "weight": 0.07,
+          "weight": 0.02,
           "similarity": 0.0,
           "contribution": 0.0
         },
         {
+          "component": "mode",
+          "label": "Mode (major/minor)",
+          "weight": 0.01,
+          "similarity": 0.26491,
+          "contribution": 0.002649
+        },
+        {
           "component": "lead_genre",
           "label": "Lead genre match",
-          "weight": 0.23,
+          "weight": 0.29,
           "similarity": 1.0,
-          "contribution": 0.23
+          "contribution": 0.29
         },
         {
           "component": "genre_overlap",
           "label": "Genre overlap",
-          "weight": 0.19,
-          "similarity": 0.491782,
-          "contribution": 0.093439
+          "weight": 0.24,
+          "similarity": 0.321343,
+          "contribution": 0.077122
         },
         {
           "component": "tag_overlap",
           "label": "Tag overlap",
-          "weight": 0.23,
-          "similarity": 0.408451,
-          "contribution": 0.093944
+          "weight": 0.29,
+          "similarity": 0.237132,
+          "contribution": 0.068768
+        },
+        {
+          "component": "danceability",
+          "label": "Danceability",
+          "weight": 0.04,
+          "similarity": 0.411707,
+          "contribution": 0.016468
+        },
+        {
+          "component": "energy",
+          "label": "Energy",
+          "weight": 0.03,
+          "similarity": 0.199687,
+          "contribution": 0.005991
+        },
+        {
+          "component": "valence",
+          "label": "Valence",
+          "weight": 0.03,
+          "similarity": 0.0,
+          "contribution": 0.0
         }
       ],
       "assembly_context": {
@@ -382,90 +466,111 @@
     },
     {
       "playlist_position": 5,
-      "track_id": "UuukSwwCli7ew9m5",
+      "track_id": "z1Yt0FxMHGcL8Esn",
       "lead_genre": "pop",
-      "final_score": 0.525466,
-      "score_rank": 483,
-      "why_selected": "Selected at playlist position 5 (score 0.5255) because it strongly matches the preference profile on Lead genre match, Tempo (BPM), Musical key. Lead genre is 'pop'.",
+      "final_score": 0.467216,
+      "score_rank": 3912,
+      "why_selected": "Selected at playlist position 5 (score 0.4672) because it strongly matches the preference profile on Lead genre match, Tag overlap, Genre overlap. Lead genre is 'pop'.",
       "primary_explanation_driver": {
         "component": "lead_genre",
         "label": "Lead genre match",
-        "weight": 0.23,
+        "weight": 0.29,
         "similarity": 1.0,
-        "contribution": 0.23
+        "contribution": 0.29
       },
       "top_score_contributors": [
         {
           "component": "lead_genre",
           "label": "Lead genre match",
-          "weight": 0.23,
+          "weight": 0.29,
           "similarity": 1.0,
-          "contribution": 0.23
+          "contribution": 0.29
         },
         {
-          "component": "tempo",
-          "label": "Tempo (BPM)",
-          "weight": 0.12,
-          "similarity": 0.843784,
-          "contribution": 0.101254
+          "component": "tag_overlap",
+          "label": "Tag overlap",
+          "weight": 0.29,
+          "similarity": 0.22854,
+          "contribution": 0.066277
         },
         {
-          "component": "key",
-          "label": "Musical key",
-          "weight": 0.08,
-          "similarity": 0.642048,
-          "contribution": 0.051364
+          "component": "genre_overlap",
+          "label": "Genre overlap",
+          "weight": 0.24,
+          "similarity": 0.275166,
+          "contribution": 0.06604
         }
       ],
       "score_breakdown": [
         {
           "component": "tempo",
           "label": "Tempo (BPM)",
-          "weight": 0.12,
-          "similarity": 0.843784,
-          "contribution": 0.101254
+          "weight": 0.03,
+          "similarity": 0.0,
+          "contribution": 0.0
         },
         {
           "component": "duration_ms",
           "label": "Duration match",
-          "weight": 0.08,
-          "similarity": 0.551282,
-          "contribution": 0.044103
+          "weight": 0.02,
+          "similarity": 0.0,
+          "contribution": 0.0
         },
         {
           "component": "key",
           "label": "Musical key",
-          "weight": 0.08,
-          "similarity": 0.642048,
-          "contribution": 0.051364
+          "weight": 0.02,
+          "similarity": 0.0,
+          "contribution": 0.0
         },
         {
           "component": "mode",
           "label": "Mode (major/minor)",
-          "weight": 0.07,
+          "weight": 0.01,
           "similarity": 0.26491,
-          "contribution": 0.018544
+          "contribution": 0.002649
         },
         {
           "component": "lead_genre",
           "label": "Lead genre match",
-          "weight": 0.23,
+          "weight": 0.29,
           "similarity": 1.0,
-          "contribution": 0.23
+          "contribution": 0.29
         },
         {
           "component": "genre_overlap",
           "label": "Genre overlap",
-          "weight": 0.19,
-          "similarity": 0.210486,
-          "contribution": 0.039992
+          "weight": 0.24,
+          "similarity": 0.275166,
+          "contribution": 0.06604
         },
         {
           "component": "tag_overlap",
           "label": "Tag overlap",
-          "weight": 0.23,
-          "similarity": 0.17482,
-          "contribution": 0.040209
+          "weight": 0.29,
+          "similarity": 0.22854,
+          "contribution": 0.066277
+        },
+        {
+          "component": "danceability",
+          "label": "Danceability",
+          "weight": 0.04,
+          "similarity": 0.98504,
+          "contribution": 0.039402
+        },
+        {
+          "component": "energy",
+          "label": "Energy",
+          "weight": 0.03,
+          "similarity": 0.0,
+          "contribution": 0.0
+        },
+        {
+          "component": "valence",
+          "label": "Valence",
+          "weight": 0.03,
+          "similarity": 0.09492,
+          "contribution": 0.002848
         }
       ],
       "assembly_context": {
@@ -476,184 +581,226 @@
     },
     {
       "playlist_position": 6,
-      "track_id": "3BoStRdOGMQv4GtU",
-      "lead_genre": "singer-songwriter",
-      "final_score": 0.487641,
-      "score_rank": 1231,
-      "why_selected": "Selected at playlist position 6 (score 0.4876) because it strongly matches the preference profile on Tag overlap, Genre overlap, Tempo (BPM). Lead genre is 'singer-songwriter'.",
+      "track_id": "3ltMH5jik02hVLDF",
+      "lead_genre": "classic rock",
+      "final_score": 0.466004,
+      "score_rank": 4089,
+      "why_selected": "Selected at playlist position 6 (score 0.4660) because it strongly matches the preference profile on Tag overlap, Genre overlap, Danceability. Lead genre is 'classic rock'.",
       "primary_explanation_driver": {
-        "component": "tempo",
-        "label": "Tempo (BPM)",
-        "weight": 0.12,
-        "similarity": 0.824518,
-        "contribution": 0.098942
+        "component": "genre_overlap",
+        "label": "Genre overlap",
+        "weight": 0.24,
+        "similarity": 0.665752,
+        "contribution": 0.15978
       },
       "top_score_contributors": [
         {
           "component": "tag_overlap",
           "label": "Tag overlap",
-          "weight": 0.23,
-          "similarity": 0.678034,
-          "contribution": 0.155948
+          "weight": 0.29,
+          "similarity": 0.633961,
+          "contribution": 0.183849
         },
         {
           "component": "genre_overlap",
           "label": "Genre overlap",
-          "weight": 0.19,
-          "similarity": 0.730432,
-          "contribution": 0.138782
+          "weight": 0.24,
+          "similarity": 0.665752,
+          "contribution": 0.15978
         },
         {
-          "component": "tempo",
-          "label": "Tempo (BPM)",
-          "weight": 0.12,
-          "similarity": 0.824518,
-          "contribution": 0.098942
+          "component": "danceability",
+          "label": "Danceability",
+          "weight": 0.04,
+          "similarity": 0.851707,
+          "contribution": 0.034068
         }
       ],
       "score_breakdown": [
         {
           "component": "tempo",
           "label": "Tempo (BPM)",
-          "weight": 0.12,
-          "similarity": 0.824518,
-          "contribution": 0.098942
+          "weight": 0.03,
+          "similarity": 0.999616,
+          "contribution": 0.029988
         },
         {
           "component": "duration_ms",
           "label": "Duration match",
-          "weight": 0.08,
-          "similarity": 0.942815,
-          "contribution": 0.075425
+          "weight": 0.02,
+          "similarity": 0.225048,
+          "contribution": 0.004501
         },
         {
           "component": "key",
           "label": "Musical key",
-          "weight": 0.08,
-          "similarity": 0.0,
-          "contribution": 0.0
+          "weight": 0.02,
+          "similarity": 0.691285,
+          "contribution": 0.013826
         },
         {
           "component": "mode",
           "label": "Mode (major/minor)",
-          "weight": 0.07,
+          "weight": 0.01,
           "similarity": 0.26491,
-          "contribution": 0.018544
+          "contribution": 0.002649
         },
         {
           "component": "lead_genre",
           "label": "Lead genre match",
-          "weight": 0.23,
+          "weight": 0.29,
           "similarity": 0.0,
           "contribution": 0.0
         },
         {
           "component": "genre_overlap",
           "label": "Genre overlap",
-          "weight": 0.19,
-          "similarity": 0.730432,
-          "contribution": 0.138782
+          "weight": 0.24,
+          "similarity": 0.665752,
+          "contribution": 0.15978
         },
         {
           "component": "tag_overlap",
           "label": "Tag overlap",
-          "weight": 0.23,
-          "similarity": 0.678034,
-          "contribution": 0.155948
+          "weight": 0.29,
+          "similarity": 0.633961,
+          "contribution": 0.183849
+        },
+        {
+          "component": "danceability",
+          "label": "Danceability",
+          "weight": 0.04,
+          "similarity": 0.851707,
+          "contribution": 0.034068
+        },
+        {
+          "component": "energy",
+          "label": "Energy",
+          "weight": 0.03,
+          "similarity": 0.579687,
+          "contribution": 0.017391
+        },
+        {
+          "component": "valence",
+          "label": "Valence",
+          "weight": 0.03,
+          "similarity": 0.66508,
+          "contribution": 0.019952
         }
       ],
       "assembly_context": {
         "decision": "included",
         "admission_rule": "Admitted on first evaluation",
-        "genre_at_position": "singer-songwriter"
+        "genre_at_position": "classic rock"
       }
     },
     {
       "playlist_position": 7,
-      "track_id": "3ltMH5jik02hVLDF",
+      "track_id": "CZOYJJKuyuUosACw",
       "lead_genre": "classic rock",
-      "final_score": 0.484109,
-      "score_rank": 1346,
-      "why_selected": "Selected at playlist position 7 (score 0.4841) because it strongly matches the preference profile on Tag overlap, Genre overlap, Tempo (BPM). Lead genre is 'classic rock'.",
+      "final_score": 0.453929,
+      "score_rank": 5808,
+      "why_selected": "Selected at playlist position 7 (score 0.4539) because it strongly matches the preference profile on Tag overlap, Genre overlap, Danceability. Lead genre is 'classic rock'.",
       "primary_explanation_driver": {
         "component": "tag_overlap",
         "label": "Tag overlap",
-        "weight": 0.23,
-        "similarity": 0.633961,
-        "contribution": 0.145811
+        "weight": 0.29,
+        "similarity": 0.624314,
+        "contribution": 0.181051
       },
       "top_score_contributors": [
         {
           "component": "tag_overlap",
           "label": "Tag overlap",
-          "weight": 0.23,
-          "similarity": 0.633961,
-          "contribution": 0.145811
+          "weight": 0.29,
+          "similarity": 0.624314,
+          "contribution": 0.181051
         },
         {
           "component": "genre_overlap",
           "label": "Genre overlap",
-          "weight": 0.19,
+          "weight": 0.24,
           "similarity": 0.665752,
-          "contribution": 0.126493
+          "contribution": 0.15978
         },
         {
-          "component": "tempo",
-          "label": "Tempo (BPM)",
-          "weight": 0.12,
-          "similarity": 0.999616,
-          "contribution": 0.119954
+          "component": "danceability",
+          "label": "Danceability",
+          "weight": 0.04,
+          "similarity": 0.951707,
+          "contribution": 0.038068
         }
       ],
       "score_breakdown": [
         {
           "component": "tempo",
           "label": "Tempo (BPM)",
-          "weight": 0.12,
-          "similarity": 0.999616,
-          "contribution": 0.119954
+          "weight": 0.03,
+          "similarity": 0.874584,
+          "contribution": 0.026238
         },
         {
           "component": "duration_ms",
           "label": "Duration match",
-          "weight": 0.08,
-          "similarity": 0.225048,
-          "contribution": 0.018004
+          "weight": 0.02,
+          "similarity": 0.0,
+          "contribution": 0.0
         },
         {
           "component": "key",
           "label": "Musical key",
-          "weight": 0.08,
-          "similarity": 0.691285,
-          "contribution": 0.055303
+          "weight": 0.02,
+          "similarity": 0.0,
+          "contribution": 0.0
         },
         {
           "component": "mode",
           "label": "Mode (major/minor)",
-          "weight": 0.07,
+          "weight": 0.01,
           "similarity": 0.26491,
-          "contribution": 0.018544
+          "contribution": 0.002649
         },
         {
           "component": "lead_genre",
           "label": "Lead genre match",
-          "weight": 0.23,
+          "weight": 0.29,
           "similarity": 0.0,
           "contribution": 0.0
         },
         {
           "component": "genre_overlap",
           "label": "Genre overlap",
-          "weight": 0.19,
+          "weight": 0.24,
           "similarity": 0.665752,
-          "contribution": 0.126493
+          "contribution": 0.15978
         },
         {
           "component": "tag_overlap",
           "label": "Tag overlap",
-          "weight": 0.23,
-          "similarity": 0.633961,
-          "contribution": 0.145811
+          "weight": 0.29,
+          "similarity": 0.624314,
+          "contribution": 0.181051
+        },
+        {
+          "component": "danceability",
+          "label": "Danceability",
+          "weight": 0.04,
+          "similarity": 0.951707,
+          "contribution": 0.038068
+        },
+        {
+          "component": "energy",
+          "label": "Energy",
+          "weight": 0.03,
+          "similarity": 0.799687,
+          "contribution": 0.023991
+        },
+        {
+          "component": "valence",
+          "label": "Valence",
+          "weight": 0.03,
+          "similarity": 0.738413,
+          "contribution": 0.022152
         }
       ],
       "assembly_context": {
@@ -664,284 +811,347 @@
     },
     {
       "playlist_position": 8,
-      "track_id": "D8u1nCspnPIixiZa",
-      "lead_genre": "classic rock",
-      "final_score": 0.474538,
-      "score_rank": 1658,
-      "why_selected": "Selected at playlist position 8 (score 0.4745) because it strongly matches the preference profile on Tag overlap, Genre overlap, Tempo (BPM). Lead genre is 'classic rock'.",
+      "track_id": "qob8Z8qGt0UR4JAs",
+      "lead_genre": "rock",
+      "final_score": 0.453251,
+      "score_rank": 5910,
+      "why_selected": "Selected at playlist position 8 (score 0.4533) because it strongly matches the preference profile on Tag overlap, Genre overlap, Danceability. Lead genre is 'rock'.",
       "primary_explanation_driver": {
         "component": "genre_overlap",
         "label": "Genre overlap",
-        "weight": 0.19,
-        "similarity": 0.665752,
-        "contribution": 0.126493
+        "weight": 0.24,
+        "similarity": 0.730432,
+        "contribution": 0.175304
       },
       "top_score_contributors": [
         {
           "component": "tag_overlap",
           "label": "Tag overlap",
-          "weight": 0.23,
-          "similarity": 0.624314,
-          "contribution": 0.143592
+          "weight": 0.29,
+          "similarity": 0.678034,
+          "contribution": 0.19663
         },
         {
           "component": "genre_overlap",
           "label": "Genre overlap",
-          "weight": 0.19,
-          "similarity": 0.665752,
-          "contribution": 0.126493
+          "weight": 0.24,
+          "similarity": 0.730432,
+          "contribution": 0.175304
         },
         {
-          "component": "tempo",
-          "label": "Tempo (BPM)",
-          "weight": 0.12,
-          "similarity": 0.794949,
-          "contribution": 0.095394
+          "component": "danceability",
+          "label": "Danceability",
+          "weight": 0.04,
+          "similarity": 0.92504,
+          "contribution": 0.037002
         }
       ],
       "score_breakdown": [
         {
           "component": "tempo",
           "label": "Tempo (BPM)",
-          "weight": 0.12,
-          "similarity": 0.794949,
-          "contribution": 0.095394
+          "weight": 0.03,
+          "similarity": 0.610682,
+          "contribution": 0.01832
         },
         {
           "component": "duration_ms",
           "label": "Duration match",
-          "weight": 0.08,
-          "similarity": 0.721185,
-          "contribution": 0.057695
+          "weight": 0.02,
+          "similarity": 0.259715,
+          "contribution": 0.005194
         },
         {
           "component": "key",
           "label": "Musical key",
-          "weight": 0.08,
-          "similarity": 0.642048,
-          "contribution": 0.051364
-        },
-        {
-          "component": "mode",
-          "label": "Mode (major/minor)",
-          "weight": 0.07,
+          "weight": 0.02,
           "similarity": 0.0,
           "contribution": 0.0
         },
         {
-          "component": "lead_genre",
-          "label": "Lead genre match",
-          "weight": 0.23,
-          "similarity": 0.0,
-          "contribution": 0.0
-        },
-        {
-          "component": "genre_overlap",
-          "label": "Genre overlap",
-          "weight": 0.19,
-          "similarity": 0.665752,
-          "contribution": 0.126493
-        },
-        {
-          "component": "tag_overlap",
-          "label": "Tag overlap",
-          "weight": 0.23,
-          "similarity": 0.624314,
-          "contribution": 0.143592
-        }
-      ],
-      "assembly_context": {
-        "decision": "included",
-        "admission_rule": "Admitted on first evaluation",
-        "genre_at_position": "classic rock"
-      }
-    },
-    {
-      "playlist_position": 9,
-      "track_id": "UNEBx6JIquhr2oea",
-      "lead_genre": "new wave",
-      "final_score": 0.454417,
-      "score_rank": 2459,
-      "why_selected": "Selected at playlist position 9 (score 0.4544) because it strongly matches the preference profile on Tag overlap, Genre overlap, Tempo (BPM). Lead genre is 'new wave'.",
-      "primary_explanation_driver": {
-        "component": "tempo",
-        "label": "Tempo (BPM)",
-        "weight": 0.12,
-        "similarity": 0.785118,
-        "contribution": 0.094214
-      },
-      "top_score_contributors": [
-        {
-          "component": "tag_overlap",
-          "label": "Tag overlap",
-          "weight": 0.23,
-          "similarity": 0.624314,
-          "contribution": 0.143592
-        },
-        {
-          "component": "genre_overlap",
-          "label": "Genre overlap",
-          "weight": 0.19,
-          "similarity": 0.665752,
-          "contribution": 0.126493
-        },
-        {
-          "component": "tempo",
-          "label": "Tempo (BPM)",
-          "weight": 0.12,
-          "similarity": 0.785118,
-          "contribution": 0.094214
-        }
-      ],
-      "score_breakdown": [
-        {
-          "component": "tempo",
-          "label": "Tempo (BPM)",
-          "weight": 0.12,
-          "similarity": 0.785118,
-          "contribution": 0.094214
-        },
-        {
-          "component": "duration_ms",
-          "label": "Duration match",
-          "weight": 0.08,
-          "similarity": 0.870052,
-          "contribution": 0.069604
-        },
-        {
-          "component": "key",
-          "label": "Musical key",
-          "weight": 0.08,
-          "similarity": 0.024619,
-          "contribution": 0.00197
-        },
-        {
           "component": "mode",
           "label": "Mode (major/minor)",
-          "weight": 0.07,
+          "weight": 0.01,
           "similarity": 0.26491,
-          "contribution": 0.018544
+          "contribution": 0.002649
         },
         {
           "component": "lead_genre",
           "label": "Lead genre match",
-          "weight": 0.23,
+          "weight": 0.29,
           "similarity": 0.0,
           "contribution": 0.0
         },
         {
           "component": "genre_overlap",
           "label": "Genre overlap",
-          "weight": 0.19,
-          "similarity": 0.665752,
-          "contribution": 0.126493
+          "weight": 0.24,
+          "similarity": 0.730432,
+          "contribution": 0.175304
         },
         {
           "component": "tag_overlap",
           "label": "Tag overlap",
-          "weight": 0.23,
-          "similarity": 0.624314,
-          "contribution": 0.143592
-        }
-      ],
-      "assembly_context": {
-        "decision": "included",
-        "admission_rule": "Admitted on first evaluation",
-        "genre_at_position": "new wave"
-      }
-    },
-    {
-      "playlist_position": 10,
-      "track_id": "8QjULlOeyqMiCPMr",
-      "lead_genre": "rock",
-      "final_score": 0.45395,
-      "score_rank": 2478,
-      "why_selected": "Selected at playlist position 10 (score 0.4540) because it strongly matches the preference profile on Tag overlap, Genre overlap, Tempo (BPM). Lead genre is 'rock'.",
-      "primary_explanation_driver": {
-        "component": "tag_overlap",
-        "label": "Tag overlap",
-        "weight": 0.23,
-        "similarity": 0.624314,
-        "contribution": 0.143592
-      },
-      "top_score_contributors": [
-        {
-          "component": "tag_overlap",
-          "label": "Tag overlap",
-          "weight": 0.23,
-          "similarity": 0.624314,
-          "contribution": 0.143592
+          "weight": 0.29,
+          "similarity": 0.678034,
+          "contribution": 0.19663
         },
         {
-          "component": "genre_overlap",
-          "label": "Genre overlap",
-          "weight": 0.19,
-          "similarity": 0.665752,
-          "contribution": 0.126493
+          "component": "danceability",
+          "label": "Danceability",
+          "weight": 0.04,
+          "similarity": 0.92504,
+          "contribution": 0.037002
         },
         {
-          "component": "tempo",
-          "label": "Tempo (BPM)",
-          "weight": 0.12,
-          "similarity": 0.847482,
-          "contribution": 0.101698
-        }
-      ],
-      "score_breakdown": [
-        {
-          "component": "tempo",
-          "label": "Tempo (BPM)",
-          "weight": 0.12,
-          "similarity": 0.847482,
-          "contribution": 0.101698
-        },
-        {
-          "component": "duration_ms",
-          "label": "Duration match",
-          "weight": 0.08,
-          "similarity": 0.795282,
-          "contribution": 0.063623
-        },
-        {
-          "component": "key",
-          "label": "Musical key",
-          "weight": 0.08,
+          "component": "energy",
+          "label": "Energy",
+          "weight": 0.03,
           "similarity": 0.0,
           "contribution": 0.0
         },
         {
-          "component": "mode",
-          "label": "Mode (major/minor)",
-          "weight": 0.07,
-          "similarity": 0.26491,
-          "contribution": 0.018544
-        },
-        {
-          "component": "lead_genre",
-          "label": "Lead genre match",
-          "weight": 0.23,
-          "similarity": 0.0,
-          "contribution": 0.0
-        },
-        {
-          "component": "genre_overlap",
-          "label": "Genre overlap",
-          "weight": 0.19,
-          "similarity": 0.665752,
-          "contribution": 0.126493
-        },
-        {
-          "component": "tag_overlap",
-          "label": "Tag overlap",
-          "weight": 0.23,
-          "similarity": 0.624314,
-          "contribution": 0.143592
+          "component": "valence",
+          "label": "Valence",
+          "weight": 0.03,
+          "similarity": 0.60508,
+          "contribution": 0.018152
         }
       ],
       "assembly_context": {
         "decision": "included",
         "admission_rule": "Admitted on first evaluation",
         "genre_at_position": "rock"
+      }
+    },
+    {
+      "playlist_position": 9,
+      "track_id": "klFSyJqiipFN08TK",
+      "lead_genre": "rock",
+      "final_score": 0.448464,
+      "score_rank": 6638,
+      "why_selected": "Selected at playlist position 9 (score 0.4485) because it strongly matches the preference profile on Tag overlap, Genre overlap, Danceability. Lead genre is 'rock'.",
+      "primary_explanation_driver": {
+        "component": "tag_overlap",
+        "label": "Tag overlap",
+        "weight": 0.29,
+        "similarity": 0.625473,
+        "contribution": 0.181387
+      },
+      "top_score_contributors": [
+        {
+          "component": "tag_overlap",
+          "label": "Tag overlap",
+          "weight": 0.29,
+          "similarity": 0.625473,
+          "contribution": 0.181387
+        },
+        {
+          "component": "genre_overlap",
+          "label": "Genre overlap",
+          "weight": 0.24,
+          "similarity": 0.665752,
+          "contribution": 0.15978
+        },
+        {
+          "component": "danceability",
+          "label": "Danceability",
+          "weight": 0.04,
+          "similarity": 0.728293,
+          "contribution": 0.029132
+        }
+      ],
+      "score_breakdown": [
+        {
+          "component": "tempo",
+          "label": "Tempo (BPM)",
+          "weight": 0.03,
+          "similarity": 0.914784,
+          "contribution": 0.027444
+        },
+        {
+          "component": "duration_ms",
+          "label": "Duration match",
+          "weight": 0.02,
+          "similarity": 0.813185,
+          "contribution": 0.016264
+        },
+        {
+          "component": "key",
+          "label": "Musical key",
+          "weight": 0.02,
+          "similarity": 0.0,
+          "contribution": 0.0
+        },
+        {
+          "component": "mode",
+          "label": "Mode (major/minor)",
+          "weight": 0.01,
+          "similarity": 0.0,
+          "contribution": 0.0
+        },
+        {
+          "component": "lead_genre",
+          "label": "Lead genre match",
+          "weight": 0.29,
+          "similarity": 0.0,
+          "contribution": 0.0
+        },
+        {
+          "component": "genre_overlap",
+          "label": "Genre overlap",
+          "weight": 0.24,
+          "similarity": 0.665752,
+          "contribution": 0.15978
+        },
+        {
+          "component": "tag_overlap",
+          "label": "Tag overlap",
+          "weight": 0.29,
+          "similarity": 0.625473,
+          "contribution": 0.181387
+        },
+        {
+          "component": "danceability",
+          "label": "Danceability",
+          "weight": 0.04,
+          "similarity": 0.728293,
+          "contribution": 0.029132
+        },
+        {
+          "component": "energy",
+          "label": "Energy",
+          "weight": 0.03,
+          "similarity": 0.920313,
+          "contribution": 0.027609
+        },
+        {
+          "component": "valence",
+          "label": "Valence",
+          "weight": 0.03,
+          "similarity": 0.228253,
+          "contribution": 0.006848
+        }
+      ],
+      "assembly_context": {
+        "decision": "included",
+        "admission_rule": "Admitted on first evaluation",
+        "genre_at_position": "rock"
+      }
+    },
+    {
+      "playlist_position": 10,
+      "track_id": "pw3itU5kFq2im468",
+      "lead_genre": "singer-songwriter",
+      "final_score": 0.447632,
+      "score_rank": 6776,
+      "why_selected": "Selected at playlist position 10 (score 0.4476) because it strongly matches the preference profile on Tag overlap, Genre overlap, Danceability. Lead genre is 'singer-songwriter'.",
+      "primary_explanation_driver": {
+        "component": "genre_overlap",
+        "label": "Genre overlap",
+        "weight": 0.24,
+        "similarity": 0.730432,
+        "contribution": 0.175304
+      },
+      "top_score_contributors": [
+        {
+          "component": "tag_overlap",
+          "label": "Tag overlap",
+          "weight": 0.29,
+          "similarity": 0.606661,
+          "contribution": 0.175932
+        },
+        {
+          "component": "genre_overlap",
+          "label": "Genre overlap",
+          "weight": 0.24,
+          "similarity": 0.730432,
+          "contribution": 0.175304
+        },
+        {
+          "component": "danceability",
+          "label": "Danceability",
+          "weight": 0.04,
+          "similarity": 0.74504,
+          "contribution": 0.029802
+        }
+      ],
+      "score_breakdown": [
+        {
+          "component": "tempo",
+          "label": "Tempo (BPM)",
+          "weight": 0.03,
+          "similarity": 0.672816,
+          "contribution": 0.020184
+        },
+        {
+          "component": "duration_ms",
+          "label": "Duration match",
+          "weight": 0.02,
+          "similarity": 0.0,
+          "contribution": 0.0
+        },
+        {
+          "component": "key",
+          "label": "Musical key",
+          "weight": 0.02,
+          "similarity": 0.0,
+          "contribution": 0.0
+        },
+        {
+          "component": "mode",
+          "label": "Mode (major/minor)",
+          "weight": 0.01,
+          "similarity": 0.26491,
+          "contribution": 0.002649
+        },
+        {
+          "component": "lead_genre",
+          "label": "Lead genre match",
+          "weight": 0.29,
+          "similarity": 0.0,
+          "contribution": 0.0
+        },
+        {
+          "component": "genre_overlap",
+          "label": "Genre overlap",
+          "weight": 0.24,
+          "similarity": 0.730432,
+          "contribution": 0.175304
+        },
+        {
+          "component": "tag_overlap",
+          "label": "Tag overlap",
+          "weight": 0.29,
+          "similarity": 0.606661,
+          "contribution": 0.175932
+        },
+        {
+          "component": "danceability",
+          "label": "Danceability",
+          "weight": 0.04,
+          "similarity": 0.74504,
+          "contribution": 0.029802
+        },
+        {
+          "component": "energy",
+          "label": "Energy",
+          "weight": 0.03,
+          "similarity": 0.593647,
+          "contribution": 0.017809
+        },
+        {
+          "component": "valence",
+          "label": "Valence",
+          "weight": 0.03,
+          "similarity": 0.86508,
+          "contribution": 0.025952
+        }
+      ],
+      "assembly_context": {
+        "decision": "included",
+        "admission_rule": "Admitted on first evaluation",
+        "genre_at_position": "singer-songwriter"
       }
     }
   ]

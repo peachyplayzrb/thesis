@@ -23,3 +23,7 @@ Before ending a chat where any work happened:
 
 ## Protected Scope
 Do not change thesis title, research question, scope boundaries, or methodology without explicit approval.
+
+## Cleanup Hygiene
+- Keep the repository root focused on canonical files only.
+- Move ad-hoc cleanup manifests, one-off scripts, and generated cleanup reports into a dated archive folder rather than leaving them in root.

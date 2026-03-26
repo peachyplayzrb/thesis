@@ -44,7 +44,7 @@ spotify_env_template.ps1
 # Spotify credentials env files (any bare env file)
 07_implementation/implementation_notes/bl001_bl002_ingestion/env
 
-# Spotify API export � large binary cache and large raw JSON exports
+# Spotify API export - large binary cache and large raw JSON exports
 07_implementation/implementation_notes/bl001_bl002_ingestion/outputs/spotify_api_export/spotify_resilience_cache.sqlite
 07_implementation/implementation_notes/bl001_bl002_ingestion/outputs/spotify_api_export/spotify_top_tracks_by_range.json
 07_implementation/implementation_notes/bl001_bl002_ingestion/outputs/spotify_api_export/spotify_saved_tracks.json
@@ -67,3 +67,10 @@ bl014_run_output.txt
 pipeline_run_output.txt
 pipeline_run_probe_v*_output.txt
 pipeline_run_probe_v*_refresh_output.txt
+
+# Local cleanup-operation artifacts (one-off manifests/reports/scripts)
+cleanup_*_manifest_*.txt
+cleanup_*_report_*.txt
+restore_from_cleanup_staging_*.ps1
+restore_from_cleanup_staging_*_report.txt
+_archive_cleanup_staging_*/

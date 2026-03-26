@@ -1,10 +1,10 @@
 {
   "run_metadata": {
-    "run_id": "BL011-CTRL-20260326-062103",
+    "run_id": "BL011-CTRL-20260326-205932",
     "task": "BL-011",
-    "generated_at_utc": "2026-03-26T06:22:15Z",
-    "elapsed_seconds": 71.976,
-    "baseline_config_hash": "C5B02AEB8F125DF859E964774175EFA613ED2FC6E3529E03AACF374389DCF1B2",
+    "generated_at_utc": "2026-03-26T21:00:15Z",
+    "elapsed_seconds": 42.746,
+    "baseline_config_hash": "99C9672FE67C112A4679F900CD8904792EF69C7E6970C03B6CA8D495E12BFFA2",
     "scenario_count": 5
   },
   "inputs": {
@@ -44,7 +44,7 @@
       "description": "BL-010 fixed baseline carried forward unchanged for BL-011 comparisons.",
       "expected_effect": "reference",
       "repeat_consistent": true,
-      "config_hash": "216A40333FFC9F4EE2A8CAE667D016416EF27A98E09F83FD4123A0341E0FC6A8",
+      "config_hash": "7C1E067E227038DF9F7A25D7C9CA0E6B5A89475F057208EDC17767F9E464802A",
       "effective_config": {
         "scenario_id": "baseline",
         "test_id": "baseline",
@@ -64,8 +64,8 @@
             "duration_ms"
           ],
           "top_tag_limit": 10,
-          "top_genre_limit": 8,
-          "top_lead_genre_limit": 6,
+          "top_genre_limit": 10,
+          "top_lead_genre_limit": 10,
           "aggregation_rules": {
             "numeric": "weighted mean over numeric columns embedded in the BL-003 enriched seed table; key uses weighted circular mean on the 12-semitone wheel",
             "tags": "sum(preference_weight) over DS-001 tag labels",
@@ -83,28 +83,37 @@
           "top_genre_limit": 8,
           "threshold_scale": 1.0,
           "numeric_thresholds": {
-            "tempo": 20.0,
-            "key": 2.0,
+            "danceability": 0.15,
+            "energy": 0.15,
+            "valence": 0.15,
+            "tempo": 15.0,
+            "key": 1.5,
             "mode": 0.5,
-            "duration_ms": 45000.0
+            "duration_ms": 30000.0
           },
-          "keep_rule": "keep if not seed and (semantic_score >= 2 or (semantic_score >= 1 and numeric_pass_count >= 1))"
+          "keep_rule": "keep if not seed and (semantic_score >= 3 or (semantic_score >= 1 and numeric_pass_count >= 4))"
         },
         "scoring": {
           "numeric_thresholds": {
-            "tempo": 20.0,
-            "key": 2.0,
+            "danceability": 0.15,
+            "energy": 0.15,
+            "valence": 0.15,
+            "tempo": 15.0,
+            "key": 1.5,
             "mode": 0.5,
-            "duration_ms": 45000.0
+            "duration_ms": 30000.0
           },
           "component_weights": {
-            "tempo": 0.2,
-            "duration_ms": 0.13,
-            "key": 0.13,
-            "mode": 0.09,
-            "lead_genre": 0.17,
-            "genre_overlap": 0.12,
-            "tag_overlap": 0.16
+            "danceability": 0.04,
+            "energy": 0.03,
+            "valence": 0.03,
+            "tempo": 0.03,
+            "duration_ms": 0.02,
+            "key": 0.02,
+            "mode": 0.01,
+            "lead_genre": 0.29,
+            "genre_overlap": 0.24,
+            "tag_overlap": 0.29
           },
           "weight_override_component": null,
           "raw_override_value": null
@@ -117,43 +126,43 @@
         }
       },
       "stable_hashes": {
-        "profile_semantic_hash": "FD49063C4E0832B8E55596A93195DA3840EEAF145A9FB60A1424AF7FFAF29512",
+        "profile_semantic_hash": "94CFED659305FD974F9A288D2D2A4400C06E9241A84543888096D372808A19A6",
         "seed_trace_hash": "E261BFD26A1F38AC79EB90016CD35258AC088E626968E267051204990B7543CF",
-        "filtered_candidates_hash": "6D50A0B05CFC2A63FC7175E74DF6CD05CD0A6FB378A82793606CDAF9C290D8B8",
-        "candidate_decisions_hash": "6516A6F13B0D7CFF3B91BA306ACEA28865B4DBB386AD703DB30B06509B2DBB5D",
-        "ranked_output_hash": "AEA12BEC87ECBFED52C699E80590F3C9C518BE36DF68BDE4094FF940F8E53C07",
-        "assembly_trace_hash": "31A8F812F5BE8287BA552D08E5399D5A5138A5E7169ACFEA7F591D913959E38D",
-        "playlist_output_hash": "5C2D7B20FAECA376107AEED3772E54980FE1E6A0A86CB801BFF9F076D8B0D0AF"
+        "filtered_candidates_hash": "8FBCF76FE9F49BC70B7FA7C52CF28C171879F0D5A4D2BE7B6C0E9D591D788CAC",
+        "candidate_decisions_hash": "749DD67651CAC92BAC89AA7F935BA97321EAA811BD8100A28CDFD2E5EB11FA14",
+        "ranked_output_hash": "B05F1F2292783026BD65B67F84FE8D66623242735D7DAFD3E88A8A2D3295561C",
+        "assembly_trace_hash": "2BA1431F59A226380C8F2B2FB9CE4840DC6C20CB1ACCB070C37A6E1494182BD2",
+        "playlist_output_hash": "A73E400C081F6A4F70B0ED2CA5325232D0740B3CA2C76F014359BFC3580881F8"
       },
       "metrics": {
         "selected_event_count": 1064,
         "matched_seed_count": 1064,
-        "candidate_pool_size": 70212,
-        "scored_candidate_count": 70212,
+        "candidate_pool_size": 33096,
+        "scored_candidate_count": 33096,
         "playlist_length": 10,
         "top10_track_ids": [
-          "CaR8UnowNJUR5Dib",
-          "hU7yckCKoiTkHjwi",
-          "yEz9rqTTulkiDDm7",
-          "rqeIltq5ixzHA5EG",
-          "M3ApGs7RGZwXHqs4",
-          "o27WwIo8F6fMirMs",
-          "lGnkOkQSUQO175Qg",
-          "e98AmnGlnVfAJhKM",
-          "8fDlJsjie4DoFMV0",
-          "kJa0UEVtgRvCJiXS"
+          "phL12CBijBqwQ9qB",
+          "2rf5nW2Fb8gMnz9l",
+          "CZOYJJKuyuUosACw",
+          "SlF31W7VgEooOonD",
+          "9jb6ZoImYLfUL8hu",
+          "3ltMH5jik02hVLDF",
+          "zyxOCKcXX1RmWpm0",
+          "Ja6sG7NsgUKEI63U",
+          "CavT1tWCp1sJDnbQ",
+          "lGnkOkQSUQO175Qg"
         ],
         "playlist_track_ids": [
-          "CaR8UnowNJUR5Dib",
-          "hU7yckCKoiTkHjwi",
-          "yEz9rqTTulkiDDm7",
-          "rqeIltq5ixzHA5EG",
-          "M3ApGs7RGZwXHqs4",
-          "o27WwIo8F6fMirMs",
-          "dv1r49qWV1haZtYv",
-          "rS5ARhXgTnEK4gwS",
-          "V1eO74AwUM3SBovw",
-          "Xh9f0R2Q7wJMaxhy"
+          "phL12CBijBqwQ9qB",
+          "2rf5nW2Fb8gMnz9l",
+          "CZOYJJKuyuUosACw",
+          "SlF31W7VgEooOonD",
+          "9jb6ZoImYLfUL8hu",
+          "3ltMH5jik02hVLDF",
+          "XsWkrl7dkqytg10B",
+          "qob8Z8qGt0UR4JAs",
+          "R5QTSwYR0IDQ6w6c",
+          "klFSyJqiipFN08TK"
         ],
         "dominant_lead_genres": [
           "pop",
@@ -170,13 +179,16 @@
           "alternative"
         ],
         "mean_component_contributions": {
-          "tempo": 0.057554,
-          "duration_ms": 0.039121,
-          "key": 0.020614,
-          "mode": 0.015406,
-          "lead_genre": 0.060872,
-          "genre_overlap": 0.024948,
-          "tag_overlap": 0.030219
+          "danceability": 0.017635,
+          "energy": 0.007967,
+          "valence": 0.007901,
+          "tempo": 0.009093,
+          "duration_ms": 0.005558,
+          "key": 0.002907,
+          "mode": 0.001961,
+          "lead_genre": 0.155442,
+          "genre_overlap": 0.060938,
+          "tag_overlap": 0.064538
         },
         "playlist_genre_mix": {
           "classic rock": 4,
@@ -212,6 +224,9 @@
           "rap"
         ],
         "component_mean_delta": {
+          "danceability": 0.0,
+          "energy": 0.0,
+          "valence": 0.0,
           "tempo": 0.0,
           "duration_ms": 0.0,
           "key": 0.0,
@@ -221,7 +236,7 @@
           "tag_overlap": 0.0
         },
         "rank_shift_summary": {
-          "common_candidate_count": 70212,
+          "common_candidate_count": 33096,
           "mean_abs_rank_delta": 0.0,
           "max_rank_improvement": 0,
           "max_rank_drop": 0,
@@ -238,7 +253,7 @@
       "description": "Disable influence-track interactions while keeping all other inputs and parameters fixed.",
       "expected_effect": "profile and ranking shift away from influence-steered indie/alternative emphasis",
       "repeat_consistent": true,
-      "config_hash": "18A5C3AD5B6EC84B16822BC2B1580FF72C379D571DF4DE0E79E4ABEFBAF0DBEB",
+      "config_hash": "CA17A0EB49893911930DCBBB5C2E9E2DDA44E0563AC7F0CBEEBEA55FD5DE2A87",
       "effective_config": {
         "scenario_id": "no_influence_tracks",
         "test_id": "EP-CTRL-001",
@@ -258,8 +273,8 @@
             "duration_ms"
           ],
           "top_tag_limit": 10,
-          "top_genre_limit": 8,
-          "top_lead_genre_limit": 6,
+          "top_genre_limit": 10,
+          "top_lead_genre_limit": 10,
           "aggregation_rules": {
             "numeric": "weighted mean over numeric columns embedded in the BL-003 enriched seed table; key uses weighted circular mean on the 12-semitone wheel",
             "tags": "sum(preference_weight) over DS-001 tag labels",
@@ -276,28 +291,37 @@
           "top_genre_limit": 8,
           "threshold_scale": 1.0,
           "numeric_thresholds": {
-            "tempo": 20.0,
-            "key": 2.0,
+            "danceability": 0.15,
+            "energy": 0.15,
+            "valence": 0.15,
+            "tempo": 15.0,
+            "key": 1.5,
             "mode": 0.5,
-            "duration_ms": 45000.0
+            "duration_ms": 30000.0
           },
-          "keep_rule": "keep if not seed and (semantic_score >= 2 or (semantic_score >= 1 and numeric_pass_count >= 1))"
+          "keep_rule": "keep if not seed and (semantic_score >= 3 or (semantic_score >= 1 and numeric_pass_count >= 4))"
         },
         "scoring": {
           "numeric_thresholds": {
-            "tempo": 20.0,
-            "key": 2.0,
+            "danceability": 0.15,
+            "energy": 0.15,
+            "valence": 0.15,
+            "tempo": 15.0,
+            "key": 1.5,
             "mode": 0.5,
-            "duration_ms": 45000.0
+            "duration_ms": 30000.0
           },
           "component_weights": {
-            "tempo": 0.2,
-            "duration_ms": 0.13,
-            "key": 0.13,
-            "mode": 0.09,
-            "lead_genre": 0.17,
-            "genre_overlap": 0.12,
-            "tag_overlap": 0.16
+            "danceability": 0.04,
+            "energy": 0.03,
+            "valence": 0.03,
+            "tempo": 0.03,
+            "duration_ms": 0.02,
+            "key": 0.02,
+            "mode": 0.01,
+            "lead_genre": 0.29,
+            "genre_overlap": 0.24,
+            "tag_overlap": 0.29
           },
           "weight_override_component": null,
           "raw_override_value": null
@@ -310,43 +334,43 @@
         }
       },
       "stable_hashes": {
-        "profile_semantic_hash": "1068212D12FDFFB50D996A2732AA3A99B07ACA515755E6A6A2D17D66C9F67176",
+        "profile_semantic_hash": "2FFBB930E004D5A579BBF74ABEB1193065F043005F8C4CDC0495B096173AB42C",
         "seed_trace_hash": "E261BFD26A1F38AC79EB90016CD35258AC088E626968E267051204990B7543CF",
-        "filtered_candidates_hash": "6D50A0B05CFC2A63FC7175E74DF6CD05CD0A6FB378A82793606CDAF9C290D8B8",
-        "candidate_decisions_hash": "6516A6F13B0D7CFF3B91BA306ACEA28865B4DBB386AD703DB30B06509B2DBB5D",
-        "ranked_output_hash": "AEA12BEC87ECBFED52C699E80590F3C9C518BE36DF68BDE4094FF940F8E53C07",
-        "assembly_trace_hash": "31A8F812F5BE8287BA552D08E5399D5A5138A5E7169ACFEA7F591D913959E38D",
-        "playlist_output_hash": "5C2D7B20FAECA376107AEED3772E54980FE1E6A0A86CB801BFF9F076D8B0D0AF"
+        "filtered_candidates_hash": "8FBCF76FE9F49BC70B7FA7C52CF28C171879F0D5A4D2BE7B6C0E9D591D788CAC",
+        "candidate_decisions_hash": "749DD67651CAC92BAC89AA7F935BA97321EAA811BD8100A28CDFD2E5EB11FA14",
+        "ranked_output_hash": "B05F1F2292783026BD65B67F84FE8D66623242735D7DAFD3E88A8A2D3295561C",
+        "assembly_trace_hash": "2BA1431F59A226380C8F2B2FB9CE4840DC6C20CB1ACCB070C37A6E1494182BD2",
+        "playlist_output_hash": "A73E400C081F6A4F70B0ED2CA5325232D0740B3CA2C76F014359BFC3580881F8"
       },
       "metrics": {
         "selected_event_count": 1064,
         "matched_seed_count": 1064,
-        "candidate_pool_size": 70212,
-        "scored_candidate_count": 70212,
+        "candidate_pool_size": 33096,
+        "scored_candidate_count": 33096,
         "playlist_length": 10,
         "top10_track_ids": [
-          "CaR8UnowNJUR5Dib",
-          "hU7yckCKoiTkHjwi",
-          "yEz9rqTTulkiDDm7",
-          "rqeIltq5ixzHA5EG",
-          "M3ApGs7RGZwXHqs4",
-          "o27WwIo8F6fMirMs",
-          "lGnkOkQSUQO175Qg",
-          "e98AmnGlnVfAJhKM",
-          "8fDlJsjie4DoFMV0",
-          "kJa0UEVtgRvCJiXS"
+          "phL12CBijBqwQ9qB",
+          "2rf5nW2Fb8gMnz9l",
+          "CZOYJJKuyuUosACw",
+          "SlF31W7VgEooOonD",
+          "9jb6ZoImYLfUL8hu",
+          "3ltMH5jik02hVLDF",
+          "zyxOCKcXX1RmWpm0",
+          "Ja6sG7NsgUKEI63U",
+          "CavT1tWCp1sJDnbQ",
+          "lGnkOkQSUQO175Qg"
         ],
         "playlist_track_ids": [
-          "CaR8UnowNJUR5Dib",
-          "hU7yckCKoiTkHjwi",
-          "yEz9rqTTulkiDDm7",
-          "rqeIltq5ixzHA5EG",
-          "M3ApGs7RGZwXHqs4",
-          "o27WwIo8F6fMirMs",
-          "dv1r49qWV1haZtYv",
-          "rS5ARhXgTnEK4gwS",
-          "V1eO74AwUM3SBovw",
-          "Xh9f0R2Q7wJMaxhy"
+          "phL12CBijBqwQ9qB",
+          "2rf5nW2Fb8gMnz9l",
+          "CZOYJJKuyuUosACw",
+          "SlF31W7VgEooOonD",
+          "9jb6ZoImYLfUL8hu",
+          "3ltMH5jik02hVLDF",
+          "XsWkrl7dkqytg10B",
+          "qob8Z8qGt0UR4JAs",
+          "R5QTSwYR0IDQ6w6c",
+          "klFSyJqiipFN08TK"
         ],
         "dominant_lead_genres": [
           "pop",
@@ -363,13 +387,16 @@
           "alternative"
         ],
         "mean_component_contributions": {
-          "tempo": 0.057554,
-          "duration_ms": 0.039121,
-          "key": 0.020614,
-          "mode": 0.015406,
-          "lead_genre": 0.060872,
-          "genre_overlap": 0.024948,
-          "tag_overlap": 0.030219
+          "danceability": 0.017635,
+          "energy": 0.007967,
+          "valence": 0.007901,
+          "tempo": 0.009093,
+          "duration_ms": 0.005558,
+          "key": 0.002907,
+          "mode": 0.001961,
+          "lead_genre": 0.155442,
+          "genre_overlap": 0.060938,
+          "tag_overlap": 0.064538
         },
         "playlist_genre_mix": {
           "classic rock": 4,
@@ -405,16 +432,19 @@
           "rap"
         ],
         "component_mean_delta": {
+          "danceability": 0.0,
           "duration_ms": 0.0,
+          "energy": 0.0,
           "genre_overlap": 0.0,
           "key": 0.0,
           "lead_genre": 0.0,
           "mode": 0.0,
           "tag_overlap": 0.0,
-          "tempo": 0.0
+          "tempo": 0.0,
+          "valence": 0.0
         },
         "rank_shift_summary": {
-          "common_candidate_count": 70212,
+          "common_candidate_count": 33096,
           "mean_abs_rank_delta": 0.0,
           "max_rank_improvement": 0,
           "max_rank_drop": 0,
@@ -431,7 +461,7 @@
       "description": "Increase one score-component raw weight and renormalize all score weights to preserve a 1.0 total.",
       "expected_effect": "tracks with stronger fit on the boosted component should gain score contribution and rank position",
       "repeat_consistent": true,
-      "config_hash": "1A2283E01F29AD6D9DEC76BD381C3AAC77DD1CA840C5212F6DFD6391FD62C7D2",
+      "config_hash": "A84C43FA63456586C173226AA15B89B63D0AEAD49CB135F8BA404922D760022F",
       "effective_config": {
         "scenario_id": "valence_weight_up",
         "test_id": "EP-CTRL-002",
@@ -451,8 +481,8 @@
             "duration_ms"
           ],
           "top_tag_limit": 10,
-          "top_genre_limit": 8,
-          "top_lead_genre_limit": 6,
+          "top_genre_limit": 10,
+          "top_lead_genre_limit": 10,
           "aggregation_rules": {
             "numeric": "weighted mean over numeric columns embedded in the BL-003 enriched seed table; key uses weighted circular mean on the 12-semitone wheel",
             "tags": "sum(preference_weight) over DS-001 tag labels",
@@ -470,31 +500,40 @@
           "top_genre_limit": 8,
           "threshold_scale": 1.0,
           "numeric_thresholds": {
-            "tempo": 20.0,
-            "key": 2.0,
+            "danceability": 0.15,
+            "energy": 0.15,
+            "valence": 0.15,
+            "tempo": 15.0,
+            "key": 1.5,
             "mode": 0.5,
-            "duration_ms": 45000.0
+            "duration_ms": 30000.0
           },
-          "keep_rule": "keep if not seed and (semantic_score >= 2 or (semantic_score >= 1 and numeric_pass_count >= 1))"
+          "keep_rule": "keep if not seed and (semantic_score >= 3 or (semantic_score >= 1 and numeric_pass_count >= 4))"
         },
         "scoring": {
           "numeric_thresholds": {
-            "tempo": 20.0,
-            "key": 2.0,
+            "danceability": 0.15,
+            "energy": 0.15,
+            "valence": 0.15,
+            "tempo": 15.0,
+            "key": 1.5,
             "mode": 0.5,
-            "duration_ms": 45000.0
+            "duration_ms": 30000.0
           },
           "component_weights": {
-            "tempo": 0.25926,
-            "duration_ms": 0.12037,
-            "key": 0.12037,
-            "mode": 0.083333,
-            "lead_genre": 0.157407,
-            "genre_overlap": 0.111111,
-            "tag_overlap": 0.148148
+            "danceability": 0.034188,
+            "energy": 0.025641,
+            "valence": 0.17094,
+            "tempo": 0.025641,
+            "duration_ms": 0.017094,
+            "key": 0.017094,
+            "mode": 0.008547,
+            "lead_genre": 0.247863,
+            "genre_overlap": 0.205128,
+            "tag_overlap": 0.247863
           },
-          "weight_override_component": "tempo",
-          "raw_override_value": 0.28
+          "weight_override_component": "valence",
+          "raw_override_value": 0.2
         },
         "assembly": {
           "target_size": 10,
@@ -504,43 +543,43 @@
         }
       },
       "stable_hashes": {
-        "profile_semantic_hash": "FD49063C4E0832B8E55596A93195DA3840EEAF145A9FB60A1424AF7FFAF29512",
+        "profile_semantic_hash": "94CFED659305FD974F9A288D2D2A4400C06E9241A84543888096D372808A19A6",
         "seed_trace_hash": "E261BFD26A1F38AC79EB90016CD35258AC088E626968E267051204990B7543CF",
-        "filtered_candidates_hash": "6D50A0B05CFC2A63FC7175E74DF6CD05CD0A6FB378A82793606CDAF9C290D8B8",
-        "candidate_decisions_hash": "6516A6F13B0D7CFF3B91BA306ACEA28865B4DBB386AD703DB30B06509B2DBB5D",
-        "ranked_output_hash": "91C344C85F5CF74B15665DCC496F50C1DCFF7376D5D43054E47193DD77EE2DC9",
-        "assembly_trace_hash": "CDDD83E1957273F6A4F20E747192B5D6C140CA4E2D5E8203F89831FE96C0F7D4",
-        "playlist_output_hash": "6C23B34890C48F3641F5A6A5723EC0D77F166A2434F74562C06E85C6C4D149CB"
+        "filtered_candidates_hash": "8FBCF76FE9F49BC70B7FA7C52CF28C171879F0D5A4D2BE7B6C0E9D591D788CAC",
+        "candidate_decisions_hash": "749DD67651CAC92BAC89AA7F935BA97321EAA811BD8100A28CDFD2E5EB11FA14",
+        "ranked_output_hash": "EC0CD5A0FA2DDD64A827ECBEE6F7C7E4B569337EE102DF296FBDBB11EE2241A3",
+        "assembly_trace_hash": "44CA9737BEAF47DF3545538765884AD0BC47E8970380476CA10F62FB1E608643",
+        "playlist_output_hash": "600021D1023A89BA2490847255E9DCFB71D95D0D4AB53570D162F855A3F806BB"
       },
       "metrics": {
         "selected_event_count": 1064,
         "matched_seed_count": 1064,
-        "candidate_pool_size": 70212,
-        "scored_candidate_count": 70212,
+        "candidate_pool_size": 33096,
+        "scored_candidate_count": 33096,
         "playlist_length": 10,
         "top10_track_ids": [
-          "CaR8UnowNJUR5Dib",
-          "hU7yckCKoiTkHjwi",
-          "yEz9rqTTulkiDDm7",
-          "rqeIltq5ixzHA5EG",
-          "M3ApGs7RGZwXHqs4",
-          "o27WwIo8F6fMirMs",
-          "lGnkOkQSUQO175Qg",
-          "e98AmnGlnVfAJhKM",
-          "8fDlJsjie4DoFMV0",
-          "ry7KVHYQ10CXYDmE"
+          "phL12CBijBqwQ9qB",
+          "2rf5nW2Fb8gMnz9l",
+          "CavT1tWCp1sJDnbQ",
+          "7VDI0wKUupDGhZHo",
+          "CZOYJJKuyuUosACw",
+          "qWKJFJO5nFfEQuZM",
+          "SlF31W7VgEooOonD",
+          "rX7qhjhfQlLsJC4M",
+          "5c9fu0pBIl9QUmed",
+          "Keuox6QeZE3Su469"
         ],
         "playlist_track_ids": [
-          "CaR8UnowNJUR5Dib",
-          "hU7yckCKoiTkHjwi",
-          "yEz9rqTTulkiDDm7",
-          "rqeIltq5ixzHA5EG",
-          "M3ApGs7RGZwXHqs4",
-          "o27WwIo8F6fMirMs",
-          "ry7KVHYQ10CXYDmE",
-          "rS5ARhXgTnEK4gwS",
-          "65Mp5rxG0Bjd0Fpr",
-          "V1eO74AwUM3SBovw"
+          "phL12CBijBqwQ9qB",
+          "2rf5nW2Fb8gMnz9l",
+          "7VDI0wKUupDGhZHo",
+          "CZOYJJKuyuUosACw",
+          "qWKJFJO5nFfEQuZM",
+          "SlF31W7VgEooOonD",
+          "3ltMH5jik02hVLDF",
+          "vAULotbx5RBKgmA0",
+          "iUcyvVWtHhpX0kyd",
+          "vCMtou9JWlsx5c6B"
         ],
         "dominant_lead_genres": [
           "pop",
@@ -557,13 +596,16 @@
           "alternative"
         ],
         "mean_component_contributions": {
-          "tempo": 0.074608,
-          "duration_ms": 0.036223,
-          "key": 0.019087,
-          "mode": 0.014265,
-          "lead_genre": 0.056363,
-          "genre_overlap": 0.0231,
-          "tag_overlap": 0.027981
+          "danceability": 0.015073,
+          "energy": 0.006809,
+          "valence": 0.04502,
+          "tempo": 0.007772,
+          "duration_ms": 0.004751,
+          "key": 0.002485,
+          "mode": 0.001676,
+          "lead_genre": 0.132856,
+          "genre_overlap": 0.052084,
+          "tag_overlap": 0.055161
         },
         "playlist_genre_mix": {
           "classic rock": 4,
@@ -576,23 +618,37 @@
         "expected_direction_met": true,
         "candidate_pool_size_delta": 0,
         "playlist_length_delta": 0,
-        "top10_overlap_count": 9,
-        "top10_overlap_ratio": 0.9,
-        "playlist_overlap_count": 8,
-        "playlist_overlap_ratio": 0.8,
+        "top10_overlap_count": 5,
+        "top10_overlap_ratio": 0.5,
+        "playlist_overlap_count": 5,
+        "playlist_overlap_ratio": 0.5,
         "top10_added_track_ids": [
-          "ry7KVHYQ10CXYDmE"
+          "7VDI0wKUupDGhZHo",
+          "qWKJFJO5nFfEQuZM",
+          "rX7qhjhfQlLsJC4M",
+          "5c9fu0pBIl9QUmed",
+          "Keuox6QeZE3Su469"
         ],
         "top10_removed_track_ids": [
-          "kJa0UEVtgRvCJiXS"
+          "9jb6ZoImYLfUL8hu",
+          "3ltMH5jik02hVLDF",
+          "zyxOCKcXX1RmWpm0",
+          "Ja6sG7NsgUKEI63U",
+          "lGnkOkQSUQO175Qg"
         ],
         "playlist_added_track_ids": [
-          "ry7KVHYQ10CXYDmE",
-          "65Mp5rxG0Bjd0Fpr"
+          "7VDI0wKUupDGhZHo",
+          "qWKJFJO5nFfEQuZM",
+          "vAULotbx5RBKgmA0",
+          "iUcyvVWtHhpX0kyd",
+          "vCMtou9JWlsx5c6B"
         ],
         "playlist_removed_track_ids": [
-          "dv1r49qWV1haZtYv",
-          "Xh9f0R2Q7wJMaxhy"
+          "9jb6ZoImYLfUL8hu",
+          "XsWkrl7dkqytg10B",
+          "qob8Z8qGt0UR4JAs",
+          "R5QTSwYR0IDQ6w6c",
+          "klFSyJqiipFN08TK"
         ],
         "profile_lead_genres_before": [
           "pop",
@@ -609,81 +665,84 @@
           "rap"
         ],
         "component_mean_delta": {
-          "duration_ms": -0.002898,
-          "genre_overlap": -0.001848,
-          "key": -0.001527,
-          "lead_genre": -0.004509,
-          "mode": -0.001141,
-          "tag_overlap": -0.002238,
-          "tempo": 0.017054
+          "danceability": -0.002562,
+          "duration_ms": -0.000807,
+          "energy": -0.001158,
+          "genre_overlap": -0.008854,
+          "key": -0.000422,
+          "lead_genre": -0.022586,
+          "mode": -0.000285,
+          "tag_overlap": -0.009377,
+          "tempo": -0.001321,
+          "valence": 0.037119
         },
         "rank_shift_summary": {
-          "common_candidate_count": 70212,
-          "mean_abs_rank_delta": 2562.036,
-          "max_rank_improvement": 10825,
-          "max_rank_drop": -4968,
+          "common_candidate_count": 33096,
+          "mean_abs_rank_delta": 2876.321,
+          "max_rank_improvement": 11734,
+          "max_rank_drop": -4439,
           "top_risers": [
             {
-              "track_id": "5zTWmvcxNgYJ7DEg",
-              "baseline_rank": 41973,
-              "scenario_rank": 31148,
-              "rank_delta": 10825
+              "track_id": "l10rkWqpcaz3cLp2",
+              "baseline_rank": 17573,
+              "scenario_rank": 5839,
+              "rank_delta": 11734
             },
             {
-              "track_id": "ywF8kHDg69ULnWyi",
-              "baseline_rank": 41981,
-              "scenario_rank": 31171,
-              "rank_delta": 10810
+              "track_id": "z2wOwPupQX2gosby",
+              "baseline_rank": 17495,
+              "scenario_rank": 5816,
+              "rank_delta": 11679
             },
             {
-              "track_id": "bfkF9g1GwssSyZLn",
-              "baseline_rank": 41825,
-              "scenario_rank": 31034,
-              "rank_delta": 10791
+              "track_id": "E8ItfdoGAywJzOvF",
+              "baseline_rank": 17457,
+              "scenario_rank": 5803,
+              "rank_delta": 11654
             },
             {
-              "track_id": "CVki2vQQAo4Muo78",
-              "baseline_rank": 42892,
-              "scenario_rank": 32115,
-              "rank_delta": 10777
+              "track_id": "GhEQ23sueL3o5Mao",
+              "baseline_rank": 16633,
+              "scenario_rank": 4985,
+              "rank_delta": 11648
             },
             {
-              "track_id": "Vsenxy9RVDPKEFEA",
-              "baseline_rank": 42608,
-              "scenario_rank": 31888,
-              "rank_delta": 10720
+              "track_id": "wA5ugyFhsZY9cweN",
+              "baseline_rank": 16634,
+              "scenario_rank": 4986,
+              "rank_delta": 11648
             }
           ],
           "top_fallers": [
             {
-              "track_id": "Bw5of18S5GxTFAso",
-              "baseline_rank": 25097,
-              "scenario_rank": 30065,
-              "rank_delta": -4968
+              "track_id": "5HsgZD8nSKlQxrVd",
+              "baseline_rank": 4221,
+              "scenario_rank": 8660,
+              "rank_delta": -4439
             },
             {
-              "track_id": "6FI00MtSDZMhewT8",
-              "baseline_rank": 25091,
-              "scenario_rank": 30058,
-              "rank_delta": -4967
+              "track_id": "pfXFB70SWskHgsIi",
+              "baseline_rank": 4217,
+              "scenario_rank": 8655,
+              "rank_delta": -4438
             },
             {
-              "track_id": "KJlYGnLuEQWr6cUf",
-              "baseline_rank": 25101,
-              "scenario_rank": 30066,
-              "rank_delta": -4965
+              "track_id": "WW2HYwJC4ICdCYhS",
+              "baseline_rank": 4246,
+              "scenario_rank": 8683,
+              "rank_delta": -4437
             },
             {
-              "track_id": "RcUEm2abO8cEZrsz",
-              "baseline_rank": 25102,
-              "scenario_rank": 30067,
-              "rank_delta": -4965
+              "track_id": "smOUDAg5foApbc9b",
+              "baseline_rank": 3533,
+              "scenario_rank": 7970,
+              "rank_delta": -4437
             },
             {
-              "track_id": "O7es3IAWQIeCovOI",
-              "baseline_rank": 25105,
-              "scenario_rank": 30069,
-              "rank_delta": -4964
+              "track_id": "3SRUD2w7DrZqHE0U",
+              "baseline_rank": 3530,
+              "scenario_rank": 7966,
+              "rank_delta": -4436
             }
           ]
         }
@@ -697,7 +756,7 @@
       "description": "Tighten all numeric retrieval thresholds by multiplying them by 0.75.",
       "expected_effect": "candidate pool should shrink and playlist overlap should reduce or reorder",
       "repeat_consistent": true,
-      "config_hash": "CBBF81A6EC04BBA870F7B495145659C063726BD91F1D468A4024F37A4CBAA1E8",
+      "config_hash": "7F9E1B54041A318027EA257D650D96B53001DD43B9120314DF5603A9D3FEE0AC",
       "effective_config": {
         "scenario_id": "stricter_thresholds",
         "test_id": "EP-CTRL-003",
@@ -717,8 +776,8 @@
             "duration_ms"
           ],
           "top_tag_limit": 10,
-          "top_genre_limit": 8,
-          "top_lead_genre_limit": 6,
+          "top_genre_limit": 10,
+          "top_lead_genre_limit": 10,
           "aggregation_rules": {
             "numeric": "weighted mean over numeric columns embedded in the BL-003 enriched seed table; key uses weighted circular mean on the 12-semitone wheel",
             "tags": "sum(preference_weight) over DS-001 tag labels",
@@ -736,28 +795,37 @@
           "top_genre_limit": 8,
           "threshold_scale": 0.75,
           "numeric_thresholds": {
-            "tempo": 15.0,
-            "key": 1.5,
+            "danceability": 0.1125,
+            "energy": 0.1125,
+            "valence": 0.1125,
+            "tempo": 11.25,
+            "key": 1.125,
             "mode": 0.375,
-            "duration_ms": 33750.0
+            "duration_ms": 22500.0
           },
-          "keep_rule": "keep if not seed and (semantic_score >= 2 or (semantic_score >= 1 and numeric_pass_count >= 1))"
+          "keep_rule": "keep if not seed and (semantic_score >= 3 or (semantic_score >= 1 and numeric_pass_count >= 4))"
         },
         "scoring": {
           "numeric_thresholds": {
-            "tempo": 20.0,
-            "key": 2.0,
+            "danceability": 0.15,
+            "energy": 0.15,
+            "valence": 0.15,
+            "tempo": 15.0,
+            "key": 1.5,
             "mode": 0.5,
-            "duration_ms": 45000.0
+            "duration_ms": 30000.0
           },
           "component_weights": {
-            "tempo": 0.2,
-            "duration_ms": 0.13,
-            "key": 0.13,
-            "mode": 0.09,
-            "lead_genre": 0.17,
-            "genre_overlap": 0.12,
-            "tag_overlap": 0.16
+            "danceability": 0.04,
+            "energy": 0.03,
+            "valence": 0.03,
+            "tempo": 0.03,
+            "duration_ms": 0.02,
+            "key": 0.02,
+            "mode": 0.01,
+            "lead_genre": 0.29,
+            "genre_overlap": 0.24,
+            "tag_overlap": 0.29
           },
           "weight_override_component": null,
           "raw_override_value": null
@@ -770,43 +838,43 @@
         }
       },
       "stable_hashes": {
-        "profile_semantic_hash": "FD49063C4E0832B8E55596A93195DA3840EEAF145A9FB60A1424AF7FFAF29512",
+        "profile_semantic_hash": "94CFED659305FD974F9A288D2D2A4400C06E9241A84543888096D372808A19A6",
         "seed_trace_hash": "E261BFD26A1F38AC79EB90016CD35258AC088E626968E267051204990B7543CF",
-        "filtered_candidates_hash": "ADCBBA56E9330E0DC566D97F323FE7BE9C5784C01D619B7AA57AA17327DA11CF",
-        "candidate_decisions_hash": "5D1A085F774E71EA3C0049661AD08D4DE2FD64124E2565F7B831F1402EA27A28",
-        "ranked_output_hash": "7785F13E7ACF7368B014DA8D4017708A7DA356FD964498219FF4B48AE9CFF2D0",
-        "assembly_trace_hash": "A375D3C86B758D2D3E89F494B46A5B8F94F3DAD296E4081C1DB9C5E2A712BB90",
-        "playlist_output_hash": "5C2D7B20FAECA376107AEED3772E54980FE1E6A0A86CB801BFF9F076D8B0D0AF"
+        "filtered_candidates_hash": "4972968A2777AD3AFC30C099FB9768E2A7DF7F3D151EC5BBA503A66B6E01DB0B",
+        "candidate_decisions_hash": "3055BA110BA2768FA95C8C41D05D514904960E3E01246D8DE6BE3B0EEAE89314",
+        "ranked_output_hash": "6AE65496C7DB0CCF6EE74C3A4BC5651823E8817E62B10B98FD6F803B3B6EA321",
+        "assembly_trace_hash": "3E96E80EE42E9AA9E52A0727275C2CB4E5A5F768A2C7023AE42BB6958A437C05",
+        "playlist_output_hash": "B7D859381752FCD5C3AA16CCB53528F31452D11065A74EF074FFC5058ECEBD2C"
       },
       "metrics": {
         "selected_event_count": 1064,
         "matched_seed_count": 1064,
-        "candidate_pool_size": 69838,
-        "scored_candidate_count": 69838,
+        "candidate_pool_size": 22620,
+        "scored_candidate_count": 22620,
         "playlist_length": 10,
         "top10_track_ids": [
-          "CaR8UnowNJUR5Dib",
-          "hU7yckCKoiTkHjwi",
-          "yEz9rqTTulkiDDm7",
-          "rqeIltq5ixzHA5EG",
-          "M3ApGs7RGZwXHqs4",
-          "o27WwIo8F6fMirMs",
-          "lGnkOkQSUQO175Qg",
-          "e98AmnGlnVfAJhKM",
-          "8fDlJsjie4DoFMV0",
-          "kJa0UEVtgRvCJiXS"
+          "phL12CBijBqwQ9qB",
+          "2rf5nW2Fb8gMnz9l",
+          "CZOYJJKuyuUosACw",
+          "SlF31W7VgEooOonD",
+          "9jb6ZoImYLfUL8hu",
+          "3ltMH5jik02hVLDF",
+          "zyxOCKcXX1RmWpm0",
+          "Ja6sG7NsgUKEI63U",
+          "CavT1tWCp1sJDnbQ",
+          "lGnkOkQSUQO175Qg"
         ],
         "playlist_track_ids": [
-          "CaR8UnowNJUR5Dib",
-          "hU7yckCKoiTkHjwi",
-          "yEz9rqTTulkiDDm7",
-          "rqeIltq5ixzHA5EG",
-          "M3ApGs7RGZwXHqs4",
-          "o27WwIo8F6fMirMs",
-          "dv1r49qWV1haZtYv",
-          "rS5ARhXgTnEK4gwS",
-          "V1eO74AwUM3SBovw",
-          "Xh9f0R2Q7wJMaxhy"
+          "phL12CBijBqwQ9qB",
+          "2rf5nW2Fb8gMnz9l",
+          "CZOYJJKuyuUosACw",
+          "SlF31W7VgEooOonD",
+          "9jb6ZoImYLfUL8hu",
+          "3ltMH5jik02hVLDF",
+          "XsWkrl7dkqytg10B",
+          "qob8Z8qGt0UR4JAs",
+          "R5QTSwYR0IDQ6w6c",
+          "klFSyJqiipFN08TK"
         ],
         "dominant_lead_genres": [
           "pop",
@@ -823,13 +891,16 @@
           "alternative"
         ],
         "mean_component_contributions": {
-          "tempo": 0.057809,
-          "duration_ms": 0.039283,
-          "key": 0.020706,
-          "mode": 0.015489,
-          "lead_genre": 0.061198,
-          "genre_overlap": 0.025075,
-          "tag_overlap": 0.030332
+          "danceability": 0.019897,
+          "energy": 0.009208,
+          "valence": 0.009083,
+          "tempo": 0.010402,
+          "duration_ms": 0.006417,
+          "key": 0.003356,
+          "mode": 0.002082,
+          "lead_genre": 0.168241,
+          "genre_overlap": 0.061711,
+          "tag_overlap": 0.065398
         },
         "playlist_genre_mix": {
           "classic rock": 4,
@@ -840,7 +911,7 @@
       "comparison_to_baseline": {
         "observable_shift": true,
         "expected_direction_met": true,
-        "candidate_pool_size_delta": -374,
+        "candidate_pool_size_delta": -10476,
         "playlist_length_delta": 0,
         "top10_overlap_count": 10,
         "top10_overlap_ratio": 1.0,
@@ -865,49 +936,52 @@
           "rap"
         ],
         "component_mean_delta": {
-          "duration_ms": 0.000162,
-          "genre_overlap": 0.000127,
-          "key": 9.2e-05,
-          "lead_genre": 0.000326,
-          "mode": 8.3e-05,
-          "tag_overlap": 0.000113,
-          "tempo": 0.000255
+          "danceability": 0.002262,
+          "duration_ms": 0.000859,
+          "energy": 0.001241,
+          "genre_overlap": 0.000773,
+          "key": 0.000449,
+          "lead_genre": 0.012799,
+          "mode": 0.000121,
+          "tag_overlap": 0.00086,
+          "tempo": 0.001309,
+          "valence": 0.001182
         },
         "rank_shift_summary": {
-          "common_candidate_count": 69838,
-          "mean_abs_rank_delta": 6.232,
-          "max_rank_improvement": 349,
+          "common_candidate_count": 22620,
+          "mean_abs_rank_delta": 3667.295,
+          "max_rank_improvement": 10388,
           "max_rank_drop": 0,
           "top_risers": [
             {
-              "track_id": "4bNyP0ryCSlaFUSf",
-              "baseline_rank": 70175,
-              "scenario_rank": 69826,
-              "rank_delta": 349
+              "track_id": "6Fx1S9wbap3tZcmY",
+              "baseline_rank": 33008,
+              "scenario_rank": 22620,
+              "rank_delta": 10388
             },
             {
-              "track_id": "AFKXUkX4F96wKNLz",
-              "baseline_rank": 70176,
-              "scenario_rank": 69827,
-              "rank_delta": 349
+              "track_id": "SnFQ5VR0y8gQZYfg",
+              "baseline_rank": 32971,
+              "scenario_rank": 22619,
+              "rank_delta": 10352
             },
             {
-              "track_id": "D5APeq80TqUke4uN",
-              "baseline_rank": 70177,
-              "scenario_rank": 69828,
-              "rank_delta": 349
+              "track_id": "J8Qa77U7lOWoWkKh",
+              "baseline_rank": 32958,
+              "scenario_rank": 22618,
+              "rank_delta": 10340
             },
             {
-              "track_id": "QK6DG4kQRrwGGcGO",
-              "baseline_rank": 70178,
-              "scenario_rank": 69829,
-              "rank_delta": 349
+              "track_id": "RqQT6zKgg1drl9Ah",
+              "baseline_rank": 32941,
+              "scenario_rank": 22617,
+              "rank_delta": 10324
             },
             {
-              "track_id": "Rvs3zLnYj3mhYVIj",
-              "baseline_rank": 70179,
-              "scenario_rank": 69830,
-              "rank_delta": 349
+              "track_id": "Kv0ATvqby0XnH1mj",
+              "baseline_rank": 32936,
+              "scenario_rank": 22616,
+              "rank_delta": 10320
             }
           ],
           "top_fallers": []
@@ -922,7 +996,7 @@
       "description": "Loosen all numeric retrieval thresholds by multiplying them by 1.25.",
       "expected_effect": "candidate pool should expand and downstream ranking or playlist composition should change",
       "repeat_consistent": true,
-      "config_hash": "67494D901B3D2F3A7B0CDA2DFC8C4AEFE5EE82BEA8091DA4FC4DA2E78C9C573D",
+      "config_hash": "3F27F0F5BD90C8ECC81F5A4B2CC893D85FD0481650BD756B68AB1C9E86DA35C8",
       "effective_config": {
         "scenario_id": "looser_thresholds",
         "test_id": "EP-CTRL-003",
@@ -942,8 +1016,8 @@
             "duration_ms"
           ],
           "top_tag_limit": 10,
-          "top_genre_limit": 8,
-          "top_lead_genre_limit": 6,
+          "top_genre_limit": 10,
+          "top_lead_genre_limit": 10,
           "aggregation_rules": {
             "numeric": "weighted mean over numeric columns embedded in the BL-003 enriched seed table; key uses weighted circular mean on the 12-semitone wheel",
             "tags": "sum(preference_weight) over DS-001 tag labels",
@@ -961,28 +1035,37 @@
           "top_genre_limit": 8,
           "threshold_scale": 1.25,
           "numeric_thresholds": {
-            "tempo": 25.0,
-            "key": 2.5,
+            "danceability": 0.1875,
+            "energy": 0.1875,
+            "valence": 0.1875,
+            "tempo": 18.75,
+            "key": 1.875,
             "mode": 0.625,
-            "duration_ms": 56250.0
+            "duration_ms": 37500.0
           },
-          "keep_rule": "keep if not seed and (semantic_score >= 2 or (semantic_score >= 1 and numeric_pass_count >= 1))"
+          "keep_rule": "keep if not seed and (semantic_score >= 3 or (semantic_score >= 1 and numeric_pass_count >= 4))"
         },
         "scoring": {
           "numeric_thresholds": {
-            "tempo": 20.0,
-            "key": 2.0,
+            "danceability": 0.15,
+            "energy": 0.15,
+            "valence": 0.15,
+            "tempo": 15.0,
+            "key": 1.5,
             "mode": 0.5,
-            "duration_ms": 45000.0
+            "duration_ms": 30000.0
           },
           "component_weights": {
-            "tempo": 0.2,
-            "duration_ms": 0.13,
-            "key": 0.13,
-            "mode": 0.09,
-            "lead_genre": 0.17,
-            "genre_overlap": 0.12,
-            "tag_overlap": 0.16
+            "danceability": 0.04,
+            "energy": 0.03,
+            "valence": 0.03,
+            "tempo": 0.03,
+            "duration_ms": 0.02,
+            "key": 0.02,
+            "mode": 0.01,
+            "lead_genre": 0.29,
+            "genre_overlap": 0.24,
+            "tag_overlap": 0.29
           },
           "weight_override_component": null,
           "raw_override_value": null
@@ -995,43 +1078,43 @@
         }
       },
       "stable_hashes": {
-        "profile_semantic_hash": "FD49063C4E0832B8E55596A93195DA3840EEAF145A9FB60A1424AF7FFAF29512",
+        "profile_semantic_hash": "94CFED659305FD974F9A288D2D2A4400C06E9241A84543888096D372808A19A6",
         "seed_trace_hash": "E261BFD26A1F38AC79EB90016CD35258AC088E626968E267051204990B7543CF",
-        "filtered_candidates_hash": "BD14DBE03671865D127A3E42905B3EB7955D422606205B99253489A166031953",
-        "candidate_decisions_hash": "FE1016C6C25B958BDBF42A885A7F19A4B87B3ACD077EBF86FC36226B692863FC",
-        "ranked_output_hash": "0D8349912C5844CB80B1CE78BE0F1BE871EE08E7BC5FC0BE1EC7C822D53152AF",
-        "assembly_trace_hash": "E5A39B318AF371B01763339913F8EBABA6B0A771B4CF3EEADAD260AC086C45CA",
-        "playlist_output_hash": "5C2D7B20FAECA376107AEED3772E54980FE1E6A0A86CB801BFF9F076D8B0D0AF"
+        "filtered_candidates_hash": "9CA5BF05BAF6C8849B3A8FF154D0F03EB874A8D01931DA00CD37FC9A57AE960D",
+        "candidate_decisions_hash": "D82DEA3FF4352A1BFBB475C6B2227EEBAA937003B2BE6561129B98549B0B2AD2",
+        "ranked_output_hash": "D02E2A93EB849596F5D12031DB30B990B1E7C97107929E6C21CF464CA7D7D349",
+        "assembly_trace_hash": "C41FBFD80D8751A079EB679EA11A339A6BC0B739A99A7F138A0AC6E17D185E7F",
+        "playlist_output_hash": "159CF267394E90F76AA564247437EBF0AD68610EC100307268EB2B368946C0D1"
       },
       "metrics": {
         "selected_event_count": 1064,
         "matched_seed_count": 1064,
-        "candidate_pool_size": 70431,
-        "scored_candidate_count": 70431,
+        "candidate_pool_size": 42086,
+        "scored_candidate_count": 42086,
         "playlist_length": 10,
         "top10_track_ids": [
-          "CaR8UnowNJUR5Dib",
-          "hU7yckCKoiTkHjwi",
-          "yEz9rqTTulkiDDm7",
-          "rqeIltq5ixzHA5EG",
-          "M3ApGs7RGZwXHqs4",
-          "o27WwIo8F6fMirMs",
-          "lGnkOkQSUQO175Qg",
-          "e98AmnGlnVfAJhKM",
-          "8fDlJsjie4DoFMV0",
-          "kJa0UEVtgRvCJiXS"
+          "phL12CBijBqwQ9qB",
+          "2rf5nW2Fb8gMnz9l",
+          "CZOYJJKuyuUosACw",
+          "SlF31W7VgEooOonD",
+          "9jb6ZoImYLfUL8hu",
+          "3ltMH5jik02hVLDF",
+          "zyxOCKcXX1RmWpm0",
+          "Ja6sG7NsgUKEI63U",
+          "CavT1tWCp1sJDnbQ",
+          "lGnkOkQSUQO175Qg"
         ],
         "playlist_track_ids": [
-          "CaR8UnowNJUR5Dib",
-          "hU7yckCKoiTkHjwi",
-          "yEz9rqTTulkiDDm7",
-          "rqeIltq5ixzHA5EG",
-          "M3ApGs7RGZwXHqs4",
-          "o27WwIo8F6fMirMs",
-          "dv1r49qWV1haZtYv",
-          "rS5ARhXgTnEK4gwS",
-          "V1eO74AwUM3SBovw",
-          "Xh9f0R2Q7wJMaxhy"
+          "phL12CBijBqwQ9qB",
+          "2rf5nW2Fb8gMnz9l",
+          "CZOYJJKuyuUosACw",
+          "SlF31W7VgEooOonD",
+          "9jb6ZoImYLfUL8hu",
+          "3ltMH5jik02hVLDF",
+          "XsWkrl7dkqytg10B",
+          "qob8Z8qGt0UR4JAs",
+          "R5QTSwYR0IDQ6w6c",
+          "klFSyJqiipFN08TK"
         ],
         "dominant_lead_genres": [
           "pop",
@@ -1048,13 +1131,16 @@
           "alternative"
         ],
         "mean_component_contributions": {
-          "tempo": 0.057375,
-          "duration_ms": 0.038999,
-          "key": 0.02055,
-          "mode": 0.015358,
-          "lead_genre": 0.060683,
-          "genre_overlap": 0.024875,
-          "tag_overlap": 0.030153
+          "danceability": 0.016065,
+          "energy": 0.007125,
+          "valence": 0.007013,
+          "tempo": 0.008179,
+          "duration_ms": 0.004948,
+          "key": 0.002585,
+          "mode": 0.001893,
+          "lead_genre": 0.144791,
+          "genre_overlap": 0.060085,
+          "tag_overlap": 0.063502
         },
         "playlist_genre_mix": {
           "classic rock": 4,
@@ -1065,7 +1151,7 @@
       "comparison_to_baseline": {
         "observable_shift": true,
         "expected_direction_met": true,
-        "candidate_pool_size_delta": 219,
+        "candidate_pool_size_delta": 8990,
         "playlist_length_delta": 0,
         "top10_overlap_count": 10,
         "top10_overlap_ratio": 1.0,
@@ -1090,50 +1176,53 @@
           "rap"
         ],
         "component_mean_delta": {
-          "duration_ms": -0.000122,
-          "genre_overlap": -7.3e-05,
-          "key": -6.4e-05,
-          "lead_genre": -0.000189,
-          "mode": -4.8e-05,
-          "tag_overlap": -6.6e-05,
-          "tempo": -0.000179
+          "danceability": -0.00157,
+          "duration_ms": -0.00061,
+          "energy": -0.000842,
+          "genre_overlap": -0.000853,
+          "key": -0.000322,
+          "lead_genre": -0.010651,
+          "mode": -6.8e-05,
+          "tag_overlap": -0.001036,
+          "tempo": -0.000914,
+          "valence": -0.000888
         },
         "rank_shift_summary": {
-          "common_candidate_count": 70212,
-          "mean_abs_rank_delta": 0.186,
+          "common_candidate_count": 33096,
+          "mean_abs_rank_delta": 2937.982,
           "max_rank_improvement": 0,
-          "max_rank_drop": -182,
+          "max_rank_drop": -8988,
           "top_risers": [],
           "top_fallers": [
             {
-              "track_id": "DgMLffad1eQAoht8",
-              "baseline_rank": 70212,
-              "scenario_rank": 70394,
-              "rank_delta": -182
+              "track_id": "tC7tLxMMWymHkCMd",
+              "baseline_rank": 33096,
+              "scenario_rank": 42084,
+              "rank_delta": -8988
             },
             {
-              "track_id": "owBOHe9YnGapHVhU",
-              "baseline_rank": 70211,
-              "scenario_rank": 70393,
-              "rank_delta": -182
+              "track_id": "7w3qlGigNraRYIz4",
+              "baseline_rank": 33094,
+              "scenario_rank": 42051,
+              "rank_delta": -8957
             },
             {
-              "track_id": "90t1iOMqBRa2rGOn",
-              "baseline_rank": 70210,
-              "scenario_rank": 70370,
-              "rank_delta": -160
+              "track_id": "NaN3g2nAJcwkqF1j",
+              "baseline_rank": 33095,
+              "scenario_rank": 42052,
+              "rank_delta": -8957
             },
             {
-              "track_id": "BlFatGr0Id4RsX9C",
-              "baseline_rank": 70209,
-              "scenario_rank": 70369,
-              "rank_delta": -160
+              "track_id": "lOkcKk1hbU84ystp",
+              "baseline_rank": 33093,
+              "scenario_rank": 42044,
+              "rank_delta": -8951
             },
             {
-              "track_id": "5DgFWqL9nAEJlmFN",
-              "baseline_rank": 70207,
-              "scenario_rank": 70299,
-              "rank_delta": -92
+              "track_id": "ZvpIILc9DJD4DLRa",
+              "baseline_rank": 33092,
+              "scenario_rank": 42033,
+              "rank_delta": -8941
             }
           ]
         }

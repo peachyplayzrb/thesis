@@ -1,10 +1,10 @@
 {
-  "run_id": "BL005-FILTER-20260326-180049-761022",
+  "run_id": "BL005-FILTER-20260326-210308-751677",
   "task": "BL-005",
-  "generated_at_utc": "2026-03-26T18:00:51Z",
+  "generated_at_utc": "2026-03-26T21:03:11Z",
   "input_artifacts": {
     "profile_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl004_profile\\outputs\\bl004_preference_profile.json",
-    "profile_sha256": "43a48a4442e8950d6ea9272715661fa6e9b6e2b96e8e72e0f2d14a5e42828724",
+    "profile_sha256": "8c4b53e238fa80fafc5fbd62a53294e74feee81b422f1a17de86f9e95f7ea7ad",
     "seed_trace_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl004_profile\\outputs\\bl004_seed_trace.csv",
     "seed_trace_sha256": "afe227d05077a35d970973e060eb6c95dc6fd62e17081e0666df9cd2d5d6bec2",
     "candidate_stub_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl000_data_layer\\outputs\\ds001_working_candidate_dataset.csv",
@@ -15,26 +15,32 @@
     "top_tag_limit": 10,
     "top_genre_limit": 8,
     "numeric_thresholds": {
+      "danceability": 0.15,
+      "energy": 0.15,
+      "valence": 0.15,
       "tempo": 15.0,
       "key": 1.5,
       "mode": 0.5,
       "duration_ms": 30000.0
     },
     "numeric_feature_mapping": {
+      "danceability": "danceability",
+      "energy": "energy",
+      "valence": "valence",
       "tempo": "tempo",
       "key": "key",
       "mode": "mode",
       "duration_ms": "duration_ms"
     },
     "numeric_features_enabled": true,
-    "keep_rule": "keep if not seed and (semantic_score >= 3 or (semantic_score >= 1 and numeric_pass_count >= 2))",
+    "keep_rule": "keep if not seed and (semantic_score >= 3 or (semantic_score >= 1 and numeric_pass_count >= 4))",
     "semantic_source": "ds001_tags_and_genres_columns"
   },
   "counts": {
     "candidate_rows_total": 109269,
     "seed_tracks_excluded": 1064,
-    "kept_candidates": 54402,
-    "rejected_non_seed_candidates": 53803
+    "kept_candidates": 46776,
+    "rejected_non_seed_candidates": 61429
   },
   "rule_hits": {
     "semantic_rule_hits": {
@@ -43,6 +49,9 @@
       "tag_overlap": 65787
     },
     "numeric_rule_hits": {
+      "danceability": 64434,
+      "energy": 39672,
+      "valence": 38811,
       "tempo": 43163,
       "key": 27332,
       "mode": 68257,
@@ -51,10 +60,10 @@
   },
   "decision_path_counts": {
     "keep_strong_semantic": 33214,
-    "reject_no_signal": 4457,
-    "reject_semantic_without_numeric_support": 16325,
-    "reject_numeric_without_semantic_support": 33021,
-    "keep_semantic_numeric_supported": 21188,
+    "reject_numeric_without_semantic_support": 35851,
+    "reject_semantic_without_numeric_support": 23951,
+    "keep_semantic_numeric_supported": 13562,
+    "reject_no_signal": 1627,
     "reject_seed_track": 1064
   },
   "score_distributions": {
@@ -65,15 +74,19 @@
       "3": 33735
     },
     "numeric_pass_count": {
-      "0": 10252,
-      "1": 38873,
-      "2": 41544,
-      "3": 16627,
-      "4": 1973
+      "0": 2701,
+      "1": 12601,
+      "2": 25511,
+      "3": 31050,
+      "4": 24046,
+      "5": 10694,
+      "6": 2438,
+      "7": 228
     }
   },
   "top_kept_track_ids": [
     "0009fFIM1eYThaPg",
+    "00CH4HJdxQQQbJfu",
     "00DZ3XCAQb2FdCc6",
     "00IeldeA9ijZOL0P",
     "00KSCJkYb8JKa4Y3",
@@ -86,17 +99,16 @@
     "013BFFjvohJT9dW9",
     "013QDoTqbexEwkHr",
     "015mOiDcGVtkg1jP",
-    "016u1nUp8JLDgd6W",
-    "01EKNot8qVgZpKM7"
+    "016u1nUp8JLDgd6W"
   ],
-  "elapsed_seconds": 2.098,
+  "elapsed_seconds": 2.639,
   "output_files": {
     "filtered_candidates_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl005_retrieval\\outputs\\bl005_filtered_candidates.csv",
     "candidate_decisions_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl005_retrieval\\outputs\\bl005_candidate_decisions.csv"
   },
   "output_hashes_sha256": {
-    "bl005_filtered_candidates.csv": "244fa71ae574732b4cc448caf69fa1568be764817d3ee6028178ff23454bf7c8",
-    "bl005_candidate_decisions.csv": "35cd3a19eaf17ab1de82e91849cd1f14cae35787d9cff9f2ab80280fc7eb5a78"
+    "bl005_filtered_candidates.csv": "fb8f549a3b6386968dae822dc8ec8c909bd3cd2c74a8afcd3e5d499e824011f1",
+    "bl005_candidate_decisions.csv": "6a07cf1dcd39045c0725c7ed4d69cec2cf9d102d9bed38dec527f91c021aebc0"
   },
   "diagnostics_hash_note": "diagnostics file does not store its own hash to avoid recursive self-reference"
 }

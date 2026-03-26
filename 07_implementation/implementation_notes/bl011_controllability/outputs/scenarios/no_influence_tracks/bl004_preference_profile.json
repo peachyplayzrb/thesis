@@ -1,7 +1,7 @@
 {
-  "run_id": "BL011-NO_INFLUENCE_TRACKS-BL004-20260326-062119-095976",
+  "run_id": "BL011-NO_INFLUENCE_TRACKS-BL004-20260326-205941-363227",
   "task": "BL-004",
-  "generated_at_utc": "2026-03-26T06:21:19Z",
+  "generated_at_utc": "2026-03-26T20:59:41Z",
   "user_id": "active_user",
   "scenario_id": "no_influence_tracks",
   "input_artifacts": {
@@ -21,8 +21,8 @@
       "duration_ms"
     ],
     "top_tag_limit": 10,
-    "top_genre_limit": 8,
-    "top_lead_genre_limit": 6,
+    "top_genre_limit": 10,
+    "top_lead_genre_limit": 10,
     "aggregation_rules": {
       "numeric": "weighted mean over numeric columns embedded in the BL-003 enriched seed table; key uses weighted circular mean on the 12-semitone wheel",
       "tags": "sum(preference_weight) over DS-001 tag labels",
@@ -1200,6 +1200,14 @@
       {
         "label": "folk",
         "weight": 125.8
+      },
+      {
+        "label": "hip hop",
+        "weight": 123.0
+      },
+      {
+        "label": "psychedelic rock",
+        "weight": 120.3
       }
     ],
     "top_lead_genres": [
@@ -1226,6 +1234,22 @@
       {
         "label": "folk",
         "weight": 81.8
+      },
+      {
+        "label": "soul",
+        "weight": 75.3
+      },
+      {
+        "label": "progressive rock",
+        "weight": 75.1
+      },
+      {
+        "label": "psychedelic rock",
+        "weight": 58.6
+      },
+      {
+        "label": "indie rock",
+        "weight": 58.0
       }
     ]
   }

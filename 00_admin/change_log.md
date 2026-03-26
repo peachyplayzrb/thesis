@@ -8,7 +8,7 @@ Ordering convention (standardized 2026-03-24):
 - New entries must be appended at the end; historical entries remain unchanged except for explicit correction records.
 
 Maintenance snapshot (2026-03-26):
-- Highest change ID currently present: `C-179`
+- Highest change ID currently present: `C-180`
 - Known legacy correction applied in this file: prior duplicate `C-079` entry has been normalized to `C-135` for unique-ID compliance.
 
 ## C-001
@@ -32,6 +32,7 @@ Maintenance snapshot (2026-03-26):
 | C-177 | 2026-03-26 | Copilot | Fixed BL-006 scoring engine empty lead-genre false match: added non-empty guard to `lead_genre_similarity` so tracks without genre data no longer receive spurious perfect scores; BL-014 pass confirmed post-fix. |
 | C-178 | 2026-03-26 | Copilot | Corrected BL-006 weighted-contribution semantics and matched-label propagation, then refreshed BL-007 through BL-009 lineage and reconfirmed BL-014 pass on the corrected baseline. |
 | C-179 | 2026-03-26 | Copilot | Refreshed UI-013 v1b acceptance evidence on the corrected BL-006 baseline, updated control/test artifacts, and closed UI-013 after reconfirming all thresholds with BL-013 and BL-014 passes. |
+| C-180 | 2026-03-26 21:03 | Copilot | Implemented v1f numeric retune (danceability, energy, valence activated end-to-end in BL-005 and BL-006), applied Windows WinError 1224 fix in BL-010, restored live pipeline to v1f, and updated all stage state logs and CODEBASE_ISSUES_CURRENT.md with a next-steps section and issue register. |
 ## C-162
 - date: 2026-03-25
 - proposed_by: Copilot
@@ -220,6 +221,17 @@ Maintenance snapshot (2026-03-26):
 - evidence_basis: BL-013 pass `BL013-ENTRYPOINT-20260326-180047-134553`; BL-014 pass `BL014-SANITY-20260326-180057-357905` (`22/22` checks); refreshed metrics `bl003_match_rate=0.1595`, `bl005_kept_candidates=54402`, `bl006_numeric_minus_semantic=-0.068775`, `bl008_top_label_dominance_share=0.3`; refreshed BL-008 top-contributor distribution `{Lead genre match:3, Tag overlap:3, Tempo (BPM):3, Genre overlap:1}` in `_scratch/ui013_v1b_bl008_focus_result.json`.
 - affected_components: `_scratch/ui013_v1b_bl008_focus_result.json`, `07_implementation/test_notes.md`, `07_implementation/experiment_log.md`, `00_admin/unresolved_issues.md`, `00_admin/thesis_state.md`, `00_admin/change_log.md`
 - impact_assessment: High-positive. Converts UI-013 from a stale-evidence risk into a closed, traceable acceptance package on the corrected active baseline and narrows the remaining open dependency set to UI-003 citation closure.
+- approval_record: Requested and confirmed by user in chat on 2026-03-26.
+
+## C-180
+- date: 2026-03-26
+- proposed_by: Copilot
+- status: accepted
+- change_summary: Implemented v1f numeric retune activating danceability, energy, and valence end-to-end in BL-005 and BL-006; applied Windows WinError 1224 archive-copy fix in BL-010; restored live pipeline to v1f via BL-013; and updated all 13 stage state logs and CODEBASE_ISSUES_CURRENT.md with a next-steps section, R1 walk-semantics clarification, and full issue register.
+- reason: After UI-013 closure on v1b, the outstanding danceability/energy/valence numeric dimensions were implemented end-to-end to complete the originally designed 10-component scoring surface. BL-010 had a Windows WinError 1224 failure on the first post-retune archive-copy step that required a targeted fallback fix. State logs and governance docs needed updating to reflect the v1f final baseline.
+- evidence_basis: BL-013 restore pass `BL013-ENTRYPOINT-20260326-210305-914179`; BL-014 sanity pass `BL014-SANITY-20260326-210317-371524` (`22/22` checks); BL-010 pass `BL010-REPRO-20260326-205834` (`deterministic_match=true`, 3 replays); BL-011 pass `BL011-CTRL-20260326-205932` (5 scenarios, `status=pass`); active freshness suite `BL-FRESHNESS-SUITE-20260326-210015` (`6/8`, non-blocking evidence-alignment mismatch documented).
+- affected_components: `07_implementation/implementation_notes/bl000_run_config/configs/profiles/run_config_ui013_tuning_v1f.json`, `07_implementation/implementation_notes/bl010_reproducibility/run_bl010_reproducibility_check.py`, `07_implementation/implementation_notes/bl000_run_config/docs/bl000_run_config_state_log_2026-03-25.md`, `07_implementation/implementation_notes/bl003_alignment/bl003_state_log_2026-03-24.md`, `07_implementation/implementation_notes/bl004_profile/bl004_state_log_2026-03-24.md`, `07_implementation/implementation_notes/bl005_retrieval/bl005_state_log_2026-03-24.md`, `07_implementation/implementation_notes/bl006_scoring/bl006_state_log_2026-03-24.md`, `07_implementation/implementation_notes/bl007_playlist/bl007_state_log_2026-03-24.md`, `07_implementation/implementation_notes/bl008_transparency/bl008_state_log_2026-03-24.md`, `07_implementation/implementation_notes/bl009_observability/bl009_state_log_2026-03-24.md`, `07_implementation/implementation_notes/bl010_reproducibility/bl010_state_log_2026-03-24.md`, `07_implementation/implementation_notes/bl011_controllability/bl011_state_log_2026-03-24.md`, `07_implementation/implementation_notes/bl013_entrypoint/bl013_state_log_2026-03-24.md`, `07_implementation/implementation_notes/bl014_quality/bl014_state_log_2026-03-24.md`, `07_implementation/implementation_notes/CODEBASE_ISSUES_CURRENT.md`, `00_admin/unresolved_issues.md`, `00_admin/thesis_state.md`, `00_admin/change_log.md`
+- impact_assessment: High-positive. Completes the intended 10-component scoring surface, hardens BL-010 for Windows environments, and establishes a fully documented v1f baseline with a forward-looking next-steps register.
 - approval_record: Requested and confirmed by user in chat on 2026-03-26.
 
 ## C-006

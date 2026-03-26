@@ -33,10 +33,13 @@ DEFAULT_ABOVE_THRESHOLD_SCORE = 0.50
 
 # BL-006 Default Scoring Component Weights
 DEFAULT_SCORING_COMPONENT_WEIGHTS = {
-    "tempo": 0.20,
-    "duration_ms": 0.13,
-    "key": 0.13,
-    "mode": 0.09,
+    "danceability": 0.10,
+    "energy": 0.10,
+    "valence": 0.08,
+    "tempo": 0.10,
+    "duration_ms": 0.07,
+    "key": 0.06,
+    "mode": 0.04,
     "lead_genre": 0.17,
     "genre_overlap": 0.12,
     "tag_overlap": 0.16,
@@ -52,6 +55,21 @@ DEFAULT_API_BASE_DELAY_SEC = 1.0  # Base exponential backoff
 # candidate dataset provide comparable values.
 # Each spec defines a candidate column, distance threshold, and whether the dimension is circular.
 NUMERIC_FEATURE_SPECS = {
+    "danceability": {
+        "candidate_column": "danceability",
+        "threshold": 0.20,
+        "circular": False,
+    },
+    "energy": {
+        "candidate_column": "energy",
+        "threshold": 0.20,
+        "circular": False,
+    },
+    "valence": {
+        "candidate_column": "valence",
+        "threshold": 0.20,
+        "circular": False,
+    },
     "tempo": {
         "candidate_column": "tempo",
         "threshold": 20.0,

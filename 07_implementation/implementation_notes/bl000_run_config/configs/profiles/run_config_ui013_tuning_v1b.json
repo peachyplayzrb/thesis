@@ -50,8 +50,11 @@
     "profile_top_lead_genre_limit": 6,
     "semantic_strong_keep_score": 3,
     "semantic_min_keep_score": 1,
-    "numeric_support_min_pass": 2,
+    "numeric_support_min_pass": 3,
     "numeric_thresholds": {
+      "danceability": 0.15,
+      "energy": 0.15,
+      "valence": 0.15,
       "tempo": 15.0,
       "key": 1.5,
       "mode": 0.5,
@@ -60,15 +63,21 @@
   },
   "scoring_controls": {
     "component_weights": {
-      "tempo": 0.12,
-      "duration_ms": 0.08,
-      "key": 0.08,
-      "mode": 0.07,
+      "danceability": 0.06,
+      "energy": 0.05,
+      "valence": 0.05,
+      "tempo": 0.07,
+      "duration_ms": 0.05,
+      "key": 0.04,
+      "mode": 0.03,
       "lead_genre": 0.23,
       "genre_overlap": 0.19,
       "tag_overlap": 0.23
     },
     "numeric_thresholds": {
+      "danceability": 0.15,
+      "energy": 0.15,
+      "valence": 0.15,
       "tempo": 15.0,
       "key": 1.5,
       "mode": 0.5,

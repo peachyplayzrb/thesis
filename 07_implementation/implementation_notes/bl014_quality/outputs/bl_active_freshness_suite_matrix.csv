@@ -3,6 +3,7 @@ bl013_latest_pass,pass,BL-013 latest orchestration summary reports overall_statu
 bl013_latest_no_failed_stages,pass,BL-013 latest orchestration summary reports failed_stage_count=0
 bl014_script_exit_zero,pass,BL-014 sanity check script return code=0
 bl014_report_pass,pass,BL-014 report overall_status is pass
-bl010_bl011_freshness_exit_zero,pass,BL-010/BL-011 freshness script return code=0
-bl010_bl011_freshness_report_pass,pass,BL-010/BL-011 freshness report overall_status is pass
-bl010_bl011_freshness_auto_refresh,pass,BL-010/BL-011 freshness auto-refresh was not needed
+bl010_bl011_refresh_exit_zero,pass,BL-010/BL-011 evidence refresh return code=0
+bl010_bl011_freshness_exit_zero,fail,BL-010/BL-011 freshness script return code=1
+bl010_bl011_freshness_report_pass,fail,BL-010/BL-011 freshness report overall_status is pass
+bl010_bl011_freshness_auto_refresh,pass,BL-010/BL-011 freshness auto-refresh succeeded

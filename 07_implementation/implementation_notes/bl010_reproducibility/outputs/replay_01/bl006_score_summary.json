@@ -1,40 +1,52 @@
 {
-  "run_id": "BL006-SCORE-20260326-062029-331598",
+  "run_id": "BL006-SCORE-20260326-205841-584687",
   "task": "BL-006",
-  "generated_at_utc": "2026-03-26T06:20:31Z",
+  "generated_at_utc": "2026-03-26T20:58:46Z",
   "input_artifacts": {
     "profile_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl004_profile\\outputs\\bl004_preference_profile.json",
-    "profile_sha256": "dd6e4e9ae54d8a0af84ff1de9ee09d1c27365934253f864bb02220241b258a56",
+    "profile_sha256": "4953553ad04e80675f338f267daccc9111ac8ab26c54979e172a8eb752b18cda",
     "filtered_candidates_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl005_retrieval\\outputs\\bl005_filtered_candidates.csv",
-    "filtered_candidates_sha256": "367a528541aa29a8bc9ced0ca6a54ab708f912db705285e5f5a51275d438a8e4"
+    "filtered_candidates_sha256": "f4b06c299884e662dc8fdcc85ce0fe1de7f30513906d68dc835399c7b4ae6211"
   },
   "config": {
     "numeric_thresholds": {
+      "danceability": 0.2,
+      "energy": 0.2,
+      "valence": 0.2,
       "tempo": 20.0,
       "key": 2.0,
       "mode": 0.5,
       "duration_ms": 45000.0
     },
     "numeric_feature_mapping": {
+      "danceability": "danceability",
+      "energy": "energy",
+      "valence": "valence",
       "tempo": "tempo",
       "key": "key",
       "mode": "mode",
       "duration_ms": "duration_ms"
     },
     "base_component_weights": {
-      "tempo_score": 0.2,
-      "duration_ms_score": 0.13,
-      "key_score": 0.13,
-      "mode_score": 0.09,
+      "danceability_score": 0.1,
+      "energy_score": 0.1,
+      "valence_score": 0.08,
+      "tempo_score": 0.1,
+      "duration_ms_score": 0.07,
+      "key_score": 0.06,
+      "mode_score": 0.04,
       "lead_genre_score": 0.17,
       "genre_overlap_score": 0.12,
       "tag_overlap_score": 0.16
     },
     "active_component_weights": {
-      "tempo_score": 0.2,
-      "duration_ms_score": 0.13,
-      "key_score": 0.13,
-      "mode_score": 0.09,
+      "danceability_score": 0.1,
+      "energy_score": 0.1,
+      "valence_score": 0.08,
+      "tempo_score": 0.1,
+      "duration_ms_score": 0.07,
+      "key_score": 0.06,
+      "mode_score": 0.04,
       "lead_genre_score": 0.17,
       "genre_overlap_score": 0.12,
       "tag_overlap_score": 0.16
@@ -43,165 +55,180 @@
     "weight_rebalance_diagnostics": {
       "rebalanced": false,
       "active_weight_sum_pre_normalization": 1.0,
-      "active_component_count": 7,
+      "active_component_count": 10,
       "inactive_components": [],
       "original_active_component_weights": {
-        "tempo_score": 0.2,
-        "duration_ms_score": 0.13,
-        "key_score": 0.13,
-        "mode_score": 0.09,
+        "danceability_score": 0.1,
+        "energy_score": 0.1,
+        "valence_score": 0.08,
+        "tempo_score": 0.1,
+        "duration_ms_score": 0.07,
+        "key_score": 0.06,
+        "mode_score": 0.04,
         "lead_genre_score": 0.17,
         "genre_overlap_score": 0.12,
         "tag_overlap_score": 0.16
       },
       "normalized_active_component_weights": {
-        "tempo_score": 0.2,
-        "duration_ms_score": 0.13,
-        "key_score": 0.13,
-        "mode_score": 0.09,
+        "danceability_score": 0.1,
+        "energy_score": 0.1,
+        "valence_score": 0.08,
+        "tempo_score": 0.1,
+        "duration_ms_score": 0.07,
+        "key_score": 0.06,
+        "mode_score": 0.04,
         "lead_genre_score": 0.17,
         "genre_overlap_score": 0.12,
         "tag_overlap_score": 0.16
       },
       "warning": null
     },
-    "lead_genre_normalization": "candidate lead genre weight divided by max profile lead-genre weight",
+    "lead_genre_normalization": "binary exact match against non-empty profile lead genre",
     "genre_overlap_normalization": "sum overlapping profile genre weights / sum top profile genre weights",
     "tag_overlap_normalization": "sum overlapping profile tag weights / sum top profile tag weights",
     "semantic_source": "ds001_tags_and_genres_columns"
   },
   "counts": {
-    "candidates_scored": 70282
+    "candidates_scored": 70680
   },
   "score_statistics": {
-    "max_score": 0.78176,
+    "max_score": 0.743017,
     "min_score": 0.00462,
-    "mean_score": 0.220792,
-    "median_score": 0.205605
+    "mean_score": 0.243691,
+    "median_score": 0.227697
   },
   "component_balance": {
     "all_candidates": {
-      "numeric_contribution_mean": 0.921851,
-      "semantic_contribution_mean": 0.587889,
-      "tempo_mean": 0.287484,
-      "duration_ms_mean": 0.300628,
-      "key_mean": 0.162728,
-      "mode_mean": 0.171011,
-      "lead_genre_mean": 0.191443,
-      "genre_overlap_mean": 0.207707,
-      "tag_overlap_mean": 0.188739
+      "numeric_contribution_mean": 0.156461,
+      "semantic_contribution_mean": 0.087232,
+      "danceability_mean": 0.043454,
+      "energy_mean": 0.026429,
+      "valence_mean": 0.020555,
+      "tempo_mean": 0.028587,
+      "duration_ms_mean": 0.020925,
+      "key_mean": 0.009709,
+      "mode_mean": 0.006802,
+      "lead_genre_mean": 0.032362,
+      "genre_overlap_mean": 0.024793,
+      "tag_overlap_mean": 0.030077
     },
     "top_100": {
-      "numeric_contribution_mean": 2.562436,
-      "semantic_contribution_mean": 1.696585,
-      "tempo_mean": 0.898781,
-      "duration_ms_mean": 0.805897,
-      "key_mean": 0.632585,
-      "mode_mean": 0.225173,
-      "lead_genre_mean": 1.0,
-      "genre_overlap_mean": 0.369514,
-      "tag_overlap_mean": 0.327071
+      "numeric_contribution_mean": 0.33579,
+      "semantic_contribution_mean": 0.291357,
+      "danceability_mean": 0.077035,
+      "energy_mean": 0.064585,
+      "valence_mean": 0.044748,
+      "tempo_mean": 0.073055,
+      "duration_ms_mean": 0.047997,
+      "key_mean": 0.020211,
+      "mode_mean": 0.008159,
+      "lead_genre_mean": 0.17,
+      "genre_overlap_mean": 0.056391,
+      "tag_overlap_mean": 0.064966
     },
     "top_500": {
-      "numeric_contribution_mean": 2.238055,
-      "semantic_contribution_mean": 1.641512,
-      "tempo_mean": 0.838907,
-      "duration_ms_mean": 0.730669,
-      "key_mean": 0.487281,
-      "mode_mean": 0.181198,
-      "lead_genre_mean": 0.996,
-      "genre_overlap_mean": 0.342562,
-      "tag_overlap_mean": 0.30295
+      "numeric_contribution_mean": 0.309583,
+      "semantic_contribution_mean": 0.268394,
+      "danceability_mean": 0.072879,
+      "energy_mean": 0.057164,
+      "valence_mean": 0.044007,
+      "tempo_mean": 0.066668,
+      "duration_ms_mean": 0.042942,
+      "key_mean": 0.018569,
+      "mode_mean": 0.007354,
+      "lead_genre_mean": 0.16796,
+      "genre_overlap_mean": 0.046627,
+      "tag_overlap_mean": 0.053807
     }
   },
   "top_candidates": [
     {
       "rank": 1,
-      "track_id": "C9oA7Glm1TItxpQA",
+      "track_id": "5c9fu0pBIl9QUmed",
       "lead_genre": "pop",
-      "final_score": 0.78176,
-      "matched_genres": "",
-      "matched_tags": ""
+      "final_score": 0.743017,
+      "matched_genres": "pop|singer-songwriter|rock",
+      "matched_tags": "pop|singer-songwriter|rock"
     },
     {
       "rank": 2,
-      "track_id": "7dYk0TCGZqev3LJD",
+      "track_id": "phL12CBijBqwQ9qB",
       "lead_genre": "pop",
-      "final_score": 0.73493,
-      "matched_genres": "",
-      "matched_tags": ""
+      "final_score": 0.72043,
+      "matched_genres": "pop|classic rock|rock",
+      "matched_tags": "pop|classic rock|rock"
     },
     {
       "rank": 3,
-      "track_id": "I2K0KDtgE2eZhPRw",
+      "track_id": "36zZsq0r6BMf2VfX",
       "lead_genre": "pop",
-      "final_score": 0.726619,
-      "matched_genres": "",
-      "matched_tags": ""
+      "final_score": 0.69931,
+      "matched_genres": "pop|rock",
+      "matched_tags": "80s|pop|rock"
     },
     {
       "rank": 4,
-      "track_id": "Oa3WjjG6GreWw3Bf",
+      "track_id": "eWJkdrJDNm0LBqqe",
       "lead_genre": "pop",
-      "final_score": 0.723516,
-      "matched_genres": "",
-      "matched_tags": ""
+      "final_score": 0.692036,
+      "matched_genres": "pop|rock",
+      "matched_tags": "pop|rock"
     },
     {
       "rank": 5,
-      "track_id": "5c9fu0pBIl9QUmed",
+      "track_id": "VC4QbxKcXufACYV9",
       "lead_genre": "pop",
-      "final_score": 0.723244,
-      "matched_genres": "",
-      "matched_tags": ""
+      "final_score": 0.686562,
+      "matched_genres": "pop",
+      "matched_tags": "80s|pop"
     },
     {
       "rank": 6,
-      "track_id": "36zZsq0r6BMf2VfX",
+      "track_id": "eABMD16TVN5rb4KT",
       "lead_genre": "pop",
-      "final_score": 0.722085,
-      "matched_genres": "",
-      "matched_tags": ""
+      "final_score": 0.686106,
+      "matched_genres": "pop|rock",
+      "matched_tags": "pop|rock"
     },
     {
       "rank": 7,
-      "track_id": "pTle20sjv0uVIr2o",
+      "track_id": "05kPnJrEqt4aSFwt",
       "lead_genre": "pop",
-      "final_score": 0.708332,
-      "matched_genres": "",
-      "matched_tags": ""
+      "final_score": 0.681653,
+      "matched_genres": "pop|rock",
+      "matched_tags": "80s|pop|rock"
     },
     {
       "rank": 8,
-      "track_id": "op7gT9GOpqOk7wc8",
+      "track_id": "dmXJIr99KdvwkYxe",
       "lead_genre": "pop",
-      "final_score": 0.693133,
-      "matched_genres": "",
-      "matched_tags": ""
+      "final_score": 0.669379,
+      "matched_genres": "pop|singer-songwriter|rock",
+      "matched_tags": "pop|singer-songwriter|rock"
     },
     {
       "rank": 9,
-      "track_id": "ZBzCrWWH35yTPv8P",
+      "track_id": "I2K0KDtgE2eZhPRw",
       "lead_genre": "pop",
-      "final_score": 0.691217,
-      "matched_genres": "",
-      "matched_tags": ""
+      "final_score": 0.662653,
+      "matched_genres": "pop|rock",
+      "matched_tags": "pop|rock|70s|80s"
     },
     {
       "rank": 10,
-      "track_id": "h2e5nNsGSAuOyTfw",
+      "track_id": "K9cIKiIeOF5aZuXa",
       "lead_genre": "pop",
-      "final_score": 0.685949,
-      "matched_genres": "",
-      "matched_tags": ""
+      "final_score": 0.662458,
+      "matched_genres": "pop|electronic",
+      "matched_tags": "pop|electronic"
     }
   ],
-  "elapsed_seconds": 3.055,
+  "elapsed_seconds": 6.135,
   "output_files": {
     "scored_candidates_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl006_scoring\\outputs\\bl006_scored_candidates.csv"
   },
   "output_hashes_sha256": {
-    "bl006_scored_candidates.csv": "96ae241d5c6195f148455919daa1d479a40b75cca25381e2ebefc35c3e489bd0"
+    "bl006_scored_candidates.csv": "16f88709e729624230dba9a88e8434d39ff78b6bfed8efdb4465428a89bbdaae"
   },
   "summary_hash_note": "summary file hash collected separately in experiment logging to avoid recursive self-reference"
 }

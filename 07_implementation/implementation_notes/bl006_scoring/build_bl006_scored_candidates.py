@@ -40,7 +40,7 @@ from bl006_scoring.profile_extractor import extract_profile_scoring_data, build_
 
 # Numeric feature specifications for comparison between profile and candidates
 NUMERIC_FEATURE_SPECS = build_numeric_specs()
-NUMERIC_COMPONENTS = {"tempo", "duration_ms", "key", "mode"}
+NUMERIC_COMPONENTS = set(NUMERIC_FEATURE_SPECS)
 SCORED_CANDIDATE_FIELDS = [
     "rank",
     "track_id",
@@ -48,6 +48,12 @@ SCORED_CANDIDATE_FIELDS = [
     "matched_genres",
     "matched_tags",
     "final_score",
+    "danceability_similarity",
+    "danceability_contribution",
+    "energy_similarity",
+    "energy_contribution",
+    "valence_similarity",
+    "valence_contribution",
     "tempo_similarity",
     "tempo_contribution",
     "duration_ms_similarity",
@@ -173,43 +179,30 @@ def ensure_paths_exist(paths: list[Path]) -> None:
 
 def contribution_breakdown(rows: list[dict[str, object]]) -> dict[str, float]:
     """Compute average component contributions across rows."""
+    numeric_components = ["danceability", "energy", "valence", "tempo", "duration_ms", "key", "mode"]
+    semantic_components = ["lead_genre", "genre_overlap", "tag_overlap"]
     if not rows:
         return {
             "numeric_contribution_mean": 0.0,
             "semantic_contribution_mean": 0.0,
-            "tempo_mean": 0.0,
-            "duration_ms_mean": 0.0,
-            "key_mean": 0.0,
-            "mode_mean": 0.0,
-            "lead_genre_mean": 0.0,
-            "genre_overlap_mean": 0.0,
-            "tag_overlap_mean": 0.0,
+            **{f"{component}_mean": 0.0 for component in numeric_components + semantic_components},
         }
 
     def mean_of(key: str) -> float:
         return round(statistics.mean(float(row[key]) for row in rows), 6)
 
-    tempo_mean = mean_of("tempo_contribution")
-    duration_mean = mean_of("duration_ms_contribution")
-    key_mean = mean_of("key_contribution")
-    mode_mean = mean_of("mode_contribution")
-    lead_mean = mean_of("lead_genre_contribution")
-    genre_overlap_mean = mean_of("genre_overlap_contribution")
-    tag_overlap_mean = mean_of("tag_overlap_contribution")
+    component_means = {
+        f"{component}_mean": mean_of(f"{component}_contribution")
+        for component in numeric_components + semantic_components
+    }
 
-    numeric_mean = round(tempo_mean + duration_mean + key_mean + mode_mean, 6)
-    semantic_mean = round(lead_mean + genre_overlap_mean + tag_overlap_mean, 6)
+    numeric_mean = round(sum(component_means[f"{component}_mean"] for component in numeric_components), 6)
+    semantic_mean = round(sum(component_means[f"{component}_mean"] for component in semantic_components), 6)
 
     return {
         "numeric_contribution_mean": numeric_mean,
         "semantic_contribution_mean": semantic_mean,
-        "tempo_mean": tempo_mean,
-        "duration_ms_mean": duration_mean,
-        "key_mean": key_mean,
-        "mode_mean": mode_mean,
-        "lead_genre_mean": lead_mean,
-        "genre_overlap_mean": genre_overlap_mean,
-        "tag_overlap_mean": tag_overlap_mean,
+        **component_means,
     }
 
 
@@ -279,6 +272,12 @@ def main() -> None:
                 "matched_genres": "|".join(component_scores.get("matched_genres", [])),
                 "matched_tags": "|".join(component_scores.get("matched_tags", [])),
                 "final_score": final_score,
+                "danceability_similarity": component_scores.get("danceability_similarity", 0.0),
+                "danceability_contribution": weighted_contributions.get("danceability_contribution", 0.0),
+                "energy_similarity":       component_scores.get("energy_similarity", 0.0),
+                "energy_contribution":     weighted_contributions.get("energy_contribution", 0.0),
+                "valence_similarity":      component_scores.get("valence_similarity", 0.0),
+                "valence_contribution":    weighted_contributions.get("valence_contribution", 0.0),
                 "tempo_similarity":        component_scores.get("tempo_similarity", 0.0),
                 "tempo_contribution":      weighted_contributions.get("tempo_contribution", 0.0),
                 "duration_ms_similarity":  component_scores.get("duration_ms_similarity", 0.0),

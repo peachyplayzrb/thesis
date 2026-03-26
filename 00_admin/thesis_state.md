@@ -69,6 +69,8 @@ The active execution corpus is DS-001 (Music4All base path). DS-002 (`MSD subset
 
 Priority status checkpoint (2026-03-26 18:06 UTC): Tier-1 pipeline remediation remains complete. UI-013 is now closed on the active baseline: the v1b profile remains the active configuration per decision D-032, refreshed acceptance evidence passed on corrected BL-006 weighted semantics (`bl003_match_rate=0.1595`, `bl005_kept_candidates=54402`, `bl006_numeric_minus_semantic=-0.068775`, `bl008_top_label_dominance_share=0.3`, BL-014 pass), and the primary remaining submission-hardening dependency is UI-003 citation closure.
 
+Priority status checkpoint (2026-03-26 21:03 UTC): Pipeline is now on the v1f baseline (`run_config_ui013_tuning_v1f.json`), completing the intended 10-component scoring surface by activating danceability, energy, and valence end-to-end in BL-005 and BL-006. BL-013 restore `BL013-ENTRYPOINT-20260326-210305-914179` pass; BL-014 sanity pass `22/22`; BL-010 reproducibility pass; BL-011 controllability pass. The active freshness suite fails at `6/8` due to a non-blocking post-restore evidence-alignment mismatch (documented). Implementation scope is closed on v1f. Planned next actions: (1) freshness re-alignment, (2) UI-003 citation closure — the primary remaining submission-hardening dependency, (3) chapter alignment to v1f counts, (4) evaluation evidence packaging.
+
 ## Current Implementation Status
 
 ### BL-020 Implementation State (as of 2026-03-25)
@@ -106,10 +108,10 @@ See: `07_implementation/BL020_HANDOFF_AUDIT_2026-03-21.md` for comprehensive pre
 ## Update Control
 
 - Last updated:
-2026-03-26 18:06 UTC
+2026-03-26 21:03 UTC
 
 - Reason for last update:
-(1) Record refreshed UI-013 v1b acceptance evidence on the corrected BL-006 weighted-contribution baseline and close UI-013. (2) Synchronize implementation/admin state files to the latest validated evidence so UI-003 remains the primary open dependency.
+(1) Implemented v1f numeric retune activating danceability, energy, and valence in BL-005 and BL-006. (2) Applied Windows WinError 1224 fix for BL-010 archive copy. (3) Restored live pipeline to v1f baseline (`BL013-ENTRYPOINT-20260326-210305-914179`). (4) Updated all stage state logs, CODEBASE_ISSUES_CURRENT.md, and admin governance files to reflect v1f as the current baseline and document planned next steps.
 
 ## Locked Definitions
 - Artefact scope lock: `00_admin/Artefact_MVP_definition.md`
