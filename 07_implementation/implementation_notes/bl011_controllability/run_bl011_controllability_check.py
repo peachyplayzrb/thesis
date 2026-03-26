@@ -249,6 +249,28 @@ def normalized_weights_with_override(base_weights: dict[str, float], component: 
     return {key: round(value / total, 6) for key, value in weights.items()}
 
 
+def normalize_component_weight_keys(raw_weights: dict[str, float]) -> dict[str, float]:
+    """
+    Normalize component weight keys to canonical BL-006 names.
+
+    Handles historical naming variants such as "tempo_score" and
+    canonicalizes to "tempo" so scoring and diagnostics use one schema.
+    """
+    normalized: dict[str, float] = {}
+    for raw_key, raw_value in raw_weights.items():
+        key = str(raw_key).strip()
+        if key.endswith("_score"):
+            key = key[: -len("_score")]
+        if not key:
+            continue
+        normalized[key] = normalized.get(key, 0.0) + float(raw_value)
+
+    total = sum(normalized.values())
+    if total > 0:
+        normalized = {k: round(v / total, 6) for k, v in normalized.items()}
+    return normalized
+
+
 def decision_reason(is_seed_track: bool, semantic_score: int, numeric_pass_count: int, kept: bool) -> str:
     if is_seed_track:
         return "reject: seed track excluded from retrieval output"
@@ -292,6 +314,7 @@ def build_scenarios(baseline_snapshot: dict) -> list[dict[str, object]]:
         or base_scoring.get("base_component_weights")
         or {}
     )
+    scoring_weights = normalize_component_weight_keys(scoring_weights)
     if not scoring_weights:
         raise RuntimeError("BL-011 could not resolve scoring component weights from baseline snapshot")
     if "valence" in scoring_weights:
@@ -760,7 +783,9 @@ def execute_scoring_stage(profile_stage: dict[str, object], retrieval_stage: dic
         or scoring_config.get("base_component_weights")
         or {}
     )
-    component_weights = {key: float(value) for key, value in raw_component_weights.items()}
+    component_weights = normalize_component_weight_keys(
+        {key: float(value) for key, value in raw_component_weights.items()}
+    )
     if not component_weights:
         raise RuntimeError(f"Scenario {scenario['scenario_id']} has no scoring component weights")
     if abs(sum(component_weights.values()) - 1.0) > 1e-4:

@@ -294,6 +294,12 @@ def main() -> int:
     )
 
     check(
+        "quality_bl007_target_size_met",
+        playlist_len >= bl007_target_size,
+        f"BL-007 playlist length ({playlist_len}) meets target_size ({bl007_target_size})",
+    )
+
+    check(
         "continuity_bl009_index_counts",
         int(bl009_index["kept_candidates"]) == bl005_kept
         and int(bl009_index["candidates_scored"]) == bl006_scored_count
@@ -371,7 +377,7 @@ def main() -> int:
             "BL-005 kept count matches filtered rows",
             "BL-006 scored count matches scored rows",
             "BL-007 playlist count aligns with BL-008 explanations",
-            "BL-007 undersized playlist advisory flagging",
+            "BL-007 playlist meets configured target size",
             "BL-009 index counts align with upstream stage outputs",
             "BL-009 run_id linkage aligns with upstream stage summaries",
         ],
