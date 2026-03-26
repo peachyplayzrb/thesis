@@ -3,7 +3,6 @@ from __future__ import annotations
 import argparse
 import csv
 import hashlib
-import importlib.util
 import json
 import math
 import os
@@ -13,6 +12,14 @@ import unicodedata
 from collections import defaultdict
 from datetime import datetime, timezone
 from pathlib import Path
+
+import sys
+
+sys.path.insert(0, str(Path(__file__).parent.parent))
+
+from bl000_shared_utils.config_loader import load_run_config_utils_module
+from bl000_shared_utils.io_utils import load_csv_rows, sha256_of_file as sha256_of_file_shared
+from bl000_shared_utils.path_utils import repo_root
 
 TOP_RANGE_WEIGHTS = {
     "short_term": 0.50,
@@ -110,26 +117,6 @@ def parse_args() -> argparse.Namespace:
 
 def utc_now() -> str:
     return datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
-
-
-def repo_root() -> Path:
-    return Path(__file__).resolve().parents[3]
-
-
-def load_run_config_utils_module():
-    module_path = (
-        repo_root()
-        / "07_implementation"
-        / "implementation_notes"
-        / "bl000_run_config"
-        / "run_config_utils.py"
-    )
-    spec = importlib.util.spec_from_file_location("run_config_utils", module_path)
-    if spec is None or spec.loader is None:
-        raise RuntimeError(f"Unable to load run-config utilities from {module_path}")
-    module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
-    return module
 
 
 def resolve_bl003_runtime_scope() -> dict[str, object]:
@@ -293,11 +280,7 @@ def apply_input_scope_filters(
 
 
 def sha256_of_file(path: Path) -> str:
-    digest = hashlib.sha256()
-    with path.open("rb") as handle:
-        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
-            digest.update(chunk)
-    return digest.hexdigest().upper()
+    return sha256_of_file_shared(path).upper()
 
 
 def canonical_json_hash(payload: object) -> str:
@@ -347,8 +330,7 @@ def parse_float(value: str) -> float | None:
 
 
 def load_csv(path: Path) -> list[dict[str, str]]:
-    with path.open("r", encoding="utf-8", newline="") as handle:
-        return list(csv.DictReader(handle))
+    return load_csv_rows(path)
 
 
 def load_optional_csv(path: Path) -> tuple[list[dict[str, str]], bool]:
