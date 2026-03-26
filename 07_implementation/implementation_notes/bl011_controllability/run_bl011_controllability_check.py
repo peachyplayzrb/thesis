@@ -632,7 +632,7 @@ def execute_retrieval_stage(
         is_seed_track = track_id in seed_track_ids
         candidate_genres = candidate_labels(row, "genres")
         candidate_tags = candidate_labels(row, "tags")
-        lead_genre = candidate_tags[0] if candidate_tags else (candidate_genres[0] if candidate_genres else "")
+        lead_genre = candidate_genres[0] if candidate_genres else (candidate_tags[0] if candidate_tags else "")
 
         lead_genre_match = lead_genre in top_lead_genres if lead_genre else False
         genre_overlap = len(top_genres.intersection(candidate_genres))
@@ -778,7 +778,7 @@ def execute_scoring_stage(profile_stage: dict[str, object], retrieval_stage: dic
     for row in candidates:
         lead_genres = candidate_labels(row, "genres")
         candidate_tags = candidate_labels(row, "tags")
-        lead_genre = candidate_tags[0] if candidate_tags else (lead_genres[0] if lead_genres else "")
+        lead_genre = lead_genres[0] if lead_genres else (candidate_tags[0] if candidate_tags else "")
 
         component_similarity: dict[str, float] = {}
         component_contribution: dict[str, float] = {}
@@ -800,18 +800,28 @@ def execute_scoring_stage(profile_stage: dict[str, object], retrieval_stage: dic
         if lead_genre and lead_genre in profile_lead_map and profile_lead_total > 0:
             lead_genre_similarity = round(profile_lead_map[lead_genre] / max(profile_lead_map.values()), 6)
         component_similarity["lead_genre"] = lead_genre_similarity
-        component_contribution["lead_genre"] = round(lead_genre_similarity * component_weights["lead_genre"], 6)
+        component_contribution["lead_genre"] = round(
+            lead_genre_similarity * component_weights.get("lead_genre", 0.0),
+            6,
+        )
 
         genre_overlap_similarity, matched_genres = weighted_overlap(lead_genres, profile_genre_map, profile_genre_total)
         tag_overlap_similarity, matched_tags = weighted_overlap(candidate_tags, profile_tag_map, profile_tag_total)
         component_similarity["genre_overlap"] = genre_overlap_similarity
-        component_contribution["genre_overlap"] = round(genre_overlap_similarity * component_weights["genre_overlap"], 6)
+        component_contribution["genre_overlap"] = round(
+            genre_overlap_similarity * component_weights.get("genre_overlap", 0.0),
+            6,
+        )
         component_similarity["tag_overlap"] = tag_overlap_similarity
-        component_contribution["tag_overlap"] = round(tag_overlap_similarity * component_weights["tag_overlap"], 6)
+        component_contribution["tag_overlap"] = round(
+            tag_overlap_similarity * component_weights.get("tag_overlap", 0.0),
+            6,
+        )
 
         final_score = round(sum(component_contribution.values()), 6)
         for key, value in component_contribution.items():
-            component_totals[key] += value
+            if key in component_totals:
+                component_totals[key] += value
 
         row_payload: dict[str, object] = {
             "track_id": row["track_id"],

@@ -278,7 +278,7 @@ def run_active_mode() -> int:
         checks,
         "bl014_script_exit_zero",
         bl014_return == 0,
-        "BL-014 sanity check script exited with code 0",
+        f"BL-014 sanity check script return code={bl014_return}",
     )
 
     bl014_report_path = OUTPUT_DIR / "bl014_sanity_report.json"
@@ -297,7 +297,7 @@ def run_active_mode() -> int:
         checks,
         "bl010_bl011_freshness_exit_zero",
         freshness_return == 0,
-        "BL-010/BL-011 freshness script exited with code 0",
+        f"BL-010/BL-011 freshness script return code={freshness_return}",
     )
 
     freshness_report_path = OUTPUT_DIR / "bl010_bl011_freshness_report.json"
@@ -329,6 +329,9 @@ def run_active_mode() -> int:
             "bl013_latest_summary": relpath(bl013_latest_path),
             "bl014_report": relpath(bl014_report_path),
             "bl010_bl011_freshness_report": relpath(freshness_report_path),
+        },
+        "script_outputs": {
+            "bl014_stdout_stderr": bl014_output,
         },
         "checks": checks,
     }
