@@ -1031,4 +1031,3 @@ review_date: none
 - evidence_basis: `07_implementation/setup/website_api_server.py`, `07_implementation/setup/smoke_website_api.ps1`, `07_implementation/setup/test_website_api_server.py`, `requirements.txt`, `07_implementation/experiment_log.md` (`EXP-052`).
 - impacted_files: `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`, `07_implementation/setup/website_api_server.py`, `07_implementation/setup/smoke_website_api.ps1`, `07_implementation/setup/test_website_api_server.py`, `requirements.txt`
 - next_steps: Keep BL-023 bounded to modular cleanup, reliability hardening, and evidence-surface polish; do not widen scope into new adapters or in-process pipeline redesign.
-
