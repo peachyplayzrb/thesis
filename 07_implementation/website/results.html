@@ -1,28 +1,60 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Playlist Generator - Results</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
   <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
   <main class="page page-import page-run">
     <aside class="import-sidebar card">
-      <h2 class="sidebar-heading">Results</h2>
-      <ul class="source-list" aria-label="Results navigation">
-        <li><a class="button-link" href="import.html">Import Data</a></li>
-        <li><a class="button-link" href="profile_basis.html">Profile Basis</a></li>
-        <li><a class="button-link" href="run.html">Run Generator</a></li>
-        <li><a class="button-link" href="results.html">Results</a></li>
-        <li><a class="button-link" href="history.html">Run History</a></li>
+      <h2 class="sidebar-heading">Workflow Steps</h2>
+      <ul class="source-list workflow-step-list" aria-label="Workflow navigation">
+        <li><a class="button-link" href="import.html">Step 1: Import Data</a></li>
+        <li><a class="button-link" href="profile_basis.html">Step 2: Profile Basis</a></li>
+        <li><a class="button-link" href="run.html">Step 3: Run Pipeline</a></li>
+        <li><a class="button-link is-active" href="results.html">Step 4: Results</a></li>
+        <li><a class="button-link" href="history.html">Step 5: History</a></li>
       </ul>
+
+      <details class="advanced-controls-shell">
+        <summary>Advanced Controls</summary>
+        <ul class="source-list" aria-label="Advanced stage pages">
+          <li><a class="button-link" href="stage_bl003.html">BL-003 Alignment</a></li>
+          <li><a class="button-link" href="stage_bl004.html">BL-004 Profile</a></li>
+          <li><a class="button-link" href="stage_bl005.html">BL-005 Retrieval</a></li>
+          <li><a class="button-link" href="stage_bl006.html">BL-006 Scoring</a></li>
+          <li><a class="button-link" href="stage_bl007.html">BL-007 Assembly</a></li>
+          <li><a class="button-link" href="stage_bl008.html">BL-008 Transparency</a></li>
+          <li><a class="button-link" href="stage_bl009.html">BL-009 Observability</a></li>
+        </ul>
+      </details>
     </aside>
 
     <section class="import-content card">
       <h1>Results</h1>
-      <p class="subtitle">Inspect playlist output, explanation summary, observability snapshot, and artifact compare data.</p>
+      <p class="subtitle">Understand what this run produced, why it produced it, and the exact evidence trail behind
+        each stage output.</p>
+
+      <section class="export-status-card">
+        <div class="export-status-head">
+          <h3>How To Read This Page</h3>
+        </div>
+        <ol class="results-read-order">
+          <li><strong>Run Summary:</strong> confirms run state and timestamps.</li>
+          <li><strong>Run Configuration + Stage Trace:</strong> shows what was requested and what actually executed.
+          </li>
+          <li><strong>Playlist + BL-008 + BL-009:</strong> shows output quality, explanation drivers, and observability
+            context.</li>
+          <li><strong>Compare + Artifacts + Raw Snapshot:</strong> provides audit evidence and full payload
+            traceability.</li>
+        </ol>
+      </section>
 
       <section class="export-status-card" aria-live="polite">
         <div class="export-status-head">
@@ -31,13 +63,81 @@
         </div>
         <p id="results-message" class="hint">Loading latest run results...</p>
         <dl class="export-meta-grid">
-          <div><dt>Run ID</dt><dd id="results-run-id">-</dd></div>
-          <div><dt>Status</dt><dd id="results-status">-</dd></div>
-          <div><dt>Current Stage</dt><dd id="results-stage">-</dd></div>
-          <div><dt>Started (UTC)</dt><dd id="results-started">-</dd></div>
-          <div><dt>Finished (UTC)</dt><dd id="results-finished">-</dd></div>
-          <div><dt>Artifact Changes</dt><dd id="results-change-count">-</dd></div>
+          <div>
+            <dt>Run ID</dt>
+            <dd id="results-run-id">-</dd>
+          </div>
+          <div>
+            <dt>Status</dt>
+            <dd id="results-status">-</dd>
+          </div>
+          <div>
+            <dt>Current Stage</dt>
+            <dd id="results-stage">-</dd>
+          </div>
+          <div>
+            <dt>Started (UTC)</dt>
+            <dd id="results-started">-</dd>
+          </div>
+          <div>
+            <dt>Finished (UTC)</dt>
+            <dd id="results-finished">-</dd>
+          </div>
+          <div>
+            <dt>Artifact Changes</dt>
+            <dd id="results-change-count">-</dd>
+          </div>
         </dl>
+      </section>
+
+      <section class="export-status-card">
+        <div class="export-status-head">
+          <h3>Run Configuration Snapshot</h3>
+        </div>
+        <dl class="export-meta-grid">
+          <div>
+            <dt>Trigger</dt>
+            <dd id="results-config-trigger">-</dd>
+          </div>
+          <div>
+            <dt>Selected Stages</dt>
+            <dd id="results-config-stages">-</dd>
+          </div>
+          <div>
+            <dt>Request Config Keys</dt>
+            <dd id="results-config-keys">-</dd>
+          </div>
+        </dl>
+        <details>
+          <summary>View Request Config JSON</summary>
+          <pre id="results-request-config-json" class="run-log results-code-block">No request config available.</pre>
+        </details>
+      </section>
+
+      <section class="export-status-card">
+        <div class="export-status-head">
+          <h3>Pipeline Stage Execution Trace</h3>
+        </div>
+        <div class="stage-table-wrap">
+          <table class="stage-table" aria-label="Pipeline stage execution trace">
+            <thead>
+              <tr>
+                <th>Stage</th>
+                <th>Status</th>
+                <th>Started (UTC)</th>
+                <th>Finished (UTC)</th>
+                <th>Elapsed</th>
+                <th>Exit</th>
+                <th>Message</th>
+              </tr>
+            </thead>
+            <tbody id="results-stage-trace-body">
+              <tr>
+                <td colspan="7" class="hint">No stage execution trace available yet.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </section>
 
       <section class="export-status-card">
@@ -55,10 +155,140 @@
               </tr>
             </thead>
             <tbody id="results-playlist-body">
-              <tr><td colspan="4" class="hint">No playlist preview available yet.</td></tr>
+              <tr>
+                <td colspan="4" class="hint">No playlist preview available yet.</td>
+              </tr>
             </tbody>
           </table>
         </div>
+      </section>
+
+      <section class="export-status-card">
+        <div class="export-status-head">
+          <h3>BL-008 Transparency Summary</h3>
+        </div>
+        <dl class="export-meta-grid">
+          <div>
+            <dt>BL-008 Run ID</dt>
+            <dd id="results-explain-run-id">-</dd>
+          </div>
+          <div>
+            <dt>Generated (UTC)</dt>
+            <dd id="results-explain-generated">-</dd>
+          </div>
+          <div>
+            <dt>Tracks Explained</dt>
+            <dd id="results-explain-track-count">-</dd>
+          </div>
+        </dl>
+        <div class="stage-table-wrap">
+          <table class="stage-table" aria-label="Top contributor distribution">
+            <thead>
+              <tr>
+                <th>Top Contributor</th>
+                <th>Track Count</th>
+              </tr>
+            </thead>
+            <tbody id="results-explain-dist-body">
+              <tr>
+                <td colspan="2" class="hint">No explanation summary available yet.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <details>
+          <summary>View BL-008 Artifact Hashes</summary>
+          <div class="stage-table-wrap">
+            <table class="stage-table" aria-label="BL-008 input and output artifact hashes">
+              <thead>
+                <tr>
+                  <th>Hash Group</th>
+                  <th>Artifact</th>
+                  <th>SHA-256</th>
+                </tr>
+              </thead>
+              <tbody id="results-explain-hash-body">
+                <tr>
+                  <td colspan="3" class="hint">No BL-008 artifact hashes available yet.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </details>
+      </section>
+
+      <section class="export-status-card">
+        <div class="export-status-head">
+          <h3>BL-009 Observability Summary</h3>
+        </div>
+        <dl class="export-meta-grid">
+          <div>
+            <dt>BL-009 Run ID</dt>
+            <dd id="results-observe-run-id">-</dd>
+          </div>
+          <div>
+            <dt>Dataset Version</dt>
+            <dd id="results-observe-dataset">-</dd>
+          </div>
+          <div>
+            <dt>Pipeline Version</dt>
+            <dd id="results-observe-pipeline">-</dd>
+          </div>
+          <div>
+            <dt>Bootstrap Mode</dt>
+            <dd id="results-observe-bootstrap">-</dd>
+          </div>
+          <div>
+            <dt>Config Source</dt>
+            <dd id="results-observe-config-source">-</dd>
+          </div>
+          <div>
+            <dt>Playlist Length</dt>
+            <dd id="results-observe-playlist-length">-</dd>
+          </div>
+        </dl>
+        <div class="stage-table-wrap">
+          <table class="stage-table" aria-label="Observed stage run ids">
+            <thead>
+              <tr>
+                <th>Stage</th>
+                <th>Run ID</th>
+              </tr>
+            </thead>
+            <tbody id="results-observe-stage-body">
+              <tr>
+                <td colspan="2" class="hint">No observability stage run IDs available yet.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <details>
+          <summary>View BL-009 Diagnostics</summary>
+          <div class="stage-table-wrap">
+            <table class="stage-table" aria-label="BL-009 diagnostics">
+              <thead>
+                <tr>
+                  <th>Group</th>
+                  <th>Key</th>
+                  <th>Value</th>
+                </tr>
+              </thead>
+              <tbody id="results-observe-diag-body">
+                <tr>
+                  <td colspan="3" class="hint">No BL-009 diagnostics available yet.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </details>
+      </section>
+
+      <section class="export-status-card">
+        <div class="export-status-head">
+          <h3>Playlist Artifact Snapshot</h3>
+        </div>
+        <p class="hint">Full BL-007 playlist payload currently available from the server response.</p>
+        <pre id="results-playlist-json" class="run-log results-code-block">No playlist payload loaded yet.</pre>
       </section>
 
       <section class="export-status-card">
@@ -72,7 +302,7 @@
 
       <section class="export-status-card">
         <div class="export-status-head">
-          <h3>Explanation + Observability Snapshot</h3>
+          <h3>Raw Snapshot (Full API Response)</h3>
         </div>
         <pre id="results-json" class="run-log">No result payload loaded yet.</pre>
       </section>
@@ -88,7 +318,10 @@
     </section>
   </main>
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+    crossorigin="anonymous"></script>
   <script src="results.js"></script>
 </body>
+
 </html>

@@ -26,11 +26,26 @@ const API_RUN_STATUS = "/api/pipeline/run/status";
 const API_RUN_CANCEL = "/api/pipeline/run/cancel";
 
 const STAGE_PARAMETER_DEFS = {
+  bl003: [
+    {
+      key: "input_scope",
+      label: "Input scope (JSON object)",
+      type: "json",
+      defaultValue: "{\n  \"source_family\": \"spotify_api_export\",\n  \"include_top_tracks\": true,\n  \"top_time_ranges\": [\"short_term\", \"medium_term\", \"long_term\"],\n  \"include_saved_tracks\": true,\n  \"saved_tracks_limit\": null,\n  \"include_playlists\": true,\n  \"playlists_limit\": null,\n  \"playlist_items_per_playlist_limit\": null,\n  \"include_recently_played\": true,\n  \"recently_played_limit\": 50\n}"
+    },
+    { key: "allow_missing_selected_sources", label: "Allow missing selected sources", type: "bool", defaultValue: false }
+  ],
   bl004: [
     { key: "top_tag_limit", label: "Top tags limit", type: "int", min: 1, max: 100, step: 1, defaultValue: 10 },
-    { key: "top_genre_limit", label: "Top genres limit", type: "int", min: 1, max: 100, step: 1, defaultValue: 10 },
-    { key: "top_lead_genre_limit", label: "Top lead-genres limit", type: "int", min: 1, max: 100, step: 1, defaultValue: 10 },
-    { key: "user_id", label: "User ID", type: "string", defaultValue: "21zsn42xecjhogne4kghyw5hq" }
+    { key: "top_genre_limit", label: "Top genres limit", type: "int", min: 1, max: 100, step: 1, defaultValue: 8 },
+    { key: "top_lead_genre_limit", label: "Top lead-genres limit", type: "int", min: 1, max: 100, step: 1, defaultValue: 6 },
+    { key: "user_id", label: "User ID", type: "string", defaultValue: "21zsn42xecjhogne4kghyw5hq" },
+    {
+      key: "include_interaction_types",
+      label: "Included interaction types (JSON array)",
+      type: "json_array",
+      defaultValue: "[\n  \"history\",\n  \"influence\"\n]"
+    }
   ],
   bl005: [
     { key: "semantic_strong_keep_score", label: "Semantic strong-keep score", type: "int", min: 0, max: 10, step: 1, defaultValue: 2 },
@@ -38,14 +53,20 @@ const STAGE_PARAMETER_DEFS = {
     { key: "numeric_support_min_pass", label: "Numeric support minimum pass", type: "int", min: 0, max: 10, step: 1, defaultValue: 1 },
     { key: "profile_top_lead_genre_limit", label: "Top lead genres", type: "int", min: 1, max: 30, step: 1, defaultValue: 6 },
     { key: "profile_top_tag_limit", label: "Top tags", type: "int", min: 1, max: 50, step: 1, defaultValue: 10 },
-    { key: "profile_top_genre_limit", label: "Top genres", type: "int", min: 1, max: 50, step: 1, defaultValue: 8 }
+    { key: "profile_top_genre_limit", label: "Top genres", type: "int", min: 1, max: 50, step: 1, defaultValue: 8 },
+    {
+      key: "numeric_thresholds",
+      label: "Numeric thresholds (JSON object)",
+      type: "json",
+      defaultValue: "{\n  \"danceability\": 0.2,\n  \"energy\": 0.2,\n  \"valence\": 0.2,\n  \"tempo\": 20.0,\n  \"duration_ms\": 45000.0,\n  \"key\": 2.0,\n  \"mode\": 0.5\n}"
+    }
   ],
   bl006: [
     {
       key: "component_weights",
       label: "Component weights (JSON object)",
       type: "json",
-      defaultValue: "{\n  \"genre\": 0.24,\n  \"tag\": 0.16,\n  \"artist_affinity\": 0.16,\n  \"tempo\": 0.08,\n  \"duration_ms\": 0.08,\n  \"key\": 0.04,\n  \"mode\": 0.04,\n  \"artist_popularity\": 0.08,\n  \"track_popularity\": 0.08,\n  \"spotify_popularity\": 0.04\n}"
+      defaultValue: "{\n  \"tempo\": 0.1,\n  \"duration_ms\": 0.07,\n  \"key\": 0.06,\n  \"mode\": 0.04,\n  \"lead_genre\": 0.17,\n  \"genre_overlap\": 0.12,\n  \"tag_overlap\": 0.16,\n  \"danceability\": 0.1,\n  \"energy\": 0.1,\n  \"valence\": 0.08\n}"
     },
     {
       key: "numeric_thresholds",
@@ -61,10 +82,13 @@ const STAGE_PARAMETER_DEFS = {
     { key: "max_consecutive", label: "Max consecutive same-genre tracks", type: "int", min: 1, max: 10, step: 1, defaultValue: 2 }
   ],
   bl008: [
-    { key: "top_contributor_limit", label: "Top contributors per track", type: "int", min: 1, max: 20, step: 1, defaultValue: 3 }
+    { key: "top_contributor_limit", label: "Top contributors per track", type: "int", min: 1, max: 20, step: 1, defaultValue: 3 },
+    { key: "blend_primary_contributor_on_near_tie", label: "Blend primary contributor on near tie", type: "bool", defaultValue: false },
+    { key: "primary_contributor_tie_delta", label: "Primary contributor tie delta", type: "float", min: 0, max: 1, step: 0.01, defaultValue: 0.02 }
   ],
   bl009: [
-    { key: "diagnostic_sample_limit", label: "Diagnostic sample limit", type: "int", min: 1, max: 50, step: 1, defaultValue: 5 }
+    { key: "diagnostic_sample_limit", label: "Diagnostic sample limit", type: "int", min: 1, max: 50, step: 1, defaultValue: 5 },
+    { key: "bootstrap_mode", label: "Bootstrap mode", type: "bool", defaultValue: true }
   ]
 };
 
@@ -79,6 +103,10 @@ function getStageParameterDefs() {
 }
 
 function stagePresetStorageKey() {
+  return `stage-params-preset-${stageId}`;
+}
+
+function legacyStagePresetStorageKey() {
   return `playlist_stage_params_preset_${stageId}_v1`;
 }
 
@@ -86,6 +114,34 @@ function setStageParamMessage(text) {
   if (stageParamMessageNode) {
     stageParamMessageNode.textContent = text;
   }
+}
+
+function stringifyDefaultValue(value, type) {
+  if (type === "bool") {
+    return value ? "true" : "false";
+  }
+  if (value === null || value === undefined) {
+    return "";
+  }
+  return String(value);
+}
+
+function setInputFromStoredValue(input, value) {
+  const type = String(input.dataset.paramType || "");
+  if (type === "bool") {
+    const lowered = String(value ?? "").trim().toLowerCase();
+    input.checked = lowered === "true" || lowered === "1" || lowered === "yes" || lowered === "on";
+    return;
+  }
+  input.value = String(value ?? "");
+}
+
+function getInputForPreset(input) {
+  const type = String(input.dataset.paramType || "");
+  if (type === "bool") {
+    return Boolean(input.checked);
+  }
+  return String(input.value || "");
 }
 
 function formatDateTimeDisplay(isoValue) {
@@ -162,7 +218,7 @@ function buildStageParameterControls() {
 
   defs.forEach((def) => {
     const col = document.createElement("div");
-    col.className = def.type === "json" ? "col-12" : "col-md-6";
+    col.className = (def.type === "json" || def.type === "json_array") ? "col-12" : "col-md-6";
 
     const label = document.createElement("label");
     label.className = "form-label";
@@ -172,10 +228,14 @@ function buildStageParameterControls() {
     label.setAttribute("for", inputId);
 
     let input;
-    if (def.type === "json") {
+    if (def.type === "json" || def.type === "json_array") {
       input = document.createElement("textarea");
       input.rows = 7;
       input.className = "form-control run-config-textarea";
+    } else if (def.type === "bool") {
+      input = document.createElement("input");
+      input.type = "checkbox";
+      input.className = "form-check-input";
     } else if (def.type === "string") {
       input = document.createElement("input");
       input.type = "text";
@@ -190,10 +250,14 @@ function buildStageParameterControls() {
     }
 
     input.id = inputId;
-    input.value = String(def.defaultValue ?? "");
+    if (def.type === "bool") {
+      input.checked = Boolean(def.defaultValue);
+    } else {
+      input.value = stringifyDefaultValue(def.defaultValue, def.type);
+    }
     input.dataset.paramKey = def.key;
     input.dataset.paramType = def.type;
-    input.dataset.defaultValue = String(def.defaultValue ?? "");
+    input.dataset.defaultValue = stringifyDefaultValue(def.defaultValue, def.type);
     col.appendChild(label);
     col.appendChild(input);
 
@@ -212,7 +276,7 @@ function buildStageParameterControls() {
   resetBtn.textContent = "Reset Defaults";
   resetBtn.addEventListener("click", () => {
     stageParamInputs.forEach((input) => {
-      input.value = String(input.dataset.defaultValue || "");
+      setInputFromStoredValue(input, input.dataset.defaultValue || "");
     });
     setStageParamMessage("Stage parameter values reset to defaults.");
   });
@@ -227,10 +291,12 @@ function buildStageParameterControls() {
       stageParamInputs.forEach((input) => {
         const key = String(input.dataset.paramKey || "");
         if (key) {
-          preset[key] = String(input.value || "");
+          preset[key] = getInputForPreset(input);
         }
       });
-      localStorage.setItem(stagePresetStorageKey(), JSON.stringify(preset));
+      const payload = JSON.stringify(preset);
+      localStorage.setItem(stagePresetStorageKey(), payload);
+      localStorage.setItem(legacyStagePresetStorageKey(), payload);
       setStageParamMessage("Preset saved for this stage in your browser.");
     } catch {
       setStageParamMessage("Unable to save preset in this browser session.");
@@ -243,7 +309,7 @@ function buildStageParameterControls() {
   loadPresetBtn.textContent = "Load Preset";
   loadPresetBtn.addEventListener("click", () => {
     try {
-      const raw = localStorage.getItem(stagePresetStorageKey());
+      const raw = localStorage.getItem(stagePresetStorageKey()) || localStorage.getItem(legacyStagePresetStorageKey());
       if (!raw) {
         setStageParamMessage("No saved preset found for this stage.");
         return;
@@ -257,7 +323,7 @@ function buildStageParameterControls() {
       stageParamInputs.forEach((input) => {
         const key = String(input.dataset.paramKey || "");
         if (Object.prototype.hasOwnProperty.call(parsed, key)) {
-          input.value = String(parsed[key] ?? "");
+          setInputFromStoredValue(input, parsed[key]);
           loadedCount += 1;
         }
       });
@@ -280,7 +346,7 @@ function buildStageParameterControls() {
   controlCard.insertAdjacentElement("afterend", card);
 
   try {
-    const raw = localStorage.getItem(stagePresetStorageKey());
+    const raw = localStorage.getItem(stagePresetStorageKey()) || localStorage.getItem(legacyStagePresetStorageKey());
     if (raw) {
       const parsed = JSON.parse(raw);
       if (parsed && typeof parsed === "object" && !Array.isArray(parsed)) {
@@ -288,7 +354,7 @@ function buildStageParameterControls() {
         stageParamInputs.forEach((input) => {
           const key = String(input.dataset.paramKey || "");
           if (Object.prototype.hasOwnProperty.call(parsed, key)) {
-            input.value = String(parsed[key] ?? "");
+            setInputFromStoredValue(input, parsed[key]);
             loaded += 1;
           }
         });
@@ -312,6 +378,11 @@ function collectStageParams() {
     const key = String(input.dataset.paramKey || "");
     const type = String(input.dataset.paramType || "");
     const raw = String(input.value || "").trim();
+
+    if (type === "bool") {
+      params[key] = Boolean(input.checked);
+      continue;
+    }
 
     if (!key || !raw) {
       continue;
@@ -344,6 +415,20 @@ function collectStageParams() {
       }
       if (!payload || typeof payload !== "object" || Array.isArray(payload)) {
         throw new Error(`Expected a JSON object for ${key}.`);
+      }
+      params[key] = payload;
+      continue;
+    }
+
+    if (type === "json_array") {
+      let payload;
+      try {
+        payload = JSON.parse(raw);
+      } catch {
+        throw new Error(`Invalid JSON array for ${key}.`);
+      }
+      if (!Array.isArray(payload)) {
+        throw new Error(`Expected a JSON array for ${key}.`);
       }
       params[key] = payload;
       continue;

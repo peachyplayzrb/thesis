@@ -90,7 +90,14 @@ def resolve_bl004_runtime_controls() -> dict[str, object]:
     root = repo_root()
     run_config_path = os.environ.get("BL_RUN_CONFIG_PATH", "").strip() or None
     env_user_id = env_str("BL004_USER_ID", "")
+    env_interaction_types_raw = env_str("BL004_INCLUDE_INTERACTION_TYPES", "")
     inferred_user_id = infer_user_id_from_ingestion(root)
+
+    env_interaction_types = [
+        token.strip()
+        for token in env_interaction_types_raw.split(",")
+        if token.strip()
+    ]
 
     def resolve_user_id(candidate: object) -> str:
         if isinstance(candidate, str) and candidate.strip():
@@ -128,7 +135,9 @@ def resolve_bl004_runtime_controls() -> dict[str, object]:
                 "top_lead_genre_limit": int(controls["top_lead_genre_limit"]),
                 "user_id": user_id,
                 "include_interaction_types": list(
-                    controls.get("include_interaction_types") or DEFAULT_INCLUDE_INTERACTION_TYPES
+                    env_interaction_types
+                    or controls.get("include_interaction_types")
+                    or DEFAULT_INCLUDE_INTERACTION_TYPES
                 ),
             }
         )
@@ -143,7 +152,7 @@ def resolve_bl004_runtime_controls() -> dict[str, object]:
             "top_genre_limit": env_int("BL004_TOP_GENRE_LIMIT", DEFAULT_PROFILE_TOP_GENRE_LIMIT),
             "top_lead_genre_limit": env_int("BL004_TOP_LEAD_GENRE_LIMIT", DEFAULT_PROFILE_TOP_LEAD_GENRE_LIMIT),
             "user_id": resolve_user_id(None),
-            "include_interaction_types": list(DEFAULT_INCLUDE_INTERACTION_TYPES),
+            "include_interaction_types": list(env_interaction_types or DEFAULT_INCLUDE_INTERACTION_TYPES),
         }
     )
 

@@ -1,11 +1,11 @@
 {
-  "run_id": "BL004-PROFILE-20260327-012151-063880",
+  "run_id": "BL004-PROFILE-20260327-165357-389471",
   "task": "BL-004",
-  "generated_at_utc": "2026-03-27T01:21:51Z",
+  "generated_at_utc": "2026-03-27T16:53:57Z",
   "user_id": "214f23jw73wgv4vdpcjabds2a",
-  "config_source": "run_config",
-  "run_config_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl000_run_config\\configs\\profiles\\run_config_ui013_tuning_v1f.json",
-  "run_config_schema_version": "run-config-v1",
+  "config_source": "environment",
+  "run_config_path": null,
+  "run_config_schema_version": null,
   "input_artifacts": {
     "seed_table_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl003_alignment\\outputs\\bl003_ds001_spotify_seed_table.csv",
     "seed_table_sha256": "21afa5f89df0eb1b5b1ad9ade76ff7dca2b528b69f19dd259ef048eaa9cc6928"
@@ -40,8 +40,8 @@
     ],
     "profile_mode": "hybrid_semantic_numeric_from_bl003_enriched_seed_table",
     "top_tag_limit": 10,
-    "top_genre_limit": 10,
-    "top_lead_genre_limit": 10,
+    "top_genre_limit": 8,
+    "top_lead_genre_limit": 6,
     "aggregation_rules": {
       "numeric": "weighted mean over numeric columns embedded in the BL-003 enriched seed table; key uses weighted circular mean on the 12-semitone wheel",
       "tags": "sum(preference_weight) over DS-001 tag labels",
@@ -67,7 +67,7 @@
     },
     "key_aggregation_method": "weighted_circular_mean",
     "total_effective_weight": 2322.377778,
-    "elapsed_seconds": 0.018
+    "elapsed_seconds": 0.023
   },
   "seed_summary": {
     "counts_by_interaction_type": {
@@ -169,14 +169,6 @@
       {
         "label": "folk",
         "weight": 125.8
-      },
-      {
-        "label": "hip hop",
-        "weight": 123.0
-      },
-      {
-        "label": "psychedelic rock",
-        "weight": 120.3
       }
     ],
     "top_lead_genres": [
@@ -203,22 +195,6 @@
       {
         "label": "folk",
         "weight": 81.8
-      },
-      {
-        "label": "soul",
-        "weight": 75.3
-      },
-      {
-        "label": "progressive rock",
-        "weight": 75.1
-      },
-      {
-        "label": "psychedelic rock",
-        "weight": 58.6
-      },
-      {
-        "label": "indie rock",
-        "weight": 58.0
       }
     ]
   }

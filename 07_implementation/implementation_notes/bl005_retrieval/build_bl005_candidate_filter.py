@@ -122,6 +122,20 @@ def build_active_numeric_specs(
 
 
 def resolve_bl005_runtime_controls() -> dict[str, object]:
+    env_numeric_thresholds_raw = os.environ.get("BL005_NUMERIC_THRESHOLDS_JSON", "").strip()
+    env_numeric_thresholds: dict[str, float] = {}
+    if env_numeric_thresholds_raw:
+        try:
+            payload = json.loads(env_numeric_thresholds_raw)
+            if isinstance(payload, dict):
+                env_numeric_thresholds = {
+                    str(key): float(value)
+                    for key, value in payload.items()
+                    if isinstance(value, (int, float)) and float(value) > 0
+                }
+        except json.JSONDecodeError:
+            env_numeric_thresholds = {}
+
     def sanitize_controls(controls: dict[str, object]) -> dict[str, object]:
         controls["profile_top_lead_genre_limit"] = max(1, int(controls["profile_top_lead_genre_limit"]))
         controls["profile_top_tag_limit"] = max(1, int(controls["profile_top_tag_limit"]))
@@ -148,7 +162,7 @@ def resolve_bl005_runtime_controls() -> dict[str, object]:
                 "semantic_strong_keep_score": int(controls["semantic_strong_keep_score"]),
                 "semantic_min_keep_score": int(controls["semantic_min_keep_score"]),
                 "numeric_support_min_pass": int(controls["numeric_support_min_pass"]),
-                "numeric_thresholds": controls.get("numeric_thresholds") or {},
+                "numeric_thresholds": env_numeric_thresholds or controls.get("numeric_thresholds") or {},
             }
         )
     return sanitize_controls(
@@ -162,7 +176,7 @@ def resolve_bl005_runtime_controls() -> dict[str, object]:
             "semantic_strong_keep_score": env_int("BL005_SEMANTIC_STRONG_KEEP_SCORE", DEFAULT_SEMANTIC_STRONG_KEEP_SCORE),
             "semantic_min_keep_score": env_int("BL005_SEMANTIC_MIN_KEEP_SCORE", DEFAULT_SEMANTIC_MIN_KEEP_SCORE),
             "numeric_support_min_pass": env_int("BL005_NUMERIC_SUPPORT_MIN_PASS", DEFAULT_NUMERIC_SUPPORT_MIN_PASS),
-            "numeric_thresholds": {},
+            "numeric_thresholds": env_numeric_thresholds,
         }
     )
 
@@ -257,11 +271,11 @@ def main() -> None:
         numeric_pass_count = 0
         numeric_distances: dict[str, float | None] = {}
         numeric_rule_hits_this_candidate: dict[str, bool] = {}
-        
+
         for profile_column, spec in active_numeric_specs.items():
             value = candidate_numeric_value(row, profile_column, str(spec["candidate_column"]))
             passed = False
-            
+
             if value is not None:
                 center = numeric_centers.get(profile_column)
                 if center is not None:
@@ -278,7 +292,7 @@ def main() -> None:
                     numeric_distances[profile_column] = None
             else:
                 numeric_distances[profile_column] = None
-            
+
             numeric_rule_hits_this_candidate[profile_column] = passed
 
         # Track numeric scores

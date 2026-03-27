@@ -55,6 +55,13 @@ TRACE_FIELDNAMES = [
     "preference_weight",
 ]
 
+
+def env_bool(name: str, default: bool = False) -> bool:
+    raw = os.environ.get(name)
+    if raw is None:
+        return default
+    return raw.strip().lower() in {"1", "true", "yes", "on"}
+
 SEED_TABLE_FIELDNAMES = [
     "ds001_id",
     "spotify_id",
@@ -107,6 +114,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--allow-missing-selected-sources",
         action="store_true",
+        default=env_bool("BL003_ALLOW_MISSING_SELECTED_SOURCES", False),
         help="Do not fail when BL-002 selection indicates a source should exist but its flat CSV is missing.",
     )
     return parser.parse_args()
@@ -130,6 +138,20 @@ def resolve_bl003_runtime_scope() -> dict[str, object]:
         "include_recently_played": True,
         "recently_played_limit": 50,
     }
+
+    env_scope_raw = os.environ.get("BL003_INPUT_SCOPE_JSON", "").strip()
+    if env_scope_raw:
+        try:
+            env_scope = json.loads(env_scope_raw)
+            if isinstance(env_scope, dict):
+                return {
+                    "config_source": "environment",
+                    "run_config_path": None,
+                    "run_config_schema_version": None,
+                    "input_scope": dict(env_scope),
+                }
+        except json.JSONDecodeError:
+            pass
 
     if run_config_path:
         run_config_utils = load_run_config_utils_module()
@@ -465,7 +487,7 @@ def main() -> None:
 
     runtime_scope = resolve_bl003_runtime_scope()
     input_scope = dict(runtime_scope["input_scope"])
-    
+
     # Load seed controls (weights, validation thresholds)
     top_range_weights = _DEFAULT_TOP_RANGE_WEIGHTS.copy()
     source_base_weights = _DEFAULT_SOURCE_BASE_WEIGHTS.copy()

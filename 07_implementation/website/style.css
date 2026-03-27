@@ -371,6 +371,11 @@ button:disabled {
   background: var(--accent-dark);
 }
 
+.button-link.is-active {
+  border: 1px solid var(--accent-dark);
+  box-shadow: inset 0 0 0 1px rgba(17, 24, 39, 0.15);
+}
+
 .secondary-btn {
   margin-top: 0;
   padding: 9px 12px;
@@ -603,6 +608,30 @@ button:disabled {
   display: flex;
   flex-direction: column;
   gap: 3px;
+}
+
+.workflow-step-list {
+  margin-bottom: 8px;
+}
+
+.advanced-controls-shell {
+  margin-top: 10px;
+  border-top: 1px dashed var(--border);
+  padding-top: 10px;
+}
+
+.advanced-controls-shell summary {
+  cursor: pointer;
+  font-size: 0.86rem;
+  font-weight: 700;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 6px;
+}
+
+.advanced-controls-shell[open] summary {
+  margin-bottom: 10px;
 }
 
 .source-btn {
@@ -1003,6 +1032,46 @@ button:disabled {
   overflow-x: auto;
 }
 
+.inline-stage-controls {
+  display: grid;
+  gap: 8px;
+}
+
+.inline-stage-block {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: #fff;
+  padding: 10px;
+}
+
+.inline-stage-block summary {
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.inline-stage-grid {
+  margin-top: 10px;
+  display: grid;
+  gap: 8px;
+}
+
+.inline-stage-field {
+  display: grid;
+  gap: 6px;
+}
+
+.inline-stage-field label {
+  font-size: 0.86rem;
+  color: var(--muted);
+}
+
+.workflow-entry-list {
+  margin: 8px 0 0;
+  padding-left: 18px;
+  display: grid;
+  gap: 8px;
+}
+
 .stage-table {
   width: 100%;
   border-collapse: collapse;
@@ -1060,6 +1129,24 @@ button:disabled {
 
 .artifact-item p {
   margin: 0 0 4px;
+}
+
+.results-read-order {
+  margin: 0;
+  padding-left: 18px;
+  display: grid;
+  gap: 6px;
+}
+
+.results-code-block {
+  max-height: 320px;
+  overflow: auto;
+}
+
+.hash-cell {
+  font-family: "Cascadia Code", "Consolas", monospace;
+  font-size: 0.78rem;
+  word-break: break-all;
 }
 
 .health-pill {

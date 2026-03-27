@@ -41,7 +41,7 @@ class SpotifyExportJob:
         self.repo_root = repo_root
         self.implementation_root = repo_root / "07_implementation"
         self.implementation_notes_root = self.implementation_root / "implementation_notes"
-        self.export_root = self.implementation_notes_root / "ingestion" / "outputs" / "spotify_api_export"
+        self.export_root = self.implementation_notes_root / "bl001_bl002_ingestion" / "outputs" / "spotify_api_export"
         self.summary_path = self.export_root / "spotify_export_run_summary.json"
         self.python_executable = Path(sys.executable)
         self.lock = threading.Lock()
@@ -291,49 +291,60 @@ class PipelineRunState:
 class PipelineJob:
     STAGE_SPECS: List[Dict[str, str]] = [
         {
+            "stage_id": "bl003",
+            "label": "BL-003 Alignment",
+            "script": "bl003_alignment/build_bl003_ds001_spotify_seed_table.py",
+            "description": "Align imported Spotify interactions to DS-001 seed tracks.",
+        },
+        {
             "stage_id": "bl004",
             "label": "BL-004 Profile",
-            "script": "profile/build_bl004_preference_profile.py",
+            "script": "bl004_profile/build_bl004_preference_profile.py",
             "description": "Build deterministic preference profile from aligned seed data.",
         },
         {
             "stage_id": "bl005",
             "label": "BL-005 Retrieval",
-            "script": "retrieval/build_bl005_candidate_filter.py",
+            "script": "bl005_retrieval/build_bl005_candidate_filter.py",
             "description": "Filter candidate corpus against profile signals and keep rules.",
         },
         {
             "stage_id": "bl006",
             "label": "BL-006 Scoring",
-            "script": "scoring/build_bl006_scored_candidates.py",
+            "script": "bl006_scoring/build_bl006_scored_candidates.py",
             "description": "Score retained candidates with weighted components.",
         },
         {
             "stage_id": "bl007",
             "label": "BL-007 Playlist",
-            "script": "playlist/build_bl007_playlist.py",
+            "script": "bl007_playlist/build_bl007_playlist.py",
             "description": "Assemble final playlist with deterministic rule checks.",
         },
         {
             "stage_id": "bl008",
             "label": "BL-008 Transparency",
-            "script": "transparency/build_bl008_explanation_payloads.py",
+            "script": "bl008_transparency/build_bl008_explanation_payloads.py",
             "description": "Generate explanation payloads and summary transparency outputs.",
         },
         {
             "stage_id": "bl009",
             "label": "BL-009 Observability",
-            "script": "observability/build_bl009_observability_log.py",
+            "script": "bl009_observability/build_bl009_observability_log.py",
             "description": "Record run-chain observability metadata and index outputs.",
         },
     ]
 
     STAGE_PARAM_SCHEMA: Dict[str, List[Dict[str, Any]]] = {
+        "bl003": [
+            {"key": "input_scope", "type": "json"},
+            {"key": "allow_missing_selected_sources", "type": "bool", "default": False},
+        ],
         "bl004": [
             {"key": "top_tag_limit", "type": "int", "min": 1, "max": 100, "default": 10},
-            {"key": "top_genre_limit", "type": "int", "min": 1, "max": 100, "default": 10},
-            {"key": "top_lead_genre_limit", "type": "int", "min": 1, "max": 100, "default": 10},
+            {"key": "top_genre_limit", "type": "int", "min": 1, "max": 100, "default": 8},
+            {"key": "top_lead_genre_limit", "type": "int", "min": 1, "max": 100, "default": 6},
             {"key": "user_id", "type": "string", "default": "21zsn42xecjhogne4kghyw5hq"},
+            {"key": "include_interaction_types", "type": "json_array"},
         ],
         "bl005": [
             {"key": "semantic_strong_keep_score", "type": "int", "min": 0, "max": 10, "default": 2},
@@ -342,6 +353,7 @@ class PipelineJob:
             {"key": "profile_top_lead_genre_limit", "type": "int", "min": 1, "max": 30, "default": 6},
             {"key": "profile_top_tag_limit", "type": "int", "min": 1, "max": 50, "default": 10},
             {"key": "profile_top_genre_limit", "type": "int", "min": 1, "max": 50, "default": 8},
+            {"key": "numeric_thresholds", "type": "json"},
         ],
         "bl006": [
             {"key": "component_weights", "type": "json"},
@@ -355,20 +367,25 @@ class PipelineJob:
         ],
         "bl008": [
             {"key": "top_contributor_limit", "type": "int", "min": 1, "max": 20, "default": 3},
+            {"key": "blend_primary_contributor_on_near_tie", "type": "bool", "default": False},
+            {"key": "primary_contributor_tie_delta", "type": "float", "min": 0, "max": 1, "default": 0.02},
         ],
         "bl009": [
             {"key": "diagnostic_sample_limit", "type": "int", "min": 1, "max": 50, "default": 5},
+            {"key": "bootstrap_mode", "type": "bool", "default": True},
         ],
     }
 
     def __init__(self, repo_root: Path) -> None:
         self.repo_root = repo_root
         self.implementation_notes_root = repo_root / "07_implementation" / "implementation_notes"
-        self.observability_output_root = self.implementation_notes_root / "observability" / "outputs"
+        self.observability_output_root = self.implementation_notes_root / "bl009_observability" / "outputs"
         self.python_executable = Path(sys.executable)
         self.lock = threading.Lock()
         self.process: Optional[subprocess.Popen[str]] = None
         self.history: Deque[Dict[str, Any]] = deque(maxlen=30)
+        self._track_lookup: Optional[Dict[str, Dict[str, str]]] = None
+        self._track_lookup_lock = threading.Lock()
         self.state = PipelineRunState(
             stages=[
                 PipelineStageState(
@@ -403,15 +420,28 @@ class PipelineJob:
                 return stage
         raise KeyError(f"Unknown stage id: {stage_id}")
 
-    def _stage_command(self, script_relative: str) -> List[str]:
+    def _stage_command(self, script_relative: str, stage_id: str, stage_params: Dict[str, Any]) -> List[str]:
         script_path = self.implementation_notes_root / script_relative
-        return [str(self.python_executable), "-u", str(script_path)]
+        command = [str(self.python_executable), "-u", str(script_path)]
+        if stage_id == "bl003" and bool(stage_params.get("allow_missing_selected_sources")):
+            command.append("--allow-missing-selected-sources")
+        return command
 
     def _stage_env_overrides(self, stage_id: str, stage_params: Dict[str, Any]) -> Dict[str, str]:
         if not isinstance(stage_params, dict):
             return {}
 
         env: Dict[str, str] = {}
+
+        if stage_id == "bl003":
+            input_scope = stage_params.get("input_scope")
+            if isinstance(input_scope, dict) and input_scope:
+                try:
+                    env["BL003_INPUT_SCOPE_JSON"] = json.dumps(input_scope, ensure_ascii=True)
+                except Exception:
+                    pass
+            if "allow_missing_selected_sources" in stage_params:
+                env["BL003_ALLOW_MISSING_SELECTED_SOURCES"] = "1" if bool(stage_params.get("allow_missing_selected_sources")) else "0"
 
         if stage_id == "bl004":
             mapping = {
@@ -428,6 +458,12 @@ class PipelineJob:
             if isinstance(user_id, str) and user_id.strip():
                 env["BL004_USER_ID"] = user_id.strip()
 
+            interaction_types = stage_params.get("include_interaction_types")
+            if isinstance(interaction_types, list):
+                cleaned = [str(item).strip() for item in interaction_types if str(item).strip()]
+                if cleaned:
+                    env["BL004_INCLUDE_INTERACTION_TYPES"] = ",".join(cleaned)
+
         if stage_id == "bl005":
             mapping = {
                 "profile_top_lead_genre_limit": "BL005_PROFILE_TOP_LEAD_GENRE_LIMIT",
@@ -441,6 +477,13 @@ class PipelineJob:
                 value = stage_params.get(key)
                 if isinstance(value, (int, float)):
                     env[env_key] = str(value)
+
+            threshold_overrides = stage_params.get("numeric_thresholds")
+            if isinstance(threshold_overrides, dict) and threshold_overrides:
+                try:
+                    env["BL005_NUMERIC_THRESHOLDS_JSON"] = json.dumps(threshold_overrides, ensure_ascii=True)
+                except Exception:
+                    pass
 
         if stage_id == "bl006":
             weights = stage_params.get("component_weights")
@@ -475,11 +518,18 @@ class PipelineJob:
             top_limit = stage_params.get("top_contributor_limit")
             if isinstance(top_limit, (int, float)):
                 env["BL008_TOP_CONTRIBUTOR_LIMIT"] = str(top_limit)
+            if "blend_primary_contributor_on_near_tie" in stage_params:
+                env["BL008_BLEND_PRIMARY_CONTRIBUTOR_ON_NEAR_TIE"] = "1" if bool(stage_params.get("blend_primary_contributor_on_near_tie")) else "0"
+            tie_delta = stage_params.get("primary_contributor_tie_delta")
+            if isinstance(tie_delta, (int, float)):
+                env["BL008_PRIMARY_CONTRIBUTOR_TIE_DELTA"] = str(tie_delta)
 
         if stage_id == "bl009":
             sample_limit = stage_params.get("diagnostic_sample_limit")
             if isinstance(sample_limit, (int, float)):
                 env["BL009_DIAGNOSTIC_SAMPLE_LIMIT"] = str(sample_limit)
+            if "bootstrap_mode" in stage_params:
+                env["BL009_BOOTSTRAP_MODE"] = "1" if bool(stage_params.get("bootstrap_mode")) else "0"
 
         return env
 
@@ -568,6 +618,21 @@ class PipelineJob:
                     stage_out[key] = clean
                     continue
 
+                if value_type == "bool":
+                    if isinstance(value, bool):
+                        stage_out[key] = value
+                        continue
+                    if isinstance(value, str):
+                        lowered = value.strip().lower()
+                        if lowered in {"true", "1", "yes", "on"}:
+                            stage_out[key] = True
+                            continue
+                        if lowered in {"false", "0", "no", "off"}:
+                            stage_out[key] = False
+                            continue
+                    errors.append(f"{sid}.{key} must be a boolean.")
+                    continue
+
                 if value_type in ("int", "float"):
                     if isinstance(value, bool):
                         errors.append(f"{sid}.{key} must be a number.")
@@ -607,6 +672,13 @@ class PipelineJob:
                 if value_type == "json":
                     if not isinstance(value, dict):
                         errors.append(f"{sid}.{key} must be a JSON object.")
+                        continue
+                    stage_out[key] = value
+                    continue
+
+                if value_type == "json_array":
+                    if not isinstance(value, list):
+                        errors.append(f"{sid}.{key} must be a JSON array.")
                         continue
                     stage_out[key] = value
                     continue
@@ -658,6 +730,29 @@ class PipelineJob:
         except Exception:
             return None
 
+    def _load_track_lookup(self) -> Dict[str, Dict[str, str]]:
+        with self._track_lookup_lock:
+            if self._track_lookup is not None:
+                return self._track_lookup
+            corpus_path = self.implementation_notes_root / "bl000_data_layer" / "outputs" / "ds001_working_candidate_dataset.csv"
+            lookup: Dict[str, Dict[str, str]] = {}
+            if corpus_path.exists():
+                import csv as _csv
+                try:
+                    with corpus_path.open(encoding="utf-8", newline="") as fh:
+                        reader = _csv.DictReader(fh)
+                        for record in reader:
+                            tid = record.get("id", "").strip()
+                            if tid:
+                                lookup[tid] = {
+                                    "song": record.get("song", "").strip(),
+                                    "artist": record.get("artist", "").strip(),
+                                }
+                except Exception:
+                    pass
+            self._track_lookup = lookup
+            return lookup
+
     def _playlist_preview(self, payload: Any, max_items: int = 10) -> List[Dict[str, Any]]:
         rows: List[Any]
         if isinstance(payload, dict) and isinstance(payload.get("tracks"), list):
@@ -667,27 +762,33 @@ class PipelineJob:
         else:
             rows = []
 
+        track_lookup = self._load_track_lookup()
+
         preview: List[Dict[str, Any]] = []
         for row in rows[:max_items]:
             if not isinstance(row, dict):
                 continue
+            track_id = row.get("track_id") or row.get("id") or "-"
+            meta = track_lookup.get(track_id, {}) if track_id != "-" else {}
             preview.append({
-                "track_id": row.get("track_id") or row.get("id") or "-",
-                "title": row.get("title") or row.get("track_name") or row.get("name") or "-",
-                "artist": row.get("artist") or row.get("artist_name") or row.get("artist_names") or "-",
-                "score": row.get("score"),
+                "track_id": track_id,
+                "title": row.get("title") or row.get("track_name") or meta.get("song") or "-",
+                "artist": row.get("artist") or row.get("artist_name") or meta.get("artist") or "-",
+                "score": row.get("final_score") or row.get("score"),
             })
         return preview
 
     def _artifact_summary(self) -> Dict[str, Any]:
         targets = {
-            "bl004_profile": self.implementation_notes_root / "profile" / "outputs" / "bl004_preference_profile.json",
-            "bl005_candidates": self.implementation_notes_root / "retrieval" / "outputs" / "bl005_filtered_candidates.csv",
-            "bl006_scores": self.implementation_notes_root / "scoring" / "outputs" / "bl006_scored_candidates.csv",
-            "bl007_playlist": self.implementation_notes_root / "playlist" / "outputs" / "bl007_playlist.json",
-            "bl008_explanations": self.implementation_notes_root / "transparency" / "outputs" / "bl008_explanation_payloads.json",
-            "bl008_explanation_summary": self.implementation_notes_root / "transparency" / "outputs" / "bl008_explanation_summary.json",
-            "bl009_observability": self.implementation_notes_root / "observability" / "outputs" / "bl009_run_observability_log.json",
+            "bl003_seed_table": self.implementation_notes_root / "bl003_alignment" / "outputs" / "bl003_ds001_spotify_seed_table.csv",
+            "bl003_summary": self.implementation_notes_root / "bl003_alignment" / "outputs" / "bl003_ds001_spotify_summary.json",
+            "bl004_profile": self.implementation_notes_root / "bl004_profile" / "outputs" / "bl004_preference_profile.json",
+            "bl005_candidates": self.implementation_notes_root / "bl005_retrieval" / "outputs" / "bl005_filtered_candidates.csv",
+            "bl006_scores": self.implementation_notes_root / "bl006_scoring" / "outputs" / "bl006_scored_candidates.csv",
+            "bl007_playlist": self.implementation_notes_root / "bl007_playlist" / "outputs" / "bl007_playlist.json",
+            "bl008_explanations": self.implementation_notes_root / "bl008_transparency" / "outputs" / "bl008_explanation_payloads.json",
+            "bl008_explanation_summary": self.implementation_notes_root / "bl008_transparency" / "outputs" / "bl008_explanation_summary.json",
+            "bl009_observability": self.implementation_notes_root / "bl009_observability" / "outputs" / "bl009_run_observability_log.json",
         }
         summary: Dict[str, Any] = {}
         for key, path in targets.items():
@@ -784,7 +885,7 @@ class PipelineJob:
                 run_id=self._new_run_id(),
                 started_at_utc=now_utc(),
                 current_stage="starting",
-                current_message="Starting deterministic BL-004 to BL-009 run...",
+                current_message="Starting deterministic BL-003 to BL-009 run...",
                 request_config=config,
                 stages=[
                     PipelineStageState(
@@ -830,12 +931,13 @@ class PipelineJob:
                 self.state.current_stage = stage_id
                 self.state.current_message = f"Running {stage.label}"
 
-            command = self._stage_command(spec["script"])
             stage_params = {}
             try:
                 stage_params = (self.state.request_config.get("stage_params", {}) or {}).get(stage_id, {})
             except Exception:
                 stage_params = {}
+
+            command = self._stage_command(spec["script"], stage_id, stage_params)
 
             env = os.environ.copy()
             env.update(self._stage_env_overrides(stage_id, stage_params))
@@ -983,9 +1085,9 @@ class PipelineJob:
         with self.lock:
             selected = self._pick_run_locked(run_id)
 
-        playlist_path = self.implementation_notes_root / "playlist" / "outputs" / "bl007_playlist.json"
-        explanation_summary_path = self.implementation_notes_root / "transparency" / "outputs" / "bl008_explanation_summary.json"
-        observability_path = self.implementation_notes_root / "observability" / "outputs" / "bl009_run_observability_log.json"
+        playlist_path = self.implementation_notes_root / "bl007_playlist" / "outputs" / "bl007_playlist.json"
+        explanation_summary_path = self.implementation_notes_root / "bl008_transparency" / "outputs" / "bl008_explanation_summary.json"
+        observability_path = self.implementation_notes_root / "bl009_observability" / "outputs" / "bl009_run_observability_log.json"
 
         playlist_payload = self._safe_json_load(playlist_path)
         explanation_summary = self._safe_json_load(explanation_summary_path)
@@ -1006,6 +1108,7 @@ class PipelineJob:
             "server_time_utc": now_utc(),
             "run": selected,
             "playlist_preview": playlist_preview,
+            "playlist_payload": playlist_payload,
             "explanation_summary": explanation_summary,
             "observability_summary": observability_payload,
             "compare_to_previous": compare,

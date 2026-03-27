@@ -1,24 +1,24 @@
 {
   "score_percentiles": {
-    "p10": 0.068598,
-    "p25": 0.101851,
-    "p50": 0.200437,
-    "p75": 0.416699,
-    "p90": 0.461627,
-    "p95": 0.483753,
-    "p99": 0.58874
+    "p10": 0.10452,
+    "p25": 0.15783,
+    "p50": 0.227697,
+    "p75": 0.319075,
+    "p90": 0.411604,
+    "p95": 0.459419,
+    "p99": 0.534449
   },
   "score_range": {
-    "max": 0.726929,
-    "min": 0.014819
+    "max": 0.743017,
+    "min": 0.00462
   },
   "rank_cliff": {
     "detected": false,
-    "rank_2_to_3_gap": 0.004656,
+    "rank_2_to_3_gap": 0.02112,
     "max_gap": {
-      "between_rank": 3,
-      "next_rank": 4,
-      "score_gap": 0.010378
+      "between_rank": 1,
+      "next_rank": 2,
+      "score_gap": 0.022587
     },
     "classification": "smooth"
   }

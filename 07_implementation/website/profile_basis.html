@@ -1,17 +1,41 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Playlist Generator - Profile Basis</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
   <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
   <main class="page page-import page-profile">
     <aside class="import-sidebar card">
-      <h2 class="sidebar-heading">Profile Basis</h2>
-      <p class="hint">Approve what the generator is allowed to use before any stage run starts.</p>
+      <h2 class="sidebar-heading">Workflow Steps</h2>
+      <ul class="source-list workflow-step-list" aria-label="Workflow navigation">
+        <li><a class="button-link" href="import.html">Step 1: Import Data</a></li>
+        <li><a class="button-link is-active" href="profile_basis.html">Step 2: Profile Basis</a></li>
+        <li><a class="button-link" href="run.html">Step 3: Run Pipeline</a></li>
+        <li><a class="button-link" href="results.html">Step 4: Results</a></li>
+        <li><a class="button-link" href="history.html">Step 5: History</a></li>
+      </ul>
+
+      <details class="advanced-controls-shell">
+        <summary>Advanced Controls</summary>
+        <ul class="source-list" aria-label="Advanced stage pages">
+          <li><a class="button-link" href="stage_bl003.html">BL-003 Alignment</a></li>
+          <li><a class="button-link" href="stage_bl004.html">BL-004 Profile</a></li>
+          <li><a class="button-link" href="stage_bl005.html">BL-005 Retrieval</a></li>
+          <li><a class="button-link" href="stage_bl006.html">BL-006 Scoring</a></li>
+          <li><a class="button-link" href="stage_bl007.html">BL-007 Assembly</a></li>
+          <li><a class="button-link" href="stage_bl008.html">BL-008 Transparency</a></li>
+          <li><a class="button-link" href="stage_bl009.html">BL-009 Observability</a></li>
+        </ul>
+      </details>
+
+      <h2 class="sidebar-heading">Page Section</h2>
       <ul class="source-list" role="tablist" aria-label="Profile sections">
         <li>
           <button class="source-btn active" type="button" aria-selected="true">
@@ -30,15 +54,17 @@
     </aside>
 
     <section class="import-content card profile-shell">
-      <h1>Profile Basis</h1>
-      <p class="subtitle">Left side reviews imported candidate input. Right side shows the approved basis, exclusion reasons, and readiness for the pipeline.</p>
+      <h1>Step 2: Profile Basis</h1>
+      <p class="subtitle">Left side reviews imported candidate input. Right side shows the approved basis, exclusion
+        reasons, and readiness for the pipeline.</p>
 
       <section id="profile-import-summary" class="export-status-card" aria-live="polite">
         <div class="export-status-head">
           <h3>Imported Data Summary</h3>
           <div class="run-actions">
             <button id="profile-refresh-btn" type="button" class="refresh-btn">Refresh Data</button>
-            <button id="profile-clear-local-btn" type="button" class="refresh-btn danger-btn">Clear Saved Snapshot</button>
+            <button id="profile-clear-local-btn" type="button" class="refresh-btn danger-btn">Clear Saved
+              Snapshot</button>
           </div>
         </div>
         <p id="profile-import-summary-message" class="hint">Checking import source and export artifacts...</p>
@@ -78,7 +104,8 @@
         <section class="profile-column profile-source-column">
           <div class="profile-panel-head">
             <h3>Candidate Input</h3>
-            <p class="hint">Exclude full endpoint groups or individual rows you do not want shaping the profile basis.</p>
+            <p class="hint">Exclude full endpoint groups or individual rows you do not want shaping the profile basis.
+            </p>
           </div>
           <div id="imported-groups" class="group-stack"></div>
         </section>
@@ -123,7 +150,8 @@
           <section class="profile-basis-card">
             <div class="profile-panel-head compact">
               <h3>Decision Logic</h3>
-              <p class="hint">This page explains basis inclusion and exclusion. Recommendation-stage match reasoning belongs later in Results.</p>
+              <p class="hint">This page explains basis inclusion and exclusion. Recommendation-stage match reasoning
+                belongs later in Results.</p>
             </div>
             <ul id="profile-decision-rules" class="profile-rule-list"></ul>
           </section>
@@ -136,9 +164,11 @@
 
       <div class="next-step">
         <div class="profile-action-row">
-          <button id="download-included-btn" type="button" class="secondary-btn">Download Included Tracks (JSON)</button>
+          <button id="download-included-btn" type="button" class="secondary-btn">Download Included Tracks
+            (JSON)</button>
           <button id="download-exclusions-btn" type="button" class="secondary-btn">Download Exclusions (JSON)</button>
-          <button id="download-profile-bundle-btn" type="button" class="secondary-btn">Download Full Profile Bundle</button>
+          <button id="download-profile-bundle-btn" type="button" class="secondary-btn">Download Full Profile
+            Bundle</button>
           <a class="button-link" href="import.html">Back To Import Options</a>
           <a class="button-link" href="run.html">Go To Run Generator →</a>
         </div>
@@ -146,7 +176,10 @@
     </section>
   </main>
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+    crossorigin="anonymous"></script>
   <script src="profile_basis.js"></script>
 </body>
+
 </html>

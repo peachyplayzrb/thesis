@@ -1,0 +1,265 @@
+{
+  "bundle_generated_at_utc": "2026-03-27T02:27:01Z",
+  "bundle_type": "website_pipeline_evidence",
+  "run": {
+    "run_id": "PIPELINE-RUN-20260327-022639-641056",
+    "status": "completed",
+    "started_at_utc": "2026-03-27T02:26:39Z",
+    "completed_at_utc": "2026-03-27T02:26:52Z",
+    "current_stage": "completed",
+    "current_message": "Pipeline run completed successfully.",
+    "request_config": {
+      "trigger": "bl023_final_verification"
+    },
+    "selected_stage_ids": [
+      "bl004",
+      "bl005",
+      "bl006",
+      "bl007",
+      "bl008",
+      "bl009"
+    ],
+    "available_stage_ids": [
+      "bl004",
+      "bl005",
+      "bl006",
+      "bl007",
+      "bl008",
+      "bl009"
+    ],
+    "line_count": 30,
+    "stages": [
+      {
+        "stage_id": "bl004",
+        "label": "BL-004 Profile",
+        "status": "completed",
+        "started_at_utc": "2026-03-27T02:26:39Z",
+        "completed_at_utc": "2026-03-27T02:26:39Z",
+        "exit_code": 0,
+        "current_message": "BL-004 Profile completed successfully."
+      },
+      {
+        "stage_id": "bl005",
+        "label": "BL-005 Retrieval",
+        "status": "completed",
+        "started_at_utc": "2026-03-27T02:26:39Z",
+        "completed_at_utc": "2026-03-27T02:26:43Z",
+        "exit_code": 0,
+        "current_message": "BL-005 Retrieval completed successfully."
+      },
+      {
+        "stage_id": "bl006",
+        "label": "BL-006 Scoring",
+        "status": "completed",
+        "started_at_utc": "2026-03-27T02:26:43Z",
+        "completed_at_utc": "2026-03-27T02:26:48Z",
+        "exit_code": 0,
+        "current_message": "BL-006 Scoring completed successfully."
+      },
+      {
+        "stage_id": "bl007",
+        "label": "BL-007 Playlist",
+        "status": "completed",
+        "started_at_utc": "2026-03-27T02:26:48Z",
+        "completed_at_utc": "2026-03-27T02:26:49Z",
+        "exit_code": 0,
+        "current_message": "BL-007 Playlist completed successfully."
+      },
+      {
+        "stage_id": "bl008",
+        "label": "BL-008 Transparency",
+        "status": "completed",
+        "started_at_utc": "2026-03-27T02:26:50Z",
+        "completed_at_utc": "2026-03-27T02:26:50Z",
+        "exit_code": 0,
+        "current_message": "BL-008 Transparency completed successfully."
+      },
+      {
+        "stage_id": "bl009",
+        "label": "BL-009 Observability",
+        "status": "completed",
+        "started_at_utc": "2026-03-27T02:26:50Z",
+        "completed_at_utc": "2026-03-27T02:26:52Z",
+        "exit_code": 0,
+        "current_message": "BL-009 Observability completed successfully."
+      }
+    ],
+    "artifact_summary": {
+      "bl004_profile": {
+        "path": "07_implementation/implementation_notes/bl004_profile/outputs/bl004_preference_profile.json",
+        "mtime_utc": "2026-03-27T02:26:39Z",
+        "size_bytes": 5117,
+        "sha256": "CAE6CBC37E212321D413AF6038870D60CE73AC144A243D1AD3FC933FB3C4031F"
+      },
+      "bl005_candidates": {
+        "path": "07_implementation/implementation_notes/bl005_retrieval/outputs/bl005_filtered_candidates.csv",
+        "mtime_utc": "2026-03-27T02:26:42Z",
+        "size_bytes": 16869539,
+        "sha256": "F4B06C299884E662DC8FDCC85CE0FE1DE7F30513906D68DC835399C7B4AE6211"
+      },
+      "bl006_scores": {
+        "path": "07_implementation/implementation_notes/bl006_scoring/outputs/bl006_scored_candidates.csv",
+        "mtime_utc": "2026-03-27T02:26:47Z",
+        "size_bytes": 13777078,
+        "sha256": "16F88709E729624230DBA9A88E8434D39FF78B6BFED8EFDB4465428A89BBDAAE"
+      },
+      "bl007_playlist": {
+        "path": "07_implementation/implementation_notes/bl007_playlist/outputs/bl007_playlist.json",
+        "mtime_utc": "2026-03-27T02:26:49Z",
+        "size_bytes": 2037,
+        "sha256": "47B627E6646C126FE5B2D7E2C5C5F3FC8CE1CCCC5AD13D97D9FEA1390E71F7C7"
+      },
+      "bl008_explanations": {
+        "path": "07_implementation/implementation_notes/bl008_transparency/outputs/bl008_explanation_payloads.json",
+        "mtime_utc": "2026-03-27T02:26:50Z",
+        "size_bytes": 33206,
+        "sha256": "30312D0FF73FDA58AB34F76B2200FF39522F18055517F23299472B1C79D82930"
+      },
+      "bl008_explanation_summary": {
+        "path": "07_implementation/implementation_notes/bl008_transparency/outputs/bl008_explanation_summary.json",
+        "mtime_utc": "2026-03-27T02:26:50Z",
+        "size_bytes": 884,
+        "sha256": "C2E6BCAFECFB36BB7306D0F589A242E812F00852C73E2321A8233319EDC2CD35"
+      },
+      "bl009_observability": {
+        "path": "07_implementation/implementation_notes/bl009_observability/outputs/bl009_run_observability_log.json",
+        "mtime_utc": "2026-03-27T02:26:51Z",
+        "size_bytes": 26779,
+        "sha256": "824A624C7F7D813FB62ACFB727F8FA26C348D1F3CCFCB7F5EB66F34D06A379FC"
+      }
+    }
+  },
+  "compare_to_previous": {
+    "baseline_run_id": null,
+    "changed_artifacts": [],
+    "unchanged_artifacts": [],
+    "changed_count": 0
+  },
+  "playlist_preview": [
+    {
+      "track_id": "5c9fu0pBIl9QUmed",
+      "title": "This Boy",
+      "artist": "James Morrison",
+      "score": 0.743017
+    },
+    {
+      "track_id": "phL12CBijBqwQ9qB",
+      "title": "Candle in the Wind",
+      "artist": "Elton John",
+      "score": 0.72043
+    },
+    {
+      "track_id": "3ltMH5jik02hVLDF",
+      "title": "It's Raining Again",
+      "artist": "Supertramp",
+      "score": 0.595043
+    },
+    {
+      "track_id": "4ZxlIxhHhrpWJcXt",
+      "title": "Call Your Girlfriend",
+      "artist": "Vanessa Carlton",
+      "score": 0.594661
+    },
+    {
+      "track_id": "ZoJu2rwmwYNeRrJ2",
+      "title": "Back To You",
+      "artist": "Sara Diamond",
+      "score": 0.594367
+    },
+    {
+      "track_id": "OXpfWulhlXVd17aK",
+      "title": "Drive",
+      "artist": "The Cars",
+      "score": 0.582141
+    },
+    {
+      "track_id": "p7erNsELhOy7B0z1",
+      "title": "Born This Way (The Country Road Version)",
+      "artist": "Lady Gaga",
+      "score": 0.566969
+    },
+    {
+      "track_id": "q2qwzkRyzMqaf61y",
+      "title": "Born This Way - The Country Road Version",
+      "artist": "Lady Gaga",
+      "score": 0.566969
+    },
+    {
+      "track_id": "btzE9uD80B8USfXt",
+      "title": "In Thee",
+      "artist": "Blue \u00d6yster Cult",
+      "score": 0.564397
+    },
+    {
+      "track_id": "klFSyJqiipFN08TK",
+      "title": "Book of Your Heart",
+      "artist": "U2",
+      "score": 0.548147
+    }
+  ],
+  "explanation_summary": {
+    "run_id": "BL008-EXPLAIN-20260327-022650-735045",
+    "generated_at_utc": "2026-03-27T02:26:50Z",
+    "elapsed_seconds": 0.624,
+    "playlist_track_count": 10,
+    "top_contributor_distribution": {
+      "Lead genre match": 4,
+      "Tag overlap": 3,
+      "Danceability": 2,
+      "Tempo (BPM)": 1
+    },
+    "input_artifact_hashes": {
+      "bl006_scored_candidates.csv": "16F88709E729624230DBA9A88E8434D39FF78B6BFED8EFDB4465428A89BBDAAE",
+      "bl006_score_summary.json": "0C6F8484BD381CCFFD6A60DE0C5F772ABA9BB3FC82880B0A5900B3BBE3B79F44",
+      "bl007_playlist.json": "47B627E6646C126FE5B2D7E2C5C5F3FC8CE1CCCC5AD13D97D9FEA1390E71F7C7",
+      "bl007_assembly_trace.csv": "6576C1D5504D2FC63E406F09D453FA568B37150D31390DED5AF092638DAFDA16"
+    },
+    "output_artifact_hashes": {
+      "bl008_explanation_payloads.json": "30312D0FF73FDA58AB34F76B2200FF39522F18055517F23299472B1C79D82930"
+    }
+  },
+  "artifact_summary": {
+    "bl004_profile": {
+      "path": "07_implementation/implementation_notes/bl004_profile/outputs/bl004_preference_profile.json",
+      "mtime_utc": "2026-03-27T02:26:39Z",
+      "size_bytes": 5117,
+      "sha256": "CAE6CBC37E212321D413AF6038870D60CE73AC144A243D1AD3FC933FB3C4031F"
+    },
+    "bl005_candidates": {
+      "path": "07_implementation/implementation_notes/bl005_retrieval/outputs/bl005_filtered_candidates.csv",
+      "mtime_utc": "2026-03-27T02:26:42Z",
+      "size_bytes": 16869539,
+      "sha256": "F4B06C299884E662DC8FDCC85CE0FE1DE7F30513906D68DC835399C7B4AE6211"
+    },
+    "bl006_scores": {
+      "path": "07_implementation/implementation_notes/bl006_scoring/outputs/bl006_scored_candidates.csv",
+      "mtime_utc": "2026-03-27T02:26:47Z",
+      "size_bytes": 13777078,
+      "sha256": "16F88709E729624230DBA9A88E8434D39FF78B6BFED8EFDB4465428A89BBDAAE"
+    },
+    "bl007_playlist": {
+      "path": "07_implementation/implementation_notes/bl007_playlist/outputs/bl007_playlist.json",
+      "mtime_utc": "2026-03-27T02:26:49Z",
+      "size_bytes": 2037,
+      "sha256": "47B627E6646C126FE5B2D7E2C5C5F3FC8CE1CCCC5AD13D97D9FEA1390E71F7C7"
+    },
+    "bl008_explanations": {
+      "path": "07_implementation/implementation_notes/bl008_transparency/outputs/bl008_explanation_payloads.json",
+      "mtime_utc": "2026-03-27T02:26:50Z",
+      "size_bytes": 33206,
+      "sha256": "30312D0FF73FDA58AB34F76B2200FF39522F18055517F23299472B1C79D82930"
+    },
+    "bl008_explanation_summary": {
+      "path": "07_implementation/implementation_notes/bl008_transparency/outputs/bl008_explanation_summary.json",
+      "mtime_utc": "2026-03-27T02:26:50Z",
+      "size_bytes": 884,
+      "sha256": "C2E6BCAFECFB36BB7306D0F589A242E812F00852C73E2321A8233319EDC2CD35"
+    },
+    "bl009_observability": {
+      "path": "07_implementation/implementation_notes/bl009_observability/outputs/bl009_run_observability_log.json",
+      "mtime_utc": "2026-03-27T02:26:51Z",
+      "size_bytes": 26779,
+      "sha256": "824A624C7F7D813FB62ACFB727F8FA26C348D1F3CCFCB7F5EB66F34D06A379FC"
+    }
+  }
+}
