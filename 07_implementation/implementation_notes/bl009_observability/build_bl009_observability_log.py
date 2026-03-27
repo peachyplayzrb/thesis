@@ -14,6 +14,7 @@ import sys
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from bl000_shared_utils.config_loader import load_run_config_utils_module
+from bl000_shared_utils.artifact_registry import bl009_required_paths
 from bl000_shared_utils.env_utils import env_bool, env_int
 from bl000_shared_utils.io_utils import (
     load_csv_rows,
@@ -211,27 +212,7 @@ def main() -> None:
     output_dir = root / "07_implementation" / "implementation_notes" / "bl009_observability" / "outputs"
     output_dir.mkdir(parents=True, exist_ok=True)
 
-    required_paths = {
-        "bl004_profile": root / "07_implementation" / "implementation_notes" / "bl004_profile" / "outputs" / "bl004_preference_profile.json",
-        "bl004_summary": root / "07_implementation" / "implementation_notes" / "bl004_profile" / "outputs" / "bl004_profile_summary.json",
-        "bl004_seed_trace": root / "07_implementation" / "implementation_notes" / "bl004_profile" / "outputs" / "bl004_seed_trace.csv",
-        "bl005_diagnostics": root / "07_implementation" / "implementation_notes" / "bl005_retrieval" / "outputs" / "bl005_candidate_diagnostics.json",
-        "bl005_decisions": root / "07_implementation" / "implementation_notes" / "bl005_retrieval" / "outputs" / "bl005_candidate_decisions.csv",
-        "bl005_filtered": root / "07_implementation" / "implementation_notes" / "bl005_retrieval" / "outputs" / "bl005_filtered_candidates.csv",
-        "bl006_summary": root / "07_implementation" / "implementation_notes" / "bl006_scoring" / "outputs" / "bl006_score_summary.json",
-        "bl006_scored": root / "07_implementation" / "implementation_notes" / "bl006_scoring" / "outputs" / "bl006_scored_candidates.csv",
-        "bl007_report": root / "07_implementation" / "implementation_notes" / "bl007_playlist" / "outputs" / "bl007_assembly_report.json",
-        "bl007_trace": root / "07_implementation" / "implementation_notes" / "bl007_playlist" / "outputs" / "bl007_assembly_trace.csv",
-        "bl007_playlist": root / "07_implementation" / "implementation_notes" / "bl007_playlist" / "outputs" / "bl007_playlist.json",
-        "bl008_summary": root / "07_implementation" / "implementation_notes" / "bl008_transparency" / "outputs" / "bl008_explanation_summary.json",
-        "bl008_payloads": root / "07_implementation" / "implementation_notes" / "bl008_transparency" / "outputs" / "bl008_explanation_payloads.json",
-        "bl004_script": root / "07_implementation" / "implementation_notes" / "bl004_profile" / "build_bl004_preference_profile.py",
-        "bl005_script": root / "07_implementation" / "implementation_notes" / "bl005_retrieval" / "build_bl005_candidate_filter.py",
-        "bl006_script": root / "07_implementation" / "implementation_notes" / "bl006_scoring" / "build_bl006_scored_candidates.py",
-        "bl007_script": root / "07_implementation" / "implementation_notes" / "bl007_playlist" / "build_bl007_playlist.py",
-        "bl008_script": root / "07_implementation" / "implementation_notes" / "bl008_transparency" / "build_bl008_explanation_payloads.py",
-        "bl009_script": Path(__file__).resolve(),
-    }
+    required_paths = bl009_required_paths(root, bl009_script_path=Path(__file__).resolve())
 
     ensure_paths_exist(required_paths, root, label="inputs")
 

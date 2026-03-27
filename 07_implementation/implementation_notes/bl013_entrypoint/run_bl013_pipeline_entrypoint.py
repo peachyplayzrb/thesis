@@ -16,31 +16,25 @@ from bl000_shared_utils.hashing import sha256_of_file
 from bl000_shared_utils.io_utils import load_json
 from bl000_shared_utils.path_utils import repo_root
 from bl000_shared_utils.report_utils import write_json_ascii
+from bl000_shared_utils.artifact_registry import (
+    bl013_bl003_script_relpath,
+    bl013_bl003_summary_relpath,
+    bl013_default_stage_order,
+    bl013_stage_script_map,
+    bl013_stable_artifact_relpaths,
+)
 
 
-STAGES = {
-    "BL-004": "07_implementation/implementation_notes/bl004_profile/build_bl004_preference_profile.py",
-    "BL-005": "07_implementation/implementation_notes/bl005_retrieval/build_bl005_candidate_filter.py",
-    "BL-006": "07_implementation/implementation_notes/bl006_scoring/build_bl006_scored_candidates.py",
-    "BL-007": "07_implementation/implementation_notes/bl007_playlist/build_bl007_playlist.py",
-    "BL-008": "07_implementation/implementation_notes/bl008_transparency/build_bl008_explanation_payloads.py",
-    "BL-009": "07_implementation/implementation_notes/bl009_observability/build_bl009_observability_log.py",
-}
+STAGE_SCRIPT_MAP = bl013_stage_script_map()
 
-BL003_SCRIPT = "07_implementation/implementation_notes/bl003_alignment/build_bl003_ds001_spotify_seed_table.py"
+BL003_SCRIPT = bl013_bl003_script_relpath()
 
-DEFAULT_STAGE_ORDER = ["BL-004", "BL-005", "BL-006", "BL-007", "BL-008", "BL-009"]
+DEFAULT_STAGE_ORDER = bl013_default_stage_order()
 
 # Hash these deterministic files to support repeatability checks for BL-013 runs.
-STABLE_ARTIFACTS = {
-    "bl004_seed_trace": "07_implementation/implementation_notes/bl004_profile/outputs/bl004_seed_trace.csv",
-    "bl005_filtered_candidates": "07_implementation/implementation_notes/bl005_retrieval/outputs/bl005_filtered_candidates.csv",
-    "bl005_candidate_decisions": "07_implementation/implementation_notes/bl005_retrieval/outputs/bl005_candidate_decisions.csv",
-    "bl006_scored_candidates": "07_implementation/implementation_notes/bl006_scoring/outputs/bl006_scored_candidates.csv",
-    "bl007_assembly_trace": "07_implementation/implementation_notes/bl007_playlist/outputs/bl007_assembly_trace.csv",
-}
+STABLE_ARTIFACTS = bl013_stable_artifact_relpaths()
 
-BL003_SUMMARY_PATH = "07_implementation/implementation_notes/bl003_alignment/outputs/bl003_ds001_spotify_summary.json"
+BL003_SUMMARY_PATH = bl013_bl003_summary_relpath()
 
 SUMMARY_NOTES = {
     "purpose": "Lightweight wrapper to run existing BL-004..BL-009 scripts in one command.",
@@ -108,7 +102,7 @@ def validate_stage_order(stage_ids: list[str]) -> list[str]:
     normalized: list[str] = []
     for stage_id in stage_ids:
         token = stage_id.strip().upper()
-        if token not in STAGES:
+        if token not in STAGE_SCRIPT_MAP:
             valid = ", ".join(DEFAULT_STAGE_ORDER)
             raise ValueError(f"Unsupported stage '{stage_id}'. Valid values: {valid}")
         normalized.append(token)
@@ -636,7 +630,7 @@ def main() -> None:
             )
 
     for stage_id in stage_order:
-        script_relpath = STAGES[stage_id]
+        script_relpath = STAGE_SCRIPT_MAP[stage_id]
         script_path = root / script_relpath
         if not script_path.exists():
             stage_results.append(

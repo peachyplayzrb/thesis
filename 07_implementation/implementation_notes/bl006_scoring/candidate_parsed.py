@@ -4,11 +4,11 @@ Candidate data parsing and attribute extraction for BL-006 scoring.
 Parses raw candidate rows and extracts attributes needed for scoring.
 """
 
-from sys import path as sys_path
+import sys
 from pathlib import Path
 
 # Add shared utilities to path
-sys_path.insert(0, str(Path(__file__).resolve().parents[3] / "07_implementation" / "implementation_notes"))
+sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from bl000_shared_utils.io_utils import parse_csv_labels, parse_float
 
@@ -16,10 +16,10 @@ from bl000_shared_utils.io_utils import parse_csv_labels, parse_float
 def parse_candidate_attributes(row: dict[str, str]) -> dict[str, object]:
     """
     Parse and extract all relevant attributes from a candidate CSV row.
-    
+
     Args:
         row: Raw candidate row (all values are strings from CSV)
-    
+
     Returns:
         Dict with parsed/extracted attributes:
         - "track_id": str
@@ -36,7 +36,7 @@ def parse_candidate_attributes(row: dict[str, str]) -> dict[str, object]:
     """
     # Track ID (handle both "track_id" and "id" variants)
     track_id = (row.get("track_id") or row.get("id") or "").strip()
-    
+
     # Numeric attributes (with None-safe parsing)
     danceability = parse_float(row.get("danceability", ""))
     energy = parse_float(row.get("energy", ""))
@@ -45,14 +45,14 @@ def parse_candidate_attributes(row: dict[str, str]) -> dict[str, object]:
     duration_ms = parse_float(row.get("duration_ms", ""))
     key = parse_float(row.get("key", ""))
     mode = parse_float(row.get("mode", ""))
-    
+
     # Categorical attributes (CSV-encoded lists)
     genres = parse_csv_labels(row.get("genres", ""))
     tags = parse_csv_labels(row.get("tags", ""))
-    
+
     # Derive lead genre (first priority: first genre, second: first tag)
     lead_genre = genres[0] if genres else (tags[0] if tags else "")
-    
+
     return {
         "track_id": track_id,
         "danceability": danceability,
@@ -75,25 +75,25 @@ def normalize_candidate_numeric(
 ) -> float | None:
     """
     Normalize candidate numeric value to match profile scale.
-    
+
     Handles unit conversions:
     - duration (seconds) → duration_ms (milliseconds)
-    
+
     Args:
         value: Parsed numeric value from candidate
         profile_column: Profile column name (e.g., "duration_ms")
         candidate_column: Candidate column name (e.g., "duration")
-    
+
     Returns:
         Normalized value or None if input was None
     """
     if value is None:
         return None
-    
+
     # Apply unit conversions
     if profile_column == "duration_ms" and candidate_column == "duration":
         return value * 1000.0  # Convert seconds to milliseconds
-    
+
     return value
 
 
@@ -103,23 +103,23 @@ def resolve_numeric_column(
 ) -> str | None:
     """
     Map a profile numeric column to the candidate dataset column.
-    
+
     Handles common naming variations:
     - profile "duration_ms" ← candidate "duration" (+ conversion)
-    
+
     Args:
         profile_column: Numeric column name from profile
         candidate_columns: Set of available columns in candidate dataset
-    
+
     Returns:
         Candidate column name or None if cannot be resolved
     """
     # Try direct match first
     if profile_column in candidate_columns:
         return profile_column
-    
+
     # Try fallbacks for common variations
     if profile_column == "duration_ms" and "duration" in candidate_columns:
         return "duration"
-    
+
     return None

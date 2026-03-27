@@ -14,6 +14,12 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from bl000_shared_utils.io_utils import load_json
 from bl000_shared_utils.report_utils import write_csv_rows, write_json_ascii
+from bl000_shared_utils.artifact_registry import (
+    bl014_bl013_latest_summary_path,
+    bl014_freshness_input_paths,
+    bl014_pipeline_script_paths,
+    bl014_refinement_diagnostic_paths,
+)
 
 
 REPO_ROOT = Path(__file__).resolve().parents[3]
@@ -53,32 +59,7 @@ def run_python_script(script_path: Path, args: list[str] | None = None) -> tuple
 
 
 def freshness_input_paths() -> dict[str, Path]:
-    return {
-        "bl010_snapshot": REPO_ROOT
-        / "07_implementation"
-        / "implementation_notes"
-        / "bl010_reproducibility"
-        / "outputs"
-        / "bl010_reproducibility_config_snapshot.json",
-        "bl010_report": REPO_ROOT
-        / "07_implementation"
-        / "implementation_notes"
-        / "bl010_reproducibility"
-        / "outputs"
-        / "bl010_reproducibility_report.json",
-        "bl011_snapshot": REPO_ROOT
-        / "07_implementation"
-        / "implementation_notes"
-        / "bl011_controllability"
-        / "outputs"
-        / "bl011_controllability_config_snapshot.json",
-        "bl011_report": REPO_ROOT
-        / "07_implementation"
-        / "implementation_notes"
-        / "bl011_controllability"
-        / "outputs"
-        / "bl011_controllability_report.json",
-    }
+    return bl014_freshness_input_paths(REPO_ROOT)
 
 
 def ensure_paths_exist(paths: list[Path], *, label: str) -> None:
@@ -139,35 +120,11 @@ def build_current_bl011_snapshot(
 
 def refresh_bl010_bl011_evidence() -> dict[str, Any]:
     """Refresh BL-010 and BL-011 evidence artifacts used by freshness checks."""
-    bl010_script = (
-        REPO_ROOT
-        / "07_implementation"
-        / "implementation_notes"
-        / "bl010_reproducibility"
-        / "run_bl010_reproducibility_check.py"
-    )
-    bl011_script = (
-        REPO_ROOT
-        / "07_implementation"
-        / "implementation_notes"
-        / "bl011_controllability"
-        / "run_bl011_controllability_check.py"
-    )
-    bl013_script = (
-        REPO_ROOT
-        / "07_implementation"
-        / "implementation_notes"
-        / "bl013_entrypoint"
-        / "run_bl013_pipeline_entrypoint.py"
-    )
-    bl013_latest_summary = (
-        REPO_ROOT
-        / "07_implementation"
-        / "implementation_notes"
-        / "bl013_entrypoint"
-        / "outputs"
-        / "bl013_orchestration_run_latest.json"
-    )
+    script_paths = bl014_pipeline_script_paths(REPO_ROOT)
+    bl010_script = script_paths["bl010_script"]
+    bl011_script = script_paths["bl011_script"]
+    bl013_script = script_paths["bl013_script"]
+    bl013_latest_summary = bl014_bl013_latest_summary_path(REPO_ROOT)
 
     ensure_paths_exist([bl013_latest_summary], label="BL-013 latest summary")
     bl013_latest = load_json(bl013_latest_summary)
@@ -456,14 +413,7 @@ def run_active_mode() -> int:
 
     checks: list[dict[str, str]] = []
 
-    bl013_latest_path = (
-        REPO_ROOT
-        / "07_implementation"
-        / "implementation_notes"
-        / "bl013_entrypoint"
-        / "outputs"
-        / "bl013_orchestration_run_latest.json"
-    )
+    bl013_latest_path = bl014_bl013_latest_summary_path(REPO_ROOT)
     if not bl013_latest_path.exists():
         raise FileNotFoundError(f"Missing BL-013 latest summary: {bl013_latest_path}")
     bl013_latest = load_json(bl013_latest_path)
@@ -501,22 +451,9 @@ def run_active_mode() -> int:
         "BL-014 report overall_status is pass",
     )
 
-    bl006_distribution_path = (
-        REPO_ROOT
-        / "07_implementation"
-        / "implementation_notes"
-        / "bl006_scoring"
-        / "outputs"
-        / "bl006_score_distribution_diagnostics.json"
-    )
-    bl007_report_path = (
-        REPO_ROOT
-        / "07_implementation"
-        / "implementation_notes"
-        / "bl007_playlist"
-        / "outputs"
-        / "bl007_assembly_report.json"
-    )
+    refinement_paths = bl014_refinement_diagnostic_paths(REPO_ROOT)
+    bl006_distribution_path = refinement_paths["bl006_distribution"]
+    bl007_report_path = refinement_paths["bl007_assembly_report"]
 
     add_check(
         checks,

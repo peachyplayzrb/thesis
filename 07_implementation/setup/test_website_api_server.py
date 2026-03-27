@@ -38,6 +38,24 @@ class WebsiteApiServerTests(unittest.TestCase):
         self.assertEqual(stage_ids[0], "bl003")
         self.assertEqual(stage_ids[-1], "bl009")
 
+    def test_runtime_stage_order_matches_stage_catalog(self) -> None:
+        catalog_response = self.client.get("/api/pipeline/stages")
+        runtime_response = self.client.get("/api/runtime/config")
+
+        self.assertEqual(catalog_response.status_code, 200)
+        self.assertEqual(runtime_response.status_code, 200)
+
+        catalog_ids = [stage["stage_id"] for stage in catalog_response.json()["stages"]]
+        runtime_ids = [stage["stage_id"] for stage in runtime_response.json()["pipeline"]["stages"]]
+        self.assertEqual(runtime_ids, catalog_ids)
+
+    def test_artifact_summary_keys_match_registry_contract(self) -> None:
+        pipeline_job = server.app.state.pipeline_job
+        summary = pipeline_job._artifact_summary()
+        expected_keys = set(server.artifact_summary_targets(pipeline_job.implementation_notes_root).keys())
+
+        self.assertEqual(set(summary.keys()), expected_keys)
+
     def test_runtime_config_validate_accepts_known_good_payload(self) -> None:
         response = self.client.post(
             "/api/runtime/config/validate",

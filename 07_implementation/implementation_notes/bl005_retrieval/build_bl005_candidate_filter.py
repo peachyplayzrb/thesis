@@ -6,10 +6,10 @@ import os
 import time
 from datetime import datetime, timezone
 from pathlib import Path
-from sys import path as sys_path
+import sys
 
 # Add shared utilities to path
-sys_path.insert(0, str(Path(__file__).resolve().parents[3] / "07_implementation" / "implementation_notes"))
+sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from bl000_shared_utils.config_loader import load_run_config_utils_module
 from bl000_shared_utils.constants import (

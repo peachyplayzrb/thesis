@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import os
 import json
-import hashlib
+import importlib.util
 import subprocess
 import sys
 import threading
@@ -13,6 +13,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Deque, Dict, List, Optional
 
+IMPLEMENTATION_NOTES_ROOT = Path(__file__).resolve().parents[1] / "implementation_notes"
+
 import uvicorn
 from fastapi.exceptions import RequestValidationError
 from fastapi import Body, FastAPI, HTTPException, Query, Request
@@ -21,6 +23,35 @@ from fastapi.responses import JSONResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, ConfigDict, Field
 from starlette.exceptions import HTTPException as StarletteHTTPException
+
+
+def _load_impl_module(module_name: str, relative_path: str):
+    module_path = IMPLEMENTATION_NOTES_ROOT / relative_path
+    spec = importlib.util.spec_from_file_location(module_name, module_path)
+    if spec is None or spec.loader is None:
+        raise RuntimeError(f"Unable to load module '{module_name}' from {module_path}")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+_ARTIFACT_REGISTRY_MODULE = _load_impl_module(
+    "_api_artifact_registry",
+    "bl000_shared_utils/artifact_registry.py",
+)
+_HASHING_MODULE = _load_impl_module(
+    "_api_hashing",
+    "bl000_shared_utils/hashing.py",
+)
+_STAGE_RESOLVER_MODULE = _load_impl_module(
+    "_api_stage_runtime_resolver",
+    "bl000_shared_utils/stage_runtime_resolver.py",
+)
+
+artifact_summary_targets = _ARTIFACT_REGISTRY_MODULE.artifact_summary_targets
+stage_specs = _ARTIFACT_REGISTRY_MODULE.stage_specs
+sha256_of_file = _HASHING_MODULE.sha256_of_file
+resolve_stage_selection = _STAGE_RESOLVER_MODULE.resolve_stage_selection
 
 
 def now_utc() -> str:
@@ -320,50 +351,7 @@ class PipelineRunState:
 
 
 class PipelineJob:
-    STAGE_SPECS: List[Dict[str, str]] = [
-        {
-            "stage_id": "bl003",
-            "label": "BL-003 Alignment",
-            "script": "bl003_alignment/build_bl003_ds001_spotify_seed_table.py",
-            "description": "Align imported Spotify interactions to DS-001 seed tracks.",
-        },
-        {
-            "stage_id": "bl004",
-            "label": "BL-004 Profile",
-            "script": "bl004_profile/build_bl004_preference_profile.py",
-            "description": "Build deterministic preference profile from aligned seed data.",
-        },
-        {
-            "stage_id": "bl005",
-            "label": "BL-005 Retrieval",
-            "script": "bl005_retrieval/build_bl005_candidate_filter.py",
-            "description": "Filter candidate corpus against profile signals and keep rules.",
-        },
-        {
-            "stage_id": "bl006",
-            "label": "BL-006 Scoring",
-            "script": "bl006_scoring/build_bl006_scored_candidates.py",
-            "description": "Score retained candidates with weighted components.",
-        },
-        {
-            "stage_id": "bl007",
-            "label": "BL-007 Playlist",
-            "script": "bl007_playlist/build_bl007_playlist.py",
-            "description": "Assemble final playlist with deterministic rule checks.",
-        },
-        {
-            "stage_id": "bl008",
-            "label": "BL-008 Transparency",
-            "script": "bl008_transparency/build_bl008_explanation_payloads.py",
-            "description": "Generate explanation payloads and summary transparency outputs.",
-        },
-        {
-            "stage_id": "bl009",
-            "label": "BL-009 Observability",
-            "script": "bl009_observability/build_bl009_observability_log.py",
-            "description": "Record run-chain observability metadata and index outputs.",
-        },
-    ]
+    STAGE_SPECS: List[Dict[str, str]] = stage_specs()
 
     STAGE_PARAM_SCHEMA: Dict[str, List[Dict[str, Any]]] = {
         "bl003": [
@@ -724,34 +712,10 @@ class PipelineJob:
         }
 
     def _resolve_stage_selection(self, config: Dict[str, Any]) -> List[Dict[str, str]]:
-        selected_raw = config.get("stage_ids", []) if isinstance(config, dict) else []
-        all_ids = [spec["stage_id"] for spec in self.STAGE_SPECS]
-
-        if not selected_raw:
-            return list(self.STAGE_SPECS)
-
-        if not isinstance(selected_raw, list):
-            raise RuntimeError("stage_ids must be an array of stage identifiers.")
-
-        selected_set = {str(item).strip().lower() for item in selected_raw if str(item).strip()}
-        if not selected_set:
-            raise RuntimeError("At least one valid stage id is required.")
-
-        unknown = sorted(selected_set.difference(all_ids))
-        if unknown:
-            raise RuntimeError(f"Unknown stage_ids: {', '.join(unknown)}")
-
-        return [spec for spec in self.STAGE_SPECS if spec["stage_id"] in selected_set]
+        return resolve_stage_selection(config, self.STAGE_SPECS)
 
     def _file_sha256(self, path: Path) -> str:
-        digest = hashlib.sha256()
-        with path.open("rb") as handle:
-            while True:
-                chunk = handle.read(1024 * 1024)
-                if not chunk:
-                    break
-                digest.update(chunk)
-        return digest.hexdigest().upper()
+        return sha256_of_file(path, uppercase=True)
 
     def _safe_json_load(self, path: Path) -> Any:
         if not path.exists():
@@ -810,17 +774,7 @@ class PipelineJob:
         return preview
 
     def _artifact_summary(self) -> Dict[str, Any]:
-        targets = {
-            "bl003_seed_table": self.implementation_notes_root / "bl003_alignment" / "outputs" / "bl003_ds001_spotify_seed_table.csv",
-            "bl003_summary": self.implementation_notes_root / "bl003_alignment" / "outputs" / "bl003_ds001_spotify_summary.json",
-            "bl004_profile": self.implementation_notes_root / "bl004_profile" / "outputs" / "bl004_preference_profile.json",
-            "bl005_candidates": self.implementation_notes_root / "bl005_retrieval" / "outputs" / "bl005_filtered_candidates.csv",
-            "bl006_scores": self.implementation_notes_root / "bl006_scoring" / "outputs" / "bl006_scored_candidates.csv",
-            "bl007_playlist": self.implementation_notes_root / "bl007_playlist" / "outputs" / "bl007_playlist.json",
-            "bl008_explanations": self.implementation_notes_root / "bl008_transparency" / "outputs" / "bl008_explanation_payloads.json",
-            "bl008_explanation_summary": self.implementation_notes_root / "bl008_transparency" / "outputs" / "bl008_explanation_summary.json",
-            "bl009_observability": self.implementation_notes_root / "bl009_observability" / "outputs" / "bl009_run_observability_log.json",
-        }
+        targets = artifact_summary_targets(self.implementation_notes_root)
         summary: Dict[str, Any] = {}
         for key, path in targets.items():
             if path.exists():

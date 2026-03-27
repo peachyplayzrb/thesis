@@ -13,6 +13,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from bl000_shared_utils.hashing import canonical_json_hash as shared_canonical_json_hash
 from bl000_shared_utils.hashing import sha256_of_file
+from bl000_shared_utils.artifact_registry import bl010_required_paths
 from bl000_shared_utils.io_utils import load_csv_rows
 from bl000_shared_utils.io_utils import load_json
 from bl000_shared_utils.path_utils import repo_root
@@ -110,29 +111,7 @@ def build_file_hash_map(paths: dict[str, Path], keys: list[str]) -> dict[str, st
 
 
 def build_paths(root: Path) -> dict[str, Path]:
-    return {
-        "bl004_script": root / "07_implementation" / "implementation_notes" / "bl004_profile" / "build_bl004_preference_profile.py",
-        "bl005_script": root / "07_implementation" / "implementation_notes" / "bl005_retrieval" / "build_bl005_candidate_filter.py",
-        "bl006_script": root / "07_implementation" / "implementation_notes" / "bl006_scoring" / "build_bl006_scored_candidates.py",
-        "bl007_script": root / "07_implementation" / "implementation_notes" / "bl007_playlist" / "build_bl007_playlist.py",
-        "bl008_script": root / "07_implementation" / "implementation_notes" / "bl008_transparency" / "build_bl008_explanation_payloads.py",
-        "bl009_script": root / "07_implementation" / "implementation_notes" / "bl009_observability" / "build_bl009_observability_log.py",
-        "bl004_profile": root / "07_implementation" / "implementation_notes" / "bl004_profile" / "outputs" / "bl004_preference_profile.json",
-        "bl004_summary": root / "07_implementation" / "implementation_notes" / "bl004_profile" / "outputs" / "bl004_profile_summary.json",
-        "bl004_seed_trace": root / "07_implementation" / "implementation_notes" / "bl004_profile" / "outputs" / "bl004_seed_trace.csv",
-        "bl005_filtered": root / "07_implementation" / "implementation_notes" / "bl005_retrieval" / "outputs" / "bl005_filtered_candidates.csv",
-        "bl005_decisions": root / "07_implementation" / "implementation_notes" / "bl005_retrieval" / "outputs" / "bl005_candidate_decisions.csv",
-        "bl005_diagnostics": root / "07_implementation" / "implementation_notes" / "bl005_retrieval" / "outputs" / "bl005_candidate_diagnostics.json",
-        "bl006_scored": root / "07_implementation" / "implementation_notes" / "bl006_scoring" / "outputs" / "bl006_scored_candidates.csv",
-        "bl006_summary": root / "07_implementation" / "implementation_notes" / "bl006_scoring" / "outputs" / "bl006_score_summary.json",
-        "bl007_playlist": root / "07_implementation" / "implementation_notes" / "bl007_playlist" / "outputs" / "bl007_playlist.json",
-        "bl007_trace": root / "07_implementation" / "implementation_notes" / "bl007_playlist" / "outputs" / "bl007_assembly_trace.csv",
-        "bl007_report": root / "07_implementation" / "implementation_notes" / "bl007_playlist" / "outputs" / "bl007_assembly_report.json",
-        "bl008_payloads": root / "07_implementation" / "implementation_notes" / "bl008_transparency" / "outputs" / "bl008_explanation_payloads.json",
-        "bl008_summary": root / "07_implementation" / "implementation_notes" / "bl008_transparency" / "outputs" / "bl008_explanation_summary.json",
-        "bl009_log": root / "07_implementation" / "implementation_notes" / "bl009_observability" / "outputs" / "bl009_run_observability_log.json",
-        "bl009_index": root / "07_implementation" / "implementation_notes" / "bl009_observability" / "outputs" / "bl009_run_index.csv",
-    }
+    return bl010_required_paths(root)
 
 
 def ensure_required_inputs(paths: dict[str, Path], root: Path) -> None:
