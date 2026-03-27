@@ -1,7 +1,7 @@
 {
-  "run_id": "BL011-LOOSER_THRESHOLDS-BL004-20260327-012129-851465",
+  "run_id": "BL011-LOOSER_THRESHOLDS-BL004-20260327-203552-959851",
   "task": "BL-004",
-  "generated_at_utc": "2026-03-27T01:21:29Z",
+  "generated_at_utc": "2026-03-27T20:35:52Z",
   "user_id": "active_user",
   "scenario_id": "looser_thresholds",
   "input_artifacts": {

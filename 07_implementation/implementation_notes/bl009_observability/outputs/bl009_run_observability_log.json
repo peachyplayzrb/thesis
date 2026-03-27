@@ -1,35 +1,35 @@
 {
   "run_metadata": {
-    "run_id": "BL009-OBSERVE-20260327-165412-004409",
+    "run_id": "BL009-OBSERVE-20260327-203514-835693",
     "task": "BL-009",
-    "generated_at_utc": "2026-03-27T16:54:12Z",
-    "elapsed_seconds": 0.807,
+    "generated_at_utc": "2026-03-27T20:35:14Z",
+    "elapsed_seconds": 0.869,
     "observability_schema_version": "bl009-observability-v1",
     "observability_scope": "artifact-level deterministic audit log",
     "bootstrap_mode": true,
     "dataset_version": "BA1BB059B662D774BD669537EE9CA0386C20E236949E83933AC9DD379D37B106",
     "dataset_version_source": "active_pipeline_outputs",
-    "pipeline_version": "6B4D68FB948AC6B35A39A6033BA18D209E99A2AEE43CC21A8F7A671E627A9AC6",
+    "pipeline_version": "FBC9D8AF2765F3D6A2FFCB57B1B2BD92A4665BBBB43ECF43177CCA337192D797",
     "dataset_component_hashes": {
       "07_implementation/implementation_notes/bl004_profile/outputs/bl004_seed_trace.csv": "AFE227D05077A35D970973E060EB6C95DC6FD62E17081E0666DF9CD2D5D6BEC2",
       "07_implementation/implementation_notes/bl005_retrieval/outputs/bl005_filtered_candidates.csv": "F4B06C299884E662DC8FDCC85CE0FE1DE7F30513906D68DC835399C7B4AE6211",
       "07_implementation/implementation_notes/bl006_scoring/outputs/bl006_scored_candidates.csv": "16F88709E729624230DBA9A88E8434D39FF78B6BFED8EFDB4465428A89BBDAAE"
     },
     "pipeline_script_hashes": {
-      "07_implementation/implementation_notes/bl004_profile/build_bl004_preference_profile.py": "016BAFA44D61157DFE58475BFE8C9BA4149886E0071E06AA47F8008E6CBB3DE3",
-      "07_implementation/implementation_notes/bl005_retrieval/build_bl005_candidate_filter.py": "40CC4B7E03039CC42D4A464FF6446CA3112FED9E53382834B187722D0B6139DC",
-      "07_implementation/implementation_notes/bl006_scoring/build_bl006_scored_candidates.py": "98C1536A5B3E3DD3778F6CFBDD079C22C7DDB37DB3963CEB272D3EC032EA02F2",
-      "07_implementation/implementation_notes/bl007_playlist/build_bl007_playlist.py": "5A4F94F5BB361C226B18153CBEA84AD4C1650B60F27491D6EC90680EFC0E00FD",
-      "07_implementation/implementation_notes/bl008_transparency/build_bl008_explanation_payloads.py": "DFFE61EF32734DB6E57B4E570B85D9720F8FF62EC8BB6F72837AC1D0CA98898D",
-      "07_implementation/implementation_notes/bl009_observability/build_bl009_observability_log.py": "62D374B427E937E12BDAC0BE31A93E4722B2EA54D86D90B17CFBDED2C73C14F8"
+      "07_implementation/implementation_notes/bl004_profile/build_bl004_preference_profile.py": "B5AC130D136E1BA9A56B9D0AC94DCCBBA87B0AC5147DBC3A226A29F8E6CAE83C",
+      "07_implementation/implementation_notes/bl005_retrieval/build_bl005_candidate_filter.py": "C21BB6A7FC03233A208FB5A9CDA683254239C4734AC52BA38AA8C595FCB1D90F",
+      "07_implementation/implementation_notes/bl006_scoring/build_bl006_scored_candidates.py": "3CD79228FF5AA44FECC19D187BBCCC2556E0B1DDEDB92B39134FF6A66E54858B",
+      "07_implementation/implementation_notes/bl007_playlist/build_bl007_playlist.py": "ED9547D4B8A232DA18607DF63B084FD05CBE057355C716A5878842C55901EBD3",
+      "07_implementation/implementation_notes/bl008_transparency/build_bl008_explanation_payloads.py": "90DBD83582E7CED417FA026F7807B9C5FAC6411594CBE2C66C6E439D57EE4BD4",
+      "07_implementation/implementation_notes/bl009_observability/build_bl009_observability_log.py": "DB8A925C5124B9102998CB96FD0A97634095777C063AB12EF8AE1806F013F315"
     },
     "optional_dependency_availability": {},
     "upstream_stage_run_ids": {
-      "BL-004": "BL004-PROFILE-20260327-165357-389471",
-      "BL-005": "BL005-FILTER-20260327-165358-293711",
-      "BL-006": "BL006-SCORE-20260327-165402-861535",
-      "BL-007": "BL007-ASSEMBLE-20260327-165409-663614",
-      "BL-008": "BL008-EXPLAIN-20260327-165410-986323"
+      "BL-004": "BL004-PROFILE-20260327-203503-207682",
+      "BL-005": "BL005-FILTER-20260327-203504-040042",
+      "BL-006": "BL006-SCORE-20260327-203507-649032",
+      "BL-007": "BL007-ASSEMBLE-20260327-203512-718713",
+      "BL-008": "BL008-EXPLAIN-20260327-203513-902943"
     },
     "config_source": "environment",
     "run_config_path": null,
@@ -284,7 +284,7 @@
     },
     "profile": {
       "task": "BL-004",
-      "run_id": "BL004-PROFILE-20260327-165357-389471",
+      "run_id": "BL004-PROFILE-20260327-203503-207682",
       "user_id": "214f23jw73wgv4vdpcjabds2a",
       "diagnostics": {
         "events_total": 1064,
@@ -304,7 +304,7 @@
         },
         "key_aggregation_method": "weighted_circular_mean",
         "total_effective_weight": 2322.377778,
-        "elapsed_seconds": 0.023
+        "elapsed_seconds": 0.021
       },
       "seed_summary": {
         "counts_by_interaction_type": {
@@ -368,7 +368,7 @@
     },
     "retrieval": {
       "task": "BL-005",
-      "run_id": "BL005-FILTER-20260327-165358-293711",
+      "run_id": "BL005-FILTER-20260327-203504-040042",
       "counts": {
         "candidate_rows_total": 109269,
         "seed_tracks_excluded": 1064,
@@ -411,7 +411,7 @@
     },
     "scoring": {
       "task": "BL-006",
-      "run_id": "BL006-SCORE-20260327-165402-861535",
+      "run_id": "BL006-SCORE-20260327-203507-649032",
       "counts": {
         "candidates_scored": 70680
       },
@@ -537,7 +537,7 @@
     },
     "assembly": {
       "task": "BL-007",
-      "run_id": "BL007-ASSEMBLE-20260327-165409-663614",
+      "run_id": "BL007-ASSEMBLE-20260327-203512-718713",
       "counts": {
         "candidates_evaluated": 70680,
         "tracks_included": 10,
@@ -563,7 +563,7 @@
     },
     "transparency": {
       "task": "BL-008",
-      "run_id": "BL008-EXPLAIN-20260327-165410-986323",
+      "run_id": "BL008-EXPLAIN-20260327-203513-902943",
       "playlist_track_count": 10,
       "top_contributor_distribution": {
         "Lead genre match": 4,
@@ -733,12 +733,12 @@
     "primary_outputs": {
       "playlist": {
         "path": "07_implementation/implementation_notes/bl007_playlist/outputs/bl007_playlist.json",
-        "sha256": "1A797D19F4664627C91DBD439FB5DECC57893AE7E2AEC5C93A833C9C6FD992FB",
+        "sha256": "BD9DF29EC349C2DBE9B1B3EC987ED44D551B0A632B8006AF3CF5D768CB6B055D",
         "size_bytes": 2037
       },
       "explanation_payloads": {
         "path": "07_implementation/implementation_notes/bl008_transparency/outputs/bl008_explanation_payloads.json",
-        "sha256": "C6C4B1011A644D488005BBE53B8426AD968A4A5FBE7AC3CD559AF3D2D75EB159",
+        "sha256": "47B74E09E5A5197F787FDAC6B6098B4A60670CE117ED73641D051F8292E5B112",
         "size_bytes": 33206
       }
     },
@@ -763,23 +763,23 @@
     "supporting_outputs": {
       "profile": {
         "path": "07_implementation/implementation_notes/bl004_profile/outputs/bl004_preference_profile.json",
-        "sha256": "26AF25300EC5933A40050E453DB2BA90E66C1F6D5E109F12B4C26BBF1C080090"
+        "sha256": "F5D8B1777C119AA362F623DD60D5BC05173FCB0477867FBD72C11D86AB5CF55C"
       },
       "retrieval_diagnostics": {
         "path": "07_implementation/implementation_notes/bl005_retrieval/outputs/bl005_candidate_diagnostics.json",
-        "sha256": "D842D358D0FAC3BF512320193AB74B722B732EBD780CD46C43FE1C4A4F978D14"
+        "sha256": "2E7FC3CD6652A60C830B7D23536B0CF499D6CCBDDAFD480EC06E819DD6AF10B6"
       },
       "score_summary": {
         "path": "07_implementation/implementation_notes/bl006_scoring/outputs/bl006_score_summary.json",
-        "sha256": "18EEEA2EED831F9F21AC522D735290698FA395EBD2C73B66DC04C08007C30A39"
+        "sha256": "A3DB53025B1894EFF3ECAC3FBECC2A3A051FBB481186A5B0933E1C8704805229"
       },
       "assembly_report": {
         "path": "07_implementation/implementation_notes/bl007_playlist/outputs/bl007_assembly_report.json",
-        "sha256": "6F4E049D0026F0F35D924D3D9E47CB991CAF8E67B2EB06B7B7C9A3C80618C561"
+        "sha256": "E581D32729EFB4F2743C31300B3CD5FC76D0ECF7375F57A169EC09AC301A2869"
       },
       "explanation_summary": {
         "path": "07_implementation/implementation_notes/bl008_transparency/outputs/bl008_explanation_summary.json",
-        "sha256": "203D35989F979CEB3B3CED86141B93ABD5604BB2F10E0BB534072D37ED97994F"
+        "sha256": "865AB4EB4278DA7874A4B0FBE89486655509D4D52CD1897B5DB6D6DBB0E25ADC"
       },
       "data_layer_coverage": {
         "path": null,

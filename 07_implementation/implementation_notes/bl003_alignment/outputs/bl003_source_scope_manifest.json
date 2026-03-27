@@ -1,8 +1,8 @@
 {
-  "generated_at_utc": "2026-03-27T16:53:56Z",
-  "config_source": "export_selection",
-  "run_config_path": null,
-  "run_config_schema_version": null,
+  "generated_at_utc": "2026-03-27T20:34:14Z",
+  "config_source": "run_config",
+  "run_config_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl000_run_config\\configs\\profiles\\run_config_ui013_tuning_v1f.json",
+  "run_config_schema_version": "run-config-v1",
   "input_scope": {
     "source_family": "spotify_api_export",
     "include_top_tracks": true,

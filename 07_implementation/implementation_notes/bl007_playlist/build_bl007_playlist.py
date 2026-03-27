@@ -20,7 +20,6 @@ Outputs
 """
 
 import csv
-import os
 import time
 from collections import Counter
 from datetime import datetime, timezone
@@ -34,6 +33,7 @@ from bl000_shared_utils.config_loader import load_run_config_utils_module
 from bl000_shared_utils.env_utils import env_float, env_int, env_str
 from bl000_shared_utils.io_utils import open_text_write, sha256_of_file, write_json
 from bl000_shared_utils.path_utils import repo_root
+from bl000_shared_utils.stage_runtime_resolver import resolve_run_config_path
 
 # ---------------------------------------------------------------------------
 # Config
@@ -66,7 +66,7 @@ def _sanitize_bl007_controls(controls: dict[str, object]) -> dict[str, object]:
 
 
 def resolve_bl007_runtime_controls() -> dict[str, object]:
-    run_config_path = os.environ.get("BL_RUN_CONFIG_PATH", "").strip() or None
+    run_config_path = resolve_run_config_path()
     if run_config_path:
         run_config_utils = load_run_config_utils_module()
         controls = run_config_utils.resolve_bl007_controls(run_config_path)

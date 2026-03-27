@@ -1,5 +1,7 @@
 # Run Config Profile Organization Guide
 
+Legacy note (2026-03-27): this document is retained as focused profile-organizing reference. Canonical unified run-config contract now lives in RUN_CONFIG_UNIFIED_CONTRACT.md.
+
 Date: 2026-03-25
 Scope: BL-000 run-config profile files in configs/profiles.
 

@@ -22,6 +22,7 @@ from bl000_shared_utils.io_utils import (
     sha256_of_file,
 )
 from bl000_shared_utils.path_utils import repo_root
+from bl000_shared_utils.stage_runtime_resolver import resolve_run_config_path
 from bl000_shared_utils.constants import (
     DEFAULT_PROFILE_TOP_TAG_LIMIT,
     DEFAULT_PROFILE_TOP_GENRE_LIMIT,
@@ -88,7 +89,7 @@ def infer_user_id_from_ingestion(root: Path) -> str | None:
 
 def resolve_bl004_runtime_controls() -> dict[str, object]:
     root = repo_root()
-    run_config_path = os.environ.get("BL_RUN_CONFIG_PATH", "").strip() or None
+    run_config_path = resolve_run_config_path()
     env_user_id = env_str("BL004_USER_ID", "")
     env_interaction_types_raw = env_str("BL004_INCLUDE_INTERACTION_TYPES", "")
     inferred_user_id = infer_user_id_from_ingestion(root)

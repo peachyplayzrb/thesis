@@ -6,6 +6,8 @@ Centralizes stage selection behavior used by orchestration and API layers.
 
 from __future__ import annotations
 
+import json
+import os
 from typing import Any, Dict, List
 
 
@@ -32,3 +34,34 @@ def resolve_stage_selection(
         raise RuntimeError(f"Unknown stage_ids: {', '.join(unknown)}")
 
     return [dict(spec) for spec in stage_specs if spec["stage_id"] in selected_set]
+
+
+def resolve_run_config_path(env_var_name: str = "BL_RUN_CONFIG_PATH") -> str | None:
+    """Resolve an optional run-config path from environment."""
+    return os.environ.get(env_var_name, "").strip() or None
+
+
+def load_positive_numeric_map_from_env(env_var_name: str) -> Dict[str, float]:
+    """
+    Parse an environment JSON object and keep positive numeric values only.
+
+    Returns an empty dictionary when the environment variable is missing,
+    malformed, or not a JSON object.
+    """
+    raw = os.environ.get(env_var_name, "").strip()
+    if not raw:
+        return {}
+
+    try:
+        payload = json.loads(raw)
+    except json.JSONDecodeError:
+        return {}
+
+    if not isinstance(payload, dict):
+        return {}
+
+    return {
+        str(k): float(v)
+        for k, v in payload.items()
+        if isinstance(v, (int, float)) and float(v) > 0
+    }

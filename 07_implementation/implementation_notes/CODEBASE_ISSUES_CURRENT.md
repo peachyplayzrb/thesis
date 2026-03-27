@@ -59,6 +59,7 @@ The current implementation is a deterministic single-user playlist generation pi
 - Active recommendation mode: deterministic hybrid ranking over DS-001 candidates
 - Active config source in latest run: explicit run-config
 - Latest run-config used: `run_config_ui013_tuning_v1f.json`
+- Canonical baseline authority: `07_implementation/ACTIVE_BASELINE.md`
 
 ## Superseding Update - 2026-03-26 21:03 UTC
 

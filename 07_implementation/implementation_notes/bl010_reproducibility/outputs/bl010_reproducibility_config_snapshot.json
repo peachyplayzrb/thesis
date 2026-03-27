@@ -12,12 +12,12 @@
   },
   "optional_dependency_availability": {},
   "stage_scripts": {
-    "07_implementation/implementation_notes/bl004_profile/build_bl004_preference_profile.py": "8DF5D27B1206070C2ED16062E6028EA7E9FA66441707A73594E04C581A66580D",
-    "07_implementation/implementation_notes/bl005_retrieval/build_bl005_candidate_filter.py": "A0D8A20DA741687FB377BD20E3CE40691375E31F6283E752A119BFA267FDFF74",
-    "07_implementation/implementation_notes/bl006_scoring/build_bl006_scored_candidates.py": "98C1536A5B3E3DD3778F6CFBDD079C22C7DDB37DB3963CEB272D3EC032EA02F2",
-    "07_implementation/implementation_notes/bl007_playlist/build_bl007_playlist.py": "5A4F94F5BB361C226B18153CBEA84AD4C1650B60F27491D6EC90680EFC0E00FD",
-    "07_implementation/implementation_notes/bl008_transparency/build_bl008_explanation_payloads.py": "DFFE61EF32734DB6E57B4E570B85D9720F8FF62EC8BB6F72837AC1D0CA98898D",
-    "07_implementation/implementation_notes/bl009_observability/build_bl009_observability_log.py": "62D374B427E937E12BDAC0BE31A93E4722B2EA54D86D90B17CFBDED2C73C14F8"
+    "07_implementation/implementation_notes/bl004_profile/build_bl004_preference_profile.py": "B5AC130D136E1BA9A56B9D0AC94DCCBBA87B0AC5147DBC3A226A29F8E6CAE83C",
+    "07_implementation/implementation_notes/bl005_retrieval/build_bl005_candidate_filter.py": "C21BB6A7FC03233A208FB5A9CDA683254239C4734AC52BA38AA8C595FCB1D90F",
+    "07_implementation/implementation_notes/bl006_scoring/build_bl006_scored_candidates.py": "3CD79228FF5AA44FECC19D187BBCCC2556E0B1DDEDB92B39134FF6A66E54858B",
+    "07_implementation/implementation_notes/bl007_playlist/build_bl007_playlist.py": "ED9547D4B8A232DA18607DF63B084FD05CBE057355C716A5878842C55901EBD3",
+    "07_implementation/implementation_notes/bl008_transparency/build_bl008_explanation_payloads.py": "90DBD83582E7CED417FA026F7807B9C5FAC6411594CBE2C66C6E439D57EE4BD4",
+    "07_implementation/implementation_notes/bl009_observability/build_bl009_observability_log.py": "DB8A925C5124B9102998CB96FD0A97634095777C063AB12EF8AE1806F013F315"
   },
   "stage_order": [
     "BL-004",

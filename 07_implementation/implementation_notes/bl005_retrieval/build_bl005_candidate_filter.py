@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import csv
 import json
-import os
 import time
 from datetime import datetime, timezone
 from pathlib import Path
@@ -30,6 +29,10 @@ from bl000_shared_utils.io_utils import (
     sha256_of_file,
 )
 from bl000_shared_utils.path_utils import repo_root
+from bl000_shared_utils.stage_runtime_resolver import (
+    load_positive_numeric_map_from_env,
+    resolve_run_config_path,
+)
 
 # Import modularized BL-005 components
 from candidate_parser import (
@@ -122,19 +125,7 @@ def build_active_numeric_specs(
 
 
 def resolve_bl005_runtime_controls() -> dict[str, object]:
-    env_numeric_thresholds_raw = os.environ.get("BL005_NUMERIC_THRESHOLDS_JSON", "").strip()
-    env_numeric_thresholds: dict[str, float] = {}
-    if env_numeric_thresholds_raw:
-        try:
-            payload = json.loads(env_numeric_thresholds_raw)
-            if isinstance(payload, dict):
-                env_numeric_thresholds = {
-                    str(key): float(value)
-                    for key, value in payload.items()
-                    if isinstance(value, (int, float)) and float(value) > 0
-                }
-        except json.JSONDecodeError:
-            env_numeric_thresholds = {}
+    env_numeric_thresholds = load_positive_numeric_map_from_env("BL005_NUMERIC_THRESHOLDS_JSON")
 
     def sanitize_controls(controls: dict[str, object]) -> dict[str, object]:
         controls["profile_top_lead_genre_limit"] = max(1, int(controls["profile_top_lead_genre_limit"]))
@@ -147,7 +138,7 @@ def resolve_bl005_runtime_controls() -> dict[str, object]:
             controls["semantic_min_keep_score"] = controls["semantic_strong_keep_score"]
         return controls
 
-    run_config_path = os.environ.get("BL_RUN_CONFIG_PATH", "").strip() or None
+    run_config_path = resolve_run_config_path()
     if run_config_path:
         run_config_utils = load_run_config_utils_module()
         controls = run_config_utils.resolve_bl005_controls(run_config_path)
@@ -181,8 +172,7 @@ def resolve_bl005_runtime_controls() -> dict[str, object]:
     )
 
 
-def main() -> None:
-    root = repo_root()
+def resolve_bl005_paths(root: Path) -> dict[str, Path]:
     profile_path = root / "07_implementation" / "implementation_notes" / "bl004_profile" / "outputs" / "bl004_preference_profile.json"
     seed_trace_path = root / "07_implementation" / "implementation_notes" / "bl004_profile" / "outputs" / "bl004_seed_trace.csv"
     candidate_path = (
@@ -190,10 +180,31 @@ def main() -> None:
         / "bl000_data_layer" / "outputs" / "ds001_working_candidate_dataset.csv"
     )
     output_dir = root / "07_implementation" / "implementation_notes" / "bl005_retrieval" / "outputs"
-    output_dir.mkdir(parents=True, exist_ok=True)
-    ensure_paths_exist([profile_path, seed_trace_path, candidate_path])
+    return {
+        "profile_path": profile_path,
+        "seed_trace_path": seed_trace_path,
+        "candidate_path": candidate_path,
+        "output_dir": output_dir,
+    }
 
-    runtime_controls = resolve_bl005_runtime_controls()
+
+def load_bl005_inputs(paths: dict[str, Path]) -> tuple[dict[str, object], list[dict[str, object]], list[dict[str, object]]]:
+    profile = load_json(paths["profile_path"])
+    candidate_rows_raw = load_csv_rows(paths["candidate_path"])
+    if not candidate_rows_raw:
+        raise RuntimeError("BL-005 candidate corpus is empty; cannot build retrieval outputs")
+    candidate_rows = [normalize_candidate_row(row) for row in candidate_rows_raw]
+    seed_trace_rows = load_csv_rows(paths["seed_trace_path"])
+    return profile, candidate_rows, seed_trace_rows
+
+
+def build_bl005_runtime_context(
+    *,
+    profile: dict[str, object],
+    candidate_rows: list[dict[str, object]],
+    seed_trace_rows: list[dict[str, object]],
+    runtime_controls: dict[str, object],
+) -> dict[str, object]:
     profile_top_lead_genre_limit = int(runtime_controls["profile_top_lead_genre_limit"])
     profile_top_tag_limit = int(runtime_controls["profile_top_tag_limit"])
     profile_top_genre_limit = int(runtime_controls["profile_top_genre_limit"])
@@ -201,17 +212,11 @@ def main() -> None:
     semantic_min_keep_score = int(runtime_controls["semantic_min_keep_score"])
     numeric_support_min_pass = int(runtime_controls["numeric_support_min_pass"])
     numeric_threshold_overrides: dict[str, float] = runtime_controls.get("numeric_thresholds") or {}
+
     effective_numeric_specs = {
         k: {**v, "threshold": float(numeric_threshold_overrides.get(k, v["threshold"]))}
         for k, v in NUMERIC_FEATURE_SPECS.items()
     }
-
-    profile = load_json(profile_path)
-    candidate_rows_raw = load_csv_rows(candidate_path)
-    if not candidate_rows_raw:
-        raise RuntimeError("BL-005 candidate corpus is empty; cannot build retrieval outputs")
-    candidate_rows = [normalize_candidate_row(row) for row in candidate_rows_raw]
-    seed_trace_rows = load_csv_rows(seed_trace_path)
 
     seed_track_ids = {row["track_id"] for row in seed_trace_rows}
     candidate_columns = set(candidate_rows[0].keys()) if candidate_rows else set()
@@ -241,16 +246,45 @@ def main() -> None:
     }
     numeric_features_enabled = bool(numeric_centers)
 
-    # Initialize decision tracker
+    return {
+        "profile_top_lead_genre_limit": profile_top_lead_genre_limit,
+        "profile_top_tag_limit": profile_top_tag_limit,
+        "profile_top_genre_limit": profile_top_genre_limit,
+        "semantic_strong_keep_score": semantic_strong_keep_score,
+        "semantic_min_keep_score": semantic_min_keep_score,
+        "numeric_support_min_pass": numeric_support_min_pass,
+        "active_numeric_specs": active_numeric_specs,
+        "seed_track_ids": seed_track_ids,
+        "top_lead_genres": top_lead_genres,
+        "top_tags": top_tags,
+        "top_genres": top_genres,
+        "numeric_centers": numeric_centers,
+        "numeric_features_enabled": numeric_features_enabled,
+    }
+
+
+def evaluate_bl005_candidates(
+    *,
+    candidate_rows: list[dict[str, object]],
+    runtime_context: dict[str, object],
+) -> tuple[DecisionTracker, list[dict[str, object]], list[dict[str, object]], dict[str, object]]:
+    active_numeric_specs: dict[str, dict[str, object]] = runtime_context["active_numeric_specs"]
+    seed_track_ids: set[str] = runtime_context["seed_track_ids"]
+    top_lead_genres: set[str] = runtime_context["top_lead_genres"]
+    top_tags: set[str] = runtime_context["top_tags"]
+    top_genres: set[str] = runtime_context["top_genres"]
+    numeric_centers: dict[str, float] = runtime_context["numeric_centers"]
+    numeric_features_enabled = bool(runtime_context["numeric_features_enabled"])
+    semantic_strong_keep_score = int(runtime_context["semantic_strong_keep_score"])
+    semantic_min_keep_score = int(runtime_context["semantic_min_keep_score"])
+    numeric_support_min_pass = int(runtime_context["numeric_support_min_pass"])
+
     tracker = DecisionTracker(active_numeric_specs)
-    start_time = time.time()
-    run_id = f"BL005-FILTER-{datetime.now(timezone.utc).strftime('%Y%m%d-%H%M%S-%f')}"
 
     for row in candidate_rows:
         track_id = row["track_id"]
         is_seed_track = track_id in seed_track_ids
 
-        # DS-001 provides explicit tags and genres columns.
         candidate_tags = parse_csv_labels(row.get("tags", ""))
         candidate_genres = parse_csv_labels(row.get("genres", ""))
         lead_genre = resolve_lead_genre(candidate_genres, candidate_tags)
@@ -264,10 +298,8 @@ def main() -> None:
         semantic_score += 1 if genre_overlap > 0 else 0
         semantic_score += 1 if tag_overlap > 0 else 0
 
-        # Track semantic scores
         tracker.record_semantic_scores(semantic_score, lead_genre_match, genre_overlap, tag_overlap)
 
-        # Compute numeric distances and pass counts
         numeric_pass_count = 0
         numeric_distances: dict[str, float | None] = {}
         numeric_rule_hits_this_candidate: dict[str, bool] = {}
@@ -295,16 +327,18 @@ def main() -> None:
 
             numeric_rule_hits_this_candidate[profile_column] = passed
 
-        # Track numeric scores
         tracker.record_numeric_scores(numeric_pass_count, numeric_rule_hits_this_candidate)
 
-        # Make filtering decision
         kept, decision_path = keep_decision(
-            is_seed_track, semantic_score, numeric_pass_count, numeric_features_enabled,
-            semantic_strong_keep_score, semantic_min_keep_score, numeric_support_min_pass,
+            is_seed_track,
+            semantic_score,
+            numeric_pass_count,
+            numeric_features_enabled,
+            semantic_strong_keep_score,
+            semantic_min_keep_score,
+            numeric_support_min_pass,
         )
 
-        # Build decision record
         decision_row = {
             "track_id": track_id,
             "is_seed_track": int(is_seed_track),
@@ -326,7 +360,6 @@ def main() -> None:
             "decision_reason": decision_reason(decision_path, semantic_score, numeric_pass_count),
         }
 
-        # Record decision in tracker
         tracker.record_decision(
             track_id,
             is_seed_track,
@@ -336,11 +369,17 @@ def main() -> None:
             row if kept else None,
         )
 
-    # Get tracked summaries
     summary = tracker.get_summary()
-    decisions = tracker.decisions
-    kept_rows = tracker.kept_rows
+    return tracker, tracker.decisions, tracker.kept_rows, summary
 
+
+def write_bl005_output_artifacts(
+    *,
+    output_dir: Path,
+    candidate_rows: list[dict[str, object]],
+    decisions: list[dict[str, object]],
+    kept_rows: list[dict[str, object]],
+) -> dict[str, Path]:
     filtered_path = output_dir / "bl005_filtered_candidates.csv"
     with open_text_write(filtered_path, newline="") as handle:
         writer = csv.DictWriter(handle, fieldnames=list(candidate_rows[0].keys()), lineterminator="\n")
@@ -353,36 +392,53 @@ def main() -> None:
         writer.writeheader()
         writer.writerows(decisions)
 
-    diagnostics = {
+    return {
+        "filtered_path": filtered_path,
+        "decisions_path": decisions_path,
+    }
+
+
+def build_bl005_diagnostics_payload(
+    *,
+    run_id: str,
+    elapsed_seconds: float,
+    paths: dict[str, Path],
+    runtime_context: dict[str, object],
+    summary: dict[str, object],
+    candidate_rows: list[dict[str, object]],
+    kept_rows: list[dict[str, object]],
+    output_paths: dict[str, Path],
+) -> dict[str, object]:
+    return {
         "run_id": run_id,
         "task": "BL-005",
         "generated_at_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
         "input_artifacts": {
-            "profile_path": str(profile_path),
-            "profile_sha256": sha256_of_file(profile_path),
-            "seed_trace_path": str(seed_trace_path),
-            "seed_trace_sha256": sha256_of_file(seed_trace_path),
-            "candidate_stub_path": str(candidate_path),
-            "candidate_stub_sha256": sha256_of_file(candidate_path),
+            "profile_path": str(paths["profile_path"]),
+            "profile_sha256": sha256_of_file(paths["profile_path"]),
+            "seed_trace_path": str(paths["seed_trace_path"]),
+            "seed_trace_sha256": sha256_of_file(paths["seed_trace_path"]),
+            "candidate_stub_path": str(paths["candidate_path"]),
+            "candidate_stub_sha256": sha256_of_file(paths["candidate_path"]),
         },
         "config": {
-            "top_lead_genre_limit": profile_top_lead_genre_limit,
-            "top_tag_limit": profile_top_tag_limit,
-            "top_genre_limit": profile_top_genre_limit,
+            "top_lead_genre_limit": int(runtime_context["profile_top_lead_genre_limit"]),
+            "top_tag_limit": int(runtime_context["profile_top_tag_limit"]),
+            "top_genre_limit": int(runtime_context["profile_top_genre_limit"]),
             "numeric_thresholds": {
                 profile_column: spec["threshold"]
-                for profile_column, spec in active_numeric_specs.items()
+                for profile_column, spec in runtime_context["active_numeric_specs"].items()
             },
             "numeric_feature_mapping": {
                 profile_column: spec["candidate_column"]
-                for profile_column, spec in active_numeric_specs.items()
+                for profile_column, spec in runtime_context["active_numeric_specs"].items()
             },
-            "numeric_features_enabled": numeric_features_enabled,
+            "numeric_features_enabled": bool(runtime_context["numeric_features_enabled"]),
             "keep_rule": (
-                f"keep if not seed and (semantic_score >= {semantic_strong_keep_score} or "
-                f"(semantic_score >= {semantic_min_keep_score} and numeric_pass_count >= {numeric_support_min_pass}))"
-                if numeric_features_enabled
-                else f"keep if not seed and semantic_score >= {semantic_min_keep_score}"
+                f"keep if not seed and (semantic_score >= {int(runtime_context['semantic_strong_keep_score'])} or "
+                f"(semantic_score >= {int(runtime_context['semantic_min_keep_score'])} and numeric_pass_count >= {int(runtime_context['numeric_support_min_pass'])}))"
+                if runtime_context["numeric_features_enabled"]
+                else f"keep if not seed and semantic_score >= {int(runtime_context['semantic_min_keep_score'])}"
             ),
             "semantic_source": "ds001_tags_and_genres_columns",
         },
@@ -402,28 +458,83 @@ def main() -> None:
             "numeric_pass_count": summary["numeric_pass_distribution"],
         },
         "top_kept_track_ids": [row["track_id"] for row in kept_rows[:15]],
-        "elapsed_seconds": round(time.time() - start_time, 3),
+        "elapsed_seconds": round(elapsed_seconds, 3),
         "output_files": {
-            "filtered_candidates_path": str(filtered_path),
-            "candidate_decisions_path": str(decisions_path),
+            "filtered_candidates_path": str(output_paths["filtered_path"]),
+            "candidate_decisions_path": str(output_paths["decisions_path"]),
         },
     }
 
-    diagnostics_path = output_dir / "bl005_candidate_diagnostics.json"
+
+def write_bl005_diagnostics_with_hashes(
+    *,
+    diagnostics: dict[str, object],
+    diagnostics_path: Path,
+    output_paths: dict[str, Path],
+) -> None:
     with open_text_write(diagnostics_path) as handle:
         json.dump(diagnostics, handle, indent=2, ensure_ascii=True)
 
     diagnostics["output_hashes_sha256"] = {
-        "bl005_filtered_candidates.csv": sha256_of_file(filtered_path),
-        "bl005_candidate_decisions.csv": sha256_of_file(decisions_path),
+        "bl005_filtered_candidates.csv": sha256_of_file(output_paths["filtered_path"]),
+        "bl005_candidate_decisions.csv": sha256_of_file(output_paths["decisions_path"]),
     }
     diagnostics["diagnostics_hash_note"] = "diagnostics file does not store its own hash to avoid recursive self-reference"
     with open_text_write(diagnostics_path) as handle:
         json.dump(diagnostics, handle, indent=2, ensure_ascii=True)
 
+
+def main() -> None:
+    root = repo_root()
+    paths = resolve_bl005_paths(root)
+    output_dir = paths["output_dir"]
+    output_dir.mkdir(parents=True, exist_ok=True)
+    ensure_paths_exist([paths["profile_path"], paths["seed_trace_path"], paths["candidate_path"]])
+
+    runtime_controls = resolve_bl005_runtime_controls()
+    profile, candidate_rows, seed_trace_rows = load_bl005_inputs(paths)
+    runtime_context = build_bl005_runtime_context(
+        profile=profile,
+        candidate_rows=candidate_rows,
+        seed_trace_rows=seed_trace_rows,
+        runtime_controls=runtime_controls,
+    )
+
+    start_time = time.time()
+    run_id = f"BL005-FILTER-{datetime.now(timezone.utc).strftime('%Y%m%d-%H%M%S-%f')}"
+    _, decisions, kept_rows, summary = evaluate_bl005_candidates(
+        candidate_rows=candidate_rows,
+        runtime_context=runtime_context,
+    )
+
+    output_paths = write_bl005_output_artifacts(
+        output_dir=output_dir,
+        candidate_rows=candidate_rows,
+        decisions=decisions,
+        kept_rows=kept_rows,
+    )
+
+    diagnostics = build_bl005_diagnostics_payload(
+        run_id=run_id,
+        elapsed_seconds=time.time() - start_time,
+        paths=paths,
+        runtime_context=runtime_context,
+        summary=summary,
+        candidate_rows=candidate_rows,
+        kept_rows=kept_rows,
+        output_paths=output_paths,
+    )
+
+    diagnostics_path = output_dir / "bl005_candidate_diagnostics.json"
+    write_bl005_diagnostics_with_hashes(
+        diagnostics=diagnostics,
+        diagnostics_path=diagnostics_path,
+        output_paths=output_paths,
+    )
+
     print("BL-005 candidate filtering complete.")
-    print(f"filtered_candidates={filtered_path}")
-    print(f"decisions={decisions_path}")
+    print(f"filtered_candidates={output_paths['filtered_path']}")
+    print(f"decisions={output_paths['decisions_path']}")
     print(f"diagnostics={diagnostics_path}")
 
 

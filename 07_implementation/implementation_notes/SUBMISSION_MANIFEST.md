@@ -12,7 +12,8 @@ This manifest lists what is considered part of the active, submission-ready impl
 - Run-config system (`bl000_run_config`)
 - Shared utilities (`bl000_shared_utils`)
 - Current implementation health snapshot (`CODEBASE_ISSUES_CURRENT.md`)
-- Setup/run instructions (`SETUP.md`)
+- Canonical setup/run instructions (`../RUN_GUIDE.md`)
+- Canonical baseline authority (`../ACTIVE_BASELINE.md`)
 - Stage state logs listed in `README.md`
 
 ## Included Canonical Outputs
@@ -30,7 +31,7 @@ This manifest lists what is considered part of the active, submission-ready impl
 
 ## Reproduction Entry Point
 Primary command source of truth:
-- `bl013_entrypoint/bl013_run_command.md`
+- `../RUN_GUIDE.md`
 
 Executable orchestration entrypoint:
 - `bl013_entrypoint/run_bl013_pipeline_entrypoint.py`

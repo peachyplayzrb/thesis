@@ -1,12 +1,12 @@
 {
   "run_metadata": {
-    "run_id": "BL010-REPRO-20260327-011941",
+    "run_id": "BL010-REPRO-20260327-203439",
     "task": "BL-010",
-    "generated_at_utc": "2026-03-27T01:19:41Z",
-    "elapsed_seconds": 58.462,
+    "generated_at_utc": "2026-03-27T20:34:39Z",
+    "elapsed_seconds": 35.69,
     "replay_count": 3,
     "bootstrap_mode": false,
-    "config_hash": "04014120B1D466D3D4C6A008B7678CC6C0334300C994F87B92E0D8B014BC24F6",
+    "config_hash": "3239F426A81374C12E998DE07521FA26E1981EFFEE6C2DA489F304F167D1EE9E",
     "fixed_input_source": "active_pipeline_outputs"
   },
   "inputs": {
@@ -19,12 +19,12 @@
       "07_implementation/implementation_notes/bl007_playlist/outputs/bl007_assembly_trace.csv": "404FA9124B052AB53B4D3FB6C2F729126EF288A753ED0C0881954034C4CC761D"
     },
     "stage_scripts": {
-      "07_implementation/implementation_notes/bl004_profile/build_bl004_preference_profile.py": "8DF5D27B1206070C2ED16062E6028EA7E9FA66441707A73594E04C581A66580D",
-      "07_implementation/implementation_notes/bl005_retrieval/build_bl005_candidate_filter.py": "A0D8A20DA741687FB377BD20E3CE40691375E31F6283E752A119BFA267FDFF74",
-      "07_implementation/implementation_notes/bl006_scoring/build_bl006_scored_candidates.py": "98C1536A5B3E3DD3778F6CFBDD079C22C7DDB37DB3963CEB272D3EC032EA02F2",
-      "07_implementation/implementation_notes/bl007_playlist/build_bl007_playlist.py": "5A4F94F5BB361C226B18153CBEA84AD4C1650B60F27491D6EC90680EFC0E00FD",
-      "07_implementation/implementation_notes/bl008_transparency/build_bl008_explanation_payloads.py": "DFFE61EF32734DB6E57B4E570B85D9720F8FF62EC8BB6F72837AC1D0CA98898D",
-      "07_implementation/implementation_notes/bl009_observability/build_bl009_observability_log.py": "62D374B427E937E12BDAC0BE31A93E4722B2EA54D86D90B17CFBDED2C73C14F8"
+      "07_implementation/implementation_notes/bl004_profile/build_bl004_preference_profile.py": "B5AC130D136E1BA9A56B9D0AC94DCCBBA87B0AC5147DBC3A226A29F8E6CAE83C",
+      "07_implementation/implementation_notes/bl005_retrieval/build_bl005_candidate_filter.py": "C21BB6A7FC03233A208FB5A9CDA683254239C4734AC52BA38AA8C595FCB1D90F",
+      "07_implementation/implementation_notes/bl006_scoring/build_bl006_scored_candidates.py": "3CD79228FF5AA44FECC19D187BBCCC2556E0B1DDEDB92B39134FF6A66E54858B",
+      "07_implementation/implementation_notes/bl007_playlist/build_bl007_playlist.py": "ED9547D4B8A232DA18607DF63B084FD05CBE057355C716A5878842C55901EBD3",
+      "07_implementation/implementation_notes/bl008_transparency/build_bl008_explanation_payloads.py": "90DBD83582E7CED417FA026F7807B9C5FAC6411594CBE2C66C6E439D57EE4BD4",
+      "07_implementation/implementation_notes/bl009_observability/build_bl009_observability_log.py": "DB8A925C5124B9102998CB96FD0A97634095777C063AB12EF8AE1806F013F315"
     }
   },
   "replay_scope": {
@@ -61,8 +61,8 @@
           "stage": "BL-004",
           "script": "build_bl004_preference_profile.py",
           "script_path": "07_implementation/implementation_notes/bl004_profile/build_bl004_preference_profile.py",
-          "command": "python 07_implementation/implementation_notes/bl004_profile/build_bl004_preference_profile.py --run-config C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl000_run_config\\configs\\profiles\\run_config_ui013_tuning_v1f.json",
-          "elapsed_seconds": 0.205,
+          "command": "python 07_implementation/implementation_notes/bl004_profile/build_bl004_preference_profile.py",
+          "elapsed_seconds": 0.15,
           "stdout": [
             "BL-004 preference profile created.",
             "profile=07_implementation/implementation_notes/bl004_profile/outputs/bl004_preference_profile.json",
@@ -76,7 +76,7 @@
             {
               "attempt_number": 1,
               "return_code": 0,
-              "elapsed_seconds": 0.205,
+              "elapsed_seconds": 0.15,
               "stdout": [
                 "BL-004 preference profile created.",
                 "profile=07_implementation/implementation_notes/bl004_profile/outputs/bl004_preference_profile.json",
@@ -91,8 +91,8 @@
           "stage": "BL-005",
           "script": "build_bl005_candidate_filter.py",
           "script_path": "07_implementation/implementation_notes/bl005_retrieval/build_bl005_candidate_filter.py",
-          "command": "python 07_implementation/implementation_notes/bl005_retrieval/build_bl005_candidate_filter.py --run-config C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl000_run_config\\configs\\profiles\\run_config_ui013_tuning_v1f.json",
-          "elapsed_seconds": 7.57,
+          "command": "python 07_implementation/implementation_notes/bl005_retrieval/build_bl005_candidate_filter.py",
+          "elapsed_seconds": 3.682,
           "stdout": [
             "BL-005 candidate filtering complete.",
             "filtered_candidates=07_implementation/implementation_notes/bl005_retrieval/outputs/bl005_filtered_candidates.csv",
@@ -106,7 +106,7 @@
             {
               "attempt_number": 1,
               "return_code": 0,
-              "elapsed_seconds": 7.569,
+              "elapsed_seconds": 3.682,
               "stdout": [
                 "BL-005 candidate filtering complete.",
                 "filtered_candidates=07_implementation/implementation_notes/bl005_retrieval/outputs/bl005_filtered_candidates.csv",
@@ -121,8 +121,8 @@
           "stage": "BL-006",
           "script": "build_bl006_scored_candidates.py",
           "script_path": "07_implementation/implementation_notes/bl006_scoring/build_bl006_scored_candidates.py",
-          "command": "python 07_implementation/implementation_notes/bl006_scoring/build_bl006_scored_candidates.py --run-config C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl000_run_config\\configs\\profiles\\run_config_ui013_tuning_v1f.json",
-          "elapsed_seconds": 10.17,
+          "command": "python 07_implementation/implementation_notes/bl006_scoring/build_bl006_scored_candidates.py",
+          "elapsed_seconds": 4.797,
           "stdout": [
             "BL-006 candidate scoring complete.",
             "scored_candidates=07_implementation/implementation_notes/bl006_scoring/outputs/bl006_scored_candidates.csv",
@@ -135,7 +135,7 @@
             {
               "attempt_number": 1,
               "return_code": 0,
-              "elapsed_seconds": 10.17,
+              "elapsed_seconds": 4.797,
               "stdout": [
                 "BL-006 candidate scoring complete.",
                 "scored_candidates=07_implementation/implementation_notes/bl006_scoring/outputs/bl006_scored_candidates.csv",
@@ -149,11 +149,11 @@
           "stage": "BL-007",
           "script": "build_bl007_playlist.py",
           "script_path": "07_implementation/implementation_notes/bl007_playlist/build_bl007_playlist.py",
-          "command": "python 07_implementation/implementation_notes/bl007_playlist/build_bl007_playlist.py --run-config C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl000_run_config\\configs\\profiles\\run_config_ui013_tuning_v1f.json",
-          "elapsed_seconds": 1.514,
+          "command": "python 07_implementation/implementation_notes/bl007_playlist/build_bl007_playlist.py",
+          "elapsed_seconds": 1.069,
           "stdout": [
             "BL-007 playlist assembly complete.  Playlist: 10/10 tracks",
-            "Run ID : BL007-ASSEMBLE-20260327-012000-018056",
+            "Run ID : BL007-ASSEMBLE-20260327-203448-838046",
             "Genre mix : {'pop': 4, 'classic rock': 2, 'new wave': 1, 'country': 2, 'rock': 1}"
           ],
           "stderr": [],
@@ -163,10 +163,10 @@
             {
               "attempt_number": 1,
               "return_code": 0,
-              "elapsed_seconds": 1.514,
+              "elapsed_seconds": 1.069,
               "stdout": [
                 "BL-007 playlist assembly complete.  Playlist: 10/10 tracks",
-                "Run ID : BL007-ASSEMBLE-20260327-012000-018056",
+                "Run ID : BL007-ASSEMBLE-20260327-203448-838046",
                 "Genre mix : {'pop': 4, 'classic rock': 2, 'new wave': 1, 'country': 2, 'rock': 1}"
               ],
               "stderr": []
@@ -177,11 +177,11 @@
           "stage": "BL-008",
           "script": "build_bl008_explanation_payloads.py",
           "script_path": "07_implementation/implementation_notes/bl008_transparency/build_bl008_explanation_payloads.py",
-          "command": "python 07_implementation/implementation_notes/bl008_transparency/build_bl008_explanation_payloads.py --run-config C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl000_run_config\\configs\\profiles\\run_config_ui013_tuning_v1f.json",
-          "elapsed_seconds": 1.446,
+          "command": "python 07_implementation/implementation_notes/bl008_transparency/build_bl008_explanation_payloads.py",
+          "elapsed_seconds": 0.851,
           "stdout": [
             "BL-008 explanation payloads complete. Tracks explained: 10",
-            "Run ID: BL008-EXPLAIN-20260327-012001-822372",
+            "Run ID: BL008-EXPLAIN-20260327-203449-969807",
             "pos= 1  5c9fu0pBIl9QUmed  top=Lead genre match",
             "pos= 2  phL12CBijBqwQ9qB  top=Lead genre match",
             "pos= 3  3ltMH5jik02hVLDF  top=Tag overlap",
@@ -200,10 +200,10 @@
             {
               "attempt_number": 1,
               "return_code": 0,
-              "elapsed_seconds": 1.446,
+              "elapsed_seconds": 0.851,
               "stdout": [
                 "BL-008 explanation payloads complete. Tracks explained: 10",
-                "Run ID: BL008-EXPLAIN-20260327-012001-822372",
+                "Run ID: BL008-EXPLAIN-20260327-203449-969807",
                 "pos= 1  5c9fu0pBIl9QUmed  top=Lead genre match",
                 "pos= 2  phL12CBijBqwQ9qB  top=Lead genre match",
                 "pos= 3  3ltMH5jik02hVLDF  top=Tag overlap",
@@ -223,13 +223,13 @@
           "stage": "BL-009",
           "script": "build_bl009_observability_log.py",
           "script_path": "07_implementation/implementation_notes/bl009_observability/build_bl009_observability_log.py",
-          "command": "python 07_implementation/implementation_notes/bl009_observability/build_bl009_observability_log.py --run-config C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl000_run_config\\configs\\profiles\\run_config_ui013_tuning_v1f.json",
-          "elapsed_seconds": 1.727,
+          "command": "python 07_implementation/implementation_notes/bl009_observability/build_bl009_observability_log.py",
+          "elapsed_seconds": 1.086,
           "stdout": [
             "BL-009 observability logging complete.",
             "run_log=07_implementation/implementation_notes/bl009_observability/outputs/bl009_run_observability_log.json",
             "run_index=07_implementation/implementation_notes/bl009_observability/outputs/bl009_run_index.csv",
-            "run_id=BL009-OBSERVE-20260327-012003-354892"
+            "run_id=BL009-OBSERVE-20260327-203450-928619"
           ],
           "stderr": [],
           "attempt_count": 1,
@@ -238,12 +238,12 @@
             {
               "attempt_number": 1,
               "return_code": 0,
-              "elapsed_seconds": 1.727,
+              "elapsed_seconds": 1.086,
               "stdout": [
                 "BL-009 observability logging complete.",
                 "run_log=07_implementation/implementation_notes/bl009_observability/outputs/bl009_run_observability_log.json",
                 "run_index=07_implementation/implementation_notes/bl009_observability/outputs/bl009_run_index.csv",
-                "run_id=BL009-OBSERVE-20260327-012003-354892"
+                "run_id=BL009-OBSERVE-20260327-203450-928619"
               ],
               "stderr": []
             }
@@ -251,12 +251,12 @@
         }
       ],
       "stage_run_ids": {
-        "BL-004": "BL004-PROFILE-20260327-011941-262419",
-        "BL-005": "BL005-FILTER-20260327-011942-417471",
-        "BL-006": "BL006-SCORE-20260327-011949-701558",
-        "BL-007": "BL007-ASSEMBLE-20260327-012000-018056",
-        "BL-008": "BL008-EXPLAIN-20260327-012001-822372",
-        "BL-009": "BL009-OBSERVE-20260327-012003-354892"
+        "BL-004": "BL004-PROFILE-20260327-203439-659598",
+        "BL-005": "BL005-FILTER-20260327-203440-384395",
+        "BL-006": "BL006-SCORE-20260327-203443-844659",
+        "BL-007": "BL007-ASSEMBLE-20260327-203448-838046",
+        "BL-008": "BL008-EXPLAIN-20260327-203449-969807",
+        "BL-009": "BL009-OBSERVE-20260327-203450-928619"
       },
       "raw_hashes": {
         "bl004_seed_trace": "AFE227D05077A35D970973E060EB6C95DC6FD62E17081E0666DF9CD2D5D6BEC2",
@@ -264,17 +264,17 @@
         "bl005_decisions": "2DBCA9D3648450B5C07B7CDB4225127C00FA704E236650E8731CD4CC794D902A",
         "bl006_scored": "16F88709E729624230DBA9A88E8434D39FF78B6BFED8EFDB4465428A89BBDAAE",
         "bl007_trace": "6576C1D5504D2FC63E406F09D453FA568B37150D31390DED5AF092638DAFDA16",
-        "bl007_playlist": "49D70A7E5344E0C39C74C4F92684FC31BEB7CCFF9180249A2EE95CB675EC8815",
-        "bl008_payloads": "F5F465FCD2C84902FAF34AD6FF962578761999E5981E49592C92119F0139BF7A",
-        "bl009_log": "202B7FA17C4D6403B829D6B26276423CF3CF542ED0FE3FBF19D0EC94C7633A65",
-        "bl009_index": "606D234E221F3FF69C3146CBA1BB801C8268DE40FCB290C3FFE3C7FA775EB9E4"
+        "bl007_playlist": "EAA19E388A2C6BC4C456B189B19A7C0EDE88A8EF3E30A993CE0CB5827095446B",
+        "bl008_payloads": "B65B1B475A17A5AA9EC7CECE8E7AD32AD78C5323C902633E8C357E64189B77C1",
+        "bl009_log": "1E200DFCAE0025A41FCAAB97D5B7E312E777A4FD1F783953267FCEBA68C6465D",
+        "bl009_index": "14A4E308DD49E7310F61E5391A3C85A637B271FEFBD60990412D51FAA6627136"
       },
       "stable_hashes": {
         "profile_semantic_hash": "3F4623ADB312E7C3EF61B6922D45265CBEC20C1C0EDDDE1C520426A79A1A3904",
         "ranked_output_hash": "16F88709E729624230DBA9A88E8434D39FF78B6BFED8EFDB4465428A89BBDAAE",
         "playlist_output_hash": "5B56E5C0E386AC54F95A380157842F5211A67792233EC0F93DE22E135F51B9F5",
         "explanation_output_hash": "838FCE68B427C70F9490E58465F00B09FDBEC9CF3B724111C96821498B9A7ADB",
-        "observability_output_hash": "6C4C2F9ADFB114F5769C911333921B265EE4CB25C6236BB63A974B2A5717C865",
+        "observability_output_hash": "9960A6F02E4B5B621D7E97D95B15A18FCEA212B2F66A7EC747629353DA133BB4",
         "seed_trace_hash": "AFE227D05077A35D970973E060EB6C95DC6FD62E17081E0666DF9CD2D5D6BEC2",
         "candidate_decisions_hash": "2DBCA9D3648450B5C07B7CDB4225127C00FA704E236650E8731CD4CC794D902A",
         "filtered_candidates_hash": "F4B06C299884E662DC8FDCC85CE0FE1DE7F30513906D68DC835399C7B4AE6211",
@@ -306,25 +306,25 @@
           "klFSyJqiipFN08TK"
         ],
         "observability_dataset_version": "BA1BB059B662D774BD669537EE9CA0386C20E236949E83933AC9DD379D37B106",
-        "observability_pipeline_version": "965C478F4E3E34E2C25EF4CF93C14C31B9569AFA22CD2C86EA6488C4F2F7278B",
+        "observability_pipeline_version": "FBC9D8AF2765F3D6A2FFCB57B1B2BD92A4665BBBB43ECF43177CCA337192D797",
         "observability_index_row": {
-          "run_id": "BL009-OBSERVE-20260327-012003-354892",
-          "generated_at_utc": "2026-03-27T01:20:03Z",
+          "run_id": "BL009-OBSERVE-20260327-203450-928619",
+          "generated_at_utc": "2026-03-27T20:34:50Z",
           "dataset_version": "BA1BB059B662D774BD669537EE9CA0386C20E236949E83933AC9DD379D37B106",
-          "pipeline_version": "965C478F4E3E34E2C25EF4CF93C14C31B9569AFA22CD2C86EA6488C4F2F7278B",
+          "pipeline_version": "FBC9D8AF2765F3D6A2FFCB57B1B2BD92A4665BBBB43ECF43177CCA337192D797",
           "bootstrap_mode": "1",
-          "profile_run_id": "BL004-PROFILE-20260327-011941-262419",
-          "retrieval_run_id": "BL005-FILTER-20260327-011942-417471",
-          "scoring_run_id": "BL006-SCORE-20260327-011949-701558",
-          "assembly_run_id": "BL007-ASSEMBLE-20260327-012000-018056",
-          "transparency_run_id": "BL008-EXPLAIN-20260327-012001-822372",
+          "profile_run_id": "BL004-PROFILE-20260327-203439-659598",
+          "retrieval_run_id": "BL005-FILTER-20260327-203440-384395",
+          "scoring_run_id": "BL006-SCORE-20260327-203443-844659",
+          "assembly_run_id": "BL007-ASSEMBLE-20260327-203448-838046",
+          "transparency_run_id": "BL008-EXPLAIN-20260327-203449-969807",
           "kept_candidates": "70680",
           "candidates_scored": "70680",
           "playlist_length": "10",
           "explanation_count": "10",
-          "playlist_sha256": "49D70A7E5344E0C39C74C4F92684FC31BEB7CCFF9180249A2EE95CB675EC8815",
-          "explanation_payloads_sha256": "F5F465FCD2C84902FAF34AD6FF962578761999E5981E49592C92119F0139BF7A",
-          "observability_log_sha256": "202B7FA17C4D6403B829D6B26276423CF3CF542ED0FE3FBF19D0EC94C7633A65"
+          "playlist_sha256": "EAA19E388A2C6BC4C456B189B19A7C0EDE88A8EF3E30A993CE0CB5827095446B",
+          "explanation_payloads_sha256": "B65B1B475A17A5AA9EC7CECE8E7AD32AD78C5323C902633E8C357E64189B77C1",
+          "observability_log_sha256": "1E200DFCAE0025A41FCAAB97D5B7E312E777A4FD1F783953267FCEBA68C6465D"
         }
       },
       "archive_dir": "07_implementation/implementation_notes/bl010_reproducibility/outputs/replay_01"
@@ -336,8 +336,8 @@
           "stage": "BL-004",
           "script": "build_bl004_preference_profile.py",
           "script_path": "07_implementation/implementation_notes/bl004_profile/build_bl004_preference_profile.py",
-          "command": "python 07_implementation/implementation_notes/bl004_profile/build_bl004_preference_profile.py --run-config C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl000_run_config\\configs\\profiles\\run_config_ui013_tuning_v1f.json",
-          "elapsed_seconds": 0.369,
+          "command": "python 07_implementation/implementation_notes/bl004_profile/build_bl004_preference_profile.py",
+          "elapsed_seconds": 0.15,
           "stdout": [
             "BL-004 preference profile created.",
             "profile=07_implementation/implementation_notes/bl004_profile/outputs/bl004_preference_profile.json",
@@ -351,7 +351,7 @@
             {
               "attempt_number": 1,
               "return_code": 0,
-              "elapsed_seconds": 0.368,
+              "elapsed_seconds": 0.15,
               "stdout": [
                 "BL-004 preference profile created.",
                 "profile=07_implementation/implementation_notes/bl004_profile/outputs/bl004_preference_profile.json",
@@ -366,8 +366,8 @@
           "stage": "BL-005",
           "script": "build_bl005_candidate_filter.py",
           "script_path": "07_implementation/implementation_notes/bl005_retrieval/build_bl005_candidate_filter.py",
-          "command": "python 07_implementation/implementation_notes/bl005_retrieval/build_bl005_candidate_filter.py --run-config C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl000_run_config\\configs\\profiles\\run_config_ui013_tuning_v1f.json",
-          "elapsed_seconds": 7.925,
+          "command": "python 07_implementation/implementation_notes/bl005_retrieval/build_bl005_candidate_filter.py",
+          "elapsed_seconds": 3.851,
           "stdout": [
             "BL-005 candidate filtering complete.",
             "filtered_candidates=07_implementation/implementation_notes/bl005_retrieval/outputs/bl005_filtered_candidates.csv",
@@ -381,7 +381,7 @@
             {
               "attempt_number": 1,
               "return_code": 0,
-              "elapsed_seconds": 7.925,
+              "elapsed_seconds": 3.851,
               "stdout": [
                 "BL-005 candidate filtering complete.",
                 "filtered_candidates=07_implementation/implementation_notes/bl005_retrieval/outputs/bl005_filtered_candidates.csv",
@@ -396,8 +396,8 @@
           "stage": "BL-006",
           "script": "build_bl006_scored_candidates.py",
           "script_path": "07_implementation/implementation_notes/bl006_scoring/build_bl006_scored_candidates.py",
-          "command": "python 07_implementation/implementation_notes/bl006_scoring/build_bl006_scored_candidates.py --run-config C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl000_run_config\\configs\\profiles\\run_config_ui013_tuning_v1f.json",
-          "elapsed_seconds": 6.84,
+          "command": "python 07_implementation/implementation_notes/bl006_scoring/build_bl006_scored_candidates.py",
+          "elapsed_seconds": 4.696,
           "stdout": [
             "BL-006 candidate scoring complete.",
             "scored_candidates=07_implementation/implementation_notes/bl006_scoring/outputs/bl006_scored_candidates.csv",
@@ -410,7 +410,7 @@
             {
               "attempt_number": 1,
               "return_code": 0,
-              "elapsed_seconds": 6.84,
+              "elapsed_seconds": 4.696,
               "stdout": [
                 "BL-006 candidate scoring complete.",
                 "scored_candidates=07_implementation/implementation_notes/bl006_scoring/outputs/bl006_scored_candidates.csv",
@@ -424,11 +424,11 @@
           "stage": "BL-007",
           "script": "build_bl007_playlist.py",
           "script_path": "07_implementation/implementation_notes/bl007_playlist/build_bl007_playlist.py",
-          "command": "python 07_implementation/implementation_notes/bl007_playlist/build_bl007_playlist.py --run-config C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl000_run_config\\configs\\profiles\\run_config_ui013_tuning_v1f.json",
-          "elapsed_seconds": 1.475,
+          "command": "python 07_implementation/implementation_notes/bl007_playlist/build_bl007_playlist.py",
+          "elapsed_seconds": 1.043,
           "stdout": [
             "BL-007 playlist assembly complete.  Playlist: 10/10 tracks",
-            "Run ID : BL007-ASSEMBLE-20260327-012020-128254",
+            "Run ID : BL007-ASSEMBLE-20260327-203500-671413",
             "Genre mix : {'pop': 4, 'classic rock': 2, 'new wave': 1, 'country': 2, 'rock': 1}"
           ],
           "stderr": [],
@@ -438,10 +438,10 @@
             {
               "attempt_number": 1,
               "return_code": 0,
-              "elapsed_seconds": 1.475,
+              "elapsed_seconds": 1.043,
               "stdout": [
                 "BL-007 playlist assembly complete.  Playlist: 10/10 tracks",
-                "Run ID : BL007-ASSEMBLE-20260327-012020-128254",
+                "Run ID : BL007-ASSEMBLE-20260327-203500-671413",
                 "Genre mix : {'pop': 4, 'classic rock': 2, 'new wave': 1, 'country': 2, 'rock': 1}"
               ],
               "stderr": []
@@ -452,11 +452,11 @@
           "stage": "BL-008",
           "script": "build_bl008_explanation_payloads.py",
           "script_path": "07_implementation/implementation_notes/bl008_transparency/build_bl008_explanation_payloads.py",
-          "command": "python 07_implementation/implementation_notes/bl008_transparency/build_bl008_explanation_payloads.py --run-config C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl000_run_config\\configs\\profiles\\run_config_ui013_tuning_v1f.json",
-          "elapsed_seconds": 1.143,
+          "command": "python 07_implementation/implementation_notes/bl008_transparency/build_bl008_explanation_payloads.py",
+          "elapsed_seconds": 0.837,
           "stdout": [
             "BL-008 explanation payloads complete. Tracks explained: 10",
-            "Run ID: BL008-EXPLAIN-20260327-012021-625897",
+            "Run ID: BL008-EXPLAIN-20260327-203501-795719",
             "pos= 1  5c9fu0pBIl9QUmed  top=Lead genre match",
             "pos= 2  phL12CBijBqwQ9qB  top=Lead genre match",
             "pos= 3  3ltMH5jik02hVLDF  top=Tag overlap",
@@ -475,10 +475,10 @@
             {
               "attempt_number": 1,
               "return_code": 0,
-              "elapsed_seconds": 1.143,
+              "elapsed_seconds": 0.837,
               "stdout": [
                 "BL-008 explanation payloads complete. Tracks explained: 10",
-                "Run ID: BL008-EXPLAIN-20260327-012021-625897",
+                "Run ID: BL008-EXPLAIN-20260327-203501-795719",
                 "pos= 1  5c9fu0pBIl9QUmed  top=Lead genre match",
                 "pos= 2  phL12CBijBqwQ9qB  top=Lead genre match",
                 "pos= 3  3ltMH5jik02hVLDF  top=Tag overlap",
@@ -498,13 +498,13 @@
           "stage": "BL-009",
           "script": "build_bl009_observability_log.py",
           "script_path": "07_implementation/implementation_notes/bl009_observability/build_bl009_observability_log.py",
-          "command": "python 07_implementation/implementation_notes/bl009_observability/build_bl009_observability_log.py --run-config C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl000_run_config\\configs\\profiles\\run_config_ui013_tuning_v1f.json",
-          "elapsed_seconds": 1.336,
+          "command": "python 07_implementation/implementation_notes/bl009_observability/build_bl009_observability_log.py",
+          "elapsed_seconds": 1.037,
           "stdout": [
             "BL-009 observability logging complete.",
             "run_log=07_implementation/implementation_notes/bl009_observability/outputs/bl009_run_observability_log.json",
             "run_index=07_implementation/implementation_notes/bl009_observability/outputs/bl009_run_index.csv",
-            "run_id=BL009-OBSERVE-20260327-012022-799113"
+            "run_id=BL009-OBSERVE-20260327-203502-716039"
           ],
           "stderr": [],
           "attempt_count": 1,
@@ -513,12 +513,12 @@
             {
               "attempt_number": 1,
               "return_code": 0,
-              "elapsed_seconds": 1.336,
+              "elapsed_seconds": 1.037,
               "stdout": [
                 "BL-009 observability logging complete.",
                 "run_log=07_implementation/implementation_notes/bl009_observability/outputs/bl009_run_observability_log.json",
                 "run_index=07_implementation/implementation_notes/bl009_observability/outputs/bl009_run_index.csv",
-                "run_id=BL009-OBSERVE-20260327-012022-799113"
+                "run_id=BL009-OBSERVE-20260327-203502-716039"
               ],
               "stderr": []
             }
@@ -526,12 +526,12 @@
         }
       ],
       "stage_run_ids": {
-        "BL-004": "BL004-PROFILE-20260327-012004-322221",
-        "BL-005": "BL005-FILTER-20260327-012005-877707",
-        "BL-006": "BL006-SCORE-20260327-012013-133231",
-        "BL-007": "BL007-ASSEMBLE-20260327-012020-128254",
-        "BL-008": "BL008-EXPLAIN-20260327-012021-625897",
-        "BL-009": "BL009-OBSERVE-20260327-012022-799113"
+        "BL-004": "BL004-PROFILE-20260327-203451-458569",
+        "BL-005": "BL005-FILTER-20260327-203452-338075",
+        "BL-006": "BL006-SCORE-20260327-203455-819652",
+        "BL-007": "BL007-ASSEMBLE-20260327-203500-671413",
+        "BL-008": "BL008-EXPLAIN-20260327-203501-795719",
+        "BL-009": "BL009-OBSERVE-20260327-203502-716039"
       },
       "raw_hashes": {
         "bl004_seed_trace": "AFE227D05077A35D970973E060EB6C95DC6FD62E17081E0666DF9CD2D5D6BEC2",
@@ -539,17 +539,17 @@
         "bl005_decisions": "2DBCA9D3648450B5C07B7CDB4225127C00FA704E236650E8731CD4CC794D902A",
         "bl006_scored": "16F88709E729624230DBA9A88E8434D39FF78B6BFED8EFDB4465428A89BBDAAE",
         "bl007_trace": "6576C1D5504D2FC63E406F09D453FA568B37150D31390DED5AF092638DAFDA16",
-        "bl007_playlist": "986E8550245EA579729E8E1625A978B90F8EAC5459A5D4A5989A9CEBCA2A1261",
-        "bl008_payloads": "A5F0F3D0559478000A58DE4A478EF25FE7EFC089E911EE9066195122BB403F6E",
-        "bl009_log": "A6F68F0E0FC6FEB4FF547B5500E7AABC5D5A920DD6C0171DC45AAE94801EB4D4",
-        "bl009_index": "768A6A0D38775D97D2C778016499DAA9B9F26EA77C9D99BD3F84E2A72DB24392"
+        "bl007_playlist": "768E4650D477D9B46D3A6C151C7905A42DBADA6F235AB437668F4B056ACF6CEB",
+        "bl008_payloads": "EE5764D86FF81803556801899B078A448FA9416CBEB5812440AA7246D1432C85",
+        "bl009_log": "6252C0FFFE605E9B184301C17C870765D64E278ABEC1DE44CE4F34F0375C42FC",
+        "bl009_index": "E27C524428630794FAC1ADC8ED909D207A9786806A4B3059FEF71959FD7FE773"
       },
       "stable_hashes": {
         "profile_semantic_hash": "3F4623ADB312E7C3EF61B6922D45265CBEC20C1C0EDDDE1C520426A79A1A3904",
         "ranked_output_hash": "16F88709E729624230DBA9A88E8434D39FF78B6BFED8EFDB4465428A89BBDAAE",
         "playlist_output_hash": "5B56E5C0E386AC54F95A380157842F5211A67792233EC0F93DE22E135F51B9F5",
         "explanation_output_hash": "838FCE68B427C70F9490E58465F00B09FDBEC9CF3B724111C96821498B9A7ADB",
-        "observability_output_hash": "6C4C2F9ADFB114F5769C911333921B265EE4CB25C6236BB63A974B2A5717C865",
+        "observability_output_hash": "9960A6F02E4B5B621D7E97D95B15A18FCEA212B2F66A7EC747629353DA133BB4",
         "seed_trace_hash": "AFE227D05077A35D970973E060EB6C95DC6FD62E17081E0666DF9CD2D5D6BEC2",
         "candidate_decisions_hash": "2DBCA9D3648450B5C07B7CDB4225127C00FA704E236650E8731CD4CC794D902A",
         "filtered_candidates_hash": "F4B06C299884E662DC8FDCC85CE0FE1DE7F30513906D68DC835399C7B4AE6211",
@@ -581,25 +581,25 @@
           "klFSyJqiipFN08TK"
         ],
         "observability_dataset_version": "BA1BB059B662D774BD669537EE9CA0386C20E236949E83933AC9DD379D37B106",
-        "observability_pipeline_version": "965C478F4E3E34E2C25EF4CF93C14C31B9569AFA22CD2C86EA6488C4F2F7278B",
+        "observability_pipeline_version": "FBC9D8AF2765F3D6A2FFCB57B1B2BD92A4665BBBB43ECF43177CCA337192D797",
         "observability_index_row": {
-          "run_id": "BL009-OBSERVE-20260327-012022-799113",
-          "generated_at_utc": "2026-03-27T01:20:22Z",
+          "run_id": "BL009-OBSERVE-20260327-203502-716039",
+          "generated_at_utc": "2026-03-27T20:35:02Z",
           "dataset_version": "BA1BB059B662D774BD669537EE9CA0386C20E236949E83933AC9DD379D37B106",
-          "pipeline_version": "965C478F4E3E34E2C25EF4CF93C14C31B9569AFA22CD2C86EA6488C4F2F7278B",
+          "pipeline_version": "FBC9D8AF2765F3D6A2FFCB57B1B2BD92A4665BBBB43ECF43177CCA337192D797",
           "bootstrap_mode": "1",
-          "profile_run_id": "BL004-PROFILE-20260327-012004-322221",
-          "retrieval_run_id": "BL005-FILTER-20260327-012005-877707",
-          "scoring_run_id": "BL006-SCORE-20260327-012013-133231",
-          "assembly_run_id": "BL007-ASSEMBLE-20260327-012020-128254",
-          "transparency_run_id": "BL008-EXPLAIN-20260327-012021-625897",
+          "profile_run_id": "BL004-PROFILE-20260327-203451-458569",
+          "retrieval_run_id": "BL005-FILTER-20260327-203452-338075",
+          "scoring_run_id": "BL006-SCORE-20260327-203455-819652",
+          "assembly_run_id": "BL007-ASSEMBLE-20260327-203500-671413",
+          "transparency_run_id": "BL008-EXPLAIN-20260327-203501-795719",
           "kept_candidates": "70680",
           "candidates_scored": "70680",
           "playlist_length": "10",
           "explanation_count": "10",
-          "playlist_sha256": "986E8550245EA579729E8E1625A978B90F8EAC5459A5D4A5989A9CEBCA2A1261",
-          "explanation_payloads_sha256": "A5F0F3D0559478000A58DE4A478EF25FE7EFC089E911EE9066195122BB403F6E",
-          "observability_log_sha256": "A6F68F0E0FC6FEB4FF547B5500E7AABC5D5A920DD6C0171DC45AAE94801EB4D4"
+          "playlist_sha256": "768E4650D477D9B46D3A6C151C7905A42DBADA6F235AB437668F4B056ACF6CEB",
+          "explanation_payloads_sha256": "EE5764D86FF81803556801899B078A448FA9416CBEB5812440AA7246D1432C85",
+          "observability_log_sha256": "6252C0FFFE605E9B184301C17C870765D64E278ABEC1DE44CE4F34F0375C42FC"
         }
       },
       "archive_dir": "07_implementation/implementation_notes/bl010_reproducibility/outputs/replay_02"
@@ -611,8 +611,8 @@
           "stage": "BL-004",
           "script": "build_bl004_preference_profile.py",
           "script_path": "07_implementation/implementation_notes/bl004_profile/build_bl004_preference_profile.py",
-          "command": "python 07_implementation/implementation_notes/bl004_profile/build_bl004_preference_profile.py --run-config C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl000_run_config\\configs\\profiles\\run_config_ui013_tuning_v1f.json",
-          "elapsed_seconds": 0.203,
+          "command": "python 07_implementation/implementation_notes/bl004_profile/build_bl004_preference_profile.py",
+          "elapsed_seconds": 0.144,
           "stdout": [
             "BL-004 preference profile created.",
             "profile=07_implementation/implementation_notes/bl004_profile/outputs/bl004_preference_profile.json",
@@ -626,7 +626,7 @@
             {
               "attempt_number": 1,
               "return_code": 0,
-              "elapsed_seconds": 0.203,
+              "elapsed_seconds": 0.144,
               "stdout": [
                 "BL-004 preference profile created.",
                 "profile=07_implementation/implementation_notes/bl004_profile/outputs/bl004_preference_profile.json",
@@ -641,8 +641,8 @@
           "stage": "BL-005",
           "script": "build_bl005_candidate_filter.py",
           "script_path": "07_implementation/implementation_notes/bl005_retrieval/build_bl005_candidate_filter.py",
-          "command": "python 07_implementation/implementation_notes/bl005_retrieval/build_bl005_candidate_filter.py --run-config C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl000_run_config\\configs\\profiles\\run_config_ui013_tuning_v1f.json",
-          "elapsed_seconds": 5.107,
+          "command": "python 07_implementation/implementation_notes/bl005_retrieval/build_bl005_candidate_filter.py",
+          "elapsed_seconds": 3.924,
           "stdout": [
             "BL-005 candidate filtering complete.",
             "filtered_candidates=07_implementation/implementation_notes/bl005_retrieval/outputs/bl005_filtered_candidates.csv",
@@ -656,7 +656,7 @@
             {
               "attempt_number": 1,
               "return_code": 0,
-              "elapsed_seconds": 5.107,
+              "elapsed_seconds": 3.924,
               "stdout": [
                 "BL-005 candidate filtering complete.",
                 "filtered_candidates=07_implementation/implementation_notes/bl005_retrieval/outputs/bl005_filtered_candidates.csv",
@@ -671,8 +671,8 @@
           "stage": "BL-006",
           "script": "build_bl006_scored_candidates.py",
           "script_path": "07_implementation/implementation_notes/bl006_scoring/build_bl006_scored_candidates.py",
-          "command": "python 07_implementation/implementation_notes/bl006_scoring/build_bl006_scored_candidates.py --run-config C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl000_run_config\\configs\\profiles\\run_config_ui013_tuning_v1f.json",
-          "elapsed_seconds": 6.646,
+          "command": "python 07_implementation/implementation_notes/bl006_scoring/build_bl006_scored_candidates.py",
+          "elapsed_seconds": 4.841,
           "stdout": [
             "BL-006 candidate scoring complete.",
             "scored_candidates=07_implementation/implementation_notes/bl006_scoring/outputs/bl006_scored_candidates.csv",
@@ -685,7 +685,7 @@
             {
               "attempt_number": 1,
               "return_code": 0,
-              "elapsed_seconds": 6.646,
+              "elapsed_seconds": 4.841,
               "stdout": [
                 "BL-006 candidate scoring complete.",
                 "scored_candidates=07_implementation/implementation_notes/bl006_scoring/outputs/bl006_scored_candidates.csv",
@@ -699,11 +699,11 @@
           "stage": "BL-007",
           "script": "build_bl007_playlist.py",
           "script_path": "07_implementation/implementation_notes/bl007_playlist/build_bl007_playlist.py",
-          "command": "python 07_implementation/implementation_notes/bl007_playlist/build_bl007_playlist.py --run-config C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl000_run_config\\configs\\profiles\\run_config_ui013_tuning_v1f.json",
-          "elapsed_seconds": 1.526,
+          "command": "python 07_implementation/implementation_notes/bl007_playlist/build_bl007_playlist.py",
+          "elapsed_seconds": 1.16,
           "stdout": [
             "BL-007 playlist assembly complete.  Playlist: 10/10 tracks",
-            "Run ID : BL007-ASSEMBLE-20260327-012036-302335",
+            "Run ID : BL007-ASSEMBLE-20260327-203512-718713",
             "Genre mix : {'pop': 4, 'classic rock': 2, 'new wave': 1, 'country': 2, 'rock': 1}"
           ],
           "stderr": [],
@@ -713,10 +713,10 @@
             {
               "attempt_number": 1,
               "return_code": 0,
-              "elapsed_seconds": 1.526,
+              "elapsed_seconds": 1.16,
               "stdout": [
                 "BL-007 playlist assembly complete.  Playlist: 10/10 tracks",
-                "Run ID : BL007-ASSEMBLE-20260327-012036-302335",
+                "Run ID : BL007-ASSEMBLE-20260327-203512-718713",
                 "Genre mix : {'pop': 4, 'classic rock': 2, 'new wave': 1, 'country': 2, 'rock': 1}"
               ],
               "stderr": []
@@ -727,11 +727,11 @@
           "stage": "BL-008",
           "script": "build_bl008_explanation_payloads.py",
           "script_path": "07_implementation/implementation_notes/bl008_transparency/build_bl008_explanation_payloads.py",
-          "command": "python 07_implementation/implementation_notes/bl008_transparency/build_bl008_explanation_payloads.py --run-config C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl000_run_config\\configs\\profiles\\run_config_ui013_tuning_v1f.json",
-          "elapsed_seconds": 1.224,
+          "command": "python 07_implementation/implementation_notes/bl008_transparency/build_bl008_explanation_payloads.py",
+          "elapsed_seconds": 0.861,
           "stdout": [
             "BL-008 explanation payloads complete. Tracks explained: 10",
-            "Run ID: BL008-EXPLAIN-20260327-012037-836426",
+            "Run ID: BL008-EXPLAIN-20260327-203513-902943",
             "pos= 1  5c9fu0pBIl9QUmed  top=Lead genre match",
             "pos= 2  phL12CBijBqwQ9qB  top=Lead genre match",
             "pos= 3  3ltMH5jik02hVLDF  top=Tag overlap",
@@ -750,10 +750,10 @@
             {
               "attempt_number": 1,
               "return_code": 0,
-              "elapsed_seconds": 1.224,
+              "elapsed_seconds": 0.86,
               "stdout": [
                 "BL-008 explanation payloads complete. Tracks explained: 10",
-                "Run ID: BL008-EXPLAIN-20260327-012037-836426",
+                "Run ID: BL008-EXPLAIN-20260327-203513-902943",
                 "pos= 1  5c9fu0pBIl9QUmed  top=Lead genre match",
                 "pos= 2  phL12CBijBqwQ9qB  top=Lead genre match",
                 "pos= 3  3ltMH5jik02hVLDF  top=Tag overlap",
@@ -773,13 +773,13 @@
           "stage": "BL-009",
           "script": "build_bl009_observability_log.py",
           "script_path": "07_implementation/implementation_notes/bl009_observability/build_bl009_observability_log.py",
-          "command": "python 07_implementation/implementation_notes/bl009_observability/build_bl009_observability_log.py --run-config C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl000_run_config\\configs\\profiles\\run_config_ui013_tuning_v1f.json",
-          "elapsed_seconds": 1.353,
+          "command": "python 07_implementation/implementation_notes/bl009_observability/build_bl009_observability_log.py",
+          "elapsed_seconds": 1.07,
           "stdout": [
             "BL-009 observability logging complete.",
             "run_log=07_implementation/implementation_notes/bl009_observability/outputs/bl009_run_observability_log.json",
             "run_index=07_implementation/implementation_notes/bl009_observability/outputs/bl009_run_index.csv",
-            "run_id=BL009-OBSERVE-20260327-012039-085006"
+            "run_id=BL009-OBSERVE-20260327-203514-835693"
           ],
           "stderr": [],
           "attempt_count": 1,
@@ -788,12 +788,12 @@
             {
               "attempt_number": 1,
               "return_code": 0,
-              "elapsed_seconds": 1.352,
+              "elapsed_seconds": 1.07,
               "stdout": [
                 "BL-009 observability logging complete.",
                 "run_log=07_implementation/implementation_notes/bl009_observability/outputs/bl009_run_observability_log.json",
                 "run_index=07_implementation/implementation_notes/bl009_observability/outputs/bl009_run_index.csv",
-                "run_id=BL009-OBSERVE-20260327-012039-085006"
+                "run_id=BL009-OBSERVE-20260327-203514-835693"
               ],
               "stderr": []
             }
@@ -801,12 +801,12 @@
         }
       ],
       "stage_run_ids": {
-        "BL-004": "BL004-PROFILE-20260327-012023-485246",
-        "BL-005": "BL005-FILTER-20260327-012024-522185",
-        "BL-006": "BL006-SCORE-20260327-012029-349696",
-        "BL-007": "BL007-ASSEMBLE-20260327-012036-302335",
-        "BL-008": "BL008-EXPLAIN-20260327-012037-836426",
-        "BL-009": "BL009-OBSERVE-20260327-012039-085006"
+        "BL-004": "BL004-PROFILE-20260327-203503-207682",
+        "BL-005": "BL005-FILTER-20260327-203504-040042",
+        "BL-006": "BL006-SCORE-20260327-203507-649032",
+        "BL-007": "BL007-ASSEMBLE-20260327-203512-718713",
+        "BL-008": "BL008-EXPLAIN-20260327-203513-902943",
+        "BL-009": "BL009-OBSERVE-20260327-203514-835693"
       },
       "raw_hashes": {
         "bl004_seed_trace": "AFE227D05077A35D970973E060EB6C95DC6FD62E17081E0666DF9CD2D5D6BEC2",
@@ -814,17 +814,17 @@
         "bl005_decisions": "2DBCA9D3648450B5C07B7CDB4225127C00FA704E236650E8731CD4CC794D902A",
         "bl006_scored": "16F88709E729624230DBA9A88E8434D39FF78B6BFED8EFDB4465428A89BBDAAE",
         "bl007_trace": "6576C1D5504D2FC63E406F09D453FA568B37150D31390DED5AF092638DAFDA16",
-        "bl007_playlist": "048FDD1F30FF95D73159126F3FDB0FA356CC7C5B23BE2D2C1A74409BFB864ED6",
-        "bl008_payloads": "3D1260086FE3616CABE80BD85B6C1861DFEF28701B3F3C53FA543F35BC057562",
-        "bl009_log": "6DB1CD8B181F04F62B04B669C33CD829F6FEEF2382524B517CE6F08C07C1EB25",
-        "bl009_index": "0674C0D87DE0F1B76B0695CB2085B4A6104B3ECFF45043E550BEAC5F8C0055C0"
+        "bl007_playlist": "BD9DF29EC349C2DBE9B1B3EC987ED44D551B0A632B8006AF3CF5D768CB6B055D",
+        "bl008_payloads": "47B74E09E5A5197F787FDAC6B6098B4A60670CE117ED73641D051F8292E5B112",
+        "bl009_log": "4F125268FBBDC31128AC2608BCBE6B82FB16D618257014D42328053B0E46E125",
+        "bl009_index": "D6415DC0927C21F5196843B84DE29E52E4EB7A52E88B59299293AC95D977C5CD"
       },
       "stable_hashes": {
         "profile_semantic_hash": "3F4623ADB312E7C3EF61B6922D45265CBEC20C1C0EDDDE1C520426A79A1A3904",
         "ranked_output_hash": "16F88709E729624230DBA9A88E8434D39FF78B6BFED8EFDB4465428A89BBDAAE",
         "playlist_output_hash": "5B56E5C0E386AC54F95A380157842F5211A67792233EC0F93DE22E135F51B9F5",
         "explanation_output_hash": "838FCE68B427C70F9490E58465F00B09FDBEC9CF3B724111C96821498B9A7ADB",
-        "observability_output_hash": "6C4C2F9ADFB114F5769C911333921B265EE4CB25C6236BB63A974B2A5717C865",
+        "observability_output_hash": "9960A6F02E4B5B621D7E97D95B15A18FCEA212B2F66A7EC747629353DA133BB4",
         "seed_trace_hash": "AFE227D05077A35D970973E060EB6C95DC6FD62E17081E0666DF9CD2D5D6BEC2",
         "candidate_decisions_hash": "2DBCA9D3648450B5C07B7CDB4225127C00FA704E236650E8731CD4CC794D902A",
         "filtered_candidates_hash": "F4B06C299884E662DC8FDCC85CE0FE1DE7F30513906D68DC835399C7B4AE6211",
@@ -856,25 +856,25 @@
           "klFSyJqiipFN08TK"
         ],
         "observability_dataset_version": "BA1BB059B662D774BD669537EE9CA0386C20E236949E83933AC9DD379D37B106",
-        "observability_pipeline_version": "965C478F4E3E34E2C25EF4CF93C14C31B9569AFA22CD2C86EA6488C4F2F7278B",
+        "observability_pipeline_version": "FBC9D8AF2765F3D6A2FFCB57B1B2BD92A4665BBBB43ECF43177CCA337192D797",
         "observability_index_row": {
-          "run_id": "BL009-OBSERVE-20260327-012039-085006",
-          "generated_at_utc": "2026-03-27T01:20:39Z",
+          "run_id": "BL009-OBSERVE-20260327-203514-835693",
+          "generated_at_utc": "2026-03-27T20:35:14Z",
           "dataset_version": "BA1BB059B662D774BD669537EE9CA0386C20E236949E83933AC9DD379D37B106",
-          "pipeline_version": "965C478F4E3E34E2C25EF4CF93C14C31B9569AFA22CD2C86EA6488C4F2F7278B",
+          "pipeline_version": "FBC9D8AF2765F3D6A2FFCB57B1B2BD92A4665BBBB43ECF43177CCA337192D797",
           "bootstrap_mode": "1",
-          "profile_run_id": "BL004-PROFILE-20260327-012023-485246",
-          "retrieval_run_id": "BL005-FILTER-20260327-012024-522185",
-          "scoring_run_id": "BL006-SCORE-20260327-012029-349696",
-          "assembly_run_id": "BL007-ASSEMBLE-20260327-012036-302335",
-          "transparency_run_id": "BL008-EXPLAIN-20260327-012037-836426",
+          "profile_run_id": "BL004-PROFILE-20260327-203503-207682",
+          "retrieval_run_id": "BL005-FILTER-20260327-203504-040042",
+          "scoring_run_id": "BL006-SCORE-20260327-203507-649032",
+          "assembly_run_id": "BL007-ASSEMBLE-20260327-203512-718713",
+          "transparency_run_id": "BL008-EXPLAIN-20260327-203513-902943",
           "kept_candidates": "70680",
           "candidates_scored": "70680",
           "playlist_length": "10",
           "explanation_count": "10",
-          "playlist_sha256": "048FDD1F30FF95D73159126F3FDB0FA356CC7C5B23BE2D2C1A74409BFB864ED6",
-          "explanation_payloads_sha256": "3D1260086FE3616CABE80BD85B6C1861DFEF28701B3F3C53FA543F35BC057562",
-          "observability_log_sha256": "6DB1CD8B181F04F62B04B669C33CD829F6FEEF2382524B517CE6F08C07C1EB25"
+          "playlist_sha256": "BD9DF29EC349C2DBE9B1B3EC987ED44D551B0A632B8006AF3CF5D768CB6B055D",
+          "explanation_payloads_sha256": "47B74E09E5A5197F787FDAC6B6098B4A60670CE117ED73641D051F8292E5B112",
+          "observability_log_sha256": "4F125268FBBDC31128AC2608BCBE6B82FB16D618257014D42328053B0E46E125"
         }
       },
       "archive_dir": "07_implementation/implementation_notes/bl010_reproducibility/outputs/replay_03"
@@ -889,7 +889,7 @@
       "ranked_output_hash": "16F88709E729624230DBA9A88E8434D39FF78B6BFED8EFDB4465428A89BBDAAE",
       "playlist_output_hash": "5B56E5C0E386AC54F95A380157842F5211A67792233EC0F93DE22E135F51B9F5",
       "explanation_output_hash": "838FCE68B427C70F9490E58465F00B09FDBEC9CF3B724111C96821498B9A7ADB",
-      "observability_output_hash": "6C4C2F9ADFB114F5769C911333921B265EE4CB25C6236BB63A974B2A5717C865",
+      "observability_output_hash": "9960A6F02E4B5B621D7E97D95B15A18FCEA212B2F66A7EC747629353DA133BB4",
       "seed_trace_hash": "AFE227D05077A35D970973E060EB6C95DC6FD62E17081E0666DF9CD2D5D6BEC2",
       "candidate_decisions_hash": "2DBCA9D3648450B5C07B7CDB4225127C00FA704E236650E8731CD4CC794D902A",
       "filtered_candidates_hash": "F4B06C299884E662DC8FDCC85CE0FE1DE7F30513906D68DC835399C7B4AE6211",

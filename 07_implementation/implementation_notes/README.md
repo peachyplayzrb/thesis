@@ -5,16 +5,29 @@ Last updated: 2026-03-27
 ## Purpose
 This index keeps implementation notes lean by separating active operational docs from historical evidence snapshots.
 
+## Authority Order
+If guidance overlaps across documents, apply this precedence:
+1. `../ACTIVE_BASELINE.md` for baseline evidence and posture authority.
+2. `../RUN_GUIDE.md` for run/setup/troubleshooting authority.
+3. `IMPLEMENTATION_CONTRACT.md` for stage input/output contract authority.
+4. `ARTIFACT_LIFECYCLE_POLICY.md` for retention and archive authority.
+5. `CODEBASE_ISSUES_CURRENT.md` for active implementation health/status narrative.
+
 ## Keep (Active Operational Contract)
+- `../ACTIVE_BASELINE.md`
+- `../RUN_GUIDE.md`
 - `CODEBASE_ISSUES_CURRENT.md`
-- `SETUP.md`
+- `SETUP.md` (redirect to `../RUN_GUIDE.md`)
 - `SUBMISSION_MANIFEST.md`
+- `IMPLEMENTATION_CONTRACT.md`
+- `ARTIFACT_LIFECYCLE_POLICY.md`
 - `bl000_shared_utils/CURRENT_IMPLEMENTATION.md`
+- `bl000_run_config/docs/RUN_CONFIG_UNIFIED_CONTRACT.md`
 - `bl000_run_config/docs/semantic_control_map.md`
 - `bl000_run_config/docs/run_config_profile_organization_guide.md`
 - `bl001_bl002_ingestion/docs/spotify_api_ingestion_runbook.md`
 - `bl001_bl002_ingestion/docs/spotify_schema_reference.md`
-- `bl013_entrypoint/bl013_run_command.md`
+- `bl013_entrypoint/bl013_run_command.md` (redirect to `../RUN_GUIDE.md`)
 - `bl000_data_layer/bl000_state_log_2026-03-25.md`
 - `bl000_run_config/docs/bl000_run_config_state_log_2026-03-25.md`
 - `bl001_bl002_ingestion/docs/bl001_state_log_2026-03-24.md`
@@ -101,3 +114,4 @@ Note: these files are protected from cleanup deletion unless explicitly supersed
 2. Keep one active runbook per stage capability and one active implementation summary per scope.
 3. If a note is superseded, mark it historical in this index or move it to an archive folder before deletion.
 4. Treat `CODEBASE_ISSUES_CURRENT.md` as the only active implementation health and status summary.
+5. Treat `../ACTIVE_BASELINE.md` as the only active baseline-evidence authority.

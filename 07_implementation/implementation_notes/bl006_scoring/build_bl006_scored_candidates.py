@@ -29,6 +29,10 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 from bl000_shared_utils.io_utils import open_text_write, sha256_of_file, load_json, load_csv_rows
 from bl000_shared_utils.path_utils import repo_root
 from bl000_shared_utils.config_loader import load_run_config_utils_module
+from bl000_shared_utils.stage_runtime_resolver import (
+    load_positive_numeric_map_from_env,
+    resolve_run_config_path,
+)
 from bl006_scoring.scoring_engine import (
     compute_component_scores,
     compute_final_score,
@@ -157,7 +161,7 @@ def build_active_component_weights(
 ) -> tuple[dict[str, float], dict[str, object]]:
     """
     Filter and normalize active component weights.
-    
+
     Drops numeric components not present in active set and re-normalizes
     remaining weights to sum to 1.0. Generates diagnostics about rebalancing.
     """
@@ -191,26 +195,13 @@ def build_active_component_weights(
 
 def _load_bl006_numeric_thresholds_from_env() -> dict[str, float]:
     """Load numeric threshold overrides from environment."""
-    raw = os.environ.get("BL006_NUMERIC_THRESHOLDS_JSON", "").strip()
-    if not raw:
-        return {}
-    try:
-        payload = json.loads(raw)
-    except json.JSONDecodeError:
-        return {}
-    if not isinstance(payload, dict):
-        return {}
-    return {
-        k: float(v)
-        for k, v in payload.items()
-        if isinstance(v, (int, float)) and v > 0
-    }
+    return load_positive_numeric_map_from_env("BL006_NUMERIC_THRESHOLDS_JSON")
 
 
 def resolve_bl006_runtime_controls() -> dict[str, object]:
     """Resolve runtime controls from run-config or environment."""
     default_weights = build_component_weights()
-    run_config_path = os.environ.get("BL_RUN_CONFIG_PATH", "").strip() or None
+    run_config_path = resolve_run_config_path()
     if run_config_path:
         run_config_utils = load_run_config_utils_module()
         controls = run_config_utils.resolve_bl006_controls(run_config_path)
@@ -267,21 +258,32 @@ def contribution_breakdown(rows: list[dict[str, object]]) -> dict[str, float]:
     }
 
 
-def main() -> None:
-    """Main BL-006 scoring orchestrator."""
-    root = repo_root()
+def resolve_bl006_paths(root: Path) -> dict[str, Path]:
     profile_path = root / "07_implementation" / "implementation_notes" / "bl004_profile" / "outputs" / "bl004_preference_profile.json"
-    filtered_candidates_path = root / "07_implementation" / "implementation_notes" / "bl005_retrieval" / "outputs" / "bl005_filtered_candidates.csv"
+    filtered_candidates_path = (
+        root / "07_implementation" / "implementation_notes" / "bl005_retrieval" / "outputs" / "bl005_filtered_candidates.csv"
+    )
     output_dir = root / "07_implementation" / "implementation_notes" / "bl006_scoring" / "outputs"
-    output_dir.mkdir(parents=True, exist_ok=True)
+    return {
+        "profile_path": profile_path,
+        "filtered_candidates_path": filtered_candidates_path,
+        "output_dir": output_dir,
+    }
 
-    ensure_paths_exist([profile_path, filtered_candidates_path])
-    profile = load_json(profile_path)
-    candidates = load_csv_rows(filtered_candidates_path)
+
+def load_bl006_inputs(paths: dict[str, Path]) -> tuple[dict[str, object], list[dict[str, object]]]:
+    profile = load_json(paths["profile_path"])
+    candidates = load_csv_rows(paths["filtered_candidates_path"])
     if not candidates:
         raise RuntimeError("No BL-005 filtered candidates found for BL-006")
+    return profile, candidates
 
-    runtime_controls = resolve_bl006_runtime_controls()
+
+def build_bl006_runtime_context(
+    *,
+    profile: dict[str, object],
+    runtime_controls: dict[str, object],
+) -> dict[str, object]:
     effective_component_weights: dict[str, float] = dict(runtime_controls["component_weights"])
     numeric_threshold_overrides: dict[str, float] = dict(runtime_controls["numeric_thresholds"])
     effective_numeric_specs = {
@@ -289,12 +291,12 @@ def main() -> None:
         for k, v in NUMERIC_FEATURE_SPECS.items()
     }
 
-    # Extract scoring data from profile using profile_extractor module
     profile_scoring_data = extract_profile_scoring_data(profile, effective_numeric_specs)
-    
-    # Determine which numeric components are active (present in profile)
-    active_numeric_specs = {k: v for k, v in effective_numeric_specs.items() 
-                            if k in profile_scoring_data["numeric_centers"]}
+    active_numeric_specs = {
+        k: v
+        for k, v in effective_numeric_specs.items()
+        if k in profile_scoring_data["numeric_centers"]
+    }
 
     active_component_weights, weight_rebalance_diagnostics = build_active_component_weights(
         set(active_numeric_specs),
@@ -303,18 +305,29 @@ def main() -> None:
     if round(sum(active_component_weights.values()), 6) != 1.0:
         raise RuntimeError("BL-006 active component weights must sum to 1.0")
 
-    start_time = time.time()
-    run_id = f"BL006-SCORE-{datetime.now(timezone.utc).strftime('%Y%m%d-%H%M%S-%f')}"
+    return {
+        "effective_component_weights": effective_component_weights,
+        "active_numeric_specs": active_numeric_specs,
+        "profile_scoring_data": profile_scoring_data,
+        "active_component_weights": active_component_weights,
+        "weight_rebalance_diagnostics": weight_rebalance_diagnostics,
+    }
+
+
+def score_bl006_candidates(
+    *,
+    candidates: list[dict[str, object]],
+    runtime_context: dict[str, object],
+) -> list[dict[str, object]]:
+    profile_scoring_data: dict[str, object] = runtime_context["profile_scoring_data"]
+    active_numeric_specs: dict[str, dict[str, object]] = runtime_context["active_numeric_specs"]
+    active_component_weights: dict[str, float] = runtime_context["active_component_weights"]
 
     scored_rows: list[dict[str, object]] = []
-
     for row in candidates:
-        # Parse candidate attributes using candidate_parsed module
         candidate_attrs = parse_candidate_attributes(row)
-        
-        # Compute component scores using scoring_engine module
         component_scores = compute_component_scores(
-            candidate_attrs, 
+            candidate_attrs,
             profile_scoring_data,
             active_numeric_specs,
         )
@@ -322,8 +335,6 @@ def main() -> None:
             component_scores,
             active_component_weights,
         )
-        
-        # Compute final score via weighted aggregation
         final_score = compute_final_score(component_scores, active_component_weights)
 
         scored_rows.append(
@@ -335,23 +346,23 @@ def main() -> None:
                 "final_score": final_score,
                 "danceability_similarity": component_scores.get("danceability_similarity", 0.0),
                 "danceability_contribution": weighted_contributions.get("danceability_contribution", 0.0),
-                "energy_similarity":       component_scores.get("energy_similarity", 0.0),
-                "energy_contribution":     weighted_contributions.get("energy_contribution", 0.0),
-                "valence_similarity":      component_scores.get("valence_similarity", 0.0),
-                "valence_contribution":    weighted_contributions.get("valence_contribution", 0.0),
-                "tempo_similarity":        component_scores.get("tempo_similarity", 0.0),
-                "tempo_contribution":      weighted_contributions.get("tempo_contribution", 0.0),
-                "duration_ms_similarity":  component_scores.get("duration_ms_similarity", 0.0),
+                "energy_similarity": component_scores.get("energy_similarity", 0.0),
+                "energy_contribution": weighted_contributions.get("energy_contribution", 0.0),
+                "valence_similarity": component_scores.get("valence_similarity", 0.0),
+                "valence_contribution": weighted_contributions.get("valence_contribution", 0.0),
+                "tempo_similarity": component_scores.get("tempo_similarity", 0.0),
+                "tempo_contribution": weighted_contributions.get("tempo_contribution", 0.0),
+                "duration_ms_similarity": component_scores.get("duration_ms_similarity", 0.0),
                 "duration_ms_contribution": weighted_contributions.get("duration_ms_contribution", 0.0),
-                "key_similarity":          component_scores.get("key_similarity", 0.0),
-                "key_contribution":        weighted_contributions.get("key_contribution", 0.0),
-                "mode_similarity":         component_scores.get("mode_similarity", 0.0),
-                "mode_contribution":       weighted_contributions.get("mode_contribution", 0.0),
-                "lead_genre_similarity":   component_scores.get("lead_genre_similarity", 0.0),
+                "key_similarity": component_scores.get("key_similarity", 0.0),
+                "key_contribution": weighted_contributions.get("key_contribution", 0.0),
+                "mode_similarity": component_scores.get("mode_similarity", 0.0),
+                "mode_contribution": weighted_contributions.get("mode_contribution", 0.0),
+                "lead_genre_similarity": component_scores.get("lead_genre_similarity", 0.0),
                 "lead_genre_contribution": weighted_contributions.get("lead_genre_contribution", 0.0),
                 "genre_overlap_similarity": component_scores.get("genre_overlap_similarity", 0.0),
                 "genre_overlap_contribution": weighted_contributions.get("genre_overlap_contribution", 0.0),
-                "tag_overlap_similarity":  component_scores.get("tag_overlap_similarity", 0.0),
+                "tag_overlap_similarity": component_scores.get("tag_overlap_similarity", 0.0),
                 "tag_overlap_contribution": weighted_contributions.get("tag_overlap_contribution", 0.0),
             }
         )
@@ -359,12 +370,31 @@ def main() -> None:
     scored_rows.sort(key=lambda item: (-float(item["final_score"]), str(item["track_id"])))
     for index, row in enumerate(scored_rows, start=1):
         row["rank"] = index
+    return scored_rows
 
-    scored_path = output_dir / "bl006_scored_candidates.csv"
+
+def write_bl006_scored_csv(*, scored_rows: list[dict[str, object]], scored_path: Path) -> None:
     with open_text_write(scored_path, newline="") as handle:
         writer = csv.DictWriter(handle, fieldnames=SCORED_CANDIDATE_FIELDS, lineterminator="\n")
         writer.writeheader()
         writer.writerows(scored_rows)
+
+
+def build_bl006_summary(
+    *,
+    run_id: str,
+    elapsed_seconds: float,
+    paths: dict[str, Path],
+    runtime_context: dict[str, object],
+    scored_rows: list[dict[str, object]],
+    distribution_diagnostics: dict[str, object],
+    diagnostics_path: Path,
+    scored_path: Path,
+) -> dict[str, object]:
+    effective_component_weights: dict[str, float] = runtime_context["effective_component_weights"]
+    active_numeric_specs: dict[str, dict[str, object]] = runtime_context["active_numeric_specs"]
+    active_component_weights: dict[str, float] = runtime_context["active_component_weights"]
+    weight_rebalance_diagnostics: dict[str, object] = runtime_context["weight_rebalance_diagnostics"]
 
     top_candidates = [
         {
@@ -377,25 +407,19 @@ def main() -> None:
         }
         for row in scored_rows[:10]
     ]
-
     score_values = [float(row["final_score"]) for row in scored_rows]
     top_100_rows = scored_rows[:100]
     top_500_rows = scored_rows[:500]
-    distribution_diagnostics = build_score_distribution_diagnostics(scored_rows)
 
-    diagnostics_path = output_dir / "bl006_score_distribution_diagnostics.json"
-    with open_text_write(diagnostics_path) as handle:
-        json.dump(distribution_diagnostics, handle, indent=2, ensure_ascii=True)
-
-    summary = {
+    return {
         "run_id": run_id,
         "task": "BL-006",
         "generated_at_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
         "input_artifacts": {
-            "profile_path": str(profile_path),
-            "profile_sha256": sha256_of_file(profile_path),
-            "filtered_candidates_path": str(filtered_candidates_path),
-            "filtered_candidates_sha256": sha256_of_file(filtered_candidates_path),
+            "profile_path": str(paths["profile_path"]),
+            "profile_sha256": sha256_of_file(paths["profile_path"]),
+            "filtered_candidates_path": str(paths["filtered_candidates_path"]),
+            "filtered_candidates_sha256": sha256_of_file(paths["filtered_candidates_path"]),
         },
         "config": {
             "numeric_thresholds": {
@@ -431,12 +455,58 @@ def main() -> None:
         },
         "score_distribution_diagnostics": distribution_diagnostics,
         "top_candidates": top_candidates,
-        "elapsed_seconds": round(time.time() - start_time, 3),
+        "elapsed_seconds": round(elapsed_seconds, 3),
         "output_files": {
             "scored_candidates_path": str(scored_path),
             "score_distribution_diagnostics_path": str(diagnostics_path),
         },
     }
+
+
+def main() -> None:
+    """Main BL-006 scoring orchestrator."""
+    root = repo_root()
+    paths = resolve_bl006_paths(root)
+    output_dir = paths["output_dir"]
+    output_dir.mkdir(parents=True, exist_ok=True)
+
+    ensure_paths_exist([paths["profile_path"], paths["filtered_candidates_path"]])
+    profile, candidates = load_bl006_inputs(paths)
+
+    runtime_controls = resolve_bl006_runtime_controls()
+    runtime_context = build_bl006_runtime_context(
+        profile=profile,
+        runtime_controls=runtime_controls,
+    )
+    weight_rebalance_diagnostics: dict[str, object] = runtime_context["weight_rebalance_diagnostics"]
+
+    start_time = time.time()
+    run_id = f"BL006-SCORE-{datetime.now(timezone.utc).strftime('%Y%m%d-%H%M%S-%f')}"
+
+    scored_rows = score_bl006_candidates(
+        candidates=candidates,
+        runtime_context=runtime_context,
+    )
+
+    scored_path = output_dir / "bl006_scored_candidates.csv"
+    write_bl006_scored_csv(scored_rows=scored_rows, scored_path=scored_path)
+
+    distribution_diagnostics = build_score_distribution_diagnostics(scored_rows)
+
+    diagnostics_path = output_dir / "bl006_score_distribution_diagnostics.json"
+    with open_text_write(diagnostics_path) as handle:
+        json.dump(distribution_diagnostics, handle, indent=2, ensure_ascii=True)
+
+    summary = build_bl006_summary(
+        run_id=run_id,
+        elapsed_seconds=time.time() - start_time,
+        paths=paths,
+        runtime_context=runtime_context,
+        scored_rows=scored_rows,
+        distribution_diagnostics=distribution_diagnostics,
+        diagnostics_path=diagnostics_path,
+        scored_path=scored_path,
+    )
 
     summary["output_hashes_sha256"] = {
         "bl006_scored_candidates.csv": sha256_of_file(scored_path),

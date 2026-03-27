@@ -12,7 +12,7 @@ Orchestrate BL-004 through BL-009 execution with optional BL-003 refresh and can
 - Optional run-intent and run-effective-config artifacts
 
 ## Run
-- See `bl013_run_command.md`
+- See `../../RUN_GUIDE.md`
 - `python bl013_entrypoint/run_bl013_pipeline_entrypoint.py --help`
 
 ## Validation

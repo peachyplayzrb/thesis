@@ -10,22 +10,11 @@ Last updated: 2026-03-27 16:54 UTC
 ## Current Execution Posture (2026-03-27)
 - Core implementation scope is complete on the active v1f baseline.
 - Active profile baseline: `run_config_ui013_tuning_v1f.json`.
-- Latest integrated evidence chain is green:
-  - BL-013 orchestration: `BL013-ENTRYPOINT-20260327-012149-023331`
-  - BL-010 reproducibility: `BL010-REPRO-20260327-011941`
-  - BL-011 controllability: `BL011-CTRL-20260327-012056`
-  - BL-014 sanity: `BL014-SANITY-20260327-011939-797165` (`22/22`)
-  - Active freshness suite: `BL-FRESHNESS-SUITE-20260327-012201` (`19/19`)
-- Latest experimental v2a evidence wave is also green (non-canonical):
-  - BL-013 orchestration: `BL013-ENTRYPOINT-20260327-002121-545346`
-  - BL-010 reproducibility: `BL010-REPRO-20260327-001916`
-  - BL-011 controllability: `BL011-CTRL-20260327-002019`
-  - BL-014 sanity: `BL014-SANITY-20260327-002035-164549` (`22/22`)
-  - Active freshness suite: `BL-FRESHNESS-SUITE-20260327-002136` (`19/19`)
-- Latest same-day additional evidence wave is logged as non-canonical (environment-mode run chain via website/server path):
-  - BL-009 observability: `BL009-OBSERVE-20260327-165412-004409`
-  - Upstream chain: `BL004-PROFILE-20260327-165357-389471` -> `BL005-FILTER-20260327-165358-293711` -> `BL006-SCORE-20260327-165402-861535` -> `BL007-ASSEMBLE-20260327-165409-663614` -> `BL008-EXPLAIN-20260327-165410-986323`
-  - Key observed metrics: `kept_candidates=70680`, BL-008 top-contributor distribution `{Lead genre match:4, Tag overlap:3, Danceability:2, Tempo (BPM):1}`
+- Canonical baseline authority and full evidence chains:
+  - `07_implementation/ACTIVE_BASELINE.md`
+- Latest integrated evidence chain remains green.
+- Latest experimental v2a evidence wave remains green (non-canonical).
+- Latest same-day website/server environment-mode wave remains logged as non-canonical.
 - Current active work is bounded to:
   - BL-023 website-to-pipeline integration
   - chapter hardening follow-through from the closed UI-003 package

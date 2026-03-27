@@ -3,7 +3,6 @@ from __future__ import annotations
 import csv
 import hashlib
 import json
-import os
 import time
 from datetime import datetime, timezone
 from pathlib import Path
@@ -23,6 +22,7 @@ from bl000_shared_utils.io_utils import (
     sha256_of_file as sha256_of_file_shared,
 )
 from bl000_shared_utils.path_utils import repo_root
+from bl000_shared_utils.stage_runtime_resolver import resolve_run_config_path
 
 
 BL009_OBSERVABILITY_SCHEMA_VERSION = "bl009-observability-v1"
@@ -167,9 +167,9 @@ def build_artifact_maps(
 
 
 def resolve_bl009_runtime_controls() -> dict[str, object]:
-    run_config_path = os.environ.get("BL_RUN_CONFIG_PATH", "").strip() or None
-    run_intent_path = os.environ.get("BL_RUN_INTENT_PATH", "").strip() or None
-    run_effective_config_path = os.environ.get("BL_RUN_EFFECTIVE_CONFIG_PATH", "").strip() or None
+    run_config_path = resolve_run_config_path("BL_RUN_CONFIG_PATH")
+    run_intent_path = resolve_run_config_path("BL_RUN_INTENT_PATH")
+    run_effective_config_path = resolve_run_config_path("BL_RUN_EFFECTIVE_CONFIG_PATH")
     if run_config_path:
         run_config_utils = load_run_config_utils_module()
         controls = run_config_utils.resolve_bl009_controls(run_config_path)

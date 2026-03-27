@@ -1,9 +1,9 @@
 {
   "run_metadata": {
-    "run_id": "BL-FRESHNESS-20260327-012201",
+    "run_id": "BL-FRESHNESS-20260327-201942",
     "task": "BL-010/011 freshness check",
-    "generated_at_utc": "2026-03-27T01:22:01Z",
-    "elapsed_seconds": 0.218,
+    "generated_at_utc": "2026-03-27T20:19:42Z",
+    "elapsed_seconds": 0.168,
     "overall_status": "pass",
     "checks_total": 9,
     "checks_passed": 9,
@@ -14,8 +14,8 @@
     "bl010_report": "07_implementation/implementation_notes/bl010_reproducibility/outputs/bl010_reproducibility_report.json",
     "bl011_config_snapshot": "07_implementation/implementation_notes/bl011_controllability/outputs/bl011_controllability_config_snapshot.json",
     "bl011_report": "07_implementation/implementation_notes/bl011_controllability/outputs/bl011_controllability_report.json",
-    "bl010_config_hash": "04014120B1D466D3D4C6A008B7678CC6C0334300C994F87B92E0D8B014BC24F6",
-    "bl011_config_hash": "78CD02FBE7D9053FF9E78B77D90647F737286C4D484FC59ED6316DAD61F29811"
+    "bl010_config_hash": "E7B44CACA4E06F3FBD5BCF65B17FD2710E090B6B6496555FC4B15C65EA0F0674",
+    "bl011_config_hash": "09C3CC9DDD6511E60443B88F4BDA6820165E01395FACC22E82E309F6C5DEFEA2"
   },
   "checks": [
     {
@@ -65,7 +65,7 @@
     }
   ],
   "current_contract_hashes": {
-    "bl010_config_hash": "04014120B1D466D3D4C6A008B7678CC6C0334300C994F87B92E0D8B014BC24F6",
-    "bl011_config_hash": "78CD02FBE7D9053FF9E78B77D90647F737286C4D484FC59ED6316DAD61F29811"
+    "bl010_config_hash": "E7B44CACA4E06F3FBD5BCF65B17FD2710E090B6B6496555FC4B15C65EA0F0674",
+    "bl011_config_hash": "09C3CC9DDD6511E60443B88F4BDA6820165E01395FACC22E82E309F6C5DEFEA2"
   }
 }
