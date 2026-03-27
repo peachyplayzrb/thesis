@@ -1,6 +1,5 @@
 ---
-mode: ask
-model: GPT-5.3-Codex
+agent: ask
 description: Run end-of-session logging-completeness pass
 ---
 

@@ -8,7 +8,7 @@ Ordering convention (standardized 2026-03-24):
 - New entries must be appended at the end; historical entries remain unchanged except for explicit correction records.
 
 Maintenance snapshot (2026-03-27):
-- Highest change ID currently present: `C-190`
+- Highest change ID currently present: `C-192`
 - Known legacy correction applied in this file: prior duplicate `C-079` entry has been normalized to `C-135` for unique-ID compliance.
 
 ## C-001
@@ -43,6 +43,7 @@ Maintenance snapshot (2026-03-27):
 | C-188 | 2026-03-27 | Copilot | Closed UI-003 at control-record level by adding Chapter 3 to 5 claim-verdict matrix and chapter-targeted hardening notes (`09_quality_control/ui003_claim_verdicts_ch3_ch5.md`, `09_quality_control/ui003_chapter_hardening_notes_ch3_ch5.md`) and synchronizing admin status surfaces (`unresolved_issues.md`, `thesis_state.md`, `backlog.md`, `experiment_log.md`). |
 | C-189 | 2026-03-27 | Copilot | Synced admin/state surfaces to current repository posture: refreshed `README.md`, `timeline.md`, and `thesis_state.md` timestamps/status language; aligned `backlog.md` canonical versus additional-wave evidence wording; and logged reconciliation pass in `experiment_log.md` (`EXP-051`) while preserving v1f as canonical baseline. |
 | C-190 | 2026-03-27 18:49 | Copilot | Completed BL-023 website-server hardening pass: migrated `07_implementation/setup/website_api_server.py` from `http.server` to FastAPI + uvicorn while preserving subprocess stage orchestration and existing `{"error": ...}` API contract, added typed POST request models plus app-state initialization, tightened localhost CORS, updated `smoke_website_api.ps1` for the 7-stage surface, added `test_website_api_server.py` regression coverage, and added runtime/test dependencies in `requirements.txt` (`fastapi`, `uvicorn[standard]`, `httpx`). |
+| C-191 | 2026-03-27 | Copilot | Refactored the thesis workflow customization surface for natural-language Ask and Plan/Autopilot use: updated `.github/copilot-instructions.md` to route mode by intent instead of prompt dependence, added `.github/agents/thesis-ask.agent.md` and `.github/agents/thesis-autopilot.agent.md`, added a lightweight user-level instruction at `Code/User/prompts/natural-language-workflow.instructions.md` for cross-workspace self-improving workflow behavior, corrected the stale `AGENTS.md` inventory entry in `file_map.md`, and logged the design in `D-036` / `EXP-053`. |
 ## C-162
 - date: 2026-03-25
 - proposed_by: Copilot
@@ -2017,3 +2018,5 @@ Maintenance snapshot (2026-03-27):
 - approval_record: Requested by user in chat ("make all the admin files up to date") on 2026-03-25.
 
 | C-176 | 2026-03-25 22:57 | Copilot | Executed UI-013 tuning profile sweep (v1, v1a, v1b, v1c) to validate explanation-diversity and candidate-filtering controls; 3/4 profiles passed BL-014; v1b selected as optimal profile (stricter filtering, improved semantic-numeric balance); sweep results and all orchestration outputs archived in _scratch/ and implementation_notes/; updated experiment_log (EXP-045) and test_notes (TC-UI013-SWEEP-001). |
+
+| C-192 | 2026-03-27 | Copilot | Workflow customization hardening pass: removed stale `model: GPT-5.3-Codex` spec from log-everything and session-start-check prompt frontmatter, renamed deprecated `mode:` to `agent:` in three prompt files, completed the stub impact-analysis prompt with full assessment steps, created `00_admin/recurring_issues.md` as the self-improvement friction log (seeded with RI-001), and wired recurring_issues.md into the copilot-instructions.md session-start checklist and Automatic Improvement Rule. |

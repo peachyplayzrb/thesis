@@ -1031,3 +1031,16 @@ review_date: none
 - evidence_basis: `07_implementation/setup/website_api_server.py`, `07_implementation/setup/smoke_website_api.ps1`, `07_implementation/setup/test_website_api_server.py`, `requirements.txt`, `07_implementation/experiment_log.md` (`EXP-052`).
 - impacted_files: `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`, `07_implementation/setup/website_api_server.py`, `07_implementation/setup/smoke_website_api.ps1`, `07_implementation/setup/test_website_api_server.py`, `requirements.txt`
 - next_steps: Keep BL-023 bounded to modular cleanup, reliability hardening, and evidence-surface polish; do not widen scope into new adapters or in-process pipeline redesign.
+
+## D-036
+- date: 2026-03-27
+- entity_id: repo workflow customization
+- proposed_by: Copilot
+- status: accepted
+- decision: Treat `.github/copilot-instructions.md` as the single canonical workspace instruction file, add dedicated Ask and Autopilot custom agents under `.github/agents/`, keep prompt files optional rather than required, and use a lightweight user-level instruction file for cross-workspace natural-language workflow preferences and repeated-friction improvement.
+- context: The user mainly starts ordinary natural-language chats in Ask mode and Plan/Autopilot rather than invoking predefined prompts. The repo already had governance instructions and optional prompts, but it lacked task-shaped custom agents and still had stale inventory implying a root `AGENTS.md` existed.
+- alternatives_considered: Keep relying on prompt files as the main entry path (rejected: does not match user behavior); add a root `AGENTS.md` alongside `.github/copilot-instructions.md` (rejected: duplicates the workspace-wide instruction surface and conflicts with the single-file guidance); use hooks immediately (rejected: too heavy for the current problem); keep only one generic agent (rejected: weaker separation between read-first Ask work and execution-first Autopilot work).
+- rationale: A split between workspace instructions, custom agents, and lightweight user-level preferences matches how the user actually works. It improves natural-language continuation, reduces unnecessary restatement, preserves thesis governance requirements, and creates a clean place to capture automatic self-improvement behavior when the same friction repeats.
+- evidence_basis: `.github/copilot-instructions.md`, `.github/agents/thesis-ask.agent.md`, `.github/agents/thesis-autopilot.agent.md`, `c:/Users/peach/AppData/Roaming/Code/User/prompts/natural-language-workflow.instructions.md`, `file_map.md`, `07_implementation/experiment_log.md` (`EXP-053`).
+- impacted_files: `.github/copilot-instructions.md`, `.github/agents/thesis-ask.agent.md`, `.github/agents/thesis-autopilot.agent.md`, `c:/Users/peach/AppData/Roaming/Code/User/prompts/natural-language-workflow.instructions.md`, `file_map.md`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `07_implementation/experiment_log.md`
+- next_steps: Validate the new files load in the expected locations, keep prompts as optional specialty tools, and revisit hooks or narrow file-level instructions only if repeated workflow drift still appears.

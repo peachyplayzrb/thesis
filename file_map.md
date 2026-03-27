@@ -22,7 +22,9 @@ For every tracked file, record four things:
 
 | File | Status | Current Location | What It Does | Notes |
 | --- | --- | --- | --- | --- |
-| `AGENTS.md` | active | repo root | Defines agent/session workflow rules for how work in the thesis repo should start, close, and stay within approved scope. | Updated to include cleanup hygiene guidance for keeping root canonical. |
+| `.github/copilot-instructions.md` | active | `.github/` | Defines the repo-wide thesis workflow rules, including session-start checks, Ask versus Autopilot routing, logging strictness, and automatic workflow-improvement behavior. | Canonical workspace instruction surface; replaced stale `AGENTS.md` inventory reference because the repo intentionally uses workspace instructions instead of a root `AGENTS.md`. |
+| `.github/agents/thesis-ask.agent.md` | active | `.github/agents/` | Defines the read-first Ask-mode agent for review, explanation, triage, and navigation work in the thesis repo. | Added to support natural-language Ask sessions without requiring prompt commands. |
+| `.github/agents/thesis-autopilot.agent.md` | active | `.github/agents/` | Defines the execution-first Autopilot agent for end-to-end implementation, verification, and governance synchronization. | Added to support natural-language Plan or Autopilot sessions without requiring prompt commands. |
 | `.gitignore` | active | repo root | Tells git which local caches, generated outputs, probe files, credentials, and temporary artifacts should stay untracked. | Updated comment text and added ignore rules for cleanup-operation artifacts and archive staging. |
 | `.gitattributes` | reviewed | repo root | Defines repo-wide git attributes, especially LFS handling for large datasets and binary-like source files. | Reviewed only; still the correct location for repo-wide LFS and binary handling rules. |
 | `requirements.txt` | reviewed | repo root | Declares the Python packages needed to run the repo's scripts and pipeline utilities. | Reviewed against actual imports; already up to date, so no edit was needed. |
@@ -96,7 +98,8 @@ These directories support repo operation and collaboration, but they serve diffe
 | Path | Status | What It Does | Notes |
 | --- | --- | --- | --- |
 | `.github/` | reviewed | Holds repo-level Copilot customization and reusable prompt files that standardize collaborator workflow, session governance, and recurring analysis tasks. | Canonical repo tooling/config; should remain in the repo. |
-| `.github/copilot-instructions.md` | reviewed | Defines how Copilot should behave in this repo, including session-start checks, logging strictness, and session-close governance. | Active collaborator-instructions file; keep in place. |
+| `.github/copilot-instructions.md` | reviewed | Defines how Copilot should behave in this repo, including session-start checks, natural-language Ask versus Autopilot routing, logging strictness, and session-close governance. | Active collaborator-instructions file; keep in place as the single workspace-wide instruction file. |
+| `.github/agents/` | active | Holds custom agent definitions that let the user pick a thesis-specific Ask or Autopilot workflow without relying on slash prompts. | Added 2026-03-27 to better fit the user’s real chat habits. |
 | `.github/prompts/` | reviewed | Holds reusable prompt templates for recurring thesis tasks such as claim verification, paper analysis, consistency checks, and session startup. | Canonical prompt library for collaborator workflows. |
 | `.venv/` | reviewed | Stores the local Python virtual environment, including the interpreter and installed packages used to run repo scripts on this machine. | Local environment state, not canonical source; keep locally but do not treat as archival repo content. |
 

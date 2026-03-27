@@ -15,6 +15,97 @@ Copy the block below for each new run.
 
 ---
 
+## EXP-053
+- date: 2026-03-27
+- backlog_link: `repo workflow customization`
+- owner: Timothy + AI
+- status: pass
+- related_test_id: `TC-WORKFLOW-CUSTOMIZATION-001`
+
+### Objective
+- Refactor the thesis repo customization surface so natural-language Ask chats and Plan/Autopilot chats work cleanly without depending on slash prompts.
+
+### Scope Check
+- In-scope confirmation: yes, repo collaboration workflow and instruction-layer hardening only.
+- Protected items affected? no
+
+### Inputs
+- source_data:
+  - `.github/copilot-instructions.md`
+  - `.github/prompts/`
+  - `00_admin/operating_protocol.md`
+  - `00_admin/handoff_friend_chat_playbook.md`
+  - `file_map.md`
+- config_or_parameters:
+  - optimize for natural-language Ask and Plan/Autopilot use
+  - keep prompt files optional rather than required
+  - add lightweight cross-workspace self-improvement guidance when safe
+- code_or_script_path:
+  - repo customization files and user-level instruction surface
+- dependency assumptions:
+  - VS Code custom agents and user instruction files are available in the current environment
+
+### Expected Evidence
+- primary_output_artifact:
+  - updated workspace instruction file plus new thesis Ask and Autopilot agents
+- secondary_output_artifacts:
+  - lightweight user-level workflow instruction and corrected file inventory
+- success_condition:
+  - natural-language thesis chats can route cleanly into read-first or execution-first behavior without relying on prompt invocation
+
+### Run Record
+- command_or_execution_method:
+  - read current customization files, then apply targeted markdown edits and additions
+- run_id:
+  - `WORKFLOW-CUSTOMIZATION-20260327`
+- start_state_summary:
+  - repo relied mainly on workspace instructions plus optional prompts; no custom Ask/Autopilot agents were present and file inventory still referenced a non-existent `AGENTS.md`.
+- end_state_summary:
+  - workspace instructions now route natural-language Ask and Plan/Autopilot sessions explicitly, thesis Ask and Autopilot custom agents exist under `.github/agents/`, a lightweight user-level workflow instruction exists under the VS Code user prompts surface, and the stale `AGENTS.md` inventory reference has been removed.
+
+### Results
+- outcome_summary:
+  - pass — the thesis repo customization surface now matches the user’s actual Ask plus Plan/Autopilot workflow and includes an automatic repeated-friction improvement rule.
+- key_metrics:
+  - files_added: `3`
+  - files_updated: `5`
+  - workspace_agent_count_added: `2`
+  - stale_inventory_references_removed: `1`
+- deterministic_repeat_checked: n/a
+- output_paths:
+  - `.github/copilot-instructions.md`
+  - `.github/agents/thesis-ask.agent.md`
+  - `.github/agents/thesis-autopilot.agent.md`
+  - `c:/Users/peach/AppData/Roaming/Code/User/prompts/natural-language-workflow.instructions.md`
+  - `file_map.md`
+  - `00_admin/decision_log.md`
+  - `00_admin/change_log.md`
+
+### Issues And Limits
+- failures_or_anomalies:
+  - initial agent validation rejected the explicit frontmatter model label, so the custom agent files now rely on the active VS Code model selection instead of a hardcoded model name.
+- likely_cause:
+  - the environment does not recognize the originally supplied model identifier string for agent frontmatter.
+- bounded_mvp_limitation_or_bug:
+  - this pass changes workflow guidance only; it does not guarantee automatic agent selection behavior beyond what VS Code supports.
+
+### Thesis Traceability
+- chapter4_relevance:
+  - improves operator/workflow clarity for implementation evidence generation.
+- chapter5_relevance:
+  - supports bounded discussion of engineering process hardening and reproducible execution practice.
+- quality_control_files_to_update:
+  - `00_admin/change_log.md`
+  - `00_admin/decision_log.md`
+
+### Next Action
+- immediate_follow_up:
+  - finish the customization pass, then validate file presence and sync governance logs.
+- backlog_status_recommendation:
+  - no backlog change required
+
+---
+
 ## EXP-051
 - date: 2026-03-27
 - backlog_link: `BL-023` (state synchronization support)

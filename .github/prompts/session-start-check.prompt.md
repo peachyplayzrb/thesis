@@ -1,6 +1,5 @@
 ---
-mode: ask
-model: GPT-5.3-Codex
+agent: ask
 description: Run thesis session-start checklist and report gaps before work
 ---
 
