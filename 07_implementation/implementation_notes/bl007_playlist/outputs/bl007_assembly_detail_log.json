@@ -4,7 +4,7 @@
     {
       "score_rank": 1,
       "track_id": "phL12CBijBqwQ9qB",
-      "final_score": 0.72367,
+      "final_score": 0.726929,
       "decision": "included",
       "exclusion_reason": "",
       "selected_alternative_rank": 2
@@ -12,794 +12,794 @@
     {
       "score_rank": 2,
       "track_id": "2rf5nW2Fb8gMnz9l",
-      "final_score": 0.717868,
+      "final_score": 0.722913,
       "decision": "included",
       "exclusion_reason": "",
-      "selected_alternative_rank": 4284
+      "selected_alternative_rank": 3910
     },
     {
       "score_rank": 3,
       "track_id": "SlF31W7VgEooOonD",
-      "final_score": 0.71265,
+      "final_score": 0.718257,
       "decision": "excluded",
       "exclusion_reason": "consecutive_genre_run",
-      "selected_alternative_rank": 4284
+      "selected_alternative_rank": 3910
     },
     {
       "score_rank": 4,
       "track_id": "OOG1uzYoXXQnOIpL",
-      "final_score": 0.704792,
+      "final_score": 0.707879,
       "decision": "excluded",
       "exclusion_reason": "consecutive_genre_run",
-      "selected_alternative_rank": 4284
+      "selected_alternative_rank": 3910
     },
     {
       "score_rank": 5,
       "track_id": "ZBzCrWWH35yTPv8P",
-      "final_score": 0.698507,
+      "final_score": 0.707456,
       "decision": "excluded",
       "exclusion_reason": "consecutive_genre_run",
-      "selected_alternative_rank": 4284
+      "selected_alternative_rank": 3910
     },
     {
       "score_rank": 6,
       "track_id": "2ulpfcMJfaKiFqZr",
-      "final_score": 0.698314,
+      "final_score": 0.702137,
       "decision": "excluded",
       "exclusion_reason": "consecutive_genre_run",
-      "selected_alternative_rank": 4284
+      "selected_alternative_rank": 3910
     },
     {
       "score_rank": 7,
       "track_id": "Ja6sG7NsgUKEI63U",
-      "final_score": 0.698225,
+      "final_score": 0.700536,
       "decision": "excluded",
       "exclusion_reason": "consecutive_genre_run",
-      "selected_alternative_rank": 4284
+      "selected_alternative_rank": 3910
     },
     {
       "score_rank": 8,
-      "track_id": "7dYk0TCGZqev3LJD",
-      "final_score": 0.693674,
+      "track_id": "lOFidX8Jxs0ViNRG",
+      "final_score": 0.699775,
       "decision": "excluded",
       "exclusion_reason": "consecutive_genre_run",
-      "selected_alternative_rank": 4284
+      "selected_alternative_rank": 3910
     },
     {
       "score_rank": 9,
-      "track_id": "lOFidX8Jxs0ViNRG",
-      "final_score": 0.692969,
+      "track_id": "7dYk0TCGZqev3LJD",
+      "final_score": 0.699238,
       "decision": "excluded",
       "exclusion_reason": "consecutive_genre_run",
-      "selected_alternative_rank": 4284
+      "selected_alternative_rank": 3910
     },
     {
       "score_rank": 10,
+      "track_id": "Unm2k636mJk61Zcx",
+      "final_score": 0.693059,
+      "decision": "excluded",
+      "exclusion_reason": "consecutive_genre_run",
+      "selected_alternative_rank": 3910
+    },
+    {
+      "score_rank": 11,
       "track_id": "9jb6ZoImYLfUL8hu",
       "final_score": 0.692644,
       "decision": "excluded",
       "exclusion_reason": "consecutive_genre_run",
-      "selected_alternative_rank": 4284
-    },
-    {
-      "score_rank": 11,
-      "track_id": "Unm2k636mJk61Zcx",
-      "final_score": 0.691867,
-      "decision": "excluded",
-      "exclusion_reason": "consecutive_genre_run",
-      "selected_alternative_rank": 4284
+      "selected_alternative_rank": 3910
     },
     {
       "score_rank": 12,
-      "track_id": "smJCxhAszKPO80Bi",
-      "final_score": 0.689381,
+      "track_id": "uzzXWHcGTzC3ipD4",
+      "final_score": 0.692344,
       "decision": "excluded",
       "exclusion_reason": "consecutive_genre_run",
-      "selected_alternative_rank": 4284
+      "selected_alternative_rank": 3910
     },
     {
       "score_rank": 13,
-      "track_id": "6k1oC4EwLjQjUFz7",
-      "final_score": 0.68817,
+      "track_id": "SVB49vvsyAQChbrb",
+      "final_score": 0.691422,
       "decision": "excluded",
       "exclusion_reason": "consecutive_genre_run",
-      "selected_alternative_rank": 4284
+      "selected_alternative_rank": 3910
     },
     {
       "score_rank": 14,
-      "track_id": "uzzXWHcGTzC3ipD4",
-      "final_score": 0.68677,
+      "track_id": "5c9fu0pBIl9QUmed",
+      "final_score": 0.690691,
       "decision": "excluded",
       "exclusion_reason": "consecutive_genre_run",
-      "selected_alternative_rank": 4284
+      "selected_alternative_rank": 3910
     },
     {
       "score_rank": 15,
-      "track_id": "SVB49vvsyAQChbrb",
-      "final_score": 0.685887,
+      "track_id": "smJCxhAszKPO80Bi",
+      "final_score": 0.690597,
       "decision": "excluded",
       "exclusion_reason": "consecutive_genre_run",
-      "selected_alternative_rank": 4284
+      "selected_alternative_rank": 3910
     },
     {
       "score_rank": 16,
-      "track_id": "zyxOCKcXX1RmWpm0",
-      "final_score": 0.68586,
+      "track_id": "1FEjhaXK2amCXXzT",
+      "final_score": 0.689809,
       "decision": "excluded",
       "exclusion_reason": "consecutive_genre_run",
-      "selected_alternative_rank": 4284
+      "selected_alternative_rank": 3910
     },
     {
       "score_rank": 17,
-      "track_id": "1FEjhaXK2amCXXzT",
-      "final_score": 0.68583,
+      "track_id": "6k1oC4EwLjQjUFz7",
+      "final_score": 0.689022,
       "decision": "excluded",
       "exclusion_reason": "consecutive_genre_run",
-      "selected_alternative_rank": 4284
+      "selected_alternative_rank": 3910
     },
     {
       "score_rank": 18,
       "track_id": "lGnkOkQSUQO175Qg",
-      "final_score": 0.68566,
+      "final_score": 0.68815,
       "decision": "excluded",
       "exclusion_reason": "consecutive_genre_run",
-      "selected_alternative_rank": 4284
+      "selected_alternative_rank": 3910
     },
     {
       "score_rank": 19,
-      "track_id": "5c9fu0pBIl9QUmed",
-      "final_score": 0.685391,
+      "track_id": "vCVgdkzSvubDpTLS",
+      "final_score": 0.686794,
       "decision": "excluded",
       "exclusion_reason": "consecutive_genre_run",
-      "selected_alternative_rank": 4284
+      "selected_alternative_rank": 3910
     },
     {
       "score_rank": 20,
+      "track_id": "zyxOCKcXX1RmWpm0",
+      "final_score": 0.686554,
+      "decision": "excluded",
+      "exclusion_reason": "consecutive_genre_run",
+      "selected_alternative_rank": 3910
+    },
+    {
+      "score_rank": 21,
+      "track_id": "NQbNKyYkv5MxNeQy",
+      "final_score": 0.686237,
+      "decision": "excluded",
+      "exclusion_reason": "consecutive_genre_run",
+      "selected_alternative_rank": 3910
+    },
+    {
+      "score_rank": 22,
       "track_id": "CavT1tWCp1sJDnbQ",
       "final_score": 0.684176,
       "decision": "excluded",
       "exclusion_reason": "consecutive_genre_run",
-      "selected_alternative_rank": 4284
-    },
-    {
-      "score_rank": 21,
-      "track_id": "qWKJFJO5nFfEQuZM",
-      "final_score": 0.681834,
-      "decision": "excluded",
-      "exclusion_reason": "consecutive_genre_run",
-      "selected_alternative_rank": 4284
-    },
-    {
-      "score_rank": 22,
-      "track_id": "vCVgdkzSvubDpTLS",
-      "final_score": 0.681602,
-      "decision": "excluded",
-      "exclusion_reason": "consecutive_genre_run",
-      "selected_alternative_rank": 4284
+      "selected_alternative_rank": 3910
     },
     {
       "score_rank": 23,
-      "track_id": "NQbNKyYkv5MxNeQy",
-      "final_score": 0.680544,
+      "track_id": "V1h2Q8uHtnIqbahp",
+      "final_score": 0.68239,
       "decision": "excluded",
       "exclusion_reason": "consecutive_genre_run",
-      "selected_alternative_rank": 4284
+      "selected_alternative_rank": 3910
     },
     {
       "score_rank": 24,
-      "track_id": "7fLQBYLIBDBiCENj",
-      "final_score": 0.680013,
+      "track_id": "qWKJFJO5nFfEQuZM",
+      "final_score": 0.682273,
       "decision": "excluded",
       "exclusion_reason": "consecutive_genre_run",
-      "selected_alternative_rank": 4284
+      "selected_alternative_rank": 3910
     },
     {
       "score_rank": 25,
-      "track_id": "V1h2Q8uHtnIqbahp",
-      "final_score": 0.679634,
+      "track_id": "7fLQBYLIBDBiCENj",
+      "final_score": 0.682133,
       "decision": "excluded",
       "exclusion_reason": "consecutive_genre_run",
-      "selected_alternative_rank": 4284
+      "selected_alternative_rank": 3910
     },
     {
       "score_rank": 26,
+      "track_id": "op7gT9GOpqOk7wc8",
+      "final_score": 0.677383,
+      "decision": "excluded",
+      "exclusion_reason": "consecutive_genre_run",
+      "selected_alternative_rank": 3910
+    },
+    {
+      "score_rank": 27,
       "track_id": "ALtYCqP0WNXBuQGi",
       "final_score": 0.677357,
       "decision": "excluded",
       "exclusion_reason": "consecutive_genre_run",
-      "selected_alternative_rank": 4284
-    },
-    {
-      "score_rank": 27,
-      "track_id": "8fDlJsjie4DoFMV0",
-      "final_score": 0.674559,
-      "decision": "excluded",
-      "exclusion_reason": "consecutive_genre_run",
-      "selected_alternative_rank": 4284
+      "selected_alternative_rank": 3910
     },
     {
       "score_rank": 28,
-      "track_id": "Q9gkoBFLwjMyFgfm",
-      "final_score": 0.674018,
+      "track_id": "ODcj49nwgvXhA46v",
+      "final_score": 0.677133,
       "decision": "excluded",
       "exclusion_reason": "consecutive_genre_run",
-      "selected_alternative_rank": 4284
+      "selected_alternative_rank": 3910
     },
     {
       "score_rank": 29,
-      "track_id": "JjRXUBWaA0I7JZ4t",
-      "final_score": 0.673983,
+      "track_id": "8fDlJsjie4DoFMV0",
+      "final_score": 0.676289,
       "decision": "excluded",
       "exclusion_reason": "consecutive_genre_run",
-      "selected_alternative_rank": 4284
+      "selected_alternative_rank": 3910
     },
     {
       "score_rank": 30,
-      "track_id": "ODcj49nwgvXhA46v",
-      "final_score": 0.67358,
+      "track_id": "Q9gkoBFLwjMyFgfm",
+      "final_score": 0.676138,
       "decision": "excluded",
       "exclusion_reason": "consecutive_genre_run",
-      "selected_alternative_rank": 4284
+      "selected_alternative_rank": 3910
     },
     {
       "score_rank": 31,
-      "track_id": "d9cweSJbo8aseKCE",
-      "final_score": 0.67261,
+      "track_id": "JjRXUBWaA0I7JZ4t",
+      "final_score": 0.674524,
       "decision": "excluded",
       "exclusion_reason": "consecutive_genre_run",
-      "selected_alternative_rank": 4284
+      "selected_alternative_rank": 3910
     },
     {
       "score_rank": 32,
-      "track_id": "oeKwh2lrTJigBR9I",
-      "final_score": 0.672066,
+      "track_id": "MiS8jiW75eCQr620",
+      "final_score": 0.674479,
       "decision": "excluded",
       "exclusion_reason": "consecutive_genre_run",
-      "selected_alternative_rank": 4284
+      "selected_alternative_rank": 3910
     },
     {
       "score_rank": 33,
       "track_id": "EYfH7hlkwLa5ZYav",
-      "final_score": 0.671104,
+      "final_score": 0.67367,
       "decision": "excluded",
       "exclusion_reason": "consecutive_genre_run",
-      "selected_alternative_rank": 4284
+      "selected_alternative_rank": 3910
     },
     {
       "score_rank": 34,
-      "track_id": "op7gT9GOpqOk7wc8",
-      "final_score": 0.670771,
+      "track_id": "C9oA7Glm1TItxpQA",
+      "final_score": 0.673261,
       "decision": "excluded",
       "exclusion_reason": "consecutive_genre_run",
-      "selected_alternative_rank": 4284
+      "selected_alternative_rank": 3910
     },
     {
       "score_rank": 35,
       "track_id": "CaR8UnowNJUR5Dib",
-      "final_score": 0.670198,
+      "final_score": 0.673158,
       "decision": "excluded",
       "exclusion_reason": "consecutive_genre_run",
-      "selected_alternative_rank": 4284
+      "selected_alternative_rank": 3910
     },
     {
       "score_rank": 36,
-      "track_id": "MiS8jiW75eCQr620",
-      "final_score": 0.66955,
+      "track_id": "d9cweSJbo8aseKCE",
+      "final_score": 0.67261,
       "decision": "excluded",
       "exclusion_reason": "consecutive_genre_run",
-      "selected_alternative_rank": 4284
+      "selected_alternative_rank": 3910
     },
     {
       "score_rank": 37,
-      "track_id": "C9oA7Glm1TItxpQA",
-      "final_score": 0.669371,
+      "track_id": "gEFF7fGcjjuJDwxj",
+      "final_score": 0.672222,
       "decision": "excluded",
       "exclusion_reason": "consecutive_genre_run",
-      "selected_alternative_rank": 4284
+      "selected_alternative_rank": 3910
     },
     {
       "score_rank": 38,
-      "track_id": "gEFF7fGcjjuJDwxj",
-      "final_score": 0.669135,
+      "track_id": "oeKwh2lrTJigBR9I",
+      "final_score": 0.672066,
       "decision": "excluded",
       "exclusion_reason": "consecutive_genre_run",
-      "selected_alternative_rank": 4284
+      "selected_alternative_rank": 3910
     },
     {
       "score_rank": 39,
       "track_id": "WAbTyx902fLAd8Q5",
-      "final_score": 0.669109,
+      "final_score": 0.670034,
       "decision": "excluded",
       "exclusion_reason": "consecutive_genre_run",
-      "selected_alternative_rank": 4284
+      "selected_alternative_rank": 3910
     },
     {
       "score_rank": 40,
-      "track_id": "SjizDRrg3ZWU97wK",
-      "final_score": 0.668352,
+      "track_id": "891C45L5wh1jWB8k",
+      "final_score": 0.669636,
       "decision": "excluded",
       "exclusion_reason": "consecutive_genre_run",
-      "selected_alternative_rank": 4284
+      "selected_alternative_rank": 3910
     },
     {
       "score_rank": 41,
-      "track_id": "891C45L5wh1jWB8k",
-      "final_score": 0.666324,
+      "track_id": "SjizDRrg3ZWU97wK",
+      "final_score": 0.66844,
       "decision": "excluded",
       "exclusion_reason": "consecutive_genre_run",
-      "selected_alternative_rank": 4284
+      "selected_alternative_rank": 3910
     },
     {
       "score_rank": 42,
       "track_id": "Keuox6QeZE3Su469",
-      "final_score": 0.664989,
+      "final_score": 0.668097,
       "decision": "excluded",
       "exclusion_reason": "consecutive_genre_run",
-      "selected_alternative_rank": 4284
+      "selected_alternative_rank": 3910
     },
     {
       "score_rank": 43,
       "track_id": "r2RGegcvs7MeJpy7",
-      "final_score": 0.664668,
+      "final_score": 0.667996,
       "decision": "excluded",
       "exclusion_reason": "consecutive_genre_run",
-      "selected_alternative_rank": 4284
+      "selected_alternative_rank": 3910
     },
     {
       "score_rank": 44,
       "track_id": "dmXJIr99KdvwkYxe",
-      "final_score": 0.664193,
+      "final_score": 0.667585,
       "decision": "excluded",
       "exclusion_reason": "consecutive_genre_run",
-      "selected_alternative_rank": 4284
+      "selected_alternative_rank": 3910
     },
     {
       "score_rank": 45,
+      "track_id": "VUurPvItLJT0Xl2o",
+      "final_score": 0.665067,
+      "decision": "excluded",
+      "exclusion_reason": "consecutive_genre_run",
+      "selected_alternative_rank": 3910
+    },
+    {
+      "score_rank": 46,
+      "track_id": "0KrfpITRYCMTHZno",
+      "final_score": 0.661839,
+      "decision": "excluded",
+      "exclusion_reason": "consecutive_genre_run",
+      "selected_alternative_rank": 3910
+    },
+    {
+      "score_rank": 47,
+      "track_id": "rX7qhjhfQlLsJC4M",
+      "final_score": 0.661598,
+      "decision": "excluded",
+      "exclusion_reason": "consecutive_genre_run",
+      "selected_alternative_rank": 3910
+    },
+    {
+      "score_rank": 48,
       "track_id": "gSsZrpJsp2iHHP8W",
       "final_score": 0.661488,
       "decision": "excluded",
       "exclusion_reason": "consecutive_genre_run",
-      "selected_alternative_rank": 4284
+      "selected_alternative_rank": 3910
     },
     {
-      "score_rank": 46,
+      "score_rank": 49,
       "track_id": "YQf74IiKzUIRUfCR",
-      "final_score": 0.660456,
+      "final_score": 0.660948,
       "decision": "excluded",
       "exclusion_reason": "consecutive_genre_run",
-      "selected_alternative_rank": 4284
+      "selected_alternative_rank": 3910
     },
     {
-      "score_rank": 47,
-      "track_id": "VUurPvItLJT0Xl2o",
-      "final_score": 0.660392,
+      "score_rank": 50,
+      "track_id": "36zZsq0r6BMf2VfX",
+      "final_score": 0.660659,
       "decision": "excluded",
       "exclusion_reason": "consecutive_genre_run",
-      "selected_alternative_rank": 4284
+      "selected_alternative_rank": 3910
     },
     {
-      "score_rank": 48,
+      "score_rank": 51,
       "track_id": "QwMeRrGC5WeHekZo",
       "final_score": 0.659145,
       "decision": "excluded",
       "exclusion_reason": "consecutive_genre_run",
-      "selected_alternative_rank": 4284
-    },
-    {
-      "score_rank": 49,
-      "track_id": "rX7qhjhfQlLsJC4M",
-      "final_score": 0.658685,
-      "decision": "excluded",
-      "exclusion_reason": "consecutive_genre_run",
-      "selected_alternative_rank": 4284
-    },
-    {
-      "score_rank": 50,
-      "track_id": "0KrfpITRYCMTHZno",
-      "final_score": 0.65721,
-      "decision": "excluded",
-      "exclusion_reason": "consecutive_genre_run",
-      "selected_alternative_rank": 4284
-    },
-    {
-      "score_rank": 51,
-      "track_id": "6JvsoRF2a3K3nK1t",
-      "final_score": 0.657011,
-      "decision": "excluded",
-      "exclusion_reason": "consecutive_genre_run",
-      "selected_alternative_rank": 4284
+      "selected_alternative_rank": 3910
     },
     {
       "score_rank": 52,
       "track_id": "0KmsAtX56jWKceiy",
-      "final_score": 0.656958,
+      "final_score": 0.658802,
       "decision": "excluded",
       "exclusion_reason": "consecutive_genre_run",
-      "selected_alternative_rank": 4284
+      "selected_alternative_rank": 3910
     },
     {
       "score_rank": 53,
-      "track_id": "mdv92N2XyKdHBtF4",
-      "final_score": 0.656355,
+      "track_id": "6JvsoRF2a3K3nK1t",
+      "final_score": 0.658798,
       "decision": "excluded",
       "exclusion_reason": "consecutive_genre_run",
-      "selected_alternative_rank": 4284
+      "selected_alternative_rank": 3910
     },
     {
       "score_rank": 54,
-      "track_id": "36zZsq0r6BMf2VfX",
-      "final_score": 0.655336,
+      "track_id": "yo4mM5hQwk4OVGB5",
+      "final_score": 0.657782,
       "decision": "excluded",
       "exclusion_reason": "consecutive_genre_run",
-      "selected_alternative_rank": 4284
+      "selected_alternative_rank": 3910
     },
     {
       "score_rank": 55,
+      "track_id": "I2K0KDtgE2eZhPRw",
+      "final_score": 0.657618,
+      "decision": "excluded",
+      "exclusion_reason": "consecutive_genre_run",
+      "selected_alternative_rank": 3910
+    },
+    {
+      "score_rank": 56,
+      "track_id": "mdv92N2XyKdHBtF4",
+      "final_score": 0.657168,
+      "decision": "excluded",
+      "exclusion_reason": "consecutive_genre_run",
+      "selected_alternative_rank": 3910
+    },
+    {
+      "score_rank": 57,
+      "track_id": "mIqRigooD5HtuP23",
+      "final_score": 0.656698,
+      "decision": "excluded",
+      "exclusion_reason": "consecutive_genre_run",
+      "selected_alternative_rank": 3910
+    },
+    {
+      "score_rank": 58,
+      "track_id": "2Xdf7hbgYtckzeS7",
+      "final_score": 0.655395,
+      "decision": "excluded",
+      "exclusion_reason": "consecutive_genre_run",
+      "selected_alternative_rank": 3910
+    },
+    {
+      "score_rank": 59,
       "track_id": "I1VjOMPpRdhwzhWk",
       "final_score": 0.65507,
       "decision": "excluded",
       "exclusion_reason": "consecutive_genre_run",
-      "selected_alternative_rank": 4284
-    },
-    {
-      "score_rank": 56,
-      "track_id": "mIqRigooD5HtuP23",
-      "final_score": 0.653888,
-      "decision": "excluded",
-      "exclusion_reason": "consecutive_genre_run",
-      "selected_alternative_rank": 4284
-    },
-    {
-      "score_rank": 57,
-      "track_id": "I2K0KDtgE2eZhPRw",
-      "final_score": 0.652038,
-      "decision": "excluded",
-      "exclusion_reason": "consecutive_genre_run",
-      "selected_alternative_rank": 4284
-    },
-    {
-      "score_rank": 58,
-      "track_id": "yo4mM5hQwk4OVGB5",
-      "final_score": 0.651732,
-      "decision": "excluded",
-      "exclusion_reason": "consecutive_genre_run",
-      "selected_alternative_rank": 4284
-    },
-    {
-      "score_rank": 59,
-      "track_id": "ByNQnjuJW39vypt7",
-      "final_score": 0.650481,
-      "decision": "excluded",
-      "exclusion_reason": "consecutive_genre_run",
-      "selected_alternative_rank": 4284
+      "selected_alternative_rank": 3910
     },
     {
       "score_rank": 60,
-      "track_id": "2Xdf7hbgYtckzeS7",
-      "final_score": 0.650438,
+      "track_id": "05kPnJrEqt4aSFwt",
+      "final_score": 0.653796,
       "decision": "excluded",
       "exclusion_reason": "consecutive_genre_run",
-      "selected_alternative_rank": 4284
+      "selected_alternative_rank": 3910
     },
     {
       "score_rank": 61,
-      "track_id": "FCcGTwPlHQIeZOva",
-      "final_score": 0.649223,
+      "track_id": "uVxM9hFVNvaFrJ1w",
+      "final_score": 0.653314,
       "decision": "excluded",
       "exclusion_reason": "consecutive_genre_run",
-      "selected_alternative_rank": 4284
+      "selected_alternative_rank": 3910
     },
     {
       "score_rank": 62,
-      "track_id": "tfwno3DpGAPEk9b9",
-      "final_score": 0.648345,
+      "track_id": "ByNQnjuJW39vypt7",
+      "final_score": 0.652589,
       "decision": "excluded",
       "exclusion_reason": "consecutive_genre_run",
-      "selected_alternative_rank": 4284
+      "selected_alternative_rank": 3910
     },
     {
       "score_rank": 63,
       "track_id": "eWJkdrJDNm0LBqqe",
-      "final_score": 0.648099,
+      "final_score": 0.651389,
       "decision": "excluded",
       "exclusion_reason": "consecutive_genre_run",
-      "selected_alternative_rank": 4284
+      "selected_alternative_rank": 3910
     },
     {
       "score_rank": 64,
-      "track_id": "uVxM9hFVNvaFrJ1w",
-      "final_score": 0.648065,
+      "track_id": "tfwno3DpGAPEk9b9",
+      "final_score": 0.65124,
       "decision": "excluded",
       "exclusion_reason": "consecutive_genre_run",
-      "selected_alternative_rank": 4284
+      "selected_alternative_rank": 3910
     },
     {
       "score_rank": 65,
-      "track_id": "Vs9sf1AxIDRnVsZ5",
-      "final_score": 0.646892,
+      "track_id": "NygzjG4eKOyPE0MK",
+      "final_score": 0.650159,
       "decision": "excluded",
       "exclusion_reason": "consecutive_genre_run",
-      "selected_alternative_rank": 4284
+      "selected_alternative_rank": 3910
     },
     {
       "score_rank": 66,
-      "track_id": "NygzjG4eKOyPE0MK",
-      "final_score": 0.646744,
+      "track_id": "Vs9sf1AxIDRnVsZ5",
+      "final_score": 0.64999,
       "decision": "excluded",
       "exclusion_reason": "consecutive_genre_run",
-      "selected_alternative_rank": 4284
+      "selected_alternative_rank": 3910
     },
     {
       "score_rank": 67,
       "track_id": "RgVgW7dr2ny0PL7o",
-      "final_score": 0.646346,
+      "final_score": 0.649432,
       "decision": "excluded",
       "exclusion_reason": "consecutive_genre_run",
-      "selected_alternative_rank": 4284
+      "selected_alternative_rank": 3910
     },
     {
       "score_rank": 68,
-      "track_id": "QOw3afPIA0ToRZqM",
-      "final_score": 0.6463,
+      "track_id": "FCcGTwPlHQIeZOva",
+      "final_score": 0.649223,
       "decision": "excluded",
       "exclusion_reason": "consecutive_genre_run",
-      "selected_alternative_rank": 4284
+      "selected_alternative_rank": 3910
     },
     {
       "score_rank": 69,
-      "track_id": "05kPnJrEqt4aSFwt",
-      "final_score": 0.645984,
+      "track_id": "sWsei8U1DXTgn4sG",
+      "final_score": 0.64807,
       "decision": "excluded",
       "exclusion_reason": "consecutive_genre_run",
-      "selected_alternative_rank": 4284
+      "selected_alternative_rank": 3910
     },
     {
       "score_rank": 70,
-      "track_id": "XOX7ROW7ZRufUOGW",
-      "final_score": 0.643885,
+      "track_id": "ebsr6NShYvKqDsgl",
+      "final_score": 0.647949,
       "decision": "excluded",
       "exclusion_reason": "consecutive_genre_run",
-      "selected_alternative_rank": 4284
+      "selected_alternative_rank": 3910
     },
     {
       "score_rank": 71,
-      "track_id": "4qoPMPl0ZFr01Pdc",
-      "final_score": 0.643824,
+      "track_id": "2S0xjAwBWffHXzRR",
+      "final_score": 0.64714,
       "decision": "excluded",
       "exclusion_reason": "consecutive_genre_run",
-      "selected_alternative_rank": 4284
+      "selected_alternative_rank": 3910
     },
     {
       "score_rank": 72,
-      "track_id": "DQti7Wb8ru3bErme",
-      "final_score": 0.643407,
+      "track_id": "QOw3afPIA0ToRZqM",
+      "final_score": 0.647102,
       "decision": "excluded",
       "exclusion_reason": "consecutive_genre_run",
-      "selected_alternative_rank": 4284
+      "selected_alternative_rank": 3910
     },
     {
       "score_rank": 73,
-      "track_id": "ebsr6NShYvKqDsgl",
-      "final_score": 0.642628,
+      "track_id": "XOX7ROW7ZRufUOGW",
+      "final_score": 0.645784,
       "decision": "excluded",
       "exclusion_reason": "consecutive_genre_run",
-      "selected_alternative_rank": 4284
+      "selected_alternative_rank": 3910
     },
     {
       "score_rank": 74,
-      "track_id": "WOaFj05xgiEosId0",
-      "final_score": 0.642523,
+      "track_id": "4qoPMPl0ZFr01Pdc",
+      "final_score": 0.645355,
       "decision": "excluded",
       "exclusion_reason": "consecutive_genre_run",
-      "selected_alternative_rank": 4284
+      "selected_alternative_rank": 3910
     },
     {
       "score_rank": 75,
       "track_id": "ohx8jv81KisDt8d0",
-      "final_score": 0.642008,
+      "final_score": 0.644711,
       "decision": "excluded",
       "exclusion_reason": "consecutive_genre_run",
-      "selected_alternative_rank": 4284
+      "selected_alternative_rank": 3910
     },
     {
       "score_rank": 76,
+      "track_id": "mGyvjtxdbwyR2rXi",
+      "final_score": 0.64459,
+      "decision": "excluded",
+      "exclusion_reason": "consecutive_genre_run",
+      "selected_alternative_rank": 3910
+    },
+    {
+      "score_rank": 77,
+      "track_id": "kSDPUwWDCOkb8wOX",
+      "final_score": 0.643864,
+      "decision": "excluded",
+      "exclusion_reason": "consecutive_genre_run",
+      "selected_alternative_rank": 3910
+    },
+    {
+      "score_rank": 78,
+      "track_id": "74x2WzSisrbTth2e",
+      "final_score": 0.643408,
+      "decision": "excluded",
+      "exclusion_reason": "consecutive_genre_run",
+      "selected_alternative_rank": 3910
+    },
+    {
+      "score_rank": 79,
+      "track_id": "DQti7Wb8ru3bErme",
+      "final_score": 0.643407,
+      "decision": "excluded",
+      "exclusion_reason": "consecutive_genre_run",
+      "selected_alternative_rank": 3910
+    },
+    {
+      "score_rank": 80,
+      "track_id": "2v2ytPyHK08Jk3EQ",
+      "final_score": 0.642726,
+      "decision": "excluded",
+      "exclusion_reason": "consecutive_genre_run",
+      "selected_alternative_rank": 3910
+    },
+    {
+      "score_rank": 81,
+      "track_id": "WOaFj05xgiEosId0",
+      "final_score": 0.642523,
+      "decision": "excluded",
+      "exclusion_reason": "consecutive_genre_run",
+      "selected_alternative_rank": 3910
+    },
+    {
+      "score_rank": 82,
+      "track_id": "h9v2D2DH7s9BEW6R",
+      "final_score": 0.642102,
+      "decision": "excluded",
+      "exclusion_reason": "consecutive_genre_run",
+      "selected_alternative_rank": 3910
+    },
+    {
+      "score_rank": 83,
       "track_id": "ur4LT9Mdi9xnWj7H",
       "final_score": 0.641914,
       "decision": "excluded",
       "exclusion_reason": "consecutive_genre_run",
-      "selected_alternative_rank": 4284
+      "selected_alternative_rank": 3910
     },
     {
-      "score_rank": 77,
-      "track_id": "sWsei8U1DXTgn4sG",
-      "final_score": 0.641737,
+      "score_rank": 84,
+      "track_id": "h4FVkBtXFDQSrlbX",
+      "final_score": 0.641654,
       "decision": "excluded",
       "exclusion_reason": "consecutive_genre_run",
-      "selected_alternative_rank": 4284
+      "selected_alternative_rank": 3910
     },
     {
-      "score_rank": 78,
-      "track_id": "2v2ytPyHK08Jk3EQ",
-      "final_score": 0.641692,
+      "score_rank": 85,
+      "track_id": "LTiJLn6u4fJEzdI6",
+      "final_score": 0.641492,
       "decision": "excluded",
       "exclusion_reason": "consecutive_genre_run",
-      "selected_alternative_rank": 4284
+      "selected_alternative_rank": 3910
     },
     {
-      "score_rank": 79,
-      "track_id": "mGyvjtxdbwyR2rXi",
-      "final_score": 0.641544,
+      "score_rank": 86,
+      "track_id": "TP9nKzg6RJ48oYlZ",
+      "final_score": 0.641355,
       "decision": "excluded",
       "exclusion_reason": "consecutive_genre_run",
-      "selected_alternative_rank": 4284
+      "selected_alternative_rank": 3910
     },
     {
-      "score_rank": 80,
-      "track_id": "74x2WzSisrbTth2e",
-      "final_score": 0.641236,
-      "decision": "excluded",
-      "exclusion_reason": "consecutive_genre_run",
-      "selected_alternative_rank": 4284
-    },
-    {
-      "score_rank": 81,
+      "score_rank": 87,
       "track_id": "LOOLjgYbn5mW2r35",
       "final_score": 0.641142,
       "decision": "excluded",
       "exclusion_reason": "consecutive_genre_run",
-      "selected_alternative_rank": 4284
-    },
-    {
-      "score_rank": 82,
-      "track_id": "zyzILCQvVeUFIINi",
-      "final_score": 0.639557,
-      "decision": "excluded",
-      "exclusion_reason": "consecutive_genre_run",
-      "selected_alternative_rank": 4284
-    },
-    {
-      "score_rank": 83,
-      "track_id": "LTiJLn6u4fJEzdI6",
-      "final_score": 0.639019,
-      "decision": "excluded",
-      "exclusion_reason": "consecutive_genre_run",
-      "selected_alternative_rank": 4284
-    },
-    {
-      "score_rank": 84,
-      "track_id": "2S0xjAwBWffHXzRR",
-      "final_score": 0.638904,
-      "decision": "excluded",
-      "exclusion_reason": "consecutive_genre_run",
-      "selected_alternative_rank": 4284
-    },
-    {
-      "score_rank": 85,
-      "track_id": "h9v2D2DH7s9BEW6R",
-      "final_score": 0.638649,
-      "decision": "excluded",
-      "exclusion_reason": "consecutive_genre_run",
-      "selected_alternative_rank": 4284
-    },
-    {
-      "score_rank": 86,
-      "track_id": "kSDPUwWDCOkb8wOX",
-      "final_score": 0.638453,
-      "decision": "excluded",
-      "exclusion_reason": "consecutive_genre_run",
-      "selected_alternative_rank": 4284
-    },
-    {
-      "score_rank": 87,
-      "track_id": "yE5furqfLpGTlvKj",
-      "final_score": 0.638354,
-      "decision": "excluded",
-      "exclusion_reason": "consecutive_genre_run",
-      "selected_alternative_rank": 4284
+      "selected_alternative_rank": 3910
     },
     {
       "score_rank": 88,
-      "track_id": "pLwqlIyZ1ODzyo8y",
-      "final_score": 0.638059,
+      "track_id": "AnG9fg5eBISL2pdN",
+      "final_score": 0.641094,
       "decision": "excluded",
       "exclusion_reason": "consecutive_genre_run",
-      "selected_alternative_rank": 4284
+      "selected_alternative_rank": 3910
     },
     {
       "score_rank": 89,
-      "track_id": "QABFtA5886cSKdKZ",
-      "final_score": 0.637545,
+      "track_id": "gc9LBQeOy3F51gk4",
+      "final_score": 0.640699,
       "decision": "excluded",
       "exclusion_reason": "consecutive_genre_run",
-      "selected_alternative_rank": 4284
+      "selected_alternative_rank": 3910
     },
     {
       "score_rank": 90,
-      "track_id": "AnG9fg5eBISL2pdN",
-      "final_score": 0.637284,
+      "track_id": "yE5furqfLpGTlvKj",
+      "final_score": 0.640513,
       "decision": "excluded",
       "exclusion_reason": "consecutive_genre_run",
-      "selected_alternative_rank": 4284
+      "selected_alternative_rank": 3910
     },
     {
       "score_rank": 91,
-      "track_id": "gMJwS3clbFlH1uKU",
-      "final_score": 0.636859,
+      "track_id": "zyzILCQvVeUFIINi",
+      "final_score": 0.640099,
       "decision": "excluded",
       "exclusion_reason": "consecutive_genre_run",
-      "selected_alternative_rank": 4284
+      "selected_alternative_rank": 3910
     },
     {
       "score_rank": 92,
-      "track_id": "vkwNyvA0jKOLfSDu",
-      "final_score": 0.636642,
+      "track_id": "gMJwS3clbFlH1uKU",
+      "final_score": 0.639703,
       "decision": "excluded",
       "exclusion_reason": "consecutive_genre_run",
-      "selected_alternative_rank": 4284
+      "selected_alternative_rank": 3910
     },
     {
       "score_rank": 93,
-      "track_id": "TP9nKzg6RJ48oYlZ",
-      "final_score": 0.63634,
+      "track_id": "vkwNyvA0jKOLfSDu",
+      "final_score": 0.639464,
       "decision": "excluded",
       "exclusion_reason": "consecutive_genre_run",
-      "selected_alternative_rank": 4284
+      "selected_alternative_rank": 3910
     },
     {
       "score_rank": 94,
-      "track_id": "oqoqv4OXrs69cP66",
-      "final_score": 0.636278,
+      "track_id": "pLwqlIyZ1ODzyo8y",
+      "final_score": 0.639004,
       "decision": "excluded",
       "exclusion_reason": "consecutive_genre_run",
-      "selected_alternative_rank": 4284
+      "selected_alternative_rank": 3910
     },
     {
       "score_rank": 95,
-      "track_id": "gc9LBQeOy3F51gk4",
-      "final_score": 0.635941,
+      "track_id": "kUyu4mGZTeLvT4OH",
+      "final_score": 0.638697,
       "decision": "excluded",
       "exclusion_reason": "consecutive_genre_run",
-      "selected_alternative_rank": 4284
+      "selected_alternative_rank": 3910
     },
     {
       "score_rank": 96,
-      "track_id": "h4FVkBtXFDQSrlbX",
-      "final_score": 0.635778,
+      "track_id": "eABMD16TVN5rb4KT",
+      "final_score": 0.638639,
       "decision": "excluded",
       "exclusion_reason": "consecutive_genre_run",
-      "selected_alternative_rank": 4284
+      "selected_alternative_rank": 3910
     },
     {
       "score_rank": 97,
-      "track_id": "CJkSYIUOtzB1IKTS",
-      "final_score": 0.635748,
+      "track_id": "Oa3WjjG6GreWw3Bf",
+      "final_score": 0.637809,
       "decision": "excluded",
       "exclusion_reason": "consecutive_genre_run",
-      "selected_alternative_rank": 4284
+      "selected_alternative_rank": 3910
     },
     {
       "score_rank": 98,
-      "track_id": "dQUNiihhNbCIbtOF",
-      "final_score": 0.635567,
+      "track_id": "pj4i2c5OmthxRh77",
+      "final_score": 0.63772,
       "decision": "excluded",
       "exclusion_reason": "consecutive_genre_run",
-      "selected_alternative_rank": 4284
+      "selected_alternative_rank": 3910
     },
     {
       "score_rank": 99,
-      "track_id": "eABMD16TVN5rb4KT",
-      "final_score": 0.634455,
+      "track_id": "Rhh4uZc5eh26n0RK",
+      "final_score": 0.63758,
       "decision": "excluded",
       "exclusion_reason": "consecutive_genre_run",
-      "selected_alternative_rank": 4284
+      "selected_alternative_rank": 3910
     },
     {
       "score_rank": 100,
-      "track_id": "IRdXoGT7rx5IWzVd",
-      "final_score": 0.634384,
+      "track_id": "dQUNiihhNbCIbtOF",
+      "final_score": 0.637554,
       "decision": "excluded",
       "exclusion_reason": "consecutive_genre_run",
-      "selected_alternative_rank": 4284
+      "selected_alternative_rank": 3910
     }
   ]
 }

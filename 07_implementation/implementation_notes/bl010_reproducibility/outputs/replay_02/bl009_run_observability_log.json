@@ -1,9 +1,9 @@
 {
   "run_metadata": {
-    "run_id": "BL009-OBSERVE-20260327-001949-245136",
+    "run_id": "BL009-OBSERVE-20260327-012022-799113",
     "task": "BL-009",
-    "generated_at_utc": "2026-03-27T00:19:49Z",
-    "elapsed_seconds": 1.177,
+    "generated_at_utc": "2026-03-27T01:20:22Z",
+    "elapsed_seconds": 1.019,
     "observability_schema_version": "bl009-observability-v1",
     "observability_scope": "artifact-level deterministic audit log",
     "bootstrap_mode": true,
@@ -25,11 +25,11 @@
     },
     "optional_dependency_availability": {},
     "upstream_stage_run_ids": {
-      "BL-004": "BL004-PROFILE-20260327-001934-638386",
-      "BL-005": "BL005-FILTER-20260327-001935-490840",
-      "BL-006": "BL006-SCORE-20260327-001939-245101",
-      "BL-007": "BL007-ASSEMBLE-20260327-001946-515238",
-      "BL-008": "BL008-EXPLAIN-20260327-001948-002493"
+      "BL-004": "BL004-PROFILE-20260327-012004-322221",
+      "BL-005": "BL005-FILTER-20260327-012005-877707",
+      "BL-006": "BL006-SCORE-20260327-012013-133231",
+      "BL-007": "BL007-ASSEMBLE-20260327-012020-128254",
+      "BL-008": "BL008-EXPLAIN-20260327-012021-625897"
     },
     "config_source": "environment",
     "run_config_path": null,
@@ -284,7 +284,7 @@
     },
     "profile": {
       "task": "BL-004",
-      "run_id": "BL004-PROFILE-20260327-001934-638386",
+      "run_id": "BL004-PROFILE-20260327-012004-322221",
       "user_id": "214f23jw73wgv4vdpcjabds2a",
       "diagnostics": {
         "events_total": 1064,
@@ -304,7 +304,7 @@
         },
         "key_aggregation_method": "weighted_circular_mean",
         "total_effective_weight": 2322.377778,
-        "elapsed_seconds": 0.025
+        "elapsed_seconds": 0.045
       },
       "seed_summary": {
         "counts_by_interaction_type": {
@@ -368,7 +368,7 @@
     },
     "retrieval": {
       "task": "BL-005",
-      "run_id": "BL005-FILTER-20260327-001935-490840",
+      "run_id": "BL005-FILTER-20260327-012005-877707",
       "counts": {
         "candidate_rows_total": 109269,
         "seed_tracks_excluded": 1064,
@@ -411,7 +411,7 @@
     },
     "scoring": {
       "task": "BL-006",
-      "run_id": "BL006-SCORE-20260327-001939-245101",
+      "run_id": "BL006-SCORE-20260327-012013-133231",
       "counts": {
         "candidates_scored": 70680
       },
@@ -537,7 +537,7 @@
     },
     "assembly": {
       "task": "BL-007",
-      "run_id": "BL007-ASSEMBLE-20260327-001946-515238",
+      "run_id": "BL007-ASSEMBLE-20260327-012020-128254",
       "counts": {
         "candidates_evaluated": 70680,
         "tracks_included": 10,
@@ -563,7 +563,7 @@
     },
     "transparency": {
       "task": "BL-008",
-      "run_id": "BL008-EXPLAIN-20260327-001948-002493",
+      "run_id": "BL008-EXPLAIN-20260327-012021-625897",
       "playlist_track_count": 10,
       "top_contributor_distribution": {
         "Lead genre match": 4,
@@ -733,12 +733,12 @@
     "primary_outputs": {
       "playlist": {
         "path": "07_implementation/implementation_notes/bl007_playlist/outputs/bl007_playlist.json",
-        "sha256": "42204D10B3B11D7FD58E96A13F41A26BA418551001476E45C36FE95944292522",
+        "sha256": "986E8550245EA579729E8E1625A978B90F8EAC5459A5D4A5989A9CEBCA2A1261",
         "size_bytes": 2037
       },
       "explanation_payloads": {
         "path": "07_implementation/implementation_notes/bl008_transparency/outputs/bl008_explanation_payloads.json",
-        "sha256": "27FAE83320BF506D5061C495CA5A994DFADF612682373ACDA4A6C11F1184EAA0",
+        "sha256": "A5F0F3D0559478000A58DE4A478EF25FE7EFC089E911EE9066195122BB403F6E",
         "size_bytes": 33206
       }
     },
@@ -763,23 +763,23 @@
     "supporting_outputs": {
       "profile": {
         "path": "07_implementation/implementation_notes/bl004_profile/outputs/bl004_preference_profile.json",
-        "sha256": "476B12C896EB046333594ADBE26F98C9D410B450F464E1D88DA03D67E8B089D0"
+        "sha256": "4C4EE04D8D618F6F57194D2F5729BE1D463271AB4019DD1F1ABABA2453700819"
       },
       "retrieval_diagnostics": {
         "path": "07_implementation/implementation_notes/bl005_retrieval/outputs/bl005_candidate_diagnostics.json",
-        "sha256": "0252D8A3BBB4421BE996382877CBFDFD1C416BA8E3B90D8A16257C2777F1257B"
+        "sha256": "5BCA1A2F86A87615062D058D0B41F64C0687FD00D64B8A4B35F102A953041990"
       },
       "score_summary": {
         "path": "07_implementation/implementation_notes/bl006_scoring/outputs/bl006_score_summary.json",
-        "sha256": "602954FE388161F0EF5EB3BF9587D6A226AAB723F47713BA71F9A8945B7C2D22"
+        "sha256": "CE9B78E06327F714633E2136979DDF6F28C96B92F999F009B037677B0BA193EC"
       },
       "assembly_report": {
         "path": "07_implementation/implementation_notes/bl007_playlist/outputs/bl007_assembly_report.json",
-        "sha256": "415241F2F1BB834CD543308F64382E755B253E3B20288C5BB9168033BCD5C9B7"
+        "sha256": "35E5C73D0E021B7F17BD463CBA24ABE67F3D982C42A6F9FE1DB83D3798920B43"
       },
       "explanation_summary": {
         "path": "07_implementation/implementation_notes/bl008_transparency/outputs/bl008_explanation_summary.json",
-        "sha256": "15EF404DA07003E0B969ED4C96A7A0A7423AE0F04B1021B137A01E68A1E1BBF2"
+        "sha256": "A5DF37AF58B2DDC797D5802779D6487EE8795BBECD4E78DA5485FA9BBCAD2E85"
       },
       "data_layer_coverage": {
         "path": null,

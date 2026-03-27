@@ -1,7 +1,7 @@
 {
   "task": "BL-011",
   "generated_from": "07_implementation/implementation_notes/bl010_reproducibility/outputs/bl010_reproducibility_config_snapshot.json",
-  "baseline_config_hash": "9D87F287D0A6826CF2B2896F14F25086D6DE9B4786E48141A6AE0DC5FCB059D1",
+  "baseline_config_hash": "04014120B1D466D3D4C6A008B7678CC6C0334300C994F87B92E0D8B014BC24F6",
   "input_source": "active_pipeline_outputs",
   "fixed_inputs": {
     "07_implementation/implementation_notes/bl004_profile/outputs/bl004_seed_trace.csv": "AFE227D05077A35D970973E060EB6C95DC6FD62E17081E0666DF9CD2D5D6BEC2",
@@ -77,17 +77,17 @@
         ]
       },
       "retrieval": {
-        "top_lead_genre_limit": 4,
-        "top_tag_limit": 8,
-        "top_genre_limit": 6,
+        "top_lead_genre_limit": 6,
+        "top_tag_limit": 10,
+        "top_genre_limit": 8,
         "numeric_thresholds": {
           "danceability": 0.15,
           "energy": 0.15,
           "valence": 0.15,
-          "tempo": 12.0,
-          "key": 1.0,
+          "tempo": 15.0,
+          "key": 1.5,
           "mode": 0.5,
-          "duration_ms": 25000.0
+          "duration_ms": 30000.0
         },
         "numeric_feature_mapping": {
           "danceability": "danceability",
@@ -99,7 +99,7 @@
           "duration_ms": "duration_ms"
         },
         "numeric_features_enabled": true,
-        "keep_rule": "keep if not seed and (semantic_score >= 3 or (semantic_score >= 1 and numeric_pass_count >= 5))",
+        "keep_rule": "keep if not seed and (semantic_score >= 3 or (semantic_score >= 1 and numeric_pass_count >= 4))",
         "semantic_source": "ds001_tags_and_genres_columns",
         "threshold_scale": 1.0
       },
@@ -108,10 +108,10 @@
           "danceability": 0.15,
           "energy": 0.15,
           "valence": 0.15,
-          "tempo": 12.0,
-          "key": 1.0,
+          "tempo": 15.0,
+          "key": 1.5,
           "mode": 0.5,
-          "duration_ms": 25000.0
+          "duration_ms": 30000.0
         },
         "numeric_feature_mapping": {
           "danceability": "danceability",
@@ -187,8 +187,8 @@
       },
       "assembly": {
         "target_size": 10,
-        "min_score_threshold": 0.38,
-        "max_per_genre": 3,
+        "min_score_threshold": 0.35,
+        "max_per_genre": 4,
         "max_consecutive": 2
       },
       "expected_effect": "reference"
@@ -241,17 +241,17 @@
         ]
       },
       "retrieval": {
-        "top_lead_genre_limit": 4,
-        "top_tag_limit": 8,
-        "top_genre_limit": 6,
+        "top_lead_genre_limit": 6,
+        "top_tag_limit": 10,
+        "top_genre_limit": 8,
         "numeric_thresholds": {
           "danceability": 0.15,
           "energy": 0.15,
           "valence": 0.15,
-          "tempo": 12.0,
-          "key": 1.0,
+          "tempo": 15.0,
+          "key": 1.5,
           "mode": 0.5,
-          "duration_ms": 25000.0
+          "duration_ms": 30000.0
         },
         "numeric_feature_mapping": {
           "danceability": "danceability",
@@ -263,7 +263,7 @@
           "duration_ms": "duration_ms"
         },
         "numeric_features_enabled": true,
-        "keep_rule": "keep if not seed and (semantic_score >= 3 or (semantic_score >= 1 and numeric_pass_count >= 5))",
+        "keep_rule": "keep if not seed and (semantic_score >= 3 or (semantic_score >= 1 and numeric_pass_count >= 4))",
         "semantic_source": "ds001_tags_and_genres_columns",
         "threshold_scale": 1.0
       },
@@ -272,10 +272,10 @@
           "danceability": 0.15,
           "energy": 0.15,
           "valence": 0.15,
-          "tempo": 12.0,
-          "key": 1.0,
+          "tempo": 15.0,
+          "key": 1.5,
           "mode": 0.5,
-          "duration_ms": 25000.0
+          "duration_ms": 30000.0
         },
         "numeric_feature_mapping": {
           "danceability": "danceability",
@@ -351,8 +351,8 @@
       },
       "assembly": {
         "target_size": 10,
-        "min_score_threshold": 0.38,
-        "max_per_genre": 3,
+        "min_score_threshold": 0.35,
+        "max_per_genre": 4,
         "max_consecutive": 2
       },
       "expected_effect": "profile and ranking shift away from influence-steered indie/alternative emphasis"
@@ -406,17 +406,17 @@
         ]
       },
       "retrieval": {
-        "top_lead_genre_limit": 4,
-        "top_tag_limit": 8,
-        "top_genre_limit": 6,
+        "top_lead_genre_limit": 6,
+        "top_tag_limit": 10,
+        "top_genre_limit": 8,
         "numeric_thresholds": {
           "danceability": 0.15,
           "energy": 0.15,
           "valence": 0.15,
-          "tempo": 12.0,
-          "key": 1.0,
+          "tempo": 15.0,
+          "key": 1.5,
           "mode": 0.5,
-          "duration_ms": 25000.0
+          "duration_ms": 30000.0
         },
         "numeric_feature_mapping": {
           "danceability": "danceability",
@@ -428,7 +428,7 @@
           "duration_ms": "duration_ms"
         },
         "numeric_features_enabled": true,
-        "keep_rule": "keep if not seed and (semantic_score >= 3 or (semantic_score >= 1 and numeric_pass_count >= 5))",
+        "keep_rule": "keep if not seed and (semantic_score >= 3 or (semantic_score >= 1 and numeric_pass_count >= 4))",
         "semantic_source": "ds001_tags_and_genres_columns",
         "threshold_scale": 1.0
       },
@@ -437,10 +437,10 @@
           "danceability": 0.15,
           "energy": 0.15,
           "valence": 0.15,
-          "tempo": 12.0,
-          "key": 1.0,
+          "tempo": 15.0,
+          "key": 1.5,
           "mode": 0.5,
-          "duration_ms": 25000.0
+          "duration_ms": 30000.0
         },
         "numeric_feature_mapping": {
           "danceability": "danceability",
@@ -528,8 +528,8 @@
       },
       "assembly": {
         "target_size": 10,
-        "min_score_threshold": 0.38,
-        "max_per_genre": 3,
+        "min_score_threshold": 0.35,
+        "max_per_genre": 4,
         "max_consecutive": 2
       },
       "expected_effect": "tracks with stronger fit on the boosted component should gain score contribution and rank position"
@@ -583,17 +583,17 @@
         ]
       },
       "retrieval": {
-        "top_lead_genre_limit": 4,
-        "top_tag_limit": 8,
-        "top_genre_limit": 6,
+        "top_lead_genre_limit": 6,
+        "top_tag_limit": 10,
+        "top_genre_limit": 8,
         "numeric_thresholds": {
           "danceability": 0.15,
           "energy": 0.15,
           "valence": 0.15,
-          "tempo": 12.0,
-          "key": 1.0,
+          "tempo": 15.0,
+          "key": 1.5,
           "mode": 0.5,
-          "duration_ms": 25000.0
+          "duration_ms": 30000.0
         },
         "numeric_feature_mapping": {
           "danceability": "danceability",
@@ -605,7 +605,7 @@
           "duration_ms": "duration_ms"
         },
         "numeric_features_enabled": true,
-        "keep_rule": "keep if not seed and (semantic_score >= 3 or (semantic_score >= 1 and numeric_pass_count >= 5))",
+        "keep_rule": "keep if not seed and (semantic_score >= 3 or (semantic_score >= 1 and numeric_pass_count >= 4))",
         "semantic_source": "ds001_tags_and_genres_columns",
         "threshold_scale": 0.75
       },
@@ -614,10 +614,10 @@
           "danceability": 0.15,
           "energy": 0.15,
           "valence": 0.15,
-          "tempo": 12.0,
-          "key": 1.0,
+          "tempo": 15.0,
+          "key": 1.5,
           "mode": 0.5,
-          "duration_ms": 25000.0
+          "duration_ms": 30000.0
         },
         "numeric_feature_mapping": {
           "danceability": "danceability",
@@ -693,8 +693,8 @@
       },
       "assembly": {
         "target_size": 10,
-        "min_score_threshold": 0.38,
-        "max_per_genre": 3,
+        "min_score_threshold": 0.35,
+        "max_per_genre": 4,
         "max_consecutive": 2
       },
       "expected_effect": "candidate pool should shrink and playlist overlap should reduce or reorder"
@@ -748,17 +748,17 @@
         ]
       },
       "retrieval": {
-        "top_lead_genre_limit": 4,
-        "top_tag_limit": 8,
-        "top_genre_limit": 6,
+        "top_lead_genre_limit": 6,
+        "top_tag_limit": 10,
+        "top_genre_limit": 8,
         "numeric_thresholds": {
           "danceability": 0.15,
           "energy": 0.15,
           "valence": 0.15,
-          "tempo": 12.0,
-          "key": 1.0,
+          "tempo": 15.0,
+          "key": 1.5,
           "mode": 0.5,
-          "duration_ms": 25000.0
+          "duration_ms": 30000.0
         },
         "numeric_feature_mapping": {
           "danceability": "danceability",
@@ -770,7 +770,7 @@
           "duration_ms": "duration_ms"
         },
         "numeric_features_enabled": true,
-        "keep_rule": "keep if not seed and (semantic_score >= 3 or (semantic_score >= 1 and numeric_pass_count >= 5))",
+        "keep_rule": "keep if not seed and (semantic_score >= 3 or (semantic_score >= 1 and numeric_pass_count >= 4))",
         "semantic_source": "ds001_tags_and_genres_columns",
         "threshold_scale": 1.25
       },
@@ -779,10 +779,10 @@
           "danceability": 0.15,
           "energy": 0.15,
           "valence": 0.15,
-          "tempo": 12.0,
-          "key": 1.0,
+          "tempo": 15.0,
+          "key": 1.5,
           "mode": 0.5,
-          "duration_ms": 25000.0
+          "duration_ms": 30000.0
         },
         "numeric_feature_mapping": {
           "danceability": "danceability",
@@ -858,8 +858,8 @@
       },
       "assembly": {
         "target_size": 10,
-        "min_score_threshold": 0.38,
-        "max_per_genre": 3,
+        "min_score_threshold": 0.35,
+        "max_per_genre": 4,
         "max_consecutive": 2
       },
       "expected_effect": "candidate pool should expand and downstream ranking or playlist composition should change"

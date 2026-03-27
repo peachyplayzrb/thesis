@@ -8,7 +8,7 @@ Ordering convention (standardized 2026-03-24):
 - New entries must be appended at the end; historical entries remain unchanged except for explicit correction records.
 
 Maintenance snapshot (2026-03-27):
-- Highest change ID currently present: `C-185`
+- Highest change ID currently present: `C-188`
 - Known legacy correction applied in this file: prior duplicate `C-079` entry has been normalized to `C-135` for unique-ID compliance.
 
 ## C-001
@@ -38,6 +38,9 @@ Maintenance snapshot (2026-03-27):
 | C-183 | 2026-03-27 | Copilot | Started implementation-alignment cleanup pass: locked v1f as canonical baseline across backlog/setup/run-config status docs, marked v1d snapshot sections as historical, and clarified v2a as experimental pending explicit promotion. |
 | C-184 | 2026-03-27 | Copilot | Synchronized docs/governance evidence after external v2a run wave: logged EXP-049, updated backlog posture with latest experimental run IDs and pass metrics, and preserved v1f as canonical reporting baseline. |
 | C-185 | 2026-03-27 | Copilot | Completed docs/governance alignment to current state: resolved D-032 vs D-033 baseline wording drift, externalized superseded v1d snapshot into historical notes, added BL-010/BL-011 pinning manifest, added run-config/profile lifecycle and retention policy docs, and added BL-013 run-wave manifest without changing runtime code or deleting artifacts. |
+| C-186 | 2026-03-27 | Copilot | Workspace environment cleanup: consolidated six scattered archive folders into `_deep_archive_march2026/`, pruned BL-013 run logs from 117 to 10 most recent, moved `_archive_cleanup_staging_2026-03-26/` out of workspace to parent folder, deleted orphaned workspace-root `07_implementation/` (older duplicate of canonical copy), moved 6 dated admin bloat files into `00_admin/archives/`, and cleaned 21 `__pycache__` directories from project source. Updated file_map.md to reflect new layout. |
+| C-187 | 2026-03-27 | Copilot | Document-consistency pass: re-ran BL-013 on v1f with seed refresh and refreshed BL-010/BL-011 via active freshness suite (`BL-FRESHNESS-SUITE-20260327-012201`, 19/19 pass), populated Chapter 4 EP matrix rows with current artifact evidence, corrected Chapter 5 stale baseline wording, authored thesis abstract, and archived stale `07_implementation/IMPLEMENTATION_STATE_2026-03-24.md` plus `07_implementation/implementation_plan.md` into `_deep_archive_march2026/`. |
+| C-188 | 2026-03-27 | Copilot | Closed UI-003 at control-record level by adding Chapter 3 to 5 claim-verdict matrix and chapter-targeted hardening notes (`09_quality_control/ui003_claim_verdicts_ch3_ch5.md`, `09_quality_control/ui003_chapter_hardening_notes_ch3_ch5.md`) and synchronizing admin status surfaces (`unresolved_issues.md`, `thesis_state.md`, `backlog.md`, `experiment_log.md`). |
 ## C-162
 - date: 2026-03-25
 - proposed_by: Copilot

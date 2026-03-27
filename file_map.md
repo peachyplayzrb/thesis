@@ -34,12 +34,17 @@ For every tracked file, record four things:
 | `07_implementation/experiment_log.md` | active | `07_implementation/` | Canonical run-by-run implementation evidence ledger used for thesis traceability. | Added EXP-049 documenting the 2026-03-27 v2a experimental evidence wave and pass metrics while keeping v1f canonical. |
 | `07_implementation/implementation_notes/bl000_run_config/configs/profiles/CONFIG_LIFECYCLE.md` | active | `07_implementation/implementation_notes/bl000_run_config/configs/profiles/` | Lifecycle index for all run-config profile files (canonical, experimental, historical-retained). | Added to keep v1a-v1e retained but explicitly classified under D-033 policy posture. |
 | `07_implementation/implementation_notes/bl000_run_config/outputs/RUN_CONFIG_RETENTION_POLICY.md` | active | `07_implementation/implementation_notes/bl000_run_config/outputs/` | Documents retention and archival policy for timestamped run-config output artifacts. | Added policy-only guidance in this pass; no artifact deletions performed. |
-| `07_implementation/implementation_notes/bl013_entrypoint/outputs/BL013_RUN_MANIFEST.md` | active | `07_implementation/implementation_notes/bl013_entrypoint/outputs/` | Run-wave index mapping dense BL-013 run outputs to date/config/purpose groups. | Added to reduce audit ambiguity across high-volume orchestration outputs. |
+| `07_implementation/implementation_notes/bl013_entrypoint/outputs/BL013_RUN_MANIFEST.md` | active | `07_implementation/implementation_notes/bl013_entrypoint/outputs/` | Run-wave index mapping dense BL-013 run outputs to date/config/purpose groups. | 2026-03-27 cleanup: dated JSON run logs pruned from 117 to 10 most recent (20260327-series); manifest and `bl013_orchestration_run_latest.json` retained. |
 | `07_implementation/implementation_notes/bl000_run_config/docs/bl000_run_config_state_log_2026-03-25.md` | active | `07_implementation/implementation_notes/bl000_run_config/docs/` | Stage-level state log for BL-000 run-config contract and evidence. | Added 2026-03-27 alignment lock update classifying v1f active and v2a experimental. |
 | `00_admin/bl010_bl011_baseline_pinning_manifest.md` | active | `00_admin/` | Documents intentional BL-010/BL-011 pinned-snapshot divergence and reproducibility context. | Added to formalize historical pinning rationale while keeping v1f canonical reporting posture. |
 | `00_admin/change_log.md` | active | `00_admin/` | Canonical C-series governance log for tracked implementation changes. | Updated maintenance snapshot and added C-185 entry for this docs/governance alignment implementation pass. |
 | `00_admin/decision_log.md` | active | `00_admin/` | Canonical D-series governance log for implementation decisions. | Updated maintenance snapshot and added D-034 retention-policy decision after D-033 baseline lock. |
 | `00_admin/unresolved_issues.md` | active | `00_admin/` | Tracks active and resolved issue posture for implementation governance. | Updated resolved UI-013 evidence wording to align with D-033 (v1f canonical, v2a experimental). |
+| `08_writing/chapter4.md` | active | `08_writing/` | Chapter 4 implementation/evaluation evidence narrative and test matrix. | Updated Table 4.3 EP rows from `pending` to evidence-backed pass records using current v1f artifacts. |
+| `08_writing/chapter5.md` | active | `08_writing/` | Chapter 5 interpretation and limitations narrative. | Reworded stale bootstrap references to current v1f evidence posture and explicit BL-010/BL-011 snapshot caveat. |
+| `08_writing/abstract.md` | active | `08_writing/` | Thesis abstract summarizing RQ, method, results, and scoped contribution. | Replaced empty stub with current evidence-aligned abstract text. |
+| `00_admin/thesis_state.md` | active | `00_admin/` | Canonical thesis execution-state register. | Updated top timestamp and added 2026-03-27 checkpoint with refreshed v1f run IDs. |
+| `07_implementation/backlog.md` | active | `07_implementation/` | Canonical implementation-control board for active scope and evidence state. | Updated latest integrated evidence chain and final-state references to 2026-03-27 v1f run IDs. |
 
 ## Archived Workspace-Level Files Touched
 
@@ -67,14 +72,14 @@ These files are outside the inner git repo root but were touched during the clea
 
 ## Reviewed Repo Archive Directories
 
-These are already archived inside the inner repo and do not need to be moved again unless you want a different archive layout.
+All prior scattered archive folders were consolidated into a single deep archive in the 2026-03-27 cleanup pass.
 
 | Path | Status | What It Does | Notes |
 | --- | --- | --- | --- |
-| `_archive_implementation_2026-03-26_pre_refactor/` | reviewed | Preserves a pre-refactor snapshot of the implementation tree, including BL-stage scripts, docs, configs, and outputs as they existed before the refactor. | Already correctly archived in-place inside the repo; useful as a dated historical backup. |
-| `_archive_run_outputs_2026-03-26_cleanup/` | reviewed | Preserves historical console/probe/run-output text captures from cleanup and validation runs. | Already correctly archived in-place inside the repo; low-value for active work but appropriate to retain as audit history. |
-
-## Reviewed Repo Scratch Files
+| `_deep_archive_march2026/` | archived | Single consolidated archive holding all six March 2026 implementation/cleanup archive folders. | Created 2026-03-27 by merging `_archive_implementation_2026-03-26_pre_refactor/`, `_archive_run_outputs_2026-03-26_cleanup/`, `07_implementation/_archive_2026-03-23/`, `07_implementation/_archive_2026-03-24/`, `07_implementation/_archive_2026-03-25/`, and `07_implementation/implementation_notes/_archive_cleanup_2026-03-26/` into one location. |
+| `00_admin/archives/` | archived | Holds dated admin bloat files moved out of the 00_admin root (sprint plans, email drafts, hardening logs, etc.) | Created 2026-03-27; contains C_080_day_3_hardening.txt, current_implementation_information_sheet_2026-03-25.md, mentor_draft_7day_sprint_2026-03-23.md, music4all_access_email_draft_2026-03-21.md, remediation_backlog_2026-03-25.md, tier1_hardening_execution_log_2026-03-25.md. |
+| `_deep_archive_march2026/IMPLEMENTATION_STATE_2026-03-24.md` | archived | Historical implementation-state snapshot moved out of active implementation surface. | Archived on 2026-03-27 during document-consistency cleanup; superseded by `07_implementation/implementation_notes/CODEBASE_ISSUES_CURRENT.md`. |
+| `_deep_archive_march2026/implementation_plan.md` | archived | Historical implementation-plan snapshot retained for traceability. | Archived on 2026-03-27 during document-consistency cleanup; active implementation posture now tracked in `07_implementation/backlog.md`. |
 
 These files are inside the inner repo scratch area. They are not core runtime files, but they do represent a meaningful UI013 tuning experiment rather than disposable junk.
 
@@ -140,7 +145,7 @@ The `07_implementation/` folder is the active implementation hub. It contains bo
 | `07_implementation/implementation_notes/` | reviewed | Contains the BL-stage implementation modules, configs, outputs, and detailed implementation artifacts that power the actual pipeline. | Core runtime implementation area; canonical. |
 | `07_implementation/backlog.md` | reviewed | Tracks BL-series implementation items, their priorities, statuses, evidence outputs, and current execution posture. | Canonical implementation-control file. |
 | `07_implementation/experiment_log.md` | reviewed | Records EXP-series implementation and evaluation runs with inputs, outputs, metrics, and traceability. | Canonical implementation evidence log. |
-| `07_implementation/implementation_plan.md` | reviewed | Describes the implementation phases, delivery strategy, definition of done, and current execution posture. | Canonical implementation-planning file. |
+| `07_implementation/implementation_plan.md` | reviewed | Historical implementation-planning document for a prior execution cycle. | Archived to `_deep_archive_march2026/implementation_plan.md`; active posture now tracked in `07_implementation/backlog.md`. |
 | `07_implementation/website.md` | reviewed | Tracks the website plan, architecture, user flows, API contract, and integration roadmap for BL-023. | Canonical plan file for website integration work. |
 | `07_implementation/website/` | reviewed | Contains the actual website frontend assets and routes used for the UI integration layer. | Active implementation area for BL-023. |
 | `07_implementation/setup/` | reviewed | Contains runtime/setup support such as the website API server and environment bootstrap logic. | Canonical setup/runtime support area. |
@@ -154,7 +159,7 @@ These files and folders are still useful, but they are either dated state snapsh
 
 | File Or Path | Status | Current Location | What It Does | Notes |
 | --- | --- | --- | --- | --- |
-| `07_implementation/IMPLEMENTATION_STATE_2026-03-24.md` | reviewed | `07_implementation/` | Dated implementation-state snapshot for a specific point in time. | Historical reference; not the primary live state file. |
+| `07_implementation/IMPLEMENTATION_STATE_2026-03-24.md` | reviewed | `_deep_archive_march2026/` | Dated implementation-state snapshot for a specific point in time. | Historical reference; archived out of the live implementation root. |
 | `07_implementation/_archive_2026-03-23/` | reviewed | `07_implementation/` | Dated archive directory containing older implementation materials retained for rollback and history. | Already correctly archived in place. |
 | `07_implementation/_archive_2026-03-24/` | reviewed | `07_implementation/` | Dated archive directory containing older implementation materials retained for rollback and history. | Already correctly archived in place. |
 | `07_implementation/_archive_2026-03-25/` | reviewed | `07_implementation/` | Dated archive directory containing older implementation materials retained for rollback and history. | Already correctly archived in place. |
@@ -166,7 +171,7 @@ The `08_writing/` folder is the active thesis-writing surface. It combines live 
 | Path | Status | What It Does | Notes |
 | --- | --- | --- | --- |
 | `08_writing/` | reviewed | Holds the active thesis draft chapters, writing plans, bibliography files, master merged draft, and final document assembly artifacts. | Canonical writing hub; should remain active. |
-| `08_writing/abstract.md` | reviewed | Stores the thesis abstract text for the final report. | Currently a placeholder shell; still the correct active location for the abstract draft. |
+| `08_writing/abstract.md` | reviewed | Stores the thesis abstract text for the final report. | Active abstract draft is now populated and aligned to the current evidence posture. |
 | `08_writing/chapter1.md` | reviewed | Holds the Chapter 1 introduction draft covering problem framing, research question, objectives, and scope. | Canonical live chapter draft. |
 | `08_writing/chapter2.md` | reviewed | Holds the Chapter 2 literature and design-rationale draft. | Canonical live chapter draft, with planning support from `chapter2_plan.md`. |
 | `08_writing/chapter3.md` | reviewed | Holds the Chapter 3 design and architecture draft. | Canonical live chapter draft, with planning support from `chapter3_plan.md`. |
@@ -449,4 +454,7 @@ This note is a concise handoff summary for the next chat so the current repo-org
 - `10_resources/` is the canonical supporting-resource library for papers, dataset bundles, extracted reference assets, and legacy/example materials.
 
 ### Workspace root: outer project folder
-- Active top-level folders now mainly consist of `thesis-main/`, `07_implementation/`, and `_archive_cleanup_staging_2026-03-26/`.
+- Active top-level folders now consist only of `thesis-main/`.
+- `_archive_cleanup_staging_2026-03-26/` was moved to the parent folder (`thesis-main (3)/`) during the 2026-03-27 cleanup pass — it is outside the workspace.
+- The partial `07_implementation/` orphan folder (workspace root level, 4 files) was deleted after confirming the canonical versions inside `thesis-main/` were newer.
+- `thesis-main/` contains the complete active project.

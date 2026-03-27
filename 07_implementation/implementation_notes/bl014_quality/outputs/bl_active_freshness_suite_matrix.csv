@@ -5,8 +5,8 @@ bl014_script_exit_zero,pass,BL-014 sanity check script return code=0
 bl014_report_pass,pass,BL-014 report overall_status is pass
 bl006_distribution_diagnostics_available,pass,BL-006 distribution diagnostics present at 07_implementation/implementation_notes/bl006_scoring/outputs/bl006_score_distribution_diagnostics.json
 bl007_assembly_pressure_diagnostics_available,pass,BL-007 assembly report present at 07_implementation/implementation_notes/bl007_playlist/outputs/bl007_assembly_report.json
-bl006_rank_cliff_advisory,pass,"BL-006 rank-cliff advisory: detected=False, rank_2_to_3_gap=0.005218"
-bl007_rank_continuity_advisory,pass,"BL-007 rank continuity advisory: max_selected_rank=8278, rank_2_to_3_score_gap=0.256398"
+bl006_rank_cliff_advisory,pass,"BL-006 rank-cliff advisory: detected=False, rank_2_to_3_gap=0.004656"
+bl007_rank_continuity_advisory,pass,"BL-007 rank continuity advisory: max_selected_rank=6776, rank_2_to_3_score_gap=0.255668"
 bl007_assembly_pressure_advisory,pass,"BL-007 assembly pressure advisory: top_100_excluded=98, dominant_reason=consecutive_genre_run"
 bl010_refresh_exit_zero,pass,BL-010 evidence refresh return code=0
 bl013_refresh_exit_zero,pass,BL-013 pipeline reapply return code=0

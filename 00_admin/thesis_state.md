@@ -1,6 +1,6 @@
 # Thesis State
 
-Last updated: 2026-03-25 22:57 UTC (tuning sweep complete; v1b profile selected)
+Last updated: 2026-03-27 01:22 UTC (v1f evidence refresh + document consistency pass)
 
 ## Official Current State
 
@@ -62,9 +62,9 @@ The active execution corpus is DS-001 (Music4All base path). DS-002 (`MSD subset
 - BL-013 now supports optional one-command seed refresh (`--refresh-seed`) to align orchestration with scope changes.
 
 ## Latest Open Priorities (Execution Snapshot)
-1. Close `UI-003` thesis-wide citation package: complete claim-citation hardening synthesis for Chapters 2 to 5 and finalize chapter-targeted improvement notes.
-2. Continue mentor sprint execution at Day 4 to Day 7 from `00_admin/mentor_draft_7day_sprint_2026-03-23.md`.
-3. Keep website integration under bounded hardening only (`WP-WEBINT-001`): bug fixes, observability clarity, and orchestration reliability without scope expansion.
+1. Continue mentor sprint execution at Day 4 to Day 7 from `00_admin/mentor_draft_7day_sprint_2026-03-23.md`.
+2. Keep website integration under bounded hardening only (`WP-WEBINT-001`): bug fixes, observability clarity, and orchestration reliability without scope expansion.
+3. Finalize Chapter 4 placeholder table completion (`Sections 4.8 to 4.10`) using current run evidence.
 4. Keep M3/M4 execution status synchronized with implementation reality and package evidence for M5 evaluation consolidation.
 
 Priority status checkpoint (2026-03-26 18:06 UTC): Tier-1 pipeline remediation remains complete. UI-013 is now closed on the active baseline: the v1b profile remains the active configuration per decision D-032, refreshed acceptance evidence passed on corrected BL-006 weighted semantics (`bl003_match_rate=0.1595`, `bl005_kept_candidates=54402`, `bl006_numeric_minus_semantic=-0.068775`, `bl008_top_label_dominance_share=0.3`, BL-014 pass), and the primary remaining submission-hardening dependency is UI-003 citation closure.
@@ -74,6 +74,10 @@ Priority status checkpoint (2026-03-26 21:03 UTC): Pipeline is now on the v1f ba
 Priority status checkpoint (2026-03-26 21:27 UTC): Freshness re-alignment is complete on the active v1f baseline. BL-010 pass (`BL010-REPRO-20260326-212523`), BL-011 pass (`BL011-CTRL-20260326-212611`), BL-013 restore pass (`BL013-ENTRYPOINT-20260326-212711-234744`), BL-014 sanity pass (`BL014-SANITY-20260326-212725-976781`), and active freshness suite pass (`BL-FRESHNESS-SUITE-20260326-212726`, `7/7`). The primary remaining submission-hardening dependency is unchanged: UI-003 citation closure.
 
 Priority status checkpoint (2026-03-26 22:30 UTC): Evidence audit completed for the canonical v1f baseline. All 10 playlist track titles resolved from `ds001_working_candidate_dataset.csv`: (1) Elton John — Candle in the Wind (1973, score 0.7269, pool rank 1), (2) Bruce Hornsby — The Way It Is (1986, score 0.7229, pool rank 2), (3) The Cars — Drive (1984, score 0.4672, pool rank 3,910), (4) Fernando Milagros — Otra Vida (2017, pool rank 3,911), (5) Maria Mena — Sorry (2004, pool rank 3,912), (6) Supertramp — It's Raining Again (1982, pool rank 4,089), (7) Loverboy — Turn Me Loose (1980, pool rank 5,808), (8) Billy Joel — I Go to Extremes (1989, pool rank 5,910), (9) U2 — Book of Your Heart (2017, pool rank 6,638), (10) Bruce Hornsby — The Valley Road (1988, pool rank 6,776). Rank cliff confirmed at position 3 (pool rank 3,910) due to genre-diversity forcing. Bruce Hornsby appears at positions 2 and 10 (no `max_per_artist` rule configured — known limitation). BL-010/BL-011 config-snapshot divergence documented: BL-010 internal replays use 70,680 candidates, BL-011 baseline uses 33,096, canonical v1f uses 46,776 — divergence caused by pinned config snapshots captured before v1f was finalised; `deterministic_match` and `all_variant_shifts_observable` claims remain valid against their respective pinned states. Dissertation claim strengths packaged for Chapter 4/5 use: strongly supported (determinism, explanation transparency, controllability directionality, observability completeness); moderately supported (diversity enforcement, 84% alignment-miss rate as documented limitation); weakly supported (universal applicability, qualitative playlist judgements). Remaining open dependency unchanged: UI-003 citation closure. Logs updated: C-182 / EXP-048.
+
+Priority status checkpoint (2026-03-27 01:22 UTC): Canonical v1f refresh wave completed for current documentation hardening. BL-013 pass (`BL013-ENTRYPOINT-20260327-012149-023331`), BL-014 sanity pass (`BL014-SANITY-20260327-011939-797165`, `22/22`), BL-010 reproducibility pass (`BL010-REPRO-20260327-011941`), BL-011 controllability pass (`BL011-CTRL-20260327-012056`), and active freshness suite pass (`BL-FRESHNESS-SUITE-20260327-012201`, `19/19`). UI-003 remains the primary open submission-hardening dependency.
+
+Priority status checkpoint (2026-03-27 03:05 UTC): UI-003 citation package is closed at control-record level. Chapter 3 to 5 claim-verdict matrix and chapter-targeted hardening notes are now logged in `09_quality_control/ui003_claim_verdicts_ch3_ch5.md` and `09_quality_control/ui003_chapter_hardening_notes_ch3_ch5.md`.
 
 ## Current Implementation Status
 
@@ -93,8 +97,8 @@ Priority status checkpoint (2026-03-26 22:30 UTC): Evidence audit completed for 
 - **Controllability** (BL-011 ✅): Latest pass `BL011-CTRL-20260326-215213` (`all_variant_shifts_observable=true`, 5 scenarios). Note: BL-011 internal config snapshot uses 33,096 candidates (pinned before v1f finalisation); controllability property holds on that pinned state.
 - **Post-Migration Stabilization** (2026-03-26 ✅): BL-ordered folder migration is runtime-stable. Latest v1f orchestration pass: `BL013-ENTRYPOINT-20260326-215741-269303`.
 - **Tier-1 Hardening Closure** (2026-03-25 ✅): CRI-004, CRI-002, HIGH-003, HIGH-004, and CRI-003 are implemented, validated, and logged in `00_admin/tier1_hardening_execution_log_2026-03-25.md`.
-- **Current Execution Focus** (2026-03-26 22:30 UTC): v1f baseline fully operational. Primary remaining work: UI-003 citation closure, chapter text alignment to v1f counts (46,776 candidates, 10 components, 22/22 checks), and Chapter 4/5 evidence packaging.
-- **Active Risk (Governance)**: Citation-package closure (UI-003) remains the sole submission-hardening dependency.
+- **Current Execution Focus** (2026-03-27 03:05 UTC): v1f baseline fully operational. Primary remaining work: chapter table completion and wording hardening at the known weak/mismatch locations documented in the UI-003 closure package.
+- **Active Risk (Governance)**: No active unresolved governance blocker; residual risk is execution discipline for chapter hardening completion.
 - **Implementation Quality Status**: Pipeline closed on the active v1f baseline (`run_config_ui013_tuning_v1f.json`). BL-014 passes 22/22. All 10 scoring components active. BL-010 determinism and BL-011 controllability confirmed on their respective pinned states. No open implementation closure risks.
 
 ### BL-021 Source-Scope Control State (as of 2026-03-26)
@@ -114,10 +118,10 @@ See: `07_implementation/BL020_HANDOFF_AUDIT_2026-03-21.md` for comprehensive pre
 ## Update Control
 
 - Last updated:
-2026-03-26 22:30 UTC
+2026-03-27 03:05 UTC
 
 - Reason for last update:
-(1) Added priority status checkpoint for evidence audit session (EXP-048 / C-182): resolved all 10 playlist track titles, documented BL-010/BL-011 config-snapshot candidate-count divergence, and packaged dissertation claims by strength. (2) Updated BL-020 implementation state section to reflect v1f canonical numbers (46,776 candidates, 10-component scoring, 22/22 checks, resolved playlist). (3) Updated BL-021 and Artefact Refinement Cycle as-of dates.
+(1) Recorded UI-003 closure at control-record level with Chapter 3 to 5 claim-verdict matrix and chapter-targeted hardening notes. (2) Updated latest open priorities and active risk wording to remove resolved UI-003 dependency. (3) Synchronized update timestamp.
 
 ## Locked Definitions
 - Artefact scope lock: `00_admin/Artefact_MVP_definition.md`

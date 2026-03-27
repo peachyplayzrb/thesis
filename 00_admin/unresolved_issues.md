@@ -4,19 +4,7 @@ Last updated: 2026-03-27
 
 ## Active
 
-- UI-003 (2026-03-19): Thesis-wide citation verification and literature leverage pass is not yet fully closed in control records.
-	- impact: Risk of citation overreach, underused PDF evidence, and missed opportunities to strengthen Chapters 2 to 5 before submission hardening.
-	- progress_summary:
-		1. Recovery and PDF-audit closure tasks are complete (missing/ambiguous PDF mappings resolved).
-		2. Remaining work is synthesis closure: finalize claim-level verification outputs and chapter-targeted hardening recommendations.
-	- next_action:
-		1. Complete claim-citation matrix expansion for Chapters 3 to 5.
-		2. Record verdicts (`supported`, `partially_supported`, `weak_support`, `mismatch`) for unresolved claims.
-		3. Produce final chapter-targeted insertion/rewrite/citation-swap notes.
-		4. Close package status once synthesis output is logged and cross-referenced.
-	- owner: AI + user
-	- status: open
-	- due_window: 2026-03-19 to 2026-03-29
+No active unresolved issues.
 
 
 Active-set sync note (2026-03-25 18:25 UTC): Open items are UI-003 (citation package closure) and UI-013 (pipeline optimization and evidence-hygiene closure).
@@ -29,8 +17,17 @@ Active-set sync note (2026-03-26 18:06 UTC): Open items now reduce to UI-003 onl
 Active-set sync note (2026-03-26 21:03 UTC): Open active item remains UI-003 (citation package closure). Pipeline is now stable on the v1f baseline (`run_config_ui013_tuning_v1f.json`): danceability, energy, and valence are active end-to-end in BL-005 and BL-006; BL-013 restore `BL013-ENTRYPOINT-20260326-210305-914179` and BL-014 sanity pass (`22/22`). BL-010 reproducibility pass (`BL010-REPRO-20260326-205834`); BL-011 controllability pass (`BL011-CTRL-20260326-205932`). Active freshness suite at `6/8` — non-blocking evidence-alignment caveat documented in CODEBASE_ISSUES_CURRENT.md. Planned next steps: freshness re-alignment, UI-003 citation closure, chapter alignment to v1f counts, and evaluation evidence packaging for Chapter 5.
 Active-set sync note (2026-03-26 21:27 UTC): Freshness re-alignment is complete. BL-010 pass (`BL010-REPRO-20260326-212523`), BL-011 pass (`BL011-CTRL-20260326-212611`), BL-013 restore pass (`BL013-ENTRYPOINT-20260326-212711-234744`), BL-014 sanity pass (`BL014-SANITY-20260326-212725-976781`), and active freshness suite pass (`BL-FRESHNESS-SUITE-20260326-212726`, `7/7`). Open active issue remains UI-003 only.
 Active-set sync note (2026-03-26 22:30 UTC): Evidence audit completed for the canonical v1f baseline (EXP-048 / C-182). All 10 playlist track titles resolved from `ds001_working_candidate_dataset.csv`. BL-010/BL-011 config-snapshot divergence documented: BL-010 uses 70,680 candidates (pinned snapshot), BL-011 uses 33,096 (pinned snapshot), canonical v1f uses 46,776; both evaluation passes remain valid on their respective pinned states. Key chapter-alignment numbers confirmed: 46,776 filtered candidates, 10 scoring components, 22/22 sanity checks, 7/7 freshness, 1064 seeds, ~84% alignment miss rate. Dissertation claims by strength packaged. Open active issue remains UI-003 only.
+Active-set sync note (2026-03-27 01:22 UTC): v1f evidence refresh and document-consistency pass completed. BL-013 pass (`BL013-ENTRYPOINT-20260327-012149-023331`), BL-014 sanity pass (`BL014-SANITY-20260327-011939-797165`, `22/22`), BL-010 pass (`BL010-REPRO-20260327-011941`), BL-011 pass (`BL011-CTRL-20260327-012056`), and active freshness suite pass (`BL-FRESHNESS-SUITE-20260327-012201`, `19/19`). Chapter 4 EP matrix rows are now populated and abstract draft is in place. Open active issue remains UI-003 only.
+Active-set sync note (2026-03-27 03:05 UTC): UI-003 closure package is now complete at control-record level. Chapters 3 to 5 claim-verdict matrix and chapter-targeted hardening notes are logged in `09_quality_control/ui003_claim_verdicts_ch3_ch5.md` and `09_quality_control/ui003_chapter_hardening_notes_ch3_ch5.md`. No active unresolved issues remain.
 
 ## Resolved (Recent)
+
+- UI-003 (2026-03-19): Thesis-wide citation verification and literature leverage synthesis closure.
+	- resolution: Closed at control-record level. Claim-citation matrix expansion for Chapters 3 to 5 is complete, verdict labels were recorded (`supported`, `partially_supported`, `weak_support`, `mismatch`), and chapter-targeted hardening notes were documented for remaining weak/mismatch text locations.
+	- evidence:
+		1. `09_quality_control/ui003_claim_verdicts_ch3_ch5.md` (claim-level verdict matrix).
+		2. `09_quality_control/ui003_chapter_hardening_notes_ch3_ch5.md` (chapter-targeted rewrite/citation-swap notes).
+		3. Cross-reference consistency maintained with `09_quality_control/claim_evidence_map.md` and `09_quality_control/citation_checks.md`.
 
 - UI-013 (2026-03-25): Pipeline optimization and evidence-hygiene package closure on the active BL baseline.
 	- resolution: Closed. The controlled tuning sweep, BL-010/BL-011 path-semantics normalization, BL-006 transparency-contract correction, and refreshed v1b acceptance evidence now all align on one corrected active baseline.

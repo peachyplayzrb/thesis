@@ -1,32 +1,31 @@
 {
-  "run_id": "BL011-STRICTER_THRESHOLDS-BL007-20260327-002059-628747",
+  "run_id": "BL011-STRICTER_THRESHOLDS-BL007-20260327-012126-178804",
   "task": "BL-007",
   "scenario_id": "stricter_thresholds",
   "config": {
     "target_size": 10,
-    "min_score_threshold": 0.38,
-    "max_per_genre": 3,
+    "min_score_threshold": 0.35,
+    "max_per_genre": 4,
     "max_consecutive": 2
   },
   "counts": {
-    "candidates_evaluated": 18969,
+    "candidates_evaluated": 22620,
     "tracks_included": 10,
-    "tracks_excluded": 18959
+    "tracks_excluded": 22610
   },
   "rule_hits": {
     "R1_score_threshold": 0,
-    "R2_genre_cap": 2155,
-    "R3_consecutive_run": 490,
-    "R4_length_cap": 16314
+    "R2_genre_cap": 110,
+    "R3_consecutive_run": 26,
+    "R4_length_cap": 22474
   },
   "playlist_genre_mix": {
-    "classic rock": 3,
-    "electronic": 1,
-    "pop": 3,
-    "rock": 3
+    "classic rock": 4,
+    "pop": 4,
+    "rock": 2
   },
   "playlist_score_range": {
-    "max": 0.735568,
-    "min": 0.496561
+    "max": 0.741029,
+    "min": 0.648858
   }
 }

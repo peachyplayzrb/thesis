@@ -1,7 +1,7 @@
 {
-  "run_id": "BL007-ASSEMBLE-20260327-001946-515238",
-  "generated_at_utc": "2026-03-27T00:19:46Z",
-  "elapsed_seconds": 0.635,
+  "run_id": "BL007-ASSEMBLE-20260327-012020-128254",
+  "generated_at_utc": "2026-03-27T01:20:20Z",
+  "elapsed_seconds": 0.788,
   "config": {
     "target_size": 10,
     "min_score_threshold": 0.35,
@@ -71,7 +71,7 @@
     "bl006_scored_candidates.csv": "16F88709E729624230DBA9A88E8434D39FF78B6BFED8EFDB4465428A89BBDAAE"
   },
   "output_artifact_hashes": {
-    "bl007_playlist.json": "42204D10B3B11D7FD58E96A13F41A26BA418551001476E45C36FE95944292522",
+    "bl007_playlist.json": "986E8550245EA579729E8E1625A978B90F8EAC5459A5D4A5989A9CEBCA2A1261",
     "bl007_assembly_trace.csv": "6576C1D5504D2FC63E406F09D453FA568B37150D31390DED5AF092638DAFDA16",
     "bl007_assembly_detail_log.json": "770B218EE83DCFE182D6F8862E816677F59D2561364ACBB3A4BAD6A5F40E93D2"
   }

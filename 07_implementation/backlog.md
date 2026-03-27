@@ -11,11 +11,11 @@ Last updated: 2026-03-27
 - Core implementation scope is complete on the active v1f baseline.
 - Active profile baseline: `run_config_ui013_tuning_v1f.json`.
 - Latest integrated evidence chain is green:
-  - BL-013 orchestration: `BL013-ENTRYPOINT-20260326-215741-269303`
-  - BL-010 reproducibility: `BL010-REPRO-20260326-215557`
-  - BL-011 controllability: `BL011-CTRL-20260326-215213`
-  - BL-014 sanity: `BL014-SANITY-20260326-215415-562794` (`22/22`)
-  - Active freshness suite: `BL-FRESHNESS-SUITE-20260326-215416` (`7/7`)
+  - BL-013 orchestration: `BL013-ENTRYPOINT-20260327-012149-023331`
+  - BL-010 reproducibility: `BL010-REPRO-20260327-011941`
+  - BL-011 controllability: `BL011-CTRL-20260327-012056`
+  - BL-014 sanity: `BL014-SANITY-20260327-011939-797165` (`22/22`)
+  - Active freshness suite: `BL-FRESHNESS-SUITE-20260327-012201` (`19/19`)
 - Latest experimental v2a evidence wave is also green (non-canonical):
   - BL-013 orchestration: `BL013-ENTRYPOINT-20260327-002121-545346`
   - BL-010 reproducibility: `BL010-REPRO-20260327-001916`
@@ -24,7 +24,7 @@ Last updated: 2026-03-27
   - Active freshness suite: `BL-FRESHNESS-SUITE-20260327-002136` (`19/19`)
 - Current active work is bounded to:
   - BL-023 website-to-pipeline integration
-  - UI-003 thesis citation-package closure
+  - chapter hardening follow-through from the closed UI-003 package
 - BL-022, BL-024, and BL-025 remain deferred.
 - BL-015 remains out of core scope.
 
@@ -73,7 +73,7 @@ Current boundary:
 - Do not expand recommendation scope or reopen closed pipeline items.
 
 Related current non-implementation dependency:
-- `UI-003` citation-package closure remains the primary submission-hardening item outside the code backlog.
+- No active unresolved governance dependency outside the code backlog.
 
 ## Deferred
 
@@ -87,14 +87,14 @@ Related current non-implementation dependency:
 All P0 implementation items are complete. Previously active P1 implementation items for BL-013, BL-014, and BL-021 are also complete.
 
 Key final-state references:
-- Latest full-chain orchestrated run: `BL013-ENTRYPOINT-20260326-215741-269303`
-- Reproducibility: `BL010-REPRO-20260326-215557`
-- Controllability: `BL011-CTRL-20260326-215213`
-- Sanity: `BL014-SANITY-20260326-215415-562794`
-- Active freshness suite: `BL-FRESHNESS-SUITE-20260326-215416`
+- Latest full-chain orchestrated run: `BL013-ENTRYPOINT-20260327-012149-023331`
+- Reproducibility: `BL010-REPRO-20260327-011941`
+- Controllability: `BL011-CTRL-20260327-012056`
+- Sanity: `BL014-SANITY-20260327-011939-797165`
+- Active freshness suite: `BL-FRESHNESS-SUITE-20260327-012201`
 - Latest experimental (v2a) run wave: `BL013-ENTRYPOINT-20260327-002121-545346` + `BL010-REPRO-20260327-001916` + `BL011-CTRL-20260327-002019` + `BL014-SANITY-20260327-002035-164549` + `BL-FRESHNESS-SUITE-20260327-002136`
 - Semantic control-layer map: `07_implementation/implementation_notes/bl000_run_config/docs/semantic_control_map.md`
-- Current implementation summary: `07_implementation/IMPLEMENTATION_STATE_2026-03-24.md`
+- Current implementation summary: `_deep_archive_march2026/IMPLEMENTATION_STATE_2026-03-24.md` (historical snapshot)
 
 ## Notes
 

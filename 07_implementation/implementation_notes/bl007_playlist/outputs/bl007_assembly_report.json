@@ -1,22 +1,22 @@
 {
-  "run_id": "BL007-ASSEMBLE-20260327-002133-441090",
-  "generated_at_utc": "2026-03-27T00:21:33Z",
-  "elapsed_seconds": 0.491,
+  "run_id": "BL007-ASSEMBLE-20260327-012159-451906",
+  "generated_at_utc": "2026-03-27T01:21:59Z",
+  "elapsed_seconds": 0.313,
   "config": {
     "target_size": 10,
-    "min_score_threshold": 0.38,
-    "max_per_genre": 3,
+    "min_score_threshold": 0.35,
+    "max_per_genre": 4,
     "max_consecutive": 2
   },
   "counts": {
-    "candidates_evaluated": 32952,
+    "candidates_evaluated": 46776,
     "tracks_included": 10,
-    "tracks_excluded": 32942
+    "tracks_excluded": 46766
   },
   "rule_hits": {
-    "R3_consecutive_run": 4281,
-    "R2_genre_cap": 3987,
-    "R4_length_cap": 24674
+    "R3_consecutive_run": 3907,
+    "R2_genre_cap": 2859,
+    "R4_length_cap": 40000
   },
   "undersized_playlist_warning": {
     "is_undersized": false,
@@ -24,39 +24,39 @@
     "actual_size": 10,
     "shortfall": 0,
     "exclusion_reason_counts": {
-      "consecutive_genre_run": 4281,
-      "genre_cap_exceeded": 3987,
-      "length_cap_reached": 24674
+      "consecutive_genre_run": 3907,
+      "genre_cap_exceeded": 2859,
+      "length_cap_reached": 40000
     },
     "reasons": []
   },
   "playlist_genre_mix": {
-    "pop": 3,
+    "pop": 4,
     "new wave": 1,
     "classic rock": 2,
-    "rock": 3,
+    "rock": 2,
     "singer-songwriter": 1
   },
   "playlist_score_range": {
-    "max": 0.72367,
-    "min": 0.436099
+    "max": 0.726929,
+    "min": 0.447632
   },
   "rank_continuity_diagnostics": {
     "selected_ranks": [
       1,
       2,
-      4284,
-      4285,
-      4505,
-      5503,
-      6372,
-      6417,
-      6752,
-      8278
+      3910,
+      3911,
+      3912,
+      4089,
+      5808,
+      5910,
+      6638,
+      6776
     ],
-    "max_selected_rank": 8278,
-    "median_selected_rank": 5503,
-    "rank_2_to_3_score_gap": 0.256398,
+    "max_selected_rank": 6776,
+    "median_selected_rank": 4089,
+    "rank_2_to_3_score_gap": 0.255668,
     "rank_cliff_detected": true
   },
   "assembly_pressure_diagnostics": {
@@ -68,11 +68,11 @@
     "dominant_top_100_exclusion_reason": "consecutive_genre_run"
   },
   "input_artifact_hashes": {
-    "bl006_scored_candidates.csv": "5A65F905CFC11EC1B898D21AE2844FB490164FF59463BE9C29053C6457089458"
+    "bl006_scored_candidates.csv": "0EDA8EC6521E13873227A4387D8EA1290F13F324C61E5344AAEC46A5353EF302"
   },
   "output_artifact_hashes": {
-    "bl007_playlist.json": "5783A7D23795602A91BFA424B18A3E56DFA0554F8278144AD3B57E2E3F038000",
-    "bl007_assembly_trace.csv": "09CAE7DD9DD1B15A65E4FC316B6C302BA1C7B8F297AD94EA06D37A91F9196166",
-    "bl007_assembly_detail_log.json": "3234FB9B5C4BAD5CF98B5CCB2E098169CC7EA16D903BCCA8CE0C9AFA43A84729"
+    "bl007_playlist.json": "01F0AE5D82275F733EBC34416137A858107A994B61CDC5E38EFA88B28CE8FCBA",
+    "bl007_assembly_trace.csv": "404FA9124B052AB53B4D3FB6C2F729126EF288A753ED0C0881954034C4CC761D",
+    "bl007_assembly_detail_log.json": "F70180F7D46A0FE2922B1E6C3CF58187AF0F14B65871EC2929490D179D9994CD"
   }
 }

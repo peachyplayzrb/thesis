@@ -1,7 +1,7 @@
 {
-  "run_id": "BL011-VALENCE_WEIGHT_UP-BL004-20260327-002039-190430",
+  "run_id": "BL011-VALENCE_WEIGHT_UP-BL004-20260327-012117-150546",
   "task": "BL-004",
-  "generated_at_utc": "2026-03-27T00:20:39Z",
+  "generated_at_utc": "2026-03-27T01:21:17Z",
   "user_id": "active_user",
   "scenario_id": "valence_weight_up",
   "input_artifacts": {

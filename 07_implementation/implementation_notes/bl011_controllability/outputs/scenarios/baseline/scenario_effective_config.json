@@ -31,30 +31,30 @@
     ]
   },
   "retrieval": {
-    "top_lead_genre_limit": 4,
-    "top_tag_limit": 8,
-    "top_genre_limit": 6,
+    "top_lead_genre_limit": 6,
+    "top_tag_limit": 10,
+    "top_genre_limit": 8,
     "threshold_scale": 1.0,
     "numeric_thresholds": {
       "danceability": 0.15,
       "energy": 0.15,
       "valence": 0.15,
-      "tempo": 12.0,
-      "key": 1.0,
+      "tempo": 15.0,
+      "key": 1.5,
       "mode": 0.5,
-      "duration_ms": 25000.0
+      "duration_ms": 30000.0
     },
-    "keep_rule": "keep if not seed and (semantic_score >= 3 or (semantic_score >= 1 and numeric_pass_count >= 5))"
+    "keep_rule": "keep if not seed and (semantic_score >= 3 or (semantic_score >= 1 and numeric_pass_count >= 4))"
   },
   "scoring": {
     "numeric_thresholds": {
       "danceability": 0.15,
       "energy": 0.15,
       "valence": 0.15,
-      "tempo": 12.0,
-      "key": 1.0,
+      "tempo": 15.0,
+      "key": 1.5,
       "mode": 0.5,
-      "duration_ms": 25000.0
+      "duration_ms": 30000.0
     },
     "component_weights": {
       "danceability": 0.04,
@@ -73,8 +73,8 @@
   },
   "assembly": {
     "target_size": 10,
-    "min_score_threshold": 0.38,
-    "max_per_genre": 3,
+    "min_score_threshold": 0.35,
+    "max_per_genre": 4,
     "max_consecutive": 2
   }
 }
