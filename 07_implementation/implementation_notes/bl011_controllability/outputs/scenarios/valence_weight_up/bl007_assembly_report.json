@@ -1,31 +1,32 @@
 {
-  "run_id": "BL011-VALENCE_WEIGHT_UP-BL007-20260326-215245-949828",
+  "run_id": "BL011-VALENCE_WEIGHT_UP-BL007-20260327-002046-204281",
   "task": "BL-007",
   "scenario_id": "valence_weight_up",
   "config": {
     "target_size": 10,
-    "min_score_threshold": 0.35,
-    "max_per_genre": 4,
+    "min_score_threshold": 0.38,
+    "max_per_genre": 3,
     "max_consecutive": 2
   },
   "counts": {
-    "candidates_evaluated": 33096,
+    "candidates_evaluated": 26886,
     "tracks_included": 10,
-    "tracks_excluded": 33086
+    "tracks_excluded": 26876
   },
   "rule_hits": {
     "R1_score_threshold": 0,
-    "R2_genre_cap": 39,
-    "R3_consecutive_run": 1,
-    "R4_length_cap": 33046
+    "R2_genre_cap": 884,
+    "R3_consecutive_run": 134,
+    "R4_length_cap": 25858
   },
   "playlist_genre_mix": {
-    "classic rock": 4,
-    "pop": 4,
-    "rock": 2
+    "classic rock": 3,
+    "new wave": 1,
+    "pop": 3,
+    "rock": 3
   },
   "playlist_score_range": {
-    "max": 0.775981,
-    "min": 0.671271
+    "max": 0.771314,
+    "min": 0.550799
   }
 }

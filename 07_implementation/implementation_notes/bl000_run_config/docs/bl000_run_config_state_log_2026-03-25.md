@@ -229,3 +229,22 @@ Status:
 
 ### Status
 - BL-000 run-config is current, and the active canonical contract now reflects the post-seven-feature BL-005 retune (`v1f`) rather than the earlier v1b/v1d snapshots.
+
+## Update - 2026-03-27 (Alignment Lock)
+
+### Baseline classification
+- canonical active baseline: `configs/profiles/run_config_ui013_tuning_v1f.json`
+- experimental profile: `configs/profiles/run_config_ui013_tuning_v2a_retrieval_tight.json`
+- historical references: earlier v1/v1a/v1b/v1d/v1e iterations remain for traceability only
+
+### Operational reporting rule
+- Implementation reporting and governance snapshots must cite v1f evidence when stating current behavior.
+- v2a can be cited only as experimental tuning context unless explicitly promoted by a new decision record.
+
+### Evidence pointers
+- latest integrated v1f chain tracked in backlog:
+  - BL-013: `BL013-ENTRYPOINT-20260326-215741-269303`
+  - BL-010: `BL010-REPRO-20260326-215557`
+  - BL-011: `BL011-CTRL-20260326-215213`
+  - BL-014: `BL014-SANITY-20260326-215415-562794`
+  - freshness suite: `BL-FRESHNESS-SUITE-20260326-215416`

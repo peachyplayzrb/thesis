@@ -7,8 +7,8 @@ Ordering convention (standardized 2026-03-24):
 - Entry order reflects historical insertion timing and may not be numerically contiguous in older sections.
 - New entries must be appended at the end; historical entries remain unchanged except for explicit correction records.
 
-Maintenance snapshot (2026-03-26):
-- Highest change ID currently present: `C-182`
+Maintenance snapshot (2026-03-27):
+- Highest change ID currently present: `C-185`
 - Known legacy correction applied in this file: prior duplicate `C-079` entry has been normalized to `C-135` for unique-ID compliance.
 
 ## C-001
@@ -35,6 +35,9 @@ Maintenance snapshot (2026-03-26):
 | C-180 | 2026-03-26 21:03 | Copilot | Implemented v1f numeric retune (danceability, energy, valence activated end-to-end in BL-005 and BL-006), applied Windows WinError 1224 fix in BL-010, restored live pipeline to v1f, and updated all stage state logs and CODEBASE_ISSUES_CURRENT.md with a next-steps section and issue register. |
 | C-181 | 2026-03-26 21:27 | Copilot | Completed freshness re-alignment on the active v1f baseline (BL-010, BL-011, BL-013 restore, BL-014 freshness suite), returning active freshness status to pass and synchronizing CODEBASE_ISSUES_CURRENT.md plus admin state files. |
 | C-182 | 2026-03-26 22:30 | Copilot | Completed evidence audit for the canonical v1f baseline: resolved all 10 playlist track titles from DS-001 CSV, documented BL-010/BL-011 config-snapshot candidate-count divergence (70,680 / 33,096 vs 46,776 v1f), packaged dissertation claims by strength, and updated all admin/state logs to reflect v1f canonical evidence. |
+| C-183 | 2026-03-27 | Copilot | Started implementation-alignment cleanup pass: locked v1f as canonical baseline across backlog/setup/run-config status docs, marked v1d snapshot sections as historical, and clarified v2a as experimental pending explicit promotion. |
+| C-184 | 2026-03-27 | Copilot | Synchronized docs/governance evidence after external v2a run wave: logged EXP-049, updated backlog posture with latest experimental run IDs and pass metrics, and preserved v1f as canonical reporting baseline. |
+| C-185 | 2026-03-27 | Copilot | Completed docs/governance alignment to current state: resolved D-032 vs D-033 baseline wording drift, externalized superseded v1d snapshot into historical notes, added BL-010/BL-011 pinning manifest, added run-config/profile lifecycle and retention policy docs, and added BL-013 run-wave manifest without changing runtime code or deleting artifacts. |
 ## C-162
 - date: 2026-03-25
 - proposed_by: Copilot

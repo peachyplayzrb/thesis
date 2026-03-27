@@ -1,6 +1,31 @@
 # Implementation Information Sheet (Current Snapshot)
 
-Last updated: 2026-03-26
+Last updated: 2026-03-27
+
+## Refactor Progress - 2026-03-27
+
+This section tracks active submission-readiness cleanup work. The objective is to improve structure and remove duplication while preserving runtime behavior and artifact contracts.
+
+Completed in this pass:
+- Added shared hashing module: `bl000_shared_utils/hashing.py`.
+- Added shared parsing/normalization module: `bl000_shared_utils/parsing.py`.
+- Updated shared package exports to include new modules.
+- Refactored BL-013, BL-010, and BL-011 to consume shared hash/path utilities instead of local duplicate implementations.
+- Refactored BL-001/BL-002 ingestion helpers (`spotify_io.py`, `ingest_history_parser.py`) to use shared hash/path utilities and simplified import fallback patterns.
+- Refactored BL-003 canonical JSON hashing to use the shared hashing utility.
+
+Completed in phase-2 follow-up:
+- Added shared `parse_int` in `bl000_shared_utils/parsing.py` and removed BL-003 local duplication.
+- Replaced BL-013 and BL-014 quality-suite local `load_json` helpers with shared `bl000_shared_utils.io_utils.load_json`.
+- Standardized remaining import-bootstrap outliers to consistent `Path(__file__).parent.parent` style in active ingestion/retrieval and run-config scripts.
+- Added stage-level operational README files for all active stage folders (BL-001/002, BL-003..BL-011, BL-013, BL-014).
+- Executed BL-013 with active run-config and re-validated BL-014 sanity with full pass (22/22).
+
+Compatibility notes:
+- Uppercase hash behavior was preserved in BL-010/BL-011/BL-013 where deterministic artifact comparison expects uppercase digests.
+- External stage entrypoints and output file contracts were not renamed in this pass.
+- Validation smoke checks were run on updated scripts using `--help` to confirm import/runtime loading.
+- Note on verification command pathing: BL-013 run-config argument must be repository-relative (for example `07_implementation/...`) when invoking from workspace root to avoid duplicate path prefixing.
 
 ## Purpose
 This document explains how the active implementation currently works, what it is designed to do, how the pipeline is structured, which runtime controls govern it, what artifacts it produces, and what the latest validated execution evidence says about its current behavior.
@@ -38,6 +63,8 @@ The current implementation is a deterministic single-user playlist generation pi
 ## Superseding Update - 2026-03-26 21:03 UTC
 
 This section supersedes the older v1b/v1d snapshot details below when they conflict with the latest live state.
+
+Alignment note (2026-03-27): treat `run_config_ui013_tuning_v1f.json` as the only canonical reporting baseline for active implementation status. `run_config_ui013_tuning_v2a_retrieval_tight.json` remains an experimental profile.
 
 ### Final Live Baseline
 - BL-013 restore run: `BL013-ENTRYPOINT-20260326-210305-914179` (`pass`)
@@ -103,53 +130,13 @@ This layer governs:
 - minimum BL-003 match-rate threshold
 - deterministic stable-artifact hashing for repeatability checks
 
-## Latest Live Run Snapshot
+## Historical Snapshot (v1d; superseded)
 
-### Latest BL-013 Orchestration Run
-- Run ID: `BL013-ENTRYPOINT-20260326-200502-414835`
-- Status: `pass`
-- Generated at: `2026-03-26T20:05:02Z`
-- Elapsed time: `~11s`
-- Config path: `07_implementation/implementation_notes/bl000_run_config/configs/profiles/run_config_ui013_tuning_v1d.json`
-- Refresh-seed mode: enabled
-- Note: v1d is the semantic-rebalanced config (numeric weights halved, semantic weights boosted). Tempo dropped from explanation outputs entirely.
+Historical v1d snapshot details were moved to `07_implementation/implementation_notes/CODEBASE_ISSUES_HISTORICAL.md` to keep this file focused on the active baseline. The v1d snapshot remains retained for audit traceability and comparison.
 
-### Stage Outcome Snapshot
-- BL-003: pass, `1.932s`
-- BL-004: pass, `0.138s`
-- BL-005: pass, `3.042s`
-- BL-006: pass, `2.692s`
-- BL-007: pass, `0.720s`
-- BL-008: pass, `0.589s`
-- BL-009: pass, `0.902s`
+## Effective Configuration Reference (Non-Canonical Snapshot)
 
-### Latest Measured Runtime Counts
-- Input event rows: `11935`
-- Matched by Spotify ID: `1098`
-- Matched by metadata: `806`
-- Matched event rows: `1904`
-- Seed table rows: `1064`
-- Unmatched rows: `10031`
-- Kept candidates: `54402`
-- Candidates scored: `54402`
-- Playlist length: `10/10`
-- Explanations generated: `10`
-
-### Latest Playlist Mix
-- pop: `4`
-- soundtrack: `1`
-- singer-songwriter: `1`
-- classic rock: `2`
-- new wave: `1`
-- rock: `1`
-
-### Latest Explanation Top-Contributor Distribution
-- Lead genre match: `4`
-- Tag overlap: `3`
-- Genre overlap: `3`
-- Tempo (BPM): `0` (no longer a top contributor under v1d semantic-rebalanced weights)
-
-## Active Effective Configuration In Latest Run
+The field values below are retained as a structural reference example and should not be read as the canonical latest run-config state. For canonical current reporting, use the v1f baseline references in `07_implementation/backlog.md` and D-033 in `00_admin/decision_log.md`.
 
 ### Input Scope
 - source family: `spotify_api_export`

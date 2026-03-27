@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import csv
-import hashlib
 import json
 from datetime import datetime, timezone
 from pathlib import Path
@@ -9,15 +8,11 @@ from typing import Any, Dict, List
 
 import sys
 
-try:
-    from bl000_shared_utils.io_utils import open_text_write
-except ImportError:
-    sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-    from bl000_shared_utils.io_utils import open_text_write
+sys.path.insert(0, str(Path(__file__).parent.parent))
 
-
-def repo_root() -> Path:
-    return Path(__file__).resolve().parents[3]
+from bl000_shared_utils.hashing import sha256_of_file as shared_sha256_of_file
+from bl000_shared_utils.io_utils import open_text_write
+from bl000_shared_utils.path_utils import repo_root
 
 
 def now_utc() -> str:
@@ -25,11 +20,7 @@ def now_utc() -> str:
 
 
 def sha256_of_file(path: Path) -> str:
-    digest = hashlib.sha256()
-    with path.open("rb") as handle:
-        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
-            digest.update(chunk)
-    return digest.hexdigest().upper()
+    return shared_sha256_of_file(path, uppercase=True)
 
 
 def write_json(path: Path, payload: Any) -> None:

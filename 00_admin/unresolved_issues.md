@@ -1,6 +1,6 @@
 # Unresolved Issues
 
-Last updated: 2026-03-26 18:06 UTC
+Last updated: 2026-03-27
 
 ## Active
 
@@ -35,7 +35,7 @@ Active-set sync note (2026-03-26 22:30 UTC): Evidence audit completed for the ca
 - UI-013 (2026-03-25): Pipeline optimization and evidence-hygiene package closure on the active BL baseline.
 	- resolution: Closed. The controlled tuning sweep, BL-010/BL-011 path-semantics normalization, BL-006 transparency-contract correction, and refreshed v1b acceptance evidence now all align on one corrected active baseline.
 	- evidence:
-		1. Canonical UI-013 tuning baseline remains `07_implementation/implementation_notes/bl000_run_config/configs/profiles/run_config_ui013_tuning_v1.json`, with `run_config_ui013_tuning_v1b.json` retained as the active recommended profile per D-032.
+		1. Canonical implementation reporting baseline is now `07_implementation/implementation_notes/bl000_run_config/configs/profiles/run_config_ui013_tuning_v1f.json` per D-033 (superseding the baseline-selection aspect of D-032). `run_config_ui013_tuning_v2a_retrieval_tight.json` remains experimental.
 		2. Controlled sweep across `v1`, `v1a`, `v1b`, `v1c` remains logged in `_scratch/ui013_tuning_sweep_results.json`.
 		3. BL-010 / BL-011 path-semantics normalization and freshness evidence remains passing from 2026-03-25.
 		4. BL-006 transparency-contract correction completed on 2026-03-26 (`C-178`, `EXP-046`).

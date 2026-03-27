@@ -1,0 +1,25 @@
+{
+  "score_percentiles": {
+    "p10": 0.088286,
+    "p25": 0.16745,
+    "p50": 0.260061,
+    "p75": 0.436347,
+    "p90": 0.469667,
+    "p95": 0.495915,
+    "p99": 0.597612
+  },
+  "score_range": {
+    "max": 0.72367,
+    "min": 0.034522
+  },
+  "rank_cliff": {
+    "detected": false,
+    "rank_2_to_3_gap": 0.005218,
+    "max_gap": {
+      "between_rank": 3,
+      "next_rank": 4,
+      "score_gap": 0.007858
+    },
+    "classification": "smooth"
+  }
+}

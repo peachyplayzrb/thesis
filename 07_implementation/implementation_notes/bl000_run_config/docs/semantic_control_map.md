@@ -4,6 +4,8 @@ Schema version: run-config-v1
 Document date: 2026-03-25
 Purpose: stable, operator-facing map from semantic control groups to concrete run-config fields and stage implementations. Does not replace internal engineering naming; supplements it for thesis presentation and audit.
 
+Path and command-context note (2026-03-27): command examples in this file assume inner repo-root execution context (`.../thesis-main/thesis-main`). For outer workspace-root equivalents, use `07_implementation/implementation_notes/SETUP.md` as the canonical run-command guide.
+
 ---
 
 ## Overview

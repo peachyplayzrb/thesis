@@ -1,10 +1,10 @@
 {
-  "run_id": "BL006-SCORE-20260326-215646-918212",
+  "run_id": "BL006-SCORE-20260327-001956-311673",
   "task": "BL-006",
-  "generated_at_utc": "2026-03-26T21:56:51Z",
+  "generated_at_utc": "2026-03-27T00:20:01Z",
   "input_artifacts": {
     "profile_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl004_profile\\outputs\\bl004_preference_profile.json",
-    "profile_sha256": "8dcc34a232fb4edde44c6a5d2a371259203b3349fa54d9aac17de68d0a6122d4",
+    "profile_sha256": "78a8905504c9d4cc95f4b467a4491c3c12ef9fdbd10c311fb23f06c5edffcb8a",
     "filtered_candidates_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl005_retrieval\\outputs\\bl005_filtered_candidates.csv",
     "filtered_candidates_sha256": "f4b06c299884e662dc8fdcc85ce0fe1de7f30513906d68dc835399c7b4ae6211"
   },
@@ -141,6 +141,31 @@
       "tag_overlap_mean": 0.053807
     }
   },
+  "score_distribution_diagnostics": {
+    "score_percentiles": {
+      "p10": 0.10452,
+      "p25": 0.15783,
+      "p50": 0.227697,
+      "p75": 0.319075,
+      "p90": 0.411604,
+      "p95": 0.459419,
+      "p99": 0.534449
+    },
+    "score_range": {
+      "max": 0.743017,
+      "min": 0.00462
+    },
+    "rank_cliff": {
+      "detected": false,
+      "rank_2_to_3_gap": 0.02112,
+      "max_gap": {
+        "between_rank": 1,
+        "next_rank": 2,
+        "score_gap": 0.022587
+      },
+      "classification": "smooth"
+    }
+  },
   "top_candidates": [
     {
       "rank": 1,
@@ -223,12 +248,14 @@
       "matched_tags": "pop|electronic"
     }
   ],
-  "elapsed_seconds": 5.327,
+  "elapsed_seconds": 5.808,
   "output_files": {
-    "scored_candidates_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl006_scoring\\outputs\\bl006_scored_candidates.csv"
+    "scored_candidates_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl006_scoring\\outputs\\bl006_scored_candidates.csv",
+    "score_distribution_diagnostics_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl006_scoring\\outputs\\bl006_score_distribution_diagnostics.json"
   },
   "output_hashes_sha256": {
-    "bl006_scored_candidates.csv": "16f88709e729624230dba9a88e8434d39ff78b6bfed8efdb4465428a89bbdaae"
+    "bl006_scored_candidates.csv": "16f88709e729624230dba9a88e8434d39ff78b6bfed8efdb4465428a89bbdaae",
+    "bl006_score_distribution_diagnostics.json": "7bfc0834d31bd2e4e8dfdbba30d3cf4ddfcf0c5f9d6397ec3a3fb67466a95098"
   },
   "summary_hash_note": "summary file hash collected separately in experiment logging to avoid recursive self-reference"
 }

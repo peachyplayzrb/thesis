@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import argparse
 import importlib.util
-import json
 import subprocess
 import sys
 import time
@@ -13,16 +12,13 @@ from typing import Any
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
+from bl000_shared_utils.io_utils import load_json
 from bl000_shared_utils.report_utils import write_csv_rows, write_json_ascii
 
 
 REPO_ROOT = Path(__file__).resolve().parents[3]
 QUALITY_DIR = Path(__file__).resolve().parent
 OUTPUT_DIR = QUALITY_DIR / "outputs"
-
-
-def load_json(path: Path) -> dict[str, Any]:
-    return json.loads(path.read_text(encoding="utf-8"))
 
 
 def relpath(path: Path) -> str:
@@ -39,9 +35,12 @@ def add_check(checks: list[dict[str, str]], check_id: str, passed: bool, details
     )
 
 
-def run_python_script(script_path: Path) -> tuple[int, str]:
+def run_python_script(script_path: Path, args: list[str] | None = None) -> tuple[int, str]:
+    command = [sys.executable, str(script_path)]
+    if args:
+        command.extend(args)
     process = subprocess.run(
-        [sys.executable, str(script_path)],
+        command,
         cwd=str(REPO_ROOT),
         capture_output=True,
         text=True,
@@ -138,7 +137,7 @@ def build_current_bl011_snapshot(
     }
 
 
-def refresh_bl010_bl011_evidence() -> tuple[int, dict[str, str]]:
+def refresh_bl010_bl011_evidence() -> dict[str, Any]:
     """Refresh BL-010 and BL-011 evidence artifacts used by freshness checks."""
     bl010_script = (
         REPO_ROOT
@@ -154,16 +153,110 @@ def refresh_bl010_bl011_evidence() -> tuple[int, dict[str, str]]:
         / "bl011_controllability"
         / "run_bl011_controllability_check.py"
     )
-    bl010_return, bl010_output = run_python_script(bl010_script)
+    bl013_script = (
+        REPO_ROOT
+        / "07_implementation"
+        / "implementation_notes"
+        / "bl013_entrypoint"
+        / "run_bl013_pipeline_entrypoint.py"
+    )
+    bl013_latest_summary = (
+        REPO_ROOT
+        / "07_implementation"
+        / "implementation_notes"
+        / "bl013_entrypoint"
+        / "outputs"
+        / "bl013_orchestration_run_latest.json"
+    )
+
+    ensure_paths_exist([bl013_latest_summary], label="BL-013 latest summary")
+    bl013_latest = load_json(bl013_latest_summary)
+    bl013_args: list[str] = []
+    if bool(bl013_latest.get("refresh_seed")):
+        bl013_args.append("--refresh-seed")
+    run_config_path = bl013_latest.get("run_config_path")
+    bl010_args: list[str] = []
+    if run_config_path:
+        bl010_args.extend(["--run-config", str(run_config_path)])
+        bl013_args.extend(["--run-config", str(run_config_path)])
+
+    bl010_return, bl010_output = run_python_script(bl010_script, args=bl010_args)
     if bl010_return != 0:
-        return bl010_return, {
-            "bl010_stdout_stderr": bl010_output,
-            "bl011_stdout_stderr": "",
+        return {
+            "combined_return_code": bl010_return,
+            "bl010_return_code": bl010_return,
+            "bl013_return_code": None,
+            "bl011_return_code": None,
+            "bl013_post_bl011_return_code": None,
+            "bl010_ran": True,
+            "bl013_ran": False,
+            "bl011_ran": False,
+            "bl013_post_bl011_ran": False,
+            "outputs": {
+                "bl010_stdout_stderr": bl010_output,
+                "bl013_stdout_stderr": "",
+                "bl011_stdout_stderr": "",
+                "bl013_post_bl011_stdout_stderr": "",
+            },
         }
+
+    bl013_return, bl013_output = run_python_script(bl013_script, args=bl013_args)
+    if bl013_return != 0:
+        return {
+            "combined_return_code": bl013_return,
+            "bl010_return_code": bl010_return,
+            "bl013_return_code": bl013_return,
+            "bl011_return_code": None,
+            "bl013_post_bl011_return_code": None,
+            "bl010_ran": True,
+            "bl013_ran": True,
+            "bl011_ran": False,
+            "bl013_post_bl011_ran": False,
+            "outputs": {
+                "bl010_stdout_stderr": bl010_output,
+                "bl013_stdout_stderr": bl013_output,
+                "bl011_stdout_stderr": "",
+                "bl013_post_bl011_stdout_stderr": "",
+            },
+        }
+
     bl011_return, bl011_output = run_python_script(bl011_script)
-    return bl011_return, {
-        "bl010_stdout_stderr": bl010_output,
-        "bl011_stdout_stderr": bl011_output,
+    if bl011_return != 0:
+        return {
+            "combined_return_code": bl011_return,
+            "bl010_return_code": bl010_return,
+            "bl013_return_code": bl013_return,
+            "bl011_return_code": bl011_return,
+            "bl013_post_bl011_return_code": None,
+            "bl010_ran": True,
+            "bl013_ran": True,
+            "bl011_ran": True,
+            "bl013_post_bl011_ran": False,
+            "outputs": {
+                "bl010_stdout_stderr": bl010_output,
+                "bl013_stdout_stderr": bl013_output,
+                "bl011_stdout_stderr": bl011_output,
+                "bl013_post_bl011_stdout_stderr": "",
+            },
+        }
+
+    bl013_post_return, bl013_post_output = run_python_script(bl013_script, args=bl013_args)
+    return {
+        "combined_return_code": bl013_post_return,
+        "bl010_return_code": bl010_return,
+        "bl013_return_code": bl013_return,
+        "bl011_return_code": bl011_return,
+        "bl013_post_bl011_return_code": bl013_post_return,
+        "bl010_ran": True,
+        "bl013_ran": True,
+        "bl011_ran": True,
+        "bl013_post_bl011_ran": True,
+        "outputs": {
+            "bl010_stdout_stderr": bl010_output,
+            "bl013_stdout_stderr": bl013_output,
+            "bl011_stdout_stderr": bl011_output,
+            "bl013_post_bl011_stdout_stderr": bl013_post_output,
+        },
     }
 
 
@@ -408,13 +501,132 @@ def run_active_mode() -> int:
         "BL-014 report overall_status is pass",
     )
 
+    bl006_distribution_path = (
+        REPO_ROOT
+        / "07_implementation"
+        / "implementation_notes"
+        / "bl006_scoring"
+        / "outputs"
+        / "bl006_score_distribution_diagnostics.json"
+    )
+    bl007_report_path = (
+        REPO_ROOT
+        / "07_implementation"
+        / "implementation_notes"
+        / "bl007_playlist"
+        / "outputs"
+        / "bl007_assembly_report.json"
+    )
+
+    add_check(
+        checks,
+        "bl006_distribution_diagnostics_available",
+        bl006_distribution_path.exists(),
+        f"BL-006 distribution diagnostics present at {relpath(bl006_distribution_path)}",
+    )
+    add_check(
+        checks,
+        "bl007_assembly_pressure_diagnostics_available",
+        bl007_report_path.exists(),
+        f"BL-007 assembly report present at {relpath(bl007_report_path)}",
+    )
+
+    if bl006_distribution_path.exists():
+        bl006_distribution = load_json(bl006_distribution_path)
+        rank_cliff = bl006_distribution.get("rank_cliff", {})
+        add_check(
+            checks,
+            "bl006_rank_cliff_advisory",
+            True,
+            (
+                "BL-006 rank-cliff advisory: "
+                f"detected={bool(rank_cliff.get('detected', False))}, "
+                f"rank_2_to_3_gap={rank_cliff.get('rank_2_to_3_gap', 0.0)}"
+            ),
+        )
+
+    if bl007_report_path.exists():
+        bl007_report = load_json(bl007_report_path)
+        rank_diag = bl007_report.get("rank_continuity_diagnostics", {})
+        pressure_diag = bl007_report.get("assembly_pressure_diagnostics", {})
+        add_check(
+            checks,
+            "bl007_rank_continuity_advisory",
+            True,
+            (
+                "BL-007 rank continuity advisory: "
+                f"max_selected_rank={rank_diag.get('max_selected_rank')}, "
+                f"rank_2_to_3_score_gap={rank_diag.get('rank_2_to_3_score_gap')}"
+            ),
+        )
+        add_check(
+            checks,
+            "bl007_assembly_pressure_advisory",
+            True,
+            (
+                "BL-007 assembly pressure advisory: "
+                f"top_100_excluded={pressure_diag.get('top_100_excluded')}, "
+                f"dominant_reason={pressure_diag.get('dominant_top_100_exclusion_reason')}"
+            ),
+        )
+
     refresh_outputs: dict[str, str] = {}
-    freshness_return = run_freshness_mode()
+    freshness_initial_return = run_freshness_mode()
+    freshness_return = freshness_initial_return
+    freshness_post_refresh_return: int | None = None
     freshness_refresh_attempted = False
     freshness_auto_refreshed = False
-    if freshness_return != 0:
+    refresh_result: dict[str, Any] | None = None
+
+    if freshness_initial_return != 0:
         freshness_refresh_attempted = True
-        refresh_return, refresh_outputs = refresh_bl010_bl011_evidence()
+        refresh_result = refresh_bl010_bl011_evidence()
+        refresh_return = int(refresh_result["combined_return_code"])
+        refresh_outputs = dict(refresh_result["outputs"])
+
+        add_check(
+            checks,
+            "bl010_refresh_exit_zero",
+            int(refresh_result["bl010_return_code"]) == 0,
+            f"BL-010 evidence refresh return code={refresh_result['bl010_return_code']}",
+        )
+        bl013_ran = bool(refresh_result["bl013_ran"])
+        bl013_return = refresh_result["bl013_return_code"]
+        add_check(
+            checks,
+            "bl013_refresh_exit_zero",
+            bl013_ran and int(bl013_return) == 0,
+            (
+                f"BL-013 pipeline reapply return code={bl013_return}"
+                if bl013_ran
+                else "BL-013 pipeline reapply was skipped because BL-010 refresh failed"
+            ),
+        )
+        bl011_ran = bool(refresh_result["bl011_ran"])
+        bl011_return = refresh_result["bl011_return_code"]
+        add_check(
+            checks,
+            "bl011_refresh_exit_zero",
+            bl011_ran and int(bl011_return) == 0,
+            (
+                f"BL-011 evidence refresh return code={bl011_return}"
+                if bl011_ran
+                else "BL-011 evidence refresh was skipped because BL-010 refresh failed"
+            ),
+        )
+        bl013_post_ran = bool(refresh_result["bl013_post_bl011_ran"])
+        bl013_post_return = refresh_result["bl013_post_bl011_return_code"]
+        add_check(
+            checks,
+            "bl013_post_bl011_refresh_exit_zero",
+            bl013_post_ran and int(bl013_post_return) == 0,
+            (
+                f"BL-013 post-BL-011 pipeline reapply return code={bl013_post_return}"
+                if bl013_post_ran
+                else "BL-013 post-BL-011 pipeline reapply was skipped because BL-011 refresh failed"
+            ),
+        )
+
         add_check(
             checks,
             "bl010_bl011_refresh_exit_zero",
@@ -423,7 +635,19 @@ def run_active_mode() -> int:
         )
         if refresh_return == 0:
             freshness_return = run_freshness_mode()
-            freshness_auto_refreshed = True
+            freshness_post_refresh_return = freshness_return
+            freshness_auto_refreshed = freshness_return == 0
+
+    add_check(
+        checks,
+        "bl010_bl011_stale_detected",
+        freshness_initial_return != 0,
+        (
+            "BL-010/BL-011 freshness was stale before active-suite checks"
+            if freshness_initial_return != 0
+            else "BL-010/BL-011 freshness was already up-to-date before active-suite checks"
+        ),
+    )
 
     add_check(
         checks,
@@ -455,6 +679,14 @@ def run_active_mode() -> int:
         ),
     )
 
+    if freshness_refresh_attempted:
+        add_check(
+            checks,
+            "bl010_bl011_freshness_post_refresh_exit_zero",
+            freshness_post_refresh_return == 0,
+            f"BL-010/BL-011 post-refresh freshness return code={freshness_post_refresh_return}",
+        )
+
     overall_status = "pass" if all(item["status"] == "pass" for item in checks) else "fail"
     run_id = f"BL-FRESHNESS-SUITE-{time.strftime('%Y%m%d-%H%M%S', time.gmtime())}"
 
@@ -476,6 +708,20 @@ def run_active_mode() -> int:
         script_outputs={
             "bl014_stdout_stderr": bl014_output,
             **refresh_outputs,
+        },
+        extra_sections={
+            "freshness_execution": {
+                "initial_freshness_return_code": freshness_initial_return,
+                "stale_detected": freshness_initial_return != 0,
+                "refresh_attempted": freshness_refresh_attempted,
+                "refresh_auto_recovered": freshness_auto_refreshed,
+                "post_refresh_freshness_return_code": freshness_post_refresh_return,
+                "refresh_stage_results": {
+                    "bl010_return_code": None if refresh_result is None else refresh_result["bl010_return_code"],
+                    "bl011_return_code": None if refresh_result is None else refresh_result["bl011_return_code"],
+                    "combined_return_code": None if refresh_result is None else refresh_result["combined_return_code"],
+                },
+            }
         },
     )
 

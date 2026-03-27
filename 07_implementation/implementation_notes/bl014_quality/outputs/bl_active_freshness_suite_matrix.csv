@@ -3,6 +3,18 @@ bl013_latest_pass,pass,BL-013 latest orchestration summary reports overall_statu
 bl013_latest_no_failed_stages,pass,BL-013 latest orchestration summary reports failed_stage_count=0
 bl014_script_exit_zero,pass,BL-014 sanity check script return code=0
 bl014_report_pass,pass,BL-014 report overall_status is pass
+bl006_distribution_diagnostics_available,pass,BL-006 distribution diagnostics present at 07_implementation/implementation_notes/bl006_scoring/outputs/bl006_score_distribution_diagnostics.json
+bl007_assembly_pressure_diagnostics_available,pass,BL-007 assembly report present at 07_implementation/implementation_notes/bl007_playlist/outputs/bl007_assembly_report.json
+bl006_rank_cliff_advisory,pass,"BL-006 rank-cliff advisory: detected=False, rank_2_to_3_gap=0.005218"
+bl007_rank_continuity_advisory,pass,"BL-007 rank continuity advisory: max_selected_rank=8278, rank_2_to_3_score_gap=0.256398"
+bl007_assembly_pressure_advisory,pass,"BL-007 assembly pressure advisory: top_100_excluded=98, dominant_reason=consecutive_genre_run"
+bl010_refresh_exit_zero,pass,BL-010 evidence refresh return code=0
+bl013_refresh_exit_zero,pass,BL-013 pipeline reapply return code=0
+bl011_refresh_exit_zero,pass,BL-011 evidence refresh return code=0
+bl013_post_bl011_refresh_exit_zero,pass,BL-013 post-BL-011 pipeline reapply return code=0
+bl010_bl011_refresh_exit_zero,pass,BL-010/BL-011 evidence refresh return code=0
+bl010_bl011_stale_detected,pass,BL-010/BL-011 freshness was stale before active-suite checks
 bl010_bl011_freshness_exit_zero,pass,BL-010/BL-011 freshness script return code=0
 bl010_bl011_freshness_report_pass,pass,BL-010/BL-011 freshness report overall_status is pass
-bl010_bl011_freshness_auto_refresh,pass,BL-010/BL-011 freshness auto-refresh was not needed
+bl010_bl011_freshness_auto_refresh,pass,BL-010/BL-011 freshness auto-refresh succeeded
+bl010_bl011_freshness_post_refresh_exit_zero,pass,BL-010/BL-011 post-refresh freshness return code=0

@@ -9,30 +9,10 @@ from sys import path as sys_path
 from pathlib import Path
 
 # Add shared utilities to path
-sys_path.insert(0, str(Path(__file__).resolve().parents[3] / "07_implementation" / "implementation_notes"))
+sys_path.insert(0, str(Path(__file__).parent.parent))
 
-from bl000_shared_utils.io_utils import parse_float
-
-
-def normalize_candidate_row(row: dict[str, str]) -> dict[str, str]:
-    """
-    Normalize a candidate row by standardizing common field variations.
-    
-    Handles:
-    - track_id vs id column variants (tries track_id first, falls back to id)
-    
-    Args:
-        row: Raw candidate row from CSV
-    
-    Returns:
-        Normalized row dict with standardized fields
-    """
-    normalized = dict(row)
-    track_id = (normalized.get("track_id") or "").strip()
-    if not track_id:
-        track_id = (normalized.get("id") or "").strip()
-    normalized["track_id"] = track_id
-    return normalized
+from bl000_shared_utils.parsing import normalize_candidate_row
+from bl000_shared_utils.parsing import parse_float
 
 
 def candidate_numeric_value(

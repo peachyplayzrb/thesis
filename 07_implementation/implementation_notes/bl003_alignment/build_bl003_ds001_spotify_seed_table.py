@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import argparse
 import csv
-import hashlib
 import json
 import os
 import re
@@ -17,8 +16,10 @@ import sys
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from bl000_shared_utils.config_loader import load_run_config_utils_module
+from bl000_shared_utils.hashing import canonical_json_hash as shared_canonical_json_hash
 from bl000_shared_utils.io_utils import load_csv_rows, sha256_of_file as sha256_of_file_shared
 from bl000_shared_utils.io_utils import open_text_write
+from bl000_shared_utils.parsing import parse_int
 from bl000_shared_utils.constants import (
     DEFAULT_TOP_RANGE_WEIGHTS,
     DEFAULT_SOURCE_BASE_WEIGHTS,
@@ -280,8 +281,7 @@ def sha256_of_file(path: Path) -> str:
 
 
 def canonical_json_hash(payload: object) -> str:
-    text = json.dumps(payload, sort_keys=True, ensure_ascii=True, separators=(",", ":"))
-    return hashlib.sha256(text.encode("utf-8")).hexdigest().upper()
+    return shared_canonical_json_hash(payload, uppercase=True)
 
 
 def normalize_text(value: str) -> str:
@@ -300,16 +300,6 @@ def first_artist(artist_names: str) -> str:
     if "," in artist_names:
         return artist_names.split(",", 1)[0].strip()
     return artist_names.strip()
-
-
-def parse_int(value: str) -> int | None:
-    text = (value or "").strip()
-    if not text:
-        return None
-    try:
-        return int(float(text))
-    except (TypeError, ValueError):
-        return None
 
 
 def load_csv(path: Path) -> list[dict[str, str]]:

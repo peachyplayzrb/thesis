@@ -1,13 +1,13 @@
 # Backlog
 
-Last updated: 2026-03-26
+Last updated: 2026-03-27
 
 ## Priority Legend
 - P0: Must complete for locked MVP and assessment evidence.
 - P1: Strongly recommended quality improvement.
 - P2: Optional stretch item if time permits.
 
-## Current Execution Posture (2026-03-26)
+## Current Execution Posture (2026-03-27)
 - Core implementation scope is complete on the active v1f baseline.
 - Active profile baseline: `run_config_ui013_tuning_v1f.json`.
 - Latest integrated evidence chain is green:
@@ -16,6 +16,12 @@ Last updated: 2026-03-26
   - BL-011 controllability: `BL011-CTRL-20260326-215213`
   - BL-014 sanity: `BL014-SANITY-20260326-215415-562794` (`22/22`)
   - Active freshness suite: `BL-FRESHNESS-SUITE-20260326-215416` (`7/7`)
+- Latest experimental v2a evidence wave is also green (non-canonical):
+  - BL-013 orchestration: `BL013-ENTRYPOINT-20260327-002121-545346`
+  - BL-010 reproducibility: `BL010-REPRO-20260327-001916`
+  - BL-011 controllability: `BL011-CTRL-20260327-002019`
+  - BL-014 sanity: `BL014-SANITY-20260327-002035-164549` (`22/22`)
+  - Active freshness suite: `BL-FRESHNESS-SUITE-20260327-002136` (`19/19`)
 - Current active work is bounded to:
   - BL-023 website-to-pipeline integration
   - UI-003 thesis citation-package closure
@@ -86,11 +92,13 @@ Key final-state references:
 - Controllability: `BL011-CTRL-20260326-215213`
 - Sanity: `BL014-SANITY-20260326-215415-562794`
 - Active freshness suite: `BL-FRESHNESS-SUITE-20260326-215416`
-- Semantic control-layer map: `07_implementation/implementation_notes/bl000_run_config/semantic_control_map.md`
+- Latest experimental (v2a) run wave: `BL013-ENTRYPOINT-20260327-002121-545346` + `BL010-REPRO-20260327-001916` + `BL011-CTRL-20260327-002019` + `BL014-SANITY-20260327-002035-164549` + `BL-FRESHNESS-SUITE-20260327-002136`
+- Semantic control-layer map: `07_implementation/implementation_notes/bl000_run_config/docs/semantic_control_map.md`
 - Current implementation summary: `07_implementation/IMPLEMENTATION_STATE_2026-03-24.md`
 
 ## Notes
 
 - Active reporting should use the v1f baseline, not earlier v1b/v1d snapshots.
+- `run_config_ui013_tuning_v2a_retrieval_tight.json` is experimental and is not the canonical reporting baseline.
 - DS-001 is the active execution corpus; DS-002 remains a validated fallback reference, not the live path.
 - Use run-specific artifacts as canonical evidence; use `*_latest` artifacts as convenience pointers only.

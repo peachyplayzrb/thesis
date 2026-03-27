@@ -68,6 +68,102 @@ Copy the block below for each new run.
 - backlog_status_recommendation:
 
 ---
+
+## EXP-049
+- date: 2026-03-27
+- backlog_link: `BL-010`, `BL-011`, `BL-013`, `BL-014`
+- owner: Timothy + AI
+- status: pass
+- related_test_id: `TC-FRESHNESS-SUITE-001`
+
+### Objective
+- Record the latest post-v2a evidence wave results and preserve clear separation between canonical v1f reporting and experimental profile runs.
+
+### Scope Check
+- In-scope confirmation: yes, this is a documentation/evidence synchronization entry.
+- Protected items affected? no
+
+### Inputs
+- source_data:
+  - `07_implementation/implementation_notes/bl013_entrypoint/outputs/bl013_orchestration_run_latest.json`
+  - `07_implementation/implementation_notes/bl010_reproducibility/outputs/bl010_reproducibility_report.json`
+  - `07_implementation/implementation_notes/bl011_controllability/outputs/bl011_controllability_report.json`
+  - `07_implementation/implementation_notes/bl014_quality/outputs/bl014_sanity_report.json`
+  - `07_implementation/implementation_notes/bl014_quality/outputs/bl_active_freshness_suite_report.json`
+  - `07_implementation/implementation_notes/bl005_retrieval/outputs/bl005_candidate_diagnostics.json`
+  - `07_implementation/implementation_notes/bl007_playlist/outputs/bl007_assembly_report.json`
+  - `07_implementation/implementation_notes/bl008_transparency/outputs/bl008_explanation_summary.json`
+- config_or_parameters:
+  - experimental profile: `run_config_ui013_tuning_v2a_retrieval_tight.json`
+- code_or_script_path: artifact inspection only (no code changes in this logging pass)
+- dependency assumptions: latest `*_latest` artifacts correspond to the 2026-03-27 v2a run wave
+
+### Expected Evidence
+- primary_output_artifact:
+  - synchronized implementation/gov docs reflecting the latest experimental run IDs
+- secondary_output_artifacts:
+  - backlog posture update and change-log record for this sync pass
+- success_condition:
+  - latest v2a run IDs and key pass/fail metrics are captured without changing canonical baseline policy
+
+### Run Record
+- command_or_execution_method:
+  - read-only artifact inspection via JSON/CSV output files
+- run_id:
+  - `BL013-ENTRYPOINT-20260327-002121-545346`
+  - `BL010-REPRO-20260327-001916`
+  - `BL011-CTRL-20260327-002019`
+  - `BL014-SANITY-20260327-002035-164549`
+  - `BL-FRESHNESS-SUITE-20260327-002136`
+- start_state_summary:
+  - docs still reflected 2026-03-26 v1f chain as latest evidence and did not yet log the 2026-03-27 v2a experimental wave.
+- end_state_summary:
+  - docs now include the latest v2a run IDs as experimental evidence while preserving v1f as canonical reporting baseline.
+
+### Results
+- outcome_summary:
+  - pass — v2a wave completed with BL-013, BL-010, BL-011, BL-014, and active freshness all passing; evidence is now explicitly classified as experimental.
+- key_metrics:
+  - `bl005_kept_candidates=32952`
+  - `bl007_tracks_included=10/10`
+  - `bl008_top_contributor_distribution={Lead genre match:3, Tag overlap:4, Genre overlap:3}`
+  - `bl010_deterministic_match=true`
+  - `bl011_status=pass` (5 scenarios)
+  - `bl014_checks=22/22`
+  - `bl_freshness_checks=19/19`
+- deterministic_repeat_checked: yes (via BL-010)
+- output_paths:
+  - `07_implementation/implementation_notes/bl013_entrypoint/outputs/bl013_orchestration_run_BL013-ENTRYPOINT-20260327-002121-545346.json`
+  - `07_implementation/implementation_notes/bl010_reproducibility/outputs/bl010_reproducibility_report.json`
+  - `07_implementation/implementation_notes/bl011_controllability/outputs/bl011_controllability_report.json`
+  - `07_implementation/implementation_notes/bl014_quality/outputs/bl014_sanity_report.json`
+  - `07_implementation/implementation_notes/bl014_quality/outputs/bl_active_freshness_suite_report.json`
+
+### Issues And Limits
+- failures_or_anomalies:
+  - none in this wave (`overall_status=pass` across logged checks)
+- likely_cause:
+  - n/a
+- bounded_mvp_limitation_or_bug:
+  - this is still experimental evidence under v2a and should not replace v1f in canonical reporting until an explicit promotion decision is logged.
+
+### Thesis Traceability
+- chapter4_relevance:
+  - shows that the tightened retrieval profile can pass the same deterministic quality gates used by the canonical baseline.
+- chapter5_relevance:
+  - supports controlled-comparison framing between canonical baseline and experimental profiles without conflating governance status.
+- quality_control_files_to_update:
+  - `07_implementation/backlog.md`
+  - `00_admin/change_log.md`
+
+### Next Action
+- immediate_follow_up:
+  - keep v1f as reporting baseline and treat v2a evidence as comparative/experimental until explicit promotion decision.
+- backlog_status_recommendation:
+  - no backlog status changes.
+
+---
+
 ## EXP-048
 - date: 2026-03-26
 - backlog_link: `BL-007`, `BL-008`, `BL-010`, `BL-011`

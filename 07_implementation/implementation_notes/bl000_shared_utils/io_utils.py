@@ -16,6 +16,10 @@ import time
 from pathlib import Path
 from typing import Any
 
+from bl000_shared_utils.hashing import sha256_of_file as shared_sha256_of_file
+from bl000_shared_utils.parsing import parse_csv_labels as shared_parse_csv_labels
+from bl000_shared_utils.parsing import parse_float as shared_parse_float
+
 
 def open_text_write(path: Path, *, newline: str | None = None):
     """Open a text file for writing with a small Windows retry/fallback guard."""
@@ -31,8 +35,14 @@ def open_text_write(path: Path, *, newline: str | None = None):
             time.sleep(0.05)
 
     if last_error is not None and os.name == "nt" and last_error.errno == 22:
-        normalized = os.path.normpath(str(path.resolve()))
-        return open(normalized, "w", encoding="utf-8", newline=newline)
+        normalized = os.path.abspath(os.path.normpath(str(path))).replace("/", "\\")
+        try:
+            return open(normalized, "w", encoding="utf-8", newline=newline)
+        except OSError as fallback_error:
+            if fallback_error.errno != 22:
+                raise
+            extended_path = normalized if normalized.startswith("\\\\?\\") else f"\\\\?\\{normalized}"
+            return open(extended_path, "w", encoding="utf-8", newline=newline)
     raise last_error if last_error is not None else RuntimeError("Unexpected file open failure")
 
 
@@ -48,11 +58,7 @@ def sha256_of_file(path: Path) -> str:
     Returns:
         SHA256 hexdigest as uppercase string
     """
-    digest = hashlib.sha256()
-    with path.open("rb") as handle:
-        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
-            digest.update(chunk)
-    return digest.hexdigest()
+    return shared_sha256_of_file(path, uppercase=False)
 
 
 def sha256_direct(path: Path) -> str:
@@ -163,13 +169,7 @@ def parse_float(value: str) -> float | None:
     Returns:
         Parsed float or None if parsing fails
     """
-    text = value.strip()
-    if not text:
-        return None
-    try:
-        return float(text)
-    except ValueError:
-        return None
+    return shared_parse_float(value)
 
 
 def parse_csv_labels(raw_value: str) -> list[str]:
@@ -187,14 +187,4 @@ def parse_csv_labels(raw_value: str) -> list[str]:
     Returns:
         List of normalized, unique labels
     """
-    if not raw_value:
-        return []
-    labels: list[str] = []
-    seen: set[str] = set()
-    for piece in raw_value.split(","):
-        label = piece.strip().lower()
-        if not label or label in seen:
-            continue
-        seen.add(label)
-        labels.append(label)
-    return labels
+    return shared_parse_csv_labels(raw_value)

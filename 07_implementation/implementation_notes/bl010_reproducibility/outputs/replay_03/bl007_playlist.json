@@ -1,7 +1,7 @@
 {
-  "run_id": "BL007-ASSEMBLE-20260326-215653-356007",
-  "generated_at_utc": "2026-03-26T21:56:53Z",
-  "elapsed_seconds": 0.771,
+  "run_id": "BL007-ASSEMBLE-20260327-002003-488341",
+  "generated_at_utc": "2026-03-27T00:20:03Z",
+  "elapsed_seconds": 0.869,
   "config": {
     "target_size": 10,
     "min_score_threshold": 0.35,

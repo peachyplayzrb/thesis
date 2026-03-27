@@ -1,12 +1,14 @@
 # Implementation Notes Index (Active)
 
-Last updated: 2026-03-26
+Last updated: 2026-03-27
 
 ## Purpose
 This index keeps implementation notes lean by separating active operational docs from historical evidence snapshots.
 
 ## Keep (Active Operational Contract)
 - `CODEBASE_ISSUES_CURRENT.md`
+- `SETUP.md`
+- `SUBMISSION_MANIFEST.md`
 - `bl000_shared_utils/CURRENT_IMPLEMENTATION.md`
 - `bl000_run_config/docs/semantic_control_map.md`
 - `bl000_run_config/docs/run_config_profile_organization_guide.md`
@@ -28,6 +30,20 @@ This index keeps implementation notes lean by separating active operational docs
 - `bl011_controllability/bl011_state_log_2026-03-24.md`
 - `bl013_entrypoint/bl013_state_log_2026-03-24.md`
 - `bl014_quality/bl014_state_log_2026-03-24.md`
+
+## Keep (Stage Operational Summaries)
+- `bl001_bl002_ingestion/README.md`
+- `bl003_alignment/README.md`
+- `bl004_profile/README.md`
+- `bl005_retrieval/README.md`
+- `bl006_scoring/README.md`
+- `bl007_playlist/README.md`
+- `bl008_transparency/README.md`
+- `bl009_observability/README.md`
+- `bl010_reproducibility/README.md`
+- `bl011_controllability/README.md`
+- `bl013_entrypoint/README.md`
+- `bl014_quality/README.md`
 
 ## Keep (Active Scripts In Use)
 
@@ -54,7 +70,9 @@ This index keeps implementation notes lean by separating active operational docs
 - `bl000_shared_utils/config_loader.py`
 - `bl000_shared_utils/constants.py`
 - `bl000_shared_utils/env_utils.py`
+- `bl000_shared_utils/hashing.py`
 - `bl000_shared_utils/io_utils.py`
+- `bl000_shared_utils/parsing.py`
 - `bl000_shared_utils/path_utils.py`
 - `bl000_shared_utils/report_utils.py`
 - `bl000_shared_utils/types.py`

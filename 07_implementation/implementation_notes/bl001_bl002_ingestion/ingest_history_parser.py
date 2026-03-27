@@ -11,11 +11,11 @@ from typing import Any
 
 import sys
 
-try:
-    from bl000_shared_utils.io_utils import open_text_write
-except ImportError:
-    sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-    from bl000_shared_utils.io_utils import open_text_write
+sys.path.insert(0, str(Path(__file__).parent.parent))
+
+from bl000_shared_utils.hashing import sha256_of_file as shared_sha256_of_file
+from bl000_shared_utils.io_utils import open_text_write
+from bl000_shared_utils.path_utils import repo_root
 
 
 REQUIRED_LOGICAL_FIELDS = ["track_name", "artist_name", "played_at", "ms_played"]
@@ -29,10 +29,6 @@ RAW_COLUMN_ALIASES = {
     "platform": ["platform"],
 }
 ISRC_PATTERN = re.compile(r"^[A-Z]{2}[A-Z0-9]{3}\d{7}$")
-
-
-def repo_root() -> Path:
-    return Path(__file__).resolve().parents[3]
 
 
 def parse_args() -> argparse.Namespace:
@@ -70,11 +66,7 @@ def parse_args() -> argparse.Namespace:
 
 
 def sha256_of_file(path: Path) -> str:
-    digest = hashlib.sha256()
-    with path.open("rb") as handle:
-        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
-            digest.update(chunk)
-    return digest.hexdigest().upper()
+    return shared_sha256_of_file(path, uppercase=True)
 
 
 def write_json(path: Path, payload: dict[str, Any]) -> None:

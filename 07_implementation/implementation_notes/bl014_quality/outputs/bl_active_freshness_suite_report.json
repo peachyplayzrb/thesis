@@ -1,12 +1,12 @@
 {
   "run_metadata": {
-    "run_id": "BL-FRESHNESS-SUITE-20260326-215801",
+    "run_id": "BL-FRESHNESS-SUITE-20260327-002136",
     "task": "active freshness suite",
-    "generated_at_utc": "2026-03-26T21:58:01Z",
-    "elapsed_seconds": 1.033,
+    "generated_at_utc": "2026-03-27T00:21:36Z",
+    "elapsed_seconds": 140.3,
     "overall_status": "pass",
-    "checks_total": 7,
-    "checks_passed": 7,
+    "checks_total": 19,
+    "checks_passed": 19,
     "checks_failed": 0
   },
   "evidence_paths": {
@@ -36,6 +36,61 @@
       "details": "BL-014 report overall_status is pass"
     },
     {
+      "id": "bl006_distribution_diagnostics_available",
+      "status": "pass",
+      "details": "BL-006 distribution diagnostics present at 07_implementation/implementation_notes/bl006_scoring/outputs/bl006_score_distribution_diagnostics.json"
+    },
+    {
+      "id": "bl007_assembly_pressure_diagnostics_available",
+      "status": "pass",
+      "details": "BL-007 assembly report present at 07_implementation/implementation_notes/bl007_playlist/outputs/bl007_assembly_report.json"
+    },
+    {
+      "id": "bl006_rank_cliff_advisory",
+      "status": "pass",
+      "details": "BL-006 rank-cliff advisory: detected=False, rank_2_to_3_gap=0.005218"
+    },
+    {
+      "id": "bl007_rank_continuity_advisory",
+      "status": "pass",
+      "details": "BL-007 rank continuity advisory: max_selected_rank=8278, rank_2_to_3_score_gap=0.256398"
+    },
+    {
+      "id": "bl007_assembly_pressure_advisory",
+      "status": "pass",
+      "details": "BL-007 assembly pressure advisory: top_100_excluded=98, dominant_reason=consecutive_genre_run"
+    },
+    {
+      "id": "bl010_refresh_exit_zero",
+      "status": "pass",
+      "details": "BL-010 evidence refresh return code=0"
+    },
+    {
+      "id": "bl013_refresh_exit_zero",
+      "status": "pass",
+      "details": "BL-013 pipeline reapply return code=0"
+    },
+    {
+      "id": "bl011_refresh_exit_zero",
+      "status": "pass",
+      "details": "BL-011 evidence refresh return code=0"
+    },
+    {
+      "id": "bl013_post_bl011_refresh_exit_zero",
+      "status": "pass",
+      "details": "BL-013 post-BL-011 pipeline reapply return code=0"
+    },
+    {
+      "id": "bl010_bl011_refresh_exit_zero",
+      "status": "pass",
+      "details": "BL-010/BL-011 evidence refresh return code=0"
+    },
+    {
+      "id": "bl010_bl011_stale_detected",
+      "status": "pass",
+      "details": "BL-010/BL-011 freshness was stale before active-suite checks"
+    },
+    {
       "id": "bl010_bl011_freshness_exit_zero",
       "status": "pass",
       "details": "BL-010/BL-011 freshness script return code=0"
@@ -48,10 +103,31 @@
     {
       "id": "bl010_bl011_freshness_auto_refresh",
       "status": "pass",
-      "details": "BL-010/BL-011 freshness auto-refresh was not needed"
+      "details": "BL-010/BL-011 freshness auto-refresh succeeded"
+    },
+    {
+      "id": "bl010_bl011_freshness_post_refresh_exit_zero",
+      "status": "pass",
+      "details": "BL-010/BL-011 post-refresh freshness return code=0"
     }
   ],
   "script_outputs": {
-    "bl014_stdout_stderr": "[BL-014] run_id=BL014-SANITY-20260326-215800-844786\n[BL-014] overall_status=pass checks_passed=22/22\n[BL-014] report=C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl014_quality\\outputs\\bl014_sanity_report.json\n[BL-014] run_matrix=C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl014_quality\\outputs\\bl014_sanity_run_matrix.csv\n[BL-014] config_snapshot=C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl014_quality\\outputs\\bl014_sanity_config_snapshot.json"
+    "bl014_stdout_stderr": "[BL-014] run_id=BL014-SANITY-20260327-001915-871778\n[BL-014] overall_status=pass checks_passed=22/22\n[BL-014] report=C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl014_quality\\outputs\\bl014_sanity_report.json\n[BL-014] run_matrix=C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl014_quality\\outputs\\bl014_sanity_run_matrix.csv\n[BL-014] config_snapshot=C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl014_quality\\outputs\\bl014_sanity_config_snapshot.json",
+    "bl010_stdout_stderr": "BL-010 reproducibility replay complete.\nrun_id=BL010-REPRO-20260327-001916\ndeterministic_match=True\nconfig_hash=9D87F287D0A6826CF2B2896F14F25086D6DE9B4786E48141A6AE0DC5FCB059D1\nreport=C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl010_reproducibility\\outputs\\bl010_reproducibility_report.json\nrun_matrix=C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl010_reproducibility\\outputs\\bl010_reproducibility_run_matrix.csv",
+    "bl013_stdout_stderr": "BL-013 orchestration complete: status=pass\nrun_id=BL013-ENTRYPOINT-20260327-002006-573060\nsummary=C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl013_entrypoint\\outputs\\bl013_orchestration_run_BL013-ENTRYPOINT-20260327-002006-573060.json\nlatest=C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl013_entrypoint\\outputs\\bl013_orchestration_run_latest.json",
+    "bl011_stdout_stderr": "BL-011 controllability evaluation complete.\nrun_id=BL011-CTRL-20260327-002019\nstatus=pass\nreport=C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl011_controllability\\outputs\\bl011_controllability_report.json\nrun_matrix=C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl011_controllability\\outputs\\bl011_controllability_run_matrix.csv",
+    "bl013_post_bl011_stdout_stderr": "BL-013 orchestration complete: status=pass\nrun_id=BL013-ENTRYPOINT-20260327-002121-545346\nsummary=C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl013_entrypoint\\outputs\\bl013_orchestration_run_BL013-ENTRYPOINT-20260327-002121-545346.json\nlatest=C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl013_entrypoint\\outputs\\bl013_orchestration_run_latest.json"
+  },
+  "freshness_execution": {
+    "initial_freshness_return_code": 1,
+    "stale_detected": true,
+    "refresh_attempted": true,
+    "refresh_auto_recovered": true,
+    "post_refresh_freshness_return_code": 0,
+    "refresh_stage_results": {
+      "bl010_return_code": 0,
+      "bl011_return_code": 0,
+      "combined_return_code": 0
+    }
   }
 }

@@ -18,7 +18,7 @@ from bl000_shared_utils.constants import (
 try:
     from bl000_shared_utils.io_utils import open_text_write
 except ImportError:
-    sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+    sys.path.insert(0, str(Path(__file__).parent.parent))
     from bl000_shared_utils.io_utils import open_text_write
 
 RUN_CONFIG_SCHEMA_VERSION = "run-config-v1"

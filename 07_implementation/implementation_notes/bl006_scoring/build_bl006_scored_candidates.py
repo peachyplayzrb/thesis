@@ -71,6 +71,67 @@ SCORED_CANDIDATE_FIELDS = [
 ]
 
 
+def percentile(sorted_values: list[float], p: float) -> float:
+    if not sorted_values:
+        return 0.0
+    if p <= 0:
+        return sorted_values[0]
+    if p >= 100:
+        return sorted_values[-1]
+    rank = (len(sorted_values) - 1) * (p / 100.0)
+    lower = int(rank)
+    upper = min(lower + 1, len(sorted_values) - 1)
+    if lower == upper:
+        return sorted_values[lower]
+    fraction = rank - lower
+    return sorted_values[lower] + (sorted_values[upper] - sorted_values[lower]) * fraction
+
+
+def build_score_distribution_diagnostics(scored_rows: list[dict[str, object]]) -> dict[str, object]:
+    score_desc = [float(row["final_score"]) for row in scored_rows]
+    score_desc.sort(reverse=True)
+
+    gaps: list[dict[str, float | int]] = []
+    for index in range(len(score_desc) - 1):
+        gap = score_desc[index] - score_desc[index + 1]
+        gaps.append(
+            {
+                "between_rank": index + 1,
+                "next_rank": index + 2,
+                "score_gap": round(gap, 6),
+            }
+        )
+
+    max_gap = max(gaps, key=lambda item: float(item["score_gap"])) if gaps else None
+    rank_2_to_3_gap = round(score_desc[1] - score_desc[2], 6) if len(score_desc) >= 3 else 0.0
+    is_rank_cliff = bool(max_gap and float(max_gap["score_gap"]) >= 0.1)
+
+    score_asc = list(reversed(score_desc))
+    percentiles = {
+        "p10": round(percentile(score_asc, 10), 6),
+        "p25": round(percentile(score_asc, 25), 6),
+        "p50": round(percentile(score_asc, 50), 6),
+        "p75": round(percentile(score_asc, 75), 6),
+        "p90": round(percentile(score_asc, 90), 6),
+        "p95": round(percentile(score_asc, 95), 6),
+        "p99": round(percentile(score_asc, 99), 6),
+    }
+
+    return {
+        "score_percentiles": percentiles,
+        "score_range": {
+            "max": round(score_desc[0], 6) if score_desc else 0.0,
+            "min": round(score_desc[-1], 6) if score_desc else 0.0,
+        },
+        "rank_cliff": {
+            "detected": is_rank_cliff,
+            "rank_2_to_3_gap": rank_2_to_3_gap,
+            "max_gap": max_gap or {"between_rank": 0, "next_rank": 0, "score_gap": 0.0},
+            "classification": "cliff" if is_rank_cliff else "smooth",
+        },
+    }
+
+
 def load_component_weight_overrides(defaults: dict[str, float]) -> dict[str, float]:
     """Load component weight overrides from environment."""
     raw = os.environ.get("BL006_COMPONENT_WEIGHTS_JSON", "").strip()
@@ -320,6 +381,12 @@ def main() -> None:
     score_values = [float(row["final_score"]) for row in scored_rows]
     top_100_rows = scored_rows[:100]
     top_500_rows = scored_rows[:500]
+    distribution_diagnostics = build_score_distribution_diagnostics(scored_rows)
+
+    diagnostics_path = output_dir / "bl006_score_distribution_diagnostics.json"
+    with open_text_write(diagnostics_path) as handle:
+        json.dump(distribution_diagnostics, handle, indent=2, ensure_ascii=True)
+
     summary = {
         "run_id": run_id,
         "task": "BL-006",
@@ -362,15 +429,18 @@ def main() -> None:
             "top_100": contribution_breakdown(top_100_rows),
             "top_500": contribution_breakdown(top_500_rows),
         },
+        "score_distribution_diagnostics": distribution_diagnostics,
         "top_candidates": top_candidates,
         "elapsed_seconds": round(time.time() - start_time, 3),
         "output_files": {
             "scored_candidates_path": str(scored_path),
+            "score_distribution_diagnostics_path": str(diagnostics_path),
         },
     }
 
     summary["output_hashes_sha256"] = {
         "bl006_scored_candidates.csv": sha256_of_file(scored_path),
+        "bl006_score_distribution_diagnostics.json": sha256_of_file(diagnostics_path),
     }
     summary["summary_hash_note"] = "summary file hash collected separately in experiment logging to avoid recursive self-reference"
     summary_path = output_dir / "bl006_score_summary.json"

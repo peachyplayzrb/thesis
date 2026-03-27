@@ -1,9 +1,7 @@
 from __future__ import annotations
 
 import argparse
-import hashlib
 import importlib.util
-import json
 import os
 import subprocess
 import sys
@@ -14,6 +12,9 @@ from typing import Any
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
+from bl000_shared_utils.hashing import sha256_of_file
+from bl000_shared_utils.io_utils import load_json
+from bl000_shared_utils.path_utils import repo_root
 from bl000_shared_utils.report_utils import write_json_ascii
 
 
@@ -45,10 +46,6 @@ SUMMARY_NOTES = {
     "purpose": "Lightweight wrapper to run existing BL-004..BL-009 scripts in one command.",
     "repeatability_check_guidance": "Compare stable_artifact_hashes between repeated runs under unchanged inputs/config.",
 }
-
-
-def repo_root() -> Path:
-    return Path(__file__).resolve().parents[3]
 
 
 def parse_args() -> argparse.Namespace:
@@ -116,18 +113,6 @@ def validate_stage_order(stage_ids: list[str]) -> list[str]:
             raise ValueError(f"Unsupported stage '{stage_id}'. Valid values: {valid}")
         normalized.append(token)
     return normalized
-
-
-def sha256_of_file(path: Path) -> str:
-    digest = hashlib.sha256()
-    with path.open("rb") as handle:
-        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
-            digest.update(chunk)
-    return digest.hexdigest().upper()
-
-
-def load_json(path: Path) -> dict[str, object]:
-    return json.loads(path.read_text(encoding="utf-8"))
 
 
 def _normalized_contract_from_effective(run_effective_config_path: Path) -> dict[str, object]:
@@ -222,9 +207,51 @@ def compute_stable_artifact_hashes(root: Path) -> tuple[dict[str, str], list[str
         if not artifact_path.exists():
             missing.append(relative_path)
             continue
-        hashes[alias] = sha256_of_file(artifact_path)
+        hashes[alias] = sha256_of_file(artifact_path, uppercase=True)
 
     return hashes, missing
+
+
+def collect_refinement_diagnostics(root: Path) -> dict[str, object]:
+    diagnostics: dict[str, object] = {
+        "bl006_distribution": {"available": False},
+        "bl007_assembly_pressure": {"available": False},
+    }
+
+    bl006_distribution_path = (
+        root
+        / "07_implementation"
+        / "implementation_notes"
+        / "bl006_scoring"
+        / "outputs"
+        / "bl006_score_distribution_diagnostics.json"
+    )
+    if bl006_distribution_path.exists():
+        bl006_distribution = load_json(bl006_distribution_path)
+        diagnostics["bl006_distribution"] = {
+            "available": True,
+            "path": bl006_distribution_path.relative_to(root).as_posix(),
+            "rank_cliff": bl006_distribution.get("rank_cliff", {}),
+        }
+
+    bl007_report_path = (
+        root
+        / "07_implementation"
+        / "implementation_notes"
+        / "bl007_playlist"
+        / "outputs"
+        / "bl007_assembly_report.json"
+    )
+    if bl007_report_path.exists():
+        bl007_report = load_json(bl007_report_path)
+        diagnostics["bl007_assembly_pressure"] = {
+            "available": True,
+            "path": bl007_report_path.relative_to(root).as_posix(),
+            "rank_continuity_diagnostics": bl007_report.get("rank_continuity_diagnostics", {}),
+            "assembly_pressure_diagnostics": bl007_report.get("assembly_pressure_diagnostics", {}),
+        }
+
+    return diagnostics
 
 
 def load_run_config_utils_module(root: Path):
@@ -376,6 +403,7 @@ def build_summary(
     failed_stage_count: int,
     stable_hashes: dict[str, str],
     missing_stable: list[str],
+    stage_diagnostics: dict[str, object],
 ) -> dict[str, object]:
     return {
         "run_id": run_id,
@@ -392,6 +420,7 @@ def build_summary(
         "failed_stage_count": failed_stage_count,
         "elapsed_seconds": elapsed_seconds,
         "stage_results": stage_results,
+        "stage_diagnostics": stage_diagnostics,
         "stable_artifact_hashes": stable_hashes,
         "missing_stable_artifacts": missing_stable,
         "notes": SUMMARY_NOTES,
@@ -442,6 +471,7 @@ def finalize_run(
     overall_status = "pass" if not failed and len(stage_results) == expected_stage_count else "fail"
 
     stable_hashes, missing_stable = compute_stable_artifact_hashes(root)
+    stage_diagnostics = collect_refinement_diagnostics(root)
     summary = build_summary(
         run_id=run_id,
         generated_at_utc=generated_at_utc,
@@ -457,6 +487,7 @@ def finalize_run(
         failed_stage_count=len(failed),
         stable_hashes=stable_hashes,
         missing_stable=missing_stable,
+        stage_diagnostics=stage_diagnostics,
     )
 
     summary_path, latest_path = write_summary_artifacts(

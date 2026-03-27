@@ -1,5 +1,5 @@
 {
-  "run_id": "BL011-NO_INFLUENCE_TRACKS-BL006-20260326-215230-591084",
+  "run_id": "BL011-NO_INFLUENCE_TRACKS-BL006-20260327-002032-259591",
   "task": "BL-006",
   "scenario_id": "no_influence_tracks",
   "config": {
@@ -7,10 +7,10 @@
       "danceability": 0.15,
       "energy": 0.15,
       "valence": 0.15,
-      "tempo": 15.0,
-      "key": 1.5,
+      "tempo": 12.0,
+      "key": 1.0,
       "mode": 0.5,
-      "duration_ms": 30000.0
+      "duration_ms": 25000.0
     },
     "component_weights": {
       "danceability": 0.04,
@@ -28,16 +28,16 @@
     "raw_override_value": null
   },
   "counts": {
-    "candidates_scored": 33096,
-    "score_max": 0.741029,
-    "score_min": 0.032998
+    "candidates_scored": 26886,
+    "score_max": 0.735568,
+    "score_min": 0.04594
   },
   "top_candidates": [
     {
       "rank": 1,
       "track_id": "phL12CBijBqwQ9qB",
       "lead_genre": "pop",
-      "final_score": 0.741029,
+      "final_score": 0.735568,
       "matched_genres": "pop|classic rock|rock",
       "matched_tags": "pop|classic rock|rock"
     },
@@ -45,7 +45,7 @@
       "rank": 2,
       "track_id": "2rf5nW2Fb8gMnz9l",
       "lead_genre": "pop",
-      "final_score": 0.734811,
+      "final_score": 0.729766,
       "matched_genres": "pop|classic rock|rock",
       "matched_tags": "80s|pop|classic rock|rock"
     },
@@ -53,7 +53,7 @@
       "rank": 3,
       "track_id": "CZOYJJKuyuUosACw",
       "lead_genre": "classic rock",
-      "final_score": 0.732481,
+      "final_score": 0.729308,
       "matched_genres": "classic rock|rock|pop",
       "matched_tags": "classic rock|80s|rock|pop"
     },
@@ -61,31 +61,31 @@
       "rank": 4,
       "track_id": "SlF31W7VgEooOonD",
       "lead_genre": "pop",
-      "final_score": 0.717484,
+      "final_score": 0.714964,
       "matched_genres": "pop|rock|singer-songwriter|classic rock",
       "matched_tags": "70s|pop|rock|singer-songwriter|classic rock"
     },
     {
       "rank": 5,
-      "track_id": "9jb6ZoImYLfUL8hu",
-      "lead_genre": "pop",
-      "final_score": 0.715673,
-      "matched_genres": "pop|rock|classic rock",
-      "matched_tags": "pop|80s|rock|classic rock|70s"
+      "track_id": "3ltMH5jik02hVLDF",
+      "lead_genre": "classic rock",
+      "final_score": 0.712092,
+      "matched_genres": "classic rock|rock|pop",
+      "matched_tags": "classic rock|rock|70s|pop"
     },
     {
       "rank": 6,
-      "track_id": "3ltMH5jik02hVLDF",
-      "lead_genre": "classic rock",
-      "final_score": 0.715194,
-      "matched_genres": "classic rock|rock|pop",
-      "matched_tags": "classic rock|rock|70s|pop"
+      "track_id": "9jb6ZoImYLfUL8hu",
+      "lead_genre": "pop",
+      "final_score": 0.711238,
+      "matched_genres": "pop|rock|classic rock",
+      "matched_tags": "pop|80s|rock|classic rock|70s"
     },
     {
       "rank": 7,
       "track_id": "zyxOCKcXX1RmWpm0",
       "lead_genre": "pop",
-      "final_score": 0.713988,
+      "final_score": 0.711062,
       "matched_genres": "pop|rock|classic rock",
       "matched_tags": "pop|rock|80s|classic rock"
     },
@@ -93,7 +93,7 @@
       "rank": 8,
       "track_id": "Ja6sG7NsgUKEI63U",
       "lead_genre": "pop",
-      "final_score": 0.712434,
+      "final_score": 0.710123,
       "matched_genres": "pop|rock|classic rock",
       "matched_tags": "pop|80s|rock|classic rock"
     },
@@ -101,29 +101,29 @@
       "rank": 9,
       "track_id": "CavT1tWCp1sJDnbQ",
       "lead_genre": "pop",
-      "final_score": 0.71161,
+      "final_score": 0.709378,
       "matched_genres": "pop|rock|classic rock",
       "matched_tags": "pop|80s|rock|classic rock"
     },
     {
       "rank": 10,
-      "track_id": "lGnkOkQSUQO175Qg",
+      "track_id": "Unm2k636mJk61Zcx",
       "lead_genre": "pop",
-      "final_score": 0.709225,
-      "matched_genres": "pop|rock|singer-songwriter",
-      "matched_tags": "pop|indie|rock|singer-songwriter|alternative"
+      "final_score": 0.703765,
+      "matched_genres": "pop|classic rock|rock",
+      "matched_tags": "80s|pop|classic rock|rock"
     }
   ],
   "mean_component_contributions": {
-    "danceability": 0.017635,
-    "energy": 0.007967,
-    "valence": 0.007901,
-    "tempo": 0.009093,
-    "duration_ms": 0.005558,
-    "key": 0.002907,
-    "mode": 0.001961,
-    "lead_genre": 0.155442,
-    "genre_overlap": 0.060938,
-    "tag_overlap": 0.064538
+    "danceability": 0.01813,
+    "energy": 0.008324,
+    "valence": 0.008232,
+    "tempo": 0.008128,
+    "duration_ms": 0.004984,
+    "key": 0.002198,
+    "mode": 0.002006,
+    "lead_genre": 0.169207,
+    "genre_overlap": 0.065276,
+    "tag_overlap": 0.069348
   }
 }

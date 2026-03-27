@@ -1,7 +1,7 @@
 {
-  "run_id": "BL007-ASSEMBLE-20260326-215653-356007",
-  "generated_at_utc": "2026-03-26T21:56:53Z",
-  "elapsed_seconds": 0.771,
+  "run_id": "BL007-ASSEMBLE-20260327-002003-488341",
+  "generated_at_utc": "2026-03-27T00:20:03Z",
+  "elapsed_seconds": 0.869,
   "config": {
     "target_size": 10,
     "min_score_threshold": 0.35,
@@ -41,11 +41,38 @@
     "max": 0.743017,
     "min": 0.548147
   },
+  "rank_continuity_diagnostics": {
+    "selected_ranks": [
+      1,
+      2,
+      117,
+      118,
+      119,
+      170,
+      248,
+      249,
+      275,
+      472
+    ],
+    "max_selected_rank": 472,
+    "median_selected_rank": 170,
+    "rank_2_to_3_score_gap": 0.125387,
+    "rank_cliff_detected": true
+  },
+  "assembly_pressure_diagnostics": {
+    "top_100_considered": 100,
+    "top_100_excluded": 98,
+    "top_100_exclusion_reason_counts": {
+      "consecutive_genre_run": 98
+    },
+    "dominant_top_100_exclusion_reason": "consecutive_genre_run"
+  },
   "input_artifact_hashes": {
     "bl006_scored_candidates.csv": "16F88709E729624230DBA9A88E8434D39FF78B6BFED8EFDB4465428A89BBDAAE"
   },
   "output_artifact_hashes": {
-    "bl007_playlist.json": "993C1F0CD354FEC07687C51B55D4ACC3F960EF1025A17C94B6133F28C9CFC1B3",
-    "bl007_assembly_trace.csv": "6576C1D5504D2FC63E406F09D453FA568B37150D31390DED5AF092638DAFDA16"
+    "bl007_playlist.json": "747B437C351341AF324465C5A7FF7916CB05473A86460172BD7195E2D32526E6",
+    "bl007_assembly_trace.csv": "6576C1D5504D2FC63E406F09D453FA568B37150D31390DED5AF092638DAFDA16",
+    "bl007_assembly_detail_log.json": "770B218EE83DCFE182D6F8862E816677F59D2561364ACBB3A4BAD6A5F40E93D2"
   }
 }

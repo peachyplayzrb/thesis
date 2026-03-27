@@ -5,10 +5,10 @@ Ordering convention (standardized 2026-03-24):
 - Entry IDs remain unique identifiers, but physical entry order reflects historical insertion timing (not strict numeric sorting).
 - New entries must be appended at the end and may include `superseded_by` when a prior decision is replaced.
 
-Maintenance snapshot (2026-03-25):
-- Highest decision ID currently present: `D-031`
-- Total decision entries: 31
-- Status distribution: accepted=27, superseded=3, rejected=1
+Maintenance snapshot (2026-03-27):
+- Highest decision ID currently present: `D-034`
+- Total decision entries: 34
+- Status distribution: accepted=28, superseded=3, rejected=1
 - ID integrity check: no duplicate decision IDs detected
 
 Current posture snapshot (2026-03-25):
@@ -17,6 +17,7 @@ Current posture snapshot (2026-03-25):
 - Freeze-first strategy was temporary and is now historical (`D-026` superseded by `D-027`).
 - Deferred enhancement still tracked: deterministic corpus-path switching fallback (`D-025`).
 - Implementation-notes naming contract is BL-ordered and canonical (`D-029`); stage/path references must use `bl000_*` ... `bl014_*` folder names.
+- Active profile baseline for implementation reporting is v1f (`D-033`), with v2a retained as experimental.
 
 id: D-001
 date: 2026-03-12
@@ -990,4 +991,31 @@ review_date: none
 - evidence_basis: experiment_log EXP-045; test_notes TC-UI013-SWEEP-001; _scratch/ui013_tuning_sweep_results.json showing v1b metrics exceeding acceptance thresholds across all quality dimensions; BL-013/BL-014 pass for v1b run IDs BL013-225113-845270 and BL014-225124-993359.
 - impacted_files: 07_implementation/implementation_notes/bl000_run_config/configs/profiles/run_config_ui013_tuning_v1b.json (marked as active); 07_implementation/implementation_notes/bl013_entrypoint/run_bl013_pipeline_entrypoint.py (default config reference); _scratch/run_ui013_sweep.ps1 (sweep orchestration, now archived).
 - next_steps: Mark UI-013 tuning closure complete; prepare final evidence package citing v1b validation and sweep results; move focus to UI-013 final acceptance evidence assembly and subsequent phases (UI-003 citation closure, thesis final hardening).
+
+## D-033
+- date: 2026-03-27
+- entity_id: BL-000
+- proposed_by: Copilot
+- status: accepted
+- supersedes: D-032 (baseline selection only)
+- decision: Set `run_config_ui013_tuning_v1f.json` as the canonical active baseline for implementation reporting and governance summaries. Keep `run_config_ui013_tuning_v2a_retrieval_tight.json` as experimental and non-canonical until an explicit promotion decision is logged.
+- context: Implementation and evidence surfaces contain mixed references to v1b/v1d/v1f-era snapshots, increasing ambiguity about what should be treated as current state during BL-023 integration and thesis evidence updates.
+- alternatives_considered: Continue treating v1b as recommended profile (rejected: conflicts with latest integrated v1f evidence chain); promote v2a immediately (rejected: insufficient promotion evidence in governance baseline); remove historical profile references (rejected: harms traceability).
+- rationale: A single canonical baseline prevents drift across backlog, setup, implementation status, and run-config state logs while preserving historical artifacts for audit context.
+- evidence_basis: `07_implementation/backlog.md` (latest integrated v1f chain), `07_implementation/implementation_notes/bl000_run_config/docs/bl000_run_config_state_log_2026-03-25.md` (v1f promotion), `07_implementation/implementation_notes/bl000_run_config/configs/profiles/run_config_ui013_tuning_v1f.json`, `07_implementation/implementation_notes/bl000_run_config/configs/profiles/run_config_ui013_tuning_v2a_retrieval_tight.json`.
+- impacted_files: `00_admin/decision_log.md`, `00_admin/change_log.md`, `07_implementation/backlog.md`, `07_implementation/implementation_notes/SETUP.md`, `07_implementation/implementation_notes/CODEBASE_ISSUES_CURRENT.md`, `07_implementation/implementation_notes/bl000_run_config/docs/bl000_run_config_state_log_2026-03-25.md`
+- next_steps: Keep BL-023 website integration and UI-003 citation closure as active work; revisit v2a promotion only after dedicated evidence run and governance update.
+
+## D-034
+- date: 2026-03-27
+- entity_id: BL-000
+- proposed_by: Copilot
+- status: accepted
+- decision: Adopt a documented retention policy for timestamped run-config output artifacts (`run_intent_*` and `run_effective_config_*`) that keeps latest pointers and governance-significant baseline snapshots while requiring manifest-based archival for older files.
+- context: BL-000 output directories contain high-volume timestamped artifacts from repeated orchestration/evaluation waves, making audit navigation difficult without explicit retention guidance.
+- alternatives_considered: Keep all timestamped outputs indefinitely (rejected: increases audit noise and operational clutter); immediate deletion of older outputs (rejected: risks reproducibility trace loss); undocumented ad hoc cleanup (rejected: governance inconsistency).
+- rationale: A written retention policy improves repository hygiene and operator clarity while preserving reproducibility traceability through manifest-driven archival.
+- evidence_basis: `07_implementation/implementation_notes/bl000_run_config/outputs/RUN_CONFIG_RETENTION_POLICY.md`, `07_implementation/implementation_notes/bl013_entrypoint/outputs/BL013_RUN_MANIFEST.md`, `00_admin/change_log.md` (C-185).
+- impacted_files: `00_admin/decision_log.md`, `00_admin/change_log.md`, `07_implementation/implementation_notes/bl000_run_config/outputs/RUN_CONFIG_RETENTION_POLICY.md`, `07_implementation/implementation_notes/bl013_entrypoint/outputs/BL013_RUN_MANIFEST.md`
+- next_steps: Execute a separate ops-only archival pass using move manifests and validation reports; keep this current pass docs-only with no artifact deletion.
 

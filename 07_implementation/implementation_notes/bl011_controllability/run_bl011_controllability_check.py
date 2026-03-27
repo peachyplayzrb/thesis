@@ -1,8 +1,6 @@
 from __future__ import annotations
 
 import argparse
-import csv
-import hashlib
 import json
 import os
 import time
@@ -14,6 +12,14 @@ import sys
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from bl000_shared_utils.config_loader import load_run_config_utils_module
+from bl000_shared_utils.hashing import canonical_json_hash as shared_canonical_json_hash
+from bl000_shared_utils.hashing import sha256_of_file as shared_sha256_of_file
+from bl000_shared_utils.hashing import sha256_of_text as shared_sha256_of_text
+from bl000_shared_utils.io_utils import load_csv_rows
+from bl000_shared_utils.parsing import normalize_candidate_row
+from bl000_shared_utils.parsing import parse_csv_labels
+from bl000_shared_utils.parsing import parse_float
+from bl000_shared_utils.path_utils import repo_root
 from bl000_shared_utils.report_utils import render_csv_text, write_text
 
 
@@ -25,10 +31,6 @@ LEGACY_NUMERIC_COLUMNS = {
     "A_mean",
     "D_mean",
 }
-
-
-def repo_root() -> Path:
-    return Path(__file__).resolve().parents[3]
 
 
 def parse_args() -> argparse.Namespace:
@@ -43,19 +45,15 @@ def relpath(path: Path, root: Path) -> str:
 
 
 def sha256_of_text(text: str) -> str:
-    return hashlib.sha256(text.encode("utf-8")).hexdigest().upper()
+    return shared_sha256_of_text(text, uppercase=True)
 
 
 def sha256_of_file(path: Path) -> str:
-    digest = hashlib.sha256()
-    with path.open("rb") as handle:
-        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
-            digest.update(chunk)
-    return digest.hexdigest().upper()
+    return shared_sha256_of_file(path, uppercase=True)
 
 
 def canonical_json_hash(payload: object) -> str:
-    return sha256_of_text(json.dumps(payload, sort_keys=True, ensure_ascii=True, separators=(",", ":")))
+    return shared_canonical_json_hash(payload, uppercase=True)
 
 
 def json_text(payload: object) -> str:
@@ -90,32 +88,6 @@ def ensure_baseline_snapshot_shape(snapshot: dict) -> None:
     if not isinstance(stage_configs, dict):
         raise RuntimeError("BL-011 baseline snapshot field stage_configs must be a JSON object")
     ensure_required_keys(stage_configs, ["profile", "retrieval", "scoring", "assembly"], label="baseline stage_configs")
-
-
-def load_csv_rows(path: Path) -> list[dict[str, str]]:
-    with path.open("r", encoding="utf-8", newline="") as handle:
-        return list(csv.DictReader(handle))
-
-
-def normalize_candidate_row(row: dict[str, str]) -> dict[str, str]:
-    normalized = dict(row)
-    track_id = (normalized.get("track_id") or "").strip()
-    if not track_id:
-        track_id = (normalized.get("id") or "").strip()
-    if not track_id:
-        track_id = (normalized.get("ds001_id") or "").strip()
-    normalized["track_id"] = track_id
-    return normalized
-
-
-def parse_float(value: str) -> float | None:
-    text = value.strip()
-    if not text:
-        return None
-    try:
-        return float(text)
-    except ValueError:
-        return None
 
 
 def parse_weighted_list(raw_value: str, key_name: str, score_name: str) -> list[tuple[str, float]]:
@@ -157,20 +129,6 @@ def parse_labels(raw_value: str, label_key: str) -> list[str]:
         label = item.get(label_key)
         if isinstance(label, str) and label.strip():
             labels.append(label.strip())
-    return labels
-
-
-def parse_csv_labels(raw_value: str) -> list[str]:
-    if not raw_value:
-        return []
-    labels: list[str] = []
-    seen: set[str] = set()
-    for piece in raw_value.split(","):
-        label = piece.strip().lower()
-        if not label or label in seen:
-            continue
-        seen.add(label)
-        labels.append(label)
     return labels
 
 

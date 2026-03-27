@@ -137,6 +137,64 @@ def build_undersized_diagnostics(
     }
 
 
+def build_rank_continuity_diagnostics(playlist: list[dict]) -> dict:
+    selected_ranks = [int(track["score_rank"]) for track in playlist]
+    selected_scores = [float(track["final_score"]) for track in playlist]
+    max_selected_rank = max(selected_ranks) if selected_ranks else 0
+    median_selected_rank = sorted(selected_ranks)[len(selected_ranks) // 2] if selected_ranks else 0
+    rank_2_to_3_gap = 0.0
+    if len(selected_scores) >= 3:
+        rank_2_to_3_gap = round(selected_scores[1] - selected_scores[2], 6)
+    return {
+        "selected_ranks": selected_ranks,
+        "max_selected_rank": max_selected_rank,
+        "median_selected_rank": median_selected_rank,
+        "rank_2_to_3_score_gap": rank_2_to_3_gap,
+        "rank_cliff_detected": rank_2_to_3_gap >= 0.1,
+    }
+
+
+def build_assembly_pressure_diagnostics(trace_rows: list[dict]) -> dict:
+    top_100_rows = [row for row in trace_rows if int(row["score_rank"]) <= 100]
+    top_100_excluded = [row for row in top_100_rows if row["decision"] == "excluded"]
+    reason_counts = Counter(
+        str(row.get("exclusion_reason") or "")
+        for row in top_100_excluded
+        if row.get("exclusion_reason")
+    )
+    return {
+        "top_100_considered": len(top_100_rows),
+        "top_100_excluded": len(top_100_excluded),
+        "top_100_exclusion_reason_counts": dict(reason_counts),
+        "dominant_top_100_exclusion_reason": reason_counts.most_common(1)[0][0] if reason_counts else None,
+    }
+
+
+def build_assembly_detail_log(trace_rows: list[dict]) -> dict:
+    top_100_rows = [row for row in trace_rows if int(row["score_rank"]) <= 100]
+    included_ranks = sorted(int(row["score_rank"]) for row in trace_rows if row["decision"] == "included")
+
+    detail_rows: list[dict[str, object]] = []
+    for row in top_100_rows:
+        current_rank = int(row["score_rank"])
+        alternative_rank = next((rank for rank in included_ranks if rank > current_rank), None)
+        detail_rows.append(
+            {
+                "score_rank": current_rank,
+                "track_id": row["track_id"],
+                "final_score": float(row["final_score"]),
+                "decision": row["decision"],
+                "exclusion_reason": row.get("exclusion_reason", ""),
+                "selected_alternative_rank": alternative_rank,
+            }
+        )
+
+    return {
+        "top_rank_window": 100,
+        "rows": detail_rows,
+    }
+
+
 def ensure_paths_exist(paths: list[Path]) -> None:
     missing = [str(path) for path in paths if not path.exists()]
     if missing:
@@ -315,6 +373,13 @@ def main() -> None:
     )
 
     report_path = output_dir / "bl007_assembly_report.json"
+    rank_continuity_diagnostics = build_rank_continuity_diagnostics(playlist)
+    assembly_pressure_diagnostics = build_assembly_pressure_diagnostics(trace_rows)
+    detail_log = build_assembly_detail_log(trace_rows)
+
+    detail_log_path = output_dir / "bl007_assembly_detail_log.json"
+    write_json(detail_log_path, detail_log)
+
     report = {
         "run_id":             run_id,
         "generated_at_utc":   playlist_obj["generated_at_utc"],
@@ -332,12 +397,15 @@ def main() -> None:
             "max": round(max(t["final_score"] for t in playlist), 6) if playlist else None,
             "min": round(min(t["final_score"] for t in playlist), 6) if playlist else None,
         },
+        "rank_continuity_diagnostics": rank_continuity_diagnostics,
+        "assembly_pressure_diagnostics": assembly_pressure_diagnostics,
         "input_artifact_hashes": {
             "bl006_scored_candidates.csv": sha256(scored_candidates_path),
         },
         "output_artifact_hashes": {
             "bl007_playlist.json":       sha256(playlist_path),
             "bl007_assembly_trace.csv":  sha256(trace_path),
+            "bl007_assembly_detail_log.json": sha256(detail_log_path),
         },
     }
     write_json(report_path, report)

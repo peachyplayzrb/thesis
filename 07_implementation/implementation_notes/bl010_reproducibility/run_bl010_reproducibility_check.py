@@ -1,8 +1,6 @@
 from __future__ import annotations
 
 import argparse
-import csv
-import hashlib
 import json
 import os
 import shutil
@@ -13,14 +11,20 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
+from bl000_shared_utils.hashing import canonical_json_hash as shared_canonical_json_hash
+from bl000_shared_utils.hashing import sha256_of_file
+from bl000_shared_utils.io_utils import load_csv_rows
+from bl000_shared_utils.io_utils import load_json
+from bl000_shared_utils.path_utils import repo_root
 from bl000_shared_utils.report_utils import write_csv_rows, write_json_ascii
 
 
 DEFAULT_REPLAY_COUNT = 3
 
 
-def repo_root() -> Path:
-    return Path(__file__).resolve().parents[3]
+def canonical_json_hash(payload: object, *, uppercase: bool = True) -> str:
+    """Preserve BL-010 historical default of uppercase JSON hash output."""
+    return shared_canonical_json_hash(payload, uppercase=uppercase)
 
 
 def parse_args() -> argparse.Namespace:
@@ -43,6 +47,11 @@ def parse_args() -> argparse.Namespace:
         default="07_implementation/implementation_notes/bl010_reproducibility/outputs",
         help="Directory for reproducibility report artifacts.",
     )
+    parser.add_argument(
+        "--run-config",
+        default=None,
+        help="Optional run-config path forwarded to BL-004..BL-009 replay stages.",
+    )
     return parser.parse_args()
 
 
@@ -56,44 +65,48 @@ def relpath(path: Path, root: Path) -> str:
     return path.relative_to(root).as_posix()
 
 
-def sha256_of_file(path: Path) -> str:
-    digest = hashlib.sha256()
-    with path.open("rb") as handle:
-        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
-            digest.update(chunk)
-    return digest.hexdigest().upper()
-
-
-def sha256_of_text(text: str) -> str:
-    return hashlib.sha256(text.encode("utf-8")).hexdigest().upper()
-
-
-def canonical_json_hash(payload: object) -> str:
-    return sha256_of_text(json.dumps(payload, sort_keys=True, ensure_ascii=True, separators=(",", ":")))
-
-
-def load_json(path: Path) -> dict:
-    return json.loads(path.read_text(encoding="utf-8"))
-
-
-def load_csv_rows(path: Path) -> list[dict[str, str]]:
-    with path.open("r", encoding="utf-8", newline="") as handle:
-        return list(csv.DictReader(handle))
-
-
 def copy_file(src: Path, dst: Path) -> None:
     dst.parent.mkdir(parents=True, exist_ok=True)
-    try:
-        shutil.copy2(src, dst)
-    except OSError as exc:
-        if os.name != "nt" or getattr(exc, "winerror", None) != 1224:
-            raise
-        dst.write_bytes(src.read_bytes())
-        shutil.copystat(src, dst)
+    last_error: OSError | None = None
+
+    for _ in range(3):
+        try:
+            shutil.copy2(src, dst)
+            return
+        except OSError as exc:
+            last_error = exc
+            is_windows_retryable = os.name == "nt" and (
+                getattr(exc, "winerror", None) == 1224 or exc.errno == 22
+            )
+            if not is_windows_retryable:
+                raise
+            time.sleep(0.05)
+
+    source_bytes = src.read_bytes()
+    normalized_dst = os.path.abspath(os.path.normpath(str(dst))).replace("/", "\\")
+    for _ in range(3):
+        try:
+            with open(normalized_dst, "wb") as handle:
+                handle.write(source_bytes)
+            try:
+                shutil.copystat(src, Path(normalized_dst))
+            except OSError:
+                pass
+            return
+        except OSError as exc:
+            last_error = exc
+            is_windows_retryable = os.name == "nt" and (
+                getattr(exc, "winerror", None) == 1224 or exc.errno == 22
+            )
+            if not is_windows_retryable:
+                raise
+            time.sleep(0.05)
+
+    raise last_error if last_error is not None else RuntimeError("Unexpected copy failure")
 
 
 def build_file_hash_map(paths: dict[str, Path], keys: list[str]) -> dict[str, str]:
-    return {key: sha256_of_file(paths[key]) for key in keys}
+    return {key: sha256_of_file(paths[key], uppercase=True) for key in keys}
 
 
 def build_paths(root: Path) -> dict[str, Path]:
@@ -150,7 +163,7 @@ def build_config_snapshot(
     ]
 
     fixed_inputs = {
-        relpath(paths[key], root): sha256_of_file(paths[key])
+        relpath(paths[key], root): sha256_of_file(paths[key], uppercase=True)
         for key in fixed_input_keys
     }
     stage_script_keys = ["bl004_script", "bl005_script", "bl006_script", "bl007_script", "bl008_script", "bl009_script"]
@@ -204,15 +217,15 @@ def stable_profile_fingerprint(profile: dict, summary: dict) -> str:
             "feature_centers": summary["feature_centers"],
         },
     }
-    return canonical_json_hash(payload)
+    return canonical_json_hash(payload, uppercase=True)
 
 
 def stable_playlist_fingerprint(playlist: dict) -> str:
-    return canonical_json_hash(playlist["tracks"])
+    return canonical_json_hash(playlist["tracks"], uppercase=True)
 
 
 def stable_explanations_fingerprint(payloads: dict) -> str:
-    return canonical_json_hash(payloads["explanations"])
+    return canonical_json_hash(payloads["explanations"], uppercase=True)
 
 
 def stable_observability_fingerprint(run_log: dict, playlist_stable_hash: str, explanations_stable_hash: str) -> str:
@@ -265,7 +278,7 @@ def stable_observability_fingerprint(run_log: dict, playlist_stable_hash: str, e
             "explanation_content_hash": explanations_stable_hash,
         },
     }
-    return canonical_json_hash(payload)
+    return canonical_json_hash(payload, uppercase=True)
 
 
 def fingerprint_outputs(paths: dict[str, Path]) -> dict[str, object]:
@@ -353,9 +366,17 @@ def _canonicalize_stage_stdout_lines(stdout: str, root: Path) -> list[str]:
     return canonical_lines
 
 
-def run_stage(stage_id: str, script_path: Path, root: Path, python_executable: str) -> dict[str, object]:
+def run_stage(
+    stage_id: str,
+    script_path: Path,
+    root: Path,
+    python_executable: str,
+    run_config_path: str | None,
+) -> dict[str, object]:
     started = time.time()
     command = [python_executable, str(script_path)]
+    if run_config_path:
+        command.extend(["--run-config", run_config_path])
     completed: subprocess.CompletedProcess[str] | None = None
     attempts: list[dict[str, object]] = []
     for attempt in range(1, 4):
@@ -388,11 +409,12 @@ def run_stage(stage_id: str, script_path: Path, root: Path, python_executable: s
         )
     canonical_script_path = relpath(script_path, root)
     final_attempt = attempts[-1]
+    command_suffix = f" --run-config {run_config_path}" if run_config_path else ""
     return {
         "stage": stage_id,
         "script": script_path.name,
         "script_path": canonical_script_path,
-        "command": f"python {canonical_script_path}",
+        "command": f"python {canonical_script_path}{command_suffix}",
         "elapsed_seconds": round(time.time() - started, 3),
         "stdout": list(final_attempt["stdout"]),
         "stderr": list(final_attempt["stderr"]),
@@ -421,11 +443,12 @@ def execute_replays(
     root: Path,
     output_dir: Path,
     paths: dict[str, Path],
+    run_config_path: str | None,
 ) -> list[dict[str, object]]:
     replay_records: list[dict[str, object]] = []
     for replay_number in range(1, replay_count + 1):
         stage_runs = [
-            run_stage(stage_id, script_path, root, python_executable)
+            run_stage(stage_id, script_path, root, python_executable, run_config_path)
             for stage_id, script_path in stage_sequence
         ]
         fingerprints = fingerprint_outputs(paths)
@@ -497,7 +520,7 @@ def main() -> None:
         root,
         replay_count=replay_count,
     )
-    config_hash = canonical_json_hash(config_snapshot)
+    config_hash = canonical_json_hash(config_snapshot, uppercase=True)
     config_path = output_dir / "bl010_reproducibility_config_snapshot.json"
     write_json_ascii(config_path, config_snapshot)
 
@@ -513,6 +536,7 @@ def main() -> None:
         root=root,
         output_dir=output_dir,
         paths=paths,
+        run_config_path=str(args.run_config) if args.run_config else None,
     )
 
     stable_hashes_by_run = [record["stable_hashes"] for record in replay_records]
