@@ -1,6 +1,6 @@
 # Backlog
 
-Last updated: 2026-03-27
+Last updated: 2026-03-27 16:54 UTC
 
 ## Priority Legend
 - P0: Must complete for locked MVP and assessment evidence.
@@ -22,6 +22,10 @@ Last updated: 2026-03-27
   - BL-011 controllability: `BL011-CTRL-20260327-002019`
   - BL-014 sanity: `BL014-SANITY-20260327-002035-164549` (`22/22`)
   - Active freshness suite: `BL-FRESHNESS-SUITE-20260327-002136` (`19/19`)
+- Latest same-day additional evidence wave is logged as non-canonical (environment-mode run chain via website/server path):
+  - BL-009 observability: `BL009-OBSERVE-20260327-165412-004409`
+  - Upstream chain: `BL004-PROFILE-20260327-165357-389471` -> `BL005-FILTER-20260327-165358-293711` -> `BL006-SCORE-20260327-165402-861535` -> `BL007-ASSEMBLE-20260327-165409-663614` -> `BL008-EXPLAIN-20260327-165410-986323`
+  - Key observed metrics: `kept_candidates=70680`, BL-008 top-contributor distribution `{Lead genre match:4, Tag overlap:3, Danceability:2, Tempo (BPM):1}`
 - Current active work is bounded to:
   - BL-023 website-to-pipeline integration
   - chapter hardening follow-through from the closed UI-003 package
@@ -39,13 +43,13 @@ Last updated: 2026-03-27
 | BL-005 | P0 | done | Implement candidate retrieval and feature filtering | `bl005_filtered_candidates.csv`, `bl005_candidate_decisions.csv`, `bl005_candidate_diagnostics.json`; latest kept candidates `46776` |
 | BL-006 | P0 | done | Implement deterministic scoring function with weighted components | `bl006_scored_candidates.csv`, `bl006_score_summary.json`; active component count `10` on v1f |
 | BL-007 | P0 | done | Implement rule-based playlist assembly (diversity, coherence, ordering) | `bl007_playlist.json`, `bl007_assembly_trace.csv`, `bl007_assembly_report.json`; latest playlist `10/10` |
-| BL-008 | P0 | done | Add transparency outputs (score contribution and rule adjustment trace) | `bl008_explanation_payloads.json`, `bl008_explanation_summary.json`; latest top-contributor mix `4/3/3` across lead genre/tag/genre overlap |
+| BL-008 | P0 | done | Add transparency outputs (score contribution and rule adjustment trace) | `bl008_explanation_payloads.json`, `bl008_explanation_summary.json`; canonical v1f top-contributor mix remains documented, with additional same-day non-canonical wave showing `4/3/2/1` across lead genre/tag overlap/danceability/tempo |
 | BL-009 | P0 | done | Add observability logging with canonical config-artifact linkage | `bl009_run_observability_log.json`, `bl009_run_index.csv`; schema `bl009-observability-v1` |
-| BL-010 | P0 | done | Execute reproducibility tests (same input/config => same output) | `bl010_reproducibility_report.json`; latest run `BL010-REPRO-20260326-215557`, `deterministic_match=true` |
-| BL-011 | P0 | done | Execute controllability tests (parameter sensitivity) | `bl011_controllability_report.json`, `bl011_controllability_run_matrix.csv`; latest run `BL011-CTRL-20260326-215213`, five scenarios |
+| BL-010 | P0 | done | Execute reproducibility tests (same input/config => same output) | `bl010_reproducibility_report.json`; latest canonical v1f run `BL010-REPRO-20260327-011941`, `deterministic_match=true` |
+| BL-011 | P0 | done | Execute controllability tests (parameter sensitivity) | `bl011_controllability_report.json`, `bl011_controllability_run_matrix.csv`; latest canonical v1f run `BL011-CTRL-20260327-012056`, five scenarios |
 | BL-012 | P0 | done | Document limitations and failure modes from test outcomes | `02_foundation/limitations.md` + `08_writing/chapter5.md` |
-| BL-013 | P1 | done | Lightweight orchestrator with repeatable run controls and canonical config artifacts | `run_bl013_pipeline_entrypoint.py`, `run_intent_*.json`, `run_effective_config_*.json`; latest integrated run `BL013-ENTRYPOINT-20260326-215741-269303` |
-| BL-014 | P1 | done | Automated sanity and freshness checks for active outputs | `run_bl014_sanity_checks.py`, `run_active_freshness_suite.py`, `check_bl010_bl011_freshness.py`; latest sanity `22/22`, freshness `7/7` on `BL014-SANITY-20260326-215415-562794` / `BL-FRESHNESS-SUITE-20260326-215416` |
+| BL-013 | P1 | done | Lightweight orchestrator with repeatable run controls and canonical config artifacts | `run_bl013_pipeline_entrypoint.py`, `run_intent_*.json`, `run_effective_config_*.json`; latest canonical integrated run `BL013-ENTRYPOINT-20260327-012149-023331` |
+| BL-014 | P1 | done | Automated sanity and freshness checks for active outputs | `run_bl014_sanity_checks.py`, `run_active_freshness_suite.py`, `check_bl010_bl011_freshness.py`; latest canonical sanity/freshness `22/22` and `19/19` on `BL014-SANITY-20260327-011939-797165` / `BL-FRESHNESS-SUITE-20260327-012201` |
 | BL-015 | P2 | todo | Add second ingestion adapter scaffold (out of core scope) | Backlog-only design note |
 | BL-016 | P0 | done | Create synthetic pre-aligned data assets for core pipeline development | `07_implementation/implementation_notes/test_assets/` |
 | BL-017 | P0 | done | Build active DS-001 working dataset layer with quality checks | `07_implementation/implementation_notes/bl000_data_layer/outputs/` |

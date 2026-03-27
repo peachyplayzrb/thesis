@@ -7,18 +7,49 @@ import subprocess
 import sys
 import threading
 import time
-import urllib.parse
 from collections import deque
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
-from http import HTTPStatus
-from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from typing import Any, Deque, Dict, List, Optional
+
+import uvicorn
+from fastapi.exceptions import RequestValidationError
+from fastapi import Body, FastAPI, HTTPException, Query, Request
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse, RedirectResponse
+from fastapi.staticfiles import StaticFiles
+from pydantic import BaseModel, ConfigDict, Field
+from starlette.exceptions import HTTPException as StarletteHTTPException
 
 
 def now_utc() -> str:
     return datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+
+
+class RuntimeConfigValidateRequest(BaseModel):
+    model_config = ConfigDict(extra="allow")
+
+    stage_params: Dict[str, Any] = Field(default_factory=dict)
+
+
+class PipelineRunStartRequest(BaseModel):
+    model_config = ConfigDict(extra="allow")
+
+    stage_ids: Optional[List[str]] = None
+    stage_params: Dict[str, Any] = Field(default_factory=dict)
+
+
+class EvidenceBundleRequest(BaseModel):
+    model_config = ConfigDict(extra="allow")
+
+    run_id: Optional[str] = None
+
+
+class SpotifyExportStartRequest(BaseModel):
+    model_config = ConfigDict(extra="allow")
+
+    spotify: Dict[str, Any] = Field(default_factory=dict)
 
 
 @dataclass
@@ -1183,212 +1214,230 @@ class PipelineJob:
             }
 
 
-class WebsiteApiHandler(SimpleHTTPRequestHandler):
-    def __init__(self, *args: Any, directory: str | None = None, **kwargs: Any) -> None:
-        super().__init__(*args, directory=directory, **kwargs)
+# ---------------------------------------------------------------------------
+# Path constants — resolved once at import time
+# ---------------------------------------------------------------------------
+_SETUP_DIR = Path(__file__).resolve().parent   # 07_implementation/setup/
+_IMPL_ROOT = _SETUP_DIR.parent                 # 07_implementation/
+_REPO_ROOT = _IMPL_ROOT.parent                 # thesis-main/
+_WEBSITE_ROOT = _IMPL_ROOT / "website"         # 07_implementation/website/
 
-    def _send_json(self, payload: Dict[str, Any], status: int = HTTPStatus.OK) -> None:
-        data = json.dumps(payload, ensure_ascii=True).encode("utf-8")
-        self.send_response(status)
-        self.send_header("Content-Type", "application/json; charset=utf-8")
-        self.send_header("Cache-Control", "no-store")
-        self.send_header("Content-Length", str(len(data)))
-        self.end_headers()
-        self.wfile.write(data)
+# ---------------------------------------------------------------------------
+# Runtime state — populated by main() before uvicorn starts
+# ---------------------------------------------------------------------------
+app = FastAPI(title="Playlist Generator API")
 
-    def do_GET(self) -> None:  # noqa: N802
-        parsed = urllib.parse.urlparse(self.path)
-        if parsed.path == "/api/health":
-            pipeline_state = self.server.pipeline_job.snapshot().get("run", {})
-            export_state = self.server.export_job.snapshot().get("run", {})
-            uptime_seconds = max(0, int(time.time() - self.server.started_monotonic))
-            self._send_json({
-                "server_time_utc": now_utc(),
-                "status": "ok",
-                "uptime_seconds": uptime_seconds,
-                "started_at_utc": self.server.started_at_utc,
-                "server": {
-                    "bind": self.server.server_address[0],
-                    "port": self.server.server_address[1],
-                    "serve_root": str(self.server.serve_root).replace("\\", "/"),
-                },
-                "services": {
-                    "pipeline": {
-                        "status": pipeline_state.get("status", "idle"),
-                        "run_id": pipeline_state.get("run_id"),
-                    },
-                    "spotify_export": {
-                        "status": export_state.get("status", "idle"),
-                        "line_count": export_state.get("line_count", 0),
-                    },
-                },
-            })
-            return
+app.add_middleware(
+    CORSMiddleware,
+    allow_origin_regex=r"^https?://(127\.0\.0\.1|localhost)(:\d+)?$",
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
-        if parsed.path == "/api/runtime/config":
-            payload = self.server.pipeline_job.runtime_config_snapshot()
-            payload["server"] = {
-                "bind": self.server.server_address[0],
-                "port": self.server.server_address[1],
-                "started_at_utc": self.server.started_at_utc,
-            }
-            self._send_json(payload)
-            return
-
-        if parsed.path == "/api/pipeline/stages":
-            self._send_json(self.server.pipeline_job.stage_catalog())
-            return
-
-        if parsed.path == "/api/pipeline/run/history":
-            query = urllib.parse.parse_qs(parsed.query)
-            limit_raw = query.get("limit", ["10"])[0]
-            try:
-                limit = int(limit_raw)
-            except (TypeError, ValueError):
-                limit = 10
-            self._send_json(self.server.pipeline_job.history_snapshot(limit=limit))
-            return
-
-        if parsed.path == "/api/pipeline/run/status":
-            query = urllib.parse.parse_qs(parsed.query)
-            after_raw = query.get("after", ["0"])[0]
-            try:
-                after = max(0, int(after_raw))
-            except (TypeError, ValueError):
-                after = 0
-            self._send_json(self.server.pipeline_job.snapshot(after=after))
-            return
-
-        if parsed.path == "/api/pipeline/run/results":
-            query = urllib.parse.parse_qs(parsed.query)
-            run_id = query.get("run_id", [None])[0]
-            self._send_json(self.server.pipeline_job.results_snapshot(run_id=run_id))
-            return
-
-        if parsed.path == "/api/spotify/export/status":
-            query = urllib.parse.parse_qs(parsed.query)
-            after_raw = query.get("after", ["0"])[0]
-            try:
-                after = max(0, int(after_raw))
-            except (TypeError, ValueError):
-                after = 0
-            self._send_json(self.server.export_job.snapshot(after=after))
-            return
-        super().do_GET()
-
-    def do_POST(self) -> None:  # noqa: N802
-        parsed = urllib.parse.urlparse(self.path)
-        if parsed.path == "/api/runtime/config/validate":
-            try:
-                content_length = int(self.headers.get("Content-Length", "0"))
-                raw = self.rfile.read(content_length).decode("utf-8") if content_length else "{}"
-                payload = json.loads(raw or "{}")
-                result = self.server.pipeline_job.validate_stage_params_payload(payload)
-            except Exception as exc:
-                self._send_json({"error": f"Unable to validate runtime config: {exc}"}, status=HTTPStatus.BAD_REQUEST)
-                return
-
-            status = HTTPStatus.OK if result.get("valid") else HTTPStatus.BAD_REQUEST
-            self._send_json({
-                "server_time_utc": now_utc(),
-                **result,
-            }, status=status)
-            return
-
-        if parsed.path == "/api/pipeline/run/cancel":
-            try:
-                self.server.pipeline_job.cancel()
-            except RuntimeError as exc:
-                self._send_json({"error": str(exc)}, status=HTTPStatus.CONFLICT)
-                return
-            self._send_json(self.server.pipeline_job.snapshot(), status=HTTPStatus.ACCEPTED)
-            return
-
-        if parsed.path == "/api/pipeline/run/start":
-            try:
-                content_length = int(self.headers.get("Content-Length", "0"))
-                raw = self.rfile.read(content_length).decode("utf-8") if content_length else "{}"
-                payload = json.loads(raw or "{}")
-                self.server.pipeline_job.start(payload)
-            except RuntimeError as exc:
-                self._send_json({"error": str(exc)}, status=HTTPStatus.CONFLICT)
-                return
-            except Exception as exc:
-                self._send_json({"error": f"Unable to start pipeline run: {exc}"}, status=HTTPStatus.BAD_REQUEST)
-                return
-
-            self._send_json(self.server.pipeline_job.snapshot(), status=HTTPStatus.ACCEPTED)
-            return
-
-        if parsed.path == "/api/pipeline/run/evidence_bundle":
-            try:
-                content_length = int(self.headers.get("Content-Length", "0"))
-                raw = self.rfile.read(content_length).decode("utf-8") if content_length else "{}"
-                payload = json.loads(raw or "{}")
-                run_id = payload.get("run_id") if isinstance(payload, dict) else None
-                bundle = self.server.pipeline_job.create_evidence_bundle(run_id=run_id)
-            except RuntimeError as exc:
-                self._send_json({"error": str(exc)}, status=HTTPStatus.CONFLICT)
-                return
-            except Exception as exc:
-                self._send_json({"error": f"Unable to create evidence bundle: {exc}"}, status=HTTPStatus.BAD_REQUEST)
-                return
-
-            self._send_json(bundle, status=HTTPStatus.ACCEPTED)
-            return
-
-        if parsed.path == "/api/spotify/export/cancel":
-            try:
-                self.server.export_job.cancel()
-            except RuntimeError as exc:
-                self._send_json({"error": str(exc)}, status=HTTPStatus.CONFLICT)
-                return
-            self._send_json(self.server.export_job.snapshot(), status=HTTPStatus.ACCEPTED)
-            return
-
-        if parsed.path != "/api/spotify/export/start":
-            self._send_json({"error": "Not found."}, status=HTTPStatus.NOT_FOUND)
-            return
-
-        try:
-            content_length = int(self.headers.get("Content-Length", "0"))
-            raw = self.rfile.read(content_length).decode("utf-8") if content_length else "{}"
-            payload = json.loads(raw or "{}")
-            self.server.export_job.start(payload)
-        except RuntimeError as exc:
-            self._send_json({"error": str(exc)}, status=HTTPStatus.CONFLICT)
-            return
-        except Exception as exc:
-            self._send_json({"error": f"Unable to start ingestion: {exc}"}, status=HTTPStatus.BAD_REQUEST)
-            return
-
-        self._send_json(self.server.export_job.snapshot(), status=HTTPStatus.ACCEPTED)
+app.mount("/website", StaticFiles(directory=str(_WEBSITE_ROOT), html=True), name="website")
 
 
-class WebsiteApiServer(ThreadingHTTPServer):
-    def __init__(self, server_address: tuple[str, int], handler_class: type[WebsiteApiHandler], serve_root: Path, export_job: SpotifyExportJob, pipeline_job: PipelineJob) -> None:
-        self.serve_root = serve_root
-        self.export_job = export_job
-        self.pipeline_job = pipeline_job
-        self.started_at_utc = now_utc()
-        self.started_monotonic = time.time()
-        super().__init__(server_address, lambda *args, **kwargs: handler_class(*args, directory=str(serve_root), **kwargs))
+def initialize_app_state(bind: str, port: int, repo_root: Optional[Path] = None) -> None:
+    resolved_repo_root = repo_root or Path(__file__).resolve().parent.parent.parent
+    app.state.bind = bind
+    app.state.port = port
+    app.state.started_at_utc = now_utc()
+    app.state.started_monotonic = time.time()
+    app.state.export_job = SpotifyExportJob(repo_root=resolved_repo_root)
+    app.state.pipeline_job = PipelineJob(repo_root=resolved_repo_root)
 
+
+def _get_pipeline_job(request: Request) -> PipelineJob:
+    pipeline_job = getattr(request.app.state, "pipeline_job", None)
+    if pipeline_job is None:
+        raise HTTPException(status_code=503, detail="Pipeline job is not initialized.")
+    return pipeline_job
+
+
+def _get_export_job(request: Request) -> SpotifyExportJob:
+    export_job = getattr(request.app.state, "export_job", None)
+    if export_job is None:
+        raise HTTPException(status_code=503, detail="Spotify export job is not initialized.")
+    return export_job
+
+
+def _error_response(detail: Any, status_code: int) -> JSONResponse:
+    if isinstance(detail, str):
+        content: Dict[str, Any] = {"error": detail}
+    elif isinstance(detail, dict):
+        content = detail
+    else:
+        content = {"error": str(detail)}
+    return JSONResponse(status_code=status_code, content=content)
+
+
+@app.exception_handler(HTTPException)
+def _http_exception_handler(request: Request, exc: HTTPException) -> JSONResponse:
+    """Return {"error": "..."} for app-raised HTTPExceptions so the JS can read payload.error."""
+    return _error_response(exc.detail, exc.status_code)
+
+
+@app.exception_handler(StarletteHTTPException)
+def _starlette_http_exception_handler(request: Request, exc: StarletteHTTPException) -> JSONResponse:
+    return _error_response(exc.detail, exc.status_code)
+
+
+@app.exception_handler(RequestValidationError)
+def _request_validation_exception_handler(request: Request, exc: RequestValidationError) -> JSONResponse:
+    return _error_response({"error": "Request validation failed.", "details": exc.errors()}, 422)
+
+
+@app.get("/")
+def root_redirect() -> RedirectResponse:
+    return RedirectResponse(url="/website/import.html")
+
+
+# ---------------------------------------------------------------------------
+# GET routes
+# ---------------------------------------------------------------------------
+
+@app.get("/api/health")
+def api_health(request: Request) -> Dict[str, Any]:
+    pipeline_state = _get_pipeline_job(request).snapshot().get("run", {})
+    export_state = _get_export_job(request).snapshot().get("run", {})
+    uptime_seconds = max(0, int(time.time() - request.app.state.started_monotonic))
+    return {
+        "server_time_utc": now_utc(),
+        "status": "ok",
+        "uptime_seconds": uptime_seconds,
+        "started_at_utc": request.app.state.started_at_utc,
+        "server": {
+            "bind": request.app.state.bind,
+            "port": request.app.state.port,
+            "serve_root": str(_IMPL_ROOT).replace("\\", "/"),
+        },
+        "services": {
+            "pipeline": {
+                "status": pipeline_state.get("status", "idle"),
+                "run_id": pipeline_state.get("run_id"),
+            },
+            "spotify_export": {
+                "status": export_state.get("status", "idle"),
+                "line_count": export_state.get("line_count", 0),
+            },
+        },
+    }
+
+
+@app.get("/api/runtime/config")
+def api_runtime_config(request: Request) -> Dict[str, Any]:
+    payload = _get_pipeline_job(request).runtime_config_snapshot()
+    payload["server"] = {
+        "bind": request.app.state.bind,
+        "port": request.app.state.port,
+        "started_at_utc": request.app.state.started_at_utc,
+    }
+    return payload
+
+
+@app.get("/api/pipeline/stages")
+def api_pipeline_stages(request: Request) -> Dict[str, Any]:
+    return _get_pipeline_job(request).stage_catalog()
+
+
+@app.get("/api/pipeline/run/history")
+def api_pipeline_run_history(request: Request, limit: int = Query(default=10, le=50)) -> Dict[str, Any]:
+    return _get_pipeline_job(request).history_snapshot(limit=limit)
+
+
+@app.get("/api/pipeline/run/status")
+def api_pipeline_run_status(request: Request, after: int = Query(default=0)) -> Dict[str, Any]:
+    return _get_pipeline_job(request).snapshot(after=max(0, after))
+
+
+@app.get("/api/pipeline/run/results")
+def api_pipeline_run_results(request: Request, run_id: Optional[str] = None) -> Dict[str, Any]:
+    return _get_pipeline_job(request).results_snapshot(run_id=run_id)
+
+
+@app.get("/api/spotify/export/status")
+def api_spotify_export_status(request: Request, after: int = Query(default=0)) -> Dict[str, Any]:
+    return _get_export_job(request).snapshot(after=max(0, after))
+
+
+# ---------------------------------------------------------------------------
+# POST routes
+# ---------------------------------------------------------------------------
+
+@app.post("/api/runtime/config/validate")
+def api_runtime_config_validate(request: Request, payload: RuntimeConfigValidateRequest = Body(default_factory=RuntimeConfigValidateRequest)) -> JSONResponse:
+    try:
+        result = _get_pipeline_job(request).validate_stage_params_payload(payload.model_dump(exclude_none=True))
+    except Exception as exc:
+        raise HTTPException(status_code=400, detail=f"Unable to validate runtime config: {exc}")
+    status_code = 200 if result.get("valid") else 400
+    return JSONResponse(content={"server_time_utc": now_utc(), **result}, status_code=status_code)
+
+
+@app.post("/api/pipeline/run/start", status_code=202)
+def api_pipeline_run_start(request: Request, payload: PipelineRunStartRequest = Body(default_factory=PipelineRunStartRequest)) -> Dict[str, Any]:
+    try:
+        _get_pipeline_job(request).start(payload.model_dump(exclude_none=True))
+    except RuntimeError as exc:
+        raise HTTPException(status_code=409, detail=str(exc))
+    except Exception as exc:
+        raise HTTPException(status_code=400, detail=f"Unable to start pipeline run: {exc}")
+    return _get_pipeline_job(request).snapshot()
+
+
+@app.post("/api/pipeline/run/cancel", status_code=202)
+def api_pipeline_run_cancel(request: Request) -> Dict[str, Any]:
+    try:
+        _get_pipeline_job(request).cancel()
+    except RuntimeError as exc:
+        raise HTTPException(status_code=409, detail=str(exc))
+    return _get_pipeline_job(request).snapshot()
+
+
+@app.post("/api/pipeline/run/evidence_bundle", status_code=202)
+def api_pipeline_run_evidence_bundle(request: Request, payload: EvidenceBundleRequest = Body(default_factory=EvidenceBundleRequest)) -> Dict[str, Any]:
+    try:
+        bundle = _get_pipeline_job(request).create_evidence_bundle(run_id=payload.run_id)
+    except RuntimeError as exc:
+        raise HTTPException(status_code=409, detail=str(exc))
+    except Exception as exc:
+        raise HTTPException(status_code=400, detail=f"Unable to create evidence bundle: {exc}")
+    return bundle
+
+
+@app.post("/api/spotify/export/start", status_code=202)
+def api_spotify_export_start(request: Request, payload: SpotifyExportStartRequest = Body(default_factory=SpotifyExportStartRequest)) -> Dict[str, Any]:
+    try:
+        _get_export_job(request).start(payload.model_dump(exclude_none=True))
+    except RuntimeError as exc:
+        raise HTTPException(status_code=409, detail=str(exc))
+    except Exception as exc:
+        raise HTTPException(status_code=400, detail=f"Unable to start ingestion: {exc}")
+    return _get_export_job(request).snapshot()
+
+
+@app.post("/api/spotify/export/cancel", status_code=202)
+def api_spotify_export_cancel(request: Request) -> Dict[str, Any]:
+    try:
+        _get_export_job(request).cancel()
+    except RuntimeError as exc:
+        raise HTTPException(status_code=409, detail=str(exc))
+    return _get_export_job(request).snapshot()
+
+
+# ---------------------------------------------------------------------------
+# Entry point
+# ---------------------------------------------------------------------------
 
 def main() -> None:
     bind = sys.argv[1] if len(sys.argv) > 1 else "127.0.0.1"
     port = int(sys.argv[2]) if len(sys.argv) > 2 else 5501
+    initialize_app_state(bind=bind, port=port)
 
-    setup_dir = Path(__file__).resolve().parent
-    implementation_root = setup_dir.parent
-    repo_root = implementation_root.parent
-    export_job = SpotifyExportJob(repo_root=repo_root)
-    pipeline_job = PipelineJob(repo_root=repo_root)
-
-    server = WebsiteApiServer((bind, port), WebsiteApiHandler, implementation_root, export_job, pipeline_job)
     print(f"Serving website + API on http://{bind}:{port}/", flush=True)
     print(f"Import page: http://{bind}:{port}/website/import.html", flush=True)
-    server.serve_forever()
+    print(f"API docs:    http://{bind}:{port}/docs", flush=True)
+    uvicorn.run(app, host=bind, port=port, log_level="warning")
 
 
 if __name__ == "__main__":

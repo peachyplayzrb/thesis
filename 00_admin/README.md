@@ -1,6 +1,6 @@
 # 00_admin Control Hub
 
-Last refreshed: 2026-03-25
+Last refreshed: 2026-03-27
 
 ## Purpose
 This folder is the governance and execution-control layer for the thesis. It tracks current state, scope, decisions, changes, timeline, unresolved risks, and mentor interaction artifacts.
@@ -28,11 +28,11 @@ This folder is the governance and execution-control layer for the thesis. It tra
 - `operating_protocol.md`: logging and workflow policy.
 - `templates/`: reusable entry templates.
 
-## Current Open Control Items (as of 2026-03-25)
-1. `UI-003` in `unresolved_issues.md`: thesis-wide citation hardening completion and synthesis closeout.
+## Current Open Control Items (as of 2026-03-27)
+1. No active unresolved governance issue in `unresolved_issues.md`.
 2. Mentor response backlog in `mentor_question_log.md`: MQ-001, MQ-002, MQ-003, MQ-004, and MQ-007 are open (MQ-005, MQ-006, MQ-008 are deferred).
 
-Admin sync checkpoint (2026-03-25): milestone-state recalibration and freshness-control closure are now reflected across `timeline.md`, `thesis_state.md`, and `unresolved_issues.md`.
+Admin sync checkpoint (2026-03-27): UI-003 closure remains reflected across control files, v1f remains canonical, latest same-day run wave evidence is classified as additional (non-canonical) documentation context, and BL-023 website hardening is now recorded with FastAPI server/regression-test coverage.
 
 ## Hygiene Rules
 - Keep this folder as the single source of truth for governance state.

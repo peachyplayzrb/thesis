@@ -1,6 +1,6 @@
 ﻿# Thesis Timeline
 
-Last updated: 2026-03-25 15:00 UTC
+Last updated: 2026-03-27 18:49 UTC
 
 ## Milestones
 - M1 (2026-03-13 to 2026-03-20): Planning baseline finalized [completed]
@@ -34,7 +34,7 @@ Last updated: 2026-03-25 15:00 UTC
 	- Verify each claim against cited PDFs in `10_resources/papers/` and classify support strength.
 	- Extract high-value findings, limitations, and trade-off evidence for chapter strengthening.
 	- Produce citation replacement recommendations and chapter-targeted hardening notes.
-	- Current status note (2026-03-25): UI-003 remains open; package window extended for synthesis closeout and chapter-targeted insertion pass.
+	- Current status note (2026-03-27): UI-003 control-record closure is complete; remaining work is chapter-level hardening follow-through and insertion-quality checks.
 
 - WP-DRAFT-001 (2026-03-23 to 2026-03-29): 7-day mentor-ready full-draft sprint [in progress]
 	- Execute day-by-day writing/evidence/coherence plan in `00_admin/mentor_draft_7day_sprint_2026-03-23.md`.
@@ -51,6 +51,7 @@ Last updated: 2026-03-25 15:00 UTC
 	- Prioritize UI-mediated inspectability: surface run id, stage status, key counts, and artifact links in the website flow.
 	- Execute implementation refinement in parallel: stability hardening, clearer error handling around external API steps, and repeatable rerun controls for reproducibility evidence.
 	- Keep deferred scope unchanged (`BL-022`), and avoid adding new adapters or model classes during this package.
+	- Current status note (2026-03-27 18:49 UTC): workflow shell and results-clarity implementation pass is complete, FastAPI server hardening plus automated API regression coverage are in place, and active focus remains bounded reliability, modular cleanup, and observability clarity.
 
 ## Recently Closed
 - UI-002 closure recorded (2026-03-24): Chapter 2 weak-claim remediation objective completed for current audit workflow.
@@ -60,6 +61,7 @@ Last updated: 2026-03-25 15:00 UTC
 - Lead-genre contract closure recorded (2026-03-25): UI-012 closed after aligning BL-004, BL-005, and BL-006 to one canonical genre-first lead-genre rule, followed by BL-013/BL-014 validation pass.
 - Evaluation-freshness closure recorded (2026-03-25): UI-010 closed after BL-010/BL-011 evidence refresh and implementation of executable freshness controls (`check_bl010_bl011_freshness.py` and `run_active_freshness_suite.py`).
 - Milestone-state recalibration recorded (2026-03-25): M3 and M4 moved from planned to in progress to reflect completed BL-004 through BL-009 implementation and active evidence-synthesis work.
+- UI-003 control-record closure recorded (2026-03-27): Chapter 3 to 5 claim-verdict matrix and chapter-targeted hardening notes are logged and active unresolved governance issues are now empty.
 
 ## Notes
 - Dates are a working baseline for execution control and can be refined against official module deadlines.

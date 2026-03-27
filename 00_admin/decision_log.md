@@ -6,9 +6,9 @@ Ordering convention (standardized 2026-03-24):
 - New entries must be appended at the end and may include `superseded_by` when a prior decision is replaced.
 
 Maintenance snapshot (2026-03-27):
-- Highest decision ID currently present: `D-034`
-- Total decision entries: 34
-- Status distribution: accepted=28, superseded=3, rejected=1
+- Highest decision ID currently present: `D-035`
+- Total decision entries: 35
+- Status distribution: accepted=29, superseded=3, rejected=1
 - ID integrity check: no duplicate decision IDs detected
 
 Current posture snapshot (2026-03-25):
@@ -1018,4 +1018,17 @@ review_date: none
 - evidence_basis: `07_implementation/implementation_notes/bl000_run_config/outputs/RUN_CONFIG_RETENTION_POLICY.md`, `07_implementation/implementation_notes/bl013_entrypoint/outputs/BL013_RUN_MANIFEST.md`, `00_admin/change_log.md` (C-185).
 - impacted_files: `00_admin/decision_log.md`, `00_admin/change_log.md`, `07_implementation/implementation_notes/bl000_run_config/outputs/RUN_CONFIG_RETENTION_POLICY.md`, `07_implementation/implementation_notes/bl013_entrypoint/outputs/BL013_RUN_MANIFEST.md`
 - next_steps: Execute a separate ops-only archival pass using move manifests and validation reports; keep this current pass docs-only with no artifact deletion.
+
+## D-035
+- date: 2026-03-27
+- entity_id: BL-023
+- proposed_by: Copilot
+- status: accepted
+- decision: Use FastAPI + uvicorn as the website/API serving layer for BL-023 while preserving the existing subprocess-per-stage orchestration model, local-only browser origins, and backwards-compatible JSON error payloads.
+- context: The prior `http.server` implementation served the website successfully but concentrated manual routing, request parsing, and response shaping in a large handler class, making bounded website hardening slower and more error-prone.
+- alternatives_considered: Keep `http.server` and continue adding manual routes (rejected: rising maintenance cost and weak validation surface); refactor stage execution in-process inside the web server (rejected: worsens isolation and thesis traceability); replace the website package entirely (rejected: unnecessary scope expansion for BL-023).
+- rationale: FastAPI provides clearer route definitions, request validation, auto-generated API docs, and easier regression testing without changing the thesis-relevant pipeline execution semantics. Preserving subprocess stage execution keeps BL-003 to BL-009 isolation, artifact traceability, and rerun behavior intact.
+- evidence_basis: `07_implementation/setup/website_api_server.py`, `07_implementation/setup/smoke_website_api.ps1`, `07_implementation/setup/test_website_api_server.py`, `requirements.txt`, `07_implementation/experiment_log.md` (`EXP-052`).
+- impacted_files: `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`, `07_implementation/setup/website_api_server.py`, `07_implementation/setup/smoke_website_api.ps1`, `07_implementation/setup/test_website_api_server.py`, `requirements.txt`
+- next_steps: Keep BL-023 bounded to modular cleanup, reliability hardening, and evidence-surface polish; do not widen scope into new adapters or in-process pipeline redesign.
 

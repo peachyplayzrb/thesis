@@ -15,6 +15,181 @@ Copy the block below for each new run.
 
 ---
 
+## EXP-051
+- date: 2026-03-27
+- backlog_link: `BL-023` (state synchronization support)
+- owner: Timothy + AI
+- status: pass
+- related_test_id: `TC-STATE-SYNC-001`
+
+### Objective
+- Synchronize admin/state surfaces to current repository evidence while preserving policy that v1f remains canonical reporting baseline.
+
+### Scope Check
+- In-scope confirmation: yes, governance/state synchronization only.
+- Protected items affected? no
+
+### Inputs
+- source_data:
+  - `00_admin/thesis_state.md`
+  - `00_admin/timeline.md`
+  - `00_admin/README.md`
+  - `00_admin/change_log.md`
+  - `07_implementation/backlog.md`
+  - `07_implementation/implementation_notes/bl009_observability/outputs/bl009_run_index.csv`
+  - `07_implementation/implementation_notes/bl009_observability/outputs/bl009_run_observability_log.json`
+  - `07_implementation/implementation_notes/bl008_transparency/outputs/bl008_explanation_summary.json`
+- config_or_parameters:
+  - governance policy: keep v1f canonical; classify latest same-day run wave as additional non-canonical evidence.
+- code_or_script_path:
+  - documentation synchronization pass (no algorithm/runtime stage code edits)
+- dependency assumptions:
+  - latest output artifacts reflect valid run IDs and counts for evidence classification.
+
+### Expected Evidence
+- primary_output_artifact:
+  - synchronized admin/state docs with aligned timestamps and consistent baseline wording.
+- secondary_output_artifacts:
+  - updated backlog posture and change-log record for this sync pass.
+- success_condition:
+  - no contradiction across governance docs on baseline identity, unresolved issue status, or latest evidence classification.
+
+### Run Record
+- command_or_execution_method:
+  - read and reconcile current markdown/state artifacts; apply targeted doc updates.
+- run_id:
+  - `STATE-SYNC-20260327-1654`
+- start_state_summary:
+  - control docs lagged behind latest same-day artifact wave and still contained stale timestamp/open-control wording.
+- end_state_summary:
+  - control docs now aligned: v1f retained as canonical, latest 16:54 run wave recorded as additional non-canonical evidence context.
+
+### Results
+- outcome_summary:
+  - pass — governance/state surfaces synchronized with current repository evidence and policy.
+- key_metrics:
+  - latest observed BL-009 run: `BL009-OBSERVE-20260327-165412-004409`
+  - latest observed upstream chain: `BL004-PROFILE-20260327-165357-389471` -> `BL005-FILTER-20260327-165358-293711` -> `BL006-SCORE-20260327-165402-861535` -> `BL007-ASSEMBLE-20260327-165409-663614` -> `BL008-EXPLAIN-20260327-165410-986323`
+  - observed additional-wave retrieval count: `70680`
+  - observed additional-wave BL-008 distribution: `{Lead genre match:4, Tag overlap:3, Danceability:2, Tempo (BPM):1}`
+- deterministic_repeat_checked: n/a
+- output_paths:
+  - `00_admin/thesis_state.md`
+  - `00_admin/timeline.md`
+  - `00_admin/README.md`
+  - `00_admin/change_log.md`
+  - `07_implementation/backlog.md`
+
+### Issues And Limits
+- failures_or_anomalies:
+  - none in sync workflow; this pass is documentation-only.
+- likely_cause:
+  - n/a
+- bounded_mvp_limitation_or_bug:
+  - same-day additional evidence wave was executed under environment/default config source and is intentionally not treated as canonical baseline replacement.
+
+### Thesis Traceability
+- chapter4_relevance:
+  - keeps run-evidence references auditable and baseline-consistent for evaluation reporting.
+- chapter5_relevance:
+  - supports clean limitation/governance narrative by preventing evidence-state drift.
+- quality_control_files_to_update:
+  - `00_admin/change_log.md`
+
+### Next Action
+- immediate_follow_up:
+  - continue BL-023 bounded hardening and chapter placeholder completion using canonical v1f references.
+- backlog_status_recommendation:
+  - keep BL-023 as `doing`; no baseline-promotion change.
+
+---
+
+## EXP-052
+- date: 2026-03-27
+- backlog_link: `BL-023` (website integration hardening)
+- owner: Timothy + AI
+- status: pass
+- related_test_id: `TC-WEB-API-REG-001`
+
+### Objective
+- Harden the local website execution server by replacing the manual `http.server` API layer with FastAPI while preserving the existing pipeline invocation model and API contract expected by the website pages.
+
+### Scope Check
+- In-scope confirmation: yes, bounded BL-023 server/refinement work only.
+- Protected items affected? no
+
+### Inputs
+- source_data:
+  - `07_implementation/setup/website_api_server.py`
+  - `07_implementation/setup/smoke_website_api.ps1`
+  - website pages using `/api/*` endpoints
+- config_or_parameters:
+  - preserve subprocess stage execution
+  - preserve `{"error": ...}` JSON error shape for existing frontend code
+  - local-origin only browser access (`localhost` / `127.0.0.1`)
+- code_or_script_path:
+  - `07_implementation/setup/website_api_server.py`
+  - `07_implementation/setup/test_website_api_server.py`
+- dependency assumptions:
+  - `.venv` available and project can install `fastapi`, `uvicorn[standard]`, and `httpx`
+
+### Expected Evidence
+- primary_output_artifact:
+  - working FastAPI website/API server with unchanged external API behavior.
+- secondary_output_artifacts:
+  - regression test file and updated smoke script.
+- success_condition:
+  - server boots, smoke script passes, and Python regression tests pass without changing stage orchestration semantics.
+
+### Run Record
+- command_or_execution_method:
+  - refactor server, install dependencies, run `python -m unittest 07_implementation.setup.test_website_api_server`, then execute `smoke_website_api.ps1` against a live server instance.
+- run_id:
+  - `WEB-API-HARDENING-20260327-1849`
+- start_state_summary:
+  - website server used manual FastAPI-compatible behavior via large `http.server` handler with no Python API regression coverage.
+- end_state_summary:
+  - website server now runs on FastAPI + uvicorn with typed requests, app-state initialization, localhost CORS, framework-level error-shape compatibility, and automated regression tests.
+
+### Results
+- outcome_summary:
+  - pass — FastAPI migration completed without breaking the 7-stage website API surface.
+- key_metrics:
+  - regression tests: `5/5` pass
+  - smoke test status: `SMOKE_OK`
+  - route surface confirmed: health, runtime config, stage catalog, run status/history/results, export status, validate/start/cancel/evidence/export control endpoints remain available
+- deterministic_repeat_checked: n/a
+- output_paths:
+  - `07_implementation/setup/website_api_server.py`
+  - `07_implementation/setup/smoke_website_api.ps1`
+  - `07_implementation/setup/test_website_api_server.py`
+  - `requirements.txt`
+
+### Issues And Limits
+- failures_or_anomalies:
+  - initial regression-test execution failed because `httpx` was not installed in the venv.
+- likely_cause:
+  - FastAPI `TestClient` depends on `httpx`, which was not previously needed by the repo.
+- bounded_mvp_limitation_or_bug:
+  - server code is still in a single Python file; future cleanup should split routes, schemas, and job classes without altering behavior.
+
+### Thesis Traceability
+- chapter4_relevance:
+  - strengthens inspectability and execution-surface validation evidence for the website package.
+- chapter5_relevance:
+  - supports discussion of bounded engineering hardening without changing the core recommendation logic.
+- quality_control_files_to_update:
+  - `00_admin/change_log.md`
+  - `00_admin/decision_log.md`
+
+### Next Action
+- immediate_follow_up:
+  - keep BL-023 focused on modular cleanup and reliability/observability polish only.
+- backlog_status_recommendation:
+  - keep BL-023 as `doing`.
+
+---
+
 ## EXP-XXX
 - date:
 - backlog_link:

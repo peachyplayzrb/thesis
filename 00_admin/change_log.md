@@ -8,7 +8,7 @@ Ordering convention (standardized 2026-03-24):
 - New entries must be appended at the end; historical entries remain unchanged except for explicit correction records.
 
 Maintenance snapshot (2026-03-27):
-- Highest change ID currently present: `C-188`
+- Highest change ID currently present: `C-190`
 - Known legacy correction applied in this file: prior duplicate `C-079` entry has been normalized to `C-135` for unique-ID compliance.
 
 ## C-001
@@ -41,6 +41,8 @@ Maintenance snapshot (2026-03-27):
 | C-186 | 2026-03-27 | Copilot | Workspace environment cleanup: consolidated six scattered archive folders into `_deep_archive_march2026/`, pruned BL-013 run logs from 117 to 10 most recent, moved `_archive_cleanup_staging_2026-03-26/` out of workspace to parent folder, deleted orphaned workspace-root `07_implementation/` (older duplicate of canonical copy), moved 6 dated admin bloat files into `00_admin/archives/`, and cleaned 21 `__pycache__` directories from project source. Updated file_map.md to reflect new layout. |
 | C-187 | 2026-03-27 | Copilot | Document-consistency pass: re-ran BL-013 on v1f with seed refresh and refreshed BL-010/BL-011 via active freshness suite (`BL-FRESHNESS-SUITE-20260327-012201`, 19/19 pass), populated Chapter 4 EP matrix rows with current artifact evidence, corrected Chapter 5 stale baseline wording, authored thesis abstract, and archived stale `07_implementation/IMPLEMENTATION_STATE_2026-03-24.md` plus `07_implementation/implementation_plan.md` into `_deep_archive_march2026/`. |
 | C-188 | 2026-03-27 | Copilot | Closed UI-003 at control-record level by adding Chapter 3 to 5 claim-verdict matrix and chapter-targeted hardening notes (`09_quality_control/ui003_claim_verdicts_ch3_ch5.md`, `09_quality_control/ui003_chapter_hardening_notes_ch3_ch5.md`) and synchronizing admin status surfaces (`unresolved_issues.md`, `thesis_state.md`, `backlog.md`, `experiment_log.md`). |
+| C-189 | 2026-03-27 | Copilot | Synced admin/state surfaces to current repository posture: refreshed `README.md`, `timeline.md`, and `thesis_state.md` timestamps/status language; aligned `backlog.md` canonical versus additional-wave evidence wording; and logged reconciliation pass in `experiment_log.md` (`EXP-051`) while preserving v1f as canonical baseline. |
+| C-190 | 2026-03-27 18:49 | Copilot | Completed BL-023 website-server hardening pass: migrated `07_implementation/setup/website_api_server.py` from `http.server` to FastAPI + uvicorn while preserving subprocess stage orchestration and existing `{"error": ...}` API contract, added typed POST request models plus app-state initialization, tightened localhost CORS, updated `smoke_website_api.ps1` for the 7-stage surface, added `test_website_api_server.py` regression coverage, and added runtime/test dependencies in `requirements.txt` (`fastapi`, `uvicorn[standard]`, `httpx`). |
 ## C-162
 - date: 2026-03-25
 - proposed_by: Copilot

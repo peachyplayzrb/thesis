@@ -1,6 +1,6 @@
 # Thesis State
 
-Last updated: 2026-03-27 01:22 UTC (v1f evidence refresh + document consistency pass)
+Last updated: 2026-03-27 18:49 UTC (FastAPI server hardening + regression coverage)
 
 ## Official Current State
 
@@ -79,6 +79,10 @@ Priority status checkpoint (2026-03-27 01:22 UTC): Canonical v1f refresh wave co
 
 Priority status checkpoint (2026-03-27 03:05 UTC): UI-003 citation package is closed at control-record level. Chapter 3 to 5 claim-verdict matrix and chapter-targeted hardening notes are now logged in `09_quality_control/ui003_claim_verdicts_ch3_ch5.md` and `09_quality_control/ui003_chapter_hardening_notes_ch3_ch5.md`.
 
+Priority status checkpoint (2026-03-27 16:54 UTC): Additional same-day run wave is now recorded as non-canonical evidence context (not baseline replacement). Latest observed chain: BL-009 `BL009-OBSERVE-20260327-165412-004409` with upstream BL-004 `BL004-PROFILE-20260327-165357-389471`, BL-005 `BL005-FILTER-20260327-165358-293711`, BL-006 `BL006-SCORE-20260327-165402-861535`, BL-007 `BL007-ASSEMBLE-20260327-165409-663614`, BL-008 `BL008-EXPLAIN-20260327-165410-986323`; BL-005 kept candidates `70680`; BL-008 top-contributor distribution `{Lead genre match:4, Tag overlap:3, Danceability:2, Tempo (BPM):1}`. Canonical reporting baseline remains v1f.
+
+Priority status checkpoint (2026-03-27 18:49 UTC): BL-023 website integration hardening now includes a FastAPI-based local server, typed POST validation, localhost-only CORS, preserved `{"error": ...}` API compatibility, and automated regression coverage (`07_implementation/setup/test_website_api_server.py`) in addition to the live smoke script. External behavior remains stable on the 7-stage pipeline surface; canonical reporting baseline remains v1f.
+
 ## Current Implementation Status
 
 ### BL-020 Implementation State (as of 2026-03-26)
@@ -98,6 +102,8 @@ Priority status checkpoint (2026-03-27 03:05 UTC): UI-003 citation package is cl
 - **Post-Migration Stabilization** (2026-03-26 ✅): BL-ordered folder migration is runtime-stable. Latest v1f orchestration pass: `BL013-ENTRYPOINT-20260326-215741-269303`.
 - **Tier-1 Hardening Closure** (2026-03-25 ✅): CRI-004, CRI-002, HIGH-003, HIGH-004, and CRI-003 are implemented, validated, and logged in `00_admin/tier1_hardening_execution_log_2026-03-25.md`.
 - **Current Execution Focus** (2026-03-27 03:05 UTC): v1f baseline fully operational. Primary remaining work: chapter table completion and wording hardening at the known weak/mismatch locations documented in the UI-003 closure package.
+- **Current Execution Focus** (2026-03-27 16:54 UTC): v1f baseline remains the canonical reporting baseline; active work continues on BL-023 bounded website integration hardening and chapter evidence-packaging follow-through.
+- **Current Execution Focus** (2026-03-27 18:49 UTC): server-layer hardening for BL-023 is now in place and regression-backed; remaining website work is bounded to modular cleanup, observability/result-surface polish, and reliability fixes only.
 - **Active Risk (Governance)**: No active unresolved governance blocker; residual risk is execution discipline for chapter hardening completion.
 - **Implementation Quality Status**: Pipeline closed on the active v1f baseline (`run_config_ui013_tuning_v1f.json`). BL-014 passes 22/22. All 10 scoring components active. BL-010 determinism and BL-011 controllability confirmed on their respective pinned states. No open implementation closure risks.
 
@@ -118,10 +124,10 @@ See: `07_implementation/BL020_HANDOFF_AUDIT_2026-03-21.md` for comprehensive pre
 ## Update Control
 
 - Last updated:
-2026-03-27 03:05 UTC
+2026-03-27 18:49 UTC
 
 - Reason for last update:
-(1) Recorded UI-003 closure at control-record level with Chapter 3 to 5 claim-verdict matrix and chapter-targeted hardening notes. (2) Updated latest open priorities and active risk wording to remove resolved UI-003 dependency. (3) Synchronized update timestamp.
+(1) Recorded BL-023 website-server hardening as a bounded implementation improvement. (2) Added FastAPI/regression-test posture to current-state checkpoints while preserving subprocess stage orchestration and v1f canonical baseline wording. (3) Updated execution-focus wording for remaining website and chapter follow-through work.
 
 ## Locked Definitions
 - Artefact scope lock: `00_admin/Artefact_MVP_definition.md`
