@@ -26,6 +26,9 @@ DEFAULT_PROFILE_TOP_GENRE_LIMIT = 8
 DEFAULT_SEMANTIC_STRONG_KEEP_SCORE = 2
 DEFAULT_SEMANTIC_MIN_KEEP_SCORE = 1
 DEFAULT_NUMERIC_SUPPORT_MIN_PASS = 1
+DEFAULT_LANGUAGE_FILTER_ENABLED = False
+DEFAULT_LANGUAGE_FILTER_CODES: list[str] = []
+DEFAULT_RECENCY_YEARS_MIN_OFFSET: int | None = None
 
 # BL-006 Score Reporting Thresholds (for categorizing final scores)
 DEFAULT_PERFECT_SCORE_THRESHOLD = 0.99
@@ -88,6 +91,11 @@ NUMERIC_FEATURE_SPECS = {
     "duration_ms": {
         "candidate_column": "duration_ms",
         "threshold": 45000.0,
+        "circular": False,
+    },
+    "release_year": {
+        "candidate_column": "release",
+        "threshold": 8.0,
         "circular": False,
     },
 }

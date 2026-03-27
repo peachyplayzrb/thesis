@@ -42,6 +42,14 @@ This file consolidates guidance previously split across:
 - scoring component weights must sum to 1.0 within configured tolerance.
 - threshold coupling and strict-validation guardrails must remain enforced by resolver logic.
 
+## Retrieval Extensions (BL-005)
+- `retrieval_controls.language_filter_enabled`: optional hard-gate toggle.
+- `retrieval_controls.language_filter_codes`: optional allowed language list.
+- `retrieval_controls.recency_years_min_offset`: optional recency hard-gate offset.
+- `retrieval_controls.numeric_thresholds.release_year`: optional release-year proximity threshold.
+
+Note: `scoring_controls.numeric_thresholds.release_year` is retained for threshold-coupling compatibility.
+
 ## Profile Organization
 - Create new profiles from template first, then modify only intended scenario controls.
 - Keep canonical, experimental, and historical profile categorization aligned with configs/profiles/CONFIG_LIFECYCLE.md.

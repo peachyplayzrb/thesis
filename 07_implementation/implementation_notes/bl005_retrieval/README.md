@@ -3,6 +3,9 @@
 ## Purpose
 Filter DS-001 candidates against BL-004 profile constraints to produce keep/reject decisions.
 
+This stage now supports optional language filtering and optional recency gating
+as retrieval controls in addition to semantic and numeric proximity rules.
+
 ## Inputs
 - BL-004 profile artifacts
 - DS-001 candidate dataset
@@ -18,3 +21,7 @@ Filter DS-001 candidates against BL-004 profile constraints to produce keep/reje
 
 ## Validation
 - Verify kept-candidate count and decision reason distribution are sensible.
+- When language filtering is enabled, verify `reject_language_filter` appears only
+	for candidates outside the allowed language code set.
+- When recency gating is enabled, verify `reject_recency_gate` and
+	`release_year_distance` are populated as expected.

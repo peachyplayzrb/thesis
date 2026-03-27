@@ -9,9 +9,12 @@ import sys
 from typing import Any
 
 from bl000_shared_utils.constants import (
+    DEFAULT_LANGUAGE_FILTER_CODES,
+    DEFAULT_LANGUAGE_FILTER_ENABLED,
     DEFAULT_PROFILE_TOP_GENRE_LIMIT,
     DEFAULT_PROFILE_TOP_LEAD_GENRE_LIMIT,
     DEFAULT_PROFILE_TOP_TAG_LIMIT,
+    DEFAULT_RECENCY_YEARS_MIN_OFFSET,
     DEFAULT_SCORING_COMPONENT_WEIGHTS,
 )
 
@@ -88,6 +91,9 @@ DEFAULT_RUN_CONFIG: dict[str, Any] = {
         "semantic_strong_keep_score": 2,
         "semantic_min_keep_score": 1,
         "numeric_support_min_pass": 1,
+        "language_filter_enabled": DEFAULT_LANGUAGE_FILTER_ENABLED,
+        "language_filter_codes": list(DEFAULT_LANGUAGE_FILTER_CODES),
+        "recency_years_min_offset": DEFAULT_RECENCY_YEARS_MIN_OFFSET,
         "numeric_thresholds": {
             "danceability": 0.20,
             "energy": 0.20,
@@ -96,6 +102,7 @@ DEFAULT_RUN_CONFIG: dict[str, Any] = {
             "key": 2.0,
             "mode": 0.5,
             "duration_ms": 45000.0,
+            "release_year": 8.0,
         },
     },
     "scoring_controls": {
@@ -108,6 +115,7 @@ DEFAULT_RUN_CONFIG: dict[str, Any] = {
             "key": 2.0,
             "mode": 0.5,
             "duration_ms": 45000.0,
+            "release_year": 8.0,
         },
     },
     "assembly_controls": {
@@ -236,22 +244,38 @@ def _normalize_allowed_tokens(raw_values: Any, allowed: set[str], defaults: list
         normalized.append(token)
     return normalized or list(defaults)
 
+
+def _normalize_string_tokens(raw_values: Any, defaults: list[str]) -> list[str]:
+    """Normalize list values to lowercase string tokens with stable-order de-duplication."""
+    if not isinstance(raw_values, list):
+        return list(defaults)
+
+    normalized: list[str] = []
+    seen: set[str] = set()
+    for item in raw_values:
+        token = str(item).strip().lower()
+        if not token or token in seen:
+            continue
+        seen.add(token)
+        normalized.append(token)
+    return normalized or list(defaults)
+
 def _validate_positive_thresholds(thresholds: dict[str, Any] | None, context: str) -> dict[str, float]:
     """Validate that all numeric thresholds in the dict are positive (> 0).
-    
+
     Args:
         thresholds: Dictionary of threshold name -> value
         context: Description of where thresholds come from (for error messages)
-    
+
     Returns:
         The validated thresholds as float values
-        
+
     Raises:
         RunConfigError if any threshold is <= 0 or non-numeric
     """
     if not thresholds:
         return {}
-    
+
     validated = {}
     for key, value in thresholds.items():
         try:
@@ -265,20 +289,20 @@ def _validate_positive_thresholds(thresholds: dict[str, Any] | None, context: st
                 f"{context}: threshold '{key}' must be positive (> 0), got {float_val}"
             )
         validated[key] = float_val
-    
+
     return validated
 
 
 def _validate_positive_float(value: Any, param_name: str) -> float:
     """Validate that a single threshold value is a positive float (> 0).
-    
+
     Args:
         value: The value to validate
         param_name: Name of the parameter (for error messages)
-        
+
     Returns:
         The validated float value
-        
+
     Raises:
         RunConfigError if value is <= 0 or non-numeric
     """
@@ -581,7 +605,7 @@ def resolve_effective_run_config(run_config_path: str | Path | None) -> tuple[di
         seed_controls.get("match_rate_min_threshold"),
         float(seed_defaults["match_rate_min_threshold"]),
     )
-    
+
     # Resolve weight dicts for seed controls (env override support via direct access)
     if "top_range_weights" not in seed_controls or not isinstance(seed_controls.get("top_range_weights"), dict):
         seed_controls["top_range_weights"] = seed_defaults["top_range_weights"].copy()
@@ -664,6 +688,18 @@ def resolve_effective_run_config(run_config_path: str | Path | None) -> tuple[di
     retrieval_controls["profile_top_lead_genre_limit"] = _coerce_positive_int(
         retrieval_controls.get("profile_top_lead_genre_limit"),
         retrieval_defaults["profile_top_lead_genre_limit"],
+    )
+    retrieval_controls["language_filter_enabled"] = _coerce_bool(
+        retrieval_controls.get("language_filter_enabled"),
+        bool(retrieval_defaults["language_filter_enabled"]),
+    )
+    retrieval_controls["language_filter_codes"] = _normalize_string_tokens(
+        retrieval_controls.get("language_filter_codes"),
+        list(retrieval_defaults["language_filter_codes"]),
+    )
+    retrieval_controls["recency_years_min_offset"] = _coerce_optional_positive_int(
+        retrieval_controls.get("recency_years_min_offset"),
+        retrieval_defaults["recency_years_min_offset"],
     )
 
     scoring_controls = effective.setdefault("scoring_controls", {})
@@ -835,6 +871,18 @@ def resolve_bl005_controls(run_config_path: str | Path | None) -> dict[str, Any]
         "numeric_support_min_pass": _coerce_positive_int(
             retrieval.get("numeric_support_min_pass"),
             defaults["numeric_support_min_pass"],
+        ),
+        "language_filter_enabled": _coerce_bool(
+            retrieval.get("language_filter_enabled"),
+            bool(defaults["language_filter_enabled"]),
+        ),
+        "language_filter_codes": _normalize_string_tokens(
+            retrieval.get("language_filter_codes"),
+            list(defaults["language_filter_codes"]),
+        ),
+        "recency_years_min_offset": _coerce_optional_positive_int(
+            retrieval.get("recency_years_min_offset"),
+            defaults["recency_years_min_offset"],
         ),
         "numeric_thresholds": _validate_positive_thresholds(
             retrieval.get("numeric_thresholds") or defaults["numeric_thresholds"],

@@ -52,6 +52,31 @@ Run selected ordered stages:
 python 07_implementation/implementation_notes/bl013_entrypoint/run_bl013_pipeline_entrypoint.py --stages BL-004 BL-005 BL-006
 ```
 
+## A/B Run Commands (Baseline vs Language+Recency)
+Baseline (canonical `v1f`) from inner repo root:
+
+```powershell
+& ".venv/Scripts/python.exe" "07_implementation/implementation_notes/bl013_entrypoint/run_bl013_pipeline_entrypoint.py" --refresh-seed --run-config "07_implementation/implementation_notes/bl000_run_config/configs/profiles/run_config_ui013_tuning_v1f.json"
+```
+
+Language+recency experiment (`v2b`) from inner repo root:
+
+```powershell
+& ".venv/Scripts/python.exe" "07_implementation/implementation_notes/bl013_entrypoint/run_bl013_pipeline_entrypoint.py" --refresh-seed --run-config "07_implementation/implementation_notes/bl000_run_config/configs/profiles/run_config_ui013_tuning_v2b_language_recency_gate.json"
+```
+
+Run BL-014 sanity after each run:
+
+```powershell
+& ".venv/Scripts/python.exe" "07_implementation/implementation_notes/bl014_quality/run_bl014_sanity_checks.py"
+```
+
+Generate a single A/B comparison artifact (baseline `v1f` vs experiment `v2b`):
+
+```powershell
+& ".venv/Scripts/python.exe" "07_implementation/scripts/run_ab_profile_comparison.py" --baseline-profile "07_implementation/implementation_notes/bl000_run_config/configs/profiles/run_config_ui013_tuning_v1f.json" --experiment-profile "07_implementation/implementation_notes/bl000_run_config/configs/profiles/run_config_ui013_tuning_v2b_language_recency_gate.json" --output "_scratch/ab_profile_comparison_v1f_vs_v2b.json"
+```
+
 Continue after stage failure:
 
 ```powershell

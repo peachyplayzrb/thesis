@@ -120,10 +120,14 @@ Outputs: `bl004_preference_profile.json`, `bl004_profile_summary.json`, `bl004_s
 | `retrieval_controls.semantic_strong_keep_score` | int | `2` | A track scoring this or above on semantic match is kept unconditionally |
 | `retrieval_controls.semantic_min_keep_score` | int | `1` | Minimum semantic score before numeric gating applies |
 | `retrieval_controls.numeric_support_min_pass` | int | `1` | Minimum number of numeric proximity tests a track must pass |
+| `retrieval_controls.language_filter_enabled` | bool | `false` | Enables language-based filtering for BL-005 candidates |
+| `retrieval_controls.language_filter_codes` | list[string] | `[]` | Allowed language codes (lowercase), used when language filtering is enabled |
+| `retrieval_controls.recency_years_min_offset` | int or null | `null` | Optional hard gate: reject candidates older than `(current UTC year - offset)` |
 | `retrieval_controls.numeric_thresholds.tempo` | float | `20.0` | Maximum tempo difference (BPM) for numeric proximity pass |
 | `retrieval_controls.numeric_thresholds.key` | float | `2.0` | Maximum key distance (semitones) for numeric proximity pass |
 | `retrieval_controls.numeric_thresholds.mode` | float | `0.5` | Maximum mode distance for numeric proximity pass |
 | `retrieval_controls.numeric_thresholds.duration_ms` | float | `45000.0` | Maximum duration difference (ms) for numeric proximity pass |
+| `retrieval_controls.numeric_thresholds.release_year` | float | `8.0` | Maximum release-year distance for numeric proximity pass |
 
 **Consuming stage:** BL-005 (`build_bl005_candidate_filter.py`)
 Outputs: `bl005_filtered_candidates.csv`, `bl005_candidate_decisions.csv`, `bl005_candidate_diagnostics.json`
@@ -153,6 +157,7 @@ Outputs: `bl005_filtered_candidates.csv`, `bl005_candidate_decisions.csv`, `bl00
 | `scoring_controls.numeric_thresholds.key` | float | `2.0` | Tolerance for key similarity computation |
 | `scoring_controls.numeric_thresholds.mode` | float | `0.5` | Tolerance for mode similarity computation |
 | `scoring_controls.numeric_thresholds.duration_ms` | float | `45000.0` | Tolerance for duration similarity computation |
+| `scoring_controls.numeric_thresholds.release_year` | float | `8.0` | Included for threshold-coupling compatibility; BL-006 release-year weighting remains optional |
 
 **Note:** Component weights must sum to 1.0. The numeric_thresholds here govern continuous similarity computation; the retrieval_controls.numeric_thresholds govern the Boolean pass/fail gate in BL-005. They share the same default values but are independently configurable.
 

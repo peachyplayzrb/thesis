@@ -98,3 +98,27 @@ def resolve_lead_genre(candidate_genres: list[str], candidate_tags: list[str]) -
     if candidate_tags:
         return candidate_tags[0]
     return ""
+
+
+def candidate_language_code(row: dict[str, str]) -> str | None:
+    """Extract normalized ISO-like language code from candidate row."""
+    raw = str(row.get("lang", "")).strip().lower()
+    if not raw:
+        return None
+    if len(raw) > 8:
+        return None
+    return raw
+
+
+def candidate_release_year(row: dict[str, str]) -> int | None:
+    """Extract candidate release year with conservative bounds."""
+    raw = str(row.get("release", "")).strip()
+    if not raw:
+        return None
+    try:
+        year = int(float(raw))
+    except ValueError:
+        return None
+    if year < 1900 or year > 2100:
+        return None
+    return year

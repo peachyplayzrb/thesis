@@ -40,6 +40,7 @@ NUMERIC_FEATURE_COLUMNS: list[str] = [
     "mode",
     "popularity",
     "duration_ms",
+    "release",
 ]
 
 SUMMARY_FEATURE_COLUMNS: list[str] = [
@@ -304,6 +305,9 @@ def main() -> None:
     numeric_profile: dict[str, float] = {}
     for column in NUMERIC_FEATURE_COLUMNS:
         if numeric_weights[column] == 0:
+            continue
+        if column == "release":
+            numeric_profile["release_year"] = round(numeric_sums[column] / numeric_weights[column], 6)
             continue
         if column == "key":
             circular_key = circular_mean_key(key_circular_sum_x, key_circular_sum_y)

@@ -13,14 +13,17 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 from bl000_shared_utils.config_loader import load_run_config_utils_module
 from bl000_shared_utils.constants import (
     DEFAULT_NUMERIC_SUPPORT_MIN_PASS,
+    DEFAULT_LANGUAGE_FILTER_CODES,
+    DEFAULT_LANGUAGE_FILTER_ENABLED,
     DEFAULT_PROFILE_TOP_GENRE_LIMIT,
     DEFAULT_PROFILE_TOP_LEAD_GENRE_LIMIT,
     DEFAULT_PROFILE_TOP_TAG_LIMIT,
+    DEFAULT_RECENCY_YEARS_MIN_OFFSET,
     DEFAULT_SEMANTIC_MIN_KEEP_SCORE,
     DEFAULT_SEMANTIC_STRONG_KEEP_SCORE,
     NUMERIC_FEATURE_SPECS,
 )
-from bl000_shared_utils.env_utils import env_int
+from bl000_shared_utils.env_utils import env_bool, env_int, env_str
 from bl000_shared_utils.io_utils import (
     load_csv_rows,
     load_json,
@@ -36,7 +39,9 @@ from bl000_shared_utils.stage_runtime_resolver import (
 
 # Import modularized BL-005 components
 from candidate_parser import (
+    candidate_language_code,
     candidate_numeric_value,
+    candidate_release_year,
     normalize_candidate_row,
     resolve_candidate_column,
     resolve_lead_genre,
@@ -53,6 +58,10 @@ DECISION_FIELDS = [
     "lead_genre_match",
     "genre_overlap_count",
     "tag_overlap_count",
+    "language",
+    "language_match",
+    "release_year",
+    "release_year_distance",
     "numeric_pass_count",
     "danceability_distance",
     "energy_distance",
@@ -126,6 +135,39 @@ def build_active_numeric_specs(
 
 def resolve_bl005_runtime_controls() -> dict[str, object]:
     env_numeric_thresholds = load_positive_numeric_map_from_env("BL005_NUMERIC_THRESHOLDS_JSON")
+    env_language_filter_enabled = env_bool("BL005_LANGUAGE_FILTER_ENABLED", DEFAULT_LANGUAGE_FILTER_ENABLED)
+    env_language_filter_codes_raw = env_str("BL005_LANGUAGE_FILTER_CODES", "")
+    env_recency_years_min_offset_raw = env_str("BL005_RECENCY_YEARS_MIN_OFFSET", "")
+
+    def parse_optional_positive_int(raw: object) -> int | None:
+        text = str(raw).strip()
+        if not text:
+            return None
+        try:
+            parsed = int(text)
+        except ValueError:
+            return None
+        return parsed if parsed > 0 else None
+
+    def normalize_language_codes(raw_values: object) -> list[str]:
+        if not isinstance(raw_values, list):
+            return []
+        normalized: list[str] = []
+        seen: set[str] = set()
+        for item in raw_values:
+            code = str(item).strip().lower()
+            if not code or code in seen:
+                continue
+            seen.add(code)
+            normalized.append(code)
+        return normalized
+
+    env_language_filter_codes = [
+        token.strip().lower()
+        for token in env_language_filter_codes_raw.split(",")
+        if token.strip()
+    ]
+    env_recency_years_min_offset = parse_optional_positive_int(env_recency_years_min_offset_raw)
 
     def sanitize_controls(controls: dict[str, object]) -> dict[str, object]:
         controls["profile_top_lead_genre_limit"] = max(1, int(controls["profile_top_lead_genre_limit"]))
@@ -134,6 +176,9 @@ def resolve_bl005_runtime_controls() -> dict[str, object]:
         controls["semantic_strong_keep_score"] = max(0, min(3, int(controls["semantic_strong_keep_score"])))
         controls["semantic_min_keep_score"] = max(0, min(3, int(controls["semantic_min_keep_score"])))
         controls["numeric_support_min_pass"] = max(0, int(controls["numeric_support_min_pass"]))
+        controls["language_filter_codes"] = normalize_language_codes(controls.get("language_filter_codes", []))
+        controls["language_filter_enabled"] = bool(controls.get("language_filter_enabled", False)) and bool(controls["language_filter_codes"])
+        controls["recency_years_min_offset"] = parse_optional_positive_int(controls.get("recency_years_min_offset", ""))
         if controls["semantic_min_keep_score"] > controls["semantic_strong_keep_score"]:
             controls["semantic_min_keep_score"] = controls["semantic_strong_keep_score"]
         return controls
@@ -153,6 +198,9 @@ def resolve_bl005_runtime_controls() -> dict[str, object]:
                 "semantic_strong_keep_score": int(controls["semantic_strong_keep_score"]),
                 "semantic_min_keep_score": int(controls["semantic_min_keep_score"]),
                 "numeric_support_min_pass": int(controls["numeric_support_min_pass"]),
+                "language_filter_enabled": bool(controls.get("language_filter_enabled", DEFAULT_LANGUAGE_FILTER_ENABLED)),
+                "language_filter_codes": list(controls.get("language_filter_codes") or DEFAULT_LANGUAGE_FILTER_CODES),
+                "recency_years_min_offset": controls.get("recency_years_min_offset", DEFAULT_RECENCY_YEARS_MIN_OFFSET),
                 "numeric_thresholds": env_numeric_thresholds or controls.get("numeric_thresholds") or {},
             }
         )
@@ -167,6 +215,9 @@ def resolve_bl005_runtime_controls() -> dict[str, object]:
             "semantic_strong_keep_score": env_int("BL005_SEMANTIC_STRONG_KEEP_SCORE", DEFAULT_SEMANTIC_STRONG_KEEP_SCORE),
             "semantic_min_keep_score": env_int("BL005_SEMANTIC_MIN_KEEP_SCORE", DEFAULT_SEMANTIC_MIN_KEEP_SCORE),
             "numeric_support_min_pass": env_int("BL005_NUMERIC_SUPPORT_MIN_PASS", DEFAULT_NUMERIC_SUPPORT_MIN_PASS),
+            "language_filter_enabled": env_language_filter_enabled,
+            "language_filter_codes": env_language_filter_codes,
+            "recency_years_min_offset": env_recency_years_min_offset,
             "numeric_thresholds": env_numeric_thresholds,
         }
     )
@@ -245,6 +296,16 @@ def build_bl005_runtime_context(
         for profile_column in active_numeric_specs
     }
     numeric_features_enabled = bool(numeric_centers)
+    language_filter_enabled = bool(runtime_controls.get("language_filter_enabled", False))
+    language_filter_codes = {
+        code for code in list(runtime_controls.get("language_filter_codes") or []) if code
+    }
+    recency_years_min_offset_raw = runtime_controls.get("recency_years_min_offset")
+    recency_years_min_offset = int(recency_years_min_offset_raw) if recency_years_min_offset_raw else None
+    current_year_utc = datetime.now(timezone.utc).year
+    recency_min_release_year = (
+        current_year_utc - recency_years_min_offset if recency_years_min_offset is not None else None
+    )
 
     return {
         "profile_top_lead_genre_limit": profile_top_lead_genre_limit,
@@ -260,6 +321,11 @@ def build_bl005_runtime_context(
         "top_genres": top_genres,
         "numeric_centers": numeric_centers,
         "numeric_features_enabled": numeric_features_enabled,
+        "language_filter_enabled": language_filter_enabled,
+        "language_filter_codes": sorted(language_filter_codes),
+        "recency_years_min_offset": recency_years_min_offset,
+        "current_year_utc": current_year_utc,
+        "recency_min_release_year": recency_min_release_year,
     }
 
 
@@ -278,6 +344,9 @@ def evaluate_bl005_candidates(
     semantic_strong_keep_score = int(runtime_context["semantic_strong_keep_score"])
     semantic_min_keep_score = int(runtime_context["semantic_min_keep_score"])
     numeric_support_min_pass = int(runtime_context["numeric_support_min_pass"])
+    language_filter_enabled = bool(runtime_context["language_filter_enabled"])
+    language_filter_codes = set(runtime_context["language_filter_codes"])
+    recency_min_release_year = runtime_context["recency_min_release_year"]
 
     tracker = DecisionTracker(active_numeric_specs)
 
@@ -288,6 +357,16 @@ def evaluate_bl005_candidates(
         candidate_tags = parse_csv_labels(row.get("tags", ""))
         candidate_genres = parse_csv_labels(row.get("genres", ""))
         lead_genre = resolve_lead_genre(candidate_genres, candidate_tags)
+        language_code = candidate_language_code(row)
+        release_year = candidate_release_year(row)
+
+        language_match: bool | None = None
+        if language_filter_enabled:
+            language_match = bool(language_code and language_code in language_filter_codes)
+
+        recency_pass: bool | None = None
+        if recency_min_release_year is not None:
+            recency_pass = bool(release_year is not None and release_year >= int(recency_min_release_year))
 
         lead_genre_match = lead_genre in top_lead_genres if lead_genre else False
         genre_overlap = len(top_genres.intersection(candidate_genres))
@@ -337,6 +416,8 @@ def evaluate_bl005_candidates(
             semantic_strong_keep_score,
             semantic_min_keep_score,
             numeric_support_min_pass,
+            language_match=language_match,
+            recency_pass=recency_pass,
         )
 
         decision_row = {
@@ -347,6 +428,10 @@ def evaluate_bl005_candidates(
             "lead_genre_match": int(lead_genre_match),
             "genre_overlap_count": genre_overlap,
             "tag_overlap_count": tag_overlap,
+            "language": language_code or "",
+            "language_match": "" if language_match is None else int(language_match),
+            "release_year": "" if release_year is None else release_year,
+            "release_year_distance": numeric_distances.get("release_year"),
             "numeric_pass_count": numeric_pass_count,
             "danceability_distance": numeric_distances.get("danceability"),
             "energy_distance": numeric_distances.get("energy"),
@@ -429,6 +514,15 @@ def build_bl005_diagnostics_payload(
                 profile_column: spec["threshold"]
                 for profile_column, spec in runtime_context["active_numeric_specs"].items()
             },
+            "language_filter": {
+                "enabled": bool(runtime_context["language_filter_enabled"]),
+                "codes": list(runtime_context["language_filter_codes"]),
+            },
+            "recency_gate": {
+                "years_min_offset": runtime_context["recency_years_min_offset"],
+                "current_year_utc": runtime_context["current_year_utc"],
+                "min_release_year": runtime_context["recency_min_release_year"],
+            },
             "numeric_feature_mapping": {
                 profile_column: spec["candidate_column"]
                 for profile_column, spec in runtime_context["active_numeric_specs"].items()
@@ -447,6 +541,8 @@ def build_bl005_diagnostics_payload(
             "seed_tracks_excluded": summary["decision_counts"]["seed_excluded"],
             "kept_candidates": len(kept_rows),
             "rejected_non_seed_candidates": summary["decision_counts"]["rejected_threshold"],
+            "rejected_by_language_filter": int(summary["decision_path_counts"].get("reject_language_filter", 0)),
+            "rejected_by_recency_gate": int(summary["decision_path_counts"].get("reject_recency_gate", 0)),
         },
         "rule_hits": {
             "semantic_rule_hits": summary["semantic_rule_hits"],

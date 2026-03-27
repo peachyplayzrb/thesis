@@ -372,6 +372,9 @@ class PipelineJob:
             {"key": "profile_top_lead_genre_limit", "type": "int", "min": 1, "max": 30, "default": 6},
             {"key": "profile_top_tag_limit", "type": "int", "min": 1, "max": 50, "default": 10},
             {"key": "profile_top_genre_limit", "type": "int", "min": 1, "max": 50, "default": 8},
+            {"key": "language_filter_enabled", "type": "bool", "default": False},
+            {"key": "language_filter_codes", "type": "json_array"},
+            {"key": "recency_years_min_offset", "type": "int", "min": 1, "max": 200},
             {"key": "numeric_thresholds", "type": "json"},
         ],
         "bl006": [
@@ -491,11 +494,21 @@ class PipelineJob:
                 "semantic_strong_keep_score": "BL005_SEMANTIC_STRONG_KEEP_SCORE",
                 "semantic_min_keep_score": "BL005_SEMANTIC_MIN_KEEP_SCORE",
                 "numeric_support_min_pass": "BL005_NUMERIC_SUPPORT_MIN_PASS",
+                "recency_years_min_offset": "BL005_RECENCY_YEARS_MIN_OFFSET",
             }
             for key, env_key in mapping.items():
                 value = stage_params.get(key)
                 if isinstance(value, (int, float)):
                     env[env_key] = str(value)
+
+            if "language_filter_enabled" in stage_params:
+                env["BL005_LANGUAGE_FILTER_ENABLED"] = "1" if bool(stage_params.get("language_filter_enabled")) else "0"
+
+            language_codes = stage_params.get("language_filter_codes")
+            if isinstance(language_codes, list):
+                cleaned = [str(item).strip().lower() for item in language_codes if str(item).strip()]
+                if cleaned:
+                    env["BL005_LANGUAGE_FILTER_CODES"] = ",".join(cleaned)
 
             threshold_overrides = stage_params.get("numeric_thresholds")
             if isinstance(threshold_overrides, dict) and threshold_overrides:

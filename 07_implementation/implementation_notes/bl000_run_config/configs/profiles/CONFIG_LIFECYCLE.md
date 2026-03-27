@@ -20,10 +20,12 @@ Define lifecycle status for all profile files under this folder so operators can
 - `run_config_ui013_tuning_v1e.json`: historical-retained
 - `run_config_ui013_tuning_v1f.json`: canonical
 - `run_config_ui013_tuning_v2a_retrieval_tight.json`: experimental
+- `run_config_ui013_tuning_v2b_language_recency_gate.json`: experimental
 
 ## Governance References
 - D-033: sets `v1f` as canonical baseline and keeps `v2a` as experimental.
 - C-184: evidence sync after 2026-03-27 v2a run wave.
+- C-185: introduces `v2b` for language and recency retrieval gating experiments.
 
 ## Operator Rule
 Use only `v1f` for canonical implementation reporting unless a new promotion decision explicitly supersedes D-033.
