@@ -90,15 +90,15 @@ Table 4.3 is used to summarize pass/fail outcomes and key evidence links.
 
 | EP test ID | Related test note ID | Status | Key metric summary | Evidence artifact(s) | Interpretation note |
 | --- | --- | --- | --- | --- | --- |
-| `EP-REPRO-001` | `TC-003` | `pending` | `ranked_hash_match=`, `playlist_hash_match=` | run hash logs | |
-| `EP-EXPL-001` | `TC-004` | `pending` | `reconstruction_error=`, `fields_complete=` | score traces + explanation payloads | |
-| `EP-CTRL-001` | `TC-005` | `pending` | `top_k_overlap_delta=`, `rank_shift=` | baseline/variant outputs | |
-| `EP-CTRL-002` | `TC-006` | `pending` | `component_delta=`, `rank_shift=` | config diff + score traces | |
-| `EP-CTRL-003` | `TC-007` | `pending` | `candidate_pool_delta=`, `playlist_overlap=` | candidate diagnostics + outputs | |
-| `EP-RULE-001` | `TC-008` | `pending` | `length_target=`, `length_actual=` | playlist output + rule logs | |
-| `EP-RULE-002` | `TC-008` | `pending` | `max_artist_repeats=` | playlist output + rule logs | |
-| `EP-OBS-001` | `TC-009` | `pending` | `required_sections_present=` | run log bundle | |
-| `EP-ALIGN-001` | `TC-010` | `pending` | `matched_isrc=`, `matched_fallback=`, `unmatched_rate=` | alignment summary | |
+| `EP-REPRO-001` | `TC-003` | `pass` | `deterministic_match=true`, `status=pass`, `replay_count=3` | `bl010_reproducibility_report.json`, `bl010_reproducibility_run_matrix.csv` | Stable recommendation artifacts replay identically; raw JSON hash variance remains metadata-driven (`run_id`, timestamps). |
+| `EP-EXPL-001` | `TC-004` | `pass` | `playlist_track_count=10`, `top_contributor_mix={Lead genre:4, Tag overlap:3, Genre overlap:3}`, `explanation_count=10` | `bl008_explanation_summary.json`, `bl008_explanation_payloads.json` | All playlist tracks carry mechanism-linked explanation payloads with explicit top-contributor attribution. |
+| `EP-CTRL-001` | `TC-005` | `pass` | `scenario=no_influence_tracks`, `top10_overlap_ratio=1.0`, `mean_abs_rank_delta=0.0`, `status=pass` | `bl011_controllability_report.json` (scenario `no_influence_tracks`) | Influence-track toggle is repeat-consistent and auditable; this run produced no rank/playlist displacement under current data profile. |
+| `EP-CTRL-002` | `TC-006` | `pass` | `scenario=valence_weight_up`, `top10_overlap_ratio=0.5`, `playlist_overlap_ratio=0.5`, `mean_abs_rank_delta=2876.321` | `bl011_controllability_report.json` (scenario `valence_weight_up`) | Feature-weight actuation yields substantial, directionally consistent re-ranking and playlist turnover. |
+| `EP-CTRL-003` | `TC-007` | `pass` | `stricter_delta=-10476`, `looser_delta=+8990`, `all_variant_shifts_observable=true` | `bl011_controllability_report.json` (scenarios `stricter_thresholds`, `looser_thresholds`) | Threshold scaling changes candidate-pool width as expected while preserving deterministic repeat consistency. |
+| `EP-RULE-001` | `TC-008` | `pass` | `length_target=10`, `length_actual=10`, `undersized=false` | `bl007_assembly_report.json`, `bl007_playlist.json` | Playlist-length rule is satisfied on the active run; no undersized warning triggered. |
+| `EP-RULE-002` | `TC-008` | `pass` | `max_per_genre=4`, `max_consecutive=2`, `R2_genre_cap_hits=2859`, `R3_consecutive_hits=3907` | `bl007_assembly_report.json`, `bl007_assembly_trace.csv` | Rule-pressure diagnostics confirm constraints are actively enforced rather than bypassed. |
+| `EP-OBS-001` | `TC-009` | `pass` | `schema=bl009-observability-v1`, `canonical_config_artifact_pair_available=true` | `bl009_run_observability_log.json`, `bl009_run_index.csv` | Run-level observability surface includes stage linkage, hashes, config provenance, and execution-scope summary. |
+| `EP-ALIGN-001` | `TC-010` | `pass` | `matched_isrc=1098`, `matched_fallback=806`, `unmatched_rate=0.8405`, `match_rate=0.1595` | `bl003_ds001_spotify_summary.json`, `bl003_ds001_spotify_trace.csv` | Alignment miss rate remains high but explicitly measured and reported as a bounded design limitation. |
 
 ## 4.8 Reproducibility and Observability Results
 

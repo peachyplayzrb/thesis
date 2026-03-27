@@ -77,3 +77,4 @@ Progress note (2026-03-24): Claim-citation matrix confirmed complete for Chapter
 
 Open blocker note (2026-03-24): Rerun of chapter2_verbatim_audit.md on current Chapter 2 is required to validate weak_support reduction from hardening edits. No assumptions made about audit outcome — if weak_support remains above threshold after rerun, next phase will involve citation swaps or targeted source additions for remaining overclaimed statements.
 
+Progress note (2026-03-27): UI-003 synthesis closure package for Chapters 3 to 5 is complete at control-record level. Claim verdicts and chapter-targeted hardening notes are now tracked in `09_quality_control/ui003_claim_verdicts_ch3_ch5.md` and `09_quality_control/ui003_chapter_hardening_notes_ch3_ch5.md`.

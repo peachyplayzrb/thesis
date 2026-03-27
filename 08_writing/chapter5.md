@@ -19,14 +19,14 @@ The research question asks what design considerations shape the engineering of a
 4. Evaluation protocol discipline as part of system design. Reproducibility and interpretation quality depend on logging, configuration traceability, and clear metric-objective alignment [@beel_towards_2016; @bauer_exploring_2024; @anelli_elliot_2021].
 5. Comparator-awareness without scope drift. Hybrid and self-supervised systems are relevant context for trade-off discussion, but not required for validating this locked MVP contribution [@liu_multimodal_2025; @yu_self_supervised_2024].
 
-Current implementation evidence now includes deterministic replay checks (BL-010) and controllability sensitivity tests (BL-011) on the bootstrap pipeline, plus BL-020 real-data diagnostics for DS-001 alignment behavior under real cross-source constraints. This supports consideration 4 directly and gives practical evidence for considerations 1 to 3.
+Current implementation evidence now includes deterministic replay checks (BL-010) and controllability sensitivity tests (BL-011) on the active v1f baseline execution surface, plus BL-020 real-data diagnostics for DS-001 alignment behavior under real cross-source constraints. This supports consideration 4 directly and gives practical evidence for considerations 1 to 3.
 
 To maintain UI-003 discipline, conclusions in this chapter are treated as evidence-tiered statements: high-confidence where claim-evidence mapping is strong, and bounded wording where support remains partial or domain-transfer based.
 
 ## 5.4 Limitations
 This thesis has explicit limits that bound how the results should be interpreted.
 
-1. Bootstrap-data limitation: BL-011 confirmed controllability at candidate and ranking layers, but threshold variants did not change final playlist membership under the synthetic pool used for those runs.
+1. Evaluation-snapshot limitation: BL-010 and BL-011 pass on their internal replay/sensitivity snapshots, but candidate-count surfaces in those reports (for example 70,680 and 33,096) can diverge from the canonical BL-005 live run count (46,776) because those checks pin and replay their own fixed inputs for repeatability.
 2. Reproducibility interpretation limitation: BL-010 showed semantic replay determinism, while some raw JSON hashes still varied because those artifacts include per-run metadata by design.
 3. Corpus-feature limitation: recommendation behavior is constrained by DS-001 candidate composition and feature availability.
 4. Scope limitation: the artefact is single-user and deterministic, so findings are not generalized to collaborative or adaptive multi-user systems.
