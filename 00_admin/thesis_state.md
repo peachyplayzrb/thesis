@@ -1,6 +1,6 @@
 # Thesis State
 
-Last updated: 2026-03-27 18:49 UTC (FastAPI server hardening + regression coverage)
+Last updated: 2026-03-28 03:46 UTC (chapter hardening pass after admin-first synchronization)
 
 ## Official Current State
 
@@ -64,10 +64,11 @@ The active execution corpus is DS-001 (Music4All base path). DS-002 (`MSD subset
 ## Latest Open Priorities (Execution Snapshot)
 1. Continue mentor sprint execution at Day 4 to Day 7 from `00_admin/mentor_draft_7day_sprint_2026-03-23.md`.
 2. Keep website integration under bounded hardening only (`WP-WEBINT-001`): bug fixes, observability clarity, and orchestration reliability without scope expansion.
-3. Finalize Chapter 4 placeholder table completion (`Sections 4.8 to 4.10`) using current run evidence.
-4. Keep M3/M4 execution status synchronized with implementation reality and package evidence for M5 evaluation consolidation.
+3. Complete admin/state evidence freeze and readiness gating before chapter text edits.
+4. Finalize Chapter 4 placeholder table completion (`Sections 4.8 to 4.10`) using frozen current run evidence.
+5. Keep M3/M4 execution status synchronized with implementation reality and package evidence for M5 evaluation consolidation.
 
-Priority status checkpoint (2026-03-26 18:06 UTC): Tier-1 pipeline remediation remains complete. UI-013 is now closed on the active baseline: the v1b profile remains the active configuration per decision D-032, refreshed acceptance evidence passed on corrected BL-006 weighted semantics (`bl003_match_rate=0.1595`, `bl005_kept_candidates=54402`, `bl006_numeric_minus_semantic=-0.068775`, `bl008_top_label_dominance_share=0.3`, BL-014 pass), and the primary remaining submission-hardening dependency is UI-003 citation closure.
+Priority status checkpoint (2026-03-26 18:06 UTC): Historical checkpoint retained for audit continuity. The original v1b active-baseline wording in this checkpoint is superseded by D-033 and later checkpoints that lock v1f as canonical. Metric snapshot remains useful as transitional evidence (`bl003_match_rate=0.1595`, `bl005_kept_candidates=54402`, `bl006_numeric_minus_semantic=-0.068775`, `bl008_top_label_dominance_share=0.3`, BL-014 pass).
 
 Priority status checkpoint (2026-03-26 21:03 UTC): Pipeline is now on the v1f baseline (`run_config_ui013_tuning_v1f.json`), completing the intended 10-component scoring surface by activating danceability, energy, and valence end-to-end in BL-005 and BL-006. BL-013 restore `BL013-ENTRYPOINT-20260326-210305-914179` pass; BL-014 sanity pass `22/22`; BL-010 reproducibility pass; BL-011 controllability pass. The active freshness suite fails at `6/8` due to a non-blocking post-restore evidence-alignment mismatch (documented). Implementation scope is closed on v1f. Planned next actions: (1) freshness re-alignment, (2) UI-003 citation closure — the primary remaining submission-hardening dependency, (3) chapter alignment to v1f counts, (4) evaluation evidence packaging.
 
@@ -82,6 +83,10 @@ Priority status checkpoint (2026-03-27 03:05 UTC): UI-003 citation package is cl
 Priority status checkpoint (2026-03-27 16:54 UTC): Additional same-day run wave is now recorded as non-canonical evidence context (not baseline replacement). Latest observed chain: BL-009 `BL009-OBSERVE-20260327-165412-004409` with upstream BL-004 `BL004-PROFILE-20260327-165357-389471`, BL-005 `BL005-FILTER-20260327-165358-293711`, BL-006 `BL006-SCORE-20260327-165402-861535`, BL-007 `BL007-ASSEMBLE-20260327-165409-663614`, BL-008 `BL008-EXPLAIN-20260327-165410-986323`; BL-005 kept candidates `70680`; BL-008 top-contributor distribution `{Lead genre match:4, Tag overlap:3, Danceability:2, Tempo (BPM):1}`. Canonical reporting baseline remains v1f.
 
 Priority status checkpoint (2026-03-27 18:49 UTC): BL-023 website integration hardening now includes a FastAPI-based local server, typed POST validation, localhost-only CORS, preserved `{"error": ...}` API compatibility, and automated regression coverage (`07_implementation/setup/test_website_api_server.py`) in addition to the live smoke script. External behavior remains stable on the 7-stage pipeline surface; canonical reporting baseline remains v1f.
+
+Priority status checkpoint (2026-03-28 03:41 UTC): Admin-first synchronization pass completed before chapter implementation edits. `07_implementation/ACTIVE_BASELINE.md` is confirmed as canonical evidence authority with no run-ID changes in this checkpoint; `00_admin/Artefact_MVP_definition.md`, `09_quality_control/chapter_readiness_checks.md`, and `00_admin/timeline.md` were synchronized to this baseline posture. Next execution step remains chapter hardening with strict run-linked references.
+
+Priority status checkpoint (2026-03-28 03:46 UTC): Chapter hardening execution is now in progress with first-pass implementation applied. `08_writing/chapter3.md` alignment-limitation metrics were synchronized to canonical baseline wording (`match_rate=0.1595`, threshold posture aligned to v1f controls), and `08_writing/chapter4.md` Sections 4.8 to 4.10 were populated with run-linked reproducibility/controllability/rule-compliance/explanation-fidelity results. Chapter 4 readiness gate for rule-compliance/failure-case write-through is now closed in `09_quality_control/chapter_readiness_checks.md`.
 
 ## Current Implementation Status
 
@@ -124,10 +129,10 @@ See: `07_implementation/BL020_HANDOFF_AUDIT_2026-03-21.md` for comprehensive pre
 ## Update Control
 
 - Last updated:
-2026-03-27 18:49 UTC
+2026-03-28 03:46 UTC
 
 - Reason for last update:
-(1) Recorded BL-023 website-server hardening as a bounded implementation improvement. (2) Added FastAPI/regression-test posture to current-state checkpoints while preserving subprocess stage orchestration and v1f canonical baseline wording. (3) Updated execution-focus wording for remaining website and chapter follow-through work.
+(1) Executed first chapter hardening pass after admin-first synchronization, with Chapter 3 stale alignment-rate wording corrected and Chapter 4 pending result tables populated using run-linked evidence. (2) Closed the remaining Chapter 4 readiness gate for rule-compliance/failure-case inclusion. (3) Preserved canonical v1f baseline authority with no run-ID changes in this documentation checkpoint.
 
 ## Locked Definitions
 - Artefact scope lock: `00_admin/Artefact_MVP_definition.md`

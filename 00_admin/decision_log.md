@@ -6,8 +6,8 @@ Ordering convention (standardized 2026-03-24):
 - New entries must be appended at the end and may include `superseded_by` when a prior decision is replaced.
 
 Maintenance snapshot (2026-03-27):
-- Highest decision ID currently present: `D-035`
-- Total decision entries: 35
+- Highest decision ID currently present: `D-038`
+- Total decision entries: 38
 - Status distribution: accepted=29, superseded=3, rejected=1
 - ID integrity check: no duplicate decision IDs detected
 
@@ -1044,3 +1044,29 @@ review_date: none
 - evidence_basis: `.github/copilot-instructions.md`, `.github/agents/thesis-ask.agent.md`, `.github/agents/thesis-autopilot.agent.md`, `c:/Users/peach/AppData/Roaming/Code/User/prompts/natural-language-workflow.instructions.md`, `file_map.md`, `07_implementation/experiment_log.md` (`EXP-053`).
 - impacted_files: `.github/copilot-instructions.md`, `.github/agents/thesis-ask.agent.md`, `.github/agents/thesis-autopilot.agent.md`, `c:/Users/peach/AppData/Roaming/Code/User/prompts/natural-language-workflow.instructions.md`, `file_map.md`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `07_implementation/experiment_log.md`
 - next_steps: Validate the new files load in the expected locations, keep prompts as optional specialty tools, and revisit hooks or narrow file-level instructions only if repeated workflow drift still appears.
+
+## D-037
+- date: 2026-03-28
+- entity_id: thesis artefact submission packaging
+- proposed_by: Copilot
+- status: accepted
+- decision: Create and adopt `07_implementation/ARTEFACT_SUBMISSION_STRUCTURE_FINAL.md` as the authoritative final submission-structure placeholder file, separating Minimum Submission Set from Full Archive Set while keeping runtime contracts unchanged.
+- context: The hand-in workflow required a single discoverable structure authority for planner/autopilot execution. Existing guidance covered runtime and baseline posture but did not provide one consolidated, placeholder-first artefact packaging skeleton.
+- alternatives_considered: Keep submission structure distributed across multiple docs only (rejected: slower handoff and higher drift risk); collapse implementation into one monolithic script for submission simplicity (rejected: harms modular auditability and reproducibility).
+- rationale: A single placeholder authority improves execution clarity for final packaging, preserves modular pipeline integrity, and enables deterministic evidence handoff without premature file movement.
+- evidence_basis: `01_requirements/submission_requirements.md`, `00_admin/Artefact_MVP_definition.md`, `07_implementation/ACTIVE_BASELINE.md`, `07_implementation/implementation_notes/IMPLEMENTATION_CONTRACT.md`, `07_implementation/ARTEFACT_SUBMISSION_STRUCTURE_FINAL.md`, `07_implementation/implementation_notes/README.md`, `07_implementation/implementation_notes/SUBMISSION_MANIFEST.md`.
+- impacted_files: `00_admin/decision_log.md`, `00_admin/change_log.md`, `07_implementation/ARTEFACT_SUBMISSION_STRUCTURE_FINAL.md`, `07_implementation/implementation_notes/README.md`, `07_implementation/implementation_notes/SUBMISSION_MANIFEST.md`
+- next_steps: Replace placeholders in a controlled fill pass after planner approval, then validate package completeness against BL-013/BL-014 evidence and submission requirements.
+
+## D-038
+- date: 2026-03-28
+- entity_id: standalone final artefact execution surface
+- proposed_by: Copilot
+- status: accepted
+- decision: Implement and adopt a root-level `final_artefact.py` as the single evaluator-facing command surface with `run`, `validate`, `bundle`, and `show-paths` commands, while preserving existing BL-stage internals and baseline authority.
+- context: The user requested a thesis hand-in path that is not tied to navigating full repository internals and asked to start implementation immediately. Existing guidance covered packaging intent, but a concrete runnable standalone entrypoint did not yet exist.
+- alternatives_considered: Collapse full pipeline into one monolithic script (rejected: high regression risk, poor maintainability); keep only existing BL-013 script path as submission surface (rejected: weaker evaluator usability and portability).
+- rationale: A single entrypoint improves evaluator UX and packaging portability without introducing method changes. Keeping stage internals intact protects deterministic behavior and evidence continuity.
+- evidence_basis: `final_artefact.py`, `final_artefact/README.md`, `final_artefact/config/default_config.json`, `final_artefact/requirements.txt`, `final_artefact/SUBMISSION_BUNDLE_MANIFEST.md`, `07_implementation/ARTEFACT_SUBMISSION_STRUCTURE_FINAL.md`, `07_implementation/implementation_notes/SUBMISSION_MANIFEST.md`.
+- impacted_files: `00_admin/decision_log.md`, `00_admin/change_log.md`, `final_artefact.py`, `final_artefact/README.md`, `final_artefact/config/default_config.json`, `final_artefact/requirements.txt`, `final_artefact/SUBMISSION_BUNDLE_MANIFEST.md`, `07_implementation/ARTEFACT_SUBMISSION_STRUCTURE_FINAL.md`, `07_implementation/implementation_notes/SUBMISSION_MANIFEST.md`
+- next_steps: Execute first standalone bundle build and run BL-013 plus BL-014 from bundle root to confirm repository-independent operation path for submission packaging.

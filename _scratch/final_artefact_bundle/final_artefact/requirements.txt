@@ -1,0 +1,9 @@
+# Standalone artefact runtime requirements
+# Keep synchronized with repository runtime dependencies used by BL-013/BL-014 paths.
+fastapi>=0.111.0
+h5py==3.16.0
+httpx>=0.27.0
+pypdf==6.9.1
+rapidfuzz==3.14.3
+spotipy==2.23.0
+uvicorn[standard]>=0.29.0

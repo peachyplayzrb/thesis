@@ -1,6 +1,6 @@
 # Active Baseline Authority
 
-Last updated: 2026-03-27 20:36 UTC
+Last updated: 2026-03-28 03:41 UTC
 
 ## Purpose
 This document is the single source of truth for active implementation execution posture and baseline evidence references.
@@ -46,6 +46,11 @@ If this file conflicts with run-status summaries elsewhere, this file takes prec
 ## Referencing Rules
 - Backlog, implementation status sheets, and admin status pages should link here for baseline evidence chains.
 - Do not duplicate the full run table in multiple docs unless required for submission snapshots.
+
+## Admin Sync Checkpoint (2026-03-28 03:41 UTC)
+- Documentation-only synchronization pass completed for admin/state surfaces.
+- Canonical and experimental baseline posture is unchanged from the 2026-03-27 20:36 UTC run-evidence state.
+- No new run IDs were introduced in this checkpoint.
 
 ## Related Documents
 - Backlog control board: 07_implementation/backlog.md

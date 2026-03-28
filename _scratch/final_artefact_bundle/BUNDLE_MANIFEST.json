@@ -1,0 +1,13 @@
+{
+  "bundle_root": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\_scratch\\final_artefact_bundle",
+  "include_outputs": false,
+  "copied": [
+    "final_artefact.py",
+    "final_artefact/",
+    "runtime/implementation_notes/",
+    "RUN_GUIDE.md",
+    "ACTIVE_BASELINE.md",
+    "ARTEFACT_SUBMISSION_STRUCTURE_FINAL.md"
+  ],
+  "entry_command": "python final_artefact.py run --implementation-root runtime/implementation_notes --run-config runtime/implementation_notes/bl000_run_config/configs/profiles/run_config_ui013_tuning_v1f.json --refresh-seed"
+}

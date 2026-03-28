@@ -8,7 +8,7 @@ Ordering convention (standardized 2026-03-24):
 - New entries must be appended at the end; historical entries remain unchanged except for explicit correction records.
 
 Maintenance snapshot (2026-03-27):
-- Highest change ID currently present: `C-192`
+- Highest change ID currently present: `C-194`
 - Known legacy correction applied in this file: prior duplicate `C-079` entry has been normalized to `C-135` for unique-ID compliance.
 
 ## C-001
@@ -2020,3 +2020,7 @@ Maintenance snapshot (2026-03-27):
 | C-176 | 2026-03-25 22:57 | Copilot | Executed UI-013 tuning profile sweep (v1, v1a, v1b, v1c) to validate explanation-diversity and candidate-filtering controls; 3/4 profiles passed BL-014; v1b selected as optimal profile (stricter filtering, improved semantic-numeric balance); sweep results and all orchestration outputs archived in _scratch/ and implementation_notes/; updated experiment_log (EXP-045) and test_notes (TC-UI013-SWEEP-001). |
 
 | C-192 | 2026-03-27 | Copilot | Workflow customization hardening pass: removed stale `model: GPT-5.3-Codex` spec from log-everything and session-start-check prompt frontmatter, renamed deprecated `mode:` to `agent:` in three prompt files, completed the stub impact-analysis prompt with full assessment steps, created `00_admin/recurring_issues.md` as the self-improvement friction log (seeded with RI-001), and wired recurring_issues.md into the copilot-instructions.md session-start checklist and Automatic Improvement Rule. |
+| C-193 | 2026-03-28 | Copilot | Created `07_implementation/ARTEFACT_SUBMISSION_STRUCTURE_FINAL.md` as the final placeholder-only artefact submission structure authority, linked it from `07_implementation/implementation_notes/README.md` and `07_implementation/implementation_notes/SUBMISSION_MANIFEST.md`, and logged governance alignment for planner/autopilot handoff. |
+| C-194 | 2026-03-28 | Copilot | Started standalone artefact implementation surface: added root `final_artefact.py` entrypoint (`run`/`validate`/`bundle`/`show-paths`), created `final_artefact/` docs-config-manifest package files, and aligned submission documentation to reference the new standalone hand-in execution path. |
+| C-195 | 2026-03-28 03:41 UTC | Copilot | Executed admin-first documentation synchronization before chapter edits: updated `07_implementation/ACTIVE_BASELINE.md` with a no-run-change sync checkpoint, synchronized `00_admin/thesis_state.md` to remove stale active-v1b ambiguity and append current checkpoint, aligned `00_admin/Artefact_MVP_definition.md` wording/date, advanced Chapter 4 readiness gates in `09_quality_control/chapter_readiness_checks.md`, and refreshed `00_admin/timeline.md` status note. |
+| C-196 | 2026-03-28 03:46 UTC | Copilot | Executed first chapter hardening pass: updated `08_writing/chapter3.md` to synchronize alignment-limitation metrics/threshold wording to canonical baseline posture, populated pending result tables in `08_writing/chapter4.md` Sections 4.8 to 4.10 with run-linked outcomes, closed the remaining Chapter 4 readiness gate in `09_quality_control/chapter_readiness_checks.md`, and synchronized `00_admin/thesis_state.md` plus `00_admin/timeline.md` checkpoints. |

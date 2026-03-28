@@ -47,7 +47,7 @@ In line with Chapter 2 evidence-limiting language, this design treats alignment 
 
 ### 3.4.1 Known Alignment Limitation: Incomplete Corpus Coverage
 
-A critical empirical finding during implementation is that the DS-001 corpus provides limited coverage of real-world Spotify history imports. In active testing with realistic user data, the alignment process achieves approximately **32.2% match rate** when matched against the DS-001 candidate dataset—meaning roughly two-thirds of imported tracks cannot be located in the corpus and do not contribute to the preference profile.
+A critical empirical finding during implementation is that the DS-001 corpus provides limited coverage of real-world Spotify history imports. In the canonical active baseline, the alignment process records **15.95% match rate** (`match_rate=0.1595`) against the DS-001 candidate dataset, meaning most imported tracks cannot be located in the corpus and therefore do not contribute to the preference profile.
 
 This has direct implications for preference profile construction and downstream validity claims:
 
@@ -57,7 +57,7 @@ This has direct implications for preference profile construction and downstream 
 
 3. **Playlist Quality Constraint**: Final playlists are drawn only from corpus candidates—a subset of a subset. The effective recommendation space is more constrained than marketing might suggest.
 
-To maintain transparency, the implementation now includes a **match-rate validation gate**: a configurable minimum match-rate threshold (currently set to 30% to accommodate observed reality) is enforced at the alignment stage, and both the threshold and actual match rate are logged in run metadata. Runs that fall below this threshold are flagged as potentially unreliable for profile claims.
+To maintain transparency, the implementation now includes a **match-rate validation gate**: a configurable minimum match-rate threshold (currently set to 15% on the canonical v1f run-config) is enforced at the alignment stage, and both the threshold and actual match rate are logged in run metadata. Runs that fall below this threshold are flagged as potentially unreliable for profile claims.
 
 In Chapter 4, this limitation is addressed through explicit discussion of profile sensitivity: controlled experiments test whether the partial corpus creates systematic retrieval bias, and results are interpreted with awareness of this structural constraint rather than claimed as universal-preference findings. Future work might pursue richer corpus coverage or weighting schemes that include reduced-confidence matched/inferred signals, but this is deferred to keep the current artefact's scope bounded and auditable.
 
@@ -168,4 +168,3 @@ Preference profile
 ```
 
 The decision points shown above represent the core implementation checkpoints that Chapter 4 will evaluate for replayability, controllability, and rule compliance.
-

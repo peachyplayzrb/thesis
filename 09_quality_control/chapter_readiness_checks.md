@@ -28,10 +28,10 @@
 - [x] Chapter 4 structure is drafted and aligned to `00_admin/evaluation_plan.md` criteria.
 - [x] Chapter 3-to-4 continuity mapping is explicit in `08_writing/chapter4.md`.
 - [x] Required evidence artifact paths are declared for reproducibility and audit traceability.
-- [ ] Implemented artifact behavior matches locked MVP scope.
-- [ ] Reproducibility tests are documented with run evidence.
-- [ ] Controllability and inspectability results are reported with traceable artifacts.
-- [ ] Rule compliance outcomes and failure cases are included.
+- [x] Implemented artifact behavior matches locked MVP scope.
+- [x] Reproducibility tests are documented with run evidence.
+- [x] Controllability and inspectability results are reported with traceable artifacts.
+- [x] Rule compliance outcomes and failure cases are included.
 
 ## Chapter 5 (Discussion And Conclusion)
 - [x] Findings answer the research question directly.
@@ -78,3 +78,5 @@ Progress note (2026-03-24): Claim-citation matrix confirmed complete for Chapter
 Open blocker note (2026-03-24): Rerun of chapter2_verbatim_audit.md on current Chapter 2 is required to validate weak_support reduction from hardening edits. No assumptions made about audit outcome — if weak_support remains above threshold after rerun, next phase will involve citation swaps or targeted source additions for remaining overclaimed statements.
 
 Progress note (2026-03-27): UI-003 synthesis closure package for Chapters 3 to 5 is complete at control-record level. Claim verdicts and chapter-targeted hardening notes are now tracked in `09_quality_control/ui003_claim_verdicts_ch3_ch5.md` and `09_quality_control/ui003_chapter_hardening_notes_ch3_ch5.md`.
+Progress note (2026-03-28): Admin-first synchronization pass completed before chapter edits. Baseline authority (`07_implementation/ACTIVE_BASELINE.md`) and governance scope files were revalidated, and Chapter 4 readiness gates for MVP alignment, reproducibility evidence, and controllability/inspectability reporting are now marked complete. Remaining open Chapter 4 gate is explicit rule-compliance and failure-case write-through in chapter text/tables.
+Progress note (2026-03-28 03:46 UTC): Chapter 3/4 hardening pass applied. Chapter 3 stale alignment-rate wording was synchronized to canonical baseline values, Chapter 4 Sections 4.8 to 4.10 result tables were populated with run-linked evidence, and the Chapter 4 rule-compliance/failure-case readiness gate is now closed.

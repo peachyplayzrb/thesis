@@ -1,0 +1,11 @@
+{
+  "description": "Default standalone final artefact execution profile",
+  "implementation_root": "07_implementation/implementation_notes",
+  "run_config": "07_implementation/implementation_notes/bl000_run_config/configs/profiles/run_config_ui013_tuning_v1f.json",
+  "python": ".venv/Scripts/python.exe",
+  "commands": {
+    "run": "final_artefact.py run --refresh-seed",
+    "run_and_validate": "final_artefact.py run --refresh-seed --validate-only",
+    "validate": "final_artefact.py validate"
+  }
+}

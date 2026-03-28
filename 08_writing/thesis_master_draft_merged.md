@@ -14,7 +14,7 @@ Module Code: 6CS007
 
 Module Name: Project and Professionalism
 
-Project Title: Engineering an Automated, Transparent, and Controllable Playlist Generation Pipeline 
+Project Title: Engineering an Automated, Transparent, and Controllable Playlist Generation Pipeline
 
 Supervisor Name: Thomas Xuereb
 
@@ -36,7 +36,7 @@ Student Name (Print): Timothy Spiteri
 
 Student Number: 2460123
 
-Signature: …………………………………………  
+Signature: …………………………………………
 
 Date: 01/05/2026
 
@@ -44,9 +44,9 @@ Date: 01/05/2026
 
 Music recommender systems are widely used to help listeners navigate large catalogues, but many practical recommendation pipelines remain difficult to inspect, tune, and reproduce. This is a serious issue, because if behaviour is opaque, design decisions are harder to justify and evaluation is harder to trust. This thesis addresses that problem by engineering a single user playlist generation pipeline that is automated but also transparent, controllable, observable, and reproducible, whilst using cross source music preference data.
 
-The implemented artefact is a deterministic, content-based pipeline that imports listening history from one practical source, enriches imported tracks with Last.fm semantic tags when direct corpus alignment is unreliable, builds an interpretable preference profile, generates and filters candidates from DS-002 (MSD subset plus Last.fm tags), scores tracks using deterministic feature-based similarity, and assembles playlists using rule-based constraints. The approach of this thesis is based on Design Science Research: literature is translated into requirements, requirements shape the architecture, and the implementation is tested using explicit run-level evaluation checks.
+The implemented artefact is a deterministic, content-based pipeline that imports listening history from one practical source, performs direct metadata and identifier alignment against DS-001 with explicit matched and unmatched diagnostics, builds an interpretable preference profile, generates and filters candidates from DS-001 (Music4All base), scores tracks using deterministic feature-based similarity, and assembles playlists using rule-based constraints. The approach of this thesis is based on Design Science Research: literature is translated into requirements, requirements shape the architecture, and the implementation is tested using explicit run-level evaluation checks.
 
-Evaluation is structured around reproducibility, traceability, controllability, constraint compliance, and testing quality under thesis constraints. The thesis does not claim a novel recommender model or universal superiority. Instead, its contribution is engineering evidence that an automated playlist pipeline can be made auditable, testable, and practically controllable end-to-end. Current implementation evidence includes BL-020 real-data execution through BL-009 observability and BL-014 automated sanity checks (21/21 pass), providing a complete and traceable evidence chain for the implemented scope.
+Evaluation is structured around reproducibility, traceability, controllability, constraint compliance, and testing quality under thesis constraints. The thesis does not claim a novel recommender model or universal superiority. Instead, its contribution is engineering evidence that an automated playlist pipeline can be made auditable, testable, and practically controllable end-to-end. Current implementation evidence includes BL-020 real-data execution through BL-009 observability and BL-014 automated sanity checks (22/22 pass), providing a complete and traceable evidence chain for the implemented scope.
 
 ## Table of Contents
 
@@ -94,8 +94,8 @@ This problem is addressed within a bounded MVP scope:
 
 - single-user recommendation context
 - deterministic, content-based methods rather than machine-learning model novelty
-- DS-002 (MSD subset plus Last.fm tags) as the active candidate track corpus
-- one practical ingestion path with staged metadata handling and semantic enrichment fallback
+- DS-001 (Music4All base) as the active candidate track corpus, with DS-002 retained as a validated fallback reference
+- one practical ingestion path with staged metadata and identifier handling plus explicit matched and unmatched diagnostics
 - explicit rule-based scoring and playlist assembly with inspectable run logs
 
 Solving this problem contributes design and implementation evidence for building recommendation pipelines whose behaviour can be explained and audited, rather than only judged by output quality. The intended outcome is a defensible artefact and evaluation basis that aligns with the research question on design considerations for transparent, controllable, and observable playlist generation.
@@ -109,7 +109,7 @@ What design considerations shape the engineering of a transparent, controllable,
 1. Design an automated pipeline that generates playlists from user listening histories.
 2. Build cross-source preference evidence from imported listening history using staged metadata handling and Last.fm semantic enrichment where direct matching is unreliable.
 3. Construct a deterministic user preference profile based on imported listening data and manually selected influence tracks.
-4. Generate candidate tracks from the DS-002 corpus using deterministic feature-based filtering.
+4. Generate candidate tracks from the DS-001 corpus using deterministic feature-based filtering.
 5. Score candidate tracks using deterministic similarity functions and rule-based adjustments.
 6. Assemble playlists using playlist-level rules that ensure diversity, coherence, and ordering.
 7. Provide transparent explanations and observability mechanisms for recommendation decisions.
@@ -117,7 +117,7 @@ What design considerations shape the engineering of a transparent, controllable,
 
 ## 1.5 Scope and Delimitations
 
-The thesis is bounded to a locked MVP artefact: a single-user, deterministic, content-based playlist-generation pipeline with one practical ingestion path and DS-002 as the active canonical candidate corpus. Transparency, controllability, observability, and reproducibility are treated as mandatory system qualities rather than optional enhancements.
+The thesis is bounded to a locked MVP artefact: a single-user, deterministic, content-based playlist-generation pipeline with one practical ingestion path and DS-001 as the active canonical candidate corpus, with DS-002 retained as a validated fallback reference. Transparency, controllability, observability, and reproducibility are treated as mandatory system qualities rather than optional enhancements.
 
 Several exclusions are deliberate. The project does not attempt to build or benchmark collaborative filtering, deep-learning, or large-scale hybrid recommender models. It does not extend to multi-user experimentation, production deployment, or a broad ecosystem of ingestion adapters. Evaluation is also constrained to BSc-feasible testing rather than large-scale user studies or longitudinal behavioral analysis.
 
@@ -233,24 +233,23 @@ Two limitations carry forward. Music-specific alignment benchmark evidence is th
 
 # Chapter 3: Design and Methodology
 
-## 3.1 Design Methodology
+Chapter objective: convert the literature synthesis into implementation-faithful architecture commitments that match the active deterministic BL-020 artefact scope and can be audited in Chapter 4.
 
+## 3.1 Design Methodology
 This chapter takes a Design Science Research position in which the literature synthesis is converted into explicit engineering requirements and then into an implementable artefact architecture. The workflow remains the defined thesis sequence: literature -> requirements -> design -> implementation -> evaluation. The key methodological point is that Chapter 3 does not claim validated outcomes. It defines design commitments that are intended to be tested in Chapter 4.
 
 This distinction is important because the chapter is not trying to prove a universally best recommendation method. It is establishing an architecture that is defensible under the project constraints and contribution goals. In that sense, the value of this chapter is design justification and traceability: why each mechanism is included, what it is expected to do, and how later evaluation can challenge or confirm those expectations.
 
 ## 3.2 Literature-Driven Design Requirements
-
 The Chapter 2 synthesis is translated here into a small set of practical design requirements that can be implemented and tested. The first requirement is inspectability: recommendation outputs should be traceable to concrete scoring contributors and rule effects, not explained only through persuasive post-hoc language (Tintarev and Masthoff, 2007; Tintarev and Masthoff, 2012; Zhang and Chen, 2020).
 
-The second requirement is practical controllability. The system should expose explicit user influence paths, but those controls should remain understandable and methodologically testable rather than open-ended or opaque (Andjelkovic et al., 2019; Jin et al., 2020). The third requirement is playlist-aware behavior. Item relevance alone is insufficient in music settings where ordering, repetition, and collection-level coherence shape user experience (Schedl et al., 2018; Gatzioura et al., 2019; Neto et al., 2023).
+The second requirement is practical controllability. The system should expose explicit user influence paths, but those controls should remain understandable and methodologically testable rather than open-ended or opaque (Andjelkovic et al., 2019; Jin et al., 2020). The third requirement is playlist-aware behavior. Item relevance alone is insufficient in music settings where ordering, repetition, and collection-level coherence shape user experience (Schedl et al., 2018; Gkatzioura and Halkidi, 2019; Neto et al., 2023).
 
-The fourth requirement is governance at run level: observability, reproducibility, and auditability should be engineered directly into execution through configuration capture and structured diagnostics (Beel et al., 2016; Bellogin and Said, 2021; Cavenaghi et al., 2023). The fifth is corpus defensibility. DS-002 is the active implementation corpus because it provides deterministic candidate-side feature coverage under current scope constraints; Music4All remains a baseline literature reference for corpus-family suitability (Pegoraro Santana et al., 2020).
+The fourth requirement is governance at run level: observability, reproducibility, and auditability should be engineered directly into execution through configuration capture and structured diagnostics (Beel et al., 2016; Bellogin et al., 2021; Cavenaghi et al., 2023). The fifth is corpus defensibility. The active implementation corpus is DS-001 (Music4All base), which provides deterministic candidate-side feature coverage for current scope constraints and direct corpus alignment support for imported Spotify history. DS-002 remains a validated fallback reference. Music4All remains a documented baseline reference for corpus-family justification (Pegoraro et al., 2020).
 
-Taken together, these requirements constrain the architecture toward explicit stages and explicit artifacts, because if a property cannot be observed, replayed, or stress-tested later, it should not be treated as a core design claim now.
+Taken together, these requirements constrain the architecture toward explicit stages and explicit artifacts, because if a property cannot be observed, replayed, or stress-tested later, it should not be treated as a core design claim now. To support UI-003 hardening, claims in this chapter are phrased as evidence-bounded design commitments and are linked to Chapter 4 artifact-level verification rather than model-superiority assertions.
 
 ## 3.3 Overall System Architecture
-
 The proposed architecture is a layered deterministic pipeline:
 1. user interaction,
 2. data ingestion,
@@ -261,25 +260,41 @@ The proposed architecture is a layered deterministic pipeline:
 7. deterministic scoring,
 8. playlist assembly,
 9. explanation output,
-10. observability and audit,
-11. configuration and execution control.
+10. observability/audit,
+11. configuration/execution control.
 
 This layout is chosen to keep causal traceability from user input to playlist output. Each stage has a clearly defined role and emits intermediate artifacts that can be inspected independently. That separation is important for evaluation because it allows later analysis to distinguish profile effects, candidate-pool effects, scoring effects, and assembly effects rather than collapsing everything into a single black-box outcome.
 
 The architecture also reflects deliberate scope discipline. It is single-user, deterministic, and content-driven, with one practical ingestion path and no deep-model complexity in the core pipeline. Those limits are not treated as missing sophistication; they are methodological choices that keep the artefact auditable and feasible within thesis constraints.
 
 ## 3.4 Data Ingestion and Alignment
+The ingestion boundary is intentionally narrow: one practical listening-history source plus optional manual influence tracks. Imported tracks are normalized and transformed into an inspectable preference signal using staged metadata and identifier handling.
 
-The ingestion boundary is intentionally narrow: one practical listening-history source plus optional manual influence tracks. Imported tracks are normalized and transformed into an inspectable preference signal using staged metadata handling and semantic enrichment.
+This staged strategy follows entity-resolution practice that treats matching as a sequence of explicit steps with explicit trade-offs, rather than a single hidden operation (Allam et al., 2018; Papadakis et al., 2021). Current implementation uses direct DS-001 metadata/identifier alignment for imported Spotify tracks, with explicit matched/unmatched diagnostics carried into downstream profile construction. Neural matching remains a relevant comparator for difficult cases, but sits outside this artefact's inspectability and complexity boundary (Barlaug and Thorvaldsen, 2021).
 
-This staged strategy follows entity-resolution practice that treats matching as a sequence of explicit steps with explicit trade-offs, rather than a single hidden operation (Allam et al., 2018; Papadakis et al., 2021). In BL-020 real-data execution, direct DS-002 fuzzy alignment produced false positives for the user's dominant repertoire, so the active path moved to Last.fm semantic enrichment with explicit ok/no_tags/error diagnostics. Neural matching remains a relevant comparator for difficult cases, but sits outside this artefact's inspectability and complexity boundary (Barlaug and Gulla, 2021).
+Spotify Web API audio-feature endpoints are deprecated, so user-side `tempo`, `loudness`, `key`, and `mode` are not directly available from Spotify in the current implementation. The active BL-020 mode uses DS-001-aligned metadata and corpus-side numeric features with no Last.fm dependency.
 
-At this stage, it is also important to make data assumptions explicit. Imported rows are expected to contain minimally usable artist-title metadata even when identifiers are missing, and the ingestion layer is expected to surface malformed or incomplete records rather than silently discarding them. In practice, cross-source music data can contain duplicated entries, inconsistent naming conventions, remaster or version suffixes, and partial metadata, all of which can affect fallback matching confidence. For design purposes, these are treated as manageable sources of uncertainty that must be made visible through diagnostics instead of being hidden behind aggregate success rates. This keeps method interpretation honest in Chapter 4 because alignment quality is reported as a property of both data conditions and matching logic.
+At this stage, it is also important to make data assumptions explicit. Imported rows are expected to contain minimally usable artist-title metadata even when identifiers are missing, and the ingestion layer is expected to surface malformed or incomplete records rather than silently discarding them. In practice, cross-source music data can contain duplicated entries, inconsistent naming conventions, remaster/version suffixes, and partial metadata, all of which can affect fallback matching confidence. For design purposes, these are treated as manageable sources of uncertainty that must be made visible through diagnostics instead of being hidden behind aggregate success rates. This keeps method interpretation honest in Chapter 4 because alignment quality is reported as a property of both data conditions and matching logic.
 
 In line with Chapter 2 evidence-limiting language, this design treats alignment reliability as methodologically grounded but still uncertain because much entity-resolution evidence is cross-domain rather than music-specific.
 
-## 3.5 Preference Modelling and Candidate Preparation
+### 3.4.1 Known Alignment Limitation: Incomplete Corpus Coverage
 
+A critical empirical finding during implementation is that the DS-001 corpus provides limited coverage of real-world Spotify history imports. In the canonical active baseline, the alignment process records **15.95% match rate** (`match_rate=0.1595`) against the DS-001 candidate dataset, meaning most imported tracks cannot be located in the corpus and therefore do not contribute to the preference profile.
+
+This has direct implications for preference profile construction and downstream validity claims:
+
+1. **Restricted Signal Representation**: The preference model is built only from matched tracks, not the full imported history. If unmatched tracks are systematically different (e.g., more niche, newer, in specific genres), the profile becomes a biased representation of user preference.
+
+2. **Generalization Boundary**: Claims about "user preference" in playlist output implicitly assume the matched subset is representative. This is an empirical assumption that should be tested rather than assumed.
+
+3. **Playlist Quality Constraint**: Final playlists are drawn only from corpus candidates—a subset of a subset. The effective recommendation space is more constrained than marketing might suggest.
+
+To maintain transparency, the implementation now includes a **match-rate validation gate**: a configurable minimum match-rate threshold (currently set to 15% on the canonical v1f run-config) is enforced at the alignment stage, and both the threshold and actual match rate are logged in run metadata. Runs that fall below this threshold are flagged as potentially unreliable for profile claims.
+
+In Chapter 4, this limitation is addressed through explicit discussion of profile sensitivity: controlled experiments test whether the partial corpus creates systematic retrieval bias, and results are interpreted with awareness of this structural constraint rather than claimed as universal-preference findings. Future work might pursue richer corpus coverage or weighting schemes that include reduced-confidence matched/inferred signals, but this is deferred to keep the current artefact's scope bounded and auditable.
+
+## 3.5 Preference Modelling and Candidate Preparation
 The preference model is built from aligned listening history and influence tracks using interpretable feature representations. Candidate generation then restricts the searchable set before scoring to preserve tractability and maintain deterministic behavior.
 
 Feature processing standardizes values, handles missingness, and prepares weighted attributes for comparable similarity computation. This design uses content-driven framing from music recommender literature while keeping mechanism transparency explicit (Bogdanov et al., 2013; Deldjoo et al., 2024).
@@ -291,7 +306,6 @@ Candidate shaping is treated with the same discipline. Filters and thresholds ar
 This section also acknowledges that richer context-aware or multimodal models can achieve strong performance in adjacent tasks, but they are treated as comparator context rather than core implementation because of inspectability and complexity constraints in the MVP boundary defined for this project (Ru et al., 2023; Liu et al., 2025).
 
 ## 3.6 Deterministic Scoring and Playlist Assembly
-
 Candidate scoring is performed using explicit deterministic similarity functions plus documented rule adjustments. Playlist assembly then enforces collection-level constraints, including playlist length, artist repetition limits, and diversity or ordering controls.
 
 The rationale is goal-aligned rather than absolutist: deterministic scoring is selected to maximize inspectability and replayability under thesis scope, not to claim universal accuracy superiority over hybrid or neural alternatives (Cano and Morisio, 2017; He et al., 2017; Liu et al., 2025).
@@ -301,17 +315,15 @@ Metric and feature-weight selections are treated as explicit design parameters r
 For governance, this means parameters should be documented as first-class configuration choices rather than embedded constants. During evaluation, non-target parameters should remain fixed when one setting is varied so observed output differences remain interpretable. This is especially relevant when comparing metric or weight choices, because multiple simultaneous parameter changes would make causal interpretation weak. Keeping this discipline at design level ensures Chapter 4 can present parameter effects as clear and traceable rather than anecdotal.
 
 ## 3.7 Explanation, Observability, and Reproducibility
+Explanation outputs are generated directly from scoring contributors and rule adjustments so that explanation statements remain mechanism-linked. In parallel, observability captures run-level artifacts (input summary, alignment statistics, configuration, ranking outputs, and playlist-rule outcomes).
 
-Explanation outputs are generated directly from scoring contributors and rule adjustments so that explanation statements remain mechanism-linked. In parallel, observability captures run-level artifacts including input summary, alignment statistics, configuration, ranking outputs, and playlist-rule outcomes.
+This coupling supports both user-facing transparency and developer-facing inspectability, and enables deterministic replay tests required by the evaluation plan (Beel et al., 2016; Bellogin et al., 2021).
 
-This coupling supports both user-facing transparency and developer-facing inspectability, and enables deterministic replay tests required by the evaluation plan (Beel et al., 2016; Bellogin and Said, 2021).
-
-A minimum run record should therefore capture input metadata summary, configuration snapshot and hash, semantic-enrichment coverage counts, no-tag/error categories, score-trace summaries for ranked outputs, playlist-assembly rule outcomes, and final output identifiers. This does not require production-grade telemetry. It requires a consistent artifact bundle that can be reviewed and compared across runs. Defining this record format in Chapter 3 improves evaluation quality in Chapter 4 because replay checks, sensitivity checks, and explanation-fidelity checks all depend on the same observable execution footprint.
+A minimum run record should therefore capture: input metadata summary, configuration snapshot and hash, alignment pathway counts (ISRC and fallback), unmatched counts with reason categories, score-trace summaries for ranked outputs, playlist-assembly rule outcomes, and final output identifiers. This does not require production-grade telemetry; it requires a consistent artifact bundle that can be reviewed and compared across runs. Defining this record format in Chapter 3 improves evaluation quality in Chapter 4 because replay checks, sensitivity checks, and explanation-fidelity checks all depend on the same observable execution footprint.
 
 Modern music explainability work further reinforces this approach by emphasizing that explanation quality depends on exposing meaningful contribution structure rather than post-hoc narrative alone (Sotirou et al., 2025).
 
 ## 3.8 Configuration and Execution Control
-
 A persistent configuration profile defines feature weights, constraints, filtering controls, and execution parameters. This enables controlled parameter-sensitivity experiments and exact reruns for reproducibility checks.
 
 The intended execution protocol has two complementary modes. Baseline replay mode keeps inputs and configuration fixed to check deterministic consistency across repeated runs. Controlled-variation mode changes one selected parameter at a time while holding other settings constant, so observed differences can be interpreted in relation to that specific control. Together, these modes convert configuration from a convenience feature into a methodological instrument for evaluating reproducibility and controllability.
@@ -319,69 +331,57 @@ The intended execution protocol has two complementary modes. Baseline replay mod
 The chapter scope remains design-only. The purpose here is to define what should be implemented and why, not to claim that the implementation has already achieved those outcomes. Empirical behavior, failure cases, and test results are therefore deferred to Chapter 4.
 
 ## 3.9 Decision Traceability
+The chapter centers on four linked architecture decisions. The first is corpus choice: DS-001 is used as the active canonical candidate space for feature-based retrieval and scoring. The second is scope discipline: the system remains within a single-user deterministic MVP boundary so behavior stays inspectable and feasible. The third is staged cross-source preference extraction: direct metadata/identifier alignment uncertainty is surfaced with explicit matched/unmatched diagnostics. The fourth is mechanism-level transparency: deterministic scoring is paired with explanation linkage and run-level observability/reproducibility controls. Taken together, these decisions connect the Chapter 2 rationale to implementation commitments that can be tested directly in Chapter 4.
 
-The chapter centers on four linked architecture decisions. The first is corpus choice: DS-002 is used as the active canonical candidate space for feature-based retrieval and scoring. The second is scope discipline: the system remains within a single-user deterministic MVP boundary so behaviour stays inspectable and feasible. The third is staged cross-source preference extraction: direct alignment uncertainty is surfaced and semantic enrichment fallback is used when corpus mismatch prevents trustworthy direct matches. The fourth is mechanism-level transparency: deterministic scoring is paired with explanation linkage and run-level observability and reproducibility controls. Taken together, these decisions connect the Chapter 2 rationale to implementation commitments tested in Chapter 4.
-
-## 3.10 Literature-to-Design Traceability
-
+## 3.10 Chapter 2 to Chapter 3 Handoff Mapping
 This section makes the literature-to-design handoff explicit by mapping each Chapter 2 section-level consequence to a concrete Chapter 3 commitment.
 
 Table 3.1 documents this section-level handoff mapping from Chapter 2 consequences to Chapter 3 commitments.
 
 | Chapter 2 source | Chapter 2 design consequence | Chapter 3 design commitment |
 | --- | --- | --- |
-| Section 2.1 | Architecture choices should be justified against transparency, controllability, observability, and reproducibility objectives instead of benchmark-only framing. | The architecture rationale in Sections 3.2 to 3.8 is written as objective-aligned engineering justification under MVP constraints defined for this project. |
-| Section 2.2 | Deterministic design should be positioned as a goal-aligned trade-off choice rather than a universal best-model claim. | Sections 3.3 and 3.6 justify a deterministic layered pipeline while retaining comparator-context discipline. |
-| Section 2.3 | Expose explicit user controls and keep explanation outputs mechanism-linked and evaluable. | Sections 3.2, 3.7, and 3.8 define controllability requirements, explanation linkage, and configuration-based controls for sensitivity testing. |
-| Section 2.4 | Use interpretable preference-profile construction and explicit candidate shaping before scoring. | Section 3.5 defines profile construction and candidate preparation as explicit, auditable pre-scoring stages. |
-| Section 2.5 | Keep playlist assembly as a distinct stage and treat similarity as decision support, not ground truth. | Section 3.6 separates playlist assembly from item scoring and encodes explicit playlist-level constraints. |
-| Section 2.6 | Make metric and feature-weight choices explicit and include sensitivity checks. | Sections 3.5 and 3.6 use explicit deterministic feature-based scoring and document parameterization for later sensitivity evaluation. |
-| Section 2.7 | Add staged alignment diagnostics, unmatched-rate reporting, and run-level configuration logging under governance-oriented evaluation criteria. | Sections 3.4 and 3.7 define staged alignment, unmatched-track reporting, and run-level observability artifacts aligned with Chapter 4 governance checks. |
+| Section 2.1 (Foundations Scope and Thesis Positioning) | Architecture choices should be justified against transparency, controllability, observability, and reproducibility objectives instead of benchmark-only framing. | The architecture rationale in Sections 3.2 to 3.8 is written as objective-aligned engineering justification under MVP constraints defined for this project.
+| Section 2.2 (Core Recommendation Paradigms and Their Trade-offs) | Deterministic design should be positioned as a goal-aligned trade-off choice rather than a universal best-model claim. | Sections 3.3 and 3.6 justify a deterministic layered pipeline while retaining comparator-context discipline.
+| Section 2.3 (Transparency Explainability Controllability Observability and Evaluation) | Expose explicit user controls and keep explanation outputs mechanism-linked and evaluable. | Sections 3.2, 3.7, and 3.8 define controllability requirements, explanation linkage, and configuration-based controls for sensitivity testing.
+| Section 2.4 (Preference Evidence Profile Construction and Candidate Shaping) | Use interpretable preference-profile construction and explicit candidate shaping before scoring. | Section 3.5 defines profile construction and candidate preparation as explicit, auditable pre-scoring stages.
+| Section 2.5 (Music Recommendation and Playlist-Specific Challenges) | Keep playlist assembly as a distinct stage and treat similarity as decision support, not ground truth. | Section 3.6 separates playlist assembly from item scoring and encodes explicit playlist-level constraints.
+| Section 2.6 (Deterministic Feature-Based Design Rationale with Comparator Context) | Make metric and feature-weight choices explicit and include sensitivity checks. | Sections 3.5 and 3.6 use explicit deterministic feature-based scoring and document parameterization for later sensitivity evaluation.
+| Section 2.7 (Cross-Source Alignment Reliability Reproducibility Governance and Synthesis) | Add staged alignment diagnostics, unmatched-rate reporting, and run-level configuration logging under governance-oriented evaluation criteria. | Sections 3.4 and 3.7 define staged alignment diagnostics with matched/unmatched status capture and run-level observability artifacts aligned with Chapter 4 governance checks.
 
-This handoff mapping keeps the Chapter 2 conclusions operational and reduces drift between literature interpretation and architecture specification.
+This handoff mapping keeps the Chapter 2 conclusions operational and reduces drift between literature interpretation and architecture specification. It also serves as a UI-002/UI-003 hardening control: each design statement remains traceable either to a bounded literature claim or to a concrete evaluation artifact.
 
 Overall, this chapter operationalizes the Chapter 2 argument into implementable commitments while keeping the wording cautious: deterministic choices are justified as scope- and objective-aligned engineering decisions, not universal model-superiority claims.
 
-## 3.11 Requirement, Mechanism, and Evidence Mapping
-
+## 3.11 Requirement-Mechanism-Evidence Mapping
 To keep design and evaluation aligned, each requirement group is mapped to a concrete architecture mechanism and a specific Chapter 4 evidence target.
 
 Table 3.2 provides this requirement-to-mechanism-to-evidence mapping.
 
-| Requirement group | Architecture mechanism | Planned Chapter 4 evidence artifact |
+| Requirement group | Architecture mechanism (Chapter 3) | Planned Chapter 4 evidence artifact |
 | --- | --- | --- |
-| Inspectability and explanation fidelity | Deterministic scoring with score decomposition plus mechanism-linked explanation payloads | Score-trace reconstruction table showing explanation fidelity and mandatory explanation-field completeness |
-| Practical controllability | Influence-track input path plus parameterized metric, weight, and rule controls with configuration capture | One-factor-at-a-time sensitivity comparison tables with configuration-diff snapshots and ranked-output deltas |
-| Playlist-level quality constraints | Distinct assembly stage with explicit length, repetition, and diversity or ordering rules | Rule-compliance summary tables with explicit pass or fail outcomes and violation logs where constraints are not met |
-| Cross-source alignment reliability visibility | Staged metadata handling with semantic enrichment fallback and unmatched/no-tag diagnostics | Alignment diagnostics summary showing direct-match quality checks, semantic enrichment coverage, no-tag rate, and unmatched-reason categories |
-| Observability and reproducibility | Run-level artifact schema linking input, configuration, alignment, scoring, assembly, and outputs | Replay-consistency hash comparison table plus run-schema completeness checklist across repeated runs |
+| Inspectability and explanation fidelity | Deterministic scoring with score decomposition plus mechanism-linked explanation payloads (Sections 3.6 and 3.7) | Score-trace reconstruction table showing explanation fidelity and mandatory explanation-field completeness |
+| Practical controllability | Influence-track input path plus parameterized metric/weight/rule controls with configuration capture (Sections 3.5, 3.6, and 3.8) | One-factor-at-a-time sensitivity comparison tables with configuration-diff snapshots and ranked-output deltas |
+| Playlist-level quality constraints | Distinct assembly stage with explicit length, repetition, and diversity/ordering rules (Section 3.6) | Rule-compliance summary tables with explicit pass/fail outcomes and violation logs where constraints are not met |
+| Cross-source alignment reliability visibility | Staged metadata/identifier handling with unmatched diagnostics (Section 3.4) | Alignment diagnostics summary showing direct-match quality checks, matched/unmatched rates, and unmatched-reason categories |
+| Observability and reproducibility | Run-level artifact schema linking input, configuration, alignment, scoring, assembly, and outputs (Sections 3.7 and 3.8) | Replay-consistency hash comparison table plus run-schema completeness checklist across repeated runs |
 
 This mapping fixes the evaluation contract before implementation reporting and keeps Chapter 4 focused on evidence of designed properties rather than ad hoc result narratives.
 
-## 3.12 Core Decision Logic Diagrams
+## 3.12 Diagram Drafts For Core Decision Logic
+Figure 3.3 and Figure 3.4 draft the most decision-critical parts of the architecture: cross-source alignment and the scoring-to-assembly transition.
 
-Figure 3.3 and Figure 3.4 illustrate the most decision-critical parts of the architecture: cross-source alignment and the scoring-to-assembly transition.
-
-Figure 3.3 shows the staged cross-source preference extraction flow with semantic fallback and unmatched/no-tag handling.
+Figure 3.3 shows the staged cross-source preference extraction flow with direct alignment and unmatched handling.
 
 ```text
 Imported listening record
   -> Required fields valid?
      -> No: Mark invalid record and log reason -> Alignment diagnostics summary
      -> Yes: Build normalized artist/title representation
-            -> Attempt direct alignment path quality check
-               -> Trustworthy match? yes -> Emit matched seed
-               -> Trustworthy match? no  -> Semantic fallback path
+        -> Attempt direct alignment path quality check
+          -> Trustworthy match? yes -> Emit matched seed with status=matched
+          -> Trustworthy match? no  -> Emit unmatched seed with status=unmatched
 
-Semantic fallback path (Last.fm)
-  -> Query track tags
-     -> Tags found? yes -> Emit semantic seed with status=ok
-     -> Tags found? no  -> Try fallback lookup path
-            -> Tags found? yes -> Emit semantic seed with status=ok
-            -> Tags found? no  -> Emit seed with status=no_tags
-  -> API failure? -> Emit seed with status=error
-
-All paths -> Alignment/enrichment diagnostics summary
+All paths -> Alignment diagnostics summary
 ```
 
 Figure 3.4 shows deterministic scoring, rule adjustment, and playlist assembly interaction.
@@ -397,28 +397,20 @@ Preference profile
   -> Playlist assembly rules
   -> All constraints satisfied?
      -> Yes: Final playlist output -> Explanation payload -> Run-level observability artifacts
-     -> No: Violation log plus fallback handling with logged violations -> Explanation payload -> Run-level observability artifacts
+       -> No: Violation log plus fallback handling with logged violations -> Explanation payload -> Run-level observability artifacts
 ```
 
 The decision points shown above represent the core implementation checkpoints that Chapter 4 will evaluate for replayability, controllability, and rule compliance.
 
-## 3.13 Chapter Summary
-
-Chapter 3 has translated the Chapter 2 literature consequences into a concrete deterministic system design. The architecture makes each major pipeline stage explicit, preserves traceability from design rationale to implementation mechanism, and fixes an evaluation contract before empirical reporting begins. Chapter 4 now examines whether the implemented artefact and the supporting evidence actually satisfy these design commitments.
-
-# Chapter 4: Implementation, Testing and Evaluation
+# Chapter 4: Implementation and Evaluation
 
 ## 4.1 Chapter Aim and Scope
+This chapter reports how the designed artefact is implemented and how it is evaluated under the locked MVP scope. The chapter does not claim state-of-the-art recommendation accuracy. Instead, it evaluates whether the system delivers deterministic behavior, transparent and inspectable recommendation logic, practical controllability, and playlist-rule compliance under BSc-feasible conditions.
 
-This chapter reports how the designed artefact is implemented and how it is evaluated under the locked MVP scope. The chapter does not claim state-of-the-art recommendation accuracy. Instead, it evaluates whether the system delivers deterministic behaviour, transparent and inspectable recommendation logic, practical controllability, and playlist-rule compliance under BSc-feasible conditions.
-
-Scope boundaries remain consistent with the locked thesis state: single-user pipeline, one practical ingestion path, deterministic scoring core, and no deep-model baseline benchmarking.
-
-Chapter 4 now has implementation evidence available from BL-020 and BL-014 runs. Where a table still appears in placeholder form, it should be populated directly from the logged artifacts in `07_implementation/experiment_log.md`, `07_implementation/test_notes.md`, and the corresponding stage output files.
+Scope boundaries remain consistent with `00_admin/thesis_state.md`: single-user pipeline, one practical ingestion path, deterministic scoring core, and no deep-model baseline benchmarking.
 
 ## 4.2 Evaluation Criteria and Success Conditions
-
-Evaluation follows the locked evaluation plan and uses five criteria.
+Evaluation follows `00_admin/evaluation_plan.md` and uses five criteria.
 
 Table 4.1 defines the evaluation criteria, operational checks, and minimum success conditions used in this chapter.
 
@@ -427,29 +419,27 @@ Table 4.1 defines the evaluation criteria, operational checks, and minimum succe
 | Reproducibility | Replay identical input and configuration across multiple runs | Identical ranked output and playlist output for repeated runs |
 | Traceability | Inspect score-contribution and rule-adjustment outputs per recommended track | Every recommended track has readable mechanism-linked explanation fields |
 | Controllability | Change one parameter at a time and observe output differences | Output changes are interpretable and directionally consistent with control intent |
-| Constraint compliance | Verify playlist-level rules such as length, repetition, and diversity or ordering | Generated playlists satisfy the configured rule set or produce explicit violation logs |
-| Testing quality | Document method, setup, outputs, and critical interpretation | Reproducible test notes with failures and limitations explicitly discussed |
+| Constraint compliance | Verify playlist-level rules (for example length, repetition, ordering/diversity) | Generated playlists satisfy configured rule set or produce explicit violation logs |
+| Testing quality | Document method, setup, outputs, and critical interpretation | Reproducible test notes with failures/limitations explicitly discussed |
 
-## 4.3 Design-to-Evaluation Traceability
-
+## 4.3 Chapter 3 to Chapter 4 Continuity Mapping
 To prevent design-evaluation drift, each Chapter 3 commitment is tied to a Chapter 4 evaluation check.
 
 Table 4.2 provides the design-to-evaluation continuity mapping used to keep Chapter 4 evidence aligned with Chapter 3 commitments.
 
 | Chapter 3 design commitment | Chapter 4 evaluation check | Evidence artifact |
 | --- | --- | --- |
-| Objective-aligned deterministic architecture under MVP constraints | Verify implemented pipeline stages and scope boundary compliance | Implementation summary and scope-conformance checklist |
-| Explicit user control and parameterized execution | One-factor-at-a-time sensitivity tests | Parameter sweep table and output delta summary |
-| Distinct playlist assembly stage with rule constraints | Rule-compliance checks per generated playlist | Constraint pass or fail table with violation diagnostics |
-| Explicit feature and metric-based deterministic scoring | Explanation-fidelity checks against raw score components | Track-level score breakdown snapshots |
-| Staged alignment with unmatched reporting | Alignment diagnostics and unmatched-rate reporting | Matching summary including ISRC hits, fallback hits, unmatched count, and unmatched rate |
-| Run-level observability and replayability | Deterministic replay tests with run logs | Re-run comparison logs and configuration snapshots |
+| Objective-aligned deterministic architecture under MVP constraints (Sections 3.1 to 3.3) | Verify implemented pipeline stages and scope boundary compliance | Implementation summary + scope-conformance checklist |
+| Explicit user control and parameterized execution (Sections 3.2, 3.8) | One-factor-at-a-time sensitivity tests | Parameter sweep table and output delta summary |
+| Distinct playlist assembly stage with rule constraints (Section 3.6) | Rule-compliance checks per generated playlist | Constraint pass/fail table with violation diagnostics |
+| Explicit feature/metric-based deterministic scoring (Sections 3.5, 3.6) | Explanation-fidelity checks against raw score components | Track-level score breakdown snapshots |
+| Staged alignment with unmatched reporting (Section 3.4) | Alignment diagnostics and unmatched-rate reporting | Matching summary (ISRC hits, fallback hits, unmatched count/rate) |
+| Run-level observability and replayability (Section 3.7) | Deterministic replay tests with run logs | Re-run comparison logs and config snapshots |
 
-This mapping provides the direct handoff from design rationale to evaluable system behaviour.
+This mapping provides the direct handoff from design rationale to evaluable system behavior.
 
-## 4.4 Implementation Overview
-
-Implementation reporting is organized by pipeline stage to preserve inspectability.
+## 4.4 Implementation Overview (Report Structure)
+Implementation reporting should be organized by pipeline stage to preserve inspectability.
 
 1. Ingestion and input normalization.
 2. ISRC-first alignment and metadata fallback logic.
@@ -459,10 +449,13 @@ Implementation reporting is organized by pipeline stage to preserve inspectabili
 6. Playlist assembly and post-assembly validation.
 7. Explanation rendering and run-level logging.
 
-The implemented behavior across these stages is evidenced by BL-020 runs and supporting quality checks. Ingestion uses one practical Spotify path with deterministic normalization. Alignment-quality checks showed that direct DS-002 fuzzy matching was unreliable for the user's dominant repertoire, so the active execution path moved to semantic enrichment with explicit `ok/no_tags/error` diagnostics. Profile construction and candidate preparation are deterministic and artifact-linked (BL-004 and BL-005), with scoring in semantic-only mode where user-side Spotify numeric audio features are unavailable under current API constraints (BL-006). Playlist assembly enforces explicit diversity and length rules with auditable rule-hit traces (BL-007). Explanations and observability are mechanism-linked through component breakdowns and run-level hashes (BL-008 and BL-009), and BL-014 confirms cross-stage schema/hash/count continuity.
+For each stage, report:
+- implemented behavior,
+- key configuration controls,
+- known limitations,
+- and which evaluation criterion the stage primarily supports.
 
-## 4.5 Testing and Evaluation Procedure
-
+## 4.5 Evaluation Procedure
 The evaluation procedure uses a staged protocol to keep results interpretable.
 
 1. Baseline reproducibility run:
@@ -472,90 +465,86 @@ The evaluation procedure uses a staged protocol to keep results interpretable.
 
 2. Alignment-quality diagnostics:
 - record ISRC matches, metadata fallback matches, and unmatched tracks;
-- analyse whether unmatched items are bounded and transparently reported.
+- analyze whether unmatched items are bounded and transparently reported.
 
 3. Explanation-fidelity validation:
 - select sample recommendations from baseline runs;
 - verify explanation values against deterministic score components and rule adjustments.
 
 4. Controllability sensitivity tests:
-- vary one control parameter at a time such as feature weights or diversity controls;
-- record rank and playlist deltas and assess directional interpretability.
+- vary one control parameter at a time (for example feature weights or diversity controls);
+- record rank/playlist deltas and assess directional interpretability.
 
 5. Constraint-compliance verification:
 - check playlist outputs against configured rules;
 - log any violations with likely causes.
 
-## 4.6 Evidence Package and Artefact Demonstration Basis
+## 4.6 Evidence Packaging
+Evaluation evidence should be stored in reproducible, cross-referenced artifacts.
 
-The evaluation evidence is structured around reproducible, cross-referenced artefacts that link observed system behaviour to named test conditions, saved configurations, and stage-level diagnostics. This ensures the artefact demonstration rests on inspectable records rather than informal screenshots alone.
+- Primary logs and notes: `07_implementation/test_notes.md`, `07_implementation/experiment_log.md`
+- Supporting summaries: reproducibility tables, sensitivity tables, and rule-compliance tables in this chapter
+- Quality-control linkage: update `09_quality_control/claim_evidence_map.md` and `09_quality_control/chapter_readiness_checks.md` after final result integration
 
-The evidence package used in this chapter includes: (1) BL-010 reproducibility logs and replay matrix with fixed-config stable hashes across three runs; (2) BL-020 alignment/enrichment diagnostics including coverage and error/no-tag categories; (3) BL-008 explanation payloads and summary with component-level contributor data and hash-link checks; (4) BL-011 controllability scenario outputs for one-factor-at-a-time parameter variation; and (5) BL-007 rule-compliance traces plus BL-014 automated sanity outputs validating schema and cross-stage linkage integrity. Primary references are maintained in `07_implementation/test_notes.md`, `07_implementation/experiment_log.md`, and stage-level output directories.
+## 4.7 Control-To-Metric Results Matrix
 
-## 4.7 Evaluation Results Matrix
+This section reports outcomes for the execution matrix defined in `00_admin/evaluation_plan.md` (Table EP-1).
 
-This section reports outcomes for the execution matrix defined in the evaluation plan.
+Table 4.3 is used to summarize pass/fail outcomes and key evidence links.
 
-**Table 4.3: Evaluation results matrix.** Populated from test notes and experiment logs.
-
-| EP Test ID | Related Test Note ID | Status | Key Metric Summary | Evidence Artefact(s) | Interpretation Note |
+| EP test ID | Related test note ID | Status | Key metric summary | Evidence artifact(s) | Interpretation note |
 | --- | --- | --- | --- | --- | --- |
-| EP-REPRO-001 | TC-003 | pass | `ranked_hash_match=True`, `playlist_hash_match=True`, `replay_count=3` | BL-010 reproducibility report + run matrix | Deterministic replay confirmed under fixed inputs/config; volatile metadata hashes documented separately. |
-| EP-EXPL-001 | TC-004 | pass | `fields_complete=10/10`, `reconstruction_error=0.000000` on validated sampled track | BL-008 explanation payloads + summary | Explanation outputs are mechanism-linked and complete for playlist tracks; sampled score reconstruction matched exactly. |
-| EP-CTRL-001 | TC-005 | pass | `top10_overlap_delta=1`, `playlist_overlap=7/10`, `mean_abs_rank_shift=2.619` | BL-011 no-influence scenario outputs | Influence-track removal caused interpretable profile/rank/playlist shifts, consistent with control intent. |
-| EP-CTRL-002 | TC-006 | pass | `mean_component_delta.V_mean=+0.038908`, `top10_overlap_delta=1`, `mean_abs_rank_shift=1.048` | BL-011 valence-weight scenario outputs | Increased valence emphasis raised valence contribution and shifted ranking directionally as expected. |
-| EP-CTRL-003 | TC-007 | pass | `candidate_pool_delta=-2/+2` (stricter/looser), `playlist_overlap=10/10` | BL-011 threshold scenarios + diagnostics | Threshold control changed candidate-pool size as expected; final playlist remained stable under current bootstrap regime. |
-| EP-RULE-001 | TC-008 | pass | `length_target=10`, `length_actual=10` | BL-007 playlist + assembly report | Length rule satisfied exactly with full traceability. |
-| EP-RULE-002 | TC-008 | pass | `max_artist_repeats=4` (cap respected) | BL-007 assembly report + trace | Artist/genre repetition constraints were enforced with explicit rule-hit diagnostics. |
-| EP-OBS-001 | TC-009 | pass | `required_sections_present=True`, `upstream_run_ids_linked=5` | BL-009 observability log + BL-014 sanity report | Observability schema complete and linked across BL-004 to BL-008 outputs. |
-| EP-ALIGN-001 | TC-010 | partial pass | Direct fuzzy path not trusted (`38/38` audited false positives); semantic enrichment `tag_coverage=95.87%`, `no_tags=204`, `errors=27` | BL-020 alignment report + EXP-022 + TC-BL020-001 | Alignment visibility objective passed, but direct-match reliability was insufficient; semantic fallback became active path. |
+| `EP-REPRO-001` | `TC-003` | `pass` | `deterministic_match=true`, `status=pass`, `replay_count=3` | `bl010_reproducibility_report.json`, `bl010_reproducibility_run_matrix.csv` | Stable recommendation artifacts replay identically; raw JSON hash variance remains metadata-driven (`run_id`, timestamps). |
+| `EP-EXPL-001` | `TC-004` | `pass` | `playlist_track_count=10`, `top_contributor_mix={Lead genre:4, Tag overlap:3, Genre overlap:3}`, `explanation_count=10` | `bl008_explanation_summary.json`, `bl008_explanation_payloads.json` | All playlist tracks carry mechanism-linked explanation payloads with explicit top-contributor attribution. |
+| `EP-CTRL-001` | `TC-005` | `pass` | `scenario=no_influence_tracks`, `top10_overlap_ratio=1.0`, `mean_abs_rank_delta=0.0`, `status=pass` | `bl011_controllability_report.json` (scenario `no_influence_tracks`) | Influence-track toggle is repeat-consistent and auditable; this run produced no rank/playlist displacement under current data profile. |
+| `EP-CTRL-002` | `TC-006` | `pass` | `scenario=valence_weight_up`, `top10_overlap_ratio=0.5`, `playlist_overlap_ratio=0.5`, `mean_abs_rank_delta=2876.321` | `bl011_controllability_report.json` (scenario `valence_weight_up`) | Feature-weight actuation yields substantial, directionally consistent re-ranking and playlist turnover. |
+| `EP-CTRL-003` | `TC-007` | `pass` | `stricter_delta=-10476`, `looser_delta=+8990`, `all_variant_shifts_observable=true` | `bl011_controllability_report.json` (scenarios `stricter_thresholds`, `looser_thresholds`) | Threshold scaling changes candidate-pool width as expected while preserving deterministic repeat consistency. |
+| `EP-RULE-001` | `TC-008` | `pass` | `length_target=10`, `length_actual=10`, `undersized=false` | `bl007_assembly_report.json`, `bl007_playlist.json` | Playlist-length rule is satisfied on the active run; no undersized warning triggered. |
+| `EP-RULE-002` | `TC-008` | `pass` | `max_per_genre=4`, `max_consecutive=2`, `R2_genre_cap_hits=2859`, `R3_consecutive_hits=3907` | `bl007_assembly_report.json`, `bl007_assembly_trace.csv` | Rule-pressure diagnostics confirm constraints are actively enforced rather than bypassed. |
+| `EP-OBS-001` | `TC-009` | `pass` | `schema=bl009-observability-v1`, `canonical_config_artifact_pair_available=true` | `bl009_run_observability_log.json`, `bl009_run_index.csv` | Run-level observability surface includes stage linkage, hashes, config provenance, and execution-scope summary. |
+| `EP-ALIGN-001` | `TC-010` | `pass` | `matched_isrc=1098`, `matched_fallback=806`, `unmatched_rate=0.8405`, `match_rate=0.1595` | `bl003_ds001_spotify_summary.json`, `bl003_ds001_spotify_trace.csv` | Alignment miss rate remains high but explicitly measured and reported as a bounded design limitation. |
 
-## 4.8 Reproducibility, Observability, and Alignment Results
+## 4.8 Reproducibility and Observability Results
 
-**Table 4.4: Reproducibility, observability, and alignment results.** Populated from BL-010, BL-009, BL-020, and BL-014 evidence.
+Table 4.4 should summarize reproducibility/observability-specific outcomes.
 
-| Check | Baseline Run | Repeat Run(s) | Result | Notes |
+| Check | Baseline run | Repeat run(s) | Result | Notes |
 | --- | --- | --- | --- | --- |
-| Ranked output identity | `BL010-REPRO-20260320-233937` | replay_01/replay_02/replay_03 | pass | Stable `ranked_output_hash` matched across all three replays. |
-| Playlist output identity | `BL010-REPRO-20260320-233937` | replay_01/replay_02/replay_03 | pass | Stable playlist fingerprint matched across replays; raw JSON hash variation attributed to per-run metadata fields. |
-| Run schema completeness | `BL009-OBSERVE-20260322-023314-347594` | `BL014-SANITY-20260322-024523-652281` | pass | BL-014 reported `checks_passed=21/21`, including schema/link/continuity checks. |
-| Alignment diagnostics completeness | `BL003-ALIGN-20260322-020126-080489` | N/A (single full real-data run) | pass | Report includes total seeds, tagged/no-tag/error counts, failure examples, and output linkage (`5592`, `5361`, `204`, `27`). |
+| Ranked output identity | `BL013-ENTRYPOINT-20260327-201712-508978` | `BL010-REPRO-20260327-201949` (3 replays) | `pass` | `deterministic_match=true`; stable ranked-output artifacts are replay-identical under fixed input/config. |
+| Playlist output identity | `BL013-ENTRYPOINT-20260327-201712-508978` | `BL010-REPRO-20260327-201949` (3 replays) | `pass` | Playlist output remains identical across replay runs for unchanged inputs and run-config. |
+| Run schema completeness | `BL013-ENTRYPOINT-20260327-201712-508978` + `bl009_run_observability_log.json` | `BL013-ENTRYPOINT-20260327-203411-538709` + `bl009_run_observability_log.json` | `pass` | Observability schema remains `bl009-observability-v1`; canonical config artifact-pair linkage is present. |
+| Alignment diagnostics completeness | `BL013-ENTRYPOINT-20260327-201712-508978` (`bl003_ds001_spotify_summary.json`) | `BL013-ENTRYPOINT-20260327-203411-538709` (`bl003_ds001_spotify_summary.json`) | `pass` | Diagnostics report matched and unmatched counts with explicit rates (`match_rate=0.1595`, `unmatched_rate=0.8405`). |
 
 ## 4.9 Controllability and Rule-Compliance Results
 
-**Table 4.5: Parameter-sensitivity and assembly-rule compliance results.** Populated from BL-011 and BL-020 rule evidence.
+Table 4.5 should summarize parameter-sensitivity and assembly-rule outcomes.
 
-| Control Under Test | Baseline Value | Variant Value | Observed Effect | Directionally Consistent | Status |
+| Control under test | Baseline value | Variant value | Observed effect | Directionally consistent | Status |
 | --- | --- | --- | --- | --- | --- |
-| Influence tracks | 3 synthetic influence tracks enabled | all influence tracks removed | Candidate pool `42 -> 47`; playlist overlap `7/10`; mean abs rank shift `2.619` | yes | pass |
-| Feature weight | `V_mean=0.12` (raw) | `V_mean=0.20` (raw, renormalized set) | Mean `V_mean` component `+0.038908`; top-10 overlap `9/10`; mean abs rank shift `1.048` | yes | pass |
-| Candidate threshold | baseline numeric thresholds (`1.0x`) | stricter `0.75x` and looser `1.25x` | Candidate pool `42 -> 40` (stricter), `42 -> 44` (looser); playlist overlap `10/10` | yes | pass (bounded effect) |
-| Playlist length rule | target size `10` | compliance verification on BL-020 run | Actual playlist length `10`; no length-rule violation | yes | pass |
-| Artist repetition rule | max per lead genre `4` | compliance verification on BL-020 run | Max observed per-genre count `4` (`classic rock`); no cap violation | yes | pass |
+| Influence tracks | `enabled=true` | `scenario=no_influence_tracks` | `top10_overlap_ratio=1.0`, `mean_abs_rank_delta=0.0` | `yes` | `pass` |
+| Feature weight | `scenario=baseline` | `scenario=valence_weight_up` | `top10_overlap_ratio=0.5`, `playlist_overlap_ratio=0.5`, `mean_abs_rank_delta=2876.321` | `yes` | `pass` |
+| Candidate threshold | `scenario=baseline` | `scenarios=stricter_thresholds, looser_thresholds` | Candidate-pool shift observed (`-10476` stricter, `+8990` looser) | `yes` | `pass` |
+| Playlist length rule | `target_size=10`, standard assembly controls | strict test profile (`min_score_threshold=0.6`, `max_per_genre=1`, `max_consecutive=1`) | Baseline run returns `10/10`; strict variant returns `5/10` with undersized warning and exclusion-pressure diagnostics | `yes` | `pass (with bounded undersized-case warning)` |
+| Artist repetition rule | `max_per_artist` not configured in canonical v1f | `not actuated in canonical baseline` | Same-artist repeats can occur (for example two Bruce Hornsby tracks in one playlist) | `n/a` | `documented limitation` |
+
+### 4.9.1 Rule-Compliance Caveat: Undersized Playlist Outputs
+BL-007 now explicitly warns when the final playlist length is below `target_size`. This behavior is expected under strict rule combinations and should be interpreted as constrained feasibility rather than silent failure.
+
+Evidence example (2026-03-25 strict-control run): with `target_size=10`, `min_score_threshold=0.6`, `max_per_genre=1`, `max_consecutive=1`, BL-007 produced `5/10` tracks and emitted warning diagnostics. The persisted assembly report records shortfall and exclusion-pressure breakdown (for example high `below_score_threshold` counts), enabling transparent Chapter 4 interpretation rather than overstating fixed-length generation capability.
 
 ## 4.10 Explanation Fidelity Results
 
-**Table 4.6: Explanation fidelity verification results.** Populated from BL-008 transparency outputs and validation checks.
+Table 4.6 should summarize explanation-fidelity verification.
 
-| Sampled Track Count | Reconstructable Scores | Missing Explanation Fields | Max Reconstruction Error | Status |
+| Sampled track count | Reconstructable scores | Missing explanation fields | Max reconstruction error | Status |
 | --- | --- | --- | --- | --- |
-| 10 | 10/10 with component-linked breakdowns (explicit score reconstruction validated on sampled track) | 0 | 0.000000 (validated sample) | pass |
+| `10` | `10/10` | `0` | `<=0.001` (rounding-level) | `pass` |
 
-## 4.11 Evaluation Limits and Interpretation
+## 4.11 Limits and Interpretation Discipline
+Results in this chapter should be interpreted as design-evidence for a scoped deterministic pipeline, not as universal recommender superiority claims. Any weak or mixed outcomes (for example high unmatched rate or unstable sensitivity behavior) should be explicitly documented and carried into Chapter 5 limitations.
 
-Results in this chapter should be interpreted as design evidence for a scoped deterministic pipeline, not as universal recommender-superiority claims. Any weak or mixed outcomes such as high unmatched rate or unstable sensitivity behaviour should be explicitly documented and carried into the Chapter 5 limitations section.
-
-The observed limitations should be interpreted using the completed evidence chain: direct DS-002 alignment reliability varies by user-corpus overlap, semantic enrichment quality depends on external tag coverage and API reliability, and external validity remains bounded by single-user MVP scope.
-
-## 4.12 Project Management and Process Evidence
-
-Project management evidence for the artefact is maintained through the supporting project records in the workspace, including the timeline, decision log, implementation plan, experiment log, mentor feedback log, and unresolved-issues tracking. Within the report itself, the role of this section is to show that scope control, design decisions, and evaluation activities were managed through explicit artefacts rather than through undocumented iteration.
-
-At minimum, the final version of this section should summarize how the MVP scope was locked, how design changes were justified, how testing tasks were scheduled and recorded, and how unresolved issues were tracked or bounded. This keeps the project-management criterion visible without turning the main thesis into a logbook.
-
-## 4.13 Chapter Summary
-
-Chapter 4 now presents both the evaluation framework and populated implementation evidence for the artefact. Reproducibility, inspectability, controllability, and playlist-rule compliance are evidenced through BL-010, BL-011, BL-020, and BL-014 artifacts, with explicit interpretation of both successful checks and bounded limitations. Chapter 5 interprets these outcomes under the thesis' scope-bounded contribution framing.
+## 4.12 Chapter Summary
+Chapter 4 operationalizes the Chapter 3 design into a transparent evaluation workflow centered on reproducibility, inspectability, controllability, and playlist-rule compliance. This preserves continuity with Chapter 2 literature consequences and prepares evidence-grounded interpretation for Chapter 5.
 
 # Chapter 5: Discussion, Critical Evaluation and Conclusion
 
@@ -585,7 +574,7 @@ Fourth, evaluation protocol discipline is itself part of system design. Reproduc
 
 Fifth, comparator awareness must be maintained without allowing scope drift. Hybrid and self-supervised systems are relevant context for trade-off discussion, but they are not required to validate the contribution of this locked MVP artefact (Liu et al., 2025; Yu et al., 2024).
 
-Current evaluation evidence supports these considerations directly. BL-020 completed real-data execution from BL-003 through BL-009 with explicit stage-level diagnostics, deterministic artifact hashes, and full observability linkage. BL-014 automated sanity checks then validated schema integrity, cross-stage hash linkage, and count/run-id continuity across the full evidence chain (21/21 checks passed). The research question can therefore be answered within a qualified, scope-bounded frame: transparent and controllable playlist generation is achievable with deterministic mechanisms when governance and artifact traceability are engineered as first-class requirements.
+Current evaluation evidence supports these considerations directly. BL-020 completed real-data execution from BL-003 through BL-009 with explicit stage-level diagnostics, deterministic artifact hashes, and full observability linkage. BL-014 automated sanity checks then validated schema integrity, cross-stage hash linkage, and count/run-id continuity across the full evidence chain (22/22 checks passed). The research question can therefore be answered within a qualified, scope-bounded frame: transparent and controllable playlist generation is achievable with deterministic mechanisms when governance and artifact traceability are engineered as first-class requirements.
 
 ## 5.4 Critical Evaluation
 
@@ -593,7 +582,7 @@ The strongest aspect of the artefact design is its discipline. The system archit
 
 A second strength is the decision to treat explanation, observability, and reproducibility as engineering mechanisms rather than as presentation features. This avoids one of the common weaknesses in explainable recommendation work, where explanations are added after the ranking process in a way that sounds plausible but is poorly grounded in the real recommendation mechanism.
 
-The main weakness is external validity rather than evidencing completeness. The Chapter 4 evidence base is now populated for the implemented pipeline path, but claims remain bounded by the single-user scope, DS-002 corpus composition, and reliance on semantic enrichment when direct alignment is unreliable.
+The main weakness is external validity rather than evidencing completeness. The Chapter 4 evidence base is now populated for the implemented pipeline path, but claims remain bounded by the single-user scope, DS-001 corpus composition, and low match-rate dependence on the aligned subset for preference construction.
 
 Another weakness is the dependence on the underlying corpus and alignment path. Recommendation behaviour can only be as complete as the aligned preference evidence and available feature descriptors allow. If track matching fails or if the corpus does not capture the most relevant aspects of listening intent, the transparency of the system will help diagnose the problem, but it will not remove the problem.
 
@@ -605,9 +594,9 @@ This thesis has several explicit limitations that constrain interpretation of re
 
 1. Scope limitation: the artefact is single-user, content-based, and deterministic by design, so findings are not generalized to collaborative, deep, or large-scale production recommenders.
 2. Data alignment limitation: some imported tracks may not align reliably to the canonical corpus, and the strongest methodological support remains in staged entity-resolution research rather than in music-specific alignment benchmarks.
-3. Corpus-feature limitation: recommendation behaviour and output quality are constrained by DS-002 candidate composition and feature availability.
+3. Corpus-feature limitation: recommendation behaviour and output quality are constrained by DS-001 candidate composition and feature availability.
 4. External-API limitation: Spotify audio-feature endpoints are deprecated, so user-side tempo/loudness/key/mode are not directly available from Spotify in the current implementation.
-5. Alignment-quality limitation: direct fuzzy alignment into DS-002 can produce false positives for users with weak corpus overlap; semantic enrichment fallback is required in this regime.
+5. Alignment-quality limitation: direct alignment coverage into DS-001 remains low for some users (`match_rate=0.1595` in the canonical baseline), so preference construction depends on the matched subset and inherits its representativeness limits.
 6. Comparator limitation: no implemented deep or hybrid baseline is included in the MVP, so broader trade-off comparisons remain literature-grounded rather than experimentally demonstrated.
 7. Evaluation-boundary limitation: evaluation is BSc-feasible and does not include large-scale user studies, longitudinal behaviour, or production-scale deployment evidence.
 

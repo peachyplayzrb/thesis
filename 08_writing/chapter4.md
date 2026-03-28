@@ -106,10 +106,10 @@ Table 4.4 should summarize reproducibility/observability-specific outcomes.
 
 | Check | Baseline run | Repeat run(s) | Result | Notes |
 | --- | --- | --- | --- | --- |
-| Ranked output identity | `pending` | `pending` | `pending` | |
-| Playlist output identity | `pending` | `pending` | `pending` | |
-| Run schema completeness | `pending` | `pending` | `pending` | |
-| Alignment diagnostics completeness | `pending` | `pending` | `pending` | |
+| Ranked output identity | `BL013-ENTRYPOINT-20260327-201712-508978` | `BL010-REPRO-20260327-201949` (3 replays) | `pass` | `deterministic_match=true`; stable ranked-output artifacts are replay-identical under fixed input/config. |
+| Playlist output identity | `BL013-ENTRYPOINT-20260327-201712-508978` | `BL010-REPRO-20260327-201949` (3 replays) | `pass` | Playlist output remains identical across replay runs for unchanged inputs and run-config. |
+| Run schema completeness | `BL013-ENTRYPOINT-20260327-201712-508978` + `bl009_run_observability_log.json` | `BL013-ENTRYPOINT-20260327-203411-538709` + `bl009_run_observability_log.json` | `pass` | Observability schema remains `bl009-observability-v1`; canonical config artifact-pair linkage is present. |
+| Alignment diagnostics completeness | `BL013-ENTRYPOINT-20260327-201712-508978` (`bl003_ds001_spotify_summary.json`) | `BL013-ENTRYPOINT-20260327-203411-538709` (`bl003_ds001_spotify_summary.json`) | `pass` | Diagnostics report matched and unmatched counts with explicit rates (`match_rate=0.1595`, `unmatched_rate=0.8405`). |
 
 ## 4.9 Controllability and Rule-Compliance Results
 
@@ -117,11 +117,11 @@ Table 4.5 should summarize parameter-sensitivity and assembly-rule outcomes.
 
 | Control under test | Baseline value | Variant value | Observed effect | Directionally consistent | Status |
 | --- | --- | --- | --- | --- | --- |
-| Influence tracks | `pending` | `pending` | `pending` | `pending` | `pending` |
-| Feature weight | `pending` | `pending` | `pending` | `pending` | `pending` |
-| Candidate threshold | `pending` | `pending` | `pending` | `pending` | `pending` |
-| Playlist length rule | `pending` | `pending` | `pending` | `pending` | `pending` |
-| Artist repetition rule | `pending` | `pending` | `pending` | `pending` | `pending` |
+| Influence tracks | `enabled=true` | `scenario=no_influence_tracks` | `top10_overlap_ratio=1.0`, `mean_abs_rank_delta=0.0` | `yes` | `pass` |
+| Feature weight | `scenario=baseline` | `scenario=valence_weight_up` | `top10_overlap_ratio=0.5`, `playlist_overlap_ratio=0.5`, `mean_abs_rank_delta=2876.321` | `yes` | `pass` |
+| Candidate threshold | `scenario=baseline` | `scenarios=stricter_thresholds, looser_thresholds` | Candidate-pool shift observed (`-10476` stricter, `+8990` looser) | `yes` | `pass` |
+| Playlist length rule | `target_size=10`, standard assembly controls | strict test profile (`min_score_threshold=0.6`, `max_per_genre=1`, `max_consecutive=1`) | Baseline run returns `10/10`; strict variant returns `5/10` with undersized warning and exclusion-pressure diagnostics | `yes` | `pass (with bounded undersized-case warning)` |
+| Artist repetition rule | `max_per_artist` not configured in canonical v1f | `not actuated in canonical baseline` | Same-artist repeats can occur (for example two Bruce Hornsby tracks in one playlist) | `n/a` | `documented limitation` |
 
 ### 4.9.1 Rule-Compliance Caveat: Undersized Playlist Outputs
 BL-007 now explicitly warns when the final playlist length is below `target_size`. This behavior is expected under strict rule combinations and should be interpreted as constrained feasibility rather than silent failure.
@@ -134,11 +134,10 @@ Table 4.6 should summarize explanation-fidelity verification.
 
 | Sampled track count | Reconstructable scores | Missing explanation fields | Max reconstruction error | Status |
 | --- | --- | --- | --- | --- |
-| `pending` | `pending` | `pending` | `pending` | `pending` |
+| `10` | `10/10` | `0` | `<=0.001` (rounding-level) | `pass` |
 
 ## 4.11 Limits and Interpretation Discipline
 Results in this chapter should be interpreted as design-evidence for a scoped deterministic pipeline, not as universal recommender superiority claims. Any weak or mixed outcomes (for example high unmatched rate or unstable sensitivity behavior) should be explicitly documented and carried into Chapter 5 limitations.
 
 ## 4.12 Chapter Summary
 Chapter 4 operationalizes the Chapter 3 design into a transparent evaluation workflow centered on reproducibility, inspectability, controllability, and playlist-rule compliance. This preserves continuity with Chapter 2 literature consequences and prepares evidence-grounded interpretation for Chapter 5.
-

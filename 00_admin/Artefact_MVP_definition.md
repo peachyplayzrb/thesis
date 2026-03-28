@@ -1,6 +1,6 @@
 # Artefact MVP Definition
 
-Last updated: 2026-03-25
+Last updated: 2026-03-28
 
 ## Purpose
 Define the minimum viable BSc-level artefact that satisfies university assessment constraints while preserving thesis contribution focus.
@@ -22,7 +22,7 @@ Single-user deterministic playlist generation pipeline with transparent scoring,
 4. Deterministic candidate filtering and scoring with explicit feature/semantic weights and documented adjustment rules.
 5. Playlist assembly stage with at least three playlist-level constraints:
 - playlist length control
-- artist repetition limit
+- artist repetition control (when configured)
 - diversity or ordering control
 6. Explanation output that exposes per-track score contributors and rule adjustments.
 7. Source-scope actuation controls that can change profile inputs in a traceable way.

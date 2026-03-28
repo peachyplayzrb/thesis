@@ -35,15 +35,23 @@ OUTPUT_FIELDNAMES = [
 
 
 def parse_args() -> argparse.Namespace:
+    import os
     script_path = Path(__file__).resolve()
-    repo_root = script_path.parents[3]
-    default_dataset_root = repo_root / "06_data_and_sources" / "music4all_raw" / "music4all" / "music4all"
     default_output_dir = script_path.parent / "outputs"
+
+    # For standalone mode: dataset-root must be provided via --dataset-root or IMPL_DATASET_ROOT env var
+    default_dataset_root = os.environ.get("IMPL_DATASET_ROOT")
 
     parser = argparse.ArgumentParser(
         description="Build a compact DS-001 working candidate dataset for runtime pipeline use."
     )
-    parser.add_argument("--dataset-root", type=Path, default=default_dataset_root)
+    parser.add_argument(
+        "--dataset-root",
+        type=Path,
+        default=default_dataset_root,
+        required=(default_dataset_root is None),
+        help="Path to music4all dataset root. Required unless IMPL_DATASET_ROOT is set.",
+    )
     parser.add_argument("--output-dir", type=Path, default=default_output_dir)
     parser.add_argument(
         "--exclude-lang",

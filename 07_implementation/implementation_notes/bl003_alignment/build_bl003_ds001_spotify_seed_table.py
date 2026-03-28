@@ -90,8 +90,9 @@ SEED_TABLE_FIELDNAMES = [
 
 
 def parse_args() -> argparse.Namespace:
-    script_path = Path(__file__).resolve()
-    repo_root = script_path.parents[3]
+    from bl000_shared_utils.path_utils import impl_root
+
+    impl_root_path = impl_root()
 
     parser = argparse.ArgumentParser(
         description="BL-003 DS-001: Build Spotify-aligned seed tables with full trace logging."
@@ -99,17 +100,17 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--ds001-candidates",
         type=Path,
-        default=repo_root / "07_implementation" / "implementation_notes" / "bl000_data_layer" / "outputs" / "ds001_working_candidate_dataset.csv",
+        default=impl_root_path / "bl000_data_layer" / "outputs" / "ds001_working_candidate_dataset.csv",
     )
     parser.add_argument(
         "--spotify-export-dir",
         type=Path,
-        default=repo_root / "07_implementation" / "implementation_notes" / "bl001_bl002_ingestion" / "outputs" / "spotify_api_export",
+        default=impl_root_path / "bl001_bl002_ingestion" / "outputs" / "spotify_api_export",
     )
     parser.add_argument(
         "--output-dir",
         type=Path,
-        default=repo_root / "07_implementation" / "implementation_notes" / "bl003_alignment" / "outputs",
+        default=impl_root_path / "bl003_alignment" / "outputs",
     )
     parser.add_argument(
         "--allow-missing-selected-sources",
