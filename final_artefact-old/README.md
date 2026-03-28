@@ -1,5 +1,7 @@
 # Final Artefact Standalone Runner
 
+Legacy status: This folder is retained as an archived legacy snapshot. The active implementation root is `07_implementation`, and current standalone launcher flow is controlled from repository root via `final_artefact.py`.
+
 This folder defines the standalone hand-in surface for the thesis artefact.
 
 ## Entry Program
