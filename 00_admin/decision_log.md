@@ -6,9 +6,9 @@ Ordering convention (standardized 2026-03-24):
 - New entries must be appended at the end and may include `superseded_by` when a prior decision is replaced.
 
 Maintenance snapshot (2026-03-28):
-- Highest decision ID currently present: `D-039`
-- Total decision entries: 39
-- Status distribution: accepted=30, superseded=3, rejected=1
+- Highest decision ID currently present: `D-040`
+- Total decision entries: 40
+- Status distribution: accepted=31, superseded=3, rejected=1
 - ID integrity check: no duplicate decision IDs detected
 
 Current posture snapshot (2026-03-25):
@@ -1083,3 +1083,16 @@ review_date: none
 - evidence_basis: `final_artefact.py`, `final_artefact/README.md`, `final_artefact/config/default_config.json`, `final_artefact/requirements.txt`, `final_artefact/SUBMISSION_BUNDLE_MANIFEST.md`, `07_implementation/ARTEFACT_SUBMISSION_STRUCTURE_FINAL.md`, `07_implementation/implementation_notes/SUBMISSION_MANIFEST.md`.
 - impacted_files: `00_admin/decision_log.md`, `00_admin/change_log.md`, `final_artefact.py`, `final_artefact/README.md`, `final_artefact/config/default_config.json`, `final_artefact/requirements.txt`, `final_artefact/SUBMISSION_BUNDLE_MANIFEST.md`, `07_implementation/ARTEFACT_SUBMISSION_STRUCTURE_FINAL.md`, `07_implementation/implementation_notes/SUBMISSION_MANIFEST.md`
 - next_steps: Execute first standalone bundle build and run BL-013 plus BL-014 from bundle root to confirm repository-independent operation path for submission packaging.
+
+## D-040
+- date: 2026-03-28
+- entity_id: BL-002 ingestion runtime simplification
+- proposed_by: Copilot
+- status: accepted
+- decision: Remove token-cache persistence and endpoint response caching from the active BL-002 export runtime path, and keep track-only playlist-item flattening using item-first payload parsing.
+- context: The active implementation moved to a simplification-first ingestion posture where cache-state complexity caused maintenance friction and stale-state risk, while downstream BL-003 and later contracts depend on generated artifacts rather than cache internals.
+- alternatives_considered: Keep token cache and sqlite endpoint cache enabled (rejected: higher complexity and stale-state risk), disable only one cache layer (rejected: partial simplification leaves split behaviors), and broaden playlist-item export to non-track payloads (rejected: out of current BL-002/BL-003 track-centric scope).
+- rationale: This keeps ingestion behavior explicit and predictable: each live export run performs fresh OAuth, direct API fetches, and deterministic artifact generation; downstream stage contracts remain stable while implementation complexity is reduced.
+- evidence_basis: `07_implementation/INGESTION_DECACHING_CHANGELOG_2026-03-28.md`, `07_implementation/src/ingestion/export_spotify_max_dataset.py`, `07_implementation/src/ingestion/spotify_client.py`, `07_implementation/src/ingestion/spotify_mapping.py`, `07_implementation/src/ingestion/spotify_artifacts.py`.
+- impacted_files: `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/thesis_state.md`, `07_implementation/README.md`, `07_implementation/INGESTION_DECACHING_CHANGELOG_2026-03-28.md`
+- next_steps: Keep `spotify_resilience.py` and legacy token-cache helper cleanup as optional maintenance only; no change required for current thesis runtime scope.

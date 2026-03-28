@@ -124,9 +124,15 @@ def main() -> int:
         return 1
 
     # Prepare environment variables
+    existing_pythonpath = os.environ.get("PYTHONPATH", "")
+    pythonpath_parts = [str(impl_root)]
+    if existing_pythonpath:
+        pythonpath_parts.append(existing_pythonpath)
+
     env_vars = {
         "IMPL_ROOT": str(impl_root),
         "BL_RUN_CONFIG_PATH": str(run_config_path),
+        "PYTHONPATH": os.pathsep.join(pythonpath_parts),
     }
 
     # Build BL-013 command

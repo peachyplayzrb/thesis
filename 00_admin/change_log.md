@@ -8,7 +8,7 @@ Ordering convention (standardized 2026-03-24):
 - New entries must be appended at the end; historical entries remain unchanged except for explicit correction records.
 
 Maintenance snapshot (2026-03-28):
-- Highest change ID currently present: `C-199`
+- Highest change ID currently present: `C-202`
 - Known legacy correction applied in this file: prior duplicate `C-079` entry has been normalized to `C-135` for unique-ID compliance.
 
 ## C-001
@@ -2044,3 +2044,5 @@ Maintenance snapshot (2026-03-28):
 | C-198 | 2026-03-28 | Copilot | Documentation sync and UI-003 mismatch closure: updated canonical run IDs (BL-010/011/013/014) across `07_implementation/backlog.md`, `00_admin/thesis_state.md`, `07_implementation/implementation_notes/bl013_entrypoint/outputs/BL013_RUN_MANIFEST.md`, and `08_writing/chapter4.md`; closed UI3-C3-007 verdict from mismatch to supported in `09_quality_control/ui003_claim_verdicts_ch3_ch5.md` (final counts: supported=18, partially_supported=2, mismatch=0, weak_support=0); updated BL-013 manifest "Last updated" timestamp to 2026-03-28. |
 | C-199 | 2026-03-28 | Copilot | Chapter 2 verbatim audit gate closure: hardened Ru et al. (2023) sentence in `08_writing/chapter2.md` to task-specific bounded wording scoped to multi-label genre classification; reran `09_quality_control/verbatim_audits/run_ch2_verbatim_audit.py` and confirmed `total_claim_checks=40`, `weak_support=0`, `no_match=0` in `09_quality_control/chapter2_verbatim_audit.md`; marked Chapter 2 verbatim audit gate `[x]` in `09_quality_control/chapter_readiness_checks.md`; added Verbatim Audit Refresh (2026-03-28) block to `09_quality_control/citation_checks.md`. |
 | C-200 | 2026-03-28 | Copilot | Post-swap path-alignment closure: switched repo type-check roots to `07_implementation` in `pyrightconfig.json`, aligned `07_implementation/tests/conftest.py` wording to active source root, verified launcher help via `final_artefact.py validate --help`, and added explicit active/legacy posture notes in governance docs plus a legacy banner in `final_artefact-old/README.md`. |
+| C-201 | 2026-03-28 | Copilot | Ingestion runtime simplification alignment: documented and adopted no-token-cache/no-endpoint-cache BL-002 behavior with fresh OAuth-per-live-export and item-first track-only playlist-item parsing as accepted baseline policy; propagated this posture into governance (`D-040`) and implementation README guidance. |
+| C-202 | 2026-03-29 | Copilot | Executed `07_implementation` cleanup and stabilization pass: removed generated caches and duplicate `src/run_config/configs/profiles` tree, retained canonical `config/profiles`, added `*.egg-info/` ignore, fixed stale README submission-guide pointer, patched `main.py` subprocess `PYTHONPATH` propagation for stage imports, and validated smoke tests (`test_standalone.py` pass). |

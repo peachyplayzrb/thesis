@@ -1,6 +1,6 @@
 # Thesis State
 
-Last updated: 2026-03-28 05:11 UTC (post-swap path-alignment closure)
+Last updated: 2026-03-29 00:05 UTC (ingestion-policy alignment + implementation cleanup pass)
 
 ## Official Current State
 
@@ -90,6 +90,8 @@ Priority status checkpoint (2026-03-28 05:11 UTC): Active-root alignment closure
 
 Priority status checkpoint (2026-03-28 closing pass): All in-repo QC and implementation tasks are complete. Code hygiene refactor closed (C-197): `safe_int` centralized in `shared_utils/parsing.py`, duplicate helpers removed from 3 modules, 181/181 tests pass, pyright clean on all edited files. Canonical run IDs synchronized across backlog, manifest, thesis_state, and chapter evidence tables (C-198). UI-003 verdict matrix fully closed: `supported=18`, `mismatch=0`, `weak_support=0` in `09_quality_control/ui003_claim_verdicts_ch3_ch5.md`. Chapter 2 verbatim audit gate closed: Ru et al. wording hardened to task-specific multi-label genre classification scope; rerun confirmed `total_claim_checks=40`, `weak_support=0` in `09_quality_control/chapter2_verbatim_audit.md` (C-199). All chapter readiness gates marked complete in `09_quality_control/chapter_readiness_checks.md`. Only remaining action is external submission packaging (Canvas deadline, cover/declaration template, Turnitin package assembly).
 
+Priority status checkpoint (2026-03-29 00:05 UTC): Ingestion runtime-policy alignment and implementation cleanup completed. BL-002 policy now explicitly treats token-cache persistence and endpoint caching as disabled runtime behavior for live exports, with OAuth-per-run and item-first track-only playlist-item flattening captured in governance (`D-040`, `C-201`). `07_implementation` cleanup pass removed generated artifacts and duplicate profile-tree drift, retained canonical profile location, and stabilized stage subprocess imports via `PYTHONPATH` propagation in `07_implementation/main.py` (`C-202`).
+
 ## Current Implementation Status
 
 ### BL-020 Implementation State (as of 2026-03-26)
@@ -133,12 +135,12 @@ See: `07_implementation/BL020_HANDOFF_AUDIT_2026-03-21.md` for comprehensive pre
 ## Update Control
 
 - Last updated:
-2026-03-28 (post-swap path-alignment closure)
+2026-03-29 (ingestion-policy alignment + implementation cleanup pass)
 
 - Reason for last update:
-(1) Code hygiene refactor: `safe_int` centralized in `shared_utils/parsing.py`, duplicate helpers removed from `playlist/rules.py`, `playlist/reporting.py`, and `ingestion/ingest_history_parser.py`; 181/181 tests pass; pyright clean (C-197). (2) Canonical run ID sync and UI-003 mismatch closure: `mismatch=0`, `weak_support=0` across verdict matrix and all tracking docs (C-198). (3) Chapter 2 verbatim audit gate closed at `weak_support=0` after Ru et al. wording hardening; gate marked `[x]` in `09_quality_control/chapter_readiness_checks.md` (C-199). (4) All chapter readiness gates now complete; only external submission-packaging remains open.
- (5) Handoff synchronization and layout transition captured: repository content swap completed per user request (`07_implementation` <-> `final_artefact` content exchange), stale nested verification outputs/cache removed, and admin records updated for push-ready continuity (C-147).
- (6) Path-alignment closure completed: `pyrightconfig.json` now points to `07_implementation/src` and `07_implementation/tests`; pytest bootstrap wording synchronized; legacy marker added for `final_artefact-old` to preserve active-vs-legacy clarity (C-200).
+(1) Ingestion runtime-policy alignment logged and formalized: BL-002 now documents disabled token-cache persistence and endpoint caching for active live-export runs, plus item-first track-only playlist-item handling (C-201, D-040).
+(2) `07_implementation` cleanup/stabilization pass completed: generated artifacts removed, duplicate profile tree removed in favor of canonical `config/profiles`, stale README guidance fixed, and subprocess import path handling hardened via `PYTHONPATH` propagation in `main.py` (C-202).
+(3) Canonical baseline and chapter/QC closure posture unchanged: all in-repo implementation and QC gates remain complete; remaining task is external submission packaging.
 
 ## Locked Definitions
 - Artefact scope lock: `00_admin/Artefact_MVP_definition.md`

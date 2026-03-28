@@ -4,7 +4,7 @@
 
 This package contains the complete, self-contained implementation of a music recommendation pipeline that generates personalized playlists from embedded BL-002 Spotify export artifacts and an embedded DS-001 candidate dataset.
 
-> **📝 For detailed setup and troubleshooting, see [SUBMISSION_GUIDE.md](SUBMISSION_GUIDE.md)**
+> **📝 Detailed setup and troubleshooting guidance is included in this README.**
 
 ## Quick Start
 
@@ -203,6 +203,13 @@ If you want to regenerate Spotify exports from live API data, set:
 export SPOTIPY_CLIENT_ID=your_client_id
 export SPOTIPY_CLIENT_SECRET=your_secret
 ```
+
+Live-export behavior notes:
+
+- Endpoint response caching is disabled for the ingestion runtime path.
+- Token-cache persistence is disabled for the ingestion runtime path.
+- Live export runs use a fresh OAuth flow each run.
+- Playlist-item parsing uses an item-first policy and keeps track rows only (episodes and unavailable items are excluded).
 
 ## Troubleshooting
 
