@@ -32,14 +32,20 @@ const playlistJsonNode = document.getElementById("results-playlist-json");
 
 const API_RESULTS = "/api/pipeline/run/results";
 
-function escapeHtml(value) {
-  return String(value ?? "-")
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#39;");
-}
+const apiFetchJson =
+  window.WebsiteApi && typeof window.WebsiteApi.fetchJson === "function"
+    ? window.WebsiteApi.fetchJson
+    : null;
+
+const escapeHtml =
+  window.WebsiteApi && typeof window.WebsiteApi.escapeHtml === "function"
+    ? window.WebsiteApi.escapeHtml
+    : (value) => String(value ?? "-")
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("'", "&#39;");
 
 function formatDateTimeDisplay(isoValue) {
   if (!isoValue) return "-";
@@ -80,23 +86,18 @@ function formatBytes(value) {
 }
 
 async function fetchJson(path) {
+  if (apiFetchJson) {
+    return apiFetchJson(path, undefined, {
+      networkMessage: "Local API is unreachable. Start via setup/start_website.cmd and refresh this page."
+    });
+  }
+
   const response = await fetch(path);
   if (!response.ok) {
-    let message = `Request failed (${response.status})`;
     const raw = await response.text();
-    if (raw) {
-      try {
-        const payload = JSON.parse(raw);
-        if (payload && payload.error) message = payload.error;
-      } catch {
-        message = raw;
-      }
-    }
-    if (response.status === 404 && path.startsWith("/api/pipeline/")) {
-      message = "Pipeline API endpoints are unavailable. Restart the website server so the latest API routes are loaded.";
-    }
-    throw new Error(message);
+    throw new Error(raw || `Request failed for ${path}`);
   }
+
   return response.json();
 }
 

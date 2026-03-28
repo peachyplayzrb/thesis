@@ -1,0 +1,146 @@
+{
+  "generated_at_utc": "2026-03-27T21:08:43Z",
+  "repo_root": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main",
+  "inputs": {
+    "baseline_profile": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl000_run_config\\configs\\profiles\\run_config_ui013_tuning_v1f.json",
+    "experiment_profile": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl000_run_config\\configs\\profiles\\run_config_ui013_tuning_v2b_language_recency_gate.json",
+    "stages": [
+      "BL-004",
+      "BL-005",
+      "BL-006",
+      "BL-007",
+      "BL-008",
+      "BL-009"
+    ],
+    "refresh_seed": true
+  },
+  "baseline": {
+    "status": "pass",
+    "return_code": 0,
+    "bl013_run_id": "BL013-ENTRYPOINT-20260327-210814-147510",
+    "run_config_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl000_run_config\\configs\\profiles\\run_config_ui013_tuning_v1f.json",
+    "bl005": {
+      "run_id": "BL005-FILTER-20260327-210817-799656",
+      "kept_candidates": 48656,
+      "rejected_non_seed": 59549,
+      "rejected_by_language_filter": 0,
+      "rejected_by_recency_gate": 0,
+      "decision_path_counts": {
+        "keep_strong_semantic": 33214,
+        "reject_numeric_without_semantic_support": 36194,
+        "reject_semantic_without_numeric_support": 22071,
+        "keep_semantic_numeric_supported": 15442,
+        "reject_no_signal": 1284,
+        "reject_seed_track": 1064
+      }
+    },
+    "bl006": {
+      "run_id": "BL006-SCORE-20260327-210822-811002",
+      "score_statistics": {
+        "max_score": 0.726929,
+        "min_score": 0.014819,
+        "mean_score": 0.238459,
+        "median_score": 0.196968
+      }
+    },
+    "bl007": {
+      "run_id": "BL007-ASSEMBLE-20260327-210827-061801",
+      "playlist_genre_mix": {
+        "pop": 4,
+        "new wave": 1,
+        "classic rock": 2,
+        "rock": 2,
+        "singer-songwriter": 1
+      },
+      "playlist_score_range": {
+        "max": 0.726929,
+        "min": 0.447632
+      },
+      "tracks_included": 10
+    },
+    "bl008": {
+      "run_id": "BL008-EXPLAIN-20260327-210828-212109",
+      "top_contributor_distribution": {
+        "Lead genre match": 4,
+        "Tag overlap": 3,
+        "Genre overlap": 3
+      }
+    }
+  },
+  "experiment": {
+    "status": "pass",
+    "return_code": 0,
+    "bl013_run_id": "BL013-ENTRYPOINT-20260327-210830-035284",
+    "run_config_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl000_run_config\\configs\\profiles\\run_config_ui013_tuning_v2b_language_recency_gate.json",
+    "bl005": {
+      "run_id": "BL005-FILTER-20260327-210834-483838",
+      "kept_candidates": 17840,
+      "rejected_non_seed": 90365,
+      "rejected_by_language_filter": 25075,
+      "rejected_by_recency_gate": 42828,
+      "decision_path_counts": {
+        "reject_recency_gate": 42828,
+        "reject_numeric_without_semantic_support": 13093,
+        "reject_language_filter": 25075,
+        "keep_strong_semantic": 12338,
+        "reject_semantic_without_numeric_support": 8882,
+        "keep_semantic_numeric_supported": 5502,
+        "reject_no_signal": 487,
+        "reject_seed_track": 1064
+      }
+    },
+    "bl006": {
+      "run_id": "BL006-SCORE-20260327-210839-246760",
+      "score_statistics": {
+        "max_score": 0.692344,
+        "min_score": 0.014819,
+        "mean_score": 0.235367,
+        "median_score": 0.185677
+      }
+    },
+    "bl007": {
+      "run_id": "BL007-ASSEMBLE-20260327-210841-196807",
+      "playlist_genre_mix": {
+        "pop": 4,
+        "rock": 3,
+        "singer-songwriter": 1,
+        "classic rock": 1,
+        "soft rock": 1
+      },
+      "playlist_score_range": {
+        "max": 0.692344,
+        "min": 0.390788
+      },
+      "tracks_included": 10
+    },
+    "bl008": {
+      "run_id": "BL008-EXPLAIN-20260327-210841-786271",
+      "top_contributor_distribution": {
+        "Lead genre match": 4,
+        "Tag overlap": 4,
+        "Genre overlap": 2
+      }
+    }
+  },
+  "delta": {
+    "available": true,
+    "kept_candidates_delta": -30816,
+    "rejected_by_language_filter_delta": 25075,
+    "rejected_by_recency_gate_delta": 42828,
+    "mean_score_delta": -0.0030920000000000114,
+    "playlist_genre_mix_baseline": {
+      "pop": 4,
+      "new wave": 1,
+      "classic rock": 2,
+      "rock": 2,
+      "singer-songwriter": 1
+    },
+    "playlist_genre_mix_experiment": {
+      "pop": 4,
+      "rock": 3,
+      "singer-songwriter": 1,
+      "classic rock": 1,
+      "soft rock": 1
+    }
+  }
+}

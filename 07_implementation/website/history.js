@@ -4,6 +4,21 @@ const bodyNode = document.getElementById("history-body");
 
 const API_HISTORY = "/api/pipeline/run/history?limit=20";
 
+const apiFetchJson =
+  window.WebsiteApi && typeof window.WebsiteApi.fetchJson === "function"
+    ? window.WebsiteApi.fetchJson
+    : null;
+
+const escapeHtml =
+  window.WebsiteApi && typeof window.WebsiteApi.escapeHtml === "function"
+    ? window.WebsiteApi.escapeHtml
+    : (value) => String(value ?? "-")
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("'", "&#39;");
+
 function formatDateTimeDisplay(isoValue) {
   if (!isoValue) return "-";
   const date = new Date(isoValue);
@@ -12,23 +27,18 @@ function formatDateTimeDisplay(isoValue) {
 }
 
 async function fetchJson(path) {
+  if (apiFetchJson) {
+    return apiFetchJson(path, undefined, {
+      networkMessage: "Local API is unreachable. Start via setup/start_website.cmd and refresh this page."
+    });
+  }
+
   const response = await fetch(path);
   if (!response.ok) {
-    let message = `Request failed (${response.status})`;
     const raw = await response.text();
-    if (raw) {
-      try {
-        const payload = JSON.parse(raw);
-        if (payload && payload.error) message = payload.error;
-      } catch {
-        message = raw;
-      }
-    }
-    if (response.status === 404 && path.startsWith("/api/pipeline/")) {
-      message = "Pipeline API endpoints are unavailable. Restart the website server so the latest API routes are loaded.";
-    }
-    throw new Error(message);
+    throw new Error(raw || `Request failed for ${path}`);
   }
+
   return response.json();
 }
 
@@ -46,12 +56,12 @@ function renderHistory(runs) {
     const link = run.run_id ? `results.html?run_id=${encodeURIComponent(run.run_id)}` : "results.html";
 
     return `<tr>
-      <td>${runId}</td>
-      <td>${run.status || "-"}</td>
-      <td>${formatDateTimeDisplay(run.started_at_utc)}</td>
-      <td>${formatDateTimeDisplay(run.completed_at_utc)}</td>
-      <td>${changedCount}</td>
-      <td>${baseline}</td>
+      <td>${escapeHtml(runId)}</td>
+      <td>${escapeHtml(run.status || "-")}</td>
+      <td>${escapeHtml(formatDateTimeDisplay(run.started_at_utc))}</td>
+      <td>${escapeHtml(formatDateTimeDisplay(run.completed_at_utc))}</td>
+      <td>${escapeHtml(changedCount)}</td>
+      <td>${escapeHtml(baseline)}</td>
       <td><a href="${link}">Open</a></td>
     </tr>`;
   }).join("");

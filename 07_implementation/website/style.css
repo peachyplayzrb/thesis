@@ -109,6 +109,15 @@ input:focus {
   outline-offset: 1px;
 }
 
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+summary:focus-visible {
+  outline: 2px solid #1f2937;
+  outline-offset: 2px;
+}
+
 input.is-max {
   background: #f0ece2;
   color: var(--muted);
@@ -1302,6 +1311,17 @@ button:disabled {
   margin-top: 0;
 }
 
+@media (max-width: 1024px) {
+  .page-import {
+    grid-template-columns: 180px 1fr;
+    gap: 14px;
+  }
+
+  .export-meta-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
 @media (max-width: 800px) {
   .page {
     grid-template-columns: 1fr;
@@ -1314,6 +1334,7 @@ button:disabled {
 
   .import-sidebar {
     position: static;
+    top: auto;
   }
 
   .source-list {
@@ -1366,5 +1387,35 @@ button:disabled {
 
   .profile-metric-grid {
     grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .card {
+    padding: 14px;
+  }
+
+  .export-status-head {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .run-actions {
+    width: 100%;
+  }
+
+  .range-row {
+    grid-template-columns: 1fr;
+    align-items: start;
+  }
+
+  .range-row .sub-cb {
+    width: 18px !important;
+    height: 18px;
+  }
+
+  .range-num,
+  .ep-num {
+    width: 100% !important;
   }
 }

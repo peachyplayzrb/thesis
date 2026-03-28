@@ -41,21 +41,21 @@
         <li>
           <button class="source-btn active" data-source="spotify" role="tab" aria-selected="true"
             aria-controls="source-panel-spotify">
-            <span class="source-icon">♪</span>
+            <span class="source-icon" aria-hidden="true">♪</span>
             <span class="source-name">Spotify API</span>
           </button>
         </li>
         <li>
           <button class="source-btn" data-source="manual" role="tab" aria-selected="false"
             aria-controls="source-panel-manual">
-            <span class="source-icon">✎</span>
+            <span class="source-icon" aria-hidden="true">✎</span>
             <span class="source-name">Manual JSON</span>
           </button>
         </li>
         <li>
           <button class="source-btn" data-source="ph1" disabled role="tab" aria-selected="false"
             aria-controls="source-panel-ph1">
-            <span class="source-icon">○</span>
+            <span class="source-icon" aria-hidden="true">○</span>
             <span class="source-name">Source 2</span>
             <span class="source-badge">soon</span>
           </button>
@@ -63,7 +63,7 @@
         <li>
           <button class="source-btn" data-source="ph2" disabled role="tab" aria-selected="false"
             aria-controls="source-panel-ph2">
-            <span class="source-icon">○</span>
+            <span class="source-icon" aria-hidden="true">○</span>
             <span class="source-name">Source 3</span>
             <span class="source-badge">soon</span>
           </button>
@@ -126,7 +126,7 @@
                 <button id="cancel-run-btn" type="button" class="refresh-btn danger-btn" disabled>Cancel Run</button>
               </div>
             </div>
-            <p id="run-status-message" class="hint">No ingestion run started yet.</p>
+            <p id="run-status-message" class="hint" role="status" aria-live="polite">No ingestion run started yet.</p>
             <dl class="export-meta-grid">
               <div>
                 <dt>Run State</dt>
@@ -357,6 +357,7 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
     crossorigin="anonymous"></script>
+  <script src="api_client.js"></script>
   <script src="app.js"></script>
 </body>
 

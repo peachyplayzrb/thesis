@@ -15,6 +15,14 @@ from typing import Any, Deque, Dict, List, Optional
 
 IMPLEMENTATION_NOTES_ROOT = Path(__file__).resolve().parents[1] / "implementation_notes"
 
+
+def _ensure_existing_dir(path: Path, label: str) -> None:
+    if not path.exists() or not path.is_dir():
+        raise RuntimeError(f"{label} not found or not a directory: {path}")
+
+
+_ensure_existing_dir(IMPLEMENTATION_NOTES_ROOT, "Implementation notes root")
+
 import uvicorn
 from fastapi.exceptions import RequestValidationError
 from fastapi import Body, FastAPI, HTTPException, Query, Request
@@ -27,6 +35,8 @@ from starlette.exceptions import HTTPException as StarletteHTTPException
 
 def _load_impl_module(module_name: str, relative_path: str):
     module_path = IMPLEMENTATION_NOTES_ROOT / relative_path
+    if not module_path.exists() or not module_path.is_file():
+        raise RuntimeError(f"Required module file is missing for '{module_name}': {module_path}")
     spec = importlib.util.spec_from_file_location(module_name, module_path)
     if spec is None or spec.loader is None:
         raise RuntimeError(f"Unable to load module '{module_name}' from {module_path}")
@@ -233,6 +243,9 @@ class SpotifyExportJob:
         return command
 
     def start(self, config: Dict[str, Any]) -> None:
+        _ensure_existing_dir(self.repo_root, "Repository root for export job")
+        _ensure_existing_dir(self.implementation_notes_root, "Implementation notes directory for export job")
+
         with self.lock:
             if self.process is not None and self.process.poll() is None:
                 raise RuntimeError("An ingestion run is already in progress.")
@@ -444,6 +457,8 @@ class PipelineJob:
 
     def _stage_command(self, script_relative: str, stage_id: str, stage_params: Dict[str, Any]) -> List[str]:
         script_path = self.implementation_notes_root / script_relative
+        if not script_path.exists() or not script_path.is_file():
+            raise RuntimeError(f"Stage script is missing for {stage_id}: {script_path}")
         command = [str(self.python_executable), "-u", str(script_path)]
         if stage_id == "bl003" and bool(stage_params.get("allow_missing_selected_sources")):
             command.append("--allow-missing-selected-sources")
@@ -873,7 +888,16 @@ class PipelineJob:
         self._record_history_locked()
 
     def start(self, config: Dict[str, Any]) -> None:
+        _ensure_existing_dir(self.repo_root, "Repository root for pipeline job")
+        _ensure_existing_dir(self.implementation_notes_root, "Implementation notes directory for pipeline job")
+
         selected_specs = self._resolve_stage_selection(config if isinstance(config, dict) else {})
+
+        for spec in selected_specs:
+            script_path = self.implementation_notes_root / spec["script"]
+            if not script_path.exists() or not script_path.is_file():
+                raise ValueError(f"Stage script does not exist: {script_path}")
+
         with self.lock:
             if self.process is not None and self.process.poll() is None:
                 raise RuntimeError("A pipeline run is already in progress.")
@@ -1189,6 +1213,16 @@ _IMPL_ROOT = _SETUP_DIR.parent                 # 07_implementation/
 _REPO_ROOT = _IMPL_ROOT.parent                 # thesis-main/
 _WEBSITE_ROOT = _IMPL_ROOT / "website"         # 07_implementation/website/
 
+
+def _validate_resolved_layout() -> None:
+    _ensure_existing_dir(_SETUP_DIR, "Setup directory")
+    _ensure_existing_dir(_IMPL_ROOT, "Implementation root")
+    _ensure_existing_dir(_REPO_ROOT, "Repository root")
+    _ensure_existing_dir(_WEBSITE_ROOT, "Website root")
+
+
+_validate_resolved_layout()
+
 # ---------------------------------------------------------------------------
 # Runtime state — populated by main() before uvicorn starts
 # ---------------------------------------------------------------------------
@@ -1205,16 +1239,23 @@ app.mount("/website", StaticFiles(directory=str(_WEBSITE_ROOT), html=True), name
 
 
 def initialize_app_state(bind: str, port: int, repo_root: Optional[Path] = None) -> None:
-    resolved_repo_root = repo_root or Path(__file__).resolve().parent.parent.parent
+    resolved_repo_root = (repo_root or Path(__file__).resolve().parent.parent.parent).resolve()
+    _ensure_existing_dir(resolved_repo_root, "Resolved repository root")
+    _ensure_existing_dir(resolved_repo_root / "07_implementation", "Resolved implementation directory")
+    _ensure_existing_dir(resolved_repo_root / "07_implementation" / "website", "Resolved website directory")
+
     app.state.bind = bind
     app.state.port = port
     app.state.started_at_utc = now_utc()
     app.state.started_monotonic = time.time()
     app.state.export_job = SpotifyExportJob(repo_root=resolved_repo_root)
     app.state.pipeline_job = PipelineJob(repo_root=resolved_repo_root)
+    app.state.initialized = True
 
 
 def _get_pipeline_job(request: Request) -> PipelineJob:
+    if not getattr(request.app.state, "initialized", False):
+        raise HTTPException(status_code=503, detail="Website API state is not initialized.")
     pipeline_job = getattr(request.app.state, "pipeline_job", None)
     if pipeline_job is None:
         raise HTTPException(status_code=503, detail="Pipeline job is not initialized.")
@@ -1222,6 +1263,8 @@ def _get_pipeline_job(request: Request) -> PipelineJob:
 
 
 def _get_export_job(request: Request) -> SpotifyExportJob:
+    if not getattr(request.app.state, "initialized", False):
+        raise HTTPException(status_code=503, detail="Website API state is not initialized.")
     export_job = getattr(request.app.state, "export_job", None)
     if export_job is None:
         raise HTTPException(status_code=503, detail="Spotify export job is not initialized.")
@@ -1251,7 +1294,8 @@ def _starlette_http_exception_handler(request: Request, exc: StarletteHTTPExcept
 
 @app.exception_handler(RequestValidationError)
 def _request_validation_exception_handler(request: Request, exc: RequestValidationError) -> JSONResponse:
-    return _error_response({"error": "Request validation failed.", "details": exc.errors()}, 422)
+    print(f"[validation] {request.method} {request.url.path} -> {exc.errors()}", file=sys.stderr, flush=True)
+    return _error_response({"error": "Request validation failed."}, 422)
 
 
 @app.get("/")
@@ -1399,7 +1443,11 @@ def api_spotify_export_cancel(request: Request) -> Dict[str, Any]:
 def main() -> None:
     bind = sys.argv[1] if len(sys.argv) > 1 else "127.0.0.1"
     port = int(sys.argv[2]) if len(sys.argv) > 2 else 5501
-    initialize_app_state(bind=bind, port=port)
+    try:
+        initialize_app_state(bind=bind, port=port)
+    except Exception as exc:
+        print(f"Startup initialization failed: {exc}", file=sys.stderr, flush=True)
+        raise
 
     print(f"Serving website + API on http://{bind}:{port}/", flush=True)
     print(f"Import page: http://{bind}:{port}/website/import.html", flush=True)

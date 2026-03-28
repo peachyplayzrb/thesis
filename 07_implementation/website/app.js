@@ -170,30 +170,17 @@ function parseCsv(text) {
 }
 
 async function fetchJson(path, options = undefined) {
-  let response;
-  try {
-    response = await fetch(path, options);
-  } catch (error) {
-    if (String(path).startsWith("/api/")) {
-      throw new Error("Local ingestion API is unreachable. Start the website via setup/start_website.cmd and refresh this page.");
-    }
-    throw error;
+  const api = window.WebsiteApi;
+  if (api && typeof api.fetchJson === "function") {
+    return api.fetchJson(path, options, {
+      networkMessage: "Local ingestion API is unreachable. Start the website via setup/start_website.cmd and refresh this page."
+    });
   }
 
+  const response = await fetch(path, options);
   if (!response.ok) {
-    let message = `Unable to load ${path}`;
-    try {
-      const payload = await response.json();
-      if (payload && payload.error) {
-        message = payload.error;
-      }
-    } catch {
-      const text = await response.text();
-      if (text) {
-        message = text;
-      }
-    }
-    throw new Error(message);
+    const text = await response.text();
+    throw new Error(text || `Unable to load ${path}`);
   }
   return response.json();
 }

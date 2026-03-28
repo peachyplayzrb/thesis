@@ -70,6 +70,10 @@
       }
     },
     "retrieval_controls": {
+      "language_filter_codes": [
+        "en"
+      ],
+      "language_filter_enabled": true,
       "numeric_support_min_pass": 4,
       "numeric_thresholds": {
         "danceability": 0.15,
@@ -77,12 +81,14 @@
         "energy": 0.15,
         "key": 1.5,
         "mode": 0.5,
+        "release_year": 8.0,
         "tempo": 15.0,
         "valence": 0.15
       },
       "profile_top_genre_limit": 8,
       "profile_top_lead_genre_limit": 6,
       "profile_top_tag_limit": 10,
+      "recency_years_min_offset": 15,
       "semantic_min_keep_score": 1,
       "semantic_strong_keep_score": 3
     },
@@ -106,6 +112,7 @@
         "energy": 0.15,
         "key": 1.5,
         "mode": 0.5,
+        "release_year": 8.0,
         "tempo": 15.0,
         "valence": 0.15
       }
@@ -133,10 +140,10 @@
       "user_id": null
     }
   },
-  "generated_at_utc": "2026-03-27T20:34:11Z",
+  "generated_at_utc": "2026-03-27T21:08:30Z",
   "resolved_from": {
-    "run_config_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl000_run_config\\configs\\profiles\\run_config_ui013_tuning_v1f.json",
-    "run_intent_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl000_run_config\\outputs\\run_intent_20260327-203411-541715.json"
+    "run_config_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl000_run_config\\configs\\profiles\\run_config_ui013_tuning_v2b_language_recency_gate.json",
+    "run_intent_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl000_run_config\\outputs\\run_intent_20260327-210830-038346.json"
   },
-  "run_id": "BL013-ENTRYPOINT-20260327-203411-538709"
+  "run_id": "BL013-ENTRYPOINT-20260327-210830-035284"
 }

@@ -28,6 +28,18 @@ class WebsiteApiServerTests(unittest.TestCase):
         self.assertEqual(payload["status"], "ok")
         self.assertEqual(payload["server"]["port"], 5501)
 
+    def test_root_redirects_to_import_page(self) -> None:
+        response = self.client.get("/", follow_redirects=False)
+
+        self.assertEqual(response.status_code, 307)
+        self.assertEqual(response.headers.get("location"), "/website/import.html")
+
+    def test_static_import_page_is_served(self) -> None:
+        response = self.client.get("/website/import.html")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("text/html", response.headers.get("content-type", ""))
+
     def test_stage_catalog_contains_seven_pipeline_stages(self) -> None:
         response = self.client.get("/api/pipeline/stages")
 
@@ -88,7 +100,7 @@ class WebsiteApiServerTests(unittest.TestCase):
         self.assertEqual(response.status_code, 422)
         payload = response.json()
         self.assertEqual(payload["error"], "Request validation failed.")
-        self.assertIn("details", payload)
+        self.assertNotIn("details", payload)
 
 
 if __name__ == "__main__":

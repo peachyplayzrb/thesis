@@ -1,0 +1,113 @@
+{
+  "run_id": "BL013-ENTRYPOINT-20260327-210654-407925",
+  "task": "BL-013",
+  "generated_at_utc": "2026-03-27T21:06:54Z",
+  "overall_status": "fail",
+  "continue_on_error": false,
+  "python_executable": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\.venv\\Scripts\\python.exe",
+  "run_config_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl000_run_config\\configs\\profiles\\run_config_ui013_tuning_v2b_language_recency_gate.json",
+  "canonical_run_config_artifacts": {
+    "run_id": "BL013-ENTRYPOINT-20260327-210654-407925",
+    "generated_at_utc": "2026-03-27T21:06:54Z",
+    "output_dir": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl000_run_config\\outputs",
+    "run_intent": {
+      "path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl000_run_config\\outputs\\run_intent_20260327-210654-413957.json",
+      "sha256": "EDC1BE22C63C6440CE82BE43740A53110A4F296ED5A4F7FA1BF0079F79BE4AB7",
+      "artifact_schema_version": "run-intent-v1"
+    },
+    "run_effective_config": {
+      "path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl000_run_config\\outputs\\run_effective_config_20260327-210654-413957.json",
+      "sha256": "BC23911B9FF9C8D4B020D256CDCDB5EC0B106424976E2B641903D8809C9B66EE",
+      "artifact_schema_version": "run-effective-config-v1"
+    },
+    "latest": {
+      "run_intent": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl000_run_config\\outputs\\run_intent_latest.json",
+      "run_effective_config": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl000_run_config\\outputs\\run_effective_config_latest.json"
+    }
+  },
+  "refresh_seed": false,
+  "requested_stage_order": [
+    "BL-004",
+    "BL-005"
+  ],
+  "executed_stage_count": 1,
+  "failed_stage_count": 1,
+  "elapsed_seconds": 0.004,
+  "stage_results": [
+    {
+      "stage_id": "BL-003-FRESHNESS-GUARD",
+      "script_path": "07_implementation/implementation_notes/bl003_alignment/build_bl003_ds001_spotify_seed_table.py",
+      "command": [
+        "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\.venv\\Scripts\\python.exe",
+        "07_implementation/implementation_notes/bl003_alignment/build_bl003_ds001_spotify_seed_table.py"
+      ],
+      "run_config_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl000_run_config\\configs\\profiles\\run_config_ui013_tuning_v2b_language_recency_gate.json",
+      "run_intent_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl000_run_config\\outputs\\run_intent_20260327-210654-413957.json",
+      "run_effective_config_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl000_run_config\\outputs\\run_effective_config_20260327-210654-413957.json",
+      "return_code": 2,
+      "status": "fail",
+      "elapsed_seconds": 0.0,
+      "stdout": "",
+      "stderr": "Seed freshness guard failed: BL-003 seed was built with a different run_config path. Run BL-013 with --refresh-seed when using --run-config."
+    }
+  ],
+  "stage_diagnostics": {
+    "bl006_distribution": {
+      "available": true,
+      "path": "07_implementation/implementation_notes/bl006_scoring/outputs/bl006_score_distribution_diagnostics.json",
+      "rank_cliff": {
+        "detected": false,
+        "rank_2_to_3_gap": 0.004219,
+        "max_gap": {
+          "between_rank": 7,
+          "next_rank": 8,
+          "score_gap": 0.009506
+        },
+        "classification": "smooth"
+      }
+    },
+    "bl007_assembly_pressure": {
+      "available": true,
+      "path": "07_implementation/implementation_notes/bl007_playlist/outputs/bl007_assembly_report.json",
+      "rank_continuity_diagnostics": {
+        "selected_ranks": [
+          1,
+          2,
+          84,
+          85,
+          86,
+          87,
+          178,
+          469,
+          846,
+          884
+        ],
+        "max_selected_rank": 884,
+        "median_selected_rank": 87,
+        "rank_2_to_3_score_gap": 0.090833,
+        "rank_cliff_detected": false
+      },
+      "assembly_pressure_diagnostics": {
+        "top_100_considered": 100,
+        "top_100_excluded": 94,
+        "top_100_exclusion_reason_counts": {
+          "consecutive_genre_run": 81,
+          "genre_cap_exceeded": 13
+        },
+        "dominant_top_100_exclusion_reason": "consecutive_genre_run"
+      }
+    }
+  },
+  "stable_artifact_hashes": {
+    "bl004_seed_trace": "AFE227D05077A35D970973E060EB6C95DC6FD62E17081E0666DF9CD2D5D6BEC2",
+    "bl005_filtered_candidates": "26E64A12BDE7C4F36A0EB940B26082BDF1A9C0A299BABBC241991D581BEBB62F",
+    "bl005_candidate_decisions": "2E1619A16BD3BEFA1171C927BB17C6082A311A9421D53ED183AC1E820ACD86F6",
+    "bl006_scored_candidates": "FE79CE8AA9E0D1C25202A82549B88A999424C60583F3325D0B93DCB015482C6D",
+    "bl007_assembly_trace": "E1DD1CA622C4C8158D9AA79E03118E0FC7153CBEE3ACF818B32DCCA49924A121"
+  },
+  "missing_stable_artifacts": [],
+  "notes": {
+    "purpose": "Lightweight wrapper to run existing BL-004..BL-009 scripts in one command.",
+    "repeatability_check_guidance": "Compare stable_artifact_hashes between repeated runs under unchanged inputs/config."
+  }
+}

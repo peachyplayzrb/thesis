@@ -88,7 +88,7 @@
             <button id="pipeline-refresh-btn" type="button" class="refresh-btn">Refresh</button>
           </div>
         </div>
-        <p id="pipeline-message" class="hint">No pipeline run started yet.</p>
+        <p id="pipeline-message" class="hint" role="status" aria-live="polite">No pipeline run started yet.</p>
         <dl class="export-meta-grid">
           <div>
             <dt>API Health</dt>
@@ -187,6 +187,7 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
     crossorigin="anonymous"></script>
+  <script src="api_client.js"></script>
   <script src="run.js"></script>
 </body>
 

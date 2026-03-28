@@ -100,6 +100,64 @@ const STAGE_PARAM_DEFS = {
   ]
 };
 
+const apiFetchJson =
+  window.WebsiteApi && typeof window.WebsiteApi.fetchJson === "function"
+    ? window.WebsiteApi.fetchJson
+    : null;
+
+const escapeHtml =
+  window.WebsiteApi && typeof window.WebsiteApi.escapeHtml === "function"
+    ? window.WebsiteApi.escapeHtml
+    : (value) => String(value ?? "-")
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("'", "&#39;");
+
+function isPlainObject(value) {
+  return Boolean(value) && typeof value === "object" && !Array.isArray(value);
+}
+
+function isFiniteNumberObject(value) {
+  return isPlainObject(value) && Object.values(value).every((item) => Number.isFinite(item));
+}
+
+function validateJsonParam(stageId, key, payload) {
+  if (stageId === "bl003" && key === "input_scope") {
+    if (!isPlainObject(payload)) {
+      return "Expected JSON object for BL003.input_scope.";
+    }
+    if (payload.top_time_ranges !== undefined) {
+      if (!Array.isArray(payload.top_time_ranges) || payload.top_time_ranges.some((item) => typeof item !== "string")) {
+        return "BL003.input_scope.top_time_ranges must be an array of strings.";
+      }
+    }
+    return "";
+  }
+
+  if (stageId === "bl004" && key === "include_interaction_types") {
+    if (!Array.isArray(payload) || payload.some((item) => typeof item !== "string" || !String(item).trim())) {
+      return "BL004.include_interaction_types must be a non-empty string array.";
+    }
+    return "";
+  }
+
+  if (stageId === "bl005" && key === "numeric_thresholds") {
+    return isFiniteNumberObject(payload)
+      ? ""
+      : "BL005.numeric_thresholds must be a JSON object with numeric values.";
+  }
+
+  if (stageId === "bl006" && (key === "component_weights" || key === "numeric_thresholds")) {
+    return isFiniteNumberObject(payload)
+      ? ""
+      : `BL006.${key} must be a JSON object with numeric values.`;
+  }
+
+  return "";
+}
+
 function stageLabel(stageId) {
   return stageId.toUpperCase();
 }
@@ -259,6 +317,10 @@ function collectInlineStageParams() {
         if (type === "json_array" && !Array.isArray(parsed)) {
           throw new Error(`Expected JSON array for ${stageLabel(stageId)}.${key}`);
         }
+        const validationError = validateJsonParam(stageId, key, parsed);
+        if (validationError) {
+          throw new Error(validationError);
+        }
         params[key] = parsed;
         return;
       }
@@ -282,6 +344,10 @@ function getSelectedStageIds() {
 }
 
 function stagePresetStorageKey(stageId) {
+  return `v2-stage-params-preset-${stageId}`;
+}
+
+function priorStagePresetStorageKey(stageId) {
   return `stage-params-preset-${stageId}`;
 }
 
@@ -290,7 +356,10 @@ function legacyStagePresetStorageKey(stageId) {
 }
 
 function loadStageParamsFromPreset(stageId) {
-  const raw = localStorage.getItem(stagePresetStorageKey(stageId)) || localStorage.getItem(legacyStagePresetStorageKey(stageId));
+  const raw =
+    localStorage.getItem(stagePresetStorageKey(stageId)) ||
+    localStorage.getItem(priorStagePresetStorageKey(stageId)) ||
+    localStorage.getItem(legacyStagePresetStorageKey(stageId));
   if (!raw) {
     return null;
   }
@@ -400,34 +469,16 @@ function formatDuration(secondsRaw) {
 }
 
 async function fetchJson(path, options = undefined) {
-  let response;
-  try {
-    response = await fetch(path, options);
-  } catch {
-    throw new Error("Local API is unreachable. Start via setup/start_website.cmd and refresh this page.");
+  if (apiFetchJson) {
+    return apiFetchJson(path, options, {
+      networkMessage: "Local API is unreachable. Start via setup/start_website.cmd and refresh this page."
+    });
   }
 
+  const response = await fetch(path, options);
   if (!response.ok) {
-    let message = `Request failed (${response.status}): ${path}`;
     const raw = await response.text();
-    if (raw) {
-      try {
-        const payload = JSON.parse(raw);
-        if (payload && payload.error) {
-          message = payload.error;
-        } else {
-          message = raw;
-        }
-      } catch {
-        message = raw;
-      }
-    }
-
-    if (response.status === 404 && path.startsWith("/api/pipeline/")) {
-      message = "Pipeline API endpoints are unavailable. Restart the website server so the latest API routes are loaded.";
-    }
-
-    throw new Error(message);
+    throw new Error(raw || `Request failed for ${path}`);
   }
 
   return response.json();
@@ -448,12 +499,12 @@ function renderStages(stages) {
 
   stageBody.innerHTML = stages.map((stage) => {
     return `<tr>
-      <td>${stage.label}</td>
-      <td>${stage.status || "-"}</td>
-      <td>${formatDateTimeDisplay(stage.started_at_utc)}</td>
-      <td>${formatDateTimeDisplay(stage.completed_at_utc)}</td>
-      <td>${stage.exit_code === null || stage.exit_code === undefined ? "-" : stage.exit_code}</td>
-      <td>${stage.current_message || "-"}</td>
+      <td>${escapeHtml(stage.label || "-")}</td>
+      <td>${escapeHtml(stage.status || "-")}</td>
+      <td>${escapeHtml(formatDateTimeDisplay(stage.started_at_utc))}</td>
+      <td>${escapeHtml(formatDateTimeDisplay(stage.completed_at_utc))}</td>
+      <td>${stage.exit_code === null || stage.exit_code === undefined ? "-" : escapeHtml(stage.exit_code)}</td>
+      <td>${escapeHtml(stage.current_message || "-")}</td>
     </tr>`;
   }).join("");
 }
@@ -471,10 +522,10 @@ function renderArtifacts(artifactSummary) {
     const path = info && info.path ? info.path : "-";
 
     return `<div class="artifact-item">
-      <p><strong>${key}</strong> (${status})</p>
-      <p class="track-meta">Path: ${path}</p>
-      <p class="track-meta">Updated: ${mtime}</p>
-      <p class="track-meta">Size: ${size}</p>
+      <p><strong>${escapeHtml(key)}</strong> (${escapeHtml(status)})</p>
+      <p class="track-meta">Path: ${escapeHtml(path)}</p>
+      <p class="track-meta">Updated: ${escapeHtml(mtime)}</p>
+      <p class="track-meta">Size: ${escapeHtml(size)}</p>
     </div>`;
   }).join("");
 
@@ -573,6 +624,7 @@ async function refreshStatus() {
     renderSnapshot(snapshot);
     await refreshHealth();
   } catch (error) {
+    stopPolling();
     messageNode.textContent = String(error.message || error);
     renderHealth({ status: "fail", uptime_seconds: null });
   }

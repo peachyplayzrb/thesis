@@ -25,6 +25,21 @@ const API_RUN_START = "/api/pipeline/run/start";
 const API_RUN_STATUS = "/api/pipeline/run/status";
 const API_RUN_CANCEL = "/api/pipeline/run/cancel";
 
+const apiFetchJson =
+  window.WebsiteApi && typeof window.WebsiteApi.fetchJson === "function"
+    ? window.WebsiteApi.fetchJson
+    : null;
+
+const escapeHtml =
+  window.WebsiteApi && typeof window.WebsiteApi.escapeHtml === "function"
+    ? window.WebsiteApi.escapeHtml
+    : (value) => String(value ?? "-")
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("'", "&#39;");
+
 const STAGE_PARAMETER_DEFS = {
   bl003: [
     {
@@ -103,6 +118,10 @@ function getStageParameterDefs() {
 }
 
 function stagePresetStorageKey() {
+  return `v2-stage-params-preset-${stageId}`;
+}
+
+function priorStagePresetStorageKey() {
   return `stage-params-preset-${stageId}`;
 }
 
@@ -152,25 +171,18 @@ function formatDateTimeDisplay(isoValue) {
 }
 
 async function fetchJson(path, options = undefined) {
+  if (apiFetchJson) {
+    return apiFetchJson(path, options, {
+      networkMessage: "Local API is unreachable. Start via setup/start_website.cmd and refresh this page."
+    });
+  }
+
   const response = await fetch(path, options);
   if (!response.ok) {
-    let message = `Request failed (${response.status})`;
     const raw = await response.text();
-    if (raw) {
-      try {
-        const payload = JSON.parse(raw);
-        if (payload && payload.error) {
-          message = payload.error;
-        }
-      } catch {
-        message = raw;
-      }
-    }
-    if (response.status === 404 && path.startsWith("/api/pipeline/")) {
-      message = "Pipeline API endpoints are unavailable. Restart the website server so the latest API routes are loaded.";
-    }
-    throw new Error(message);
+    throw new Error(raw || `Request failed for ${path}`);
   }
+
   return response.json();
 }
 
@@ -205,7 +217,9 @@ function buildStageParameterControls() {
 
   const title = document.createElement("div");
   title.className = "export-status-head";
-  title.innerHTML = "<h3>Stage Parameters</h3>";
+  const titleHeading = document.createElement("h3");
+  titleHeading.textContent = "Stage Parameters";
+  title.appendChild(titleHeading);
   card.appendChild(title);
 
   const hint = document.createElement("p");
@@ -296,6 +310,7 @@ function buildStageParameterControls() {
       });
       const payload = JSON.stringify(preset);
       localStorage.setItem(stagePresetStorageKey(), payload);
+      localStorage.setItem(priorStagePresetStorageKey(), payload);
       localStorage.setItem(legacyStagePresetStorageKey(), payload);
       setStageParamMessage("Preset saved for this stage in your browser.");
     } catch {
@@ -309,7 +324,10 @@ function buildStageParameterControls() {
   loadPresetBtn.textContent = "Load Preset";
   loadPresetBtn.addEventListener("click", () => {
     try {
-      const raw = localStorage.getItem(stagePresetStorageKey()) || localStorage.getItem(legacyStagePresetStorageKey());
+      const raw =
+        localStorage.getItem(stagePresetStorageKey()) ||
+        localStorage.getItem(priorStagePresetStorageKey()) ||
+        localStorage.getItem(legacyStagePresetStorageKey());
       if (!raw) {
         setStageParamMessage("No saved preset found for this stage.");
         return;
@@ -346,7 +364,10 @@ function buildStageParameterControls() {
   controlCard.insertAdjacentElement("afterend", card);
 
   try {
-    const raw = localStorage.getItem(stagePresetStorageKey()) || localStorage.getItem(legacyStagePresetStorageKey());
+    const raw =
+      localStorage.getItem(stagePresetStorageKey()) ||
+      localStorage.getItem(priorStagePresetStorageKey()) ||
+      localStorage.getItem(legacyStagePresetStorageKey());
     if (raw) {
       const parsed = JSON.parse(raw);
       if (parsed && typeof parsed === "object" && !Array.isArray(parsed)) {
@@ -452,10 +473,10 @@ function renderArtifacts(artifactSummary) {
   artifactNode.innerHTML = Object.entries(artifactSummary).map(([key, info]) => {
     const ready = info && !info.missing;
     return `<div class="artifact-item">
-      <p><strong>${key}</strong> (${ready ? "ready" : "missing"})</p>
-      <p class="track-meta">Path: ${info.path || "-"}</p>
-      <p class="track-meta">Updated: ${formatDateTimeDisplay(info.mtime_utc)}</p>
-      <p class="track-meta">Hash: ${info.sha256 || "-"}</p>
+      <p><strong>${escapeHtml(key)}</strong> (${ready ? "ready" : "missing"})</p>
+      <p class="track-meta">Path: ${escapeHtml(info.path || "-")}</p>
+      <p class="track-meta">Updated: ${escapeHtml(formatDateTimeDisplay(info.mtime_utc))}</p>
+      <p class="track-meta">Hash: ${escapeHtml(info.sha256 || "-")}</p>
     </div>`;
   }).join("");
 }
@@ -519,6 +540,7 @@ async function refreshStatus() {
     const snapshot = await fetchJson(`${API_RUN_STATUS}?after=${logCursor}`);
     renderSnapshot(snapshot);
   } catch (error) {
+    stopPolling();
     messageNode.textContent = String(error.message || error);
   }
 }
