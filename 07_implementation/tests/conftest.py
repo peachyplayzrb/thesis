@@ -1,5 +1,5 @@
 """
-Pytest configuration: add final_artefact/src to sys.path so all stage
+Pytest configuration: add 07_implementation/src to sys.path so all stage
 packages (alignment, shared_utils, …) are importable without an install step.
 """
 import sys

@@ -2,20 +2,20 @@
     "venvPath": ".",
     "venv": ".venv",
     "include": [
-        "final_artefact/src",
-        "final_artefact/tests"
+        "07_implementation/src",
+        "07_implementation/tests"
     ],
     "executionEnvironments": [
         {
-            "root": "final_artefact/src",
+            "root": "07_implementation/src",
             "extraPaths": [
-                "final_artefact/src"
+                "07_implementation/src"
             ]
         },
         {
-            "root": "final_artefact/tests",
+            "root": "07_implementation/tests",
             "extraPaths": [
-                "final_artefact/src"
+                "07_implementation/src"
             ]
         }
     ]
