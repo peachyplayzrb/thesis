@@ -1858,6 +1858,21 @@ Maintenance snapshot (2026-03-28):
 - status: accepted
 - change_summary: Close UI-008 as an active unresolved issue and synchronize admin control snapshots so only UI-003 remains open in current-priority surfaces.
 - reason: User explicitly requested removal of the unresolved DS-001 governance item ("lose the unresolved issue its not an issue anymore").
+- evidence_basis: User confirmation in chat that DS-001 governance gating should no longer remain in unresolved-issue active posture; admin control files updated to reflect UI-003 as the sole active unresolved control item at that checkpoint.
+- affected_components: `00_admin/unresolved_issues.md`, `00_admin/thesis_state.md`, `00_admin/README.md`, `00_admin/change_log.md`
+- impact_assessment: Medium-positive. Reduces stale governance noise and keeps the active unresolved surface focused on chapter citation closure.
+- approval_record: Requested and confirmed by user in chat on 2026-03-25.
+
+## C-147
+- date: 2026-03-28
+- proposed_by: user + AI
+- status: accepted
+- change_summary: Final handoff synchronization pass completed: recently-played ingestion simplification already implemented and validated, cleanup of leftover generated artifacts performed, and repository content swap executed so implementation package content is now in `07_implementation` before commit/push preparation.
+- reason: User requested pre-chat handoff closure with no leftover code/artifacts, explicit directory-content swap, and immediate push-readiness with admin-file synchronization.
+- evidence_basis: Verified swap markers (`07_implementation` contains package runtime surface including `main.py`; `final_artefact` contains prior baseline marker `ACTIVE_BASELINE.md`), cleanup removed stale nested output directories and stale `.pytest_cache`, and prior run/test evidence confirms recently-played one-request cap behavior.
+- affected_components: `07_implementation/`, `final_artefact/`, cleanup targets under ingestion outputs/cache, `00_admin/change_log.md`, `00_admin/thesis_state.md`
+- impact_assessment: High-positive for handoff reliability. Repository layout now matches requested direction, stale byproducts are removed, and governance records explicitly capture the transition state ahead of push.
+- approval_record: Requested and confirmed by user in chat on 2026-03-28.
 - evidence_basis: `00_admin/unresolved_issues.md` moved UI-008 to resolved; `00_admin/thesis_state.md`, `00_admin/README.md`, and `00_admin/handoff_friend_chat_playbook.md` updated to remove active UI-008 queue references; `06_data_and_sources/dataset_registry.md` status wording aligned.
 - affected_components: `00_admin/unresolved_issues.md`, `00_admin/thesis_state.md`, `00_admin/README.md`, `00_admin/handoff_friend_chat_playbook.md`, `06_data_and_sources/dataset_registry.md`, `00_admin/change_log.md`
 - impact_assessment: Medium-positive. Simplifies active governance focus and removes stale-open-item noise from daily control navigation.

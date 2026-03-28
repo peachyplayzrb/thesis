@@ -1,0 +1,28 @@
+{
+  "run_id": "BL011-VALENCE_WEIGHT_UP-BL004-20260327-203535-708856",
+  "scenario_id": "valence_weight_up",
+  "matched_seed_count": 1064,
+  "total_effective_weight": 2322.377778,
+  "dominant_lead_genres": [
+    "pop",
+    "classic rock",
+    "rock",
+    "electronic",
+    "rap"
+  ],
+  "dominant_tags": [
+    "rock",
+    "pop",
+    "classic rock",
+    "70s",
+    "alternative"
+  ],
+  "dominant_genres": [
+    "rock",
+    "pop",
+    "classic rock",
+    "electronic",
+    "singer-songwriter"
+  ],
+  "feature_centers": {}
+}

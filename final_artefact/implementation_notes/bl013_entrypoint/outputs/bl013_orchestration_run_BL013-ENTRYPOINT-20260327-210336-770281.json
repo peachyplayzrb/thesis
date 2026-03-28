@@ -1,0 +1,163 @@
+{
+  "run_id": "BL013-ENTRYPOINT-20260327-210336-770281",
+  "task": "BL-013",
+  "generated_at_utc": "2026-03-27T21:03:36Z",
+  "overall_status": "pass",
+  "continue_on_error": false,
+  "python_executable": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\.venv\\Scripts\\python.exe",
+  "run_config_path": null,
+  "canonical_run_config_artifacts": {
+    "run_id": "BL013-ENTRYPOINT-20260327-210336-770281",
+    "generated_at_utc": "2026-03-27T21:03:36Z",
+    "output_dir": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl000_run_config\\outputs",
+    "run_intent": {
+      "path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl000_run_config\\outputs\\run_intent_20260327-210336-773368.json",
+      "sha256": "5F923DE8237132EE285AD5DA898BA1D557A725242E8121098C4FCA7F28CC1B05",
+      "artifact_schema_version": "run-intent-v1"
+    },
+    "run_effective_config": {
+      "path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl000_run_config\\outputs\\run_effective_config_20260327-210336-773368.json",
+      "sha256": "6B42F08B629DBD31EA08E7C1A8366761721CB3E52785EEC7B146253EAD7CF794",
+      "artifact_schema_version": "run-effective-config-v1"
+    },
+    "latest": {
+      "run_intent": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl000_run_config\\outputs\\run_intent_latest.json",
+      "run_effective_config": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl000_run_config\\outputs\\run_effective_config_latest.json"
+    }
+  },
+  "refresh_seed": false,
+  "requested_stage_order": [
+    "BL-006",
+    "BL-007",
+    "BL-008",
+    "BL-009"
+  ],
+  "executed_stage_count": 4,
+  "failed_stage_count": 0,
+  "elapsed_seconds": 5.31,
+  "stage_results": [
+    {
+      "stage_id": "BL-006",
+      "script_path": "07_implementation/implementation_notes/bl006_scoring/build_bl006_scored_candidates.py",
+      "command": [
+        "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\.venv\\Scripts\\python.exe",
+        "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl006_scoring\\build_bl006_scored_candidates.py"
+      ],
+      "run_config_path": null,
+      "run_intent_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl000_run_config\\outputs\\run_intent_20260327-210336-773368.json",
+      "run_effective_config_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl000_run_config\\outputs\\run_effective_config_20260327-210336-773368.json",
+      "return_code": 0,
+      "status": "pass",
+      "elapsed_seconds": 2.492,
+      "stdout": "BL-006 candidate scoring complete.\nscored_candidates=C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl006_scoring\\outputs\\bl006_scored_candidates.csv\nscore_summary=C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl006_scoring\\outputs\\bl006_score_summary.json",
+      "stderr": ""
+    },
+    {
+      "stage_id": "BL-007",
+      "script_path": "07_implementation/implementation_notes/bl007_playlist/build_bl007_playlist.py",
+      "command": [
+        "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\.venv\\Scripts\\python.exe",
+        "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl007_playlist\\build_bl007_playlist.py"
+      ],
+      "run_config_path": null,
+      "run_intent_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl000_run_config\\outputs\\run_intent_20260327-210336-773368.json",
+      "run_effective_config_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl000_run_config\\outputs\\run_effective_config_20260327-210336-773368.json",
+      "return_code": 0,
+      "status": "pass",
+      "elapsed_seconds": 0.789,
+      "stdout": "BL-007 playlist assembly complete.  Playlist: 10/10 tracks\nRun ID : BL007-ASSEMBLE-20260327-210339-741066\nGenre mix : {'pop': 4, 'country': 2, 'rock': 1, 'classic rock': 1, 'synthpop': 1, 'indie rock': 1}",
+      "stderr": ""
+    },
+    {
+      "stage_id": "BL-008",
+      "script_path": "07_implementation/implementation_notes/bl008_transparency/build_bl008_explanation_payloads.py",
+      "command": [
+        "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\.venv\\Scripts\\python.exe",
+        "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl008_transparency\\build_bl008_explanation_payloads.py"
+      ],
+      "run_config_path": null,
+      "run_intent_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl000_run_config\\outputs\\run_intent_20260327-210336-773368.json",
+      "run_effective_config_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl000_run_config\\outputs\\run_effective_config_20260327-210336-773368.json",
+      "return_code": 0,
+      "status": "pass",
+      "elapsed_seconds": 0.629,
+      "stdout": "BL-008 explanation payloads complete. Tracks explained: 10\nRun ID: BL008-EXPLAIN-20260327-210340-630246\n  pos= 1  K9cIKiIeOF5aZuXa  top=Lead genre match\n  pos= 2  PZVW1IbNypbxdfwM  top=Lead genre match\n  pos= 3  p7erNsELhOy7B0z1  top=Danceability\n  pos= 4  q2qwzkRyzMqaf61y  top=Danceability\n  pos= 5  NGf9Wz4FwqROSB6a  top=Lead genre match\n  pos= 6  nd4vejLsgjjhl55B  top=Lead genre match\n  pos= 7  klFSyJqiipFN08TK  top=Tag overlap\n  pos= 8  okNFLrHiaSgfH8Vk  top=Danceability\n  pos= 9  xlhEtPW7WjlmFDSr  top=Tempo (BPM)\n  pos=10  SO5PPiQfzES0jpkf  top=Danceability",
+      "stderr": ""
+    },
+    {
+      "stage_id": "BL-009",
+      "script_path": "07_implementation/implementation_notes/bl009_observability/build_bl009_observability_log.py",
+      "command": [
+        "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\.venv\\Scripts\\python.exe",
+        "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl009_observability\\build_bl009_observability_log.py"
+      ],
+      "run_config_path": null,
+      "run_intent_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl000_run_config\\outputs\\run_intent_20260327-210336-773368.json",
+      "run_effective_config_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl000_run_config\\outputs\\run_effective_config_20260327-210336-773368.json",
+      "return_code": 0,
+      "status": "pass",
+      "elapsed_seconds": 1.399,
+      "stdout": "BL-009 observability logging complete.\nrun_log=C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl009_observability\\outputs\\bl009_run_observability_log.json\nrun_index=C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl009_observability\\outputs\\bl009_run_index.csv\nrun_id=BL009-OBSERVE-20260327-210341-863131",
+      "stderr": ""
+    }
+  ],
+  "stage_diagnostics": {
+    "bl006_distribution": {
+      "available": true,
+      "path": "07_implementation/implementation_notes/bl006_scoring/outputs/bl006_score_distribution_diagnostics.json",
+      "rank_cliff": {
+        "detected": false,
+        "rank_2_to_3_gap": 0.004219,
+        "max_gap": {
+          "between_rank": 7,
+          "next_rank": 8,
+          "score_gap": 0.009506
+        },
+        "classification": "smooth"
+      }
+    },
+    "bl007_assembly_pressure": {
+      "available": true,
+      "path": "07_implementation/implementation_notes/bl007_playlist/outputs/bl007_assembly_report.json",
+      "rank_continuity_diagnostics": {
+        "selected_ranks": [
+          1,
+          2,
+          84,
+          85,
+          86,
+          87,
+          178,
+          469,
+          846,
+          884
+        ],
+        "max_selected_rank": 884,
+        "median_selected_rank": 87,
+        "rank_2_to_3_score_gap": 0.090833,
+        "rank_cliff_detected": false
+      },
+      "assembly_pressure_diagnostics": {
+        "top_100_considered": 100,
+        "top_100_excluded": 94,
+        "top_100_exclusion_reason_counts": {
+          "consecutive_genre_run": 81,
+          "genre_cap_exceeded": 13
+        },
+        "dominant_top_100_exclusion_reason": "consecutive_genre_run"
+      }
+    }
+  },
+  "stable_artifact_hashes": {
+    "bl004_seed_trace": "AFE227D05077A35D970973E060EB6C95DC6FD62E17081E0666DF9CD2D5D6BEC2",
+    "bl005_filtered_candidates": "26E64A12BDE7C4F36A0EB940B26082BDF1A9C0A299BABBC241991D581BEBB62F",
+    "bl005_candidate_decisions": "2E1619A16BD3BEFA1171C927BB17C6082A311A9421D53ED183AC1E820ACD86F6",
+    "bl006_scored_candidates": "FE79CE8AA9E0D1C25202A82549B88A999424C60583F3325D0B93DCB015482C6D",
+    "bl007_assembly_trace": "E1DD1CA622C4C8158D9AA79E03118E0FC7153CBEE3ACF818B32DCCA49924A121"
+  },
+  "missing_stable_artifacts": [],
+  "notes": {
+    "purpose": "Lightweight wrapper to run existing BL-004..BL-009 scripts in one command.",
+    "repeatability_check_guidance": "Compare stable_artifact_hashes between repeated runs under unchanged inputs/config."
+  }
+}

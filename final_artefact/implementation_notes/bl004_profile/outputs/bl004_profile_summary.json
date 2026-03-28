@@ -1,0 +1,106 @@
+{
+  "run_id": "BL004-PROFILE-20260327-210832-945966",
+  "task": "BL-004",
+  "user_id": "214f23jw73wgv4vdpcjabds2a",
+  "config_source": "run_config",
+  "run_config_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl000_run_config\\configs\\profiles\\run_config_ui013_tuning_v2b_language_recency_gate.json",
+  "run_config_schema_version": "run-config-v1",
+  "input_scope": {
+    "source_family": "spotify_api_export",
+    "include_top_tracks": true,
+    "top_time_ranges": [
+      "short_term",
+      "medium_term",
+      "long_term"
+    ],
+    "include_saved_tracks": true,
+    "saved_tracks_limit": null,
+    "include_playlists": true,
+    "playlists_limit": null,
+    "playlist_items_per_playlist_limit": null,
+    "include_recently_played": true,
+    "recently_played_limit": 50
+  },
+  "matched_seed_count": 1064,
+  "total_effective_weight": 2322.377778,
+  "dominant_lead_genres": [
+    {
+      "label": "pop",
+      "weight": 397.7
+    },
+    {
+      "label": "classic rock",
+      "weight": 344.377778
+    },
+    {
+      "label": "rock",
+      "weight": 258.5
+    },
+    {
+      "label": "electronic",
+      "weight": 149.7
+    },
+    {
+      "label": "rap",
+      "weight": 136.9
+    }
+  ],
+  "dominant_tags": [
+    {
+      "label": "rock",
+      "weight": 987.577778
+    },
+    {
+      "label": "pop",
+      "weight": 738.977778
+    },
+    {
+      "label": "classic rock",
+      "weight": 610.777778
+    },
+    {
+      "label": "70s",
+      "weight": 342.477778
+    },
+    {
+      "label": "alternative",
+      "weight": 306.6
+    }
+  ],
+  "dominant_genres": [
+    {
+      "label": "rock",
+      "weight": 987.577778
+    },
+    {
+      "label": "pop",
+      "weight": 738.977778
+    },
+    {
+      "label": "classic rock",
+      "weight": 610.777778
+    },
+    {
+      "label": "electronic",
+      "weight": 263.4
+    },
+    {
+      "label": "singer-songwriter",
+      "weight": 227.077778
+    }
+  ],
+  "feature_centers": {
+    "danceability": 0.580756,
+    "energy": 0.610953,
+    "valence": 0.508762,
+    "tempo": 121.255237
+  },
+  "artifact_paths": {
+    "profile_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl004_profile\\outputs\\bl004_preference_profile.json",
+    "seed_trace_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl004_profile\\outputs\\bl004_seed_trace.csv"
+  },
+  "input_hashes": {
+    "seed_table_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl003_alignment\\outputs\\bl003_ds001_spotify_seed_table.csv",
+    "seed_table_sha256": "21afa5f89df0eb1b5b1ad9ade76ff7dca2b528b69f19dd259ef048eaa9cc6928"
+  }
+}

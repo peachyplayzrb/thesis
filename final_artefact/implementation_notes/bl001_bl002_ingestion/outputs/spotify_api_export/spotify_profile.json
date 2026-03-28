@@ -1,0 +1,32 @@
+{
+  "country": "MT",
+  "display_name": "T",
+  "explicit_content": {
+    "filter_enabled": false,
+    "filter_locked": false
+  },
+  "external_urls": {
+    "spotify": "https://open.spotify.com/user/214f23jw73wgv4vdpcjabds2a"
+  },
+  "followers": {
+    "href": null,
+    "total": 20
+  },
+  "href": "https://api.spotify.com/v1/users/214f23jw73wgv4vdpcjabds2a",
+  "id": "214f23jw73wgv4vdpcjabds2a",
+  "images": [
+    {
+      "height": 300,
+      "url": "https://i.scdn.co/image/ab6775700000ee852d558106d1b606852a01db6e",
+      "width": 300
+    },
+    {
+      "height": 64,
+      "url": "https://i.scdn.co/image/ab67757000003b822d558106d1b606852a01db6e",
+      "width": 64
+    }
+  ],
+  "product": "premium",
+  "type": "user",
+  "uri": "spotify:user:214f23jw73wgv4vdpcjabds2a"
+}

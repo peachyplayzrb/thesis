@@ -1,0 +1,57 @@
+"""Explanation selection helpers for BL-008 transparency."""
+
+from __future__ import annotations
+
+
+def build_why_selected(
+    lead_genre: str,
+    final_score: float,
+    top_contributors: list[dict[str, object]],
+    playlist_position: int,
+    top_contributor_limit: int,
+) -> str:
+    """Build the human-readable explanation sentence."""
+    top_labels = [
+        str(c.get("label", "Unknown"))
+        for c in top_contributors[:top_contributor_limit]
+    ]
+    contributors_str = ", ".join(top_labels)
+    return (
+        f"Selected at playlist position {playlist_position} "
+        f"(score {final_score:.4f}) because it strongly matches the preference profile "
+        f"on {contributors_str}. "
+        f"Lead genre is '{lead_genre}'."
+    )
+
+
+def select_primary_explanation_driver(
+    top_contributors: list[dict[str, object]],
+    playlist_position: int,
+    *,
+    enable_near_tie_blend: bool,
+    near_tie_delta: float,
+) -> dict[str, object]:
+    """Select the primary explanation driver with optional near-tie rotation."""
+    if not top_contributors:
+        return {
+            "component": "unknown",
+            "label": "Unknown",
+            "weight": 0.0,
+            "similarity": 0.0,
+            "contribution": 0.0,
+        }
+
+    if not enable_near_tie_blend or len(top_contributors) == 1:
+        return top_contributors[0]
+
+    best = float(top_contributors[0].get("contribution", 0.0))
+    near_tied = [
+        c
+        for c in top_contributors
+        if best - float(c.get("contribution", 0.0)) <= near_tie_delta
+    ]
+    if len(near_tied) <= 1:
+        return top_contributors[0]
+
+    idx = (max(int(playlist_position), 1) - 1) % len(near_tied)
+    return near_tied[idx]

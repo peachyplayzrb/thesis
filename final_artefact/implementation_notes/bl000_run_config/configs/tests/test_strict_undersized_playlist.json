@@ -1,0 +1,12 @@
+{
+  "schema_version": "run-config-v1",
+  "seed_controls": {
+    "match_rate_min_threshold": 0.3
+  },
+  "assembly_controls": {
+    "target_size": 10,
+    "min_score_threshold": 0.6,
+    "max_per_genre": 1,
+    "max_consecutive": 1
+  }
+}

@@ -1,0 +1,114 @@
+{
+  "run_id": "BL005-FILTER-20260327-203452-338075",
+  "task": "BL-005",
+  "generated_at_utc": "2026-03-27T20:34:55Z",
+  "input_artifacts": {
+    "profile_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl004_profile\\outputs\\bl004_preference_profile.json",
+    "profile_sha256": "6bd69e204f623c03e89294272973529ee9dd301a5e1a51194360797c9f8426c5",
+    "seed_trace_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl004_profile\\outputs\\bl004_seed_trace.csv",
+    "seed_trace_sha256": "afe227d05077a35d970973e060eb6c95dc6fd62e17081e0666df9cd2d5d6bec2",
+    "candidate_stub_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl000_data_layer\\outputs\\ds001_working_candidate_dataset.csv",
+    "candidate_stub_sha256": "296331ca6390d2c111aa336c7eb154b69ec7060604312ac8a274f545b68a04ef"
+  },
+  "config": {
+    "top_lead_genre_limit": 6,
+    "top_tag_limit": 10,
+    "top_genre_limit": 8,
+    "numeric_thresholds": {
+      "danceability": 0.2,
+      "energy": 0.2,
+      "valence": 0.2,
+      "tempo": 20.0,
+      "key": 2.0,
+      "mode": 0.5,
+      "duration_ms": 45000.0
+    },
+    "numeric_feature_mapping": {
+      "danceability": "danceability",
+      "energy": "energy",
+      "valence": "valence",
+      "tempo": "tempo",
+      "key": "key",
+      "mode": "mode",
+      "duration_ms": "duration_ms"
+    },
+    "numeric_features_enabled": true,
+    "keep_rule": "keep if not seed and (semantic_score >= 2 or (semantic_score >= 1 and numeric_pass_count >= 1))",
+    "semantic_source": "ds001_tags_and_genres_columns"
+  },
+  "counts": {
+    "candidate_rows_total": 109269,
+    "seed_tracks_excluded": 1064,
+    "kept_candidates": 70680,
+    "rejected_non_seed_candidates": 37525
+  },
+  "rule_hits": {
+    "semantic_rule_hits": {
+      "lead_genre_match": 37604,
+      "genre_overlap": 62883,
+      "tag_overlap": 65787
+    },
+    "numeric_rule_hits": {
+      "danceability": 79060,
+      "energy": 52505,
+      "valence": 51914,
+      "tempo": 54842,
+      "key": 40093,
+      "mode": 68257,
+      "duration_ms": 58469
+    }
+  },
+  "decision_path_counts": {
+    "keep_strong_semantic": 60049,
+    "reject_numeric_without_semantic_support": 36780,
+    "keep_semantic_numeric_supported": 10631,
+    "reject_no_signal": 698,
+    "reject_seed_track": 1064,
+    "reject_semantic_without_numeric_support": 47
+  },
+  "score_distributions": {
+    "semantic_score": {
+      "0": 37625,
+      "1": 10749,
+      "2": 27160,
+      "3": 33735
+    },
+    "numeric_pass_count": {
+      "0": 1015,
+      "1": 5728,
+      "2": 14502,
+      "3": 25624,
+      "4": 30115,
+      "5": 22083,
+      "6": 8753,
+      "7": 1449
+    }
+  },
+  "top_kept_track_ids": [
+    "0009fFIM1eYThaPg",
+    "002Jyd0vN4HyCpqL",
+    "00CH4HJdxQQQbJfu",
+    "00DZ3XCAQb2FdCc6",
+    "00IeldeA9ijZOL0P",
+    "00KSCJkYb8JKa4Y3",
+    "00LuPWdOccBb09bW",
+    "00XWljDxNBgBKEEA",
+    "00b6fV3nx5z2b8Ls",
+    "00hFmpewuNvc4dRL",
+    "00i0OB17z3m3yamO",
+    "00mLjKFmaTv9MdaB",
+    "00uLdNEc6yXbIxyW",
+    "00wqHIO65EtRyRQM",
+    "013BFFjvohJT9dW9"
+  ],
+  "elapsed_seconds": 2.778,
+  "output_files": {
+    "filtered_candidates_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl005_retrieval\\outputs\\bl005_filtered_candidates.csv",
+    "candidate_decisions_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl005_retrieval\\outputs\\bl005_candidate_decisions.csv"
+  },
+  "output_hashes_sha256": {
+    "bl005_filtered_candidates.csv": "f4b06c299884e662dc8fdcc85ce0fe1de7f30513906d68dc835399c7b4ae6211",
+    "bl005_candidate_decisions.csv": "2dbca9d3648450b5c07b7cdb4225127c00fa704e236650e8731cd4cc794d902a"
+  },
+  "diagnostics_hash_note": "diagnostics file does not store its own hash to avoid recursive self-reference"
+}

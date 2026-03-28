@@ -1,0 +1,78 @@
+{
+  "run_id": "BL007-ASSEMBLE-20260327-203500-671413",
+  "generated_at_utc": "2026-03-27T20:35:00Z",
+  "elapsed_seconds": 0.513,
+  "config": {
+    "target_size": 10,
+    "min_score_threshold": 0.35,
+    "max_per_genre": 4,
+    "max_consecutive": 2
+  },
+  "counts": {
+    "candidates_evaluated": 70680,
+    "tracks_included": 10,
+    "tracks_excluded": 70670
+  },
+  "rule_hits": {
+    "R3_consecutive_run": 114,
+    "R2_genre_cap": 348,
+    "R4_length_cap": 70208
+  },
+  "undersized_playlist_warning": {
+    "is_undersized": false,
+    "target_size": 10,
+    "actual_size": 10,
+    "shortfall": 0,
+    "exclusion_reason_counts": {
+      "consecutive_genre_run": 114,
+      "genre_cap_exceeded": 348,
+      "length_cap_reached": 70208
+    },
+    "reasons": []
+  },
+  "playlist_genre_mix": {
+    "pop": 4,
+    "classic rock": 2,
+    "new wave": 1,
+    "country": 2,
+    "rock": 1
+  },
+  "playlist_score_range": {
+    "max": 0.743017,
+    "min": 0.548147
+  },
+  "rank_continuity_diagnostics": {
+    "selected_ranks": [
+      1,
+      2,
+      117,
+      118,
+      119,
+      170,
+      248,
+      249,
+      275,
+      472
+    ],
+    "max_selected_rank": 472,
+    "median_selected_rank": 170,
+    "rank_2_to_3_score_gap": 0.125387,
+    "rank_cliff_detected": true
+  },
+  "assembly_pressure_diagnostics": {
+    "top_100_considered": 100,
+    "top_100_excluded": 98,
+    "top_100_exclusion_reason_counts": {
+      "consecutive_genre_run": 98
+    },
+    "dominant_top_100_exclusion_reason": "consecutive_genre_run"
+  },
+  "input_artifact_hashes": {
+    "bl006_scored_candidates.csv": "16F88709E729624230DBA9A88E8434D39FF78B6BFED8EFDB4465428A89BBDAAE"
+  },
+  "output_artifact_hashes": {
+    "bl007_playlist.json": "768E4650D477D9B46D3A6C151C7905A42DBADA6F235AB437668F4B056ACF6CEB",
+    "bl007_assembly_trace.csv": "6576C1D5504D2FC63E406F09D453FA568B37150D31390DED5AF092638DAFDA16",
+    "bl007_assembly_detail_log.json": "770B218EE83DCFE182D6F8862E816677F59D2561364ACBB3A4BAD6A5F40E93D2"
+  }
+}

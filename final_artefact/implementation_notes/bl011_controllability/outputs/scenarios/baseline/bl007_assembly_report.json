@@ -1,0 +1,31 @@
+{
+  "run_id": "BL011-BASELINE-BL007-20260327-203521-614241",
+  "task": "BL-007",
+  "scenario_id": "baseline",
+  "config": {
+    "target_size": 10,
+    "min_score_threshold": 0.35,
+    "max_per_genre": 4,
+    "max_consecutive": 2
+  },
+  "counts": {
+    "candidates_evaluated": 33096,
+    "tracks_included": 10,
+    "tracks_excluded": 33086
+  },
+  "rule_hits": {
+    "R1_score_threshold": 0,
+    "R2_genre_cap": 122,
+    "R3_consecutive_run": 26,
+    "R4_length_cap": 32938
+  },
+  "playlist_genre_mix": {
+    "classic rock": 4,
+    "pop": 4,
+    "rock": 2
+  },
+  "playlist_score_range": {
+    "max": 0.741029,
+    "min": 0.648858
+  }
+}

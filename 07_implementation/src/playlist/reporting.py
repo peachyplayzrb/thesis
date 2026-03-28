@@ -1,0 +1,123 @@
+"""Diagnostics builders for BL-007 playlist assembly."""
+
+from __future__ import annotations
+
+from collections import Counter
+
+from shared_utils.parsing import safe_float, safe_int
+
+
+def build_undersized_diagnostics(
+    target_size: int,
+    playlist_size: int,
+    candidates_evaluated: int,
+    trace_rows: list[dict[str, object]],
+) -> dict[str, object]:
+    """Build diagnostics for undersized playlist outcomes."""
+    is_undersized = playlist_size < target_size
+    exclusion_counts = Counter(
+        str(row.get("exclusion_reason") or "")
+        for row in trace_rows
+        if row.get("decision") == "excluded" and row.get("exclusion_reason")
+    )
+
+    reasons: list[str] = []
+    if is_undersized:
+        shortfall = target_size - playlist_size
+        reasons.append(
+            f"final playlist length is {playlist_size}/{target_size} (shortfall={shortfall})"
+        )
+        if candidates_evaluated < target_size:
+            reasons.append(
+                f"candidate pool is smaller than target size ({candidates_evaluated} < {target_size})"
+            )
+        for reason, count in exclusion_counts.most_common(3):
+            reasons.append(f"exclusion pressure: {reason} ({count} rows)")
+
+    return {
+        "is_undersized": is_undersized,
+        "target_size": target_size,
+        "actual_size": playlist_size,
+        "shortfall": max(0, target_size - playlist_size),
+        "exclusion_reason_counts": dict(exclusion_counts),
+        "reasons": reasons,
+    }
+
+
+def build_rank_continuity_diagnostics(
+    playlist: list[dict[str, object]],
+) -> dict[str, object]:
+    """Build rank continuity and rank-cliff diagnostics for selected tracks."""
+    selected_ranks = [safe_int(track["score_rank"], 0) for track in playlist]
+    selected_scores = [safe_float(track["final_score"], 0.0) for track in playlist]
+    max_selected_rank = max(selected_ranks) if selected_ranks else 0
+    median_selected_rank = (
+        sorted(selected_ranks)[len(selected_ranks) // 2] if selected_ranks else 0
+    )
+    rank_2_to_3_gap = 0.0
+    if len(selected_scores) >= 3:
+        rank_2_to_3_gap = round(selected_scores[1] - selected_scores[2], 6)
+
+    return {
+        "selected_ranks": selected_ranks,
+        "max_selected_rank": max_selected_rank,
+        "median_selected_rank": median_selected_rank,
+        "rank_2_to_3_score_gap": rank_2_to_3_gap,
+        "rank_cliff_detected": rank_2_to_3_gap >= 0.1,
+    }
+
+
+def build_assembly_pressure_diagnostics(
+    trace_rows: list[dict[str, object]],
+) -> dict[str, object]:
+    """Build diagnostics for exclusion pressure within the top-ranked window."""
+    top_100_rows = [row for row in trace_rows if safe_int(row["score_rank"], 0) <= 100]
+    top_100_excluded = [row for row in top_100_rows if row["decision"] == "excluded"]
+    reason_counts = Counter(
+        str(row.get("exclusion_reason") or "")
+        for row in top_100_excluded
+        if row.get("exclusion_reason")
+    )
+    return {
+        "top_100_considered": len(top_100_rows),
+        "top_100_excluded": len(top_100_excluded),
+        "top_100_exclusion_reason_counts": dict(reason_counts),
+        "dominant_top_100_exclusion_reason": (
+            reason_counts.most_common(1)[0][0] if reason_counts else None
+        ),
+    }
+
+
+def build_assembly_detail_log(
+    trace_rows: list[dict[str, object]],
+) -> dict[str, object]:
+    """Build detail rows for top-ranked candidate decisions."""
+    top_100_rows = [row for row in trace_rows if safe_int(row["score_rank"], 0) <= 100]
+    included_ranks = sorted(
+        safe_int(row["score_rank"], 0)
+        for row in trace_rows
+        if row["decision"] == "included"
+    )
+
+    detail_rows: list[dict[str, object]] = []
+    for row in top_100_rows:
+        current_rank = safe_int(row["score_rank"], 0)
+        alternative_rank = next(
+            (rank for rank in included_ranks if rank > current_rank),
+            None,
+        )
+        detail_rows.append(
+            {
+                "score_rank": current_rank,
+                "track_id": row["track_id"],
+                "final_score": safe_float(row["final_score"], 0.0),
+                "decision": row["decision"],
+                "exclusion_reason": row.get("exclusion_reason", ""),
+                "selected_alternative_rank": alternative_rank,
+            }
+        )
+
+    return {
+        "top_rank_window": 100,
+        "rows": detail_rows,
+    }

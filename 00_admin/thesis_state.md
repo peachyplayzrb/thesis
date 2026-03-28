@@ -1,6 +1,6 @@
 # Thesis State
 
-Last updated: 2026-03-28 03:46 UTC (chapter hardening pass after admin-first synchronization)
+Last updated: 2026-03-28 04:18 UTC (handoff sync pass after repository swap and cleanup)
 
 ## Official Current State
 
@@ -84,6 +84,8 @@ Priority status checkpoint (2026-03-28 03:41 UTC): Admin-first synchronization p
 
 Priority status checkpoint (2026-03-28 03:46 UTC): Chapter hardening execution is now in progress with first-pass implementation applied. `08_writing/chapter3.md` alignment-limitation metrics were synchronized to canonical baseline wording (`match_rate=0.1595`, threshold posture aligned to v1f controls), and `08_writing/chapter4.md` Sections 4.8 to 4.10 were populated with run-linked reproducibility/controllability/rule-compliance/explanation-fidelity results. Chapter 4 readiness gate for rule-compliance/failure-case write-through is now closed in `09_quality_control/chapter_readiness_checks.md`.
 
+Priority status checkpoint (2026-03-28 04:18 UTC): Handoff synchronization pass completed before branch push. Repository content swap requested by user is now in place (`07_implementation` carries the implementation package runtime surface; `final_artefact` holds prior baseline-content snapshot), stale nested verification output folders and stale pytest cache were removed, and admin control files were updated to log this transition state explicitly.
+
 Priority status checkpoint (2026-03-28 closing pass): All in-repo QC and implementation tasks are complete. Code hygiene refactor closed (C-197): `safe_int` centralized in `shared_utils/parsing.py`, duplicate helpers removed from 3 modules, 181/181 tests pass, pyright clean on all edited files. Canonical run IDs synchronized across backlog, manifest, thesis_state, and chapter evidence tables (C-198). UI-003 verdict matrix fully closed: `supported=18`, `mismatch=0`, `weak_support=0` in `09_quality_control/ui003_claim_verdicts_ch3_ch5.md`. Chapter 2 verbatim audit gate closed: Ru et al. wording hardened to task-specific multi-label genre classification scope; rerun confirmed `total_claim_checks=40`, `weak_support=0` in `09_quality_control/chapter2_verbatim_audit.md` (C-199). All chapter readiness gates marked complete in `09_quality_control/chapter_readiness_checks.md`. Only remaining action is external submission packaging (Canvas deadline, cover/declaration template, Turnitin package assembly).
 
 ## Current Implementation Status
@@ -129,10 +131,11 @@ See: `07_implementation/BL020_HANDOFF_AUDIT_2026-03-21.md` for comprehensive pre
 ## Update Control
 
 - Last updated:
-2026-03-28 (closing pass)
+2026-03-28 (handoff sync pass)
 
 - Reason for last update:
 (1) Code hygiene refactor: `safe_int` centralized in `shared_utils/parsing.py`, duplicate helpers removed from `playlist/rules.py`, `playlist/reporting.py`, and `ingestion/ingest_history_parser.py`; 181/181 tests pass; pyright clean (C-197). (2) Canonical run ID sync and UI-003 mismatch closure: `mismatch=0`, `weak_support=0` across verdict matrix and all tracking docs (C-198). (3) Chapter 2 verbatim audit gate closed at `weak_support=0` after Ru et al. wording hardening; gate marked `[x]` in `09_quality_control/chapter_readiness_checks.md` (C-199). (4) All chapter readiness gates now complete; only external submission-packaging remains open.
+ (5) Handoff synchronization and layout transition captured: repository content swap completed per user request (`07_implementation` <-> `final_artefact` content exchange), stale nested verification outputs/cache removed, and admin records updated for push-ready continuity (C-147).
 
 ## Locked Definitions
 - Artefact scope lock: `00_admin/Artefact_MVP_definition.md`

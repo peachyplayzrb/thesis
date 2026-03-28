@@ -1,0 +1,133 @@
+{
+  "run_id": "BL005-FILTER-20260327-210834-483838",
+  "task": "BL-005",
+  "generated_at_utc": "2026-03-27T21:08:38Z",
+  "input_artifacts": {
+    "profile_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl004_profile\\outputs\\bl004_preference_profile.json",
+    "profile_sha256": "4cb9f585d4daf1440970e4ea9e57fb0d6d314510332205bda32c4a34c58e0b9c",
+    "seed_trace_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl004_profile\\outputs\\bl004_seed_trace.csv",
+    "seed_trace_sha256": "afe227d05077a35d970973e060eb6c95dc6fd62e17081e0666df9cd2d5d6bec2",
+    "candidate_stub_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl000_data_layer\\outputs\\ds001_working_candidate_dataset.csv",
+    "candidate_stub_sha256": "296331ca6390d2c111aa336c7eb154b69ec7060604312ac8a274f545b68a04ef"
+  },
+  "config": {
+    "top_lead_genre_limit": 6,
+    "top_tag_limit": 10,
+    "top_genre_limit": 8,
+    "numeric_thresholds": {
+      "danceability": 0.15,
+      "energy": 0.15,
+      "valence": 0.15,
+      "tempo": 15.0,
+      "key": 1.5,
+      "mode": 0.5,
+      "duration_ms": 30000.0,
+      "release_year": 8.0
+    },
+    "language_filter": {
+      "enabled": true,
+      "codes": [
+        "en"
+      ]
+    },
+    "recency_gate": {
+      "years_min_offset": 15,
+      "current_year_utc": 2026,
+      "min_release_year": 2011
+    },
+    "numeric_feature_mapping": {
+      "danceability": "danceability",
+      "energy": "energy",
+      "valence": "valence",
+      "tempo": "tempo",
+      "key": "key",
+      "mode": "mode",
+      "duration_ms": "duration_ms",
+      "release_year": "release"
+    },
+    "numeric_features_enabled": true,
+    "keep_rule": "keep if not seed and (semantic_score >= 3 or (semantic_score >= 1 and numeric_pass_count >= 4))",
+    "semantic_source": "ds001_tags_and_genres_columns"
+  },
+  "counts": {
+    "candidate_rows_total": 109269,
+    "seed_tracks_excluded": 1064,
+    "kept_candidates": 17840,
+    "rejected_non_seed_candidates": 90365,
+    "rejected_by_language_filter": 25075,
+    "rejected_by_recency_gate": 42828
+  },
+  "rule_hits": {
+    "semantic_rule_hits": {
+      "lead_genre_match": 37604,
+      "genre_overlap": 62883,
+      "tag_overlap": 65787
+    },
+    "numeric_rule_hits": {
+      "danceability": 64434,
+      "energy": 39672,
+      "valence": 38811,
+      "tempo": 43163,
+      "key": 27332,
+      "mode": 68257,
+      "duration_ms": 40982,
+      "release_year": 20262
+    }
+  },
+  "decision_path_counts": {
+    "reject_recency_gate": 42828,
+    "reject_numeric_without_semantic_support": 13093,
+    "reject_language_filter": 25075,
+    "keep_strong_semantic": 12338,
+    "reject_semantic_without_numeric_support": 8882,
+    "keep_semantic_numeric_supported": 5502,
+    "reject_no_signal": 487,
+    "reject_seed_track": 1064
+  },
+  "score_distributions": {
+    "semantic_score": {
+      "0": 37625,
+      "1": 10749,
+      "2": 27160,
+      "3": 33735
+    },
+    "numeric_pass_count": {
+      "0": 2170,
+      "1": 10624,
+      "2": 23069,
+      "3": 30353,
+      "4": 25429,
+      "5": 13043,
+      "6": 3943,
+      "7": 601,
+      "8": 37
+    }
+  },
+  "top_kept_track_ids": [
+    "00KSCJkYb8JKa4Y3",
+    "00b6fV3nx5z2b8Ls",
+    "00uLdNEc6yXbIxyW",
+    "01EKNot8qVgZpKM7",
+    "01I5p010ajulr0O5",
+    "01Kgo55olDKOHxQz",
+    "01OcWE6ZDS0RAb4I",
+    "01ZrNpwRWi7Ymdp5",
+    "01roaWOWaMzXjMOV",
+    "02H3FqI0CSBlYFo7",
+    "02JeIZCvClyeiCA2",
+    "02kJNQnTgvS2rS7d",
+    "0396S8l04hSNqgvk",
+    "03LtQbTmxkIPDSau",
+    "03QgQw5LI8x5RTQK"
+  ],
+  "elapsed_seconds": 4.076,
+  "output_files": {
+    "filtered_candidates_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl005_retrieval\\outputs\\bl005_filtered_candidates.csv",
+    "candidate_decisions_path": "C:\\Users\\peach\\Desktop\\thesis-main (3)\\thesis-main\\thesis-main\\07_implementation\\implementation_notes\\bl005_retrieval\\outputs\\bl005_candidate_decisions.csv"
+  },
+  "output_hashes_sha256": {
+    "bl005_filtered_candidates.csv": "a291f6c732683890e0ea284b0c22fa86971fdaa8690e24854bdbcf79a31eb685",
+    "bl005_candidate_decisions.csv": "3c26373b1f889b82956468a2bd6de9f4157b5863e7503514ded61fcf0026a863"
+  },
+  "diagnostics_hash_note": "diagnostics file does not store its own hash to avoid recursive self-reference"
+}

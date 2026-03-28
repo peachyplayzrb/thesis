@@ -1,0 +1,101 @@
+"""
+Shared constants for implementation stages.
+
+Centralizes feature specifications, default values, and other constants
+that were previously duplicated across multiple stages.
+"""
+
+# BL-003 Alignment Default Weights (for seed table preference weighting)
+DEFAULT_TOP_RANGE_WEIGHTS = {
+    "short_term": 0.50,
+    "medium_term": 0.30,
+    "long_term": 0.20,
+}
+DEFAULT_SOURCE_BASE_WEIGHTS = {
+    "top_tracks": 1.00,
+    "saved_tracks": 0.60,
+    "playlist_items": 0.40,
+    "recently_played": 0.50,
+}
+DEFAULT_SOURCE_BASE_WEIGHT_FALLBACK = 0.25
+
+# BL-005 Candidate Filtering Default Values
+DEFAULT_PROFILE_TOP_LEAD_GENRE_LIMIT = 6
+DEFAULT_PROFILE_TOP_TAG_LIMIT = 10
+DEFAULT_PROFILE_TOP_GENRE_LIMIT = 8
+DEFAULT_SEMANTIC_STRONG_KEEP_SCORE = 2
+DEFAULT_SEMANTIC_MIN_KEEP_SCORE = 1
+DEFAULT_NUMERIC_SUPPORT_MIN_PASS = 1
+DEFAULT_LANGUAGE_FILTER_ENABLED = False
+DEFAULT_LANGUAGE_FILTER_CODES: list[str] = []
+DEFAULT_RECENCY_YEARS_MIN_OFFSET: int | None = None
+
+# BL-006 Score Reporting Thresholds (for categorizing final scores)
+DEFAULT_PERFECT_SCORE_THRESHOLD = 0.99
+DEFAULT_ABOVE_THRESHOLD_SCORE = 0.50
+
+# BL-006 Default Scoring Component Weights
+DEFAULT_SCORING_COMPONENT_WEIGHTS = {
+    "danceability": 0.10,
+    "energy": 0.10,
+    "valence": 0.08,
+    "tempo": 0.10,
+    "duration_ms": 0.07,
+    "key": 0.06,
+    "mode": 0.04,
+    "lead_genre": 0.17,
+    "genre_overlap": 0.12,
+    "tag_overlap": 0.16,
+}
+
+# BL-001/BL-002 Ingestion Resilience Defaults
+DEFAULT_API_CACHE_TTL_SECONDS = 60 * 60 * 24  # 24 hours
+DEFAULT_API_THROTTLE_SLEEP_SEC = 0.12  # 120ms between calls
+DEFAULT_API_MAX_RETRIES = 6
+DEFAULT_API_BASE_DELAY_SEC = 1.0  # Base exponential backoff
+
+# Numeric features that are valid only when both the BL-004 profile and the
+# candidate dataset provide comparable values.
+# Each spec defines a candidate column, distance threshold, and whether the dimension is circular.
+NUMERIC_FEATURE_SPECS = {
+    "danceability": {
+        "candidate_column": "danceability",
+        "threshold": 0.20,
+        "circular": False,
+    },
+    "energy": {
+        "candidate_column": "energy",
+        "threshold": 0.20,
+        "circular": False,
+    },
+    "valence": {
+        "candidate_column": "valence",
+        "threshold": 0.20,
+        "circular": False,
+    },
+    "tempo": {
+        "candidate_column": "tempo",
+        "threshold": 20.0,
+        "circular": False,
+    },
+    "key": {
+        "candidate_column": "key",
+        "threshold": 2.0,
+        "circular": True,
+    },
+    "mode": {
+        "candidate_column": "mode",
+        "threshold": 0.5,
+        "circular": False,
+    },
+    "duration_ms": {
+        "candidate_column": "duration_ms",
+        "threshold": 45000.0,
+        "circular": False,
+    },
+    "release_year": {
+        "candidate_column": "release",
+        "threshold": 8.0,
+        "circular": False,
+    },
+}

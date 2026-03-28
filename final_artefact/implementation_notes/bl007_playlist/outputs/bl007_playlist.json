@@ -1,0 +1,84 @@
+{
+  "run_id": "BL007-ASSEMBLE-20260327-210841-196807",
+  "generated_at_utc": "2026-03-27T21:08:41Z",
+  "elapsed_seconds": 0.187,
+  "config": {
+    "target_size": 10,
+    "min_score_threshold": 0.35,
+    "max_per_genre": 4,
+    "max_consecutive": 2
+  },
+  "playlist_length": 10,
+  "tracks": [
+    {
+      "playlist_position": 1,
+      "track_id": "uzzXWHcGTzC3ipD4",
+      "lead_genre": "pop",
+      "final_score": 0.692344,
+      "score_rank": 1
+    },
+    {
+      "playlist_position": 2,
+      "track_id": "V1h2Q8uHtnIqbahp",
+      "lead_genre": "pop",
+      "final_score": 0.68239,
+      "score_rank": 2
+    },
+    {
+      "playlist_position": 3,
+      "track_id": "klFSyJqiipFN08TK",
+      "lead_genre": "rock",
+      "final_score": 0.448464,
+      "score_rank": 2798
+    },
+    {
+      "playlist_position": 4,
+      "track_id": "qgwm7iDNVCOtWxve",
+      "lead_genre": "pop",
+      "final_score": 0.448456,
+      "score_rank": 2799
+    },
+    {
+      "playlist_position": 5,
+      "track_id": "97oSvVoNR4aH4ShM",
+      "lead_genre": "pop",
+      "final_score": 0.448444,
+      "score_rank": 2800
+    },
+    {
+      "playlist_position": 6,
+      "track_id": "1a3eLiT2OOPS2wse",
+      "lead_genre": "singer-songwriter",
+      "final_score": 0.41182,
+      "score_rank": 5099
+    },
+    {
+      "playlist_position": 7,
+      "track_id": "5Yax8HzeaHHWZ5hp",
+      "lead_genre": "classic rock",
+      "final_score": 0.402094,
+      "score_rank": 5422
+    },
+    {
+      "playlist_position": 8,
+      "track_id": "61b96CQqexdJHAn4",
+      "lead_genre": "rock",
+      "final_score": 0.40026,
+      "score_rank": 5451
+    },
+    {
+      "playlist_position": 9,
+      "track_id": "dZG90iuYYFIuksa2",
+      "lead_genre": "rock",
+      "final_score": 0.395796,
+      "score_rank": 5519
+    },
+    {
+      "playlist_position": 10,
+      "track_id": "gadbmFD3ed72REmk",
+      "lead_genre": "soft rock",
+      "final_score": 0.390788,
+      "score_rank": 5608
+    }
+  ]
+}

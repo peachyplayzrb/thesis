@@ -1,0 +1,1065 @@
+event_id,track_id,spotify_track_id,spotify_artist,spotify_title,interaction_type,signal_source,seed_rank,interaction_count,preference_weight,effective_weight,lead_genre,top_tag,numeric_feature_coverage,lastfm_status
+ds001_seed_000001,0SZzDlqkVto82lT8,3DK6m7It6Pw857FcQftMds,Kanye West,Runaway,history,ds001_seed_table,1,35,3.5,3.5,hip hop,hip-hop,1,not_applicable_ds001
+ds001_seed_000002,0cQdObcXUyY1tLkj,2EQWbkcNoKPOXQtJM7nqRV,Labi Siffre,My Song,history,ds001_seed_table,2,16,1.6,1.6,soul,piano,1,not_applicable_ds001
+ds001_seed_000003,0f5VsyaVnlGiaFKU,3YKptz29AsOlm7WAVnztBh,Seal,Kiss from a Rose,history,ds001_seed_table,3,16,1.6,1.6,pop,pop,1,not_applicable_ds001
+ds001_seed_000004,0h1DZxZGq5dT1g0I,62KZRwymXq9Rgm8Cm5UCfx,Frank Sinatra,The World We Knew (Over And Over),history,ds001_seed_table,4,31,3.1,3.1,swing,swing,1,not_applicable_ds001
+ds001_seed_000005,0h8G1bhVFVP6G9Km,12oxsGACfwMozi4nK9noGQ,Crystal Castles,Suffocation,history,ds001_seed_table,5,25,2.5,2.5,electronic,poptron,1,not_applicable_ds001
+ds001_seed_000006,0h9H6j3eKLXdIy9B,52DKGPMQ21DauCR19pQ0BK,Lynyrd Skynyrd,That Smell,history,ds001_seed_table,6,10,1.0,1.0,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000007,0kLmYF9ryiLpl4Ik,5Gy6XmBcmCZ6xQ4p729ldE,Crystal Castles,Violent Youth,history,ds001_seed_table,7,31,3.1,3.1,electronic,electronic,1,not_applicable_ds001
+ds001_seed_000008,0nWfiiw6TgdCNuYe,0GjEhVFGZW8afUYGChu3Rr,ABBA,Dancing Queen,history,ds001_seed_table,8,60,6.0,6.0,disco,disco,1,not_applicable_ds001
+ds001_seed_000009,109IXnS5xSfF7I3I,19Shlms2uTnOjIUg50TXzd,Fleetwood Mac,Never Going Back Again,history,ds001_seed_table,9,25,2.5,2.5,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000010,11J7t26d1VAPstc2,2ZRo7axmMPeSVUvDbGkJah,XXXTentacion,HOPE,history,ds001_seed_table,10,10,1.0,1.0,rap,hip-hop,1,not_applicable_ds001
+ds001_seed_000011,12SaUULMCYJRudhD,7068X4wz4hhlhzj0cTlXU4,Mandy Moore,Cry,history,ds001_seed_table,11,25,2.5,2.5,pop,pop,1,not_applicable_ds001
+ds001_seed_000012,12etOXoBRGtTNOHE,2fiMQ44VojtY1IODTpRlnh,The Isley Brothers,Summer Breeze,history,ds001_seed_table,12,10,1.0,1.0,soul,soul,1,not_applicable_ds001
+ds001_seed_000013,140Y8sFnpDCyMd3d,77xZFu9TwwYnX7JNWfbavn,alt-J,Matilda,history,ds001_seed_table,13,10,1.0,1.0,indie rock,alternative,1,not_applicable_ds001
+ds001_seed_000014,15CxeKsD9DvqCVhY,3KfbEIOC7YIv90FIfNSZpo,The Beatles,In My Life,history,ds001_seed_table,14,25,2.5,2.5,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000015,15FubSjThciWXy1G,31JwK4iHCf75rnQWoMPU5t,Jason Derulo,Talk Dirty (feat. 2 Chainz),history,ds001_seed_table,15,10,1.0,1.0,pop,rnb,1,not_applicable_ds001
+ds001_seed_000016,15ukFL1GV2TKixoZ,4jDmJ51x1o9NZB5Nxxc7gY,George Michael,Careless Whisper,history,ds001_seed_table,16,6,0.6,0.6,pop,80s,1,not_applicable_ds001
+ds001_seed_000017,1AJJKAWvMLhJbr4V,4mzI0FX6EsfATmFNoKXkpR,Giuseppe Verdi,Dies irae,history,ds001_seed_table,17,10,1.0,1.0,classical,classical,1,not_applicable_ds001
+ds001_seed_000018,1E4zW8q8ix7FmfMF,0pdKRp2sUthTPe7RLWpPqQ,Flora Cash,You're Somebody Else,history,ds001_seed_table,18,6,0.6,0.6,folk,2018 single,1,not_applicable_ds001
+ds001_seed_000019,1LVCIU4fWhE8ms3W,63Pi2NAx5yCgeLhCTOrEou,Imogen Heap,Headlock,history,ds001_seed_table,19,25,2.5,2.5,electronic,lush,1,not_applicable_ds001
+ds001_seed_000020,1LXzq4JEYjTGVAu3,1iWgFnhR0oW5Mup8yXDAPW,Otherwise,Soldiers,history,ds001_seed_table,20,56,5.6,5.6,rock,rock,1,not_applicable_ds001
+ds001_seed_000021,1NSrxYWqrIUfYJlG,7zMUCLm1TN9o9JlLISztxO,Elvis Presley,Burning Love,history,ds001_seed_table,21,10,1.0,1.0,rock,rock n roll,1,not_applicable_ds001
+ds001_seed_000022,1PJMQl1maBvOGwlj,1ymC664RHrROyr4G4KhxXg,OVERWERK,Create,history,ds001_seed_table,22,6,0.6,0.6,electronic,electronic,1,not_applicable_ds001
+ds001_seed_000023,1PfP9hjZwp7HQVkW,0ivHDucXMbjTjiU4lMIkBO,Lou Reed,Coney Island Baby,history,ds001_seed_table,23,10,1.0,1.0,rock,rock,1,not_applicable_ds001
+ds001_seed_000024,1Pfvty4majWz07HO,4bH4V6scr0RXTEX492Yzwc,One Way,Cutie Pie,history,ds001_seed_table,24,10,1.0,1.0,funk,funk,1,not_applicable_ds001
+ds001_seed_000025,1R1kHNgqw5IWRkbu,4bN43jYf41eIjJZ3UXQpuA,John Lennon,Hold On,history,ds001_seed_table,25,50,5.0,5.0,rock,cookie,1,not_applicable_ds001
+ds001_seed_000026,1RJxTKSQPAskFbxh,0TDLuuLlV54CkRRUOahJb4,David Guetta,Titanium (feat. Sia),history,ds001_seed_table,26,50,5.0,5.0,electronic,dance,1,not_applicable_ds001
+ds001_seed_000027,1e1Mcad1me9BW4I5,3kXKHXZmaw57l7gu4Rn11x,Duster,The Breakup Suite,history,ds001_seed_table,27,50,5.0,5.0,space rock,slowcore,1,not_applicable_ds001
+ds001_seed_000028,1kCw7s6PF0jYdyl4,52Bg6oaos7twR7IUtEpqcE,Elliott Smith,Between the Bars,history,ds001_seed_table,28,25,2.5,2.5,singer-songwriter,fip,1,not_applicable_ds001
+ds001_seed_000029,1mbkGw4hvKIjAqPt,59xhCcRskqyMtKzdvLZDfV,Billy Joel,Allentown,history,ds001_seed_table,29,10,1.0,1.0,rock,rock,1,not_applicable_ds001
+ds001_seed_000030,1sB1EkYi3nTqSUgJ,7n3WO6ESKS1uCI9fgkGs66,Ten Years After,I'd Love to Change the World - 2004 Remaster,history,ds001_seed_table,30,10,1.0,1.0,classic rock,blues rock,1,not_applicable_ds001
+ds001_seed_000031,1sVeWGYrfzvci1Ez,4QTIn0nZY2cIkanPX62vdT,Shlohmo,Hopeless,history,ds001_seed_table,31,16,1.6,1.6,experimental,experimental,1,not_applicable_ds001
+ds001_seed_000032,1uOAA86MIfB4vgid,2Lhdl74nwwVGOE2Gv35QuK,Gym Class Heroes,Cupid's Chokehold,history,ds001_seed_table,32,25,2.5,2.5,rap,hip-hop,1,not_applicable_ds001
+ds001_seed_000033,1zu5jVcv8bMMBQeB,1oTHteQbmJw15rPxPVXUTv,Cypress Hill,Insane in the Brain,history,ds001_seed_table,33,10,1.0,1.0,rap,hip-hop,1,not_applicable_ds001
+ds001_seed_000034,22YI5YceDuG0QoOj,64hZX40A8Z14efLfF0JjwT,Moby,Lift Me Up,history,ds001_seed_table,34,10,1.0,1.0,electronic,electronic,1,not_applicable_ds001
+ds001_seed_000035,22h3peROPWFmg2Fx,0WCiI0ddWiu5F2kSHgfw5S,Kesha,Take It Off,history,ds001_seed_table,35,10,1.0,1.0,pop,dance,1,not_applicable_ds001
+ds001_seed_000036,23aA0GPz7veDbuJs,2NBQmPrOEEjA8VbeWOQGxO,Snoop Dogg,Drop It Like It's Hot,history,ds001_seed_table,36,10,1.0,1.0,rap,hip-hop,1,not_applicable_ds001
+ds001_seed_000037,26wY3PtByn0RBOYk,0Z57YWES04xGh3AImDz6Qr,Father John Misty,Real Love Baby,history,ds001_seed_table,37,10,1.0,1.0,folk,folk,1,not_applicable_ds001
+ds001_seed_000038,29qPz9aGO6jdkDqm,0U87auHx1iZTEFcq9KVdmO,Green Day,Boulevard of Broken Dreams,history,ds001_seed_table,38,10,1.0,1.0,rock,rock,1,not_applicable_ds001
+ds001_seed_000039,2FL4WLRSWf6rLjNd,2tznHmp70DxMyr2XhWLOW0,Cage the Elephant,Cigarette Daydreams,history,ds001_seed_table,39,10,1.0,1.0,alternative rock,alternative rock,1,not_applicable_ds001
+ds001_seed_000040,2HFsFMY433xQqSUM,6dBUzqjtbnIa1TwYbyw5CM,TV Girl,Lovers Rock,history,ds001_seed_table,40,50,5.0,5.0,indie pop,2014,1,not_applicable_ds001
+ds001_seed_000041,2UbyfJ2ads4YvskN,6kCJMxv445L2okuTiou1fR,Billy Joel,Tell Her About It,history,ds001_seed_table,41,50,5.0,5.0,pop,80s,1,not_applicable_ds001
+ds001_seed_000042,2ZmZ8o1XdjMEfXKe,1G391cbiT3v3Cywg8T7DM1,Red Hot Chili Peppers,Scar Tissue,history,ds001_seed_table,42,10,1.0,1.0,rock,rock,1,not_applicable_ds001
+ds001_seed_000043,2cAZUa9MxtzDspgl,4LD5p1sSp97yp86E2zDZwK,Tame Impala,Desire Be Desire Go,history,ds001_seed_table,43,20,2.0,2.0,psychedelic rock,psychedelic rock,1,not_applicable_ds001
+ds001_seed_000044,2dz5irjqGlXlJ3fX,0PCduL4v5QEEKqeRUv7TEC,Joep Beving,The Gift,history,ds001_seed_table,44,25,2.5,2.5,contemporary classical,piano,1,not_applicable_ds001
+ds001_seed_000045,2iN5zookG3le4vqI,3rZtJBEvgcG2yZlkaTH9TD,Ryan Adams,Nuclear,history,ds001_seed_table,45,6,0.6,0.6,singer-songwriter,singer-songwriter,1,not_applicable_ds001
+ds001_seed_000046,2qPuAJ7Q7dBIyg0V,5y788ya4NvwhBznoDIcXwK,Simon & Garfunkel,"Wednesday Morning, 3 A.M.",history,ds001_seed_table,46,10,1.0,1.0,folk,60s,1,not_applicable_ds001
+ds001_seed_000047,2qyKesnC8z0qNywe,5p9XWUdvbUzmPCukOmwoU3,KT Tunstall,Suddenly I See,history,ds001_seed_table,47,10,1.0,1.0,pop,pop,1,not_applicable_ds001
+ds001_seed_000048,2reTAz0NP2hVHRna,0YuePEX4KyfLIPMdNLPwgQ,Tame Impala,Endors Toi,history,ds001_seed_table,48,16,1.6,1.6,psychedelic rock,psychedelic rock,1,not_applicable_ds001
+ds001_seed_000049,2yArja7FuST1MJd2,5gRcv46AMTrosmTOqrOV3Q,Nirvana,Dumb,history,ds001_seed_table,49,10,1.0,1.0,grunge,grunge,1,not_applicable_ds001
+ds001_seed_000050,32F98qQgIfyuA3rh,4HlFJV71xXKIGcU3kRyttv,Train,"Hey, Soul Sister",history,ds001_seed_table,50,10,1.0,1.0,pop,pop,1,not_applicable_ds001
+ds001_seed_000051,3JKd3B55HUasdT4h,7Cuk8jsPPoNYQWXK9XRFvG,"Earth, Wind & Fire",September,history,ds001_seed_table,51,10,1.0,1.0,funk,funk,1,not_applicable_ds001
+ds001_seed_000052,3LtA77ONujiGvb0F,0NWPxcsf5vdjdiFUI8NgkP,Jimi Hendrix,Hey Joe,history,ds001_seed_table,52,10,1.0,1.0,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000053,3N44mC5RNTa17Epv,1n7xFAY4xoPeqRvrkzAtsw,Queen,Good Old-Fashioned Lover Boy - Remastered 2011,history,ds001_seed_table,53,10,1.0,1.0,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000054,3T1QmxISGOkyWsz7,0aym2LBJBk9DAYuHHutrIl,The Beatles,Hey Jude - Remastered 2015,history,ds001_seed_table,54,10,1.0,1.0,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000055,3Y38upRWxIOVg0Uq,3yUcJwYu7fXAfqMj9krY6l,Dido,Thank You,history,ds001_seed_table,55,25,2.5,2.5,pop,pop,1,not_applicable_ds001
+ds001_seed_000056,3bWjKtVMcf4WxJXB,4OV0sRTFrZLXaZZ1sS9hLn,The Alan Parsons Project,Sirius,history,ds001_seed_table,56,10,1.0,1.0,progressive rock,progressive rock,1,not_applicable_ds001
+ds001_seed_000057,3d7YHOa8v4AvWEV9,6lFZbCc7pn6Lme1NP7qQqQ,The Rolling Stones,You Can't Always Get What You Want,history,ds001_seed_table,57,10,1.0,1.0,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000058,3faYOQ867TjLuWQz,26PwuMotZqcczKLHi4Htz3,Bob Marley & The Wailers,Redemption Song,history,ds001_seed_table,58,10,1.0,1.0,reggae,reggae,1,not_applicable_ds001
+ds001_seed_000059,3mEwzTmHiwL7RYYB,6nGUM3Z0FNJZW9wbNj97Ig,The Chemical Brothers,Block Rockin' Beats,history,ds001_seed_table,59,10,1.0,1.0,electronic,electronic,1,not_applicable_ds001
+ds001_seed_000060,3oJflRW3ftkj1IYu,2VEZx7NWsZ1D0eJ4uv5Fym,Daft Punk,Digital Love,history,ds001_seed_table,60,10,1.0,1.0,electronic,electronic,1,not_applicable_ds001
+ds001_seed_000061,3q9c7eDhgc5kN9lS,3G0ENKW9vzV0SuYKaWFflI,Elton John,Nikita,history,ds001_seed_table,61,10,1.0,1.0,pop,pop,1,not_applicable_ds001
+ds001_seed_000062,3uW7vRPZg1rDThEV,27tNWlhdAryQY04Gb2ZhUI,Katy Perry,Roar,history,ds001_seed_table,62,10,1.0,1.0,pop,pop,1,not_applicable_ds001
+ds001_seed_000063,3vpLjr47A2ANetid,2vwlzO0Qp8kfEtzTsCXfyE,Miley Cyrus,Wrecking Ball,history,ds001_seed_table,63,10,1.0,1.0,pop,pop,1,not_applicable_ds001
+ds001_seed_000064,3zbT1J1fitktP7TP,2DHgvPQD1jApRnT1DBZdrS,Coldplay,High Speed,history,ds001_seed_table,64,25,2.5,2.5,rock,rock,1,not_applicable_ds001
+ds001_seed_000065,42efOlK7gQ5gH5eo,1P9523tBg56NRc78lX2i4l,Elvis Costello & The Attractions,Everyday I Write the Book,history,ds001_seed_table,65,10,1.0,1.0,singer-songwriter,80s,1,not_applicable_ds001
+ds001_seed_000066,44B4LvdJBuKDVja9,7zwn1eykZtZ5LODrf7c0tS,The Neighbourhood,You Get Me So High,history,ds001_seed_table,66,10,1.0,1.0,indie rock,indie,1,not_applicable_ds001
+ds001_seed_000067,48mxqBW7ebNE2WuE,4Hhv2vrOTy89HFRcjU3QOx,Etta James,At Last,history,ds001_seed_table,67,10,1.0,1.0,soul,soul,1,not_applicable_ds001
+ds001_seed_000068,4G3r1ru4rFVJSOAS,0Dkibk70FDp6t7eOZNemNQ,Ludovico Einaudi,Una Mattina,history,ds001_seed_table,68,25,2.5,2.5,classical,piano,1,not_applicable_ds001
+ds001_seed_000069,4HbLZP6EW7KTGuP8,3BqqF8suAIzW8655yJfcvh,Cat Stevens,Morning Has Broken,history,ds001_seed_table,69,6,0.6,0.6,folk,folk,1,not_applicable_ds001
+ds001_seed_000070,4NVBaY8G8LtnJon6,63OQupATfueTdZMWTxW03A,Radiohead,Karma Police,history,ds001_seed_table,70,31,3.1,3.1,alternative rock,alternative,1,not_applicable_ds001
+ds001_seed_000071,4Qrv825yF8YcDqF0,2wAJTrFhCnQyNSD3oUgTZO,J. Cole,Work Out,history,ds001_seed_table,71,31,3.1,3.1,hip hop,hip-hop,1,not_applicable_ds001
+ds001_seed_000072,4S2N0UNI4K33uo3e,6gCVA6ja6g0foIsWv0RuSZ,System of a Down,ATWA,history,ds001_seed_table,72,10,1.0,1.0,alternative metal,alternative metal,1,not_applicable_ds001
+ds001_seed_000073,4U4OVmmnenJ5xGrp,4OSBTYWVwsQhGLF9NHvIbR,Adele,Rolling in the Deep,history,ds001_seed_table,73,31,3.1,3.1,soul,soul,1,not_applicable_ds001
+ds001_seed_000074,4WZ4nxbqfJL6D73I,2bcvooA6HEmVUneEGJnNZD,Jeff Buckley,Everybody Here Wants You,history,ds001_seed_table,74,55,5.5,5.5,rock,sexy,1,not_applicable_ds001
+ds001_seed_000075,4Wb6mkYeW0XuiUet,6qZjm61s6u8Ead9sWxCDro,Tame Impala,Elephant,history,ds001_seed_table,75,31,3.1,3.1,psychedelic rock,poptron,1,not_applicable_ds001
+ds001_seed_000076,4Y4l5B4IkrYncIqh,5vdp5UmvTsnMEMESIF2Ym7,Queen,Another One Bites The Dust - Remastered 2011,history,ds001_seed_table,76,25,2.5,2.5,rock,rock,1,not_applicable_ds001
+ds001_seed_000077,4oTCBnBQ389wmbQN,2RWFncSWZEhSRRifqiDNVV,Bryan Adams,Run to You,history,ds001_seed_table,77,25,2.5,2.5,rock,rock,1,not_applicable_ds001
+ds001_seed_000078,4rbvP2ZF2o9Bnv05,4CeeEOM32jQcH3eN9Q2dGj,Nirvana,Smells Like Teen Spirit,history,ds001_seed_table,78,10,1.0,1.0,grunge,grunge,1,not_applicable_ds001
+ds001_seed_000079,4v0ckwWCv2ags5jv,57yeWyaoeTt26p0dlEZukQ,Florence + the Machine,Spectrum (Say My Name) (Calvin Harris Remix),history,ds001_seed_table,79,31,3.1,3.1,house,dance,1,not_applicable_ds001
+ds001_seed_000080,4zOF93S2zfaD5h1a,2csA2nDUNR5TfQEn1I7nt4,Dinah Washington,September in the Rain,history,ds001_seed_table,80,10,1.0,1.0,jazz,jazz,1,not_applicable_ds001
+ds001_seed_000081,51XYIfDaAUgQXb5u,2w6JXokk0F8i241Y8C0Mn6,ABBA,"Honey, Honey",history,ds001_seed_table,81,10,1.0,1.0,pop,pop,1,not_applicable_ds001
+ds001_seed_000082,55DcTLYWMGMgRiWh,2cmRpmO04TLaKPzmAzySYZ,LCD Soundsystem,Dance Yrself Clean,history,ds001_seed_table,82,10,1.0,1.0,electronic,electronic,1,not_applicable_ds001
+ds001_seed_000083,569DDnQOSEyuJug9,0R8P9KfGJCDULmlEoBagcO,Coldplay,Trouble,history,ds001_seed_table,83,25,2.5,2.5,rock,alternative,1,not_applicable_ds001
+ds001_seed_000084,57kWBGxuEvgZTwoz,5BckPAYcKEJuYs1eV1BHHe,ABBA,Take a Chance on Me,history,ds001_seed_table,84,50,5.0,5.0,pop,pop,1,not_applicable_ds001
+ds001_seed_000085,5ETdBRySEeluPv63,1ZgMsA55GIY7ICkQh5MILA,Beach House,Space Song,history,ds001_seed_table,85,25,2.5,2.5,dream pop,dream pop,1,not_applicable_ds001
+ds001_seed_000086,5Fs5vJUXYzgwIFNx,5RLzsVW6UNiV2YrOlKwzNN,Frank Sinatra,Blue Moon,history,ds001_seed_table,86,10,1.0,1.0,swing,swing,1,not_applicable_ds001
+ds001_seed_000087,5KdyfCJMKBMbooOf,2AX5E86cn9n2dgioZEjirI,The Stranglers,Golden Brown,history,ds001_seed_table,87,6,0.6,0.6,new wave,80s,1,not_applicable_ds001
+ds001_seed_000088,5MWmsAPuhdOjPuAy,48p5E25cFPanxuwCTmTpuL,When In Rome,The Promise,history,ds001_seed_table,88,50,5.0,5.0,new wave,80s,1,not_applicable_ds001
+ds001_seed_000089,5R7xZqZcW8w3zKkB,0E2EPL6XnSe3gqjfLuJECb,Skee-Lo,I Wish,history,ds001_seed_table,89,21,2.1,2.1,rap,90s,1,not_applicable_ds001
+ds001_seed_000090,5Scqm76LNZOH38Jq,16EKGMPGE3f6X3p18CjtkB,Pixies,The Thing,history,ds001_seed_table,90,25,2.5,2.5,grunge,80s,1,not_applicable_ds001
+ds001_seed_000091,5Y0lOXpffflDWYpA,6FBzhcfgGacfXF3AmtfEaX,Steve Lacy,C U Girl,history,ds001_seed_table,91,10,1.0,1.0,free jazz,free jazz,1,not_applicable_ds001
+ds001_seed_000092,5ZkROTB0K8xuyg4c,72Z17vmmeQKAg8bptWvpVG,David Bowie,Space Oddity,history,ds001_seed_table,92,10,1.0,1.0,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000093,5Zn834QHgvahleW7,2R3heksil8zmzSFUwYQIPC,Crystal Castles,Empathy,history,ds001_seed_table,93,56,5.6,5.6,electronic,electronic,1,not_applicable_ds001
+ds001_seed_000094,5brUdw7l0lFtnpSE,5cxp9kjCFyJwzv3lzeX7ku,Disturbed,Inside the Fire,history,ds001_seed_table,94,50,5.0,5.0,metal,metal,1,not_applicable_ds001
+ds001_seed_000095,5lPeVYnf78m5UpXG,2kRFrWaLWiKq48YYVdGcm8,Radiohead,Everything in Its Right Place,history,ds001_seed_table,95,31,3.1,3.1,electronic,alternative,1,not_applicable_ds001
+ds001_seed_000096,5lkZg4aNjP8qnOu1,7D0RhFcb3CrfPuTJ0obrod,Coldplay,Sparks,history,ds001_seed_table,96,56,5.6,5.6,rock,rock,1,not_applicable_ds001
+ds001_seed_000097,5m32YRg5vATXRhTG,5gOd6zDC8vhlYjqbQdJVWP,Gerry Rafferty,Baker Street,history,ds001_seed_table,97,56,5.6,5.6,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000098,5mfkYLkpxt4qN4Df,2qHOJh86IKhNAstCFA46eL,Joep Beving,An Amalgamation Waltz 1839,history,ds001_seed_table,98,31,3.1,3.1,contemporary classical,piano,1,not_applicable_ds001
+ds001_seed_000099,5yuxfTfS1IQorM5r,7iL6o9tox1zgHpKUfh9vuC,50 Cent,In Da Club,history,ds001_seed_table,99,10,1.0,1.0,rap,hip-hop,1,not_applicable_ds001
+ds001_seed_000100,61akykdDh0XvmX6T,74SUn8w4lYSwgOGPvVZiEo,Lebanon Hanover,Tomb For Two,history,ds001_seed_table,100,56,5.6,5.6,post-punk,post-punk,1,not_applicable_ds001
+ds001_seed_000101,62k7avQ3Bk1LaNmW,0elmUoU7eMPwZX1Mw1MnQo,Frank Sinatra,Moon River,history,ds001_seed_table,101,10,1.0,1.0,jazz,jazz,1,not_applicable_ds001
+ds001_seed_000102,63EHEFeQvEOlUrWE,3EPXxR3ImUwfayaurPi3cm,Dean Lewis,Be Alright,history,ds001_seed_table,102,10,1.0,1.0,pop,pop,1,not_applicable_ds001
+ds001_seed_000103,69KaI7eSNxoMoe6Q,5ujBlp0aOSfDZuY2nWM2Tt,Sweet,Love Is Like Oxygen,history,ds001_seed_table,103,16,1.6,1.6,classic rock,70s,1,not_applicable_ds001
+ds001_seed_000104,6CLhAItze5KngG73,3qLZ866ZfaK0B0R5FIqXLG,The Cult,She Sells Sanctuary,history,ds001_seed_table,104,10,1.0,1.0,rock,rock,1,not_applicable_ds001
+ds001_seed_000105,6EzICdy0NRPVs4QL,0C3Q3ifKJXdvfzNISw6JXK,Madness,Our House,history,ds001_seed_table,105,10,1.0,1.0,ska,80s,1,not_applicable_ds001
+ds001_seed_000106,6G5o4WtQ9pprjq30,1WbhIxkn5ECsOwUm795iX1,Lil Peep,Star Shopping,history,ds001_seed_table,106,10,1.0,1.0,emo,emo,1,not_applicable_ds001
+ds001_seed_000107,6IbX6k5qfIkJKV2Y,2nGFzvICaeEWjIrBrL2RAx,Corinne Bailey Rae,Put Your Records On,history,ds001_seed_table,107,50,5.0,5.0,soul,soul,1,not_applicable_ds001
+ds001_seed_000108,6OiY1Zz1dEn1E78F,3G0EALIIp5DAeIERxXBHmo,The Kinks,Waterloo Sunset,history,ds001_seed_table,108,50,5.0,5.0,classic rock,60s,1,not_applicable_ds001
+ds001_seed_000109,6Pqz6EiSPFD4XS8x,4vaxvNDaLSoD36iZX515ug,Lil Xan,Betrayed,history,ds001_seed_table,109,6,0.6,0.6,rap,hip-hop,1,not_applicable_ds001
+ds001_seed_000110,6aBRbyBhpzINUaQK,5Q7adZgptimLsdWof0kW7B,Lorn,OXBOW B,history,ds001_seed_table,110,10,1.0,1.0,glitch hop,glitch hop,1,not_applicable_ds001
+ds001_seed_000111,6aW7evleI2c1U6fF,3zBhihYUHBmGd2bcQIobrF,Otis Redding,(Sittin' On) The Dock of the Bay,history,ds001_seed_table,111,16,1.6,1.6,soul,soul,1,not_applicable_ds001
+ds001_seed_000112,6d3nvmrH6r3q0zG8,4hYNZvsCnAOZP0lADhpmgC,Deftones,(L)MIRL,history,ds001_seed_table,112,10,1.0,1.0,alternative metal,alternative metal,1,not_applicable_ds001
+ds001_seed_000113,6fluaPrvDyHHRP7u,7qU7vhCPKhkDiJYGoboISc,Tame Impala,Apocalypse Dreams,history,ds001_seed_table,113,31,3.1,3.1,psychedelic rock,psychedelic rock,1,not_applicable_ds001
+ds001_seed_000114,6h80Ld7gYsfaRlJn,7cMFjxhbXBpOlais7KMF3j,Daft Punk,Voyager,history,ds001_seed_table,114,10,1.0,1.0,electronic,poptron,1,not_applicable_ds001
+ds001_seed_000115,6igibK2LLAxWLJty,3kbUFmLV5SHVQonfOpNgkd,Pink Floyd,San Tropez,history,ds001_seed_table,115,10,1.0,1.0,progressive rock,progressive rock,1,not_applicable_ds001
+ds001_seed_000116,6jPELSTj4w45V8Bm,3iohh4bLsUKefmjHw5jhbq,Tame Impala,Runway Houses City Clouds,history,ds001_seed_table,116,10,1.0,1.0,psychedelic rock,psychedelic rock,1,not_applicable_ds001
+ds001_seed_000117,6mR1ZSAlWHLb9SbN,3INsYP1Y8GG4qJvBsKCdXC,Queen,Don't Stop Me Now - ...Revisited,history,ds001_seed_table,117,10,1.0,1.0,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000118,6p38jfjctIdsc9wd,2LawezPeJhN4AWuSB0GtAU,Creedence Clearwater Revival,Have You Ever Seen the Rain,history,ds001_seed_table,118,25,2.5,2.5,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000119,6prZl5p9Hy4t9eul,6V7g6qM8wheMivMWrzbPTM,Flipp Dinero,Leave Me Alone,history,ds001_seed_table,119,16,1.6,1.6,rap,rap,1,not_applicable_ds001
+ds001_seed_000120,6sNF1PatKaEu7Feg,1QbOvACeYanja5pbnJbAmk,John Denver,"Take Me Home, Country Roads",history,ds001_seed_table,120,10,1.0,1.0,country,country,1,not_applicable_ds001
+ds001_seed_000121,6urvk94d6y3xZpvq,5ihS6UUlyQAfmp48eSkxuQ,Fleetwood Mac,Landslide,history,ds001_seed_table,121,50,5.0,5.0,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000122,6xzljncQnJE9c5hC,74miLQ09m6kSQu4f42rkJP,Bob Marley & The Wailers,No More Trouble,history,ds001_seed_table,122,10,1.0,1.0,reggae,reggae,1,not_applicable_ds001
+ds001_seed_000123,70hKKMIjgwW82xec,01iiEi9h8CQGUN2K1xBbTj,Tame Impala,List Of People (To Try And Forget About),history,ds001_seed_table,123,56,5.6,5.6,psychedelic rock,psychedelic rock,1,not_applicable_ds001
+ds001_seed_000124,7B2jR20M7DJQnjzp,3dkIE8P7hvl3tHl9KSb6dA,Édith Piaf,"Non, je ne regrette rien",history,ds001_seed_table,124,10,1.0,1.0,chanson,french,1,not_applicable_ds001
+ds001_seed_000125,7DHGJKy5B07aTAJx,23IJ5wLRhEZ9DOuia5mPiZ,The Who,Who Are You,history,ds001_seed_table,125,10,1.0,1.0,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000126,7ELJ2sVO3n3mZHVM,2JuasWPUodaUxf5nwNpciQ,Alice in Chains,Nutshell,history,ds001_seed_table,126,10,1.0,1.0,grunge,grunge,1,not_applicable_ds001
+ds001_seed_000127,7JTU0duuRqguRXR3,6rXG5o3QapxdoWtltSWWN3,Żabson,Trapollo,history,ds001_seed_table,127,10,1.0,1.0,rap,rap,1,not_applicable_ds001
+ds001_seed_000128,7NxXSo5Xly9ZHgyR,3a1lNhkSLSkpJE4MSHpDu9,Post Malone,Congratulations,history,ds001_seed_table,128,25,2.5,2.5,rap,rap,1,not_applicable_ds001
+ds001_seed_000129,7OHC4h6bd07pq3zH,73OIUNKRi2y24Cu9cOLrzM,Pink Floyd,On the Run,history,ds001_seed_table,129,10,1.0,1.0,progressive rock,progressive rock,1,not_applicable_ds001
+ds001_seed_000130,7Qumm8N7qnP1Rh91,2jQiSYrwJehQAcuaaQrXnS,Chase Atlantic,Friends,history,ds001_seed_table,130,6,0.6,0.6,rock,rnb,1,not_applicable_ds001
+ds001_seed_000131,7RETcXgtJOJJrdHb,4NTn0Yo8hTGW5tbBANBzfh,Ice Cube,You Can Do It,history,ds001_seed_table,131,10,1.0,1.0,rap,rap,1,not_applicable_ds001
+ds001_seed_000132,7RV8qywhsziRdKNK,6pWgRkpqVfxnj3WuIcJ7WP,Hans Zimmer,Cornfield Chase,history,ds001_seed_table,132,56,5.6,5.6,soundtrack,soundtrack,1,not_applicable_ds001
+ds001_seed_000133,7T6iNBAvaDIA8eM5,5rgrBsAFYMun6yhtnLKRPz,Bryson Tiller,Right My Wrongs,history,ds001_seed_table,133,10,1.0,1.0,hip hop,hip hop,1,not_applicable_ds001
+ds001_seed_000134,7bbCXbz5k2bdp6Kx,7qiZfU4dY1lWllzX7mPBI3,Ed Sheeran,Shape of You,history,ds001_seed_table,134,16,1.6,1.6,pop,pop,1,not_applicable_ds001
+ds001_seed_000135,7hdiuu05ukBgaKd4,5hALSggfcyvBNLUHY8pvZd,Eve,Who's That Girl?,history,ds001_seed_table,135,10,1.0,1.0,rap,hip-hop,1,not_applicable_ds001
+ds001_seed_000136,7s9HbLG6ol1RTlLv,2AiUFAeAsSR9lcpGxdc2Sj,4 Non Blondes,Spaceman,history,ds001_seed_table,136,25,2.5,2.5,rock,rock,1,not_applicable_ds001
+ds001_seed_000137,7wOljwtrC5BiovLj,3iA4foXIFpekwHyma7pRs1,Men at Work,Overkill,history,ds001_seed_table,137,25,2.5,2.5,new wave,80s,1,not_applicable_ds001
+ds001_seed_000138,82oFffiSwWLgg1Kp,6WkJ2OK163XXS2oARUC9JM,Aaron Smith,Dancin,history,ds001_seed_table,138,16,1.6,1.6,house,house,1,not_applicable_ds001
+ds001_seed_000139,84XQ4Sjt2rbfBrEt,0SiywuOBRcynK0uKGWdCnn,Lady Gaga,Bad Romance,history,ds001_seed_table,139,16,1.6,1.6,pop,pop,1,not_applicable_ds001
+ds001_seed_000140,8IGLn4ukOQRcid7O,3Jy0dWV5AnnfyTvHK6UWof,Art Garfunkel,Bright Eyes,history,ds001_seed_table,140,50,5.0,5.0,folk,folk,1,not_applicable_ds001
+ds001_seed_000141,8Ky7gD0ltCLDG7kH,68VCCqeujyd3SqmYAWB0lZ,The Jones Girls,Nights Over Egypt,history,ds001_seed_table,141,10,1.0,1.0,soul,soul,1,not_applicable_ds001
+ds001_seed_000142,8L0NYoham5YHm3XF,52ojopYMUzeNcudsoz7O9D,Tame Impala,"New Person, Same Old Mistakes",history,ds001_seed_table,142,31,3.1,3.1,psychedelic rock,psychedelic rock,1,not_applicable_ds001
+ds001_seed_000143,8NRhUyNiiSYvRbjL,3Dy4REq8O09IlgiwuHQ3sk,ABBA,Waterloo,history,ds001_seed_table,143,10,1.0,1.0,pop,pop,1,not_applicable_ds001
+ds001_seed_000144,8Ru0zKi4RmKM3UrW,2RsAajgo0g7bMCHxwH3Sk0,Nirvana,Come as You Are,history,ds001_seed_table,144,10,1.0,1.0,grunge,grunge,1,not_applicable_ds001
+ds001_seed_000145,8UL9KpU6T0remjaB,1Cj2vqUwlJVG27gJrun92y,Disturbed,The Sound of Silence,history,ds001_seed_table,145,10,1.0,1.0,rock,cover,1,not_applicable_ds001
+ds001_seed_000146,8UOUviqTPB72hSbQ,3BlS8PVpjxAcAkWdHlGOtY,Surf Curse,Forever Dumb,history,ds001_seed_table,146,10,1.0,1.0,lo-fi,lo-fi,1,not_applicable_ds001
+ds001_seed_000147,8XHxMqZ0mQ4Xss0G,4e9hUiLsN4mx61ARosFi7p,Rush,The Spirit of Radio,history,ds001_seed_table,147,25,2.5,2.5,progressive rock,progressive rock,1,not_applicable_ds001
+ds001_seed_000148,8foN1Ncj7EPgtWCa,2XHzzp1j4IfTNp1FTn7YFg,Lil' Wayne,Love Me,history,ds001_seed_table,148,31,3.1,3.1,rap,southern rap,1,not_applicable_ds001
+ds001_seed_000149,8keAhBJumHlc8qe9,57Xjny5yNzAcsxnusKmAfA,The Strokes,Reptilia,history,ds001_seed_table,149,10,1.0,1.0,indie rock,indie rock,1,not_applicable_ds001
+ds001_seed_000150,8lNPwRTNsL1VBbFj,6Up545NUflOiXo8cEraH49,Lauren Daigle,You Say,history,ds001_seed_table,150,10,1.0,1.0,gospel,gospel,1,not_applicable_ds001
+ds001_seed_000151,8nG0vZiRQXrHbrQK,57BrRMwf9LrcmuOsyGilwr,Linkin Park,Crawling,history,ds001_seed_table,151,25,2.5,2.5,nu metal,nu metal,1,not_applicable_ds001
+ds001_seed_000152,8uL4F1dwK5MUzJk3,10yY7i70r9wtllofw0GIpx,Fatboy Slim,Praise You,history,ds001_seed_table,152,6,0.6,0.6,electronic,electronic,1,not_applicable_ds001
+ds001_seed_000153,8xFD1UO8nr1qwOg6,34gCuhDGsG4bRPIf9bb02f,Ed Sheeran,Thinking Out Loud,history,ds001_seed_table,153,10,1.0,1.0,soul,soul,1,not_applicable_ds001
+ds001_seed_000154,8xrJB9uhruYJUVAL,1nZzRJbFvCEct3uzu04ZoL,Katy Perry,Part of Me,history,ds001_seed_table,154,10,1.0,1.0,pop,pop,1,not_applicable_ds001
+ds001_seed_000155,9CHzAeSHv9tWaIXW,3Ty7OTBNSigGEpeW2PqcsC,Portishead,Glory Box,history,ds001_seed_table,155,25,2.5,2.5,electronic,trip-hop,1,not_applicable_ds001
+ds001_seed_000156,9CLTmq6Ps7WVseF2,1xsYj84j7hUDDnTTerGWlH,Aerosmith,Dream On,history,ds001_seed_table,156,10,1.0,1.0,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000157,9EOUvfzk6eOb8KBd,1oAwsWBovWRIp7qLMGPIet,Cigarettes After Sex,Apocalypse,history,ds001_seed_table,157,31,3.1,3.1,dream pop,fip,1,not_applicable_ds001
+ds001_seed_000158,9G2z6hHoL7Wsvmg4,1SKPmfSYaPsETbRHaiA18G,Keane,Somewhere Only We Know,history,ds001_seed_table,158,6,0.6,0.6,britpop,britpop,1,not_applicable_ds001
+ds001_seed_000159,9I8RDzB6HPqkHKbP,35iCSlFxyiawRBUOtQAkeT,ABBA,Summer Night City,history,ds001_seed_table,159,10,1.0,1.0,pop,pop,1,not_applicable_ds001
+ds001_seed_000160,9L3wVAnFmedjj6o9,33JMMgxQKL3zJsZeMNC3gR,Tame Impala,Nothing That Has Happened So Far Has Been Anything We Could Control,history,ds001_seed_table,160,10,1.0,1.0,psychedelic rock,psychedelic rock,1,not_applicable_ds001
+ds001_seed_000161,9NjhYksb8jfyNHdI,44DCjBHfvn5s6ZfLHpKmBi,Timmy Trumpet,Freaks,history,ds001_seed_table,161,50,5.0,5.0,house,house,1,not_applicable_ds001
+ds001_seed_000162,9PB0ewyDzJTklpIQ,0NNCkIadCP6VnV7LeGL1zx,Moby,Natural Blues,history,ds001_seed_table,162,16,1.6,1.6,electronic,electronic,1,not_applicable_ds001
+ds001_seed_000163,9PUnKxg2n1co5JI1,6g4vHtdGqD5eEgpf7nKISk,Billy Joel,Don't Ask Me Why,history,ds001_seed_table,163,50,5.0,5.0,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000164,9RXfDd1AWl6hoJqk,3iZ5twPwvFeOUQA4Deu8tP,Fleetwood Mac,Albatross,history,ds001_seed_table,164,10,1.0,1.0,classic rock,instrumental,1,not_applicable_ds001
+ds001_seed_000165,9SLEBErmisxSGi5T,22sS7JkzeVeq4vOPCB6Fbj,Hozier,Someone New,history,ds001_seed_table,165,10,1.0,1.0,soul,soul,1,not_applicable_ds001
+ds001_seed_000166,9Vyh7gIzM5laPL1r,0wbnC9AUenxp613TYaJsGK,Migos,Narcos,history,ds001_seed_table,166,16,1.6,1.6,rap,hip-hop,1,not_applicable_ds001
+ds001_seed_000167,9aTiCxkUOzUbQaIA,2m4qhLcXkiYHT4ttRRajop,4 Non Blondes,Dear Mr. President,history,ds001_seed_table,167,25,2.5,2.5,rock,rock,1,not_applicable_ds001
+ds001_seed_000168,9an30Pot4mXST3p1,6PSKhwo0mVcOdjUOhVJd5p,Enrique Iglesias,Bailando - Spanish Version,history,ds001_seed_table,168,25,2.5,2.5,pop,pop,1,not_applicable_ds001
+ds001_seed_000169,9dH6vQtoNRNDUO88,1kPBT8S2wJFNAyBMnGVZgL,Etta James,Tell Mama,history,ds001_seed_table,169,10,1.0,1.0,soul,soul,1,not_applicable_ds001
+ds001_seed_000170,9fK9nmH8yEB93qkx,426lDtGrejS1wga7gmAmDv,Oliver Koletzki,No Man No Cry - Jimmy Sax Version,history,ds001_seed_table,170,6,0.6,0.6,minimal,minimal,1,not_applicable_ds001
+ds001_seed_000171,9fdbvjNodhEjD4ol,1vxw6aYJls2oq3gW0DujAo,Gnarls Barkley,Crazy,history,ds001_seed_table,171,31,3.1,3.1,soul,soul,1,not_applicable_ds001
+ds001_seed_000172,9kJvMvpo89JhMqDo,1LD75COdR1n8jTIjommyS2,The Rolling Stones,As Tears Go By,history,ds001_seed_table,172,50,5.0,5.0,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000173,9rvoWUrdiqVQwBUB,6ztstiyZL6FXzh4aG46ZPD,"Earth, Wind & Fire",Boogie Wonderland,history,ds001_seed_table,173,50,5.0,5.0,disco,disco,1,not_applicable_ds001
+ds001_seed_000174,9ziWMjkmNbJKtU8Y,1cCbsojaA6GIT7Y3zuMJ1q,Tame Impala,Nangs,history,ds001_seed_table,174,25,2.5,2.5,electronic,psychedelic,1,not_applicable_ds001
+ds001_seed_000175,A1BXGdlTukDnWY9D,5FgRDNmY9nB35EpUp8IB7Y,Bob Marley & The Wailers,Natural Mystic,history,ds001_seed_table,175,20,2.0,2.0,reggae,reggae,1,not_applicable_ds001
+ds001_seed_000176,A4AVCQCEZyieBjbf,4E6SMz8ioJ2jj8uQrULqWM,The Alan Parsons Project,The Turn Of A Friendly Card (Part One) - Part 1,history,ds001_seed_table,176,10,1.0,1.0,progressive rock,progressive rock radio,1,not_applicable_ds001
+ds001_seed_000177,A7dnMsCi1D6vaWkk,6SmV1Oo24nCZBPzIYkL4HZ,Tame Impala,Alter Ego,history,ds001_seed_table,177,10,1.0,1.0,psychedelic rock,psychedelic,1,not_applicable_ds001
+ds001_seed_000178,A8b2VDW6IlOl9SOu,1A8j067qyiNwQnZT0bzUpZ,Kungs,This Girl (Kungs Vs. Cookin' On 3 Burners),history,ds001_seed_table,178,50,5.0,5.0,house,2016,1,not_applicable_ds001
+ds001_seed_000179,A8kewYV75MUyN1Iz,0M955bMOoilikPXwKLYpoi,Three Days Grace,I Hate Everything About You,history,ds001_seed_table,179,10,1.0,1.0,alternative rock,alternative rock,1,not_applicable_ds001
+ds001_seed_000180,A9RW1cmrRkRGRJzC,5HOpkTTVcmZHnthgyxrIL8,Ylvis,The Fox (What Does The Fox Say?),history,ds001_seed_table,180,10,1.0,1.0,comedy,comedy,1,not_applicable_ds001
+ds001_seed_000181,ACJooOrpJl0RtQWa,2m0M7YqCy4lXfedh18qd8N,Madonna,Into the Groove,history,ds001_seed_table,181,10,1.0,1.0,pop,pop,1,not_applicable_ds001
+ds001_seed_000182,AIudGBRcdB1SloB8,72zZfHPYx43shcP3eKkYi5,Jet,Are You Gonna Be My Girl,history,ds001_seed_table,182,25,2.5,2.5,rock,rock,1,not_applicable_ds001
+ds001_seed_000183,AK6noKULayqIBX84,14rZjW3RioG7WesZhYESso,Yann Tiersen,"Comptine d'un autre été, L'Après-midi",history,ds001_seed_table,183,25,2.5,2.5,soundtrack,piano,1,not_applicable_ds001
+ds001_seed_000184,AUD4CPjTuomBqA7z,4Zc7TCHzuNwL0AFBlyLdyr,Iron Maiden,Run to the Hills - 2015 Remaster,history,ds001_seed_table,184,10,1.0,1.0,metal,heavy metal,1,not_applicable_ds001
+ds001_seed_000185,AZBVWao2R74fCGIs,46h7yzNgZQNuyn5BwBHQeS,Skepta,I Spy,history,ds001_seed_table,185,10,1.0,1.0,grime,grime,1,not_applicable_ds001
+ds001_seed_000186,AbFfzUrqOYHNZJnS,1NCuYqMc8hKMb4cpNTcJbD,Phil Collins,Another Day in Paradise,history,ds001_seed_table,186,50,5.0,5.0,pop,80s,1,not_applicable_ds001
+ds001_seed_000187,AbQHO1jNOSeCmTwH,4BP3uh0hFLFRb5cjsgLqDh,Creedence Clearwater Revival,Fortunate Son,history,ds001_seed_table,187,25,2.5,2.5,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000188,AbjlEcSMY5tjKc3D,4t6vrJg7GcUELCAxHX1z5W,Tame Impala,Half Full Glass Of Wine,history,ds001_seed_table,188,16,1.6,1.6,psychedelic rock,psychedelic rock,1,not_applicable_ds001
+ds001_seed_000189,AeEKbcGeUG3kIp41,6yjKlmm7vOszkXEUku1EM1,Billy Joel,New York State Of Mind,history,ds001_seed_table,189,50,5.0,5.0,singer-songwriter,piano,1,not_applicable_ds001
+ds001_seed_000190,AoIkE3E87vDDbEn5,09bRmFRViBORKQ2miwp04P,Air Supply,Even the Nights Are Better,history,ds001_seed_table,190,10,1.0,1.0,soft rock,80s,1,not_applicable_ds001
+ds001_seed_000191,Aq68vXrhLUoCtGP1,6bK9BH9Ts8Gj5JFvnQkzak,Sean Paul,Get Busy,history,ds001_seed_table,191,10,1.0,1.0,dancehall,dancehall,1,not_applicable_ds001
+ds001_seed_000192,AqPFZeUfSCNg7ge2,3IXRdLsQib8m0hBbQpe7T8,Cold War Kids,Hang Me Up to Dry,history,ds001_seed_table,192,10,1.0,1.0,indie rock,indie rock,1,not_applicable_ds001
+ds001_seed_000193,ArJGMpFcEtEpVMe4,7Ewz6bJ97vUqk5HdkvguFQ,Bryan Adams,Heaven,history,ds001_seed_table,193,25,2.5,2.5,rock,80s,1,not_applicable_ds001
+ds001_seed_000194,AslhT7HVUd7KOt4q,5eqK0tbzUPo2SoeZsov04s,21 Savage,Bank Account,history,ds001_seed_table,194,6,0.6,0.6,rap,hip-hop,1,not_applicable_ds001
+ds001_seed_000195,At1hCwT59BPuNp4L,4mn2kNTqiGLwaUR8JdhJ1l,The Animals,House of the Rising Sun,history,ds001_seed_table,195,56,5.6,5.6,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000196,AtVf0xx3Yy3EAsYk,6kwAbEjseqBob48jCus7Sz,Sia,Elastic Heart,history,ds001_seed_table,196,10,1.0,1.0,pop,pop,1,not_applicable_ds001
+ds001_seed_000197,AufaRWttOCrzAeWH,3Xls4cNOwy01dtrNXb1inG,Cream,White Room,history,ds001_seed_table,197,10,1.0,1.0,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000198,Av95cIVQILL3LsXk,24BYTj1tb5ovZcnIbtdTYD,Seekae,Test & Recognise - Flume Re-work,history,ds001_seed_table,198,37,3.7,3.7,ambient,ambient,1,not_applicable_ds001
+ds001_seed_000199,B3CURpV01czuf6jw,2K7xn816oNHJZ0aVqdQsha,The Neighbourhood,Softcore,history,ds001_seed_table,199,10,1.0,1.0,soft rock,alternative,1,not_applicable_ds001
+ds001_seed_000200,B5qJ9cFjwIkqhyF6,3GIChxHmuLmBm5PTNZGDtj,Bob Marley & The Wailers,Jamming,history,ds001_seed_table,200,10,1.0,1.0,reggae,reggae,1,not_applicable_ds001
+ds001_seed_000201,B9ZkPZuifU84ZUcR,0Q5YtY85lz5n7rQkeMNpoe,Eagles,Wasted Time,history,ds001_seed_table,201,25,2.5,2.5,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000202,BBiswLufo26YQCT7,1xzsEmaU4IXjvxxwQlA8Lz,Crystal Castles,Crimewave,history,ds001_seed_table,202,41,4.1,4.1,electronic,electronic,1,not_applicable_ds001
+ds001_seed_000203,BNol79A95QwklLnN,1PWnAEQcbwQwK759otUbta,Sam Smith,Writing's on the Wall,history,ds001_seed_table,203,10,1.0,1.0,soundtrack,british,1,not_applicable_ds001
+ds001_seed_000204,BVHQTf26BaHOM6G0,6sby78fghipoXHQLeeZFFH,Prince,When Doves Cry,history,ds001_seed_table,204,10,1.0,1.0,funk,80s,1,not_applicable_ds001
+ds001_seed_000205,BbjwoLBQtBZL1YfK,0j2T0R9dR9qdJYsB7ciXhf,Kanye West,Stronger,history,ds001_seed_table,205,25,2.5,2.5,rap,hip-hop,1,not_applicable_ds001
+ds001_seed_000206,BhMYgGwg3CZO5YlI,5VYTKiOnHw4iTrB9pG3yum,EMF,Unbelievable,history,ds001_seed_table,206,10,1.0,1.0,pop,90s,1,not_applicable_ds001
+ds001_seed_000207,BkvRhnEqbcLSBEI7,6bUNEbXT7HovLW6BgPCBsb,OutKast,Roses,history,ds001_seed_table,207,25,2.5,2.5,hip hop,hip-hop,1,not_applicable_ds001
+ds001_seed_000208,BuhmP3osoxMQPGNM,45EaIq9lKyoQxxTjFkiGbl,ABBA,Does Your Mother Know,history,ds001_seed_table,208,10,1.0,1.0,pop,pop,1,not_applicable_ds001
+ds001_seed_000209,ByvqB1PZmAM3eFfW,02tPqiXPgZWca1UrWKrkIn,Backstreet Boys,Christmas Time,history,ds001_seed_table,209,10,1.0,1.0,pop,christmas,1,not_applicable_ds001
+ds001_seed_000210,C0mhpBhouqyLmYSK,23l1kVpqMVREiwU1YAlcr4,Elton John,I Guess That's Why They Call It the Blues,history,ds001_seed_table,210,10,1.0,1.0,pop,pop,1,not_applicable_ds001
+ds001_seed_000211,C0o1DhYXRLTDfSCt,06hsdMbBxWGqBO0TV0Zrkf,Rednex,Cotton Eye Joe,history,ds001_seed_table,211,10,1.0,1.0,country,country,1,not_applicable_ds001
+ds001_seed_000212,C7EchcRY8IZwkkac,3d0WouFnFmr0K3kjeza3fF,Shakira,Hips Don't Lie (feat. Wyclef Jean),history,ds001_seed_table,212,66,6.6,6.6,pop,pop,1,not_applicable_ds001
+ds001_seed_000213,C96Kfe53yd3oodUk,0puf9yIluy9W0vpMEUoAnN,Jessie J,Bang Bang,history,ds001_seed_table,213,10,1.0,1.0,pop,pop,1,not_applicable_ds001
+ds001_seed_000214,C9q52Laezijgjs7R,1MIwRUsj23h7cYn6mNiqHw,Penguin Cafe Orchestra,Perpetuum Mobile,history,ds001_seed_table,214,10,1.0,1.0,classical,instrumental,1,not_applicable_ds001
+ds001_seed_000215,CAcfgsvOODhPqShX,6I9VzXrHxO9rA9A5euc8Ak,Britney Spears,Toxic,history,ds001_seed_table,215,25,2.5,2.5,pop,pop,1,not_applicable_ds001
+ds001_seed_000216,CHg9GmMQ74rgJjhq,5EWPGh7jbTNO2wakv8LjUI,Lynyrd Skynyrd,Free Bird,history,ds001_seed_table,216,25,2.5,2.5,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000217,CJjLRi8WG5zvK5d6,4Ouhoi2lAhrLJKFzUqEzwl,Lana Del Rey,Born to Die,history,ds001_seed_table,217,10,1.0,1.0,pop,indie,1,not_applicable_ds001
+ds001_seed_000218,CV1cYS3ulclC2pwO,7Aobt67JnaF7qN8jCCKvHq,The Beatles,Do You Want to Know a Secret,history,ds001_seed_table,218,10,1.0,1.0,rock,60s,1,not_applicable_ds001
+ds001_seed_000219,Cf9HTNzWqNwl2PLi,5jnxxpX2834SB6LJ0S73Uz,Lil' Wayne,Lollipop,history,ds001_seed_table,219,10,1.0,1.0,rap,lil wayne,1,not_applicable_ds001
+ds001_seed_000220,ChEJfwuYjfSqlJQO,3dPQuX8Gs42Y7b454ybpMR,The White Stripes,Seven Nation Army,history,ds001_seed_table,220,10,1.0,1.0,rock,rock,1,not_applicable_ds001
+ds001_seed_000221,CiLFjUJvYWGmyr2d,5hnyJvgoWiQUYZttV4wXy6,Snow Patrol,Chasing Cars,history,ds001_seed_table,221,10,1.0,1.0,rock,indie,1,not_applicable_ds001
+ds001_seed_000222,CsjELZP6Xga7rSEi,3uPfVXcjnpOjyzI3jb3js4,Sugar Ray,Fly,history,ds001_seed_table,222,10,1.0,1.0,pop,90s,1,not_applicable_ds001
+ds001_seed_000223,CuSWch9xFADOCJv0,49OMJ1prsRA7ZYgrAjz70c,Bee Gees,More Than a Woman,history,ds001_seed_table,223,50,5.0,5.0,disco,disco,1,not_applicable_ds001
+ds001_seed_000224,D44XDcB4jt8k2eV9,0ccCwNzXvr1Yoz91vKz31Z,The Flaming Lips,Yoshimi Battles the Pink Robots Pt. 1,history,ds001_seed_table,224,10,1.0,1.0,indie rock,alternative,1,not_applicable_ds001
+ds001_seed_000225,D4eo12t43gbqfsv0,3Osh3BJ2wtQpIHh8IMqs6P,Phantogram,Running From the Cops,history,ds001_seed_table,225,10,1.0,1.0,electronic,trip-hop,1,not_applicable_ds001
+ds001_seed_000226,D4jkqanFRv3zfugR,0pQskrTITgmCMyr85tb9qq,David Bowie,Starman (2012 Remastered Version),history,ds001_seed_table,226,10,1.0,1.0,glam rock,glam rock,1,not_applicable_ds001
+ds001_seed_000227,DBfwoe4Ks96QkP3u,5OPT7l9b5SMwfTQgLPoNl7,Erik Satie,Gymnopédie No.1,history,ds001_seed_table,227,15,1.5,1.5,classical,classical,1,not_applicable_ds001
+ds001_seed_000228,DDHtFOeWf1gnUmCY,7cv28LXcjAC3GsXbUvXKbX,Gloria Gaynor,I Will Survive - Extended Version,history,ds001_seed_table,228,10,1.0,1.0,disco,disco,1,not_applicable_ds001
+ds001_seed_000229,DDv8WQuQqeLtiAXD,3Z2tPWiNiIpg8UMMoowHIk,U.S.A. for Africa,We Are the World,history,ds001_seed_table,229,10,1.0,1.0,pop,pop,1,not_applicable_ds001
+ds001_seed_000230,DG39VzSQUIx0P3F6,4KW1lqgSr8TKrvBII0Brf8,Kanye West,Father Stretch My Hands Pt. 1,history,ds001_seed_table,230,25,2.5,2.5,rap,kid cudi,1,not_applicable_ds001
+ds001_seed_000231,DIenz1hGgjltkjQF,3dYD57lRAUcMHufyqn9GcI,Hozier,Take Me to Church,history,ds001_seed_table,231,25,2.5,2.5,soul,indie,1,not_applicable_ds001
+ds001_seed_000232,DMSPSXCv8UN5942f,3DamFFqW32WihKkTVlwTYQ,Owl City,Fireflies,history,ds001_seed_table,232,10,1.0,1.0,electronic,electronic,1,not_applicable_ds001
+ds001_seed_000233,DMbVAwi6MBqaxMfO,40bm28QcJT5My540ymSQ2y,The Veronicas,Untouched,history,ds001_seed_table,233,6,0.6,0.6,pop,pop,1,not_applicable_ds001
+ds001_seed_000234,DQ0X8nl9S3VxjrqQ,6bIPHR8AJG5HAcn9oF21Ma,Pink Floyd,Marooned,history,ds001_seed_table,234,10,1.0,1.0,progressive rock,progressive rock,1,not_applicable_ds001
+ds001_seed_000235,DVfF7BnDmwYICmxX,3S36aqn9EqvHkRCAa86oiF,Rodriguez,Rich Folks Hoax,history,ds001_seed_table,235,50,5.0,5.0,rock,rock,1,not_applicable_ds001
+ds001_seed_000236,DWyZFEfrAmv0Gkbh,55e99bv2wlgTYtNEYHWtN1,Pink Floyd,Sheep,history,ds001_seed_table,236,10,1.0,1.0,progressive rock,progressive rock,1,not_applicable_ds001
+ds001_seed_000237,DjaFe6ViLvWKDBEM,4UDmDIqJIbrW0hMBQMFOsM,Bee Gees,Stayin' Alive,history,ds001_seed_table,237,10,1.0,1.0,disco,disco,1,not_applicable_ds001
+ds001_seed_000238,DnCgzkcKsebtLrml,7Jk2pg4g0c5rz5AfkEGMRp,Tame Impala,Sun's Coming Up,history,ds001_seed_table,238,10,1.0,1.0,psychedelic rock,psychedelic rock,1,not_applicable_ds001
+ds001_seed_000239,DrLavv9yMq0YHLcV,4IRHwIZHzlHT1FQpRa5RdE,Elton John,Goodbye Yellow Brick Road - Remastered 2014,history,ds001_seed_table,239,10,1.0,1.0,soft rock,70s,1,not_applicable_ds001
+ds001_seed_000240,DtLiNQhkiczSfHHi,1bQ4zbP8Fo0qAePTSOfYji,Pink Floyd,Coming Back to Life,history,ds001_seed_table,240,10,1.0,1.0,progressive rock,progressive rock,1,not_applicable_ds001
+ds001_seed_000241,Dvv43ANkwiTz5fN6,32OlwWuMpZ6b0aN2RZOeMS,Mark Ronson,Uptown Funk,history,ds001_seed_table,241,50,5.0,5.0,funk,funk,1,not_applicable_ds001
+ds001_seed_000242,Dwaz7UEwbLFpJLxC,51ODNNDZm21HU7wI7cccRr,Disclosure,Latch,history,ds001_seed_table,242,25,2.5,2.5,uk garage,uk garage,1,not_applicable_ds001
+ds001_seed_000243,DxDlXMhKggqoFsRt,6uE9hF8fIb6shBXrrzA12U,Pink Floyd,Poles Apart,history,ds001_seed_table,243,10,1.0,1.0,progressive rock,progressive rock,1,not_applicable_ds001
+ds001_seed_000244,DxpgzwaYUUxulamI,2JvzF1RMd7lE3KmFlsyZD8,J. Cole,MIDDLE CHILD,history,ds001_seed_table,244,31,3.1,3.1,hip hop,hip hop,1,not_applicable_ds001
+ds001_seed_000245,E1LNkPMuGpL8SRPc,4mHv2ujBeoqhwZxgVhoPJy,Hans Zimmer,The Battle,history,ds001_seed_table,245,20,2.0,2.0,soundtrack,soundtrack,1,not_applicable_ds001
+ds001_seed_000246,E1OqdWbAa4PwSyhp,7Ar4G7Ci11gpt6sfH9Cgz5,The Doobie Brothers,Listen to the Music,history,ds001_seed_table,246,50,5.0,5.0,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000247,ESJe9L4OcWMH7Ojt,2Q4hl7psP5tVG6rOYZk0m0,Crystal Castles,Knights,history,ds001_seed_table,247,25,2.5,2.5,electronic,electronic,1,not_applicable_ds001
+ds001_seed_000248,EdQ3HZUF5KcU03lu,1Ser4X0TKttOvo8bgdytTP,Rae Sremmurd,Come Get Her,history,ds001_seed_table,248,25,2.5,2.5,hip hop,hip-hop,1,not_applicable_ds001
+ds001_seed_000249,Ef1Hc6VL1i1fCar8,0PgT8DiJmpqTnf9SnFnHM0,Duster,stars will fall,history,ds001_seed_table,249,50,5.0,5.0,rock,rock,1,not_applicable_ds001
+ds001_seed_000250,EpB3U8gmv48wkPLX,1Eolhana7nKHYpcYpdVcT5,Jimi Hendrix,Little Wing,history,ds001_seed_table,250,10,1.0,1.0,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000251,EzcnrcBA0jtYwrBh,4QlzkaRHtU8gAdwqjWmO8n,The Cure,Friday I'm in Love,history,ds001_seed_table,251,40,4.0,4.0,new wave,new wave,1,not_applicable_ds001
+ds001_seed_000252,F8vAvaC1LW5E8DOU,7vggqxNKwd6xdRoYS0pQtM,Bob Marley & The Wailers,Three Little Birds,history,ds001_seed_table,252,20,2.0,2.0,reggae,reggae,1,not_applicable_ds001
+ds001_seed_000253,FDnPGRj95BakXOSj,1PS1QMdUqOal0ai3Gt7sDQ,Kanye West,Gold Digger,history,ds001_seed_table,253,25,2.5,2.5,rap,hip-hop,1,not_applicable_ds001
+ds001_seed_000254,FFcyaeDTjDA16nQp,3d9DChrdc6BOeFsbrZ3Is0,Red Hot Chili Peppers,Under the Bridge,history,ds001_seed_table,254,10,1.0,1.0,rock,rock,1,not_applicable_ds001
+ds001_seed_000255,FGkOq9tzAz2fqAlz,2NVpYQqdraEcQwqT7GhUkh,Chaka Khan,Ain't Nobody,history,ds001_seed_table,255,10,1.0,1.0,soul,soul,1,not_applicable_ds001
+ds001_seed_000256,FKdGrW98y4cRo24c,1tKha6Q0lYlW1qsWYbZB2N,Eagles,Victim of Love,history,ds001_seed_table,256,25,2.5,2.5,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000257,FL2adIy5dTxdJ6Df,6mSnSuOhgHHohqeBw76jRV,Salvia Palth,I Was All Over Her,history,ds001_seed_table,257,50,5.0,5.0,shoegaze,shoegaze,1,not_applicable_ds001
+ds001_seed_000258,FNv4Zgioe9uN4CqX,3MtP9T0WF4xbIo8vqHYeXM,Dusty Springfield,Spooky,history,ds001_seed_table,258,10,1.0,1.0,soul,soul,1,not_applicable_ds001
+ds001_seed_000259,FRz7wSLK3WnTS83L,7uoFMmxln0GPXQ0AcCBXRq,Sia,Everyday Is Christmas,history,ds001_seed_table,259,10,1.0,1.0,pop,christmas,1,not_applicable_ds001
+ds001_seed_000260,FYUYb99Dm1hmdboI,2dxjKgT0li4qBI3QwuN9Ih,Kanye West,Touch the Sky,history,ds001_seed_table,260,16,1.6,1.6,rap,hip-hop,1,not_applicable_ds001
+ds001_seed_000261,FZpHbO5XJ4X5QGJu,64BbK9SFKH2jk86U3dGj2P,Red Hot Chili Peppers,Otherside,history,ds001_seed_table,261,16,1.6,1.6,rock,rock,1,not_applicable_ds001
+ds001_seed_000262,FeRInaEhXdfN0VZv,2agBDIr9MYDUducQPC1sFU,Yiruma,River Flows in You,history,ds001_seed_table,262,25,2.5,2.5,classical,piano,1,not_applicable_ds001
+ds001_seed_000263,FgTT9HPZlyBFgpjU,5ZGzNhBC1sEtYtQ1b6Cy53,Teen Suicide,"no, the moon",history,ds001_seed_table,263,31,3.1,3.1,emo,emo,1,not_applicable_ds001
+ds001_seed_000264,FgglYlWMesX5FDdq,3di5hcvxxciiqwMH1jarhY,Adele,Set Fire to the Rain,history,ds001_seed_table,264,16,1.6,1.6,soul,soul,1,not_applicable_ds001
+ds001_seed_000265,FhG1z1oOGeize5ny,7yCF65vpc7sUwPjftI0iFb,Ace of Base,Happy Nation,history,ds001_seed_table,265,10,1.0,1.0,pop,pop,1,not_applicable_ds001
+ds001_seed_000266,FmlyY49NsWk4yAcu,5DnT9a5IM3eMjKgXTWVJvi,Creedence Clearwater Revival,Have You Ever Seen the Rain?,history,ds001_seed_table,266,10,1.0,1.0,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000267,FuVju35v7B0jtKeU,6FZDfxM3a3UCqtzo5pxSLZ,Halsey,Without Me,history,ds001_seed_table,267,10,1.0,1.0,pop,pop,1,not_applicable_ds001
+ds001_seed_000268,FzBGuQhNJ8D49br3,4EWCNWgDS8707fNSZ1oaA5,Kanye West,Heartless,history,ds001_seed_table,268,25,2.5,2.5,hip hop,hip hop,1,not_applicable_ds001
+ds001_seed_000269,FzP2Zz4WxuVqXwI8,4mQtXW0vrHC3oTkA1mQsb0,Jim Croce,Operator (That's Not the Way It Feels),history,ds001_seed_table,269,50,5.0,5.0,folk,folk,1,not_applicable_ds001
+ds001_seed_000270,G1wEFosd4DFHP8Jg,6WCeFNVAXUtNczb7lqLiZU,Elton John,Crocodile Rock,history,ds001_seed_table,270,56,5.6,5.6,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000271,G4VU810Wqh1dlwb2,62AuGbAkt8Ox2IrFFb8GKV,Neil Diamond,Sweet Caroline,history,ds001_seed_table,271,50,5.0,5.0,singer-songwriter,70s,1,not_applicable_ds001
+ds001_seed_000272,G73YM6yfYWtErL8s,29cfdljLR8lgvsRrLMJioK,Agnes Obel,Under Giant Trees,history,ds001_seed_table,272,31,3.1,3.1,folk,folk,1,not_applicable_ds001
+ds001_seed_000273,GGVEhXe864IozrMK,5HNCy40Ni5BZJFw1TKzRsC,Pink Floyd,Comfortably Numb,history,ds001_seed_table,273,50,5.0,5.0,progressive rock,progressive rock,1,not_applicable_ds001
+ds001_seed_000274,GJBMg2XCb4yuAS4b,1HzDhHApjdjXPLHF6GGYhu,Pink Floyd,Wish You Were Here,history,ds001_seed_table,274,20,2.0,2.0,progressive rock,progressive rock,1,not_applicable_ds001
+ds001_seed_000275,GNSbbHCs9ArtTnM3,1Vk4yRsz0iBzDiZEoFMQyv,Justin Hurwitz,Mia & Sebastian's Theme,history,ds001_seed_table,275,10,1.0,1.0,soundtrack,instrumental,1,not_applicable_ds001
+ds001_seed_000276,GP6V2MRYCZaiRNQ5,6xdLJrVj4vIXwhuG8TMopk,Queen,Crazy Little Thing Called Love - Remastered 2011,history,ds001_seed_table,276,10,1.0,1.0,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000277,GVwBGyqqwyQPW5UV,4xUlOxwGkdhsQuirAp5RfV,Cat Stevens,Moonshadow,history,ds001_seed_table,277,6,0.6,0.6,folk,folk,1,not_applicable_ds001
+ds001_seed_000278,GYB3RV47EOGDwGcJ,0AluA5RNsa4Cx6XRhf2hWZ,Metro Boomin,10 Freaky Girls (with 21 Savage),history,ds001_seed_table,278,31,3.1,3.1,rap,rap,1,not_applicable_ds001
+ds001_seed_000279,GYGl9JEhALs0Xsw0,4LwU4Vp6od3Sb08CsP99GC,Dr. Dre,The Next Episode,history,ds001_seed_table,279,10,1.0,1.0,rap,rap,1,not_applicable_ds001
+ds001_seed_000280,Ghu5m0iG8PV3uzBB,7wuJGgpTNzbUyn26IOY6rj,Bonnie Tyler,Total Eclipse of the Heart,history,ds001_seed_table,280,25,2.5,2.5,pop,80s,1,not_applicable_ds001
+ds001_seed_000281,GkYkg3DR0r1Ajr79,4iEOVEULZRvmzYSZY2ViKN,alt-J,Left Hand Free,history,ds001_seed_table,281,16,1.6,1.6,indie rock,indie,1,not_applicable_ds001
+ds001_seed_000282,GkxQVCokkwJu1mUk,2RBcYkonAofm0rYycVrCGt,Dire Straits,Lady Writer,history,ds001_seed_table,282,25,2.5,2.5,rock,rock,1,not_applicable_ds001
+ds001_seed_000283,Gof4MUngidge7y1f,0wrWxW18WK2MkrfDpRHkyh,Soap&Skin,Me and the Devil,history,ds001_seed_table,283,10,1.0,1.0,experimental,cover,1,not_applicable_ds001
+ds001_seed_000284,GqkAKeka9w7jrbXs,3jagJCUbdqhDSPuxP8cAqF,Missy Elliott,Work It,history,ds001_seed_table,284,10,1.0,1.0,rap,hip-hop,1,not_applicable_ds001
+ds001_seed_000285,HAmHsJ34aRU8jUR8,5DPNLHoisZSIInV23TJ49P,The Mamas & the Papas,Snowqueen Of Texas,history,ds001_seed_table,285,50,5.0,5.0,rock,rock,1,not_applicable_ds001
+ds001_seed_000286,HBAdFFQjTWtYGrgQ,1qDrWA6lyx8cLECdZE7TV7,Gotye,Somebody That I Used to Know,history,ds001_seed_table,286,10,1.0,1.0,electronic,indie,1,not_applicable_ds001
+ds001_seed_000287,HDBCf0YnKZLKBXEE,2uXlHCUbq9OMUwx3hrk06o,Vance Joy,Riptide,history,ds001_seed_table,287,45,4.5,4.5,folk,indie,1,not_applicable_ds001
+ds001_seed_000288,HDC4pS6sjdz4ArsR,0jWgAnTrNZmOGmqgvHhZEm,4 Non Blondes,What's Up,history,ds001_seed_table,288,56,5.6,5.6,rock,90s,1,not_applicable_ds001
+ds001_seed_000289,HImHMiXqiMw82QuK,4KcH1ZRV2W1q7Flq0QqC76,Ramones,Blitzkrieg Bop,history,ds001_seed_table,289,10,1.0,1.0,punk,punk,1,not_applicable_ds001
+ds001_seed_000290,HJ1G55UKfk3uaLrZ,4ciRwt5dGHKKm8Et8r1xJ0,Charles Aznavour,Hier encore,history,ds001_seed_table,290,31,3.1,3.1,chanson,french,1,not_applicable_ds001
+ds001_seed_000291,HKIz3PeU2J2RzdVY,1BncfTJAWxrsxyT9culBrj,Ludovico Einaudi,Experience,history,ds001_seed_table,291,25,2.5,2.5,classical,fip,1,not_applicable_ds001
+ds001_seed_000292,HLmjvoUyp1RMnP1X,09Nck1nvRcg1Y14SNfWwtJ,Bob Marley & The Wailers,Waiting In Vain,history,ds001_seed_table,292,10,1.0,1.0,reggae,reggae,1,not_applicable_ds001
+ds001_seed_000293,HMozDqpGFu60Rgi7,6mib3N4E8PZHAGQ3xy7bho,David Bowie,Moonage Daydream - 2012 Remastered Version,history,ds001_seed_table,293,25,2.5,2.5,glam rock,glam rock,1,not_applicable_ds001
+ds001_seed_000294,HNR4YwVqa6S5kfng,6HJxxqHWMdidwTVZmZWeHU,Current Joys,New Flesh,history,ds001_seed_table,294,20,2.0,2.0,emo,indie,1,not_applicable_ds001
+ds001_seed_000295,HNtyxIUXmYmm82iO,7HKW2F9UqwMVPdByorotm1,Spoon,Inside Out,history,ds001_seed_table,295,10,1.0,1.0,indie rock,indie rock,1,not_applicable_ds001
+ds001_seed_000296,HRZhYx3cHGecSNO1,79CUrU5o2KAVDTNm4x3eGU,The Prodigy,Firestarter,history,ds001_seed_table,296,10,1.0,1.0,electronic,electronic,1,not_applicable_ds001
+ds001_seed_000297,HRvdhNsl5QtwGDFI,0AePV8pWe0Nig8hDs8EGot,Moby,Slipping Away,history,ds001_seed_table,297,10,1.0,1.0,electronic,electronic,1,not_applicable_ds001
+ds001_seed_000298,HVKzZYjTOXuK6vlC,3oDkdAySo1VQQG0ptV7uwa,Juice WRLD,Lean Wit Me,history,ds001_seed_table,298,31,3.1,3.1,rap,rap,1,not_applicable_ds001
+ds001_seed_000299,HaAACyAQ1XiE1F7k,5fnOrhQ4KgT5irGCjIccGH,Christopher Cross,Arthur's Theme (Best That You Can Do),history,ds001_seed_table,299,10,1.0,1.0,soundtrack,80s,1,not_applicable_ds001
+ds001_seed_000300,HaUHT4EPFg8DOxdl,20I8RduZC2PWMWTDCZuuAN,Franz Ferdinand,Take Me Out,history,ds001_seed_table,300,31,3.1,3.1,indie rock,indie,1,not_applicable_ds001
+ds001_seed_000301,HhnTUIZ040LnpSZm,5DH7nDryMhpixm4G4B7RP9,Billy Joel,The Longest Time,history,ds001_seed_table,301,50,5.0,5.0,pop,80s,1,not_applicable_ds001
+ds001_seed_000302,HpCgNCDpy2sgaiLk,1db0gbTSKdRQum8VlbNkiO,Paul McCartney,Say Say Say - Remastered 2015,history,ds001_seed_table,302,50,5.0,5.0,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000303,Hux5y6x6B8pI2jDY,1y4jsQt7MjnZhiD1L6qFBC,sub urban,Cradles,history,ds001_seed_table,303,41,4.1,4.1,electronic,electronic,1,not_applicable_ds001
+ds001_seed_000304,I4OmhYlLlRo7wPCS,3nSgRpyy7gujpUSIsdECvO,Elvis Costello,Waiting For The End Of The World,history,ds001_seed_table,304,10,1.0,1.0,new wave,new wave,1,not_applicable_ds001
+ds001_seed_000305,I7xwlyqUByL76Wpu,1hHGUdFaiJHw9hVZGJWYO2,The Allman Brothers Band,Midnight Rider,history,ds001_seed_table,305,10,1.0,1.0,southern rock,southern rock,1,not_applicable_ds001
+ds001_seed_000306,IC3AMRdFGbAPSuJT,0JP9xo3adEtGSdUEISiszL,XXXTentacion,Moonlight,history,ds001_seed_table,306,10,1.0,1.0,rap,hip-hop,1,not_applicable_ds001
+ds001_seed_000307,IIlr0jVCKmI9A5QM,0gCJkpD0RhF2rjiALLHBQL,"Crosby, Stills, Nash & Young",Almost Cut My Hair,history,ds001_seed_table,307,10,1.0,1.0,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000308,IQ18pAadvThQNBDX,2SpEHTbUuebeLkgs9QB7Ue,Dolly Parton,Jolene,history,ds001_seed_table,308,10,1.0,1.0,country,country,1,not_applicable_ds001
+ds001_seed_000309,IS7OB7FYttexoOWV,2DnJjbjNTV9Nd5NOa1KGba,Carly Simon,You're So Vain,history,ds001_seed_table,309,50,5.0,5.0,pop,70s,1,not_applicable_ds001
+ds001_seed_000310,IXA0zOmllPeMKWQw,4s6LhHAV5SEsOV0lC2tjvJ,The Mamas & the Papas,California Dreamin',history,ds001_seed_table,310,56,5.6,5.6,classic rock,60s,1,not_applicable_ds001
+ds001_seed_000311,IYI6RFvYIFFg9Mi7,7uv632EkfwYhXoqf8rhYrg,Massive Attack,Angel,history,ds001_seed_table,311,25,2.5,2.5,electronic,trip-hop,1,not_applicable_ds001
+ds001_seed_000312,IYnvgrRybkiFqpqA,3nFJbZCHP4d9vduKjJLdBL,Luther Vandross,Never Too Much,history,ds001_seed_table,312,10,1.0,1.0,soul,soul,1,not_applicable_ds001
+ds001_seed_000313,IgOJDpLr5MtKaRtm,6UO5XUAD3kPGru1NCj4Au7,Oskar Schuster,Gizeh,history,ds001_seed_table,313,25,2.5,2.5,neoclassical,piano,1,not_applicable_ds001
+ds001_seed_000314,IgQT25VkuSrkKXEX,73TxYZd0lBCVRrHawrAglA,Aerosmith,Sweet Emotion,history,ds001_seed_table,314,10,1.0,1.0,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000315,Iji0qLelezpjUUOV,5eFxwmqKrHpSQDOEIFYlgY,Three Days Grace,Animal I Have Become,history,ds001_seed_table,315,10,1.0,1.0,alternative rock,alternative rock,1,not_applicable_ds001
+ds001_seed_000316,J2ZHIxyb5eq9UkrA,7ks6AZmFcm3Y6PGGxGSmlB,David Guetta,Where Them Girls At (feat. Nicki Minaj & Flo Rida),history,ds001_seed_table,316,10,1.0,1.0,house,dance,1,not_applicable_ds001
+ds001_seed_000317,J3FvA5V0IYqpXN7E,5YoITs1m0q8UOQ4AW7N5ga,Daddy Yankee,Gasolina,history,ds001_seed_table,317,25,2.5,2.5,reggaeton,reggaeton,1,not_applicable_ds001
+ds001_seed_000318,J4I2R9dZ8GBeewE0,2id8E4WvczfKHB4LHI7Np3,Stevie Nicks,Edge of Seventeen,history,ds001_seed_table,318,10,1.0,1.0,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000319,J6B2XXyqh2snCI6N,3y1EzRl5UEQxxd1f6Bv2aN,Phantogram,When I'm Small,history,ds001_seed_table,319,10,1.0,1.0,electronic,poptron,1,not_applicable_ds001
+ds001_seed_000320,J789kUUp5rKnN9zE,57iDDD9N9tTWe75x6qhStw,The Verve,Bitter Sweet Symphony,history,ds001_seed_table,320,10,1.0,1.0,britpop,britpop,1,not_applicable_ds001
+ds001_seed_000321,JBDciNNHPYybi7dF,5Qnrgqy1pAm9GyNQOgyVFz,Sufjan Stevens,Fourth of July,history,ds001_seed_table,321,16,1.6,1.6,folk,folk,1,not_applicable_ds001
+ds001_seed_000322,JC4K22IQkKbeD7qg,63T7DJ1AFDD6Bn8VzG6JE8,The Rolling Stones,Paint It Black,history,ds001_seed_table,322,25,2.5,2.5,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000323,JHClTH4nuCqYK0wm,4H0KLsPpr5atperrHGfz3x,Allah-Las,Catamaran,history,ds001_seed_table,323,10,1.0,1.0,garage rock,garage rock,1,not_applicable_ds001
+ds001_seed_000324,JHJusOYsaL3zLGtA,3KdNyeEZPSND2Eii1O2lNf,Moby,Everloving,history,ds001_seed_table,324,10,1.0,1.0,electronic,chillout,1,not_applicable_ds001
+ds001_seed_000325,JLJS9OAC2UnkSSUO,0jpk88zk40MjQ63ljrq7V2,Moby,Flower,history,ds001_seed_table,325,10,1.0,1.0,electronic,electronic,1,not_applicable_ds001
+ds001_seed_000326,JOmGUPAUjElCpzUb,10nyNJ6zNy2YVYLrcwLccB,Radiohead,No Surprises,history,ds001_seed_table,326,16,1.6,1.6,alternative rock,alternative,1,not_applicable_ds001
+ds001_seed_000327,JP0Ezi39foLp3I8M,0qqRNnwh86N1XBV94GVgQN,FrankJavCee,SimpsonWave1995,history,ds001_seed_table,327,10,1.0,1.0,electronic,electronic,1,not_applicable_ds001
+ds001_seed_000328,JTe4O8jE5AfV8Ppo,5eALoO9RRACvoxvLKF9zt4,Three Days Grace,Riot,history,ds001_seed_table,328,10,1.0,1.0,alternative rock,alternative rock,1,not_applicable_ds001
+ds001_seed_000329,Jcoule2iddCkTjfE,1LVDyF6lGAPQGiL09X9m01,The Romantics,Talking in Your Sleep,history,ds001_seed_table,329,10,1.0,1.0,new wave,80s,1,not_applicable_ds001
+ds001_seed_000330,JgeeHLWk1zvmVYTo,3DNRdudZ2SstnDCVKFdXxG,Ludwig van Beethoven,Moonlight Sonata,history,ds001_seed_table,330,16,1.6,1.6,classical,classical,1,not_applicable_ds001
+ds001_seed_000331,JlNOAIXRmRm5cyil,0z1o5L7HJx562xZSATcIpY,Radiohead,Exit Music (for a Film),history,ds001_seed_table,331,25,2.5,2.5,alternative rock,alternative,1,not_applicable_ds001
+ds001_seed_000332,JlfSEFOyxMZ8v1U5,7F02x6EKYIQV3VcTaTm7oN,Pink Floyd,Hey You,history,ds001_seed_table,332,10,1.0,1.0,progressive rock,progressive rock,1,not_applicable_ds001
+ds001_seed_000333,K01Mxf5XW4k9jAIt,0hCB0YR03f6AmQaHbwWDe8,Led Zeppelin,Whole Lotta Love,history,ds001_seed_table,333,10,1.0,1.0,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000334,K1HscSosu2LAfq59,3aE27Z5DDaeTcBQjTnsUMo,Mr.Kitty,Neglect,history,ds001_seed_table,334,10,1.0,1.0,electronic,electronic,1,not_applicable_ds001
+ds001_seed_000335,K3XPiN69md8ss0N5,5g9lS8deSIxItFBmZRC4vN,2Pac,Ambitionz az a Ridah,history,ds001_seed_table,335,10,1.0,1.0,rap,hip-hop,1,not_applicable_ds001
+ds001_seed_000336,K9q7m4Fqz6nAh8uq,19gEmPjfqSZT0ulDRfjl0m,Bobby Shmurda,Hot N*gga,history,ds001_seed_table,336,16,1.6,1.6,rap,hip-hop,1,not_applicable_ds001
+ds001_seed_000337,KAUyXbLAuVeKPHZl,3R0aGgSQNVSPk0hDLTGwS3,alt-J,Taro,history,ds001_seed_table,337,10,1.0,1.0,indie rock,alternative,1,not_applicable_ds001
+ds001_seed_000338,KLgyNINS1nq7SYAW,4yugZvBYaoREkJKtbG08Qr,Eagles,Take It Easy,history,ds001_seed_table,338,25,2.5,2.5,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000339,KYG1wtKKwnG682cF,0HEmnAUT8PHznIAAmVXqFJ,George Michael,Faith - Remastered,history,ds001_seed_table,339,10,1.0,1.0,pop,extra cheese,1,not_applicable_ds001
+ds001_seed_000340,KZOjRyaVBPrGHAnx,6QewNVIDKdSl8Y3ycuHIei,Pearl Jam,Even Flow,history,ds001_seed_table,340,31,3.1,3.1,grunge,grunge,1,not_applicable_ds001
+ds001_seed_000341,KeGhQaWgApmKiJSN,1Jaah2tmN9Hv81A87KZ1MU,Natalie Imbruglia,Torn,history,ds001_seed_table,341,35,3.5,3.5,pop,pop,1,not_applicable_ds001
+ds001_seed_000342,KguTteL3tOdobHH3,64kEBCPbeV06af3omyh1Ju,Imogen Heap,Just For Now,history,ds001_seed_table,342,10,1.0,1.0,electronic,lush,1,not_applicable_ds001
+ds001_seed_000343,KjZd6Cm43t68hLvl,0j0majKoNlF7GkwA8xNQHG,Tame Impala,I Don't Really Mind,history,ds001_seed_table,343,10,1.0,1.0,psychedelic rock,psychedelic rock,1,not_applicable_ds001
+ds001_seed_000344,KjyNXRt29XbOv7V8,3jfZ9M23l0L7RxzYMTgBTv,Joy Again,Looking Out For You,history,ds001_seed_table,344,25,2.5,2.5,soft rock,soft rock,1,not_applicable_ds001
+ds001_seed_000345,KmTnRGkWmFkYqOcF,2JI71GHwq2LN8mtq3iCLYo,O.T. Genasis,CoCo,history,ds001_seed_table,345,10,1.0,1.0,rap,rap,1,not_applicable_ds001
+ds001_seed_000346,KnHQRMCoX2mWx7Uj,5fmBlyRUBpxLktz7Gw4Stl,Molotov,Gimme Tha Power,history,ds001_seed_table,346,10,1.0,1.0,latin,latin,1,not_applicable_ds001
+ds001_seed_000347,KwG7d3rndL0hUKHp,5WbfFTuIldjL9x7W6y5l7R,Faye Webster,Kingston,history,ds001_seed_table,347,25,2.5,2.5,folk,indie,1,not_applicable_ds001
+ds001_seed_000348,L2OBrPwbO2hupXEc,4cS2HQ6jK80vqdY9ofpztx,Shakira,She Wolf,history,ds001_seed_table,348,6,0.6,0.6,pop,pop,1,not_applicable_ds001
+ds001_seed_000349,L3wRkS7GSoXs5SVX,1kDWRREI28eCvDpJvSRd9b,The Corrs,All the Love in the World,history,ds001_seed_table,349,25,2.5,2.5,pop,pop,1,not_applicable_ds001
+ds001_seed_000350,L4lGOjfg9lTLXh3U,5UWwZ5lm5PKu6eKsHAGxOk,Foo Fighters,Everlong,history,ds001_seed_table,350,25,2.5,2.5,rock,rock,1,not_applicable_ds001
+ds001_seed_000351,L76yXbX4hMnIwhiE,3U4isOIWM3VvDubwSI3y7a,John Legend,All of Me,history,ds001_seed_table,351,25,2.5,2.5,pop,rnb,1,not_applicable_ds001
+ds001_seed_000352,LB2ETNbmphEzXBKd,61mWefnWQOLf90gepjOCb3,Slipknot,Duality,history,ds001_seed_table,352,10,1.0,1.0,metal,metal,1,not_applicable_ds001
+ds001_seed_000353,LGPnswByWn3ESi3u,5vFmEDQivD8FNOOushB70i,Jim Croce,New York's Not My Home,history,ds001_seed_table,353,50,5.0,5.0,folk,folk,1,not_applicable_ds001
+ds001_seed_000354,LH70VIradki18t0B,3AUpYeScJOpYf8psTIz62l,Supertramp,Lord Is It Mine - 2010 Remastered,history,ds001_seed_table,354,25,2.5,2.5,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000355,LIARNjTtGb7yHivK,0uxSUdBrJy9Un0EYoBowng,Lil Uzi Vert,20 Min,history,ds001_seed_table,355,31,3.1,3.1,rap,rap,1,not_applicable_ds001
+ds001_seed_000356,LLfFLFkxgCxlkP4P,1GeNWyZtCHbcp3ZWp8GTOO,Chris de Burgh,The Lady in Red,history,ds001_seed_table,356,20,2.0,2.0,pop,80s,1,not_applicable_ds001
+ds001_seed_000357,LNz20W3npgeBSPNJ,0ofHAoxe9vBkTCp2UQIavz,Fleetwood Mac,Dreams - 2004 Remaster,history,ds001_seed_table,357,50,5.0,5.0,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000358,LQHfBCMB76kykskl,58lcznIKSNlOVdmklrPA99,System of a Down,Science,history,ds001_seed_table,358,10,1.0,1.0,alternative metal,alternative metal,1,not_applicable_ds001
+ds001_seed_000359,LSlXU7NYPeRz4THO,3GpbwCm3YxiWDvy29Uo3vP,Flo Rida,Right Round,history,ds001_seed_table,359,10,1.0,1.0,hip hop,hip hop,1,not_applicable_ds001
+ds001_seed_000360,LXceiUY7PECR4GYm,2knr7ikPt4l7bk92qS4ZXW,Loreen,Heal,history,ds001_seed_table,360,10,1.0,1.0,pop,female vocalists,1,not_applicable_ds001
+ds001_seed_000361,LatpzJsSTXLlrsvV,1AWQoqb9bSvzTjaLralEkT,Justin Timberlake,Rock Your Body,history,ds001_seed_table,361,25,2.5,2.5,pop,pop,1,not_applicable_ds001
+ds001_seed_000362,LddxFra3eYoXPfiX,0TlLq3lA83rQOYtrqBqSct,Drake,Nonstop,history,ds001_seed_table,362,25,2.5,2.5,rap,rap,1,not_applicable_ds001
+ds001_seed_000363,Lgp5AVjugeDHWp3q,4Y1igB1GDncJvt7ezbV3cW,Thom Yorke,Suspirium,history,ds001_seed_table,363,16,1.6,1.6,soundtrack,piano,1,not_applicable_ds001
+ds001_seed_000364,LhXbUFqojEVPw1m1,58yFroDNbzHpYzvicaC0de,Bill Evans,Peace Piece,history,ds001_seed_table,364,10,1.0,1.0,jazz,jazz,1,not_applicable_ds001
+ds001_seed_000365,LkpZOWQt3SGE01IR,285pBltuF7vW8TeWk8hdRR,Juice WRLD,Lucid Dreams,history,ds001_seed_table,365,10,1.0,1.0,hip hop,hip hop,1,not_applicable_ds001
+ds001_seed_000366,Lm1lBPHIoKVQTx82,5zH710lFSLtkHbMkslLDjR,Heart,Dreamboat Annie,history,ds001_seed_table,366,56,5.6,5.6,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000367,LmYZjUdYPlBrAoQj,6La3P2zp9KaW1d35hwm0Xh,TV on the Radio,DLZ,history,ds001_seed_table,367,31,3.1,3.1,experimental,indie,1,not_applicable_ds001
+ds001_seed_000368,LnwO98D96QcntAjT,6RJK553YhstRzyKA4mug09,The Box Tops,The Letter,history,ds001_seed_table,368,10,1.0,1.0,classic rock,60s,1,not_applicable_ds001
+ds001_seed_000369,LrB4BWs6UCF9DVLQ,6KIKRz9eSTXdNsGUnomdtW,N.W.A,Straight Outta Compton,history,ds001_seed_table,369,10,1.0,1.0,rap,gangsta rap,1,not_applicable_ds001
+ds001_seed_000370,M1zYSBJ9jyiGWE0m,5B37ocpk2zxeZL1lq5F6ui,The Fixx,One Thing Leads To Another,history,ds001_seed_table,370,10,1.0,1.0,new wave,80s,1,not_applicable_ds001
+ds001_seed_000371,M7WDgVe36ucHqpcl,2K70ZV0Ls65Kkj0WUEfHlz,Crystal Castles,Kerosene,history,ds001_seed_table,371,31,3.1,3.1,electronic,electronic,1,not_applicable_ds001
+ds001_seed_000372,ME9AVNcYwpF1WPYG,30qVCFYKBtAENjTIBA8FPZ,Billy Joel,The River of Dreams,history,ds001_seed_table,372,50,5.0,5.0,pop,pop,1,not_applicable_ds001
+ds001_seed_000373,MEZP2LLTsJFJrBLq,5xEM5hIgJ1jjgcEBfpkt2F,Avril Lavigne,Let Go,history,ds001_seed_table,373,25,2.5,2.5,pop rock,pop rock,1,not_applicable_ds001
+ds001_seed_000374,MGvV5k36pm92ZI6v,2wXioTynVwrEWYRv6R6vEj,The Neighbourhood,Void,history,ds001_seed_table,374,10,1.0,1.0,pop,indie,1,not_applicable_ds001
+ds001_seed_000375,MHsjV1WqZlvw886d,09CtPGIpYB4BrO8qb1RGsF,Justin Bieber,Sorry,history,ds001_seed_table,375,50,5.0,5.0,pop,pop,1,not_applicable_ds001
+ds001_seed_000376,MINRhAZrwe8LnJ7d,0vlCOzte4bru0gK74lfUIJ,Dire Straits,Once Upon a Time in the West,history,ds001_seed_table,376,25,2.5,2.5,rock,rock,1,not_applicable_ds001
+ds001_seed_000377,MJd3OIpSb5QKifLB,2epbL7s3RFV81K5UhTgZje,Fools Garden,Lemon Tree,history,ds001_seed_table,377,10,1.0,1.0,pop,90s,1,not_applicable_ds001
+ds001_seed_000378,MLiHPWT9keEd62vN,0GcWf1Cc4ixN35D3O9VdcP,Red Hot Chili Peppers,Get on Top,history,ds001_seed_table,378,10,1.0,1.0,rock,rock,1,not_applicable_ds001
+ds001_seed_000379,MM0UMiFxtLd1HNKZ,6fHS0zmDdDKktklfaqojaF,Van Halen,Unchained,history,ds001_seed_table,379,10,1.0,1.0,hard rock,hard rock,1,not_applicable_ds001
+ds001_seed_000380,MVdLRZiR3M35J4b0,1zB4vmk8tFRmM9UULNzbLB,Imagine Dragons,Thunder,history,ds001_seed_table,380,10,1.0,1.0,indie pop,indie pop,1,not_applicable_ds001
+ds001_seed_000381,MgTqfM2q3l0nJ2Jp,7fqjWHXf330QwnfaAWB2Dr,PASTEL GHOST,DARK BEACH,history,ds001_seed_table,381,10,1.0,1.0,witch house,witch house,1,not_applicable_ds001
+ds001_seed_000382,MhH8vHBuDfzPQG4b,55q3Ro66yXWi9rsEddeEN4,Radiohead,Pyramid Song,history,ds001_seed_table,382,31,3.1,3.1,alternative rock,alternative,1,not_applicable_ds001
+ds001_seed_000383,MiwYaGCls6PW4BLm,1IAiDrvZCOx8AHlNZGY5yU,Pink Floyd,Your Possible Pasts,history,ds001_seed_table,383,10,1.0,1.0,progressive rock,progressive rock,1,not_applicable_ds001
+ds001_seed_000384,MkpFpgCVOx5KH86p,7iAqvWLgZzXvH38lA06QZg,Queen,I Want to Break Free,history,ds001_seed_table,384,10,1.0,1.0,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000385,Mo7zU60JlJCVl7at,1j3ANZgokEc0jKztEDV34l,Bob Marley & The Wailers,"Roots, Rock, Reggae",history,ds001_seed_table,385,16,1.6,1.6,reggae,reggae,1,not_applicable_ds001
+ds001_seed_000386,MthYVqJWWZGhsTv9,6FRwDxXsvSasw0y2eDArsz,Cream,Sunshine of Your Love,history,ds001_seed_table,386,10,1.0,1.0,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000387,MwnVtpCds5ncb4zO,2xLMifQCjDGFmkHkpNLD9h,Travis Scott,SICKO MODE,history,ds001_seed_table,387,6,0.6,0.6,rap,rap,1,not_applicable_ds001
+ds001_seed_000388,N3NgbW7GRmCSq7em,754kgU5rWscRTfvlsuEwFp,Sixpence None the Richer,Kiss Me,history,ds001_seed_table,388,25,2.5,2.5,pop,pop,1,not_applicable_ds001
+ds001_seed_000389,N9s1AgD8t85a6Fp3,14QX1ckbDIhqetvu5VZ3cP,The Irrepressibles,In This Shirt,history,ds001_seed_table,389,31,3.1,3.1,chamber pop,melancholic,1,not_applicable_ds001
+ds001_seed_000390,NB1WV5meJ08E9EhN,6LxSe8YmdPxy095Ux6znaQ,Drake,Headlines,history,ds001_seed_table,390,25,2.5,2.5,rap,rap,1,not_applicable_ds001
+ds001_seed_000391,NCD8XAG4Q0Nbyr0l,2OBofMJx94NryV2SK8p8Zf,Queen,Bohemian Rhapsody - Remastered 2011,history,ds001_seed_table,391,60,6.0,6.0,hard rock,hard rock,1,not_applicable_ds001
+ds001_seed_000392,NDs6bfERIUeP6nkc,2Yy0FsAV2I5VXU4xpph2WN,Rihanna,Stay,history,ds001_seed_table,392,10,1.0,1.0,pop,pop,1,not_applicable_ds001
+ds001_seed_000393,NH4vTKclgyLaA6F5,500h8jAdr7LvzzXlm1qxtK,Pilot,Magic,history,ds001_seed_table,393,6,0.6,0.6,pop,70s,1,not_applicable_ds001
+ds001_seed_000394,NISgBJHfzsIfrJp3,68rcszAg5pbVaXVvR7LFNh,Asaf Avidan & The Mojos,Reckoning Song (One Day),history,ds001_seed_table,394,10,1.0,1.0,rock,rock,1,not_applicable_ds001
+ds001_seed_000395,NNH9ImbH7f6jsdl0,5N720bYInxSsiUDvBOLM3C,Fatima Yamaha,What's a Girl to Do,history,ds001_seed_table,395,16,1.6,1.6,electronic,electronic,1,not_applicable_ds001
+ds001_seed_000396,NPOsbL3fobizZyEs,29FNeqjOV2kPWGS55qhtGB,ABBA,"Money, Money, Money",history,ds001_seed_table,396,20,2.0,2.0,pop,pop,1,not_applicable_ds001
+ds001_seed_000397,NRmwGslYl8hmp0FA,2KVwlelhxKUy8LVV6JypH3,Matchbox Twenty,Push,history,ds001_seed_table,397,10,1.0,1.0,rock,rock,1,not_applicable_ds001
+ds001_seed_000398,NZ6xUwPS4UDNEnQu,2fTsFCKRFQ5M0igJgabnLA,Jessie J,Price Tag,history,ds001_seed_table,398,50,5.0,5.0,pop,pop,1,not_applicable_ds001
+ds001_seed_000399,NfSfEoxJmTd2T2Aj,16GUMo6u3D2qo9a19AkYct,Billy Joel,Movin' Out (Anthony's Song),history,ds001_seed_table,399,59,5.877778,5.877778,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000400,Nl1sEvzj94qavDXi,4gHnSNHs8RyVukKoWdS99f,Nirvana,Something in the Way,history,ds001_seed_table,400,10,1.0,1.0,grunge,grunge,1,not_applicable_ds001
+ds001_seed_000401,NnUby9KSJDkEAj23,2EGaDf0cPX789H3LNeB03D,Bananarama,Cruel Summer,history,ds001_seed_table,401,10,1.0,1.0,pop,80s,1,not_applicable_ds001
+ds001_seed_000402,NpFeIXdR3vMyWWkh,1jDMi92a9zNQuPD3uPMkla,Toby Fox,Fallen Down,history,ds001_seed_table,402,10,1.0,1.0,soundtrack,soundtrack,1,not_applicable_ds001
+ds001_seed_000403,NqHSobylY2nBZ0ce,1RNtm45kw0hPMBz7gKiIYu,Coldplay,Everything's Not Lost,history,ds001_seed_table,403,25,2.5,2.5,rock,rock,1,not_applicable_ds001
+ds001_seed_000404,Nseiw5iKBqT66a2Q,5lQKRR3MdJLtAwNBiT8Cq0,Eagles,Lyin' Eyes,history,ds001_seed_table,404,25,2.5,2.5,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000405,NsuY5GoTxwUZtGce,34x6hEJgGAOQvmlMql5Ige,Kenny Loggins,Danger Zone,history,ds001_seed_table,405,10,1.0,1.0,soundtrack,80s,1,not_applicable_ds001
+ds001_seed_000406,NtkPWWiYxVOeiuAA,3qVKp0bGG2uEkrkMOtwb5F,alt-J,Fitzpleasure,history,ds001_seed_table,406,10,1.0,1.0,electronic,alternative,1,not_applicable_ds001
+ds001_seed_000407,NySWqo3tkFUYaeQh,5jsw9uXEGuKyJzs0boZ1bT,Shawn Mendes,Stitches,history,ds001_seed_table,407,10,1.0,1.0,pop,pop,1,not_applicable_ds001
+ds001_seed_000408,O3CNZRdd6UxmOqBo,1tDWVeCR9oWGX8d5J9rswk,Pink Floyd,Eclipse,history,ds001_seed_table,408,50,5.0,5.0,progressive rock,progressive rock,1,not_applicable_ds001
+ds001_seed_000409,O7pjTEtfY0momza8,0boS4e6uXwp3zAvz1mLxZS,Woodkid,Run Boy Run,history,ds001_seed_table,409,25,2.5,2.5,folk,alternative,1,not_applicable_ds001
+ds001_seed_000410,OCM57tsHAvVxlaGM,5IPT4Noqvo7bsfbWUOHcG4,Grandson,Despicable,history,ds001_seed_table,410,6,0.6,0.6,rock,alternative,1,not_applicable_ds001
+ds001_seed_000411,OHiJws8t4NlFjJcB,6ECp64rv50XVz93WvxXMGF,Maroon 5,This Love,history,ds001_seed_table,411,10,1.0,1.0,pop,pop,1,not_applicable_ds001
+ds001_seed_000412,OK4PKg9GpJkIrBBm,6tZdL3Zp8JgrfDbsSeSV1S,The Kinks,You Really Got Me,history,ds001_seed_table,412,50,5.0,5.0,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000413,OP9go6UBgq2oUoyA,1SgdUjvppHnIp6L7DZSnwc,David Guetta,She Wolf (Falling to Pieces) (feat. Sia),history,ds001_seed_table,413,10,1.0,1.0,house,house,1,not_applicable_ds001
+ds001_seed_000414,OR11bqRGFPj72cQ2,4eKN8RPS06OHyk8dTdempU,Lorn,ANVIL,history,ds001_seed_table,414,10,1.0,1.0,electronic,electronic,1,not_applicable_ds001
+ds001_seed_000415,OR47MUHNtvK2oCIZ,7HW5WIw7ZgZORCzUxv5gW5,Elton John,Don't Go Breaking My Heart,history,ds001_seed_table,415,16,1.6,1.6,pop,pop,1,not_applicable_ds001
+ds001_seed_000416,OTvGGwYYHOhE7Arf,5noQJkpVfHt2D4df2GXieV,Passion Pit,The Reeling,history,ds001_seed_table,416,10,1.0,1.0,electronic,poptron,1,not_applicable_ds001
+ds001_seed_000417,OW73gzsIB0CRrUy8,70LcF31zb1H0PyJoS1Sx1r,Radiohead,Creep,history,ds001_seed_table,417,31,3.1,3.1,alternative rock,alternative,1,not_applicable_ds001
+ds001_seed_000418,OfKB7hPmPbZtrUGB,0v0XYK0pLgsPiq5u4FKHaw,Supertramp,Take the Long Way Home,history,ds001_seed_table,418,25,2.5,2.5,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000419,OfpuZwo7YWMiF71J,5bHwCxqs3jhxjDeztcHFpd,Flyleaf,All Around Me,history,ds001_seed_table,419,10,1.0,1.0,alternative rock,alternative rock,1,not_applicable_ds001
+ds001_seed_000420,OlMgiYbFuwQNGl7B,47Slg6LuqLaX0VodpSCvPt,Bruno Mars,Just the Way You Are,history,ds001_seed_table,420,50,5.0,5.0,pop,pop,1,not_applicable_ds001
+ds001_seed_000421,OpVCl8LXb7oPZoff,2PpruBYCo4H7WOBJ7Q2EwM,OutKast,Hey Ya!,history,ds001_seed_table,421,10,1.0,1.0,funk,hip-hop,1,not_applicable_ds001
+ds001_seed_000422,OpjfqywWHNQqLBp6,7eiNxeOC8dvYAJWgTOu6xn,Cat Stevens,Oh Very Young,history,ds001_seed_table,422,50,5.0,5.0,folk,70s,1,not_applicable_ds001
+ds001_seed_000423,OrH51RTkOQhwfYtt,4frelkLhC4ATqJH9VGJztu,The Police,Spirits In The Material World - Remastered 2003,history,ds001_seed_table,423,25,2.5,2.5,rock,rock,1,not_applicable_ds001
+ds001_seed_000424,Orc4a1Hr2keBseZ2,4SqWKzw0CbA05TGszDgMlc,The walters,I Love You So,history,ds001_seed_table,424,10,1.0,1.0,indie rock,indie rock,1,not_applicable_ds001
+ds001_seed_000425,Ouff0SNSjJcYBVLz,17YNmMy03QLPirmBzWxFa6,Salvia Palth,(Dream),history,ds001_seed_table,425,50,5.0,5.0,lo-fi,lo-fi,1,not_applicable_ds001
+ds001_seed_000426,OxCTebk8s4Ex3yBg,78lgmZwycJ3nzsdgmPPGNx,Led Zeppelin,Immigrant Song,history,ds001_seed_table,426,10,1.0,1.0,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000427,OziNOqcTkMPI3gq4,2QSuqxALyh7JFoQEBxyo0H,The Alan Parsons Project,I Robot,history,ds001_seed_table,427,10,1.0,1.0,progressive rock,progressive rock,1,not_applicable_ds001
+ds001_seed_000428,P19ON8wKk9JFknDT,3v8PlUFGQQDBIk1J86waCo,The Clash,Should I Stay or Should I Go - Remastered,history,ds001_seed_table,428,10,1.0,1.0,classic rock,punk rock,1,not_applicable_ds001
+ds001_seed_000429,P2S6M5e4PN1JubTp,503OTo2dSqe7qk76rgsbep,Dr. Dre,Still D.R.E.,history,ds001_seed_table,429,25,2.5,2.5,rap,hip-hop,1,not_applicable_ds001
+ds001_seed_000430,PCYCDrzlGgfXM1QU,08wnOyN1wyMaNrup3m353f,M83,My Tears Are Becoming a Sea,history,ds001_seed_table,430,25,2.5,2.5,electronic,electronic,1,not_applicable_ds001
+ds001_seed_000431,PFYen7nm8cFFUub4,37Tmv4NnfQeb0ZgUC4fOJj,Dire Straits,Sultans of Swing,history,ds001_seed_table,431,56,5.6,5.6,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000432,PTGJtA9w6NRK7i2i,65krtHkaYLPr0mEbjL61UP,Sade,Kiss Of Life,history,ds001_seed_table,432,50,5.0,5.0,soul,soul,1,not_applicable_ds001
+ds001_seed_000433,PdYtsSRChch10Pis,3VIJBrMpvimHEw5wtPh2wB,The Drums,Money,history,ds001_seed_table,433,10,1.0,1.0,indie pop,indie,1,not_applicable_ds001
+ds001_seed_000434,PkDkL7FwoxgSihWF,6MV9CNu8TCE2281ltK3rh0,Elton John,Tiny Dancer,history,ds001_seed_table,434,10,1.0,1.0,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000435,PpHkM6yBx8iOPbbj,2TVxnKdb3tqe1nhQWwwZCO,Elton John,Madman Across The Water,history,ds001_seed_table,435,10,1.0,1.0,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000436,Q3FW5IETfMGskjPT,43DeSV93pJPT4lCZaWZ6b1,Thin Lizzy,The Boys Are Back in Town,history,ds001_seed_table,436,10,1.0,1.0,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000437,Q5FpbLUBcj52MXJc,6gBFPUFcJLzWGx4lenP6h2,Travis,Sing,history,ds001_seed_table,437,6,0.6,0.6,britpop,britpop,1,not_applicable_ds001
+ds001_seed_000438,Q7dZASswZQ06WSCk,0wI7QkCcs8FUQE1OkXUIqd,Alessia Cara,Scars to Your Beautiful,history,ds001_seed_table,438,10,1.0,1.0,pop,pop,1,not_applicable_ds001
+ds001_seed_000439,Q83ngwYg6Drv80ri,0J2p4KYdr6Mg4ET6JPlbe1,ABBA,Super Trouper,history,ds001_seed_table,439,50,5.0,5.0,pop,pop,1,not_applicable_ds001
+ds001_seed_000440,Q91NrXXiGSPTWDdu,0Dm43YLUlGdePpSbI1ct8h,Stevie Wonder,Part-Time Lover,history,ds001_seed_table,440,10,1.0,1.0,soul,soul,1,not_applicable_ds001
+ds001_seed_000441,QCAdazLRjD4TPSY4,2VzJH2QeNO1PiZwXZMvx7g,Alexandre Desplat,The Shape Of Water,history,ds001_seed_table,441,16,1.6,1.6,soundtrack,soundtrack,1,not_applicable_ds001
+ds001_seed_000442,QRDB2vfDc0Zoxx3k,0Aqi7ArnBrGblW5T6p2jmD,Trevor Daniel,Falling,history,ds001_seed_table,442,16,1.6,1.6,rap,rap,1,not_applicable_ds001
+ds001_seed_000443,QSrP0ZqE3fe2HbFp,5GXAXm5YOmYT0kL5jHvYBt,The Weeknd,I Feel It Coming,history,ds001_seed_table,443,25,2.5,2.5,pop,pop,1,not_applicable_ds001
+ds001_seed_000444,QTxf0P1qd3Dsrc5D,1RXoCep9hxApPfx8UFsGZk,Thousand Foot Krutch,Welcome to the Masquerade,history,ds001_seed_table,444,50,5.0,5.0,alternative rock,alternative rock,1,not_applicable_ds001
+ds001_seed_000445,QUJ8zKT2xvrShIlP,6lrQo6KAYvb92MGk6ZuZlt,Fleetwood Mac,Say You Love Me,history,ds001_seed_table,445,50,5.0,5.0,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000446,QVwdXpB3mFZBrFJW,3qiyyUfYe7CRYLucrPmulD,The Who,Baba O'Riley,history,ds001_seed_table,446,10,1.0,1.0,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000447,QdOaCdAV1jSP1ofh,30XU4suKzCeoCK9YFzdufg,Lady Gaga,Born This Way,history,ds001_seed_table,447,10,1.0,1.0,pop,pop,1,not_applicable_ds001
+ds001_seed_000448,QhQahljQAwJIBXvA,5r5cp9IpziiIsR6b93vcnQ,Empire of the Sun,Walking on a Dream,history,ds001_seed_table,448,10,1.0,1.0,electronic,electronic,1,not_applicable_ds001
+ds001_seed_000449,QnunZ1ZVLtj4JNj8,6Jv7kjGkhY2fT4yuBF3aTz,Jeff Buckley,"Lover, You Should've Come Over",history,ds001_seed_table,449,50,5.0,5.0,rock,rock,1,not_applicable_ds001
+ds001_seed_000450,QqwGEOJjUjyzLrXY,4zdsBics0asw0gj4L5wu5v,Can,Vitamin C,history,ds001_seed_table,450,10,1.0,1.0,krautrock,krautrock,1,not_applicable_ds001
+ds001_seed_000451,QtypIv8SrwQuhtMJ,5tWPG0AU9LVjONRofHcLD0,The Handsome Family,Far From Any Road,history,ds001_seed_table,451,25,2.5,2.5,country,country,1,not_applicable_ds001
+ds001_seed_000452,QvxkMSraOKulkeVJ,5u6y4u5EgDv0peILf60H5t,Santana,Oye Como Va,history,ds001_seed_table,452,10,1.0,1.0,latin,latin,1,not_applicable_ds001
+ds001_seed_000453,Qzf370SfYIwihxzd,7dfKIw7EbXEyqsba0foihh,German Error Message,Everything is scary,history,ds001_seed_table,453,50,5.0,5.0,folk,folk,1,not_applicable_ds001
+ds001_seed_000454,R1HouWQrkqwxJ7mj,1158ckiB5S4cpsdYHDB9IF,Deftones,Around the Fur,history,ds001_seed_table,454,10,1.0,1.0,metal,metal,1,not_applicable_ds001
+ds001_seed_000455,R6GngKj4w5gPISet,7H7NyZ3G075GqPx2evsfeb,Mac DeMarco,Chamber of Reflection,history,ds001_seed_table,455,10,1.0,1.0,synthpop,fip,1,not_applicable_ds001
+ds001_seed_000456,R6lBPJqyMAiDDFpk,33ZXjLCpiINn8eQIDYEPTD,Mobb Deep,Shook Ones Pt. II,history,ds001_seed_table,456,10,1.0,1.0,rap,hip-hop,1,not_applicable_ds001
+ds001_seed_000457,RA9JZ0JD6OQJTDoL,1rBjexQsgqXpsS2BrCxaDX,Blueface,Thotiana,history,ds001_seed_table,457,25,2.5,2.5,rap,hip-hop,1,not_applicable_ds001
+ds001_seed_000458,RAL9I7IQ8cstSeTt,2bbeNsFmjZqdoDhjLsKNWe,Enrique Iglesias,Bailamos,history,ds001_seed_table,458,10,1.0,1.0,pop,pop,1,not_applicable_ds001
+ds001_seed_000459,RHfiy7cNcTHGIGYz,17OqI90oTFZ3J8PVu6j07V,ABBA,Voulez-Vous,history,ds001_seed_table,459,10,1.0,1.0,pop,pop,1,not_applicable_ds001
+ds001_seed_000460,RLJW4LAw34ds2kmh,1MXOWbSCEjoGwivtIMnlBV,Duster,Constellations,history,ds001_seed_table,460,50,5.0,5.0,indie rock,slowcore,1,not_applicable_ds001
+ds001_seed_000461,RNHiitHUUcHRVuTL,7fYKKFD0jiSlMDgG9IUs1q,Dire Straits,Down to the Waterline,history,ds001_seed_table,461,50,5.0,5.0,rock,rock,1,not_applicable_ds001
+ds001_seed_000462,RNXoLjgCgB2JGtiy,0FNLnZRNWEIbGsb8jkU2lv,Barns Courtney,Champion,history,ds001_seed_table,462,50,5.0,5.0,singer-songwriter,singer-songwriter,1,not_applicable_ds001
+ds001_seed_000463,RST57JJzLeQ1Vx73,7jZBPuJmkOsfPkwFD30dAA,Animal Collective,My Girls,history,ds001_seed_table,463,10,1.0,1.0,experimental,experimental,1,not_applicable_ds001
+ds001_seed_000464,RYVe3W02M4Dogfey,2QhURnm7mQDxBb5jWkbDug,Coldplay,Don't Panic,history,ds001_seed_table,464,25,2.5,2.5,rock,rock,1,not_applicable_ds001
+ds001_seed_000465,RdFRnRnYEQazgtcd,5RgFlk1fcClZd0Y4SGYhqH,Billy Joel,She's Always a Woman,history,ds001_seed_table,465,50,5.0,5.0,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000466,RgcvaoASogB8ZgG1,2anqvLXhJRNLJC6K4XD0Mj,Santigold,Disparate Youth,history,ds001_seed_table,466,31,3.1,3.1,electronic,electronic,1,not_applicable_ds001
+ds001_seed_000467,RoHsSri236Riyuz0,4wf2u78747lu1rU5WbpXMk,Roxette,Spending My Time,history,ds001_seed_table,467,25,2.5,2.5,pop,pop,1,not_applicable_ds001
+ds001_seed_000468,RtND0H9YUGoC9e7Y,3wMUvT6eIw2L5cZFG1yH9j,Nelly,Country Grammar (Hot Shit),history,ds001_seed_table,468,10,1.0,1.0,hip hop,hip hop,1,not_applicable_ds001
+ds001_seed_000469,Rv7ZEVRO0Bcy3kty,4vGwwMIIvFHtm4KX0rqF0U,The Alan Parsons Project,Some Other Time,history,ds001_seed_table,469,10,1.0,1.0,progressive rock,progressive rock,1,not_applicable_ds001
+ds001_seed_000470,S9NHB8tncOFLjyYh,2A6yzRGMgSQCUapR2ptm6A,Cyndi Lauper,True Colors,history,ds001_seed_table,470,50,5.0,5.0,pop,80s,1,not_applicable_ds001
+ds001_seed_000471,SEMFQJPRX56E433d,7b96P5WRVoixTmssXpFL9N,Slipknot,Sarcastrophe,history,ds001_seed_table,471,10,1.0,1.0,nu metal,nu metal,1,not_applicable_ds001
+ds001_seed_000472,SGNa3kLR3hIEve4g,2wvMC5EyaaYQwBfiwwY2xE,Joe Walsh,Life's Been Good,history,ds001_seed_table,472,10,1.0,1.0,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000473,SGdBZN7YdHYovtvU,0Z2J91b2iTGLVTZC4fKgxf,2Pac,Hit 'Em Up,history,ds001_seed_table,473,25,2.5,2.5,rap,rap,1,not_applicable_ds001
+ds001_seed_000474,SHts9gG3F21q8NFM,48UPSzbZjgc449aqz8bxox,Red Hot Chili Peppers,Californication,history,ds001_seed_table,474,10,1.0,1.0,rock,rock,1,not_applicable_ds001
+ds001_seed_000475,SZI6pFbowlUQvZ2r,1NeLwFETswx8Fzxl2AFl91,Daft Punk,Something About Us,history,ds001_seed_table,475,10,1.0,1.0,electronic,electronic,1,not_applicable_ds001
+ds001_seed_000476,Sc5hSW0RlRrBF0Kh,3vkQ5DAB1qQMYO4Mr9zJN6,ABBA,Gimme! Gimme! Gimme! (A Man After Midnight),history,ds001_seed_table,476,50,5.0,5.0,pop,pop,1,not_applicable_ds001
+ds001_seed_000477,SdygXhQ9Wrubkqed,0Ja4hLKiUSw01E01pJ1yGr,The Prodigy,Breathe,history,ds001_seed_table,477,31,3.1,3.1,electronic,electronic,1,not_applicable_ds001
+ds001_seed_000478,Sf5uG9XR2xiSQOiT,3KliPMvk1EvFZu9cvkj8p1,Britney Spears,Work Bitch,history,ds001_seed_table,478,25,2.5,2.5,pop,pop,1,not_applicable_ds001
+ds001_seed_000479,SqgPvFQAQGajRcs6,54eZmuggBFJbV7k248bTTt,America,A Horse With No Name,history,ds001_seed_table,479,25,2.5,2.5,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000480,Sx24emXFUeV0fxVx,0LtOwyZoSNZKJWHqjzADpW,Tame Impala,Feels Like We Only Go Backwards,history,ds001_seed_table,480,31,3.1,3.1,psychedelic rock,psychedelic rock,1,not_applicable_ds001
+ds001_seed_000481,SxvIXgbSYEXQi5jk,0UJEym12sdx3m5UlY2HYfp,Justin Hurwitz,Armstrong Cabin,history,ds001_seed_table,481,10,1.0,1.0,jazz,jazz,1,not_applicable_ds001
+ds001_seed_000482,T0THbg5LsplRrah4,1FEiijYPJtyswChfcpv3p0,Lana Del Rey,Summertime Sadness,history,ds001_seed_table,482,50,5.0,5.0,pop,indie,1,not_applicable_ds001
+ds001_seed_000483,T8DDAzoRnJ3p3VXq,1uwzAmgnBBO5fi6N4JQnlt,Sidewalks and Skeletons,SLEEP PARALYSIS,history,ds001_seed_table,483,10,1.0,1.0,witch house,witch house,1,not_applicable_ds001
+ds001_seed_000484,TIAp6H2gjqrlVVOG,4JWfPMjVEh4SusNs8V3gt5,Esbjörn Svensson Trio,From Gagarin's Point Of View,history,ds001_seed_table,484,10,1.0,1.0,jazz,jazz,1,not_applicable_ds001
+ds001_seed_000485,TIK2RwS4GHUjzwHV,2nLtzopw4rPReszdYBJU6h,Linkin Park,Numb,history,ds001_seed_table,485,25,2.5,2.5,rock,rock,1,not_applicable_ds001
+ds001_seed_000486,TNVtJ2qAv1t1Xwxp,6hjVajm2JfjhXs803HqqMO,Tame Impala,Jeremy's Storm,history,ds001_seed_table,486,10,1.0,1.0,psychedelic rock,psychedelic rock,1,not_applicable_ds001
+ds001_seed_000487,TNwdyxcnAeUozsup,1fTAs4YpBA7R21i0iB4j54,Hans Zimmer,Stay,history,ds001_seed_table,487,31,3.1,3.1,soundtrack,soundtrack,1,not_applicable_ds001
+ds001_seed_000488,TO3cZBWQE1GRRXy4,5XeFesFbtLpXzIVDNQP22n,Arctic Monkeys,I Wanna Be Yours,history,ds001_seed_table,488,25,2.5,2.5,indie rock,indie rock,1,not_applicable_ds001
+ds001_seed_000489,TOlmmZkIzb90hTof,15BQ7vEDv2LJuh8TxWIhtd,Iggy Pop,The Passenger,history,ds001_seed_table,489,10,1.0,1.0,rock,rock,1,not_applicable_ds001
+ds001_seed_000490,TYzCbdIvKp1R4pBm,3sTN90bIP2cJ1783ctHykO,Mura Masa,Lovesick,history,ds001_seed_table,490,6,0.6,0.6,electronic,lovestep,1,not_applicable_ds001
+ds001_seed_000491,TcVzpep6p47rspsF,02ppMPbg1OtEdHgoPqoqju,Radiohead,Reckoner,history,ds001_seed_table,491,31,3.1,3.1,alternative rock,alternative,1,not_applicable_ds001
+ds001_seed_000492,TcfQOkbDwUcXfICz,09TlxralXOGX35LUutvw7I,Daft Punk,End of Line,history,ds001_seed_table,492,20,2.0,2.0,electronic,electronic,1,not_applicable_ds001
+ds001_seed_000493,TdOSAiEwVoEMLjuw,6ho0GyrWZN3mhi9zVRW7xi,Fisher,Losing It,history,ds001_seed_table,493,6,0.6,0.6,techno,techno,1,not_applicable_ds001
+ds001_seed_000494,TdZFrdiO7o38l6l9,126HWk9JuCt4PHZJAAsgOv,La Caution,Thé à la menthe,history,ds001_seed_table,494,25,2.5,2.5,rap,hip-hop,1,not_applicable_ds001
+ds001_seed_000495,TfDcisAgz7sLIi7w,54KFQB6N4pn926IUUYZGzK,The Cinematic Orchestra,To Build a Home,history,ds001_seed_table,495,31,3.1,3.1,downtempo,beautiful,1,not_applicable_ds001
+ds001_seed_000496,TicIVjUI2VKrl7Vb,0sVcnEo2jnUnr3p7uVDZ9o,Comethazine,Walk,history,ds001_seed_table,496,12,1.2,1.2,rap,trap,1,not_applicable_ds001
+ds001_seed_000497,TlDpRXqH3vXZvU1s,2UVbBKQOdFAekPTRsnkzcf,Migos,Stir Fry,history,ds001_seed_table,497,31,3.1,3.1,rap,hip-hop,1,not_applicable_ds001
+ds001_seed_000498,Tm8ig4y2sPh3tcK1,4MagTPnkPiDuIa4P8GtW1b,Lauv,I Like Me Better,history,ds001_seed_table,498,10,1.0,1.0,indie pop,linedance 2017,1,not_applicable_ds001
+ds001_seed_000499,TmhEi0Z91beKiZgT,3AFpIlNR4DEJ1WC7qyOHU8,Crystal Castles,Affection,history,ds001_seed_table,499,31,3.1,3.1,electronic,electronic,1,not_applicable_ds001
+ds001_seed_000500,ToGEr6hcY8W5l5bG,46Qy1xAr2K7rylRYwdQ6Gw,Faster Pussycat,House Of Pain,history,ds001_seed_table,500,10,1.0,1.0,hard rock,hard rock,1,not_applicable_ds001
+ds001_seed_000501,ToVL2QCrrhcqq6Uc,2iUmqdfGZcHIhS3b9E9EWq,Neon Trees,Everybody Talks,history,ds001_seed_table,501,25,2.5,2.5,indie rock,alternative,1,not_applicable_ds001
+ds001_seed_000502,ToVgmnLAIy5VVLH2,62uLNJgVZaFiEiKV4LpoYJ,The Police,Walking On The Moon - Remastered 2003,history,ds001_seed_table,502,25,2.5,2.5,rock,rock,1,not_applicable_ds001
+ds001_seed_000503,TpMj0105soSPxJ9k,3GiJq4AQK7324mfIQbpiTf,Slipknot,Custer,history,ds001_seed_table,503,10,1.0,1.0,nu metal,nu metal,1,not_applicable_ds001
+ds001_seed_000504,TqfQLJGD3ycda4Wx,22UDw8rSfLbUsaAGTXQ4Z8,Estelle,American Boy,history,ds001_seed_table,504,62,6.2,6.2,pop,rnb,1,not_applicable_ds001
+ds001_seed_000505,U3MQ5cAm4YLdMToe,1JO1xLtVc8mWhIoE3YaCL0,The Turtles,Happy Together,history,ds001_seed_table,505,10,1.0,1.0,classic rock,60s,1,not_applicable_ds001
+ds001_seed_000506,U5F4JMfzI49fpU4E,0B7wvvmu9EISAwZnOpjhNI,Bruno Mars,When I Was Your Man,history,ds001_seed_table,506,50,5.0,5.0,pop,pop,1,not_applicable_ds001
+ds001_seed_000507,UDvlGtvXLOP5hSsJ,4a5pNRjwmzYQuEY1E7O6pj,Supertramp,Breakfast in America,history,ds001_seed_table,507,25,2.5,2.5,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000508,UKMiY3x8av9TlLsN,6IM45SqAURH6PrvziDs1RQ,Tame Impala,Why Won't They Talk To Me?,history,ds001_seed_table,508,10,1.0,1.0,psychedelic rock,life soundtrack,1,not_applicable_ds001
+ds001_seed_000509,UNshO7ZVwub48OoT,33daQo3S8j2NcJstEHXwhQ,Three Days Grace,Pain,history,ds001_seed_table,509,10,1.0,1.0,rock,rock,1,not_applicable_ds001
+ds001_seed_000510,UOC3r4tvGL3Gm9lX,7hfRrdFJgFKK3cJ4rmkecE,Mase,Feel So Good,history,ds001_seed_table,510,10,1.0,1.0,hip hop,hip-hop,1,not_applicable_ds001
+ds001_seed_000511,UPDZbB5LWwqGI9oq,4GJTbB9FNkGkvf6dxl22qW,Crystal Castles,Baptism,history,ds001_seed_table,511,25,2.5,2.5,electronic,electronic,1,not_applicable_ds001
+ds001_seed_000512,USLM5pkhFI0MwCPx,3JvKfv6T31zO0ini8iNItO,Tom Odell,Another Love,history,ds001_seed_table,512,31,3.1,3.1,singer-songwriter,indie,1,not_applicable_ds001
+ds001_seed_000513,UZWT3D67GpgYRg0c,3gGMsx3jxYKfhXq8LMj1tz,Crystal Castles,Vanished,history,ds001_seed_table,513,35,3.5,3.5,electronic,poptron,1,not_applicable_ds001
+ds001_seed_000514,UaPXEpK5J5mC2MCy,3DQisSEr1TLp9H0BEeKiQS,Zara Larsson,Uncover,history,ds001_seed_table,514,50,5.0,5.0,pop,swedish,1,not_applicable_ds001
+ds001_seed_000515,UgrCFfB1dBp9U9P3,0iOZM63lendWRTTeKhZBSC,Simon & Garfunkel,Bookends,history,ds001_seed_table,515,25,2.5,2.5,folk,folk,1,not_applicable_ds001
+ds001_seed_000516,UimghTkYTuQzTvRT,7tqhbajSfrz2F7E1Z75ASX,Marvin Gaye,Ain't No Mountain High Enough,history,ds001_seed_table,516,10,1.0,1.0,soul,soul,1,not_applicable_ds001
+ds001_seed_000517,UodNIylMAVda4qBR,70Vdd1gx5tn84jkAU31ASv,LMFAO,Sexy and I Know It,history,ds001_seed_table,517,10,1.0,1.0,pop,dance,1,not_applicable_ds001
+ds001_seed_000518,Uop8gPCwESlxWLBg,2ucFCqazVVhPKHDoaR73t8,Sibylle Baier,I Lost Something in the Hills,history,ds001_seed_table,518,25,2.5,2.5,folk,folk,1,not_applicable_ds001
+ds001_seed_000519,V1CAYgQRWL3phfP7,2a2MbiJN2skOxohykOVcss,Tame Impala,Solitude Is Bliss,history,ds001_seed_table,519,31,3.1,3.1,psychedelic rock,psychedelic rock,1,not_applicable_ds001
+ds001_seed_000520,V2ZPjbtFj7sMWXHL,3H3cOQ6LBLSvmcaV7QkZEu,Daft Punk,Aerodynamic,history,ds001_seed_table,520,10,1.0,1.0,electronic,electronic,1,not_applicable_ds001
+ds001_seed_000521,VByM6z4j9kTTcMps,6crfO56bDm0RjpctUuGs5X,Julie London,I'm in the Mood for Love,history,ds001_seed_table,521,10,1.0,1.0,jazz,jazz,1,not_applicable_ds001
+ds001_seed_000522,VCFEdiDe9DmaHTQl,3bnVBN67NBEzedqQuWrpP4,Twenty One Pilots,Tear in My Heart,history,ds001_seed_table,522,25,2.5,2.5,rock,alternative,1,not_applicable_ds001
+ds001_seed_000523,VEgCJYWOWbeX7FGT,2aEuA8PSqLa17Y4hKPj5rr,Modern Talking,Cheri Cheri Lady,history,ds001_seed_table,523,10,1.0,1.0,disco,80s,1,not_applicable_ds001
+ds001_seed_000524,VFKGg5XXpQpbTCgo,1EuFHPoVGfyfEZBaYExK7v,Moondog,Bird's Lament,history,ds001_seed_table,524,10,1.0,1.0,jazz,jazz,1,not_applicable_ds001
+ds001_seed_000525,VI2U8T3gDG3s3oPF,0e8C9dPERvvARURkNOFrrC,Moby,Go,history,ds001_seed_table,525,10,1.0,1.0,electronic,electronic,1,not_applicable_ds001
+ds001_seed_000526,VKvF5oSWmxCDL97f,60a0Rd6pjrkxjPbaKzXjfq,Linkin Park,In the End,history,ds001_seed_table,526,25,2.5,2.5,rock,rock,1,not_applicable_ds001
+ds001_seed_000527,VNLPt5JJKlywaw8B,1d6KS9GH06JAd19uiBy9IE,Alanis Morissette,Ironic - 2015 Remaster,history,ds001_seed_table,527,25,2.5,2.5,rock,female vocalists,1,not_applicable_ds001
+ds001_seed_000528,VOOUpIPgI0zBYdBt,4DMKwE2E2iYDKY01C335Uw,Kansas,Carry on Wayward Son,history,ds001_seed_table,528,16,1.6,1.6,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000529,VTPceIXtVKN34lrz,6HSXNV0b4M4cLJ7ljgVVeh,Bob Dylan,Knockin' on Heaven's Door,history,ds001_seed_table,529,25,2.5,2.5,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000530,VW3ZqqNG2piOADHC,3kMrazSvILsgcwtidZd1Qd,La Roux,Bulletproof,history,ds001_seed_table,530,16,1.6,1.6,electropop,electropop,1,not_applicable_ds001
+ds001_seed_000531,VWHyoFVCdTmglCz7,6EnKFFz82SDnlWFXXOq6JZ,The Cure,A Forest,history,ds001_seed_table,531,10,1.0,1.0,new wave,new wave,1,not_applicable_ds001
+ds001_seed_000532,VWrUykeicslfUToY,2mHngbc9wHeVuJr59VCV2h,Crystal Castles,Char,history,ds001_seed_table,532,25,2.5,2.5,synthpop,synthpop,1,not_applicable_ds001
+ds001_seed_000533,VYPcjZYIHcj9pPL8,5veJDT0MLsLbhYsx42GXUD,The Police,Don't Stand So Close To Me - Remastered 2003,history,ds001_seed_table,533,25,2.5,2.5,rock,rock,1,not_applicable_ds001
+ds001_seed_000534,VdZlILZXuH35jZvs,1TKTiKp3zbNgrBH2IwSwIx,Pink Floyd,Us and Them,history,ds001_seed_table,534,10,1.0,1.0,progressive rock,progressive rock,1,not_applicable_ds001
+ds001_seed_000535,VjL805nl0oHFzqSt,05f8Hg3RSfiPSCBQOtxl3i,Led Zeppelin,When the Levee Breaks,history,ds001_seed_table,535,10,1.0,1.0,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000536,VtF32nX4mmVRGMEj,0cQVqPuHQP4KEwc7ZUQmj6,The Neighbourhood,Sweater Weather,history,ds001_seed_table,536,41,4.1,4.1,indie rock,indie,1,not_applicable_ds001
+ds001_seed_000537,VzHIvgqRHbhogDkG,3EYOJ48Et32uATr9ZmLnAo,The Police,Roxanne,history,ds001_seed_table,537,31,3.1,3.1,rock,rock,1,not_applicable_ds001
+ds001_seed_000538,W19LRCYGtraTMETd,5vYA1mW9g2Coh1HUFUSmlb,Matchbox Twenty,3AM,history,ds001_seed_table,538,10,1.0,1.0,rock,rock,1,not_applicable_ds001
+ds001_seed_000539,W3840iF5Q641yVJ1,2oENJa1T33GJ0w8dC167G4,Sean Kingston,Fire Burning,history,ds001_seed_table,539,16,1.6,1.6,pop,dance,1,not_applicable_ds001
+ds001_seed_000540,W4o0xoXePKHkqbTZ,22yRdwQ4OXUlPrLGhF6ebu,Grandson,thoughts & prayers,history,ds001_seed_table,540,31,3.1,3.1,indie rock,alternative,1,not_applicable_ds001
+ds001_seed_000541,WBZXGy6cWwR2hWdG,0pJTrMWCiR0TuJ5FApIqrz,Tame Impala,Music To Walk Home By,history,ds001_seed_table,541,10,1.0,1.0,psychedelic rock,psychedelic rock,1,not_applicable_ds001
+ds001_seed_000542,WGm8CU7iWc7j9Kzf,7w5AOd6HrDIHewHfpABEss,Chris Isaak,Wicked Game,history,ds001_seed_table,542,25,2.5,2.5,rock,80s,1,not_applicable_ds001
+ds001_seed_000543,WHPR9OrFBOToYWXJ,75JFxkI2RXiU7L9VXzMkle,Coldplay,The Scientist,history,ds001_seed_table,543,10,1.0,1.0,rock,rock,1,not_applicable_ds001
+ds001_seed_000544,WJvBVNMc5pLuW4F6,3XOMgW4jVBP3c4LFqe7pH3,Avicii,Hey Brother,history,ds001_seed_table,544,25,2.5,2.5,pop,dance,1,not_applicable_ds001
+ds001_seed_000545,WOQdQUmxaehIk6YJ,4KwvTXx3yR0FA4LGfxD4xP,Heartless Bastards,Only for You,history,ds001_seed_table,545,10,1.0,1.0,indie rock,indie rock,1,not_applicable_ds001
+ds001_seed_000546,WPicPUjFYRHXuprh,7nmtH3cyqEmKz8F09V60yO,Tame Impala,Powerlines,history,ds001_seed_table,546,10,1.0,1.0,psychedelic rock,psychedelic rock,1,not_applicable_ds001
+ds001_seed_000547,WTW5L6HcDrAzobMB,7uWFUpGuEfmxYeymkV95jn,Jim Croce,Time in a Bottle,history,ds001_seed_table,547,50,5.0,5.0,folk,folk,1,not_applicable_ds001
+ds001_seed_000548,WWXkHEiWJuBoE9bj,1k1Bqnv2R0uJXQN4u6LKYt,Bill Withers,Ain't No Sunshine,history,ds001_seed_table,548,56,5.6,5.6,soul,soul,1,not_applicable_ds001
+ds001_seed_000549,Watr4MvWFxo9I2I6,1LzNfuep1bnAUR9skqdHCK,Mazzy Star,Fade Into You,history,ds001_seed_table,549,10,1.0,1.0,dream pop,lush,1,not_applicable_ds001
+ds001_seed_000550,WgyhkBBzgS4PfS48,0AS63m1wHv9n4VVRizK6Hc,Shawn Mendes,Mercy,history,ds001_seed_table,550,10,1.0,1.0,pop,pop,1,not_applicable_ds001
+ds001_seed_000551,WjVTbCVNOO69M3j5,4Sd5tbNP4q8wS64abqwfkN,The War on Drugs,Thinking Of A Place,history,ds001_seed_table,551,6,0.6,0.6,indie rock,indie rock,1,not_applicable_ds001
+ds001_seed_000552,WmXXcoyZSKAYNRY3,0UAJH0k4k3slcE83a9UGCe,The Kinks,Lola - Coca Cola Version,history,ds001_seed_table,552,6,0.6,0.6,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000553,WojFH6fFwBxqY5ac,0YZ3J8xzGwLOg4yEgST1YK,Joe Cocker,With A Little Help From My Friends,history,ds001_seed_table,553,10,1.0,1.0,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000554,WriyCY7EQKhsjM3K,3gdewACMIVMEWVbyb8O9sY,Elton John,Rocket Man (I Think It's Going to Be a Long Long Time),history,ds001_seed_table,554,10,1.0,1.0,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000555,WsjIzoWgtrSKuoKk,4xfAVJL8R7mVYbDk8a9xOY,Elliott Smith,Somebody That I Used To Know,history,ds001_seed_table,555,25,2.5,2.5,folk,acoustic,1,not_applicable_ds001
+ds001_seed_000556,Wz8GjjsF8VpLtkTf,1CmhkiXegdbj3Ewizvdg2Q,Grandson,Best Friends,history,ds001_seed_table,556,6,0.6,0.6,indie rock,alternative,1,not_applicable_ds001
+ds001_seed_000557,X7ALhvRn3UgOKSjh,6UpMG6BDOd5xecMTu5r3sj,Genesis,Firth of Fifth,history,ds001_seed_table,557,25,2.5,2.5,progressive rock,progressive rock,1,not_applicable_ds001
+ds001_seed_000558,X8WX8W8vuZd017kb,2TW37GtISke3eb6MkCH8br,Current Joys,Become the Warm Jets,history,ds001_seed_table,558,31,3.1,3.1,emo,indie,1,not_applicable_ds001
+ds001_seed_000559,X9AB542GPGgUycCq,4gbVRS8gloEluzf0GzDOFc,Maroon 5,Maps,history,ds001_seed_table,559,25,2.5,2.5,pop,pop,1,not_applicable_ds001
+ds001_seed_000560,XEbyzfafxVpCCLK2,5YEOzOojehCqxGQCcQiyR4,Desiigner,Panda,history,ds001_seed_table,560,25,2.5,2.5,rap,2016,1,not_applicable_ds001
+ds001_seed_000561,XGVDmBZwb1Bnx0Gb,5TXDeTFVRVY7Cvt0Dw4vWW,XXXTentacion,REVENGE,history,ds001_seed_table,561,31,3.1,3.1,emo rap,emo rap,1,not_applicable_ds001
+ds001_seed_000562,XIICCaTg9woXEdIS,2gam98EZKrF9XuOkU13ApN,Nelly Furtado,Promiscuous,history,ds001_seed_table,562,25,2.5,2.5,pop,pop,1,not_applicable_ds001
+ds001_seed_000563,XL9ttv6KtHJ4vyhO,6XUHsYE38CEbYunT983O9G,Supertramp,Give a Little Bit,history,ds001_seed_table,563,25,2.5,2.5,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000564,XPhsdXhKGswGFS85,64UioB4Nmwgn2f4cbIpAkl,Billy Joel,It's Still Rock and Roll to Me,history,ds001_seed_table,564,50,5.0,5.0,rock,rock,1,not_applicable_ds001
+ds001_seed_000565,XQrflLn70qYnXiw1,5jgFfDIR6FR0gvlA56Nakr,The Beatles,Blackbird - Remastered 2009,history,ds001_seed_table,565,25,2.5,2.5,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000566,XVJQTqbQnVWgb8TS,1fHodIvqzNeO7ccrhreMDj,alt-J,Bloodflood,history,ds001_seed_table,566,10,1.0,1.0,indie rock,alternative,1,not_applicable_ds001
+ds001_seed_000567,Xb2hM65vVEGzBn6y,3C0nOe05EIt1390bVABLyN,Jennifer Lopez,On the Floor,history,ds001_seed_table,567,6,0.6,0.6,pop,dance,1,not_applicable_ds001
+ds001_seed_000568,Xccqfq1iLhRkBK8X,2dURQIBrw3XcHyVZlfdpC1,Stacey Q,Two of Hearts,history,ds001_seed_table,568,50,5.0,5.0,pop,80s,1,not_applicable_ds001
+ds001_seed_000569,XgXbrtAIUO5lcGMq,2O99aywAVBhaPrsiJ6zbSS,Tame Impala,'Cause I'm A Man,history,ds001_seed_table,569,10,1.0,1.0,psychedelic rock,psychedelic pop,1,not_applicable_ds001
+ds001_seed_000570,Xn2QVBodsAWdFr86,3pf96IFggfQuT6Gafqx2rt,Boney M.,Sunny,history,ds001_seed_table,570,10,1.0,1.0,disco,disco,1,not_applicable_ds001
+ds001_seed_000571,XoB08R2Ak0m5iuan,4vhVDkSx9RSb2k6mWFMYNI,Queen,You're My Best Friend (Remastered 2011),history,ds001_seed_table,571,10,1.0,1.0,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000572,XygrGJXLUtSk2T3w,4EC81w5nKG5tZlkHyKT2vO,Tame Impala,Lucidity,history,ds001_seed_table,572,10,1.0,1.0,psychedelic rock,psychedelic rock,1,not_applicable_ds001
+ds001_seed_000573,Y0HXGXSuieokwB23,2xql0pid3EUwW38AsywxhV,The Neighbourhood,Reflections,history,ds001_seed_table,573,10,1.0,1.0,indie rock,indie,1,not_applicable_ds001
+ds001_seed_000574,YAXokwIbdBLOG283,4h7bZNHnYP2umOomPbnfxG,Faith No More,Epic,history,ds001_seed_table,574,10,1.0,1.0,rock,rock,1,not_applicable_ds001
+ds001_seed_000575,YFzjDdmMf3UQnZvs,39shmbIHICJ2Wxnk1fPSdz,The Clash,Should I Stay or Should I Go,history,ds001_seed_table,575,15,1.5,1.5,punk,punk,1,not_applicable_ds001
+ds001_seed_000576,YG7EYKYrtUYRZ22c,0aJrYfARfCKzv6gXjhs4SZ,Jack Johnson,Upside Down,history,ds001_seed_table,576,31,3.1,3.1,singer-songwriter,acoustic,1,not_applicable_ds001
+ds001_seed_000577,YJTqEs29X5Ek7jWi,2Gl1Qdx5Px5kVYe0PQoGI0,Tame Impala,Be Above It,history,ds001_seed_table,577,10,1.0,1.0,psychedelic rock,psychedelic,1,not_applicable_ds001
+ds001_seed_000578,YQAhQJrci52RNpdA,003vvx7Niy0yvhvHt4a68B,The Killers,Mr. Brightside,history,ds001_seed_table,578,25,2.5,2.5,rock,rock,1,not_applicable_ds001
+ds001_seed_000579,YaAiYlVpWYLFO7YV,1Pq47iFLC5U7j8xeNiNcuS,Lesley Gore,It's My Party,history,ds001_seed_table,579,10,1.0,1.0,pop,60s,1,not_applicable_ds001
+ds001_seed_000580,Ydh9qUkrroIymncM,3utq2FgD1pkmIoaWfjXWAU,Billy Joel,Scenes from an Italian Restaurant,history,ds001_seed_table,580,50,5.0,5.0,rock,rock,1,not_applicable_ds001
+ds001_seed_000581,YgEh62KLk46uZxd8,00TFDHSe7s8cWm5CzDY8UP,Moby,Extreme Ways,history,ds001_seed_table,581,10,1.0,1.0,electronic,electronic,1,not_applicable_ds001
+ds001_seed_000582,Yh6WQXVEjRQbrnFB,7iN1s7xHE4ifF5povM6A48,The Beatles,Let It Be,history,ds001_seed_table,582,25,2.5,2.5,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000583,Yk16YxYhqZjAh5xI,4cIPLtg1avt2Jm3ne9S1zy,Queen,Killer Queen - Remastered 2011,history,ds001_seed_table,583,50,5.0,5.0,rock,rock,1,not_applicable_ds001
+ds001_seed_000584,YsdRXh0pGb8jps1b,0snQkGI5qnAmohLE7jTsTn,System of a Down,Toxicity,history,ds001_seed_table,584,25,2.5,2.5,alternative metal,alternative metal,1,not_applicable_ds001
+ds001_seed_000585,Z2dVhsmV3LBUYo40,7hCNBVRhHzcsRAv0TQnOzq,Bruno Mars,Runaway Baby,history,ds001_seed_table,585,50,5.0,5.0,pop,pop,1,not_applicable_ds001
+ds001_seed_000586,Z4XewTB70q4fZK6p,0q5giEtY4wsFTwjWqswLwx,Bob Marley & The Wailers,"Get Up, Stand Up",history,ds001_seed_table,586,30,3.0,3.0,reggae,reggae,1,not_applicable_ds001
+ds001_seed_000587,ZMPwCflu8N47hDXS,2Qf6Xj6jbe1mfe5cnnnJ44,Genesis,Follow You Follow Me,history,ds001_seed_table,587,25,2.5,2.5,progressive rock,progressive rock,1,not_applicable_ds001
+ds001_seed_000588,ZVJZjvc9vaLlebOc,0gBfLS4aqbrr1ZvVv8dqWB,Edward Maya,Stereo Love,history,ds001_seed_table,588,26,2.6,2.6,house,dance,1,not_applicable_ds001
+ds001_seed_000589,ZrXqcGbJ1wDA0n90,2xiOdusRnZezQok1RgLNeS,Bee Gees,World,history,ds001_seed_table,589,50,5.0,5.0,pop,pop,1,not_applicable_ds001
+ds001_seed_000590,ZxermC14QeOkLzuY,56eSclzdXaWU5jOJ7DX7Vp,Beach House,Silver Soul,history,ds001_seed_table,590,6,0.6,0.6,dream pop,dream pop,1,not_applicable_ds001
+ds001_seed_000591,aLRN0RIs9E0Ltz1R,2UCgWpa2r4ytWueNItYbWE,Dazz Band,Let It Whip,history,ds001_seed_table,591,10,1.0,1.0,funk,funk,1,not_applicable_ds001
+ds001_seed_000592,aNNeqPoExIOUDcxH,5XVjNRubJUW0iPhhSWpLCj,Alice Deejay,Better Off Alone,history,ds001_seed_table,592,10,1.0,1.0,trance,dance,1,not_applicable_ds001
+ds001_seed_000593,aNYQ7ySXzax4NlKK,3reoq3Kp45545OlqZBk93X,Alex Gaudino,Destination Calabria - Radio Edit,history,ds001_seed_table,593,40,4.0,4.0,house,dance,1,not_applicable_ds001
+ds001_seed_000594,aOhIZTFpMgepc17h,2p5YsiLsdmFlBtJOmFXDDj,Paul McCartney,Live and Let Die,history,ds001_seed_table,594,50,5.0,5.0,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000595,aUIkmtwPPZoBFQFR,28eg5bkYvIHT7HPmzZFwLN,Billy Squier,Lonely Is The Night - Remastered,history,ds001_seed_table,595,10,1.0,1.0,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000596,aYxVQbN1iI7Ah5Ol,0K6yUnIKNsFtfIpTgGtcHm,Rush,Limelight,history,ds001_seed_table,596,10,1.0,1.0,progressive rock,progressive rock,1,not_applicable_ds001
+ds001_seed_000597,aZx7sdB2dtr95A9x,2xar08Fq5xra2KKZs5Bw9j,Ray Charles,I've Got a Woman,history,ds001_seed_table,597,50,5.0,5.0,soul,soul,1,not_applicable_ds001
+ds001_seed_000598,aaCvzPWSdW19Nelr,2hKdd3qO7cWr2Jo0Bcs0MA,Train,Drops of Jupiter,history,ds001_seed_table,598,16,1.6,1.6,rock,rock,1,not_applicable_ds001
+ds001_seed_000599,adG7LBliQbcLS3eM,6L5BZEcZmD6RBJnimzlyKr,The Moody Blues,Nights in White Satin,history,ds001_seed_table,599,50,5.0,5.0,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000600,anFPQOBQz4WPD1ob,2X485T9Z5Ly0xyaghN73ed,Tame Impala,Let It Happen,history,ds001_seed_table,600,31,3.1,3.1,psychedelic rock,indie,1,not_applicable_ds001
+ds001_seed_000601,ayw1SNXO3IZRRHwc,7EZC6E7UjZe63f1jRmkWxt,The Cranberries,Zombie,history,ds001_seed_table,601,10,1.0,1.0,rock,rock,1,not_applicable_ds001
+ds001_seed_000602,b1HMJHbxChlBDPef,608xszaAxVh4m7NcKJiAbF,Eagles,One of These Nights,history,ds001_seed_table,602,50,5.0,5.0,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000603,b1zUVHW2rTsC0niU,7A4rW6quroPut2I6OsCys9,The Police,Canary In A Coalmine,history,ds001_seed_table,603,16,1.6,1.6,rock,rock,1,not_applicable_ds001
+ds001_seed_000604,b4zqr2rJpHEDotke,7EQGXaVSyEDsCWKmUcfpLk,Kesha,Die Young,history,ds001_seed_table,604,10,1.0,1.0,pop,pop,1,not_applicable_ds001
+ds001_seed_000605,b5uHnwRWtsh5yY09,5VSAonaAPhhGn0G7hMYwWK,America,Sister Golden Hair,history,ds001_seed_table,605,25,2.5,2.5,classic rock,70s,1,not_applicable_ds001
+ds001_seed_000606,b93f0GYGzdKlq4I7,70Znjq5VPKFrwlB7O26SWT,Billy Joel,Zanzibar,history,ds001_seed_table,606,56,5.6,5.6,singer-songwriter,singer-songwriter,1,not_applicable_ds001
+ds001_seed_000607,bII4ckYVH0KiYb1c,0Fnb2pfBfu0ka33d6Yki17,Bob Dylan,John Wesley Harding,history,ds001_seed_table,607,25,2.5,2.5,folk,folk,1,not_applicable_ds001
+ds001_seed_000608,bMK5xWrxof8TouDL,5O4erNlJ74PIF6kGol1ZrC,Bob Marley & The Wailers,Could You Be Loved,history,ds001_seed_table,608,10,1.0,1.0,reggae,reggae,1,not_applicable_ds001
+ds001_seed_000609,bQKLyc0Y45WrTCRK,75IQVo8hqI1iwVZyvkN2VT,Men I Trust,Show Me How,history,ds001_seed_table,609,10,1.0,1.0,downtempo,fave indie pop,1,not_applicable_ds001
+ds001_seed_000610,bRRvcKXsaruiqVMX,1EzrEOXmMH3G43AXT1y7pA,Jason Mraz,I'm Yours,history,ds001_seed_table,610,97,9.7,9.7,singer-songwriter,acoustic,1,not_applicable_ds001
+ds001_seed_000611,bU9zsndJzZ8fRZ92,6nek1Nin9q48AVZcWs9e9D,Coldplay,Paradise,history,ds001_seed_table,611,10,1.0,1.0,alternative rock,alternative rock,1,not_applicable_ds001
+ds001_seed_000612,bahMZziomwcw8ge4,1CgmY8fVN7kstVDZmsdM5k,Michael Jackson,P.Y.T. (Pretty Young Thing),history,ds001_seed_table,612,60,6.0,6.0,pop,pop,1,not_applicable_ds001
+ds001_seed_000613,bbRubPkT5bxwLQpH,7EXMu7qI9Hv5PlMgtmfjES,Moby,We Are All Made of Stars,history,ds001_seed_table,613,10,1.0,1.0,electronic,electronic,1,not_applicable_ds001
+ds001_seed_000614,bgaW0PAE9g3ndI3H,6r1ygpKNXg7deq18rzyM7F,Katy Perry,Teenage Dream,history,ds001_seed_table,614,10,1.0,1.0,pop,pop,1,not_applicable_ds001
+ds001_seed_000615,bgbP9RmsdiSZSvIx,325toqbCzE1g1pYIED7U4C,Pink Floyd,Take It Back,history,ds001_seed_table,615,10,1.0,1.0,progressive rock,progressive rock,1,not_applicable_ds001
+ds001_seed_000616,bhTLRMfKnCUFzExH,4mWahKerLaVddUjb8d1Q4Q,David Bowie,The Man Who Sold the World,history,ds001_seed_table,616,10,1.0,1.0,rock,rock,1,not_applicable_ds001
+ds001_seed_000617,bkRNQTQPa1dJMXXF,2qOm7ukLyHUXWyR4ZWLwxA,Ice Cube,It Was A Good Day,history,ds001_seed_table,617,10,1.0,1.0,rap,rap,1,not_applicable_ds001
+ds001_seed_000618,bn2v1XZjvZ4DCVgm,6Rb0ptOEjBjPPQUlQtQGbL,Pitbull,Hotel Room Service,history,ds001_seed_table,618,10,1.0,1.0,rap,dance,1,not_applicable_ds001
+ds001_seed_000619,bnmgDNeay1s4oi9j,2HEgBBls7l0smWTxPx0MtZ,Nancy Sinatra,These Boots Are Made for Walkin',history,ds001_seed_table,619,10,1.0,1.0,pop,60s,1,not_applicable_ds001
+ds001_seed_000620,boG2Is4YcDe4oYLw,6REbwUNlppTfcnV4d4ZoZi,Kendrick Lamar,Swimming Pools (Drank),history,ds001_seed_table,620,25,2.5,2.5,rap,hip-hop,1,not_applicable_ds001
+ds001_seed_000621,bs5DUdgQAHF9c5sE,6kQz6t5z1FK4uohPh8Kd73,Jennifer Lopez,Let's Get Loud,history,ds001_seed_table,621,10,1.0,1.0,pop,pop,1,not_applicable_ds001
+ds001_seed_000622,bsizTBFio63TNrJO,2gQsUHVFY4tpXc3AFU2mcS,The Alan Parsons Project,Games People Play,history,ds001_seed_table,622,10,1.0,1.0,progressive rock,progressive rock,1,not_applicable_ds001
+ds001_seed_000623,btxFhAJuwKD1b6Tu,2t8yVaLvJ0RenpXUIAC52d,21 Savage,a lot,history,ds001_seed_table,623,6,0.6,0.6,rap,hip-hop,1,not_applicable_ds001
+ds001_seed_000624,bwF6WFgG72FvarGJ,0KzAbK6nItSqNh8q70tb0K,Pixies,Where Is My Mind?,history,ds001_seed_table,624,6,0.6,0.6,alternative rock,alternative,1,not_applicable_ds001
+ds001_seed_000625,bwon6zFv5CPGk8Hk,2LD2gT7gwAurzdQDQtILds,Daft Punk,Veridis Quo,history,ds001_seed_table,625,16,1.6,1.6,electronic,electronic,1,not_applicable_ds001
+ds001_seed_000626,bzskxZYFKSQQ6yFq,2ctvdKmETyOzPb2GiJJT53,Pink Floyd,Breathe In The Air,history,ds001_seed_table,626,10,1.0,1.0,progressive rock,progressive rock,1,not_applicable_ds001
+ds001_seed_000627,c1RfCbcaU8UjIl5C,6cHxEBJ6MN4wfqkEXMaS1B,Mr.Kitty,XIII,history,ds001_seed_table,627,16,1.6,1.6,electronic,electronic,1,not_applicable_ds001
+ds001_seed_000628,c4YdL4HnXOFKKbE8,1JSTJqkT5qHq8MDJnJbRE1,The Police,Every Breath You Take - Remastered 2003,history,ds001_seed_table,628,25,2.5,2.5,rock,80s,1,not_applicable_ds001
+ds001_seed_000629,c4t5z0k4ujUl5e9W,1HfPcQ3c2HyGeID3u1lmCa,David Guetta,She Wolf (Falling to Pieces),history,ds001_seed_table,629,40,4.0,4.0,pop,pop,1,not_applicable_ds001
+ds001_seed_000630,c6ueRbNvZotL2J6q,5D2mYZuzcgjpchVY1pmTPh,50 Cent,Candy Shop,history,ds001_seed_table,630,25,2.5,2.5,rap,rap,1,not_applicable_ds001
+ds001_seed_000631,c8K4aE4yHT81V2X0,1yvMUkIOTeUNtNWlWRgANS,Sia,Unstoppable,history,ds001_seed_table,631,10,1.0,1.0,pop,pop,1,not_applicable_ds001
+ds001_seed_000632,c9I6gyKgENn7bD5D,3ZOEytgrvLwQaqXreDs2Jx,Red Hot Chili Peppers,Can't Stop,history,ds001_seed_table,632,16,1.6,1.6,rock,rock,1,not_applicable_ds001
+ds001_seed_000633,cBvJvxJSs8UXXTKG,4SgcE7RxpK3ydWrjoAQH1K,Tame Impala,Why Won't You Make Up Your Mind?,history,ds001_seed_table,633,10,1.0,1.0,psychedelic rock,psychedelic rock,1,not_applicable_ds001
+ds001_seed_000634,cC2BZKMudvidPFIE,3TO7bbrUKrOSPGRTB5MeCz,Pink Floyd,Time,history,ds001_seed_table,634,50,5.0,5.0,progressive rock,progressive rock,1,not_applicable_ds001
+ds001_seed_000635,cCcpwGeZs5j0DBjc,6vuPZX9fWESg5js2JFTQRJ,Daft Punk,Crescendolls,history,ds001_seed_table,635,10,1.0,1.0,electronic,poptron,1,not_applicable_ds001
+ds001_seed_000636,cEAm0nZDHEs4tiXo,1SnCoCBoTgJKNPeZJ1MO8p,alt-J,Dissolve Me,history,ds001_seed_table,636,10,1.0,1.0,indie rock,alternative,1,not_applicable_ds001
+ds001_seed_000637,cEHfOhOsSTSVgSpF,3Cx4yrFaX8CeHwBMReOWXI,Billy Joel,We Didn't Start the Fire,history,ds001_seed_table,637,50,5.0,5.0,rock,80s,1,not_applicable_ds001
+ds001_seed_000638,cQhRyoaFQ1aol9sh,5kqIPrATaCc2LqxVWzQGbk,Lukas Graham,7 Years,history,ds001_seed_table,638,16,1.6,1.6,pop,pop,1,not_applicable_ds001
+ds001_seed_000639,cUVeTJt6l8bM4jOc,1aj4GXfmEYXfdVZohCpNKu,Otis Redding,Stand by Me,history,ds001_seed_table,639,31,3.1,3.1,soul,soul,1,not_applicable_ds001
+ds001_seed_000640,cWJrDbT2y0N6g8Jx,1oYYd2gnWZYrt89EBXdFiO,The Police,Message in a Bottle,history,ds001_seed_table,640,25,2.5,2.5,rock,rock,1,not_applicable_ds001
+ds001_seed_000641,cY88PTobeWjSBDgH,1wszdDUhlil6EH3SRkmTZL,PASTEL GHOST,Embrace,history,ds001_seed_table,641,10,1.0,1.0,synthpop,synthpop,1,not_applicable_ds001
+ds001_seed_000642,cZXcA0XJNGeXkzgu,1xOXXYh6lTW8laxlW7JP2J,Billy Joel,Only the Good Die Young,history,ds001_seed_table,642,50,5.0,5.0,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000643,cfTBu0FtciWpOUhy,4SYMibQ93bfzOk6uzkF0dO,Ace of Base,Don't Turn Around,history,ds001_seed_table,643,10,1.0,1.0,pop,pop,1,not_applicable_ds001
+ds001_seed_000644,cgmAU8RaivLqOTHe,63JXZZRbmzooashakb0zbu,Daft Punk,Nightvision,history,ds001_seed_table,644,10,1.0,1.0,electronic,electronic,1,not_applicable_ds001
+ds001_seed_000645,chrMZevKUhdziYN8,1DqdF42leyFIzqNDv9CjId,Taio Cruz,Dynamite,history,ds001_seed_table,645,25,2.5,2.5,pop,dance,1,not_applicable_ds001
+ds001_seed_000646,ckRNGDkc2KWb5uti,58zE9NyMKGTpzV5J8WyXXe,Kany García,Hoy Ya Me Voy,history,ds001_seed_table,646,25,2.5,2.5,latin,spanish,1,not_applicable_ds001
+ds001_seed_000647,cosQpkhsrHXjwn7W,4scpF6J5uMBvoh6sFB7EL1,Rae Sremmurd,No Type,history,ds001_seed_table,647,25,2.5,2.5,hip hop,hip-hop,1,not_applicable_ds001
+ds001_seed_000648,cqv4VcFvQOgrUahR,4xWqRo8GPwMQ02LjiaX4D8,Morningsiders,Empress,history,ds001_seed_table,648,10,1.0,1.0,folk,american,1,not_applicable_ds001
+ds001_seed_000649,d3XJODyFgcy3ZPiY,3boi65u59Ex9jbhLXcXwre,Robert Miles,Children,history,ds001_seed_table,649,41,4.1,4.1,trance,trance,1,not_applicable_ds001
+ds001_seed_000650,d8mpA1OkA5Rpk28W,5qHirGR7M9tdm6C17DlzSY,Aminé,REEL IT IN,history,ds001_seed_table,650,31,3.1,3.1,rap,rap,1,not_applicable_ds001
+ds001_seed_000651,dB2gDmZ8Dp35ToNd,0lizgQ7Qw35od7CYaoMBZb,Ariana Grande,Santa Tell Me,history,ds001_seed_table,651,10,1.0,1.0,pop,christmas,1,not_applicable_ds001
+ds001_seed_000652,dBDGWf06sWOmFFMg,2Xb6wJYGi0QXwURw5WWvI5,Gerry Rafferty,Right Down The Line,history,ds001_seed_table,652,50,5.0,5.0,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000653,dCk71gW1HTNSD8CX,5TmFTHZp7HjBXjjsFvCY6h,Alex Gaudino,Destination Calabria,history,ds001_seed_table,653,10,1.0,1.0,house,dance,1,not_applicable_ds001
+ds001_seed_000654,dH77BneQXfLdLRHP,1GcVa4jFySlun4jLSuMhiq,The Rolling Stones,Angie,history,ds001_seed_table,654,10,1.0,1.0,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000655,dPa2ZmGsMqympPA0,5FVd6KXrgO9B3JPmC8OPst,Arctic Monkeys,Do I Wanna Know?,history,ds001_seed_table,655,25,2.5,2.5,indie rock,indie rock,1,not_applicable_ds001
+ds001_seed_000656,dV7xIuU5Jn69oqRT,2Ih217RCGAmyQR68Nn7Cqo,Ice Cube,You Know How We Do It,history,ds001_seed_table,656,10,1.0,1.0,rap,west coast,1,not_applicable_ds001
+ds001_seed_000657,dWoAt8vpq9BABlIH,30FURVTCpbKyykjSEQzGkH,Amy Winehouse,Back to Black,history,ds001_seed_table,657,20,2.0,2.0,soul,soul,1,not_applicable_ds001
+ds001_seed_000658,dWoqh1PZ2v31CqYb,1QmhkjuUlosROqKk59sBSK,Philip Glass,Opening,history,ds001_seed_table,658,10,1.0,1.0,contemporary classical,contemporary classical,1,not_applicable_ds001
+ds001_seed_000659,df1K1mbXTgX9fXGl,74jTexO94dFGyXGyeu8krd,Ace of Base,Beautiful Life,history,ds001_seed_table,659,10,1.0,1.0,pop,90s,1,not_applicable_ds001
+ds001_seed_000660,dhgthhFvwSWvlemR,1OrD9RkuBnoNrrURFap9wi,Miniature Tigers,Like Or Like Like,history,ds001_seed_table,660,10,1.0,1.0,indie pop,indie pop,1,not_applicable_ds001
+ds001_seed_000661,dkWTr2wb1Njj6jPV,3L7RtEcu1Hw3OXrpnthngx,The Human League,Human,history,ds001_seed_table,661,50,5.0,5.0,new wave,80s,1,not_applicable_ds001
+ds001_seed_000662,dt2rHqDjy0925YZa,4ZoBC5MhSEzuknIgAkBaoT,Billy Joel,My Life,history,ds001_seed_table,662,50,5.0,5.0,pop,pop,1,not_applicable_ds001
+ds001_seed_000663,dvwkD1w1L1x5bN8U,3Yub3anoLj8w58TVpEXUJv,Tame Impala,It Is Not Meant to Be,history,ds001_seed_table,663,31,3.1,3.1,psychedelic rock,psychedelic rock,1,not_applicable_ds001
+ds001_seed_000664,dwi9fWnMiWyysgAd,6pnwfWyaWjQiHCKTiZLItr,Pink Floyd,"Shine on You Crazy Diamond, Pts. 1-5",history,ds001_seed_table,664,10,1.0,1.0,progressive rock,progressive rock,1,not_applicable_ds001
+ds001_seed_000665,e8uT0TN97LEzJmTu,7N3PAbqfTjSEU1edb2tY8j,Van Halen,Jump,history,ds001_seed_table,665,10,1.0,1.0,rock,80s,1,not_applicable_ds001
+ds001_seed_000666,eAQw0AcG5ZUhZpTi,5e9TFTbltYBg2xThimr0rU,Fleetwood Mac,The Chain - 2004 Remaster,history,ds001_seed_table,666,41,4.1,4.1,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000667,eAou7WQoHsCJHj7i,75IN3CtuZwTHTnZvYM4qnJ,Eminem,My Name Is,history,ds001_seed_table,667,10,1.0,1.0,rap,rap,1,not_applicable_ds001
+ds001_seed_000668,eGdSduVcqH0jldUr,0GTK6TesV108Jj5D3MHsYb,Yes,Owner of a Lonely Heart,history,ds001_seed_table,668,50,5.0,5.0,progressive rock,progressive rock,1,not_applicable_ds001
+ds001_seed_000669,eImY8mchzpgRlOuy,5op53ANI4exiWqFHKuwWxd,Modest Mouse,The World at Large,history,ds001_seed_table,669,10,1.0,1.0,indie rock,indie,1,not_applicable_ds001
+ds001_seed_000670,eJNfRdSM192c2hWz,7jOuIhMrkiKj7bvYhRqaym,Flo Rida,Low (feat T-Pain),history,ds001_seed_table,670,10,1.0,1.0,hip hop,hip-hop,1,not_applicable_ds001
+ds001_seed_000671,eRxWfOoiJqeqkWtU,5cwN1htZyoWqZCc33f3RfE,Broken Bells,The High Road,history,ds001_seed_table,671,10,1.0,1.0,indie pop,indie,1,not_applicable_ds001
+ds001_seed_000672,eTTmWAi6wdU98EZl,2MGRnjJc7C0z3EOEWRqcMw,David Guetta,Love Is Gone,history,ds001_seed_table,672,50,5.0,5.0,house,dance,1,not_applicable_ds001
+ds001_seed_000673,ea4ZO2KHBtmawzVg,6Q8s3YuAWkx0Qui0Jgkr5m,Prince,Soft and Wet,history,ds001_seed_table,673,50,5.0,5.0,funk,funk,1,not_applicable_ds001
+ds001_seed_000674,em8NdzYjVrUjQLhU,2usrT8QIbIk9y0NEtQwS4j,The xx,Intro,history,ds001_seed_table,674,25,2.5,2.5,electronic,indie,1,not_applicable_ds001
+ds001_seed_000675,emfrFnthPWX2mGuU,5JLv62qFIS1DR3zGEcApRt,Katy Perry,Wide Awake,history,ds001_seed_table,675,10,1.0,1.0,pop,pop,1,not_applicable_ds001
+ds001_seed_000676,eo7a6cSCByZUq5vT,0aGQHMr7bc23Y9Ts84ffop,Red Hot Chili Peppers,Around the World,history,ds001_seed_table,676,10,1.0,1.0,rock,rock,1,not_applicable_ds001
+ds001_seed_000677,ersr8HUCo4MAEjcy,40riOy7x9W7GXjyGp4pjAv,Eagles,Hotel California,history,ds001_seed_table,677,56,5.6,5.6,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000678,ev8BH8kJZ6doXyLb,3Z3QhZAZpqwZa1phsbQ3JZ,Chris Rea,Driving Home for Christmas,history,ds001_seed_table,678,10,1.0,1.0,rock,christmas,1,not_applicable_ds001
+ds001_seed_000679,f4CjtotxCWPvBA5o,3ULgE72PnMaeV6lzA0G6Jv,Eagles,Try and Love Again,history,ds001_seed_table,679,25,2.5,2.5,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000680,f5dvbY2QV345OKbt,2LEF1A8DOZ9wRYikWgVlZ8,Flo Rida,Good Feeling,history,ds001_seed_table,680,50,5.0,5.0,electronic,party,1,not_applicable_ds001
+ds001_seed_000681,f6BSvFkn6EVp68CJ,1nMpuUZl8hNmdHUpqZgbt5,alt-J,Intro,history,ds001_seed_table,681,10,1.0,1.0,indie rock,alternative,1,not_applicable_ds001
+ds001_seed_000682,f7TdJ5xB11oH40YP,3CmHvyZQQAGkKkTjTBFWN6,Pink Floyd,Have a Cigar,history,ds001_seed_table,682,16,1.6,1.6,progressive rock,progressive rock,1,not_applicable_ds001
+ds001_seed_000683,f87VuyyZBMlzKCEu,0yfNXxlyXdmP0ue1iJijx1,Duran Duran,Come Undone,history,ds001_seed_table,683,10,1.0,1.0,new wave,80s,1,not_applicable_ds001
+ds001_seed_000684,f8tgcekDCU8ikfH8,113xf7t4qNM7038YJvauik,The Neighbourhood,Nervous,history,ds001_seed_table,684,10,1.0,1.0,rock,indie,1,not_applicable_ds001
+ds001_seed_000685,f8vT7aBGAqTXbvyY,1xNmF1Uep5OGutizZSbKvd,Joan Osborne,One of Us,history,ds001_seed_table,685,56,5.6,5.6,rock,female vocalists,1,not_applicable_ds001
+ds001_seed_000686,fG9YQSFjhJkd4ghq,4D3DfbLyQpAFYo6j3zRIL5,Blues Saraceno,The River,history,ds001_seed_table,686,50,5.0,5.0,instrumental rock,guitar virtuoso,1,not_applicable_ds001
+ds001_seed_000687,fGqo4w2qgX1lQXGW,3cHyrEgdyYRjgJKSOiOtcS,Pitbull,Timber (feat. Ke$ha),history,ds001_seed_table,687,10,1.0,1.0,pop,dance,1,not_applicable_ds001
+ds001_seed_000688,fJJCD6DJfQyDgjyh,4U45aEWtQhrm8A5mxPaFZ7,Billy Joel,Vienna,history,ds001_seed_table,688,50,5.0,5.0,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000689,fMAHXkJP4VUi1cCZ,0BQMym4vrghWvHFDQybmRa,Son Lux,Easy,history,ds001_seed_table,689,25,2.5,2.5,electronic,fip,1,not_applicable_ds001
+ds001_seed_000690,fMo1uZ6fy9YjwK9v,5InE7NRPIeNayZy5HhbUxD,Nicole Dollanganger,Poacher's Pride,history,ds001_seed_table,690,10,1.0,1.0,folk,canadian,1,not_applicable_ds001
+ds001_seed_000691,fOEol954daZrG315,5HAjss9faCAowGY8dM24r6,Pink Floyd,Is There Anybody Out There?,history,ds001_seed_table,691,50,5.0,5.0,progressive rock,progressive rock,1,not_applicable_ds001
+ds001_seed_000692,fQNjWCvmXaPytHEq,3aEJMh1cXKEjgh52claxQp,Frank Sinatra,I've Got You Under My Skin - Remastered 1998,history,ds001_seed_table,692,10,1.0,1.0,jazz,jazz,1,not_applicable_ds001
+ds001_seed_000693,fQcKATcMDnJhQ5D6,4PEGwWH4tL6H7dGl4uVSPg,Sade,Like A Tattoo,history,ds001_seed_table,693,56,5.6,5.6,soul,soul,1,not_applicable_ds001
+ds001_seed_000694,fV9SV0yxaWpJOpRN,10Nmj3JCNoMeBQ87uw5j8k,Red Hot Chili Peppers,Dani California,history,ds001_seed_table,694,10,1.0,1.0,rock,rock,1,not_applicable_ds001
+ds001_seed_000695,fXO7aH7NFHfPHUgo,0LWkaEyQRkF0XAms8Bg1fC,DMX,Party Up,history,ds001_seed_table,695,10,1.0,1.0,rap,hip-hop,1,not_applicable_ds001
+ds001_seed_000696,faPyGyrJB09U4hSG,4wswaG5vmNINMZcVBsAyBP,George Harrison,Got My Mind Set on You,history,ds001_seed_table,696,10,1.0,1.0,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000697,felFFjT2RoGyR4SS,0Q2dRzhPWFOex89dOjbq5Y,Frank Zappa,Watermelon In Easter Hay,history,ds001_seed_table,697,10,1.0,1.0,progressive rock,progressive rock,1,not_applicable_ds001
+ds001_seed_000698,ffIMcHbNxb5LClZ8,186hvCTyrni4KT9nwIQ7zS,Daft Punk,Superheroes,history,ds001_seed_table,698,10,1.0,1.0,electronic,electronic,1,not_applicable_ds001
+ds001_seed_000699,ffrr19LJScn4TwaI,6WlmEymaXKMRs3D2c4j6os,Duster,Inside Out,history,ds001_seed_table,699,50,5.0,5.0,space rock,space rock,1,not_applicable_ds001
+ds001_seed_000700,fh6TNtMkrWBSNavC,3RN6IMCkcJr44Xm7tdWWaK,Shlohmo,Places,history,ds001_seed_table,700,10,1.0,1.0,ambient,ambient,1,not_applicable_ds001
+ds001_seed_000701,foVvryczNWG8CoFR,0GxV3poTM7Z7fKSUqy5qFw,Cream,Tales of Brave Ulysses,history,ds001_seed_table,701,16,1.6,1.6,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000702,fpNGoMJLkWqtynzc,1e3Q7gE5TRUklXOlZFKIrv,R.E.M.,Find the River,history,ds001_seed_table,702,50,5.0,5.0,rock,rock,1,not_applicable_ds001
+ds001_seed_000703,fvyOMzDOpAq7GW5R,4PINSJIlBWsnVeveicq1S8,The Velvet Underground,I'll Be Your Mirror,history,ds001_seed_table,703,10,1.0,1.0,rock,60s,1,not_applicable_ds001
+ds001_seed_000704,fyKKFWDwwAnQ0lBd,40ppiA4zkitHegsv6A4Lhn,Tame Impala,41 Mojitos Poolside Dub,history,ds001_seed_table,704,10,1.0,1.0,psychedelic rock,psychedelic rock,1,not_applicable_ds001
+ds001_seed_000705,fyTPYIaKV4tfEYvk,6VObnIkLVruX4UVyxWhlqm,Adele,Skyfall,history,ds001_seed_table,705,10,1.0,1.0,soundtrack,soundtrack,1,not_applicable_ds001
+ds001_seed_000706,gMdQONPf9JdWb6MS,0S3gpZzlT9Hb7CCSV2owX7,Ozzy Osbourne,"Mama, I'm Coming Home",history,ds001_seed_table,706,10,1.0,1.0,hard rock,heavy metal,1,not_applicable_ds001
+ds001_seed_000707,gQbivAeNzh1daC1x,4JehYebiI9JE8sR8MisGVb,Beyoncé,Halo,history,ds001_seed_table,707,10,1.0,1.0,pop,pop,1,not_applicable_ds001
+ds001_seed_000708,gSLnhHl7yZMDhWPO,6RUpJeXT6U4SPEafnr9Wr7,DMX,Where The Hood At,history,ds001_seed_table,708,10,1.0,1.0,rap,rap,1,not_applicable_ds001
+ds001_seed_000709,gWCfT826DQ3knjVg,2tpWsVSb9UEmDRxAl1zhX1,OneRepublic,Counting Stars,history,ds001_seed_table,709,35,3.5,3.5,pop rock,pop rock,1,not_applicable_ds001
+ds001_seed_000710,gX7Wjq4qPvzzqp96,1mea3bSkSGXuIRvnydlB5b,Coldplay,Viva la Vida,history,ds001_seed_table,710,10,1.0,1.0,rock,alternative,1,not_applicable_ds001
+ds001_seed_000711,gYxWozyzUYjYWISO,5T8EDUDqKcs6OSOwEsfqG7,Queen,Don't Stop Me Now - Remastered 2011,history,ds001_seed_table,711,50,5.0,5.0,rock,rock,1,not_applicable_ds001
+ds001_seed_000712,gaGYxFBjeKKKEfke,2yPoXCs7BSIUrucMdK5PzV,Rihanna,Umbrella,history,ds001_seed_table,712,50,5.0,5.0,pop,pop,1,not_applicable_ds001
+ds001_seed_000713,gkZV3kea5YXpMIWo,4feXcsElKIVsGwkbnTHAfV,Frank Sinatra,Somethin' Stupid,history,ds001_seed_table,713,10,1.0,1.0,swing,swing,1,not_applicable_ds001
+ds001_seed_000714,gkaNGhUTCZzICBcE,0bfvHnWWOeU1U5XeKyVLbW,Frankie Valli,Can't Take My Eyes Off You,history,ds001_seed_table,714,50,5.0,5.0,easy listening,oldies,1,not_applicable_ds001
+ds001_seed_000715,gmZBYRybDhgacpoZ,38zsOOcu31XbbYj9BIPUF1,Elton John,Your Song,history,ds001_seed_table,715,31,3.1,3.1,pop,70s,1,not_applicable_ds001
+ds001_seed_000716,gsLqJ1JiyTInSrS2,1Xi84slp6FryDSCbzq4UCD,Duncan Laurence,Arcade,history,ds001_seed_table,716,10,1.0,1.0,eurovision,eurovision,1,not_applicable_ds001
+ds001_seed_000717,gvOtX0Zd0NEhlPmr,3E7ZwUMJFqpsDOJzEkBrQ7,Kylie Minogue,Fever,history,ds001_seed_table,717,50,5.0,5.0,pop,pop,1,not_applicable_ds001
+ds001_seed_000718,gxVc3JUykVtpBR7n,1foMv2HQwfQ2vntFf9HFeG,Gorillaz,Rhinestone Eyes,history,ds001_seed_table,718,16,1.6,1.6,electronic,electronic,1,not_applicable_ds001
+ds001_seed_000719,gxk4hG7MU5tUnpmJ,2mLgOcRkEgq89j8WstUpui,Coldplay,Spies,history,ds001_seed_table,719,25,2.5,2.5,rock,rock,1,not_applicable_ds001
+ds001_seed_000720,gy6m6csgF6N2tLBR,0gEaeqVRHPzRc7HMXtOKc7,Pink Floyd,Pigs (Three Different Ones),history,ds001_seed_table,720,10,1.0,1.0,progressive rock,progressive rock,1,not_applicable_ds001
+ds001_seed_000721,h0LCV99d7Kd4dwtv,5Ohxk2dO5COHF1krpoPigN,Harry Styles,Sign of the Times,history,ds001_seed_table,721,10,1.0,1.0,rock,rock,1,not_applicable_ds001
+ds001_seed_000722,h6QeSqR3aQAUAjoA,4ju4zNA8aY8LMPClsptrBW,Lenka,Blue Skies - Revoke Remix,history,ds001_seed_table,722,6,0.6,0.6,pop,female vocalists,1,not_applicable_ds001
+ds001_seed_000723,h9RfaO1aejBY2U23,3oEkrIfXfSh9zGnE7eBzSV,ABBA,The Winner Takes It All,history,ds001_seed_table,723,56,5.6,5.6,pop,pop,1,not_applicable_ds001
+ds001_seed_000724,hCKWOVKhjPffcjw2,3UmaczJpikHgJFyBTAJVoz,Eminem,Stan,history,ds001_seed_table,724,16,1.6,1.6,rap,rap,1,not_applicable_ds001
+ds001_seed_000725,hIXwnHFqhJJZtIhy,4dpEYOPcmHNfvERbiajp3G,Cage the Elephant,Sweetie Little Jean,history,ds001_seed_table,725,56,5.6,5.6,indie rock,indie rock,1,not_applicable_ds001
+ds001_seed_000726,hIo1NnmlNrVuTh0Z,2DlHlPMa4M17kufBvI2lEN,System of a Down,Chop Suey!,history,ds001_seed_table,726,25,2.5,2.5,alternative metal,alternative metal,1,not_applicable_ds001
+ds001_seed_000727,hK5SOLS7HLgwSbc3,1HMQmOWrkieKYWlFsjUP3D,The Paper Kites,Bloom - Bonus Track,history,ds001_seed_table,727,10,1.0,1.0,indie folk,indie folk,1,not_applicable_ds001
+ds001_seed_000728,hMcOM8RsAoAHnFsr,6gPd6brcBXlbGdy1obe234,Three Days Grace,Time of Dying,history,ds001_seed_table,728,10,1.0,1.0,alternative rock,alternative rock,1,not_applicable_ds001
+ds001_seed_000729,hPdocEW4suRWAMMs,4bJygwUKrRgq1stlNXcgMg,t.A.T.u.,All the Things She Said,history,ds001_seed_table,729,31,3.1,3.1,pop,pop,1,not_applicable_ds001
+ds001_seed_000730,hTw4SMjYA2gvcRd1,5oO3drDxtziYU2H1X23ZIp,Rihanna,Love on the Brain,history,ds001_seed_table,730,10,1.0,1.0,soul,soul,1,not_applicable_ds001
+ds001_seed_000731,hUu4G1SPIxEAOYVt,5TRPicyLGbAF2LGBFbHGvO,Kanye West,Flashing Lights,history,ds001_seed_table,731,25,2.5,2.5,rap,hip-hop,1,not_applicable_ds001
+ds001_seed_000732,hkrDrI3zOB5ubrnK,0E8q2Fx2XuzXCO2NSAppkR,Duke Ellington,In A Sentimental Mood,history,ds001_seed_table,732,10,1.0,1.0,jazz,jazz,1,not_applicable_ds001
+ds001_seed_000733,hpAxy4GQYqsAVKN7,6KzkqZqhUBEsWYJJa2aBOd,Michael Gray,The Weekend - Radio Edit,history,ds001_seed_table,733,10,1.0,1.0,house,house,1,not_applicable_ds001
+ds001_seed_000734,htn9V7zLY5FJNyer,2wy29RBixBECDOsXuBs7md,Hilight Tribe,Free Tibet - Vini Vici Remix,history,ds001_seed_table,734,10,1.0,1.0,electronic,psytrance,1,not_applicable_ds001
+ds001_seed_000735,hzMv55iIbZBSOEVf,1MlAkYV0nbRKWhhfvTt3zc,Swedish House Mafia,Don't You Worry Child (Radio Edit),history,ds001_seed_table,735,50,5.0,5.0,house,house,1,not_applicable_ds001
+ds001_seed_000736,i1vuo6VqmsBFl46g,3Tsh9pjiJ5cvmuiZALdgVz,Pink Floyd,What Do You Want from Me,history,ds001_seed_table,736,10,1.0,1.0,progressive rock,progressive rock,1,not_applicable_ds001
+ds001_seed_000737,i2DvGPtMbLM3EViJ,4qiBDlMzW2vTK8dJKw7xD3,Gnarls Barkley,Who's Gonna Save My Soul,history,ds001_seed_table,737,25,2.5,2.5,soul,soul,1,not_applicable_ds001
+ds001_seed_000738,i5XEkJGX8VVSFqhs,1UbDqlLHBY7SxKVamO6hqJ,Hans Zimmer,Afraid of Time,history,ds001_seed_table,738,10,1.0,1.0,soundtrack,soundtrack,1,not_applicable_ds001
+ds001_seed_000739,i9z7mU4ZQWEID6mf,6UuVONmxXwTKN1ISepuAoQ,Jeff Buckley,Forget Her,history,ds001_seed_table,739,55,5.5,5.5,rock,rock,1,not_applicable_ds001
+ds001_seed_000740,iG3kLv8ql5d7Qkev,3hlksXnvbKogFdPbpO9vel,Nicki Minaj,Super Bass,history,ds001_seed_table,740,25,2.5,2.5,hip hop,nicki minaj,1,not_applicable_ds001
+ds001_seed_000741,iJGkySsh0ZufQUz6,4GAqWEmxzMZDZ1T0NFHqKG,Canned Heat,Let's Work Together,history,ds001_seed_table,741,10,1.0,1.0,classic rock,blues rock,1,not_applicable_ds001
+ds001_seed_000742,iPbNmnHajSsGPq0n,3E7dfMvvCLUddWissuqMwr,Miley Cyrus,Party in the U.S.A.,history,ds001_seed_table,742,50,5.0,5.0,pop,pop,1,not_applicable_ds001
+ds001_seed_000743,iRpU8PKEZMO3zWtk,0CAfXk7DXMnon4gLudAp7J,Flo Rida,Low (feat. T-Pain),history,ds001_seed_table,743,15,1.5,1.5,rap,hip-hop,1,not_applicable_ds001
+ds001_seed_000744,iWYyJqFE5EvHrL3M,5KG2ahk1cONbHvg3dBdTbx,Bobby Vinton,Mr. Lonely,history,ds001_seed_table,744,56,5.6,5.6,easy listening,oldies,1,not_applicable_ds001
+ds001_seed_000745,iYrDEjFIZ5cCtb5n,6CGMZijOAZvTXG21T8t6R0,RÜFÜS DU SOL,Innerbloom,history,ds001_seed_table,745,25,2.5,2.5,electronic,electronic,1,not_applicable_ds001
+ds001_seed_000746,icDp8Z1cXRG1hy6j,52dm9op3rbfAkc1LGXgipW,The Rolling Stones,Wild Horses - Remastered,history,ds001_seed_table,746,10,1.0,1.0,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000747,ie4N0PytcPCNC6gS,1FnHpM2zimTALdIvuxFoNM,Tame Impala,Expectation,history,ds001_seed_table,747,10,1.0,1.0,psychedelic rock,psychedelic rock,1,not_applicable_ds001
+ds001_seed_000748,ig99pcR1lLuWoyxa,5Hroj5K7vLpIG4FNCRIjbP,American Authors,"Oh, What A Life",history,ds001_seed_table,748,10,1.0,1.0,indie rock,2014,1,not_applicable_ds001
+ds001_seed_000749,igE1eGCmo7BXtcEt,0O45fw2L5vsWpdsOdXwNAR,Justin Timberlake,SexyBack (feat. Timbaland),history,ds001_seed_table,749,31,3.1,3.1,pop,pop,1,not_applicable_ds001
+ds001_seed_000750,iglBkItdGVz3tOAG,3BQHpFgAp4l80e1XslIjNI,The Beatles,Help! - Remastered 2009,history,ds001_seed_table,750,25,2.5,2.5,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000751,iikufrfKJAAwTjFv,1pKYYY0dkg23sQQXi0Q5zN,Daft Punk,Around the World,history,ds001_seed_table,751,10,1.0,1.0,electronic,electronic,1,not_applicable_ds001
+ds001_seed_000752,itK24FswQ3p2cpgZ,4v2rkl1mC3zVAz0nXMx9r4,Blondie,Heart of Glass,history,ds001_seed_table,752,50,5.0,5.0,new wave,80s,1,not_applicable_ds001
+ds001_seed_000753,iwuFFK3eEwn4IjvJ,5pMmWfuL0FTGshYt7HVJ8P,ABBA,S.O.S,history,ds001_seed_table,753,10,1.0,1.0,pop,pop,1,not_applicable_ds001
+ds001_seed_000754,ixhYIiyMqEdzsD23,7e89621JPkKaeDSTQ3avtg,Lynyrd Skynyrd,Sweet Home Alabama,history,ds001_seed_table,754,25,2.5,2.5,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000755,iz0nfMjqDgy78GD0,3nAp4IvdMPPWEH9uuXFFV5,Kelly Clarkson,Underneath the Tree,history,ds001_seed_table,755,10,1.0,1.0,pop,christmas,1,not_applicable_ds001
+ds001_seed_000756,j1BonDBahN9EcSDc,1HbOlAS9kF9d5j7WNQbin9,Jimi Hendrix,Born Under a Bad Sign,history,ds001_seed_table,756,25,2.5,2.5,blues,blues,1,not_applicable_ds001
+ds001_seed_000757,j1uRipkYksEeyuo1,5aJmSzmuhLI6fr1Rm0EnkS,Purity Ring,Fineshrine,history,ds001_seed_table,757,10,1.0,1.0,synthpop,synthpop,1,not_applicable_ds001
+ds001_seed_000758,jG3xP50LBqErj1uh,7LVHVU3tWfcxj5aiPFEW4Q,Coldplay,X&Y,history,ds001_seed_table,758,10,1.0,1.0,rock,rock,1,not_applicable_ds001
+ds001_seed_000759,jHNEKv9xolti6J0N,4KfSdst7rW39C0sfhArdrz,Heart,Little Queen,history,ds001_seed_table,759,50,5.0,5.0,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000760,jJecc84eUKPiBO3e,6jTpdkPWw4QT7VOgUYqrsK,Crystal Castles,Chloroform,history,ds001_seed_table,760,25,2.5,2.5,witch house,witch house,1,not_applicable_ds001
+ds001_seed_000761,jKxlEW8EKiPyRbLW,756CJtQRFSxEx9jV4P9hpA,The Darkness,I Believe in a Thing Called Love,history,ds001_seed_table,761,10,1.0,1.0,rock,rock,1,not_applicable_ds001
+ds001_seed_000762,jOWlRujiZZdfkIVQ,2VxeLyX666F8uXCJ0dZF8B,"Lady Gaga, Bradley Cooper",Shallow,history,ds001_seed_table,762,31,3.1,3.1,pop,pop,1,not_applicable_ds001
+ds001_seed_000763,jPQ15ZwL5PrusQZd,27hhIs2fp6w06N5zx4Eaa5,The Mamas & the Papas,Dream A Little Dream Of Me,history,ds001_seed_table,763,56,5.6,5.6,classic rock,60s,1,not_applicable_ds001
+ds001_seed_000764,jPv1Tj4Mgo4l2Oue,0j2ETZsGM21Q3wKpVNBVJN,The Strokes,You Only Live Once,history,ds001_seed_table,764,16,1.6,1.6,indie rock,indie rock,1,not_applicable_ds001
+ds001_seed_000765,jUGjh936OAuxkPs1,5vmRQ3zELMLUQPo2FLQ76x,Bronski Beat,Smalltown Boy,history,ds001_seed_table,765,10,1.0,1.0,new wave,80s,1,not_applicable_ds001
+ds001_seed_000766,jfAXsBQ3x6qBIYTt,3zEN0ii6s4DHHBpnTp3RP7,Empire of the Sun,We Are the People,history,ds001_seed_table,766,25,2.5,2.5,electronic,electronic,1,not_applicable_ds001
+ds001_seed_000767,jfMwiuFj6p7qN6zc,4uytiW8D73yWQHkg1PzYlB,Meryl Streep,The Winner Takes It All,history,ds001_seed_table,767,10,1.0,1.0,soundtrack,soundtrack,1,not_applicable_ds001
+ds001_seed_000768,jj55fEqkySIv4qy1,7eBqSVxrzQZtK2mmgRG6lC,YNW Melly,Murder On My Mind,history,ds001_seed_table,768,25,2.5,2.5,rap,rap,1,not_applicable_ds001
+ds001_seed_000769,jnRuxFIusdwRDCVV,3ydfhgIZIc2j39NLIhpJpq,CeeLo Green,Fuck You,history,ds001_seed_table,769,25,2.5,2.5,pop,pop,1,not_applicable_ds001
+ds001_seed_000770,jngtsW2Mm0L8UySe,7floNISpH8VF4z4459Qo18,XXXTentacion,Look at Me!,history,ds001_seed_table,770,25,2.5,2.5,rap,hip-hop,1,not_applicable_ds001
+ds001_seed_000771,jp40BwZvbVDNqgFO,0KfZvLAO5JWgklNqBg030h,Gesaffelstein,Atmosphere,history,ds001_seed_table,771,10,1.0,1.0,electronic,electronic,1,not_applicable_ds001
+ds001_seed_000772,jv35SXvlRGSOfynN,2HbKqm4o0w5wEeEFXm2sD4,Kendrick Lamar,good kid,history,ds001_seed_table,772,15,1.5,1.5,hip hop,fip,1,not_applicable_ds001
+ds001_seed_000773,jznaBggs140GlHGH,6ie2Bw3xLj2JcGowOlcMhb,Lorde,Green Light,history,ds001_seed_table,773,10,1.0,1.0,pop,pop,1,not_applicable_ds001
+ds001_seed_000774,k44IHrLH4XmaWOif,0mZ5GyrHG908lqrHaTw4hi,Alicia Keys,No One,history,ds001_seed_table,774,50,5.0,5.0,soul,soul,1,not_applicable_ds001
+ds001_seed_000775,kMj1oApVC4e6MIps,2r3XNMon9K7bl2KTtHsaQO,Jim Croce,"Bad, Bad Leroy Brown",history,ds001_seed_table,775,50,5.0,5.0,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000776,kOEqXPhRlr86wTu2,188ogJrKez9zzsidIg22X8,Air Supply,Making Love Out of Nothing At All,history,ds001_seed_table,776,25,2.5,2.5,soft rock,80s,1,not_applicable_ds001
+ds001_seed_000777,kP2AZZBQ7mhyOpKw,3z8h0TU7ReDPLIbEnYhWZb,Queen,Bohemian Rhapsody,history,ds001_seed_table,777,16,1.6,1.6,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000778,kQBYFfp5dOmHwZul,2BndJYJQ17UcEeUFJP5JmY,Massive Attack,Paradise Circus,history,ds001_seed_table,778,25,2.5,2.5,electronic,trip-hop,1,not_applicable_ds001
+ds001_seed_000779,kSlG0eApnx01j6Lr,6ewQE1dNPv9qqlnB1CxrvM,Tame Impala,Mind Mischief,history,ds001_seed_table,779,10,1.0,1.0,psychedelic rock,psychedelic rock,1,not_applicable_ds001
+ds001_seed_000780,kUXmGnJGVt3Zhdos,1iqzDtZJZYZLJBQ8YfulbN,Molotov,Puto,history,ds001_seed_table,780,10,1.0,1.0,latin,mexican,1,not_applicable_ds001
+ds001_seed_000781,kUpKZvqw7TMafVOq,6MdqqkQ8sSC0WB4i8PyRuQ,Blackstreet,No Diggity,history,ds001_seed_table,781,10,1.0,1.0,hip hop,rnb,1,not_applicable_ds001
+ds001_seed_000782,kawSKh3mCOB96z1X,0lNudhCTfcGBQVvSO22g4r,The Cure,Just Like Heaven,history,ds001_seed_table,782,25,2.5,2.5,new wave,80s,1,not_applicable_ds001
+ds001_seed_000783,kb7H6FbRLXnCra6z,6EXi6ZqTITKGtVBKqbphjL,Moby,Porcelain,history,ds001_seed_table,783,10,1.0,1.0,electronic,chillout,1,not_applicable_ds001
+ds001_seed_000784,kcNHLQMJnapzVQa9,0bYg9bo50gSsH3LtXe2SQn,Mariah Carey,Want You,history,ds001_seed_table,784,10,1.0,1.0,soul,soul,1,not_applicable_ds001
+ds001_seed_000785,kdtKm9nNsq3kwmyD,6IAVxNFi1W88UhDeyvOsdo,Queen,Fat Bottomed Girls - 2011 Remaster,history,ds001_seed_table,785,10,1.0,1.0,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000786,ke5EfOpcvTl0dtyR,0GWGZA5mxo9nHuSyrj70uo,David Guetta,When Love Takes Over (feat. Kelly Rowland),history,ds001_seed_table,786,62,6.2,6.2,house,dance,1,not_applicable_ds001
+ds001_seed_000787,kfiD4pEhO7oZ1gFm,7xQAfvXzm3AkraOtGPWIZg,Post Malone,Wow.,history,ds001_seed_table,787,25,2.5,2.5,metal,metal,1,not_applicable_ds001
+ds001_seed_000788,ki0XZDpBDL8y8GvT,3K4HG9evC7dg3N0R9cYqk4,Linkin Park,One Step Closer,history,ds001_seed_table,788,31,3.1,3.1,nu metal,nu metal,1,not_applicable_ds001
+ds001_seed_000789,kjkaAHsFMmbYKBAE,1BeNZQORyV0jEF2toAmrsA,Phantogram,Don't Move,history,ds001_seed_table,789,10,1.0,1.0,electronic,electronic,1,not_applicable_ds001
+ds001_seed_000790,kqVWk6G25ortikfF,1JpcqmUlzNlK7lpFOkszzv,Tame Impala,Beverly Laurel,history,ds001_seed_table,790,10,1.0,1.0,experimental,experimental,1,not_applicable_ds001
+ds001_seed_000791,l05MaeKgw6wjJxLs,1dcphLLksiA99xOQujqUAa,Moby,Honey,history,ds001_seed_table,791,10,1.0,1.0,electronic,electronic,1,not_applicable_ds001
+ds001_seed_000792,l0YHMYqUXIHgxAi4,7iXF2W9vKmDoGAhlHdpyIa,Dr. Dre,Forgot About Dre,history,ds001_seed_table,792,10,1.0,1.0,rap,rap,1,not_applicable_ds001
+ds001_seed_000793,l0ahobbDqRsCaepj,6nTiIhLmQ3FWhvrGafw2zj,Green Day,American Idiot,history,ds001_seed_table,793,10,1.0,1.0,rock,punk rock,1,not_applicable_ds001
+ds001_seed_000794,l2TRupUFNXdDLU9a,5n6RDaGFSN88oRWuGtYAIN,Queen,The Show Must Go On - Remastered 2011,history,ds001_seed_table,794,10,1.0,1.0,rock,rock,1,not_applicable_ds001
+ds001_seed_000795,l3mFePFtnaDdJ8Ux,38xWaVFKaxZlMFvzNff2aW,The Script,Breakeven,history,ds001_seed_table,795,10,1.0,1.0,rock,rock,1,not_applicable_ds001
+ds001_seed_000796,lBmaPfuBMaTt0dZl,1VN2vWSkSmMKOhxr8lHzSx,Fleetwood Mac,Seven Wonders,history,ds001_seed_table,796,50,5.0,5.0,rock,rock,1,not_applicable_ds001
+ds001_seed_000797,lCKftVeX56Y6FrwH,6kopmMZiyLmw7h66uXcXR7,Mark Ronson,Valerie (Feat. Amy Winehouse) - Version Revisited,history,ds001_seed_table,797,10,1.0,1.0,funk,funk,1,not_applicable_ds001
+ds001_seed_000798,lJKIbZNzpS6IsNgh,7w87IxuO7BDcJ3YUqCyMTT,Foster the People,Pumped Up Kicks,history,ds001_seed_table,798,6,0.6,0.6,indie pop,indie,1,not_applicable_ds001
+ds001_seed_000799,lMcvDbkPPdOHScsf,6mz1fBdKATx6qP4oP1I65G,Ginuwine,Pony,history,ds001_seed_table,799,50,5.0,5.0,pony,rnb,1,not_applicable_ds001
+ds001_seed_000800,lNKfAL6sbDZmxlob,4POgt5ayni68MeLqclubcC,UB40,Red Red Wine,history,ds001_seed_table,800,50,5.0,5.0,reggae,reggae,1,not_applicable_ds001
+ds001_seed_000801,lPAW2IulFyjZtuaH,0hPLZrnDgtKxrym1BHjDhd,21 Savage,can't leave without it,history,ds001_seed_table,801,16,1.6,1.6,rap,hip-hop,1,not_applicable_ds001
+ds001_seed_000802,lS0plxOmG29oGgJg,2xZfPZxInlDXDKc6NDts8Z,Édith Piaf,La foule,history,ds001_seed_table,802,10,1.0,1.0,chanson,french,1,not_applicable_ds001
+ds001_seed_000803,lZDk11KaRskQqhWf,5qaEfEh1AtSdrdrByCP7qR,Imagine Dragons,Demons,history,ds001_seed_table,803,10,1.0,1.0,rock,indie,1,not_applicable_ds001
+ds001_seed_000804,lbJcVykwLxbW68zC,7nYvUtkQMx1v80S2FH2s9J,Warren G,Regulate,history,ds001_seed_table,804,10,1.0,1.0,rap,hip-hop,1,not_applicable_ds001
+ds001_seed_000805,lfh4KdUXOLvYYrTi,1uN0f4NqMDcReSwXO6PLuG,Rihanna,Where Have You Been,history,ds001_seed_table,805,25,2.5,2.5,pop,dance,1,not_applicable_ds001
+ds001_seed_000806,lh4q7VWWq1M7US7d,557un1HgwYMuqfWGSTmnxw,Beyoncé,Single Ladies (Put a Ring on It),history,ds001_seed_table,806,50,5.0,5.0,pop,pop,1,not_applicable_ds001
+ds001_seed_000807,ltuqdl7RA2AnWOCR,04KTF78FFg8sOHC1BADqbY,Nelly,Hot In Herre,history,ds001_seed_table,807,10,1.0,1.0,rap,hip-hop,1,not_applicable_ds001
+ds001_seed_000808,lw4m9PxzySLxDSl2,5KXTDunEgNVBnuSBDzsm6x,Genesis,Turn It On Again,history,ds001_seed_table,808,15,1.5,1.5,progressive rock,progressive rock,1,not_applicable_ds001
+ds001_seed_000809,lycg6VMKzUQolD0o,48i055G1OT5KxGGftwFxWy,Roy Orbison,"Oh, Pretty Woman",history,ds001_seed_table,809,10,1.0,1.0,classic rock,oldies,1,not_applicable_ds001
+ds001_seed_000810,m11LZh96XNXGbaj9,5N6pQ2vYtd3Rb9w7LC8PZ9,Antônio Carlos Jobim,The Girl from Ipanema,history,ds001_seed_table,810,10,1.0,1.0,bossa nova,bossa nova,1,not_applicable_ds001
+ds001_seed_000811,m3f8CahjkAoRe6RC,5fW86jOUa4U8EqYRWpNNa4,Crystal Castles,Frail,history,ds001_seed_table,811,31,3.1,3.1,witch house,witch house,1,not_applicable_ds001
+ds001_seed_000812,m4O1iLh6fC43xjRy,2Y0iGXY6m6immVb2ktbseM,MGMT,Little Dark Age,history,ds001_seed_table,812,25,2.5,2.5,synthpop,synthpop,1,not_applicable_ds001
+ds001_seed_000813,mE3cwnpmZ75Mamsf,3BIzHNxAQbRTY4LCp1oMR1,Mild High Club,Tesselation,history,ds001_seed_table,813,10,1.0,1.0,jazz,2016,1,not_applicable_ds001
+ds001_seed_000814,mFnwdjVMsfTTNoCn,6csX1JjmeoLhGqMBXGnZF0,The Corrs,Runaway,history,ds001_seed_table,814,25,2.5,2.5,pop,pop,1,not_applicable_ds001
+ds001_seed_000815,mJn8yZt21Grk0K27,3KPwt1LBpt1jVSHz8GXERo,Bad Company,Bad Company,history,ds001_seed_table,815,10,1.0,1.0,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000816,mNFxniHwzXQ4rB9I,4DVu7YgHVJaeN0C7HNpy2q,Alice Coltrane,"Ptah, The El Daoud",history,ds001_seed_table,816,10,1.0,1.0,jazz,jazz,1,not_applicable_ds001
+ds001_seed_000817,meHdWOGPHEx3aFaV,41sGGCCoHI2GLV9qadX80A,Player,Baby Come Back,history,ds001_seed_table,817,56,5.6,5.6,soft rock,70s,1,not_applicable_ds001
+ds001_seed_000818,mm2nhlo9eEObGGfC,4nbILrYODP667b3d66ZMzI,Dean Martin,Sway (Quien Sera),history,ds001_seed_table,818,10,1.0,1.0,jazz,jazz,1,not_applicable_ds001
+ds001_seed_000819,mqcCD4gTbcbp524p,5E30LdtzQTGqRvNd7l6kG5,The Neighbourhood,Wiped Out!,history,ds001_seed_table,819,10,1.0,1.0,indie pop,indie,1,not_applicable_ds001
+ds001_seed_000820,mqgC02zknKOSq66o,00t7QTffOR3SA3L1BvSQVq,The Notorious B.I.G.,Suicidal Thoughts,history,ds001_seed_table,820,10,1.0,1.0,rap,hip-hop,1,not_applicable_ds001
+ds001_seed_000821,msq32IrilI3TsOYu,7vfvZp6KZJpxiaW6rI9ieM,Luniz,I Got 5 On It,history,ds001_seed_table,821,10,1.0,1.0,rap,hip-hop,1,not_applicable_ds001
+ds001_seed_000822,mveuidphWlUM8igo,0vLwL4xuJ3s7SeaCdvMqkY,Blondie,Call Me,history,ds001_seed_table,822,50,5.0,5.0,new wave,80s,1,not_applicable_ds001
+ds001_seed_000823,n4KnuiQIzUx1eS9H,4Yf5bqU3NK4kNOypcrLYwU,Linkin Park,Faint,history,ds001_seed_table,823,41,4.1,4.1,nu metal,nu metal,1,not_applicable_ds001
+ds001_seed_000824,n5YYi7TlCfslOxtT,5TB6QgrF0RPIxSCGfRDLoe,Coldplay,We Never Change,history,ds001_seed_table,824,25,2.5,2.5,rock,rock,1,not_applicable_ds001
+ds001_seed_000825,n7KZksEdCkTuBE5w,3ZuT0Evo8chdVM6rPXXqgd,Tame Impala,Remember Me,history,ds001_seed_table,825,66,6.6,6.6,psychedelic rock,psychedelic,1,not_applicable_ds001
+ds001_seed_000826,nB14gnXChsvIDyO3,4Y6pdMS2PwGshq1MYcJ9fC,Ricky Nelson,I Will Follow You,history,ds001_seed_table,826,50,5.0,5.0,rockabilly,oldies,1,not_applicable_ds001
+ds001_seed_000827,nDj04hpTitHH0aLf,7jmHyHMEqm9MJWiMAneF05,Ben E. King,Stand By Me,history,ds001_seed_table,827,10,1.0,1.0,soul,soul,1,not_applicable_ds001
+ds001_seed_000828,nGZZ7M14BYcqfRzU,7BfW1eoDh27W69nxsmRicb,Bob Marley,Buffalo Soldier,history,ds001_seed_table,828,10,1.0,1.0,reggae,reggae,1,not_applicable_ds001
+ds001_seed_000829,nL5OISo1ClBQrJ2y,0ZfByLXCeKchuj7zi1CJ0S,Milky Chance,Stolen Dance,history,ds001_seed_table,829,25,2.5,2.5,indie folk,fip,1,not_applicable_ds001
+ds001_seed_000830,nM7CF8cIbWP2xY67,1qRA5BS78u3gME0loMl9AA,Buffalo Springfield,For What It's Worth,history,ds001_seed_table,830,50,5.0,5.0,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000831,nMFdMpJv5coLAEQj,5ixQCurcV2gKLqJGMeLvpz,"Dave Dee, Dozy, Beaky, Mick & Tich",Hold Tight!,history,ds001_seed_table,831,10,1.0,1.0,soundtrack,60s,1,not_applicable_ds001
+ds001_seed_000832,nQ8ug70q1eSquOci,03UrZgTINDqvnUMbbIMhql,Psy,Gangnam Style (강남스타일),history,ds001_seed_table,832,25,2.5,2.5,k-pop,k-pop,1,not_applicable_ds001
+ds001_seed_000833,nQlsSWoUVEfTHfCu,11DjZQEZ69EXLo77HVj6yW,Creedence Clearwater Revival,Green River,history,ds001_seed_table,833,10,1.0,1.0,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000834,nUQlgoMuo5g1YUPJ,3ieDOGcOqVxScs2VZBzidt,Pink Floyd,Learning to Fly,history,ds001_seed_table,834,10,1.0,1.0,progressive rock,progressive rock,1,not_applicable_ds001
+ds001_seed_000835,nUtmXPlkXCHKQz5u,3LUWWox8YYykohBbHUrrxd,Kesha,We R Who We R,history,ds001_seed_table,835,31,3.1,3.1,pop,pop,1,not_applicable_ds001
+ds001_seed_000836,nYZ4U0yhe7j8Q5Ov,1qwno7xb5mJe71xtMS6jl2,K.Flay,High Enough,history,ds001_seed_table,836,31,3.1,3.1,pop,pop,1,not_applicable_ds001
+ds001_seed_000837,naZNrcpLntAXN6O6,0sCeNwt8xRCMR4NhKpMyBe,Herbie Hancock,Cantaloupe Island,history,ds001_seed_table,837,10,1.0,1.0,jazz,jazz,1,not_applicable_ds001
+ds001_seed_000838,ncHDBviOTkCfgvEG,2xq9cLlOPyLoi8kLlR4miz,Siouxsie and the Banshees,Cities in Dust,history,ds001_seed_table,838,10,1.0,1.0,post-punk,post-punk,1,not_applicable_ds001
+ds001_seed_000839,ndMoayjBuAiQDMKm,4bipyiRyS8XYYOXy3CcdPd,Mika,Grace Kelly,history,ds001_seed_table,839,6,0.6,0.6,pop,pop,1,not_applicable_ds001
+ds001_seed_000840,nfVNJlHreFIa7gZN,0GO8y8jQk1PkHzS31d699N,Grouplove,Tongue Tied,history,ds001_seed_table,840,50,5.0,5.0,indie rock,indie,1,not_applicable_ds001
+ds001_seed_000841,nj2cLATqU6wpKvqw,1jy0RbDHyBMTupSdc98XbG,Bee Gees,How Can You Mend a Broken Heart,history,ds001_seed_table,841,25,2.5,2.5,pop,pop,1,not_applicable_ds001
+ds001_seed_000842,nlBGDdRdBAy3e1GD,0hrBpAOgrt8RXigk83LLNE,Ace of Base,The Sign,history,ds001_seed_table,842,10,1.0,1.0,pop,pop,1,not_applicable_ds001
+ds001_seed_000843,nltzxmV9aWW7F7z8,1zzxoZVylsna2BQB65Ppcb,DMX,X Gon' Give It To Ya,history,ds001_seed_table,843,10,1.0,1.0,rap,rap,1,not_applicable_ds001
+ds001_seed_000844,noYzr84N5kRcNktR,5I9sHwLDX28tLtzVgKLtpr,Dean Martin,Everybody Loves Somebody,history,ds001_seed_table,844,10,1.0,1.0,easy listening,oldies,1,not_applicable_ds001
+ds001_seed_000845,nrJdjUOX50wfkdDX,3Am0IbOxmvlSXro7N5iSfZ,The Beatles,Magical Mystery Tour,history,ds001_seed_table,845,10,1.0,1.0,classic rock,60s,1,not_applicable_ds001
+ds001_seed_000846,nuCATSqQe0xru1fQ,0pUVeEgZuNyFzIMKp67RbS,Billy Idol,Eyes Without a Face,history,ds001_seed_table,846,10,1.0,1.0,new wave,80s,1,not_applicable_ds001
+ds001_seed_000847,nvndDIHtMrmHBRah,1Ud6moTC0KyXMq1Oxfien0,The Rolling Stones,Sympathy For The Devil - 50th Anniversary Edition,history,ds001_seed_table,847,25,2.5,2.5,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000848,o2LcK38b4mFLa55g,3AJwUDP919kvQ9QcozQPxg,Coldplay,Parachutes,history,ds001_seed_table,848,50,5.0,5.0,rock,rock,1,not_applicable_ds001
+ds001_seed_000849,o83Oide1YU4nvUeh,44AyOl4qVkzS48vBsbNXaC,Elvis Presley,Blue Hawaii,history,ds001_seed_table,849,10,1.0,1.0,classic rock,fip,1,not_applicable_ds001
+ds001_seed_000850,o9V25ss6N2OsOZuh,1jDJFeK9x3OZboIAHsY9k2,Elton John,Too Low For Zero,history,ds001_seed_table,850,25,2.5,2.5,pop,elton john,1,not_applicable_ds001
+ds001_seed_000851,oBmZ4LmRSKBSAK0z,0U10zFw4GlBacOy9VDGfGL,Rihanna,We Found Love,history,ds001_seed_table,851,10,1.0,1.0,pop,pop,1,not_applicable_ds001
+ds001_seed_000852,oNf01m7GAPp3SoxE,6cA1usDL8nTHeSgFewQat3,The Velvet Underground,After Hours,history,ds001_seed_table,852,10,1.0,1.0,classic rock,60s,1,not_applicable_ds001
+ds001_seed_000853,oPyfsuPz96kvFsDT,74VR3AkGPhbYXnxcOYa16x,Frank Sinatra,Strangers in the Night,history,ds001_seed_table,853,10,1.0,1.0,jazz,jazz,1,not_applicable_ds001
+ds001_seed_000854,oQniRKTR6GcN7gGI,1FvDJ9KGxcqwv1utyPL3JZ,The Smiths,This Charming Man,history,ds001_seed_table,854,50,5.0,5.0,new wave,80s,1,not_applicable_ds001
+ds001_seed_000855,odOc7zzoP2wuiC5d,5NGtFXVpXSvwunEIGeviY3,Erik Satie,Gymnopédie No. 1,history,ds001_seed_table,855,10,1.0,1.0,classical,classical,1,not_applicable_ds001
+ds001_seed_000856,oed874gCtftyvvV9,009ImBOrIUlWgla8U05RAC,Katy Perry,Unconditionally,history,ds001_seed_table,856,10,1.0,1.0,pop,pop,1,not_applicable_ds001
+ds001_seed_000857,oexh4Tve5X1YUmbM,6OMO6WdRhSfjMPAiPT94wH,Three Days Grace,Painkiller,history,ds001_seed_table,857,50,5.0,5.0,rock,rock,1,not_applicable_ds001
+ds001_seed_000858,oqryFvQLgKjZXLlA,1IHU5fpOVTL7AjnRg5PRql,Gesaffelstein,Belgium,history,ds001_seed_table,858,10,1.0,1.0,techno,techno,1,not_applicable_ds001
+ds001_seed_000859,orLkyDKbxldM2FWk,561jH07mF1jHuk7KlaeF0s,Eminem,Mockingbird,history,ds001_seed_table,859,10,1.0,1.0,rap,rap,1,not_applicable_ds001
+ds001_seed_000860,osEXLEW9bozKofhd,1NV6sCADgcLSW7DG7zSWlq,Led Zeppelin,Ten Years Gone,history,ds001_seed_table,860,6,0.6,0.6,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000861,ovewjdmCWRexCYBy,5M4yti0QxgqJieUYaEXcpw,Tame Impala,Eventually,history,ds001_seed_table,861,25,2.5,2.5,psychedelic rock,psychedelic pop,1,not_applicable_ds001
+ds001_seed_000862,ovuc4rJWTO3g7Out,6gXrEUzibufX9xYPk3HD5p,Eagles,Life in the Fast Lane,history,ds001_seed_table,862,56,5.6,5.6,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000863,pArilIHUtKnuLesx,78TTtXnFQPzwqlbtbwqN0y,Rihanna,FourFiveSeconds,history,ds001_seed_table,863,50,5.0,5.0,pop,acoustic,1,not_applicable_ds001
+ds001_seed_000864,pBIpvqWxaU73OCkx,4qvsbUgMtU5zbZ0IoGBoG7,Jim Croce,One Less Set of Footsteps,history,ds001_seed_table,864,50,5.0,5.0,singer-songwriter,70s,1,not_applicable_ds001
+ds001_seed_000865,pBjlgKfc6q55DKAj,3muBQDekYAg7jm6hDu6R0Z,Tee Grizzley,First Day Out,history,ds001_seed_table,865,56,5.6,5.6,rap,tee grizzley,1,not_applicable_ds001
+ds001_seed_000866,pDMwL6cVVMdp0VaI,612VcBshQcy4mpB2utGc3H,Eric Clapton,Tears in Heaven,history,ds001_seed_table,866,6,0.6,0.6,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000867,pEMRNnVOWS19ySYe,3B54sVLJ402zGa6Xm4YGNe,French Montana,Unforgettable,history,ds001_seed_table,867,25,2.5,2.5,rap,swae lee,1,not_applicable_ds001
+ds001_seed_000868,pEpfvGtUaBNkbQdh,67oyFnjJnn78fZP9KjeZx0,Supertramp,Goodbye Stranger,history,ds001_seed_table,868,31,3.1,3.1,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000869,pGPcFOoxMh9Jnygm,2RTLIQRc8yogHh08waQDVa,Jeff Buckley,I Know It's Over,history,ds001_seed_table,869,50,5.0,5.0,singer-songwriter,cover,1,not_applicable_ds001
+ds001_seed_000870,pL3UHTZRfVJ8VNoa,6mHOcVtsHLMuesJkswc0GZ,Supertramp,The Logical Song - Remastered 2010,history,ds001_seed_table,870,25,2.5,2.5,progressive rock,progressive rock,1,not_applicable_ds001
+ds001_seed_000871,pO6PcI0GCaP9eLf8,0djZ2ndRfAL69WYNra5jRC,Simon & Garfunkel,April Come She Will,history,ds001_seed_table,871,6,0.6,0.6,folk,folk,1,not_applicable_ds001
+ds001_seed_000872,pVidfQyCntTCkBph,4HfLQJtVT1KiX1eVedDyTm,Maggie Rogers,Alaska,history,ds001_seed_table,872,10,1.0,1.0,folk,awesome,1,not_applicable_ds001
+ds001_seed_000873,pWKJxThwgH9yXdZG,5RYLa5P4qweEAKq5U1gdcK,Queen,A Kind Of Magic - Remastered 2011,history,ds001_seed_table,873,10,1.0,1.0,rock,rock,1,not_applicable_ds001
+ds001_seed_000874,pYbjrIDObV1ZLgxt,40h65HAR8COEoqkMwUUQHu,Eagles,Peaceful Easy Feeling,history,ds001_seed_table,874,25,2.5,2.5,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000875,pYqtuFAxw8uWvjrf,1YQWosTIljIvxAgHWTp7KP,Dave Brubeck,Take Five,history,ds001_seed_table,875,10,1.0,1.0,jazz,jazz,1,not_applicable_ds001
+ds001_seed_000876,pZtkM5PcDvXLMrWJ,2YiCMmONQcoMPX2bV1LxE0,Tears for Fears,Everybody Wants to Rule the World,history,ds001_seed_table,876,60,6.0,6.0,new wave,80s,1,not_applicable_ds001
+ds001_seed_000877,pbn8OHQr9Kphn3ov,5F8rPLt2c52p0SK7kiH26b,Chick Corea,Crystal Silence,history,ds001_seed_table,877,10,1.0,1.0,jazz,jazz,1,not_applicable_ds001
+ds001_seed_000878,pdCwFqLJj9AKbBgI,0yp3TvJNlG50Q4tAHWNCRm,Depeche Mode,Enjoy the Silence,history,ds001_seed_table,878,25,2.5,2.5,electronic,electronic,1,not_applicable_ds001
+ds001_seed_000879,pe9xu1MyfbFWZT3B,0SWfNpzeFpP0PXa7bujUmz,Hans Zimmer,Progeny,history,ds001_seed_table,879,25,2.5,2.5,soundtrack,soundtrack,1,not_applicable_ds001
+ds001_seed_000880,pm6JXjToDiig5BpI,2U5cq89GCnsR1yixKkC8d5,ramz,Barking,history,ds001_seed_table,880,6,0.6,0.6,grime,british,1,not_applicable_ds001
+ds001_seed_000881,prQhv8MnI183j5im,6ITNRagpLcw79jH8gkiyBS,Pat Metheny,And I Love Her,history,ds001_seed_table,881,10,1.0,1.0,jazz,jazz,1,not_applicable_ds001
+ds001_seed_000882,ps6MhDoZaYaMilmz,3uVmR6oQq0NluVZXkipKHV,Buffalo Springfield,Expecting To Fly,history,ds001_seed_table,882,50,5.0,5.0,classic rock,60s,1,not_applicable_ds001
+ds001_seed_000883,ptVOUmAT3em8Ximl,6N7gPTru90HYLRUIVDQ185,Roxy Music,More Than This,history,ds001_seed_table,883,10,1.0,1.0,new wave,80s,1,not_applicable_ds001
+ds001_seed_000884,pyqlAYscD9n7Bosz,2AYEOC02WLhUiOoaig2SEH,Fitz and the Tantrums,Out of My League,history,ds001_seed_table,884,50,5.0,5.0,indie pop,indie pop,1,not_applicable_ds001
+ds001_seed_000885,q3Gz5hHmnWFZV4mA,0bvpSvOYt4KTfZIZJmyFOs,Billy Idol,White Wedding,history,ds001_seed_table,885,10,1.0,1.0,rock,80s,1,not_applicable_ds001
+ds001_seed_000886,qAKGvFq9liu9CBNq,452KBpASS5lZLeJWX9Ixub,Elvis Presley,Jailhouse Rock,history,ds001_seed_table,886,10,1.0,1.0,classic rock,rock n roll,1,not_applicable_ds001
+ds001_seed_000887,qAcMA3Z0KNnwYFEM,7gKgd0P3dAAePiSQQBqrlf,Busta Rhymes,Break Ya Neck,history,ds001_seed_table,887,10,1.0,1.0,rap,hip-hop,1,not_applicable_ds001
+ds001_seed_000888,qI16bVrtu67BC507,1Ryxsiacu8pUXIMCVnIQ8J,Bob Seger & The Silver Bullet Band,Still the Same,history,ds001_seed_table,888,16,1.6,1.6,rock,rock,1,not_applicable_ds001
+ds001_seed_000889,qKGuhs9EYiRQlbdX,1lCRw5FEZ1gPDNPzy1K4zW,Queen,We Are The Champions - Remastered 2011,history,ds001_seed_table,889,10,1.0,1.0,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000890,qNQD9UOrBYvuOmAz,1mCsF9Tw4AkIZOjvZbZZdT,Matthew Wilder,Break My Stride,history,ds001_seed_table,890,50,5.0,5.0,pop,80s,1,not_applicable_ds001
+ds001_seed_000891,qOE4LveyRDnxXjc3,7EkWXAI1wn8Ii883ecd9xr,Surf Curse,Freaks,history,ds001_seed_table,891,31,3.1,3.1,lo-fi,lo-fi,1,not_applicable_ds001
+ds001_seed_000892,qX7WdHFYrdKjjLMB,57ct8jKi6trntXiRV0NnXi,Gordon Lightfoot,If You Could Read My Mind,history,ds001_seed_table,892,50,5.0,5.0,folk,70s,1,not_applicable_ds001
+ds001_seed_000893,qbQPIU7I8AJy3cPQ,0qvzXomUDJVaUboy2wMfiS,Niall Horan,This Town,history,ds001_seed_table,893,10,1.0,1.0,folk,folk,1,not_applicable_ds001
+ds001_seed_000894,qiptUsLxxafOMF2P,1GEOSS415bZVHNuXWlCT6b,Pink Floyd,Mother,history,ds001_seed_table,894,10,1.0,1.0,progressive rock,progressive rock,1,not_applicable_ds001
+ds001_seed_000895,qpTTFLpP4lKnnmhk,6QhXQOpyYvbpdbyjgAqKdY,Simon & Garfunkel,Bridge over Troubled Water,history,ds001_seed_table,895,10,1.0,1.0,folk,folk,1,not_applicable_ds001
+ds001_seed_000896,qpjjcDIQvWArofNH,5YiZBxP9dINkvix6nfZjlb,Temple of the Dog,Reach Down,history,ds001_seed_table,896,25,2.5,2.5,grunge,grunge,1,not_applicable_ds001
+ds001_seed_000897,qpqWWT0zOdT0d6rV,2mvffzYUJ9Ld9xhsF5DUjU,Nirvana,In Bloom,history,ds001_seed_table,897,16,1.6,1.6,grunge,grunge,1,not_applicable_ds001
+ds001_seed_000898,qq5vzfzinhePpehj,6Kkt27YmFyIFrcX3QXFi2o,Lorde,Liability,history,ds001_seed_table,898,25,2.5,2.5,pop,pop,1,not_applicable_ds001
+ds001_seed_000899,qsOWCmNt4zBhJTlm,6AbaUu4XtHu7pGkPE94Tat,Wings,Live and Let Die,history,ds001_seed_table,899,10,1.0,1.0,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000900,qxgl2POAqWAMmLyV,0q21FNwES2bbtcduB6kjEU,King Harvest,Dancing In The Moonlight,history,ds001_seed_table,900,31,3.1,3.1,pop,70s,1,not_applicable_ds001
+ds001_seed_000901,qzdMRNsXSBtWlzmc,4BY4V1T0RJK1HmD2Q0ClyK,Grimes,Oblivion,history,ds001_seed_table,901,10,1.0,1.0,synthpop,poptron,1,not_applicable_ds001
+ds001_seed_000902,qzk0L9aBJUPIR9dv,7nyprGzLfhdp0zJfa0peji,Gesaffelstein,Obsession,history,ds001_seed_table,902,10,1.0,1.0,electronic,electronic,1,not_applicable_ds001
+ds001_seed_000903,r0lmzffE4VCcskr2,4Gd6yYZtA0U0fQbphXZGWI,Gesaffelstein,Viol,history,ds001_seed_table,903,10,1.0,1.0,techno,techno,1,not_applicable_ds001
+ds001_seed_000904,r4ke4zpyHo1U6JXv,6kvoHl80mfCVTv7XnZkjQn,Roxette,It Must Have Been Love,history,ds001_seed_table,904,25,2.5,2.5,pop,80s,1,not_applicable_ds001
+ds001_seed_000905,r6UaD5xj5mecVY8b,3Pqf09cdDlOYDNkrbw5l0p,The Beatles,Strawberry Fields Forever - Stereo Mix 2015,history,ds001_seed_table,905,10,1.0,1.0,psychedelic rock,psychedelic rock,1,not_applicable_ds001
+ds001_seed_000906,r8Qz6oZr8MlHq6mn,0WQiDwKJclirSYG9v5tayI,The Smiths,There Is a Light That Never Goes Out - 2011 Remaster,history,ds001_seed_table,906,10,1.0,1.0,jangle pop,jangle pop,1,not_applicable_ds001
+ds001_seed_000907,rBL21jDfPKoEqrX6,05uGBKRCuePsf43Hfm0JwX,Pink Floyd,Brain Damage,history,ds001_seed_table,907,50,5.0,5.0,progressive rock,progressive rock,1,not_applicable_ds001
+ds001_seed_000908,rDNYBGHtNbCQzHu8,4VXIryQMWpIdGgYR4TrjT1,Juice WRLD,all girls are the same,history,ds001_seed_table,908,31,3.1,3.1,rap,rap,1,not_applicable_ds001
+ds001_seed_000909,rDRa8A1rr2bTi0F1,0DMRKqrpd0QO4RWiEdMib0,Amy Winehouse,You Know I'm No Good,history,ds001_seed_table,909,10,1.0,1.0,soul,soul,1,not_applicable_ds001
+ds001_seed_000910,rFl0cKwGq6y8w8bM,5UqHgJxYCMQraYuqeEOvtr,alt-J,Something Good,history,ds001_seed_table,910,10,1.0,1.0,indie pop,alternative,1,not_applicable_ds001
+ds001_seed_000911,rKhKGhLTw5HRbpZ7,3bNv3VuUOKgrf5hu3YcuRo,Adele,Someone Like You,history,ds001_seed_table,911,50,5.0,5.0,soul,soul,1,not_applicable_ds001
+ds001_seed_000912,rMaxAHHviFsQ0V2v,01Lr5YepbgjXAWR9iOEyH1,Chief Keef,Love Sosa,history,ds001_seed_table,912,25,2.5,2.5,rap,banger,1,not_applicable_ds001
+ds001_seed_000913,rS5ZdyxwbuP98bbB,1lqMLr9Wj7SM2F9AikGcxN,Bob Dylan,Hurricane,history,ds001_seed_table,913,10,1.0,1.0,folk,folk,1,not_applicable_ds001
+ds001_seed_000914,rSZ71tsqQD5GsgSN,7o9uu2GDtVDr9nsR7ZRN73,Cyndi Lauper,Time After Time,history,ds001_seed_table,914,25,2.5,2.5,pop,80s,1,not_applicable_ds001
+ds001_seed_000915,rSkf2srcZ30Idp3n,0JXXNGljqupsJaZsgSbMZV,Miguel,...All,history,ds001_seed_table,915,10,1.0,1.0,soul,killer tune,1,not_applicable_ds001
+ds001_seed_000916,rXvqqplMjMjTvK0z,2KH16WveTQWT6KOG9Rg6e2,Survivor,Eye of the Tiger,history,ds001_seed_table,916,10,1.0,1.0,rock,80s,1,not_applicable_ds001
+ds001_seed_000917,reuHTN7HpYNkX23l,3RAFcUBrCNaboRXoP3S5t1,Slipknot,Psychosocial,history,ds001_seed_table,917,10,1.0,1.0,metal,metal,1,not_applicable_ds001
+ds001_seed_000918,rrdk3UXEdIqQA1dP,05oETzWbd4SI33qK2gbJfR,Fleetwood Mac,Rhiannon,history,ds001_seed_table,918,50,5.0,5.0,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000919,rvA08SBMDfEYU2zP,7o2AeQZzfCERsRmOM86EcB,Aphex Twin,Xtal,history,ds001_seed_table,919,10,1.0,1.0,ambient,ambient,1,not_applicable_ds001
+ds001_seed_000920,s3ZaZGNHeOOSItrg,6zeE5tKyr8Nu882DQhhSQI,Kansas,Point of Know Return,history,ds001_seed_table,920,56,5.6,5.6,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000921,s7df1snBNQo3iEbQ,3koCCeSaVUyrRo3N2gHrd8,"Earth, Wind & Fire",Let's Groove,history,ds001_seed_table,921,50,5.0,5.0,funk,funk,1,not_applicable_ds001
+ds001_seed_000922,sCROycIv2MiczTUf,4w0sBSIgy945h7TZE0FUbc,James Newton Howard,Fantastic Beasts: The Crimes of Grindelwald,history,ds001_seed_table,922,16,1.6,1.6,soundtrack,soundtrack,1,not_applicable_ds001
+ds001_seed_000923,sEGBgaw9QdOHu2ht,2VOomzT6VavJOGBeySqaMc,Rihanna,Disturbia,history,ds001_seed_table,923,10,1.0,1.0,pop,pop,1,not_applicable_ds001
+ds001_seed_000924,sHQ4NOxkSvefPKL8,2EqlS6tkEnglzr7tkKAAYD,The Beatles,Come Together (Remastered 2009),history,ds001_seed_table,924,56,5.6,5.6,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000925,sLNWV0kpmxklO5Bf,00SmB7n85SKROGjybsyq5i,Manu Chao,Bongo Bong,history,ds001_seed_table,925,6,0.6,0.6,reggae,reggae,1,not_applicable_ds001
+ds001_seed_000926,sQoX2x2sNcsApz57,2rtGaCAeYtmcIvuZsvgTf6,Radiohead,How to Disappear Completely,history,ds001_seed_table,926,10,1.0,1.0,alternative rock,alternative,1,not_applicable_ds001
+ds001_seed_000927,sRkYKjXoICliTmnD,2aGw77pZqli064JiPuXYRi,Nelly Furtado,I'm Like a Bird,history,ds001_seed_table,927,10,1.0,1.0,pop,pop,1,not_applicable_ds001
+ds001_seed_000928,sWCg8E9SbmMnUaTJ,2PzU4IB8Dr6mxV3lHuaG34,The Rolling Stones,(I Can't Get No) Satisfaction - Mono Version,history,ds001_seed_table,928,10,1.0,1.0,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000929,sb8ULf4OH9FatySd,3hRV0jL3vUpRrcy398teAU,Lord Huron,The Night We Met,history,ds001_seed_table,929,41,4.1,4.1,folk,indie,1,not_applicable_ds001
+ds001_seed_000930,scFEZpQ31md4M3Gz,0u6JFVn0KHHlidZxNL9gVE,ZZ Top,La Grange - 2005 Remaster,history,ds001_seed_table,930,25,2.5,2.5,classic rock,blues rock,1,not_applicable_ds001
+ds001_seed_000931,sdFkhRQdC3Xg9j6R,7GX5flRQZVHRAGd6B4TmDO,Lil Uzi Vert,XO TOUR Llif3,history,ds001_seed_table,931,56,5.6,5.6,emo rap,emo rap,1,not_applicable_ds001
+ds001_seed_000932,sjYhGmmvRnQLXR6M,0weAUscowxeqDtpCgtbpgp,Will Smith,Gettin' Jiggy Wit It,history,ds001_seed_table,932,10,1.0,1.0,rap,hip-hop,1,not_applicable_ds001
+ds001_seed_000933,sqdheoNWuwotHoKD,2rgtCOVK2tpfao2VjURn84,David Guetta,Lovers on the Sun (feat. Sam Martin),history,ds001_seed_table,933,56,5.6,5.6,electronic,dance,1,not_applicable_ds001
+ds001_seed_000934,srlLmQtmplQwvJeO,4uTTd2SlalZoG0zVgI63kH,America,Tin Man,history,ds001_seed_table,934,25,2.5,2.5,classic rock,70s,1,not_applicable_ds001
+ds001_seed_000935,ss4XiPMCn4fVwEaZ,2245x0g1ft0HC7sf79zbYN,ABBA,Lay All Your Love on Me,history,ds001_seed_table,935,20,2.0,2.0,pop,pop,1,not_applicable_ds001
+ds001_seed_000936,ssRuTfIXvxK9Aey5,6lanRgr6wXibZr8KgzXxBl,Christina Perri,A Thousand Years,history,ds001_seed_table,936,10,1.0,1.0,soundtrack,soundtrack,1,not_applicable_ds001
+ds001_seed_000937,szEt6posCEoic7zL,15JINEqzVMv3SvJTAXAKED,Eminem,Love The Way You Lie,history,ds001_seed_table,937,50,5.0,5.0,rap,955 wkqi,1,not_applicable_ds001
+ds001_seed_000938,t5OR1Oo9qR6DXH2Y,7K7E7LKK51PezScgsvVg9Y,C418,Key,history,ds001_seed_table,938,10,1.0,1.0,ambient,ambient,1,not_applicable_ds001
+ds001_seed_000939,t6lXy0VMsVf8Cfbj,5iHK8VI9XkJJdXQHCBXeM4,TV on the Radio,Will Do,history,ds001_seed_table,939,10,1.0,1.0,indie rock,indie,1,not_applicable_ds001
+ds001_seed_000940,tCXayjFMD8S34ciD,3xKsf9qdS1CyvXSMEid6g8,Frank Ocean,White,history,ds001_seed_table,940,10,1.0,1.0,soul,soul,1,not_applicable_ds001
+ds001_seed_000941,tE8Ze7l7OnHRARIx,2FRnf9qhLbvw8fu4IBXx78,Wham!,Last Christmas,history,ds001_seed_table,941,10,1.0,1.0,pop,christmas,1,not_applicable_ds001
+ds001_seed_000942,tELVpq8Fxr0UOypX,4mRSbPLnOm54ttkTYvxxSY,Radiohead,Decks Dark,history,ds001_seed_table,942,31,3.1,3.1,art rock,art rock,1,not_applicable_ds001
+ds001_seed_000943,tQZvNGuTwhmLNqte,0QKfiqpEU4h9ycPSzIFwYe,Michael Sembello,Maniac,history,ds001_seed_table,943,10,1.0,1.0,pop,80s,1,not_applicable_ds001
+ds001_seed_000944,tSBoahjUECeByewg,6JRLFiX9NJSoRRKxowlBYr,Bob Marley & The Wailers,Kaya,history,ds001_seed_table,944,10,1.0,1.0,reggae,reggae,1,not_applicable_ds001
+ds001_seed_000945,tUjNg43lNrLWZkM1,20OFwXhEXf12DzwXmaV7fj,Creedence Clearwater Revival,Bad Moon Rising,history,ds001_seed_table,945,10,1.0,1.0,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000946,tdnxKeN3M7AyNP5u,69M9QCMsCQ5MLsw7BBW0rL,Lil Uzi Vert,Hi Roller,history,ds001_seed_table,946,25,2.5,2.5,rap,trap,1,not_applicable_ds001
+ds001_seed_000947,ted1lsec2CZgenI2,5pgdZyYh16sAUkDjrqGPej,M2M,Pretty Boy,history,ds001_seed_table,947,25,2.5,2.5,pop,pop,1,not_applicable_ds001
+ds001_seed_000948,tj31bDdnHPx5Xqbf,5CQ30WqJwcep0pYcV4AMNc,Led Zeppelin,Stairway to Heaven,history,ds001_seed_table,948,10,1.0,1.0,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000949,tra4duGP5HNGj9a0,2jvuMDqBK04WvCYYz5qjvG,Pink Floyd,Dogs,history,ds001_seed_table,949,10,1.0,1.0,progressive rock,progressive rock,1,not_applicable_ds001
+ds001_seed_000950,tt7XTyGLkbn4fq9T,5DZNSYxhFA1WA9WEJg9TNY,Cigarettes After Sex,Dreaming of You,history,ds001_seed_table,950,10,1.0,1.0,dream pop,dream pop,1,not_applicable_ds001
+ds001_seed_000951,tuA9OQatzhlFyO8d,70C4NyhjD5OZUMzvWZ3njJ,Billy Joel,Piano Man,history,ds001_seed_table,951,50,5.0,5.0,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000952,twTZiJnIkFnPHEF7,5GjPQ0eI7AgmOnADn1EO6Q,The Beatles,Eleanor Rigby - Remastered,history,ds001_seed_table,952,10,1.0,1.0,baroque pop,baroque pop,1,not_applicable_ds001
+ds001_seed_000953,tzgLjalg5FHn1kNl,7oOOI85fVQvVnK5ynNMdW7,Michael Jackson,Rock with You,history,ds001_seed_table,953,50,5.0,5.0,pop,pop,1,not_applicable_ds001
+ds001_seed_000954,u0VxzTc7MZfTbE3p,0JmiBCpWc1IAc0et7Xm7FL,Passenger,Let Her Go,history,ds001_seed_table,954,31,3.1,3.1,folk,folk,1,not_applicable_ds001
+ds001_seed_000955,u75RcQS8Yf7u5yIS,7tFsUfrmyBvLdvIByreecz,Radiohead,Sail to the Moon,history,ds001_seed_table,955,25,2.5,2.5,alternative rock,alternative,1,not_applicable_ds001
+ds001_seed_000956,uN5YSlPz9FNDrgzv,0SsYlkXxZ5vkWOTsKxMfMz,Ricky Nelson,Lonesome Town - Remastered,history,ds001_seed_table,956,50,5.0,5.0,rockabilly,rockabilly,1,not_applicable_ds001
+ds001_seed_000957,uPI7HUjRKP086kqU,5AyL2kgLtTWEu3qO3B9SqK,Far East Movement,Like A G6,history,ds001_seed_table,957,25,2.5,2.5,electronic,dance,1,not_applicable_ds001
+ds001_seed_000958,uQQw5XTm4WLcsMvU,2enPRFda84VE2wtI8c86Uf,Cults,Always Forever,history,ds001_seed_table,958,16,1.6,1.6,indie rock,indie rock,1,not_applicable_ds001
+ds001_seed_000959,uQUCBofXJAQuX3pV,0d28khcov6AiegSCpG5TuT,Gorillaz,Feel Good Inc.,history,ds001_seed_table,959,16,1.6,1.6,electronic,alternative,1,not_applicable_ds001
+ds001_seed_000960,uSN6pNdjfghH85vO,0B8drtTSp68pZdkmVrG9ZA,Big Punisher,Twinz (Deep Cover 98),history,ds001_seed_table,960,10,1.0,1.0,rap,hip-hop,1,not_applicable_ds001
+ds001_seed_000961,uYzXr8Tvq7b6Pdbz,3Ra4rkq1ExwPXwrPQeHBWg,Alexandre Desplat,Lily's Theme,history,ds001_seed_table,961,10,1.0,1.0,soundtrack,soundtrack,1,not_applicable_ds001
+ds001_seed_000962,ubiu5uAQ8JPrf6jp,7aQjPecQdIuNd1sz3KCDhD,The Cardigans,Lovefool,history,ds001_seed_table,962,50,5.0,5.0,pop,pop,1,not_applicable_ds001
+ds001_seed_000963,uj7iH69jmruknJ9V,49MHCPzvMLXhRjDantBMVH,Billy Joel,Just The Way You Are,history,ds001_seed_table,963,50,5.0,5.0,pop,70s,1,not_applicable_ds001
+ds001_seed_000964,umwmt9WBlxEWLrE7,4gMgiXfqyzZLMhsksGmbQV,Pink Floyd,"Another Brick in the Wall, Pt. 2",history,ds001_seed_table,964,25,2.5,2.5,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000965,uo90jnC5j8FRHcIw,2aibwv5hGXSgw7Yru8IYTO,Red Hot Chili Peppers,Snow,history,ds001_seed_table,965,10,1.0,1.0,rock,rock,1,not_applicable_ds001
+ds001_seed_000966,uq18sHDe0Q0J0mfO,1WN4uNclrDuczTO3bCr8s1,The Ronettes,Be My Baby,history,ds001_seed_table,966,50,5.0,5.0,pop,60s,1,not_applicable_ds001
+ds001_seed_000967,v5l8zuH9DGDB5qo1,3WkibOpDF7cQ5xntM1epyf,Shaggy,It Wasn't Me,history,ds001_seed_table,967,50,5.0,5.0,reggae,reggae,1,not_applicable_ds001
+ds001_seed_000968,v7IrQO9WGQEpLyVn,5sICkBXVmaCQk5aISGR3x1,Metallica,Enter Sandman,history,ds001_seed_table,968,10,1.0,1.0,metal,metal,1,not_applicable_ds001
+ds001_seed_000969,v8CxMxQM2jlfkWRQ,3ia3dJETSOllPsv3LJkE35,2Pac,California Love - Original Version,history,ds001_seed_table,969,10,1.0,1.0,rap,rap,1,not_applicable_ds001
+ds001_seed_000970,v8Is3nRJz9BVIBk2,3bidbhpOYeV4knp8AIu8Xn,Macklemore & Ryan Lewis,Can't Hold Us,history,ds001_seed_table,970,10,1.0,1.0,hip hop,hip hop,1,not_applicable_ds001
+ds001_seed_000971,vAFhzfpn5itzX2Ak,5pSvjjfsh34sLrkYSNGCl4,Men at Work,Down Under,history,ds001_seed_table,971,25,2.5,2.5,pop,80s,1,not_applicable_ds001
+ds001_seed_000972,vFFG3XV9GDUXEZZr,6Qyc6fS4DsZjB2mRW9DsQs,The Goo Goo Dolls,Iris,history,ds001_seed_table,972,10,1.0,1.0,rock,rock,1,not_applicable_ds001
+ds001_seed_000973,vI47ZWm1rLlX4Ktd,69kOkLUCkxIZYexIgSG8rq,Daft Punk,Get Lucky,history,ds001_seed_table,973,10,1.0,1.0,electronic,electronic,1,not_applicable_ds001
+ds001_seed_000974,vNtxCeTdzuhP03bJ,11LmqTE2naFULdEP94AUBa,Nirvana,Heart-Shaped Box,history,ds001_seed_table,974,10,1.0,1.0,grunge,grunge,1,not_applicable_ds001
+ds001_seed_000975,vPOtsghpUAxydfot,3bC1ahPIYt1btJzSSEyyrF,Flo Rida,Whistle,history,ds001_seed_table,975,10,1.0,1.0,pop,hip-hop,1,not_applicable_ds001
+ds001_seed_000976,vPfqXKLAI0PhWF1d,18AXbzPzBS8Y3AkgSxzJPb,Phil Collins,In The Air Tonight (2015 Remastered),history,ds001_seed_table,976,25,2.5,2.5,pop,phil collins,1,not_applicable_ds001
+ds001_seed_000977,vR2RH0TaYhTwm8ix,0e3yhVeNaTfKIWQRw9U9sY,Elton John,Sacrifice,history,ds001_seed_table,977,10,1.0,1.0,pop,pop,1,not_applicable_ds001
+ds001_seed_000978,vSPFegsnqCB0Tmx6,5y1Uc72BAKxaleTEXpcJJq,Pink Floyd,The Final Cut,history,ds001_seed_table,978,10,1.0,1.0,progressive rock,progressive rock,1,not_applicable_ds001
+ds001_seed_000979,vStAxklmrgAdVFJZ,098ttCNmncrO4YvqWUNMvn,Daft Punk,High Life,history,ds001_seed_table,979,10,1.0,1.0,electronic,electronic,1,not_applicable_ds001
+ds001_seed_000980,vdqOntyfDOpSYNGn,6epn3r7S14KUqlReYr77hA,Justin Bieber,Baby,history,ds001_seed_table,980,50,5.0,5.0,pop,pop,1,not_applicable_ds001
+ds001_seed_000981,vh5gcly9V14bYFlF,7gMOe0gXYcELUoVugfMmHP,Billy Joel,You May Be Right,history,ds001_seed_table,981,50,5.0,5.0,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000982,vhXhodaosMVRFo15,0LrwgdLsFaWh9VXIjBRe8t,David Bowie,Changes,history,ds001_seed_table,982,10,1.0,1.0,glam rock,glam rock,1,not_applicable_ds001
+ds001_seed_000983,vmBOqSJWFBHOUIRe,0nLiqZ6A27jJri2VCalIUs,Metallica,Nothing Else Matters,history,ds001_seed_table,983,16,1.6,1.6,metal,metal,1,not_applicable_ds001
+ds001_seed_000984,vmem2WsZ135YcGi2,1i6N76fftMZhijOzFQ5ZtL,Talking Heads,Psycho Killer,history,ds001_seed_table,984,10,1.0,1.0,new wave,new wave,1,not_applicable_ds001
+ds001_seed_000985,vqFYS6LzsyiT21RG,386RUes7n1uM1yfzgeUuwp,Bruno Mars,The Lazy Song,history,ds001_seed_table,985,31,3.1,3.1,pop,pop,1,not_applicable_ds001
+ds001_seed_000986,vxWFZbu91hL3u4cw,5O2P9iiztwhomNh8xkR9lJ,One Direction,Night Changes,history,ds001_seed_table,986,10,1.0,1.0,pop,pop,1,not_applicable_ds001
+ds001_seed_000987,vyB8yTO4J4Oa1NUV,2dQWGV0Iuvj4SmDgLpRrxj,Shlohmo,Beams,history,ds001_seed_table,987,10,1.0,1.0,experimental electronic,experimental electronic,1,not_applicable_ds001
+ds001_seed_000988,w0DRBn09JGf00jeH,2cyLCuYnTA0zcdxYW9O3Yk,Grimes,Genesis,history,ds001_seed_table,988,10,1.0,1.0,dream pop,poptron,1,not_applicable_ds001
+ds001_seed_000989,w3Bg3iP0fgb7fvfT,5Y6nVaayzitvsD5F7nr3DV,Lana Del Rey,West Coast,history,ds001_seed_table,989,10,1.0,1.0,pop,alternative,1,not_applicable_ds001
+ds001_seed_000990,w4DuXpBVV6TTEWYi,5Qv2Nby1xTr9pQyjkrc94J,Radiohead,All I Need,history,ds001_seed_table,990,10,1.0,1.0,alternative rock,alternative,1,not_applicable_ds001
+ds001_seed_000991,w53OOrCRFci0wvRQ,5OQGeJ1ceykovrykZsGhqL,The Corrs,Breathless,history,ds001_seed_table,991,25,2.5,2.5,pop,pop,1,not_applicable_ds001
+ds001_seed_000992,w6BTU0doOLIYijKS,01qJhVPCHFFR6wJ5ptyw17,Midlake,Roscoe,history,ds001_seed_table,992,10,1.0,1.0,indie rock,indie,1,not_applicable_ds001
+ds001_seed_000993,wC7uu6BTgkb7blgi,18lR4BzEs7e3qzc0KVkTpU,Linkin Park,What I've Done,history,ds001_seed_table,993,10,1.0,1.0,rock,rock,1,not_applicable_ds001
+ds001_seed_000994,wIsNu1n2D58VBWmV,03yOjwHoOPDlTUg0NRxN6t,The Smiths,Cemetry Gates,history,ds001_seed_table,994,50,5.0,5.0,post-punk,80s,1,not_applicable_ds001
+ds001_seed_000995,wTCZJA04Iry0Pbd6,56OMc2pr6XJgpQqASY7kYc,Antônio Carlos Jobim,Insensatez,history,ds001_seed_table,995,10,1.0,1.0,bossa nova,bossa nova,1,not_applicable_ds001
+ds001_seed_000996,wWr87YN3j07FWo5d,34E0Higz6fFVXlbVsn6TIW,Billy Joel,Honesty,history,ds001_seed_table,996,50,5.0,5.0,pop,70s,1,not_applicable_ds001
+ds001_seed_000997,wXWIwDN7IKl9sT17,1Se0r96r0gnqg67kJPmESc,Red Hot Chili Peppers,Parallel Universe,history,ds001_seed_table,997,10,1.0,1.0,rock,rock,1,not_applicable_ds001
+ds001_seed_000998,wYJ8kCEGuUHFkMcO,2miIOgni3EEut8pvYcxeYn,Dire Straits,Six Blade Knife,history,ds001_seed_table,998,25,2.5,2.5,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_000999,wYoJBT9Lg1bBf8Nd,2UoxRLlTWbVnH1xvXOKfrE,Moby,One Of These Mornings,history,ds001_seed_table,999,10,1.0,1.0,electronic,electronic,1,not_applicable_ds001
+ds001_seed_001000,wb4LtQFBXxV8SaZp,5buaEVRCGzrhj3ld9iRrZj,Lykke Li,I Follow Rivers,history,ds001_seed_table,1000,10,1.0,1.0,indie pop,indie,1,not_applicable_ds001
+ds001_seed_001001,wcUo9Yyb5hVxepIj,1GYCHxZn4T6PcH1tSI1isx,Grandson,Overdose,history,ds001_seed_table,1001,37,3.7,3.7,rock,rock,1,not_applicable_ds001
+ds001_seed_001002,wgsxbwyDkek1cz6U,4hO2y5DRbeMppklIroS1O8,Pink Floyd,Terminal Frost,history,ds001_seed_table,1002,10,1.0,1.0,progressive rock,progressive rock,1,not_applicable_ds001
+ds001_seed_001003,wouHmFw43qRW91BC,5WJU527RQNyMLuKecjsL8V,Funkadelic,Maggot Brain,history,ds001_seed_table,1003,10,1.0,1.0,funk,funk,1,not_applicable_ds001
+ds001_seed_001004,wwfM0FVKfTM6rwfa,4JGKZS7h4Qa16gOU3oNETV,The Cranberries,Dreams,history,ds001_seed_table,1004,25,2.5,2.5,rock,rock,1,not_applicable_ds001
+ds001_seed_001005,wzBQapgHuYmDanR9,4joiWvli4qJVEW6qZV2i2J,The Beatles,All My Loving,history,ds001_seed_table,1005,50,5.0,5.0,classic rock,60s,1,not_applicable_ds001
+ds001_seed_001006,x0NWP5jCon9IHrG0,762B4bOcXF7I2Y8UlKTyTy,ABBA,Chiquitita,history,ds001_seed_table,1006,50,5.0,5.0,pop,pop,1,not_applicable_ds001
+ds001_seed_001007,x2AFbVbFJ8Na3lQg,6J212smZzpeOCYQ9DITMSC,Billy Joel,A Matter Of Trust,history,ds001_seed_table,1007,50,5.0,5.0,rock,rock,1,not_applicable_ds001
+ds001_seed_001008,x34GAHtPhxEn0cxU,2aJDlirz6v2a4HREki98cP,Bicep,Glue,history,ds001_seed_table,1008,32,3.2,3.2,house,house,1,not_applicable_ds001
+ds001_seed_001009,x3U2yLdOrcDnHmWl,2cGxRwrMyEAp8dEbuZaVv6,Daft Punk,Instant Crush,history,ds001_seed_table,1009,10,1.0,1.0,electronic,electronic,1,not_applicable_ds001
+ds001_seed_001010,x3wfcyxEQjeCrl8b,4nVBt6MZDDP6tRVdQTgxJg,One Direction,Midnight Memories,history,ds001_seed_table,1010,10,1.0,1.0,pop,pop,1,not_applicable_ds001
+ds001_seed_001011,x9NtqLeFepfZv0yF,7L3b6iaVhDVjfo52Hbvh9Z,Stevie Nicks,Edge of Seventeen - Remastered,history,ds001_seed_table,1011,40,4.0,4.0,rock,rock,1,not_applicable_ds001
+ds001_seed_001012,xGVtmlr8RhV9tUCJ,21j1PsCiTaO8ZW88UZrh3A,Pink Floyd,Shine On You Crazy Diamond (Pts. 6-9),history,ds001_seed_table,1012,10,1.0,1.0,progressive rock,progressive rock,1,not_applicable_ds001
+ds001_seed_001013,xNBZvWt6cuPpFBTd,4CNL4GBNTdVIU5Nk6hB4LC,Van Morrison,Brown Eyed Girl,history,ds001_seed_table,1013,50,5.0,5.0,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_001014,xOkmwx0EUjUybeq5,0ct6r3EGTcMLPtrXHDvVjc,Avicii,The Days,history,ds001_seed_table,1014,10,1.0,1.0,electronic,2014,1,not_applicable_ds001
+ds001_seed_001015,xP4yBFzU6zxzoXNp,4aVuWgvD0X63hcOCnZtNFA,Toto,Hold the Line,history,ds001_seed_table,1015,50,5.0,5.0,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_001016,xRrv5zjNMt6jzwM9,7795WJLVKJoAyVoOtCWqXN,Sam Smith,I'm Not the Only One,history,ds001_seed_table,1016,10,1.0,1.0,soul,soul,1,not_applicable_ds001
+ds001_seed_001017,xTrqL0ytNsp0yf6W,2zwH1NlxBEpzVlvzXNHQso,Ralph McTell,Streets of London,history,ds001_seed_table,1017,50,5.0,5.0,folk,folk,1,not_applicable_ds001
+ds001_seed_001018,xVpfflK2WcRAO2mJ,5VWC7v2dC2K0SIIjT9WTLN,Pink Floyd,Welcome to the Machine,history,ds001_seed_table,1018,10,1.0,1.0,progressive rock,progressive rock,1,not_applicable_ds001
+ds001_seed_001019,xW1XKPJ5ZLazRwpP,3ZpTyU4mF3PR9jLpFA3AAC,Dean Martin,Ain't That a Kick in the Head,history,ds001_seed_table,1019,10,1.0,1.0,swing,swing,1,not_applicable_ds001
+ds001_seed_001020,xhQWWzKY5TAwaliZ,0I3q5fE6wg7LIfHGngUTnV,OutKast,Ms. Jackson,history,ds001_seed_table,1020,10,1.0,1.0,rap,hip-hop,1,not_applicable_ds001
+ds001_seed_001021,xj9ipNAWldstgVco,6Z0F3Mqj7tq1CBZo5qMlUg,Hannah Montana,The Best of Both Worlds,history,ds001_seed_table,1021,25,2.5,2.5,pop,hannah montana,1,not_applicable_ds001
+ds001_seed_001022,xsAC7LEsEv3vlz4p,7uCnDfUGb0vtjonHaSv6ka,Moby,In This World,history,ds001_seed_table,1022,10,1.0,1.0,electronic,electronic,1,not_applicable_ds001
+ds001_seed_001023,xupOu9psHLlU8iAa,6urCAbunOQI4bLhmGpX7iS,No Doubt,Don't Speak,history,ds001_seed_table,1023,56,5.6,5.6,rock,90s,1,not_applicable_ds001
+ds001_seed_001024,xvXrMH2YnlH77Y5i,3FpcRPsHXmKyDEJl9P1PsZ,Depeche Mode,Behind the Wheel,history,ds001_seed_table,1024,31,3.1,3.1,new wave,new wave,1,not_applicable_ds001
+ds001_seed_001025,y4C7mqPH9Ij4XFVK,4sIS2rmGgH60OliPbLrZvQ,The Alan Parsons Project,Don't Let It Show,history,ds001_seed_table,1025,10,1.0,1.0,progressive rock,progressive rock,1,not_applicable_ds001
+ds001_seed_001026,y8AxY885GUWQuyCR,5ZBeML7Lf3FMEVviTyvi8l,The Beatles,Twist and Shout,history,ds001_seed_table,1026,10,1.0,1.0,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_001027,yCAfT6vVKCDIMGrP,416MsJxvxSKY96DCmbJIRs,James Newton Howard,The Hanging Tree,history,ds001_seed_table,1027,50,5.0,5.0,soundtrack,jennifer lawrence,1,not_applicable_ds001
+ds001_seed_001028,yD8TRSiHPRGAB8Cv,1FTSo4v6BOZH9QxKc3MbVM,Blur,Song 2,history,ds001_seed_table,1028,10,1.0,1.0,rock,rock,1,not_applicable_ds001
+ds001_seed_001029,yDY62vaqQdoRPi6X,5jSz894ljfWE0IcHBSM39i,Prince,Raspberry Beret,history,ds001_seed_table,1029,50,5.0,5.0,pop,80s,1,not_applicable_ds001
+ds001_seed_001030,yJyiOAwUUoJ5YDO0,0ZNYGrmcehorhh9JOeg5Iv,José González,Stay Alive,history,ds001_seed_table,1030,10,1.0,1.0,soundtrack,soundtrack,1,not_applicable_ds001
+ds001_seed_001031,yLu4I2NGi36ixzIg,4K0odcECsBvgzv9Lr9z4kd,C418,Aria Math,history,ds001_seed_table,1031,10,1.0,1.0,ambient,ambient,1,not_applicable_ds001
+ds001_seed_001032,yVr5VTRL3p708oqo,63rbP24OzfaQCJjsHWZXnY,David Guetta,Where Them Girls At,history,ds001_seed_table,1032,40,4.0,4.0,disco,disco,1,not_applicable_ds001
+ds001_seed_001033,yWRhfm4JZ4VqIuS8,5zA8vzDGqPl2AzZkEYQGKh,Billy Joel,Uptown Girl,history,ds001_seed_table,1033,50,5.0,5.0,pop,80s,1,not_applicable_ds001
+ds001_seed_001034,yX6rieJ3iQqBVFIN,54b8qPFqYqIndfdxiLApea,Heart,Alone,history,ds001_seed_table,1034,10,1.0,1.0,classic rock,80s,1,not_applicable_ds001
+ds001_seed_001035,yfm7RER1PWTqgjIp,2dLLR6qlu5UJ5gk0dKz0h3,Lorde,Royals,history,ds001_seed_table,1035,10,1.0,1.0,pop,pop,1,not_applicable_ds001
+ds001_seed_001036,yiNlhVBKm5rEIWXf,4w1lzcaoZ1IC2K5TwjalRP,Vanessa Carlton,A Thousand Miles,history,ds001_seed_table,1036,10,1.0,1.0,pop,pop,1,not_applicable_ds001
+ds001_seed_001037,yj5hUpgxoy0S4F1m,4VbDJMkAX3dWNBdn3KH6Wx,Foster the People,Helena Beat,history,ds001_seed_table,1037,10,1.0,1.0,indie rock,indie,1,not_applicable_ds001
+ds001_seed_001038,yqNY16s5yT0amiRZ,0BCPKOYdS2jbQ8iyB56Zns,Coldplay,Clocks,history,ds001_seed_table,1038,50,5.0,5.0,rock,rock,1,not_applicable_ds001
+ds001_seed_001039,ywzGcnOy4CwT0wrJ,6ADSaE87h8Y3lccZlBJdXH,U2,With Or Without You - remastered,history,ds001_seed_table,1039,10,1.0,1.0,rock,rock,1,not_applicable_ds001
+ds001_seed_001040,yymCroqfZk3rVIZd,0HPD5WQqrq7wPWR7P7Dw1i,Kesha,Animal,history,ds001_seed_table,1040,10,1.0,1.0,pop,dance,1,not_applicable_ds001
+ds001_seed_001041,yzstp8q2Ct2pU6pZ,49X0LAl6faAusYq02PRAY6,Modjo,Lady - Hear me tonight,history,ds001_seed_table,1041,56,5.6,5.6,house,house,1,not_applicable_ds001
+ds001_seed_001042,z6K99QwmnDbz4HVE,1TaVPXzhKeDFMZgOaHybgG,The Alan Parsons Project,Children of the Moon,history,ds001_seed_table,1042,10,1.0,1.0,progressive rock,progressive rock,1,not_applicable_ds001
+ds001_seed_001043,z862MwggN0SNWrs7,6s8nHXTJVqFjXE4yVZPDHR,Olly Murs,Troublemaker (feat. Flo Rida),history,ds001_seed_table,1043,31,3.1,3.1,pop,pop,1,not_applicable_ds001
+ds001_seed_001044,zC8HgAnuvfxIGkt5,3PTBfw2zgvY9HjpBU8VoFz,Grandson,6:00,history,ds001_seed_table,1044,6,0.6,0.6,indie rock,alternative,1,not_applicable_ds001
+ds001_seed_001045,zKU5n8xMk5IicYWg,2RXVCRdSkFbNcQfTjgiDwL,alt-J,Tessellate,history,ds001_seed_table,1045,16,1.6,1.6,electronic,indie,1,not_applicable_ds001
+ds001_seed_001046,zMtZubmfy3SOxtgg,6iLzFJhs4ATwJn7P1utZIJ,Ramin Djawadi,Light of the Seven,history,ds001_seed_table,1046,31,3.1,3.1,soundtrack,game of thrones,1,not_applicable_ds001
+ds001_seed_001047,zMvJUCpVrfLkgwmb,1mYAxcDROLJxGF6Q3W5mj9,C418,Floating Trees,history,ds001_seed_table,1047,10,1.0,1.0,ambient,ambient,1,not_applicable_ds001
+ds001_seed_001048,zP4PDYaE5f7iMHWQ,1DIXPcTDzTj8ZMHt3PDt8p,Coolio,Gangsta's Paradise,history,ds001_seed_table,1048,16,1.6,1.6,rap,rap,1,not_applicable_ds001
+ds001_seed_001049,zV7mL3owfnTXQXxi,7257drAN3eTtaaUUPw95B3,Robert Plant,Big Log,history,ds001_seed_table,1049,25,2.5,2.5,classic rock,classic rock,1,not_applicable_ds001
+ds001_seed_001050,zVtJASd682xCthGr,0wbDgMuAoy7O7pL3a69uZx,Timbaland,Give It To Me,history,ds001_seed_table,1050,6,0.6,0.6,pop,timbaland,1,not_applicable_ds001
+ds001_seed_001051,zYVnErhV19roMuSz,5FkJHVudUByVjanCqFXRql,Mr.Kitty,After Dark,history,ds001_seed_table,1051,10,1.0,1.0,synthpop,synthpop,1,not_applicable_ds001
+ds001_seed_001052,zcilKC3K2mO633S7,1cuclT4cacekr88IvVtCpz,Alabama 3,Woke Up This Morning,history,ds001_seed_table,1052,10,1.0,1.0,blues,blues,1,not_applicable_ds001
+ds001_seed_001053,zeJfbvManM5xVqDL,2EoOZnxNgtmZaD8uUmz2nD,Soundgarden,Black Hole Sun,history,ds001_seed_table,1053,31,3.1,3.1,grunge,grunge,1,not_applicable_ds001
+ds001_seed_001054,zjO2DPmd0D6b6apS,0zxj7dVhYZq5ACyaDx5XIo,Eric Clapton,Layla (acoustic live),history,ds001_seed_table,1054,10,1.0,1.0,blues,blues,1,not_applicable_ds001
+ds001_seed_001055,zkRV3WqJN3gwKqfj,4tqcoej1zPvwePZCzuAjJd,J. Cole,Wet Dreamz,history,ds001_seed_table,1055,16,1.6,1.6,rap,rap,1,not_applicable_ds001
+ds001_seed_001056,zmD8tVWUJmOjvuDT,1prZ0pr6XoRCxcrC3MCL0M,Fleetwood Mac,Everywhere,history,ds001_seed_table,1056,50,5.0,5.0,classic rock,80s,1,not_applicable_ds001
+ds001_seed_001057,zp4zYVjiH2Tm3gTM,4VrWlk8IQxevMvERoX08iC,Sia,Chandelier,history,ds001_seed_table,1057,50,5.0,5.0,pop,pop,1,not_applicable_ds001
+ds001_seed_001058,zrQe7EDNxu5AgYKl,0wS84KJ0rn0hfBK2yDZJRn,Phantogram,Mouthful of Diamonds,history,ds001_seed_table,1058,31,3.1,3.1,electronic,trip-hop,1,not_applicable_ds001
+ds001_seed_001059,zs3sU37IIbJbm7ix,65T1aY3I9qfNUDVAnaM9bq,Houndmouth,Sedona,history,ds001_seed_table,1059,6,0.6,0.6,folk rock,american,1,not_applicable_ds001
+ds001_seed_001060,zvNnbDSgevQ3A35j,5B5eTk7DF8KVp1zpQoY1XY,Hoobastank,The Reason,history,ds001_seed_table,1060,10,1.0,1.0,rock,rock,1,not_applicable_ds001
+ds001_seed_001061,zvcvQZAigdukItwb,6GyFP1nfCDB8lbD2bG0Hq9,M83,Midnight City,history,ds001_seed_table,1061,16,1.6,1.6,electronic,poptron,1,not_applicable_ds001
+ds001_seed_001062,zxCjkRd5mumVrTjo,4YJUTdZ0Pgl0ZeNyHYXeLd,Queen,Love Of My Life - Remastered 2011,history,ds001_seed_table,1062,10,1.0,1.0,rock,rock,1,not_applicable_ds001
+ds001_seed_001063,zxqKvtGMOMGE2ZeX,0VgkVdmE4gld66l8iyGjgx,Future,Mask Off,history,ds001_seed_table,1063,25,2.5,2.5,hip hop,hip hop,1,not_applicable_ds001
+ds001_seed_001064,zy5XpIMlq57UeVWJ,1BvJmtaXsqtH438BcDPeBb,Elton John,Daniel,history,ds001_seed_table,1064,10,1.0,1.0,pop,pop,1,not_applicable_ds001

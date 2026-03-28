@@ -1,0 +1,60 @@
+{
+  "run_id": "BL011-STRICTER_THRESHOLDS-BL005-20260327-203546-378561",
+  "task": "BL-005",
+  "scenario_id": "stricter_thresholds",
+  "config": {
+    "top_lead_genre_limit": 6,
+    "top_tag_limit": 10,
+    "top_genre_limit": 8,
+    "threshold_scale": 0.75,
+    "numeric_thresholds": {
+      "danceability": 0.1125,
+      "energy": 0.1125,
+      "valence": 0.1125,
+      "tempo": 11.25,
+      "key": 1.125,
+      "mode": 0.375,
+      "duration_ms": 22500.0
+    },
+    "keep_rule": "keep if not seed and (semantic_score >= 3 or (semantic_score >= 1 and numeric_pass_count >= 4))"
+  },
+  "counts": {
+    "candidate_rows_total": 109269,
+    "seed_tracks_excluded": 1064,
+    "kept_candidates": 22620,
+    "rejected_non_seed_candidates": 85585
+  },
+  "rule_hits": {
+    "semantic_rule_hits": {
+      "lead_genre_match": 37604,
+      "genre_overlap": 62883,
+      "tag_overlap": 65787
+    },
+    "numeric_rule_hits": {
+      "danceability": 50645,
+      "energy": 29574,
+      "valence": 29145,
+      "tempo": 34185,
+      "key": 15987,
+      "mode": 68257,
+      "duration_ms": 31152
+    }
+  },
+  "top_kept_track_ids": [
+    "0009fFIM1eYThaPg",
+    "00DZ3XCAQb2FdCc6",
+    "00LuPWdOccBb09bW",
+    "00hFmpewuNvc4dRL",
+    "013BFFjvohJT9dW9",
+    "01EKNot8qVgZpKM7",
+    "01I5p010ajulr0O5",
+    "01OcWE6ZDS0RAb4I",
+    "01WKqxhGhBvvJnwb",
+    "01ZrNpwRWi7Ymdp5",
+    "01oEzhZwXGG8os3W",
+    "02IJEnORh7mcQteb",
+    "02JeIZCvClyeiCA2",
+    "02ZnlCGZEbkfCDxo",
+    "02nj8E8TzgIiOkiW"
+  ]
+}
