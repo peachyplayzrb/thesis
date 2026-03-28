@@ -12,6 +12,7 @@ Write-Host "Activating virtual environment..." -ForegroundColor Green
 Write-Host "Installing dependencies..." -ForegroundColor Green
 pip install --upgrade pip setuptools wheel
 pip install -r requirements.txt
+pip install -e .
 
 Write-Host ""
 Write-Host "✓ Setup complete!" -ForegroundColor Green

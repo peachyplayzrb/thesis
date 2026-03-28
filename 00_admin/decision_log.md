@@ -5,10 +5,10 @@ Ordering convention (standardized 2026-03-24):
 - Entry IDs remain unique identifiers, but physical entry order reflects historical insertion timing (not strict numeric sorting).
 - New entries must be appended at the end and may include `superseded_by` when a prior decision is replaced.
 
-Maintenance snapshot (2026-03-27):
-- Highest decision ID currently present: `D-038`
-- Total decision entries: 38
-- Status distribution: accepted=29, superseded=3, rejected=1
+Maintenance snapshot (2026-03-28):
+- Highest decision ID currently present: `D-039`
+- Total decision entries: 39
+- Status distribution: accepted=30, superseded=3, rejected=1
 - ID integrity check: no duplicate decision IDs detected
 
 Current posture snapshot (2026-03-25):
@@ -1057,6 +1057,19 @@ review_date: none
 - evidence_basis: `01_requirements/submission_requirements.md`, `00_admin/Artefact_MVP_definition.md`, `07_implementation/ACTIVE_BASELINE.md`, `07_implementation/implementation_notes/IMPLEMENTATION_CONTRACT.md`, `07_implementation/ARTEFACT_SUBMISSION_STRUCTURE_FINAL.md`, `07_implementation/implementation_notes/README.md`, `07_implementation/implementation_notes/SUBMISSION_MANIFEST.md`.
 - impacted_files: `00_admin/decision_log.md`, `00_admin/change_log.md`, `07_implementation/ARTEFACT_SUBMISSION_STRUCTURE_FINAL.md`, `07_implementation/implementation_notes/README.md`, `07_implementation/implementation_notes/SUBMISSION_MANIFEST.md`
 - next_steps: Replace placeholders in a controlled fill pass after planner approval, then validate package completeness against BL-013/BL-014 evidence and submission requirements.
+
+## D-039
+- date: 2026-03-28
+- entity_id: final_artefact clean-code G2 deferred scope
+- proposed_by: Copilot
+- status: accepted
+- decision: Defer G2 runtime-control resolver migration for `resolve_bl004_runtime_controls` (profile/main.py) and `resolve_bl011_runtime_controls` (controllability/scenarios.py) from the current clean-code pass. G1 (BL-007, BL-008, BL-006, BL-005, BL-009) is now fully migrated to the `resolve_stage_controls` factory. BL-004 and BL-011 involve list-parsing env logic and scenario-variant complexity that increases parity risk disproportionate to the gain.
+- context: The G1 migration pass completed BL-007, BL-008, BL-006, BL-005, and BL-009. BL-004 has a bespoke `BL004_INCLUDE_INTERACTION_TYPES` comma-split env path and multiple env keys with no direct run-config/env symmetry. BL-011 uses raw `os.environ.get` directly with controllability scenario-variant setup that does not map cleanly to the two-callback factory.
+- alternatives_considered: Migrate BL-004 and BL-011 in this pass (rejected: complexity increases parity risk without submission benefit); leave both permanently out of the resolver pattern (rejected: adds future maintenance inconsistency).
+- rationale: Correctness and test coverage take priority over cosmetic uniformity. The factory pattern is now consistent across 5 of 7 applicable stages. BL-004 and BL-011 can be migrated in a future maintenance pass with a dedicated parity harness.
+- evidence_basis: `final_artefact/src/profile/main.py`, `final_artefact/src/controllability/scenarios.py`, `final_artefact/src/shared_utils/stage_runtime_resolver.py`.
+- impacted_files: `00_admin/decision_log.md`, `00_admin/change_log.md`
+- next_steps: No immediate action required. Record in handoff playbook.
 
 ## D-038
 - date: 2026-03-28

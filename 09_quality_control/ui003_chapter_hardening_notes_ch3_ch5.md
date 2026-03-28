@@ -57,3 +57,13 @@ Linked verdict matrix: `09_quality_control/ui003_claim_verdicts_ch3_ch5.md`
 - [x] Mismatch and weak-support locations isolated.
 - [x] Concrete chapter-level rewrite instructions prepared.
 - [x] UI-003 can be closed at control-record level after governance sync.
+
+## Applied verification status (2026-03-28)
+
+- Applied: Chapter 4 Section 4.8 table populated with run-linked reproducibility and observability outcomes.
+- Applied: Chapter 4 Section 4.9 table populated with controllability and rule-compliance baseline/variant values.
+- Applied: Chapter 4 Section 4.10 table populated with explanation reconstruction sample count and bounded error statement.
+- Deferred: Chapter 3 mismatch item UI3-C3-007 remains a wording-level checkpoint to keep long-term numeric references tightly run-linked.
+
+Re-audit note:
+- `09_quality_control/ui003_claim_verdicts_ch3_ch5.md` has been refreshed to the 2026-03-28 state with Chapter 4 weak-support claims resolved.

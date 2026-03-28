@@ -22,6 +22,18 @@
 	- `no_match=0`
 - Interpretation note: parser support for author-year citations is now active and producing claim extraction for v11. Remaining closure risk is evidence-strength (`weak_support=24`), so Chapter 2 wording still needs targeted hardening if a strict zero-weak gate is retained.
 
+## Verbatim Audit Refresh (2026-03-28)
+- Audit artifact: `09_quality_control/chapter2_verbatim_audit.md`
+- Audit method: unchanged automated sentence-level lexical matching workflow (`09_quality_control/verbatim_audits/run_ch2_verbatim_audit.py`).
+- Audit scope: canonical Chapter 2 file `08_writing/chapter2.md`.
+- Results snapshot:
+	- `total_claim_checks=40`
+	- `supported=2`
+	- `partially_supported=38`
+	- `weak_support=0`
+	- `no_match=0`
+- Interpretation note: Chapter 2 verbatim evidence-strength gate is closed on current canonical text (`weak_support=0`).
+
 ## Temp Draft Verbatim Closure (2026-03-15)
 - Audit artifact: `09_quality_control/chapter2_temp_verbatim_audit.md`
 - Audit method: same automated sentence-level lexical matching workflow used for final Chapter 2 audit.
@@ -83,4 +95,3 @@
 - Alignment pipeline claims are currently supported by entity-resolution surveys/method papers (`allam_improved_2018`, `papadakis_blocking_2021`, `barlaug_neural_2021`) and should be presented as cross-domain support with music-specific uncertainty.
 - Reproducibility/accountability claims are strongly supported by recommender-specific evidence (`beel_towards_2016`, `bellogin_improving_2021`, `cavenaghi_systematic_2023`).
 - Deterministic design rationale should remain framed as thesis-goal alignment (inspectability/replayability), not as a global performance claim versus hybrid/neural approaches.
-

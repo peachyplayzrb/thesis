@@ -32,3 +32,12 @@ def canonical_json_hash(
 ) -> str:
     canonical = json.dumps(payload, sort_keys=True, ensure_ascii=ensure_ascii, separators=(",", ":"))
     return sha256_of_text(canonical, uppercase=uppercase)
+
+
+def sha256_of_values(values: list[str], *, uppercase: bool = True) -> str:
+    """Combine multiple hex-digest strings into one SHA256 by feeding each value sequentially."""
+    digest = hashlib.sha256()
+    for value in values:
+        digest.update(value.encode("utf-8"))
+    result = digest.hexdigest()
+    return result.upper() if uppercase else result

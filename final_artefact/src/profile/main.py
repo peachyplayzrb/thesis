@@ -1,4 +1,4 @@
-from __future__ import annotations
+﻿from __future__ import annotations
 
 import csv
 import json
@@ -8,9 +8,6 @@ import time
 from datetime import datetime, timezone
 from pathlib import Path
 
-import sys
-
-sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from shared_utils.config_loader import load_run_config_utils_module
 from shared_utils.env_utils import env_int, env_str
@@ -20,6 +17,7 @@ from shared_utils.io_utils import (
     parse_csv_labels,
     parse_float,
     sha256_of_file,
+    utc_now,
 )
 from shared_utils.path_utils import impl_root
 from shared_utils.stage_runtime_resolver import resolve_run_config_path
@@ -27,8 +25,9 @@ from shared_utils.constants import (
     DEFAULT_PROFILE_TOP_TAG_LIMIT,
     DEFAULT_PROFILE_TOP_GENRE_LIMIT,
     DEFAULT_PROFILE_TOP_LEAD_GENRE_LIMIT,
+    DEFAULT_INCLUDE_INTERACTION_TYPES,
+    DEFAULT_INPUT_SCOPE,
 )
-
 
 # Hybrid profile: semantic labels + numeric centers from DS-001 candidate dataset.
 NUMERIC_FEATURE_COLUMNS: list[str] = [
@@ -49,21 +48,6 @@ SUMMARY_FEATURE_COLUMNS: list[str] = [
     "valence",
     "tempo",
 ]
-
-# Use shared defaults from BL000 utilities (canonical source for profile limits)
-DEFAULT_INCLUDE_INTERACTION_TYPES: list[str] = ["history", "influence"]
-DEFAULT_INPUT_SCOPE: dict[str, object] = {
-    "source_family": "spotify_api_export",
-    "include_top_tracks": True,
-    "top_time_ranges": ["short_term", "medium_term", "long_term"],
-    "include_saved_tracks": True,
-    "saved_tracks_limit": None,
-    "include_playlists": True,
-    "playlists_limit": None,
-    "playlist_items_per_playlist_limit": None,
-    "include_recently_played": True,
-    "recently_played_limit": 50,
-}
 
 
 def infer_user_id_from_ingestion() -> str | None:
@@ -326,7 +310,7 @@ def main() -> None:
     profile = {
         "run_id": run_id,
         "task": "BL-004",
-        "generated_at_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+        "generated_at_utc": utc_now(),
         "user_id": user_id,
         "config_source": str(runtime_controls["config_source"]),
         "run_config_path": runtime_controls["run_config_path"],

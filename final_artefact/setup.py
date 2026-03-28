@@ -20,11 +20,12 @@ setup(
     long_description="Complete implementation of a systematic music recommendation pipeline with full transparency and controllability for academic review",
     author="Research Implementation",
     python_requires=">=3.10",
-    packages=find_packages(include=["src", "src.*"]),
+    packages=find_packages(where="src"),
+    package_dir={"": "src"},
     install_requires=requirements,
     entry_points={
         "console_scripts": [
-            "recommendation-impl=src.orchestration.main:main",
+            "recommendation-impl=orchestration.main:main",
         ],
     },
     classifiers=[

@@ -1,152 +1,96 @@
-from __future__ import annotations
+﻿from __future__ import annotations
 
 import json
 from copy import deepcopy
 from datetime import datetime, timezone
 import hashlib
 from pathlib import Path
-import sys
 from typing import Any
 
 from shared_utils.constants import (
+    DEFAULT_ASSEMBLY_CONTROLS,
+    DEFAULT_CONTROLLABILITY_CONTROLS,
+    DEFAULT_CONTROL_MODE,
+    DEFAULT_INCLUDE_INTERACTION_TYPES,
+    DEFAULT_INGESTION_CONTROLS,
+    DEFAULT_INPUT_SCOPE,
+    DEFAULT_INFLUENCE_TRACKS,
+    DEFAULT_INTERACTION_SCOPE,
     DEFAULT_LANGUAGE_FILTER_CODES,
     DEFAULT_LANGUAGE_FILTER_ENABLED,
+    DEFAULT_OBSERVABILITY_CONTROLS,
     DEFAULT_PROFILE_TOP_GENRE_LIMIT,
     DEFAULT_PROFILE_TOP_LEAD_GENRE_LIMIT,
     DEFAULT_PROFILE_TOP_TAG_LIMIT,
     DEFAULT_RECENCY_YEARS_MIN_OFFSET,
+    DEFAULT_REPORTING_SCORE_THRESHOLDS,
+    DEFAULT_RETRIEVAL_NUMERIC_THRESHOLDS,
     DEFAULT_SCORING_COMPONENT_WEIGHTS,
+    DEFAULT_SCORING_NUMERIC_THRESHOLDS,
+    DEFAULT_SEED_CONTROLS,
+    DEFAULT_TOP_CONTRIBUTOR_LIMIT,
+    DEFAULT_TRANSPARENCY_CONTROLS,
 )
 
-try:
-    from shared_utils.io_utils import open_text_write
-except ImportError:
-    sys.path.insert(0, str(Path(__file__).parent.parent))
-    from shared_utils.io_utils import open_text_write
+from shared_utils.io_utils import open_text_write
 
 RUN_CONFIG_SCHEMA_VERSION = "run-config-v1"
 RUN_INTENT_ARTIFACT_SCHEMA_VERSION = "run-intent-v1"
 RUN_EFFECTIVE_ARTIFACT_SCHEMA_VERSION = "run-effective-config-v1"
 
-DEFAULT_RUN_CONFIG: dict[str, Any] = {
-    "schema_version": RUN_CONFIG_SCHEMA_VERSION,
-    "control_mode": {
-        "validation_profile": "strict",
-        "allow_threshold_decoupling": False,
-        "allow_weight_auto_normalization": False,
-    },
-    "user_context": {
-        "user_id": None,
-    },
-    "input_scope": {
-        "source_family": "spotify_api_export",
-        "include_top_tracks": True,
-        "top_time_ranges": ["short_term", "medium_term", "long_term"],
-        "include_saved_tracks": True,
-        "saved_tracks_limit": None,
-        "include_playlists": True,
-        "playlists_limit": None,
-        "playlist_items_per_playlist_limit": None,
-        "include_recently_played": True,
-        "recently_played_limit": 50,
-    },
-    "interaction_scope": {
-        "include_interaction_types": ["history", "influence"],
-    },
-    "influence_tracks": {
-        "enabled": True,
-        "track_ids": [],
-        "preference_weight": 1.0,
-        "source": None,
-    },
-    "seed_controls": {
-        "match_rate_min_threshold": 0.0,
-        "top_range_weights": {
-            "short_term": 0.50,
-            "medium_term": 0.30,
-            "long_term": 0.20,
+
+def _build_default_run_config() -> dict[str, Any]:
+    return {
+        "schema_version": RUN_CONFIG_SCHEMA_VERSION,
+        "control_mode": dict(DEFAULT_CONTROL_MODE),
+        "user_context": {
+            "user_id": None,
         },
-        "source_base_weights": {
-            "top_tracks": 1.00,
-            "saved_tracks": 0.60,
-            "playlist_items": 0.40,
-            "recently_played": 0.50,
+        "input_scope": dict(DEFAULT_INPUT_SCOPE),
+        "interaction_scope": dict(DEFAULT_INTERACTION_SCOPE),
+        "influence_tracks": dict(DEFAULT_INFLUENCE_TRACKS),
+        "seed_controls": {
+            "match_rate_min_threshold": DEFAULT_SEED_CONTROLS["match_rate_min_threshold"],
+            "top_range_weights": dict(DEFAULT_SEED_CONTROLS["top_range_weights"]),
+            "source_base_weights": dict(DEFAULT_SEED_CONTROLS["source_base_weights"]),
         },
-    },
-    "ingestion_controls": {
-        "cache_ttl_seconds": 86400,
-        "throttle_sleep_seconds": 0.12,
-        "max_retries": 6,
-        "base_backoff_delay_seconds": 1.0,
-    },
-    "profile_controls": {
-        "top_tag_limit": DEFAULT_PROFILE_TOP_TAG_LIMIT,
-        "top_genre_limit": DEFAULT_PROFILE_TOP_GENRE_LIMIT,
-        "top_lead_genre_limit": DEFAULT_PROFILE_TOP_LEAD_GENRE_LIMIT,
-    },
-    "retrieval_controls": {
-        "profile_top_tag_limit": 10,
-        "profile_top_genre_limit": 8,
-        "profile_top_lead_genre_limit": 6,
-        "semantic_strong_keep_score": 2,
-        "semantic_min_keep_score": 1,
-        "numeric_support_min_pass": 1,
-        "language_filter_enabled": DEFAULT_LANGUAGE_FILTER_ENABLED,
-        "language_filter_codes": list(DEFAULT_LANGUAGE_FILTER_CODES),
-        "recency_years_min_offset": DEFAULT_RECENCY_YEARS_MIN_OFFSET,
-        "numeric_thresholds": {
-            "danceability": 0.20,
-            "energy": 0.20,
-            "valence": 0.20,
-            "tempo": 20.0,
-            "key": 2.0,
-            "mode": 0.5,
-            "duration_ms": 45000.0,
-            "release_year": 8.0,
+        "ingestion_controls": dict(DEFAULT_INGESTION_CONTROLS),
+        "profile_controls": {
+            "top_tag_limit": DEFAULT_PROFILE_TOP_TAG_LIMIT,
+            "top_genre_limit": DEFAULT_PROFILE_TOP_GENRE_LIMIT,
+            "top_lead_genre_limit": DEFAULT_PROFILE_TOP_LEAD_GENRE_LIMIT,
         },
-    },
-    "scoring_controls": {
-        "component_weights": dict(DEFAULT_SCORING_COMPONENT_WEIGHTS),
-        "numeric_thresholds": {
-            "danceability": 0.20,
-            "energy": 0.20,
-            "valence": 0.20,
-            "tempo": 20.0,
-            "key": 2.0,
-            "mode": 0.5,
-            "duration_ms": 45000.0,
-            "release_year": 8.0,
+        "retrieval_controls": {
+            "profile_top_tag_limit": 10,
+            "profile_top_genre_limit": 8,
+            "profile_top_lead_genre_limit": 6,
+            "semantic_strong_keep_score": 2,
+            "semantic_min_keep_score": 1,
+            "numeric_support_min_pass": 1,
+            "language_filter_enabled": DEFAULT_LANGUAGE_FILTER_ENABLED,
+            "language_filter_codes": list(DEFAULT_LANGUAGE_FILTER_CODES),
+            "recency_years_min_offset": DEFAULT_RECENCY_YEARS_MIN_OFFSET,
+            "numeric_thresholds": dict(DEFAULT_RETRIEVAL_NUMERIC_THRESHOLDS),
         },
-    },
-    "assembly_controls": {
-        "target_size": 10,
-        "min_score_threshold": 0.35,
-        "max_per_genre": 4,
-        "max_consecutive": 2,
-    },
-    "transparency_controls": {
-        "top_contributor_limit": 3,
-        "blend_primary_contributor_on_near_tie": False,
-        "primary_contributor_tie_delta": 0.02,
-    },
-    "observability_controls": {
-        "diagnostic_sample_limit": 5,
-        "bootstrap_mode": True,
-    },
-    "reporting_controls": {
-        "score_thresholds": {
-            "perfect_score": 0.99,
-            "above_threshold": 0.50,
+        "scoring_controls": {
+            "component_weights": dict(DEFAULT_SCORING_COMPONENT_WEIGHTS),
+            "numeric_thresholds": dict(DEFAULT_SCORING_NUMERIC_THRESHOLDS),
         },
-    },
-    "controllability_controls": {
-        "weight_override_value_if_component_present": 0.20,
-        "weight_override_increment_fallback": 0.08,
-        "weight_override_cap_fallback": 0.35,
-        "stricter_threshold_scale": 0.75,
-        "looser_threshold_scale": 1.25,
-    },
-}
+        "assembly_controls": dict(DEFAULT_ASSEMBLY_CONTROLS),
+        "transparency_controls": {
+            "top_contributor_limit": DEFAULT_TOP_CONTRIBUTOR_LIMIT,
+            "blend_primary_contributor_on_near_tie": bool(DEFAULT_TRANSPARENCY_CONTROLS["blend_primary_contributor_on_near_tie"]),
+            "primary_contributor_tie_delta": float(DEFAULT_TRANSPARENCY_CONTROLS["primary_contributor_tie_delta"]),
+        },
+        "observability_controls": dict(DEFAULT_OBSERVABILITY_CONTROLS),
+        "reporting_controls": {
+            "score_thresholds": dict(DEFAULT_REPORTING_SCORE_THRESHOLDS),
+        },
+        "controllability_controls": dict(DEFAULT_CONTROLLABILITY_CONTROLS),
+    }
+
+
+DEFAULT_RUN_CONFIG: dict[str, Any] = _build_default_run_config()
 
 
 
@@ -567,7 +511,7 @@ def resolve_effective_run_config(run_config_path: str | Path | None) -> tuple[di
     interaction_scope["include_interaction_types"] = _normalize_allowed_tokens(
         interaction_scope.get("include_interaction_types"),
         {"history", "influence"},
-        list(DEFAULT_RUN_CONFIG["interaction_scope"]["include_interaction_types"]),
+        list(DEFAULT_INCLUDE_INTERACTION_TYPES),
     )
 
     influence_tracks = effective.setdefault("influence_tracks", {})

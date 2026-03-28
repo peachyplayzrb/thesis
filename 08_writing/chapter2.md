@@ -60,7 +60,7 @@ Bonnin and Jannach (2015) frame automated playlist generation as a distinct reco
 
 Subjective similarity adds a separate difficulty. Flexer and Grill (2016) found limited inter-rater agreement on music similarity judgements, with considerable sensitivity to how the comparison task is framed. Low-level audio features and metadata do not capture what listeners mean by mood, atmosphere, or nostalgia, and listening context adds further instability — the same person may want a very different playlist for studying versus commuting, often without being able to say exactly why.
 
-At the corpus level, Music4All remains an important historical baseline and literature anchor for multi-signal music recommendation research (Pegoraro et al., 2020). Related multimodal work shows that fused audio-lyrics representations can improve downstream music understanding tasks, supporting the broader practical value of multi-signal feature pipelines (Ru et al., 2023). Concrete corpus commitments for this thesis artefact are specified in the design and implementation chapters.
+At the corpus level, Music4All remains an important historical baseline and literature anchor for multi-signal music recommendation research (Pegoraro et al., 2020). Ru et al. (2023) report improved multi-label music genre classification when audio and lyric representations are aligned and fused, which provides bounded comparator evidence that multi-signal representations can be useful in music tasks. Concrete corpus commitments for this thesis artefact are specified in the design and implementation chapters.
 
 Explicit feature proxies are reasonable approximations for this kind of work. Claims that the system has captured the full complexity of listening intent are not.
 

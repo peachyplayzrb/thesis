@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+﻿#!/usr/bin/env python3
 """
 Spotify API resilience utilities: rate-limiting, caching, backoff, job tracking.
 
@@ -13,8 +13,6 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any, Callable, Dict, Optional, Tuple
 
-import sys
-sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from shared_utils.constants import (
     DEFAULT_API_CACHE_TTL_SECONDS,
@@ -33,16 +31,16 @@ BASE_DELAY_SEC = DEFAULT_API_BASE_DELAY_SEC
 
 def apply_ingestion_controls(ingestion_config: dict) -> None:
     """Apply ingestion controls from run_config to module-level defaults.
-    
+
     This allows users to override resilience behavior via run_config.ingestion_controls
     without modifying this source file.
-    
+
     Args:
         ingestion_config: Dict with keys cache_ttl_seconds, throttle_sleep_seconds,
                          max_retries, base_backoff_delay_seconds
     """
     global DEFAULT_TTL_SECONDS, SLEEP_BETWEEN_CALLS_SEC, MAX_RETRIES, BASE_DELAY_SEC
-    
+
     if ingestion_config:
         DEFAULT_TTL_SECONDS = int(ingestion_config.get("cache_ttl_seconds", DEFAULT_TTL_SECONDS))
         SLEEP_BETWEEN_CALLS_SEC = float(ingestion_config.get("throttle_sleep_seconds", SLEEP_BETWEEN_CALLS_SEC))

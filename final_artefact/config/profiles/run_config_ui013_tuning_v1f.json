@@ -37,7 +37,11 @@
     "source": null
   },
   "seed_controls": {
-    "match_rate_min_threshold": 0.15
+    "match_rate_min_threshold": 0.15,
+    "decay_half_lives": {
+      "recently_played": 90.0,
+      "saved_tracks": 365.0
+    }
   },
   "profile_controls": {
     "top_tag_limit": 10,

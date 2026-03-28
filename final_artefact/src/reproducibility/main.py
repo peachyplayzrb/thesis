@@ -1,4 +1,4 @@
-from __future__ import annotations
+﻿from __future__ import annotations
 
 import argparse
 import json
@@ -9,15 +9,13 @@ import sys
 import time
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).parent.parent))
-
 from shared_utils.hashing import canonical_json_hash as shared_canonical_json_hash
 from shared_utils.hashing import sha256_of_file
 from shared_utils.artifact_registry import bl010_required_paths
-from shared_utils.io_utils import load_csv_rows
-from shared_utils.io_utils import load_json
+from shared_utils.io_utils import load_csv_rows, load_json, utc_now
 from shared_utils.path_utils import impl_root
 from shared_utils.report_utils import write_csv_rows, write_json_ascii
+from shared_utils.stage_utils import relpath
 
 
 DEFAULT_REPLAY_COUNT = 3
@@ -60,11 +58,6 @@ def ensure_positive_replay_count(value: int) -> int:
     if value < 1:
         raise ValueError(f"--replay-count must be >= 1, got {value}")
     return value
-
-
-def relpath(path: Path, root: Path) -> str:
-    return path.relative_to(root).as_posix()
-
 
 def copy_file(src: Path, dst: Path) -> None:
     dst.parent.mkdir(parents=True, exist_ok=True)
@@ -503,7 +496,7 @@ def main() -> None:
     config_path = output_dir / "reproducibility_config_snapshot.json"
     write_json_ascii(config_path, config_snapshot)
 
-    run_started_at = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
+    run_started_at = utc_now()
     run_id = f"BL010-REPRO-{time.strftime('%Y%m%d-%H%M%S', time.gmtime())}"
     started = time.time()
 

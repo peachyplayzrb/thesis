@@ -1,4 +1,4 @@
-from __future__ import annotations
+﻿from __future__ import annotations
 
 import base64
 import json
@@ -12,13 +12,7 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 from pathlib import Path
 from typing import Any, Dict, Optional, Tuple
 
-import sys
-
-try:
-    from shared_utils.io_utils import open_text_write
-except ImportError:
-    sys.path.insert(0, str(Path(__file__).parent.parent))
-    from shared_utils.io_utils import open_text_write
+from shared_utils.io_utils import open_text_write
 
 ACCOUNTS_BASE_URL = "https://accounts.spotify.com"
 

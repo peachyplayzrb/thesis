@@ -1,0 +1,22 @@
+{
+    "venvPath": ".",
+    "venv": ".venv",
+    "include": [
+        "final_artefact/src",
+        "final_artefact/tests"
+    ],
+    "executionEnvironments": [
+        {
+            "root": "final_artefact/src",
+            "extraPaths": [
+                "final_artefact/src"
+            ]
+        },
+        {
+            "root": "final_artefact/tests",
+            "extraPaths": [
+                "final_artefact/src"
+            ]
+        }
+    ]
+}

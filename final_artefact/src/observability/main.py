@@ -1,66 +1,30 @@
-from __future__ import annotations
+﻿from __future__ import annotations
 
 import csv
-import hashlib
 import json
 import time
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-import sys
-
-sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from shared_utils.config_loader import load_run_config_utils_module
 from shared_utils.artifact_registry import bl009_required_paths
+from shared_utils.constants import DEFAULT_CONTROL_MODE, DEFAULT_INPUT_SCOPE, DEFAULT_OBSERVABILITY_CONTROLS
 from shared_utils.env_utils import env_bool, env_int
+from shared_utils.hashing import sha256_of_values
 from shared_utils.io_utils import (
     load_csv_rows,
-    load_json,
     open_text_write,
-    sha256_of_file as sha256_of_file_shared,
+    sha256_of_file,
+    utc_now,
 )
 from shared_utils.path_utils import impl_root
-from shared_utils.stage_runtime_resolver import resolve_run_config_path
+from shared_utils.stage_utils import ensure_paths_exist, ensure_required_keys, load_required_json_object, relpath, safe_relpath
+from shared_utils.stage_runtime_resolver import resolve_run_config_path, resolve_stage_controls
 
 
 BL009_OBSERVABILITY_SCHEMA_VERSION = "bl009-observability-v1"
-
-DEFAULT_INPUT_SCOPE: dict[str, object] = {
-    "source_family": "spotify_api_export",
-    "include_top_tracks": True,
-    "top_time_ranges": ["short_term", "medium_term", "long_term"],
-    "include_saved_tracks": True,
-    "saved_tracks_limit": None,
-    "include_playlists": True,
-    "playlists_limit": None,
-    "playlist_items_per_playlist_limit": None,
-    "include_recently_played": True,
-    "recently_played_limit": 50,
-}
-
-
-def sha256_of_file(path: Path) -> str:
-    return sha256_of_file_shared(path).upper()
-
-
-def relpath(path: Path, root: Path) -> str:
-    return path.relative_to(root).as_posix()
-
-
-def safe_relpath(path: Path, root: Path) -> str:
-    try:
-        return path.relative_to(root).as_posix()
-    except ValueError:
-        return str(path)
-
-
-def combined_sha256(values: list[str]) -> str:
-    digest = hashlib.sha256()
-    for value in values:
-        digest.update(value.encode("utf-8"))
-    return digest.hexdigest().upper()
 
 
 def first_items(values: list[dict[str, str]], limit: int) -> list[dict[str, str]]:
@@ -80,24 +44,6 @@ def parse_exclusion_samples(rows: list[dict[str, str]], field: str, limit: int) 
     return grouped
 
 
-def load_required_json(path: Path, *, label: str) -> dict[str, Any]:
-    try:
-        payload = load_json(path)
-    except OSError as exc:
-        raise RuntimeError(f"BL-009 could not read {label}: {path}") from exc
-    except json.JSONDecodeError as exc:
-        raise RuntimeError(f"BL-009 could not parse {label} as valid JSON: {path}") from exc
-    if not isinstance(payload, dict):
-        raise RuntimeError(f"BL-009 expected {label} to be a JSON object: {path}")
-    return payload
-
-
-def ensure_required_keys(payload: dict[str, Any], keys: list[str], *, label: str) -> None:
-    missing = [key for key in keys if key not in payload]
-    if missing:
-        raise RuntimeError(f"BL-009 {label} missing required keys: {missing}")
-
-
 def ensure_required_sections(run_log: dict) -> None:
     required_keys = [
         "run_metadata",
@@ -111,12 +57,6 @@ def ensure_required_sections(run_log: dict) -> None:
     missing = [key for key in required_keys if key not in run_log]
     if missing:
         raise RuntimeError(f"BL-009 run log missing required sections: {missing}")
-
-
-def ensure_paths_exist(paths: dict[str, Path], root: Path, *, label: str) -> None:
-    missing_paths = [relpath(path, root) for path in paths.values() if not path.exists()]
-    if missing_paths:
-        raise FileNotFoundError(f"BL-009 missing required {label}: {missing_paths}")
 
 
 def resolve_canonical_config_artifacts(
@@ -166,40 +106,42 @@ def build_artifact_maps(
     return artifact_hashes, artifact_sizes
 
 
-def resolve_bl009_runtime_controls() -> dict[str, object]:
-    run_config_path = resolve_run_config_path("BL_RUN_CONFIG_PATH")
-    run_intent_path = resolve_run_config_path("BL_RUN_INTENT_PATH")
-    run_effective_config_path = resolve_run_config_path("BL_RUN_EFFECTIVE_CONFIG_PATH")
-    if run_config_path:
-        run_config_utils = load_run_config_utils_module()
-        controls = run_config_utils.resolve_bl009_controls(run_config_path)
-        input_scope_controls = run_config_utils.resolve_input_scope_controls(run_config_path)
-        return {
-            "config_source": "run_config",
-            "run_config_path": controls.get("config_path"),
-            "run_config_schema_version": controls.get("schema_version"),
-            "control_mode": dict(controls.get("control_mode") or {}),
-            "run_intent_path": run_intent_path,
-            "run_effective_config_path": run_effective_config_path,
-            "input_scope": dict(input_scope_controls.get("input_scope") or DEFAULT_INPUT_SCOPE),
-            "diagnostic_sample_limit": int(controls["diagnostic_sample_limit"]),
-            "bootstrap_mode": bool(controls.get("bootstrap_mode", True)),
-        }
+def _load_bl009_controls_from_run_config(run_config_utils: object, run_config_path: str) -> dict[str, object]:
+    controls = run_config_utils.resolve_bl009_controls(run_config_path)
+    input_scope_controls = run_config_utils.resolve_input_scope_controls(run_config_path)
+    return {
+        "config_source": "run_config",
+        "run_config_path": controls.get("config_path"),
+        "run_config_schema_version": controls.get("schema_version"),
+        "control_mode": dict(controls.get("control_mode") or {}),
+        "input_scope": dict(input_scope_controls.get("input_scope") or DEFAULT_INPUT_SCOPE),
+        "diagnostic_sample_limit": int(controls["diagnostic_sample_limit"]),
+        "bootstrap_mode": bool(controls.get("bootstrap_mode", True)),
+    }
+
+
+def _load_bl009_controls_from_env() -> dict[str, object]:
     return {
         "config_source": "environment",
         "run_config_path": None,
         "run_config_schema_version": None,
-        "control_mode": {
-            "validation_profile": "strict",
-            "allow_threshold_decoupling": False,
-            "allow_weight_auto_normalization": False,
-        },
-        "run_intent_path": run_intent_path,
-        "run_effective_config_path": run_effective_config_path,
+        "control_mode": dict(DEFAULT_CONTROL_MODE),
         "input_scope": dict(DEFAULT_INPUT_SCOPE),
-        "diagnostic_sample_limit": max(1, env_int("BL009_DIAGNOSTIC_SAMPLE_LIMIT", 5)),
-        "bootstrap_mode": env_bool("BL009_BOOTSTRAP_MODE", True),
+        "diagnostic_sample_limit": max(1, env_int("BL009_DIAGNOSTIC_SAMPLE_LIMIT", int(DEFAULT_OBSERVABILITY_CONTROLS["diagnostic_sample_limit"]))),
+        "bootstrap_mode": env_bool("BL009_BOOTSTRAP_MODE", bool(DEFAULT_OBSERVABILITY_CONTROLS["bootstrap_mode"])),
     }
+
+
+def resolve_bl009_runtime_controls() -> dict[str, object]:
+    run_intent_path = resolve_run_config_path("BL_RUN_INTENT_PATH")
+    run_effective_config_path = resolve_run_config_path("BL_RUN_EFFECTIVE_CONFIG_PATH")
+    controls = resolve_stage_controls(
+        load_from_run_config=_load_bl009_controls_from_run_config,
+        load_from_env=_load_bl009_controls_from_env,
+    )
+    controls["run_intent_path"] = run_intent_path
+    controls["run_effective_config_path"] = run_effective_config_path
+    return controls
 
 
 def main() -> None:
@@ -214,33 +156,33 @@ def main() -> None:
 
     required_paths = bl009_required_paths(root, bl009_script_path=Path(__file__).resolve())
 
-    ensure_paths_exist(required_paths, root, label="inputs")
+    ensure_paths_exist(list(required_paths.values()), stage_label="BL-009", label="inputs", root=root)
 
     start_time = time.time()
 
     paths = dict(required_paths)
-    profile = load_required_json(paths["bl004_profile"], label="BL-004 profile")
-    bl004_summary = load_required_json(paths["bl004_summary"], label="BL-004 profile summary")
-    bl005_diagnostics = load_required_json(paths["bl005_diagnostics"], label="BL-005 diagnostics")
-    bl006_summary = load_required_json(paths["bl006_summary"], label="BL-006 score summary")
-    bl007_report = load_required_json(paths["bl007_report"], label="BL-007 assembly report")
-    bl008_summary = load_required_json(paths["bl008_summary"], label="BL-008 explanation summary")
+    profile = load_required_json_object(paths["bl004_profile"], label="BL-004 profile", stage_label="BL-009")
+    bl004_summary = load_required_json_object(paths["bl004_summary"], label="BL-004 profile summary", stage_label="BL-009")
+    bl005_diagnostics = load_required_json_object(paths["bl005_diagnostics"], label="BL-005 diagnostics", stage_label="BL-009")
+    bl006_summary = load_required_json_object(paths["bl006_summary"], label="BL-006 score summary", stage_label="BL-009")
+    bl007_report = load_required_json_object(paths["bl007_report"], label="BL-007 assembly report", stage_label="BL-009")
+    bl008_summary = load_required_json_object(paths["bl008_summary"], label="BL-008 explanation summary", stage_label="BL-009")
 
-    ensure_required_keys(profile, ["run_id", "user_id", "diagnostics", "seed_summary", "config"], label="BL-004 profile")
-    ensure_required_keys(bl004_summary, ["dominant_lead_genres", "dominant_tags"], label="BL-004 profile summary")
-    ensure_required_keys(bl005_diagnostics, ["run_id", "counts", "rule_hits", "top_kept_track_ids", "config"], label="BL-005 diagnostics")
-    ensure_required_keys(bl006_summary, ["run_id", "counts", "score_statistics", "top_candidates", "config"], label="BL-006 score summary")
-    ensure_required_keys(bl007_report, ["run_id", "counts", "rule_hits", "playlist_genre_mix", "playlist_score_range", "config"], label="BL-007 assembly report")
-    ensure_required_keys(bl008_summary, ["run_id", "playlist_track_count", "top_contributor_distribution"], label="BL-008 explanation summary")
+    ensure_required_keys(profile, ["run_id", "user_id", "diagnostics", "seed_summary", "config"], label="BL-004 profile", stage_label="BL-009")
+    ensure_required_keys(bl004_summary, ["dominant_lead_genres", "dominant_tags"], label="BL-004 profile summary", stage_label="BL-009")
+    ensure_required_keys(bl005_diagnostics, ["run_id", "counts", "rule_hits", "top_kept_track_ids", "config"], label="BL-005 diagnostics", stage_label="BL-009")
+    ensure_required_keys(bl006_summary, ["run_id", "counts", "score_statistics", "top_candidates", "config"], label="BL-006 score summary", stage_label="BL-009")
+    ensure_required_keys(bl007_report, ["run_id", "counts", "rule_hits", "playlist_genre_mix", "playlist_score_range", "config"], label="BL-007 assembly report", stage_label="BL-009")
+    ensure_required_keys(bl008_summary, ["run_id", "playlist_track_count", "top_contributor_distribution"], label="BL-008 explanation summary", stage_label="BL-009")
 
     bl005_decisions = load_csv_rows(paths["bl005_decisions"])
     bl007_trace = load_csv_rows(paths["bl007_trace"])
-    playlist = load_required_json(paths["bl007_playlist"], label="BL-007 playlist")
-    bl008_payloads = load_required_json(paths["bl008_payloads"], label="BL-008 explanation payloads")
-    ensure_required_keys(playlist, ["playlist_length"], label="BL-007 playlist")
-    ensure_required_keys(bl008_payloads, ["explanations"], label="BL-008 explanation payloads")
+    playlist = load_required_json_object(paths["bl007_playlist"], label="BL-007 playlist", stage_label="BL-009")
+    bl008_payloads = load_required_json_object(paths["bl008_payloads"], label="BL-008 explanation payloads", stage_label="BL-009")
+    ensure_required_keys(playlist, ["playlist_length"], label="BL-007 playlist", stage_label="BL-009")
+    ensure_required_keys(bl008_payloads, ["explanations"], label="BL-008 explanation payloads", stage_label="BL-009")
 
-    generated_at_utc = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
+    generated_at_utc = utc_now()
     run_id = f"BL009-OBSERVE-{datetime.now(timezone.utc).strftime('%Y%m%d-%H%M%S-%f')}"
 
     script_hash_keys = [
@@ -256,7 +198,7 @@ def main() -> None:
         relpath(paths[key], root): sha256_of_file(paths[key])
         for key in script_hash_keys
     }
-    pipeline_version = combined_sha256([script_hashes[key] for key in sorted(script_hashes)])
+    pipeline_version = sha256_of_values([script_hashes[key] for key in sorted(script_hashes)])
 
     dataset_hash_sources = ["bl004_seed_trace", "bl005_filtered", "bl006_scored"]
     dataset_version_source = "active_pipeline_outputs"
@@ -265,7 +207,7 @@ def main() -> None:
         relpath(paths[key], root): sha256_of_file(paths[key])
         for key in dataset_hash_sources
     }
-    dataset_version = combined_sha256([dataset_component_hashes[key] for key in sorted(dataset_component_hashes)])
+    dataset_version = sha256_of_values([dataset_component_hashes[key] for key in sorted(dataset_component_hashes)])
 
     interaction_types_included: list[str] = []
     if input_scope.get("include_top_tracks"):
@@ -290,7 +232,7 @@ def main() -> None:
         {
             "track_id": row["track_id"],
             "lead_genre": row["lead_genre"],
-            "semantic_score": int(row["semantic_score"]),
+            "semantic_score": float(row["semantic_score"]),
             "numeric_pass_count": int(row["numeric_pass_count"]),
             "decision_reason": row["decision_reason"],
         }

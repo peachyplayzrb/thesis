@@ -1,0 +1,20 @@
+"""Tests for scoring.scoring_engine helpers."""
+
+from scoring.scoring_engine import numeric_similarity
+from shared_utils.genre_utils import lead_genre_token_similarity
+
+
+def test_numeric_similarity_parabolic_midpoint() -> None:
+    # Mid-threshold distance now uses parabolic falloff: 1 - (0.5^2) = 0.75
+    assert numeric_similarity(0.6, center=0.5, threshold=0.2) == 0.75
+
+
+def test_numeric_similarity_threshold_and_beyond() -> None:
+    assert numeric_similarity(0.7, center=0.5, threshold=0.2) == 0.0
+    assert numeric_similarity(0.9, center=0.5, threshold=0.2) == 0.0
+
+
+def test_lead_genre_token_similarity_partial_and_exact() -> None:
+    assert lead_genre_token_similarity("classic rock", "rock") == 0.5
+    assert lead_genre_token_similarity("pop", "pop") == 1.0
+    assert lead_genre_token_similarity("jazz", "rock") == 0.0

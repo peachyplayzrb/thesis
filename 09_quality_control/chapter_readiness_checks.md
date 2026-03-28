@@ -14,7 +14,7 @@
 - [x] Contradictory findings and limitations are acknowledged.
 - [x] Freeze-ready status confirmed with one bounded limitation logged in `09_quality_control/citation_checks.md`.
 - [x] Final draft synchronized in `08_writing/chapter2_draft_v11.md` and mirrored to canonical `08_writing/chapter2.md`.
-- [ ] Full cited-paper verbatim claim audit now runs on current Chapter 2 (`total_claim_checks=46`), but closure is pending because `weak_support=24` in `09_quality_control/chapter2_verbatim_audit.md`.
+- [x] Full cited-paper verbatim claim audit rerun on current Chapter 2 is now closed with `weak_support=0` (`total_claim_checks=40`) in `09_quality_control/chapter2_verbatim_audit.md` (2026-03-28 refresh).
 - [x] Temp refinement cycle completed in `08_writing/chapter2_temp.md` with iterative rechecks and `weak_support=0` in `09_quality_control/chapter2_temp_verbatim_audit.md`.
 - [x] Canonical Chapter 2 draft synchronized to `08_writing/chapter2.md` with lock snapshot in `08_writing/chapter2_draft_locked_2026-03-15.md`.
 
@@ -80,3 +80,6 @@ Open blocker note (2026-03-24): Rerun of chapter2_verbatim_audit.md on current C
 Progress note (2026-03-27): UI-003 synthesis closure package for Chapters 3 to 5 is complete at control-record level. Claim verdicts and chapter-targeted hardening notes are now tracked in `09_quality_control/ui003_claim_verdicts_ch3_ch5.md` and `09_quality_control/ui003_chapter_hardening_notes_ch3_ch5.md`.
 Progress note (2026-03-28): Admin-first synchronization pass completed before chapter edits. Baseline authority (`07_implementation/ACTIVE_BASELINE.md`) and governance scope files were revalidated, and Chapter 4 readiness gates for MVP alignment, reproducibility evidence, and controllability/inspectability reporting are now marked complete. Remaining open Chapter 4 gate is explicit rule-compliance and failure-case write-through in chapter text/tables.
 Progress note (2026-03-28 03:46 UTC): Chapter 3/4 hardening pass applied. Chapter 3 stale alignment-rate wording was synchronized to canonical baseline values, Chapter 4 Sections 4.8 to 4.10 result tables were populated with run-linked evidence, and the Chapter 4 rule-compliance/failure-case readiness gate is now closed.
+Progress note (2026-03-28): UI-003 Chapter 4 re-audit synchronized. `09_quality_control/ui003_claim_verdicts_ch3_ch5.md` now records UI3-C4-004/005/006 as supported after table population, and Chapter 4 evidence-artifact paths were expanded to explicit BL-003/007/008/009/010/011/014 output files.
+Progress note (2026-03-28): UI-003 Chapter 3 mismatch closure completed. `08_writing/chapter3.md` Section 3.4.1 now uses run-linked alignment values (`match_rate=0.1595`, `unmatched_rate=0.8405`), and `09_quality_control/ui003_claim_verdicts_ch3_ch5.md` now records `mismatch=0`.
+Progress note (2026-03-28): Chapter 2 verbatim audit rerun completed via `09_quality_control/verbatim_audits/run_ch2_verbatim_audit.py`; current snapshot is `total_claim_checks=40`, `supported=2`, `partially_supported=38`, `weak_support=0`, `no_match=0` in `09_quality_control/chapter2_verbatim_audit.md`.

@@ -48,6 +48,13 @@ Use one of these patterns for every task:
 Current sprint state note: Day 4 is active as of 2026-03-25.
 Governance sync note: UI-010 freshness controls are closed/operational; UI-003 remains the only active unresolved issue.
 
+## Clean-Code Status (2026-03-28)
+Final-artefact clean-code pass is complete (C-192). All phases done:
+- F1–F4: shared utilities, hashing, parsing, import standardization.
+- F5/G1: dead `sha256_direct` removed; `sha256_of_values` canonical in `shared_utils/hashing.py`; BL-009 observability resolver migrated to `resolve_stage_controls` factory.
+- Tests: 171/171 pass. New `test_observability_runtime_controls.py` added.
+- G2 deferred (BL-004 profile resolver, BL-011 controllability resolver) per D-039 — complex env-parsing logic, low submission benefit.
+
 ## Technical Snapshot (Before Chat Switch)
 1. Implementation-notes folder naming is canonicalized to BL-ordered names (`bl000_*` through `bl014_*`) and path consumers were hardened.
 2. Latest orchestration pass: `BL013-ENTRYPOINT-20260325-163713-079187` (pass).

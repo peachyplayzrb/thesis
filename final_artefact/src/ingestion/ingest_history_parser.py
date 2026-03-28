@@ -1,4 +1,4 @@
-from __future__ import annotations
+﻿from __future__ import annotations
 
 import argparse
 import csv
@@ -9,12 +9,9 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-import sys
 
-sys.path.insert(0, str(Path(__file__).parent.parent))
-
-from shared_utils.hashing import sha256_of_file as shared_sha256_of_file
-from shared_utils.io_utils import open_text_write
+from shared_utils.io_utils import open_text_write, sha256_of_file
+from shared_utils.parsing import normalize_text
 from shared_utils.path_utils import impl_root
 
 
@@ -65,10 +62,6 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
-def sha256_of_file(path: Path) -> str:
-    return shared_sha256_of_file(path, uppercase=True)
-
-
 def write_json(path: Path, payload: dict[str, Any]) -> None:
     with open_text_write(path) as handle:
         json.dump(payload, handle, indent=2, ensure_ascii=True)
@@ -93,16 +86,6 @@ def first_present(row: dict[str, Any], aliases: list[str]) -> str:
         if key in row:
             return str(row.get(key, ""))
     return ""
-
-
-def normalize_text(value: str | None, lowercase: bool = True) -> str:
-    text = (value or "").strip()
-    if not text:
-        return ""
-    collapsed = " ".join(text.split())
-    if lowercase:
-        return collapsed.lower()
-    return collapsed
 
 
 def normalize_isrc(value: str | None) -> str:

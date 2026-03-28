@@ -9,16 +9,28 @@ Provides functions for:
 """
 
 import csv
-import hashlib
 import json
 import os
 import time
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
 from shared_utils.hashing import sha256_of_file as shared_sha256_of_file
-from shared_utils.parsing import parse_csv_labels as shared_parse_csv_labels
-from shared_utils.parsing import parse_float as shared_parse_float
+from shared_utils.hashing import sha256_of_text as _sha256_of_text
+from shared_utils.hashing import canonical_json_hash as _canonical_json_hash
+from shared_utils.parsing import parse_csv_labels
+from shared_utils.parsing import parse_float
+
+
+def utc_now() -> str:
+    """Return the current UTC time as an ISO 8601 string (YYYY-MM-DDTHH:MM:SSZ)."""
+    return datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+
+
+def format_utc_iso(dt: datetime) -> str:
+    """Format an existing datetime object as an ISO 8601 UTC string (YYYY-MM-DDTHH:MM:SSZ)."""
+    return dt.strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
 def open_text_write(path: Path, *, newline: str | None = None):
@@ -49,45 +61,38 @@ def open_text_write(path: Path, *, newline: str | None = None):
 def sha256_of_file(path: Path) -> str:
     """
     Compute SHA256 hash of a file by reading it in chunks.
-    
+
     This is memory-efficient for large files.
-    
+
     Args:
         path: Path to the file to hash
-        
+
     Returns:
         SHA256 hexdigest as uppercase string
     """
-    return shared_sha256_of_file(path, uppercase=False)
+    return shared_sha256_of_file(path, uppercase=True)
 
 
-def sha256_direct(path: Path) -> str:
-    """
-    Compute SHA256 hash of a file directly in memory.
-    
-    Returns the hexdigest in uppercase.
-    
-    Args:
-        path: Path to the file to hash
-        
-    Returns:
-        SHA256 hexdigest as uppercase string
-    """
-    h = hashlib.sha256()
-    h.update(path.read_bytes())
-    return h.hexdigest().upper()
+def sha256_of_text(text: str) -> str:
+    """Compute SHA256 hash of UTF-8 text, returned as an uppercase hex string."""
+    return _sha256_of_text(text, uppercase=True)
+
+
+def canonical_json_hash(payload: Any) -> str:
+    """Compute a deterministic SHA256 hash of a JSON-serializable payload, uppercase."""
+    return _canonical_json_hash(payload, uppercase=True)
 
 
 def load_json(path: Path) -> dict:
     """
     Load a JSON file.
-    
+
     Args:
         path: Path to the JSON file
-        
+
     Returns:
         Parsed JSON as dict
-        
+
     Raises:
         json.JSONDecodeError: If file is not valid JSON
         FileNotFoundError: If file does not exist
@@ -98,15 +103,15 @@ def load_json(path: Path) -> dict:
 def load_jsonl(path: Path) -> list[dict[str, Any]]:
     """
     Load a JSONL (JSON Lines) file.
-    
+
     Each line is parsed as a separate JSON object.
-    
+
     Args:
         path: Path to the JSONL file
-        
+
     Returns:
         List of dicts, one per line
-        
+
     Raises:
         json.JSONDecodeError: If a line is not valid JSON
         FileNotFoundError: If file does not exist
@@ -124,15 +129,15 @@ def load_jsonl(path: Path) -> list[dict[str, Any]]:
 def load_csv_rows(path: Path) -> list[dict[str, str]]:
     """
     Load a CSV file as list of dicts.
-    
+
     Uses csv.DictReader to map column headers to values.
-    
+
     Args:
         path: Path to the CSV file
-        
+
     Returns:
         List of dicts, one per CSV row
-        
+
     Raises:
         FileNotFoundError: If file does not exist
     """
@@ -140,14 +145,30 @@ def load_csv_rows(path: Path) -> list[dict[str, str]]:
         return list(csv.DictReader(handle))
 
 
+def read_csv_index(path: Path, key_field: str) -> dict[str, dict[str, str]]:
+    """
+    Load CSV rows indexed by a key field.
+
+    Rows with missing or empty key_field values are skipped.
+    If a key appears multiple times, the last row wins.
+    """
+    index: dict[str, dict[str, str]] = {}
+    with path.open("r", encoding="utf-8", newline="") as handle:
+        for row in csv.DictReader(handle):
+            key = (row.get(key_field) or "").strip()
+            if key:
+                index[key] = row
+    return index
+
+
 def write_json(path: Path, obj: dict | list) -> None:
     """
     Write a dict or list to a JSON file with pretty indentation.
-    
+
     Args:
         path: Path where JSON should be written
         obj: Dict or list to write
-        
+
     Raises:
         IOError: If file cannot be written
     """
@@ -157,34 +178,5 @@ def write_json(path: Path, obj: dict | list) -> None:
     )
 
 
-def parse_float(value: str) -> float | None:
-    """
-    Parse a string as float, returning None if parsing fails.
-    
-    Handles empty strings and invalid numeric strings gracefully.
-    
-    Args:
-        value: String to parse
-        
-    Returns:
-        Parsed float or None if parsing fails
-    """
-    return shared_parse_float(value)
-
-
-def parse_csv_labels(raw_value: str) -> list[str]:
-    """
-    Parse a comma-separated string into a list of normalized labels.
-    
-    - Splits on commas
-    - Strips whitespace
-    - Lowercases each label
-    - Removes empty strings and duplicates
-    
-    Args:
-        raw_value: Comma-separated string of labels
-        
-    Returns:
-        List of normalized, unique labels
-    """
-    return shared_parse_csv_labels(raw_value)
+# parse_float and parse_csv_labels are re-exported from shared_utils.parsing
+# for backward compatibility with existing import sites.

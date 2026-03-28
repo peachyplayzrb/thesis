@@ -25,6 +25,7 @@ __all__ = [
     "path_utils",
     "report_utils",
     "run_config_runtime",
+    "stage_utils",
     "stage_runtime_resolver",
     "types",
 ]

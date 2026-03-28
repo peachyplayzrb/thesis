@@ -1,4 +1,4 @@
-from __future__ import annotations
+﻿from __future__ import annotations
 
 import argparse
 import importlib.util
@@ -10,10 +10,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-sys.path.insert(0, str(Path(__file__).parent.parent))
-
 from shared_utils.hashing import sha256_of_file
-from shared_utils.io_utils import load_json
+from shared_utils.io_utils import load_json, utc_now
 from shared_utils.path_utils import impl_root
 from shared_utils.report_utils import write_json_ascii
 from shared_utils.artifact_registry import (
@@ -542,7 +540,7 @@ def main() -> None:
         raise FileNotFoundError(f"Run config file not found: {run_config_path}")
 
     run_id = f"BL013-ENTRYPOINT-{datetime.now(timezone.utc).strftime('%Y%m%d-%H%M%S-%f')}"
-    generated_at_utc = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    generated_at_utc = utc_now()
     run_config_artifact_dir = (root / args.run_config_artifact_dir).resolve()
     run_config_artifacts = emit_run_config_artifact_pair(
         root=root,

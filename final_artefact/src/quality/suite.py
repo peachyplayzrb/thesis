@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+﻿#!/usr/bin/env python3
 
 from __future__ import annotations
 
@@ -10,11 +10,10 @@ import time
 from pathlib import Path
 from typing import Any
 
-sys.path.insert(0, str(Path(__file__).parent.parent))
-
-from shared_utils.io_utils import load_json
+from shared_utils.io_utils import load_json, utc_now
 from shared_utils.report_utils import write_csv_rows, write_json_ascii
 from shared_utils.path_utils import impl_root
+from shared_utils.stage_utils import ensure_paths_exist, relpath as stage_relpath
 from shared_utils.artifact_registry import (
     bl014_bl013_latest_summary_path,
     bl014_freshness_input_paths,
@@ -26,10 +25,6 @@ from shared_utils.artifact_registry import (
 REPO_ROOT = impl_root()
 QUALITY_DIR = Path(__file__).resolve().parent
 OUTPUT_DIR = QUALITY_DIR / "outputs"
-
-
-def relpath(path: Path) -> str:
-    return path.relative_to(REPO_ROOT).as_posix()
 
 
 def add_check(checks: list[dict[str, str]], check_id: str, passed: bool, details: str) -> None:
@@ -63,12 +58,6 @@ def freshness_input_paths() -> dict[str, Path]:
     return bl014_freshness_input_paths(REPO_ROOT)
 
 
-def ensure_paths_exist(paths: list[Path], *, label: str) -> None:
-    missing = [relpath(path) for path in paths if not path.exists()]
-    if missing:
-        raise FileNotFoundError(f"Missing required {label}: {missing}")
-
-
 def build_current_bl011_snapshot(
     bl011_module: Any,
     *,
@@ -80,8 +69,8 @@ def build_current_bl011_snapshot(
     scenarios = bl011_module.build_scenarios(current_bl010_snapshot, runtime_controls)
 
     fixed_inputs = {
-        relpath(paths_bl011["active_seed_trace"]): bl011_module.sha256_of_file(paths_bl011["active_seed_trace"]),
-        relpath(paths_bl011["active_candidates"]): bl011_module.sha256_of_file(paths_bl011["active_candidates"]),
+        stage_relpath(paths_bl011["active_seed_trace"], REPO_ROOT): bl011_module.sha256_of_file(paths_bl011["active_seed_trace"]),
+        stage_relpath(paths_bl011["active_candidates"], REPO_ROOT): bl011_module.sha256_of_file(paths_bl011["active_candidates"]),
     }
 
     optional_inputs = {
@@ -90,17 +79,17 @@ def build_current_bl011_snapshot(
     }
     for path in optional_inputs.values():
         if path.exists():
-            fixed_inputs[relpath(path)] = bl011_module.sha256_of_file(path)
+            fixed_inputs[stage_relpath(path, REPO_ROOT)] = bl011_module.sha256_of_file(path)
 
     return {
         "task": "BL-011",
-        "generated_from": relpath(paths_bl011["baseline_snapshot"]),
+        "generated_from": stage_relpath(paths_bl011["baseline_snapshot"], REPO_ROOT),
         "baseline_config_hash": baseline_config_hash,
         "input_source": "active_pipeline_outputs",
         "fixed_inputs": fixed_inputs,
         "optional_dependency_availability": {
             key: {
-                "path": relpath(path),
+                "path": stage_relpath(path, REPO_ROOT),
                 "available": path.exists(),
             }
             for key, path in optional_inputs.items()
@@ -127,7 +116,7 @@ def refresh_bl010_bl011_evidence() -> dict[str, Any]:
     bl013_script = script_paths["bl013_script"]
     bl013_latest_summary = bl014_bl013_latest_summary_path(REPO_ROOT)
 
-    ensure_paths_exist([bl013_latest_summary], label="BL-013 latest summary")
+    ensure_paths_exist([bl013_latest_summary], stage_label="BL-014", label="BL-013 latest summary", root=REPO_ROOT)
     bl013_latest = load_json(bl013_latest_summary)
     bl013_args: list[str] = []
     if bool(bl013_latest.get("refresh_seed")):
@@ -251,7 +240,7 @@ def write_suite_artifacts(
         "run_metadata": {
             "run_id": run_id,
             "task": task,
-            "generated_at_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+            "generated_at_utc": utc_now(),
             "elapsed_seconds": elapsed_seconds,
             "overall_status": overall_status,
             "checks_total": len(checks),
@@ -293,7 +282,7 @@ def run_freshness_mode() -> int:
         freshness_paths["bl011_snapshot"],
         freshness_paths["bl011_report"],
     ]
-    ensure_paths_exist(required_paths, label="freshness inputs")
+    ensure_paths_exist(required_paths, stage_label="BL-014", label="freshness inputs", root=REPO_ROOT)
 
     stored_bl010_snapshot = load_json(freshness_paths["bl010_snapshot"])
     stored_bl010_report = load_json(freshness_paths["bl010_report"])
@@ -383,10 +372,10 @@ def run_freshness_mode() -> int:
         elapsed_seconds=round(time.time() - started, 3),
         overall_status=overall_status,
         evidence_paths={
-            "bl010_config_snapshot": relpath(freshness_paths["bl010_snapshot"]),
-            "bl010_report": relpath(freshness_paths["bl010_report"]),
-            "bl011_config_snapshot": relpath(freshness_paths["bl011_snapshot"]),
-            "bl011_report": relpath(freshness_paths["bl011_report"]),
+            "bl010_config_snapshot": stage_relpath(freshness_paths["bl010_snapshot"], REPO_ROOT),
+            "bl010_report": stage_relpath(freshness_paths["bl010_report"], REPO_ROOT),
+            "bl011_config_snapshot": stage_relpath(freshness_paths["bl011_snapshot"], REPO_ROOT),
+            "bl011_report": stage_relpath(freshness_paths["bl011_report"], REPO_ROOT),
             "bl010_config_hash": current_bl010_hash,
             "bl011_config_hash": current_bl011_hash,
         },
@@ -460,13 +449,13 @@ def run_active_mode() -> int:
         checks,
         "bl006_distribution_diagnostics_available",
         bl006_distribution_path.exists(),
-        f"BL-006 distribution diagnostics present at {relpath(bl006_distribution_path)}",
+        f"BL-006 distribution diagnostics present at {stage_relpath(bl006_distribution_path, REPO_ROOT)}",
     )
     add_check(
         checks,
         "bl007_assembly_pressure_diagnostics_available",
         bl007_report_path.exists(),
-        f"BL-007 assembly report present at {relpath(bl007_report_path)}",
+        f"BL-007 assembly report present at {stage_relpath(bl007_report_path, REPO_ROOT)}",
     )
 
     if bl006_distribution_path.exists():
@@ -636,9 +625,9 @@ def run_active_mode() -> int:
         elapsed_seconds=round(time.time() - started, 3),
         overall_status=overall_status,
         evidence_paths={
-            "bl013_latest_summary": relpath(bl013_latest_path),
-            "bl014_report": relpath(bl014_report_path),
-            "bl010_bl011_freshness_report": relpath(freshness_report_path),
+            "bl013_latest_summary": stage_relpath(bl013_latest_path, REPO_ROOT),
+            "bl014_report": stage_relpath(bl014_report_path, REPO_ROOT),
+            "bl010_bl011_freshness_report": stage_relpath(freshness_report_path, REPO_ROOT),
         },
         checks=checks,
         report_path=report_path,

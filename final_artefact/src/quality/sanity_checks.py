@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+﻿#!/usr/bin/env python3
 """BL-014 sanity checks for BL-020 artifacts.
 
 This script validates:
@@ -19,12 +19,9 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
-import sys
-
-sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from shared_utils.io_utils import load_json as load_json_shared
-from shared_utils.io_utils import sha256_of_file
+from shared_utils.io_utils import sha256_of_file, format_utc_iso
 from shared_utils.path_utils import impl_root
 from shared_utils.report_utils import write_csv_rows, write_json_ascii
 
@@ -340,7 +337,7 @@ def main() -> int:
     report = {
         "run_id": run_id,
         "task": "BL-014",
-        "generated_at_utc": finished.strftime("%Y-%m-%dT%H:%M:%SZ"),
+        "generated_at_utc": format_utc_iso(finished),
         "elapsed_seconds": elapsed_seconds,
         "overall_status": overall_status,
         "checks_total": len(checks),

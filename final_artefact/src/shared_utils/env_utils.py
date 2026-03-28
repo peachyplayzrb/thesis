@@ -5,21 +5,22 @@ Provides type-safe functions for reading environment variables with defaults.
 """
 
 import os
+from pathlib import Path
 
 
 def env_int(name: str, default: int) -> int:
     """
     Get an environment variable as an int, with a default.
-    
+
     Returns the default if:
     - Variable is not set
     - Variable is empty string
     - Variable cannot be parsed as int
-    
+
     Args:
         name: Environment variable name
         default: Default value if variable not set or invalid
-        
+
     Returns:
         Int value from environment or default
     """
@@ -35,16 +36,16 @@ def env_int(name: str, default: int) -> int:
 def env_float(name: str, default: float) -> float:
     """
     Get an environment variable as a float, with a default.
-    
+
     Returns the default if:
     - Variable is not set
     - Variable is empty string
     - Variable cannot be parsed as float
-    
+
     Args:
         name: Environment variable name
         default: Default value if variable not set or invalid
-        
+
     Returns:
         Float value from environment or default
     """
@@ -60,15 +61,15 @@ def env_float(name: str, default: float) -> float:
 def env_str(name: str, default: str) -> str:
     """
     Get an environment variable as a string, with a default.
-    
+
     Returns the default if:
     - Variable is not set
     - Variable is empty string (after stripping whitespace)
-    
+
     Args:
         name: Environment variable name
         default: Default value if variable not set or empty
-        
+
     Returns:
         String value from environment or default
     """
@@ -101,4 +102,16 @@ def env_bool(name: str, default: bool) -> bool:
         return True
     if token in {"0", "false", "no", "off"}:
         return False
+    return default
+
+
+def env_path(name: str, default: Path) -> Path:
+    """
+    Get an environment variable as a Path, with a default.
+
+    Returns the default if the variable is not set or is empty.
+    """
+    raw = env_str(name, "")
+    if raw:
+        return Path(raw)
     return default

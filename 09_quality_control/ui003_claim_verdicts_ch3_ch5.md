@@ -1,6 +1,6 @@
 # UI-003 Claim Verdict Matrix (Chapters 3 to 5)
 
-Date: 2026-03-27
+Date: 2026-03-28
 Scope: `08_writing/chapter3.md`, `08_writing/chapter4.md`, `08_writing/chapter5.md`
 Verdict labels: `supported`, `partially_supported`, `weak_support`, `mismatch`
 
@@ -14,7 +14,7 @@ Verdict labels: `supported`, `partially_supported`, `weak_support`, `mismatch`
 | UI3-C3-004 | 3.2 | Run-level governance requires observability and reproducibility controls | supported | C-CLM-018, C-CLM-020 | none |
 | UI3-C3-005 | 3.4 | Staged metadata/identifier alignment is preferable to one-shot fuzzy matching | supported | C-CLM-017 | none |
 | UI3-C3-006 | 3.2 / 3.4 | DS-001 as active corpus is defensible under project constraints | partially_supported | C-CLM-021 | keep task-transfer caveat |
-| UI3-C3-007 | 3.4.1 | DS-001 alignment match rate is approximately 32.2% | mismatch | Current BL-003 evidence in Chapter 4 table shows match rate 15.95% and unmatched rate 84.05% | replace 32.2% with current run-linked value and date |
+| UI3-C3-007 | 3.4.1 | DS-001 alignment match-rate claim is synchronized to current run-linked baseline evidence (`match_rate=0.1595`, `unmatched_rate=0.8405`) | supported | Chapter 3 Section 3.4.1 now uses canonical run-linked values consistent with Chapter 4 EP-ALIGN-001 | none |
 
 ## Chapter 4
 
@@ -23,9 +23,9 @@ Verdict labels: `supported`, `partially_supported`, `weak_support`, `mismatch`
 | UI3-C4-001 | 4.7 / Table 4.3 | Reproducibility check passes with deterministic replay behavior | supported | EP-REPRO-001 row + BL-010 report references | none |
 | UI3-C4-002 | 4.7 / Table 4.3 | Explanation payload completeness and top-contributor traceability are present | supported | EP-EXPL-001 row + BL-008 artifacts | none |
 | UI3-C4-003 | 4.7 / Table 4.3 | Controllability actuation produces interpretable directional deltas | supported | EP-CTRL-002 / EP-CTRL-003 rows + BL-011 scenarios | none |
-| UI3-C4-004 | 4.8 | Reproducibility and observability results table content is complete | weak_support | Section still contains `pending` placeholders | finalize table with actual run IDs and outcomes |
-| UI3-C4-005 | 4.9 | Controllability and rule-compliance results table content is complete | weak_support | Section still contains `pending` placeholders | finalize table with current baseline and variant values |
-| UI3-C4-006 | 4.10 | Explanation fidelity reconstruction evidence is complete | weak_support | Section still contains `pending` placeholders | add sampled-track reconstruction summary |
+| UI3-C4-004 | 4.8 | Reproducibility and observability results table content is complete | supported | Section 4.8 now contains run-linked baseline/repeat rows and pass outcomes | none |
+| UI3-C4-005 | 4.9 | Controllability and rule-compliance results table content is complete | supported | Section 4.9 now includes baseline and variant controls with directional outcomes | none |
+| UI3-C4-006 | 4.10 | Explanation fidelity reconstruction evidence is complete | supported | Section 4.10 now includes sampled-track reconstruction count and bounded error statement | none |
 | UI3-C4-007 | 4.7 / EP-ALIGN-001 | High unmatched-rate limitation is explicitly surfaced | supported | EP-ALIGN-001 row (`match_rate=0.1595`, `unmatched_rate=0.8405`) | none |
 
 ## Chapter 5
@@ -40,11 +40,12 @@ Verdict labels: `supported`, `partially_supported`, `weak_support`, `mismatch`
 
 ## Closure Summary
 
-- `supported`: 14
+- `supported`: 18
 - `partially_supported`: 2
-- `weak_support`: 3
-- `mismatch`: 1
+- `weak_support`: 0
+- `mismatch`: 0
 
 UI-003 closure interpretation:
 - Claim-verdict recording for Chapters 3 to 5 is complete.
-- Remaining quality work is chapter hardening on known weak/mismatch locations, not unresolved citation-package tracking.
+- Chapter 4 weak-support locations are now resolved after the 2026-03-28 hardening pass.
+- Chapter 3 mismatch wording alignment checkpoint is now resolved.

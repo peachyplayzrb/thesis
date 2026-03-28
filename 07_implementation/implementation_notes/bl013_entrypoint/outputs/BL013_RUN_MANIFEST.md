@@ -1,6 +1,6 @@
 # BL-013 Run Manifest
 
-Last updated: 2026-03-27
+Last updated: 2026-03-28
 Scope: `07_implementation/implementation_notes/bl013_entrypoint/outputs`
 
 ## Purpose
@@ -17,11 +17,11 @@ Provide a compact index of dense BL-013 orchestration output waves so operators 
 - status: historical-retained
 
 ### Wave B - Canonical v1f evidence chain
-- date range: 2026-03-26
+- date range: 2026-03-26 to 2026-03-27
 - profile: `run_config_ui013_tuning_v1f.json`
 - representative runs:
-  - `BL013-ENTRYPOINT-20260326-210305-914179`
-  - `BL013-ENTRYPOINT-20260326-215741-269303`
+  - `BL013-ENTRYPOINT-20260327-201712-508978`
+  - `BL013-ENTRYPOINT-20260327-203411-538709`
 - governance role: canonical reporting baseline evidence
 
 ### Wave C - Experimental v2a evidence wave

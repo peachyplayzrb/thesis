@@ -7,7 +7,7 @@ Provides pure decision-making functions independent of I/O or data parsing.
 
 def keep_decision(
     is_seed_track: bool,
-    semantic_score: int,
+    semantic_score: float,
     numeric_pass_count: int,
     numeric_features_enabled: bool,
     semantic_strong_keep_score: int,
@@ -78,7 +78,7 @@ def keep_decision(
     return False, "reject_no_signal"
 
 
-def decision_reason(decision_path: str, semantic_score: int, numeric_pass_count: int) -> str:
+def decision_reason(decision_path: str, semantic_score: float, numeric_pass_count: int) -> str:
     """
     Generate human-readable explanation for a keep/reject decision.
 
@@ -100,18 +100,18 @@ def decision_reason(decision_path: str, semantic_score: int, numeric_pass_count:
         return "reject: release year outside recency gate"
 
     if decision_path == "keep_semantic_only":
-        return f"keep: semantic_score={semantic_score} with semantic-only mode"
+        return f"keep: semantic_score={semantic_score:.2f} with semantic-only mode"
 
     if decision_path == "keep_strong_semantic":
-        return f"keep: semantic_score={semantic_score} meets strong semantic threshold"
+        return f"keep: semantic_score={semantic_score:.2f} meets strong semantic threshold"
 
     if decision_path == "keep_semantic_numeric_supported":
-        return f"keep: semantic_score={semantic_score} with numeric_pass_count={numeric_pass_count}"
+        return f"keep: semantic_score={semantic_score:.2f} with numeric_pass_count={numeric_pass_count}"
 
     if decision_path == "reject_semantic_without_numeric_support":
-        return f"reject: semantic_score={semantic_score} lacks numeric support (numeric_pass_count={numeric_pass_count})"
+        return f"reject: semantic_score={semantic_score:.2f} lacks numeric support (numeric_pass_count={numeric_pass_count})"
 
     if decision_path == "reject_numeric_without_semantic_support":
         return f"reject: numeric_pass_count={numeric_pass_count} without semantic evidence"
 
-    return f"reject: semantic_score={semantic_score}, numeric_pass_count={numeric_pass_count} below keep threshold"
+    return f"reject: semantic_score={semantic_score:.2f}, numeric_pass_count={numeric_pass_count} below keep threshold"

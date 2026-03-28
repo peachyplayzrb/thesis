@@ -14,6 +14,7 @@ source .venv/bin/activate
 echo "Installing dependencies..."
 pip install --upgrade pip setuptools wheel
 pip install -r requirements.txt
+pip install -e .
 
 echo ""
 echo "✓ Setup complete!"

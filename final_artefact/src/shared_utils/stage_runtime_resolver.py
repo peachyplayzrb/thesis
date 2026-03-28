@@ -8,7 +8,7 @@ from __future__ import annotations
 
 import json
 import os
-from typing import Any, Dict, List
+from typing import Any, Callable, Dict, List
 
 
 def resolve_stage_selection(
@@ -65,3 +65,24 @@ def load_positive_numeric_map_from_env(env_var_name: str) -> Dict[str, float]:
         for k, v in payload.items()
         if isinstance(v, (int, float)) and float(v) > 0
     }
+
+
+def resolve_stage_controls(
+    *,
+    load_from_run_config: Callable[[Any, str], Dict[str, Any]],
+    load_from_env: Callable[[], Dict[str, Any]],
+    sanitize: Callable[[Dict[str, Any]], Dict[str, Any]] | None = None,
+) -> Dict[str, Any]:
+    """Resolve stage controls from run config when present, else environment defaults."""
+    run_config_path = resolve_run_config_path()
+    if run_config_path:
+        from shared_utils.config_loader import load_run_config_utils_module
+
+        run_config_utils = load_run_config_utils_module()
+        controls = load_from_run_config(run_config_utils, run_config_path)
+    else:
+        controls = load_from_env()
+
+    if sanitize is None:
+        return controls
+    return sanitize(controls)

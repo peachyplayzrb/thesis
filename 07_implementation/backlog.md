@@ -34,11 +34,11 @@ Last updated: 2026-03-27 16:54 UTC
 | BL-007 | P0 | done | Implement rule-based playlist assembly (diversity, coherence, ordering) | `bl007_playlist.json`, `bl007_assembly_trace.csv`, `bl007_assembly_report.json`; latest playlist `10/10` |
 | BL-008 | P0 | done | Add transparency outputs (score contribution and rule adjustment trace) | `bl008_explanation_payloads.json`, `bl008_explanation_summary.json`; canonical v1f top-contributor mix remains documented, with additional same-day non-canonical wave showing `4/3/2/1` across lead genre/tag overlap/danceability/tempo |
 | BL-009 | P0 | done | Add observability logging with canonical config-artifact linkage | `bl009_run_observability_log.json`, `bl009_run_index.csv`; schema `bl009-observability-v1` |
-| BL-010 | P0 | done | Execute reproducibility tests (same input/config => same output) | `bl010_reproducibility_report.json`; latest canonical v1f run `BL010-REPRO-20260327-011941`, `deterministic_match=true` |
-| BL-011 | P0 | done | Execute controllability tests (parameter sensitivity) | `bl011_controllability_report.json`, `bl011_controllability_run_matrix.csv`; latest canonical v1f run `BL011-CTRL-20260327-012056`, five scenarios |
+| BL-010 | P0 | done | Execute reproducibility tests (same input/config => same output) | `bl010_reproducibility_report.json`; latest canonical v1f run `BL010-REPRO-20260327-201949`, `deterministic_match=true` |
+| BL-011 | P0 | done | Execute controllability tests (parameter sensitivity) | `bl011_controllability_report.json`, `bl011_controllability_run_matrix.csv`; latest canonical v1f run `BL011-CTRL-20260327-202057`, five scenarios |
 | BL-012 | P0 | done | Document limitations and failure modes from test outcomes | `02_foundation/limitations.md` + `08_writing/chapter5.md` |
-| BL-013 | P1 | done | Lightweight orchestrator with repeatable run controls and canonical config artifacts | `run_bl013_pipeline_entrypoint.py`, `run_intent_*.json`, `run_effective_config_*.json`; latest canonical integrated run `BL013-ENTRYPOINT-20260327-012149-023331` |
-| BL-014 | P1 | done | Automated sanity and freshness checks for active outputs | `run_bl014_sanity_checks.py`, `run_active_freshness_suite.py`, `check_bl010_bl011_freshness.py`; latest canonical sanity/freshness `22/22` and `19/19` on `BL014-SANITY-20260327-011939-797165` / `BL-FRESHNESS-SUITE-20260327-012201` |
+| BL-013 | P1 | done | Lightweight orchestrator with repeatable run controls and canonical config artifacts | `run_bl013_pipeline_entrypoint.py`, `run_intent_*.json`, `run_effective_config_*.json`; latest canonical integrated run `BL013-ENTRYPOINT-20260327-201712-508978` |
+| BL-014 | P1 | done | Automated sanity and freshness checks for active outputs | `run_bl014_sanity_checks.py`, `run_active_freshness_suite.py`, `check_bl010_bl011_freshness.py`; latest canonical sanity/freshness `22/22` and `19/19` on `BL014-SANITY-20260327-201731-408637` / `BL-FRESHNESS-SUITE-20260327-201942` |
 | BL-015 | P2 | todo | Add second ingestion adapter scaffold (out of core scope) | Backlog-only design note |
 | BL-016 | P0 | done | Create synthetic pre-aligned data assets for core pipeline development | `07_implementation/implementation_notes/test_assets/` |
 | BL-017 | P0 | done | Build active DS-001 working dataset layer with quality checks | `07_implementation/implementation_notes/bl000_data_layer/outputs/` |
@@ -80,11 +80,11 @@ Related current non-implementation dependency:
 All P0 implementation items are complete. Previously active P1 implementation items for BL-013, BL-014, and BL-021 are also complete.
 
 Key final-state references:
-- Latest full-chain orchestrated run: `BL013-ENTRYPOINT-20260327-012149-023331`
-- Reproducibility: `BL010-REPRO-20260327-011941`
-- Controllability: `BL011-CTRL-20260327-012056`
-- Sanity: `BL014-SANITY-20260327-011939-797165`
-- Active freshness suite: `BL-FRESHNESS-SUITE-20260327-012201`
+- Latest full-chain orchestrated run: `BL013-ENTRYPOINT-20260327-201712-508978`
+- Reproducibility: `BL010-REPRO-20260327-201949`
+- Controllability: `BL011-CTRL-20260327-202057`
+- Sanity: `BL014-SANITY-20260327-201731-408637`
+- Active freshness suite: `BL-FRESHNESS-SUITE-20260327-201942`
 - Latest experimental (v2a) run wave: `BL013-ENTRYPOINT-20260327-002121-545346` + `BL010-REPRO-20260327-001916` + `BL011-CTRL-20260327-002019` + `BL014-SANITY-20260327-002035-164549` + `BL-FRESHNESS-SUITE-20260327-002136`
 - Semantic control-layer map: `07_implementation/implementation_notes/bl000_run_config/docs/semantic_control_map.md`
 - Current implementation summary: `_deep_archive_march2026/IMPLEMENTATION_STATE_2026-03-24.md` (historical snapshot)

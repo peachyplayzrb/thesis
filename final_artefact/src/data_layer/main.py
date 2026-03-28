@@ -1,17 +1,10 @@
 from __future__ import annotations
 
 import csv
-import hashlib
 import json
 from pathlib import Path
 
-
-def sha256_of_file(path: Path) -> str:
-    digest = hashlib.sha256()
-    with path.open("rb") as handle:
-        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
-            digest.update(chunk)
-    return digest.hexdigest().upper()
+from shared_utils.io_utils import sha256_of_file
 
 
 def count_rows(path: Path) -> int:
