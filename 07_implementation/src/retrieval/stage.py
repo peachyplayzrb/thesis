@@ -306,6 +306,10 @@ class RetrievalStage:
         history_weight_share = RetrievalStage._clamp_0_1(
             RetrievalStage._safe_float(signal_vector.get("history_weight_share"), 1.0)
         )
+        # When BL-003 injection is disabled (BL003_INJECT_INFLUENCE_TRACKS=false) and influence
+        # ownership moves to BL-006, influence events are excluded from the profile. In that case
+        # influence_weight_share will be 0.0 so the penalty branch below will not fire — this is
+        # intentional graceful behaviour during the migration, not a bug.
         influence_weight_share = RetrievalStage._clamp_0_1(
             RetrievalStage._safe_float(signal_vector.get("influence_weight_share"), 0.0)
         )

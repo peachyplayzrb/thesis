@@ -18,6 +18,7 @@ from alignment.constants import (
     SOURCE_INFLUENCE,
     format_influence_event_id,
 )
+from alignment.resolved_context import AlignmentResolvedContext
 
 _DS001_PASSTHROUGH_FIELDS: tuple[str, ...] = (
     "song", "release", "duration_ms", "popularity",
@@ -49,40 +50,20 @@ def _make_influence_event(
         "interaction_count": max(1, int(round(infl_weight * INTERACTION_COUNT_WEIGHT_SCALE))),
         "interaction_type": INTERACTION_TYPE_INFLUENCE,
     }
-from alignment.models import AlignmentBehaviorControls
-from shared_utils.config_loader import load_run_config_utils_module
-from alignment.resolved_context import AlignmentResolvedContext
 
 
 def inject_influence_tracks(
     matched_events: list[dict[str, Any]],
     by_ds001_id: dict[str, dict[str, str]],
-    run_config_path: str | None = None,
     *,
-    behavior_controls: AlignmentBehaviorControls | None = None,
-    context: AlignmentResolvedContext | None = None,
+    context: AlignmentResolvedContext,
 ) -> dict[str, Any]:
     """
     Inject influence tracks from the run config into matched_events (mutates in place).
 
     Returns the influence contract dict to embed in the BL-003 summary.
-    When run_config_path is None, returns a disabled contract with zero counts.
     """
-    if context is not None:
-        infl = dict(context.behavior_controls.influence_controls)
-    elif behavior_controls is not None:
-        infl = dict(behavior_controls.influence_controls)
-    elif run_config_path:
-        _rc_utils = load_run_config_utils_module()
-        infl = _rc_utils.resolve_bl003_influence_controls(run_config_path)
-    else:
-        return {
-            "enabled": False,
-            "track_ids": [],
-            "preference_weight": DEFAULT_INFLUENCE_PREFERENCE_WEIGHT,
-            "injected_count": 0,
-            "skipped_track_ids": [],
-        }
+    infl = dict(context.behavior_controls.influence_controls)
 
     influence_injected_count = 0
     influence_skipped_ids: list[str] = []

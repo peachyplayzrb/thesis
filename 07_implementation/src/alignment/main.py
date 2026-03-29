@@ -4,7 +4,6 @@ import argparse
 from pathlib import Path
 
 from alignment.constants import ALIGNMENT_DEFAULT_RELATIVE_PATHS
-from shared_utils.env_utils import env_bool
 from alignment.stage import AlignmentStage
 
 
@@ -34,7 +33,6 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--allow-missing-selected-sources",
         action="store_true",
-        default=env_bool("BL003_ALLOW_MISSING_SELECTED_SOURCES", False),
         help="Do not fail when BL-002 selection indicates a source should exist but its flat CSV is missing.",
     )
     return parser.parse_args()

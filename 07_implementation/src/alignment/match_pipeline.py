@@ -20,7 +20,7 @@ from alignment.constants import (
 from alignment.models import AlignmentBehaviorControls, MatchTrace, MatchedEvent, SourceEvent
 from alignment.resolved_context import AlignmentResolvedContext
 from shared_utils.parsing import parse_int
-from alignment.text_matching import (
+from shared_utils.text_matching import (
     choose_best_duration_match,
     first_artist,
     fuzzy_find_candidate,
@@ -41,6 +41,7 @@ def match_events(
     fuzzy_controls: dict[str, Any] | None = None,
     weighting_policy: dict | None = None,
     behavior_controls: AlignmentBehaviorControls | None = None,
+    *,
     context: AlignmentResolvedContext | None = None,
 ) -> tuple[list[dict[str, str]], list[dict[str, Any]], list[dict[str, str]], dict[str, int]]:
     """

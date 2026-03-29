@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import json
 import os
 from typing import Any
 
@@ -14,20 +13,6 @@ def resolve_bl003_runtime_scope() -> dict[str, object]:
     run_config_path = os.environ.get("BL_RUN_CONFIG_PATH", "").strip() or None
     default_scope = DEFAULT_INPUT_SCOPE
 
-    env_scope_raw = os.environ.get("BL003_INPUT_SCOPE_JSON", "").strip()
-    if env_scope_raw:
-        try:
-            env_scope = json.loads(env_scope_raw)
-            if isinstance(env_scope, dict):
-                return {
-                    "config_source": "environment",
-                    "run_config_path": None,
-                    "run_config_schema_version": None,
-                    "input_scope": dict(env_scope),
-                }
-        except json.JSONDecodeError:
-            pass
-
     if run_config_path:
         run_config_utils = load_run_config_utils_module()
         controls = run_config_utils.resolve_input_scope_controls(run_config_path)
@@ -39,7 +24,7 @@ def resolve_bl003_runtime_scope() -> dict[str, object]:
         }
 
     return {
-        "config_source": "export_selection",
+        "config_source": "defaults",
         "run_config_path": None,
         "run_config_schema_version": None,
         "input_scope": dict(default_scope),

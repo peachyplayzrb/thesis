@@ -388,6 +388,52 @@ def _canonicalize_stage_stdout_lines(stdout: str, root: Path) -> list[str]:
     return canonical_lines
 
 
+def build_replay_run_config(
+    *,
+    root: Path,
+    output_dir: Path,
+    run_config_path: str | None,
+    reference_now_utc: str,
+) -> str | None:
+    """Create a replay-local run-config with fixed BL-003 temporal controls."""
+    if not run_config_path:
+        return None
+
+    source_path = Path(run_config_path)
+    if not source_path.is_absolute():
+        candidates = [
+            (root / source_path).resolve(),
+            (root.parent / source_path).resolve(),
+        ]
+        resolved = next((candidate for candidate in candidates if candidate.exists()), None)
+        if resolved is None:
+            raise FileNotFoundError(
+                "BL-010 run-config path does not exist in src-root or package-root resolution: "
+                f"{run_config_path}"
+            )
+        source_path = resolved
+    elif not source_path.exists():
+        raise FileNotFoundError(f"BL-010 run-config path does not exist: {source_path}")
+
+    payload = load_json(source_path)
+    seed_controls = payload.get("seed_controls")
+    if not isinstance(seed_controls, dict):
+        seed_controls = {}
+        payload["seed_controls"] = seed_controls
+
+    temporal_controls = seed_controls.get("temporal_controls")
+    if not isinstance(temporal_controls, dict):
+        temporal_controls = {}
+        seed_controls["temporal_controls"] = temporal_controls
+
+    temporal_controls["reference_mode"] = "fixed"
+    temporal_controls["reference_now_utc"] = reference_now_utc
+
+    replay_config_path = output_dir / "bl010_replay_run_config_fixed_temporal.json"
+    write_json_ascii(replay_config_path, payload)
+    return str(replay_config_path)
+
+
 def run_stage(
     stage_id: str,
     script_path: Path,
@@ -398,11 +444,18 @@ def run_stage(
 ) -> dict[str, object]:
     started = time.time()
     command = [python_executable, str(script_path)]
-    if run_config_path:
-        command.extend(["--run-config", run_config_path])
+    if stage_id == "BL-003":
+        command.append("--allow-missing-selected-sources")
     completed: subprocess.CompletedProcess[str] | None = None
     attempts: list[dict[str, object]] = []
     stage_env = os.environ.copy()
+    existing_pythonpath = stage_env.get("PYTHONPATH", "")
+    pythonpath_parts = [str(root)]
+    if existing_pythonpath:
+        pythonpath_parts.append(existing_pythonpath)
+    stage_env["PYTHONPATH"] = os.pathsep.join(pythonpath_parts)
+    if run_config_path:
+        stage_env["BL_RUN_CONFIG_PATH"] = run_config_path
     if reference_now_utc:
         stage_env["BL_REFERENCE_NOW_UTC"] = reference_now_utc
     for attempt in range(1, 4):
@@ -436,7 +489,7 @@ def run_stage(
         )
     canonical_script_path = relpath(script_path, root)
     final_attempt = attempts[-1]
-    command_suffix = f" --run-config {run_config_path}" if run_config_path else ""
+    command_suffix = ""
     return {
         "stage": stage_id,
         "script": script_path.name,
@@ -564,6 +617,12 @@ def main() -> None:
 
     run_started_at = utc_now()
     reference_now_utc = run_started_at
+    replay_run_config_path = build_replay_run_config(
+        root=root,
+        output_dir=output_dir,
+        run_config_path=str(args.run_config) if args.run_config else None,
+        reference_now_utc=reference_now_utc,
+    )
     run_id = f"BL010-REPRO-{time.strftime('%Y%m%d-%H%M%S', time.gmtime())}"
     started = time.time()
 
@@ -575,7 +634,7 @@ def main() -> None:
         root=root,
         output_dir=output_dir,
         paths=paths,
-        run_config_path=str(args.run_config) if args.run_config else None,
+        run_config_path=replay_run_config_path,
         reference_now_utc=reference_now_utc,
     )
 
@@ -644,6 +703,7 @@ def main() -> None:
         },
         "inputs": {
             "config_snapshot_path": relpath(config_path, root),
+            "replay_run_config_path": relpath(Path(replay_run_config_path), root) if replay_run_config_path else None,
             "fixed_input_hashes": config_snapshot["fixed_inputs"],
             "stage_scripts": config_snapshot["stage_scripts"],
         },
@@ -689,6 +749,7 @@ def main() -> None:
         },
         "output_artifacts": {
             "config_snapshot_path": relpath(config_path, root),
+            "replay_run_config_path": relpath(Path(replay_run_config_path), root) if replay_run_config_path else None,
             "run_matrix_path": relpath(summary_csv_path, root),
             "archived_replay_dirs": [record["archive_dir"] for record in replay_records],
         },

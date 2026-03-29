@@ -34,8 +34,8 @@ def _apply_preference_weight_policy(
 
 def aggregate_matched_events(
     matched_events: list[dict[str, Any]],
-    aggregation_policy: dict[str, Any] | None = None,
-    behavior_controls: AlignmentBehaviorControls | None = None,
+    *,
+    behavior_controls: AlignmentBehaviorControls,
 ) -> dict[str, dict[str, Any]]:
     """
     Aggregate matched events by DS-001 ID.
@@ -44,9 +44,7 @@ def aggregate_matched_events(
     interaction statistics and set-valued fields (source_types, spotify_track_ids,
     interaction_types) that are serialised to pipe-separated strings at write time.
     """
-    effective_policy = dict(aggregation_policy or {})
-    if behavior_controls is not None:
-        effective_policy = dict(behavior_controls.aggregation_policy)
+    effective_policy = dict(behavior_controls.aggregation_policy)
     preference_weight_mode = str(
         effective_policy.get("preference_weight_mode", "sum")
     ).strip().lower() or "sum"

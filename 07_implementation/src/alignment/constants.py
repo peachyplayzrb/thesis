@@ -155,7 +155,6 @@ MATCH_STRATEGY_ORDER: Final[tuple[str, ...]] = (
 )
 TEXT_NORMALIZATION_RULES: Final[str] = "unicode_nfd_lowercase_ascii_folding"
 CONFIG_PRECEDENCE_HIERARCHY: Final[tuple[str, ...]] = (
-    "BL003_INPUT_SCOPE_JSON",
     "BL_RUN_CONFIG_PATH",
     "defaults",
 )

@@ -2,6 +2,10 @@
 
 Standalone implementation of the BL-003 to BL-014 playlist recommendation pipeline.
 
+Architecture reference:
+
+- CLEAN_ARCHITECTURE.md
+
 This folder is runnable as-is with embedded inputs:
 
 - Embedded candidate dataset: src/data_layer/outputs/ds001_working_candidate_dataset.csv

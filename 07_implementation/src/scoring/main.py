@@ -25,6 +25,7 @@ def resolve_bl006_paths(root: Path) -> dict[str, Path]:
     paths = ScoringStage(root=root).resolve_paths()
     return {
         "profile_path": paths.profile_path,
+        "bl003_summary_path": paths.bl003_summary_path,
         "filtered_candidates_path": paths.filtered_candidates_path,
         "output_dir": paths.output_dir,
     }
@@ -33,6 +34,7 @@ def resolve_bl006_paths(root: Path) -> dict[str, Path]:
 def load_bl006_inputs(paths: dict[str, Path]) -> tuple[dict[str, object], list[dict[str, str]]]:
     typed_paths = ScoringPaths(
         profile_path=paths["profile_path"],
+        bl003_summary_path=paths["bl003_summary_path"],
         filtered_candidates_path=paths["filtered_candidates_path"],
         output_dir=paths["output_dir"],
     )
@@ -49,10 +51,12 @@ def build_bl006_runtime_context(
     *,
     profile: dict[str, object],
     runtime_controls: dict[str, object],
+    bl003_summary: dict[str, object] | None = None,
 ) -> dict[str, object]:
     context = ScoringStage.build_runtime_context(
         profile=profile,
         runtime_controls=controls_from_mapping(runtime_controls),
+        bl003_summary=bl003_summary,
     )
     return context_as_mapping(context)
 
@@ -87,6 +91,7 @@ def build_bl006_summary(
 ) -> dict[str, object]:
     typed_paths = ScoringPaths(
         profile_path=paths["profile_path"],
+        bl003_summary_path=paths["bl003_summary_path"],
         filtered_candidates_path=paths["filtered_candidates_path"],
         output_dir=paths["output_dir"],
     )

@@ -44,6 +44,7 @@ SCORED_CANDIDATE_FIELDS = [
 @dataclass(frozen=True)
 class ScoringPaths:
     profile_path: Path
+    bl003_summary_path: Path
     filtered_candidates_path: Path
     output_dir: Path
 
@@ -66,6 +67,8 @@ class ScoringControls:
     profile_numeric_confidence_blend_weight: float = 1.0
     emit_confidence_impact_diagnostics: bool = True
     emit_semantic_precision_diagnostics: bool = False
+    apply_bl003_influence_tracks: bool = False
+    influence_track_bonus_scale: float = 0.0
 
     def as_mapping(self) -> dict[str, object]:
         return {
@@ -85,12 +88,15 @@ class ScoringControls:
             "profile_numeric_confidence_blend_weight": self.profile_numeric_confidence_blend_weight,
             "emit_confidence_impact_diagnostics": self.emit_confidence_impact_diagnostics,
             "emit_semantic_precision_diagnostics": self.emit_semantic_precision_diagnostics,
+            "apply_bl003_influence_tracks": self.apply_bl003_influence_tracks,
+            "influence_track_bonus_scale": self.influence_track_bonus_scale,
         }
 
 
 @dataclass(frozen=True)
 class ScoringInputs:
     profile: dict[str, object]
+    bl003_summary: dict[str, object]
     candidates: list[dict[str, str]]
 
 
@@ -115,6 +121,10 @@ class ScoringContext:
     profile_numeric_confidence_blend_weight: float = 1.0
     emit_confidence_impact_diagnostics: bool = True
     emit_semantic_precision_diagnostics: bool = False
+    apply_bl003_influence_tracks: bool = False
+    influence_track_ids: set[str] | None = None
+    influence_preference_weight: float = 0.0
+    influence_track_bonus_scale: float = 0.0
 
 
 @dataclass(frozen=True)
@@ -170,6 +180,12 @@ def controls_from_mapping(payload: Mapping[str, Any]) -> ScoringControls:
         ),
         emit_confidence_impact_diagnostics=bool(payload.get("emit_confidence_impact_diagnostics", True)),
         emit_semantic_precision_diagnostics=bool(payload.get("emit_semantic_precision_diagnostics", False)),
+        apply_bl003_influence_tracks=bool(payload.get("apply_bl003_influence_tracks", False)),
+        influence_track_bonus_scale=float(
+            payload["influence_track_bonus_scale"]
+            if payload.get("influence_track_bonus_scale") is not None
+            else 0.0
+        ),
     )
 
 
@@ -194,6 +210,10 @@ def context_as_mapping(context: ScoringContext) -> dict[str, object]:
         "profile_numeric_confidence_blend_weight": context.profile_numeric_confidence_blend_weight,
         "emit_confidence_impact_diagnostics": context.emit_confidence_impact_diagnostics,
         "emit_semantic_precision_diagnostics": context.emit_semantic_precision_diagnostics,
+        "apply_bl003_influence_tracks": context.apply_bl003_influence_tracks,
+        "influence_track_ids": sorted(context.influence_track_ids or set()),
+        "influence_preference_weight": context.influence_preference_weight,
+        "influence_track_bonus_scale": context.influence_track_bonus_scale,
     }
 
 
@@ -270,4 +290,8 @@ def context_from_mapping(payload: Mapping[str, Any]) -> ScoringContext:
         ),
         emit_confidence_impact_diagnostics=bool(payload.get("emit_confidence_impact_diagnostics", True)),
         emit_semantic_precision_diagnostics=bool(payload.get("emit_semantic_precision_diagnostics", False)),
+        apply_bl003_influence_tracks=bool(payload.get("apply_bl003_influence_tracks", False)),
+        influence_track_ids={str(v) for v in list(payload.get("influence_track_ids") or []) if str(v)},
+        influence_preference_weight=float(payload.get("influence_preference_weight", 0.0)),
+        influence_track_bonus_scale=float(payload.get("influence_track_bonus_scale", 0.0)),
     )

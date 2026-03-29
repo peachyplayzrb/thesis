@@ -130,6 +130,8 @@ def _build_default_run_config() -> dict[str, Any]:
             "profile_numeric_confidence_blend_weight": float(DEFAULT_SCORING_CONTROLS["profile_numeric_confidence_blend_weight"]),
             "emit_confidence_impact_diagnostics": bool(DEFAULT_SCORING_CONTROLS["emit_confidence_impact_diagnostics"]),
             "emit_semantic_precision_diagnostics": bool(DEFAULT_SCORING_CONTROLS["emit_semantic_precision_diagnostics"]),
+            "apply_bl003_influence_tracks": bool(DEFAULT_SCORING_CONTROLS["apply_bl003_influence_tracks"]),
+            "influence_track_bonus_scale": float(DEFAULT_SCORING_CONTROLS["influence_track_bonus_scale"]),
         },
         "assembly_controls": dict(DEFAULT_ASSEMBLY_CONTROLS),
         "transparency_controls": {
@@ -1355,6 +1357,15 @@ def resolve_effective_run_config(run_config_path: str | Path | None) -> tuple[di
         "scoring_controls.emit_semantic_precision_diagnostics",
         bool(scoring_defaults["emit_semantic_precision_diagnostics"]),
     )
+    scoring_controls["apply_bl003_influence_tracks"] = _validate_bool_like(
+        scoring_controls.get("apply_bl003_influence_tracks"),
+        "scoring_controls.apply_bl003_influence_tracks",
+        bool(scoring_defaults["apply_bl003_influence_tracks"]),
+    )
+    scoring_controls["influence_track_bonus_scale"] = _coerce_non_negative_float(
+        scoring_controls.get("influence_track_bonus_scale"),
+        float(scoring_defaults["influence_track_bonus_scale"]),
+    )
     _enforce_profile_retrieval_limit_constraints(profile_controls, retrieval_controls)
     effective["signal_mode"] = _build_signal_mode_summary(retrieval_controls, scoring_controls)
 
@@ -1753,6 +1764,15 @@ def resolve_bl006_controls(run_config_path: str | Path | None) -> dict[str, Any]
             scoring.get("emit_semantic_precision_diagnostics"),
             "scoring_controls.emit_semantic_precision_diagnostics",
             bool(defaults["emit_semantic_precision_diagnostics"]),
+        ),
+        "apply_bl003_influence_tracks": _validate_bool_like(
+            scoring.get("apply_bl003_influence_tracks"),
+            "scoring_controls.apply_bl003_influence_tracks",
+            bool(defaults["apply_bl003_influence_tracks"]),
+        ),
+        "influence_track_bonus_scale": _coerce_non_negative_float(
+            scoring.get("influence_track_bonus_scale"),
+            float(defaults["influence_track_bonus_scale"]),
         ),
     }
 

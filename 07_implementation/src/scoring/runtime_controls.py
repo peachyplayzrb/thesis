@@ -125,6 +125,8 @@ def resolve_bl006_runtime_controls(default_weights: dict[str, float]) -> dict[st
             ),
             "emit_confidence_impact_diagnostics": bool(controls.get("emit_confidence_impact_diagnostics", True)),
             "emit_semantic_precision_diagnostics": bool(controls.get("emit_semantic_precision_diagnostics", False)),
+            "apply_bl003_influence_tracks": bool(controls.get("apply_bl003_influence_tracks", False)),
+            "influence_track_bonus_scale": float(controls.get("influence_track_bonus_scale", 0.0)),
         }
     return {
         "config_source": "environment",
@@ -146,4 +148,6 @@ def resolve_bl006_runtime_controls(default_weights: dict[str, float]) -> dict[st
         ),
         "emit_confidence_impact_diagnostics": _env_bool("BL006_EMIT_CONFIDENCE_IMPACT_DIAGNOSTICS", True),
         "emit_semantic_precision_diagnostics": _env_bool("BL006_EMIT_SEMANTIC_PRECISION_DIAGNOSTICS", False),
+        "apply_bl003_influence_tracks": _env_bool("BL006_APPLY_BL003_INFLUENCE_TRACKS", False),
+        "influence_track_bonus_scale": _env_float("BL006_INFLUENCE_TRACK_BONUS_SCALE", 0.0),
     }

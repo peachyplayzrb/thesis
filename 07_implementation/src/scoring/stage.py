@@ -58,6 +58,7 @@ class ScoringStage:
     def resolve_paths(self) -> ScoringPaths:
         return ScoringPaths(
             profile_path=self.root / "profile" / "outputs" / "bl004_preference_profile.json",
+            bl003_summary_path=self.root / "alignment" / "outputs" / "bl003_ds001_spotify_summary.json",
             filtered_candidates_path=self.root / "retrieval" / "outputs" / "bl005_filtered_candidates.csv",
             output_dir=self.root / "scoring" / "outputs",
         )
@@ -67,6 +68,11 @@ class ScoringStage:
         profile = load_json(paths.profile_path)
         if not isinstance(profile, dict):
             raise RuntimeError("BL-006 profile artifact is malformed; expected JSON object")
+        bl003_summary: dict[str, object] = {}
+        if paths.bl003_summary_path.exists():
+            loaded_summary = load_json(paths.bl003_summary_path)
+            if isinstance(loaded_summary, dict):
+                bl003_summary = {str(k): v for k, v in loaded_summary.items()}
         candidates_raw = load_csv_rows(paths.filtered_candidates_path)
         if not candidates_raw:
             raise RuntimeError("No BL-005 filtered candidates found for BL-006")
@@ -74,7 +80,27 @@ class ScoringStage:
             {str(k): str(v) for k, v in row.items()}
             for row in candidates_raw
         ]
-        return ScoringInputs(profile=profile, candidates=candidates)
+        return ScoringInputs(profile=profile, bl003_summary=bl003_summary, candidates=candidates)
+
+    @staticmethod
+    def _extract_bl003_influence_contract(
+        bl003_summary: dict[str, object] | None,
+    ) -> tuple[bool, set[str], float]:
+        summary = dict(bl003_summary or {})
+        inputs_obj = summary.get("inputs")
+        inputs = dict(inputs_obj) if isinstance(inputs_obj, dict) else {}
+        influence_obj = inputs.get("influence_tracks")
+        influence = dict(influence_obj) if isinstance(influence_obj, dict) else {}
+
+        enabled = bool(influence.get("enabled", False))
+        track_ids_raw = influence.get("track_ids")
+        track_ids = {
+            str(track_id).strip()
+            for track_id in (track_ids_raw or [])
+            if str(track_id).strip()
+        } if isinstance(track_ids_raw, list) else set()
+        preference_weight = ScoringStage._to_float(influence.get("preference_weight", 0.0), 0.0)
+        return enabled, track_ids, max(0.0, preference_weight)
 
     @staticmethod
     def resolve_runtime_controls(default_weights: dict[str, float] | None = None) -> ScoringControls:
@@ -86,6 +112,7 @@ class ScoringStage:
     def build_runtime_context(
         *,
         profile: dict[str, object],
+        bl003_summary: dict[str, object] | None = None,
         runtime_controls: ScoringControls | dict[str, object],
     ) -> ScoringContext:
         controls = (
@@ -184,6 +211,16 @@ class ScoringStage:
         enable_numeric_confidence_scaling = bool(controls.enable_numeric_confidence_scaling)
         numeric_confidence_floor = ScoringStage._clamp_0_1(controls.numeric_confidence_floor)
 
+        influence_enabled, influence_track_ids, influence_preference_weight = (
+            ScoringStage._extract_bl003_influence_contract(bl003_summary)
+        )
+        apply_bl003_influence_tracks = (
+            bool(controls.apply_bl003_influence_tracks)
+            and influence_enabled
+            and bool(influence_track_ids)
+        )
+        influence_track_bonus_scale = max(0.0, float(controls.influence_track_bonus_scale))
+
         return ScoringContext(
             signal_mode=dict(controls.signal_mode),
             effective_component_weights=effective_component_weights,
@@ -204,6 +241,10 @@ class ScoringStage:
             profile_numeric_confidence_blend_weight=profile_numeric_confidence_blend_weight,
             emit_confidence_impact_diagnostics=bool(controls.emit_confidence_impact_diagnostics),
             emit_semantic_precision_diagnostics=bool(controls.emit_semantic_precision_diagnostics),
+            apply_bl003_influence_tracks=apply_bl003_influence_tracks,
+            influence_track_ids=set(influence_track_ids),
+            influence_preference_weight=influence_preference_weight,
+            influence_track_bonus_scale=influence_track_bonus_scale,
         )
 
     @staticmethod
@@ -244,6 +285,17 @@ class ScoringStage:
                 context.active_component_weights,
                 weighted_contributions=weighted_contributions,
             )
+            if (
+                context.apply_bl003_influence_tracks
+                and str(row.get("track_id", "")) in (context.influence_track_ids or set())
+            ):
+                influence_bonus = (
+                    context.influence_preference_weight * context.influence_track_bonus_scale
+                )
+                final_score = round(
+                    ScoringStage._clamp_0_1(final_score + influence_bonus),
+                    6,
+                )
             matched_genres_raw = component_scores.get("matched_genres")
             matched_tags_raw = component_scores.get("matched_tags")
             matched_genres = [str(v) for v in matched_genres_raw] if isinstance(matched_genres_raw, list) else []
@@ -339,6 +391,12 @@ class ScoringStage:
             "input_artifacts": {
                 "profile_path": str(paths.profile_path),
                 "profile_sha256": sha256_of_file(paths.profile_path),
+                "bl003_summary_path": str(paths.bl003_summary_path),
+                "bl003_summary_sha256": (
+                    sha256_of_file(paths.bl003_summary_path)
+                    if paths.bl003_summary_path.exists()
+                    else None
+                ),
                 "filtered_candidates_path": str(paths.filtered_candidates_path),
                 "filtered_candidates_sha256": sha256_of_file(paths.filtered_candidates_path),
             },
@@ -377,6 +435,10 @@ class ScoringStage:
                     context.profile_numeric_confidence_blend_weight,
                     6,
                 ),
+                "apply_bl003_influence_tracks": context.apply_bl003_influence_tracks,
+                "influence_track_bonus_scale": round(context.influence_track_bonus_scale, 6),
+                "influence_preference_weight": round(context.influence_preference_weight, 6),
+                "influence_track_count": len(context.influence_track_ids or set()),
                 "inactive_components": sorted(
                     set(context.effective_component_weights) - set(context.active_component_weights)
                 ),
@@ -420,6 +482,7 @@ class ScoringStage:
         runtime_controls = self.resolve_runtime_controls(build_component_weights())
         runtime_context = self.build_runtime_context(
             profile=inputs.profile,
+            bl003_summary=inputs.bl003_summary,
             runtime_controls=runtime_controls,
         )
 

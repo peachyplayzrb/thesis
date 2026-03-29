@@ -209,6 +209,8 @@ DEFAULT_SCORING_CONTROLS: dict[str, object] = {
     "profile_numeric_confidence_blend_weight": 1.0,
     "emit_confidence_impact_diagnostics": True,
     "emit_semantic_precision_diagnostics": False,
+    "apply_bl003_influence_tracks": False,
+    "influence_track_bonus_scale": 0.0,
 }
 
 DEFAULT_ASSEMBLY_CONTROLS: dict[str, object] = {

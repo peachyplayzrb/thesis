@@ -21,6 +21,6 @@ STABLE_ARTIFACTS: dict[str, str] = bl013_stable_artifact_relpaths()
 BL003_SUMMARY_PATH: str = bl013_bl003_summary_relpath()
 
 SUMMARY_NOTES: dict[str, str] = {
-    "purpose": "Lightweight wrapper to run existing BL-004..BL-009 scripts in one command.",
+    "purpose": "Lightweight wrapper to run BL-003..BL-009 scripts in one command.",
     "repeatability_check_guidance": "Compare stable_artifact_hashes between repeated runs under unchanged inputs/config.",
 }

@@ -32,7 +32,11 @@
   },
   "influence_tracks": {
     "enabled": true,
-    "track_ids": [],
+    "track_ids": [
+      "tzgGpQrOrdyACAvN",
+      "PgdjI4bos3cQlF0H",
+      "STQQY9CB4ccv4qWQ"
+    ],
     "preference_weight": 1.0,
     "source": null
   },
@@ -86,7 +90,9 @@
       "key": 1.5,
       "mode": 0.5,
       "duration_ms": 30000.0
-    }
+    },
+    "apply_bl003_influence_tracks": true,
+    "influence_track_bonus_scale": 0.5
   },
   "assembly_controls": {
     "target_size": 10,
