@@ -1,6 +1,6 @@
 ﻿# Thesis Timeline
 
-Last updated: 2026-03-28 03:46 UTC
+Last updated: 2026-03-29
 
 ## Milestones
 - M1 (2026-03-13 to 2026-03-20): Planning baseline finalized [completed]
@@ -53,7 +53,7 @@ Last updated: 2026-03-28 03:46 UTC
 	- Prioritize UI-mediated inspectability: surface run id, stage status, key counts, and artifact links in the website flow.
 	- Execute implementation refinement in parallel: stability hardening, clearer error handling around external API steps, and repeatable rerun controls for reproducibility evidence.
 	- Keep deferred scope unchanged (`BL-022`), and avoid adding new adapters or model classes during this package.
-	- Current status note (2026-03-27 18:49 UTC): workflow shell and results-clarity implementation pass is complete, FastAPI server hardening plus automated API regression coverage are in place, and active focus remains bounded reliability, modular cleanup, and observability clarity.
+	- Current status note (2026-03-29): workflow shell and results-clarity implementation pass remains complete, FastAPI server hardening plus automated API regression coverage remain in place, and the bounded modular cleanup pass is now closed across BL-013 orchestration, BL-011 controllability, and BL-003 alignment support code.
 
 ## Recently Closed
 - UI-002 closure recorded (2026-03-24): Chapter 2 weak-claim remediation objective completed for current audit workflow.
@@ -64,6 +64,7 @@ Last updated: 2026-03-28 03:46 UTC
 - Evaluation-freshness closure recorded (2026-03-25): UI-010 closed after BL-010/BL-011 evidence refresh and implementation of executable freshness controls (`check_bl010_bl011_freshness.py` and `run_active_freshness_suite.py`).
 - Milestone-state recalibration recorded (2026-03-25): M3 and M4 moved from planned to in progress to reflect completed BL-004 through BL-009 implementation and active evidence-synthesis work.
 - UI-003 control-record closure recorded (2026-03-27): Chapter 3 to 5 claim-verdict matrix and chapter-targeted hardening notes are logged and active unresolved governance issues are now empty.
+- Phase 5-6 modularization closure recorded (2026-03-29): orchestration, controllability, and alignment runtime helpers were split into focused modules with stable compatibility entrypoints retained and touched files revalidated with pyright.
 
 ## Notes
 - Dates are a working baseline for execution control and can be refined against official module deadlines.

@@ -54,7 +54,7 @@ The packaged run uses embedded inputs by default:
 
 This implementation includes:
 
-- **BL-003**: Alignment — Aligns Spotify user history to the embedded DS-001 candidate dataset using ISRC matching
+- **BL-003**: Alignment — Aligns Spotify user history to the embedded DS-001 candidate dataset using metadata/identifier matching with exact and optional fuzzy fallback paths
 - **BL-004**: Profile — Builds deterministic user preference profile (semantic tags, genres, numeric audio features)
 - **BL-005**: Retrieval — Filters candidate corpus using semantic and numeric controls
 - **BL-006**: Scoring — Weights and scores candidates with hybrid component scoring
@@ -64,6 +64,16 @@ This implementation includes:
 - **BL-010**: Reproducibility — Validates determinism and component testing
 - **BL-011**: Controllability — Validates control path isolation
 - **BL-014**: Quality — Sanity checks and system assertions
+
+## Internal Layout
+
+The operator-facing entrypoints remain stable, but the runtime code is now split into focused modules under `src/`:
+
+- `src/orchestration/` keeps `main.py` as a thin BL-013 entrypoint over dedicated CLI, stage-runner, seed-freshness, and summary helpers.
+- `src/controllability/` keeps `pipeline_runner.py` and `scenarios.py` as stable BL-011 entry surfaces while stage execution, pathing, and runtime-control resolution live in focused helper modules.
+- `src/alignment/` keeps `matching.py` and `reporting.py` as compatibility wrappers over focused text-matching, indexing, match-pipeline, writing, validation, and summary helpers.
+
+This split preserves the existing package surface while reducing monolithic scripts and making control/runtime behavior easier to audit.
 
 ## Configuration
 

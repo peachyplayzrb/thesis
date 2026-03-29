@@ -1,66 +1,35 @@
 from __future__ import annotations
 
-import os
-from pathlib import Path
+from typing import Any, cast
 
-from shared_utils.config_loader import load_run_config_utils_module
-from shared_utils.stage_utils import relpath
-
+from controllability.pathing import build_paths, ensure_required_inputs
+from controllability.runtime_controls import resolve_bl011_runtime_controls
 from .weights import normalize_component_weight_keys, normalized_weights_with_override
 
 
-def build_paths(root: Path) -> dict[str, Path]:
-    return {
-        "legacy_manifest": root / "test_assets" / "bl016_asset_manifest.json",
-        "legacy_coverage": root / "data_layer" / "outputs" / "onion_join_coverage_report.json",
-        "bl003_summary": root / "alignment" / "outputs" / "bl003_ds001_spotify_summary.json",
-        "active_seed_trace": root / "profile" / "outputs" / "bl004_seed_trace.csv",
-        "active_candidates": root / "data_layer" / "outputs" / "ds001_working_candidate_dataset.csv",
-        "baseline_snapshot": root / "reproducibility" / "outputs" / "reproducibility_config_snapshot.json",
-        "output_dir": root / "controllability" / "outputs",
-    }
-
-
-def resolve_bl011_runtime_controls() -> dict[str, object]:
-    rc_utils = load_run_config_utils_module()
-    run_config_path: str | None = os.environ.get("BL_RUN_CONFIG_PATH", "").strip() or None
-    controls: dict[str, object] = {
-        "config_source": "run_config" if run_config_path else "defaults",
-        "run_config_path": run_config_path,
-        **rc_utils.resolve_bl011_controls(run_config_path),
-    }
-    scenario_policy, scenario_definitions = rc_utils.resolve_bl011_scenario_policy(run_config_path)
-    controls["scenario_policy"] = scenario_policy
-    controls["scenario_definitions"] = scenario_definitions
-    return controls
-
-
-def ensure_required_inputs(paths: dict[str, Path], root: Path) -> None:
-    required = ["baseline_snapshot", "bl003_summary", "active_seed_trace", "active_candidates"]
-    missing = [relpath(paths[key], root) for key in required if not paths[key].exists()]
-    if missing:
-        raise FileNotFoundError(f"BL-011 missing required inputs: {missing}")
-
-
 def build_scenarios(baseline_snapshot: dict, runtime_controls: dict[str, object]) -> list[dict[str, object]]:
-    base_profile = baseline_snapshot["stage_configs"]["profile"]
-    base_retrieval = baseline_snapshot["stage_configs"]["retrieval"]
-    base_scoring = baseline_snapshot["stage_configs"]["scoring"]
-    base_assembly = baseline_snapshot["stage_configs"]["assembly"]
-    scoring_weights = dict(
+    stage_configs = cast(dict[str, dict[str, object]], baseline_snapshot["stage_configs"])
+    base_profile = cast(dict[str, object], stage_configs["profile"])
+    base_retrieval = cast(dict[str, object], stage_configs["retrieval"])
+    base_scoring = cast(dict[str, object], stage_configs["scoring"])
+    base_assembly = cast(dict[str, object], stage_configs["assembly"])
+    raw_scoring_weights = cast(
+        dict[str, Any],
         base_scoring.get("component_weights")
         or base_scoring.get("active_component_weights")
         or base_scoring.get("base_component_weights")
-        or {}
+        or {},
     )
-    scoring_weights = normalize_component_weight_keys(scoring_weights)
+    scoring_weights = normalize_component_weight_keys(
+        {key: float(value) for key, value in raw_scoring_weights.items()}
+    )
     if not scoring_weights:
         raise RuntimeError("BL-011 could not resolve scoring component weights from baseline snapshot")
-    override_if_present = float(runtime_controls["weight_override_value_if_component_present"])
-    override_increment_fallback = float(runtime_controls["weight_override_increment_fallback"])
-    override_cap_fallback = float(runtime_controls["weight_override_cap_fallback"])
-    stricter_threshold_scale = float(runtime_controls["stricter_threshold_scale"])
-    looser_threshold_scale = float(runtime_controls["looser_threshold_scale"])
+    override_if_present = float(cast(Any, runtime_controls["weight_override_value_if_component_present"]))
+    override_increment_fallback = float(cast(Any, runtime_controls["weight_override_increment_fallback"]))
+    override_cap_fallback = float(cast(Any, runtime_controls["weight_override_cap_fallback"]))
+    stricter_threshold_scale = float(cast(Any, runtime_controls["stricter_threshold_scale"]))
+    looser_threshold_scale = float(cast(Any, runtime_controls["looser_threshold_scale"]))
     if "valence" in scoring_weights:
         override_component = "valence"
         override_raw_value = override_if_present
@@ -211,5 +180,5 @@ def build_scenarios(baseline_snapshot: dict, runtime_controls: dict[str, object]
         },
     ]
     from controllability.scenario_loader import filter_scenarios_by_policy
-    scenario_policy = dict(runtime_controls.get("scenario_policy") or {})
+    scenario_policy = cast(dict[str, Any], runtime_controls.get("scenario_policy") or {})
     return filter_scenarios_by_policy(built_scenarios, scenario_policy)

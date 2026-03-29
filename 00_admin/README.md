@@ -14,20 +14,19 @@
 ## Current Implementation Status
 - ✅ Transparency: Strong (BL-008, BL-009 explanations and logs)
 - ✅ Reproducibility: Strong (BL-010 determinism checks)
-- ⚠️ Controllability: Redesign in progress
-  - Influence tracks: Moving from weak (profile shift) to strong (playlist slots)
-  - Assembly rules: Being exposed for user configuration
-  - Control-effect validation: Adding mandatory measurement
+- ✅ Controllability governance: Phase 1-4 control/transparency framework is in place
+- ✅ Runtime modularity: Phase 5-6 split BL-013 orchestration, BL-011 controllability, and BL-003 alignment helpers into focused modules while preserving stable entrypoints
 
 ## Active Development
-See: `/memories/repo/controllability_transparency_refactor_plan.md`
+Current in-repo implementation work is effectively closed.
+Remaining active work is bounded to submission packaging and any last-mile documentation polish.
 Control audit: `07_implementation/CONTROL_SURFACE_REGISTRY.md`
 
 ---
 
 # 00_admin Control Hub
 
-Last refreshed: 2026-03-27
+Last refreshed: 2026-03-29
 
 ## Purpose
 This folder is the governance and execution-control layer for the thesis. It tracks current state, scope, decisions, changes, timeline, unresolved risks, and mentor interaction artifacts.
@@ -55,11 +54,11 @@ This folder is the governance and execution-control layer for the thesis. It tra
 - `operating_protocol.md`: logging and workflow policy.
 - `templates/`: reusable entry templates.
 
-## Current Open Control Items (as of 2026-03-27)
+## Current Open Control Items (as of 2026-03-29)
 1. No active unresolved governance issue in `unresolved_issues.md`.
 2. Mentor response backlog in `mentor_question_log.md`: MQ-001, MQ-002, MQ-003, MQ-004, and MQ-007 are open (MQ-005, MQ-006, MQ-008 are deferred).
 
-Admin sync checkpoint (2026-03-27): UI-003 closure remains reflected across control files, v1f remains canonical, latest same-day run wave evidence is classified as additional (non-canonical) documentation context, and BL-023 website hardening is now recorded with FastAPI server/regression-test coverage.
+Admin sync checkpoint (2026-03-29): UI-003 closure and v1f canonical posture remain reflected across control files. Phase 5-6 modularization is now also recorded: BL-013 orchestration, BL-011 controllability, and BL-003 alignment support code are split into focused helper modules with thin compatibility entrypoints preserved.
 
 ## Hygiene Rules
 - Keep this folder as the single source of truth for governance state.
