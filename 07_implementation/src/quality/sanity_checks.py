@@ -20,6 +20,7 @@ from pathlib import Path
 from typing import Any
 
 
+from shared_utils.artifact_registry import bl003_required_paths
 from shared_utils.io_utils import load_json as load_json_shared
 from shared_utils.io_utils import sha256_of_file, format_utc_iso
 from shared_utils.path_utils import impl_root
@@ -68,9 +69,10 @@ def main() -> int:
     started = datetime.now(UTC)
     run_id = f"BL014-SANITY-{started.strftime('%Y%m%d-%H%M%S-%f')}"
 
+    bl003_paths = bl003_required_paths(REPO_ROOT)
     artifacts = {
-        "bl003_summary": REPO_ROOT / "alignment/outputs/bl003_ds001_spotify_summary.json",
-        "bl003_seed_table": REPO_ROOT / "alignment/outputs/bl003_ds001_spotify_seed_table.csv",
+        "bl003_summary": bl003_paths["summary"],
+        "bl003_seed_table": bl003_paths["seed_table"],
         "profile": REPO_ROOT / "profile/outputs/bl004_preference_profile.json",
         "bl004_summary": REPO_ROOT / "profile/outputs/profile_summary.json",
         "bl005_filtered": REPO_ROOT / "retrieval/outputs/bl005_filtered_candidates.csv",

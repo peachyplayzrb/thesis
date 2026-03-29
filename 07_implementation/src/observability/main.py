@@ -27,6 +27,35 @@ from shared_utils.stage_runtime_resolver import resolve_run_config_path, resolve
 BL009_OBSERVABILITY_SCHEMA_VERSION = "bl009-observability-v1"
 
 
+def build_signal_mode_calibration_summary(
+    bl005_diagnostics: dict[str, object],
+    bl006_summary: dict[str, object],
+) -> dict[str, object]:
+    retrieval_config = dict(bl005_diagnostics.get("config") or {})
+    scoring_config = dict(bl006_summary.get("config") or {})
+    signal_mode = dict(retrieval_config.get("signal_mode") or scoring_config.get("signal_mode") or {})
+    popularity_profile = dict(signal_mode.get("popularity_profile") or {})
+    component_weights = dict(scoring_config.get("base_component_weights") or {})
+    numeric_thresholds = dict(retrieval_config.get("numeric_thresholds") or {})
+
+    return {
+        "mode_name": signal_mode.get("name"),
+        "semantic_profile": signal_mode.get("semantic_profile"),
+        "numeric_profile": signal_mode.get("numeric_profile"),
+        "retrieval": {
+            "use_weighted_semantics": bool(retrieval_config.get("use_weighted_semantics", False)),
+            "use_continuous_numeric": bool(retrieval_config.get("use_continuous_numeric", False)),
+            "numeric_support_min_score": float(retrieval_config.get("numeric_support_min_score", 0.0) or 0.0),
+            "popularity_numeric_enabled": bool(popularity_profile.get("retrieval_enabled", False)),
+            "numeric_feature_count": len(numeric_thresholds),
+        },
+        "scoring": {
+            "popularity_weight": float(component_weights.get("popularity", 0.0) or 0.0),
+            "popularity_scoring_enabled": bool(popularity_profile.get("scoring_enabled", False)),
+        },
+    }
+
+
 def first_items(values: list[dict[str, str]], limit: int) -> list[dict[str, str]]:
     return values[:limit]
 
@@ -277,6 +306,10 @@ def main() -> None:
 
     canonical_config_artifacts = resolve_canonical_config_artifacts(runtime_controls, root)
     artifact_hashes, artifact_sizes = build_artifact_maps(paths, root, script_keys)
+    retrieval_signal_mode = dict((bl005_diagnostics.get("config") or {}).get("signal_mode") or {})
+    scoring_signal_mode = dict((bl006_summary.get("config") or {}).get("signal_mode") or {})
+    signal_mode = retrieval_signal_mode or scoring_signal_mode
+    signal_mode_calibration = build_signal_mode_calibration_summary(bl005_diagnostics, bl006_summary)
 
     run_log = {
         "run_metadata": {
@@ -305,10 +338,13 @@ def main() -> None:
             "run_config_schema_version": runtime_controls["run_config_schema_version"],
             "run_intent_path": runtime_controls["run_intent_path"],
             "run_effective_config_path": runtime_controls["run_effective_config_path"],
+            "signal_mode_name": signal_mode.get("name"),
         },
         "execution_scope_summary": {
             "observability_schema_version": BL009_OBSERVABILITY_SCHEMA_VERSION,
             "source_family": input_scope.get("source_family"),
+            "signal_mode": signal_mode,
+            "signal_mode_calibration": signal_mode_calibration,
             "interaction_types_included": interaction_types_included,
             "total_seed_count": profile["diagnostics"]["matched_seed_count"],
             "history_track_count": history_track_count,
@@ -322,6 +358,8 @@ def main() -> None:
         "run_config": {
             "control_mode": control_mode,
             "input_scope": input_scope,
+            "signal_mode": signal_mode,
+            "signal_mode_calibration": signal_mode_calibration,
             "canonical_config_artifacts": canonical_config_artifacts,
             "data_layer": (
                 {

@@ -2,8 +2,12 @@
 
 from __future__ import annotations
 
-from profile.models import ProfileControls, ProfileInputs
-from profile.stage import ProfileStage
+from pathlib import Path
+
+import pytest
+
+from profile.models import ProfileAggregation, ProfileControls, ProfileInputs, ProfilePaths
+from profile.stage import NUMERIC_FEATURE_COLUMNS, ProfileStage
 
 
 def _controls(include_types: list[str] | None = None) -> ProfileControls:
@@ -20,6 +24,32 @@ def _controls(include_types: list[str] | None = None) -> ProfileControls:
     )
 
 
+def _inputs(seed_rows: list[dict[str, object]]) -> ProfileInputs:
+    return ProfileInputs(
+        seed_rows=seed_rows,
+        bl003_summary={"inputs": {}},
+        bl003_manifest={"rows_selected": {}, "rows_available": {}},
+        bl003_seed_contract={"seed_contract_schema_version": "bl003-seed-contract-v1"},
+        bl003_structural_contract={
+            "structural_contract_schema_version": "bl003-structural-contract-v1",
+            "seed_table_fieldnames": [
+                "ds001_id",
+                "spotify_track_ids",
+                "interaction_types",
+                "preference_weight_sum",
+                "interaction_count_sum",
+                "tags",
+                "genres",
+                "artist",
+                "song",
+                *NUMERIC_FEATURE_COLUMNS,
+            ],
+        },
+        bl003_seed_contract_hash="seed-hash",
+        bl003_structural_contract_hash="struct-hash",
+    )
+
+
 def test_circular_mean_key_handles_zero_vector() -> None:
     assert ProfileStage.circular_mean_key(0.0, 0.0) is None
 
@@ -31,8 +61,8 @@ def test_sorted_weight_map_is_deterministic_on_ties() -> None:
 
 
 def test_aggregate_inputs_respects_interaction_type_filter() -> None:
-    inputs = ProfileInputs(
-        seed_rows=[
+    inputs = _inputs(
+        [
             {
                 "ds001_id": "track_history",
                 "spotify_track_ids": "sp_hist",
@@ -73,3 +103,258 @@ def test_aggregate_inputs_respects_interaction_type_filter() -> None:
     assert aggregation.counts_by_type["influence"] == 0
     assert "release_year" in aggregation.numeric_profile
     assert round(aggregation.numeric_profile["tempo"], 3) == 100.0
+
+
+def test_aggregate_inputs_uses_confidence_adjusted_effective_weight() -> None:
+    inputs = _inputs(
+        [
+            {
+                "ds001_id": "track_high_conf",
+                "spotify_track_ids": "sp_high",
+                "interaction_types": "history",
+                "preference_weight_sum": "1.0",
+                "interaction_count_sum": "10",
+                "match_confidence_score": "1.0",
+                "tags": "rock",
+                "genres": "rock",
+                "tempo": "100",
+                "release": "2011",
+                "key": "1",
+                "artist": "A",
+                "song": "S1",
+            },
+            {
+                "ds001_id": "track_low_conf",
+                "spotify_track_ids": "sp_low",
+                "interaction_types": "influence",
+                "preference_weight_sum": "1.0",
+                "interaction_count_sum": "10",
+                "match_confidence_score": "0.0",
+                "tags": "jazz",
+                "genres": "jazz",
+                "tempo": "140",
+                "release": "2019",
+                "key": "11",
+                "artist": "B",
+                "song": "S2",
+            },
+        ]
+    )
+
+    aggregation = ProfileStage.aggregate_inputs(inputs, _controls())
+
+    assert aggregation.matched_seed_count == 2
+    assert aggregation.weight_by_type["history"] == 1.0
+    assert aggregation.weight_by_type["influence"] == 0.5
+    assert aggregation.total_effective_weight == 1.5
+    assert aggregation.confidence_adjusted_weight_sum == 1.5
+    assert aggregation.seed_trace_rows[0]["effective_weight"] == 1.0
+    assert aggregation.seed_trace_rows[1]["effective_weight"] == 0.5
+
+
+def test_aggregate_inputs_excludes_blank_track_id_from_missing_numeric_ids() -> None:
+    inputs = _inputs(
+        [
+            {
+                "ds001_id": "",
+                "spotify_track_ids": "sp_only",
+                "interaction_types": "history",
+                "preference_weight_sum": "0.5",
+                "interaction_count_sum": "5",
+                "tags": "ambient",
+                "genres": "ambient",
+                "artist": "A",
+                "song": "S1",
+            }
+        ]
+    )
+
+    aggregation = ProfileStage.aggregate_inputs(inputs, _controls(include_types=["history"]))
+
+    assert aggregation.blank_track_id_row_count == 1
+    assert aggregation.missing_numeric_track_ids == []
+    assert aggregation.seed_trace_rows[0]["track_id"] == "sp_only"
+
+
+def test_build_profile_payload_emits_missing_numeric_diagnostics_keys(tmp_path: Path) -> None:
+    aggregation = ProfileAggregation(
+        input_row_count=3,
+        seed_trace_rows=[{"seed_rank": 1}],
+        numeric_profile={"tempo": 120.0},
+        tag_weights={},
+        genre_weights={},
+        lead_genre_weights={},
+        counts_by_type={"history": 1, "influence": 0},
+        weight_by_type={"history": 1.0, "influence": 0.0},
+        interaction_count_sum_by_type={"history": 5, "influence": 0},
+        numeric_observations={column: 0 for column in NUMERIC_FEATURE_COLUMNS},
+        missing_numeric_track_ids=["track_1", "track_2"],
+        blank_track_id_row_count=1,
+        total_effective_weight=1.0,
+        confidence_adjusted_weight_sum=0.8,
+        confidence_bins={
+            "high_0_9_plus": 1,
+            "medium_0_5_to_0_9": 0,
+            "low_below_0_5": 0,
+        },
+        match_method_counts={
+            "spotify_id_exact": 1,
+            "metadata_fallback": 0,
+            "fuzzy_title_artist": 0,
+        },
+        history_preference_weight_sum=1.0,
+        influence_preference_weight_sum=0.0,
+        history_interaction_count_sum=5,
+        influence_interaction_count_sum=0,
+        matched_seed_count=1,
+    )
+
+    controls = _controls()
+    seed_table_path = tmp_path / "seed.csv"
+    seed_table_path.write_text("ds001_id\ntrack_1\n", encoding="utf-8")
+
+    paths = ProfilePaths(
+        seed_table_path=seed_table_path,
+        bl003_summary_path=Path("bl003_summary.json"),
+        bl003_manifest_path=Path("bl003_manifest.json"),
+        output_dir=Path("outputs"),
+        seed_trace_path=Path("seed_trace.csv"),
+        profile_path=Path("profile.json"),
+        summary_path=Path("summary.json"),
+    )
+    inputs = _inputs([])
+
+    payload = ProfileStage.build_profile_payload(
+        run_id="BL004-test",
+        controls=controls,
+        paths=paths,
+        inputs=inputs,
+        aggregation=aggregation,
+        elapsed_seconds=0.1,
+    )
+    diagnostics = payload["diagnostics"]
+
+    assert diagnostics["missing_numeric_track_count"] == 2
+    assert diagnostics["missing_numeric_track_ids"] == ["track_1", "track_2"]
+    assert diagnostics["blank_track_id_rows"] == 1
+    assert diagnostics["confidence_adjusted_weight_sum"] == 0.8
+    assert diagnostics["match_method_counts"]["spotify_id_exact"] == 1
+    assert payload["input_artifacts"]["bl003_seed_contract_hash"] == "seed-hash"
+    assert payload["input_artifacts"]["bl003_structural_contract_hash"] == "struct-hash"
+
+
+def test_validate_seed_table_schema_raises_on_missing_contract_columns() -> None:
+    seed_rows = [
+        {
+            "ds001_id": "track_1",
+            "spotify_track_ids": "sp_1",
+            "interaction_types": "history",
+            "preference_weight_sum": "0.5",
+            "interaction_count_sum": "5",
+            "tags": "ambient",
+            "genres": "ambient",
+            "artist": "A",
+            "song": "S",
+            "danceability": "0.1",
+            "energy": "0.2",
+            "valence": "0.3",
+            "tempo": "100",
+            "key": "1",
+            "mode": "1",
+            "popularity": "10",
+            "duration_ms": "200000",
+            "release": "2020",
+        }
+    ]
+    structural_contract = {
+        "seed_table_fieldnames": [
+            "ds001_id",
+            "spotify_track_ids",
+            "interaction_types",
+            "preference_weight_sum",
+            "interaction_count_sum",
+            "missing_column_from_seed_table",
+        ]
+    }
+
+    with pytest.raises(RuntimeError, match="missing columns"):
+        ProfileStage._validate_seed_table_schema(seed_rows, structural_contract)
+
+
+def test_build_summary_payload_includes_bl003_coverage() -> None:
+    controls = _controls()
+    paths = ProfilePaths(
+        seed_table_path=Path("seed.csv"),
+        bl003_summary_path=Path("bl003_summary.json"),
+        bl003_manifest_path=Path("bl003_manifest.json"),
+        output_dir=Path("outputs"),
+        seed_trace_path=Path("seed_trace.csv"),
+        profile_path=Path("profile.json"),
+        summary_path=Path("summary.json"),
+    )
+    inputs = ProfileInputs(
+        seed_rows=[],
+        bl003_summary={
+            "counts": {
+                "input_event_rows": 10,
+                "matched_by_spotify_id": 5,
+                "matched_by_metadata": 2,
+                "matched_by_fuzzy": 1,
+                "unmatched": 2,
+            }
+        },
+        bl003_manifest={
+            "rows_selected": {"top_tracks": 50},
+            "rows_available": {"top_tracks": 60},
+        },
+        bl003_seed_contract={"seed_contract_schema_version": "bl003-seed-contract-v1"},
+        bl003_structural_contract={"structural_contract_schema_version": "bl003-structural-contract-v1"},
+        bl003_seed_contract_hash="seed-hash",
+        bl003_structural_contract_hash="struct-hash",
+    )
+    aggregation = ProfileAggregation(
+        input_row_count=1,
+        seed_trace_rows=[{"seed_rank": 1}],
+        numeric_profile={"tempo": 120.0},
+        tag_weights={},
+        genre_weights={},
+        lead_genre_weights={},
+        counts_by_type={"history": 1, "influence": 0},
+        weight_by_type={"history": 1.0, "influence": 0.0},
+        interaction_count_sum_by_type={"history": 5, "influence": 0},
+        numeric_observations={column: 0 for column in NUMERIC_FEATURE_COLUMNS},
+        missing_numeric_track_ids=[],
+        blank_track_id_row_count=0,
+        total_effective_weight=1.0,
+        confidence_adjusted_weight_sum=0.9,
+        confidence_bins={
+            "high_0_9_plus": 1,
+            "medium_0_5_to_0_9": 0,
+            "low_below_0_5": 0,
+        },
+        match_method_counts={
+            "spotify_id_exact": 1,
+            "metadata_fallback": 0,
+            "fuzzy_title_artist": 0,
+        },
+        history_preference_weight_sum=1.0,
+        influence_preference_weight_sum=0.0,
+        history_interaction_count_sum=5,
+        influence_interaction_count_sum=0,
+        matched_seed_count=1,
+    )
+
+    payload = ProfileStage.build_summary_payload(
+        run_id="BL004-test",
+        controls=controls,
+        paths=paths,
+        inputs=inputs,
+        profile={"semantic_profile": {}, "input_artifacts": {}},
+        aggregation=aggregation,
+    )
+
+    coverage = payload["bl003_coverage"]
+    assert coverage["rows_selected"]["top_tracks"] == 50
+    assert coverage["rows_available"]["top_tracks"] == 60
+    assert coverage["match_counts"]["matched_total"] == 8
+    assert coverage["match_counts"]["match_rate"] == 0.8

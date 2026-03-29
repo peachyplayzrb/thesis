@@ -13,10 +13,14 @@ from shared_utils.constants import (
     DEFAULT_LANGUAGE_FILTER_ENABLED,
     DEFAULT_LEAD_GENRE_PARTIAL_MATCH_THRESHOLD,
     DEFAULT_NUMERIC_SUPPORT_MIN_PASS,
+    DEFAULT_NUMERIC_SUPPORT_MIN_SCORE,
     DEFAULT_PROFILE_TOP_GENRE_LIMIT,
     DEFAULT_PROFILE_TOP_LEAD_GENRE_LIMIT,
     DEFAULT_PROFILE_TOP_TAG_LIMIT,
     DEFAULT_RECENCY_YEARS_MIN_OFFSET,
+    DEFAULT_RETRIEVAL_ENABLE_POPULARITY_NUMERIC,
+    DEFAULT_RETRIEVAL_USE_CONTINUOUS_NUMERIC,
+    DEFAULT_RETRIEVAL_USE_WEIGHTED_SEMANTICS,
     DEFAULT_SEMANTIC_MIN_KEEP_SCORE,
     DEFAULT_SEMANTIC_STRONG_KEEP_SCORE,
     NUMERIC_FEATURE_SPECS,
@@ -30,7 +34,7 @@ from shared_utils.stage_utils import ensure_paths_exist
 from retrieval.candidate_evaluator import RetrievalEvaluator
 from retrieval.candidate_parser import normalize_candidate_row
 from retrieval.models import NumericFeatureSpec, RetrievalContext, RetrievalControls, RetrievalInputs, RetrievalPaths
-from retrieval.profile_builder import build_active_numeric_specs, build_profile_label_set
+from retrieval.profile_builder import build_active_numeric_specs, build_profile_label_set, build_profile_weight_map
 
 
 DECISION_FIELDS = [
@@ -38,6 +42,9 @@ DECISION_FIELDS = [
     "is_seed_track",
     "lead_genre",
     "semantic_score",
+    "lead_genre_similarity",
+    "genre_overlap_score",
+    "tag_overlap_score",
     "lead_genre_match",
     "genre_overlap_count",
     "tag_overlap_count",
@@ -46,13 +53,23 @@ DECISION_FIELDS = [
     "release_year",
     "release_year_distance",
     "numeric_pass_count",
+    "numeric_support_score",
     "danceability_distance",
+    "danceability_similarity",
     "energy_distance",
+    "energy_similarity",
     "valence_distance",
+    "valence_similarity",
     "tempo_distance",
+    "tempo_similarity",
+    "popularity_distance",
+    "popularity_similarity",
     "duration_ms_distance",
+    "duration_ms_similarity",
     "key_distance",
+    "key_similarity",
     "mode_distance",
+    "mode_similarity",
     "decision",
     "decision_path",
     "decision_reason",
@@ -97,6 +114,10 @@ class RetrievalStage:
         semantic_strong_keep_score = max(0, min(3, int(str(payload["semantic_strong_keep_score"]))))
         semantic_min_keep_score = max(0, min(3, int(str(payload["semantic_min_keep_score"]))))
         numeric_support_min_pass = max(0, int(str(payload["numeric_support_min_pass"])))
+        numeric_support_min_score = max(
+            0.0,
+            float(str(payload.get("numeric_support_min_score", numeric_support_min_pass))),
+        )
         lead_genre_partial_match_threshold = max(
             0.0,
             min(
@@ -104,6 +125,9 @@ class RetrievalStage:
                 float(str(payload.get("lead_genre_partial_match_threshold", DEFAULT_LEAD_GENRE_PARTIAL_MATCH_THRESHOLD))),
             ),
         )
+        use_weighted_semantics = bool(payload.get("use_weighted_semantics", False))
+        use_continuous_numeric = bool(payload.get("use_continuous_numeric", False))
+        enable_popularity_numeric = bool(payload.get("enable_popularity_numeric", False))
 
         language_filter_codes = self._normalize_language_codes(payload.get("language_filter_codes", []))
         language_filter_enabled = bool(payload.get("language_filter_enabled", False)) and bool(language_filter_codes)
@@ -127,13 +151,18 @@ class RetrievalStage:
             run_config_schema_version=(
                 str(run_config_schema_version_raw) if run_config_schema_version_raw else None
             ),
+            signal_mode={str(k): v for k, v in dict(payload.get("signal_mode") or {}).items()},
             profile_top_lead_genre_limit=profile_top_lead_genre_limit,
             profile_top_tag_limit=profile_top_tag_limit,
             profile_top_genre_limit=profile_top_genre_limit,
             semantic_strong_keep_score=semantic_strong_keep_score,
             semantic_min_keep_score=semantic_min_keep_score,
             numeric_support_min_pass=numeric_support_min_pass,
+            numeric_support_min_score=numeric_support_min_score,
             lead_genre_partial_match_threshold=lead_genre_partial_match_threshold,
+            use_weighted_semantics=use_weighted_semantics,
+            use_continuous_numeric=use_continuous_numeric,
+            enable_popularity_numeric=enable_popularity_numeric,
             language_filter_enabled=language_filter_enabled,
             language_filter_codes=language_filter_codes,
             recency_years_min_offset=recency_years_min_offset,
@@ -156,6 +185,22 @@ class RetrievalStage:
         env_lead_genre_partial_match_threshold = env_float(
             "BL005_LEAD_GENRE_PARTIAL_MATCH_THRESHOLD",
             DEFAULT_LEAD_GENRE_PARTIAL_MATCH_THRESHOLD,
+        )
+        env_numeric_support_min_score = env_float(
+            "BL005_NUMERIC_SUPPORT_MIN_SCORE",
+            DEFAULT_NUMERIC_SUPPORT_MIN_SCORE,
+        )
+        env_use_weighted_semantics = env_bool(
+            "BL005_USE_WEIGHTED_SEMANTICS",
+            DEFAULT_RETRIEVAL_USE_WEIGHTED_SEMANTICS,
+        )
+        env_use_continuous_numeric = env_bool(
+            "BL005_USE_CONTINUOUS_NUMERIC",
+            DEFAULT_RETRIEVAL_USE_CONTINUOUS_NUMERIC,
+        )
+        env_enable_popularity_numeric = env_bool(
+            "BL005_ENABLE_POPULARITY_NUMERIC",
+            DEFAULT_RETRIEVAL_ENABLE_POPULARITY_NUMERIC,
         )
 
         env_language_filter_codes = [
@@ -180,10 +225,17 @@ class RetrievalStage:
                     "semantic_strong_keep_score": int(controls["semantic_strong_keep_score"]),
                     "semantic_min_keep_score": int(controls["semantic_min_keep_score"]),
                     "numeric_support_min_pass": int(controls["numeric_support_min_pass"]),
+                    "numeric_support_min_score": controls.get(
+                        "numeric_support_min_score",
+                        DEFAULT_NUMERIC_SUPPORT_MIN_SCORE,
+                    ),
                     "lead_genre_partial_match_threshold": controls.get(
                         "lead_genre_partial_match_threshold",
                         DEFAULT_LEAD_GENRE_PARTIAL_MATCH_THRESHOLD,
                     ),
+                    "use_weighted_semantics": bool(controls.get("use_weighted_semantics", False)),
+                    "use_continuous_numeric": bool(controls.get("use_continuous_numeric", False)),
+                    "enable_popularity_numeric": bool(controls.get("enable_popularity_numeric", False)),
                     "language_filter_enabled": bool(
                         controls.get("language_filter_enabled", DEFAULT_LANGUAGE_FILTER_ENABLED)
                     ),
@@ -224,7 +276,11 @@ class RetrievalStage:
                     "BL005_NUMERIC_SUPPORT_MIN_PASS",
                     DEFAULT_NUMERIC_SUPPORT_MIN_PASS,
                 ),
+                "numeric_support_min_score": env_numeric_support_min_score,
                 "lead_genre_partial_match_threshold": env_lead_genre_partial_match_threshold,
+                "use_weighted_semantics": env_use_weighted_semantics,
+                "use_continuous_numeric": env_use_continuous_numeric,
+                "enable_popularity_numeric": env_enable_popularity_numeric,
                 "language_filter_enabled": env_language_filter_enabled,
                 "language_filter_codes": env_language_filter_codes,
                 "recency_years_min_offset": env_recency_years_min_offset,
@@ -266,6 +322,7 @@ class RetrievalStage:
                 circular=bool(spec["circular"]),
             )
             for key, spec in NUMERIC_FEATURE_SPECS.items()
+            if controls.enable_popularity_numeric or key != "popularity"
         }
 
         seed_track_ids = {str(row["track_id"]) for row in inputs.seed_trace_rows}
@@ -276,12 +333,27 @@ class RetrievalStage:
             "top_lead_genres",
             controls.profile_top_lead_genre_limit,
         )
+        lead_genre_weights = build_profile_weight_map(
+            inputs.profile,
+            "top_lead_genres",
+            controls.profile_top_lead_genre_limit,
+        )
         top_tags = build_profile_label_set(
             inputs.profile,
             "top_tags",
             controls.profile_top_tag_limit,
         )
+        tag_weights = build_profile_weight_map(
+            inputs.profile,
+            "top_tags",
+            controls.profile_top_tag_limit,
+        )
         top_genres = build_profile_label_set(
+            inputs.profile,
+            "top_genres",
+            controls.profile_top_genre_limit,
+        )
+        genre_weights = build_profile_weight_map(
             inputs.profile,
             "top_genres",
             controls.profile_top_genre_limit,
@@ -312,20 +384,27 @@ class RetrievalStage:
         )
 
         return RetrievalContext(
+            signal_mode=dict(controls.signal_mode),
             profile_top_lead_genre_limit=controls.profile_top_lead_genre_limit,
             profile_top_tag_limit=controls.profile_top_tag_limit,
             profile_top_genre_limit=controls.profile_top_genre_limit,
             semantic_strong_keep_score=controls.semantic_strong_keep_score,
             semantic_min_keep_score=controls.semantic_min_keep_score,
             numeric_support_min_pass=controls.numeric_support_min_pass,
+            numeric_support_min_score=controls.numeric_support_min_score,
             lead_genre_partial_match_threshold=controls.lead_genre_partial_match_threshold,
             active_numeric_specs=active_numeric_specs,
             seed_track_ids=seed_track_ids,
             top_lead_genres=top_lead_genres,
             top_tags=top_tags,
             top_genres=top_genres,
+            lead_genre_weights=lead_genre_weights,
+            tag_weights=tag_weights,
+            genre_weights=genre_weights,
             numeric_centers=numeric_centers,
             numeric_features_enabled=numeric_features_enabled,
+            use_weighted_semantics=controls.use_weighted_semantics,
+            use_continuous_numeric=controls.use_continuous_numeric,
             language_filter_enabled=controls.language_filter_enabled,
             language_filter_codes=language_filter_codes,
             recency_years_min_offset=controls.recency_years_min_offset,
@@ -391,10 +470,14 @@ class RetrievalStage:
                 "top_lead_genre_limit": runtime_context.profile_top_lead_genre_limit,
                 "top_tag_limit": runtime_context.profile_top_tag_limit,
                 "top_genre_limit": runtime_context.profile_top_genre_limit,
+                "signal_mode": dict(runtime_context.signal_mode),
                 "numeric_thresholds": {
                     profile_column: spec.threshold
                     for profile_column, spec in runtime_context.active_numeric_specs.items()
                 },
+                "numeric_support_min_score": runtime_context.numeric_support_min_score,
+                "use_weighted_semantics": runtime_context.use_weighted_semantics,
+                "use_continuous_numeric": runtime_context.use_continuous_numeric,
                 "language_filter": {
                     "enabled": runtime_context.language_filter_enabled,
                     "codes": list(runtime_context.language_filter_codes),
@@ -411,7 +494,9 @@ class RetrievalStage:
                 "numeric_features_enabled": runtime_context.numeric_features_enabled,
                 "keep_rule": (
                     f"keep if not seed and (semantic_score >= {runtime_context.semantic_strong_keep_score} or "
-                    f"(semantic_score >= {runtime_context.semantic_min_keep_score} and numeric_pass_count >= {runtime_context.numeric_support_min_pass}))"
+                    f"(semantic_score >= {runtime_context.semantic_min_keep_score} and "
+                    f"{'numeric_support_score' if runtime_context.use_continuous_numeric else 'numeric_pass_count'} >= "
+                    f"{runtime_context.numeric_support_min_score if runtime_context.use_continuous_numeric else runtime_context.numeric_support_min_pass}))"
                     if runtime_context.numeric_features_enabled
                     else f"keep if not seed and semantic_score >= {runtime_context.semantic_min_keep_score}"
                 ),
@@ -433,6 +518,7 @@ class RetrievalStage:
             "score_distributions": {
                 "semantic_score": summary["semantic_score_distribution"],
                 "numeric_pass_count": summary["numeric_pass_distribution"],
+                "numeric_support_score": summary.get("numeric_support_score_distribution", {}),
             },
             "top_kept_track_ids": [str(row["track_id"]) for row in kept_rows[:15]],
             "elapsed_seconds": round(elapsed_seconds, 3),

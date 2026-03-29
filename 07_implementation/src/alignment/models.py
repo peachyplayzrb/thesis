@@ -3,7 +3,65 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
+from pathlib import Path
 from typing import Any
+
+from alignment.constants import (
+    ALIGNMENT_ARTIFACT_SCHEMA_VERSION,
+    ALIGNMENT_DEFAULT_RELATIVE_PATHS,
+    ALIGNMENT_OUTPUT_FILENAMES,
+    ALIGNMENT_SOURCE_SCOPE_MANIFEST_SCHEMA_VERSION,
+    ALIGNMENT_SUMMARY_SCHEMA_VERSION,
+    FLOAT_PRECISION_DECIMALS,
+    INTERACTION_TYPE_HISTORY,
+    SEED_TABLE_FIELDNAMES,
+    SOURCE_PLAYLIST_ITEMS,
+    SOURCE_RECENTLY_PLAYED,
+    SOURCE_SAVED_TRACKS,
+    SPOTIFY_EXPORT_FILENAMES,
+    TRACE_FIELDNAMES,
+)
+
+
+@dataclass(frozen=True, slots=True)
+class AlignmentBehaviorControls:
+    input_scope: dict[str, object]
+    top_range_weights: dict[str, float]
+    source_base_weights: dict[str, float]
+    decay_half_lives: dict[str, float]
+    match_rate_min_threshold: float
+    fuzzy_matching_controls: dict[str, Any]
+    match_strategy: dict[str, bool]
+    match_strategy_order: list[str]
+    temporal_controls: dict[str, Any]
+    aggregation_policy: dict[str, Any]
+    weighting_policy: dict[str, Any] | None
+    influence_controls: dict[str, Any]
+
+
+@dataclass(frozen=True, slots=True)
+class AlignmentStructuralContract:
+    spotify_export_filenames: dict[str, str]
+    output_filenames: dict[str, str]
+    trace_fieldnames: list[str]
+    seed_table_fieldnames: list[str]
+    artifact_schema_version: str
+    summary_schema_version: str
+    source_scope_manifest_schema_version: str
+    default_relative_paths: dict[str, Path]
+
+    @classmethod
+    def from_defaults(cls) -> AlignmentStructuralContract:
+        return cls(
+            spotify_export_filenames=dict(SPOTIFY_EXPORT_FILENAMES),
+            output_filenames=dict(ALIGNMENT_OUTPUT_FILENAMES),
+            trace_fieldnames=list(TRACE_FIELDNAMES),
+            seed_table_fieldnames=list(SEED_TABLE_FIELDNAMES),
+            artifact_schema_version=ALIGNMENT_ARTIFACT_SCHEMA_VERSION,
+            summary_schema_version=ALIGNMENT_SUMMARY_SCHEMA_VERSION,
+            source_scope_manifest_schema_version=ALIGNMENT_SOURCE_SCOPE_MANIFEST_SCHEMA_VERSION,
+            default_relative_paths=dict(ALIGNMENT_DEFAULT_RELATIVE_PATHS),
+        )
 
 
 @dataclass(slots=True)
@@ -25,9 +83,9 @@ class SourceEvent:
     @classmethod
     def from_raw_row(cls, source_type: str, row_index: int, row: dict[str, str]) -> SourceEvent:
         event_time = ""
-        if source_type in {"saved_tracks", "playlist_items"}:
+        if source_type in {SOURCE_SAVED_TRACKS, SOURCE_PLAYLIST_ITEMS}:
             event_time = (row.get("added_at") or "").strip()
-        elif source_type == "recently_played":
+        elif source_type == SOURCE_RECENTLY_PLAYED:
             event_time = (row.get("played_at") or "").strip()
 
         return cls(
@@ -125,7 +183,7 @@ class MatchTrace:
             playlist_id=event.playlist_id,
             playlist_name=event.playlist_name,
             playlist_position=event.playlist_position,
-            preference_weight=f"{preference_weight:.6f}",
+            preference_weight=f"{preference_weight:.{FLOAT_PRECISION_DECIMALS}f}",
         )
 
     def to_dict(self) -> dict[str, str]:
@@ -242,7 +300,7 @@ class MatchedEvent:
             lang=str(payload.get("lang", "")),
             preference_weight=float(payload.get("preference_weight", 0.0)),
             interaction_count=_as_int(payload.get("interaction_count"), 0),
-            interaction_type=str(payload.get("interaction_type", "history")),
+            interaction_type=str(payload.get("interaction_type", INTERACTION_TYPE_HISTORY)),
         )
 
     def to_dict(self) -> dict[str, Any]:
@@ -337,7 +395,7 @@ class AggregatedEvent:
         self.source_types.add(event.source_type)
         if event.spotify_track_id:
             self.spotify_track_ids.add(event.spotify_track_id)
-        for interaction_type in str(event.interaction_type or "history").split(","):
+        for interaction_type in str(event.interaction_type or INTERACTION_TYPE_HISTORY).split(","):
             token = interaction_type.strip()
             if token:
                 self.interaction_types.add(token)
@@ -368,3 +426,74 @@ class AggregatedEvent:
             "interaction_types": self.interaction_types,
             "spotify_track_ids": self.spotify_track_ids,
         }
+
+
+@dataclass(frozen=True, slots=True)
+class AlignmentPaths:
+    ds001_path: Path
+    spotify_dir: Path
+    output_dir: Path
+    top_path: Path
+    saved_path: Path
+    playlist_items_path: Path
+    recently_played_path: Path
+    summary_path: Path
+    source_scope_manifest_path: Path
+
+
+@dataclass(frozen=True, slots=True)
+class AlignmentSourceRows:
+    top_rows: list[dict[str, str]]
+    saved_rows: list[dict[str, str]]
+    playlist_rows: list[dict[str, str]]
+    recent_rows: list[dict[str, str]]
+    top_exists: bool
+    saved_exists: bool
+    playlist_exists: bool
+    recent_exists: bool
+
+
+@dataclass(frozen=True, slots=True)
+class AlignmentRunArtifacts:
+    summary_path: Path
+    summary_counts: dict[str, int]
+    matched_events_rows: int
+    seed_table_rows: int
+    trace_rows: int
+    unmatched_rows: int
+
+
+@dataclass(frozen=True, slots=True)
+class AlignmentSummaryMetrics:
+    summary_counts: dict[str, int]
+    matched_events_rows: int
+    seed_table_rows: int
+    trace_rows: int
+    unmatched_rows: int
+
+
+@dataclass(frozen=True, slots=True)
+class AlignmentSummaryContext:
+    elapsed_seconds: float
+    ds001_path: Path
+    spotify_dir: Path
+    top_path: Path
+    saved_path: Path
+    playlist_items_path: Path
+    recently_played_path: Path
+    export_selection: dict[str, Any]
+    runtime_scope: dict[str, Any]
+    input_scope: dict[str, Any]
+    influence_contract: dict[str, Any]
+    expected_sources: dict[str, bool]
+    available_sources: dict[str, bool]
+    missing_selected_sources: list[str]
+    allow_missing_selected_sources: bool
+    source_stats: dict[str, Any]
+    scope_filter_stats: dict[str, Any]
+    behavior_controls: AlignmentBehaviorControls
+    structural_contract: AlignmentStructuralContract
+    metrics: AlignmentSummaryMetrics
+    output_paths: dict[str, Path]
+    match_rate_min_threshold: float
+    fuzzy_matching_controls: dict[str, Any]

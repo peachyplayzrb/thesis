@@ -33,6 +33,7 @@ def execute_profile_stage(
     lead_genre_weights: dict[str, float] = {}
     seed_trace_rows: list[dict[str, object]] = []
     missing_track_ids: list[str] = []
+    blank_track_id_row_count = 0
     counts_by_type = {"history": 0, "influence": 0}
     weight_by_type = {"history": 0.0, "influence": 0.0}
 
@@ -42,7 +43,10 @@ def execute_profile_stage(
     user_id = next(iter(user_ids))
 
     for event in selected_events:
-        track_id = str(event["track_id"])
+        track_id = str(event["track_id"]).strip()
+        if not track_id:
+            blank_track_id_row_count += 1
+            continue
         candidate = candidate_rows_by_id.get(track_id)
         if candidate is None:
             missing_track_ids.append(track_id)
@@ -124,8 +128,9 @@ def execute_profile_stage(
         "diagnostics": {
             "events_total": len(selected_events),
             "matched_seed_count": len(seed_trace_rows),
-            "missing_seed_count": len(missing_track_ids),
-            "missing_track_ids": missing_track_ids,
+            "missing_candidate_track_count": len(missing_track_ids),
+            "missing_candidate_track_ids": missing_track_ids,
+            "blank_track_id_rows": blank_track_id_row_count,
             "candidate_rows_total": len(candidate_rows_by_id),
             "total_effective_weight": total_effective_weight,
             "weight_by_interaction_type": {key: round(value, 6) for key, value in weight_by_type.items() if value > 0},
@@ -188,7 +193,7 @@ def execute_profile_stage(
                     "diagnostics": {
                         "events_total": diagnostics["events_total"],
                         "matched_seed_count": diagnostics["matched_seed_count"],
-                        "missing_seed_count": diagnostics["missing_seed_count"],
+                        "missing_candidate_track_count": diagnostics["missing_candidate_track_count"],
                         "candidate_rows_total": diagnostics["candidate_rows_total"],
                         "total_effective_weight": diagnostics["total_effective_weight"],
                         "weight_by_interaction_type": diagnostics["weight_by_interaction_type"],

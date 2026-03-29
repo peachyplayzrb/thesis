@@ -119,6 +119,7 @@ class ScoringStage:
             raise RuntimeError("BL-006 active component weights must sum to 1.0")
 
         return ScoringContext(
+            signal_mode=dict(controls.signal_mode),
             effective_component_weights=effective_component_weights,
             active_numeric_specs=active_numeric_specs,
             profile_scoring_data=profile_scoring_data,
@@ -173,6 +174,8 @@ class ScoringStage:
                     "tempo_contribution": weighted_contributions.get("tempo_contribution", 0.0),
                     "duration_ms_similarity": component_scores.get("duration_ms_similarity", 0.0),
                     "duration_ms_contribution": weighted_contributions.get("duration_ms_contribution", 0.0),
+                    "popularity_similarity": component_scores.get("popularity_similarity", 0.0),
+                    "popularity_contribution": weighted_contributions.get("popularity_contribution", 0.0),
                     "key_similarity": component_scores.get("key_similarity", 0.0),
                     "key_contribution": weighted_contributions.get("key_contribution", 0.0),
                     "mode_similarity": component_scores.get("mode_similarity", 0.0),
@@ -247,6 +250,7 @@ class ScoringStage:
                 "filtered_candidates_sha256": sha256_of_file(paths.filtered_candidates_path),
             },
             "config": {
+                "signal_mode": dict(context.signal_mode),
                 "numeric_thresholds": {
                     profile_column: spec["threshold"]
                     for profile_column, spec in context.active_numeric_specs.items()

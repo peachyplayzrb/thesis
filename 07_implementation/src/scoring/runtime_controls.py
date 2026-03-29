@@ -80,6 +80,7 @@ def resolve_bl006_runtime_controls(default_weights: dict[str, float]) -> dict[st
             "config_source": "run_config",
             "run_config_path": controls.get("config_path"),
             "run_config_schema_version": controls.get("schema_version"),
+            "signal_mode": dict(controls.get("signal_mode") or {}),
             "component_weights": dict(controls.get("component_weights") or default_weights),
             "numeric_thresholds": dict(controls.get("numeric_thresholds") or {}),
         }
@@ -87,6 +88,7 @@ def resolve_bl006_runtime_controls(default_weights: dict[str, float]) -> dict[st
         "config_source": "environment",
         "run_config_path": None,
         "run_config_schema_version": None,
+        "signal_mode": {},
         "component_weights": load_component_weight_overrides(default_weights),
         "numeric_thresholds": _load_bl006_numeric_thresholds_from_env(),
     }

@@ -13,12 +13,17 @@ def _controls(*, recency_offset: int | None = 5) -> RetrievalControls:
         config_source="test",
         run_config_path=None,
         run_config_schema_version=None,
+        signal_mode={"name": "custom"},
         profile_top_lead_genre_limit=3,
         profile_top_tag_limit=3,
         profile_top_genre_limit=3,
         semantic_strong_keep_score=2,
         semantic_min_keep_score=1,
         numeric_support_min_pass=1,
+        numeric_support_min_score=1.0,
+        use_weighted_semantics=False,
+        use_continuous_numeric=False,
+        enable_popularity_numeric=False,
         lead_genre_partial_match_threshold=0.5,
         language_filter_enabled=True,
         language_filter_codes=["en"],
@@ -112,5 +117,6 @@ def test_build_diagnostics_payload_includes_expected_counts(tmp_path: Path) -> N
     assert payload["task"] == "BL-005"
     assert payload["counts"]["seed_tracks_excluded"] == 1
     assert payload["counts"]["rejected_by_language_filter"] == 1
+    assert payload["config"]["signal_mode"]["name"] == "custom"
     assert payload["config"]["language_filter"]["enabled"] is True
     assert payload["output_files"]["filtered_candidates_path"] == str(filtered_path)

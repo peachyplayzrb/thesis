@@ -9,6 +9,47 @@ from __future__ import annotations
 
 from typing import Any
 
+from alignment.constants import (
+    DEFAULT_INFLUENCE_PREFERENCE_WEIGHT,
+    INTERACTION_COUNT_WEIGHT_SCALE,
+    INTERACTION_TYPE_HISTORY_INFLUENCE,
+    INTERACTION_TYPE_INFLUENCE,
+    MATCH_METHOD_INFLUENCE_DIRECT,
+    SOURCE_INFLUENCE,
+    format_influence_event_id,
+)
+
+_DS001_PASSTHROUGH_FIELDS: tuple[str, ...] = (
+    "song", "release", "duration_ms", "popularity",
+    "danceability", "energy", "key", "mode", "valence", "tempo", "genres", "tags", "lang",
+)
+
+
+def _make_influence_event(
+    candidate: dict[str, Any],
+    event_id: str,
+    infl_weight: float,
+) -> dict[str, Any]:
+    return {
+        "event_id": event_id,
+        "source_type": SOURCE_INFLUENCE,
+        "source_row_index": 0,
+        "source_timestamp": "",
+        "spotify_track_id": candidate.get("spotify_id", ""),
+        "spotify_isrc": "",
+        "spotify_track_name": candidate.get("song", ""),
+        "spotify_artist_names": candidate.get("artist", ""),
+        "match_method": MATCH_METHOD_INFLUENCE_DIRECT,
+        "duration_delta_ms": None,
+        "ds001_id": candidate.get("id", ""),
+        "ds001_spotify_id": candidate.get("spotify_id", ""),
+        "artist": candidate.get("artist", ""),
+        **{f: candidate.get(f, "") for f in _DS001_PASSTHROUGH_FIELDS},
+        "preference_weight": infl_weight,
+        "interaction_count": max(1, int(round(infl_weight * INTERACTION_COUNT_WEIGHT_SCALE))),
+        "interaction_type": INTERACTION_TYPE_INFLUENCE,
+    }
+from alignment.models import AlignmentBehaviorControls
 from shared_utils.config_loader import load_run_config_utils_module
 from alignment.resolved_context import AlignmentResolvedContext
 
@@ -18,6 +59,7 @@ def inject_influence_tracks(
     by_ds001_id: dict[str, dict[str, str]],
     run_config_path: str | None = None,
     *,
+    behavior_controls: AlignmentBehaviorControls | None = None,
     context: AlignmentResolvedContext | None = None,
 ) -> dict[str, Any]:
     """
@@ -27,7 +69,9 @@ def inject_influence_tracks(
     When run_config_path is None, returns a disabled contract with zero counts.
     """
     if context is not None:
-        infl = dict(context.influence_controls)
+        infl = dict(context.behavior_controls.influence_controls)
+    elif behavior_controls is not None:
+        infl = dict(behavior_controls.influence_controls)
     elif run_config_path:
         _rc_utils = load_run_config_utils_module()
         infl = _rc_utils.resolve_bl003_influence_controls(run_config_path)
@@ -35,7 +79,7 @@ def inject_influence_tracks(
         return {
             "enabled": False,
             "track_ids": [],
-            "preference_weight": 1.0,
+            "preference_weight": DEFAULT_INFLUENCE_PREFERENCE_WEIGHT,
             "injected_count": 0,
             "skipped_track_ids": [],
         }
@@ -62,40 +106,13 @@ def inject_influence_tracks(
             if track_id in existing_ds001_ids:
                 for ev in matched_events:
                     if str(ev["ds001_id"]) == track_id:
-                        ev["interaction_type"] = "history,influence"
+                        ev["interaction_type"] = INTERACTION_TYPE_HISTORY_INFLUENCE
             else:
-                infl_event: dict[str, Any] = {
-                    "event_id": f"ds001_influence_{influence_injected_count + 1:06d}",
-                    "source_type": "influence",
-                    "source_row_index": 0,
-                    "source_timestamp": "",
-                    "spotify_track_id": candidate.get("spotify_id", ""),
-                    "spotify_isrc": "",
-                    "spotify_track_name": candidate.get("song", ""),
-                    "spotify_artist_names": candidate.get("artist", ""),
-                    "match_method": "influence_direct",
-                    "duration_delta_ms": None,
-                    "ds001_id": candidate.get("id", ""),
-                    "ds001_spotify_id": candidate.get("spotify_id", ""),
-                    "artist": candidate.get("artist", ""),
-                    "song": candidate.get("song", ""),
-                    "release": candidate.get("release", ""),
-                    "duration_ms": candidate.get("duration_ms", ""),
-                    "popularity": candidate.get("popularity", ""),
-                    "danceability": candidate.get("danceability", ""),
-                    "energy": candidate.get("energy", ""),
-                    "key": candidate.get("key", ""),
-                    "mode": candidate.get("mode", ""),
-                    "valence": candidate.get("valence", ""),
-                    "tempo": candidate.get("tempo", ""),
-                    "genres": candidate.get("genres", ""),
-                    "tags": candidate.get("tags", ""),
-                    "lang": candidate.get("lang", ""),
-                    "preference_weight": infl_weight,
-                    "interaction_count": max(1, int(round(infl_weight * 10))),
-                    "interaction_type": "influence",
-                }
-                matched_events.append(infl_event)
+                matched_events.append(_make_influence_event(
+                    candidate,
+                    format_influence_event_id(influence_injected_count + 1),
+                    infl_weight,
+                ))
                 existing_ds001_ids.add(track_id)
 
             influence_injected_count += 1
@@ -103,7 +120,9 @@ def inject_influence_tracks(
     return {
         "enabled": bool(infl.get("influence_enabled", False)),
         "track_ids": list(infl.get("influence_track_ids") or []),
-        "preference_weight": float(infl.get("influence_preference_weight") or 1.0),
+        "preference_weight": float(
+            infl.get("influence_preference_weight") or DEFAULT_INFLUENCE_PREFERENCE_WEIGHT
+        ),
         "injected_count": influence_injected_count,
         "skipped_track_ids": influence_skipped_ids,
     }

@@ -3,6 +3,7 @@ from __future__ import annotations
 
 from typing import Any
 
+from alignment.constants import ARTIST_NAME_DELIMITERS
 from rapidfuzz import fuzz
 
 from shared_utils.constants import DEFAULT_SEED_CONTROLS
@@ -16,12 +17,9 @@ def normalize_text(value: str) -> str:
 
 def first_artist(artist_names: str) -> str:
     """Return the primary artist from a pipe-, semicolon-, or comma-separated string."""
-    if "|" in artist_names:
-        return artist_names.split("|", 1)[0].strip()
-    if ";" in artist_names:
-        return artist_names.split(";", 1)[0].strip()
-    if "," in artist_names:
-        return artist_names.split(",", 1)[0].strip()
+    for delimiter in ARTIST_NAME_DELIMITERS:
+        if delimiter in artist_names:
+            return artist_names.split(delimiter, 1)[0].strip()
     return artist_names.strip()
 
 

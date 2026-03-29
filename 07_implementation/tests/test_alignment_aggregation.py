@@ -101,3 +101,38 @@ class TestAggregateMatchedEvents:
         agg = aggregate_matched_events(events)["ds1"]
         assert "sp1" in agg["spotify_track_ids"]
         assert "sp2" in agg["spotify_track_ids"]
+
+    def test_preference_weight_mode_max(self):
+        events = [
+            _event("ds1", preference_weight=1.0),
+            _event("ds1", preference_weight=2.5),
+        ]
+        agg = aggregate_matched_events(
+            events,
+            aggregation_policy={"preference_weight_mode": "max", "preference_weight_cap_per_event": None},
+        )["ds1"]
+        assert agg["preference_weight_sum"] == 2.5
+        assert agg["preference_weight_max"] == 2.5
+
+    def test_preference_weight_mode_mean(self):
+        events = [
+            _event("ds1", preference_weight=1.0),
+            _event("ds1", preference_weight=2.0),
+            _event("ds1", preference_weight=3.0),
+        ]
+        agg = aggregate_matched_events(
+            events,
+            aggregation_policy={"preference_weight_mode": "mean", "preference_weight_cap_per_event": None},
+        )["ds1"]
+        assert agg["preference_weight_sum"] == 2.0
+
+    def test_preference_weight_mode_capped(self):
+        events = [
+            _event("ds1", preference_weight=1.0),
+            _event("ds1", preference_weight=2.0),
+        ]
+        agg = aggregate_matched_events(
+            events,
+            aggregation_policy={"preference_weight_mode": "capped", "preference_weight_cap_per_event": 1.2},
+        )["ds1"]
+        assert agg["preference_weight_sum"] == 2.2

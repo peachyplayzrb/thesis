@@ -1,6 +1,6 @@
 """Tests for shared normalization helpers in shared_utils.parsing."""
 
-from alignment.matching import normalize_text as alignment_normalize_text
+from alignment.text_matching import normalize_text as alignment_normalize_text
 from shared_utils.parsing import normalize_ascii_text, normalize_text
 
 

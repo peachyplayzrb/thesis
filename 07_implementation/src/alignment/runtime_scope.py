@@ -4,6 +4,8 @@ import json
 import os
 from typing import Any
 
+from alignment.constants import DEFAULT_TOP_TIME_RANGES, SOURCE_PLAYLIST_ITEMS, SOURCE_RECENTLY_PLAYED, SOURCE_SAVED_TRACKS, SOURCE_TOP_TRACKS
+from alignment.models import AlignmentBehaviorControls
 from shared_utils.config_loader import load_run_config_utils_module
 from shared_utils.constants import DEFAULT_INPUT_SCOPE
 
@@ -99,28 +101,33 @@ def apply_input_scope_filters(
     saved_rows: list[dict[str, str]],
     playlist_rows: list[dict[str, str]],
     recent_rows: list[dict[str, str]],
-    input_scope: dict[str, object],
+    input_scope: dict[str, object] | AlignmentBehaviorControls,
 ) -> tuple[dict[str, list[dict[str, str]]], dict[str, object]]:
-    include_top_tracks = bool(input_scope.get("include_top_tracks", True))
-    include_saved_tracks = bool(input_scope.get("include_saved_tracks", True))
-    include_playlists = bool(input_scope.get("include_playlists", True))
-    include_recently_played = bool(input_scope.get("include_recently_played", True))
+    scope_mapping = (
+        dict(input_scope.input_scope)
+        if isinstance(input_scope, AlignmentBehaviorControls)
+        else dict(input_scope)
+    )
+    include_top_tracks = bool(scope_mapping.get("include_top_tracks", True))
+    include_saved_tracks = bool(scope_mapping.get("include_saved_tracks", True))
+    include_playlists = bool(scope_mapping.get("include_playlists", True))
+    include_recently_played = bool(scope_mapping.get("include_recently_played", True))
 
-    top_time_ranges_raw = input_scope.get("top_time_ranges")
+    top_time_ranges_raw = scope_mapping.get("top_time_ranges")
     top_time_ranges = {
         str(item).strip()
         for item in (top_time_ranges_raw if isinstance(top_time_ranges_raw, list) else [])
         if str(item).strip()
     }
     if not top_time_ranges:
-        top_time_ranges = {"short_term", "medium_term", "long_term"}
+        top_time_ranges = set(DEFAULT_TOP_TIME_RANGES)
 
-    saved_tracks_limit = as_positive_int_or_none(input_scope.get("saved_tracks_limit"))
-    playlists_limit = as_positive_int_or_none(input_scope.get("playlists_limit"))
+    saved_tracks_limit = as_positive_int_or_none(scope_mapping.get("saved_tracks_limit"))
+    playlists_limit = as_positive_int_or_none(scope_mapping.get("playlists_limit"))
     playlist_items_per_playlist_limit = as_positive_int_or_none(
-        input_scope.get("playlist_items_per_playlist_limit")
+        scope_mapping.get("playlist_items_per_playlist_limit")
     )
-    recently_played_limit = as_positive_int_or_none(input_scope.get("recently_played_limit"))
+    recently_played_limit = as_positive_int_or_none(scope_mapping.get("recently_played_limit"))
 
     top_rows_selected = filter_top_tracks_rows(top_rows, top_time_ranges) if include_top_tracks else []
     saved_rows_selected = list(saved_rows[:saved_tracks_limit]) if include_saved_tracks else []
@@ -141,13 +148,13 @@ def apply_input_scope_filters(
         recent_rows_selected = list(recent_rows)
 
     selected_rows = {
-        "top_tracks": top_rows_selected,
-        "saved_tracks": saved_rows_selected,
-        "playlist_items": playlist_rows_selected,
-        "recently_played": recent_rows_selected,
+        SOURCE_TOP_TRACKS: top_rows_selected,
+        SOURCE_SAVED_TRACKS: saved_rows_selected,
+        SOURCE_PLAYLIST_ITEMS: playlist_rows_selected,
+        SOURCE_RECENTLY_PLAYED: recent_rows_selected,
     }
     scope_filter_stats = {
-        "requested_input_scope": input_scope,
+        "requested_input_scope": scope_mapping,
         "limits": {
             "saved_tracks_limit": saved_tracks_limit,
             "playlists_limit": playlists_limit,
@@ -155,16 +162,16 @@ def apply_input_scope_filters(
             "recently_played_limit": recently_played_limit,
         },
         "rows_available": {
-            "top_tracks": len(top_rows),
-            "saved_tracks": len(saved_rows),
-            "playlist_items": len(playlist_rows),
-            "recently_played": len(recent_rows),
+            SOURCE_TOP_TRACKS: len(top_rows),
+            SOURCE_SAVED_TRACKS: len(saved_rows),
+            SOURCE_PLAYLIST_ITEMS: len(playlist_rows),
+            SOURCE_RECENTLY_PLAYED: len(recent_rows),
         },
         "rows_selected": {
-            "top_tracks": len(top_rows_selected),
-            "saved_tracks": len(saved_rows_selected),
-            "playlist_items": len(playlist_rows_selected),
-            "recently_played": len(recent_rows_selected),
+            SOURCE_TOP_TRACKS: len(top_rows_selected),
+            SOURCE_SAVED_TRACKS: len(saved_rows_selected),
+            SOURCE_PLAYLIST_ITEMS: len(playlist_rows_selected),
+            SOURCE_RECENTLY_PLAYED: len(recent_rows_selected),
         },
     }
 

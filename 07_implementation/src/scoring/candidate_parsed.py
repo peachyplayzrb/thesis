@@ -37,6 +37,7 @@ def parse_candidate_attributes(row: dict[str, str]) -> dict[str, object]:
     valence = parse_float(row.get("valence", ""))
     tempo = parse_float(row.get("tempo", ""))
     duration_ms = parse_float(row.get("duration_ms", ""))
+    popularity = parse_float(row.get("popularity", ""))
     key = parse_float(row.get("key", ""))
     mode = parse_float(row.get("mode", ""))
 
@@ -54,6 +55,7 @@ def parse_candidate_attributes(row: dict[str, str]) -> dict[str, object]:
         "valence": valence,
         "tempo": tempo,
         "duration_ms": duration_ms,
+        "popularity": popularity,
         "key": key,
         "mode": mode,
         "genres": genres,

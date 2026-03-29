@@ -26,6 +26,8 @@ SCORED_CANDIDATE_FIELDS = [
     "tempo_contribution",
     "duration_ms_similarity",
     "duration_ms_contribution",
+    "popularity_similarity",
+    "popularity_contribution",
     "key_similarity",
     "key_contribution",
     "mode_similarity",
@@ -51,6 +53,7 @@ class ScoringControls:
     config_source: str
     run_config_path: str | None
     run_config_schema_version: str | None
+    signal_mode: dict[str, object]
     component_weights: dict[str, float]
     numeric_thresholds: dict[str, float]
 
@@ -59,6 +62,7 @@ class ScoringControls:
             "config_source": self.config_source,
             "run_config_path": self.run_config_path,
             "run_config_schema_version": self.run_config_schema_version,
+            "signal_mode": dict(self.signal_mode),
             "component_weights": dict(self.component_weights),
             "numeric_thresholds": dict(self.numeric_thresholds),
         }
@@ -72,6 +76,7 @@ class ScoringInputs:
 
 @dataclass(frozen=True)
 class ScoringContext:
+    signal_mode: dict[str, object]
     effective_component_weights: dict[str, float]
     active_numeric_specs: dict[str, dict[str, object]]
     profile_scoring_data: dict[str, object]
@@ -107,6 +112,7 @@ def controls_from_mapping(payload: Mapping[str, Any]) -> ScoringControls:
             if payload.get("run_config_schema_version")
             else None
         ),
+        signal_mode={str(k): v for k, v in dict(payload.get("signal_mode") or {}).items()},
         component_weights=component_weights,
         numeric_thresholds=numeric_thresholds,
     )
@@ -114,6 +120,7 @@ def controls_from_mapping(payload: Mapping[str, Any]) -> ScoringControls:
 
 def context_as_mapping(context: ScoringContext) -> dict[str, object]:
     return {
+        "signal_mode": dict(context.signal_mode),
         "effective_component_weights": dict(context.effective_component_weights),
         "active_numeric_specs": dict(context.active_numeric_specs),
         "profile_scoring_data": dict(context.profile_scoring_data),
@@ -128,6 +135,7 @@ def context_from_mapping(payload: Mapping[str, Any]) -> ScoringContext:
     profile_scoring_data_raw = payload.get("profile_scoring_data")
     active_component_weights_raw = payload.get("active_component_weights")
     weight_rebalance_diagnostics_raw = payload.get("weight_rebalance_diagnostics")
+    signal_mode_raw = payload.get("signal_mode")
 
     effective_component_weights = {
         str(k): float(v)
@@ -156,6 +164,7 @@ def context_from_mapping(payload: Mapping[str, Any]) -> ScoringContext:
     )
 
     return ScoringContext(
+        signal_mode={str(k): v for k, v in dict(signal_mode_raw or {}).items()},
         effective_component_weights=effective_component_weights,
         active_numeric_specs=active_numeric_specs,
         profile_scoring_data=profile_scoring_data,

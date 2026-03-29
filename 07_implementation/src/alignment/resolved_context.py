@@ -4,6 +4,8 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any
 
+from alignment.constants import DEFAULT_INFLUENCE_PREFERENCE_WEIGHT
+from alignment.models import AlignmentBehaviorControls, AlignmentStructuralContract
 from shared_utils.config_loader import load_run_config_utils_module
 from shared_utils.constants import (
     DEFAULT_RECENTLY_PLAYED_DECAY_HALF_LIFE_DAYS,
@@ -21,20 +23,14 @@ class AlignmentResolvedContext:
     """Resolved control surface used by BL-003 matching and influence stages."""
 
     runtime_scope: dict[str, object]
-    input_scope: dict[str, object]
-    top_range_weights: dict[str, float]
-    source_base_weights: dict[str, float]
-    decay_half_lives: dict[str, float]
-    match_rate_min_threshold: float
-    fuzzy_matching_controls: dict[str, Any]
-    weighting_policy: dict[str, Any] | None
-    influence_controls: dict[str, Any]
+    behavior_controls: AlignmentBehaviorControls
+    structural_contract: AlignmentStructuralContract
 
 
 DEFAULT_INFLUENCE_CONTROLS: dict[str, Any] = {
     "influence_enabled": False,
     "influence_track_ids": [],
-    "influence_preference_weight": 1.0,
+    "influence_preference_weight": DEFAULT_INFLUENCE_PREFERENCE_WEIGHT,
 }
 
 
@@ -53,6 +49,10 @@ def resolve_alignment_context() -> AlignmentResolvedContext:
     fuzzy_matching_controls: dict[str, Any] = dict(
         DEFAULT_SEED_CONTROLS.get("fuzzy_matching") or {}
     )
+    match_strategy: dict[str, bool] = dict(DEFAULT_SEED_CONTROLS.get("match_strategy") or {})
+    match_strategy_order: list[str] = list(DEFAULT_SEED_CONTROLS.get("match_strategy_order") or [])
+    temporal_controls: dict[str, Any] = dict(DEFAULT_SEED_CONTROLS.get("temporal_controls") or {})
+    aggregation_policy: dict[str, Any] = dict(DEFAULT_SEED_CONTROLS.get("aggregation_policy") or {})
     weighting_policy: dict[str, Any] | None = None
     influence_controls: dict[str, Any] = dict(DEFAULT_INFLUENCE_CONTROLS)
 
@@ -69,6 +69,26 @@ def resolve_alignment_context() -> AlignmentResolvedContext:
         fuzzy_matching_controls = dict(
             seed_controls.get("fuzzy_matching")
             or DEFAULT_SEED_CONTROLS.get("fuzzy_matching")
+            or {}
+        )
+        match_strategy = dict(
+            seed_controls.get("match_strategy")
+            or DEFAULT_SEED_CONTROLS.get("match_strategy")
+            or {}
+        )
+        match_strategy_order = list(
+            seed_controls.get("match_strategy_order")
+            or DEFAULT_SEED_CONTROLS.get("match_strategy_order")
+            or []
+        )
+        temporal_controls = dict(
+            seed_controls.get("temporal_controls")
+            or DEFAULT_SEED_CONTROLS.get("temporal_controls")
+            or {}
+        )
+        aggregation_policy = dict(
+            seed_controls.get("aggregation_policy")
+            or DEFAULT_SEED_CONTROLS.get("aggregation_policy")
             or {}
         )
         seed_decay_half_lives = dict(seed_controls.get("decay_half_lives") or {})
@@ -95,13 +115,20 @@ def resolve_alignment_context() -> AlignmentResolvedContext:
         influence_controls = rc_utils.resolve_bl003_influence_controls(run_config_path)
 
     return AlignmentResolvedContext(
-        runtime_scope=runtime_scope,
-        input_scope=input_scope,
-        top_range_weights=top_range_weights,
-        source_base_weights=source_base_weights,
-        decay_half_lives=decay_half_lives,
-        match_rate_min_threshold=match_rate_min_threshold,
-        fuzzy_matching_controls=fuzzy_matching_controls,
-        weighting_policy=weighting_policy,
-        influence_controls=influence_controls,
+        runtime_scope=dict(runtime_scope),
+        behavior_controls=AlignmentBehaviorControls(
+            input_scope=dict(input_scope),
+            top_range_weights=dict(top_range_weights),
+            source_base_weights=dict(source_base_weights),
+            decay_half_lives=dict(decay_half_lives),
+            match_rate_min_threshold=float(match_rate_min_threshold),
+            fuzzy_matching_controls=dict(fuzzy_matching_controls),
+            match_strategy={k: bool(v) for k, v in match_strategy.items()},
+            match_strategy_order=list(match_strategy_order),
+            temporal_controls=dict(temporal_controls),
+            aggregation_policy=dict(aggregation_policy),
+            weighting_policy=(dict(weighting_policy) if weighting_policy is not None else None),
+            influence_controls=dict(influence_controls),
+        ),
+        structural_contract=AlignmentStructuralContract.from_defaults(),
     )

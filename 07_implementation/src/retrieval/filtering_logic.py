@@ -13,6 +13,10 @@ def keep_decision(
     semantic_strong_keep_score: int,
     semantic_min_keep_score: int,
     numeric_support_min_pass: int,
+    *,
+    numeric_support_score: float | None = None,
+    numeric_support_min_score: float | None = None,
+    use_continuous_numeric: bool = False,
     language_match: bool | None = None,
     recency_pass: bool | None = None,
 ) -> tuple[bool, str]:
@@ -63,7 +67,15 @@ def keep_decision(
         return True, "keep_strong_semantic"
 
     # Weak semantic signal needs numeric support
-    if semantic_score >= semantic_min_keep_score and numeric_pass_count >= numeric_support_min_pass:
+    numeric_support_met = numeric_pass_count >= numeric_support_min_pass
+    if use_continuous_numeric and numeric_support_score is not None:
+        numeric_support_met = numeric_support_score >= float(
+            numeric_support_min_score
+            if numeric_support_min_score is not None
+            else numeric_support_min_pass
+        )
+
+    if semantic_score >= semantic_min_keep_score and numeric_support_met:
         return True, "keep_semantic_numeric_supported"
 
     # Semantic signal too weak, check if numeric alone could save it
@@ -78,7 +90,14 @@ def keep_decision(
     return False, "reject_no_signal"
 
 
-def decision_reason(decision_path: str, semantic_score: float, numeric_pass_count: int) -> str:
+def decision_reason(
+    decision_path: str,
+    semantic_score: float,
+    numeric_pass_count: int,
+    *,
+    numeric_support_score: float | None = None,
+    use_continuous_numeric: bool = False,
+) -> str:
     """
     Generate human-readable explanation for a keep/reject decision.
 
@@ -90,6 +109,12 @@ def decision_reason(decision_path: str, semantic_score: float, numeric_pass_coun
     Returns:
         Human-readable string explaining the decision
     """
+    numeric_support_fragment = (
+        f"numeric_support_score={numeric_support_score:.2f}"
+        if use_continuous_numeric and numeric_support_score is not None
+        else f"numeric_pass_count={numeric_pass_count}"
+    )
+
     if decision_path == "reject_seed_track":
         return "reject: seed track excluded from retrieval output"
 
@@ -106,12 +131,12 @@ def decision_reason(decision_path: str, semantic_score: float, numeric_pass_coun
         return f"keep: semantic_score={semantic_score:.2f} meets strong semantic threshold"
 
     if decision_path == "keep_semantic_numeric_supported":
-        return f"keep: semantic_score={semantic_score:.2f} with numeric_pass_count={numeric_pass_count}"
+        return f"keep: semantic_score={semantic_score:.2f} with {numeric_support_fragment}"
 
     if decision_path == "reject_semantic_without_numeric_support":
-        return f"reject: semantic_score={semantic_score:.2f} lacks numeric support (numeric_pass_count={numeric_pass_count})"
+        return f"reject: semantic_score={semantic_score:.2f} lacks numeric support ({numeric_support_fragment})"
 
     if decision_path == "reject_numeric_without_semantic_support":
-        return f"reject: numeric_pass_count={numeric_pass_count} without semantic evidence"
+        return f"reject: {numeric_support_fragment} without semantic evidence"
 
-    return f"reject: semantic_score={semantic_score:.2f}, numeric_pass_count={numeric_pass_count} below keep threshold"
+    return f"reject: semantic_score={semantic_score:.2f}, {numeric_support_fragment} below keep threshold"

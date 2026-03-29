@@ -18,13 +18,18 @@ class RetrievalControls:
     config_source: str
     run_config_path: str | None
     run_config_schema_version: str | None
+    signal_mode: dict[str, object]
     profile_top_lead_genre_limit: int
     profile_top_tag_limit: int
     profile_top_genre_limit: int
     semantic_strong_keep_score: int
     semantic_min_keep_score: int
     numeric_support_min_pass: int
+    numeric_support_min_score: float
     lead_genre_partial_match_threshold: float
+    use_weighted_semantics: bool
+    use_continuous_numeric: bool
+    enable_popularity_numeric: bool
     language_filter_enabled: bool
     language_filter_codes: list[str]
     recency_years_min_offset: int | None
@@ -47,20 +52,27 @@ class RetrievalInputs:
 
 @dataclass(frozen=True)
 class RetrievalContext:
+    signal_mode: dict[str, object]
     profile_top_lead_genre_limit: int
     profile_top_tag_limit: int
     profile_top_genre_limit: int
     semantic_strong_keep_score: int
     semantic_min_keep_score: int
     numeric_support_min_pass: int
+    numeric_support_min_score: float
     lead_genre_partial_match_threshold: float
     active_numeric_specs: dict[str, NumericFeatureSpec]
     seed_track_ids: set[str]
     top_lead_genres: set[str]
     top_tags: set[str]
     top_genres: set[str]
+    lead_genre_weights: dict[str, float]
+    tag_weights: dict[str, float]
+    genre_weights: dict[str, float]
     numeric_centers: dict[str, float]
     numeric_features_enabled: bool
+    use_weighted_semantics: bool
+    use_continuous_numeric: bool
     language_filter_enabled: bool
     language_filter_codes: list[str]
     recency_years_min_offset: int | None
@@ -92,22 +104,29 @@ def context_from_mapping(payload: Mapping[str, Any]) -> RetrievalContext:
                 )
 
     return RetrievalContext(
+        signal_mode={str(k): v for k, v in dict(payload.get("signal_mode") or {}).items()},
         profile_top_lead_genre_limit=int(payload.get("profile_top_lead_genre_limit", 1)),
         profile_top_tag_limit=int(payload.get("profile_top_tag_limit", 1)),
         profile_top_genre_limit=int(payload.get("profile_top_genre_limit", 1)),
         semantic_strong_keep_score=int(payload.get("semantic_strong_keep_score", 0)),
         semantic_min_keep_score=int(payload.get("semantic_min_keep_score", 0)),
         numeric_support_min_pass=int(payload.get("numeric_support_min_pass", 0)),
+        numeric_support_min_score=float(payload.get("numeric_support_min_score", payload.get("numeric_support_min_pass", 0.0))),
         lead_genre_partial_match_threshold=float(payload.get("lead_genre_partial_match_threshold", 0.0)),
         active_numeric_specs=active_specs,
         seed_track_ids={str(v) for v in set(payload.get("seed_track_ids") or set())},
         top_lead_genres={str(v) for v in set(payload.get("top_lead_genres") or set())},
         top_tags={str(v) for v in set(payload.get("top_tags") or set())},
         top_genres={str(v) for v in set(payload.get("top_genres") or set())},
+        lead_genre_weights={str(k): float(v) for k, v in dict(payload.get("lead_genre_weights") or {}).items()},
+        tag_weights={str(k): float(v) for k, v in dict(payload.get("tag_weights") or {}).items()},
+        genre_weights={str(k): float(v) for k, v in dict(payload.get("genre_weights") or {}).items()},
         numeric_centers={
             str(k): float(v) for k, v in dict(payload.get("numeric_centers") or {}).items()
         },
         numeric_features_enabled=bool(payload.get("numeric_features_enabled", False)),
+        use_weighted_semantics=bool(payload.get("use_weighted_semantics", False)),
+        use_continuous_numeric=bool(payload.get("use_continuous_numeric", False)),
         language_filter_enabled=bool(payload.get("language_filter_enabled", False)),
         language_filter_codes=[
             str(v) for v in list(payload.get("language_filter_codes") or []) if str(v)

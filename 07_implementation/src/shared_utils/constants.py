@@ -28,10 +28,17 @@ DEFAULT_PROFILE_TOP_GENRE_LIMIT = 8
 DEFAULT_SEMANTIC_STRONG_KEEP_SCORE = 2
 DEFAULT_SEMANTIC_MIN_KEEP_SCORE = 1
 DEFAULT_NUMERIC_SUPPORT_MIN_PASS = 1
+DEFAULT_NUMERIC_SUPPORT_MIN_SCORE = 1.0
 DEFAULT_LANGUAGE_FILTER_ENABLED = False
 DEFAULT_LANGUAGE_FILTER_CODES: list[str] = []
 DEFAULT_RECENCY_YEARS_MIN_OFFSET: int | None = None
 DEFAULT_LEAD_GENRE_PARTIAL_MATCH_THRESHOLD = 0.5
+DEFAULT_RETRIEVAL_USE_WEIGHTED_SEMANTICS = False
+DEFAULT_RETRIEVAL_USE_CONTINUOUS_NUMERIC = False
+DEFAULT_RETRIEVAL_ENABLE_POPULARITY_NUMERIC = False
+DEFAULT_SIGNAL_MODE_NAME = "v1f-compat"
+ENHANCED_SIGNAL_MODE_NAME = "v1g-enhanced"
+CUSTOM_SIGNAL_MODE_NAME = "custom"
 
 DEFAULT_RECENTLY_PLAYED_DECAY_HALF_LIFE_DAYS = 90.0
 DEFAULT_SAVED_TRACKS_DECAY_HALF_LIFE_DAYS = 365.0
@@ -47,6 +54,7 @@ DEFAULT_SCORING_COMPONENT_WEIGHTS = {
     "valence": 0.08,
     "tempo": 0.10,
     "duration_ms": 0.07,
+    "popularity": 0.0,
     "key": 0.06,
     "mode": 0.04,
     "lead_genre": 0.17,
@@ -104,6 +112,24 @@ DEFAULT_SEED_CONTROLS: dict[str, Any] = {
         "max_duration_delta_ms": 5000,
         "max_artist_candidates": 5,
     },
+    "match_strategy": {
+        "enable_spotify_id_match": True,
+        "enable_metadata_match": True,
+        "enable_fuzzy_match": True,
+    },
+    "match_strategy_order": [
+        "spotify_id_exact",
+        "metadata_fallback",
+        "fuzzy_title_artist",
+    ],
+    "temporal_controls": {
+        "reference_mode": "system",
+        "reference_now_utc": None,
+    },
+    "aggregation_policy": {
+        "preference_weight_mode": "sum",
+        "preference_weight_cap_per_event": None,
+    },
 }
 
 DEFAULT_RETRIEVAL_NUMERIC_THRESHOLDS: dict[str, float] = {
@@ -111,6 +137,7 @@ DEFAULT_RETRIEVAL_NUMERIC_THRESHOLDS: dict[str, float] = {
     "energy": 0.20,
     "valence": 0.20,
     "tempo": 20.0,
+    "popularity": 15.0,
     "key": 2.0,
     "mode": 0.5,
     "duration_ms": 45000.0,
@@ -223,6 +250,11 @@ NUMERIC_FEATURE_SPECS = {
     "tempo": {
         "candidate_column": "tempo",
         "threshold": 20.0,
+        "circular": False,
+    },
+    "popularity": {
+        "candidate_column": "popularity",
+        "threshold": 15.0,
         "circular": False,
     },
     "key": {

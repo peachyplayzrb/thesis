@@ -44,6 +44,7 @@ class DecisionTracker:
         self.numeric_pass_distribution = {
             str(score): 0 for score in range(len(numeric_feature_specs) + 1)
         }
+        self.numeric_support_score_distribution: dict[str, int] = {}
 
     def record_decision(
         self,
@@ -115,6 +116,7 @@ class DecisionTracker:
     def record_numeric_scores(
         self,
         numeric_pass_count: int,
+        numeric_support_score: float,
         numeric_rule_hits_this_candidate: dict[str, bool],
     ) -> None:
         """
@@ -128,6 +130,10 @@ class DecisionTracker:
         count_str = str(numeric_pass_count)
         self.numeric_pass_distribution[count_str] = (
             self.numeric_pass_distribution.get(count_str, 0) + 1
+        )
+        support_str = f"{numeric_support_score:.2f}"
+        self.numeric_support_score_distribution[support_str] = (
+            self.numeric_support_score_distribution.get(support_str, 0) + 1
         )
 
         # Update rule hits
@@ -151,4 +157,5 @@ class DecisionTracker:
             "numeric_rule_hits": self.numeric_rule_hits,
             "semantic_score_distribution": self.semantic_score_distribution,
             "numeric_pass_distribution": self.numeric_pass_distribution,
+            "numeric_support_score_distribution": self.numeric_support_score_distribution,
         }

@@ -1,14 +1,13 @@
-"""Tests for alignment.matching — normalize_text, first_artist,
-build_ds001_indices, choose_best_duration_match, match_events."""
+"""Tests for alignment text matching and match pipeline helpers."""
 import pytest
-from alignment.matching import (
-    normalize_text,
-    first_artist,
-    build_ds001_indices,
+from alignment.index_builder import build_ds001_indices
+from alignment.match_pipeline import match_events
+from alignment.text_matching import (
     choose_best_duration_match,
-    _fuzzy_find_candidate,
-    _resolve_fuzzy_controls,
-    match_events,
+    first_artist,
+    fuzzy_find_candidate,
+    normalize_text,
+    resolve_fuzzy_controls,
 )
 
 
@@ -210,7 +209,7 @@ class TestMatchEvents:
 
 class TestFuzzyControls:
     def test_defaults_used_when_none(self):
-        controls = _resolve_fuzzy_controls(None)
+        controls = resolve_fuzzy_controls(None)
         assert controls["enabled"] is False
         assert controls["artist_threshold"] == 0.90
         assert controls["title_threshold"] == 0.90
@@ -219,7 +218,7 @@ class TestFuzzyControls:
         assert controls["max_artist_candidates"] == 5
 
     def test_controls_are_clamped_and_sanitized(self):
-        controls = _resolve_fuzzy_controls(
+        controls = resolve_fuzzy_controls(
             {
                 "enabled": 1,
                 "artist_threshold": 2.5,
@@ -246,7 +245,7 @@ class TestFuzzyFindCandidate:
                 return 90.0
             return 0.0
 
-        monkeypatch.setattr("alignment.matching.fuzz.ratio", fake_ratio)
+        monkeypatch.setattr("alignment.text_matching.fuzz.ratio", fake_ratio)
 
         by_artist = {
             "artist a": [
@@ -258,7 +257,7 @@ class TestFuzzyFindCandidate:
                 }
             ]
         }
-        controls = _resolve_fuzzy_controls(
+        controls = resolve_fuzzy_controls(
             {
                 "enabled": True,
                 "artist_threshold": 0.90,
@@ -266,7 +265,7 @@ class TestFuzzyFindCandidate:
                 "combined_threshold": 0.90,
             }
         )
-        row, delta, title_score, artist_score, combined = _fuzzy_find_candidate(
+        row, delta, title_score, artist_score, combined = fuzzy_find_candidate(
             title_key="song a",
             artist_key="artist a",
             event_duration=200000,
@@ -280,15 +279,15 @@ class TestFuzzyFindCandidate:
         assert combined == 0.9
 
     def test_duration_gate_boundary_5000_is_inclusive(self, monkeypatch):
-        monkeypatch.setattr("alignment.matching.fuzz.ratio", lambda *_: 100.0)
+        monkeypatch.setattr("alignment.text_matching.fuzz.ratio", lambda *_: 100.0)
         by_artist = {
             "artist a": [
                 {"id": "id-pass", "song": "Song A", "artist": "Artist A", "duration_ms": "205000"},
                 {"id": "id-fail", "song": "Song A", "artist": "Artist A", "duration_ms": "205001"},
             ]
         }
-        controls = _resolve_fuzzy_controls({"enabled": True, "max_duration_delta_ms": 5000})
-        row, delta, _, _, _ = _fuzzy_find_candidate(
+        controls = resolve_fuzzy_controls({"enabled": True, "max_duration_delta_ms": 5000})
+        row, delta, _, _, _ = fuzzy_find_candidate(
             title_key="song a",
             artist_key="artist a",
             event_duration=200000,
@@ -300,15 +299,15 @@ class TestFuzzyFindCandidate:
         assert delta == 5000
 
     def test_tie_break_prefers_lexicographically_smaller_ds001_id(self, monkeypatch):
-        monkeypatch.setattr("alignment.matching.fuzz.ratio", lambda *_: 95.0)
+        monkeypatch.setattr("alignment.text_matching.fuzz.ratio", lambda *_: 95.0)
         by_artist = {
             "artist a": [
                 {"id": "track-z", "song": "Song A", "artist": "Artist A", "duration_ms": "200000"},
                 {"id": "track-a", "song": "Song A", "artist": "Artist A", "duration_ms": "200000"},
             ]
         }
-        controls = _resolve_fuzzy_controls({"enabled": True})
-        row, _, _, _, _ = _fuzzy_find_candidate(
+        controls = resolve_fuzzy_controls({"enabled": True})
+        row, _, _, _, _ = fuzzy_find_candidate(
             title_key="song a",
             artist_key="artist a",
             event_duration=200000,

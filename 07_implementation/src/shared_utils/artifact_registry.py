@@ -159,6 +159,18 @@ def bl014_refinement_diagnostic_paths(repo_root: Path) -> Dict[str, Path]:
     }
 
 
+def bl003_required_paths(repo_root: Path) -> Dict[str, Path]:
+    """Return canonical BL-003 alignment output artifact paths used by downstreams."""
+    return {
+        "summary": repo_root / "alignment/outputs/bl003_ds001_spotify_summary.json",
+        "seed_table": repo_root / "alignment/outputs/bl003_ds001_spotify_seed_table.csv",
+        "matched_events": repo_root / "alignment/outputs/bl003_ds001_spotify_matched_events.jsonl",
+        "trace": repo_root / "alignment/outputs/bl003_ds001_spotify_trace.csv",
+        "unmatched": repo_root / "alignment/outputs/bl003_ds001_spotify_unmatched.csv",
+        "source_scope_manifest": repo_root / "alignment/outputs/bl003_source_scope_manifest.json",
+    }
+
+
 def bl010_required_paths(repo_root: Path) -> Dict[str, Path]:
     """Return canonical BL-010 required script and artifact paths."""
     return {

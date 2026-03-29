@@ -13,6 +13,7 @@ def _controls() -> ScoringControls:
         config_source="test",
         run_config_path=None,
         run_config_schema_version=None,
+        signal_mode={"name": "custom"},
         component_weights={
             "tempo_score": 0.5,
             "lead_genre_score": 0.25,
@@ -93,6 +94,8 @@ def test_build_summary_includes_expected_output_paths(tmp_path: Path) -> None:
             "tempo_contribution": 0.5,
             "duration_ms_similarity": 0.0,
             "duration_ms_contribution": 0.0,
+            "popularity_similarity": 0.0,
+            "popularity_contribution": 0.0,
             "key_similarity": 0.0,
             "key_contribution": 0.0,
             "mode_similarity": 0.0,
@@ -119,5 +122,6 @@ def test_build_summary_includes_expected_output_paths(tmp_path: Path) -> None:
 
     assert summary["task"] == "BL-006"
     assert summary["counts"]["candidates_scored"] == 1
+    assert summary["config"]["signal_mode"]["name"] == "custom"
     assert summary["output_files"]["scored_candidates_path"] == str(scored_path)
     assert summary["output_files"]["score_distribution_diagnostics_path"] == str(diagnostics_path)

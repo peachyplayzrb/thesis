@@ -5,6 +5,10 @@ from __future__ import annotations
 import statistics
 
 
+def _to_float(value: object) -> float:
+    return float(str(value))
+
+
 def percentile(sorted_values: list[float], p: float) -> float:
     """Compute percentile with linear interpolation."""
     if not sorted_values:
@@ -24,7 +28,7 @@ def percentile(sorted_values: list[float], p: float) -> float:
 
 def build_score_distribution_diagnostics(scored_rows: list[dict[str, object]]) -> dict[str, object]:
     """Build score spread and rank-cliff diagnostics."""
-    score_desc = [float(row["final_score"]) for row in scored_rows]
+    score_desc = [_to_float(row["final_score"]) for row in scored_rows]
     score_desc.sort(reverse=True)
 
     gaps: list[dict[str, float | int]] = []
@@ -38,9 +42,9 @@ def build_score_distribution_diagnostics(scored_rows: list[dict[str, object]]) -
             }
         )
 
-    max_gap = max(gaps, key=lambda item: float(item["score_gap"])) if gaps else None
+    max_gap = max(gaps, key=lambda item: _to_float(item["score_gap"])) if gaps else None
     rank_2_to_3_gap = round(score_desc[1] - score_desc[2], 6) if len(score_desc) >= 3 else 0.0
-    is_rank_cliff = bool(max_gap and float(max_gap["score_gap"]) >= 0.1)
+    is_rank_cliff = bool(max_gap and _to_float(max_gap["score_gap"]) >= 0.1)
 
     score_asc = list(reversed(score_desc))
     percentiles = {
@@ -70,7 +74,7 @@ def build_score_distribution_diagnostics(scored_rows: list[dict[str, object]]) -
 
 def contribution_breakdown(rows: list[dict[str, object]]) -> dict[str, float]:
     """Compute average component contributions across rows."""
-    numeric_components = ["danceability", "energy", "valence", "tempo", "duration_ms", "key", "mode"]
+    numeric_components = ["danceability", "energy", "valence", "tempo", "duration_ms", "popularity", "key", "mode"]
     semantic_components = ["lead_genre", "genre_overlap", "tag_overlap"]
     if not rows:
         return {
@@ -80,7 +84,7 @@ def contribution_breakdown(rows: list[dict[str, object]]) -> dict[str, float]:
         }
 
     def mean_of(key: str) -> float:
-        return round(statistics.mean(float(row[key]) for row in rows), 6)
+        return round(statistics.mean(_to_float(row[key]) for row in rows), 6)
 
     component_means = {
         f"{component}_mean": mean_of(f"{component}_contribution")

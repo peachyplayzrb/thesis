@@ -129,6 +129,28 @@ class TestTemporalDecay:
         decay = compute_temporal_decay("not-a-time", half_life_days=30.0)
         assert decay == 1.0
 
+    def test_temporal_controls_fixed_reference_is_used(self):
+        event_time = "2026-01-01T00:00:00+00:00"
+        decay = compute_temporal_decay(
+            event_time,
+            half_life_days=30.0,
+            temporal_controls={
+                "reference_mode": "fixed",
+                "reference_now_utc": "2026-01-31T00:00:00Z",
+            },
+        )
+        assert pytest.approx(decay, abs=1e-2) == 0.5
+
+    def test_temporal_controls_system_uses_env_fallback(self, monkeypatch):
+        monkeypatch.setenv("BL_REFERENCE_NOW_UTC", "2026-01-31T00:00:00Z")
+        event_time = "2026-01-01T00:00:00+00:00"
+        decay = compute_temporal_decay(
+            event_time,
+            half_life_days=30.0,
+            temporal_controls={"reference_mode": "system", "reference_now_utc": None},
+        )
+        assert pytest.approx(decay, abs=1e-2) == 0.5
+
 
 # ---------------------------------------------------------------------------
 # to_event_rows

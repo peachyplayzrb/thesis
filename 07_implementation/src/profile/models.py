@@ -7,6 +7,8 @@ from pathlib import Path
 @dataclass(frozen=True)
 class ProfilePaths:
     seed_table_path: Path
+    bl003_summary_path: Path
+    bl003_manifest_path: Path
     output_dir: Path
     seed_trace_path: Path
     profile_path: Path
@@ -42,6 +44,12 @@ class ProfileControls:
 @dataclass(frozen=True)
 class ProfileInputs:
     seed_rows: list[dict[str, object]]
+    bl003_summary: dict[str, object]
+    bl003_manifest: dict[str, object]
+    bl003_seed_contract: dict[str, object]
+    bl003_structural_contract: dict[str, object]
+    bl003_seed_contract_hash: str
+    bl003_structural_contract_hash: str
 
 
 @dataclass(frozen=True)
@@ -57,7 +65,15 @@ class ProfileAggregation:
     interaction_count_sum_by_type: dict[str, int]
     numeric_observations: dict[str, int]
     missing_numeric_track_ids: list[str]
+    blank_track_id_row_count: int
     total_effective_weight: float
+    confidence_adjusted_weight_sum: float
+    confidence_bins: dict[str, int]
+    match_method_counts: dict[str, int]
+    history_preference_weight_sum: float
+    influence_preference_weight_sum: float
+    history_interaction_count_sum: int
+    influence_interaction_count_sum: int
     matched_seed_count: int
 
 

@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from scoring.scoring_engine import numeric_similarity, weighted_overlap
 from shared_utils.genre_utils import lead_genre_token_similarity
 from shared_utils.parsing import parse_csv_labels
 
@@ -14,6 +15,24 @@ from retrieval.candidate_parser import (
 from retrieval.decision_tracker import DecisionTracker
 from retrieval.filtering_logic import decision_reason, keep_decision
 from retrieval.models import RetrievalContext, RetrievalEvaluationResult, context_from_mapping
+
+
+def circular_distance_12(a: float, b: float) -> float:
+    """Return shortest non-negative distance between two values on a 12-step circle."""
+    normalized_a = a % 12.0
+    normalized_b = b % 12.0
+    raw_diff = abs(normalized_a - normalized_b)
+    return min(raw_diff, 12.0 - raw_diff)
+
+
+def weighted_lead_genre_similarity(candidate_label: str, profile_weights: dict[str, float]) -> float:
+    if not candidate_label or not profile_weights:
+        return 0.0
+    score = sum(
+        lead_genre_token_similarity(candidate_label, profile_label) * weight
+        for profile_label, weight in profile_weights.items()
+    )
+    return round(max(0.0, min(score, 1.0)), 6)
 
 
 def evaluate_bl005_candidates(
@@ -37,10 +56,16 @@ def evaluate_bl005_candidates(
     semantic_strong_keep_score = context.semantic_strong_keep_score
     semantic_min_keep_score = context.semantic_min_keep_score
     numeric_support_min_pass = context.numeric_support_min_pass
+    numeric_support_min_score = context.numeric_support_min_score
     language_filter_enabled = context.language_filter_enabled
     language_filter_codes = set(context.language_filter_codes)
     recency_min_release_year = context.recency_min_release_year
     lead_genre_partial_match_threshold = context.lead_genre_partial_match_threshold
+    use_weighted_semantics = context.use_weighted_semantics
+    use_continuous_numeric = context.use_continuous_numeric
+    lead_genre_weights = context.lead_genre_weights
+    tag_weights = context.tag_weights
+    genre_weights = context.genre_weights
 
     tracker = DecisionTracker(active_numeric_specs)
 
@@ -62,24 +87,32 @@ def evaluate_bl005_candidates(
         if recency_min_release_year is not None:
             recency_pass = bool(release_year is not None and release_year >= int(recency_min_release_year))
 
-        lead_genre_match_score = 0.0
-        if lead_genre and top_lead_genres:
-            lead_genre_match_score = max(
-                lead_genre_token_similarity(lead_genre, profile_lead_genre)
-                for profile_lead_genre in top_lead_genres
-            )
-        lead_genre_match = lead_genre_match_score >= lead_genre_partial_match_threshold
         genre_overlap = len(top_genres.intersection(candidate_genres))
         tag_overlap = len(top_tags.intersection(candidate_tags))
 
-        genre_overlap_fraction = min(1.0, genre_overlap / max(1, len(top_genres)))
-        tag_overlap_fraction = min(1.0, tag_overlap / max(1, len(top_tags)))
+        if use_weighted_semantics:
+            lead_genre_match_score = weighted_lead_genre_similarity(lead_genre, lead_genre_weights)
+            genre_overlap_fraction = weighted_overlap(candidate_genres, genre_weights)
+            tag_overlap_fraction = weighted_overlap(candidate_tags, tag_weights)
+        else:
+            lead_genre_match_score = 0.0
+            if lead_genre and top_lead_genres:
+                lead_genre_match_score = max(
+                    lead_genre_token_similarity(lead_genre, profile_lead_genre)
+                    for profile_lead_genre in top_lead_genres
+                )
+            genre_overlap_fraction = min(1.0, genre_overlap / max(1, len(top_genres)))
+            tag_overlap_fraction = min(1.0, tag_overlap / max(1, len(top_tags)))
+
+        lead_genre_match = lead_genre_match_score >= lead_genre_partial_match_threshold
         semantic_score = lead_genre_match_score + genre_overlap_fraction + tag_overlap_fraction
 
         tracker.record_semantic_scores(semantic_score, lead_genre_match, genre_overlap, tag_overlap)
 
         numeric_pass_count = 0
+        numeric_support_score = 0.0
         numeric_distances: dict[str, float | None] = {}
+        numeric_similarities: dict[str, float] = {}
         numeric_rule_hits_this_candidate: dict[str, bool] = {}
 
         for profile_column, spec in active_numeric_specs.items():
@@ -94,22 +127,27 @@ def evaluate_bl005_candidates(
                 center = numeric_centers.get(profile_column)
                 if center is not None:
                     if spec.circular:
-                        raw_diff = abs(value - center)
-                        distance = min(raw_diff, 12.0 - raw_diff)
+                        distance = circular_distance_12(value, center)
                     else:
                         distance = abs(value - center)
+                    similarity = numeric_similarity(value, center, spec.threshold, spec.circular)
                     numeric_distances[profile_column] = round(distance, 6)
+                    numeric_similarities[profile_column] = similarity
+                    numeric_support_score += similarity
                     if distance <= spec.threshold:
                         numeric_pass_count += 1
                         passed = True
                 else:
                     numeric_distances[profile_column] = None
+                    numeric_similarities[profile_column] = 0.0
             else:
                 numeric_distances[profile_column] = None
+                numeric_similarities[profile_column] = 0.0
 
             numeric_rule_hits_this_candidate[profile_column] = passed
 
-        tracker.record_numeric_scores(numeric_pass_count, numeric_rule_hits_this_candidate)
+        numeric_support_score = round(numeric_support_score, 6)
+        tracker.record_numeric_scores(numeric_pass_count, numeric_support_score, numeric_rule_hits_this_candidate)
 
         kept, decision_path = keep_decision(
             is_seed_track,
@@ -119,6 +157,9 @@ def evaluate_bl005_candidates(
             semantic_strong_keep_score,
             semantic_min_keep_score,
             numeric_support_min_pass,
+            numeric_support_score=numeric_support_score,
+            numeric_support_min_score=numeric_support_min_score,
+            use_continuous_numeric=use_continuous_numeric,
             language_match=language_match,
             recency_pass=recency_pass,
         )
@@ -128,6 +169,9 @@ def evaluate_bl005_candidates(
             "is_seed_track": int(is_seed_track),
             "lead_genre": lead_genre,
             "semantic_score": round(semantic_score, 6),
+            "lead_genre_similarity": round(lead_genre_match_score, 6),
+            "genre_overlap_score": round(genre_overlap_fraction, 6),
+            "tag_overlap_score": round(tag_overlap_fraction, 6),
             "lead_genre_match": int(lead_genre_match),
             "genre_overlap_count": genre_overlap,
             "tag_overlap_count": tag_overlap,
@@ -136,16 +180,32 @@ def evaluate_bl005_candidates(
             "release_year": "" if release_year is None else release_year,
             "release_year_distance": numeric_distances.get("release_year"),
             "numeric_pass_count": numeric_pass_count,
+            "numeric_support_score": numeric_support_score,
             "danceability_distance": numeric_distances.get("danceability"),
+            "danceability_similarity": numeric_similarities.get("danceability", 0.0),
             "energy_distance": numeric_distances.get("energy"),
+            "energy_similarity": numeric_similarities.get("energy", 0.0),
             "valence_distance": numeric_distances.get("valence"),
+            "valence_similarity": numeric_similarities.get("valence", 0.0),
             "tempo_distance": numeric_distances.get("tempo"),
+            "tempo_similarity": numeric_similarities.get("tempo", 0.0),
+            "popularity_distance": numeric_distances.get("popularity"),
+            "popularity_similarity": numeric_similarities.get("popularity", 0.0),
             "duration_ms_distance": numeric_distances.get("duration_ms"),
+            "duration_ms_similarity": numeric_similarities.get("duration_ms", 0.0),
             "key_distance": numeric_distances.get("key"),
+            "key_similarity": numeric_similarities.get("key", 0.0),
             "mode_distance": numeric_distances.get("mode"),
+            "mode_similarity": numeric_similarities.get("mode", 0.0),
             "decision": "keep" if kept else "reject",
             "decision_path": decision_path,
-            "decision_reason": decision_reason(decision_path, semantic_score, numeric_pass_count),
+            "decision_reason": decision_reason(
+                decision_path,
+                semantic_score,
+                numeric_pass_count,
+                numeric_support_score=numeric_support_score,
+                use_continuous_numeric=use_continuous_numeric,
+            ),
         }
 
         tracker.record_decision(

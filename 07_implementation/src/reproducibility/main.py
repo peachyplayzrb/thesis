@@ -21,6 +21,29 @@ from shared_utils.stage_utils import relpath
 DEFAULT_REPLAY_COUNT = 3
 
 
+def build_signal_mode_calibration_snapshot(
+    bl005_diagnostics: dict[str, object],
+    bl006_summary: dict[str, object],
+) -> dict[str, object]:
+    retrieval_config = dict(bl005_diagnostics.get("config") or {})
+    scoring_config = dict(bl006_summary.get("config") or {})
+    signal_mode = dict(retrieval_config.get("signal_mode") or scoring_config.get("signal_mode") or {})
+    popularity_profile = dict(signal_mode.get("popularity_profile") or {})
+    component_weights = dict(scoring_config.get("base_component_weights") or {})
+
+    return {
+        "mode_name": signal_mode.get("name"),
+        "semantic_profile": signal_mode.get("semantic_profile"),
+        "numeric_profile": signal_mode.get("numeric_profile"),
+        "retrieval_numeric_support_min_score": float(retrieval_config.get("numeric_support_min_score", 0.0) or 0.0),
+        "retrieval_use_weighted_semantics": bool(retrieval_config.get("use_weighted_semantics", False)),
+        "retrieval_use_continuous_numeric": bool(retrieval_config.get("use_continuous_numeric", False)),
+        "retrieval_popularity_numeric_enabled": bool(popularity_profile.get("retrieval_enabled", False)),
+        "scoring_popularity_weight": float(component_weights.get("popularity", 0.0) or 0.0),
+        "scoring_popularity_enabled": bool(popularity_profile.get("scoring_enabled", False)),
+    }
+
+
 def canonical_json_hash(payload: object, *, uppercase: bool = True) -> str:
     """Preserve BL-010 historical default of uppercase JSON hash output."""
     return shared_canonical_json_hash(payload, uppercase=uppercase)
@@ -149,6 +172,8 @@ def build_config_snapshot(
     return {
         "task": "BL-010",
         "bootstrap_mode": False,
+        "signal_mode": dict((bl005_diagnostics.get("config") or {}).get("signal_mode") or (bl006_summary.get("config") or {}).get("signal_mode") or {}),
+        "signal_mode_calibration": build_signal_mode_calibration_snapshot(bl005_diagnostics, bl006_summary),
         "fixed_input_source": fixed_input_source,
         "replay_count": int(replay_count),
         "fixed_inputs": fixed_inputs,
@@ -172,15 +197,18 @@ def build_config_snapshot(
 
 
 def stable_profile_fingerprint(profile: dict, summary: dict) -> str:
+    diagnostics = profile["diagnostics"]
+    missing_numeric_track_count = diagnostics["missing_numeric_track_count"]
+
     payload = {
         "user_id": profile["user_id"],
         "config": profile["config"],
         "diagnostics": {
-            "events_total": profile["diagnostics"]["events_total"],
-            "matched_seed_count": profile["diagnostics"]["matched_seed_count"],
-            "missing_seed_count": profile["diagnostics"]["missing_seed_count"],
-            "candidate_rows_total": profile["diagnostics"]["candidate_rows_total"],
-            "total_effective_weight": profile["diagnostics"]["total_effective_weight"],
+            "events_total": diagnostics["events_total"],
+            "matched_seed_count": diagnostics["matched_seed_count"],
+            "missing_numeric_track_count": missing_numeric_track_count,
+            "candidate_rows_total": diagnostics["candidate_rows_total"],
+            "total_effective_weight": diagnostics["total_effective_weight"],
         },
         "seed_summary": profile["seed_summary"],
         "numeric_feature_profile": profile["numeric_feature_profile"],

@@ -10,6 +10,21 @@ from typing import Any
 from shared_utils.genre_utils import lead_genre_token_similarity
 
 
+def circular_distance_12(value: float, center: float) -> float:
+    """Return shortest non-negative distance on the 12-step key circle."""
+    normalized_value = value % 12.0
+    normalized_center = center % 12.0
+    raw_diff = abs(normalized_value - normalized_center)
+    return min(raw_diff, 12.0 - raw_diff)
+
+
+def _to_float(value: object, default: float = 0.0) -> float:
+    try:
+        return float(str(value))
+    except (TypeError, ValueError):
+        return default
+
+
 def numeric_similarity(value: float | None, center: float, threshold: float, circular: bool = False) -> float:
     """
     Compute similarity score for numeric dimensions.
@@ -30,9 +45,7 @@ def numeric_similarity(value: float | None, center: float, threshold: float, cir
         return 0.0
 
     if circular:
-        # Circular distance: for key, wrap around 12
-        raw_diff = abs(value - center)
-        diff = min(raw_diff, 12.0 - raw_diff)
+        diff = circular_distance_12(value, center)
     else:
         diff = abs(value - center)
 
@@ -97,15 +110,22 @@ def compute_component_scores(
         - "matched_genres", "matched_tags" (for output)
     """
     scores: dict[str, object] = {}
-    numeric_centers = profile_data.get("numeric_centers", {})
-    numeric_thresholds = profile_data.get("numeric_thresholds", {})
+    numeric_centers_raw = profile_data.get("numeric_centers")
+    numeric_thresholds_raw = profile_data.get("numeric_thresholds")
+    genre_weights_raw = profile_data.get("genre_weights")
+    tag_weights_raw = profile_data.get("tag_weights")
+
+    numeric_centers = numeric_centers_raw if isinstance(numeric_centers_raw, dict) else {}
+    numeric_thresholds = numeric_thresholds_raw if isinstance(numeric_thresholds_raw, dict) else {}
+    genre_weights = genre_weights_raw if isinstance(genre_weights_raw, dict) else {}
+    tag_weights = tag_weights_raw if isinstance(tag_weights_raw, dict) else {}
 
     # Numeric components are driven by active_numeric_specs so BL-006 stays aligned to shared config.
     for dimension, spec in active_numeric_specs.items():
         value = candidate_attrs.get(dimension)
         center = numeric_centers.get(dimension)
         threshold = numeric_thresholds.get(dimension, 1.0)
-        circular = spec.get("circular", False)
+        circular = bool(spec.get("circular", False))
 
         similarity = numeric_similarity(
             float(value) if value is not None else None,
@@ -116,20 +136,20 @@ def compute_component_scores(
         scores[f"{dimension}_similarity"] = similarity
 
     # Lead genre: token overlap vs profile lead genre
-    candidate_lead_genre = candidate_attrs.get("lead_genre", "").lower()
-    profile_lead_genre = profile_data.get("lead_genre", "").lower()
+    candidate_lead_genre = str(candidate_attrs.get("lead_genre", "")).lower()
+    profile_lead_genre = str(profile_data.get("lead_genre", "")).lower()
     lead_genre_similarity = lead_genre_token_similarity(candidate_lead_genre, profile_lead_genre)
     scores["lead_genre_similarity"] = lead_genre_similarity
 
     # Genre overlap: weighted Jaccard similarity
-    candidate_genres = candidate_attrs.get("genres", [])
-    genre_weights = profile_data.get("genre_weights", {})
+    candidate_genres_raw = candidate_attrs.get("genres", [])
+    candidate_genres = [str(value) for value in candidate_genres_raw] if isinstance(candidate_genres_raw, list) else []
     genre_overlap_similarity = weighted_overlap(candidate_genres, genre_weights)
     scores["genre_overlap_similarity"] = genre_overlap_similarity
 
     # Tag overlap: weighted Jaccard similarity
-    candidate_tags = candidate_attrs.get("tags", [])
-    tag_weights = profile_data.get("tag_weights", {})
+    candidate_tags_raw = candidate_attrs.get("tags", [])
+    candidate_tags = [str(value) for value in candidate_tags_raw] if isinstance(candidate_tags_raw, list) else []
     tag_overlap_similarity = weighted_overlap(candidate_tags, tag_weights)
     scores["tag_overlap_similarity"] = tag_overlap_similarity
 
@@ -149,7 +169,7 @@ def compute_weighted_contributions(
     for component, weight in component_weights.items():
         component_name = component.removesuffix("_score")
         score_key = f"{component_name}_similarity"
-        similarity = float(component_scores.get(score_key, 0.0))
+        similarity = _to_float(component_scores.get(score_key, 0.0))
         contributions[f"{component_name}_contribution"] = round(similarity * weight, 6)
     return contributions
 
