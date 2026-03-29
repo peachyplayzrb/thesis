@@ -1,51 +1,53 @@
 ﻿# Requirements To Design Map
 
-DOCUMENT STATUS: working traceability map
-CONFIDENCE: medium-high
-ROLE: literature-to-architecture bridge
+DOCUMENT STATUS: implementation-synchronized traceability map
+LAST SYNCHRONIZED: 2026-03-29 UTC
+CONFIDENCE: high for design-to-implementation mapping, medium for literature-strength grading
+ROLE: requirement-to-design-to-implementation bridge
 
-## Seed Traceability
-| Literature issue | Design requirement | Current mechanism | Literature justification needed |
-| --- | --- | --- | --- |
-| Opaque recommendation logic | Recommendation process must be inspectable | Deterministic scoring + score trace logging | Explainable RS + faithful explanation evidence |
-| Limited user agency | Users can influence recommendation behavior | Influence tracks + parameter controls | Control-oriented interface studies |
-| Playlist quality is more than ranking | Playlist-level constraints required | Playlist assembly stage with diversity/order rules | Playlist continuation and sequence-quality literature |
-| Cross-source data fragmentation | Tracks must align across systems | ISRC-first + metadata fallback matching | Entity resolution / cross-platform reliability studies |
-| Reproducibility concerns | Runs must be repeatable and auditable | Configuration profiles + observability logs | Reproducibility and experiment traceability evidence |
+## 1) Requirement to Mechanism Traceability
 
-## Open Validation Checks
-- Confirm acceptable alignment failure thresholds from literature.
-- Confirm which feature descriptors best support transparent explanations.
-- Confirm trade-off framing between transparency and recommendation utility.
+| Requirement Theme | Design Requirement | Implemented Mechanism | Primary Stage Surface | Status |
+| --- | --- | --- | --- | --- |
+| Transparency | Recommendation process must be inspectable | Deterministic scoring plus per-track explanation payloads | BL-006 and BL-008 | Implemented (partial causal depth) |
+| Controllability | Users can influence recommendation behavior through bounded controls | Run-config/env control surfaces across retrieval, scoring, and assembly | BL-005, BL-006, BL-007 | Implemented (partial in effect strength) |
+| Playlist quality beyond ranking | Playlist-level constraints and sequencing needed | Rule-based assembly with threshold and diversity constraints | BL-007 | Implemented |
+| Cross-source alignment reliability | Source events must map into candidate corpus | Alignment pipeline with source-scope and matching strategies | BL-003 | Implemented (known unmatched-rate boundary) |
+| Reproducibility/observability | Runs must be replayable and auditable | Config provenance, stage diagnostics, artifact hashing, observability log | BL-009 (+ BL-010/BL-011 evaluation layers) | Implemented |
 
-## Chapter 2 Consequence Handoff (2026-03-14)
-| Chapter 2 section | Design consequence carried forward | Chapter 3 target section | Mechanism anchor |
-| --- | --- | --- | --- |
-| 2.1 Foundations and scope positioning | Justify design against transparency, controllability, reproducibility objectives (not benchmark-max framing) | 3.1, 3.2 | Objective-aligned requirement framing under locked MVP constraints |
-| 2.2 Transparency, explainability, controllability | Expose user controls and support sensitivity-oriented evaluation | 3.2, 3.8 | Influence tracks plus configurable parameters |
-| 2.3 Music and playlist-specific challenges | Separate playlist assembly from item ranking and treat similarity as approximation | 3.6 | Rule-based playlist assembly with sequence/diversity constraints |
-| 2.4 Deterministic design rationale | Keep metrics and feature weights explicit and reviewable | 3.5, 3.6 | Deterministic scoring pipeline with declared weights and rules |
-| 2.5 Alignment reliability and reproducibility | Include staged matching diagnostics, unmatched-rate visibility, run-level logging | 3.4, 3.7 | ISRC-first plus metadata fallback, audit logs, replayable config |
-| 2.6 Literature gap and conclusion | Evaluate system on transparency/control/reproducibility/rule-compliance criteria | 3.1, 3.7 | Evaluation criteria handoff to Chapter 4 protocol |
+## 2) BL Stage Coverage Map
 
-Handoff status: complete for Chapter 3 drafting scope; implementation evidence remains Chapter 4 responsibility.
+| BL Stage | Design Role | Key Requirement Contribution |
+| --- | --- | --- |
+| BL-003 Alignment | Source normalization and seed construction | Data reliability and inspectable matching lineage |
+| BL-004 Profile | Preference signal aggregation | Interpretable profile representation |
+| BL-005 Retrieval | Candidate filtering | Controlled pool shaping and rejection traceability |
+| BL-006 Scoring | Deterministic relevance scoring | Faithful contribution-level decision basis |
+| BL-007 Playlist | Constraint-based assembly | Playlist-level quality constraints |
+| BL-008 Transparency | Explanation payload generation | Human-readable, score-grounded justification |
+| BL-009 Observability | Run-level audit aggregation | End-to-end traceability and reproducibility evidence |
 
-## Layer-Level Traceability (MVP-Aligned)
-| Architecture layer | Literature finding | Design requirement | System mechanism | Supporting papers | Support strength |
-| --- | --- | --- | --- | --- | --- |
-| User Interaction | One-size-fits-all controls are suboptimal; explanation goals matter | Provide controllable but understandable user influence | Influence tracks + minimal parameter controls | P-004, P-002 | medium |
-| Data Ingestion | Music-RS must handle practical preference signals | Support one feasible ingestion route for MVP | Single adapter path + manual seed input | P-005 | medium |
-| Track Alignment | Cross-source integration needed for pipeline continuity | Map imported tracks into feature corpus reliably | ISRC-first + metadata fallback | P-029, P-030, P-031 | medium |
-| Preference Modelling | Preference representation must support recommendation behavior | Build interpretable profile from user history | Aggregated feature profile from matched tracks + influence tracks | P-005 (broad) | low-medium |
-| Candidate Dataset | Music recommendation faces scale/selection challenges | Restrict candidate set for tractable scoring | Canonical corpus + candidate subset filtering | P-005 | medium |
-| Feature Processing | Stable scoring requires comparable features | Normalize/select features and handle missing values | Feature prep pipeline before scoring | none direct in P-001..P-005 | low |
-| Deterministic Scoring | Explainability requires faithful, inspectable mechanisms | Use explicit scoring with traceability | Weighted deterministic similarity + rule adjustments | P-001, P-002, P-003 | high |
-| Playlist Assembly | Playlist quality is not equivalent to item ranking | Apply playlist-level constraints | Rule-based assembly (length/repetition/diversity/order) | P-005 | medium |
-| Output and Explanation | Explanation value depends on faithful mechanism linkage | Explanations must reflect actual scoring process | Per-track contribution and adjustment reporting | P-001, P-002, P-003 | high |
-| Observability and Audit | Evaluation beyond accuracy needs inspectable process evidence | Log enough detail for audit and interpretation | Run logs for inputs/alignment/config/output | P-032, P-033, P-034, P-010 | high |
-| Configuration and Execution | Evaluation requires declared objective and reproducible setup | Enable deterministic replay and parameter experiments | Saved config profiles + controlled execution | P-032, P-033, P-034 | high |
+## 3) Requirement Fulfillment Posture
+1. Transparency: implemented with score-grounded explanations; limited by missing counterfactual and full control-causality surfaces.
+2. Controllability: implemented via stage controls; influence-track effect remains weak in current behavior.
+3. Reproducibility: implemented via deterministic pipeline behavior and run-level provenance/hashing.
+4. Observability: implemented via BL-009 aggregated diagnostics and required artifact contracts.
+5. Playlist quality controls: implemented through BL-007 constraints with partial control-policy tunability.
 
-## Gaps To Resolve In Next Literature Batch
-- Strengthen feature-processing decision evidence.
-- Add at least one music-domain alignment reliability benchmark to complement entity-resolution surveys.
+## 4) Design Assumptions Still in Force
+1. Deterministic recommendation behavior is preferred for inspectability and reproducibility goals.
+2. Single-user scope is sufficient for thesis artefact evaluation goals.
+3. Candidate-side features and metadata are sufficient for controllability/transparency evaluation in scope.
 
+## 5) Known Requirement Gaps
+1. Control-causality requirement is only partially satisfied (no unified per-track causal contract).
+2. Influence-track controllability requirement is partially satisfied (weak measured effect).
+3. Counterfactual explanation requirement is not implemented.
+
+## 6) Evidence and Governance Linkage
+Implementation-consistency references:
+1. Architecture baseline: `05_design/architecture.md`.
+2. Control posture source: `07_implementation/CONTROL_SURFACE_REGISTRY.md`.
+3. Transparency posture source: `07_implementation/TRANSPARENCY_SPEC.md`.
+
+This map should be updated whenever stage ownership or required artifact contracts change.

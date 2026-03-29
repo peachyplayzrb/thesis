@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 
 
@@ -26,6 +26,11 @@ class ProfileControls:
     top_lead_genre_limit: int
     user_id: str
     include_interaction_types: list[str]
+    confidence_weighting_mode: str = "linear_half_bias"
+    confidence_bin_high_threshold: float = 0.90
+    confidence_bin_medium_threshold: float = 0.50
+    interaction_attribution_mode: str = "split_selected_types_equal_share"
+    emit_profile_policy_diagnostics: bool = True
 
     def as_mapping(self) -> dict[str, object]:
         return {
@@ -36,6 +41,11 @@ class ProfileControls:
             "top_tag_limit": self.top_tag_limit,
             "top_genre_limit": self.top_genre_limit,
             "top_lead_genre_limit": self.top_lead_genre_limit,
+            "confidence_weighting_mode": self.confidence_weighting_mode,
+            "confidence_bin_high_threshold": self.confidence_bin_high_threshold,
+            "confidence_bin_medium_threshold": self.confidence_bin_medium_threshold,
+            "interaction_attribution_mode": self.interaction_attribution_mode,
+            "emit_profile_policy_diagnostics": self.emit_profile_policy_diagnostics,
             "user_id": self.user_id,
             "include_interaction_types": list(self.include_interaction_types),
         }
@@ -50,6 +60,10 @@ class ProfileInputs:
     bl003_structural_contract: dict[str, object]
     bl003_seed_contract_hash: str
     bl003_structural_contract_hash: str
+    bl003_quality: dict[str, int | float] = field(default_factory=dict)
+    bl003_rows_selected: dict[str, int] = field(default_factory=dict)
+    bl003_rows_available: dict[str, int] = field(default_factory=dict)
+    bl003_coverage_rate_by_source: dict[str, float] = field(default_factory=dict)
 
 
 @dataclass(frozen=True)
@@ -75,6 +89,17 @@ class ProfileAggregation:
     history_interaction_count_sum: int
     influence_interaction_count_sum: int
     matched_seed_count: int
+    mixed_interaction_row_count: int = 0
+    primary_type_attribution_row_count: int = 0
+    attribution_weight_by_type: dict[str, float] = field(
+        default_factory=lambda: {"history": 0.0, "influence": 0.0}
+    )
+    attribution_interaction_count_by_type: dict[str, float] = field(
+        default_factory=lambda: {"history": 0.0, "influence": 0.0}
+    )
+    attribution_row_share_by_type: dict[str, float] = field(
+        default_factory=lambda: {"history": 0.0, "influence": 0.0}
+    )
 
 
 @dataclass(frozen=True)

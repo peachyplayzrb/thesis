@@ -90,9 +90,12 @@ def build_assembly_pressure_diagnostics(
 
 def build_assembly_detail_log(
     trace_rows: list[dict[str, object]],
+    *,
+    top_k: int = 100,
 ) -> dict[str, object]:
     """Build detail rows for top-ranked candidate decisions."""
-    top_100_rows = [row for row in trace_rows if safe_int(row["score_rank"], 0) <= 100]
+    top_window = max(1, int(top_k))
+    top_100_rows = [row for row in trace_rows if safe_int(row["score_rank"], 0) <= top_window]
     included_ranks = sorted(
         safe_int(row["score_rank"], 0)
         for row in trace_rows
@@ -118,6 +121,63 @@ def build_assembly_detail_log(
         )
 
     return {
-        "top_rank_window": 100,
+        "top_rank_window": top_window,
         "rows": detail_rows,
+    }
+
+
+def build_opportunity_cost_diagnostics(
+    trace_rows: list[dict[str, object]],
+    *,
+    top_k_examples: int = 10,
+) -> dict[str, object]:
+    """Estimate score opportunity cost from excluded candidates by exclusion reason."""
+    excluded_rows = [row for row in trace_rows if row.get("decision") == "excluded"]
+    top_examples_limit = max(1, int(top_k_examples))
+    grouped: dict[str, list[dict[str, object]]] = {}
+    for row in excluded_rows:
+        reason = str(row.get("exclusion_reason") or "unspecified")
+        grouped.setdefault(reason, []).append(row)
+
+    summary: dict[str, dict[str, object]] = {}
+    for reason, rows in grouped.items():
+        score_values = [safe_float(row.get("final_score"), 0.0) for row in rows]
+        score_values.sort(reverse=True)
+        sorted_rows = sorted(
+            rows,
+            key=lambda row: (
+                -safe_float(row.get("final_score"), 0.0),
+                safe_int(row.get("score_rank"), 0),
+                str(row.get("track_id", "")),
+            ),
+        )
+        summary[reason] = {
+            "count": len(rows),
+            "mean_score": round(sum(score_values) / max(1, len(score_values)), 6),
+            "max_score": round(score_values[0], 6) if score_values else 0.0,
+            "top_examples": [
+                {
+                    "track_id": row.get("track_id", ""),
+                    "score_rank": safe_int(row.get("score_rank"), 0),
+                    "final_score": round(safe_float(row.get("final_score"), 0.0), 6),
+                }
+                for row in sorted_rows[:top_examples_limit]
+            ],
+        }
+
+    first_blocking_reason = None
+    ranked_excluded = sorted(
+        excluded_rows,
+        key=lambda row: (
+            safe_int(row.get("score_rank"), 0),
+            str(row.get("track_id", "")),
+        ),
+    )
+    if ranked_excluded:
+        first_blocking_reason = str(ranked_excluded[0].get("exclusion_reason") or "unspecified")
+
+    return {
+        "excluded_count": len(excluded_rows),
+        "by_reason": summary,
+        "fill_failure_frontier_reason": first_blocking_reason,
     }

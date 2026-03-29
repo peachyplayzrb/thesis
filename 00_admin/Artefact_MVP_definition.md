@@ -38,6 +38,15 @@ Single-user deterministic playlist generation pipeline with transparent scoring,
 - Advanced UI with many control widgets.
 - Rich visualization dashboard for observability.
 - Automated hyperparameter exploration.
+
+## Known Limitations (Implementation-Bounded)
+- Alignment miss-rate (~84%): most imported listening-history tracks do not find a match in DS-001 due to metadata/identifier coverage gaps; this is documented and accepted per `02_foundation/limitations.md`.
+- Influence tracks have weak measured effect: BL-011 controllability testing shows zero directional shift in final playlist composition from adding/removing influence tracks via the current pre-profile injection path; direct assembly-layer integration is out of scope for the locked MVP.
+- No unified per-track control-causality tracing: the `DECISION_FIELDS` contract captures scored metadata, but no field explicitly links each playlist position to the specific control parameter that produced it.
+- No counterfactual explanation outputs: BL-008 explains actual score contributors but does not generate what-if alternative explanations.
+- BL-007 partially configurable: thresholds and utility strategies are tunable via run-config, but rule order (R1 hard limits → R2 genre diversity → R3 utility-greedy → R4 relaxation) is fixed in code.
+- No `max_per_artist` rule is configured in the canonical v1f baseline; Bruce Hornsby therefore appears twice in the canonical output (positions 2 and 10) — a known accepted limitation.
+- User-side tempo/key/loudness unavailable: Spotify Web API audio-feature endpoints are deprecated, so numeric profile signals for those dimensions are absent.
 - Extended fallback matching heuristics beyond the active DS-001 alignment path.
 
 ## Explicit Out Of Scope

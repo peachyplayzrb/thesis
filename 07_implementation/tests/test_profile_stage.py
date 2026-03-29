@@ -10,8 +10,8 @@ from profile.models import ProfileAggregation, ProfileControls, ProfileInputs, P
 from profile.stage import NUMERIC_FEATURE_COLUMNS, ProfileStage
 
 
-def _controls(include_types: list[str] | None = None) -> ProfileControls:
-    return ProfileControls(
+def _controls(include_types: list[str] | None = None, **overrides: object) -> ProfileControls:
+    base = ProfileControls(
         config_source="test",
         run_config_path=None,
         run_config_schema_version=None,
@@ -22,6 +22,9 @@ def _controls(include_types: list[str] | None = None) -> ProfileControls:
         user_id="user_1",
         include_interaction_types=include_types or ["history", "influence"],
     )
+    if not overrides:
+        return base
+    return ProfileControls(**{**base.__dict__, **overrides})
 
 
 def _inputs(seed_rows: list[dict[str, object]]) -> ProfileInputs:
@@ -152,6 +155,40 @@ def test_aggregate_inputs_uses_confidence_adjusted_effective_weight() -> None:
     assert aggregation.seed_trace_rows[1]["effective_weight"] == 0.5
 
 
+def test_aggregate_inputs_supports_direct_confidence_weighting_mode() -> None:
+    inputs = _inputs(
+        [
+            {
+                "ds001_id": "track_1",
+                "spotify_track_ids": "sp_1",
+                "interaction_types": "history",
+                "preference_weight_sum": "1.0",
+                "interaction_count_sum": "5",
+                "match_confidence_score": "0.4",
+                "tags": "ambient",
+                "genres": "ambient",
+                "tempo": "100",
+                "key": "1",
+                "release": "2011",
+                "artist": "A",
+                "song": "S1",
+            }
+        ]
+    )
+    controls = _controls(
+        confidence_weighting_mode="direct_confidence",
+        confidence_bin_high_threshold=0.8,
+        confidence_bin_medium_threshold=0.3,
+    )
+
+    aggregation = ProfileStage.aggregate_inputs(inputs, controls)
+
+    assert aggregation.total_effective_weight == 0.4
+    assert aggregation.seed_trace_rows[0]["effective_weight"] == 0.4
+    assert aggregation.confidence_bins["high_0_9_plus"] == 0
+    assert aggregation.confidence_bins["medium_0_5_to_0_9"] == 1
+
+
 def test_aggregate_inputs_excludes_blank_track_id_from_missing_numeric_ids() -> None:
     inputs = _inputs(
         [
@@ -241,6 +278,35 @@ def test_build_profile_payload_emits_missing_numeric_diagnostics_keys(tmp_path: 
     assert diagnostics["match_method_counts"]["spotify_id_exact"] == 1
     assert payload["input_artifacts"]["bl003_seed_contract_hash"] == "seed-hash"
     assert payload["input_artifacts"]["bl003_structural_contract_hash"] == "struct-hash"
+
+
+def test_aggregate_inputs_supports_primary_type_only_attribution() -> None:
+    inputs = _inputs(
+        [
+            {
+                "ds001_id": "mixed_row",
+                "spotify_track_ids": "sp_mixed",
+                "interaction_types": "history|influence",
+                "preference_weight_sum": "1.0",
+                "interaction_count_sum": "10",
+                "tags": "rock",
+                "genres": "rock",
+                "tempo": "100",
+                "release": "2011",
+                "key": "1",
+                "artist": "A",
+                "song": "S1",
+            }
+        ]
+    )
+    controls = _controls(interaction_attribution_mode="primary_type_only")
+
+    aggregation = ProfileStage.aggregate_inputs(inputs, controls)
+
+    assert aggregation.mixed_interaction_row_count == 1
+    assert aggregation.primary_type_attribution_row_count == 1
+    assert aggregation.attribution_weight_by_type["influence"] == aggregation.total_effective_weight
+    assert aggregation.attribution_weight_by_type["history"] == 0.0
 
 
 def test_validate_seed_table_schema_raises_on_missing_contract_columns() -> None:

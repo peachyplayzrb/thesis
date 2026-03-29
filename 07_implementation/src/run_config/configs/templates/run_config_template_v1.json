@@ -39,7 +39,7 @@
     "preference_weight": 1.0,
     "source": null
   },
-    "seed_controls": {
+  "seed_controls": {
     "match_rate_min_threshold": 0.3,
     "match_rate_min_threshold_comment": "Minimum acceptable match rate (0.0-1.0) for imported tracks against DS-001 corpus. Set to 0.3 (30%) based on empirical data showing 32.2% match rate with current corpus. Known limitation: DS-001 has limited coverage of user's import history - preference profiles built from incomplete data. See Chapter 3 for bias documentation.",
     "top_range_weights": {
@@ -94,7 +94,17 @@
   "profile_controls": {
     "top_tag_limit": 10,
     "top_genre_limit": 8,
-    "top_lead_genre_limit": 6
+    "top_lead_genre_limit": 6,
+    "confidence_weighting_mode": "linear_half_bias",
+    "confidence_weighting_mode_comment": "linear_half_bias preserves current BL-004 behavior: effective_weight = preference_weight * (0.5 + 0.5*confidence). direct_confidence uses preference_weight*confidence. none disables confidence scaling.",
+    "confidence_bin_high_threshold": 0.9,
+    "confidence_bin_high_threshold_comment": "High-confidence bin lower bound within [0,1].",
+    "confidence_bin_medium_threshold": 0.5,
+    "confidence_bin_medium_threshold_comment": "Medium-confidence bin lower bound within [0,1], must be <= confidence_bin_high_threshold.",
+    "interaction_attribution_mode": "split_selected_types_equal_share",
+    "interaction_attribution_mode_comment": "split_selected_types_equal_share preserves current mixed-row attribution behavior. primary_type_only assigns full mixed-row fallback attribution to BL-004 primary interaction type.",
+    "emit_profile_policy_diagnostics": true,
+    "emit_profile_policy_diagnostics_comment": "When true, BL-004 emits effective profile policy settings and attribution impact counters in diagnostics."
   },
   "retrieval_controls": {
     "profile_top_tag_limit": 10,
@@ -106,6 +116,34 @@
     "semantic_strong_keep_score": 2,
     "semantic_min_keep_score": 1,
     "numeric_support_min_pass": 1,
+    "numeric_support_min_score": 1.0,
+    "numeric_support_score_mode": "weighted_absolute",
+    "numeric_support_score_mode_comment": "Controls continuous numeric decision source: raw | weighted | weighted_absolute.",
+    "lead_genre_partial_match_threshold": 0.5,
+    "use_weighted_semantics": false,
+    "use_continuous_numeric": false,
+    "enable_popularity_numeric": false,
+    "language_filter_enabled": false,
+    "language_filter_codes": [],
+    "recency_years_min_offset": null,
+    "profile_quality_penalty_enabled": true,
+    "profile_quality_penalty_enabled_comment": "When true, BL-005 tightens effective thresholds based on profile quality signals.",
+    "profile_quality_threshold": 0.9,
+    "profile_entropy_low_threshold": 0.35,
+    "influence_share_threshold": 0.6,
+    "profile_quality_penalty_increment": 0.2,
+    "profile_entropy_penalty_increment": 0.2,
+    "influence_share_penalty_increment": 0.15,
+    "numeric_penalty_scale": 0.5,
+    "semantic_overlap_damping_mid_entropy_threshold": 0.6,
+    "semantic_overlap_damping_low_entropy": 0.85,
+    "semantic_overlap_damping_mid_entropy": 0.92,
+    "enable_numeric_confidence_scaling": true,
+    "numeric_confidence_floor": 0.0,
+    "profile_numeric_confidence_mode": "direct",
+    "profile_numeric_confidence_mode_comment": "direct uses profile confidence as-is; blended mixes toward 1.0 via profile_numeric_confidence_blend_weight.",
+    "profile_numeric_confidence_blend_weight": 1.0,
+    "emit_profile_policy_diagnostics": true,
     "numeric_thresholds": {
       "tempo": 20.0,
       "key": 2.0,
@@ -129,13 +167,57 @@
       "key": 2.0,
       "mode": 0.5,
       "duration_ms": 45000.0
-    }
+    },
+    "lead_genre_strategy": "weighted_top_lead_genres",
+    "lead_genre_strategy_comment": "weighted_top_lead_genres (default) uses BL-004 top_lead_genres weighted token similarity. single_anchor compares only with the primary BL-004 lead_genre.",
+    "semantic_overlap_strategy": "precision_aware",
+    "semantic_overlap_strategy_comment": "precision_aware (default) penalizes unmatched labels in candidate genre/tag sets. overlap_only disables precision penalties.",
+    "semantic_precision_alpha_mode": "profile_adaptive",
+    "semantic_precision_alpha_mode_comment": "profile_adaptive (default) derives alpha from BL-004 semantic entropy. fixed uses semantic_precision_alpha_fixed.",
+    "semantic_precision_alpha_fixed": 0.35,
+    "semantic_precision_alpha_fixed_comment": "Used only when semantic_precision_alpha_mode=fixed. Must be within [0,1].",
+    "enable_numeric_confidence_scaling": true,
+    "enable_numeric_confidence_scaling_comment": "Default true preserves current BL-006 behavior by scaling numeric contributions with BL-004 confidence.",
+    "numeric_confidence_floor": 0.0,
+    "numeric_confidence_floor_comment": "Lower bound applied to per-feature numeric confidence multipliers when scaling is enabled. Must be within [0,1].",
+    "profile_numeric_confidence_mode": "direct",
+    "profile_numeric_confidence_mode_comment": "direct uses BL-004 profile_numeric_confidence_factor as-is. blended mixes it with 1.0 using profile_numeric_confidence_blend_weight.",
+    "profile_numeric_confidence_blend_weight": 1.0,
+    "profile_numeric_confidence_blend_weight_comment": "Blend weight within [0,1] used only when profile_numeric_confidence_mode=blended.",
+    "emit_confidence_impact_diagnostics": true,
+    "emit_semantic_precision_diagnostics": false
   },
   "assembly_controls": {
     "target_size": 10,
     "min_score_threshold": 0.35,
     "max_per_genre": 4,
-    "max_consecutive": 2
+    "max_consecutive": 2,
+    "utility_strategy": "rank_round_robin",
+    "utility_strategy_comment": "rank_round_robin preserves current BL-007 behavior; utility_greedy enables deterministic utility-based candidate ordering.",
+    "utility_weights": {
+      "score_weight": 1.0,
+      "novelty_weight": 0.0,
+      "repetition_penalty_weight": 0.0
+    },
+    "adaptive_limits": {
+      "enabled": false,
+      "reference_top_k": 100,
+      "max_per_genre_scale_min": 0.75,
+      "max_per_genre_scale_max": 1.25
+    },
+    "controlled_relaxation": {
+      "enabled": false,
+      "relax_consecutive_first": true,
+      "max_per_genre_increment": 1,
+      "max_relaxation_rounds": 2,
+      "never_relax_score_threshold": true
+    },
+    "lead_genre_fallback_strategy": "none",
+    "lead_genre_fallback_strategy_comment": "none keeps raw lead_genre bucketing; semantic_component_proxy uses contribution-derived fallback buckets when lead_genre is blank.",
+    "use_component_contributions_for_tiebreak": false,
+    "use_semantic_strength_for_tiebreak": false,
+    "emit_opportunity_cost_metrics": false,
+    "detail_log_top_k": 100
   },
   "transparency_controls": {
     "top_contributor_limit": 3,
@@ -161,13 +243,16 @@
     "looser_threshold_scale": 1.25,
     "scenario_policy": {
       "scenario_policy_comment": "Controls which BL-011 scenarios run. enabled_scenario_ids: list of scenario_id strings, or [\"all\"] to run every defined scenario. repeat_count: how many times each scenario runs (>=1). comparison_mode: baseline_reference compares each variant against the baseline scenario.",
-      "enabled_scenario_ids": ["all"],
+      "enabled_scenario_ids": [
+        "all"
+      ],
       "repeat_count": 1,
-      "stage_scope": ["all"],
+      "stage_scope": [
+        "all"
+      ],
       "comparison_mode": "baseline_reference"
     },
-    "scenario_definitions": [
-    ]
+    "scenario_definitions": []
   },
   "orchestration_controls": {
     "orchestration_controls_comment": "BL-013 stage graph and execution policy. stage_order: null = use static default order. refresh_seed_policy: auto_if_stale | always | never.",

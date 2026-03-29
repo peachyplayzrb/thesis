@@ -42,8 +42,8 @@ Thesis requirement: Every decision must be transparent and traceable to explicit
 - Shows genre distribution, consecutive runs
 
 **Gap**: Does NOT explain user control application
-- *Needed*: Show influence_tracks reservation (once redesigned)
-- *Needed*: Show how assembly_rules config shaped selection
+- *Clarification*: BL-007 emits effective config snapshots and rule-hit diagnostics, but does not emit per-track control-causality statements
+- *Needed*: Show influence_tracks impact path (currently weak and indirect)
 - *Needed*: Show what would happen with different rule parameters
 
 ### BL-008: Explanation Payloads (Transparency Output)
@@ -59,41 +59,17 @@ Thesis requirement: Every decision must be transparent and traceable to explicit
 - *Needed*: "This track was selected because [your genre preference] drove the score up"
 - *Needed*: "This track would NOT have been selected if you'd used looser numeric thresholds"
 
-## Planned Enhancements
+## Known Limitations (Current Implementation)
 
-### Control Traceability
-Add to all stages:
-```json
-{
-  "user_controls_applied": {
-    "influence_tracks": {
-      "enabled": true,
-      "request_count": 2,
-      "fulfilled_count": 2,
-      "effect": "reserved 2 playlist slots"
-    },
-    "numeric_thresholds": {
-      "danceability_distance": 0.25,
-      "effect": "rejected N candidates outside this threshold"
-    }
-  }
-}
-```
+- Control-causality is not emitted as a unified `user_controls_applied` block.
+- Counterfactual reasoning is not emitted in BL-008 or BL-009 outputs.
+- Influence-track impact is visible only indirectly through aggregation behavior and downstream result deltas.
 
-### Counterfactual Reasoning
-Add to transparency outputs:
-```json
-{
-  "what_if_analysis": {
-    "if_no_influence_tracks": "playlist would be: [track_ids], rank changes: [...]",
-    "if_stricter_thresholds": "pool would shrink to N candidates",
-    "if_looser_genre_cap": "could fit more pop tracks, genre mix would be: [...]"
-  }
-}
-```
+## Future Work (Optional, Out of Current Scope)
+- Add stage-level control-causality blocks linking accepted/rejected outcomes to concrete control values.
+- Add what-if/counterfactual summaries for major control families (thresholds, language filter, assembly limits).
+- Add stronger influence-track traceability once control-effect behavior changes from weak indirect influence.
 
 ## Next Steps
-- Update BL-004 to differentiate influence seed sources
-- Update BL-007 trace to show influence_tracks reservation
-- Add control_application block to all explanations
-- Implement what-if analysis in observability
+- Keep limitations explicit in thesis claims and evaluation framing.
+- Avoid describing future-work transparency features as implemented behavior.

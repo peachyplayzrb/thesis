@@ -10,8 +10,8 @@ def keep_decision(
     semantic_score: float,
     numeric_pass_count: int,
     numeric_features_enabled: bool,
-    semantic_strong_keep_score: int,
-    semantic_min_keep_score: int,
+    semantic_strong_keep_score: float,
+    semantic_min_keep_score: float,
     numeric_support_min_pass: int,
     *,
     numeric_support_score: float | None = None,
@@ -83,7 +83,11 @@ def keep_decision(
         return False, "reject_semantic_without_numeric_support"
 
     # Numeric signal without semantic support
-    if numeric_pass_count > 0:
+    has_numeric_signal = numeric_pass_count > 0
+    if use_continuous_numeric and numeric_support_score is not None:
+        has_numeric_signal = numeric_support_score > 0.0
+
+    if has_numeric_signal:
         return False, "reject_numeric_without_semantic_support"
 
     # No signal on any dimension

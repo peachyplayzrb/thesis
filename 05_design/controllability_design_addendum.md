@@ -24,7 +24,7 @@ Extend `05_design/controllability_design.md` with current implementation finding
 - Effect: Observable in BL-003 alignment source stats
 - Status: Working
 
-### Weak Controls (Requiring Redesign)
+### Weak Controls (Known Limitation)
 **Influence Tracks** ❌ WEAK
 - **Current Design**: Pre-profile injection (BL-003 alignment)
 - **Measurement**: BL-011 controllability test shows ZERO playlist effect
@@ -34,17 +34,16 @@ Extend `05_design/controllability_design.md` with current implementation finding
 - **User Expectation Gap**: "I selected these 5 tracks" → user expects them in playlist or measurable impact
 - **Current Reality**: Seeds merge into profile, profile shift too small to affect filtering/scoring
 - **Design Gap**: No guarantee of inclusion, no measurable effect in current setup
-- **Redesign Direction**: Move to post-profile direct insertion with guaranteed playlist slots
+- **Scope Position**: documented limitation in current implementation scope
 
-**Assembly Rules** ❌ RIGID
-- **Current Design**: Hard-coded R1-R4 rules in BL-007
+**Assembly Rules** ⚠️ PARTIAL
+- **Current Design**: BL-007 applies a fixed R1-R4 rule order with tunable thresholds/limits
   - R1: Score threshold
   - R2: Genre cap per playlist
   - R3: Consecutive-same-genre limit
   - R4: Target length cap
-- **Problem**: User cannot adjust without code changes or config system redesign
-- **Control Gap**: These are major diversity/coherence levers but are not user-tunable
-- **Redesign Direction**: Expose as configuration in run_config
+- **Configurable Surface**: `target_size`, `min_score_threshold`, `max_per_genre`, `max_consecutive`, utility strategy/weights, adaptive limits, and controlled relaxation
+- **Residual Gap**: Rule order and some helper heuristics remain fixed in code
 
 ## Design Principles (from Thesis)
 1. Controls must be semantically clear and documented ✅
@@ -61,7 +60,7 @@ Extend `05_design/controllability_design.md` with current implementation finding
 | numeric_thresholds | Candidate pool size | High | Excellent | Good |
 | input_scope | Profile composition | Medium | Good | Good |
 | influence_tracks | (Zero) | None measured | N/A | N/A |
-| assembly_rules | (Not tunable) | N/A | N/A | N/A |
+| assembly_rules | Playlist structure and inclusion/exclusion | Medium | Good | Good |
 
 ## Open Design Questions
 
@@ -69,17 +68,16 @@ Extend `05_design/controllability_design.md` with current implementation finding
    - Current: No (they're just seeds that may or may not make it through)
    - Proposed: Yes (user explicit intent overrides system rules)
 
-2. **Assembly rule exposure scope**: Start with all 4 rules or subset?
-   - Proposed: Start with target_size, max_per_genre, max_consecutive
-   - Add others in Phase 4 if needed
+2. **Assembly-rule policy depth**: Should future work expose rule order/priority and helper heuristics, or keep those fixed?
+   - Current: thresholds and limits are tunable; policy order remains fixed
+   - Future direction: expose only if reproducibility and interpretability trade-offs are acceptable
 
 3. **Control-effect validation**: Should pipeline FAIL if control has observed zero effect?
    - Proposed: YES (strong signal that something is broken)
    - Alternative: Warn only, allow manual investigation
 
-## Next Steps (Phase 2-3)
-- [ ] Design post-profile influence slot reservation logic
-- [ ] Document influence slot policy decisions
-- [ ] Design assembly rules exposure in run_config
-- [ ] Create control-effect validation layer
+## Next Steps
+- [ ] Keep influence-tracks weakness explicit in limitations and evaluation framing
+- [ ] Preserve consistent language for BL-007 partial tunability across design/governance docs
+- [ ] Create stronger control-effect validation reporting where feasible
 - [ ] Document findings in CONTROL_SURFACE_REGISTRY.md

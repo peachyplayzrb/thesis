@@ -84,7 +84,7 @@ def contribution_breakdown(rows: list[dict[str, object]]) -> dict[str, float]:
         }
 
     def mean_of(key: str) -> float:
-        return round(statistics.mean(_to_float(row[key]) for row in rows), 6)
+        return round(statistics.mean(_to_float(row.get(key, 0.0)) for row in rows), 6)
 
     component_means = {
         f"{component}_mean": mean_of(f"{component}_contribution")
@@ -98,4 +98,108 @@ def contribution_breakdown(rows: list[dict[str, object]]) -> dict[str, float]:
         "numeric_contribution_mean": numeric_mean,
         "semantic_contribution_mean": semantic_mean,
         **component_means,
+    }
+
+
+def build_confidence_impact_diagnostics(
+    scored_rows: list[dict[str, object]],
+    numeric_confidence_by_feature: dict[str, float],
+    profile_numeric_confidence_factor: float,
+    *,
+    enabled: bool = True,
+    numeric_confidence_floor: float = 0.0,
+    profile_numeric_confidence_mode: str = "direct",
+    profile_numeric_confidence_blend_weight: float = 1.0,
+) -> dict[str, object]:
+    """Estimate pre/post confidence impact from contribution columns and static multipliers."""
+    if not enabled:
+        return {
+            "active": False,
+            "disabled": True,
+            "reason": "confidence scaling disabled by scoring control",
+        }
+
+    if not scored_rows:
+        return {
+            "active": False,
+            "profile_numeric_confidence_factor": round(profile_numeric_confidence_factor, 6),
+            "feature_confidence_by_name": dict(numeric_confidence_by_feature),
+            "numeric_confidence_floor": round(numeric_confidence_floor, 6),
+            "profile_numeric_confidence_mode": str(profile_numeric_confidence_mode),
+            "profile_numeric_confidence_blend_weight": round(profile_numeric_confidence_blend_weight, 6),
+            "component_multiplier": {},
+            "mean_adjusted_contribution": {},
+            "mean_estimated_unadjusted_contribution": {},
+            "mean_estimated_reduction": {},
+            "total_numeric_adjusted_mean": 0.0,
+            "total_numeric_estimated_unadjusted_mean": 0.0,
+            "total_numeric_estimated_reduction": 0.0,
+        }
+
+    profile_factor = max(0.0, min(1.0, float(profile_numeric_confidence_factor)))
+    component_multiplier = {
+        component: round(max(0.0, min(1.0, float(confidence))) * profile_factor, 6)
+        for component, confidence in numeric_confidence_by_feature.items()
+    }
+
+    def mean_of(key: str) -> float:
+        values = [_to_float(row.get(key, 0.0)) for row in scored_rows]
+        return round(statistics.mean(values), 6)
+
+    adjusted_by_component: dict[str, float] = {}
+    estimated_unadjusted_by_component: dict[str, float] = {}
+    estimated_reduction_by_component: dict[str, float] = {}
+
+    for component, multiplier in component_multiplier.items():
+        contribution_key = f"{component}_contribution"
+        adjusted_mean = mean_of(contribution_key)
+        adjusted_by_component[component] = adjusted_mean
+        if multiplier > 0:
+            estimated_unadjusted = round(adjusted_mean / multiplier, 6)
+        else:
+            estimated_unadjusted = adjusted_mean
+        estimated_unadjusted_by_component[component] = estimated_unadjusted
+        estimated_reduction_by_component[component] = round(
+            max(0.0, estimated_unadjusted - adjusted_mean),
+            6,
+        )
+
+    total_adjusted = round(sum(adjusted_by_component.values()), 6)
+    total_unadjusted = round(sum(estimated_unadjusted_by_component.values()), 6)
+
+    return {
+        "active": bool(component_multiplier),
+        "profile_numeric_confidence_factor": round(profile_factor, 6),
+        "numeric_confidence_floor": round(numeric_confidence_floor, 6),
+        "profile_numeric_confidence_mode": str(profile_numeric_confidence_mode),
+        "profile_numeric_confidence_blend_weight": round(profile_numeric_confidence_blend_weight, 6),
+        "feature_confidence_by_name": {
+            key: round(float(value), 6)
+            for key, value in numeric_confidence_by_feature.items()
+        },
+        "component_multiplier": component_multiplier,
+        "mean_adjusted_contribution": adjusted_by_component,
+        "mean_estimated_unadjusted_contribution": estimated_unadjusted_by_component,
+        "mean_estimated_reduction": estimated_reduction_by_component,
+        "total_numeric_adjusted_mean": total_adjusted,
+        "total_numeric_estimated_unadjusted_mean": total_unadjusted,
+        "total_numeric_estimated_reduction": round(max(0.0, total_unadjusted - total_adjusted), 6),
+    }
+
+
+def build_semantic_precision_diagnostics(
+    *,
+    enabled: bool,
+    overlap_strategy: str,
+    alpha_mode: str,
+    alpha_effective: float,
+    alpha_fixed: float,
+) -> dict[str, object]:
+    """Emit additive semantic precision diagnostics for BL-006 controls."""
+    return {
+        "active": bool(enabled),
+        "overlap_strategy": str(overlap_strategy),
+        "semantic_precision_alpha_mode": str(alpha_mode),
+        "semantic_precision_alpha_effective": round(float(alpha_effective), 6),
+        "semantic_precision_alpha_fixed": round(float(alpha_fixed), 6),
     }

@@ -25,6 +25,11 @@ DEFAULT_SOURCE_BASE_WEIGHT_FALLBACK = 0.25
 DEFAULT_PROFILE_TOP_LEAD_GENRE_LIMIT = 6
 DEFAULT_PROFILE_TOP_TAG_LIMIT = 10
 DEFAULT_PROFILE_TOP_GENRE_LIMIT = 8
+DEFAULT_BL004_CONFIDENCE_WEIGHTING_MODE = "linear_half_bias"
+DEFAULT_BL004_CONFIDENCE_BIN_HIGH_THRESHOLD = 0.90
+DEFAULT_BL004_CONFIDENCE_BIN_MEDIUM_THRESHOLD = 0.50
+DEFAULT_BL004_INTERACTION_ATTRIBUTION_MODE = "split_selected_types_equal_share"
+DEFAULT_BL004_EMIT_PROFILE_POLICY_DIAGNOSTICS = True
 DEFAULT_SEMANTIC_STRONG_KEEP_SCORE = 2
 DEFAULT_SEMANTIC_MIN_KEEP_SCORE = 1
 DEFAULT_NUMERIC_SUPPORT_MIN_PASS = 1
@@ -81,6 +86,17 @@ DEFAULT_INCLUDE_INTERACTION_TYPES: list[str] = ["history", "influence"]
 
 DEFAULT_INTERACTION_SCOPE: dict[str, object] = {
     "include_interaction_types": list(DEFAULT_INCLUDE_INTERACTION_TYPES),
+}
+
+DEFAULT_PROFILE_CONTROLS: dict[str, object] = {
+    "top_tag_limit": DEFAULT_PROFILE_TOP_TAG_LIMIT,
+    "top_genre_limit": DEFAULT_PROFILE_TOP_GENRE_LIMIT,
+    "top_lead_genre_limit": DEFAULT_PROFILE_TOP_LEAD_GENRE_LIMIT,
+    "confidence_weighting_mode": DEFAULT_BL004_CONFIDENCE_WEIGHTING_MODE,
+    "confidence_bin_high_threshold": DEFAULT_BL004_CONFIDENCE_BIN_HIGH_THRESHOLD,
+    "confidence_bin_medium_threshold": DEFAULT_BL004_CONFIDENCE_BIN_MEDIUM_THRESHOLD,
+    "interaction_attribution_mode": DEFAULT_BL004_INTERACTION_ATTRIBUTION_MODE,
+    "emit_profile_policy_diagnostics": DEFAULT_BL004_EMIT_PROFILE_POLICY_DIAGNOSTICS,
 }
 
 DEFAULT_CONTROL_MODE: dict[str, object] = {
@@ -144,13 +160,86 @@ DEFAULT_RETRIEVAL_NUMERIC_THRESHOLDS: dict[str, float] = {
     "release_year": 8.0,
 }
 
+DEFAULT_RETRIEVAL_CONTROLS: dict[str, object] = {
+    "profile_top_tag_limit": DEFAULT_PROFILE_TOP_TAG_LIMIT,
+    "profile_top_genre_limit": DEFAULT_PROFILE_TOP_GENRE_LIMIT,
+    "profile_top_lead_genre_limit": DEFAULT_PROFILE_TOP_LEAD_GENRE_LIMIT,
+    "semantic_strong_keep_score": DEFAULT_SEMANTIC_STRONG_KEEP_SCORE,
+    "semantic_min_keep_score": DEFAULT_SEMANTIC_MIN_KEEP_SCORE,
+    "numeric_support_min_pass": DEFAULT_NUMERIC_SUPPORT_MIN_PASS,
+    "numeric_support_min_score": DEFAULT_NUMERIC_SUPPORT_MIN_SCORE,
+    "use_weighted_semantics": DEFAULT_RETRIEVAL_USE_WEIGHTED_SEMANTICS,
+    "use_continuous_numeric": DEFAULT_RETRIEVAL_USE_CONTINUOUS_NUMERIC,
+    "enable_popularity_numeric": DEFAULT_RETRIEVAL_ENABLE_POPULARITY_NUMERIC,
+    "language_filter_enabled": DEFAULT_LANGUAGE_FILTER_ENABLED,
+    "language_filter_codes": list(DEFAULT_LANGUAGE_FILTER_CODES),
+    "recency_years_min_offset": DEFAULT_RECENCY_YEARS_MIN_OFFSET,
+    "numeric_thresholds": dict(DEFAULT_RETRIEVAL_NUMERIC_THRESHOLDS),
+    "profile_quality_penalty_enabled": True,
+    "profile_quality_threshold": 0.90,
+    "profile_entropy_low_threshold": 0.35,
+    "influence_share_threshold": 0.60,
+    "profile_quality_penalty_increment": 0.20,
+    "profile_entropy_penalty_increment": 0.20,
+    "influence_share_penalty_increment": 0.15,
+    "numeric_penalty_scale": 0.50,
+    "semantic_overlap_damping_mid_entropy_threshold": 0.60,
+    "semantic_overlap_damping_low_entropy": 0.85,
+    "semantic_overlap_damping_mid_entropy": 0.92,
+    "enable_numeric_confidence_scaling": True,
+    "numeric_confidence_floor": 0.0,
+    "profile_numeric_confidence_mode": "direct",
+    "profile_numeric_confidence_blend_weight": 1.0,
+    "numeric_support_score_mode": "weighted_absolute",
+    "emit_profile_policy_diagnostics": True,
+}
+
 DEFAULT_SCORING_NUMERIC_THRESHOLDS: dict[str, float] = dict(DEFAULT_RETRIEVAL_NUMERIC_THRESHOLDS)
+
+DEFAULT_SCORING_CONTROLS: dict[str, object] = {
+    "component_weights": dict(DEFAULT_SCORING_COMPONENT_WEIGHTS),
+    "numeric_thresholds": dict(DEFAULT_SCORING_NUMERIC_THRESHOLDS),
+    "lead_genre_strategy": "weighted_top_lead_genres",
+    "semantic_overlap_strategy": "precision_aware",
+    "semantic_precision_alpha_mode": "profile_adaptive",
+    "semantic_precision_alpha_fixed": 0.35,
+    "enable_numeric_confidence_scaling": True,
+    "numeric_confidence_floor": 0.0,
+    "profile_numeric_confidence_mode": "direct",
+    "profile_numeric_confidence_blend_weight": 1.0,
+    "emit_confidence_impact_diagnostics": True,
+    "emit_semantic_precision_diagnostics": False,
+}
 
 DEFAULT_ASSEMBLY_CONTROLS: dict[str, object] = {
     "target_size": 10,
     "min_score_threshold": 0.35,
     "max_per_genre": 4,
     "max_consecutive": 2,
+    "utility_strategy": "rank_round_robin",
+    "utility_weights": {
+        "score_weight": 1.0,
+        "novelty_weight": 0.0,
+        "repetition_penalty_weight": 0.0,
+    },
+    "adaptive_limits": {
+        "enabled": False,
+        "reference_top_k": 100,
+        "max_per_genre_scale_min": 0.75,
+        "max_per_genre_scale_max": 1.25,
+    },
+    "controlled_relaxation": {
+        "enabled": False,
+        "relax_consecutive_first": True,
+        "max_per_genre_increment": 1,
+        "max_relaxation_rounds": 2,
+        "never_relax_score_threshold": True,
+    },
+    "lead_genre_fallback_strategy": "none",
+    "use_component_contributions_for_tiebreak": False,
+    "use_semantic_strength_for_tiebreak": False,
+    "emit_opportunity_cost_metrics": False,
+    "detail_log_top_k": 100,
 }
 
 # BL-008 Transparency Default

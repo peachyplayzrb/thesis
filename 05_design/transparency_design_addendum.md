@@ -40,7 +40,7 @@ Extend `05_design/transparency_design.md` with current implementation patterns a
 - Impact: User cannot see if their influence selections matter
 
 **Gap 3: Assembly Rule Transparency** ❌
-- Current: BL-007 trace shows rule hits (R1-R4) but not configuration
+- Current: BL-007 report includes effective configuration plus rule hits (R1-R4)
 - Gap: No explanation of rule parameter values that led to exclusion
 - Missing: "Max per genre was set to 2, rejected 8 additional pop candidates"
 - Impact: User cannot understand why different playlists result from config changes
@@ -68,79 +68,19 @@ From thesis problem statement:
 3. How control changes would affect outcomes ❌ (not implemented)
 4. What uncertainty or alternatives exist ⚠️ (limited)
 
-## Planned Transparency Enhancements
+## Known Limitations (Current Implementation)
 
-### T1: Control Application Tracing
-Add to every explanation:
-```json
-{
-  "track_explanation": {
-    "why_selected": "...",
-    "user_controls_that_enabled_this": {
-      "genre_filter_sources": ["your top 3 genres"],
-      "numeric_thresholds": ["passed danceability window"],
-      "assembly_rules": ["passed score threshold rule (R1)"]
-    }
-  }
-}
-```
+1. Control-causality is not emitted as a unified per-track block linking user controls to final inclusion.
+2. Influence-track impact remains weak and indirect; there is no dedicated influence-effect transparency contract.
+3. BL-005 rejection rationale is partially transparent but not fully threshold-attribution complete.
+4. Counterfactual what-if analysis is not emitted in BL-008 or BL-009.
 
-### T2: Influence Track Transparency
-Add to BL-004 profile and BL-008 explanations:
-```json
-{
-  "seed_source_breakdown": {
-    "history_seeds": 1062,
-    "history_seed_weight": 1062.3,
-    "influence_seeds": 2,
-    "influence_seed_weight": 2.0,
-    "influence_seeds_list": ["track_1", "track_2"]
-  }
-}
-```
+## Future Work (Optional, Out of Current Scope)
 
-### T3: Assembly Rule Transparency
-Add to BL-007 trace:
-```json
-{
-  "rule_application_context": {
-    "r2_genre_cap": 2,
-    "r2_rejections_due_to_genre_cap": 45,
-    "r3_consecutive_limit": 1,
-    "r3_rejections_due_to_consecutive": 12,
-    "r4_target_size": 10,
-    "r4_stop_reached_after": 10
-  }
-}
-```
-
-### T4: Candidate Filtering Rationale
-Add to BL-005 summary:
-```json
-{
-  "numeric_threshold_impact": {
-    "danceability_distance_0_25": {"candidates_rejected": 2000, "reason": "outside window"},
-    "energy_distance_0_3": {"candidates_rejected": 1500, "reason": "outside window"},
-    "combined_numeric_passes": 46776
-  },
-  "semantic_filter_impact": {
-    "language_filter": {"enabled": true, "candidates_rejected": 500},
-    "genre_overlap_minimum": {"required": 1, "candidates_rejected": 250}
-  }
-}
-```
-
-### T5: Counterfactual Analysis
-Add to observability and explanations:
-```json
-{
-  "what_if_scenarios": [
-    {"scenario": "if_no_influence_tracks", "expected_playlist_change": "0% (none selected)"},
-    {"scenario": "if_looser_numeric_thresholds", "expected_candidate_pool": "60000 (vs 46776)"},
-    {"scenario": "if_stricter_genre_cap", "expected_genre_diversity": "less mixed, more homogeneous"}
-  ]
-}
-```
+1. Add control-application tracing fields at per-track and per-stage levels.
+2. Add influence source/effect breakdown contracts where measurable impact exists.
+3. Add richer threshold-impact attribution in BL-005 diagnostics.
+4. Add counterfactual scenario summaries in observability outputs.
 
 ## Transparency Design Principles
 
@@ -150,9 +90,7 @@ Add to observability and explanations:
 4. **Rejection Rationale**: Why was Candidate X rejected? ⚠️ (Partial—shows fail, not which threshold)
 5. **Configuration Impact**: How did my control choices affect the outcome? ❌ (Not traced)
 
-## Next Steps (Phase 2-3)
-- [ ] Design control traceability data flow
-- [ ] Add influence seed source tracking to BL-004
-- [ ] Document assembly rule context in BL-007
-- [ ] Create what-if analysis layer
-- [ ] Update transparency outputs to include control application
+## Next Steps
+- [ ] Keep limitation statements explicit in thesis claims and evaluation framing
+- [ ] Keep stage-level transparency descriptions aligned with emitted fields in code
+- [ ] Revisit future-work transparency features only if scope expands

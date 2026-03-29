@@ -1,8 +1,9 @@
 ﻿# Mentor Question Log
 
-Status checkpoint (2026-03-25):
+Status checkpoint (2026-03-29):
 - Open: MQ-001, MQ-002, MQ-003, MQ-004, MQ-007
 - Deferred: MQ-005, MQ-006, MQ-008
+- Note: no new mentor interaction since 2026-03-13; questions remain open pending first supervisor meeting.
 
 id: MQ-001
 date: 2026-03-13

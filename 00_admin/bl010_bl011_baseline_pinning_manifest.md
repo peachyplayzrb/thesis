@@ -1,6 +1,6 @@
 # BL-010 and BL-011 Baseline Pinning Manifest
 
-Last updated: 2026-03-27
+Last updated: 2026-03-29
 Owner: Governance sync pass (docs-only)
 
 ## Purpose

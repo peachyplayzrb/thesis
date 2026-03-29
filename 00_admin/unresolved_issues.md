@@ -1,6 +1,6 @@
 # Unresolved Issues
 
-Last updated: 2026-03-27
+Last updated: 2026-03-29
 
 ## Active
 
@@ -19,6 +19,7 @@ Active-set sync note (2026-03-26 21:27 UTC): Freshness re-alignment is complete.
 Active-set sync note (2026-03-26 22:30 UTC): Evidence audit completed for the canonical v1f baseline (EXP-048 / C-182). All 10 playlist track titles resolved from `ds001_working_candidate_dataset.csv`. BL-010/BL-011 config-snapshot divergence documented: BL-010 uses 70,680 candidates (pinned snapshot), BL-011 uses 33,096 (pinned snapshot), canonical v1f uses 46,776; both evaluation passes remain valid on their respective pinned states. Key chapter-alignment numbers confirmed: 46,776 filtered candidates, 10 scoring components, 22/22 sanity checks, 7/7 freshness, 1064 seeds, ~84% alignment miss rate. Dissertation claims by strength packaged. Open active issue remains UI-003 only.
 Active-set sync note (2026-03-27 01:22 UTC): v1f evidence refresh and document-consistency pass completed. BL-013 pass (`BL013-ENTRYPOINT-20260327-012149-023331`), BL-014 sanity pass (`BL014-SANITY-20260327-011939-797165`, `22/22`), BL-010 pass (`BL010-REPRO-20260327-011941`), BL-011 pass (`BL011-CTRL-20260327-012056`), and active freshness suite pass (`BL-FRESHNESS-SUITE-20260327-012201`, `19/19`). Chapter 4 EP matrix rows are now populated and abstract draft is in place. Open active issue remains UI-003 only.
 Active-set sync note (2026-03-27 03:05 UTC): UI-003 closure package is now complete at control-record level. Chapters 3 to 5 claim-verdict matrix and chapter-targeted hardening notes are logged in `09_quality_control/ui003_claim_verdicts_ch3_ch5.md` and `09_quality_control/ui003_chapter_hardening_notes_ch3_ch5.md`. No active unresolved issues remain.
+Active-set sync note (2026-03-29 UTC): Confirmed no active unresolved issues. Architecture migration wave (BL-003 typed boundaries + stage-shell, BL-004 through BL-007 OO migration + controllable-logic uplift) is complete and logged. Documentation sync C-219 is complete. 00_admin full synchronization wave C-220 is in progress. Only remaining active scope is physical submission packaging.
 
 ## Resolved (Recent)
 

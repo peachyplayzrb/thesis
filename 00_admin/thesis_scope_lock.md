@@ -1,6 +1,6 @@
 ﻿# Thesis Scope Lock
 
-Last updated: 2026-03-25
+Last updated: 2026-03-29
 
 ## In Scope
 - Single-user automated playlist generation pipeline.

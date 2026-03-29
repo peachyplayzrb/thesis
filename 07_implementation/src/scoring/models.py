@@ -56,6 +56,16 @@ class ScoringControls:
     signal_mode: dict[str, object]
     component_weights: dict[str, float]
     numeric_thresholds: dict[str, float]
+    lead_genre_strategy: str = "weighted_top_lead_genres"
+    semantic_overlap_strategy: str = "precision_aware"
+    semantic_precision_alpha_mode: str = "profile_adaptive"
+    semantic_precision_alpha_fixed: float = 0.35
+    enable_numeric_confidence_scaling: bool = True
+    numeric_confidence_floor: float = 0.0
+    profile_numeric_confidence_mode: str = "direct"
+    profile_numeric_confidence_blend_weight: float = 1.0
+    emit_confidence_impact_diagnostics: bool = True
+    emit_semantic_precision_diagnostics: bool = False
 
     def as_mapping(self) -> dict[str, object]:
         return {
@@ -65,6 +75,16 @@ class ScoringControls:
             "signal_mode": dict(self.signal_mode),
             "component_weights": dict(self.component_weights),
             "numeric_thresholds": dict(self.numeric_thresholds),
+            "lead_genre_strategy": self.lead_genre_strategy,
+            "semantic_overlap_strategy": self.semantic_overlap_strategy,
+            "semantic_precision_alpha_mode": self.semantic_precision_alpha_mode,
+            "semantic_precision_alpha_fixed": self.semantic_precision_alpha_fixed,
+            "enable_numeric_confidence_scaling": self.enable_numeric_confidence_scaling,
+            "numeric_confidence_floor": self.numeric_confidence_floor,
+            "profile_numeric_confidence_mode": self.profile_numeric_confidence_mode,
+            "profile_numeric_confidence_blend_weight": self.profile_numeric_confidence_blend_weight,
+            "emit_confidence_impact_diagnostics": self.emit_confidence_impact_diagnostics,
+            "emit_semantic_precision_diagnostics": self.emit_semantic_precision_diagnostics,
         }
 
 
@@ -82,6 +102,19 @@ class ScoringContext:
     profile_scoring_data: dict[str, object]
     active_component_weights: dict[str, float]
     weight_rebalance_diagnostics: dict[str, object]
+    numeric_confidence_by_feature: dict[str, float]
+    profile_numeric_confidence_factor: float
+    semantic_precision_alpha: float
+    lead_genre_strategy: str = "weighted_top_lead_genres"
+    semantic_overlap_strategy: str = "precision_aware"
+    semantic_precision_alpha_mode: str = "profile_adaptive"
+    semantic_precision_alpha_fixed: float = 0.35
+    enable_numeric_confidence_scaling: bool = True
+    numeric_confidence_floor: float = 0.0
+    profile_numeric_confidence_mode: str = "direct"
+    profile_numeric_confidence_blend_weight: float = 1.0
+    emit_confidence_impact_diagnostics: bool = True
+    emit_semantic_precision_diagnostics: bool = False
 
 
 @dataclass(frozen=True)
@@ -115,6 +148,28 @@ def controls_from_mapping(payload: Mapping[str, Any]) -> ScoringControls:
         signal_mode={str(k): v for k, v in dict(payload.get("signal_mode") or {}).items()},
         component_weights=component_weights,
         numeric_thresholds=numeric_thresholds,
+        lead_genre_strategy=str(payload.get("lead_genre_strategy") or "weighted_top_lead_genres"),
+        semantic_overlap_strategy=str(payload.get("semantic_overlap_strategy") or "precision_aware"),
+        semantic_precision_alpha_mode=str(payload.get("semantic_precision_alpha_mode") or "profile_adaptive"),
+        semantic_precision_alpha_fixed=float(
+            payload["semantic_precision_alpha_fixed"]
+            if payload.get("semantic_precision_alpha_fixed") is not None
+            else 0.35
+        ),
+        enable_numeric_confidence_scaling=bool(payload.get("enable_numeric_confidence_scaling", True)),
+        numeric_confidence_floor=float(
+            payload["numeric_confidence_floor"]
+            if payload.get("numeric_confidence_floor") is not None
+            else 0.0
+        ),
+        profile_numeric_confidence_mode=str(payload.get("profile_numeric_confidence_mode") or "direct"),
+        profile_numeric_confidence_blend_weight=float(
+            payload["profile_numeric_confidence_blend_weight"]
+            if payload.get("profile_numeric_confidence_blend_weight") is not None
+            else 1.0
+        ),
+        emit_confidence_impact_diagnostics=bool(payload.get("emit_confidence_impact_diagnostics", True)),
+        emit_semantic_precision_diagnostics=bool(payload.get("emit_semantic_precision_diagnostics", False)),
     )
 
 
@@ -126,6 +181,19 @@ def context_as_mapping(context: ScoringContext) -> dict[str, object]:
         "profile_scoring_data": dict(context.profile_scoring_data),
         "active_component_weights": dict(context.active_component_weights),
         "weight_rebalance_diagnostics": dict(context.weight_rebalance_diagnostics),
+        "numeric_confidence_by_feature": dict(context.numeric_confidence_by_feature),
+        "profile_numeric_confidence_factor": context.profile_numeric_confidence_factor,
+        "semantic_precision_alpha": context.semantic_precision_alpha,
+        "lead_genre_strategy": context.lead_genre_strategy,
+        "semantic_overlap_strategy": context.semantic_overlap_strategy,
+        "semantic_precision_alpha_mode": context.semantic_precision_alpha_mode,
+        "semantic_precision_alpha_fixed": context.semantic_precision_alpha_fixed,
+        "enable_numeric_confidence_scaling": context.enable_numeric_confidence_scaling,
+        "numeric_confidence_floor": context.numeric_confidence_floor,
+        "profile_numeric_confidence_mode": context.profile_numeric_confidence_mode,
+        "profile_numeric_confidence_blend_weight": context.profile_numeric_confidence_blend_weight,
+        "emit_confidence_impact_diagnostics": context.emit_confidence_impact_diagnostics,
+        "emit_semantic_precision_diagnostics": context.emit_semantic_precision_diagnostics,
     }
 
 
@@ -135,6 +203,9 @@ def context_from_mapping(payload: Mapping[str, Any]) -> ScoringContext:
     profile_scoring_data_raw = payload.get("profile_scoring_data")
     active_component_weights_raw = payload.get("active_component_weights")
     weight_rebalance_diagnostics_raw = payload.get("weight_rebalance_diagnostics")
+    numeric_confidence_by_feature_raw = payload.get("numeric_confidence_by_feature")
+    profile_numeric_confidence_factor_raw = payload.get("profile_numeric_confidence_factor")
+    semantic_precision_alpha_raw = payload.get("semantic_precision_alpha")
     signal_mode_raw = payload.get("signal_mode")
 
     effective_component_weights = {
@@ -162,6 +233,10 @@ def context_from_mapping(payload: Mapping[str, Any]) -> ScoringContext:
         if isinstance(weight_rebalance_diagnostics_raw, Mapping)
         else {}
     )
+    numeric_confidence_by_feature = {
+        str(k): float(v)
+        for k, v in dict(numeric_confidence_by_feature_raw or {}).items()
+    } if isinstance(numeric_confidence_by_feature_raw, Mapping) else {}
 
     return ScoringContext(
         signal_mode={str(k): v for k, v in dict(signal_mode_raw or {}).items()},
@@ -170,4 +245,29 @@ def context_from_mapping(payload: Mapping[str, Any]) -> ScoringContext:
         profile_scoring_data=profile_scoring_data,
         active_component_weights=active_component_weights,
         weight_rebalance_diagnostics=weight_rebalance_diagnostics,
+        numeric_confidence_by_feature=numeric_confidence_by_feature,
+        profile_numeric_confidence_factor=float(profile_numeric_confidence_factor_raw or 1.0),
+        semantic_precision_alpha=float(semantic_precision_alpha_raw or 0.35),
+        lead_genre_strategy=str(payload.get("lead_genre_strategy") or "weighted_top_lead_genres"),
+        semantic_overlap_strategy=str(payload.get("semantic_overlap_strategy") or "precision_aware"),
+        semantic_precision_alpha_mode=str(payload.get("semantic_precision_alpha_mode") or "profile_adaptive"),
+        semantic_precision_alpha_fixed=float(
+            payload["semantic_precision_alpha_fixed"]
+            if payload.get("semantic_precision_alpha_fixed") is not None
+            else 0.35
+        ),
+        enable_numeric_confidence_scaling=bool(payload.get("enable_numeric_confidence_scaling", True)),
+        numeric_confidence_floor=float(
+            payload["numeric_confidence_floor"]
+            if payload.get("numeric_confidence_floor") is not None
+            else 0.0
+        ),
+        profile_numeric_confidence_mode=str(payload.get("profile_numeric_confidence_mode") or "direct"),
+        profile_numeric_confidence_blend_weight=float(
+            payload["profile_numeric_confidence_blend_weight"]
+            if payload.get("profile_numeric_confidence_blend_weight") is not None
+            else 1.0
+        ),
+        emit_confidence_impact_diagnostics=bool(payload.get("emit_confidence_impact_diagnostics", True)),
+        emit_semantic_precision_diagnostics=bool(payload.get("emit_semantic_precision_diagnostics", False)),
     )

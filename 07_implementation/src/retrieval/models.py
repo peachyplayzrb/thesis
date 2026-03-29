@@ -34,6 +34,23 @@ class RetrievalControls:
     language_filter_codes: list[str]
     recency_years_min_offset: int | None
     numeric_thresholds: dict[str, float]
+    profile_quality_penalty_enabled: bool = True
+    profile_quality_threshold: float = 0.90
+    profile_entropy_low_threshold: float = 0.35
+    influence_share_threshold: float = 0.60
+    profile_quality_penalty_increment: float = 0.20
+    profile_entropy_penalty_increment: float = 0.20
+    influence_share_penalty_increment: float = 0.15
+    numeric_penalty_scale: float = 0.50
+    semantic_overlap_damping_mid_entropy_threshold: float = 0.60
+    semantic_overlap_damping_low_entropy: float = 0.85
+    semantic_overlap_damping_mid_entropy: float = 0.92
+    enable_numeric_confidence_scaling: bool = True
+    numeric_confidence_floor: float = 0.0
+    profile_numeric_confidence_mode: str = "direct"
+    profile_numeric_confidence_blend_weight: float = 1.0
+    numeric_support_score_mode: str = "weighted_absolute"
+    emit_profile_policy_diagnostics: bool = True
 
 
 @dataclass(frozen=True)
@@ -78,6 +95,36 @@ class RetrievalContext:
     recency_years_min_offset: int | None
     current_year_utc: int
     recency_min_release_year: int | None
+    feature_confidence_by_name: dict[str, float]
+    profile_numeric_confidence_factor: float
+    profile_match_quality: float
+    top_genre_entropy: float
+    top_tag_entropy: float
+    history_weight_share: float
+    influence_weight_share: float
+    effective_semantic_strong_keep_score: float
+    effective_semantic_min_keep_score: float
+    effective_numeric_support_min_pass: int
+    effective_numeric_support_min_score: float
+    semantic_overlap_damping: float
+    profile_quality_penalty_enabled: bool = True
+    profile_quality_threshold: float = 0.90
+    profile_entropy_low_threshold: float = 0.35
+    influence_share_threshold: float = 0.60
+    profile_quality_penalty_increment: float = 0.20
+    profile_entropy_penalty_increment: float = 0.20
+    influence_share_penalty_increment: float = 0.15
+    numeric_penalty_scale: float = 0.50
+    semantic_overlap_damping_mid_entropy_threshold: float = 0.60
+    semantic_overlap_damping_low_entropy: float = 0.85
+    semantic_overlap_damping_mid_entropy: float = 0.92
+    enable_numeric_confidence_scaling: bool = True
+    numeric_confidence_floor: float = 0.0
+    profile_numeric_confidence_mode: str = "direct"
+    profile_numeric_confidence_blend_weight: float = 1.0
+    numeric_support_score_mode: str = "weighted_absolute"
+    effective_threshold_penalty: float = 0.0
+    emit_profile_policy_diagnostics: bool = True
 
 
 @dataclass(frozen=True)
@@ -85,6 +132,17 @@ class RetrievalEvaluationResult:
     decisions: list[dict[str, object]]
     kept_rows: list[dict[str, str]]
     summary: dict[str, object]
+
+
+@dataclass(frozen=True)
+class RetrievalArtifacts:
+    filtered_path: Path
+    decisions_path: Path
+    diagnostics_path: Path
+    kept_candidates_count: int
+    rejected_candidates_count: int
+    seed_excluded_count: int
+    elapsed_seconds: float
 
 
 def context_from_mapping(payload: Mapping[str, Any]) -> RetrievalContext:
@@ -142,4 +200,49 @@ def context_from_mapping(payload: Mapping[str, Any]) -> RetrievalContext:
             if payload.get("recency_min_release_year") is not None
             else None
         ),
+        feature_confidence_by_name={
+            str(k): float(v)
+            for k, v in dict(payload.get("feature_confidence_by_name") or {}).items()
+        },
+        profile_numeric_confidence_factor=float(payload.get("profile_numeric_confidence_factor", 1.0)),
+        profile_match_quality=float(payload.get("profile_match_quality", 1.0)),
+        top_genre_entropy=float(payload.get("top_genre_entropy", 0.0)),
+        top_tag_entropy=float(payload.get("top_tag_entropy", 0.0)),
+        history_weight_share=float(payload.get("history_weight_share", 1.0)),
+        influence_weight_share=float(payload.get("influence_weight_share", 0.0)),
+        effective_semantic_strong_keep_score=float(
+            payload.get("effective_semantic_strong_keep_score", payload.get("semantic_strong_keep_score", 0.0))
+        ),
+        effective_semantic_min_keep_score=float(
+            payload.get("effective_semantic_min_keep_score", payload.get("semantic_min_keep_score", 0.0))
+        ),
+        effective_numeric_support_min_pass=int(
+            payload.get("effective_numeric_support_min_pass", payload.get("numeric_support_min_pass", 0))
+        ),
+        effective_numeric_support_min_score=float(
+            payload.get("effective_numeric_support_min_score", payload.get("numeric_support_min_score", 0.0))
+        ),
+        semantic_overlap_damping=float(payload.get("semantic_overlap_damping", 1.0)),
+        profile_quality_penalty_enabled=bool(payload.get("profile_quality_penalty_enabled", True)),
+        profile_quality_threshold=float(payload.get("profile_quality_threshold", 0.90)),
+        profile_entropy_low_threshold=float(payload.get("profile_entropy_low_threshold", 0.35)),
+        influence_share_threshold=float(payload.get("influence_share_threshold", 0.60)),
+        profile_quality_penalty_increment=float(payload.get("profile_quality_penalty_increment", 0.20)),
+        profile_entropy_penalty_increment=float(payload.get("profile_entropy_penalty_increment", 0.20)),
+        influence_share_penalty_increment=float(payload.get("influence_share_penalty_increment", 0.15)),
+        numeric_penalty_scale=float(payload.get("numeric_penalty_scale", 0.50)),
+        semantic_overlap_damping_mid_entropy_threshold=float(
+            payload.get("semantic_overlap_damping_mid_entropy_threshold", 0.60)
+        ),
+        semantic_overlap_damping_low_entropy=float(payload.get("semantic_overlap_damping_low_entropy", 0.85)),
+        semantic_overlap_damping_mid_entropy=float(payload.get("semantic_overlap_damping_mid_entropy", 0.92)),
+        enable_numeric_confidence_scaling=bool(payload.get("enable_numeric_confidence_scaling", True)),
+        numeric_confidence_floor=float(payload.get("numeric_confidence_floor", 0.0)),
+        profile_numeric_confidence_mode=str(payload.get("profile_numeric_confidence_mode", "direct")),
+        profile_numeric_confidence_blend_weight=float(
+            payload.get("profile_numeric_confidence_blend_weight", 1.0)
+        ),
+        numeric_support_score_mode=str(payload.get("numeric_support_score_mode", "weighted_absolute")),
+        effective_threshold_penalty=float(payload.get("effective_threshold_penalty", 0.0)),
+        emit_profile_policy_diagnostics=bool(payload.get("emit_profile_policy_diagnostics", True)),
     )

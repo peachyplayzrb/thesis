@@ -13,19 +13,14 @@ from alignment.constants import (
     ALIGNMENT_STRUCTURAL_CONTRACT_SCHEMA_VERSION,
 )
 from profile.models import ProfileAggregation, ProfileArtifacts, ProfileControls, ProfileInputs, ProfilePaths
+from profile.runtime_controls import resolve_bl004_runtime_controls
 from shared_utils.artifact_registry import bl003_required_paths
-from shared_utils.config_loader import load_run_config_utils_module
 from shared_utils.constants import (
     DEFAULT_INCLUDE_INTERACTION_TYPES,
     DEFAULT_INPUT_SCOPE,
-    DEFAULT_PROFILE_TOP_GENRE_LIMIT,
-    DEFAULT_PROFILE_TOP_LEAD_GENRE_LIMIT,
-    DEFAULT_PROFILE_TOP_TAG_LIMIT,
 )
-from shared_utils.env_utils import env_int, env_str
 from shared_utils.io_utils import load_csv_rows, open_text_write, parse_csv_labels, parse_float, sha256_of_file, utc_now
 from shared_utils.path_utils import impl_root
-from shared_utils.stage_runtime_resolver import resolve_run_config_path
 
 
 NUMERIC_FEATURE_COLUMNS: list[str] = [
@@ -59,6 +54,10 @@ BL004_REQUIRED_SEED_COLUMNS: list[str] = [
     "song",
     *NUMERIC_FEATURE_COLUMNS,
 ]
+
+BL004_PROFILE_SCHEMA_VERSION = "bl004-profile-v2"
+BL004_SUMMARY_SCHEMA_VERSION = "bl004-summary-v2"
+BL004_OUTPUT_CONTRACT_VERSION = "bl004-output-contract-v2"
 
 
 class ProfileStage:
@@ -116,6 +115,26 @@ class ProfileStage:
         top_tag_limit = max(1, int(str(controls["top_tag_limit"])))
         top_genre_limit = max(1, int(str(controls["top_genre_limit"])))
         top_lead_genre_limit = max(1, int(str(controls["top_lead_genre_limit"])))
+        confidence_weighting_mode = str(controls.get("confidence_weighting_mode") or "linear_half_bias").strip().lower()
+        if confidence_weighting_mode not in {"linear_half_bias", "direct_confidence", "none"}:
+            confidence_weighting_mode = "linear_half_bias"
+        confidence_bin_high_threshold = max(
+            0.0,
+            min(1.0, float(controls.get("confidence_bin_high_threshold", 0.90))),
+        )
+        confidence_bin_medium_threshold = max(
+            0.0,
+            min(1.0, float(controls.get("confidence_bin_medium_threshold", 0.50))),
+        )
+        confidence_bin_medium_threshold = min(
+            confidence_bin_medium_threshold,
+            confidence_bin_high_threshold,
+        )
+        interaction_attribution_mode = str(
+            controls.get("interaction_attribution_mode") or "split_selected_types_equal_share"
+        ).strip().lower()
+        if interaction_attribution_mode not in {"split_selected_types_equal_share", "primary_type_only"}:
+            interaction_attribution_mode = "split_selected_types_equal_share"
         include_types_raw = controls.get("include_interaction_types")
         include_types_values = include_types_raw if isinstance(include_types_raw, list) else []
         include_types = [
@@ -145,69 +164,20 @@ class ProfileStage:
             top_tag_limit=top_tag_limit,
             top_genre_limit=top_genre_limit,
             top_lead_genre_limit=top_lead_genre_limit,
+            confidence_weighting_mode=confidence_weighting_mode,
+            confidence_bin_high_threshold=confidence_bin_high_threshold,
+            confidence_bin_medium_threshold=confidence_bin_medium_threshold,
+            interaction_attribution_mode=interaction_attribution_mode,
+            emit_profile_policy_diagnostics=bool(controls.get("emit_profile_policy_diagnostics", True)),
             user_id=str(controls.get("user_id") or "unknown_user"),
             include_interaction_types=include_types or list(DEFAULT_INCLUDE_INTERACTION_TYPES),
         )
 
     def resolve_runtime_controls(self) -> ProfileControls:
-        run_config_path = resolve_run_config_path()
-        env_user_id = env_str("BL004_USER_ID", "")
-        env_interaction_types_raw = env_str("BL004_INCLUDE_INTERACTION_TYPES", "")
         inferred_user_id = self.infer_user_id_from_ingestion()
-
-        env_interaction_types = [
-            token.strip()
-            for token in env_interaction_types_raw.split(",")
-            if token.strip()
-        ]
-
-        def resolve_user_id(candidate: object) -> str:
-            if isinstance(candidate, str) and candidate.strip():
-                return candidate.strip()
-            if env_user_id:
-                return env_user_id
-            if inferred_user_id:
-                return inferred_user_id
-            return "unknown_user"
-
-        if run_config_path:
-            run_config_utils = load_run_config_utils_module()
-            controls = run_config_utils.resolve_bl004_controls(run_config_path)
-            user_id = resolve_user_id(controls.get("user_id"))
-            return self._sanitize_controls(
-                {
-                    "config_source": "run_config",
-                    "run_config_path": controls.get("config_path"),
-                    "run_config_schema_version": controls.get("schema_version"),
-                    "input_scope": dict(controls.get("input_scope") or DEFAULT_INPUT_SCOPE),
-                    "top_tag_limit": int(controls["top_tag_limit"]),
-                    "top_genre_limit": int(controls["top_genre_limit"]),
-                    "top_lead_genre_limit": int(controls["top_lead_genre_limit"]),
-                    "user_id": user_id,
-                    "include_interaction_types": list(
-                        env_interaction_types
-                        or controls.get("include_interaction_types")
-                        or DEFAULT_INCLUDE_INTERACTION_TYPES
-                    ),
-                }
-            )
-
-        return self._sanitize_controls(
-            {
-                "config_source": "environment",
-                "run_config_path": None,
-                "run_config_schema_version": None,
-                "input_scope": dict(DEFAULT_INPUT_SCOPE),
-                "top_tag_limit": env_int("BL004_TOP_TAG_LIMIT", DEFAULT_PROFILE_TOP_TAG_LIMIT),
-                "top_genre_limit": env_int("BL004_TOP_GENRE_LIMIT", DEFAULT_PROFILE_TOP_GENRE_LIMIT),
-                "top_lead_genre_limit": env_int(
-                    "BL004_TOP_LEAD_GENRE_LIMIT",
-                    DEFAULT_PROFILE_TOP_LEAD_GENRE_LIMIT,
-                ),
-                "user_id": resolve_user_id(None),
-                "include_interaction_types": list(env_interaction_types or DEFAULT_INCLUDE_INTERACTION_TYPES),
-            }
-        )
+        controls = resolve_bl004_runtime_controls(inferred_user_id=inferred_user_id)
+        controls["input_scope"] = dict(controls.get("input_scope") or DEFAULT_INPUT_SCOPE)
+        return self._sanitize_controls(controls)
 
     def resolve_paths(self) -> ProfilePaths:
         output_dir = self.root / "profile" / "outputs"
@@ -345,6 +315,210 @@ class ProfileStage:
         return max(0.0, min(1.0, parsed))
 
     @staticmethod
+    def _safe_rate(numerator: float, denominator: float, precision: int = 6) -> float:
+        if denominator <= 0:
+            return 0.0
+        return round(numerator / denominator, precision)
+
+    @staticmethod
+    def _normalize_int_mapping(raw_obj: object) -> dict[str, int]:
+        if not isinstance(raw_obj, dict):
+            return {}
+        normalized: dict[str, int] = {}
+        for key, value in raw_obj.items():
+            parsed = parse_float(str(value))
+            normalized[str(key)] = int(parsed) if parsed is not None else 0
+        return normalized
+
+    @staticmethod
+    def _extract_bl003_quality(summary_payload: dict[str, object]) -> dict[str, int | float]:
+        counts_raw = summary_payload.get("counts")
+        counts = dict(counts_raw) if isinstance(counts_raw, dict) else {}
+        input_event_rows = int(parse_float(str(counts.get("input_event_rows", ""))) or 0)
+        matched_by_spotify_id = int(parse_float(str(counts.get("matched_by_spotify_id", ""))) or 0)
+        matched_by_metadata = int(parse_float(str(counts.get("matched_by_metadata", ""))) or 0)
+        matched_by_fuzzy = int(parse_float(str(counts.get("matched_by_fuzzy", ""))) or 0)
+        unmatched = int(parse_float(str(counts.get("unmatched", ""))) or 0)
+        matched_total = matched_by_spotify_id + matched_by_metadata + matched_by_fuzzy
+        match_rate = ProfileStage._safe_rate(matched_total, input_event_rows, precision=4)
+        return {
+            "input_event_rows": input_event_rows,
+            "matched_by_spotify_id": matched_by_spotify_id,
+            "matched_by_metadata": matched_by_metadata,
+            "matched_by_fuzzy": matched_by_fuzzy,
+            "unmatched": unmatched,
+            "matched_total": matched_total,
+            "match_rate": match_rate,
+        }
+
+    @staticmethod
+    def _compute_coverage_rate_by_source(
+        rows_selected: dict[str, int],
+        rows_available: dict[str, int],
+    ) -> dict[str, float]:
+        rates: dict[str, float] = {}
+        all_sources = set(rows_selected.keys()) | set(rows_available.keys())
+        for source in sorted(all_sources):
+            selected = float(rows_selected.get(source, 0))
+            available = float(rows_available.get(source, 0))
+            rates[source] = ProfileStage._safe_rate(selected, available, precision=6)
+        return rates
+
+    @staticmethod
+    def _compute_entropy(weight_map: dict[str, float]) -> float:
+        positive_weights = [value for value in weight_map.values() if value > 0.0]
+        if len(positive_weights) <= 1:
+            return 0.0
+        total_weight = sum(positive_weights)
+        if total_weight <= 0.0:
+            return 0.0
+        probabilities = [weight / total_weight for weight in positive_weights]
+        entropy = -sum(prob * math.log(prob) for prob in probabilities if prob > 0.0)
+        max_entropy = math.log(len(probabilities))
+        return ProfileStage._safe_rate(entropy, max_entropy, precision=6)
+
+    @staticmethod
+    def _build_numeric_confidence_block(
+        numeric_observations: dict[str, int],
+        matched_seed_count: int,
+        missing_numeric_track_count: int,
+    ) -> dict[str, object]:
+        confidence_by_feature = {
+            feature: ProfileStage._safe_rate(float(observed), float(matched_seed_count), precision=6)
+            for feature, observed in numeric_observations.items()
+        }
+        return {
+            "observations_by_feature": dict(numeric_observations),
+            "confidence_by_feature": confidence_by_feature,
+            "missing_numeric_track_count": int(missing_numeric_track_count),
+        }
+
+    @staticmethod
+    def _build_interaction_attribution_block(
+        aggregation: ProfileAggregation,
+        controls: ProfileControls,
+    ) -> dict[str, object]:
+        contribution_by_type = {
+            interaction_type: {
+                "effective_weight": round(aggregation.attribution_weight_by_type.get(interaction_type, 0.0), 6),
+                "interaction_count": round(
+                    aggregation.attribution_interaction_count_by_type.get(interaction_type, 0.0),
+                    6,
+                ),
+                "row_share": round(aggregation.attribution_row_share_by_type.get(interaction_type, 0.0), 6),
+            }
+            for interaction_type in sorted(aggregation.attribution_weight_by_type.keys())
+        }
+        return {
+            "policy_name": controls.interaction_attribution_mode,
+            "mixed_interaction_row_count": aggregation.mixed_interaction_row_count,
+            "contribution_by_type": contribution_by_type,
+            "filtered_types_requested": list(controls.include_interaction_types),
+        }
+
+    @staticmethod
+    def _resolve_confidence_weight_multiplier(confidence: float, mode: str) -> float:
+        if mode == "none":
+            return 1.0
+        if mode == "direct_confidence":
+            return confidence
+        return 0.5 + 0.5 * confidence
+
+    @staticmethod
+    def _resolve_attribution_shares(
+        selected_interaction_types: list[str],
+        primary_interaction_type: str,
+        mode: str,
+    ) -> dict[str, float]:
+        if not selected_interaction_types:
+            return {}
+        if mode == "primary_type_only":
+            return {primary_interaction_type: 1.0}
+        split_fraction = 1.0 / float(len(selected_interaction_types))
+        return {interaction_type: split_fraction for interaction_type in selected_interaction_types}
+
+    @staticmethod
+    def _build_profile_signal_vector(
+        aggregation: ProfileAggregation,
+        bl003_quality: dict[str, int | float],
+    ) -> dict[str, float]:
+        history_effective_weight = aggregation.attribution_weight_by_type.get("history", 0.0)
+        influence_effective_weight = aggregation.attribution_weight_by_type.get("influence", 0.0)
+        total_effective_weight = aggregation.total_effective_weight
+        return {
+            "total_effective_weight": round(total_effective_weight, 6),
+            "history_weight_share": ProfileStage._safe_rate(
+                history_effective_weight,
+                total_effective_weight,
+                precision=6,
+            ),
+            "influence_weight_share": ProfileStage._safe_rate(
+                influence_effective_weight,
+                total_effective_weight,
+                precision=6,
+            ),
+            "alignment_match_rate": float(bl003_quality.get("match_rate", 0.0) or 0.0),
+            "top_genre_entropy": ProfileStage._compute_entropy(aggregation.genre_weights),
+            "top_tag_entropy": ProfileStage._compute_entropy(aggregation.tag_weights),
+        }
+
+    @staticmethod
+    def _build_canonical_blocks(
+        aggregation: ProfileAggregation,
+        controls: ProfileControls,
+        inputs: ProfileInputs,
+    ) -> dict[str, object]:
+        bl003_quality = dict(inputs.bl003_quality) or ProfileStage._extract_bl003_quality(inputs.bl003_summary)
+        rows_selected = dict(inputs.bl003_rows_selected) or ProfileStage._normalize_int_mapping(
+            inputs.bl003_manifest.get("rows_selected")
+        )
+        rows_available = dict(inputs.bl003_rows_available) or ProfileStage._normalize_int_mapping(
+            inputs.bl003_manifest.get("rows_available")
+        )
+        coverage_rate_by_source = dict(inputs.bl003_coverage_rate_by_source) or ProfileStage._compute_coverage_rate_by_source(
+            rows_selected,
+            rows_available,
+        )
+        return {
+            "bl003_quality": bl003_quality,
+            "source_coverage": {
+                "rows_selected": rows_selected,
+                "rows_available": rows_available,
+                "coverage_rate_by_source": coverage_rate_by_source,
+            },
+            "interaction_attribution": ProfileStage._build_interaction_attribution_block(
+                aggregation,
+                controls,
+            ),
+            "numeric_confidence": ProfileStage._build_numeric_confidence_block(
+                aggregation.numeric_observations,
+                aggregation.matched_seed_count,
+                len(aggregation.missing_numeric_track_ids),
+            ),
+            "profile_signal_vector": ProfileStage._build_profile_signal_vector(
+                aggregation,
+                inputs.bl003_quality,
+            ),
+        }
+
+    @staticmethod
+    def _parse_selected_interaction_types(
+        row: dict[str, object],
+        include_interaction_types: set[str],
+    ) -> list[str]:
+        raw_itypes = str(row.get("interaction_types", "") or row.get("interaction_type", "")).strip()
+        row_interaction_types = (
+            {t.strip() for t in raw_itypes.split("|") if t.strip()}
+            if raw_itypes
+            else {"history"}
+        )
+        return sorted(row_interaction_types.intersection(include_interaction_types))
+
+    @staticmethod
+    def _resolve_primary_interaction_type(selected_interaction_types: list[str]) -> str:
+        return "influence" if "influence" in selected_interaction_types else "history"
+
+    @staticmethod
     def load_inputs(paths: ProfilePaths) -> ProfileInputs:
         seed_rows = load_csv_rows(paths.seed_table_path)
         summary_payload = ProfileStage._load_required_json_object(
@@ -367,6 +541,9 @@ class ProfileStage:
             for row in seed_rows
         ]
         ProfileStage._validate_seed_table_schema(normalized_rows, structural_contract)
+        rows_selected = ProfileStage._normalize_int_mapping(manifest_payload.get("rows_selected"))
+        rows_available = ProfileStage._normalize_int_mapping(manifest_payload.get("rows_available"))
+        bl003_quality = ProfileStage._extract_bl003_quality(summary_payload)
 
         return ProfileInputs(
             seed_rows=normalized_rows,
@@ -376,6 +553,13 @@ class ProfileStage:
             bl003_structural_contract=structural_contract,
             bl003_seed_contract_hash=seed_contract_hash,
             bl003_structural_contract_hash=structural_contract_hash,
+            bl003_quality=bl003_quality,
+            bl003_rows_selected=rows_selected,
+            bl003_rows_available=rows_available,
+            bl003_coverage_rate_by_source=ProfileStage._compute_coverage_rate_by_source(
+                rows_selected,
+                rows_available,
+            ),
         )
 
     @staticmethod
@@ -402,14 +586,21 @@ class ProfileStage:
             "low_below_0_5": 0,
         }
         match_method_counts = {
-            "spotify_id_exact": 0,
-            "metadata_fallback": 0,
-            "fuzzy_title_artist": 0,
+            "spotify_id_exact": int(inputs.bl003_quality.get("matched_by_spotify_id", 0) or 0),
+            "metadata_fallback": int(inputs.bl003_quality.get("matched_by_metadata", 0) or 0),
+            "fuzzy_title_artist": int(inputs.bl003_quality.get("matched_by_fuzzy", 0) or 0),
         }
         history_preference_weight_sum = 0.0
         influence_preference_weight_sum = 0.0
-        history_interaction_count_sum = 0
-        influence_interaction_count_sum = 0
+        history_interaction_count_sum_value = 0.0
+        influence_interaction_count_sum_value = 0.0
+        mixed_interaction_row_count = 0
+        primary_type_attribution_row_count = 0
+        attribution_weight_by_type = {"history": 0.0, "influence": 0.0}
+        attribution_interaction_count_by_type = {"history": 0.0, "influence": 0.0}
+        attribution_row_share_by_type = {"history": 0.0, "influence": 0.0}
+        high_confidence_threshold = controls.confidence_bin_high_threshold
+        medium_confidence_threshold = controls.confidence_bin_medium_threshold
         key_circular_sum_x = 0.0
         key_circular_sum_y = 0.0
 
@@ -419,16 +610,25 @@ class ProfileStage:
             spotify_id = next((item for item in spotify_ids if item), "")
             trace_track_id = track_id or (spotify_id if spotify_id else f"missing_ds001_id_{index:06d}")
 
-            raw_itypes = str(row.get("interaction_types", "") or row.get("interaction_type", "")).strip()
-            row_interaction_types = (
-                {t.strip() for t in raw_itypes.split("|") if t.strip()}
-                if raw_itypes
-                else {"history"}
+            selected_interaction_types = ProfileStage._parse_selected_interaction_types(
+                row,
+                include_interaction_types,
             )
-            if not row_interaction_types.intersection(include_interaction_types):
+            if not selected_interaction_types:
                 continue
+            if len(selected_interaction_types) > 1:
+                mixed_interaction_row_count += 1
 
-            interaction_type = "influence" if "influence" in row_interaction_types else "history"
+            interaction_type = ProfileStage._resolve_primary_interaction_type(
+                selected_interaction_types
+            )
+            attribution_shares = ProfileStage._resolve_attribution_shares(
+                selected_interaction_types,
+                interaction_type,
+                controls.interaction_attribution_mode,
+            )
+            if len(selected_interaction_types) > 1 and controls.interaction_attribution_mode == "primary_type_only":
+                primary_type_attribution_row_count += 1
             preference_weight = parse_float(str(row.get("preference_weight_sum", ""))) or 0.0
             if preference_weight <= 0:
                 continue
@@ -440,25 +640,18 @@ class ProfileStage:
             confidence = ProfileStage._clamp_confidence(
                 row.get("match_confidence_score", "")
             )
-            confidence_adjusted_weight = preference_weight * (0.5 + 0.5 * confidence)
+            confidence_adjusted_weight = preference_weight * ProfileStage._resolve_confidence_weight_multiplier(
+                confidence,
+                controls.confidence_weighting_mode,
+            )
             effective_weight = confidence_adjusted_weight
             confidence_adjusted_weight_sum += confidence_adjusted_weight
-            if confidence >= 0.9:
+            if confidence >= high_confidence_threshold:
                 confidence_bins["high_0_9_plus"] += 1
-            elif confidence >= 0.5:
+            elif confidence >= medium_confidence_threshold:
                 confidence_bins["medium_0_5_to_0_9"] += 1
             else:
                 confidence_bins["low_below_0_5"] += 1
-
-            match_method_counts["spotify_id_exact"] += int(
-                parse_float(str(row.get("matched_by_spotify_id_count", ""))) or 0
-            )
-            match_method_counts["metadata_fallback"] += int(
-                parse_float(str(row.get("matched_by_metadata_count", ""))) or 0
-            )
-            match_method_counts["fuzzy_title_artist"] += int(
-                parse_float(str(row.get("matched_by_fuzzy_count", ""))) or 0
-            )
 
             history_weight_component = parse_float(
                 str(row.get("history_preference_weight_sum", ""))
@@ -466,25 +659,39 @@ class ProfileStage:
             influence_weight_component = parse_float(
                 str(row.get("influence_preference_weight_sum", ""))
             )
-            if history_weight_component is None and interaction_type == "history":
-                history_weight_component = preference_weight
-            if influence_weight_component is None and interaction_type == "influence":
-                influence_weight_component = preference_weight
+            if history_weight_component is None and "history" in selected_interaction_types:
+                history_weight_component = preference_weight * attribution_shares.get("history", 0.0)
+            if influence_weight_component is None and "influence" in selected_interaction_types:
+                influence_weight_component = preference_weight * attribution_shares.get("influence", 0.0)
             history_preference_weight_sum += max(0.0, history_weight_component or 0.0)
             influence_preference_weight_sum += max(0.0, influence_weight_component or 0.0)
 
-            history_interaction_component = int(
-                parse_float(str(row.get("history_interaction_count_sum", ""))) or 0
+            history_interaction_component = parse_float(
+                str(row.get("history_interaction_count_sum", ""))
             )
-            influence_interaction_component = int(
-                parse_float(str(row.get("influence_interaction_count_sum", ""))) or 0
+            influence_interaction_component = parse_float(
+                str(row.get("influence_interaction_count_sum", ""))
             )
-            if history_interaction_component == 0 and interaction_type == "history":
-                history_interaction_component = interaction_count
-            if influence_interaction_component == 0 and interaction_type == "influence":
-                influence_interaction_component = interaction_count
-            history_interaction_count_sum += max(0, history_interaction_component)
-            influence_interaction_count_sum += max(0, influence_interaction_component)
+            if history_interaction_component is None and "history" in selected_interaction_types:
+                history_interaction_component = float(interaction_count) * attribution_shares.get("history", 0.0)
+            if influence_interaction_component is None and "influence" in selected_interaction_types:
+                influence_interaction_component = float(interaction_count) * attribution_shares.get("influence", 0.0)
+            history_interaction_count_sum_value += max(0.0, history_interaction_component or 0.0)
+            influence_interaction_count_sum_value += max(0.0, influence_interaction_component or 0.0)
+
+            for selected_type, share in attribution_shares.items():
+                attribution_weight_by_type[selected_type] = (
+                    attribution_weight_by_type.get(selected_type, 0.0)
+                    + (effective_weight * share)
+                )
+                attribution_interaction_count_by_type[selected_type] = (
+                    attribution_interaction_count_by_type.get(selected_type, 0.0)
+                    + (float(interaction_count) * share)
+                )
+                attribution_row_share_by_type[selected_type] = (
+                    attribution_row_share_by_type.get(selected_type, 0.0)
+                    + share
+                )
 
             tags = parse_csv_labels(str(row.get("tags", "")))
             genres = parse_csv_labels(str(row.get("genres", "")))
@@ -595,9 +802,14 @@ class ProfileStage:
             match_method_counts=match_method_counts,
             history_preference_weight_sum=history_preference_weight_sum,
             influence_preference_weight_sum=influence_preference_weight_sum,
-            history_interaction_count_sum=history_interaction_count_sum,
-            influence_interaction_count_sum=influence_interaction_count_sum,
+            history_interaction_count_sum=int(round(history_interaction_count_sum_value)),
+            influence_interaction_count_sum=int(round(influence_interaction_count_sum_value)),
             matched_seed_count=matched_seed_count,
+            mixed_interaction_row_count=mixed_interaction_row_count,
+            primary_type_attribution_row_count=primary_type_attribution_row_count,
+            attribution_weight_by_type=attribution_weight_by_type,
+            attribution_interaction_count_by_type=attribution_interaction_count_by_type,
+            attribution_row_share_by_type=attribution_row_share_by_type,
         )
 
     @staticmethod
@@ -617,11 +829,47 @@ class ProfileStage:
         aggregation: ProfileAggregation,
         elapsed_seconds: float,
     ) -> dict[str, object]:
-        manifest_rows_selected = inputs.bl003_manifest.get("rows_selected")
-        manifest_rows_available = inputs.bl003_manifest.get("rows_available")
+        canonical_blocks = ProfileStage._build_canonical_blocks(
+            aggregation,
+            controls,
+            inputs,
+        )
+        diagnostics: dict[str, object] = {
+            "events_total": aggregation.input_row_count,
+            "matched_seed_count": aggregation.matched_seed_count,
+            "missing_numeric_track_count": len(aggregation.missing_numeric_track_ids),
+            "missing_numeric_track_ids": aggregation.missing_numeric_track_ids[:50],
+            "blank_track_id_rows": aggregation.blank_track_id_row_count,
+            "candidate_rows_total": aggregation.input_row_count,
+            "numeric_observations": aggregation.numeric_observations,
+            "key_aggregation_method": "weighted_circular_mean",
+            "total_effective_weight": round(aggregation.total_effective_weight, 6),
+            "confidence_adjusted_weight_sum": round(
+                aggregation.confidence_adjusted_weight_sum,
+                6,
+            ),
+            "confidence_bins": dict(aggregation.confidence_bins),
+            "match_method_counts": dict(aggregation.match_method_counts),
+            "bl003_source_rows_selected": dict(inputs.bl003_rows_selected),
+            "bl003_source_rows_available": dict(inputs.bl003_rows_available),
+            "elapsed_seconds": round(elapsed_seconds, 3),
+        }
+        if controls.emit_profile_policy_diagnostics:
+            diagnostics["profile_policy_effective"] = {
+                "confidence_weighting_mode": controls.confidence_weighting_mode,
+                "confidence_bin_high_threshold": controls.confidence_bin_high_threshold,
+                "confidence_bin_medium_threshold": controls.confidence_bin_medium_threshold,
+                "interaction_attribution_mode": controls.interaction_attribution_mode,
+            }
+            diagnostics["profile_policy_impact"] = {
+                "mixed_interaction_row_count": aggregation.mixed_interaction_row_count,
+                "primary_type_attribution_row_count": aggregation.primary_type_attribution_row_count,
+            }
         return {
             "run_id": run_id,
             "task": "BL-004",
+            "profile_schema_version": BL004_PROFILE_SCHEMA_VERSION,
+            "output_contract_version": BL004_OUTPUT_CONTRACT_VERSION,
             "generated_at_utc": utc_now(),
             "user_id": controls.user_id,
             "config_source": controls.config_source,
@@ -659,6 +907,13 @@ class ProfileStage:
                 "top_tag_limit": controls.top_tag_limit,
                 "top_genre_limit": controls.top_genre_limit,
                 "top_lead_genre_limit": controls.top_lead_genre_limit,
+                "profile_policy": {
+                    "confidence_weighting_mode": controls.confidence_weighting_mode,
+                    "confidence_bin_high_threshold": controls.confidence_bin_high_threshold,
+                    "confidence_bin_medium_threshold": controls.confidence_bin_medium_threshold,
+                    "interaction_attribution_mode": controls.interaction_attribution_mode,
+                    "emit_profile_policy_diagnostics": controls.emit_profile_policy_diagnostics,
+                },
                 "aggregation_rules": {
                     "numeric": "weighted mean over numeric columns embedded in the BL-003 enriched seed table; key uses weighted circular mean on the 12-semitone wheel",
                     "tags": "sum(effective_weight) over DS-001 tag labels",
@@ -666,34 +921,12 @@ class ProfileStage:
                     "lead_genres": "sum(effective_weight)",
                 },
             },
-            "diagnostics": {
-                "events_total": aggregation.input_row_count,
-                "matched_seed_count": aggregation.matched_seed_count,
-                "missing_numeric_track_count": len(aggregation.missing_numeric_track_ids),
-                "missing_numeric_track_ids": aggregation.missing_numeric_track_ids[:50],
-                "blank_track_id_rows": aggregation.blank_track_id_row_count,
-                "candidate_rows_total": aggregation.input_row_count,
-                "numeric_observations": aggregation.numeric_observations,
-                "key_aggregation_method": "weighted_circular_mean",
-                "total_effective_weight": round(aggregation.total_effective_weight, 6),
-                "confidence_adjusted_weight_sum": round(
-                    aggregation.confidence_adjusted_weight_sum,
-                    6,
-                ),
-                "confidence_bins": dict(aggregation.confidence_bins),
-                "match_method_counts": dict(aggregation.match_method_counts),
-                "bl003_source_rows_selected": (
-                    dict(manifest_rows_selected)
-                    if isinstance(manifest_rows_selected, dict)
-                    else {}
-                ),
-                "bl003_source_rows_available": (
-                    dict(manifest_rows_available)
-                    if isinstance(manifest_rows_available, dict)
-                    else {}
-                ),
-                "elapsed_seconds": round(elapsed_seconds, 3),
-            },
+            "diagnostics": diagnostics,
+            "bl003_quality": canonical_blocks["bl003_quality"],
+            "source_coverage": canonical_blocks["source_coverage"],
+            "interaction_attribution": canonical_blocks["interaction_attribution"],
+            "numeric_confidence": canonical_blocks["numeric_confidence"],
+            "profile_signal_vector": canonical_blocks["profile_signal_vector"],
             "seed_summary": {
                 "counts_by_interaction_type": aggregation.counts_by_type,
                 "weight_by_interaction_type": {
@@ -742,36 +975,29 @@ class ProfileStage:
     ) -> dict[str, object]:
         semantic_profile_obj = profile.get("semantic_profile")
         semantic_profile = semantic_profile_obj if isinstance(semantic_profile_obj, dict) else {}
-        manifest_rows_selected_raw = inputs.bl003_manifest.get("rows_selected")
-        manifest_rows_available_raw = inputs.bl003_manifest.get("rows_available")
-        manifest_rows_selected = (
-            {str(key): int(value) for key, value in dict(manifest_rows_selected_raw).items()}
-            if isinstance(manifest_rows_selected_raw, dict)
-            else {}
+        canonical_blocks = ProfileStage._build_canonical_blocks(
+            aggregation,
+            controls,
+            inputs,
         )
-        manifest_rows_available = (
-            {str(key): int(value) for key, value in dict(manifest_rows_available_raw).items()}
-            if isinstance(manifest_rows_available_raw, dict)
-            else {}
-        )
-        bl003_counts_raw = inputs.bl003_summary.get("counts")
-        bl003_counts = dict(bl003_counts_raw) if isinstance(bl003_counts_raw, dict) else {}
-        input_event_rows = int(parse_float(str(bl003_counts.get("input_event_rows", ""))) or 0)
-        matched_by_spotify_id = int(parse_float(str(bl003_counts.get("matched_by_spotify_id", ""))) or 0)
-        matched_by_metadata = int(parse_float(str(bl003_counts.get("matched_by_metadata", ""))) or 0)
-        matched_by_fuzzy = int(parse_float(str(bl003_counts.get("matched_by_fuzzy", ""))) or 0)
-        unmatched = int(parse_float(str(bl003_counts.get("unmatched", ""))) or 0)
-        matched_total = matched_by_spotify_id + matched_by_metadata + matched_by_fuzzy
-        match_rate = round((matched_total / input_event_rows) if input_event_rows > 0 else 0.0, 4)
 
         return {
             "run_id": run_id,
             "task": "BL-004",
+            "summary_schema_version": BL004_SUMMARY_SCHEMA_VERSION,
+            "output_contract_version": BL004_OUTPUT_CONTRACT_VERSION,
             "user_id": controls.user_id,
             "config_source": controls.config_source,
             "run_config_path": controls.run_config_path,
             "run_config_schema_version": controls.run_config_schema_version,
             "input_scope": controls.input_scope,
+            "profile_policy": {
+                "confidence_weighting_mode": controls.confidence_weighting_mode,
+                "confidence_bin_high_threshold": controls.confidence_bin_high_threshold,
+                "confidence_bin_medium_threshold": controls.confidence_bin_medium_threshold,
+                "interaction_attribution_mode": controls.interaction_attribution_mode,
+                "emit_profile_policy_diagnostics": controls.emit_profile_policy_diagnostics,
+            },
             "matched_seed_count": aggregation.matched_seed_count,
             "total_effective_weight": round(aggregation.total_effective_weight, 6),
             "confidence_adjusted_weight_sum": round(
@@ -797,6 +1023,11 @@ class ProfileStage:
                 for column in SUMMARY_FEATURE_COLUMNS
                 if column in aggregation.numeric_profile
             },
+            "bl003_quality": canonical_blocks["bl003_quality"],
+            "source_coverage": canonical_blocks["source_coverage"],
+            "interaction_attribution": canonical_blocks["interaction_attribution"],
+            "numeric_confidence": canonical_blocks["numeric_confidence"],
+            "profile_signal_vector": canonical_blocks["profile_signal_vector"],
             "artifact_paths": {
                 "profile_path": str(paths.profile_path),
                 "seed_trace_path": str(paths.seed_trace_path),
@@ -809,17 +1040,9 @@ class ProfileStage:
                 "structural_contract_hash": inputs.bl003_structural_contract_hash,
             },
             "bl003_coverage": {
-                "rows_selected": manifest_rows_selected,
-                "rows_available": manifest_rows_available,
-                "match_counts": {
-                    "input_event_rows": input_event_rows,
-                    "matched_by_spotify_id": matched_by_spotify_id,
-                    "matched_by_metadata": matched_by_metadata,
-                    "matched_by_fuzzy": matched_by_fuzzy,
-                    "matched_total": matched_total,
-                    "unmatched": unmatched,
-                    "match_rate": match_rate,
-                },
+                "rows_selected": dict(canonical_blocks["source_coverage"]["rows_selected"]),
+                "rows_available": dict(canonical_blocks["source_coverage"]["rows_available"]),
+                "match_counts": dict(canonical_blocks["bl003_quality"]),
             },
         }
 

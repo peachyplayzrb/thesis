@@ -66,6 +66,14 @@ def evaluate_bl005_candidates(
     lead_genre_weights = context.lead_genre_weights
     tag_weights = context.tag_weights
     genre_weights = context.genre_weights
+    feature_confidence_by_name = context.feature_confidence_by_name
+    profile_numeric_confidence_factor = context.profile_numeric_confidence_factor
+    semantic_overlap_damping = context.semantic_overlap_damping
+    effective_semantic_strong_keep_score = context.effective_semantic_strong_keep_score
+    effective_semantic_min_keep_score = context.effective_semantic_min_keep_score
+    effective_numeric_support_min_pass = context.effective_numeric_support_min_pass
+    effective_numeric_support_min_score = context.effective_numeric_support_min_score
+    numeric_support_score_mode = str(context.numeric_support_score_mode or "weighted_absolute").strip().lower()
 
     tracker = DecisionTracker(active_numeric_specs)
 
@@ -104,6 +112,9 @@ def evaluate_bl005_candidates(
             genre_overlap_fraction = min(1.0, genre_overlap / max(1, len(top_genres)))
             tag_overlap_fraction = min(1.0, tag_overlap / max(1, len(top_tags)))
 
+        genre_overlap_fraction = round(genre_overlap_fraction * semantic_overlap_damping, 6)
+        tag_overlap_fraction = round(tag_overlap_fraction * semantic_overlap_damping, 6)
+
         lead_genre_match = lead_genre_match_score >= lead_genre_partial_match_threshold
         semantic_score = lead_genre_match_score + genre_overlap_fraction + tag_overlap_fraction
 
@@ -111,6 +122,10 @@ def evaluate_bl005_candidates(
 
         numeric_pass_count = 0
         numeric_support_score = 0.0
+        weighted_support_numerator = 0.0
+        weighted_support_denominator = 0.0
+        numeric_support_score_weighted = 0.0
+        numeric_support_score_weighted_absolute = 0.0
         numeric_distances: dict[str, float | None] = {}
         numeric_similarities: dict[str, float] = {}
         numeric_rule_hits_this_candidate: dict[str, bool] = {}
@@ -134,6 +149,12 @@ def evaluate_bl005_candidates(
                     numeric_distances[profile_column] = round(distance, 6)
                     numeric_similarities[profile_column] = similarity
                     numeric_support_score += similarity
+                    confidence_weight = max(
+                        0.0,
+                        min(1.0, float(feature_confidence_by_name.get(profile_column, 1.0))),
+                    )
+                    weighted_support_numerator += similarity * confidence_weight
+                    weighted_support_denominator += confidence_weight
                     if distance <= spec.threshold:
                         numeric_pass_count += 1
                         passed = True
@@ -147,18 +168,42 @@ def evaluate_bl005_candidates(
             numeric_rule_hits_this_candidate[profile_column] = passed
 
         numeric_support_score = round(numeric_support_score, 6)
-        tracker.record_numeric_scores(numeric_pass_count, numeric_support_score, numeric_rule_hits_this_candidate)
+        if weighted_support_denominator > 0:
+            weighted_average_similarity = weighted_support_numerator / weighted_support_denominator
+            numeric_support_score_weighted = weighted_average_similarity * float(len(active_numeric_specs))
+        numeric_support_score_weighted = round(numeric_support_score_weighted, 6)
+        numeric_support_score_weighted_absolute = round(
+            numeric_support_score_weighted * max(0.0, min(1.0, profile_numeric_confidence_factor)),
+            6,
+        )
+        if numeric_support_score_mode == "raw":
+            numeric_support_score_selected = numeric_support_score
+        elif numeric_support_score_mode == "weighted":
+            numeric_support_score_selected = numeric_support_score_weighted
+        else:
+            numeric_support_score_selected = numeric_support_score_weighted_absolute
+
+        tracker.record_numeric_scores(
+            numeric_pass_count,
+            numeric_support_score,
+            numeric_rule_hits_this_candidate,
+            numeric_support_score_weighted=numeric_support_score_weighted,
+            numeric_support_score_weighted_absolute=numeric_support_score_weighted_absolute,
+            numeric_support_score_selected=numeric_support_score_selected,
+            effective_semantic_min_keep_score=effective_semantic_min_keep_score,
+            effective_numeric_support_min_score=effective_numeric_support_min_score,
+        )
 
         kept, decision_path = keep_decision(
             is_seed_track,
             semantic_score,
             numeric_pass_count,
             numeric_features_enabled,
-            semantic_strong_keep_score,
-            semantic_min_keep_score,
-            numeric_support_min_pass,
-            numeric_support_score=numeric_support_score,
-            numeric_support_min_score=numeric_support_min_score,
+            effective_semantic_strong_keep_score,
+            effective_semantic_min_keep_score,
+            effective_numeric_support_min_pass,
+            numeric_support_score=numeric_support_score_selected,
+            numeric_support_min_score=effective_numeric_support_min_score,
             use_continuous_numeric=use_continuous_numeric,
             language_match=language_match,
             recency_pass=recency_pass,
@@ -181,6 +226,16 @@ def evaluate_bl005_candidates(
             "release_year_distance": numeric_distances.get("release_year"),
             "numeric_pass_count": numeric_pass_count,
             "numeric_support_score": numeric_support_score,
+            "numeric_support_score_weighted": numeric_support_score_weighted,
+            "numeric_support_score_weighted_absolute": numeric_support_score_weighted_absolute,
+            "numeric_support_score_selected": numeric_support_score_selected,
+            "numeric_support_score_mode": numeric_support_score_mode,
+            "numeric_confidence_weight_sum": round(weighted_support_denominator, 6),
+            "profile_numeric_confidence_factor": round(profile_numeric_confidence_factor, 6),
+            "effective_semantic_strong_keep_score": round(effective_semantic_strong_keep_score, 6),
+            "effective_semantic_min_keep_score": round(effective_semantic_min_keep_score, 6),
+            "effective_numeric_support_min_pass": effective_numeric_support_min_pass,
+            "effective_numeric_support_min_score": round(effective_numeric_support_min_score, 6),
             "danceability_distance": numeric_distances.get("danceability"),
             "danceability_similarity": numeric_similarities.get("danceability", 0.0),
             "energy_distance": numeric_distances.get("energy"),
@@ -203,7 +258,7 @@ def evaluate_bl005_candidates(
                 decision_path,
                 semantic_score,
                 numeric_pass_count,
-                numeric_support_score=numeric_support_score,
+                numeric_support_score=numeric_support_score_selected,
                 use_continuous_numeric=use_continuous_numeric,
             ),
         }

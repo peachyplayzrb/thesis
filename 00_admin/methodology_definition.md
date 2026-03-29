@@ -22,8 +22,8 @@ Each iteration updates:
 - implementation notes
 - evaluation evidence
 
-Current execution-cycle note (2026-03-25):
-- Core deterministic pipeline baseline is stable; active iteration focus is evidence hardening, chapter coherence, and bounded integration refinement.
+Current execution-cycle note (2026-03-29):
+- Core deterministic pipeline baseline is stable; architecture migration wave (BL-003 through BL-007 typed OO stages + controllable-logic uplifts) is complete. Active iteration focus is submission packaging, chapter coherence final checks, and external formatting compliance.
 
 ## Method Boundaries
 - Thesis contribution is engineering/design knowledge, not new ML algorithm invention.

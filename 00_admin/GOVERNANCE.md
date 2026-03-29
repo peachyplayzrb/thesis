@@ -44,8 +44,9 @@ Before a feature is considered "done":
 - Feature fails Gate (any of 3 questions)
 - Control effect is unclear or unmeasurable
 - Transparency requirements conflict with performance/simplicity
-- Uncertain if Influence tracks should override assembly rules
-- Unsure about control-effect measurement methodology
+- Uncertain about control-effect measurement methodology
+
+> Note: Influence track override semantics are no longer an open escalation item. Influence tracks are a documented WEAK/known-limitation control (zero measured playlist effect in BL-011 testing); assembly-layer redesign is explicitly deferred out of scope. See `07_implementation/CONTROL_SURFACE_REGISTRY.md`.
 
 ### When to Escalate to RESEARCH_DIRECTIONS.md
 - Open design question (e.g., "How many influence slots?")

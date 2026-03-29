@@ -12,6 +12,36 @@ from shared_utils.stage_runtime_resolver import (
 )
 
 
+def _env_bool(name: str, default: bool) -> bool:
+    raw = os.environ.get(name)
+    if raw is None:
+        return default
+    token = str(raw).strip().lower()
+    if token in {"1", "true", "yes", "on"}:
+        return True
+    if token in {"0", "false", "no", "off"}:
+        return False
+    return default
+
+
+def _env_float(name: str, default: float) -> float:
+    raw = os.environ.get(name)
+    if raw is None or not str(raw).strip():
+        return default
+    try:
+        return float(str(raw).strip())
+    except ValueError:
+        return default
+
+
+def _env_str(name: str, default: str) -> str:
+    raw = os.environ.get(name)
+    if raw is None:
+        return default
+    value = str(raw).strip()
+    return value if value else default
+
+
 def load_component_weight_overrides(defaults: dict[str, float]) -> dict[str, float]:
     """Load component weight overrides from environment."""
     raw = os.environ.get("BL006_COMPONENT_WEIGHTS_JSON", "").strip()
@@ -83,6 +113,18 @@ def resolve_bl006_runtime_controls(default_weights: dict[str, float]) -> dict[st
             "signal_mode": dict(controls.get("signal_mode") or {}),
             "component_weights": dict(controls.get("component_weights") or default_weights),
             "numeric_thresholds": dict(controls.get("numeric_thresholds") or {}),
+            "lead_genre_strategy": str(controls.get("lead_genre_strategy") or "weighted_top_lead_genres"),
+            "semantic_overlap_strategy": str(controls.get("semantic_overlap_strategy") or "precision_aware"),
+            "semantic_precision_alpha_mode": str(controls.get("semantic_precision_alpha_mode") or "profile_adaptive"),
+            "semantic_precision_alpha_fixed": float(controls.get("semantic_precision_alpha_fixed", 0.35)),
+            "enable_numeric_confidence_scaling": bool(controls.get("enable_numeric_confidence_scaling", True)),
+            "numeric_confidence_floor": float(controls.get("numeric_confidence_floor", 0.0)),
+            "profile_numeric_confidence_mode": str(controls.get("profile_numeric_confidence_mode") or "direct"),
+            "profile_numeric_confidence_blend_weight": float(
+                controls.get("profile_numeric_confidence_blend_weight", 1.0)
+            ),
+            "emit_confidence_impact_diagnostics": bool(controls.get("emit_confidence_impact_diagnostics", True)),
+            "emit_semantic_precision_diagnostics": bool(controls.get("emit_semantic_precision_diagnostics", False)),
         }
     return {
         "config_source": "environment",
@@ -91,4 +133,17 @@ def resolve_bl006_runtime_controls(default_weights: dict[str, float]) -> dict[st
         "signal_mode": {},
         "component_weights": load_component_weight_overrides(default_weights),
         "numeric_thresholds": _load_bl006_numeric_thresholds_from_env(),
+        "lead_genre_strategy": _env_str("BL006_LEAD_GENRE_STRATEGY", "weighted_top_lead_genres"),
+        "semantic_overlap_strategy": _env_str("BL006_SEMANTIC_OVERLAP_STRATEGY", "precision_aware"),
+        "semantic_precision_alpha_mode": _env_str("BL006_SEMANTIC_PRECISION_ALPHA_MODE", "profile_adaptive"),
+        "semantic_precision_alpha_fixed": _env_float("BL006_SEMANTIC_PRECISION_ALPHA_FIXED", 0.35),
+        "enable_numeric_confidence_scaling": _env_bool("BL006_ENABLE_NUMERIC_CONFIDENCE_SCALING", True),
+        "numeric_confidence_floor": _env_float("BL006_NUMERIC_CONFIDENCE_FLOOR", 0.0),
+        "profile_numeric_confidence_mode": _env_str("BL006_PROFILE_NUMERIC_CONFIDENCE_MODE", "direct"),
+        "profile_numeric_confidence_blend_weight": _env_float(
+            "BL006_PROFILE_NUMERIC_CONFIDENCE_BLEND_WEIGHT",
+            1.0,
+        ),
+        "emit_confidence_impact_diagnostics": _env_bool("BL006_EMIT_CONFIDENCE_IMPACT_DIAGNOSTICS", True),
+        "emit_semantic_precision_diagnostics": _env_bool("BL006_EMIT_SEMANTIC_PRECISION_DIAGNOSTICS", False),
     }

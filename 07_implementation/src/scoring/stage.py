@@ -8,7 +8,12 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 from scoring.candidate_parsed import parse_candidate_attributes
-from scoring.diagnostics import build_score_distribution_diagnostics, contribution_breakdown
+from scoring.diagnostics import (
+    build_confidence_impact_diagnostics,
+    build_semantic_precision_diagnostics,
+    build_score_distribution_diagnostics,
+    contribution_breakdown,
+)
 from scoring.models import (
     NUMERIC_COMPONENTS,
     NUMERIC_FEATURE_SPECS,
@@ -45,6 +50,10 @@ class ScoringStage:
             return float(str(value))
         except (TypeError, ValueError):
             return default
+
+    @staticmethod
+    def _clamp_0_1(value: float) -> float:
+        return max(0.0, min(1.0, value))
 
     def resolve_paths(self) -> ScoringPaths:
         return ScoringPaths(
@@ -118,6 +127,63 @@ class ScoringStage:
         if round(sum(active_component_weights.values()), 6) != 1.0:
             raise RuntimeError("BL-006 active component weights must sum to 1.0")
 
+        numeric_confidence_by_feature_raw = profile_scoring_data.get("numeric_confidence_by_feature")
+        numeric_confidence_by_feature = {
+            str(k): ScoringStage._clamp_0_1(ScoringStage._to_float(v, 1.0))
+            for k, v in dict(numeric_confidence_by_feature_raw).items()
+            if str(k) in active_numeric_specs
+        } if isinstance(numeric_confidence_by_feature_raw, dict) else {}
+        profile_numeric_confidence_factor_base = ScoringStage._clamp_0_1(
+            ScoringStage._to_float(profile_scoring_data.get("profile_numeric_confidence_factor", 1.0), 1.0)
+        )
+        semantic_precision_alpha_profile = max(
+            0.0,
+            ScoringStage._to_float(profile_scoring_data.get("semantic_precision_alpha", 0.35), 0.35),
+        )
+
+        lead_genre_strategy_raw = controls.lead_genre_strategy.strip().lower()
+        lead_genre_strategy = (
+            lead_genre_strategy_raw
+            if lead_genre_strategy_raw in {"single_anchor", "weighted_top_lead_genres"}
+            else "weighted_top_lead_genres"
+        )
+        semantic_overlap_strategy_raw = controls.semantic_overlap_strategy.strip().lower()
+        semantic_overlap_strategy = (
+            semantic_overlap_strategy_raw
+            if semantic_overlap_strategy_raw in {"overlap_only", "precision_aware"}
+            else "precision_aware"
+        )
+        semantic_precision_alpha_mode_raw = controls.semantic_precision_alpha_mode.strip().lower()
+        semantic_precision_alpha_mode = (
+            semantic_precision_alpha_mode_raw
+            if semantic_precision_alpha_mode_raw in {"profile_adaptive", "fixed"}
+            else "profile_adaptive"
+        )
+        semantic_precision_alpha_fixed = ScoringStage._clamp_0_1(controls.semantic_precision_alpha_fixed)
+        semantic_precision_alpha = (
+            semantic_precision_alpha_fixed
+            if semantic_precision_alpha_mode == "fixed"
+            else semantic_precision_alpha_profile
+        )
+
+        profile_numeric_confidence_mode_raw = controls.profile_numeric_confidence_mode.strip().lower()
+        profile_numeric_confidence_mode = (
+            profile_numeric_confidence_mode_raw
+            if profile_numeric_confidence_mode_raw in {"direct", "blended"}
+            else "direct"
+        )
+        profile_numeric_confidence_blend_weight = ScoringStage._clamp_0_1(
+            controls.profile_numeric_confidence_blend_weight
+        )
+        if profile_numeric_confidence_mode == "blended":
+            profile_numeric_confidence_factor = (
+                profile_numeric_confidence_blend_weight * profile_numeric_confidence_factor_base
+            ) + ((1.0 - profile_numeric_confidence_blend_weight) * 1.0)
+        else:
+            profile_numeric_confidence_factor = profile_numeric_confidence_factor_base
+        enable_numeric_confidence_scaling = bool(controls.enable_numeric_confidence_scaling)
+        numeric_confidence_floor = ScoringStage._clamp_0_1(controls.numeric_confidence_floor)
+
         return ScoringContext(
             signal_mode=dict(controls.signal_mode),
             effective_component_weights=effective_component_weights,
@@ -125,6 +191,19 @@ class ScoringStage:
             profile_scoring_data=profile_scoring_data,
             active_component_weights=active_component_weights,
             weight_rebalance_diagnostics=weight_rebalance_diagnostics,
+            numeric_confidence_by_feature=numeric_confidence_by_feature,
+            profile_numeric_confidence_factor=profile_numeric_confidence_factor,
+            semantic_precision_alpha=semantic_precision_alpha,
+            lead_genre_strategy=lead_genre_strategy,
+            semantic_overlap_strategy=semantic_overlap_strategy,
+            semantic_precision_alpha_mode=semantic_precision_alpha_mode,
+            semantic_precision_alpha_fixed=semantic_precision_alpha_fixed,
+            enable_numeric_confidence_scaling=enable_numeric_confidence_scaling,
+            numeric_confidence_floor=numeric_confidence_floor,
+            profile_numeric_confidence_mode=profile_numeric_confidence_mode,
+            profile_numeric_confidence_blend_weight=profile_numeric_confidence_blend_weight,
+            emit_confidence_impact_diagnostics=bool(controls.emit_confidence_impact_diagnostics),
+            emit_semantic_precision_diagnostics=bool(controls.emit_semantic_precision_diagnostics),
         )
 
     @staticmethod
@@ -146,12 +225,25 @@ class ScoringStage:
                 candidate_attrs,
                 context.profile_scoring_data,
                 context.active_numeric_specs,
+                lead_genre_strategy=context.lead_genre_strategy,
+                overlap_strategy=context.semantic_overlap_strategy,
+                semantic_precision_alpha=context.semantic_precision_alpha,
             )
             weighted_contributions = compute_weighted_contributions(
                 component_scores,
                 context.active_component_weights,
+                numeric_confidence_by_feature=context.numeric_confidence_by_feature,
+                profile_numeric_confidence_factor=context.profile_numeric_confidence_factor,
+                enable_numeric_confidence_scaling=context.enable_numeric_confidence_scaling,
+                numeric_confidence_floor=context.numeric_confidence_floor,
+                profile_numeric_confidence_mode=context.profile_numeric_confidence_mode,
+                profile_numeric_confidence_blend_weight=context.profile_numeric_confidence_blend_weight,
             )
-            final_score = compute_final_score(component_scores, context.active_component_weights)
+            final_score = compute_final_score(
+                component_scores,
+                context.active_component_weights,
+                weighted_contributions=weighted_contributions,
+            )
             matched_genres_raw = component_scores.get("matched_genres")
             matched_tags_raw = component_scores.get("matched_tags")
             matched_genres = [str(v) for v in matched_genres_raw] if isinstance(matched_genres_raw, list) else []
@@ -217,6 +309,7 @@ class ScoringStage:
         distribution_diagnostics: dict[str, object],
         diagnostics_path: Path,
         scored_path: Path,
+        confidence_impact_diagnostics: dict[str, object] | None = None,
     ) -> dict[str, object]:
         context = (
             runtime_context
@@ -264,13 +357,33 @@ class ScoringStage:
                     key: round(value, 6)
                     for key, value in context.active_component_weights.items()
                 },
+                "numeric_confidence_by_feature": {
+                    key: round(value, 6)
+                    for key, value in context.numeric_confidence_by_feature.items()
+                },
+                "profile_numeric_confidence_factor": round(
+                    context.profile_numeric_confidence_factor,
+                    6,
+                ),
+                "semantic_precision_alpha": round(context.semantic_precision_alpha, 6),
+                "lead_genre_strategy": context.lead_genre_strategy,
+                "semantic_overlap_strategy": context.semantic_overlap_strategy,
+                "semantic_precision_alpha_mode": context.semantic_precision_alpha_mode,
+                "semantic_precision_alpha_fixed": round(context.semantic_precision_alpha_fixed, 6),
+                "enable_numeric_confidence_scaling": context.enable_numeric_confidence_scaling,
+                "numeric_confidence_floor": round(context.numeric_confidence_floor, 6),
+                "profile_numeric_confidence_mode": context.profile_numeric_confidence_mode,
+                "profile_numeric_confidence_blend_weight": round(
+                    context.profile_numeric_confidence_blend_weight,
+                    6,
+                ),
                 "inactive_components": sorted(
                     set(context.effective_component_weights) - set(context.active_component_weights)
                 ),
                 "weight_rebalance_diagnostics": context.weight_rebalance_diagnostics,
-                "lead_genre_normalization": "binary exact match against non-empty profile lead genre",
-                "genre_overlap_normalization": "sum overlapping profile genre weights / sum top profile genre weights",
-                "tag_overlap_normalization": "sum overlapping profile tag weights / sum top profile tag weights",
+                "lead_genre_normalization": "weighted token overlap against BL-004 top_lead_genres",
+                "genre_overlap_normalization": "weighted overlap with unmatched-label precision penalty",
+                "tag_overlap_normalization": "weighted overlap with unmatched-label precision penalty",
                 "semantic_source": "ds001_tags_and_genres_columns",
             },
             "counts": {
@@ -288,6 +401,7 @@ class ScoringStage:
                 "top_500": contribution_breakdown(top_500_rows),
             },
             "score_distribution_diagnostics": distribution_diagnostics,
+            "confidence_impact_diagnostics": confidence_impact_diagnostics or {},
             "top_candidates": top_candidates,
             "elapsed_seconds": round(elapsed_seconds, 3),
             "output_files": {
@@ -321,6 +435,22 @@ class ScoringStage:
         self.write_scored_csv(scored_rows=scored_rows, scored_path=scored_path)
 
         distribution_diagnostics = build_score_distribution_diagnostics(scored_rows)
+        confidence_impact_diagnostics = build_confidence_impact_diagnostics(
+            scored_rows,
+            runtime_context.numeric_confidence_by_feature,
+            runtime_context.profile_numeric_confidence_factor,
+            enabled=runtime_context.emit_confidence_impact_diagnostics,
+            numeric_confidence_floor=runtime_context.numeric_confidence_floor,
+            profile_numeric_confidence_mode=runtime_context.profile_numeric_confidence_mode,
+            profile_numeric_confidence_blend_weight=runtime_context.profile_numeric_confidence_blend_weight,
+        )
+        semantic_precision_diagnostics = build_semantic_precision_diagnostics(
+            enabled=runtime_context.emit_semantic_precision_diagnostics,
+            overlap_strategy=runtime_context.semantic_overlap_strategy,
+            alpha_mode=runtime_context.semantic_precision_alpha_mode,
+            alpha_effective=runtime_context.semantic_precision_alpha,
+            alpha_fixed=runtime_context.semantic_precision_alpha_fixed,
+        )
         diagnostics_path = paths.output_dir / "bl006_score_distribution_diagnostics.json"
         with open_text_write(diagnostics_path) as handle:
             json.dump(distribution_diagnostics, handle, indent=2, ensure_ascii=True)
@@ -332,9 +462,11 @@ class ScoringStage:
             runtime_context=runtime_context,
             scored_rows=scored_rows,
             distribution_diagnostics=distribution_diagnostics,
+            confidence_impact_diagnostics=confidence_impact_diagnostics,
             diagnostics_path=diagnostics_path,
             scored_path=scored_path,
         )
+        summary["semantic_precision_diagnostics"] = semantic_precision_diagnostics
 
         summary["output_hashes_sha256"] = {
             "bl006_scored_candidates.csv": sha256_of_file(scored_path),

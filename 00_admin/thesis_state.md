@@ -102,7 +102,7 @@ Priority status checkpoint (2026-03-29 BL-003 Phase 2 pass): BL-003 alignment in
 
 ## Current Implementation Status
 
-### BL-020 Implementation State (as of 2026-03-26)
+### BL-020 Implementation State (as of 2026-03-29)
 - **Ingestion**: Schema locked (BL-001 ✅), parser + Web API exporter implemented (BL-002 ✅), real Spotify API export completed (5,592 unique tracks from top + saved history)
 - **Candidate Dataset**: DS-001 is the active execution corpus. DS-002 remains built and verified (BL-019 ✅, 9,330 tracks) as a validated fallback reference.
 - **Alignment** (BL-003 ✅): Active alignment now uses direct DS-001 metadata/identifier mapping for imported Spotify records. Historical Last.fm enrichment artifacts from earlier BL-020 runs are retained as legacy evidence only and are not part of the active path.

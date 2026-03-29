@@ -45,6 +45,11 @@ class DecisionTracker:
             str(score): 0 for score in range(len(numeric_feature_specs) + 1)
         }
         self.numeric_support_score_distribution: dict[str, int] = {}
+        self.numeric_support_score_weighted_distribution: dict[str, int] = {}
+        self.numeric_support_score_weighted_absolute_distribution: dict[str, int] = {}
+        self.numeric_support_score_selected_distribution: dict[str, int] = {}
+        self.effective_semantic_min_distribution: dict[str, int] = {}
+        self.effective_numeric_support_min_score_distribution: dict[str, int] = {}
 
     def record_decision(
         self,
@@ -118,6 +123,12 @@ class DecisionTracker:
         numeric_pass_count: int,
         numeric_support_score: float,
         numeric_rule_hits_this_candidate: dict[str, bool],
+        *,
+        numeric_support_score_weighted: float,
+        numeric_support_score_weighted_absolute: float,
+        numeric_support_score_selected: float,
+        effective_semantic_min_keep_score: float,
+        effective_numeric_support_min_score: float,
     ) -> None:
         """
         Record numeric scoring results for a candidate.
@@ -134,6 +145,26 @@ class DecisionTracker:
         support_str = f"{numeric_support_score:.2f}"
         self.numeric_support_score_distribution[support_str] = (
             self.numeric_support_score_distribution.get(support_str, 0) + 1
+        )
+        weighted_support_str = f"{numeric_support_score_weighted:.2f}"
+        self.numeric_support_score_weighted_distribution[weighted_support_str] = (
+            self.numeric_support_score_weighted_distribution.get(weighted_support_str, 0) + 1
+        )
+        weighted_absolute_support_str = f"{numeric_support_score_weighted_absolute:.2f}"
+        self.numeric_support_score_weighted_absolute_distribution[weighted_absolute_support_str] = (
+            self.numeric_support_score_weighted_absolute_distribution.get(weighted_absolute_support_str, 0) + 1
+        )
+        selected_support_str = f"{numeric_support_score_selected:.2f}"
+        self.numeric_support_score_selected_distribution[selected_support_str] = (
+            self.numeric_support_score_selected_distribution.get(selected_support_str, 0) + 1
+        )
+        effective_semantic_min_str = f"{effective_semantic_min_keep_score:.2f}"
+        self.effective_semantic_min_distribution[effective_semantic_min_str] = (
+            self.effective_semantic_min_distribution.get(effective_semantic_min_str, 0) + 1
+        )
+        effective_numeric_min_str = f"{effective_numeric_support_min_score:.2f}"
+        self.effective_numeric_support_min_score_distribution[effective_numeric_min_str] = (
+            self.effective_numeric_support_min_score_distribution.get(effective_numeric_min_str, 0) + 1
         )
 
         # Update rule hits
@@ -158,4 +189,9 @@ class DecisionTracker:
             "semantic_score_distribution": self.semantic_score_distribution,
             "numeric_pass_distribution": self.numeric_pass_distribution,
             "numeric_support_score_distribution": self.numeric_support_score_distribution,
+            "numeric_support_score_weighted_distribution": self.numeric_support_score_weighted_distribution,
+            "numeric_support_score_weighted_absolute_distribution": self.numeric_support_score_weighted_absolute_distribution,
+            "numeric_support_score_selected_distribution": self.numeric_support_score_selected_distribution,
+            "effective_semantic_min_distribution": self.effective_semantic_min_distribution,
+            "effective_numeric_support_min_score_distribution": self.effective_numeric_support_min_score_distribution,
         }

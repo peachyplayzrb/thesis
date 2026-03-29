@@ -1,5 +1,6 @@
 from retrieval.models import (
 	NumericFeatureSpec,
+	RetrievalArtifacts,
 	RetrievalContext,
 	RetrievalControls,
 	RetrievalEvaluationResult,
@@ -10,6 +11,7 @@ from retrieval.stage import RetrievalStage
 
 __all__ = [
 	"NumericFeatureSpec",
+	"RetrievalArtifacts",
 	"RetrievalContext",
 	"RetrievalControls",
 	"RetrievalEvaluationResult",

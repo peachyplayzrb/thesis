@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from retrieval.models import RetrievalControls, RetrievalInputs, RetrievalPaths
+from retrieval.models import RetrievalArtifacts, RetrievalControls, RetrievalEvaluationResult, RetrievalInputs, RetrievalPaths
 from retrieval.stage import RetrievalStage
 
 
@@ -120,3 +120,62 @@ def test_build_diagnostics_payload_includes_expected_counts(tmp_path: Path) -> N
     assert payload["config"]["signal_mode"]["name"] == "custom"
     assert payload["config"]["language_filter"]["enabled"] is True
     assert payload["output_files"]["filtered_candidates_path"] == str(filtered_path)
+
+
+def test_run_returns_typed_artifacts(monkeypatch, tmp_path: Path) -> None:
+    stage = RetrievalStage(root=tmp_path)
+
+    output_dir = tmp_path / "retrieval_outputs"
+    output_dir.mkdir(parents=True, exist_ok=True)
+    paths = RetrievalPaths(
+        profile_path=tmp_path / "bl004_preference_profile.json",
+        seed_trace_path=tmp_path / "bl004_seed_trace.csv",
+        candidate_path=tmp_path / "ds001_working_candidate_dataset.csv",
+        output_dir=output_dir,
+    )
+    inputs = RetrievalInputs(
+        profile={"semantic_profile": {}},
+        candidate_rows=[{"track_id": "cand_1"}],
+        seed_trace_rows=[{"track_id": "seed_1"}],
+    )
+    controls = _controls(recency_offset=None)
+    context = object()
+
+    class _FakeRetrievalEvaluator:
+        def __init__(self, runtime_context: object) -> None:
+            self.runtime_context = runtime_context
+
+        def evaluate(self, _: list[dict[str, str]]) -> RetrievalEvaluationResult:
+            return RetrievalEvaluationResult(
+                decisions=[{"track_id": "cand_1", "decision": "keep"}],
+                kept_rows=[{"track_id": "cand_1"}],
+                summary={"decision_counts": {"rejected_threshold": 2, "seed_excluded": 1}},
+            )
+
+    monkeypatch.setattr("retrieval.stage.ensure_paths_exist", lambda *_args, **_kwargs: None)
+    monkeypatch.setattr(RetrievalStage, "resolve_paths", lambda self: paths)
+    monkeypatch.setattr(RetrievalStage, "resolve_runtime_controls", lambda self: controls)
+    monkeypatch.setattr(RetrievalStage, "load_inputs", staticmethod(lambda _: inputs))
+    monkeypatch.setattr(RetrievalStage, "build_runtime_context", staticmethod(lambda **_kwargs: context))
+    monkeypatch.setattr("retrieval.stage.RetrievalEvaluator", _FakeRetrievalEvaluator)
+
+    filtered_path = output_dir / "bl005_filtered_candidates.csv"
+    decisions_path = output_dir / "bl005_candidate_decisions.csv"
+    diagnostics_path = output_dir / "bl005_candidate_diagnostics.json"
+    monkeypatch.setattr(
+        RetrievalStage,
+        "write_output_artifacts",
+        staticmethod(lambda **_kwargs: {"filtered_path": filtered_path, "decisions_path": decisions_path}),
+    )
+    monkeypatch.setattr(RetrievalStage, "build_diagnostics_payload", staticmethod(lambda **_kwargs: {}))
+    monkeypatch.setattr(RetrievalStage, "write_diagnostics_with_hashes", staticmethod(lambda **_kwargs: None))
+
+    artifacts = stage.run()
+
+    assert isinstance(artifacts, RetrievalArtifacts)
+    assert artifacts.filtered_path == filtered_path
+    assert artifacts.decisions_path == decisions_path
+    assert artifacts.diagnostics_path == diagnostics_path
+    assert artifacts.kept_candidates_count == 1
+    assert artifacts.rejected_candidates_count == 2
+    assert artifacts.seed_excluded_count == 1

@@ -1,6 +1,6 @@
 # Friend Handoff Playbook
 
-Last updated: 2026-03-25 (post-migration stabilization)
+Last updated: 2026-03-29 (00_admin full synchronization wave C-220)
 
 ## Purpose
 This file gives a collaborator the exact way to use chat in this thesis repo so work quality, logging, and governance remain consistent.
@@ -41,12 +41,13 @@ Use one of these patterns for every task:
 5. End every session with a "log everything" pass.
 
 ## Current Priority Queue (At Handoff)
-1. Resolve UI-003: finish thesis-wide citation verification package and synthesis closeout.
-2. Execute Days 4 to 7 of `00_admin/mentor_draft_7day_sprint_2026-03-23.md`.
-3. Continue `WP-WEBINT-001` freeze-and-integrate website package with bounded hardening only.
+All in-repo implementation and QC tasks are complete. No active unresolved issues exist.
+1. External submission packaging: Canvas deadline, cover/declaration template, Turnitin package assembly.
+2. Final formatting and submission constraint compliance check (see `09_quality_control/chapter_readiness_checks.md`).
+3. Viva/demo preparation.
 
-Current sprint state note: Day 4 is active as of 2026-03-25.
-Governance sync note: UI-010 freshness controls are closed/operational; UI-003 remains the only active unresolved issue.
+Current sprint state note: 7-day mentor-ready sprint (WP-DRAFT-001) is complete as of 2026-03-29. 00_admin synchronization wave C-220 is the last in-repo admin action before physical submission.
+Governance sync note: all unresolved issues (UI-001 through UI-013) are closed. Canonical baseline is v1f. Architecture migration wave (C-204 through C-218) is complete. Documentation sync C-219 is complete.
 
 ## Clean-Code Status (2026-03-28)
 Final-artefact clean-code pass is complete (C-192). All phases done:
@@ -56,10 +57,14 @@ Final-artefact clean-code pass is complete (C-192). All phases done:
 - G2 deferred (BL-004 profile resolver, BL-011 controllability resolver) per D-039 — complex env-parsing logic, low submission benefit.
 
 ## Technical Snapshot (Before Chat Switch)
-1. Implementation-notes folder naming is canonicalized to BL-ordered names (`bl000_*` through `bl014_*`) and path consumers were hardened.
-2. Latest orchestration pass: `BL013-ENTRYPOINT-20260325-163713-079187` (pass).
-3. Latest sanity pass: `BL014-SANITY-20260325-163738-023840` (21/21 pass).
-4. Known caveat for quick reruns: `run_config_profile_test_threshold_015.json` currently requests `include_recently_played=true`; if Spotify export artifacts do not include recently-played data, BL-003 strict source checks can fail unless scope is adjusted or missing-source tolerance is explicitly enabled for that run.
+1. Canonical implementation baseline: v1f (`run_config_ui013_tuning_v1f.json`, D-033).
+2. Active canonical orchestration reference: `BL013-ENTRYPOINT-20260327-201712-508978` (pass).
+3. Active canonical sanity: `BL014-SANITY-20260327-201731-408637` (22/22 pass).
+4. Active canonical reproducibility: `BL010-REPRO-20260327-201949` (`deterministic_match=true`, 3 replays).
+5. Active canonical controllability: `BL011-CTRL-20260327-202057` (`all_variant_shifts_observable=true`, 5 scenarios).
+6. Active freshness suite: `BL-FRESHNESS-SUITE-20260327-201942` (19/19 pass).
+7. Architecture migration complete: BL-003 through BL-007 now have typed stage classes + models with controllable-logic uplifts (C-205 through C-218); pyright clean on all touched files.
+8. Known pinning caveat: BL-010 internal snapshot uses 70,680 candidates, BL-011 uses 33,096, canonical v1f uses 46,776 — see `00_admin/bl010_bl011_baseline_pinning_manifest.md` for rationale.
 
 ## Run References
 1. BL-013 entrypoint command docs:

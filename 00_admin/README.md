@@ -16,6 +16,7 @@
 - ✅ Reproducibility: Strong (BL-010 determinism checks)
 - ✅ Controllability governance: Phase 1-4 control/transparency framework is in place
 - ✅ Runtime modularity: Phase 5-6 split BL-013 orchestration, BL-011 controllability, and BL-003 alignment helpers into focused modules while preserving stable entrypoints
+- ✅ Architecture migration: BL-003 through BL-007 now have typed stage classes, typed model contracts, and thin compatibility `main.py` wrappers; BL-004 through BL-007 controllable-logic uplifts add run-config/env-driven policy controls
 
 ## Active Development
 Current in-repo implementation work is effectively closed.
@@ -26,7 +27,7 @@ Control audit: `07_implementation/CONTROL_SURFACE_REGISTRY.md`
 
 # 00_admin Control Hub
 
-Last refreshed: 2026-03-29 (BL-003 Phase 2 typed-boundary pass)
+Last refreshed: 2026-03-29 (00_admin full synchronization wave C-220)
 
 ## Purpose
 This folder is the governance and execution-control layer for the thesis. It tracks current state, scope, decisions, changes, timeline, unresolved risks, and mentor interaction artifacts.
@@ -58,7 +59,7 @@ This folder is the governance and execution-control layer for the thesis. It tra
 1. No active unresolved governance issue in `unresolved_issues.md`.
 2. Mentor response backlog in `mentor_question_log.md`: MQ-001, MQ-002, MQ-003, MQ-004, and MQ-007 are open (MQ-005, MQ-006, MQ-008 are deferred).
 
-Admin sync checkpoint (2026-03-29): UI-003 closure and v1f canonical posture remain reflected across control files. Phase 5-6 modularization remains recorded, and BL-003 alignment Phase 2 typed-boundary migration is now captured: typed internal models are active in alignment internals with legacy dict interfaces preserved at boundaries.
+Admin sync checkpoint (2026-03-29): UI-003 closure and v1f canonical posture remain reflected across control files. Phase 5-6 modularization recorded. BL-003 typed-boundary + stage-shell migration complete. BL-004 through BL-007 OO-stage migration and controllable-logic uplift complete (C-205 through C-218). Documentation sync wave complete (C-219). 00_admin full synchronization wave complete (C-220). Only remaining active scope: physical submission packaging.
 
 ## Hygiene Rules
 - Keep this folder as the single source of truth for governance state.
