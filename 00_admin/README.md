@@ -1,3 +1,30 @@
+# Thesis Project: Controllable, Transparent Playlist Generation
+
+## Thesis Focus
+**Primary Objective**: Design a "deterministic, transparent, controllable, and observable" playlist generation pipeline.
+
+**Research Question**: How can a single-user playlist generation pipeline remain automated while also being transparent, controllable, observable, and reproducible when using cross-source music preference data?
+
+**Design Principles**:
+1. **Controllability**: Every control has measurable, traceable effects
+2. **Transparency**: Every decision is explainable and auditable
+3. **Determinism**: Same input → same output (reproducibility)
+4. **Observability**: Full diagnostics and decision logs
+
+## Current Implementation Status
+- ✅ Transparency: Strong (BL-008, BL-009 explanations and logs)
+- ✅ Reproducibility: Strong (BL-010 determinism checks)
+- ⚠️ Controllability: Redesign in progress
+  - Influence tracks: Moving from weak (profile shift) to strong (playlist slots)
+  - Assembly rules: Being exposed for user configuration
+  - Control-effect validation: Adding mandatory measurement
+
+## Active Development
+See: `/memories/repo/controllability_transparency_refactor_plan.md`
+Control audit: `07_implementation/CONTROL_SURFACE_REGISTRY.md`
+
+---
+
 # 00_admin Control Hub
 
 Last refreshed: 2026-03-27

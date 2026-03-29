@@ -906,6 +906,118 @@ review_date: none
 id: D-026
 date: 2026-03-23
 status: superseded
+
+---
+
+id: D-041
+date: 2026-03-28
+status: accepted
+
+context:
+Implementation review identified that controllability and transparency—core thesis objectives—are underemphasized in current system visibility. Control surfaces are buried in configuration (not first-class), transparency outputs don't show control application tracing (why did YOUR controls lead to this outcome), and weak controls like influence_tracks show zero measurable effect in BL-011 tests. This architecture gap risks undermining thesis contribution by making controls seem secondary rather than foundational.
+
+decision:
+Establish governance layer for controllability and transparency as thesis-core design patterns, not implementation details. Create the following persistent governance artifacts: (1) `.controllability-transparency.instructions.md` at workspace root to frame every new session/agent immediately around thesis intent; (2) `CONTROL_SURFACE_REGISTRY.md` to document all controls (weak/working status, measured effects, design gaps); (3) `TRANSPARENCY_SPEC.md` to map current outputs to transparency requirements and identify gaps; (4) `GOVERNANCE.md` to define the control/transparency gate that all features must pass; (5) `RESEARCH_DIRECTIONS.md` to capture open questions (influence slot policy, control-effect measurement, weak control transparency). All files are documentation-only in this phase; code changes deferred to Phase 4 after governance is stabilized.
+
+alternatives_considered:
+- Implement code changes immediately to fix weak controls (rejected: decomposes thesis intent into scattered fixes rather than establishing systematic governance)
+- Add comments to existing code explaining controllability (rejected: comments get stale, not discoverable to new agents/readers)
+- Continue with current architecture but add observability logs (rejected: does not address root issue that controls appear secondary)
+- Escalate via mentor feedback on thesis scope (rejected: have sufficient clarity to act; governance layer addresses this directly)
+
+rationale:
+Governance artifacts are persistent, discoverable, and serve as the environment signal that controllability and transparency are not compliance-layer features but core thesis contribution. They enable continuity across sessions/agents and establish audit trail for design decisions. Documentation-first approach preserves current implementation stability while unblocking design clarity and transparency enhancements.
+
+evidence_basis:
+- BL-011 controllability test: influence_tracks show 0% measurable effect on final playlist despite being enabled
+- CONTROL_SURFACE_REGISTRY analysis: 3 working controls, 2 weak controls (influence_tracks, assembly_rules)
+- TRANSPARENCY_SPEC identifies 5 gaps: control traceability, influence transparency, assembly rule transparency, filtering rationale, counterfactual reasoning
+- Current state: controls scattered across run_config, no central governance, no effect-size validation
+- Phase 1 implementation complete: 4 governance files created, README updated
+- Design intent: thesis is about building transparent, controllable, observable systems; system must reflect this in governance/visibility
+
+impacted_files:
+- `.controllability-transparency.instructions.md` (new, workspace root)
+- `07_implementation/CONTROL_SURFACE_REGISTRY.md` (new)
+- `07_implementation/TRANSPARENCY_SPEC.md` (new)
+- `00_admin/GOVERNANCE.md` (new)
+- `07_implementation/RESEARCH_DIRECTIONS.md` (new)
+- `00_admin/README.md` (updated with thesis focus section prepended)
+- `05_design/controllability_design_addendum.md` (created, extends D-021)
+- `05_design/transparency_design_addendum.md` (created, extends transparency design)
+- `00_admin/decision_log.md` (this entry)
+
+review_date: none
+
+---
+
+id: D-042
+date: 2026-03-28
+status: accepted
+
+context:
+GOVERNANCE.md (from D-041) defines three gate questions that force clarity on every control/transparency feature: (1) Does this add measurable user control or transparency? (2) Is the control-to-effect relationship traceable? (3) Can we verify this works via BL-010/BL-011 tests? Influence tracks currently fail Q3—they show zero measured effect in BL-011. This raises a foundational design question: should influence tracks override assembly rules to get guaranteed inclusion and stronger user control?
+
+decision:
+Apply governance gate to influence tracks design. Proposed decision (for Phase 3): influence tracks should be moved from pre-profile injection (current, weak) to post-profile slot reservation with hard guarantees. Influence tracks selected by user will reserve up to N playlist slots and bypass assembly rules (genre caps, consecutive limits) because user explicit intent overrides system diversity rules. This ensures measurable effect and satisfies control-effect traceback requirement. Store decision in GOVERNANCE.md escalation template for Phase 3 implementation.
+
+alternatives_considered:
+- Keep pre-profile influence injection; accept zero measured effect as limitation (rejected: violates governance gate Q3)
+- Remove influence tracks entirely (rejected: loses valid controllability surface)
+- Influence tracks follow same rules (genre caps etc.) as regular candidates (rejected: contradicts user intent; still produces weak effect)
+
+rationale:
+Explicit inheritance from governance gate forces discipline on design: if a control has zero effect, either fix it architecturally or remove it. Moving influence to post-profile with hard guarantees will satisfy all three gate questions and provide strong user control over playlist composition. This also clarifies the tradeoff: user intent > system diversity rules in this design.
+
+evidence_basis:
+- BL-011 test result: influence_tracks produce 0% measurable change (top10_overlap=1.0, rank_delta=0.0)
+- Current design: pre-profile injection, indirect effect through profile aggregation
+- Proposed design: post-profile slot reservation with rule override
+- GOVERNANCE.md gate structure forces this clarity
+- RESEARCH_DIRECTIONS.md RQ1 captures this as open decision
+
+impacted_files:
+- `00_admin/GOVERNANCE.md` (existing, referenced for gate framework)
+- `07_implementation/RESEARCH_DIRECTIONS.md` (RQ1 updated with this decision record)
+- `07_implementation/CONTROL_SURFACE_REGISTRY.md` (influence_tracks status will be updated once decision is locked)
+- `00_admin/decision_log.md` (this entry)
+
+review_date: Phase 3 post-profile redesign milestone
+
+---
+
+id: D-043
+date: 2026-03-28
+status: accepted
+
+context:
+GOVERNANCE.md implementation checkpoint established, TRANSPARENCY_SPEC.md identified five transparency gaps (control traceability being the largest). To satisfy thesis core requirement that "user can understand why this outcome resulted from their control choices," explanations must trace which user controls enabled each decision, not just which rules/components applied.
+
+decision:
+Design requirement for Phase 3+: All transparency outputs (BL-008 explanations, BL-009 observability) must include a "control_application_trace" field that explicitly documents which user control settings shaped the decision. Example: "This track was selected because YOUR genre preference drove similarity score to 0.89." Format: user controls → decision logic → outcome. Store specification in TRANSPARENCY_SPEC.md addendum.
+
+alternatives_considered:
+- Continue with current explanations (component score breakdown only) (rejected: does not satisfy thesis transparency requirement for control traceability)
+- Add control trace only in debug logs, not user explanations (rejected: users are the primary audience for transparency)
+- Generate counterfactual what-if analysis on demand (rejected: too expensive; start with simpler trace first)
+
+rationale:
+Control application tracing directly addresses thesis core: user understands their agency and control effects. This is foundational for transparency; counterfactual analysis can build on top. Design is deferred to Phase 3 after governance foundation is stable, but specification must be locked now to guide Phase 3 implementation.
+
+evidence_basis:
+- TRANSPARENCY_SPEC.md Gap 1: Current explanations don't show HOW user controls shaped outcome
+- BL-008 current design: Shows score components but not control application
+- Thesis requirement: "Recommendation system is transparent about how user control choices led to outcome"
+- GOVERNANCE.md enforcement: Every transparency feature must make control application explicit
+
+impacted_files:
+- `07_implementation/TRANSPARENCY_SPEC.md` (updated with control_application_trace requirement)
+- `07_implementation/implementation_notes/bl008_transparency/build_bl008_explanation_payloads.py` (will implement in Phase 3+)
+- `00_admin/decision_log.md` (this entry)
+
+review_date: Phase 3 transparency trace implementation milestone
+
+---
 context: BL-020 and BL-014 are complete with evidence, while current user priority is to freeze the implemented pipeline and build a website interaction layer for demonstration, testing, and bounded refinement. Without a freeze decision, integration work risks accidental scope expansion into deferred items.
 superseded_by: D-027
 decision: Adopt a freeze-first execution strategy for the current implementation baseline. Keep core recommendation behavior stable and direct implementation effort to website-to-pipeline integration, run observability exposure in the UI, and bounded reliability hardening.

@@ -118,6 +118,7 @@ def main() -> None:
     }
     match_rate_min_threshold = 0.0
     fuzzy_matching_controls = dict(DEFAULT_SEED_CONTROLS.get("fuzzy_matching") or {})
+    weighting_policy: dict | None = None
     if runtime_scope["config_source"] == "run_config" and runtime_scope.get("run_config_path"):
         _rc_utils = load_run_config_utils_module()
         seed_controls = _rc_utils.resolve_bl003_seed_controls(runtime_scope["run_config_path"])
@@ -145,6 +146,7 @@ def main() -> None:
             }
         )
         match_rate_min_threshold = float(seed_controls.get("match_rate_min_threshold", 0.0))
+        weighting_policy = _rc_utils.resolve_bl003_weighting_policy(runtime_scope["run_config_path"])
 
     selected_rows, scope_filter_stats = apply_input_scope_filters(
         top_rows, saved_rows, playlist_rows, recent_rows, input_scope,
@@ -210,6 +212,7 @@ def main() -> None:
         source_base_weights,
         decay_half_lives,
         fuzzy_matching_controls,
+        weighting_policy,
     )
     summary_counts = {"input_event_rows": len(events), **match_counts}
 

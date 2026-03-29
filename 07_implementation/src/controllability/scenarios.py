@@ -23,17 +23,15 @@ def build_paths(root: Path) -> dict[str, Path]:
 
 def resolve_bl011_runtime_controls() -> dict[str, object]:
     rc_utils = load_run_config_utils_module()
+    run_config_path: str | None = os.environ.get("BL_RUN_CONFIG_PATH", "").strip() or None
     controls: dict[str, object] = {
-        "config_source": "defaults",
-        "run_config_path": None,
-        **rc_utils.resolve_bl011_controls(None),
+        "config_source": "run_config" if run_config_path else "defaults",
+        "run_config_path": run_config_path,
+        **rc_utils.resolve_bl011_controls(run_config_path),
     }
-    run_config_path = os.environ.get("BL_RUN_CONFIG_PATH", "").strip() or None
-    if run_config_path:
-        resolved = rc_utils.resolve_bl011_controls(run_config_path)
-        controls.update(resolved)
-        controls["config_source"] = "run_config"
-        controls["run_config_path"] = run_config_path
+    scenario_policy, scenario_definitions = rc_utils.resolve_bl011_scenario_policy(run_config_path)
+    controls["scenario_policy"] = scenario_policy
+    controls["scenario_definitions"] = scenario_definitions
     return controls
 
 
@@ -73,7 +71,7 @@ def build_scenarios(baseline_snapshot: dict, runtime_controls: dict[str, object]
         override_component = next(iter(scoring_weights.keys()))
         override_raw_value = min(override_cap_fallback, float(scoring_weights[override_component]) + override_increment_fallback)
 
-    return [
+    built_scenarios = [
         {
             "scenario_id": "baseline",
             "test_id": "baseline",
@@ -212,3 +210,6 @@ def build_scenarios(baseline_snapshot: dict, runtime_controls: dict[str, object]
             "expected_effect": "no BL-004 to BL-007 shift expected because controllability reuses fixed active seed inputs",
         },
     ]
+    from controllability.scenario_loader import filter_scenarios_by_policy
+    scenario_policy = dict(runtime_controls.get("scenario_policy") or {})
+    return filter_scenarios_by_policy(built_scenarios, scenario_policy)

@@ -19,17 +19,21 @@ from shared_utils.constants import (
     DEFAULT_LANGUAGE_FILTER_CODES,
     DEFAULT_LANGUAGE_FILTER_ENABLED,
     DEFAULT_OBSERVABILITY_CONTROLS,
+    DEFAULT_ORCHESTRATION_CONTROLS,
     DEFAULT_PROFILE_TOP_GENRE_LIMIT,
     DEFAULT_PROFILE_TOP_LEAD_GENRE_LIMIT,
     DEFAULT_PROFILE_TOP_TAG_LIMIT,
     DEFAULT_RECENCY_YEARS_MIN_OFFSET,
     DEFAULT_REPORTING_SCORE_THRESHOLDS,
     DEFAULT_RETRIEVAL_NUMERIC_THRESHOLDS,
+    DEFAULT_SCENARIO_DEFINITIONS,
+    DEFAULT_SCENARIO_POLICY,
     DEFAULT_SCORING_COMPONENT_WEIGHTS,
     DEFAULT_SCORING_NUMERIC_THRESHOLDS,
     DEFAULT_SEED_CONTROLS,
     DEFAULT_TOP_CONTRIBUTOR_LIMIT,
     DEFAULT_TRANSPARENCY_CONTROLS,
+    DEFAULT_WEIGHTING_POLICY,
 )
 
 from shared_utils.io_utils import open_text_write
@@ -49,12 +53,6 @@ def _build_default_run_config() -> dict[str, Any]:
         "input_scope": dict(DEFAULT_INPUT_SCOPE),
         "interaction_scope": dict(DEFAULT_INTERACTION_SCOPE),
         "influence_tracks": dict(DEFAULT_INFLUENCE_TRACKS),
-        "seed_controls": {
-            "match_rate_min_threshold": DEFAULT_SEED_CONTROLS["match_rate_min_threshold"],
-            "top_range_weights": dict(DEFAULT_SEED_CONTROLS["top_range_weights"]),
-            "source_base_weights": dict(DEFAULT_SEED_CONTROLS["source_base_weights"]),
-            "fuzzy_matching": dict(DEFAULT_SEED_CONTROLS["fuzzy_matching"]),
-        },
         "ingestion_controls": dict(DEFAULT_INGESTION_CONTROLS),
         "profile_controls": {
             "top_tag_limit": DEFAULT_PROFILE_TOP_TAG_LIMIT,
@@ -87,7 +85,33 @@ def _build_default_run_config() -> dict[str, Any]:
         "reporting_controls": {
             "score_thresholds": dict(DEFAULT_REPORTING_SCORE_THRESHOLDS),
         },
-        "controllability_controls": dict(DEFAULT_CONTROLLABILITY_CONTROLS),
+        "controllability_controls": {
+            **dict(DEFAULT_CONTROLLABILITY_CONTROLS),
+            "scenario_policy": {
+                "enabled_scenario_ids": list(DEFAULT_SCENARIO_POLICY["enabled_scenario_ids"]),
+                "repeat_count": int(DEFAULT_SCENARIO_POLICY["repeat_count"]),
+                "stage_scope": list(DEFAULT_SCENARIO_POLICY["stage_scope"]),
+                "comparison_mode": str(DEFAULT_SCENARIO_POLICY["comparison_mode"]),
+            },
+            "scenario_definitions": list(DEFAULT_SCENARIO_DEFINITIONS),
+        },
+        "seed_controls": {
+            "match_rate_min_threshold": DEFAULT_SEED_CONTROLS["match_rate_min_threshold"],
+            "top_range_weights": dict(DEFAULT_SEED_CONTROLS["top_range_weights"]),
+            "source_base_weights": dict(DEFAULT_SEED_CONTROLS["source_base_weights"]),
+            "fuzzy_matching": dict(DEFAULT_SEED_CONTROLS["fuzzy_matching"]),
+            "decay_half_lives": dict(DEFAULT_SEED_CONTROLS["decay_half_lives"]),
+            "weighting_policy": {
+                "top_tracks": dict(DEFAULT_WEIGHTING_POLICY["top_tracks"]),
+                "playlist_items": dict(DEFAULT_WEIGHTING_POLICY["playlist_items"]),
+            },
+        },
+        "orchestration_controls": {
+            "stage_order": DEFAULT_ORCHESTRATION_CONTROLS["stage_order"],
+            "continue_on_error": bool(DEFAULT_ORCHESTRATION_CONTROLS["continue_on_error"]),
+            "refresh_seed_policy": str(DEFAULT_ORCHESTRATION_CONTROLS["refresh_seed_policy"]),
+            "required_stable_artifacts": list(DEFAULT_ORCHESTRATION_CONTROLS["required_stable_artifacts"]),
+        },
     }
 
 
@@ -817,6 +841,78 @@ def resolve_bl011_controls(run_config_path: str | Path | None) -> dict[str, Any]
     }
 
 
+def resolve_bl011_scenario_policy(run_config_path: str | Path | None) -> tuple[dict[str, Any], list[dict[str, Any]]]:
+    """Resolve BL-011 scenario policy and scenario definitions from run config.
+
+    Returns:
+        (scenario_policy_dict, scenario_definitions_list)
+        scenario_policy keys: enabled_scenario_ids, repeat_count, stage_scope, comparison_mode
+        scenario_definitions_list: list of scenario definition dicts (may be empty; Phase 2
+            populates built-in defaults when the list is empty).
+    """
+    effective, _ = resolve_effective_run_config(run_config_path)
+    controls = effective["controllability_controls"]
+    default_policy = DEFAULT_RUN_CONFIG["controllability_controls"]["scenario_policy"]
+
+    raw_policy = controls.get("scenario_policy") or {}
+    policy: dict[str, Any] = {
+        "enabled_scenario_ids": _normalize_string_tokens(
+            raw_policy.get("enabled_scenario_ids"),
+            list(default_policy["enabled_scenario_ids"]),
+        ),
+        "repeat_count": _coerce_positive_int(
+            raw_policy.get("repeat_count"), default_policy["repeat_count"]
+        ),
+        "stage_scope": _normalize_string_tokens(
+            raw_policy.get("stage_scope"), list(default_policy["stage_scope"])
+        ),
+        "comparison_mode": str(raw_policy.get("comparison_mode") or default_policy["comparison_mode"]),
+    }
+
+    raw_definitions = controls.get("scenario_definitions")
+    definitions: list[dict[str, Any]] = list(raw_definitions) if raw_definitions else []
+
+    return policy, definitions
+
+
+def resolve_bl003_weighting_policy(run_config_path: str | Path | None) -> dict[str, Any]:
+    """Resolve BL-003 weighting policy knobs from run config.
+
+    Returns a flat dict of formula constants used by alignment/weighting.py:
+        top_tracks_min_rank_floor, top_tracks_scale_multiplier,
+        top_tracks_default_time_range_weight,
+        playlist_items_min_position_floor, playlist_items_scale_multiplier.
+    Defaults match the values previously embedded in alignment/weighting.py
+    so there is no behavioral change until the caller switches over.
+    """
+    effective, _ = resolve_effective_run_config(run_config_path)
+    seed = effective["seed_controls"]
+    raw = (seed.get("weighting_policy") or {})
+    default_top = DEFAULT_WEIGHTING_POLICY["top_tracks"]
+    default_pl = DEFAULT_WEIGHTING_POLICY["playlist_items"]
+
+    raw_top = raw.get("top_tracks") or {}
+    raw_pl = raw.get("playlist_items") or {}
+
+    return {
+        "top_tracks_min_rank_floor": float(
+            raw_top.get("min_rank_floor", default_top["min_rank_floor"])
+        ),
+        "top_tracks_scale_multiplier": float(
+            raw_top.get("scale_multiplier", default_top["scale_multiplier"])
+        ),
+        "top_tracks_default_time_range_weight": float(
+            raw_top.get("default_time_range_weight", default_top["default_time_range_weight"])
+        ),
+        "playlist_items_min_position_floor": float(
+            raw_pl.get("min_position_floor", default_pl["min_position_floor"])
+        ),
+        "playlist_items_scale_multiplier": float(
+            raw_pl.get("scale_multiplier", default_pl["scale_multiplier"])
+        ),
+    }
+
+
 def resolve_bl005_controls(run_config_path: str | Path | None) -> dict[str, Any]:
     effective, resolved_path = resolve_effective_run_config(run_config_path)
     retrieval = effective["retrieval_controls"]
@@ -958,6 +1054,23 @@ def resolve_bl009_controls(run_config_path: str | Path | None) -> dict[str, Any]
             observability.get("bootstrap_mode"),
             bool(defaults["bootstrap_mode"]),
         ),
+    }
+
+
+def resolve_bl013_orchestration_controls(run_config_path: str | Path | None) -> dict[str, Any]:
+    effective, resolved_path = resolve_effective_run_config(run_config_path)
+    raw = effective.get("orchestration_controls") or {}
+    if not isinstance(raw, dict):
+        raw = {}
+    merged: dict[str, Any] = {**DEFAULT_ORCHESTRATION_CONTROLS, **raw}
+    raw_stage_order = merged.get("stage_order")
+    stage_order: list[str] | None = list(raw_stage_order) if isinstance(raw_stage_order, list) else None
+    return {
+        "config_path": str(resolved_path) if resolved_path else None,
+        "stage_order": stage_order,
+        "continue_on_error": bool(merged.get("continue_on_error", False)),
+        "refresh_seed_policy": str(merged.get("refresh_seed_policy") or "auto_if_stale"),
+        "required_stable_artifacts": list(merged.get("required_stable_artifacts") or []),
     }
 
 

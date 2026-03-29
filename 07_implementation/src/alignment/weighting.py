@@ -62,11 +62,20 @@ def compute_weight(
     top_range_weights: dict,
     source_base_weights: dict,
     decay_half_lives: dict[str, float] | None = None,
+    weighting_policy: dict | None = None,
 ) -> float:
     """Return a preference weight for a single event based on its source type and position."""
     source_type = event["source_type"]
     base = source_base_weights.get(source_type, DEFAULT_SOURCE_BASE_WEIGHT_FALLBACK)
     effective_decay_half_lives = dict(decay_half_lives or {})
+
+    # Resolve weighting policy knobs — defaults match previously embedded constants.
+    _policy = dict(weighting_policy or {})
+    _min_rank_floor = float(_policy.get("top_tracks_min_rank_floor", 0.05))
+    _scale_top = float(_policy.get("top_tracks_scale_multiplier", 100.0))
+    _default_time_range_w = float(_policy.get("top_tracks_default_time_range_weight", 0.20))
+    _min_pos_floor = float(_policy.get("playlist_items_min_position_floor", 0.05))
+    _scale_pl = float(_policy.get("playlist_items_scale_multiplier", 20.0))
 
     def apply_decay(raw_weight: float, source_key: str, default_half_life: float) -> float:
         half_life = float(effective_decay_half_lives.get(source_key, default_half_life))
@@ -76,9 +85,9 @@ def compute_weight(
     if source_type == "top_tracks":
         rank = parse_int(event.get("rank", ""))
         rank = rank if (rank is not None and rank > 0) else 50
-        range_weight = top_range_weights.get(event.get("time_range", ""), 0.20)
-        rank_score = max(0.05, 1.0 / rank)
-        return round(base * range_weight * rank_score * 100.0, 6)
+        range_weight = top_range_weights.get(event.get("time_range", ""), _default_time_range_w)
+        rank_score = max(_min_rank_floor, 1.0 / rank)
+        return round(base * range_weight * rank_score * _scale_top, 6)
 
     if source_type == "saved_tracks":
         return round(
@@ -90,7 +99,7 @@ def compute_weight(
         pos = parse_int(event.get("playlist_position", ""))
         if pos is None or pos <= 0:
             pos = 50
-        return round(base * max(0.05, 1.0 / pos) * 20.0, 6)
+        return round(base * max(_min_pos_floor, 1.0 / pos) * _scale_pl, 6)
 
     if source_type == "recently_played":
         return round(

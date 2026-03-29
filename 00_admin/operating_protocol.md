@@ -242,3 +242,90 @@ Required collaborator start action:
 
 Required collaborator close action:
 - Before ending chat, run a full logging-completeness pass and update backlog/experiment/change/decision/unresolved-issues files where needed.
+
+## 17) Control Testing & Transparency Audit Protocol
+
+This protocol ensures that controllability and transparency—core thesis objectives—remain active design priorities throughout implementation.
+
+### Control Testing Procedures
+
+#### Before control changes
+1. Read `07_implementation/CONTROL_TESTING_PROTOCOL.md` — understand effect-size measurement methods.
+2. Read `07_implementation/CONTROL_SURFACE_REGISTRY.md` — see current control status assessments.
+3. Define baseline and treatment configs (single control perturbed).
+
+#### During control implementation
+1. Run BL-002 through BL-009 with **baseline config**.
+2. Run BL-002 through BL-009 with **treatment config**.
+3. Use CONTROL_TESTING_PROTOCOL measurement methods (Sections B.1-B.4) to quantify effect.
+4. Run BL-010 reproducibility check for both configs.
+
+#### After control testing
+1. Record effect size in `07_implementation/CONTROL_SURFACE_REGISTRY.md` with date and measurement method.
+2. If effect is zero: 🛑 Escalate to `07_implementation/RESEARCH_DIRECTIONS.md` (add to RQ-series) and `00_admin/GOVERNANCE.md` (gate question failure).
+3. If effect is measurable: Document in `00_admin/decision_log.md` with evidence.
+4. Update `00_admin/change_log.md` with affected files and control effect summary.
+
+### Transparency Audit Procedures
+
+#### Quarterly transparency audit (1 hour)
+1. Read `07_implementation/TRANSPARENCY_AUDIT_CHECKLIST.md` — run full checklist (A1-A4, B1-B5).
+2. Record results in checklist template section.
+3. If any check FAILS (other than expected B4/B5):
+   - Document finding in `07_implementation/TRANSPARENCY_SPEC.md`
+   - Create `MQ-###` entry in `00_admin/mentor_question_log.md` if needed for escalation
+   - Add to `00_admin/unresolved_issues.md` if blocking progress
+4. If check B4 (control traceability) or B5 (what-if) is implemented:
+   - Update `07_implementation/RESEARCH_DIRECTIONS.md` (mark as resolved)
+   - Update `00_admin/decision_log.md` with implementation decision
+
+#### After every BL-011 controllability test
+1. Run Transparency Audit Checklist B2-B3 (explanation quality, rejection documentation).
+2. Record results.
+3. If gaps found: Add to `07_implementation/TRANSPARENCY_SPEC.md` and prioritize in Phase 3-4.
+
+### Signal Files Maintenance
+
+See `07_implementation/SIGNAL_FILES_MAINTENANCE.md` for detailed procedures.
+
+**Minimum maintenance**: 
+- Weekly (5 min): Verify signal files exist and are readable
+- End of Phase (30 min): Update all 6 signal files with phase completion status
+- Quarterly (1 hour): Full consistency audit
+
+### Control/Transparency Gate (GOVERNANCE)
+
+Every new feature, control, or transparency enhancement **must pass the 3-question gate** defined in `00_admin/GOVERNANCE.md`:
+1. Does this add measurable user control or transparency?
+2. Is the control-to-effect relationship traceable and testable?
+3. Can we verify this works via BL-010/BL-011 tests?
+
+**If answer is NO to any question**: Feature cannot be merged. Escalate to RESEARCH_DIRECTIONS.md or deferred backlog.
+
+**If answer is YES to all**: Proceed with implementation + full logging.
+
+### Escalation Path
+
+If control/transparency work uncovers issues:
+
+| Issue Type | Escalation | Document |
+|---|---|---|
+| Control has zero effect | Add to RESEARCH_DIRECTIONS.md RQ-series | CONTROL_SURFACE_REGISTRY.md |
+| Transparency gap | Add to TRANSPARENCY_SPEC.md gaps | Note implementation phase |
+| Design conflict | Add to RESEARCH_DIRECTIONS.md AF-series | decision_log.md + GOVERNANCE.md |
+| Measurement unclear | Add to RESEARCH_DIRECTIONS.md RQ | mentor_question_log.md + GOVERNANCE.md |
+| Needs mentor input | Create MQ-### entry | mentor_question_log.md |
+
+### Verification Checkpoints
+
+Before thesis submission, verify:
+- ✅ All controls pass BL-011 tests with measurable effect (or marked as "exception: weak by design")
+- ✅ All transparency audits pass B1-B3 (outputs, explanations, rejections documented)
+- ✅ B4 (control traceability) implemented OR marked as "pending D-043"
+- ✅ B5 (what-if analysis) implemented OR marked as "pending AF2"
+- ✅ Signal files are current and consistent (C1-C4 checks pass)
+- ✅ CONTROL_SURFACE_REGISTRY documents all final control statuses
+- ✅ TRANSPARENCY_SPEC maps all outputs to thesis requirements
+- ✅ RESEARCH_DIRECTIONS records any unresolved design questions
+
+

@@ -3,6 +3,136 @@ from __future__ import annotations
 from typing import Any
 
 
+def _expects_no_shift(expected_effect: str) -> bool:
+    """Return True if expected_effect text signals that no observable shift is expected."""
+    lower = expected_effect.lower()
+    return "no shift" in lower or "no bl-004" in lower or "not expected" in lower
+
+
+def _evaluate_acceptance_bounds(
+    bounds: list[dict[str, Any]],
+    comparison: dict[str, object],
+    scenario_result: dict[str, object],
+    baseline_result: dict[str, object],
+) -> bool:
+    """Evaluate declarative acceptance-bound rules against comparison metrics.
+
+    Called when a scenario carries an explicit ``acceptance_bounds`` list (from
+    config-provided scenario definitions).  Each rule has the shape::
+
+        { "metric": str, "comparator": str, "value": <scalar>, "required": bool }
+
+    Supported comparators: less_than, greater_than, equal_to, not_equal_to,
+    less_than_or_equal, greater_than_or_equal.
+
+    Returns True if all required rules pass, False if any required rule fails.
+    Rules that reference an unknown metric are skipped.
+    """
+    rank_shift = dict(comparison.get("rank_shift_summary") or {})
+    metrics: dict[str, object] = {
+        "observable_shift": comparison["observable_shift"],
+        "candidate_pool_size_delta": comparison["candidate_pool_size_delta"],
+        "playlist_length_delta": comparison["playlist_length_delta"],
+        "top10_overlap_count": comparison["top10_overlap_count"],
+        "top10_overlap_ratio": comparison["top10_overlap_ratio"],
+        "playlist_overlap_count": comparison["playlist_overlap_count"],
+        "playlist_overlap_ratio": comparison["playlist_overlap_ratio"],
+        "mean_abs_rank_delta": rank_shift.get("mean_abs_rank_delta", 0.0),
+        "profile_hash_changed": (
+            scenario_result["stable_hashes"]["profile_semantic_hash"]
+            != baseline_result["stable_hashes"]["profile_semantic_hash"]
+        ),
+    }
+    _comparators = {
+        "less_than": lambda a, b: float(a) < float(b),
+        "greater_than": lambda a, b: float(a) > float(b),
+        "equal_to": lambda a, b: a == b,
+        "not_equal_to": lambda a, b: a != b,
+        "less_than_or_equal": lambda a, b: float(a) <= float(b),
+        "greater_than_or_equal": lambda a, b: float(a) >= float(b),
+    }
+    for rule in bounds:
+        metric_key = str(rule.get("metric", ""))
+        comparator_key = str(rule.get("comparator", "equal_to"))
+        value = rule.get("value")
+        required = bool(rule.get("required", True))
+        if metric_key not in metrics:
+            continue
+        op = _comparators.get(comparator_key)
+        if op is None:
+            continue
+        if not op(metrics[metric_key], value) and required:
+            return False
+    return True
+
+
+def _evaluate_expected_direction(
+    scenario_result: dict[str, object],
+    baseline_result: dict[str, object],
+    partial_comparison: dict[str, object],
+) -> bool | None:
+    """Determine whether a scenario achieved its expected directional effect.
+
+    Tries config-provided ``acceptance_bounds`` first (from effective_config),
+    then falls back to control_surface-based built-in logic.
+
+    Built-in dispatch replaces the previous scenario_id if/elif coupling,
+    using ``control_surface`` as the dispatch key so new scenario IDs work
+    automatically when their control_surface matches a known variant type.
+
+    Returns:
+        True  — direction confirmed.
+        False — direction not met.
+        None  — cannot be determined for this control_surface / configuration.
+    """
+    control_surface = str(scenario_result.get("control_surface", ""))
+    effective_config = dict(scenario_result.get("effective_config") or {})
+    observable_shift = bool(partial_comparison["observable_shift"])
+    candidate_pool_size_delta = int(partial_comparison["candidate_pool_size_delta"])
+    component_delta = dict(partial_comparison.get("component_mean_delta") or {})
+    rank_shift = dict(partial_comparison.get("rank_shift_summary") or {})
+
+    # Config-driven acceptance bounds (for scenario definitions loaded from config).
+    acceptance_bounds = list(effective_config.get("acceptance_bounds") or [])
+    if acceptance_bounds:
+        return _evaluate_acceptance_bounds(acceptance_bounds, partial_comparison, scenario_result, baseline_result)
+
+    # Built-in control_surface dispatch.
+    if control_surface == "fixed_bl010_baseline":
+        return True
+
+    if control_surface == "influence_tracks":
+        profile_hash_changed = (
+            scenario_result["stable_hashes"]["profile_semantic_hash"]
+            != baseline_result["stable_hashes"]["profile_semantic_hash"]
+        )
+        return profile_hash_changed and observable_shift
+
+    if control_surface == "feature_weight":
+        override_component = str(
+            effective_config.get("scoring", {}).get("weight_override_component") or ""
+        )
+        return (
+            component_delta.get(override_component, 0.0) > 0
+            and float(rank_shift.get("mean_abs_rank_delta", 0.0)) > 0
+        )
+
+    if control_surface == "candidate_threshold":
+        retrieval_config = dict(effective_config.get("retrieval") or {})
+        threshold_scale = float(retrieval_config.get("threshold_scale") or 1.0)
+        if threshold_scale < 1.0:
+            return candidate_pool_size_delta < 0   # stricter → pool must shrink
+        if threshold_scale > 1.0:
+            return candidate_pool_size_delta > 0   # looser → pool must grow
+        return None  # scale == 1.0, no direction expected
+
+    if control_surface == "alignment_fuzzy_mode":
+        return not observable_shift
+
+    return None  # unknown control_surface — no assertion possible
+
+
+
 def build_rank_shift_summary(baseline_rank_map: dict[str, int], scenario_rank_map: dict[str, int]) -> dict[str, object]:
     common_ids = sorted(set(baseline_rank_map).intersection(scenario_rank_map))
     if not common_ids:
@@ -86,36 +216,8 @@ def compare_to_baseline(baseline_result: dict[str, object], scenario_result: dic
         ]
     )
 
-    expected_direction_met = None
-    scenario_id = str(scenario_result["scenario_id"])
-    if scenario_id == "no_influence_tracks":
-        expected_direction_met = (
-            scenario_result["stable_hashes"]["profile_semantic_hash"]
-            != baseline_result["stable_hashes"]["profile_semantic_hash"]
-            and observable_shift
-        )
-    elif scenario_id == "valence_weight_up":
-        override_component = str(
-            scenario_result["effective_config"]["scoring"].get("weight_override_component") or ""
-        )
-        expected_direction_met = (
-            component_delta.get(override_component, 0.0) > 0
-            and rank_shift_summary["mean_abs_rank_delta"] > 0
-        )
-    elif scenario_id == "stricter_thresholds":
-        expected_direction_met = (
-            scenario_metrics["candidate_pool_size"] < baseline_metrics["candidate_pool_size"]
-        )
-    elif scenario_id == "looser_thresholds":
-        expected_direction_met = (
-            scenario_metrics["candidate_pool_size"] > baseline_metrics["candidate_pool_size"]
-        )
-    elif scenario_id == "fuzzy_enabled_strict":
-        expected_direction_met = not observable_shift
-
-    return {
+    partial_comparison: dict[str, object] = {
         "observable_shift": observable_shift,
-        "expected_direction_met": expected_direction_met,
         "candidate_pool_size_delta": (
             scenario_metrics["candidate_pool_size"] - baseline_metrics["candidate_pool_size"]
         ),
@@ -126,6 +228,14 @@ def compare_to_baseline(baseline_result: dict[str, object], scenario_result: dic
         "top10_overlap_ratio": round(len(top10_overlap) / max(len(baseline_top10), 1), 3),
         "playlist_overlap_count": len(playlist_overlap),
         "playlist_overlap_ratio": round(len(playlist_overlap) / max(len(baseline_playlist), 1), 3),
+        "component_mean_delta": component_delta,
+        "rank_shift_summary": rank_shift_summary,
+    }
+    expected_direction_met = _evaluate_expected_direction(scenario_result, baseline_result, partial_comparison)
+
+    return {
+        **partial_comparison,
+        "expected_direction_met": expected_direction_met,
         "top10_added_track_ids": [
             track_id for track_id in scenario_top10 if track_id not in baseline_top10
         ],
@@ -140,8 +250,6 @@ def compare_to_baseline(baseline_result: dict[str, object], scenario_result: dic
         ],
         "profile_lead_genres_before": baseline_metrics["dominant_lead_genres"],
         "profile_lead_genres_after": scenario_metrics["dominant_lead_genres"],
-        "component_mean_delta": component_delta,
-        "rank_shift_summary": rank_shift_summary,
     }
 
 
@@ -177,15 +285,14 @@ def evaluate_results_status(scenario_records: list[dict[str, object]]) -> dict[s
     non_baseline_records = [
         record for record in scenario_records if record["scenario_id"] != "baseline"
     ]
-    expected_no_shift_ids = {"fuzzy_enabled_strict"}
     all_repeat = all(record["repeat_consistent"] for record in scenario_records)
     all_shift = all(
         record["comparison_to_baseline"]["observable_shift"] for record in non_baseline_records
-        if record["scenario_id"] not in expected_no_shift_ids
+        if not _expects_no_shift(str(record.get("expected_effect", "")))
     )
     all_expected_no_shift = all(
         not record["comparison_to_baseline"]["observable_shift"] for record in non_baseline_records
-        if record["scenario_id"] in expected_no_shift_ids
+        if _expects_no_shift(str(record.get("expected_effect", "")))
     )
     all_direction = all(
         record["comparison_to_baseline"]["expected_direction_met"]

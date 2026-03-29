@@ -39,7 +39,7 @@
     "preference_weight": 1.0,
     "source": null
   },
-  "seed_controls": {
+    "seed_controls": {
     "match_rate_min_threshold": 0.3,
     "match_rate_min_threshold_comment": "Minimum acceptable match rate (0.0-1.0) for imported tracks against DS-001 corpus. Set to 0.3 (30%) based on empirical data showing 32.2% match rate with current corpus. Known limitation: DS-001 has limited coverage of user's import history - preference profiles built from incomplete data. See Chapter 3 for bias documentation.",
     "top_range_weights": {
@@ -66,6 +66,23 @@
       "max_duration_delta_ms_comment": "Maximum allowed duration difference for fuzzy matches when both durations are available.",
       "max_artist_candidates": 5,
       "max_artist_candidates_comment": "Maximum artist-key candidates considered per unmatched event."
+    },
+    "weighting_policy": {
+      "weighting_policy_comment": "Formula knobs for BL-003 preference weight computation. Defaults match the values previously embedded in alignment/weighting.py — change only to tune weight distribution.",
+      "top_tracks": {
+        "min_rank_floor": 0.05,
+        "min_rank_floor_comment": "Minimum weight contribution from rank (prevents zero weight for low-ranked tracks).",
+        "scale_multiplier": 100.0,
+        "scale_multiplier_comment": "Multiplier applied to rank-based weight before normalisation.",
+        "default_time_range_weight": 0.20,
+        "default_time_range_weight_comment": "Fallback time-range weight used when the event's time_range is absent from top_range_weights."
+      },
+      "playlist_items": {
+        "min_position_floor": 0.05,
+        "min_position_floor_comment": "Minimum weight from playlist position (prevents zero weight for late-position items).",
+        "scale_multiplier": 20.0,
+        "scale_multiplier_comment": "Multiplier applied to position-based weight before normalisation."
+      }
     }
   },
   "ingestion_controls": {
@@ -141,6 +158,22 @@
     "weight_override_increment_fallback": 0.08,
     "weight_override_cap_fallback": 0.35,
     "stricter_threshold_scale": 0.75,
-    "looser_threshold_scale": 1.25
+    "looser_threshold_scale": 1.25,
+    "scenario_policy": {
+      "scenario_policy_comment": "Controls which BL-011 scenarios run. enabled_scenario_ids: list of scenario_id strings, or [\"all\"] to run every defined scenario. repeat_count: how many times each scenario runs (>=1). comparison_mode: baseline_reference compares each variant against the baseline scenario.",
+      "enabled_scenario_ids": ["all"],
+      "repeat_count": 1,
+      "stage_scope": ["all"],
+      "comparison_mode": "baseline_reference"
+    },
+    "scenario_definitions": [
+    ]
+  },
+  "orchestration_controls": {
+    "orchestration_controls_comment": "BL-013 stage graph and execution policy. stage_order: null = use static default order. refresh_seed_policy: auto_if_stale | always | never.",
+    "stage_order": null,
+    "continue_on_error": false,
+    "refresh_seed_policy": "auto_if_stale",
+    "required_stable_artifacts": []
   }
 }

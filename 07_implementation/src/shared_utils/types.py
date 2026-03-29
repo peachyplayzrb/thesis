@@ -82,6 +82,60 @@ class SeedControlsConfig(TypedDict):
     match_rate_min_threshold: float
     top_range_weights: dict[str, float]
     source_base_weights: dict[str, float]
+    fuzzy_matching: dict[str, Any]
+    decay_half_lives: dict[str, float]
+
+
+class SeedWeightingPolicyConfig(TypedDict, total=False):
+    """Weighting formula knobs for BL-003 preference weight computation.
+
+    Controls the numeric constants used when computing per-event preference
+    weights from top-tracks rank and playlist position. Defaults match the
+    values that were previously embedded in alignment/weighting.py.
+    """
+    top_tracks_min_rank_floor: float          # default 0.05
+    top_tracks_scale_multiplier: float        # default 100.0
+    top_tracks_default_time_range_weight: float  # default 0.20 (fallback when time_range absent)
+    playlist_items_min_position_floor: float  # default 0.05
+    playlist_items_scale_multiplier: float    # default 20.0
+
+
+class AcceptanceBoundConfig(TypedDict, total=False):
+    """Single quantitative acceptance rule for a controllability scenario."""
+    metric: str       # e.g. "candidate_pool_size_delta"
+    comparator: str   # "less_than" | "greater_than" | "equal_to" | "not_equal_to"
+    value: float      # threshold value
+    required: bool    # if True, failing this rule fails the scenario
+
+
+class ScenarioDefinitionConfig(TypedDict, total=False):
+    """Full declarative specification of one BL-011 controllability scenario."""
+    scenario_id: str
+    test_id: str
+    control_surface: str
+    description: str
+    expected_effect: str
+    profile_patch: dict[str, Any]
+    retrieval_patch: dict[str, Any]
+    scoring_patch: dict[str, Any]
+    assembly_patch: dict[str, Any]
+    acceptance_bounds: list[AcceptanceBoundConfig]
+
+
+class ScenarioPolicyConfig(TypedDict, total=False):
+    """Policy controls for how BL-011 runs and compares scenarios."""
+    enabled_scenario_ids: list[str]  # ["all"] means run all defined scenarios
+    repeat_count: int                # number of times each scenario is run (for stability)
+    stage_scope: list[str]           # which stages to include; ["all"] = full pipeline
+    comparison_mode: str             # "baseline_reference" | "pairwise"
+
+
+class OrchestrationControlsConfig(TypedDict, total=False):
+    """BL-013 stage graph and execution policy controls."""
+    stage_order: list[str] | None    # None = use static default order
+    continue_on_error: bool          # default False; if True non-fatal stage failures are skipped
+    refresh_seed_policy: str         # "auto_if_stale" | "always" | "never"
+    required_stable_artifacts: list[str]  # artifact names that must hash-match between runs
 
 
 class IngestionControlsConfig(TypedDict):

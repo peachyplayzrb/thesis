@@ -5,6 +5,8 @@ Centralizes feature specifications, default values, and other constants
 that were previously duplicated across multiple stages.
 """
 
+from typing import Any
+
 # BL-003 Alignment Default Weights (for seed table preference weighting)
 DEFAULT_TOP_RANGE_WEIGHTS = {
     "short_term": 0.50,
@@ -86,7 +88,7 @@ DEFAULT_INFLUENCE_TRACKS: dict[str, object] = {
     "source": None,
 }
 
-DEFAULT_SEED_CONTROLS: dict[str, object] = {
+DEFAULT_SEED_CONTROLS: dict[str, Any] = {
     "match_rate_min_threshold": 0.0,
     "top_range_weights": dict(DEFAULT_TOP_RANGE_WEIGHTS),
     "source_base_weights": dict(DEFAULT_SOURCE_BASE_WEIGHTS),
@@ -127,13 +129,13 @@ DEFAULT_ASSEMBLY_CONTROLS: dict[str, object] = {
 # BL-008 Transparency Default
 DEFAULT_TOP_CONTRIBUTOR_LIMIT = 3
 
-DEFAULT_TRANSPARENCY_CONTROLS: dict[str, object] = {
+DEFAULT_TRANSPARENCY_CONTROLS: dict[str, Any] = {
     "top_contributor_limit": DEFAULT_TOP_CONTRIBUTOR_LIMIT,
     "blend_primary_contributor_on_near_tie": False,
     "primary_contributor_tie_delta": 0.02,
 }
 
-DEFAULT_OBSERVABILITY_CONTROLS: dict[str, object] = {
+DEFAULT_OBSERVABILITY_CONTROLS: dict[str, Any] = {
     "diagnostic_sample_limit": 5,
     "bootstrap_mode": True,
 }
@@ -149,6 +151,41 @@ DEFAULT_CONTROLLABILITY_CONTROLS: dict[str, float] = {
     "weight_override_cap_fallback": 0.35,
     "stricter_threshold_scale": 0.75,
     "looser_threshold_scale": 1.25,
+}
+
+# BL-003 Weighting policy — formula knobs extracted from alignment/weighting.py.
+# Values match the previously embedded constants exactly so existing runs are
+# numerically identical when this policy is wired in Phase 4.
+DEFAULT_WEIGHTING_POLICY: dict[str, dict[str, float]] = {
+    "top_tracks": {
+        "min_rank_floor": 0.05,
+        "scale_multiplier": 100.0,
+        "default_time_range_weight": 0.20,
+    },
+    "playlist_items": {
+        "min_position_floor": 0.05,
+        "scale_multiplier": 20.0,
+    },
+}
+
+# BL-011 Scenario policy — controls which scenarios run and how comparisons work.
+DEFAULT_SCENARIO_POLICY: dict[str, Any] = {
+    "enabled_scenario_ids": ["all"],
+    "repeat_count": 1,
+    "stage_scope": ["all"],
+    "comparison_mode": "baseline_reference",
+}
+
+# BL-011 Scenario definitions — populated from config; empty list here means
+# the Python-side fallback in Phase 2 will generate the built-in 5 scenarios.
+DEFAULT_SCENARIO_DEFINITIONS: list[dict[str, object]] = []
+
+# BL-013 Orchestration controls — stage graph and execution policy.
+DEFAULT_ORCHESTRATION_CONTROLS: dict[str, Any] = {
+    "stage_order": None,           # None = use the static default order in orchestration/main.py
+    "continue_on_error": False,
+    "refresh_seed_policy": "auto_if_stale",
+    "required_stable_artifacts": [],
 }
 
 # BL-001/BL-002 Ingestion Resilience Defaults

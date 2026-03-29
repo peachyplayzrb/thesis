@@ -12,6 +12,7 @@ from typing import Any
 from rapidfuzz import fuzz
 
 from shared_utils.parsing import normalize_ascii_text, parse_int
+from shared_utils.constants import DEFAULT_SEED_CONTROLS
 from alignment.weighting import compute_weight
 
 
@@ -67,14 +68,7 @@ def build_ds001_indices(
 
 
 def _resolve_fuzzy_controls(raw_controls: dict[str, Any] | None) -> dict[str, Any]:
-    defaults: dict[str, Any] = {
-        "enabled": False,
-        "artist_threshold": 0.90,
-        "title_threshold": 0.90,
-        "combined_threshold": 0.90,
-        "max_duration_delta_ms": 5000,
-        "max_artist_candidates": 5,
-    }
+    defaults: dict[str, Any] = dict(DEFAULT_SEED_CONTROLS.get("fuzzy_matching") or {})
     if not isinstance(raw_controls, dict):
         return defaults
     controls = dict(defaults)
@@ -202,6 +196,7 @@ def match_events(
     source_base_weights: dict,
     decay_half_lives: dict[str, float] | None = None,
     fuzzy_controls: dict[str, Any] | None = None,
+    weighting_policy: dict | None = None,
 ) -> tuple[list[dict[str, str]], list[dict[str, Any]], list[dict[str, str]], dict[str, int]]:
     """
     Match every event against DS-001 using Spotify-ID first, metadata fallback second.
@@ -233,6 +228,7 @@ def match_events(
             top_range_weights,
             source_base_weights,
             decay_half_lives=decay_half_lives,
+            weighting_policy=weighting_policy,
         )
 
         trace = dict(event)
