@@ -1,6 +1,6 @@
 # Thesis State
 
-Last updated: 2026-03-29 UTC (Phase 5-6 modularization + BL-004/005/006 OO migration and docs sync complete)
+Last updated: 2026-03-29 UTC (BL-003 Phase 2 typed-boundary migration + admin sync complete)
 
 ## Official Current State
 
@@ -98,6 +98,8 @@ Priority status checkpoint (2026-03-29 modularization pass): Phase 5 and Phase 6
 
 Priority status checkpoint (2026-03-29 OO stage migration pass): BL-004 profile, BL-005 retrieval, and BL-006 scoring are now aligned to the typed OO shell pattern used across newer modules: each surface now has explicit models contracts, dedicated stage orchestration class, and thin compatibility wrappers at the legacy `main.py` call points. Stage-level tests were added for the migrated scoring path and existing integration behavior was preserved for BL-007/BL-008/BL-009 consumers.
 
+Priority status checkpoint (2026-03-29 BL-003 Phase 2 pass): BL-003 alignment internals now use typed boundaries for event normalization, matching traces, matched-event payloads, and aggregation state via `07_implementation/src/alignment/models.py` while preserving dict-shaped interfaces at stage boundaries for backward compatibility. Validation remained green on targeted alignment coverage (`88/88` tests).
+
 ## Current Implementation Status
 
 ### BL-020 Implementation State (as of 2026-03-26)
@@ -124,6 +126,7 @@ Priority status checkpoint (2026-03-29 OO stage migration pass): BL-004 profile,
 - **Active Risk (Governance)**: No active unresolved governance blocker; residual risk is execution discipline for chapter hardening completion.
 - **Implementation Quality Status**: Pipeline closed on the active v1f baseline (`run_config_ui013_tuning_v1f.json`). BL-014 passes 22/22. All 10 scoring components active. BL-010 determinism and BL-011 controllability confirmed on their respective pinned states. No open implementation closure risks.
 - **Implementation Modularity Status** (2026-03-29): Orchestration, controllability, and alignment runtime surfaces are now split into focused helper modules with thin compatibility entrypoints/wrappers retained at `main.py`, `pipeline_runner.py`, `scenarios.py`, `matching.py`, and `reporting.py`. BL-004, BL-005, and BL-006 now also follow a consistent typed stage pattern (`models.py` + `stage.py` + wrapper `main.py`) to reduce script-level coupling and preserve a stable API surface. Current risk is low and limited to normal maintenance drift rather than monolithic-script fragility.
+- **BL-003 Typed Boundary Status** (2026-03-29): Phase 2 model-boundary migration is complete in `07_implementation/src/alignment/`. Typed dataclasses now back source events, match traces, matched events, and aggregation internals; output contracts and writer schemas remain unchanged for downstream compatibility.
 
 ### BL-021 Source-Scope Control State (as of 2026-03-26)
 - Source-scope contract is baseline behavior (no longer deferred): implemented, validated, and traceable in run artifacts.
@@ -142,13 +145,13 @@ See: `07_implementation/BL020_HANDOFF_AUDIT_2026-03-21.md` for comprehensive pre
 ## Update Control
 
 - Last updated:
-2026-03-29 (Phase 5-6 modularization + BL-004/005/006 OO migration + docs sync pass)
+2026-03-29 (BL-003 Phase 2 typed-boundary migration + docs sync pass)
 
 - Reason for last update:
-(1) Phase 5 BL-013 orchestration cleanup completed: control resolution was externalized and `orchestration/main.py` reduced to a thin entrypoint over focused helper modules while preserving behavior.
-(2) Phase 6 modularization completed across BL-011 and BL-003 support code: controllability scenario execution is split into dedicated stage/path/runtime-control modules and alignment matching/reporting is split into focused helper modules with compatibility wrappers retained.
-(3) BL-004/BL-005/BL-006 were migrated to a consistent typed OO stage shell (`models.py` + `stage.py` + wrapper `main.py`) with compatibility wrappers preserved and stage-level tests added.
-(4) Admin/runtime docs were synchronized to the modularized layout and touched files were revalidated with pyright; canonical baseline and chapter/QC closure posture remain unchanged, so the only remaining task is external submission packaging.
+(1) BL-003 Phase 2 typed-boundary migration completed in `07_implementation/src/alignment/` with new dataclass models and internal typed flow across weighting, matching, aggregation, and output boundary handling.
+(2) Interface compatibility was preserved for existing dict-based call sites and artifact schemas while reducing internal shape ambiguity.
+(3) Targeted BL-003 alignment tests were rerun and remain green (`88/88` pass).
+(4) Admin control files were synchronized to explicitly record this migration state; canonical baseline and chapter/QC closure posture remain unchanged, so the only remaining task is external submission packaging.
 
 ## Locked Definitions
 - Artefact scope lock: `00_admin/Artefact_MVP_definition.md`

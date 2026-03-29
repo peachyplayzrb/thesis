@@ -1,5 +1,6 @@
 """Tests for retrieval.profile_builder."""
 
+from retrieval.models import NumericFeatureSpec
 from retrieval.profile_builder import build_active_numeric_specs, build_profile_label_set
 
 
@@ -30,26 +31,26 @@ def test_build_active_numeric_specs_resolves_duration_fallback() -> None:
         }
     }
     effective = {
-        "duration_ms": {
-            "candidate_column": "duration_ms",
-            "threshold": 45000.0,
-            "circular": False,
-        },
-        "tempo": {
-            "candidate_column": "tempo",
-            "threshold": 20.0,
-            "circular": False,
-        },
-        "energy": {
-            "candidate_column": "energy",
-            "threshold": 0.2,
-            "circular": False,
-        },
+        "duration_ms": NumericFeatureSpec(
+            candidate_column="duration_ms",
+            threshold=45000.0,
+            circular=False,
+        ),
+        "tempo": NumericFeatureSpec(
+            candidate_column="tempo",
+            threshold=20.0,
+            circular=False,
+        ),
+        "energy": NumericFeatureSpec(
+            candidate_column="energy",
+            threshold=0.2,
+            circular=False,
+        ),
     }
     candidate_columns = {"duration", "tempo"}
 
     active = build_active_numeric_specs(profile, effective, candidate_columns)
 
     assert set(active.keys()) == {"duration_ms", "tempo"}
-    assert active["duration_ms"]["candidate_column"] == "duration"
-    assert active["tempo"]["candidate_column"] == "tempo"
+    assert active["duration_ms"].candidate_column == "duration"
+    assert active["tempo"].candidate_column == "tempo"

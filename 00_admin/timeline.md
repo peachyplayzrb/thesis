@@ -65,6 +65,7 @@ Last updated: 2026-03-29
 - Milestone-state recalibration recorded (2026-03-25): M3 and M4 moved from planned to in progress to reflect completed BL-004 through BL-009 implementation and active evidence-synthesis work.
 - UI-003 control-record closure recorded (2026-03-27): Chapter 3 to 5 claim-verdict matrix and chapter-targeted hardening notes are logged and active unresolved governance issues are now empty.
 - Phase 5-6 modularization closure recorded (2026-03-29): orchestration, controllability, and alignment runtime helpers were split into focused modules with stable compatibility entrypoints retained and touched files revalidated with pyright.
+- BL-003 typed-boundary closure recorded (2026-03-29): Phase 2 alignment migration completed with typed internal data models (`SourceEvent`, `MatchTrace`, `MatchedEvent`, `AggregatedEvent`) wired through weighting, matching, aggregation, and writer boundaries while preserving existing output/interface contracts; targeted alignment tests pass (`88/88`).
 
 ## Notes
 - Dates are a working baseline for execution control and can be refined against official module deadlines.

@@ -6,6 +6,7 @@ import json
 from pathlib import Path
 from typing import Any
 
+from alignment.models import AggregatedEvent, MatchedEvent
 from shared_utils.hashing import canonical_json_hash as _canonical_json_hash
 from shared_utils.io_utils import open_text_write, sha256_of_file, utc_now
 
@@ -94,11 +95,13 @@ def write_alignment_outputs(
 
     with open_text_write(matched_jsonl_path) as handle:
         for row in matched_events:
-            handle.write(json.dumps(row, ensure_ascii=True) + "\n")
+            payload = row.to_dict() if isinstance(row, MatchedEvent) else row
+            handle.write(json.dumps(payload, ensure_ascii=True) + "\n")
 
     seed_rows_output: list[dict[str, Any]] = []
     for ds001_id in sorted(aggregated.keys()):
-        agg = aggregated[ds001_id]
+        raw_agg = aggregated[ds001_id]
+        agg = raw_agg.to_dict() if isinstance(raw_agg, AggregatedEvent) else raw_agg
         seed_rows_output.append(
             {
                 "ds001_id": agg["ds001_id"],

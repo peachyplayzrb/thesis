@@ -17,6 +17,7 @@ from shared_utils.constants import (
     DEFAULT_SOURCE_BASE_WEIGHT_FALLBACK,
 )
 from shared_utils.parsing import parse_int
+from alignment.models import SourceEvent
 
 
 def _parse_event_time(raw_value: str) -> datetime | None:
@@ -119,29 +120,6 @@ def to_event_rows(source_type: str, rows: list[dict[str, str]]) -> list[dict[str
     events: list[dict[str, str]] = []
 
     for idx, row in enumerate(rows, start=1):
-        event: dict[str, str] = {
-            "source_type": source_type,
-            "source_row_index": str(idx),
-            "spotify_track_id": (row.get("track_id") or "").strip(),
-            "isrc": (row.get("isrc") or "").strip(),
-            "track_name": (row.get("track_name") or "").strip(),
-            "artist_names": (row.get("artist_names") or "").strip(),
-            "duration_ms": (row.get("duration_ms") or "").strip(),
-            "event_time": "",
-            "time_range": (row.get("time_range") or "").strip(),
-            "rank": (row.get("rank") or "").strip(),
-            "playlist_id": (row.get("playlist_id") or "").strip(),
-            "playlist_name": (row.get("playlist_name") or "").strip(),
-            "playlist_position": (row.get("playlist_position") or "").strip(),
-        }
-
-        if source_type == "saved_tracks":
-            event["event_time"] = (row.get("added_at") or "").strip()
-        elif source_type == "playlist_items":
-            event["event_time"] = (row.get("added_at") or "").strip()
-        elif source_type == "recently_played":
-            event["event_time"] = (row.get("played_at") or "").strip()
-
-        events.append(event)
+        events.append(SourceEvent.from_raw_row(source_type, idx, row).to_dict())
 
     return events

@@ -11,7 +11,7 @@ from typing import Any
 class DecisionTracker:
     """Tracks filtering decisions and generates diagnostic reports."""
 
-    def __init__(self, numeric_feature_specs: dict[str, dict[str, Any]]) -> None:
+    def __init__(self, numeric_feature_specs: dict[str, Any]) -> None:
         """
         Initialize decision tracker.
 

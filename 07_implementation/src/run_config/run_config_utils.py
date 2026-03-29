@@ -810,6 +810,7 @@ def resolve_bl003_seed_controls(run_config_path: str | Path | None) -> dict[str,
         "match_rate_min_threshold": float(seed["match_rate_min_threshold"]),
         "top_range_weights": dict(seed["top_range_weights"]),
         "source_base_weights": dict(seed["source_base_weights"]),
+        "decay_half_lives": dict(seed.get("decay_half_lives") or {}),
         "fuzzy_matching": dict(seed.get("fuzzy_matching") or {}),
     }
 

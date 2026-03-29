@@ -10,12 +10,15 @@ from __future__ import annotations
 from typing import Any
 
 from shared_utils.config_loader import load_run_config_utils_module
+from alignment.resolved_context import AlignmentResolvedContext
 
 
 def inject_influence_tracks(
     matched_events: list[dict[str, Any]],
     by_ds001_id: dict[str, dict[str, str]],
-    run_config_path: str | None,
+    run_config_path: str | None = None,
+    *,
+    context: AlignmentResolvedContext | None = None,
 ) -> dict[str, Any]:
     """
     Inject influence tracks from the run config into matched_events (mutates in place).
@@ -23,7 +26,12 @@ def inject_influence_tracks(
     Returns the influence contract dict to embed in the BL-003 summary.
     When run_config_path is None, returns a disabled contract with zero counts.
     """
-    if not run_config_path:
+    if context is not None:
+        infl = dict(context.influence_controls)
+    elif run_config_path:
+        _rc_utils = load_run_config_utils_module()
+        infl = _rc_utils.resolve_bl003_influence_controls(run_config_path)
+    else:
         return {
             "enabled": False,
             "track_ids": [],
@@ -31,9 +39,6 @@ def inject_influence_tracks(
             "injected_count": 0,
             "skipped_track_ids": [],
         }
-
-    _rc_utils = load_run_config_utils_module()
-    infl = _rc_utils.resolve_bl003_influence_controls(run_config_path)
 
     influence_injected_count = 0
     influence_skipped_ids: list[str] = []

@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-from shared_utils.constants import DEFAULT_LEAD_GENRE_PARTIAL_MATCH_THRESHOLD
 from shared_utils.genre_utils import lead_genre_token_similarity
 from shared_utils.parsing import parse_csv_labels
 
@@ -14,32 +13,34 @@ from retrieval.candidate_parser import (
 )
 from retrieval.decision_tracker import DecisionTracker
 from retrieval.filtering_logic import decision_reason, keep_decision
+from retrieval.models import RetrievalContext, RetrievalEvaluationResult, context_from_mapping
 
 
 def evaluate_bl005_candidates(
     *,
-    candidate_rows: list[dict[str, object]],
-    runtime_context: dict[str, object],
-) -> tuple[DecisionTracker, list[dict[str, object]], list[dict[str, object]], dict[str, object]]:
-    active_numeric_specs: dict[str, dict[str, object]] = runtime_context["active_numeric_specs"]
-    seed_track_ids: set[str] = runtime_context["seed_track_ids"]
-    top_lead_genres: set[str] = runtime_context["top_lead_genres"]
-    top_tags: set[str] = runtime_context["top_tags"]
-    top_genres: set[str] = runtime_context["top_genres"]
-    numeric_centers: dict[str, float] = runtime_context["numeric_centers"]
-    numeric_features_enabled = bool(runtime_context["numeric_features_enabled"])
-    semantic_strong_keep_score = int(runtime_context["semantic_strong_keep_score"])
-    semantic_min_keep_score = int(runtime_context["semantic_min_keep_score"])
-    numeric_support_min_pass = int(runtime_context["numeric_support_min_pass"])
-    language_filter_enabled = bool(runtime_context["language_filter_enabled"])
-    language_filter_codes = set(runtime_context["language_filter_codes"])
-    recency_min_release_year = runtime_context["recency_min_release_year"]
-    lead_genre_partial_match_threshold = float(
-        runtime_context.get(
-            "lead_genre_partial_match_threshold",
-            DEFAULT_LEAD_GENRE_PARTIAL_MATCH_THRESHOLD,
-        )
+    candidate_rows: list[dict[str, str]],
+    runtime_context: RetrievalContext | dict[str, object],
+) -> tuple[DecisionTracker, list[dict[str, object]], list[dict[str, str]], dict[str, object]]:
+    context = (
+        runtime_context
+        if isinstance(runtime_context, RetrievalContext)
+        else context_from_mapping(runtime_context)
     )
+
+    active_numeric_specs = context.active_numeric_specs
+    seed_track_ids = context.seed_track_ids
+    top_lead_genres = context.top_lead_genres
+    top_tags = context.top_tags
+    top_genres = context.top_genres
+    numeric_centers = context.numeric_centers
+    numeric_features_enabled = context.numeric_features_enabled
+    semantic_strong_keep_score = context.semantic_strong_keep_score
+    semantic_min_keep_score = context.semantic_min_keep_score
+    numeric_support_min_pass = context.numeric_support_min_pass
+    language_filter_enabled = context.language_filter_enabled
+    language_filter_codes = set(context.language_filter_codes)
+    recency_min_release_year = context.recency_min_release_year
+    lead_genre_partial_match_threshold = context.lead_genre_partial_match_threshold
 
     tracker = DecisionTracker(active_numeric_specs)
 
@@ -82,23 +83,23 @@ def evaluate_bl005_candidates(
         numeric_rule_hits_this_candidate: dict[str, bool] = {}
 
         for profile_column, spec in active_numeric_specs.items():
-            value = candidate_numeric_value(  # type: ignore[arg-type]
+            value = candidate_numeric_value(
                 row,
                 profile_column,
-                str(spec["candidate_column"]),
+                spec.candidate_column,
             )
             passed = False
 
             if value is not None:
                 center = numeric_centers.get(profile_column)
                 if center is not None:
-                    if bool(spec["circular"]):
+                    if spec.circular:
                         raw_diff = abs(value - center)
                         distance = min(raw_diff, 12.0 - raw_diff)
                     else:
                         distance = abs(value - center)
                     numeric_distances[profile_column] = round(distance, 6)
-                    if distance <= float(spec["threshold"]):
+                    if distance <= spec.threshold:
                         numeric_pass_count += 1
                         passed = True
                 else:
@@ -158,3 +159,21 @@ def evaluate_bl005_candidates(
 
     summary = tracker.get_summary()
     return tracker, tracker.decisions, tracker.kept_rows, summary
+
+
+class RetrievalEvaluator:
+    """OO wrapper for BL-005 candidate evaluation over a fixed runtime context."""
+
+    def __init__(self, runtime_context: RetrievalContext) -> None:
+        self.runtime_context = runtime_context
+
+    def evaluate(self, candidate_rows: list[dict[str, str]]) -> RetrievalEvaluationResult:
+        _, decisions, kept_rows, summary = evaluate_bl005_candidates(
+            candidate_rows=candidate_rows,
+            runtime_context=self.runtime_context,
+        )
+        return RetrievalEvaluationResult(
+            decisions=decisions,
+            kept_rows=kept_rows,
+            summary=summary,
+        )

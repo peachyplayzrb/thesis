@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from rapidfuzz import fuzz
+
 from alignment.index_builder import build_ds001_indices
 from alignment.match_pipeline import match_events
 from alignment.text_matching import (
@@ -11,3 +13,7 @@ from alignment.text_matching import (
     normalize_text,
     resolve_fuzzy_controls,
 )
+
+# Backward-compatible aliases used by the existing test surface.
+_fuzzy_find_candidate = fuzzy_find_candidate
+_resolve_fuzzy_controls = resolve_fuzzy_controls

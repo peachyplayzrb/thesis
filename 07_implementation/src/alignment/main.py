@@ -2,22 +2,13 @@
 
 import argparse
 import json
-import os
 import time
 from pathlib import Path
 
-from shared_utils.config_loader import load_run_config_utils_module
 from shared_utils.io_utils import load_csv_rows
 from shared_utils.env_utils import env_bool
-from shared_utils.constants import (
-    DEFAULT_TOP_RANGE_WEIGHTS,
-    DEFAULT_SOURCE_BASE_WEIGHTS,
-    DEFAULT_INPUT_SCOPE,
-    DEFAULT_SEED_CONTROLS,
-    DEFAULT_RECENTLY_PLAYED_DECAY_HALF_LIFE_DAYS,
-    DEFAULT_SAVED_TRACKS_DECAY_HALF_LIFE_DAYS,
-)
-from alignment.runtime_scope import apply_input_scope_filters, resolve_bl003_runtime_scope
+from alignment.runtime_scope import apply_input_scope_filters
+from alignment.resolved_context import resolve_alignment_context
 from alignment.matching import build_ds001_indices, match_events
 from alignment.weighting import to_event_rows
 from alignment.influence import inject_influence_tracks
@@ -107,46 +98,9 @@ def main() -> None:
     playlist_rows, playlist_exists = load_optional_csv(playlist_items_path)
     recent_rows, recent_exists = load_optional_csv(recently_played_path)
 
-    runtime_scope = resolve_bl003_runtime_scope()
-    input_scope = dict(runtime_scope["input_scope"])
-
-    top_range_weights = DEFAULT_TOP_RANGE_WEIGHTS.copy()
-    source_base_weights = DEFAULT_SOURCE_BASE_WEIGHTS.copy()
-    decay_half_lives = {
-        "recently_played": DEFAULT_RECENTLY_PLAYED_DECAY_HALF_LIFE_DAYS,
-        "saved_tracks": DEFAULT_SAVED_TRACKS_DECAY_HALF_LIFE_DAYS,
-    }
-    match_rate_min_threshold = 0.0
-    fuzzy_matching_controls = dict(DEFAULT_SEED_CONTROLS.get("fuzzy_matching") or {})
-    weighting_policy: dict | None = None
-    if runtime_scope["config_source"] == "run_config" and runtime_scope.get("run_config_path"):
-        _rc_utils = load_run_config_utils_module()
-        seed_controls = _rc_utils.resolve_bl003_seed_controls(runtime_scope["run_config_path"])
-        top_range_weights = dict(seed_controls.get("top_range_weights", DEFAULT_TOP_RANGE_WEIGHTS))
-        source_base_weights = dict(seed_controls.get("source_base_weights", DEFAULT_SOURCE_BASE_WEIGHTS))
-        fuzzy_matching_controls = dict(
-            seed_controls.get("fuzzy_matching")
-            or DEFAULT_SEED_CONTROLS.get("fuzzy_matching")
-            or {}
-        )
-        decay_half_lives.update(
-            {
-                "recently_played": float(
-                    (seed_controls.get("decay_half_lives") or {}).get(
-                        "recently_played",
-                        DEFAULT_RECENTLY_PLAYED_DECAY_HALF_LIFE_DAYS,
-                    )
-                ),
-                "saved_tracks": float(
-                    (seed_controls.get("decay_half_lives") or {}).get(
-                        "saved_tracks",
-                        DEFAULT_SAVED_TRACKS_DECAY_HALF_LIFE_DAYS,
-                    )
-                ),
-            }
-        )
-        match_rate_min_threshold = float(seed_controls.get("match_rate_min_threshold", 0.0))
-        weighting_policy = _rc_utils.resolve_bl003_weighting_policy(runtime_scope["run_config_path"])
+    context = resolve_alignment_context()
+    runtime_scope = context.runtime_scope
+    input_scope = context.input_scope
 
     selected_rows, scope_filter_stats = apply_input_scope_filters(
         top_rows, saved_rows, playlist_rows, recent_rows, input_scope,
@@ -208,16 +162,15 @@ def main() -> None:
         by_spotify_id,
         by_title_artist,
         by_artist,
-        top_range_weights,
-        source_base_weights,
-        decay_half_lives,
-        fuzzy_matching_controls,
-        weighting_policy,
+        context=context,
     )
     summary_counts = {"input_event_rows": len(events), **match_counts}
 
-    run_config_path_infl = os.environ.get("BL_RUN_CONFIG_PATH", "").strip() or None
-    influence_contract = inject_influence_tracks(matched_events, by_ds001_id, run_config_path_infl)
+    influence_contract = inject_influence_tracks(
+        matched_events,
+        by_ds001_id,
+        context=context,
+    )
 
     aggregated = aggregate_matched_events(matched_events)
 
@@ -229,7 +182,7 @@ def main() -> None:
     write_source_scope_manifest(manifest_path, runtime_scope, input_scope, scope_filter_stats)
     output_paths["source_scope_manifest"] = manifest_path
 
-    validate_match_rate(summary_counts, match_rate_min_threshold)
+    validate_match_rate(summary_counts, context.match_rate_min_threshold)
 
     summary_path = output_dir / "bl003_ds001_spotify_summary.json"
     elapsed_seconds = round(time.time() - t0, 3)
@@ -258,8 +211,8 @@ def main() -> None:
         trace_rows=trace_rows,
         unmatched_rows=unmatched_rows,
         output_paths=output_paths,
-        match_rate_min_threshold=match_rate_min_threshold,
-        fuzzy_matching_controls=fuzzy_matching_controls,
+        match_rate_min_threshold=context.match_rate_min_threshold,
+        fuzzy_matching_controls=context.fuzzy_matching_controls,
     )
 
     print(f"input_event_rows={summary_counts['input_event_rows']}")
