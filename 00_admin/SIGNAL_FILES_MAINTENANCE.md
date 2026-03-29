@@ -41,7 +41,7 @@ Signal files are persistent documentation artifacts that communicate design inte
 ---
 
 ### CONTROL_SURFACE_REGISTRY.md
-**Location**: `07_implementation/CONTROL_SURFACE_REGISTRY.md`
+**Location**: `05_design/CONTROL_SURFACE_REGISTRY.md`
 
 **Content**: Audit of all controls (weak/working status), measured effects, design gaps
 
@@ -68,7 +68,7 @@ Signal files are persistent documentation artifacts that communicate design inte
 ---
 
 ### TRANSPARENCY_SPEC.md
-**Location**: `07_implementation/TRANSPARENCY_SPEC.md`
+**Location**: `05_design/TRANSPARENCY_SPEC.md`
 
 **Content**: Maps BL-004 through BL-008 to current outputs + gaps + planned enhancements
 
@@ -121,7 +121,7 @@ Signal files are persistent documentation artifacts that communicate design inte
 ---
 
 ### RESEARCH_DIRECTIONS.md
-**Location**: `07_implementation/RESEARCH_DIRECTIONS.md`
+**Location**: `00_admin/RESEARCH_DIRECTIONS.md`
 
 **Content**: Open design questions (RQ1-4), aspirational features (AF1-5), investigation tasks
 
@@ -300,3 +300,4 @@ All signal files should follow these standards:
 - All versions of TRANSPARENCY_SPEC (shows transparency evolution)
 - Snapshot of decision_log.md at each phase
 - Final RESEARCH_DIRECTIONS.md (shows open questions at project end)
+

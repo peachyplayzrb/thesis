@@ -30,8 +30,8 @@ When proposing ANY new feature, change, or control:
 Before a feature is considered "done":
 
 - [ ] Feature passes control/transparency gate (3 questions above)
-- [ ] Control is documented in `07_implementation/CONTROL_SURFACE_REGISTRY.md`
-- [ ] Transparency outputs are documented in `07_implementation/TRANSPARENCY_SPEC.md`
+- [ ] Control is documented in `05_design/CONTROL_SURFACE_REGISTRY.md`
+- [ ] Transparency outputs are documented in `05_design/TRANSPARENCY_SPEC.md`
 - [ ] Control-to-effect mapping is explicit in documentation
 - [ ] BL-010 or BL-011 tests verify measurable effect
 - [ ] Effect size is documented (e.g., "changing X produces Y% change in Z")
@@ -46,7 +46,7 @@ Before a feature is considered "done":
 - Transparency requirements conflict with performance/simplicity
 - Uncertain about control-effect measurement methodology
 
-> Note: Influence track override semantics are no longer an open escalation item. Influence tracks are a documented WEAK/known-limitation control (zero measured playlist effect in BL-011 testing); assembly-layer redesign is explicitly deferred out of scope. See `07_implementation/CONTROL_SURFACE_REGISTRY.md`.
+> Note: Influence track override semantics are no longer an open escalation item. Influence tracks are a documented WEAK/known-limitation control (zero measured playlist effect in BL-011 testing); assembly-layer redesign is explicitly deferred out of scope. See `05_design/CONTROL_SURFACE_REGISTRY.md`.
 
 ### When to Escalate to RESEARCH_DIRECTIONS.md
 - Open design question (e.g., "How many influence slots?")
@@ -152,3 +152,4 @@ When making a control-related governance decision, record in decision_log.md:
 - Evidence: [What test/measurement / supports this?]
 - Impact: [Effect on other controls/transparency]
 ```
+

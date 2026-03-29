@@ -39,7 +39,7 @@ Use Table EP-1 as the execution contract between design intent and Chapter 4 evi
 | --- | --- | --- | --- | --- | --- |
 | `EP-REPRO-001` | Fixed input + fixed config | Repeat identical run 3 times | `ranked_output_hash_match`, `playlist_output_hash_match` | run logs + output hashes | All repeated runs produce identical ranked and playlist hashes |
 | `EP-EXPL-001` | Explanation fidelity | Reconstruct sampled final scores from trace components | `reconstruction_error`, field completeness | score trace + explanation payload | Reconstruction error within tolerance and no missing mandatory explanation fields |
-| `EP-CTRL-001` | Influence tracks | Add/remove defined influence-track set | `top_k_overlap_delta`, `rank_shift_summary` | baseline/variant ranking snapshots | Directional shift is observable and explainable from profile/score traces. **Implementation caveat (BL-011)**: current testing shows zero measured playlist shift from influence-track actuation via the pre-profile injection path; this is a documented limitation, not an evaluation failure — report observed effect size and cite `07_implementation/CONTROL_SURFACE_REGISTRY.md` WEAK status. |
+| `EP-CTRL-001` | Influence tracks | Add/remove defined influence-track set | `top_k_overlap_delta`, `rank_shift_summary` | baseline/variant ranking snapshots | Directional shift is observable and explainable from profile/score traces. **Implementation caveat (BL-011)**: current testing shows zero measured playlist shift from influence-track actuation via the pre-profile injection path; this is a documented limitation, not an evaluation failure — report observed effect size and cite `05_design/CONTROL_SURFACE_REGISTRY.md` WEAK status. |
 | `EP-CTRL-002` | Feature weight | Increase one feature weight while others fixed | `score_component_delta`, `rank_shift_summary` | config diff + score traces | Score/rank changes align with expected weighted feature emphasis |
 | `EP-CTRL-003` | Candidate threshold | Tighten/loosen candidate filter threshold | `candidate_pool_size`, `playlist_overlap` | candidate diagnostics + outputs | Candidate pool changes as configured and downstream effects remain interpretable |
 | `EP-RULE-001` | Playlist length rule | Vary target playlist length | `actual_playlist_length` | playlist output + rule logs | Output length equals configured target or explicit violation logged |
@@ -71,3 +71,4 @@ Chapter 4 should report EP-1 outcomes in three result tables:
 ## Non-Goals For Evaluation
 - Benchmarking against state-of-the-art accuracy models.
 - Large-N human subject evaluation.
+

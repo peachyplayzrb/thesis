@@ -12,14 +12,14 @@ Complete verification that controllability and transparency are now established 
    - References: CONTROL_SURFACE_REGISTRY, TRANSPARENCY_SPEC, GOVERNANCE
    - Discoverable: ✓ At workspace root
 
-2. **`07_implementation/CONTROL_SURFACE_REGISTRY.md`**
+2. **`05_design/CONTROL_SURFACE_REGISTRY.md`**
    - Purpose: Audit of current controls (weak/working status), measured effects
    - Type: Control inventory + design status
    - References: TRANSPARENCY_SPEC, GOVERNANCE, RESEARCH_DIRECTIONS
    - Key Content: 3 working, 2 weak controls documented
    - Discoverable: ✓ In implementation folder
 
-3. **`07_implementation/TRANSPARENCY_SPEC.md`**
+3. **`05_design/TRANSPARENCY_SPEC.md`**
    - Purpose: Map BL-004-008 to current outputs + gaps + enhancements
    - Type: Transparency requirement specification
    - References: controllability_design_addendum, transparency_design_addendum
@@ -55,7 +55,7 @@ Complete verification that controllability and transparency are now established 
    - Key Content: 3-question gate, implementation checklist, escalation rules, decision template
    - Discoverable: ✓ In admin folder
 
-8. **`07_implementation/RESEARCH_DIRECTIONS.md`**
+8. **`00_admin/RESEARCH_DIRECTIONS.md`**
    - Purpose: Open design questions (RQ1-4), aspirational features (AF1-5), investigation tasks
    - Type: Design roadmap
    - References: GOVERNANCE, CONTROL_SURFACE_REGISTRY, TRANSPARENCY_SPEC
@@ -73,21 +73,21 @@ Complete verification that controllability and transparency are now established 
    - Discoverable: ✓ Updated in admin folder
 
 ### Phase 3: Admin & Operational (5 files)
-10. **`07_implementation/CONTROL_TESTING_PROTOCOL.md`**
+10. **`05_design/CONTROL_TESTING_PROTOCOL.md`**
     - Purpose: Repeatable procedure for validating control-to-effect mapping
     - Type: Operational procedure
     - References: CONTROL_SURFACE_REGISTRY, GOVERNANCE, BL-011
     - Key Content: 4 measurement methods, 4 test scenario templates, execution checklist
     - Discoverable: ✓ In implementation folder
 
-11. **`07_implementation/TRANSPARENCY_AUDIT_CHECKLIST.md`**
+11. **`09_quality_control/TRANSPARENCY_AUDIT_CHECKLIST.md`**
     - Purpose: Spot-check procedure for transparency requirement verification
     - Type: Operational procedure
     - References: TRANSPARENCY_SPEC, CONTROL_TESTING_PROTOCOL
     - Key Content: A1-A4 design checks, B1-B5 validation checks, audit template
     - Discoverable: ✓ In implementation folder
 
-12. **`07_implementation/SIGNAL_FILES_MAINTENANCE.md`**
+12. **`00_admin/SIGNAL_FILES_MAINTENANCE.md`**
     - Purpose: Keep governance/signal files current and consistent
     - Type: Maintenance guide
     - References: All 11 other files
@@ -453,3 +453,4 @@ All deferred items are documented, gated, and have clear implementation paths.
 ## Phase 4 Status: ✓ COMPLETE
 
 All verification checks passed. Governance and signal layers are ready. Next: Proceed with Phase 3-4 code implementations using documented procedures.
+

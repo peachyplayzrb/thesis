@@ -21,7 +21,7 @@
 ## Active Development
 Current in-repo implementation work is effectively closed.
 Remaining active work is bounded to submission packaging and any last-mile documentation polish.
-Control audit: `07_implementation/CONTROL_SURFACE_REGISTRY.md`
+Control audit: `05_design/CONTROL_SURFACE_REGISTRY.md`
 
 ---
 
@@ -65,3 +65,4 @@ Admin sync checkpoint (2026-03-29): UI-003 closure and v1f canonical posture rem
 - Keep this folder as the single source of truth for governance state.
 - When implementation/writing reality changes, update admin files in the same session.
 - Do not delete historical decisions/changes; mark superseded/deprecated where needed.
+

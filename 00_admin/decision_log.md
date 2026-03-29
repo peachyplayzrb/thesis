@@ -938,10 +938,10 @@ evidence_basis:
 
 impacted_files:
 - `.controllability-transparency.instructions.md` (new, workspace root)
-- `07_implementation/CONTROL_SURFACE_REGISTRY.md` (new)
-- `07_implementation/TRANSPARENCY_SPEC.md` (new)
+- `05_design/CONTROL_SURFACE_REGISTRY.md` (new)
+- `05_design/TRANSPARENCY_SPEC.md` (new)
 - `00_admin/GOVERNANCE.md` (new)
-- `07_implementation/RESEARCH_DIRECTIONS.md` (new)
+- `00_admin/RESEARCH_DIRECTIONS.md` (new)
 - `00_admin/README.md` (updated with thesis focus section prepended)
 - `05_design/controllability_design_addendum.md` (created, extends D-021)
 - `05_design/transparency_design_addendum.md` (created, extends transparency design)
@@ -978,8 +978,8 @@ evidence_basis:
 
 impacted_files:
 - `00_admin/GOVERNANCE.md` (existing, referenced for gate framework)
-- `07_implementation/RESEARCH_DIRECTIONS.md` (RQ1 updated with this decision record)
-- `07_implementation/CONTROL_SURFACE_REGISTRY.md` (influence_tracks status will be updated once decision is locked)
+- `00_admin/RESEARCH_DIRECTIONS.md` (RQ1 updated with this decision record)
+- `05_design/CONTROL_SURFACE_REGISTRY.md` (influence_tracks status will be updated once decision is locked)
 - `00_admin/decision_log.md` (this entry)
 
 review_date: Phase 3 post-profile redesign milestone
@@ -1011,7 +1011,7 @@ evidence_basis:
 - GOVERNANCE.md enforcement: Every transparency feature must make control application explicit
 
 impacted_files:
-- `07_implementation/TRANSPARENCY_SPEC.md` (updated with control_application_trace requirement)
+- `05_design/TRANSPARENCY_SPEC.md` (updated with control_application_trace requirement)
 - `07_implementation/implementation_notes/bl008_transparency/build_bl008_explanation_payloads.py` (will implement in Phase 3+)
 - `00_admin/decision_log.md` (this entry)
 
@@ -1205,6 +1205,7 @@ review_date: none
 - context: The active implementation moved to a simplification-first ingestion posture where cache-state complexity caused maintenance friction and stale-state risk, while downstream BL-003 and later contracts depend on generated artifacts rather than cache internals.
 - alternatives_considered: Keep token cache and sqlite endpoint cache enabled (rejected: higher complexity and stale-state risk), disable only one cache layer (rejected: partial simplification leaves split behaviors), and broaden playlist-item export to non-track payloads (rejected: out of current BL-002/BL-003 track-centric scope).
 - rationale: This keeps ingestion behavior explicit and predictable: each live export run performs fresh OAuth, direct API fetches, and deterministic artifact generation; downstream stage contracts remain stable while implementation complexity is reduced.
-- evidence_basis: `07_implementation/INGESTION_DECACHING_CHANGELOG_2026-03-28.md`, `07_implementation/src/ingestion/export_spotify_max_dataset.py`, `07_implementation/src/ingestion/spotify_client.py`, `07_implementation/src/ingestion/spotify_mapping.py`, `07_implementation/src/ingestion/spotify_artifacts.py`.
-- impacted_files: `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/thesis_state.md`, `07_implementation/README.md`, `07_implementation/INGESTION_DECACHING_CHANGELOG_2026-03-28.md`
+- evidence_basis: `00_admin/INGESTION_DECACHING_CHANGELOG_2026-03-28.md`, `07_implementation/src/ingestion/export_spotify_max_dataset.py`, `07_implementation/src/ingestion/spotify_client.py`, `07_implementation/src/ingestion/spotify_mapping.py`, `07_implementation/src/ingestion/spotify_artifacts.py`.
+- impacted_files: `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/thesis_state.md`, `07_implementation/README.md`, `00_admin/INGESTION_DECACHING_CHANGELOG_2026-03-28.md`
 - next_steps: Keep `spotify_resilience.py` and legacy token-cache helper cleanup as optional maintenance only; no change required for current thesis runtime scope.
+

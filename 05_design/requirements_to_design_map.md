@@ -1,4 +1,4 @@
-﻿# Requirements To Design Map
+# Requirements To Design Map
 
 DOCUMENT STATUS: implementation-synchronized traceability map
 LAST SYNCHRONIZED: 2026-03-29 UTC
@@ -47,7 +47,8 @@ ROLE: requirement-to-design-to-implementation bridge
 ## 6) Evidence and Governance Linkage
 Implementation-consistency references:
 1. Architecture baseline: `05_design/architecture.md`.
-2. Control posture source: `07_implementation/CONTROL_SURFACE_REGISTRY.md`.
-3. Transparency posture source: `07_implementation/TRANSPARENCY_SPEC.md`.
+2. Control posture source: `05_design/CONTROL_SURFACE_REGISTRY.md`.
+3. Transparency posture source: `05_design/TRANSPARENCY_SPEC.md`.
 
 This map should be updated whenever stage ownership or required artifact contracts change.
+
