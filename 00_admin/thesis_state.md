@@ -1,6 +1,6 @@
 # Thesis State
 
-Last updated: 2026-03-29 UTC (BL-003 Phase 2 typed-boundary migration + admin sync complete)
+Last updated: 2026-03-29 UTC (README runtime-alignment sync + admin log update)
 
 ## Official Current State
 
@@ -100,6 +100,8 @@ Priority status checkpoint (2026-03-29 OO stage migration pass): BL-004 profile,
 
 Priority status checkpoint (2026-03-29 BL-003 Phase 2 pass): BL-003 alignment internals now use typed boundaries for event normalization, matching traces, matched-event payloads, and aggregation state via `07_implementation/src/alignment/models.py` while preserving dict-shaped interfaces at stage boundaries for backward compatibility. Validation remained green on targeted alignment coverage (`88/88` tests).
 
+Priority status checkpoint (2026-03-29 README/admin sync): `07_implementation/README.md` was updated to mirror actual standalone runtime behavior (wrapper flow, BL-013 invocation, additive `--validate-only` semantics, active artifact paths, and direct stage command guidance). This is a documentation-alignment update only and does not change canonical run IDs, baseline posture, or implementation behavior.
+
 ## Current Implementation Status
 
 ### BL-020 Implementation State (as of 2026-03-29)
@@ -145,13 +147,12 @@ See: `07_implementation/BL020_HANDOFF_AUDIT_2026-03-21.md` for comprehensive pre
 ## Update Control
 
 - Last updated:
-2026-03-29 (BL-003 Phase 2 typed-boundary migration + docs sync pass)
+2026-03-29 (README runtime-alignment + admin log sync pass)
 
 - Reason for last update:
-(1) BL-003 Phase 2 typed-boundary migration completed in `07_implementation/src/alignment/` with new dataclass models and internal typed flow across weighting, matching, aggregation, and output boundary handling.
-(2) Interface compatibility was preserved for existing dict-based call sites and artifact schemas while reducing internal shape ambiguity.
-(3) Targeted BL-003 alignment tests were rerun and remain green (`88/88` pass).
-(4) Admin control files were synchronized to explicitly record this migration state; canonical baseline and chapter/QC closure posture remain unchanged, so the only remaining task is external submission packaging.
+(1) `07_implementation/README.md` was synchronized to current code behavior so execution guidance now matches the active wrapper/orchestration path in `07_implementation/main.py` and `07_implementation/src/orchestration/main.py`.
+(2) Validation guidance was clarified to reflect additive `--validate-only` behavior (pipeline run first, BL-014 sanity second).
+(3) Admin controls were updated for traceability (`00_admin/change_log.md`, this file) with no codepath, run artifact, or baseline changes.
 
 ## Locked Definitions
 - Artefact scope lock: `00_admin/Artefact_MVP_definition.md`

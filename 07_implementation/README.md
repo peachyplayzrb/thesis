@@ -1,302 +1,184 @@
-# Recommendation System Implementation
+# Recommendation System Implementation (07_implementation)
 
-**Standalone, reproducible implementation of a systematic playlist recommendation system.**
+Standalone implementation of the BL-003 to BL-014 playlist recommendation pipeline.
 
-This package contains the complete, self-contained implementation of a music recommendation pipeline that generates personalized playlists from embedded BL-002 Spotify export artifacts and an embedded DS-001 candidate dataset.
+This folder is runnable as-is with embedded inputs:
 
-> **📝 Detailed setup and troubleshooting guidance is included in this README.**
+- Embedded candidate dataset: src/data_layer/outputs/ds001_working_candidate_dataset.csv
+- Embedded Spotify export bundle: src/ingestion/outputs/spotify_api_export/
+
+No raw Music4All tables are required for the default run path.
+
+## What Actually Runs
+
+Top-level entrypoint:
+
+- main.py
+
+Runtime behavior in main.py:
+
+1. Resolves src as the implementation root.
+2. Verifies the embedded DS-001 dataset exists.
+3. Resolves run config (default: config/profiles/run_config_ui013_tuning_v1f.json).
+4. Calls BL-013 orchestrator at src/orchestration/main.py.
+5. Always requests a BL-003 seed refresh via --refresh-seed for wrapper-driven runs.
+6. Optionally runs BL-014 sanity checks when --validate-only is set.
+
+Important: --validate-only is additive, not exclusive. It runs BL-013 first, then BL-014.
 
 ## Quick Start
 
-### 1. Extract and Setup
-
 ```bash
-# Extract the package
-unzip recommendation-implementation.zip
-cd recommendation-implementation
-
-# Create/activate Python virtual environment (Python 3.10+)
+# From 07_implementation/
 python -m venv .venv
-# On Windows:
-.venv\Scripts\activate
-# On macOS/Linux:
+
+# Windows PowerShell
+.venv\Scripts\Activate.ps1
+
+# macOS/Linux
 source .venv/bin/activate
 
-# Install dependencies
 pip install -r requirements.txt
-```
-
-### 2. Embedded Candidate Dataset
-
-The submission package already includes the DS-001 working candidate dataset at `src/data_layer/outputs/ds001_working_candidate_dataset.csv`.
-
-You do not need to supply the raw Music4All tables to run the packaged pipeline.
-
-### 3. Run Pipeline
-
-```bash
 python main.py
 ```
 
-Run with validation:
+Run with explicit config:
 
 ```bash
-# Run pipeline with validation
+python main.py --run-config config/profiles/run_config_ui013_tuning_v2a_retrieval_tight.json
+```
+
+Run with post-pipeline BL-014 validation:
+
+```bash
 python main.py --validate-only
 ```
 
-The packaged run uses embedded inputs by default:
+Continue past non-fatal stage failures:
 
-- DS-001 candidate dataset: `src/data_layer/outputs/ds001_working_candidate_dataset.csv`
-- BL-002 Spotify export bundle: `src/ingestion/outputs/spotify_api_export/`
+```bash
+python main.py --continue-on-error
+```
 
-## Features
+## Pipeline Stages
 
-This implementation includes:
+- BL-003 Alignment: src/alignment/main.py
+- BL-004 Profile: src/profile/main.py
+- BL-005 Retrieval: src/retrieval/main.py
+- BL-006 Scoring: src/scoring/main.py
+- BL-007 Playlist: src/playlist/main.py
+- BL-008 Transparency: src/transparency/main.py
+- BL-009 Observability: src/observability/main.py
+- BL-010 Reproducibility: src/reproducibility/main.py
+- BL-011 Controllability: src/controllability/main.py
+- BL-014 Quality/Sanity: src/quality/sanity_checks.py
 
-- **BL-003**: Alignment — Aligns Spotify user history to the embedded DS-001 candidate dataset using metadata/identifier matching with exact and optional fuzzy fallback paths
-- **BL-004**: Profile — Builds deterministic user preference profile (semantic tags, genres, numeric audio features)
-- **BL-005**: Retrieval — Filters candidate corpus using semantic and numeric controls
-- **BL-006**: Scoring — Weights and scores candidates with hybrid component scoring
-- **BL-007**: Playlist — Assembles final playlist with deterministic rule constraints
-- **BL-008**: Transparency — Generates per-track explanation payloads (why each song was recommended)
-- **BL-009**: Observability — Records decision logs and run-chain metadata
-- **BL-010**: Reproducibility — Validates determinism and component testing
-- **BL-011**: Controllability — Validates control path isolation
-- **BL-014**: Quality — Sanity checks and system assertions
+BL-013 orchestration (src/orchestration/main.py) is the stage runner used by the wrapper.
 
-## Internal Layout
+## BL-013 Orchestration Notes
 
-The operator-facing entrypoints remain stable, but the runtime code is now split into focused modules under `src/`:
+- Default stage order is BL-004 to BL-009.
+- BL-003 can be executed before those stages when seed refresh is requested.
+- Run summaries are written to src/orchestration/outputs/.
+- A latest pointer file is maintained: src/orchestration/outputs/bl013_orchestration_run_latest.json.
+- Canonical run config artifacts are emitted under src/run_config/outputs/.
 
-- `src/orchestration/` keeps `main.py` as a thin BL-013 entrypoint over dedicated CLI, stage-runner, seed-freshness, and summary helpers.
-- `src/controllability/` keeps `pipeline_runner.py` and `scenarios.py` as stable BL-011 entry surfaces while stage execution, pathing, and runtime-control resolution live in focused helper modules.
-- `src/alignment/` now follows the same typed-stage architecture used by later stages: `models.py` contracts + `stage.py` orchestrator + thin wrapper `main.py`, with focused helpers for text matching, indexing, match-pipeline, writing, and validation.
-- `src/profile/`, `src/retrieval/`, and `src/scoring/` follow a shared typed-stage structure (`models.py` contracts + `stage.py` orchestrator + thin wrapper `main.py`) so BL-004 to BL-006 remain API-compatible while reducing monolithic script logic.
+You can run BL-013 directly from src for advanced workflows:
 
-Recent BL-003 alignment architecture updates:
+```bash
+# From 07_implementation/src
+PYTHONPATH=. python orchestration/main.py --run-config ../config/profiles/run_config_ui013_tuning_v1f.json
+```
 
-- Introduced `AlignmentStage` orchestration shell (`src/alignment/stage.py`) and reduced `src/alignment/main.py` to a thin CLI wrapper.
-- Added typed alignment run contracts (`AlignmentPaths`, `AlignmentSourceRows`, `AlignmentRunArtifacts`) in `src/alignment/models.py`.
-- Migrated summary generation to a typed context contract (`AlignmentSummaryContext`) with a single context-based entrypoint in `src/alignment/writers.py`.
-- Added stage and summary parity regression tests (`tests/test_alignment_stage.py`, `tests/test_alignment_summary_builder.py`).
+## Validation and Evaluation Commands
 
-This split preserves the existing package surface while reducing monolithic scripts and making control/runtime behavior easier to audit.
+BL-014 sanity checks:
+
+```bash
+# From 07_implementation/src
+PYTHONPATH=. python quality/sanity_checks.py
+```
+
+BL-010 reproducibility replay:
+
+```bash
+# From 07_implementation/src
+PYTHONPATH=. python reproducibility/main.py --replay-count 3
+```
+
+BL-011 controllability evaluation:
+
+```bash
+# From 07_implementation/src
+PYTHONPATH=. python controllability/main.py
+```
+
+## Output Artifacts
+
+Core artifacts (under src/*/outputs):
+
+- src/alignment/outputs/bl003_ds001_spotify_seed_table.csv
+- src/alignment/outputs/bl003_ds001_spotify_summary.json
+- src/profile/outputs/bl004_preference_profile.json
+- src/retrieval/outputs/bl005_filtered_candidates.csv
+- src/retrieval/outputs/bl005_candidate_decisions.csv
+- src/scoring/outputs/bl006_scored_candidates.csv
+- src/playlist/outputs/playlist.json
+- src/transparency/outputs/bl008_explanation_payloads.json
+- src/observability/outputs/bl009_run_observability_log.json
+
+Validation/evaluation artifacts:
+
+- src/reproducibility/outputs/reproducibility_report.json
+- src/controllability/outputs/controllability_report.json
+- src/quality/outputs/bl014_sanity_report.json
 
 ## Configuration
 
-### Default Configuration
+Run config profiles are in config/profiles/.
 
-The pipeline uses a canonical baseline configuration (`run_config_ui013_tuning_v1f.json`):
+Current canonical default used by main.py:
 
-```bash
-# Default run (uses canonical config)
-python main.py
+- config/profiles/run_config_ui013_tuning_v1f.json
 
-# Or explicitly specify:
-python main.py \
-  --run-config config/profiles/run_config_ui013_tuning_v1f.json
-```
-
-### Alternative Configurations
-
-Other baseline profiles are available in `config/profiles/`:
-
-- `run_config_ui013_tuning_v1a.json` through `v1d.json` (historical v1 baseline variants)
-- `run_config_ui013_tuning_v1e_hard_swing_influence.json` (historical v1 influence variant)
-- `run_config_ui013_tuning_v2a_retrieval_tight.json` and `run_config_ui013_tuning_v2b_language_recency_gate.json` (v2 experimental variants)
-
-```bash
-python main.py \
-  --run-config config/profiles/run_config_ui013_tuning_v2a_retrieval_tight.json
-```
-
-### Configuration Format
-
-Configurations are JSON files with the schema:
-
-```json
-{
-  "schema_version": "run-config-v1",
-  "control_mode": {
-    "validation_profile": "strict",
-    "allow_threshold_decoupling": false,
-    "allow_weight_auto_normalization": false
-  },
-  "input_scope": {
-    "source_family": "spotify_api_export",
-    "include_top_tracks": true,
-    "top_time_ranges": ["short_term", "medium_term", "long_term"],
-    "include_saved_tracks": true,
-    "include_playlists": true,
-    "include_recently_played": true
-  },
-  "profile_controls": {
-    "top_tag_limit": 30,
-    "top_genre_limit": 50,
-    "top_lead_genre_limit": 10
-  },
-  "retrieval_controls": {
-    "profile_top_tag_limit": 10,
-    "profile_top_genre_limit": 8,
-    "profile_top_lead_genre_limit": 6,
-    "language_filter_enabled": true,
-    "language_filter_codes": ["en"],
-    "recency_years_min_offset": 8,
-    "numeric_thresholds": {
-      "danceability": 0.20,
-      "energy": 0.20,
-      "valence": 0.20,
-      "tempo": 20.0,
-      "key": 2.0,
-      "mode": 0.5,
-      "duration_ms": 45000.0,
-      "release_year": 8.0
-    }
-  },
-  "scoring_controls": {
-    "component_weights": {
-      "danceability": 0.10,
-      "energy": 0.10,
-      "valence": 0.10,
-      "tempo": 0.05,
-      "key": 0.05,
-      "mode": 0.05,
-      "duration_ms": 0.10,
-      "release_year": 0.10,
-      "genres": 0.15,
-      "tags": 0.15
-    },
-    "numeric_thresholds": { }
-  },
-  "assembly_controls": {
-    "target_size": 10,
-    "min_score_threshold": 0.35,
-    "max_per_genre": 4,
-    "max_consecutive": 2
-  }
-}
-```
-
-## Outputs
-
-After running the pipeline, outputs are saved in `src/*/outputs/`:
-
-### Core Artifacts
-
-- **Alignment**: `src/alignment/outputs/bl003_ds001_spotify_seed_table.csv` — Aligned seed tracks
-- **Profile**: `src/profile/outputs/bl004_preference_profile.json` — User preference profile
-- **Retrieval**: `src/retrieval/outputs/bl005_filtered_candidates.csv` — Filtered candidate set
-- **Scoring**: `src/scoring/outputs/bl006_scored_candidates.csv` — Scored candidates
-- **Playlist**: `src/playlist/outputs/playlist.json` — Final recommended playlist
-- **Transparency**: `src/transparency/outputs/bl008_explanation_payloads.json` — Explanations per track
-- **Observability**: `src/observability/outputs/bl009_run_observability_log.json` — Decision log
-
-### Validation Outputs
-
-- **Reproducibility**: `src/reproducibility/outputs/reproducibility_report.json` — Determinism verification
-- **Controllability**: `src/controllability/outputs/controllability_report.json` — Control path isolation
-- **Quality**: `src/quality/outputs/bl014_sanity_report.json` — Quality assertions
-
-## Reproducibility
-
-This implementation is **deterministic**:
-
-- No randomness in algorithm logic
-- Identical runs with same inputs produce identical outputs
-- All scores and rankings are bit-for-bit reproducible
-- The package entrypoint always refreshes BL-003 from the embedded DS-001 candidate dataset before downstream stages run
-
-```bash
-python main.py
-```
-
-## Spotify Integration (Optional)
-
-The standalone package already includes a pre-exported BL-002 Spotify bundle at `src/ingestion/outputs/spotify_api_export/`, so credentials are not required for standard execution.
-
-If you want to regenerate Spotify exports from live API data, set:
-
-```bash
-export SPOTIPY_CLIENT_ID=your_client_id
-export SPOTIPY_CLIENT_SECRET=your_secret
-```
-
-Live-export behavior notes:
-
-- Endpoint response caching is disabled for the ingestion runtime path.
-- Token-cache persistence is disabled for the ingestion runtime path.
-- Live export runs use a fresh OAuth flow each run.
-- Playlist-item parsing uses an item-first policy and keeps track rows only (episodes and unavailable items are excluded).
+Other profiles include v1 variants, v2 experimental variants, and BL-021 probe profiles.
 
 ## Troubleshooting
 
-### Missing embedded dataset
+Missing src directory:
 
-```
-ERROR: Cannot find embedded candidate dataset at .../src/data_layer/outputs/ds001_working_candidate_dataset.csv
-```
-
-**Solution**: Verify the packaged DS-001 dataset was extracted under `src/data_layer/outputs/`.
-
-### Spotify credential errors
-
-```
-ERROR: Spotify credentials not found (SPOTIPY_CLIENT_ID, SPOTIPY_CLIENT_SECRET)
-```
-
-**Solution**: For the packaged default run, verify the embedded export bundle exists at `src/ingestion/outputs/spotify_api_export/`. Set credentials only if you are regenerating exports from the live API.
-
-### Path errors
-
-```
+```text
 ERROR: Cannot find src directory at ...
 ```
 
-**Solution**: Run `main.py` from the package root directory.
+Fix: run main.py from 07_implementation/.
+
+Missing embedded candidate dataset:
+
+```text
+ERROR: Cannot find embedded candidate dataset at .../src/data_layer/outputs/ds001_working_candidate_dataset.csv
+```
+
+Fix: ensure the dataset file exists at that path.
+
+Direct BL-013 import errors like ModuleNotFoundError: shared_utils:
+
+Fix: run BL-013 via top-level main.py, or set PYTHONPATH=. when running from src.
+
+## Test Entry Points
+
+- Standalone smoke script: python test_standalone.py
+- Full test suite: pytest tests
 
 ## System Requirements
 
-- **Python**: 3.10 or later
-- **RAM**: 4 GB minimum
-- **Disk**: package contents + outputs
-- **Network**: Optional (for Spotify API, can work offline with pre-exported data)
-
-## Citation
-
-If you use this implementation in research, please cite:
-
-```bibtex
-@thesis{author2026recommendation,
-  title={Systematic Playlist Recommendation with Transparency and Controllability},
-  author={Author, A.},
-  year={2026},
-  school={University}
-}
-```
+- Python 3.10+
+- OS: Windows/macOS/Linux
+- Network optional for default embedded-input runs
 
 ## License
 
-This implementation is provided for academic and research purposes.
+Provided for academic and research use.
 
-## Documentation
-
-For detailed information:
-
-- Review `src/` for the domain-organized pipeline packages
-- Review `config/profiles/` for runnable baseline configurations
-- Run `python main.py --help` for command-line options
-
-## Support
-
-For questions or issues:
-
-1. Run `python test_standalone.py`
-2. Review test outputs from `--validate-only` mode
-3. Check individual stage outputs under `src/*/outputs/`
-
----
-
-**Version**: 1.0
-**Last Updated**: March 2026
-**Compatibility**: Python 3.10+, Windows/macOS/Linux
+Version: 1.0
+Last Updated: March 2026
