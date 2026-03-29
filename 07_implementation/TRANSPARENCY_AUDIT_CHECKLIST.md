@@ -102,7 +102,7 @@ For top 5 tracks, ask:
 
 ## Audit Checklist Template
 
-### Transparency Audit Run 
+### Transparency Audit Run
 Date: [YYYY-MM-DD]
 Run ID: [BL-009 run summary ID]
 Auditor: [name]
@@ -163,4 +163,3 @@ Transparency audit must show:
 3. ✅ Rejections are documented (B3)
 4. ✅ Control application is traceable (B4) — currently pending D-043
 5. ✅ User can predict what-if outcomes (B5) — currently pending AF2
-

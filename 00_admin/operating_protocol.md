@@ -288,7 +288,7 @@ This protocol ensures that controllability and transparency—core thesis object
 
 See `07_implementation/SIGNAL_FILES_MAINTENANCE.md` for detailed procedures.
 
-**Minimum maintenance**: 
+**Minimum maintenance**:
 - Weekly (5 min): Verify signal files exist and are readable
 - End of Phase (30 min): Update all 6 signal files with phase completion status
 - Quarterly (1 hour): Full consistency audit
@@ -327,5 +327,3 @@ Before thesis submission, verify:
 - ✅ CONTROL_SURFACE_REGISTRY documents all final control statuses
 - ✅ TRANSPARENCY_SPEC maps all outputs to thesis requirements
 - ✅ RESEARCH_DIRECTIONS records any unresolved design questions
-
-

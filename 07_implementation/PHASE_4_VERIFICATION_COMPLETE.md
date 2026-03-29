@@ -11,21 +11,21 @@ Complete verification that controllability and transparency are now established 
    - Type: Instruction file (read-first)
    - References: CONTROL_SURFACE_REGISTRY, TRANSPARENCY_SPEC, GOVERNANCE
    - Discoverable: ✓ At workspace root
-   
+
 2. **`07_implementation/CONTROL_SURFACE_REGISTRY.md`**
    - Purpose: Audit of current controls (weak/working status), measured effects
    - Type: Control inventory + design status
    - References: TRANSPARENCY_SPEC, GOVERNANCE, RESEARCH_DIRECTIONS
    - Key Content: 3 working, 2 weak controls documented
    - Discoverable: ✓ In implementation folder
-   
+
 3. **`07_implementation/TRANSPARENCY_SPEC.md`**
    - Purpose: Map BL-004-008 to current outputs + gaps + enhancements
    - Type: Transparency requirement specification
    - References: controllability_design_addendum, transparency_design_addendum
    - Key Content: 5 gaps identified (control traceability, influence, assembly rules, filtering, counterfactual)
    - Discoverable: ✓ In implementation folder
-   
+
 4. **`00_admin/README.md` (updated)**
    - Purpose: Governance hub with thesis focus section prepended
    - Type: Hub document
@@ -40,28 +40,28 @@ Complete verification that controllability and transparency are now established 
    - References: GOVERNANCE (gate design), CONTROL_SURFACE_REGISTRY
    - Key Content: Current control audit, measured effectiveness, open design questions
    - Discoverable: ✓ In design folder (next to main design doc)
-   
+
 6. **`05_design/transparency_design_addendum.md`**
    - Purpose: Extend transparency design with implementation patterns
    - Type: Design document
    - References: TRANSPARENCY_SPEC, GOVERNANCE, RESEARCH_DIRECTIONS
    - Key Content: 5 transparency gaps + T1-T5 planned enhancements
    - Discoverable: ✓ In design folder (next to main design doc)
-   
+
 7. **`00_admin/GOVERNANCE.md`**
    - Purpose: Rules for control/transparency feature development
    - Type: Governance document
    - References: RESEARCH_DIRECTIONS, decision_log
    - Key Content: 3-question gate, implementation checklist, escalation rules, decision template
    - Discoverable: ✓ In admin folder
-   
+
 8. **`07_implementation/RESEARCH_DIRECTIONS.md`**
    - Purpose: Open design questions (RQ1-4), aspirational features (AF1-5), investigation tasks
    - Type: Design roadmap
    - References: GOVERNANCE, CONTROL_SURFACE_REGISTRY, TRANSPARENCY_SPEC
    - Key Content: 4 research questions, 5 aspirational features, investigation tasks
    - Discoverable: ✓ In implementation folder
-   
+
 9. **`00_admin/decision_log.md` (updated)**
    - Purpose: Append 3 new architectural decisions (D-041, D-042, D-043)
    - Type: Decision log (append-only)
@@ -79,21 +79,21 @@ Complete verification that controllability and transparency are now established 
     - References: CONTROL_SURFACE_REGISTRY, GOVERNANCE, BL-011
     - Key Content: 4 measurement methods, 4 test scenario templates, execution checklist
     - Discoverable: ✓ In implementation folder
-    
+
 11. **`07_implementation/TRANSPARENCY_AUDIT_CHECKLIST.md`**
     - Purpose: Spot-check procedure for transparency requirement verification
     - Type: Operational procedure
     - References: TRANSPARENCY_SPEC, CONTROL_TESTING_PROTOCOL
     - Key Content: A1-A4 design checks, B1-B5 validation checks, audit template
     - Discoverable: ✓ In implementation folder
-    
+
 12. **`07_implementation/SIGNAL_FILES_MAINTENANCE.md`**
     - Purpose: Keep governance/signal files current and consistent
     - Type: Maintenance guide
     - References: All 11 other files
     - Key Content: File-by-file maintenance, batch routines, consistency checks
     - Discoverable: ✓ In implementation folder
-    
+
 13. **`00_admin/operating_protocol.md` (updated)**
     - Purpose: Add Section 17 on control testing & transparency audit protocol
     - Type: Operational procedure

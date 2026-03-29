@@ -14,7 +14,7 @@ Document open design questions, aspirational features, and research opportunitie
 - Option A: Influence tracks bypass all rules (user explicit intent dominates)
   - Pro: Strong user control, clear semantics
   - Con: May break playlist coherence if user selects incompatible tracks
-  
+
 - Option B: Influence tracks follow same rules as candidates
   - Pro: Maintains system coherence guarantees
   - Con: Weak user intent—tracks may still be excluded
@@ -69,7 +69,7 @@ Document open design questions, aspirational features, and research opportunitie
 ### RQ4: Transparency for Weak Controls
 **Question**: How transparent can we be about a control that has zero effect?
 
-**Challenge**: 
+**Challenge**:
 - Influence tracks are "visible" in BL-004 seed aggregation
 - But they have zero observed effect on final playlist
 - How do we transparently explain "you picked these, they did nothing"?
@@ -111,7 +111,7 @@ Document open design questions, aspirational features, and research opportunitie
 ```
 feature_weights × numeric_thresholds = HIGH interaction
   (both affect which candidates are scored)
-  
+
 assembly_rules × influence_tracks = POTENTIAL conflict
   (rules might reject influence tracks)
 ```
@@ -138,7 +138,7 @@ assembly_rules × influence_tracks = POTENTIAL conflict
 - **Question**: Do weak controls (zero effect) belong in the system?
   - Should we redesign them or remove them?
   - Or document as "research limitation"?
-  
+
 - **Question**: Is transparency about uncertainty valued?
   - Should we show user when a control had no effect?
   - Or hide weak controls?

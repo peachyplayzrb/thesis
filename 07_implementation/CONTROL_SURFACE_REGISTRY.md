@@ -60,6 +60,6 @@ Thesis requirement: Each control must have measurable downstream effect.
 
 ## Next Steps
 - [ ] Redesign influence_tracks (HIGH priority)
-- [ ] Expose assembly_rules as user config (HIGH priority)  
+- [ ] Expose assembly_rules as user config (HIGH priority)
 - [ ] Add control-effect validation to orchestration (MEDIUM priority)
 - [ ] Implement planned controls (Phase 4, BACKLOG)

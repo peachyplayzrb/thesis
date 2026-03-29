@@ -22,7 +22,7 @@ Signal files are persistent documentation artifacts that communicate design inte
 
 **Content**: Framing for agents/reviewers, thesis core statement, active references
 
-**Update trigger**: 
+**Update trigger**:
 - Thesis scope changes (major decision point)
 - Major design pivot (e.g., influence track redesign)
 - Quarterly alignment check (ensure framing is still accurate)
@@ -300,4 +300,3 @@ All signal files should follow these standards:
 - All versions of TRANSPARENCY_SPEC (shows transparency evolution)
 - Snapshot of decision_log.md at each phase
 - Final RESEARCH_DIRECTIONS.md (shows open questions at project end)
-
