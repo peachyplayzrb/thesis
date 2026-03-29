@@ -94,6 +94,14 @@ DEFAULT_SEED_CONTROLS: dict[str, object] = {
         "recently_played": DEFAULT_RECENTLY_PLAYED_DECAY_HALF_LIFE_DAYS,
         "saved_tracks": DEFAULT_SAVED_TRACKS_DECAY_HALF_LIFE_DAYS,
     },
+    "fuzzy_matching": {
+        "enabled": False,
+        "artist_threshold": 0.90,
+        "title_threshold": 0.90,
+        "combined_threshold": 0.90,
+        "max_duration_delta_ms": 5000,
+        "max_artist_candidates": 5,
+    },
 }
 
 DEFAULT_RETRIEVAL_NUMERIC_THRESHOLDS: dict[str, float] = {

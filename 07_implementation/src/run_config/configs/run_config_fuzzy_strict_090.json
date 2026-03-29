@@ -5,7 +5,7 @@
     "validation_profile_comment": "strict keeps full guardrails enabled. explore allows more experimentation when explicit control flags are enabled.",
     "allow_threshold_decoupling": false,
     "allow_threshold_decoupling_comment": "When true, BL-005 retrieval numeric_thresholds and BL-006 scoring numeric_thresholds may differ. Default false for strict semantic consistency.",
-    "allow_weight_auto_normalization": false,
+    "allow_weight_auto_normalization": true,
     "allow_weight_auto_normalization_comment": "When true, scoring component weights are allowed to sum != 1.0 and BL-006 normalizes active weights at runtime."
   },
   "user_context": {
@@ -24,7 +24,7 @@
     "include_playlists": true,
     "playlists_limit": null,
     "playlist_items_per_playlist_limit": null,
-    "include_recently_played": true,
+    "include_recently_played": false,
     "recently_played_limit": 50
   },
   "interaction_scope": {
@@ -54,7 +54,7 @@
       "recently_played": 0.5
     },
     "fuzzy_matching": {
-      "enabled": false,
+      "enabled": true,
       "enabled_comment": "When true, BL-003 adds deterministic fuzzy fallback after spotify_id_exact and metadata_fallback.",
       "artist_threshold": 0.9,
       "artist_threshold_comment": "Minimum normalized artist similarity [0.0, 1.0].",

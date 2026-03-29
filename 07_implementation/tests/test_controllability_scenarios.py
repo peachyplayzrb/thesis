@@ -13,6 +13,7 @@ class TestBuildPaths:
         assert set(paths.keys()) == {
             "legacy_manifest",
             "legacy_coverage",
+            "bl003_summary",
             "active_seed_trace",
             "active_candidates",
             "baseline_snapshot",
@@ -28,7 +29,7 @@ class TestEnsureRequiredInputs:
 
     def test_passes_when_required_present(self, tmp_path: Path):
         paths = build_paths(tmp_path)
-        for key in ["baseline_snapshot", "active_seed_trace", "active_candidates"]:
+        for key in ["baseline_snapshot", "bl003_summary", "active_seed_trace", "active_candidates"]:
             paths[key].parent.mkdir(parents=True, exist_ok=True)
             paths[key].write_text("{}", encoding="utf-8")
         ensure_required_inputs(paths, tmp_path)
@@ -74,7 +75,16 @@ class TestBuildScenarios:
             "valence_weight_up",
             "stricter_thresholds",
             "looser_thresholds",
+            "fuzzy_enabled_strict",
         ]
+
+    def test_fuzzy_enabled_strict_scenario_declares_alignment_controls(self):
+        snapshot = _baseline_snapshot({"valence": 0.5, "tempo": 0.5})
+        scenarios = build_scenarios(snapshot, _runtime_controls())
+        scenario = next(s for s in scenarios if s["scenario_id"] == "fuzzy_enabled_strict")
+        fuzzy = scenario["alignment_seed_controls"]["fuzzy_matching"]
+        assert fuzzy["enabled"] is True
+        assert fuzzy["combined_threshold"] == 0.90
 
     def test_valence_override_uses_valence_component_when_present(self):
         snapshot = _baseline_snapshot({"valence": 0.4, "tempo": 0.6})

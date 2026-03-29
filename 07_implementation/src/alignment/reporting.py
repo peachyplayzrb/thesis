@@ -37,6 +37,9 @@ TRACE_FIELDNAMES: list[str] = [
     "matched_song",
     "matched_artist",
     "duration_delta_ms",
+    "fuzzy_title_score",
+    "fuzzy_artist_score",
+    "fuzzy_combined_score",
     "reason",
     "preference_weight",
 ]
@@ -87,7 +90,9 @@ def validate_match_rate(summary_counts: dict[str, int], threshold: float) -> Non
     """Raise RuntimeError if the matched fraction falls below the configured threshold."""
     if summary_counts["input_event_rows"] > 0 and threshold > 0.0:
         matched = (
-            summary_counts["matched_by_spotify_id"] + summary_counts["matched_by_metadata"]
+            summary_counts["matched_by_spotify_id"]
+            + summary_counts["matched_by_metadata"]
+            + summary_counts.get("matched_by_fuzzy", 0)
         )
         match_rate = matched / summary_counts["input_event_rows"]
         if match_rate < threshold:
@@ -212,6 +217,7 @@ def build_and_write_summary(
     unmatched_rows: list[dict[str, Any]],
     output_paths: dict[str, Path],
     match_rate_min_threshold: float,
+    fuzzy_matching_controls: dict[str, Any],
 ) -> dict[str, Any]:
     """Assemble and write the BL-003 summary JSON. Returns the full summary dict."""
     seed_contract: dict[str, Any] = {
@@ -221,10 +227,13 @@ def build_and_write_summary(
             "track_ids": influence_contract["track_ids"],
             "preference_weight": influence_contract["preference_weight"],
         },
+        "fuzzy_matching": dict(fuzzy_matching_controls),
     }
 
     matched_count = (
-        summary_counts["matched_by_spotify_id"] + summary_counts["matched_by_metadata"]
+        summary_counts["matched_by_spotify_id"]
+        + summary_counts["matched_by_metadata"]
+        + summary_counts.get("matched_by_fuzzy", 0)
     )
     input_rows = summary_counts["input_event_rows"]
     actual_match_rate = round(matched_count / input_rows if input_rows > 0 else 0.0, 4)
@@ -254,6 +263,7 @@ def build_and_write_summary(
             "run_config_schema_version": runtime_scope["run_config_schema_version"],
             "input_scope": input_scope,
             "influence_tracks": influence_contract,
+            "fuzzy_matching": dict(fuzzy_matching_controls),
             "seed_contract": {
                 **seed_contract,
                 "contract_hash": canonical_json_hash(seed_contract),
@@ -298,7 +308,10 @@ def build_and_write_summary(
             },
         },
         "notes": {
-            "policy": "spotify_id exact match is primary for DS-001; metadata fallback used only when needed",
+            "policy": (
+                "spotify_id exact match is primary for DS-001; metadata fallback used when needed; "
+                "optional fuzzy fallback applies only after both exact paths fail"
+            ),
             "logging": "full row-level trace includes matched and unmatched reasons",
             "seed_table_enrichment": (
                 "seed table includes DS-001 numeric feature columns so downstream "

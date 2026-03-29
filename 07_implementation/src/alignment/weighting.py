@@ -8,6 +8,7 @@ into normalised event dicts consumed by the matching loop.
 from __future__ import annotations
 
 import math
+import os
 from datetime import datetime, timezone
 
 from shared_utils.constants import (
@@ -32,6 +33,17 @@ def _parse_event_time(raw_value: str) -> datetime | None:
     return parsed.astimezone(timezone.utc)
 
 
+def _resolve_reference_now_utc(now_utc: datetime | None = None) -> datetime:
+    if now_utc is not None:
+        return now_utc.astimezone(timezone.utc)
+    override = (os.getenv("BL_REFERENCE_NOW_UTC") or "").strip()
+    if override:
+        parsed = _parse_event_time(override)
+        if parsed is not None:
+            return parsed
+    return datetime.now(timezone.utc)
+
+
 def compute_temporal_decay(event_time: str, half_life_days: float, now_utc: datetime | None = None) -> float:
     """Return exponential time-decay factor using a half-life in days."""
     if half_life_days <= 0:
@@ -39,7 +51,7 @@ def compute_temporal_decay(event_time: str, half_life_days: float, now_utc: date
     event_dt = _parse_event_time(event_time)
     if event_dt is None:
         return 1.0
-    reference_now = now_utc or datetime.now(timezone.utc)
+    reference_now = _resolve_reference_now_utc(now_utc)
     age_days = max(0.0, (reference_now - event_dt).total_seconds() / 86400.0)
     decay = math.exp(-math.log(2.0) * (age_days / half_life_days))
     return round(max(0.0, min(decay, 1.0)), 6)

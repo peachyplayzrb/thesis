@@ -94,6 +94,31 @@ class TestComparisons:
         assert comp["top10_overlap_count"] == 2
         assert comp["expected_direction_met"] is True
 
+    def test_fuzzy_enabled_strict_expects_no_shift(self):
+        baseline = _result(
+            scenario_id="baseline",
+            top10=["a", "b"],
+            playlist=["a", "b"],
+            pool_size=10,
+            rank_map={"a": 1, "b": 2},
+            mean_component={"valence": 0.1},
+            lead_genres=["indie"],
+            profile_hash="h1",
+        )
+        variant = _result(
+            scenario_id="fuzzy_enabled_strict",
+            top10=["a", "b"],
+            playlist=["a", "b"],
+            pool_size=10,
+            rank_map={"a": 1, "b": 2},
+            mean_component={"valence": 0.1},
+            lead_genres=["indie"],
+            profile_hash="h1",
+        )
+        comp = compare_to_baseline(baseline, variant)
+        assert comp["observable_shift"] is False
+        assert comp["expected_direction_met"] is True
+
 
 class TestEvaluateResultsStatus:
     def test_status_pass_when_all_conditions_true(self):
@@ -110,6 +135,28 @@ class TestEvaluateResultsStatus:
             },
         ]
         status = evaluate_results_status(records)
+        assert status["status"] == "pass"
+
+    def test_status_passes_when_expected_no_shift_variant_is_stable(self):
+        records = [
+            {
+                "scenario_id": "baseline",
+                "repeat_consistent": True,
+                "comparison_to_baseline": {"observable_shift": False, "expected_direction_met": True},
+            },
+            {
+                "scenario_id": "valence_weight_up",
+                "repeat_consistent": True,
+                "comparison_to_baseline": {"observable_shift": True, "expected_direction_met": True},
+            },
+            {
+                "scenario_id": "fuzzy_enabled_strict",
+                "repeat_consistent": True,
+                "comparison_to_baseline": {"observable_shift": False, "expected_direction_met": True},
+            },
+        ]
+        status = evaluate_results_status(records)
+        assert status["all_expected_no_shift_variants_stable"] is True
         assert status["status"] == "pass"
 
     def test_status_bounded_risk_when_any_condition_fails(self):

@@ -161,6 +161,7 @@ def main() -> None:
     start_time = time.time()
 
     paths = dict(required_paths)
+    bl003_summary = load_required_json_object(paths["bl003_summary"], label="BL-003 alignment summary", stage_label="BL-009")
     profile = load_required_json_object(paths["bl004_profile"], label="BL-004 profile", stage_label="BL-009")
     bl004_summary = load_required_json_object(paths["bl004_summary"], label="BL-004 profile summary", stage_label="BL-009")
     bl005_diagnostics = load_required_json_object(paths["bl005_diagnostics"], label="BL-005 diagnostics", stage_label="BL-009")
@@ -168,12 +169,18 @@ def main() -> None:
     bl007_report = load_required_json_object(paths["bl007_report"], label="BL-007 assembly report", stage_label="BL-009")
     bl008_summary = load_required_json_object(paths["bl008_summary"], label="BL-008 explanation summary", stage_label="BL-009")
 
+    ensure_required_keys(bl003_summary, ["inputs", "counts"], label="BL-003 alignment summary", stage_label="BL-009")
     ensure_required_keys(profile, ["run_id", "user_id", "diagnostics", "seed_summary", "config"], label="BL-004 profile", stage_label="BL-009")
     ensure_required_keys(bl004_summary, ["dominant_lead_genres", "dominant_tags"], label="BL-004 profile summary", stage_label="BL-009")
     ensure_required_keys(bl005_diagnostics, ["run_id", "counts", "rule_hits", "top_kept_track_ids", "config"], label="BL-005 diagnostics", stage_label="BL-009")
     ensure_required_keys(bl006_summary, ["run_id", "counts", "score_statistics", "top_candidates", "config"], label="BL-006 score summary", stage_label="BL-009")
     ensure_required_keys(bl007_report, ["run_id", "counts", "rule_hits", "playlist_genre_mix", "playlist_score_range", "config"], label="BL-007 assembly report", stage_label="BL-009")
     ensure_required_keys(bl008_summary, ["run_id", "playlist_track_count", "top_contributor_distribution"], label="BL-008 explanation summary", stage_label="BL-009")
+
+    bl003_counts = dict(bl003_summary.get("counts") or {})
+    bl003_fuzzy_controls = dict((bl003_summary.get("inputs") or {}).get("fuzzy_matching") or {})
+    bl003_match_by_fuzzy = int(bl003_counts.get("matched_by_fuzzy", 0))
+    bl003_match_total = int(bl003_counts.get("matched_events_rows", 0))
 
     bl005_decisions = load_csv_rows(paths["bl005_decisions"])
     bl007_trace = load_csv_rows(paths["bl007_trace"])
@@ -332,6 +339,12 @@ def main() -> None:
             "retrieval": bl005_diagnostics["config"],
             "scoring": bl006_summary["config"],
             "assembly": bl007_report["config"],
+            "alignment_seed_controls": {
+                "fuzzy_matching": bl003_fuzzy_controls,
+                "match_rate_min_threshold": float(
+                    ((bl003_counts.get("match_rate_validation") or {}).get("min_threshold") or 0.0)
+                ),
+            },
             "transparency": {
                 "playlist_track_count": bl008_summary["playlist_track_count"],
                 "top_contributor_distribution": bl008_summary["top_contributor_distribution"],
@@ -345,13 +358,19 @@ def main() -> None:
                 "aligned_events_path": None,
                 "candidate_stub_path": None,
             },
-            "conceptual_fields_recorded_as_not_applicable": [
-                "imported_row_counts",
-                "valid_invalid_counts",
-                "matched_by_isrc",
-                "matched_by_fallback",
-                "unmatched_count",
-            ],
+            "alignment_summary": {
+                "summary_path": relpath(paths["bl003_summary"], root),
+                "matched_by_spotify_id": int(bl003_counts.get("matched_by_spotify_id", 0)),
+                "matched_by_metadata": int(bl003_counts.get("matched_by_metadata", 0)),
+                "matched_by_fuzzy": bl003_match_by_fuzzy,
+                "matched_events_rows": bl003_match_total,
+                "unmatched_rows": int(bl003_counts.get("unmatched_rows", 0)),
+                "fuzzy_match_ratio": round(
+                    (bl003_match_by_fuzzy / bl003_match_total) if bl003_match_total > 0 else 0.0,
+                    6,
+                ),
+                "fuzzy_matching": bl003_fuzzy_controls,
+            },
         },
         "stage_diagnostics": {
             "data_layer": (
@@ -368,6 +387,19 @@ def main() -> None:
                     "reason": "BL-009 observability does not require BL-016 in active mode.",
                 }
             ),
+            "alignment": {
+                "task": "BL-003",
+                "summary_path": relpath(paths["bl003_summary"], root),
+                "counts": {
+                    "input_event_rows": int(bl003_counts.get("input_event_rows", 0)),
+                    "matched_by_spotify_id": int(bl003_counts.get("matched_by_spotify_id", 0)),
+                    "matched_by_metadata": int(bl003_counts.get("matched_by_metadata", 0)),
+                    "matched_by_fuzzy": bl003_match_by_fuzzy,
+                    "unmatched": int(bl003_counts.get("unmatched", 0)),
+                    "seed_table_rows": int(bl003_counts.get("seed_table_rows", 0)),
+                },
+                "fuzzy_matching": bl003_fuzzy_controls,
+            },
             "profile": {
                 "task": "BL-004",
                 "run_id": profile["run_id"],
@@ -529,6 +561,8 @@ def main() -> None:
         "candidates_scored": bl006_summary["counts"]["candidates_scored"],
         "playlist_length": playlist["playlist_length"],
         "explanation_count": len(bl008_payloads["explanations"]),
+        "matched_by_fuzzy": bl003_match_by_fuzzy,
+        "fuzzy_enabled": int(bool(bl003_fuzzy_controls.get("enabled", False))),
         "playlist_sha256": artifact_hashes[relpath(paths["bl007_playlist"], root)],
         "explanation_payloads_sha256": artifact_hashes[relpath(paths["bl008_payloads"], root)],
         "observability_log_sha256": sha256_of_file(run_log_path),

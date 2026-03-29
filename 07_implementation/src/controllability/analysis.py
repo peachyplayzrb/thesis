@@ -110,6 +110,8 @@ def compare_to_baseline(baseline_result: dict[str, object], scenario_result: dic
         expected_direction_met = (
             scenario_metrics["candidate_pool_size"] > baseline_metrics["candidate_pool_size"]
         )
+    elif scenario_id == "fuzzy_enabled_strict":
+        expected_direction_met = not observable_shift
 
     return {
         "observable_shift": observable_shift,
@@ -175,9 +177,15 @@ def evaluate_results_status(scenario_records: list[dict[str, object]]) -> dict[s
     non_baseline_records = [
         record for record in scenario_records if record["scenario_id"] != "baseline"
     ]
+    expected_no_shift_ids = {"fuzzy_enabled_strict"}
     all_repeat = all(record["repeat_consistent"] for record in scenario_records)
     all_shift = all(
         record["comparison_to_baseline"]["observable_shift"] for record in non_baseline_records
+        if record["scenario_id"] not in expected_no_shift_ids
+    )
+    all_expected_no_shift = all(
+        not record["comparison_to_baseline"]["observable_shift"] for record in non_baseline_records
+        if record["scenario_id"] in expected_no_shift_ids
     )
     all_direction = all(
         record["comparison_to_baseline"]["expected_direction_met"]
@@ -186,6 +194,7 @@ def evaluate_results_status(scenario_records: list[dict[str, object]]) -> dict[s
     return {
         "all_scenarios_repeat_consistent": all_repeat,
         "all_variant_shifts_observable": all_shift,
+        "all_expected_no_shift_variants_stable": all_expected_no_shift,
         "all_variant_directions_met": all_direction,
-        "status": "pass" if all_repeat and all_shift and all_direction else "bounded-risk",
+        "status": "pass" if all_repeat and all_shift and all_expected_no_shift and all_direction else "bounded-risk",
     }

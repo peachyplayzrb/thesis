@@ -53,6 +53,7 @@ def _build_default_run_config() -> dict[str, Any]:
             "match_rate_min_threshold": DEFAULT_SEED_CONTROLS["match_rate_min_threshold"],
             "top_range_weights": dict(DEFAULT_SEED_CONTROLS["top_range_weights"]),
             "source_base_weights": dict(DEFAULT_SEED_CONTROLS["source_base_weights"]),
+            "fuzzy_matching": dict(DEFAULT_SEED_CONTROLS["fuzzy_matching"]),
         },
         "ingestion_controls": dict(DEFAULT_INGESTION_CONTROLS),
         "profile_controls": {
@@ -555,6 +556,36 @@ def resolve_effective_run_config(run_config_path: str | Path | None) -> tuple[di
         seed_controls["top_range_weights"] = seed_defaults["top_range_weights"].copy()
     if "source_base_weights" not in seed_controls or not isinstance(seed_controls.get("source_base_weights"), dict):
         seed_controls["source_base_weights"] = seed_defaults["source_base_weights"].copy()
+    fuzzy_defaults = dict(seed_defaults.get("fuzzy_matching") or {})
+    fuzzy_matching = seed_controls.get("fuzzy_matching")
+    if not isinstance(fuzzy_matching, dict):
+        fuzzy_matching = {}
+    seed_controls["fuzzy_matching"] = {
+        "enabled": _coerce_bool(
+            fuzzy_matching.get("enabled"),
+            bool(fuzzy_defaults.get("enabled", False)),
+        ),
+        "artist_threshold": _coerce_fraction_zero_to_one(
+            fuzzy_matching.get("artist_threshold"),
+            float(fuzzy_defaults.get("artist_threshold", 0.90)),
+        ),
+        "title_threshold": _coerce_fraction_zero_to_one(
+            fuzzy_matching.get("title_threshold"),
+            float(fuzzy_defaults.get("title_threshold", 0.90)),
+        ),
+        "combined_threshold": _coerce_fraction_zero_to_one(
+            fuzzy_matching.get("combined_threshold"),
+            float(fuzzy_defaults.get("combined_threshold", 0.90)),
+        ),
+        "max_duration_delta_ms": _coerce_positive_int(
+            fuzzy_matching.get("max_duration_delta_ms"),
+            int(fuzzy_defaults.get("max_duration_delta_ms", 5000)),
+        ),
+        "max_artist_candidates": _coerce_positive_int(
+            fuzzy_matching.get("max_artist_candidates"),
+            int(fuzzy_defaults.get("max_artist_candidates", 5)),
+        ),
+    }
 
     ingestion_controls = effective.setdefault("ingestion_controls", {})
     if not isinstance(ingestion_controls, dict):
@@ -755,6 +786,7 @@ def resolve_bl003_seed_controls(run_config_path: str | Path | None) -> dict[str,
         "match_rate_min_threshold": float(seed["match_rate_min_threshold"]),
         "top_range_weights": dict(seed["top_range_weights"]),
         "source_base_weights": dict(seed["source_base_weights"]),
+        "fuzzy_matching": dict(seed.get("fuzzy_matching") or {}),
     }
 
 

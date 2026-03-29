@@ -701,6 +701,7 @@ def execute_scenario(
         "control_surface": scenario["control_surface"],
         "description": scenario["description"],
         "expected_effect": scenario["expected_effect"],
+        "alignment_seed_controls": dict(scenario.get("alignment_seed_controls") or {}),
         "profile": profile_stage["profile"]["config"],
         "retrieval": retrieval_stage["diagnostics"]["config"],
         "scoring": scoring_stage["summary"]["config"],

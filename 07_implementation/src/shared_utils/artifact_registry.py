@@ -162,12 +162,16 @@ def bl014_refinement_diagnostic_paths(repo_root: Path) -> Dict[str, Path]:
 def bl010_required_paths(repo_root: Path) -> Dict[str, Path]:
     """Return canonical BL-010 required script and artifact paths."""
     return {
+        "bl003_script": repo_root / "alignment/main.py",
         "bl004_script": repo_root / "profile/main.py",
         "bl005_script": repo_root / "retrieval/main.py",
         "bl006_script": repo_root / "scoring/main.py",
         "bl007_script": repo_root / "playlist/main.py",
         "bl008_script": repo_root / "transparency/main.py",
         "bl009_script": repo_root / "observability/main.py",
+        "bl003_summary": repo_root / "alignment/outputs/bl003_ds001_spotify_summary.json",
+        "bl003_seed_table": repo_root / "alignment/outputs/bl003_ds001_spotify_seed_table.csv",
+        "profile": repo_root / "profile/outputs/bl004_preference_profile.json",
         "bl004_profile": repo_root / "profile/outputs/bl004_preference_profile.json",
         "bl004_summary": repo_root / "profile/outputs/profile_summary.json",
         "bl004_seed_trace": repo_root / "profile/outputs/bl004_seed_trace.csv",
@@ -176,6 +180,7 @@ def bl010_required_paths(repo_root: Path) -> Dict[str, Path]:
         "bl005_diagnostics": repo_root / "retrieval/outputs/bl005_candidate_diagnostics.json",
         "bl006_scored": repo_root / "scoring/outputs/bl006_scored_candidates.csv",
         "bl006_summary": repo_root / "scoring/outputs/bl006_score_summary.json",
+        "playlist": repo_root / "playlist/outputs/playlist.json",
         "bl007_playlist": repo_root / "playlist/outputs/playlist.json",
         "bl007_trace": repo_root / "playlist/outputs/bl007_assembly_trace.csv",
         "bl007_report": repo_root / "playlist/outputs/bl007_assembly_report.json",
@@ -192,6 +197,7 @@ def bl009_required_paths(repo_root: Path, bl009_script_path: Path | None = None)
         repo_root / "observability/main.py"
     )
     return {
+        "bl003_summary": repo_root / "alignment/outputs/bl003_ds001_spotify_summary.json",
         "bl004_profile": repo_root / "profile/outputs/bl004_preference_profile.json",
         "bl004_summary": repo_root / "profile/outputs/profile_summary.json",
         "bl004_seed_trace": repo_root / "profile/outputs/bl004_seed_trace.csv",

@@ -13,6 +13,7 @@ def build_paths(root: Path) -> dict[str, Path]:
     return {
         "legacy_manifest": root / "test_assets" / "bl016_asset_manifest.json",
         "legacy_coverage": root / "data_layer" / "outputs" / "onion_join_coverage_report.json",
+        "bl003_summary": root / "alignment" / "outputs" / "bl003_ds001_spotify_summary.json",
         "active_seed_trace": root / "profile" / "outputs" / "bl004_seed_trace.csv",
         "active_candidates": root / "data_layer" / "outputs" / "ds001_working_candidate_dataset.csv",
         "baseline_snapshot": root / "reproducibility" / "outputs" / "reproducibility_config_snapshot.json",
@@ -37,7 +38,7 @@ def resolve_bl011_runtime_controls() -> dict[str, object]:
 
 
 def ensure_required_inputs(paths: dict[str, Path], root: Path) -> None:
-    required = ["baseline_snapshot", "active_seed_trace", "active_candidates"]
+    required = ["baseline_snapshot", "bl003_summary", "active_seed_trace", "active_candidates"]
     missing = [relpath(paths[key], root) for key in required if not paths[key].exists()]
     if missing:
         raise FileNotFoundError(f"BL-011 missing required inputs: {missing}")
@@ -178,5 +179,36 @@ def build_scenarios(baseline_snapshot: dict, runtime_controls: dict[str, object]
             },
             "assembly": dict(base_assembly),
             "expected_effect": "candidate pool should expand and downstream ranking or playlist composition should change",
+        },
+        {
+            "scenario_id": "fuzzy_enabled_strict",
+            "test_id": "EP-CTRL-004",
+            "control_surface": "alignment_fuzzy_mode",
+            "description": "Record strict fuzzy-enabled upstream alignment controls while keeping BL-004 to BL-007 inputs fixed for isolation evidence.",
+            "profile": {
+                **base_profile,
+                "include_interaction_types": ["history", "influence"],
+            },
+            "retrieval": {
+                **base_retrieval,
+                "threshold_scale": 1.0,
+            },
+            "scoring": {
+                **base_scoring,
+                "weight_override_component": None,
+                "raw_override_value": None,
+            },
+            "assembly": dict(base_assembly),
+            "alignment_seed_controls": {
+                "fuzzy_matching": {
+                    "enabled": True,
+                    "artist_threshold": 0.90,
+                    "title_threshold": 0.90,
+                    "combined_threshold": 0.90,
+                    "max_duration_delta_ms": 5000,
+                    "max_artist_candidates": 5,
+                }
+            },
+            "expected_effect": "no BL-004 to BL-007 shift expected because controllability reuses fixed active seed inputs",
         },
     ]

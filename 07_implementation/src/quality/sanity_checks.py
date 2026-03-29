@@ -56,11 +56,21 @@ def ensure_exists(path: Path) -> None:
         raise FileNotFoundError(f"Missing required artifact: {path}")
 
 
+def resolve_existing_path(preferred: Path, fallback: Path) -> Path:
+    if preferred.exists():
+        return preferred
+    if fallback.exists():
+        return fallback
+    return preferred
+
+
 def main() -> int:
     started = datetime.now(UTC)
     run_id = f"BL014-SANITY-{started.strftime('%Y%m%d-%H%M%S-%f')}"
 
     artifacts = {
+        "bl003_summary": REPO_ROOT / "alignment/outputs/bl003_ds001_spotify_summary.json",
+        "bl003_seed_table": REPO_ROOT / "alignment/outputs/bl003_ds001_spotify_seed_table.csv",
         "profile": REPO_ROOT / "profile/outputs/bl004_preference_profile.json",
         "bl004_summary": REPO_ROOT / "profile/outputs/profile_summary.json",
         "bl005_filtered": REPO_ROOT / "retrieval/outputs/bl005_filtered_candidates.csv",
@@ -81,6 +91,8 @@ def main() -> int:
     for artifact_path in artifacts.values():
         ensure_exists(artifact_path)
 
+    bl003_summary = load_json(artifacts["bl003_summary"])
+    profile = load_json(artifacts["profile"])
     bl004_summary = load_json(artifacts["bl004_summary"])
     bl005_diag = load_json(artifacts["bl005_diag"])
     bl006_summary = load_json(artifacts["bl006_summary"])
@@ -106,6 +118,13 @@ def main() -> int:
         checks.append({"id": check_id, "status": "pass" if passed else "fail", "details": details})
 
     # Schema checks
+    bl003_required = {"inputs", "counts", "outputs"}
+    check(
+        "schema_bl003_summary",
+        bl003_required.issubset(set(bl003_summary.keys())),
+        "BL-003 summary contains required top-level keys",
+    )
+
     profile_required = {
         "run_id",
         "task",
@@ -136,7 +155,10 @@ def main() -> int:
         "key",
         "mode",
     }
-    candidate_stub_path = Path(bl005_diag["input_artifacts"]["candidate_stub_path"])
+    candidate_stub_path = resolve_existing_path(
+        Path(bl005_diag["input_artifacts"]["candidate_stub_path"]),
+        REPO_ROOT / "data_layer/outputs/ds001_working_candidate_dataset.csv",
+    )
     ensure_exists(candidate_stub_path)
     candidate_stub_hash = sha256_file(candidate_stub_path)
 
@@ -200,8 +222,24 @@ def main() -> int:
         obs_required_sections.issubset(set(bl009_log.keys())),
         "BL-009 observability log contains required sections",
     )
+    check(
+        "schema_bl003_fuzzy_controls",
+        isinstance((bl003_summary.get("inputs") or {}).get("fuzzy_matching"), dict),
+        "BL-003 summary includes fuzzy matching control block",
+    )
 
     # Hash-link integrity checks
+    profile_seed_table_path = resolve_existing_path(
+        Path(profile["input_artifacts"]["seed_table_path"]),
+        artifacts["bl003_seed_table"],
+    )
+    ensure_exists(profile_seed_table_path)
+    check(
+        "hash_bl004_input_seed_table",
+        profile["input_artifacts"]["seed_table_sha256"].upper() == sha256_file(profile_seed_table_path),
+        "BL-004 profile links to the seed table hash recorded in its input artifacts",
+    )
+
     check(
         "hash_bl005_input_profile",
         bl005_diag["input_artifacts"]["profile_sha256"].upper() == hashes["profile"],
@@ -260,6 +298,31 @@ def main() -> int:
         and bl009_index["explanation_payloads_sha256"].upper() == hashes["bl008_payloads"]
         and bl009_index["observability_log_sha256"].upper() == hashes["bl009_log"],
         "BL-009 index hashes match playlist, explanation payloads, and observability log",
+    )
+
+    bl003_fuzzy = dict((bl003_summary.get("inputs") or {}).get("fuzzy_matching") or {})
+    bl003_counts = dict(bl003_summary.get("counts") or {})
+    bl009_fuzzy = dict((((bl009_log.get("run_config") or {}).get("alignment_seed_controls") or {}).get("fuzzy_matching") or {}))
+    bl009_alignment_counts = dict((((bl009_log.get("stage_diagnostics") or {}).get("alignment") or {}).get("counts") or {}))
+
+    check(
+        "continuity_bl009_fuzzy_controls",
+        bl009_fuzzy == bl003_fuzzy,
+        "BL-009 run_config alignment fuzzy controls mirror BL-003 summary",
+    )
+
+    check(
+        "continuity_bl009_fuzzy_count",
+        int(bl009_alignment_counts.get("matched_by_fuzzy", 0)) == int(bl003_counts.get("matched_by_fuzzy", 0)),
+        "BL-009 alignment diagnostics matched_by_fuzzy aligns with BL-003 summary",
+    )
+
+    fuzzy_enabled = bool(bl003_fuzzy.get("enabled", False))
+    matched_by_fuzzy = int(bl003_counts.get("matched_by_fuzzy", 0))
+    check(
+        "continuity_bl003_fuzzy_enabled_consistency",
+        matched_by_fuzzy == 0 if not fuzzy_enabled else matched_by_fuzzy >= 0,
+        "BL-003 matched_by_fuzzy is zero when fuzzy is disabled",
     )
 
     # Count/run-id continuity checks
@@ -355,6 +418,7 @@ def main() -> int:
         "run_id": run_id,
         "required_artifacts": {k: str(v.relative_to(REPO_ROOT)) for k, v in artifacts.items()},
         "schema_checks": [
+            "BL-003 summary top-level keys",
             "BL-004 summary top-level keys",
             "BL-005 filtered CSV required columns",
             "BL-005 decisions CSV required columns",
@@ -362,8 +426,10 @@ def main() -> int:
             "BL-007 playlist length consistency",
             "BL-008 explanation count consistency",
             "BL-009 required top-level observability sections",
+            "BL-003 fuzzy control block presence",
         ],
         "integrity_checks": [
+            "BL-004 seed table hash links to BL-003 seed table",
             "BL-005 input/output hashes",
             "BL-006 input/output hashes",
             "BL-007 input/output hashes",
@@ -371,6 +437,9 @@ def main() -> int:
             "BL-009 index hash linkage",
         ],
         "continuity_checks": [
+            "BL-003 fuzzy enabled consistency against matched_by_fuzzy",
+            "BL-009 fuzzy controls mirror BL-003 controls",
+            "BL-009 fuzzy count mirrors BL-003 count",
             "BL-005 kept count matches filtered rows",
             "BL-006 scored count matches scored rows",
             "BL-007 playlist count aligns with BL-008 explanations",
@@ -404,6 +473,8 @@ def main() -> int:
                 "undersized_playlist": str(undersized_playlist).lower(),
                 "undersized_shortfall": undersized_shortfall,
                 "explanation_count": explanations_len,
+                "bl003_fuzzy_enabled": str(fuzzy_enabled).lower(),
+                "bl003_matched_by_fuzzy": matched_by_fuzzy,
                 "bl009_run_id": bl009_index["run_id"],
                 "playlist_sha256": hashes["playlist"],
                 "bl008_payloads_sha256": hashes["bl008_payloads"],

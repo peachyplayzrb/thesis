@@ -119,6 +119,7 @@ def build_config_snapshot(
     root: Path,
     replay_count: int = DEFAULT_REPLAY_COUNT,
 ) -> dict:
+    bl003_summary = load_json(paths["bl003_summary"])
     profile = load_json(paths["profile"])
     bl005_diagnostics = load_json(paths["bl005_diagnostics"])
     bl006_summary = load_json(paths["bl006_summary"])
@@ -127,6 +128,7 @@ def build_config_snapshot(
 
     fixed_input_source = "active_pipeline_outputs"
     fixed_input_keys = [
+        "bl003_seed_table",
         "bl004_seed_trace",
         "bl005_filtered",
         "bl005_decisions",
@@ -138,7 +140,7 @@ def build_config_snapshot(
         relpath(paths[key], root): sha256_of_file(paths[key], uppercase=True)
         for key in fixed_input_keys
     }
-    stage_script_keys = ["bl004_script", "bl005_script", "bl006_script", "bl007_script", "bl008_script", "bl009_script"]
+    stage_script_keys = ["bl003_script", "bl004_script", "bl005_script", "bl006_script", "bl007_script", "bl008_script", "bl009_script"]
     stage_scripts = {
         relpath(paths[key], root): digest
         for key, digest in build_file_hash_map(paths, stage_script_keys).items()
@@ -152,8 +154,11 @@ def build_config_snapshot(
         "fixed_inputs": fixed_inputs,
         "optional_dependency_availability": {},
         "stage_scripts": stage_scripts,
-        "stage_order": ["BL-004", "BL-005", "BL-006", "BL-007", "BL-008", "BL-009"],
+        "stage_order": ["BL-003", "BL-004", "BL-005", "BL-006", "BL-007", "BL-008", "BL-009"],
         "stage_configs": {
+            "alignment_seed_controls": {
+                "fuzzy_matching": dict((bl003_summary.get("inputs") or {}).get("fuzzy_matching") or {}),
+            },
             "profile": profile["config"],
             "retrieval": bl005_diagnostics["config"],
             "scoring": bl006_summary["config"],
@@ -254,6 +259,7 @@ def stable_observability_fingerprint(run_log: dict, playlist_stable_hash: str, e
 
 
 def fingerprint_outputs(paths: dict[str, Path]) -> dict[str, object]:
+    bl003_summary = load_json(paths["bl003_summary"])
     profile = load_json(paths["profile"])
     bl004_summary = load_json(paths["bl004_summary"])
     playlist = load_json(paths["playlist"])
@@ -274,6 +280,8 @@ def fingerprint_outputs(paths: dict[str, Path]) -> dict[str, object]:
     raw_hash_map = build_file_hash_map(
         paths,
         [
+            "bl003_summary",
+            "bl003_seed_table",
             "bl004_seed_trace",
             "bl005_filtered",
             "bl005_decisions",
@@ -288,6 +296,7 @@ def fingerprint_outputs(paths: dict[str, Path]) -> dict[str, object]:
 
     return {
         "stage_run_ids": {
+            "BL-003": str(bl003_summary.get("generated_at_utc") or "unknown"),
             "BL-004": profile["run_id"],
             "BL-005": load_json(paths["bl005_diagnostics"])["run_id"],
             "BL-006": load_json(paths["bl006_summary"])["run_id"],
@@ -296,6 +305,8 @@ def fingerprint_outputs(paths: dict[str, Path]) -> dict[str, object]:
             "BL-009": bl009_log["run_metadata"]["run_id"],
         },
         "raw_hashes": {
+            "bl003_summary": raw_hash_map["bl003_summary"],
+            "bl003_seed_table": raw_hash_map["bl003_seed_table"],
             "bl004_seed_trace": raw_hash_map["bl004_seed_trace"],
             "bl005_filtered": raw_hash_map["bl005_filtered"],
             "bl005_decisions": raw_hash_map["bl005_decisions"],
@@ -307,6 +318,15 @@ def fingerprint_outputs(paths: dict[str, Path]) -> dict[str, object]:
             "bl009_index": raw_hash_map["bl009_index"],
         },
         "stable_hashes": {
+            "alignment_summary_hash": canonical_json_hash(
+                {
+                    "counts": bl003_summary.get("counts"),
+                    "source_stats": bl003_summary.get("source_stats"),
+                    "fuzzy_matching": ((bl003_summary.get("inputs") or {}).get("fuzzy_matching") or {}),
+                    "seed_contract": ((bl003_summary.get("inputs") or {}).get("seed_contract") or {}),
+                },
+                uppercase=True,
+            ),
             "profile_semantic_hash": stable_profile_fingerprint(profile, bl004_summary),
             "ranked_output_hash": raw_hash_map["bl006_scored"],
             "playlist_output_hash": playlist_stable_hash,
@@ -320,6 +340,8 @@ def fingerprint_outputs(paths: dict[str, Path]) -> dict[str, object]:
         "semantic_snapshots": {
             "playlist_track_ids": playlist_track_ids,
             "explanation_track_ids": explanation_track_ids,
+            "alignment_match_counts": dict(bl003_summary.get("counts") or {}),
+            "alignment_fuzzy_matching": dict((bl003_summary.get("inputs") or {}).get("fuzzy_matching") or {}),
             "observability_dataset_version": bl009_log["run_metadata"]["dataset_version"],
             "observability_pipeline_version": bl009_log["run_metadata"]["pipeline_version"],
             "observability_index_row": bl009_index_rows[0] if bl009_index_rows else {},
@@ -344,6 +366,7 @@ def run_stage(
     root: Path,
     python_executable: str,
     run_config_path: str | None,
+    reference_now_utc: str | None,
 ) -> dict[str, object]:
     started = time.time()
     command = [python_executable, str(script_path)]
@@ -351,11 +374,15 @@ def run_stage(
         command.extend(["--run-config", run_config_path])
     completed: subprocess.CompletedProcess[str] | None = None
     attempts: list[dict[str, object]] = []
+    stage_env = os.environ.copy()
+    if reference_now_utc:
+        stage_env["BL_REFERENCE_NOW_UTC"] = reference_now_utc
     for attempt in range(1, 4):
         attempt_started = time.time()
         completed = subprocess.run(
             command,
             cwd=root,
+            env=stage_env,
             capture_output=True,
             text=True,
             check=False,
@@ -398,6 +425,7 @@ def run_stage(
 
 def build_stage_sequence(paths: dict[str, Path]) -> list[tuple[str, Path]]:
     return [
+        ("BL-003", paths["bl003_script"]),
         ("BL-004", paths["bl004_script"]),
         ("BL-005", paths["bl005_script"]),
         ("BL-006", paths["bl006_script"]),
@@ -416,11 +444,19 @@ def execute_replays(
     output_dir: Path,
     paths: dict[str, Path],
     run_config_path: str | None,
+    reference_now_utc: str | None,
 ) -> list[dict[str, object]]:
     replay_records: list[dict[str, object]] = []
     for replay_number in range(1, replay_count + 1):
         stage_runs = [
-            run_stage(stage_id, script_path, root, python_executable, run_config_path)
+            run_stage(
+                stage_id,
+                script_path,
+                root,
+                python_executable,
+                run_config_path,
+                reference_now_utc,
+            )
             for stage_id, script_path in stage_sequence
         ]
         fingerprints = fingerprint_outputs(paths)
@@ -445,6 +481,8 @@ def execute_replays(
 
 def archive_replay_outputs(paths: dict[str, Path], replay_dir: Path) -> None:
     archive_map = {
+        "bl003_ds001_spotify_summary.json": paths["bl003_summary"],
+        "bl003_ds001_spotify_seed_table.csv": paths["bl003_seed_table"],
         "bl004_preference_profile.json": paths["profile"],
         "profile_summary.json": paths["bl004_summary"],
         "bl004_seed_trace.csv": paths["bl004_seed_trace"],
@@ -497,6 +535,7 @@ def main() -> None:
     write_json_ascii(config_path, config_snapshot)
 
     run_started_at = utc_now()
+    reference_now_utc = run_started_at
     run_id = f"BL010-REPRO-{time.strftime('%Y%m%d-%H%M%S', time.gmtime())}"
     started = time.time()
 
@@ -509,6 +548,7 @@ def main() -> None:
         output_dir=output_dir,
         paths=paths,
         run_config_path=str(args.run_config) if args.run_config else None,
+        reference_now_utc=reference_now_utc,
     )
 
     stable_hashes_by_run = [record["stable_hashes"] for record in replay_records]
@@ -536,16 +576,20 @@ def main() -> None:
         retry_count = sum(1 for stage_run in record["stage_runs"] if bool(stage_run.get("had_retry")))
         row = {
             "replay_number": record["replay_number"],
+            "bl003_generated_at_utc": record["stage_run_ids"]["BL-003"],
             "bl004_run_id": record["stage_run_ids"]["BL-004"],
             "bl005_run_id": record["stage_run_ids"]["BL-005"],
             "bl006_run_id": record["stage_run_ids"]["BL-006"],
             "bl007_run_id": record["stage_run_ids"]["BL-007"],
             "bl008_run_id": record["stage_run_ids"]["BL-008"],
             "bl009_run_id": record["stage_run_ids"]["BL-009"],
+            "alignment_summary_hash": record["stable_hashes"]["alignment_summary_hash"],
             "ranked_output_hash": record["stable_hashes"]["ranked_output_hash"],
             "playlist_output_hash": record["stable_hashes"]["playlist_output_hash"],
             "explanation_output_hash": record["stable_hashes"]["explanation_output_hash"],
             "observability_output_hash": record["stable_hashes"]["observability_output_hash"],
+            "matched_by_fuzzy": int(record["semantic_snapshots"]["alignment_match_counts"].get("matched_by_fuzzy", 0)),
+            "fuzzy_enabled": int(bool(record["semantic_snapshots"]["alignment_fuzzy_matching"].get("enabled", False))),
             "raw_playlist_hash": record["raw_hashes"]["playlist"],
             "raw_explanation_hash": record["raw_hashes"]["bl008_payloads"],
             "raw_observability_hash": record["raw_hashes"]["bl009_log"],
@@ -578,6 +622,7 @@ def main() -> None:
         "replay_scope": {
             "stage_order": config_snapshot["stage_order"],
             "stable_comparison_artifacts": [
+                "alignment_summary_hash",
                 "profile_semantic_hash",
                 "seed_trace_hash",
                 "filtered_candidates_hash",

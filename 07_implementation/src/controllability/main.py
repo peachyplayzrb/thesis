@@ -65,6 +65,10 @@ def main() -> None:
 
     baseline_snapshot = load_required_json_object(paths["baseline_snapshot"], label="BL-010 baseline snapshot", stage_label="BL-011")
     ensure_baseline_snapshot_shape(baseline_snapshot)
+    bl003_summary = load_required_json_object(paths["bl003_summary"], label="BL-003 alignment summary", stage_label="BL-011")
+    ensure_required_keys(bl003_summary, ["inputs", "counts"], label="BL-003 alignment summary", stage_label="BL-011")
+    alignment_fuzzy_controls = dict((bl003_summary.get("inputs") or {}).get("fuzzy_matching") or {})
+    alignment_counts = dict(bl003_summary.get("counts") or {})
     seed_rows = load_csv_rows(paths["active_seed_trace"])
     events = build_active_seed_events(seed_rows)
     candidate_rows = [normalize_candidate_row(row) for row in load_csv_rows(paths["active_candidates"])]
@@ -79,6 +83,7 @@ def main() -> None:
     scenarios = build_scenarios(baseline_snapshot, runtime_controls)
 
     fixed_inputs = {
+        relpath(paths["bl003_summary"], root): sha256_of_file(paths["bl003_summary"]),
         input_artifacts["aligned_events_path"]: sha256_of_file(paths["active_seed_trace"]),
         input_artifacts["candidate_stub_path"]: sha256_of_file(paths["active_candidates"]),
     }
@@ -95,6 +100,17 @@ def main() -> None:
         "generated_from": relpath(paths["baseline_snapshot"], root),
         "baseline_config_hash": baseline_config_hash,
         "input_source": "active_pipeline_outputs",
+        "alignment_seed_controls": {
+            "fuzzy_matching": alignment_fuzzy_controls,
+        },
+        "alignment_counts": {
+            "input_event_rows": int(alignment_counts.get("input_event_rows", 0)),
+            "matched_by_spotify_id": int(alignment_counts.get("matched_by_spotify_id", 0)),
+            "matched_by_metadata": int(alignment_counts.get("matched_by_metadata", 0)),
+            "matched_by_fuzzy": int(alignment_counts.get("matched_by_fuzzy", 0)),
+            "unmatched": int(alignment_counts.get("unmatched", 0)),
+            "seed_table_rows": int(alignment_counts.get("seed_table_rows", 0)),
+        },
         "fixed_inputs": fixed_inputs,
         "optional_dependency_availability": {
             key: {
@@ -166,6 +182,8 @@ def main() -> None:
                 "ranked_output_hash": record["stable_hashes"]["ranked_output_hash"],
                 "playlist_output_hash": record["stable_hashes"]["playlist_output_hash"],
                 "archive_dir": record["archive_dir"],
+                "alignment_fuzzy_enabled": bool(alignment_fuzzy_controls.get("enabled", False)),
+                "alignment_matched_by_fuzzy": int(alignment_counts.get("matched_by_fuzzy", 0)),
             }
         )
 
@@ -205,6 +223,7 @@ def main() -> None:
         },
         "inputs": {
             "baseline_snapshot_path": relpath(paths["baseline_snapshot"], root),
+            "alignment_summary_path": relpath(paths["bl003_summary"], root),
             "controllability_config_snapshot_path": relpath(config_snapshot_path, root),
             "fixed_input_hashes": config_snapshot["fixed_inputs"],
         },

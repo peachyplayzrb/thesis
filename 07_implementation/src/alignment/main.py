@@ -13,6 +13,7 @@ from shared_utils.constants import (
     DEFAULT_TOP_RANGE_WEIGHTS,
     DEFAULT_SOURCE_BASE_WEIGHTS,
     DEFAULT_INPUT_SCOPE,
+    DEFAULT_SEED_CONTROLS,
     DEFAULT_RECENTLY_PLAYED_DECAY_HALF_LIFE_DAYS,
     DEFAULT_SAVED_TRACKS_DECAY_HALF_LIFE_DAYS,
 )
@@ -116,11 +117,17 @@ def main() -> None:
         "saved_tracks": DEFAULT_SAVED_TRACKS_DECAY_HALF_LIFE_DAYS,
     }
     match_rate_min_threshold = 0.0
+    fuzzy_matching_controls = dict(DEFAULT_SEED_CONTROLS.get("fuzzy_matching") or {})
     if runtime_scope["config_source"] == "run_config" and runtime_scope.get("run_config_path"):
         _rc_utils = load_run_config_utils_module()
         seed_controls = _rc_utils.resolve_bl003_seed_controls(runtime_scope["run_config_path"])
         top_range_weights = dict(seed_controls.get("top_range_weights", DEFAULT_TOP_RANGE_WEIGHTS))
         source_base_weights = dict(seed_controls.get("source_base_weights", DEFAULT_SOURCE_BASE_WEIGHTS))
+        fuzzy_matching_controls = dict(
+            seed_controls.get("fuzzy_matching")
+            or DEFAULT_SEED_CONTROLS.get("fuzzy_matching")
+            or {}
+        )
         decay_half_lives.update(
             {
                 "recently_played": float(
@@ -176,7 +183,7 @@ def main() -> None:
         )
 
     ds001_rows = load_csv_rows(ds001_path)
-    by_spotify_id, by_title_artist = build_ds001_indices(ds001_rows)
+    by_spotify_id, by_title_artist, by_artist = build_ds001_indices(ds001_rows)
     by_ds001_id: dict[str, dict[str, str]] = {
         str(r.get("id", "")).strip(): r for r in ds001_rows if r.get("id", "").strip()
     }
@@ -198,9 +205,11 @@ def main() -> None:
         events,
         by_spotify_id,
         by_title_artist,
+        by_artist,
         top_range_weights,
         source_base_weights,
         decay_half_lives,
+        fuzzy_matching_controls,
     )
     summary_counts = {"input_event_rows": len(events), **match_counts}
 
@@ -247,11 +256,13 @@ def main() -> None:
         unmatched_rows=unmatched_rows,
         output_paths=output_paths,
         match_rate_min_threshold=match_rate_min_threshold,
+        fuzzy_matching_controls=fuzzy_matching_controls,
     )
 
     print(f"input_event_rows={summary_counts['input_event_rows']}")
     print(f"matched_by_spotify_id={summary_counts['matched_by_spotify_id']}")
     print(f"matched_by_metadata={summary_counts['matched_by_metadata']}")
+    print(f"matched_by_fuzzy={summary_counts.get('matched_by_fuzzy', 0)}")
     print(f"unmatched={summary_counts['unmatched']}")
     print(f"matched_events_rows={len(matched_events)}")
     print(f"seed_table_rows={len(aggregated)}")
