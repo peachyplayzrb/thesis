@@ -72,6 +72,7 @@ The operator-facing entrypoints remain stable, but the runtime code is now split
 - `src/orchestration/` keeps `main.py` as a thin BL-013 entrypoint over dedicated CLI, stage-runner, seed-freshness, and summary helpers.
 - `src/controllability/` keeps `pipeline_runner.py` and `scenarios.py` as stable BL-011 entry surfaces while stage execution, pathing, and runtime-control resolution live in focused helper modules.
 - `src/alignment/` keeps `matching.py` and `reporting.py` as compatibility wrappers over focused text-matching, indexing, match-pipeline, writing, validation, and summary helpers.
+- `src/profile/`, `src/retrieval/`, and `src/scoring/` now follow a shared typed-stage structure (`models.py` contracts + `stage.py` orchestrator + thin wrapper `main.py`) so BL-004 to BL-006 remain API-compatible while reducing monolithic script logic.
 
 This split preserves the existing package surface while reducing monolithic scripts and making control/runtime behavior easier to audit.
 

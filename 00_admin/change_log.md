@@ -8,7 +8,7 @@ Ordering convention (standardized 2026-03-24):
 - New entries must be appended at the end; historical entries remain unchanged except for explicit correction records.
 
 Maintenance snapshot (2026-03-28):
-- Highest change ID currently present: `C-204`
+- Highest change ID currently present: `C-205`
 - Known legacy correction applied in this file: prior duplicate `C-079` entry has been normalized to `C-135` for unique-ID compliance.
 
 ## C-001
@@ -2058,3 +2058,4 @@ Maintenance snapshot (2026-03-28):
 | C-201 | 2026-03-28 | Copilot | Ingestion runtime simplification alignment: documented and adopted no-token-cache/no-endpoint-cache BL-002 behavior with fresh OAuth-per-live-export and item-first track-only playlist-item parsing as accepted baseline policy; propagated this posture into governance (`D-040`) and implementation README guidance. |
 | C-202 | 2026-03-29 | Copilot | Executed `07_implementation` cleanup and stabilization pass: removed generated caches and duplicate `src/run_config/configs/profiles` tree, retained canonical `config/profiles`, added `*.egg-info/` ignore, fixed stale README submission-guide pointer, patched `main.py` subprocess `PYTHONPATH` propagation for stage imports, and validated smoke tests (`test_standalone.py` pass). |
 | C-204 | 2026-03-29 | Copilot | Completed the Phase 5-6 modularization sync pass: split BL-013 orchestration into focused helper modules with CLI > run-config > defaults control resolution, split BL-011 controllability into stage/path/runtime-control modules, split BL-003 matching/reporting into focused helper modules while preserving thin compatibility wrappers, refreshed admin/runtime docs to reflect the new layout, and revalidated touched files with pyright (`0 errors`). |
+| C-205 | 2026-03-29 | Copilot | Completed OO-stage migration for BL-004, BL-005, and BL-006 in the standalone implementation surface: added typed models and stage classes for profile/retrieval/scoring, reduced each `main.py` to thin compatibility wrappers over stage methods, added stage-level tests, and revalidated touched files with pytest and pyright. |

@@ -15,6 +15,99 @@ Copy the block below for each new run.
 
 ---
 
+## EXP-054
+- date: 2026-03-29
+- backlog_link: `BL-004/BL-005/BL-006 modularity hardening`
+- owner: Timothy + AI
+- status: pass
+- related_test_id: `TC-BL006-STAGE-OO-001`
+
+### Objective
+- Migrate BL-004 profile, BL-005 retrieval, and BL-006 scoring to a consistent typed OO stage pattern while preserving compatibility wrappers and downstream behavior.
+
+### Scope Check
+- In-scope confirmation: yes, bounded implementation modularity hardening and docs sync.
+- Protected items affected? no
+
+### Inputs
+- source_data:
+  - `07_implementation/src/profile/main.py`
+  - `07_implementation/src/retrieval/main.py`
+  - `07_implementation/src/scoring/main.py`
+  - `07_implementation/src/*/models.py`
+  - `07_implementation/src/*/stage.py`
+  - `07_implementation/tests/test_scoring_stage.py`
+- config_or_parameters:
+  - preserve existing run contracts and wrapper function surface
+  - keep deterministic behavior unchanged for downstream BL-007 to BL-009 consumers
+- code_or_script_path:
+  - staged modularization in profile/retrieval/scoring modules
+- dependency assumptions:
+  - existing test harness remains valid for compatibility verification
+
+### Expected Evidence
+- primary_output_artifact:
+  - BL-004/BL-005/BL-006 modules use typed models plus stage orchestration classes with thin wrappers in `main.py`.
+- secondary_output_artifacts:
+  - stage-level scoring tests and synchronized admin state docs.
+- success_condition:
+  - migrated modules pass targeted tests and pyright checks without downstream contract regressions.
+
+### Run Record
+- command_or_execution_method:
+  - apply staged refactors, run targeted tests and pyright on touched surfaces, then sync governance docs.
+- run_id:
+  - `OO-STAGE-MIGRATION-20260329`
+- start_state_summary:
+  - BL-004/BL-005/BL-006 still carried mixed monolithic script logic with uneven typed orchestration patterns.
+- end_state_summary:
+  - profile, retrieval, and scoring now share explicit typed models + stage classes; main entrypoints are wrapper-first and compatibility preserved.
+
+### Results
+- outcome_summary:
+  - pass - typed OO shell migration completed for BL-004 to BL-006 with compatibility wrappers retained and docs synchronized.
+- key_metrics:
+  - modules_migrated: `3`
+  - stage_classes_added: `3`
+  - stage_model_contract_files_added: `3`
+  - stage_tests_added: `1`
+- deterministic_repeat_checked: yes (targeted downstream behavior preserved)
+- output_paths:
+  - `07_implementation/src/profile/models.py`
+  - `07_implementation/src/profile/stage.py`
+  - `07_implementation/src/retrieval/models.py`
+  - `07_implementation/src/retrieval/stage.py`
+  - `07_implementation/src/scoring/models.py`
+  - `07_implementation/src/scoring/stage.py`
+  - `07_implementation/tests/test_scoring_stage.py`
+  - `00_admin/change_log.md`
+  - `00_admin/thesis_state.md`
+
+### Issues And Limits
+- failures_or_anomalies:
+  - none blocking after adapter and type-surface cleanup.
+- likely_cause:
+  - n/a
+- bounded_mvp_limitation_or_bug:
+  - this pass preserves behavior by design; it does not expand recommendation scope or change evaluation claims.
+
+### Thesis Traceability
+- chapter4_relevance:
+  - strengthens implementation-quality narrative by showing explicit modular orchestration in core ranking stages.
+- chapter5_relevance:
+  - supports maintainability and risk-reduction discussion for deterministic engineering choices.
+- quality_control_files_to_update:
+  - `00_admin/change_log.md`
+  - `00_admin/thesis_state.md`
+
+### Next Action
+- immediate_follow_up:
+  - keep submission packaging as the remaining external task.
+- backlog_status_recommendation:
+  - no backlog status change required.
+
+---
+
 ## EXP-053
 - date: 2026-03-27
 - backlog_link: `repo workflow customization`

@@ -1,6 +1,6 @@
 # Thesis State
 
-Last updated: 2026-03-29 UTC (Phase 5-6 modularization and docs sync complete)
+Last updated: 2026-03-29 UTC (Phase 5-6 modularization + BL-004/005/006 OO migration and docs sync complete)
 
 ## Official Current State
 
@@ -96,6 +96,8 @@ Priority status checkpoint (2026-03-29 06:00 UTC): Phase 1-4 controllability & t
 
 Priority status checkpoint (2026-03-29 modularization pass): Phase 5 and Phase 6 implementation cleanup is complete. BL-013 orchestration control resolution now consistently honors CLI > run-config > defaults and `orchestration/main.py` is reduced to a thin entrypoint over focused CLI, stage-runner, seed-freshness, and summary helpers. BL-011 controllability is split into dedicated profile, retrieval, scoring, playlist, pathing, and runtime-control modules, and BL-003 matching/reporting is split into focused text, indexing, matching, writing, validation, and summary helpers while preserving compatibility wrappers at the legacy import surfaces. Touched files were revalidated with pyright (`0 errors`). Remaining work remains external submission packaging rather than in-repo implementation changes.
 
+Priority status checkpoint (2026-03-29 OO stage migration pass): BL-004 profile, BL-005 retrieval, and BL-006 scoring are now aligned to the typed OO shell pattern used across newer modules: each surface now has explicit models contracts, dedicated stage orchestration class, and thin compatibility wrappers at the legacy `main.py` call points. Stage-level tests were added for the migrated scoring path and existing integration behavior was preserved for BL-007/BL-008/BL-009 consumers.
+
 ## Current Implementation Status
 
 ### BL-020 Implementation State (as of 2026-03-26)
@@ -121,7 +123,7 @@ Priority status checkpoint (2026-03-29 modularization pass): Phase 5 and Phase 6
 - **Current Execution Focus** (2026-03-28 closing pass): All in-repo QC gates closed (C-197/C-198/C-199). Code hygiene refactor applied and validated: `safe_int` centralized, duplicate helpers removed from 3 modules, 181/181 tests pass, pyright clean. UI-003 verdict matrix `mismatch=0`, `weak_support=0`. Chapter 2 verbatim audit `weak_support=0` (`total_claim_checks=40`). All chapter readiness gates complete. No open implementation or QC blockers for submission.
 - **Active Risk (Governance)**: No active unresolved governance blocker; residual risk is execution discipline for chapter hardening completion.
 - **Implementation Quality Status**: Pipeline closed on the active v1f baseline (`run_config_ui013_tuning_v1f.json`). BL-014 passes 22/22. All 10 scoring components active. BL-010 determinism and BL-011 controllability confirmed on their respective pinned states. No open implementation closure risks.
-- **Implementation Modularity Status** (2026-03-29): Orchestration, controllability, and alignment runtime surfaces are now split into focused helper modules with thin compatibility entrypoints/wrappers retained at `main.py`, `pipeline_runner.py`, `scenarios.py`, `matching.py`, and `reporting.py`. Current risk is low and limited to normal maintenance drift rather than monolithic-script fragility.
+- **Implementation Modularity Status** (2026-03-29): Orchestration, controllability, and alignment runtime surfaces are now split into focused helper modules with thin compatibility entrypoints/wrappers retained at `main.py`, `pipeline_runner.py`, `scenarios.py`, `matching.py`, and `reporting.py`. BL-004, BL-005, and BL-006 now also follow a consistent typed stage pattern (`models.py` + `stage.py` + wrapper `main.py`) to reduce script-level coupling and preserve a stable API surface. Current risk is low and limited to normal maintenance drift rather than monolithic-script fragility.
 
 ### BL-021 Source-Scope Control State (as of 2026-03-26)
 - Source-scope contract is baseline behavior (no longer deferred): implemented, validated, and traceable in run artifacts.
@@ -140,12 +142,13 @@ See: `07_implementation/BL020_HANDOFF_AUDIT_2026-03-21.md` for comprehensive pre
 ## Update Control
 
 - Last updated:
-2026-03-29 (Phase 5-6 modularization + docs sync pass)
+2026-03-29 (Phase 5-6 modularization + BL-004/005/006 OO migration + docs sync pass)
 
 - Reason for last update:
 (1) Phase 5 BL-013 orchestration cleanup completed: control resolution was externalized and `orchestration/main.py` reduced to a thin entrypoint over focused helper modules while preserving behavior.
 (2) Phase 6 modularization completed across BL-011 and BL-003 support code: controllability scenario execution is split into dedicated stage/path/runtime-control modules and alignment matching/reporting is split into focused helper modules with compatibility wrappers retained.
-(3) Admin/runtime docs were synchronized to the modularized layout and touched files were revalidated with pyright; canonical baseline and chapter/QC closure posture remain unchanged, so the only remaining task is external submission packaging.
+(3) BL-004/BL-005/BL-006 were migrated to a consistent typed OO stage shell (`models.py` + `stage.py` + wrapper `main.py`) with compatibility wrappers preserved and stage-level tests added.
+(4) Admin/runtime docs were synchronized to the modularized layout and touched files were revalidated with pyright; canonical baseline and chapter/QC closure posture remain unchanged, so the only remaining task is external submission packaging.
 
 ## Locked Definitions
 - Artefact scope lock: `00_admin/Artefact_MVP_definition.md`
