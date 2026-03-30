@@ -6,8 +6,9 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 from playlist.io_layer import (
+    DEFAULT_OUTPUT_DIR,
+    DEFAULT_SCORED_CANDIDATES_PATH,
     read_scored_candidates,
-    resolve_bl007_paths,
     write_assembly_trace,
     write_detail_log,
     write_playlist,
@@ -32,6 +33,7 @@ from playlist.reporting import (
 from playlist.rules import assemble_bucketed
 from playlist.runtime_controls import resolve_bl007_runtime_controls
 from shared_utils.io_utils import sha256_of_file, utc_now
+from shared_utils.env_utils import env_path
 from shared_utils.path_utils import impl_root
 from shared_utils.parsing import safe_int
 from shared_utils.stage_utils import ensure_paths_exist
@@ -43,9 +45,12 @@ class PlaylistStage:
     def __init__(self, root: Path | None = None) -> None:
         self.root = root if root is not None else impl_root()
 
-    @staticmethod
-    def resolve_paths() -> PlaylistPaths:
-        scored_candidates_path, output_dir = resolve_bl007_paths()
+    def resolve_paths(self) -> PlaylistPaths:
+        scored_candidates_path = env_path(
+            "BL007_SCORED_CANDIDATES_PATH",
+            self.root / DEFAULT_SCORED_CANDIDATES_PATH,
+        )
+        output_dir = env_path("BL007_OUTPUT_DIR", self.root / DEFAULT_OUTPUT_DIR)
         return PlaylistPaths(
             scored_candidates_path=scored_candidates_path,
             output_dir=output_dir,

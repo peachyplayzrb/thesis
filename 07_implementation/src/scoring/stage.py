@@ -530,6 +530,8 @@ class ScoringStage:
             scored_path=scored_path,
         )
         summary["semantic_precision_diagnostics"] = semantic_precision_diagnostics
+        summary["bl003_summary_present"] = bool(inputs.bl003_summary)
+        summary["influence_contract_source"] = "present" if bool(inputs.bl003_summary) else "missing"
 
         summary["output_hashes_sha256"] = {
             "bl006_scored_candidates.csv": sha256_of_file(scored_path),

@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+
 # pyright: reportMissingImports=false
 
 import json

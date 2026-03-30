@@ -6,7 +6,7 @@ import time
 from pathlib import Path
 from typing import Any
 
-from alignment.constants import ALIGNMENT_OUTPUT_FILENAMES, SOURCE_SCOPE_SPECS, SOURCE_TYPES, SPOTIFY_EXPORT_FILENAMES
+from alignment.constants import ALIGNMENT_DEFAULT_RELATIVE_PATHS, ALIGNMENT_OUTPUT_FILENAMES, SOURCE_SCOPE_SPECS, SOURCE_TYPES, SPOTIFY_EXPORT_FILENAMES
 from alignment.aggregation import aggregate_matched_events
 from alignment.influence import inject_influence_tracks
 from alignment.match_pipeline import match_events
@@ -31,6 +31,7 @@ from alignment.runtime_scope import apply_input_scope_filters
 from alignment.weighting import to_event_rows
 from shared_utils.io_utils import load_csv_rows
 from shared_utils.index_builder import build_ds001_indices
+from shared_utils.path_utils import impl_root
 
 
 @dataclass(frozen=True)
@@ -61,29 +62,39 @@ class AlignmentStage:
 
     def __init__(
         self,
+        root: Path | None = None,
         *,
-        ds001_path: Path,
-        spotify_dir: Path,
-        output_dir: Path,
+        ds001_path: Path | None = None,
+        spotify_dir: Path | None = None,
+        output_dir: Path | None = None,
         allow_missing_selected_sources: bool = False,
     ) -> None:
-        self.ds001_path = ds001_path
-        self.spotify_dir = spotify_dir
-        self.output_dir = output_dir
+        self.root = root if root is not None else impl_root()
+        self._ds001_path_override = ds001_path
+        self._spotify_dir_override = spotify_dir
+        self._output_dir_override = output_dir
         self.allow_missing_selected_sources = allow_missing_selected_sources
 
     def resolve_paths(self) -> AlignmentPaths:
+        d = ALIGNMENT_DEFAULT_RELATIVE_PATHS
+        ds001 = self._ds001_path_override or self.root / d["ds001_candidates"]
+        spotify = self._spotify_dir_override or self.root / d["spotify_export_dir"]
+        out = self._output_dir_override or self.root / d["output_dir"]
         return AlignmentPaths(
-            ds001_path=self.ds001_path,
-            spotify_dir=self.spotify_dir,
-            output_dir=self.output_dir,
-            top_path=self.spotify_dir / SPOTIFY_EXPORT_FILENAMES["top_tracks"],
-            saved_path=self.spotify_dir / SPOTIFY_EXPORT_FILENAMES["saved_tracks"],
-            playlist_items_path=self.spotify_dir / SPOTIFY_EXPORT_FILENAMES["playlist_items"],
-            recently_played_path=self.spotify_dir / SPOTIFY_EXPORT_FILENAMES["recently_played"],
-            summary_path=self.output_dir / ALIGNMENT_OUTPUT_FILENAMES["summary_json"],
-            source_scope_manifest_path=self.output_dir / ALIGNMENT_OUTPUT_FILENAMES["source_scope_manifest_json"],
+            ds001_path=ds001,
+            spotify_dir=spotify,
+            output_dir=out,
+            top_path=spotify / SPOTIFY_EXPORT_FILENAMES["top_tracks"],
+            saved_path=spotify / SPOTIFY_EXPORT_FILENAMES["saved_tracks"],
+            playlist_items_path=spotify / SPOTIFY_EXPORT_FILENAMES["playlist_items"],
+            recently_played_path=spotify / SPOTIFY_EXPORT_FILENAMES["recently_played"],
+            summary_path=out / ALIGNMENT_OUTPUT_FILENAMES["summary_json"],
+            source_scope_manifest_path=out / ALIGNMENT_OUTPUT_FILENAMES["source_scope_manifest_json"],
         )
+
+    @staticmethod
+    def resolve_runtime_controls() -> AlignmentResolvedContext:
+        return resolve_alignment_context()
 
     @staticmethod
     def load_export_selection(spotify_export_dir: Path) -> dict[str, object]:
@@ -311,7 +322,7 @@ class AlignmentStage:
             raise FileNotFoundError(f"DS-001 working dataset not found: {paths.ds001_path}")
 
         source_rows = self.load_source_rows(paths)
-        context: AlignmentResolvedContext = resolve_alignment_context()
+        context: AlignmentResolvedContext = self.resolve_runtime_controls()
         scope_result = self._resolve_scope_selection(
             source_rows=source_rows,
             context=context,
