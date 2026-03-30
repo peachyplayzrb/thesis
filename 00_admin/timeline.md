@@ -1,6 +1,6 @@
 ﻿# Thesis Timeline
 
-Last updated: 2026-03-29
+Last updated: 2026-03-30
 
 ## Milestones
 - M1 (2026-03-13 to 2026-03-20): Planning baseline finalized [completed]
@@ -76,6 +76,7 @@ Last updated: 2026-03-29
 - BL-005 retrieval typed-artifacts contract recorded (2026-03-29): `RetrievalArtifacts` dataclass standardized the `RetrievalStage.run()` return contract to match BL-003/BL-004/BL-006/BL-007 (C-218).
 - Documentation sync wave recorded (2026-03-29): governance and design docs synchronized to BL-003 through BL-007 source-code behavior; BL-007 wording corrected to partially configurable (C-219).
 - 00_admin full synchronization wave recorded (2026-03-29): all admin files synchronized to current canonical baseline (C-220).
+- Aggressive root archival wave recorded (2026-03-30): moved `.controllability-transparency.instructions.md`, `.gitattributes`, `requirements.txt`, `pyrightconfig.json`, `main_standalone.py`, and `final_artefact.py` into `_deep_archive_march2026/_packages_reference_2026-03-30/`, expanded `.gitignore` to ignore deep archive, and synchronized admin logs/state (D-044, C-222).
 
 ## Notes
 - Dates are a working baseline for execution control and can be refined against official module deadlines.

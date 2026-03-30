@@ -1,6 +1,6 @@
 # Unresolved Issues
 
-Last updated: 2026-03-29
+Last updated: 2026-03-30
 
 ## Active
 
@@ -20,6 +20,7 @@ Active-set sync note (2026-03-26 22:30 UTC): Evidence audit completed for the ca
 Active-set sync note (2026-03-27 01:22 UTC): v1f evidence refresh and document-consistency pass completed. BL-013 pass (`BL013-ENTRYPOINT-20260327-012149-023331`), BL-014 sanity pass (`BL014-SANITY-20260327-011939-797165`, `22/22`), BL-010 pass (`BL010-REPRO-20260327-011941`), BL-011 pass (`BL011-CTRL-20260327-012056`), and active freshness suite pass (`BL-FRESHNESS-SUITE-20260327-012201`, `19/19`). Chapter 4 EP matrix rows are now populated and abstract draft is in place. Open active issue remains UI-003 only.
 Active-set sync note (2026-03-27 03:05 UTC): UI-003 closure package is now complete at control-record level. Chapters 3 to 5 claim-verdict matrix and chapter-targeted hardening notes are logged in `09_quality_control/ui003_claim_verdicts_ch3_ch5.md` and `09_quality_control/ui003_chapter_hardening_notes_ch3_ch5.md`. No active unresolved issues remain.
 Active-set sync note (2026-03-29 UTC): Confirmed no active unresolved issues. Architecture migration wave (BL-003 typed boundaries + stage-shell, BL-004 through BL-007 OO migration + controllable-logic uplift) is complete and logged. Documentation sync C-219 is complete. 00_admin full synchronization wave C-220 is in progress. Only remaining active scope is physical submission packaging.
+Active-set sync note (2026-03-30 UTC): Aggressive root archival wave accepted and executed (D-044/C-222). No new unresolved blocker opened by this operation; active runtime posture remains `07_implementation/main.py` with archived root wrappers/config surfaces retained in deep archive.
 
 ## Resolved (Recent)
 

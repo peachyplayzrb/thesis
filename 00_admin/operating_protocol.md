@@ -152,14 +152,16 @@ If a protected item appears misaligned, AI must log a change proposal (`C-###`) 
 Use `09_quality_control/audit_schedule.md` as the operating schedule for weekly, biweekly, and monthly checks.
 
 ## 9) Archive Protocol
-- Archive location: `archive/`.
+- Archive location: `_deep_archive_march2026/` (dated subfolders required for each wave).
 - Move content to archive when:
   - a design direction is rejected
   - an old chapter draft is replaced
   - an experiment is invalidated
   - a literature theme is abandoned
+  - root-level surfaces are explicitly retired by accepted decision
 - Archive moves require explicit human confirmation.
 - Keep a short reason and date with every archived item.
+- Archive execution record for the 2026-03-30 aggressive root wave: see `D-044` and `C-222`.
 
 ## 10) Workload Guardrails
 - Do not create a new thematic note unless at least 3 papers map to it.

@@ -5,10 +5,10 @@ Ordering convention (standardized 2026-03-24):
 - Entry IDs remain unique identifiers, but physical entry order reflects historical insertion timing (not strict numeric sorting).
 - New entries must be appended at the end and may include `superseded_by` when a prior decision is replaced.
 
-Maintenance snapshot (2026-03-28):
-- Highest decision ID currently present: `D-040`
-- Total decision entries: 40
-- Status distribution: accepted=31, superseded=3, rejected=1
+Maintenance snapshot (2026-03-30):
+- Highest decision ID currently present: `D-044`
+- Total decision entries: 41
+- Status distribution: accepted=32, superseded=3, rejected=1
 - ID integrity check: no duplicate decision IDs detected
 
 Current posture snapshot (2026-03-25):
@@ -1208,4 +1208,17 @@ review_date: none
 - evidence_basis: `00_admin/INGESTION_DECACHING_CHANGELOG_2026-03-28.md`, `07_implementation/src/ingestion/export_spotify_max_dataset.py`, `07_implementation/src/ingestion/spotify_client.py`, `07_implementation/src/ingestion/spotify_mapping.py`, `07_implementation/src/ingestion/spotify_artifacts.py`.
 - impacted_files: `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/thesis_state.md`, `07_implementation/README.md`, `00_admin/INGESTION_DECACHING_CHANGELOG_2026-03-28.md`
 - next_steps: Keep `spotify_resilience.py` and legacy token-cache helper cleanup as optional maintenance only; no change required for current thesis runtime scope.
+
+## D-044
+- date: 2026-03-30
+- entity_id: aggressive root control-surface archival
+- proposed_by: user + Copilot
+- status: accepted
+- decision: Archive six root-level control/runtime surface files (`.controllability-transparency.instructions.md`, `.gitattributes`, `requirements.txt`, `pyrightconfig.json`, `main_standalone.py`, `final_artefact.py`) into `_deep_archive_march2026/_packages_reference_2026-03-30/`, ignore the full `_deep_archive_march2026/` tree in `.gitignore`, and treat `07_implementation/main.py` as the active runtime entrypoint.
+- context: User explicitly requested aggressive archival of all listed root files, placement in deep archive, full admin-document synchronization, and push completion.
+- alternatives_considered: Safe-scope archive of only `main_standalone.py` (rejected by user); retain root wrappers/config files and archive only legacy bundles (rejected by user).
+- rationale: The accepted directive prioritizes root-surface minimization and archival consolidation over preserving prior root convenience surfaces. Deep archive keeps historical assets available while removing them from active root operations.
+- evidence_basis: `_deep_archive_march2026/_packages_reference_2026-03-30/`, `.gitignore`, `file_map.md`, `00_admin/change_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`, `00_admin/operating_protocol.md`, `00_admin/SIGNAL_FILES_MAINTENANCE.md`, `00_admin/README.md`.
+- impacted_files: `.controllability-transparency.instructions.md`, `.gitattributes`, `requirements.txt`, `pyrightconfig.json`, `main_standalone.py`, `final_artefact.py`, `.gitignore`, `file_map.md`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`, `00_admin/operating_protocol.md`, `00_admin/SIGNAL_FILES_MAINTENANCE.md`, `00_admin/README.md`
+- next_steps: Maintain active run/setup guidance on `07_implementation` surfaces and avoid reintroducing archived root files unless a new decision supersedes D-044.
 

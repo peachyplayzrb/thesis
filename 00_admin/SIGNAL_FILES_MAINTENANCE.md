@@ -8,7 +8,7 @@ Ensure that governance and signal files remain current, discoverable, and contin
 Signal files are persistent documentation artifacts that communicate design intent to every agent, reviewer, and contributor who enters the workspace. They are "read first" materials that establish thesis framing upfront.
 
 **Signal files in this system**:
-1. `.controllability-transparency.instructions.md` — Workspace root, framing for agents
+1. `_deep_archive_march2026/_packages_reference_2026-03-30/.controllability-transparency.instructions.md` — Archived historical framing signal (retained for audit)
 2. `CONTROL_SURFACE_REGISTRY.md` — Audit of all controls and their designer status
 3. `TRANSPARENCY_SPEC.md` — Mapping of outputs to transparency requirements
 4. `GOVERNANCE.md` — Rules for control/transparency feature development
@@ -18,7 +18,7 @@ Signal files are persistent documentation artifacts that communicate design inte
 ## File-by-File Maintenance
 
 ### .controllability-transparency.instructions.md
-**Location**: Workspace root (discoverable with first file list)
+**Location**: `_deep_archive_march2026/_packages_reference_2026-03-30/` (archived historical signal, moved from workspace root on 2026-03-30)
 
 **Content**: Framing for agents/reviewers, thesis core statement, active references
 

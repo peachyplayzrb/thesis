@@ -418,6 +418,15 @@ This section is a conservative proposal only. Nothing below has been moved yet. 
 | Candidate | Recommended Action | Why It Is A Candidate | Safety Level | Notes |
 | --- | --- | --- | --- | --- |
 | `01_requirements/university_documents/~$mple Project Final Report v1 (3).pdf` | remove or archive | Appears to be a transient Office lock/temp file rather than meaningful thesis content. | high | Strongest cleanup candidate in the repo tree. |
+
+## Archive Moves (2026-03-30)
+
+| File Or Path | Status | Current Location | What It Does | Notes |
+| --- | --- | --- | --- | --- |
+| `final_artefact/` | archived | `_deep_archive_march2026/_packages_reference_2026-03-30/final_artefact/` | Legacy standalone/reference implementation snapshot package. | Moved out of active root surface; retained for rollback and historical audit. |
+| `recommendation-implementation-standalone/` | archived | `_deep_archive_march2026/_packages_reference_2026-03-30/recommendation-implementation-standalone/` | Previously assembled standalone package copy with implementation mirror. | Moved out of active root surface to reduce duplicate runtime surfaces. |
+| `_assemble_package.py` | archived | `_deep_archive_march2026/_packages_reference_2026-03-30/_assemble_package.py` | One-off assembly helper for standalone package generation. | Archived with related package surfaces; not part of canonical runtime entry path. |
+| `_verify_package.py` | archived | `_deep_archive_march2026/_packages_reference_2026-03-30/_verify_package.py` | One-off verification helper for standalone package structure checks. | Archived with related package surfaces; retained for historical reproduction context. |
 | `00_admin/C_080_day_3_hardening.txt` | archive | Plain-text dated hardening note with lower structure than the main admin logs. | high | Good fit for a future `00_admin/_archive_admin_YYYY-MM-DD/` folder. |
 | `00_admin/music4all_access_email_draft_2026-03-21.md` | archive | One-off communication draft, not an ongoing governance control file. | high | Retain for traceability, but move out of the active admin surface. |
 | `00_admin/mentor_draft_7day_sprint_2026-03-23.md` | archive | Time-bounded mentor sprint draft rather than an enduring control file. | high | Safe once no active sprint work depends on it. |
@@ -459,7 +468,7 @@ This note is a concise handoff summary for the next chat so the current repo-org
 
 ### Repo root: `thesis-main/`
 - Canonical directories remain under `00_admin/` through `10_resources/`.
-- Root-level control files remain: `AGENTS.md`, `.gitignore`, `.gitattributes`, `requirements.txt`.
+- Root-level control files remain: `.gitignore` and workspace-control directories (`.github/`, `00_admin/` through `10_resources/`); former root control files `.gitattributes`, `requirements.txt`, `.controllability-transparency.instructions.md`, `final_artefact.py`, `main_standalone.py`, and `pyrightconfig.json` were archived on 2026-03-30.
 - Active smoke test script now lives under `07_implementation/scripts/`.
 - Dated archive directories remain in place for implementation snapshots and historical run-output retention.
 - `_scratch/` currently contains retained UI013 tuning experiment artifacts rather than throwaway temp files.
@@ -482,3 +491,13 @@ This note is a concise handoff summary for the next chat so the current repo-org
 - `_archive_cleanup_staging_2026-03-26/` was moved to the parent folder (`thesis-main (3)/`) during the 2026-03-27 cleanup pass — it is outside the workspace.
 - The partial `07_implementation/` orphan folder (workspace root level, 4 files) was deleted after confirming the canonical versions inside `thesis-main/` were newer.
 - `thesis-main/` contains the complete active project.
+## Archive Moves (2026-03-30 Aggressive Root Scope)
+
+| File Or Path | Status | Current Location | What It Does | Notes |
+| --- | --- | --- | --- | --- |
+| `.controllability-transparency.instructions.md` | archived | `_deep_archive_march2026/_packages_reference_2026-03-30/.controllability-transparency.instructions.md` | Workspace-level control/transparency framing signal file. | Archived per explicit aggressive-scope instruction; governance docs updated to reference archive location. |
+| `.gitattributes` | archived | `_deep_archive_march2026/_packages_reference_2026-03-30/.gitattributes` | Repo-level attributes/LFS policy file for binary and large data handling. | Archived per explicit aggressive-scope instruction; historical policy retained in deep archive. |
+| `requirements.txt` | archived | `_deep_archive_march2026/_packages_reference_2026-03-30/requirements.txt` | Root dependency manifest used in prior setup guidance. | Archived per explicit aggressive-scope instruction; canonical install surface is now `07_implementation/requirements.txt`. |
+| `pyrightconfig.json` | archived | `_deep_archive_march2026/_packages_reference_2026-03-30/pyrightconfig.json` | Root pyright configuration used for active-source scoping. | Archived per explicit aggressive-scope instruction; active type-check commands should target `07_implementation` scope directly. |
+| `main_standalone.py` | archived | `_deep_archive_march2026/_packages_reference_2026-03-30/main_standalone.py` | Legacy standalone orchestration wrapper for packaged implementation notes. | Archived as superseded root launcher surface. |
+| `final_artefact.py` | archived | `_deep_archive_march2026/_packages_reference_2026-03-30/final_artefact.py` | Legacy evaluator-facing wrapper (`run`/`validate`/`bundle`/`show-paths`). | Archived per explicit aggressive-scope instruction; active runtime entrypoint remains `07_implementation/main.py`. |

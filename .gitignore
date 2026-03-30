@@ -77,3 +77,8 @@ _archive_cleanup_staging_*/
 
 # Legacy/reference implementation snapshot folder (not canonical runtime surface)
 final_artefact/
+recommendation-implementation-standalone/
+
+# Archived package/reference snapshots (kept locally, ignored by repo)
+_deep_archive_march2026/
+_deep_archive_march2026/_packages_reference_2026-03-30/

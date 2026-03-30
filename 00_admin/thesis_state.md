@@ -1,6 +1,6 @@
 # Thesis State
 
-Last updated: 2026-03-29 UTC (README runtime-alignment sync + admin log update)
+Last updated: 2026-03-30 UTC (aggressive root archival wave + admin/governance synchronization)
 
 ## Official Current State
 
@@ -101,6 +101,8 @@ Priority status checkpoint (2026-03-29 OO stage migration pass): BL-004 profile,
 Priority status checkpoint (2026-03-29 BL-003 Phase 2 pass): BL-003 alignment internals now use typed boundaries for event normalization, matching traces, matched-event payloads, and aggregation state via `07_implementation/src/alignment/models.py` while preserving dict-shaped interfaces at stage boundaries for backward compatibility. Validation remained green on targeted alignment coverage (`88/88` tests).
 
 Priority status checkpoint (2026-03-29 README/admin sync): `07_implementation/README.md` was updated to mirror actual standalone runtime behavior (wrapper flow, BL-013 invocation, additive `--validate-only` semantics, active artifact paths, and direct stage command guidance). This is a documentation-alignment update only and does not change canonical run IDs, baseline posture, or implementation behavior.
+
+Priority status checkpoint (2026-03-30 aggressive archive wave): By accepted decision D-044, root-level control/runtime surfaces `.controllability-transparency.instructions.md`, `.gitattributes`, `requirements.txt`, `pyrightconfig.json`, `main_standalone.py`, and `final_artefact.py` were moved to `_deep_archive_march2026/_packages_reference_2026-03-30/` and deep archive is ignored in git. Active runtime posture remains anchored on `07_implementation/main.py`; governance references were synchronized across admin control files.
 
 ## Current Implementation Status
 

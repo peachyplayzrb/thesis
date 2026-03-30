@@ -27,7 +27,7 @@ Control audit: `05_design/CONTROL_SURFACE_REGISTRY.md`
 
 # 00_admin Control Hub
 
-Last refreshed: 2026-03-29 (00_admin full synchronization wave C-220)
+Last refreshed: 2026-03-30 (aggressive root archival wave + admin synchronization C-222)
 
 ## Purpose
 This folder is the governance and execution-control layer for the thesis. It tracks current state, scope, decisions, changes, timeline, unresolved risks, and mentor interaction artifacts.
@@ -60,6 +60,8 @@ This folder is the governance and execution-control layer for the thesis. It tra
 2. Mentor response backlog in `mentor_question_log.md`: MQ-001, MQ-002, MQ-003, MQ-004, and MQ-007 are open (MQ-005, MQ-006, MQ-008 are deferred).
 
 Admin sync checkpoint (2026-03-29): UI-003 closure and v1f canonical posture remain reflected across control files. Phase 5-6 modularization recorded. BL-003 typed-boundary + stage-shell migration complete. BL-004 through BL-007 OO-stage migration and controllable-logic uplift complete (C-205 through C-218). Documentation sync wave complete (C-219). 00_admin full synchronization wave complete (C-220). Only remaining active scope: physical submission packaging.
+
+Admin sync checkpoint (2026-03-30): Aggressive root archival wave accepted (D-044/C-222). Root files `.controllability-transparency.instructions.md`, `.gitattributes`, `requirements.txt`, `pyrightconfig.json`, `main_standalone.py`, and `final_artefact.py` moved to `_deep_archive_march2026/_packages_reference_2026-03-30/`; deep archive is ignored in git; active runtime remains `07_implementation/main.py`.
 
 ## Hygiene Rules
 - Keep this folder as the single source of truth for governance state.
