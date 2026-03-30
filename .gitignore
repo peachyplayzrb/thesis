@@ -74,3 +74,6 @@ cleanup_*_report_*.txt
 restore_from_cleanup_staging_*.ps1
 restore_from_cleanup_staging_*_report.txt
 _archive_cleanup_staging_*/
+
+# Legacy/reference implementation snapshot folder (not canonical runtime surface)
+final_artefact/

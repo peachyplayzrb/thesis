@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+from collections import Counter
 import os
 import re
 import shutil
@@ -136,15 +137,6 @@ def _normalize_requested_time_ranges(raw_value: str) -> List[str]:
     return requested or list(TIME_RANGE_ORDER)
 
 
-def _fetch_recently_played_items(client: SpotifyApiClient, requested_limit: int) -> List[Dict[str, Any]]:
-    limit = max(1, min(50, int(requested_limit)))
-    page = client.api_get(path="/me/player/recently-played", params={"limit": limit})
-    items = page.get("items", []) if isinstance(page, dict) else []
-    if not isinstance(items, list):
-        raise RuntimeError("Expected list items for /me/player/recently-played")
-    return items[:limit]
-
-
 def parse_ps1_env_file(path: Path) -> Dict[str, str]:
     pattern = re.compile(
         r"^\s*\$env:(SPOTIFY_CLIENT_ID|SPOTIFY_CLIENT_SECRET|SPOTIFY_REDIRECT_URI)\s*=\s*['\"](.*?)['\"]\s*$"
@@ -228,15 +220,11 @@ def _fetch_all_data(
     playlist_item_batches: List[Dict[str, Any]] = []
     if args.include_playlists:
         market = profile.get("country") if isinstance(profile, dict) else None
-        seen_playlist_ids: set[str] = set()
         for playlist in playlists:
             playlist_id = playlist.get("id")
             if not playlist_id:
                 continue
             playlist_id = str(playlist_id)
-            if playlist_id in seen_playlist_ids:
-                continue
-            seen_playlist_ids.add(playlist_id)
             playlist_params: Dict[str, Any] = {}
             if isinstance(market, str) and market:
                 playlist_params["market"] = market
@@ -263,7 +251,11 @@ def _fetch_all_data(
     recently_played_items: List[Dict[str, Any]] = []
     if args.include_recently_played:
         limit = max(1, min(50, int(args.recently_played_limit)))
-        recently_played_items = _fetch_recently_played_items(client=client, requested_limit=limit)
+        rp_page = client.api_get(path="/me/player/recently-played", params={"limit": limit})
+        rp_raw = rp_page.get("items", []) if isinstance(rp_page, dict) else []
+        if not isinstance(rp_raw, list):
+            raise RuntimeError("Expected list items for /me/player/recently-played")
+        recently_played_items = rp_raw[:limit]
         print(f"[recently_played] requested_limit={limit} count={len(recently_played_items)}", flush=True)
 
     return {
@@ -310,38 +302,25 @@ def _write_all_artifacts(
         written_artifacts["spotify_top_tracks_by_range.json"] = artifacts["spotify_top_tracks_by_range.json"]
         written_artifacts["spotify_top_tracks_flat.csv"] = artifacts["spotify_top_tracks_flat.csv"]
 
-    if data["saved_track_items"]:
-        write_json(
-            artifacts["spotify_saved_tracks.json"],
-            {"generated_at_utc": generated_at, "count": len(data["saved_track_items"]), "items": data["saved_track_items"]},
-        )
-        write_csv(artifacts["spotify_saved_tracks_flat.csv"], saved_track_rows, SAVED_TRACKS_FIELDS)
-        written_artifacts["spotify_saved_tracks.json"] = artifacts["spotify_saved_tracks.json"]
-        written_artifacts["spotify_saved_tracks_flat.csv"] = artifacts["spotify_saved_tracks_flat.csv"]
-
-    if data["playlists"]:
-        write_json(
-            artifacts["spotify_playlists.json"],
-            {"generated_at_utc": generated_at, "count": len(data["playlists"]), "items": data["playlists"]},
-        )
-        write_csv(artifacts["spotify_playlists_flat.csv"], playlist_rows, PLAYLISTS_FIELDS)
-        written_artifacts["spotify_playlists.json"] = artifacts["spotify_playlists.json"]
-        written_artifacts["spotify_playlists_flat.csv"] = artifacts["spotify_playlists_flat.csv"]
+    for _data_key, _json_name, _csv_name, _rows, _fields in [
+        ("saved_track_items", "spotify_saved_tracks.json", "spotify_saved_tracks_flat.csv", saved_track_rows, SAVED_TRACKS_FIELDS),
+        ("playlists", "spotify_playlists.json", "spotify_playlists_flat.csv", playlist_rows, PLAYLISTS_FIELDS),
+        ("recently_played_items", "spotify_recently_played.json", "spotify_recently_played_flat.csv", recently_played_rows, RECENTLY_PLAYED_FIELDS),
+    ]:
+        if data[_data_key]:
+            write_json(
+                artifacts[_json_name],
+                {"generated_at_utc": generated_at, "count": len(data[_data_key]), "items": data[_data_key]},
+            )
+            write_csv(artifacts[_csv_name], _rows, _fields)
+            written_artifacts[_json_name] = artifacts[_json_name]
+            written_artifacts[_csv_name] = artifacts[_csv_name]
 
     if playlist_item_rows:
         write_jsonl(artifacts["spotify_playlist_items_flat.jsonl"], playlist_item_rows)
         write_csv(artifacts["spotify_playlist_items_flat.csv"], playlist_item_rows, PLAYLIST_ITEMS_FIELDS)
         written_artifacts["spotify_playlist_items_flat.jsonl"] = artifacts["spotify_playlist_items_flat.jsonl"]
         written_artifacts["spotify_playlist_items_flat.csv"] = artifacts["spotify_playlist_items_flat.csv"]
-
-    if data["recently_played_items"]:
-        write_json(
-            artifacts["spotify_recently_played.json"],
-            {"generated_at_utc": generated_at, "count": len(data["recently_played_items"]), "items": data["recently_played_items"]},
-        )
-        write_csv(artifacts["spotify_recently_played_flat.csv"], recently_played_rows, RECENTLY_PLAYED_FIELDS)
-        written_artifacts["spotify_recently_played.json"] = artifacts["spotify_recently_played.json"]
-        written_artifacts["spotify_recently_played_flat.csv"] = artifacts["spotify_recently_played_flat.csv"]
 
     build_metrics = {
         "playlist_item_items_total": int(playlist_item_items_total),
@@ -394,8 +373,7 @@ def _replace_export_directory(staging_dir: Path, output_dir: Path) -> None:
 
 
 def _reset_staging_directory(staging_dir: Path) -> None:
-    if staging_dir.exists():
-        shutil.rmtree(staging_dir)
+    shutil.rmtree(staging_dir, ignore_errors=True)
     staging_dir.mkdir(parents=True, exist_ok=True)
 
 
@@ -504,17 +482,9 @@ def main() -> None:
 
     elapsed_seconds = round(time.time() - run_started, 3)
     top_by_range = data["top_tracks_by_range"]
-    playlist_access_counts = {
-        "accessible": 0,
-        "forbidden": 0,
-        "unknown": 0,
-    }
-    for playlist in data["playlists"]:
-        status = str(playlist.get("playlist_items_access_status") or "unknown")
-        if status not in playlist_access_counts:
-            playlist_access_counts["unknown"] += 1
-        else:
-            playlist_access_counts[status] += 1
+    playlist_access_counts: Counter[str] = Counter(
+        str(p.get("playlist_items_access_status") or "unknown") for p in data["playlists"]
+    )
     endpoint_counts = {
         "top_tracks_short_term": len(top_by_range.get("short_term", [])),
         "top_tracks_medium_term": len(top_by_range.get("medium_term", [])),
