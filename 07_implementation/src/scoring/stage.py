@@ -58,9 +58,9 @@ class ScoringStage:
     def resolve_paths(self) -> ScoringPaths:
         return ScoringPaths(
             profile_path=self.root / "profile" / "outputs" / "bl004_preference_profile.json",
-            bl003_summary_path=self.root / "alignment" / "outputs" / "bl003_ds001_spotify_summary.json",
             filtered_candidates_path=self.root / "retrieval" / "outputs" / "bl005_filtered_candidates.csv",
             output_dir=self.root / "scoring" / "outputs",
+            bl003_summary_path=self.root / "alignment" / "outputs" / "bl003_ds001_spotify_summary.json",
         )
 
     @staticmethod
@@ -69,7 +69,7 @@ class ScoringStage:
         if not isinstance(profile, dict):
             raise RuntimeError("BL-006 profile artifact is malformed; expected JSON object")
         bl003_summary: dict[str, object] = {}
-        if paths.bl003_summary_path.exists():
+        if paths.bl003_summary_path is not None and paths.bl003_summary_path.exists():
             loaded_summary = load_json(paths.bl003_summary_path)
             if isinstance(loaded_summary, dict):
                 bl003_summary = {str(k): v for k, v in loaded_summary.items()}
@@ -391,10 +391,14 @@ class ScoringStage:
             "input_artifacts": {
                 "profile_path": str(paths.profile_path),
                 "profile_sha256": sha256_of_file(paths.profile_path),
-                "bl003_summary_path": str(paths.bl003_summary_path),
+                "bl003_summary_path": (
+                    str(paths.bl003_summary_path)
+                    if paths.bl003_summary_path is not None
+                    else None
+                ),
                 "bl003_summary_sha256": (
                     sha256_of_file(paths.bl003_summary_path)
-                    if paths.bl003_summary_path.exists()
+                    if paths.bl003_summary_path is not None and paths.bl003_summary_path.exists()
                     else None
                 ),
                 "filtered_candidates_path": str(paths.filtered_candidates_path),

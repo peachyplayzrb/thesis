@@ -5,21 +5,24 @@ from collections import Counter
 from playlist.rules import assemble_bucketed, decide_candidate
 
 
-def test_decide_candidate_excludes_below_threshold() -> None:
+def test_assemble_bucketed_r1_counts_below_threshold_candidates() -> None:
+    """R1 pre-filter in assemble_bucketed counts exactly the below-threshold candidates."""
     rule_hits: Counter[str] = Counter()
-    decision, reason = decide_candidate(
-        playlist=[],
-        lead_genre="rock",
-        final_score=0.2,
+    candidates = [
+        {"track_id": "t1", "lead_genre": "rock", "final_score": 0.9, "rank": 1},
+        {"track_id": "t2", "lead_genre": "pop", "final_score": 0.8, "rank": 2},
+        {"track_id": "t3", "lead_genre": "jazz", "final_score": 0.1, "rank": 3},
+        {"track_id": "t4", "lead_genre": "rock", "final_score": 0.05, "rank": 4},
+    ]
+    assemble_bucketed(
+        candidates=candidates,
         target_size=10,
         min_score_threshold=0.35,
         max_per_genre=4,
-        max_consecutive=2,
+        max_consecutive=4,
         rule_hits=rule_hits,
     )
-    assert decision == "excluded"
-    assert reason == "below_score_threshold"
-    assert rule_hits["R1_score_threshold"] == 1
+    assert rule_hits["R1_score_threshold"] == 2
 
 
 def test_decide_candidate_excludes_on_consecutive_run() -> None:
@@ -30,10 +33,8 @@ def test_decide_candidate_excludes_on_consecutive_run() -> None:
     ]
     decision, reason = decide_candidate(
         playlist=playlist,
-        lead_genre="rock",
-        final_score=0.9,
+        assembly_genre="rock",
         target_size=10,
-        min_score_threshold=0.35,
         max_per_genre=5,
         max_consecutive=2,
         rule_hits=rule_hits,
@@ -51,10 +52,8 @@ def test_decide_candidate_includes_when_all_rules_pass() -> None:
     ]
     decision, reason = decide_candidate(
         playlist=playlist,
-        lead_genre="jazz",
-        final_score=0.7,
+        assembly_genre="jazz",
         target_size=10,
-        min_score_threshold=0.35,
         max_per_genre=4,
         max_consecutive=2,
         rule_hits=rule_hits,

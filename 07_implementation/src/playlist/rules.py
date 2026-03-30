@@ -8,40 +8,38 @@ from shared_utils.parsing import safe_float, safe_int
 
 
 def last_n_genres(playlist: list[dict[str, object]], n: int) -> list[str]:
-    """Return lead genres for the last n playlist entries."""
-    return [str(track["lead_genre"]) for track in playlist[-n:]]
+    """Return assembly genres for the last n playlist entries."""
+    return [str(track.get("_assembly_genre") or track.get("lead_genre", "")) for track in playlist[-n:]]
 
 
 def decide_candidate(
     *,
     playlist: list[dict[str, object]],
-    lead_genre: str,
-    final_score: float,
+    assembly_genre: str,
     target_size: int,
-    min_score_threshold: float,
     max_per_genre: int,
     max_consecutive: int,
     rule_hits: Counter,
 ) -> tuple[str, str]:
-    """Apply BL-007 rules in fixed order and return decision plus exclusion reason."""
+    """Apply BL-007 diversity rules (R2, R3, R4) and return decision plus exclusion reason.
+
+    R1 (score threshold) is enforced upstream in assemble_bucketed before candidates
+    reach this function and is not re-checked here.
+    """
     if len(playlist) >= target_size:
         rule_hits["R4_length_cap"] += 1
         return "excluded", "length_cap_reached"
 
-    if final_score < min_score_threshold:
-        rule_hits["R1_score_threshold"] += 1
-        return "excluded", "below_score_threshold"
-
     if sum(
         1
         for track in playlist
-        if str(track.get("_assembly_genre", track.get("lead_genre", ""))) == lead_genre
+        if str(track.get("_assembly_genre", track.get("lead_genre", ""))) == assembly_genre
     ) >= max_per_genre:
         rule_hits["R2_genre_cap"] += 1
         return "excluded", "genre_cap_exceeded"
 
     if len(playlist) >= max_consecutive and all(
-        genre == lead_genre for genre in last_n_genres(playlist, max_consecutive)
+        genre == assembly_genre for genre in last_n_genres(playlist, max_consecutive)
     ):
         rule_hits["R3_consecutive_run"] += 1
         return "excluded", "consecutive_genre_run"
@@ -332,10 +330,8 @@ def assemble_bucketed(
 
             decision, exclusion_reason = decide_candidate(
                 playlist=playlist,
-                lead_genre=str(cand["assembly_genre"]),
-                final_score=safe_float(cand["final_score"], 0.0),
+                assembly_genre=str(cand["assembly_genre"]),
                 target_size=target_size,
-                min_score_threshold=min_score_threshold,
                 max_per_genre=effective_max_per_genre,
                 max_consecutive=effective_max_consecutive,
                 rule_hits=rule_hits,
@@ -399,10 +395,8 @@ def assemble_bucketed(
                     continue
                 _, final_reason = decide_candidate(
                     playlist=playlist,
-                    lead_genre=str(cand["assembly_genre"]),
-                    final_score=safe_float(cand["final_score"], 0.0),
+                    assembly_genre=str(cand["assembly_genre"]),
                     target_size=target_size,
-                    min_score_threshold=min_score_threshold,
                     max_per_genre=effective_max_per_genre,
                     max_consecutive=effective_max_consecutive,
                     rule_hits=rule_hits,

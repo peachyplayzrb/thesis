@@ -76,7 +76,7 @@ def _behavior_controls() -> AlignmentBehaviorControls:
 
 def test_resolve_alignment_context_returns_typed_controls(monkeypatch) -> None:
     monkeypatch.delenv("BL003_INPUT_SCOPE_JSON", raising=False)
-    monkeypatch.delenv("BL_RUN_CONFIG_PATH", raising=False)
+    monkeypatch.delenv("BL_STAGE_CONFIG_JSON", raising=False)
 
     context = resolve_alignment_context()
 
@@ -94,38 +94,37 @@ def test_resolve_alignment_context_returns_typed_controls(monkeypatch) -> None:
     assert context.structural_contract.output_filenames["summary_json"] == "bl003_ds001_spotify_summary.json"
 
 
-def test_resolve_alignment_context_reads_validated_run_config(tmp_path, monkeypatch) -> None:
-    run_config_path = tmp_path / "run_config.json"
-    run_config_path.write_text(
-        json.dumps(
-            {
-                "seed_controls": {
-                    "top_range_weights": {"short_term": 0.8},
-                    "match_strategy": {"enable_metadata_match": False},
-                    "match_strategy_order": ["spotify_id_exact", "fuzzy_title_artist"],
-                    "temporal_controls": {
-                        "reference_mode": "fixed",
-                        "reference_now_utc": "2026-01-15T00:00:00Z",
-                    },
-                    "aggregation_policy": {
-                        "preference_weight_mode": "capped",
-                        "preference_weight_cap_per_event": 0.5,
-                    },
-                    "weighting_policy": {
-                        "top_tracks": {"scale_multiplier": 55.0},
-                    },
+def test_resolve_alignment_context_reads_orchestration_payload(monkeypatch) -> None:
+    payload = {
+        "stage_id": "BL-003",
+        "schema_version": "1.0",
+        "resolved_from": "defaults",
+        "controls": {
+            "seed_controls": {
+                "top_range_weights": {"short_term": 0.8},
+                "match_strategy": {"enable_metadata_match": False},
+                "match_strategy_order": ["spotify_id_exact", "fuzzy_title_artist"],
+                "temporal_controls": {
+                    "reference_mode": "fixed",
+                    "reference_now_utc": "2026-01-15T00:00:00Z",
                 },
-                "influence_tracks": {
-                    "enabled": True,
-                    "track_ids": ["track_a", "track_b"],
-                    "preference_weight": 1.75,
+                "aggregation_policy": {
+                    "preference_weight_mode": "capped",
+                    "preference_weight_cap_per_event": 0.5,
                 },
-            }
-        ),
-        encoding="utf-8",
-    )
+            },
+            "weighting_policy": {
+                "top_tracks": {"scale_multiplier": 55.0},
+            },
+            "influence_controls": {
+                "influence_enabled": True,
+                "influence_track_ids": ["track_a", "track_b"],
+                "influence_preference_weight": 1.75,
+            },
+        },
+    }
     monkeypatch.delenv("BL003_INPUT_SCOPE_JSON", raising=False)
-    monkeypatch.setenv("BL_RUN_CONFIG_PATH", str(run_config_path))
+    monkeypatch.setenv("BL_STAGE_CONFIG_JSON", json.dumps(payload))
 
     context = resolve_alignment_context()
 
@@ -141,7 +140,7 @@ def test_resolve_alignment_context_reads_validated_run_config(tmp_path, monkeypa
         "preference_weight_cap_per_event": 0.5,
     }
     assert context.behavior_controls.weighting_policy is not None
-    assert context.behavior_controls.weighting_policy["top_tracks_scale_multiplier"] == 55.0
+    assert context.behavior_controls.weighting_policy["top_tracks"]["scale_multiplier"] == 55.0
     assert context.behavior_controls.influence_controls["influence_track_ids"] == ["track_a", "track_b"]
     assert context.behavior_controls.influence_controls["influence_preference_weight"] == 1.75
 
@@ -336,3 +335,90 @@ def test_match_events_respects_strategy_order_with_fuzzy_first(monkeypatch) -> N
     assert counts["matched_by_metadata"] == 0
     assert matched[0]["match_method"] == "fuzzy_title_artist"
     assert matched[0]["ds001_id"] == "track_fuzzy"
+
+
+def test_resolve_alignment_context_from_orchestration_payload(monkeypatch) -> None:
+    """Phase 3: verify payload-based resolution (BL_STAGE_CONFIG_JSON) takes precedence."""
+    # Disable env vars to ensure only payload is used
+    monkeypatch.delenv("BL_STAGE_CONFIG_JSON", raising=False)
+    monkeypatch.delenv("BL003_INPUT_SCOPE_JSON", raising=False)
+
+    # Provide orchestration-injected payload
+    payload = {
+        "stage_id": "BL-003",
+        "schema_version": "1.0",
+        "resolved_from": "defaults",
+        "controls": {
+            "input_scope_controls": {
+                "include_top_tracks": True,
+                "include_saved_tracks": False,
+                "include_playlists": False,
+                "include_recently_played": False,
+            },
+            "seed_controls": {
+                "top_range_weights": {"short_term": 0.8, "medium_term": 0.15, "long_term": 0.05},
+                "source_base_weights": {
+                    "top_tracks": 0.9,
+                    "saved_tracks": 0.5,
+                    "playlist_items": 0.3,
+                    "recently_played": 0.4,
+                },
+                "fuzzy_matching": {"enabled": True},
+                "match_strategy": {"enable_spotify_id_match": True},
+                "match_strategy_order": ["spotify_id_exact"],
+                "temporal_controls": {"apply_recency_weighting": True},
+                "aggregation_policy": {"method": "weighted_avg"},
+                "decay_half_lives": {"recently_played": 60.0, "saved_tracks": 730.0},
+                "match_rate_min_threshold": 0.5,
+            },
+            "weighting_policy": {"min_event_weight": 0.1},
+            "influence_controls": {
+                "influence_enabled": True,
+                "influence_track_ids": ["influence_track_123"],
+                "influence_preference_weight": 3.0,
+            },
+        },
+    }
+
+    monkeypatch.setenv("BL_STAGE_CONFIG_JSON", json.dumps(payload))
+
+    context = resolve_alignment_context()
+
+    # Verify payload-based config source
+    assert context.runtime_scope["config_source"] == "orchestration_payload"
+    assert context.runtime_scope["run_config_path"] is None
+
+    # Verify seed controls from payload
+    assert context.behavior_controls.top_range_weights == {
+        "short_term": 0.8,
+        "medium_term": 0.15,
+        "long_term": 0.05,
+    }
+    assert context.behavior_controls.match_rate_min_threshold == 0.5
+    assert context.behavior_controls.decay_half_lives["recently_played"] == 60.0
+    assert context.behavior_controls.decay_half_lives["saved_tracks"] == 730.0
+
+    # Verify matching controls
+    assert context.behavior_controls.match_strategy_order == ["spotify_id_exact"]
+
+    # Verify influence controls
+    assert context.behavior_controls.influence_controls["influence_enabled"] is True
+    assert context.behavior_controls.influence_controls["influence_track_ids"] == [
+        "influence_track_123"
+    ]
+    assert context.behavior_controls.influence_controls["influence_preference_weight"] == 3.0
+
+
+def test_resolve_alignment_context_invalid_payload_falls_back_to_legacy(
+    monkeypatch,
+) -> None:
+    """Phase 3: verify invalid payload JSON falls back to legacy resolution."""
+    # Set invalid JSON
+    monkeypatch.setenv("BL_STAGE_CONFIG_JSON", "{invalid json}")
+
+    # Should not raise; falls back to legacy sources
+    context = resolve_alignment_context()
+
+    # Verify we got a valid context (from legacy resolution)
+    assert context is not None
+    assert context.behavior_controls is not None

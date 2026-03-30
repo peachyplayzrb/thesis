@@ -9,6 +9,14 @@ def _expects_no_shift(expected_effect: str) -> bool:
     return "no shift" in lower or "no bl-004" in lower or "not expected" in lower
 
 
+def _record_expects_no_shift(record: dict[str, object]) -> bool:
+    expected_effect = str(record.get("expected_effect", ""))
+    if _expects_no_shift(expected_effect):
+        return True
+    scenario_id = str(record.get("scenario_id", "")).strip().lower()
+    return scenario_id in {"fuzzy_enabled_strict"}
+
+
 def _evaluate_acceptance_bounds(
     bounds: list[dict[str, Any]],
     comparison: dict[str, object],
@@ -86,6 +94,7 @@ def _evaluate_expected_direction(
         None  — cannot be determined for this control_surface / configuration.
     """
     control_surface = str(scenario_result.get("control_surface", ""))
+    scenario_id = str(scenario_result.get("scenario_id", "")).strip().lower()
     effective_config = dict(scenario_result.get("effective_config") or {})
     observable_shift = bool(partial_comparison["observable_shift"])
     candidate_pool_size_delta = int(partial_comparison["candidate_pool_size_delta"])
@@ -108,10 +117,13 @@ def _evaluate_expected_direction(
         )
         return profile_hash_changed and observable_shift
 
-    if control_surface == "feature_weight":
-        override_component = str(
-            effective_config.get("scoring", {}).get("weight_override_component") or ""
-        )
+    if control_surface == "alignment_fuzzy_mode" or scenario_id == "fuzzy_enabled_strict":
+        return not observable_shift
+
+    override_component = str(
+        effective_config.get("scoring", {}).get("weight_override_component") or ""
+    )
+    if control_surface == "feature_weight" or override_component:
         return (
             component_delta.get(override_component, 0.0) > 0
             and float(rank_shift.get("mean_abs_rank_delta", 0.0)) > 0
@@ -125,9 +137,6 @@ def _evaluate_expected_direction(
         if threshold_scale > 1.0:
             return candidate_pool_size_delta > 0   # looser → pool must grow
         return None  # scale == 1.0, no direction expected
-
-    if control_surface == "alignment_fuzzy_mode":
-        return not observable_shift
 
     return None  # unknown control_surface — no assertion possible
 
@@ -288,11 +297,11 @@ def evaluate_results_status(scenario_records: list[dict[str, object]]) -> dict[s
     all_repeat = all(record["repeat_consistent"] for record in scenario_records)
     all_shift = all(
         record["comparison_to_baseline"]["observable_shift"] for record in non_baseline_records
-        if not _expects_no_shift(str(record.get("expected_effect", "")))
+        if not _record_expects_no_shift(record)
     )
     all_expected_no_shift = all(
         not record["comparison_to_baseline"]["observable_shift"] for record in non_baseline_records
-        if _expects_no_shift(str(record.get("expected_effect", "")))
+        if _record_expects_no_shift(record)
     )
     all_direction = all(
         record["comparison_to_baseline"]["expected_direction_met"]

@@ -5,11 +5,7 @@ from __future__ import annotations
 import json
 import os
 
-from shared_utils.config_loader import load_run_config_utils_module
-from shared_utils.stage_runtime_resolver import (
-    load_positive_numeric_map_from_env,
-    resolve_run_config_path,
-)
+from shared_utils.stage_runtime_resolver import load_positive_numeric_map_from_env
 
 
 def _env_bool(name: str, default: bool) -> bool:
@@ -101,33 +97,44 @@ def _load_bl006_numeric_thresholds_from_env() -> dict[str, float]:
 
 
 def resolve_bl006_runtime_controls(default_weights: dict[str, float]) -> dict[str, object]:
-    """Resolve runtime controls from run-config or environment."""
-    run_config_path = resolve_run_config_path()
-    if run_config_path:
-        run_config_utils = load_run_config_utils_module()
-        controls = run_config_utils.resolve_bl006_controls(run_config_path)
-        return {
-            "config_source": "run_config",
-            "run_config_path": controls.get("config_path"),
-            "run_config_schema_version": controls.get("schema_version"),
-            "signal_mode": dict(controls.get("signal_mode") or {}),
-            "component_weights": dict(controls.get("component_weights") or default_weights),
-            "numeric_thresholds": dict(controls.get("numeric_thresholds") or {}),
-            "lead_genre_strategy": str(controls.get("lead_genre_strategy") or "weighted_top_lead_genres"),
-            "semantic_overlap_strategy": str(controls.get("semantic_overlap_strategy") or "precision_aware"),
-            "semantic_precision_alpha_mode": str(controls.get("semantic_precision_alpha_mode") or "profile_adaptive"),
-            "semantic_precision_alpha_fixed": float(controls.get("semantic_precision_alpha_fixed", 0.35)),
-            "enable_numeric_confidence_scaling": bool(controls.get("enable_numeric_confidence_scaling", True)),
-            "numeric_confidence_floor": float(controls.get("numeric_confidence_floor", 0.0)),
-            "profile_numeric_confidence_mode": str(controls.get("profile_numeric_confidence_mode") or "direct"),
-            "profile_numeric_confidence_blend_weight": float(
-                controls.get("profile_numeric_confidence_blend_weight", 1.0)
-            ),
-            "emit_confidence_impact_diagnostics": bool(controls.get("emit_confidence_impact_diagnostics", True)),
-            "emit_semantic_precision_diagnostics": bool(controls.get("emit_semantic_precision_diagnostics", False)),
-            "apply_bl003_influence_tracks": bool(controls.get("apply_bl003_influence_tracks", False)),
-            "influence_track_bonus_scale": float(controls.get("influence_track_bonus_scale", 0.0)),
-        }
+    """Resolve runtime controls with payload-first precedence.
+
+    Precedence:
+    1) BL_STAGE_CONFIG_JSON (orchestration-injected payload)
+    2) environment defaults
+    """
+    payload_raw = os.environ.get("BL_STAGE_CONFIG_JSON", "").strip()
+    if payload_raw:
+        try:
+            payload = json.loads(payload_raw)
+            stage_payload = payload.get("controls") if isinstance(payload, dict) else None
+            payload_controls = dict(stage_payload) if isinstance(stage_payload, dict) else payload
+            if isinstance(payload_controls, dict) and "signal_mode" in payload_controls:
+                return {
+                    "config_source": "orchestration_payload",
+                    "run_config_path": payload_controls.get("run_config_path"),
+                    "run_config_schema_version": payload_controls.get("run_config_schema_version")
+                    or (payload.get("schema_version") if isinstance(payload, dict) else None),
+                    "signal_mode": dict(payload_controls.get("signal_mode") or {}),
+                    "component_weights": dict(payload_controls.get("component_weights") or default_weights),
+                    "numeric_thresholds": dict(payload_controls.get("numeric_thresholds") or {}),
+                    "lead_genre_strategy": str(payload_controls.get("lead_genre_strategy") or "weighted_top_lead_genres"),
+                    "semantic_overlap_strategy": str(payload_controls.get("semantic_overlap_strategy") or "precision_aware"),
+                    "semantic_precision_alpha_mode": str(payload_controls.get("semantic_precision_alpha_mode") or "profile_adaptive"),
+                    "semantic_precision_alpha_fixed": float(payload_controls.get("semantic_precision_alpha_fixed", 0.35)),
+                    "enable_numeric_confidence_scaling": bool(payload_controls.get("enable_numeric_confidence_scaling", True)),
+                    "numeric_confidence_floor": float(payload_controls.get("numeric_confidence_floor", 0.0)),
+                    "profile_numeric_confidence_mode": str(payload_controls.get("profile_numeric_confidence_mode") or "direct"),
+                    "profile_numeric_confidence_blend_weight": float(
+                        payload_controls.get("profile_numeric_confidence_blend_weight", 1.0)
+                    ),
+                    "emit_confidence_impact_diagnostics": bool(payload_controls.get("emit_confidence_impact_diagnostics", True)),
+                    "emit_semantic_precision_diagnostics": bool(payload_controls.get("emit_semantic_precision_diagnostics", False)),
+                    "apply_bl003_influence_tracks": bool(payload_controls.get("apply_bl003_influence_tracks", False)),
+                    "influence_track_bonus_scale": float(payload_controls.get("influence_track_bonus_scale", 0.0)),
+                }
+        except (json.JSONDecodeError, ValueError, TypeError):
+            pass
     return {
         "config_source": "environment",
         "run_config_path": None,

@@ -1,7 +1,6 @@
-"""BL-011 scenario loading and filtering.
+"""BL-011 scenario filtering utilities.
 
-Bridges the run-config ``scenario_policy`` and ``scenario_definitions`` blocks
-into the runtime scenario list consumed by ``main.py``.
+Applies runtime ``scenario_policy`` to the scenario list consumed by ``main.py``.
 
 Phase 2 capability:
     Scenario filtering by ``enabled_scenario_ids``.  Users can limit which
@@ -15,28 +14,6 @@ Phase 3 extension point:
 from __future__ import annotations
 
 from typing import Any
-
-
-def _load_rc_utils() -> Any:
-    from shared_utils.config_loader import load_run_config_utils_module
-    return load_run_config_utils_module()
-
-
-def load_scenario_policy(run_config_path: str | None) -> tuple[dict[str, Any], list[dict[str, Any]]]:
-    """Load scenario_policy and scenario_definitions from run config.
-
-    Args:
-        run_config_path: Path to run-config JSON, or None to use defaults.
-
-    Returns:
-        (scenario_policy, scenario_definitions)
-        ``scenario_policy`` has keys: enabled_scenario_ids, repeat_count,
-            stage_scope, comparison_mode.
-        ``scenario_definitions`` is the list of definition dicts from config
-            (empty list when not provided — built-in fallback applies).
-    """
-    rc_utils = _load_rc_utils()
-    return rc_utils.resolve_bl011_scenario_policy(run_config_path)
 
 
 def filter_scenarios_by_policy(

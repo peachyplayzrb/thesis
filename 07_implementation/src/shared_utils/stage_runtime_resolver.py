@@ -11,6 +11,35 @@ import os
 from typing import Any, Callable, Dict, List
 
 
+PAYLOAD_SCHEMA_VERSION = "1.0"
+
+
+def _parse_stage_payload(raw_payload: str) -> Dict[str, Any] | None:
+    try:
+        payload = json.loads(raw_payload)
+    except json.JSONDecodeError:
+        return None
+    if not isinstance(payload, dict):
+        return None
+    return payload
+
+
+def get_stage_payload() -> Dict[str, Any] | None:
+    """Load and parse BL_STAGE_CONFIG_JSON payload envelope from environment."""
+    payload_raw = os.environ.get("BL_STAGE_CONFIG_JSON", "").strip()
+    if not payload_raw:
+        return None
+    return _parse_stage_payload(payload_raw)
+
+
+def get_stage_payload_controls(payload: Dict[str, Any]) -> Dict[str, Any]:
+    """Extract stage controls from payload envelope or legacy direct payload dict."""
+    payload_controls = payload.get("controls")
+    if isinstance(payload_controls, dict):
+        return dict(payload_controls)
+    return dict(payload)
+
+
 def resolve_stage_selection(
     config: Dict[str, Any],
     stage_specs: List[Dict[str, str]],
@@ -69,19 +98,31 @@ def load_positive_numeric_map_from_env(env_var_name: str) -> Dict[str, float]:
 
 def resolve_stage_controls(
     *,
-    load_from_run_config: Callable[[Any, str], Dict[str, Any]],
     load_from_env: Callable[[], Dict[str, Any]],
     sanitize: Callable[[Dict[str, Any]], Dict[str, Any]] | None = None,
+    require_payload: bool = False,
 ) -> Dict[str, Any]:
-    """Resolve stage controls from run config when present, else environment defaults."""
-    run_config_path = resolve_run_config_path()
-    if run_config_path:
-        from shared_utils.config_loader import load_run_config_utils_module
+    """Resolve stage controls with payload-first precedence.
 
-        run_config_utils = load_run_config_utils_module()
-        controls = load_from_run_config(run_config_utils, run_config_path)
+    Precedence:
+    1) BL_STAGE_CONFIG_JSON (orchestration-injected payload)
+    2) stage-local environment defaults
+    """
+    controls: Dict[str, Any]
+    payload = get_stage_payload()
+    if payload is not None:
+        controls = get_stage_payload_controls(payload)
     else:
+        if require_payload:
+            raise RuntimeError(
+                "Missing or invalid BL_STAGE_CONFIG_JSON payload for strict stage execution"
+            )
         controls = load_from_env()
+
+    if require_payload and not controls:
+        raise RuntimeError(
+            "BL_STAGE_CONFIG_JSON payload does not contain stage controls"
+        )
 
     if sanitize is None:
         return controls

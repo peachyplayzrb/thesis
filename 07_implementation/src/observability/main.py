@@ -7,8 +7,6 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-
-from shared_utils.config_loader import load_run_config_utils_module
 from shared_utils.artifact_registry import bl009_required_paths
 from shared_utils.constants import DEFAULT_CONTROL_MODE, DEFAULT_INPUT_SCOPE, DEFAULT_OBSERVABILITY_CONTROLS
 from shared_utils.env_utils import env_bool, env_int
@@ -135,20 +133,6 @@ def build_artifact_maps(
     return artifact_hashes, artifact_sizes
 
 
-def _load_bl009_controls_from_run_config(run_config_utils: object, run_config_path: str) -> dict[str, object]:
-    controls = run_config_utils.resolve_bl009_controls(run_config_path)
-    input_scope_controls = run_config_utils.resolve_input_scope_controls(run_config_path)
-    return {
-        "config_source": "run_config",
-        "run_config_path": controls.get("config_path"),
-        "run_config_schema_version": controls.get("schema_version"),
-        "control_mode": dict(controls.get("control_mode") or {}),
-        "input_scope": dict(input_scope_controls.get("input_scope") or DEFAULT_INPUT_SCOPE),
-        "diagnostic_sample_limit": int(controls["diagnostic_sample_limit"]),
-        "bootstrap_mode": bool(controls.get("bootstrap_mode", True)),
-    }
-
-
 def _load_bl009_controls_from_env() -> dict[str, object]:
     return {
         "config_source": "environment",
@@ -165,7 +149,6 @@ def resolve_bl009_runtime_controls() -> dict[str, object]:
     run_intent_path = resolve_run_config_path("BL_RUN_INTENT_PATH")
     run_effective_config_path = resolve_run_config_path("BL_RUN_EFFECTIVE_CONFIG_PATH")
     controls = resolve_stage_controls(
-        load_from_run_config=_load_bl009_controls_from_run_config,
         load_from_env=_load_bl009_controls_from_env,
     )
     controls["run_intent_path"] = run_intent_path

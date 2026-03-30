@@ -115,6 +115,42 @@ class AlignmentStage:
             )
         return selection
 
+    @staticmethod
+    def resolve_expected_sources(
+        *,
+        runtime_scope: dict[str, object],
+        input_scope: dict[str, object],
+        export_selection: dict[str, object],
+    ) -> dict[str, bool]:
+        if runtime_scope.get("config_source") == "run_config":
+            return {
+                source: bool(input_scope.get(str(SOURCE_SCOPE_SPECS[source]["input_scope_flag"]), True))
+                for source in SOURCE_TYPES
+            }
+        return {
+            source: bool(export_selection.get(str(SOURCE_SCOPE_SPECS[source]["export_selection_flag"]), False))
+            for source in SOURCE_TYPES
+        }
+
+    def enforce_selected_source_requirements(
+        self,
+        *,
+        expected_sources: dict[str, bool],
+        available_sources: dict[str, bool],
+    ) -> list[str]:
+        missing_selected_sources = [
+            source
+            for source, expected in expected_sources.items()
+            if expected and not available_sources.get(source, False)
+        ]
+        if missing_selected_sources and not self.allow_missing_selected_sources:
+            raise RuntimeError(
+                "BL-003 strict selected-source check failed. Missing required source files from BL-002 selection: "
+                f"{', '.join(missing_selected_sources)}. Re-run BL-002 export or pass "
+                "--allow-missing-selected-sources to continue."
+            )
+        return missing_selected_sources
+
     def load_source_rows(self, paths: AlignmentPaths) -> AlignmentSourceRows:
         def load_if_present(path: Path) -> tuple[list[dict[str, str]], bool]:
             if not path.exists():
@@ -155,32 +191,20 @@ class AlignmentStage:
         )
 
         export_selection = self.load_export_selection(paths.spotify_dir)
-        if runtime_scope["config_source"] == "run_config":
-            expected_sources = {
-                source: bool(input_scope.get(str(SOURCE_SCOPE_SPECS[source]["input_scope_flag"]), True))
-                for source in SOURCE_TYPES
-            }
-        else:
-            expected_sources = {
-                source: bool(export_selection.get(str(SOURCE_SCOPE_SPECS[source]["export_selection_flag"]), False))
-                for source in SOURCE_TYPES
-            }
+        expected_sources = self.resolve_expected_sources(
+            runtime_scope=runtime_scope,
+            input_scope=input_scope,
+            export_selection=export_selection,
+        )
 
         available_sources = {
             source: bool(getattr(source_rows, str(SOURCE_SCOPE_SPECS[source]["exists_attr"])))
             for source in SOURCE_TYPES
         }
-        missing_selected_sources = [
-            source
-            for source, expected in expected_sources.items()
-            if expected and not available_sources[source]
-        ]
-        if missing_selected_sources and not self.allow_missing_selected_sources:
-            raise RuntimeError(
-                "BL-003 strict selected-source check failed. Missing required source files from BL-002 selection: "
-                f"{', '.join(missing_selected_sources)}. Re-run BL-002 export or pass "
-                "--allow-missing-selected-sources to continue."
-            )
+        missing_selected_sources = self.enforce_selected_source_requirements(
+            expected_sources=expected_sources,
+            available_sources=available_sources,
+        )
 
         source_stats = {
             source: {

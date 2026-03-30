@@ -1,6 +1,7 @@
 """Stage subprocess execution helpers for BL-013."""
 from __future__ import annotations
 
+import json
 import os
 import subprocess
 import time
@@ -17,15 +18,21 @@ def run_stage(
     run_config_path: Path | None,
     run_intent_path: Path | None,
     run_effective_config_path: Path | None,
+    stage_config_payload: dict[str, object] | None = None,
 ) -> dict[str, object]:
     command = [python_executable, str(script_path)]
     stage_env = os.environ.copy()
-    if run_config_path is not None:
-        stage_env["BL_RUN_CONFIG_PATH"] = str(run_config_path)
     if run_intent_path is not None:
         stage_env["BL_RUN_INTENT_PATH"] = str(run_intent_path)
     if run_effective_config_path is not None:
         stage_env["BL_RUN_EFFECTIVE_CONFIG_PATH"] = str(run_effective_config_path)
+    if stage_config_payload is None:
+        raise RuntimeError(f"Missing stage config payload for {stage_id}")
+    stage_env["BL_STAGE_CONFIG_JSON"] = json.dumps(
+        stage_config_payload,
+        ensure_ascii=True,
+        sort_keys=True,
+    )
     started = time.time()
     process = subprocess.run(
         command,
@@ -82,6 +89,7 @@ def run_bl003_seed_refresh(
     run_config_path: Path | None,
     run_intent_path: Path | None,
     run_effective_config_path: Path | None,
+    stage_config_payload: dict[str, object] | None = None,
 ) -> dict[str, object]:
     script_path = root / BL003_SCRIPT
     if not script_path.exists():
@@ -107,4 +115,5 @@ def run_bl003_seed_refresh(
         run_config_path=run_config_path,
         run_intent_path=run_intent_path,
         run_effective_config_path=run_effective_config_path,
+        stage_config_payload=stage_config_payload,
     )

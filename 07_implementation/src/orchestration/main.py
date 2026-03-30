@@ -1,58 +1,21 @@
 ﻿from __future__ import annotations
 
-import importlib.util
 import time
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any
 
 from shared_utils.io_utils import utc_now
 from shared_utils.path_utils import impl_root
 from orchestration.stage_registry import BL003_SCRIPT, DEFAULT_STAGE_ORDER, STAGE_SCRIPT_MAP
 from orchestration.cli import parse_args, validate_stage_order
+from orchestration.config_resolver import (
+    emit_run_config_artifact_pair,
+    resolve_orchestration_controls,
+    resolve_stage_control_payloads,
+)
 from orchestration.seed_freshness import validate_bl003_seed_freshness
 from orchestration.stage_runner import build_missing_script_result, run_bl003_seed_refresh, run_stage
 from orchestration.summary_builder import emit_and_exit_failure, finalize_run, print_run_footer
-
-
-def load_run_config_utils_module(root: Path):
-    module_path = (
-        root
-        / "run_config"
-        / "run_config_utils.py"
-    )
-    spec = importlib.util.spec_from_file_location("run_config_utils", module_path)
-    if spec is None or spec.loader is None:
-        raise RuntimeError(f"Unable to load run-config utilities from {module_path}")
-    module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
-    return module
-
-
-def emit_run_config_artifact_pair(
-    root: Path,
-    run_id: str,
-    run_config_path: Path | None,
-    artifact_dir: Path,
-    generated_at_utc: str,
-) -> dict[str, object]:
-    run_config_utils = load_run_config_utils_module(root)
-    return run_config_utils.write_run_config_artifact_pair(
-        run_id=run_id,
-        output_dir=artifact_dir,
-        run_config_path=run_config_path,
-        generated_at_utc=generated_at_utc,
-    )
-
-
-
-
-def _resolve_oc(run_config_path: Path | None, root: Path) -> dict[str, Any]:
-    """Load orchestration_controls from run-config, merged with defaults."""
-    run_config_utils = load_run_config_utils_module(root)
-    return run_config_utils.resolve_bl013_orchestration_controls(
-        str(run_config_path) if run_config_path else None
-    )
 
 
 def main() -> None:
@@ -65,7 +28,7 @@ def main() -> None:
         raise FileNotFoundError(f"Run config file not found: {run_config_path}")
 
     # Load orchestration_controls from run-config (merged with defaults).
-    oc = _resolve_oc(run_config_path, root)
+    oc = resolve_orchestration_controls(run_config_path)
     oc_stage_order: list[str] | None = oc.get("stage_order")  # type: ignore[assignment]
     oc_continue: bool = bool(oc.get("continue_on_error", False))
     oc_refresh_policy: str = str(oc.get("refresh_seed_policy") or "auto_if_stale")
@@ -79,6 +42,7 @@ def main() -> None:
         stage_order = list(DEFAULT_STAGE_ORDER)
 
     effective_continue_on_error: bool = bool(args.continue_on_error) or oc_continue
+    stage_control_payloads = resolve_stage_control_payloads(stage_order, run_config_path)
 
     if oc_refresh_policy == "always":
         effective_refresh_seed = True
@@ -94,7 +58,6 @@ def main() -> None:
     generated_at_utc = utc_now()
     run_config_artifact_dir = (root / args.run_config_artifact_dir).resolve()
     run_config_artifacts = emit_run_config_artifact_pair(
-        root=root,
         run_id=run_id,
         run_config_path=run_config_path,
         artifact_dir=run_config_artifact_dir,
@@ -154,6 +117,7 @@ def main() -> None:
             run_config_path,
             run_intent_path,
             run_effective_config_path,
+            stage_control_payload=stage_control_payloads.get("BL-003"),
         )
         stage_results.append(seed_result)
         if seed_result["status"] == "fail" and not effective_continue_on_error:
@@ -199,6 +163,7 @@ def main() -> None:
             run_config_path,
             run_intent_path,
             run_effective_config_path,
+            stage_config_payload=stage_control_payloads.get(stage_id),
         )
         stage_results.append(result)
 

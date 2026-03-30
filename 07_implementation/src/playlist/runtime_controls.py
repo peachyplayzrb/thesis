@@ -77,32 +77,6 @@ def _sanitize_bl007_controls(controls: dict[str, object]) -> dict[str, object]:
     return controls
 
 
-def _load_bl007_controls_from_run_config(run_config_utils: object, run_config_path: str) -> dict[str, object]:
-    controls = run_config_utils.resolve_bl007_controls(run_config_path)
-    return {
-        "config_source": "run_config",
-        "run_config_path": controls.get("config_path"),
-        "run_config_schema_version": controls.get("schema_version"),
-        "target_size": int(controls["target_size"]),
-        "min_score_threshold": float(controls["min_score_threshold"]),
-        "max_per_genre": int(controls["max_per_genre"]),
-        "max_consecutive": int(controls["max_consecutive"]),
-        "utility_strategy": str(controls.get("utility_strategy") or DEFAULT_UTILITY_STRATEGY),
-        "utility_weights": dict(controls.get("utility_weights") or {}),
-        "adaptive_limits": dict(controls.get("adaptive_limits") or {}),
-        "controlled_relaxation": dict(controls.get("controlled_relaxation") or {}),
-        "lead_genre_fallback_strategy": str(controls.get("lead_genre_fallback_strategy") or "none"),
-        "use_component_contributions_for_tiebreak": bool(
-            controls.get("use_component_contributions_for_tiebreak", False)
-        ),
-        "use_semantic_strength_for_tiebreak": bool(
-            controls.get("use_semantic_strength_for_tiebreak", False)
-        ),
-        "emit_opportunity_cost_metrics": bool(controls.get("emit_opportunity_cost_metrics", False)),
-        "detail_log_top_k": int(controls.get("detail_log_top_k", 100)),
-    }
-
-
 def _load_bl007_controls_from_env() -> dict[str, object]:
     return {
         "config_source": "environment",
@@ -154,7 +128,6 @@ def _load_bl007_controls_from_env() -> dict[str, object]:
 def resolve_bl007_runtime_controls() -> dict[str, object]:
     """Resolve BL-007 controls from run config first, then environment defaults."""
     return resolve_stage_controls(
-        load_from_run_config=_load_bl007_controls_from_run_config,
         load_from_env=_load_bl007_controls_from_env,
         sanitize=_sanitize_bl007_controls,
     )

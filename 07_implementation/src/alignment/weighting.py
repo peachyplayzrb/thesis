@@ -8,6 +8,7 @@ into normalised event dicts consumed by the matching loop.
 from __future__ import annotations
 
 import math
+import os
 from datetime import datetime, timezone
 
 from alignment.constants import (
@@ -57,6 +58,12 @@ def _resolve_reference_now_utc(
             parsed = _parse_event_time(configured_reference)
             if parsed is not None:
                 return parsed
+    if reference_mode == "system":
+        env_reference = os.environ.get("BL_REFERENCE_NOW_UTC", "").strip()
+        if env_reference:
+            parsed_env = _parse_event_time(env_reference)
+            if parsed_env is not None:
+                return parsed_env
     return datetime.now(timezone.utc)
 
 

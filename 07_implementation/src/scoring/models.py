@@ -44,9 +44,9 @@ SCORED_CANDIDATE_FIELDS = [
 @dataclass(frozen=True)
 class ScoringPaths:
     profile_path: Path
-    bl003_summary_path: Path
     filtered_candidates_path: Path
     output_dir: Path
+    bl003_summary_path: Path | None = None
 
 
 @dataclass(frozen=True)

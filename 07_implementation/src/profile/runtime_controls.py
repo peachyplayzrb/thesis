@@ -76,29 +76,6 @@ def _sanitize_bl004_controls(controls: dict[str, object]) -> dict[str, object]:
     return controls
 
 
-def _load_bl004_controls_from_run_config(run_config_utils: object, run_config_path: str) -> dict[str, object]:
-    controls = run_config_utils.resolve_bl004_controls(run_config_path)
-    env_user_id = env_str("BL004_USER_ID", "")
-    env_types = _normalize_include_interaction_types(env_str("BL004_INCLUDE_INTERACTION_TYPES", ""))
-    include_types = env_types if env_str("BL004_INCLUDE_INTERACTION_TYPES", "").strip() else list(controls.get("include_interaction_types") or DEFAULT_INCLUDE_INTERACTION_TYPES)
-    return {
-        "config_source": "run_config",
-        "run_config_path": controls.get("config_path"),
-        "run_config_schema_version": controls.get("schema_version"),
-        "input_scope": dict(controls.get("input_scope") or {}),
-        "top_tag_limit": controls.get("top_tag_limit"),
-        "top_genre_limit": controls.get("top_genre_limit"),
-        "top_lead_genre_limit": controls.get("top_lead_genre_limit"),
-        "confidence_weighting_mode": controls.get("confidence_weighting_mode"),
-        "confidence_bin_high_threshold": controls.get("confidence_bin_high_threshold"),
-        "confidence_bin_medium_threshold": controls.get("confidence_bin_medium_threshold"),
-        "interaction_attribution_mode": controls.get("interaction_attribution_mode"),
-        "emit_profile_policy_diagnostics": controls.get("emit_profile_policy_diagnostics"),
-        "user_id": env_user_id or controls.get("user_id") or "unknown_user",
-        "include_interaction_types": include_types,
-    }
-
-
 def _load_bl004_controls_from_env() -> dict[str, object]:
     defaults = DEFAULT_PROFILE_CONTROLS
     return {
@@ -138,7 +115,6 @@ def _load_bl004_controls_from_env() -> dict[str, object]:
 
 def resolve_bl004_runtime_controls(*, inferred_user_id: str | None = None) -> dict[str, object]:
     controls = resolve_stage_controls(
-        load_from_run_config=_load_bl004_controls_from_run_config,
         load_from_env=_load_bl004_controls_from_env,
         sanitize=_sanitize_bl004_controls,
     )

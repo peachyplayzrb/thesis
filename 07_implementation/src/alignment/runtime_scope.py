@@ -1,33 +1,58 @@
 from __future__ import annotations
 
+import json
 import os
 from typing import Any
 
 from alignment.constants import DEFAULT_TOP_TIME_RANGES, SOURCE_PLAYLIST_ITEMS, SOURCE_RECENTLY_PLAYED, SOURCE_SAVED_TRACKS, SOURCE_TOP_TRACKS
 from alignment.models import AlignmentBehaviorControls
-from shared_utils.config_loader import load_run_config_utils_module
 from shared_utils.constants import DEFAULT_INPUT_SCOPE
 
 
 def resolve_bl003_runtime_scope() -> dict[str, object]:
-    run_config_path = os.environ.get("BL_RUN_CONFIG_PATH", "").strip() or None
-    default_scope = DEFAULT_INPUT_SCOPE
+    payload_json = os.environ.get("BL_STAGE_CONFIG_JSON", "").strip()
+    input_scope_json = os.environ.get("BL003_INPUT_SCOPE_JSON", "").strip()
+    default_scope = dict(DEFAULT_INPUT_SCOPE)
 
-    if run_config_path:
-        run_config_utils = load_run_config_utils_module()
-        controls = run_config_utils.resolve_input_scope_controls(run_config_path)
-        return {
-            "config_source": "run_config",
-            "run_config_path": controls.get("config_path"),
-            "run_config_schema_version": controls.get("schema_version"),
-            "input_scope": dict(controls.get("input_scope") or default_scope),
-        }
+    if payload_json:
+        try:
+            payload = json.loads(payload_json)
+        except (json.JSONDecodeError, TypeError, ValueError):
+            payload = None
+        if isinstance(payload, dict):
+            stage_controls = payload.get("controls")
+            payload_controls = dict(stage_controls) if isinstance(stage_controls, dict) else dict(payload)
+            input_scope_controls = payload_controls.get("input_scope_controls")
+            if isinstance(input_scope_controls, dict):
+                merged_scope = dict(default_scope)
+                merged_scope.update({str(k): v for k, v in input_scope_controls.items()})
+                return {
+                    "config_source": "orchestration_payload",
+                    "run_config_path": None,
+                    "run_config_schema_version": str(payload.get("schema_version") or "") or None,
+                    "input_scope": merged_scope,
+                }
+
+    if input_scope_json:
+        try:
+            parsed_scope = json.loads(input_scope_json)
+            if isinstance(parsed_scope, dict):
+                merged_scope = dict(default_scope)
+                merged_scope.update({str(k): v for k, v in parsed_scope.items()})
+                return {
+                    "config_source": "environment",
+                    "run_config_path": None,
+                    "run_config_schema_version": None,
+                    "input_scope": merged_scope,
+                }
+        except (json.JSONDecodeError, TypeError, ValueError):
+            pass
 
     return {
-        "config_source": "defaults",
+        "config_source": "export_selection",
         "run_config_path": None,
         "run_config_schema_version": None,
-        "input_scope": dict(default_scope),
+        "input_scope": default_scope,
     }
 
 

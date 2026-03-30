@@ -19,22 +19,6 @@ def _sanitize_bl008_controls(controls: dict[str, object]) -> dict[str, object]:
     return controls
 
 
-def _load_bl008_controls_from_run_config(run_config_utils: object, run_config_path: str) -> dict[str, object]:
-    controls = run_config_utils.resolve_bl008_controls(run_config_path)
-    return {
-        "config_source": "run_config",
-        "run_config_path": controls.get("config_path"),
-        "run_config_schema_version": controls.get("schema_version"),
-        "top_contributor_limit": int(controls["top_contributor_limit"]),
-        "blend_primary_contributor_on_near_tie": bool(
-            controls.get("blend_primary_contributor_on_near_tie", False)
-        ),
-        "primary_contributor_tie_delta": float(
-            controls.get("primary_contributor_tie_delta", 0.02)
-        ),
-    }
-
-
 def _load_bl008_controls_from_env() -> dict[str, object]:
     return {
         "config_source": "environment",
@@ -56,7 +40,6 @@ def _load_bl008_controls_from_env() -> dict[str, object]:
 def resolve_bl008_runtime_controls() -> dict[str, object]:
     """Resolve BL-008 controls from run config first, then environment defaults."""
     return resolve_stage_controls(
-        load_from_run_config=_load_bl008_controls_from_run_config,
         load_from_env=_load_bl008_controls_from_env,
         sanitize=_sanitize_bl008_controls,
     )

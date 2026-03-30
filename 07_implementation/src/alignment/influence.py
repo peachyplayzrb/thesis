@@ -18,6 +18,7 @@ from alignment.constants import (
     SOURCE_INFLUENCE,
     format_influence_event_id,
 )
+from alignment.models import AlignmentBehaviorControls
 from alignment.resolved_context import AlignmentResolvedContext
 
 _DS001_PASSTHROUGH_FIELDS: tuple[str, ...] = (
@@ -55,15 +56,26 @@ def _make_influence_event(
 def inject_influence_tracks(
     matched_events: list[dict[str, Any]],
     by_ds001_id: dict[str, dict[str, str]],
+    run_config_path: str | None = None,
     *,
-    context: AlignmentResolvedContext,
+    context: AlignmentResolvedContext | None = None,
+    behavior_controls: AlignmentBehaviorControls | None = None,
 ) -> dict[str, Any]:
     """
     Inject influence tracks from the run config into matched_events (mutates in place).
 
     Returns the influence contract dict to embed in the BL-003 summary.
     """
-    infl = dict(context.behavior_controls.influence_controls)
+    if context is not None:
+        infl = dict(context.behavior_controls.influence_controls)
+    elif behavior_controls is not None:
+        infl = dict(behavior_controls.influence_controls)
+    else:
+        infl = {
+            "influence_enabled": False,
+            "influence_track_ids": [],
+            "influence_preference_weight": DEFAULT_INFLUENCE_PREFERENCE_WEIGHT,
+        }
 
     influence_injected_count = 0
     influence_skipped_ids: list[str] = []
@@ -87,7 +99,12 @@ def inject_influence_tracks(
             if track_id in existing_ds001_ids:
                 for ev in matched_events:
                     if str(ev["ds001_id"]) == track_id:
-                        ev["interaction_type"] = INTERACTION_TYPE_HISTORY_INFLUENCE
+                        existing_type = str(ev.get("interaction_type", "")).strip().lower()
+                        if existing_type and existing_type != INTERACTION_TYPE_INFLUENCE:
+                            if "influence" not in existing_type.split(","):
+                                ev["interaction_type"] = INTERACTION_TYPE_HISTORY_INFLUENCE
+                        else:
+                            ev["interaction_type"] = INTERACTION_TYPE_HISTORY_INFLUENCE
             else:
                 matched_events.append(_make_influence_event(
                     candidate,

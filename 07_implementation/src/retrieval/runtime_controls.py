@@ -113,19 +113,6 @@ def _sanitize_bl005_controls(controls: dict[str, object]) -> dict[str, object]:
     return controls
 
 
-def _load_bl005_controls_from_run_config(run_config_utils: object, run_config_path: str) -> dict[str, object]:
-    controls = run_config_utils.resolve_bl005_controls(run_config_path)
-    env_threshold_overrides = load_positive_numeric_map_from_env("BL005_NUMERIC_THRESHOLDS_JSON")
-    return {
-        "config_source": "run_config",
-        "run_config_path": controls.get("config_path"),
-        "run_config_schema_version": controls.get("schema_version"),
-        "signal_mode": dict(controls.get("signal_mode") or {}),
-        **{key: controls.get(key) for key in DEFAULT_RETRIEVAL_CONTROLS},
-        "numeric_thresholds": env_threshold_overrides or dict(controls.get("numeric_thresholds") or {}),
-    }
-
-
 def _load_bl005_controls_from_env() -> dict[str, object]:
     defaults = DEFAULT_RETRIEVAL_CONTROLS
     return {
@@ -214,7 +201,6 @@ def _load_bl005_controls_from_env() -> dict[str, object]:
 def resolve_bl005_runtime_controls() -> dict[str, object]:
     """Resolve BL-005 controls from run config first, then environment defaults."""
     return resolve_stage_controls(
-        load_from_run_config=_load_bl005_controls_from_run_config,
         load_from_env=_load_bl005_controls_from_env,
         sanitize=_sanitize_bl005_controls,
     )

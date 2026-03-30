@@ -1,5 +1,6 @@
 """Tests for alignment.influence — inject_influence_tracks."""
-from unittest.mock import MagicMock, patch
+from types import SimpleNamespace
+
 from alignment.influence import inject_influence_tracks
 
 
@@ -24,14 +25,14 @@ def _make_candidate(track_id, song="Song", artist="Artist"):
     }
 
 
-def _make_rc_utils(enabled=True, track_ids=None, weight=1.0):
-    mock = MagicMock()
-    mock.resolve_bl003_influence_controls.return_value = {
+def _make_behavior_controls(enabled=True, track_ids=None, weight=1.0):
+    return SimpleNamespace(
+        influence_controls={
         "influence_enabled": enabled,
         "influence_track_ids": track_ids or [],
         "influence_preference_weight": weight,
-    }
-    return mock
+        }
+    )
 
 
 class TestInjectInfluenceTracksNoConfig:
@@ -53,9 +54,13 @@ class TestInjectInfluenceTracksNewTrack:
     def test_new_track_appended_to_matched_events(self):
         by_ds001_id = {"track1": _make_candidate("track1")}
         matched_events = []
-        rc_utils = _make_rc_utils(track_ids=["track1"])
-        with patch("alignment.influence.load_run_config_utils_module", return_value=rc_utils):
-            contract = inject_influence_tracks(matched_events, by_ds001_id, "dummy_path")
+        behavior_controls = _make_behavior_controls(track_ids=["track1"])
+        contract = inject_influence_tracks(
+            matched_events,
+            by_ds001_id,
+            "dummy_path",
+            behavior_controls=behavior_controls,
+        )
         assert contract["injected_count"] == 1
         assert len(matched_events) == 1
         assert matched_events[0]["interaction_type"] == "influence"
@@ -63,10 +68,14 @@ class TestInjectInfluenceTracksNewTrack:
 
     def test_new_track_contract_fields(self):
         by_ds001_id = {"t1": _make_candidate("t1", song="My Song")}
-        rc_utils = _make_rc_utils(track_ids=["t1"], weight=2.0)
+        behavior_controls = _make_behavior_controls(track_ids=["t1"], weight=2.0)
         matched_events = []
-        with patch("alignment.influence.load_run_config_utils_module", return_value=rc_utils):
-            contract = inject_influence_tracks(matched_events, by_ds001_id, "dummy_path")
+        contract = inject_influence_tracks(
+            matched_events,
+            by_ds001_id,
+            "dummy_path",
+            behavior_controls=behavior_controls,
+        )
         assert contract["enabled"] is True
         assert contract["preference_weight"] == 2.0
         assert "t1" in contract["track_ids"]
@@ -77,9 +86,13 @@ class TestInjectInfluenceTracksExistingTrack:
         existing_event = {"ds001_id": "track1", "interaction_type": "history"}
         matched_events = [existing_event]
         by_ds001_id = {"track1": _make_candidate("track1")}
-        rc_utils = _make_rc_utils(track_ids=["track1"])
-        with patch("alignment.influence.load_run_config_utils_module", return_value=rc_utils):
-            contract = inject_influence_tracks(matched_events, by_ds001_id, "dummy_path")
+        behavior_controls = _make_behavior_controls(track_ids=["track1"])
+        contract = inject_influence_tracks(
+            matched_events,
+            by_ds001_id,
+            "dummy_path",
+            behavior_controls=behavior_controls,
+        )
         assert contract["injected_count"] == 1
         # List not extended — same event updated
         assert len(matched_events) == 1
@@ -89,10 +102,14 @@ class TestInjectInfluenceTracksExistingTrack:
 class TestInjectInfluenceTracksInvalidId:
     def test_unknown_track_id_goes_to_skipped(self):
         by_ds001_id = {}
-        rc_utils = _make_rc_utils(track_ids=["nonexistent"])
+        behavior_controls = _make_behavior_controls(track_ids=["nonexistent"])
         matched_events = []
-        with patch("alignment.influence.load_run_config_utils_module", return_value=rc_utils):
-            contract = inject_influence_tracks(matched_events, by_ds001_id, "dummy_path")
+        contract = inject_influence_tracks(
+            matched_events,
+            by_ds001_id,
+            "dummy_path",
+            behavior_controls=behavior_controls,
+        )
         assert "nonexistent" in contract["skipped_track_ids"]
         assert contract["injected_count"] == 0
         assert len(matched_events) == 0
@@ -101,10 +118,14 @@ class TestInjectInfluenceTracksInvalidId:
 class TestInjectInfluenceTracksDedup:
     def test_duplicate_ids_only_injected_once(self):
         by_ds001_id = {"t1": _make_candidate("t1")}
-        rc_utils = _make_rc_utils(track_ids=["t1", "t1"])
+        behavior_controls = _make_behavior_controls(track_ids=["t1", "t1"])
         matched_events = []
-        with patch("alignment.influence.load_run_config_utils_module", return_value=rc_utils):
-            contract = inject_influence_tracks(matched_events, by_ds001_id, "dummy_path")
+        contract = inject_influence_tracks(
+            matched_events,
+            by_ds001_id,
+            "dummy_path",
+            behavior_controls=behavior_controls,
+        )
         assert len(matched_events) == 1
         assert contract["injected_count"] == 1
 
@@ -112,10 +133,14 @@ class TestInjectInfluenceTracksDedup:
 class TestInjectInfluenceTracksDisabled:
     def test_disabled_flag_means_no_injection(self):
         by_ds001_id = {"t1": _make_candidate("t1")}
-        rc_utils = _make_rc_utils(enabled=False, track_ids=["t1"])
+        behavior_controls = _make_behavior_controls(enabled=False, track_ids=["t1"])
         matched_events = []
-        with patch("alignment.influence.load_run_config_utils_module", return_value=rc_utils):
-            contract = inject_influence_tracks(matched_events, by_ds001_id, "dummy_path")
+        contract = inject_influence_tracks(
+            matched_events,
+            by_ds001_id,
+            "dummy_path",
+            behavior_controls=behavior_controls,
+        )
         assert len(matched_events) == 0
         assert contract["injected_count"] == 0
         assert contract["enabled"] is False

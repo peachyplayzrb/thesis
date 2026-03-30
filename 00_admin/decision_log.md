@@ -1221,4 +1221,3 @@ review_date: none
 - evidence_basis: `_deep_archive_march2026/_packages_reference_2026-03-30/`, `.gitignore`, `file_map.md`, `00_admin/change_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`, `00_admin/operating_protocol.md`, `00_admin/SIGNAL_FILES_MAINTENANCE.md`, `00_admin/README.md`.
 - impacted_files: `.controllability-transparency.instructions.md`, `.gitattributes`, `requirements.txt`, `pyrightconfig.json`, `main_standalone.py`, `final_artefact.py`, `.gitignore`, `file_map.md`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`, `00_admin/operating_protocol.md`, `00_admin/SIGNAL_FILES_MAINTENANCE.md`, `00_admin/README.md`
 - next_steps: Maintain active run/setup guidance on `07_implementation` surfaces and avoid reintroducing archived root files unless a new decision supersedes D-044.
-

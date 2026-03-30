@@ -67,4 +67,3 @@ Admin sync checkpoint (2026-03-30): Aggressive root archival wave accepted (D-04
 - Keep this folder as the single source of truth for governance state.
 - When implementation/writing reality changes, update admin files in the same session.
 - Do not delete historical decisions/changes; mark superseded/deprecated where needed.
-

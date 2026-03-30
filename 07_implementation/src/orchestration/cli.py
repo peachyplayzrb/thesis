@@ -42,7 +42,10 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--run-config",
         default=None,
-        help="Optional path to a canonical run-config JSON file. Passed to stages via BL_RUN_CONFIG_PATH.",
+        help=(
+            "Optional path to a canonical run-config JSON file used by orchestration "
+            "to resolve stage payloads."
+        ),
     )
     parser.add_argument(
         "--refresh-seed",

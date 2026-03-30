@@ -193,7 +193,6 @@ class PlaylistStage:
             "output_artifact_hashes": {
                 "playlist.json": sha256_of_file(playlist_path),
                 "bl007_assembly_trace.csv": sha256_of_file(trace_path),
-                "bl007_assembly_detail_log.json": sha256_of_file(detail_log_path),
             },
         }
         if bool(playlist_payload["config"].get("emit_opportunity_cost_metrics", False)):
@@ -251,6 +250,7 @@ class PlaylistStage:
             detail_log_path=detail_log_path,
         )
         write_detail_log(detail_log_path, detail_log)
+        report["output_artifact_hashes"]["bl007_assembly_detail_log.json"] = sha256_of_file(detail_log_path)
         write_report(report_path, report)
 
         return PlaylistArtifacts(

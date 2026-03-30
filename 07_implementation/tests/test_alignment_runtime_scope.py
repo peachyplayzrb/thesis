@@ -44,20 +44,29 @@ class TestAsPositiveIntOrNone:
 class TestResolveBl003RuntimeScope:
     def test_no_env_vars_returns_export_selection(self, monkeypatch):
         monkeypatch.delenv("BL003_INPUT_SCOPE_JSON", raising=False)
-        monkeypatch.delenv("BL_RUN_CONFIG_PATH", raising=False)
+        monkeypatch.delenv("BL_STAGE_CONFIG_JSON", raising=False)
         result = resolve_bl003_runtime_scope()
         assert result["config_source"] == "export_selection"
         assert result["run_config_path"] is None
 
+    def test_payload_scope_overrides_default(self, monkeypatch):
+        monkeypatch.setenv(
+            "BL_STAGE_CONFIG_JSON",
+            '{"stage_id":"BL-003","schema_version":"1.0","resolved_from":"defaults","controls":{"input_scope_controls":{"include_top_tracks":false}}}',
+        )
+        result = resolve_bl003_runtime_scope()
+        assert result["config_source"] == "orchestration_payload"
+        assert result["input_scope"]["include_top_tracks"] is False
+
     def test_env_scope_json_overrides_default(self, monkeypatch):
-        monkeypatch.delenv("BL_RUN_CONFIG_PATH", raising=False)
+        monkeypatch.delenv("BL_STAGE_CONFIG_JSON", raising=False)
         monkeypatch.setenv("BL003_INPUT_SCOPE_JSON", '{"include_top_tracks": false}')
         result = resolve_bl003_runtime_scope()
         assert result["config_source"] == "environment"
         assert result["input_scope"]["include_top_tracks"] is False
 
     def test_invalid_json_falls_through_to_default(self, monkeypatch):
-        monkeypatch.delenv("BL_RUN_CONFIG_PATH", raising=False)
+        monkeypatch.delenv("BL_STAGE_CONFIG_JSON", raising=False)
         monkeypatch.setenv("BL003_INPUT_SCOPE_JSON", "not-json")
         result = resolve_bl003_runtime_scope()
         assert result["config_source"] == "export_selection"

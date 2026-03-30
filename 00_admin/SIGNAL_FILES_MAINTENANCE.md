@@ -300,4 +300,3 @@ All signal files should follow these standards:
 - All versions of TRANSPARENCY_SPEC (shows transparency evolution)
 - Snapshot of decision_log.md at each phase
 - Final RESEARCH_DIRECTIONS.md (shows open questions at project end)
-

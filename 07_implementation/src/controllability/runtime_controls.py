@@ -1,20 +1,31 @@
 """Runtime control resolution for BL-011 controllability."""
 from __future__ import annotations
 
-import os
+from shared_utils.constants import (
+    DEFAULT_CONTROLLABILITY_CONTROLS,
+    DEFAULT_SCENARIO_DEFINITIONS,
+    DEFAULT_SCENARIO_POLICY,
+)
+from shared_utils.stage_runtime_resolver import resolve_stage_controls
 
-from shared_utils.config_loader import load_run_config_utils_module
+
+def _load_bl011_controls_from_env() -> dict[str, object]:
+    return {
+        "config_source": "defaults",
+        "run_config_path": None,
+        **DEFAULT_CONTROLLABILITY_CONTROLS,
+        "scenario_policy": dict(DEFAULT_SCENARIO_POLICY),
+        "scenario_definitions": list(DEFAULT_SCENARIO_DEFINITIONS),
+    }
 
 
 def resolve_bl011_runtime_controls() -> dict[str, object]:
-    rc_utils = load_run_config_utils_module()
-    run_config_path: str | None = os.environ.get("BL_RUN_CONFIG_PATH", "").strip() or None
-    controls: dict[str, object] = {
-        "config_source": "run_config" if run_config_path else "defaults",
-        "run_config_path": run_config_path,
-        **rc_utils.resolve_bl011_controls(run_config_path),
-    }
-    scenario_policy, scenario_definitions = rc_utils.resolve_bl011_scenario_policy(run_config_path)
-    controls["scenario_policy"] = scenario_policy
-    controls["scenario_definitions"] = scenario_definitions
+    controls = resolve_stage_controls(
+        load_from_env=_load_bl011_controls_from_env,
+        require_payload=True,
+    )
+    controls.setdefault("config_source", "orchestration_payload")
+    controls.setdefault("run_config_path", None)
+    controls.setdefault("scenario_policy", dict(DEFAULT_SCENARIO_POLICY))
+    controls.setdefault("scenario_definitions", list(DEFAULT_SCENARIO_DEFINITIONS))
     return controls
