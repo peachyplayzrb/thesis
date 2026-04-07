@@ -5,8 +5,8 @@ Ordering convention (standardized 2026-03-24):
 - Entry IDs remain unique identifiers, but physical entry order reflects historical insertion timing (not strict numeric sorting).
 - New entries must be appended at the end and may include `superseded_by` when a prior decision is replaced.
 
-Maintenance snapshot (2026-03-30):
-- Highest decision ID currently present: `D-044`
+Maintenance snapshot (2026-04-08):
+- Highest decision ID currently present: `D-045`
 - Total decision entries: 41
 - Status distribution: accepted=32, superseded=3, rejected=1
 - ID integrity check: no duplicate decision IDs detected
@@ -1221,3 +1221,16 @@ review_date: none
 - evidence_basis: `_deep_archive_march2026/_packages_reference_2026-03-30/`, `.gitignore`, `file_map.md`, `00_admin/change_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`, `00_admin/operating_protocol.md`, `00_admin/SIGNAL_FILES_MAINTENANCE.md`, `00_admin/README.md`.
 - impacted_files: `.controllability-transparency.instructions.md`, `.gitattributes`, `requirements.txt`, `pyrightconfig.json`, `main_standalone.py`, `final_artefact.py`, `.gitignore`, `file_map.md`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`, `00_admin/operating_protocol.md`, `00_admin/SIGNAL_FILES_MAINTENANCE.md`, `00_admin/README.md`
 - next_steps: Maintain active run/setup guidance on `07_implementation` surfaces and avoid reintroducing archived root files unless a new decision supersedes D-044.
+
+## D-045
+- date: 2026-04-08
+- entity_id: local repo hardening posture
+- proposed_by: user + Copilot
+- status: accepted
+- decision: Use `main` as the canonical local day-to-day branch and enforce owner-aligned local repo hygiene by default: owner git identity in local config, no legacy old-owner LFS endpoint stanza, and resolver-based VS Code Python/Pyright task execution that supports workspace-root or implementation-root virtual environments.
+- context: Post-ownership-transfer review identified three recurrent local reliability risks: commit attribution drift to prior owner identity, lingering old-owner LFS endpoint config noise, and VS Code task failures when only one of two valid venv layouts exists.
+- alternatives_considered: Keep current mixed local posture and rely on manual operator corrections (rejected: repetitive friction and avoidable errors); keep `restore/pre-restart` as daily default (rejected by user); enforce only one venv location for all contributors (rejected: brittle across setups).
+- rationale: This decision reduces operational risk and improves reproducibility without changing pipeline logic. Local setup becomes deterministic and collaborator-friendly while preserving existing recovery branches/tags.
+- evidence_basis: `.git/config` owner identity + LFS stanza cleanup, `.vscode/tasks.json` resolver-based task commands, `07_implementation/scripts/run_tool_with_venv_fallback.ps1`, successful resolver and preflight execution on 2026-04-08.
+- impacted_files: `.git/config`, `.vscode/tasks.json`, `07_implementation/scripts/run_tool_with_venv_fallback.ps1`, `00_admin/decision_log.md`, `00_admin/change_log.md`
+- next_steps: Keep recovery branches/tags unchanged, run periodic preflight checks before major work sessions, and track unrelated pyright baseline errors as separate technical debt.

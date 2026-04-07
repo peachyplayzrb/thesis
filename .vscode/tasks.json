@@ -36,8 +36,14 @@
     {
       "label": "07: CI Guard Phase 6",
       "type": "shell",
-      "command": "${workspaceFolder}/.venv/Scripts/python.exe",
+      "command": "pwsh",
       "args": [
+        "-NoProfile",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "${workspaceFolder}/07_implementation/scripts/run_tool_with_venv_fallback.ps1",
+        "python",
         "ci_guard_phase_6_check.py"
       ],
       "options": {
@@ -48,8 +54,14 @@
     {
       "label": "07: Tests",
       "type": "shell",
-      "command": "${workspaceFolder}/.venv/Scripts/python.exe",
+      "command": "pwsh",
       "args": [
+        "-NoProfile",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "${workspaceFolder}/07_implementation/scripts/run_tool_with_venv_fallback.ps1",
+        "python",
         "-m",
         "pytest",
         "tests",
@@ -63,8 +75,14 @@
     {
       "label": "07: Typecheck (pyright)",
       "type": "shell",
-      "command": "${workspaceFolder}/.venv/Scripts/pyright.exe",
+      "command": "pwsh",
       "args": [
+        "-NoProfile",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "${workspaceFolder}/07_implementation/scripts/run_tool_with_venv_fallback.ps1",
+        "pyright",
         "src"
       ],
       "options": {
@@ -75,8 +93,14 @@
     {
       "label": "07: Validate Only (Wrapper)",
       "type": "shell",
-      "command": "${workspaceFolder}/.venv/Scripts/python.exe",
+      "command": "pwsh",
       "args": [
+        "-NoProfile",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "${workspaceFolder}/07_implementation/scripts/run_tool_with_venv_fallback.ps1",
+        "python",
         "main.py",
         "--validate-only"
       ],
