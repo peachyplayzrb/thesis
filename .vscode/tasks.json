@@ -124,6 +124,46 @@
         "cwd": "${workspaceFolder}/07_implementation"
       },
       "problemMatcher": []
+    },
+    {
+      "label": "07: Autopilot Launch (Full Contract + Report)",
+      "type": "shell",
+      "command": "pwsh",
+      "args": [
+        "-NoProfile",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "${workspaceFolder}/07_implementation/scripts/autopilot_launch.ps1",
+        "-Mode",
+        "full-contract"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}/07_implementation"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "07: Autopilot Report (Latest BL-013/BL-014)",
+      "type": "shell",
+      "command": "pwsh",
+      "args": [
+        "-NoProfile",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "${workspaceFolder}/07_implementation/scripts/run_tool_with_venv_fallback.ps1",
+        "python",
+        "scripts/autopilot_report.py",
+        "--impl-root",
+        "${workspaceFolder}/07_implementation",
+        "--mode",
+        "manual-report"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}/07_implementation"
+      },
+      "problemMatcher": []
     }
   ]
 }

@@ -72,6 +72,20 @@ Final-artefact clean-code pass is complete (C-192). All phases done:
 2. Spotify API ingestion runbook:
    - `07_implementation/implementation_notes/bl001_bl002_ingestion/docs/spotify_api_ingestion_runbook.md`
 
+## Autonomous Mode Handoff
+Use this mode when you want one-command execution with automatic session reporting.
+
+1. Full contract + report (recommended)
+   - `pwsh -NoProfile -ExecutionPolicy Bypass -File 07_implementation/scripts/autopilot_launch.ps1 -Mode full-contract`
+2. Validate-only + report
+   - `pwsh -NoProfile -ExecutionPolicy Bypass -File 07_implementation/scripts/autopilot_launch.ps1 -Mode validate-only`
+3. Focused gates (single mode)
+   - `preflight`, `ci-guard`, `typecheck`, `tests`
+4. Report output
+   - A markdown session report is written to `00_admin/autopilot_session_YYYY-MM-DD-HHMMSS.md`.
+5. Sign-off rule
+   - Treat BL-014 `overall_status=pass` as required before session sign-off updates.
+
 ## Session Close Checklist
 1. `07_implementation/backlog.md` reflects real status.
 2. `07_implementation/experiment_log.md` includes all runs from this chat.
