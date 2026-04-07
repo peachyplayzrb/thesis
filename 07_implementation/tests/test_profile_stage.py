@@ -2,12 +2,15 @@
 
 from __future__ import annotations
 
+import json
 from pathlib import Path
 
 import pytest
 
 from profile.models import ProfileAggregation, ProfileControls, ProfileInputs, ProfilePaths
+from profile.runtime_controls import resolve_bl004_runtime_controls
 from profile.stage import NUMERIC_FEATURE_COLUMNS, ProfileStage
+from shared_utils.constants import DEFAULT_INPUT_SCOPE, DEFAULT_PROFILE_CONTROLS
 
 
 def _controls(include_types: list[str] | None = None, **overrides: object) -> ProfileControls:
@@ -424,3 +427,35 @@ def test_build_summary_payload_includes_bl003_coverage() -> None:
     assert coverage["rows_available"]["top_tracks"] == 60
     assert coverage["match_counts"]["matched_total"] == 8
     assert coverage["match_counts"]["match_rate"] == 0.8
+
+
+def test_resolve_bl004_runtime_controls_defaults_input_scope(monkeypatch) -> None:
+    monkeypatch.delenv("BL_STAGE_CONFIG_JSON", raising=False)
+    monkeypatch.setenv("BL004_TOP_TAG_LIMIT", "5")
+    monkeypatch.setenv("BL004_TOP_GENRE_LIMIT", "5")
+    monkeypatch.setenv("BL004_TOP_LEAD_GENRE_LIMIT", "5")
+    monkeypatch.setenv("BL004_INCLUDE_INTERACTION_TYPES", "history,influence")
+
+    controls = resolve_bl004_runtime_controls()
+
+    assert controls["input_scope"] == dict(DEFAULT_INPUT_SCOPE)
+
+
+def test_resolve_bl004_runtime_controls_payload_uses_defaults_not_env(monkeypatch) -> None:
+    monkeypatch.setenv("BL004_TOP_TAG_LIMIT", "99")
+    monkeypatch.setenv(
+        "BL_STAGE_CONFIG_JSON",
+        json.dumps(
+            {
+                "controls": {
+                    "top_genre_limit": 6,
+                }
+            }
+        ),
+    )
+
+    controls = resolve_bl004_runtime_controls()
+
+    assert controls["config_source"] == "defaults"
+    assert controls["top_tag_limit"] == int(DEFAULT_PROFILE_CONTROLS["top_tag_limit"])
+    assert controls["top_genre_limit"] == 6

@@ -117,7 +117,7 @@ def main() -> None:
             run_config_path,
             run_intent_path,
             run_effective_config_path,
-            stage_control_payload=stage_control_payloads.get("BL-003"),
+            stage_config_payload=stage_control_payloads.get("BL-003"),
         )
         stage_results.append(seed_result)
         if seed_result["status"] == "fail" and not effective_continue_on_error:

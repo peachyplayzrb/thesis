@@ -1,0 +1,57 @@
+"""Tests for retrieval.runtime_controls."""
+
+import json
+
+from retrieval.runtime_controls import resolve_bl005_runtime_controls
+
+
+def test_runtime_controls_environment_defaults(monkeypatch) -> None:
+    monkeypatch.delenv("BL_STAGE_CONFIG_JSON", raising=False)
+
+    controls = resolve_bl005_runtime_controls()
+
+    assert controls["config_source"] == "environment"
+    assert controls["signal_mode"] == {}
+    assert controls["language_filter_enabled"] is False
+
+
+def test_runtime_controls_payload_defaults_missing_sections(monkeypatch) -> None:
+    monkeypatch.setenv(
+        "BL_STAGE_CONFIG_JSON",
+        json.dumps(
+            {
+                "controls": {
+                    "profile_top_tag_limit": 8,
+                    "profile_top_genre_limit": 7,
+                }
+            }
+        ),
+    )
+
+    controls = resolve_bl005_runtime_controls()
+
+    assert controls["config_source"] == "defaults"
+    assert controls["signal_mode"] == {}
+    assert controls["language_filter_enabled"] is False
+    assert controls["numeric_thresholds"]["danceability"] == 0.2
+    assert controls["profile_top_tag_limit"] == 8
+    assert controls["profile_top_genre_limit"] == 7
+
+
+def test_runtime_controls_payload_does_not_inherit_env_for_missing_keys(monkeypatch) -> None:
+    monkeypatch.setenv("BL005_NUMERIC_SUPPORT_MIN_SCORE", "9")
+    monkeypatch.setenv(
+        "BL_STAGE_CONFIG_JSON",
+        json.dumps(
+            {
+                "controls": {
+                    "profile_top_tag_limit": 8,
+                }
+            }
+        ),
+    )
+
+    controls = resolve_bl005_runtime_controls()
+
+    assert controls["config_source"] == "defaults"
+    assert controls["numeric_support_min_score"] == 1.0

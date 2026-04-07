@@ -64,6 +64,40 @@ Continue past non-fatal stage failures:
 python main.py --continue-on-error
 ```
 
+## Windows Automation Contract
+
+Use this sequence for deterministic setup and validation on Windows.
+
+```powershell
+# From thesis-main/07_implementation
+pwsh -NoProfile -ExecutionPolicy Bypass -File .\scripts\preflight_windows.ps1
+pwsh -NoProfile -ExecutionPolicy Bypass -File .\setup.ps1
+pwsh -NoProfile -ExecutionPolicy Bypass -File .\scripts\check_all.ps1 -SkipSetup
+```
+
+Single command path (runs preflight + setup + checks + validate-only):
+
+```powershell
+pwsh -NoProfile -ExecutionPolicy Bypass -File .\scripts\check_all.ps1
+```
+
+Expected report artifacts after success:
+
+- src/orchestration/outputs/bl013_orchestration_run_latest.json
+- src/quality/outputs/bl014_sanity_report.json
+
+## VS Code Task Runner
+
+Use Command Palette -> `Tasks: Run Task` and pick one of:
+
+- `07: Preflight (Windows)`
+- `07: Setup Environment`
+- `07: CI Guard Phase 6`
+- `07: Tests`
+- `07: Typecheck (pyright)`
+- `07: Validate Only (Wrapper)`
+- `07: Full Contract (Preflight + Check-All)`
+
 ## Pipeline Stages
 
 - BL-003 Alignment: src/alignment/main.py
@@ -168,6 +202,14 @@ Fix: ensure the dataset file exists at that path.
 Direct BL-013 import errors like ModuleNotFoundError: shared_utils:
 
 Fix: run BL-013 via top-level main.py, or set PYTHONPATH=. when running from src.
+
+PowerShell blocks script execution:
+
+```powershell
+Set-ExecutionPolicy -Scope Process Bypass
+```
+
+This applies only to the current terminal session.
 
 ## Test Entry Points
 

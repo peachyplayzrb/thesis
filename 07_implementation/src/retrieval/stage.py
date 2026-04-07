@@ -2,10 +2,13 @@ from __future__ import annotations
 
 import csv
 import json
+import logging
 import time
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
+
+logger = logging.getLogger(__name__)
 
 from shared_utils.constants import (
     NUMERIC_FEATURE_SPECS,
@@ -648,10 +651,10 @@ class RetrievalStage:
             output_paths=output_paths,
         )
 
-        print("BL-005 candidate filtering complete.")
-        print(f"filtered_candidates={output_paths['filtered_path']}")
-        print(f"decisions={output_paths['decisions_path']}")
-        print(f"diagnostics={diagnostics_path}")
+        logger.info("BL-005 candidate filtering complete.")
+        logger.info("filtered_candidates=%s", output_paths["filtered_path"])
+        logger.info("decisions=%s", output_paths["decisions_path"])
+        logger.info("diagnostics=%s", diagnostics_path)
 
         decision_counts = evaluation.summary.get("decision_counts")
         decision_counts_map = decision_counts if isinstance(decision_counts, dict) else {}

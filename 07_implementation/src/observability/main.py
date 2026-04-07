@@ -7,9 +7,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
+from observability.runtime_controls import resolve_bl009_runtime_controls
 from shared_utils.artifact_registry import bl009_required_paths
-from shared_utils.constants import DEFAULT_CONTROL_MODE, DEFAULT_INPUT_SCOPE, DEFAULT_OBSERVABILITY_CONTROLS
-from shared_utils.env_utils import env_bool, env_int
 from shared_utils.hashing import sha256_of_values
 from shared_utils.io_utils import (
     load_csv_rows,
@@ -19,7 +18,6 @@ from shared_utils.io_utils import (
 )
 from shared_utils.path_utils import impl_root
 from shared_utils.stage_utils import ensure_paths_exist, ensure_required_keys, load_required_json_object, relpath, safe_relpath
-from shared_utils.stage_runtime_resolver import resolve_run_config_path, resolve_stage_controls
 
 
 BL009_OBSERVABILITY_SCHEMA_VERSION = "bl009-observability-v1"
@@ -131,29 +129,6 @@ def build_artifact_maps(
         if key not in script_keys and path.exists()
     }
     return artifact_hashes, artifact_sizes
-
-
-def _load_bl009_controls_from_env() -> dict[str, object]:
-    return {
-        "config_source": "environment",
-        "run_config_path": None,
-        "run_config_schema_version": None,
-        "control_mode": dict(DEFAULT_CONTROL_MODE),
-        "input_scope": dict(DEFAULT_INPUT_SCOPE),
-        "diagnostic_sample_limit": max(1, env_int("BL009_DIAGNOSTIC_SAMPLE_LIMIT", int(DEFAULT_OBSERVABILITY_CONTROLS["diagnostic_sample_limit"]))),
-        "bootstrap_mode": env_bool("BL009_BOOTSTRAP_MODE", bool(DEFAULT_OBSERVABILITY_CONTROLS["bootstrap_mode"])),
-    }
-
-
-def resolve_bl009_runtime_controls() -> dict[str, object]:
-    run_intent_path = resolve_run_config_path("BL_RUN_INTENT_PATH")
-    run_effective_config_path = resolve_run_config_path("BL_RUN_EFFECTIVE_CONFIG_PATH")
-    controls = resolve_stage_controls(
-        load_from_env=_load_bl009_controls_from_env,
-    )
-    controls["run_intent_path"] = run_intent_path
-    controls["run_effective_config_path"] = run_effective_config_path
-    return controls
 
 
 def main() -> None:

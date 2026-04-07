@@ -1,8 +1,9 @@
 """Tests for observability.main resolve_bl009_runtime_controls."""
 
-from unittest.mock import patch
+import json
 
-from observability import main as observability_main
+from observability.runtime_controls import resolve_bl009_runtime_controls
+from shared_utils.constants import DEFAULT_INPUT_SCOPE
 
 
 def test_runtime_controls_environment_defaults(monkeypatch) -> None:
@@ -11,7 +12,7 @@ def test_runtime_controls_environment_defaults(monkeypatch) -> None:
     monkeypatch.delenv("BL_RUN_INTENT_PATH", raising=False)
     monkeypatch.delenv("BL_RUN_EFFECTIVE_CONFIG_PATH", raising=False)
 
-    controls = observability_main.resolve_bl009_runtime_controls()
+    controls = resolve_bl009_runtime_controls()
 
     assert controls["config_source"] == "environment"
     assert controls["diagnostic_sample_limit"] == 5
@@ -26,8 +27,51 @@ def test_runtime_controls_environment_override(monkeypatch) -> None:
     monkeypatch.delenv("BL_RUN_INTENT_PATH", raising=False)
     monkeypatch.delenv("BL_RUN_EFFECTIVE_CONFIG_PATH", raising=False)
 
-    controls = observability_main.resolve_bl009_runtime_controls()
+    controls = resolve_bl009_runtime_controls()
 
     assert controls["config_source"] == "environment"
     assert controls["diagnostic_sample_limit"] == 12
+    assert controls["bootstrap_mode"] is False
+
+
+def test_runtime_controls_payload_defaults_input_scope_when_missing(monkeypatch) -> None:
+    monkeypatch.setenv(
+        "BL_STAGE_CONFIG_JSON",
+        json.dumps(
+            {
+                "controls": {
+                    "diagnostic_sample_limit": 7,
+                    "bootstrap_mode": False,
+                }
+            }
+        ),
+    )
+
+    controls = resolve_bl009_runtime_controls()
+
+    assert controls["config_source"] == "defaults"
+    assert controls["run_config_path"] is None
+    assert controls["run_config_schema_version"] is None
+    assert controls["diagnostic_sample_limit"] == 7
+    assert controls["bootstrap_mode"] is False
+    assert controls["input_scope"] == dict(DEFAULT_INPUT_SCOPE)
+
+
+def test_runtime_controls_payload_does_not_inherit_env_for_missing_keys(monkeypatch) -> None:
+    monkeypatch.setenv("BL009_DIAGNOSTIC_SAMPLE_LIMIT", "99")
+    monkeypatch.setenv(
+        "BL_STAGE_CONFIG_JSON",
+        json.dumps(
+            {
+                "controls": {
+                    "bootstrap_mode": False,
+                }
+            }
+        ),
+    )
+
+    controls = resolve_bl009_runtime_controls()
+
+    assert controls["config_source"] == "defaults"
+    assert controls["diagnostic_sample_limit"] == 5
     assert controls["bootstrap_mode"] is False

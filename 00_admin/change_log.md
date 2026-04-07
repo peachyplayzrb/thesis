@@ -8,7 +8,7 @@ Ordering convention (standardized 2026-03-24):
 - New entries must be appended at the end; historical entries remain unchanged except for explicit correction records.
 
 Maintenance snapshot (2026-03-29):
-- Highest change ID currently present: `C-219`
+- Highest change ID currently present: `C-221`
 - Maintenance snapshot (2026-03-28): prior snapshot stated `C-205`; superseded by the 2026-03-29 architecture migration + documentation sync wave (C-204 through C-219).
 - Known legacy correction applied in this file: prior duplicate `C-079` entry has been normalized to `C-135` for unique-ID compliance.
 
@@ -2058,6 +2058,28 @@ Maintenance snapshot (2026-03-29):
 | C-200 | 2026-03-28 | Copilot | Post-swap path-alignment closure: switched repo type-check roots to `07_implementation` in `pyrightconfig.json`, aligned `07_implementation/tests/conftest.py` wording to active source root, verified launcher help via `final_artefact.py validate --help`, and added explicit active/legacy posture notes in governance docs plus a legacy banner in `final_artefact-old/README.md`. |
 | C-201 | 2026-03-28 | Copilot | Ingestion runtime simplification alignment: documented and adopted no-token-cache/no-endpoint-cache BL-002 behavior with fresh OAuth-per-live-export and item-first track-only playlist-item parsing as accepted baseline policy; propagated this posture into governance (`D-040`) and implementation README guidance. |
 | C-202 | 2026-03-29 | Copilot | Executed `07_implementation` cleanup and stabilization pass: removed generated caches and duplicate `src/run_config/configs/profiles` tree, retained canonical `config/profiles`, added `*.egg-info/` ignore, fixed stale README submission-guide pointer, patched `main.py` subprocess `PYTHONPATH` propagation for stage imports, and validated smoke tests (`test_standalone.py` pass). |
+
+## C-220
+- date: 2026-04-01
+- proposed_by: user + AI
+- status: accepted
+- change_summary: Implemented run-config centralization hardening across BL-004 to BL-009 runtime control resolution by introducing payload-default merge semantics that use canonical defaults (not ambient stage env values) when orchestration payloads are present.
+- reason: User requested end-to-end implementation to reduce repeated runtime resolving drift and make orchestrated behavior deterministic and submission-ready.
+- evidence_basis: Shared resolver updated with explicit `load_payload_defaults` path; BL-004/005/006/007/008/009 runtime-control modules updated to use canonical defaults for payload merges; new and updated regression tests confirm no env leakage for missing payload keys and safe partial-payload behavior.
+- affected_components: `07_implementation/src/shared_utils/stage_runtime_resolver.py`, `07_implementation/src/profile/runtime_controls.py`, `07_implementation/src/retrieval/runtime_controls.py`, `07_implementation/src/scoring/runtime_controls.py`, `07_implementation/src/playlist/runtime_controls.py`, `07_implementation/src/transparency/runtime_controls.py`, `07_implementation/src/observability/runtime_controls.py`, `07_implementation/tests/test_profile_stage.py`, `07_implementation/tests/test_retrieval_runtime_controls.py`, `07_implementation/tests/test_scoring_runtime_controls.py`, `07_implementation/tests/test_playlist_runtime_controls.py`, `07_implementation/tests/test_transparency_runtime_controls.py`, `07_implementation/tests/test_observability_runtime_controls.py`, `07_implementation/tests/test_runtime_controls_defaults_completeness.py`
+- impact_assessment: High-positive. Centralized payload behavior is now deterministic under BL-013 and resilient to partial payloads without inheriting undeclared stage env overrides.
+- approval_record: Requested by user in chat on 2026-04-01 ("Start implementation", "continue").
+
+## C-221
+- date: 2026-04-01
+- proposed_by: user + AI
+- status: accepted
+- change_summary: Added orchestration-level payload-authority evidence and executed fresh end-to-end BL-013 pass to validate centralized runtime control behavior under current implementation state.
+- reason: User requested continuation toward submission-readiness with explicit validation that centralized run-config payload behavior holds at orchestration handoff level.
+- evidence_basis: BL-013 pass `BL013-ENTRYPOINT-20260401-150246-160721`; targeted test pass `19/19` for orchestration payload handoff/runner/default-completeness surfaces; broader runtime-controls selector pass `29/29` selected tests; new tests verify defaults are not sourced from stage env vars during payload resolution and run-config overrides propagate into stage payloads.
+- affected_components: `07_implementation/tests/test_orchestration_stage_payload_handoff.py`, `07_implementation/tests/test_orchestration_stage_runner.py`, `07_implementation/tests/test_runtime_controls_defaults_completeness.py`, `07_implementation/src/orchestration/outputs/bl013_orchestration_run_latest.json`, `00_admin/change_log.md`, `00_admin/thesis_state.md`, `00_admin/evaluation_plan.md`
+- impact_assessment: High-positive. Provides direct, current evidence for reproducibility and controllability claims tied to centralized orchestration payload semantics.
+- approval_record: Requested by user in chat on 2026-04-01 ("yes", continue execution).
 | C-204 | 2026-03-29 | Copilot | Completed the Phase 5-6 modularization sync pass: split BL-013 orchestration into focused helper modules with CLI > run-config > defaults control resolution, split BL-011 controllability into stage/path/runtime-control modules, split BL-003 matching/reporting into focused helper modules while preserving thin compatibility wrappers, refreshed admin/runtime docs to reflect the new layout, and revalidated touched files with pyright (`0 errors`). |
 | C-205 | 2026-03-29 | Copilot | Completed OO-stage migration for BL-004, BL-005, and BL-006 in the standalone implementation surface: added typed models and stage classes for profile/retrieval/scoring, reduced each `main.py` to thin compatibility wrappers over stage methods, added stage-level tests, and revalidated touched files with pytest and pyright. |
 | C-206 | 2026-03-29 | Copilot | Completed BL-003 Phase 2 typed-boundary migration in the standalone source surface: added `alignment/models.py` dataclasses (`SourceEvent`, `MatchTrace`, `MatchedEvent`, `AggregatedEvent`), migrated `weighting.py`, `match_pipeline.py`, and `aggregation.py` internals to typed models while preserving existing dict-based interfaces, added writer boundary compatibility for typed/dict payloads, and revalidated alignment behavior with targeted pytest (`88/88` pass). |

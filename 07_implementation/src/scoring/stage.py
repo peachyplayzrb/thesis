@@ -2,12 +2,15 @@ from __future__ import annotations
 
 import csv
 import json
+import logging
 import statistics
 import time
 from datetime import datetime, timezone
 from pathlib import Path
 
 from scoring.candidate_parsed import parse_candidate_attributes
+
+logger = logging.getLogger(__name__)
 from scoring.diagnostics import (
     build_confidence_impact_diagnostics,
     build_semantic_precision_diagnostics,
@@ -26,12 +29,17 @@ from scoring.models import (
     context_from_mapping,
     controls_from_mapping,
 )
-from scoring.profile_extractor import build_component_weights, extract_profile_scoring_data
+from scoring.profile_extractor import extract_profile_scoring_data
 from scoring.runtime_controls import build_active_component_weights, resolve_bl006_runtime_controls
 from scoring.scoring_engine import (
     compute_component_scores,
     compute_final_score,
     compute_weighted_contributions,
+)
+from shared_utils.constants import (
+    VALID_LEAD_GENRE_STRATEGIES,
+    VALID_SEMANTIC_ALPHA_MODES,
+    VALID_SEMANTIC_OVERLAP_STRATEGIES,
 )
 from shared_utils.io_utils import load_csv_rows, load_json, open_text_write, sha256_of_file, utc_now
 from shared_utils.path_utils import impl_root
@@ -103,9 +111,8 @@ class ScoringStage:
         return enabled, track_ids, max(0.0, preference_weight)
 
     @staticmethod
-    def resolve_runtime_controls(default_weights: dict[str, float] | None = None) -> ScoringControls:
-        effective_defaults = default_weights if default_weights is not None else build_component_weights()
-        payload = resolve_bl006_runtime_controls(effective_defaults)
+    def resolve_runtime_controls() -> ScoringControls:
+        payload = resolve_bl006_runtime_controls()
         return controls_from_mapping(payload)
 
     @staticmethod
@@ -171,19 +178,19 @@ class ScoringStage:
         lead_genre_strategy_raw = controls.lead_genre_strategy.strip().lower()
         lead_genre_strategy = (
             lead_genre_strategy_raw
-            if lead_genre_strategy_raw in {"single_anchor", "weighted_top_lead_genres"}
+            if lead_genre_strategy_raw in VALID_LEAD_GENRE_STRATEGIES
             else "weighted_top_lead_genres"
         )
         semantic_overlap_strategy_raw = controls.semantic_overlap_strategy.strip().lower()
         semantic_overlap_strategy = (
             semantic_overlap_strategy_raw
-            if semantic_overlap_strategy_raw in {"overlap_only", "precision_aware"}
+            if semantic_overlap_strategy_raw in VALID_SEMANTIC_OVERLAP_STRATEGIES
             else "precision_aware"
         )
         semantic_precision_alpha_mode_raw = controls.semantic_precision_alpha_mode.strip().lower()
         semantic_precision_alpha_mode = (
             semantic_precision_alpha_mode_raw
-            if semantic_precision_alpha_mode_raw in {"profile_adaptive", "fixed"}
+            if semantic_precision_alpha_mode_raw in VALID_SEMANTIC_ALPHA_MODES
             else "profile_adaptive"
         )
         semantic_precision_alpha_fixed = ScoringStage._clamp_0_1(controls.semantic_precision_alpha_fixed)
@@ -483,7 +490,7 @@ class ScoringStage:
         ensure_paths_exist([paths.profile_path, paths.filtered_candidates_path], stage_label="BL-006")
         inputs = self.load_inputs(paths)
 
-        runtime_controls = self.resolve_runtime_controls(build_component_weights())
+        runtime_controls = self.resolve_runtime_controls()
         runtime_context = self.build_runtime_context(
             profile=inputs.profile,
             bl003_summary=inputs.bl003_summary,
@@ -548,15 +555,14 @@ class ScoringStage:
         with open_text_write(summary_path) as handle:
             json.dump(summary, handle, indent=2, ensure_ascii=True)
 
-        print("BL-006 candidate scoring complete.")
+        logger.info("BL-006 candidate scoring complete.")
         if runtime_context.weight_rebalance_diagnostics["rebalanced"]:
-            print("WARNING: BL-006 rebalanced component weights.")
-            print(
-                "  original_active_weight_sum="
-                f"{runtime_context.weight_rebalance_diagnostics['active_weight_sum_pre_normalization']}"
+            logger.warning(
+                "BL-006 rebalanced component weights. original_active_weight_sum=%s",
+                runtime_context.weight_rebalance_diagnostics["active_weight_sum_pre_normalization"],
             )
-        print(f"scored_candidates={scored_path}")
-        print(f"score_summary={summary_path}")
+        logger.info("scored_candidates=%s", scored_path)
+        logger.info("score_summary=%s", summary_path)
 
         return ScoringArtifacts(
             scored_path=scored_path,

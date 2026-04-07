@@ -105,6 +105,37 @@ def env_bool(name: str, default: bool) -> bool:
     return default
 
 
+def coerce_int(value: object, default: int) -> int:
+    """Safely coerce any value to int, falling back to default."""
+    if value is None:
+        return default
+    try:
+        return int(str(value))
+    except (ValueError, TypeError):
+        return default
+
+
+def coerce_float(value: object, default: float) -> float:
+    """Safely coerce any value to float, falling back to default."""
+    if value is None:
+        return default
+    try:
+        return float(str(value))
+    except (ValueError, TypeError):
+        return default
+
+
+def coerce_dict(value: object) -> dict[str, object]:
+    """Safely coerce a value to dict, returning empty dict on failure."""
+    return dict(value) if isinstance(value, dict) else {}
+
+
+def coerce_enum(value: object, valid: frozenset[str], default: str) -> str:
+    """Validate a string value against a set of allowed values."""
+    normalized = str(value or default).strip().lower()
+    return normalized if normalized in valid else default
+
+
 def env_path(name: str, default: Path) -> Path:
     """
     Get an environment variable as a Path, with a default.

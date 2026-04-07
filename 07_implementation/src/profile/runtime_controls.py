@@ -2,12 +2,25 @@
 
 from __future__ import annotations
 
+from typing import Mapping
+
 from shared_utils.constants import (
     DEFAULT_INCLUDE_INTERACTION_TYPES,
+    DEFAULT_INPUT_SCOPE,
     DEFAULT_PROFILE_CONTROLS,
+    VALID_CONFIDENCE_WEIGHTING_MODES,
+    VALID_INTERACTION_ATTRIBUTION_MODES,
 )
-from shared_utils.env_utils import env_bool, env_float, env_int, env_str
-from shared_utils.stage_runtime_resolver import resolve_stage_controls
+from shared_utils.env_utils import (
+    coerce_enum,
+    coerce_float,
+    coerce_int,
+    env_bool,
+    env_float,
+    env_int,
+    env_str,
+)
+from shared_utils.stage_runtime_resolver import defaults_loader, resolve_stage_controls
 
 
 def _normalize_include_interaction_types(raw_value: object) -> list[str]:
@@ -31,38 +44,31 @@ def _normalize_include_interaction_types(raw_value: object) -> list[str]:
 
 def _sanitize_bl004_controls(controls: dict[str, object]) -> dict[str, object]:
     defaults = DEFAULT_PROFILE_CONTROLS
-    controls["top_tag_limit"] = max(1, int(controls.get("top_tag_limit", defaults["top_tag_limit"])))
-    controls["top_genre_limit"] = max(1, int(controls.get("top_genre_limit", defaults["top_genre_limit"])))
+    controls["top_tag_limit"] = max(1, coerce_int(controls.get("top_tag_limit", defaults["top_tag_limit"]), 10))
+    controls["top_genre_limit"] = max(1, coerce_int(controls.get("top_genre_limit", defaults["top_genre_limit"]), 8))
     controls["top_lead_genre_limit"] = max(
-        1,
-        int(controls.get("top_lead_genre_limit", defaults["top_lead_genre_limit"])),
+        1, coerce_int(controls.get("top_lead_genre_limit", defaults["top_lead_genre_limit"]), 6),
     )
 
-    weighting_mode = str(
-        controls.get("confidence_weighting_mode", defaults["confidence_weighting_mode"])
-    ).strip().lower()
-    controls["confidence_weighting_mode"] = (
-        weighting_mode if weighting_mode in {"linear_half_bias", "direct_confidence", "none"} else str(defaults["confidence_weighting_mode"])
+    controls["confidence_weighting_mode"] = coerce_enum(
+        controls.get("confidence_weighting_mode", defaults["confidence_weighting_mode"]),
+        VALID_CONFIDENCE_WEIGHTING_MODES,
+        str(defaults["confidence_weighting_mode"]),
     )
 
     high_threshold = max(
-        0.0,
-        min(1.0, float(controls.get("confidence_bin_high_threshold", defaults["confidence_bin_high_threshold"]))),
+        0.0, min(1.0, coerce_float(controls.get("confidence_bin_high_threshold", defaults["confidence_bin_high_threshold"]), 0.90)),
     )
     medium_threshold = max(
-        0.0,
-        min(1.0, float(controls.get("confidence_bin_medium_threshold", defaults["confidence_bin_medium_threshold"]))),
+        0.0, min(1.0, coerce_float(controls.get("confidence_bin_medium_threshold", defaults["confidence_bin_medium_threshold"]), 0.50)),
     )
     controls["confidence_bin_high_threshold"] = high_threshold
     controls["confidence_bin_medium_threshold"] = min(medium_threshold, high_threshold)
 
-    attribution_mode = str(
-        controls.get("interaction_attribution_mode", defaults["interaction_attribution_mode"])
-    ).strip().lower()
-    controls["interaction_attribution_mode"] = (
-        attribution_mode
-        if attribution_mode in {"split_selected_types_equal_share", "primary_type_only"}
-        else str(defaults["interaction_attribution_mode"])
+    controls["interaction_attribution_mode"] = coerce_enum(
+        controls.get("interaction_attribution_mode", defaults["interaction_attribution_mode"]),
+        VALID_INTERACTION_ATTRIBUTION_MODES,
+        str(defaults["interaction_attribution_mode"]),
     )
 
     controls["emit_profile_policy_diagnostics"] = bool(
@@ -73,6 +79,9 @@ def _sanitize_bl004_controls(controls: dict[str, object]) -> dict[str, object]:
         controls.get("include_interaction_types")
     )
     controls["user_id"] = str(controls.get("user_id") or "unknown_user").strip() or "unknown_user"
+    input_scope_raw = controls.get("input_scope")
+    input_scope_payload = dict(input_scope_raw) if isinstance(input_scope_raw, Mapping) else {}
+    controls["input_scope"] = input_scope_payload or dict(DEFAULT_INPUT_SCOPE)
     return controls
 
 
@@ -83,20 +92,20 @@ def _load_bl004_controls_from_env() -> dict[str, object]:
         "run_config_path": None,
         "run_config_schema_version": None,
         "input_scope": {},
-        "top_tag_limit": env_int("BL004_TOP_TAG_LIMIT", int(defaults["top_tag_limit"])),
-        "top_genre_limit": env_int("BL004_TOP_GENRE_LIMIT", int(defaults["top_genre_limit"])),
-        "top_lead_genre_limit": env_int("BL004_TOP_LEAD_GENRE_LIMIT", int(defaults["top_lead_genre_limit"])),
+        "top_tag_limit": env_int("BL004_TOP_TAG_LIMIT", int(str(defaults["top_tag_limit"]))),
+        "top_genre_limit": env_int("BL004_TOP_GENRE_LIMIT", int(str(defaults["top_genre_limit"]))),
+        "top_lead_genre_limit": env_int("BL004_TOP_LEAD_GENRE_LIMIT", int(str(defaults["top_lead_genre_limit"]))),
         "confidence_weighting_mode": env_str(
             "BL004_CONFIDENCE_WEIGHTING_MODE",
             str(defaults["confidence_weighting_mode"]),
         ),
         "confidence_bin_high_threshold": env_float(
             "BL004_CONFIDENCE_BIN_HIGH_THRESHOLD",
-            float(defaults["confidence_bin_high_threshold"]),
+            float(str(defaults["confidence_bin_high_threshold"])),
         ),
         "confidence_bin_medium_threshold": env_float(
             "BL004_CONFIDENCE_BIN_MEDIUM_THRESHOLD",
-            float(defaults["confidence_bin_medium_threshold"]),
+            float(str(defaults["confidence_bin_medium_threshold"])),
         ),
         "interaction_attribution_mode": env_str(
             "BL004_INTERACTION_ATTRIBUTION_MODE",
@@ -116,6 +125,7 @@ def _load_bl004_controls_from_env() -> dict[str, object]:
 def resolve_bl004_runtime_controls(*, inferred_user_id: str | None = None) -> dict[str, object]:
     controls = resolve_stage_controls(
         load_from_env=_load_bl004_controls_from_env,
+        load_payload_defaults=defaults_loader(DEFAULT_PROFILE_CONTROLS),
         sanitize=_sanitize_bl004_controls,
     )
     if controls.get("user_id") in {None, "", "unknown_user"} and inferred_user_id:

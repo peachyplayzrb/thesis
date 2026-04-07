@@ -2,67 +2,64 @@
 
 from __future__ import annotations
 
-from shared_utils.env_utils import env_bool, env_float, env_int, env_str
-from shared_utils.stage_runtime_resolver import resolve_stage_controls
-
-
-DEFAULT_TARGET_SIZE = 10
-DEFAULT_MIN_SCORE_THRESHOLD = 0.35
-DEFAULT_MAX_PER_GENRE = 4
-DEFAULT_MAX_CONSECUTIVE = 2
-DEFAULT_UTILITY_STRATEGY = "rank_round_robin"
+from shared_utils.constants import (
+    DEFAULT_ASSEMBLY_CONTROLS,
+    VALID_LEAD_GENRE_FALLBACK_STRATEGIES,
+    VALID_UTILITY_STRATEGIES,
+)
+from shared_utils.env_utils import (
+    coerce_dict,
+    coerce_enum,
+    coerce_float,
+    coerce_int,
+    env_bool,
+    env_float,
+    env_int,
+    env_str,
+)
+from shared_utils.stage_runtime_resolver import defaults_loader, resolve_stage_controls
 
 
 def _sanitize_bl007_controls(controls: dict[str, object]) -> dict[str, object]:
-    controls["target_size"] = max(1, int(controls["target_size"]))
+    controls["target_size"] = max(1, coerce_int(controls.get("target_size"), 10))
     controls["min_score_threshold"] = max(
-        0.0,
-        min(1.0, float(controls["min_score_threshold"])),
+        0.0, min(1.0, coerce_float(controls.get("min_score_threshold"), 0.35)),
     )
-    controls["max_per_genre"] = max(1, int(controls["max_per_genre"]))
-    controls["max_consecutive"] = max(1, int(controls["max_consecutive"]))
+    controls["max_per_genre"] = max(1, coerce_int(controls.get("max_per_genre"), 4))
+    controls["max_consecutive"] = max(1, coerce_int(controls.get("max_consecutive"), 2))
 
-    utility_strategy = str(controls.get("utility_strategy") or DEFAULT_UTILITY_STRATEGY).strip().lower()
-    controls["utility_strategy"] = (
-        utility_strategy
-        if utility_strategy in {"rank_round_robin", "utility_greedy"}
-        else DEFAULT_UTILITY_STRATEGY
+    controls["utility_strategy"] = coerce_enum(
+        controls.get("utility_strategy"), VALID_UTILITY_STRATEGIES, "rank_round_robin"
     )
 
-    utility_weights_raw = controls.get("utility_weights")
-    utility_weights = dict(utility_weights_raw) if isinstance(utility_weights_raw, dict) else {}
+    utility_weights = coerce_dict(controls.get("utility_weights"))
     controls["utility_weights"] = {
-        "score_weight": max(0.0, float(utility_weights.get("score_weight", 1.0))),
-        "novelty_weight": max(0.0, float(utility_weights.get("novelty_weight", 0.0))),
-        "repetition_penalty_weight": max(0.0, float(utility_weights.get("repetition_penalty_weight", 0.0))),
+        "score_weight": max(0.0, coerce_float(utility_weights.get("score_weight"), 1.0)),
+        "novelty_weight": max(0.0, coerce_float(utility_weights.get("novelty_weight"), 0.0)),
+        "repetition_penalty_weight": max(0.0, coerce_float(utility_weights.get("repetition_penalty_weight"), 0.0)),
     }
 
-    adaptive_raw = controls.get("adaptive_limits")
-    adaptive = dict(adaptive_raw) if isinstance(adaptive_raw, dict) else {}
-    scale_min = max(0.0, float(adaptive.get("max_per_genre_scale_min", 0.75)))
-    scale_max = max(scale_min, float(adaptive.get("max_per_genre_scale_max", 1.25)))
+    adaptive = coerce_dict(controls.get("adaptive_limits"))
+    scale_min = max(0.0, coerce_float(adaptive.get("max_per_genre_scale_min"), 0.75))
+    scale_max = max(scale_min, coerce_float(adaptive.get("max_per_genre_scale_max"), 1.25))
     controls["adaptive_limits"] = {
         "enabled": bool(adaptive.get("enabled", False)),
-        "reference_top_k": max(1, int(adaptive.get("reference_top_k", 100))),
+        "reference_top_k": max(1, coerce_int(adaptive.get("reference_top_k"), 100)),
         "max_per_genre_scale_min": scale_min,
         "max_per_genre_scale_max": scale_max,
     }
 
-    relax_raw = controls.get("controlled_relaxation")
-    relax = dict(relax_raw) if isinstance(relax_raw, dict) else {}
+    relax = coerce_dict(controls.get("controlled_relaxation"))
     controls["controlled_relaxation"] = {
         "enabled": bool(relax.get("enabled", False)),
         "relax_consecutive_first": bool(relax.get("relax_consecutive_first", True)),
-        "max_per_genre_increment": max(1, int(relax.get("max_per_genre_increment", 1))),
-        "max_relaxation_rounds": max(1, int(relax.get("max_relaxation_rounds", 2))),
+        "max_per_genre_increment": max(1, coerce_int(relax.get("max_per_genre_increment"), 1)),
+        "max_relaxation_rounds": max(1, coerce_int(relax.get("max_relaxation_rounds"), 2)),
         "never_relax_score_threshold": bool(relax.get("never_relax_score_threshold", True)),
     }
 
-    fallback_strategy = str(controls.get("lead_genre_fallback_strategy") or "none").strip().lower()
-    controls["lead_genre_fallback_strategy"] = (
-        fallback_strategy
-        if fallback_strategy in {"none", "semantic_component_proxy"}
-        else "none"
+    controls["lead_genre_fallback_strategy"] = coerce_enum(
+        controls.get("lead_genre_fallback_strategy"), VALID_LEAD_GENRE_FALLBACK_STRATEGIES, "none"
     )
     controls["use_component_contributions_for_tiebreak"] = bool(
         controls.get("use_component_contributions_for_tiebreak", False)
@@ -73,7 +70,7 @@ def _sanitize_bl007_controls(controls: dict[str, object]) -> dict[str, object]:
     controls["emit_opportunity_cost_metrics"] = bool(
         controls.get("emit_opportunity_cost_metrics", False)
     )
-    controls["detail_log_top_k"] = max(1, int(controls.get("detail_log_top_k", 100)))
+    controls["detail_log_top_k"] = max(1, coerce_int(controls.get("detail_log_top_k"), 100))
     return controls
 
 
@@ -82,17 +79,11 @@ def _load_bl007_controls_from_env() -> dict[str, object]:
         "config_source": "environment",
         "run_config_path": None,
         "run_config_schema_version": None,
-        "target_size": env_int("BL007_TARGET_SIZE", DEFAULT_TARGET_SIZE),
-        "min_score_threshold": env_float(
-            "BL007_MIN_SCORE_THRESHOLD",
-            DEFAULT_MIN_SCORE_THRESHOLD,
-        ),
-        "max_per_genre": env_int("BL007_MAX_PER_GENRE", DEFAULT_MAX_PER_GENRE),
-        "max_consecutive": env_int(
-            "BL007_MAX_CONSECUTIVE",
-            DEFAULT_MAX_CONSECUTIVE,
-        ),
-        "utility_strategy": env_str("BL007_UTILITY_STRATEGY", DEFAULT_UTILITY_STRATEGY),
+        "target_size": env_int("BL007_TARGET_SIZE", 10),
+        "min_score_threshold": env_float("BL007_MIN_SCORE_THRESHOLD", 0.35),
+        "max_per_genre": env_int("BL007_MAX_PER_GENRE", 4),
+        "max_consecutive": env_int("BL007_MAX_CONSECUTIVE", 2),
+        "utility_strategy": env_str("BL007_UTILITY_STRATEGY", "rank_round_robin"),
         "utility_weights": {
             "score_weight": env_float("BL007_UTILITY_SCORE_WEIGHT", 1.0),
             "novelty_weight": env_float("BL007_UTILITY_NOVELTY_WEIGHT", 0.0),
@@ -113,12 +104,10 @@ def _load_bl007_controls_from_env() -> dict[str, object]:
         },
         "lead_genre_fallback_strategy": env_str("BL007_LEAD_GENRE_FALLBACK_STRATEGY", "none"),
         "use_component_contributions_for_tiebreak": env_bool(
-            "BL007_USE_COMPONENT_CONTRIBUTIONS_FOR_TIEBREAK",
-            False,
+            "BL007_USE_COMPONENT_CONTRIBUTIONS_FOR_TIEBREAK", False,
         ),
         "use_semantic_strength_for_tiebreak": env_bool(
-            "BL007_USE_SEMANTIC_STRENGTH_FOR_TIEBREAK",
-            False,
+            "BL007_USE_SEMANTIC_STRENGTH_FOR_TIEBREAK", False,
         ),
         "emit_opportunity_cost_metrics": env_bool("BL007_EMIT_OPPORTUNITY_COST_METRICS", False),
         "detail_log_top_k": env_int("BL007_DETAIL_LOG_TOP_K", 100),
@@ -126,8 +115,9 @@ def _load_bl007_controls_from_env() -> dict[str, object]:
 
 
 def resolve_bl007_runtime_controls() -> dict[str, object]:
-    """Resolve BL-007 controls from run config first, then environment defaults."""
+    """Resolve BL-007 controls with payload-first precedence."""
     return resolve_stage_controls(
         load_from_env=_load_bl007_controls_from_env,
+        load_payload_defaults=defaults_loader(DEFAULT_ASSEMBLY_CONTROLS),
         sanitize=_sanitize_bl007_controls,
     )

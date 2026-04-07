@@ -4,22 +4,35 @@ from __future__ import annotations
 
 from shared_utils.constants import (
     DEFAULT_RETRIEVAL_CONTROLS,
+    VALID_NUMERIC_CONFIDENCE_MODES,
+    VALID_NUMERIC_SUPPORT_SCORE_MODES,
 )
-from shared_utils.env_utils import env_bool, env_float, env_int, env_str
-from shared_utils.stage_runtime_resolver import load_positive_numeric_map_from_env, resolve_stage_controls
+from shared_utils.env_utils import (
+    coerce_enum,
+    coerce_float,
+    coerce_int,
+    env_bool,
+    env_float,
+    env_int,
+    env_str,
+)
+from shared_utils.stage_runtime_resolver import (
+    defaults_loader,
+    load_positive_numeric_map_from_env,
+    resolve_stage_controls,
+)
 
 
 def _sanitize_bl005_controls(controls: dict[str, object]) -> dict[str, object]:
-    controls["profile_top_lead_genre_limit"] = max(1, int(controls.get("profile_top_lead_genre_limit", 6)))
-    controls["profile_top_tag_limit"] = max(1, int(controls.get("profile_top_tag_limit", 10)))
-    controls["profile_top_genre_limit"] = max(1, int(controls.get("profile_top_genre_limit", 8)))
-    controls["semantic_strong_keep_score"] = max(0, min(3, int(controls.get("semantic_strong_keep_score", 2))))
-    controls["semantic_min_keep_score"] = max(0, min(3, int(controls.get("semantic_min_keep_score", 1))))
-    controls["numeric_support_min_pass"] = max(0, int(controls.get("numeric_support_min_pass", 1)))
-    controls["numeric_support_min_score"] = max(0.0, float(controls.get("numeric_support_min_score", 1.0)))
+    controls["profile_top_lead_genre_limit"] = max(1, coerce_int(controls.get("profile_top_lead_genre_limit", 6), 6))
+    controls["profile_top_tag_limit"] = max(1, coerce_int(controls.get("profile_top_tag_limit", 10), 10))
+    controls["profile_top_genre_limit"] = max(1, coerce_int(controls.get("profile_top_genre_limit", 8), 8))
+    controls["semantic_strong_keep_score"] = max(0, min(3, coerce_int(controls.get("semantic_strong_keep_score", 2), 2)))
+    controls["semantic_min_keep_score"] = max(0, min(3, coerce_int(controls.get("semantic_min_keep_score", 1), 1)))
+    controls["numeric_support_min_pass"] = max(0, coerce_int(controls.get("numeric_support_min_pass", 1), 1))
+    controls["numeric_support_min_score"] = max(0.0, coerce_float(controls.get("numeric_support_min_score", 1.0), 1.0))
     controls["lead_genre_partial_match_threshold"] = max(
-        0.0,
-        min(1.0, float(controls.get("lead_genre_partial_match_threshold", 0.5))),
+        0.0, min(1.0, coerce_float(controls.get("lead_genre_partial_match_threshold", 0.5), 0.5)),
     )
     controls["use_weighted_semantics"] = bool(controls.get("use_weighted_semantics", False))
     controls["use_continuous_numeric"] = bool(controls.get("use_continuous_numeric", False))
@@ -53,60 +66,44 @@ def _sanitize_bl005_controls(controls: dict[str, object]) -> dict[str, object]:
     if isinstance(numeric_thresholds_raw, dict):
         for key, value in numeric_thresholds_raw.items():
             try:
-                parsed = float(value)
+                parsed_val = float(value)
             except (TypeError, ValueError):
                 continue
-            if parsed > 0:
-                numeric_thresholds[str(key)] = parsed
+            if parsed_val > 0:
+                numeric_thresholds[str(key)] = parsed_val
     controls["numeric_thresholds"] = numeric_thresholds
 
     controls["profile_quality_penalty_enabled"] = bool(controls.get("profile_quality_penalty_enabled", True))
-    controls["profile_quality_threshold"] = max(0.0, min(1.0, float(controls.get("profile_quality_threshold", 0.90))))
+    controls["profile_quality_threshold"] = max(0.0, min(1.0, coerce_float(controls.get("profile_quality_threshold", 0.90), 0.90)))
     controls["profile_entropy_low_threshold"] = max(
-        0.0,
-        min(1.0, float(controls.get("profile_entropy_low_threshold", 0.35))),
+        0.0, min(1.0, coerce_float(controls.get("profile_entropy_low_threshold", 0.35), 0.35)),
     )
-    controls["influence_share_threshold"] = max(0.0, min(1.0, float(controls.get("influence_share_threshold", 0.60))))
-    controls["profile_quality_penalty_increment"] = max(
-        0.0,
-        float(controls.get("profile_quality_penalty_increment", 0.20)),
-    )
-    controls["profile_entropy_penalty_increment"] = max(
-        0.0,
-        float(controls.get("profile_entropy_penalty_increment", 0.20)),
-    )
-    controls["influence_share_penalty_increment"] = max(
-        0.0,
-        float(controls.get("influence_share_penalty_increment", 0.15)),
-    )
-    controls["numeric_penalty_scale"] = max(0.0, float(controls.get("numeric_penalty_scale", 0.50)))
+    controls["influence_share_threshold"] = max(0.0, min(1.0, coerce_float(controls.get("influence_share_threshold", 0.60), 0.60)))
+    controls["profile_quality_penalty_increment"] = max(0.0, coerce_float(controls.get("profile_quality_penalty_increment", 0.20), 0.20))
+    controls["profile_entropy_penalty_increment"] = max(0.0, coerce_float(controls.get("profile_entropy_penalty_increment", 0.20), 0.20))
+    controls["influence_share_penalty_increment"] = max(0.0, coerce_float(controls.get("influence_share_penalty_increment", 0.15), 0.15))
+    controls["numeric_penalty_scale"] = max(0.0, coerce_float(controls.get("numeric_penalty_scale", 0.50), 0.50))
 
     controls["semantic_overlap_damping_mid_entropy_threshold"] = max(
-        0.0,
-        min(1.0, float(controls.get("semantic_overlap_damping_mid_entropy_threshold", 0.60))),
+        0.0, min(1.0, coerce_float(controls.get("semantic_overlap_damping_mid_entropy_threshold", 0.60), 0.60)),
     )
     controls["semantic_overlap_damping_low_entropy"] = max(
-        0.0,
-        min(1.0, float(controls.get("semantic_overlap_damping_low_entropy", 0.85))),
+        0.0, min(1.0, coerce_float(controls.get("semantic_overlap_damping_low_entropy", 0.85), 0.85)),
     )
     controls["semantic_overlap_damping_mid_entropy"] = max(
-        0.0,
-        min(1.0, float(controls.get("semantic_overlap_damping_mid_entropy", 0.92))),
+        0.0, min(1.0, coerce_float(controls.get("semantic_overlap_damping_mid_entropy", 0.92), 0.92)),
     )
 
     controls["enable_numeric_confidence_scaling"] = bool(controls.get("enable_numeric_confidence_scaling", True))
-    controls["numeric_confidence_floor"] = max(0.0, min(1.0, float(controls.get("numeric_confidence_floor", 0.0))))
-
-    profile_mode = str(controls.get("profile_numeric_confidence_mode", "direct")).strip().lower()
-    controls["profile_numeric_confidence_mode"] = profile_mode if profile_mode in {"direct", "blended"} else "direct"
-    controls["profile_numeric_confidence_blend_weight"] = max(
-        0.0,
-        min(1.0, float(controls.get("profile_numeric_confidence_blend_weight", 1.0))),
+    controls["numeric_confidence_floor"] = max(0.0, min(1.0, coerce_float(controls.get("numeric_confidence_floor", 0.0), 0.0)))
+    controls["profile_numeric_confidence_mode"] = coerce_enum(
+        controls.get("profile_numeric_confidence_mode", "direct"), VALID_NUMERIC_CONFIDENCE_MODES, "direct"
     )
-
-    score_mode = str(controls.get("numeric_support_score_mode", "weighted_absolute")).strip().lower()
-    controls["numeric_support_score_mode"] = (
-        score_mode if score_mode in {"raw", "weighted", "weighted_absolute"} else "weighted_absolute"
+    controls["profile_numeric_confidence_blend_weight"] = max(
+        0.0, min(1.0, coerce_float(controls.get("profile_numeric_confidence_blend_weight", 1.0), 1.0)),
+    )
+    controls["numeric_support_score_mode"] = coerce_enum(
+        controls.get("numeric_support_score_mode", "weighted_absolute"), VALID_NUMERIC_SUPPORT_SCORE_MODES, "weighted_absolute"
     )
     controls["emit_profile_policy_diagnostics"] = bool(controls.get("emit_profile_policy_diagnostics", True))
 
@@ -199,8 +196,9 @@ def _load_bl005_controls_from_env() -> dict[str, object]:
 
 
 def resolve_bl005_runtime_controls() -> dict[str, object]:
-    """Resolve BL-005 controls from run config first, then environment defaults."""
+    """Resolve BL-005 controls with payload-first precedence."""
     return resolve_stage_controls(
         load_from_env=_load_bl005_controls_from_env,
+        load_payload_defaults=defaults_loader(DEFAULT_RETRIEVAL_CONTROLS),
         sanitize=_sanitize_bl005_controls,
     )

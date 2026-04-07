@@ -1,6 +1,6 @@
 # Thesis State
 
-Last updated: 2026-03-30 UTC (aggressive root archival wave + admin/governance synchronization)
+Last updated: 2026-04-01 UTC (runtime-control centralization + orchestration evidence refresh)
 
 ## Official Current State
 
@@ -104,6 +104,8 @@ Priority status checkpoint (2026-03-29 README/admin sync): `07_implementation/RE
 
 Priority status checkpoint (2026-03-30 aggressive archive wave): By accepted decision D-044, root-level control/runtime surfaces `.controllability-transparency.instructions.md`, `.gitattributes`, `requirements.txt`, `pyrightconfig.json`, `main_standalone.py`, and `final_artefact.py` were moved to `_deep_archive_march2026/_packages_reference_2026-03-30/` and deep archive is ignored in git. Active runtime posture remains anchored on `07_implementation/main.py`; governance references were synchronized across admin control files.
 
+Priority status checkpoint (2026-04-01 runtime-control centralization wave): Runtime control resolution for BL-004 through BL-009 is now centralized for orchestrated execution by using canonical payload-default merges instead of ambient stage env fallbacks when `BL_STAGE_CONFIG_JSON` is present. Shared resolver behavior was extended to support explicit payload-default loaders, stage runtime modules were aligned, and cross-stage defaults completeness tests were added to lock behavior. Validation snapshot: focused runtime-control suites pass (`38/38`), broader runtime-controls selector pass (`29/29` selected), orchestration payload-handoff/runner/default-completeness suite pass (`19/19`), and full BL-013 orchestration pass `BL013-ENTRYPOINT-20260401-150246-160721` completed with status `pass`.
+
 ## Current Implementation Status
 
 ### BL-020 Implementation State (as of 2026-03-29)
@@ -149,12 +151,12 @@ See: `07_implementation/BL020_HANDOFF_AUDIT_2026-03-21.md` for comprehensive pre
 ## Update Control
 
 - Last updated:
-2026-03-29 (README runtime-alignment + admin log sync pass)
+2026-04-01 (runtime-control centralization + orchestration evidence refresh)
 
 - Reason for last update:
-(1) `07_implementation/README.md` was synchronized to current code behavior so execution guidance now matches the active wrapper/orchestration path in `07_implementation/main.py` and `07_implementation/src/orchestration/main.py`.
-(2) Validation guidance was clarified to reflect additive `--validate-only` behavior (pipeline run first, BL-014 sanity second).
-(3) Admin controls were updated for traceability (`00_admin/change_log.md`, this file) with no codepath, run artifact, or baseline changes.
+(1) Runtime-control centralization implementation progressed from plan to validated code for BL-004 through BL-009 payload resolution behavior.
+(2) Orchestration-level payload-authority evidence was added and revalidated with fresh BL-013 and targeted pytest runs.
+(3) Admin controls were updated to reflect current implementation posture and latest evidence IDs.
 
 ## Locked Definitions
 - Artefact scope lock: `00_admin/Artefact_MVP_definition.md`

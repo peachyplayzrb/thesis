@@ -1,28 +1,26 @@
 #!/usr/bin/env python3
-"""
-BL-007: Rule-based playlist assembly.
+"""BL-007: Rule-based playlist assembly."""
 
-Thin compatibility entrypoint wrapper over the class-based PlaylistStage.
-"""
+import logging
 
 from playlist.stage import PlaylistStage
 
+logger = logging.getLogger(__name__)
 
-# ---------------------------------------------------------------------------
-# Main
-# ---------------------------------------------------------------------------
+
 def main() -> None:
     artifacts = PlaylistStage().run()
-    print(
-        f"BL-007 playlist assembly complete.  Playlist: "
-        f"{artifacts.playlist_size}/{artifacts.target_size} tracks"
+    logger.info(
+        "BL-007 playlist assembly complete. Playlist: %d/%d tracks",
+        artifacts.playlist_size,
+        artifacts.target_size,
     )
-    print(f"Run ID : {artifacts.run_id}")
-    print(f"Genre mix : {dict(artifacts.genre_mix)}")
+    logger.info("Run ID: %s", artifacts.run_id)
+    logger.info("Genre mix: %s", dict(artifacts.genre_mix))
     if artifacts.undersized_diagnostics["is_undersized"]:
-        print("WARNING: BL-007 produced an undersized playlist.")
+        logger.warning("BL-007 produced an undersized playlist.")
         for reason in artifacts.undersized_diagnostics["reasons"]:
-            print(f"  - {reason}")
+            logger.warning("  - %s", reason)
 
 
 if __name__ == "__main__":

@@ -22,6 +22,13 @@ def run_stage(
 ) -> dict[str, object]:
     command = [python_executable, str(script_path)]
     stage_env = os.environ.copy()
+    existing_pythonpath = stage_env.get("PYTHONPATH", "").strip()
+    stage_root = str(root)
+    stage_env["PYTHONPATH"] = (
+        stage_root
+        if not existing_pythonpath
+        else os.pathsep.join([stage_root, existing_pythonpath])
+    )
     if run_intent_path is not None:
         stage_env["BL_RUN_INTENT_PATH"] = str(run_intent_path)
     if run_effective_config_path is not None:

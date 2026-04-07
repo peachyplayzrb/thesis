@@ -1,0 +1,39 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "07: Wrapper Validate Only",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/07_implementation/main.py",
+      "args": [
+        "--validate-only"
+      ],
+      "cwd": "${workspaceFolder}/07_implementation",
+      "console": "integratedTerminal"
+    },
+    {
+      "name": "07: Wrapper Custom Config",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/07_implementation/main.py",
+      "args": [
+        "--run-config",
+        "${workspaceFolder}/07_implementation/config/profiles/run_config_ui013_tuning_v2a_retrieval_tight.json"
+      ],
+      "cwd": "${workspaceFolder}/07_implementation",
+      "console": "integratedTerminal"
+    },
+    {
+      "name": "07: BL-014 Sanity Direct",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/07_implementation/src/quality/sanity_checks.py",
+      "cwd": "${workspaceFolder}/07_implementation/src",
+      "env": {
+        "PYTHONPATH": "${workspaceFolder}/07_implementation/src"
+      },
+      "console": "integratedTerminal"
+    }
+  ]
+}

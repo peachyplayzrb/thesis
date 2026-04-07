@@ -96,9 +96,27 @@ def load_positive_numeric_map_from_env(env_var_name: str) -> Dict[str, float]:
     }
 
 
+def defaults_loader(controls_dict: Dict[str, Any]) -> Callable[[], Dict[str, Any]]:
+    """Return a callable that yields clean payload defaults from a constants dict.
+
+    Used as the ``load_payload_defaults`` argument to :func:`resolve_stage_controls`
+    so that each stage no longer needs its own ``_load_blXXX_controls_defaults`` function.
+    """
+    def _load() -> Dict[str, Any]:
+        return {
+            "config_source": "defaults",
+            "run_config_path": None,
+            "run_config_schema_version": None,
+            **{k: (dict(v) if isinstance(v, dict) else list(v) if isinstance(v, list) else v)
+               for k, v in controls_dict.items()},
+        }
+    return _load
+
+
 def resolve_stage_controls(
     *,
     load_from_env: Callable[[], Dict[str, Any]],
+    load_payload_defaults: Callable[[], Dict[str, Any]] | None = None,
     sanitize: Callable[[Dict[str, Any]], Dict[str, Any]] | None = None,
     require_payload: bool = False,
 ) -> Dict[str, Any]:
@@ -111,18 +129,19 @@ def resolve_stage_controls(
     controls: Dict[str, Any]
     payload = get_stage_payload()
     if payload is not None:
-        controls = get_stage_payload_controls(payload)
+        payload_controls = get_stage_payload_controls(payload)
+        if require_payload and not payload_controls:
+            raise RuntimeError(
+                "BL_STAGE_CONFIG_JSON payload does not contain stage controls"
+            )
+        payload_defaults_loader = load_payload_defaults or load_from_env
+        controls = {**payload_defaults_loader(), **payload_controls}
     else:
         if require_payload:
             raise RuntimeError(
                 "Missing or invalid BL_STAGE_CONFIG_JSON payload for strict stage execution"
             )
         controls = load_from_env()
-
-    if require_payload and not controls:
-        raise RuntimeError(
-            "BL_STAGE_CONFIG_JSON payload does not contain stage controls"
-        )
 
     if sanitize is None:
         return controls

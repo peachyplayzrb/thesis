@@ -89,6 +89,7 @@ DEFAULT_INTERACTION_SCOPE: dict[str, object] = {
 }
 
 DEFAULT_PROFILE_CONTROLS: dict[str, object] = {
+    "input_scope": dict(DEFAULT_INPUT_SCOPE),
     "top_tag_limit": DEFAULT_PROFILE_TOP_TAG_LIMIT,
     "top_genre_limit": DEFAULT_PROFILE_TOP_GENRE_LIMIT,
     "top_lead_genre_limit": DEFAULT_PROFILE_TOP_LEAD_GENRE_LIMIT,
@@ -97,6 +98,8 @@ DEFAULT_PROFILE_CONTROLS: dict[str, object] = {
     "confidence_bin_medium_threshold": DEFAULT_BL004_CONFIDENCE_BIN_MEDIUM_THRESHOLD,
     "interaction_attribution_mode": DEFAULT_BL004_INTERACTION_ATTRIBUTION_MODE,
     "emit_profile_policy_diagnostics": DEFAULT_BL004_EMIT_PROFILE_POLICY_DIAGNOSTICS,
+    "user_id": "unknown_user",
+    "include_interaction_types": list(DEFAULT_INCLUDE_INTERACTION_TYPES),
 }
 
 DEFAULT_CONTROL_MODE: dict[str, object] = {
@@ -161,9 +164,11 @@ DEFAULT_RETRIEVAL_NUMERIC_THRESHOLDS: dict[str, float] = {
 }
 
 DEFAULT_RETRIEVAL_CONTROLS: dict[str, object] = {
+    "signal_mode": {},
     "profile_top_tag_limit": DEFAULT_PROFILE_TOP_TAG_LIMIT,
     "profile_top_genre_limit": DEFAULT_PROFILE_TOP_GENRE_LIMIT,
     "profile_top_lead_genre_limit": DEFAULT_PROFILE_TOP_LEAD_GENRE_LIMIT,
+    "lead_genre_partial_match_threshold": DEFAULT_LEAD_GENRE_PARTIAL_MATCH_THRESHOLD,
     "semantic_strong_keep_score": DEFAULT_SEMANTIC_STRONG_KEEP_SCORE,
     "semantic_min_keep_score": DEFAULT_SEMANTIC_MIN_KEEP_SCORE,
     "numeric_support_min_pass": DEFAULT_NUMERIC_SUPPORT_MIN_PASS,
@@ -197,6 +202,7 @@ DEFAULT_RETRIEVAL_CONTROLS: dict[str, object] = {
 DEFAULT_SCORING_NUMERIC_THRESHOLDS: dict[str, float] = dict(DEFAULT_RETRIEVAL_NUMERIC_THRESHOLDS)
 
 DEFAULT_SCORING_CONTROLS: dict[str, object] = {
+    "signal_mode": {},
     "component_weights": dict(DEFAULT_SCORING_COMPONENT_WEIGHTS),
     "numeric_thresholds": dict(DEFAULT_SCORING_NUMERIC_THRESHOLDS),
     "lead_genre_strategy": "weighted_top_lead_genres",
@@ -254,6 +260,8 @@ DEFAULT_TRANSPARENCY_CONTROLS: dict[str, Any] = {
 }
 
 DEFAULT_OBSERVABILITY_CONTROLS: dict[str, Any] = {
+    "control_mode": dict(DEFAULT_CONTROL_MODE),
+    "input_scope": dict(DEFAULT_INPUT_SCOPE),
     "diagnostic_sample_limit": 5,
     "bootstrap_mode": True,
 }
@@ -318,6 +326,17 @@ DEFAULT_INGESTION_CONTROLS: dict[str, object] = {
     "max_retries": DEFAULT_API_MAX_RETRIES,
     "base_backoff_delay_seconds": DEFAULT_API_BASE_DELAY_SEC,
 }
+
+# ── Valid enum values for stage controls ──────────────────────────────────
+VALID_LEAD_GENRE_STRATEGIES: frozenset[str] = frozenset({"single_anchor", "weighted_top_lead_genres"})
+VALID_SEMANTIC_OVERLAP_STRATEGIES: frozenset[str] = frozenset({"overlap_only", "precision_aware"})
+VALID_SEMANTIC_ALPHA_MODES: frozenset[str] = frozenset({"profile_adaptive", "fixed"})
+VALID_NUMERIC_CONFIDENCE_MODES: frozenset[str] = frozenset({"direct", "blended"})
+VALID_CONFIDENCE_WEIGHTING_MODES: frozenset[str] = frozenset({"linear_half_bias", "direct_confidence", "none"})
+VALID_INTERACTION_ATTRIBUTION_MODES: frozenset[str] = frozenset({"split_selected_types_equal_share", "primary_type_only"})
+VALID_UTILITY_STRATEGIES: frozenset[str] = frozenset({"rank_round_robin", "utility_greedy"})
+VALID_NUMERIC_SUPPORT_SCORE_MODES: frozenset[str] = frozenset({"raw", "weighted", "weighted_absolute"})
+VALID_LEAD_GENRE_FALLBACK_STRATEGIES: frozenset[str] = frozenset({"none", "semantic_component_proxy"})
 
 # Numeric features that are valid only when both the BL-004 profile and the
 # candidate dataset provide comparable values.

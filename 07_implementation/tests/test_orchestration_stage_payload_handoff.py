@@ -182,3 +182,50 @@ def test_payload_fixture_helper_for_test_injections() -> None:
     assert json.dumps(fixture)  # Must be JSON-serializable
 
     # Can now be injected via BL_STAGE_CONFIG_JSON in tests
+
+
+def test_stage_payload_defaults_are_not_sourced_from_stage_env(monkeypatch) -> None:
+    """Orchestration payloads should resolve from canonical defaults/run-config, not BL00x env vars."""
+    monkeypatch.setenv("BL007_MIN_SCORE_THRESHOLD", "0.91")
+
+    payload = config_resolver.resolve_stage_control_payload("BL-007", run_config_path=None)
+
+    assert payload["resolved_from"] == "defaults"
+    controls = dict(payload["controls"])
+    assert controls["min_score_threshold"] == 0.35
+
+
+def test_stage_payload_uses_run_config_overrides(tmp_path: Path) -> None:
+    """Orchestration payload should reflect explicit run-config overrides across stages."""
+    run_config_path = tmp_path / "run_config_override.json"
+    run_config_path.write_text(
+        json.dumps(
+            {
+                "profile_controls": {
+                    "top_tag_limit": 22,
+                },
+                "retrieval_controls": {
+                    "profile_top_tag_limit": 22,
+                },
+                "scoring_controls": {
+                    "numeric_confidence_floor": 0.25,
+                },
+                "assembly_controls": {
+                    "target_size": 12,
+                },
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    payloads = config_resolver.resolve_stage_control_payloads(
+        ["BL-005", "BL-006", "BL-007"],
+        run_config_path=run_config_path,
+    )
+
+    assert payloads["BL-005"]["resolved_from"] == "run_config"
+    assert payloads["BL-006"]["resolved_from"] == "run_config"
+    assert payloads["BL-007"]["resolved_from"] == "run_config"
+    assert dict(payloads["BL-005"]["controls"])["profile_top_tag_limit"] == 22
+    assert dict(payloads["BL-006"]["controls"])["numeric_confidence_floor"] == 0.25
+    assert dict(payloads["BL-007"]["controls"])["target_size"] == 12

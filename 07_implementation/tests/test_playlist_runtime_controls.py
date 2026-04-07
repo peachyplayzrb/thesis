@@ -1,5 +1,6 @@
 """Tests for playlist.runtime_controls."""
 
+import json
 from unittest.mock import patch
 
 from playlist import runtime_controls
@@ -34,3 +35,44 @@ def test_runtime_controls_environment_sanitizes_bounds(monkeypatch) -> None:
     assert controls["min_score_threshold"] == 1.0
     assert controls["max_per_genre"] == 1
     assert controls["max_consecutive"] == 1
+
+
+def test_runtime_controls_payload_defaults_missing_sections(monkeypatch) -> None:
+    monkeypatch.setenv(
+        "BL_STAGE_CONFIG_JSON",
+        json.dumps(
+            {
+                "controls": {
+                    "target_size": 12,
+                    "max_per_genre": 5,
+                }
+            }
+        ),
+    )
+
+    controls = runtime_controls.resolve_bl007_runtime_controls()
+
+    assert controls["config_source"] == "defaults"
+    assert controls["target_size"] == 12
+    assert controls["max_per_genre"] == 5
+    assert controls["utility_weights"]["score_weight"] == 1.0
+    assert controls["controlled_relaxation"]["enabled"] is False
+
+
+def test_runtime_controls_payload_does_not_inherit_env_for_missing_keys(monkeypatch) -> None:
+    monkeypatch.setenv("BL007_MIN_SCORE_THRESHOLD", "0.91")
+    monkeypatch.setenv(
+        "BL_STAGE_CONFIG_JSON",
+        json.dumps(
+            {
+                "controls": {
+                    "target_size": 12,
+                }
+            }
+        ),
+    )
+
+    controls = runtime_controls.resolve_bl007_runtime_controls()
+
+    assert controls["config_source"] == "defaults"
+    assert controls["min_score_threshold"] == 0.35

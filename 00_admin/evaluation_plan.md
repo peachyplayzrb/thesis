@@ -1,6 +1,6 @@
 # Evaluation Plan
 
-Last updated: 2026-03-29
+Last updated: 2026-04-01
 
 ## Evaluation Scope
 Evaluate whether the artefact delivers deterministic behavior, transparent reasoning, and usable controllability under BSc-feasible conditions.
@@ -63,6 +63,19 @@ Chapter 4 should report EP-1 outcomes in three result tables:
 2. Controllability outcomes (`EP-CTRL-*`, `EP-RULE-*`).
 3. Explanation fidelity outcomes (`EP-EXPL-*`).
 
+## Current Execution Evidence Snapshot (2026-04-01)
+
+1. Full orchestration pass:
+- BL-013 pass `BL013-ENTRYPOINT-20260401-150246-160721` with summary in `07_implementation/src/orchestration/outputs/bl013_orchestration_run_latest.json`.
+2. Runtime-control centralization validation:
+- Focused BL-004 to BL-009 runtime-control suites pass (`38/38`).
+- Broader runtime-controls selector pass (`29 selected / 29 pass`).
+3. Orchestration payload-authority validation:
+- Targeted handoff/runner/defaults suites pass (`19/19`).
+- Added coverage confirms payload defaults are sourced from canonical run-config/defaults rather than ambient BL00x stage env values when payload is present.
+
+This snapshot is the current evidence anchor for `EP-REPRO-001`, `EP-OBS-001`, and configuration-control claims used in Chapter 4/5 discussion.
+
 ## Evidence Artifacts To Produce
 - test logs and run configs in `07_implementation/test_notes.md` and experiment records.
 - summarized metrics/tables for reproducibility and parameter effects.
@@ -71,4 +84,3 @@ Chapter 4 should report EP-1 outcomes in three result tables:
 ## Non-Goals For Evaluation
 - Benchmarking against state-of-the-art accuracy models.
 - Large-N human subject evaluation.
-

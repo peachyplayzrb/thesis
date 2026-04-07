@@ -2,11 +2,14 @@ from __future__ import annotations
 
 import csv
 import json
+import logging
 import math
 import time
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Mapping
+from typing import Any
+
+logger = logging.getLogger(__name__)
 
 from alignment.constants import (
     ALIGNMENT_SEED_CONTRACT_SCHEMA_VERSION,
@@ -17,7 +20,6 @@ from profile.runtime_controls import resolve_bl004_runtime_controls
 from shared_utils.artifact_registry import bl003_required_paths
 from shared_utils.constants import (
     DEFAULT_INCLUDE_INTERACTION_TYPES,
-    DEFAULT_INPUT_SCOPE,
 )
 from shared_utils.io_utils import load_csv_rows, open_text_write, parse_csv_labels, parse_float, sha256_of_file, utc_now
 from shared_utils.path_utils import impl_root
@@ -112,42 +114,6 @@ class ProfileStage:
 
     @staticmethod
     def _sanitize_controls(controls: dict[str, object]) -> ProfileControls:
-        top_tag_limit = max(1, int(str(controls["top_tag_limit"])))
-        top_genre_limit = max(1, int(str(controls["top_genre_limit"])))
-        top_lead_genre_limit = max(1, int(str(controls["top_lead_genre_limit"])))
-        confidence_weighting_mode = str(controls.get("confidence_weighting_mode") or "linear_half_bias").strip().lower()
-        if confidence_weighting_mode not in {"linear_half_bias", "direct_confidence", "none"}:
-            confidence_weighting_mode = "linear_half_bias"
-        confidence_bin_high_threshold = max(
-            0.0,
-            min(1.0, float(controls.get("confidence_bin_high_threshold", 0.90))),
-        )
-        confidence_bin_medium_threshold = max(
-            0.0,
-            min(1.0, float(controls.get("confidence_bin_medium_threshold", 0.50))),
-        )
-        confidence_bin_medium_threshold = min(
-            confidence_bin_medium_threshold,
-            confidence_bin_high_threshold,
-        )
-        interaction_attribution_mode = str(
-            controls.get("interaction_attribution_mode") or "split_selected_types_equal_share"
-        ).strip().lower()
-        if interaction_attribution_mode not in {"split_selected_types_equal_share", "primary_type_only"}:
-            interaction_attribution_mode = "split_selected_types_equal_share"
-        include_types_raw = controls.get("include_interaction_types")
-        include_types_values = include_types_raw if isinstance(include_types_raw, list) else []
-        include_types = [
-            str(v).strip()
-            for v in include_types_values
-            if str(v).strip()
-        ]
-        input_scope_raw = controls.get("input_scope")
-        input_scope_payload = (
-            dict(input_scope_raw)
-            if isinstance(input_scope_raw, Mapping)
-            else dict(DEFAULT_INPUT_SCOPE)
-        )
         return ProfileControls(
             config_source=str(controls.get("config_source") or "environment"),
             run_config_path=(
@@ -160,23 +126,26 @@ class ProfileStage:
                 if controls.get("run_config_schema_version")
                 else None
             ),
-            input_scope={str(k): v for k, v in input_scope_payload.items()},
-            top_tag_limit=top_tag_limit,
-            top_genre_limit=top_genre_limit,
-            top_lead_genre_limit=top_lead_genre_limit,
-            confidence_weighting_mode=confidence_weighting_mode,
-            confidence_bin_high_threshold=confidence_bin_high_threshold,
-            confidence_bin_medium_threshold=confidence_bin_medium_threshold,
-            interaction_attribution_mode=interaction_attribution_mode,
-            emit_profile_policy_diagnostics=bool(controls.get("emit_profile_policy_diagnostics", True)),
-            user_id=str(controls.get("user_id") or "unknown_user"),
-            include_interaction_types=include_types or list(DEFAULT_INCLUDE_INTERACTION_TYPES),
+            input_scope=(
+                {str(k): v for k, v in controls["input_scope"].items()}  # type: ignore[union-attr]
+            ),
+            top_tag_limit=int(str(controls["top_tag_limit"])),
+            top_genre_limit=int(str(controls["top_genre_limit"])),
+            top_lead_genre_limit=int(str(controls["top_lead_genre_limit"])),
+            confidence_weighting_mode=str(controls["confidence_weighting_mode"]),
+            confidence_bin_high_threshold=float(str(controls["confidence_bin_high_threshold"])),
+            confidence_bin_medium_threshold=float(str(controls["confidence_bin_medium_threshold"])),
+            interaction_attribution_mode=str(controls["interaction_attribution_mode"]),
+            emit_profile_policy_diagnostics=bool(controls["emit_profile_policy_diagnostics"]),
+            user_id=str(controls["user_id"]),
+            include_interaction_types=list(
+                controls["include_interaction_types"]  # type: ignore[arg-type]
+            ),
         )
 
     def resolve_runtime_controls(self) -> ProfileControls:
         inferred_user_id = self.infer_user_id_from_ingestion()
         controls = resolve_bl004_runtime_controls(inferred_user_id=inferred_user_id)
-        controls["input_scope"] = dict(controls.get("input_scope") or DEFAULT_INPUT_SCOPE)
         return self._sanitize_controls(controls)
 
     def resolve_paths(self) -> ProfilePaths:
@@ -1084,10 +1053,10 @@ class ProfileStage:
         )
         self.write_json(paths.summary_path, summary)
 
-        print("BL-004 preference profile created.")
-        print(f"profile={paths.profile_path}")
-        print(f"summary={paths.summary_path}")
-        print(f"seed_trace={paths.seed_trace_path}")
+        logger.info("BL-004 preference profile created.")
+        logger.info("profile=%s", paths.profile_path)
+        logger.info("summary=%s", paths.summary_path)
+        logger.info("seed_trace=%s", paths.seed_trace_path)
 
         return ProfileArtifacts(
             profile_path=paths.profile_path,

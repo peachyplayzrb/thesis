@@ -1,0 +1,105 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "07: Preflight (Windows)",
+      "type": "shell",
+      "command": "pwsh",
+      "args": [
+        "-NoProfile",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "${workspaceFolder}/07_implementation/scripts/preflight_windows.ps1"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}/07_implementation"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "07: Setup Environment",
+      "type": "shell",
+      "command": "pwsh",
+      "args": [
+        "-NoProfile",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "${workspaceFolder}/07_implementation/setup.ps1"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}/07_implementation"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "07: CI Guard Phase 6",
+      "type": "shell",
+      "command": "${workspaceFolder}/.venv/Scripts/python.exe",
+      "args": [
+        "ci_guard_phase_6_check.py"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}/07_implementation"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "07: Tests",
+      "type": "shell",
+      "command": "${workspaceFolder}/.venv/Scripts/python.exe",
+      "args": [
+        "-m",
+        "pytest",
+        "tests",
+        "-v"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}/07_implementation"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "07: Typecheck (pyright)",
+      "type": "shell",
+      "command": "${workspaceFolder}/.venv/Scripts/pyright.exe",
+      "args": [
+        "src"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}/07_implementation"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "07: Validate Only (Wrapper)",
+      "type": "shell",
+      "command": "${workspaceFolder}/.venv/Scripts/python.exe",
+      "args": [
+        "main.py",
+        "--validate-only"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}/07_implementation"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "07: Full Contract (Preflight + Check-All)",
+      "type": "shell",
+      "command": "pwsh",
+      "args": [
+        "-NoProfile",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "${workspaceFolder}/07_implementation/scripts/check_all.ps1"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}/07_implementation"
+      },
+      "problemMatcher": []
+    }
+  ]
+}
