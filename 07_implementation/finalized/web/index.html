@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Thesis Runner</title>
+    <style>
+        body {
+            margin: 20px;
+            font-family: Consolas, "Courier New", monospace;
+            background: #111;
+            color: #ddd;
+        }
+
+        .row {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        input,
+        select {
+            flex: 1;
+            padding: 8px;
+            background: #1a1a1a;
+            color: #eee;
+            border: 1px solid #444;
+        }
+
+        button {
+            padding: 8px 12px;
+            border: 1px solid #555;
+            background: #222;
+            color: #eee;
+            cursor: pointer;
+        }
+
+        pre {
+            margin: 0;
+            padding: 10px;
+            min-height: 260px;
+            background: #000;
+            color: #8ff58f;
+            border: 1px solid #333;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="row">
+        <select id="configPath"></select>
+        <button id="runBtn" type="button">Run</button>
+    </div>
+
+    <pre id="terminal">Waiting for command...</pre>
+
+    <script>
+        const configPathInput = document.getElementById("configPath");
+        const runBtn = document.getElementById("runBtn");
+        const terminal = document.getElementById("terminal");
+
+        async function loadConfigOptions() {
+            try {
+                const response = await fetch("/api/configs");
+                const data = await response.json();
+                const configs = Array.isArray(data.configs) ? data.configs : [];
+
+                configPathInput.innerHTML = "";
+                if (configs.length === 0) {
+                    const option = document.createElement("option");
+                    option.value = "";
+                    option.textContent = "No config files found";
+                    configPathInput.appendChild(option);
+                    runBtn.disabled = false;
+                    return;
+                }
+
+                for (const path of configs) {
+                    const option = document.createElement("option");
+                    option.value = path;
+                    option.textContent = path.replace("config/", "");
+                    configPathInput.appendChild(option);
+                }
+                runBtn.disabled = false;
+            } catch (_) {
+                runBtn.disabled = false;
+            }
+        }
+
+        async function runThesis() {
+            const configPath = configPathInput.value.trim();
+
+            runBtn.disabled = true;
+            terminal.textContent = "Running...";
+
+            try {
+                const response = await fetch("/api/run", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ config_path: configPath }),
+                });
+                const data = await response.json();
+                terminal.textContent = data.terminal_output || "";
+            } catch (error) {
+                terminal.textContent = `Request failed: ${error}`;
+            } finally {
+                runBtn.disabled = false;
+            }
+        }
+
+        runBtn.addEventListener("click", runThesis);
+        loadConfigOptions();
+    </script>
+</body>
+
+</html>

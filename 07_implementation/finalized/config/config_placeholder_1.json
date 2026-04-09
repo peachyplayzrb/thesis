@@ -1,0 +1,28 @@
+{
+    "pipeline": {
+        "stage_order": [
+            "BL-003",
+            "BL-004",
+            "BL-005",
+            "BL-006",
+            "BL-007",
+            "BL-008",
+            "BL-009"
+        ],
+        "continue_on_error": false
+    },
+    "controls": {
+        "BL-003": {},
+        "BL-004": {},
+        "BL-005": {},
+        "BL-006": {},
+        "BL-007": {},
+        "BL-008": {},
+        "BL-009": {}
+    },
+    "secrets": {
+        "spotify_auth_token": "REPLACE_ME",
+        "spotify_client_id": "REPLACE_ME",
+        "spotify_client_secret": "REPLACE_ME"
+    }
+}
