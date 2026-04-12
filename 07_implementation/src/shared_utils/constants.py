@@ -248,6 +248,11 @@ DEFAULT_ASSEMBLY_CONTROLS: dict[str, object] = {
     "use_semantic_strength_for_tiebreak": False,
     "emit_opportunity_cost_metrics": False,
     "detail_log_top_k": 100,
+    "influence_policy_mode": "competitive",
+    "influence_reserved_slots": 0,
+    "influence_allow_genre_cap_override": False,
+    "influence_allow_consecutive_override": False,
+    "influence_allow_score_threshold_override": False,
 }
 
 # BL-008 Transparency Default
@@ -337,6 +342,7 @@ VALID_INTERACTION_ATTRIBUTION_MODES: frozenset[str] = frozenset({"split_selected
 VALID_UTILITY_STRATEGIES: frozenset[str] = frozenset({"rank_round_robin", "utility_greedy"})
 VALID_NUMERIC_SUPPORT_SCORE_MODES: frozenset[str] = frozenset({"raw", "weighted", "weighted_absolute"})
 VALID_LEAD_GENRE_FALLBACK_STRATEGIES: frozenset[str] = frozenset({"none", "semantic_component_proxy"})
+VALID_INFLUENCE_POLICY_MODES: frozenset[str] = frozenset({"competitive", "reserved_slots", "hybrid_override"})
 
 # Numeric features that are valid only when both the BL-004 profile and the
 # candidate dataset provide comparable values.

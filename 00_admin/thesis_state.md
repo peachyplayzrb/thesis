@@ -1,6 +1,6 @@
 # Thesis State
 
-Last updated: 2026-04-12 UTC (REB-M3 tranche-3 hardening checkpoint)
+Last updated: 2026-04-12 UTC (REB-M4 closure checkpoint)
 
 ## REBUILD POSTURE (active from 2026-04-12)
 
@@ -10,7 +10,7 @@ A full architecture rebuild was initiated on 2026-04-12 (D-052).
 
 **Scrapped / under reconstruction from Chapter 2 outwards:**
 - Research question and objectives (re-derived and locked in REB-M1; now active rebuild baseline)
-- All chapter drafts except Chapter 2 (Chapter 1, 3, 4, 5 — treat as legacy skeleton only)
+- Chapter 1 and any unrevised legacy chapter fragments remain reconstruction surfaces; Chapter 3 is rebuild-locked, and Chapter 4/5 are now active rebuild-era drafts rather than legacy skeletons
 - Artefact definition and methodology position (re-established; artefact switched to design-contract-first form for REB-M3)
 - `07_implementation/` legacy behavior remains frozen as historical reference; REB-M3 rebuild work proceeds only under the locked Chapter 3 control/evidence contract
 
@@ -99,6 +99,21 @@ Implementation changes are valid only when they can be traced to O1 to O6 design
 
 #### Follow-up hardening checkpoint
 BL-009 section validation is now hardened so `ensure_required_sections` fails fast when top-level `validity_boundaries` is missing, closing the regression gap left after the initial tranche-3 runtime fix. This follow-up is anchored by `D-063` / `C-292` and revalidated by pytest (`338/338`), validate-only (`BL013-ENTRYPOINT-20260412-141352-373476`, `BL014-SANITY-20260412-141423-183313`, `28/28`), and tranche-3 gate rerun `REB-M3-TRANCHE3-GATE-20260412-141431-157169` (`9/9`).
+
+#### Post-closure enhancement checkpoint
+Influence-policy hardening for ranked item 4 is now implemented additively in the active runtime surface: BL-007 exposes opt-in policy modes (`competitive`, `reserved_slots`, `hybrid_override`) with bounded reserved slots and override controls, and BL-009 now emits per-track influence inclusion/exclusion diagnostics. Validation remains green (`342/342`, pyright `0 errors`, `BL013-ENTRYPOINT-20260412-150114-734913`, `BL014-SANITY-20260412-150146-906654`, `28/28`) under decision/change anchors `D-067` / `C-297`.
+
+### REB-M4 Kickoff Checkpoint (2026-04-12)
+
+- Rebuild milestone outcome: Chapter 4 and Chapter 5 are now being rebuilt around the active O1 to O6 objective-to-evidence contract rather than the pre-rebuild MVP framing.
+- Decision anchor: `D-064`.
+
+#### Active chapter-evidence synthesis surfaces
+1. `08_writing/chapter4.md` now uses REB-M3 tranche gates, BL-013/BL-014 validation evidence, and current `07_implementation/src` output artifacts as the canonical implementation/evaluation evidence surface.
+2. `08_writing/chapter5.md` now interprets findings through bounded uncertainty handling, controllable trade-off engineering, and mechanism-linked evidence quality rather than legacy design-consideration wording.
+
+#### REB-M4 closure note
+The Chapter 4/5 rebuild slice is now complete in-repo. A follow-up citation-density hardening pass anchored the rebuilt discussion and interpretation sections back to the locked Chapter 2 evidence base, and the remaining in-repo rebuild risk is no longer chapter-framing drift but only final submission proofing/packaging outside the rebuild milestones.
 
 ---
 

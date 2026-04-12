@@ -12,6 +12,7 @@ from run_config.run_config_utils import (
     resolve_bl003_influence_controls,
     resolve_bl003_seed_controls,
     resolve_bl003_weighting_policy,
+    resolve_bl007_controls,
     resolve_effective_run_config,
 )
 
@@ -176,3 +177,33 @@ def test_resolve_effective_run_config_rejects_invalid_bl003_contract(
 
     with pytest.raises(RunConfigError, match=match_text):
         resolve_effective_run_config(run_config_path)
+
+
+def test_resolve_bl007_controls_includes_influence_policy_contract(tmp_path: Path) -> None:
+    run_config_path = _write_run_config(
+        tmp_path,
+        {
+            "influence_tracks": {
+                "enabled": True,
+                "track_ids": ["x1", "x2"],
+            },
+            "assembly_controls": {
+                "target_size": 4,
+                "influence_policy_mode": "reserved_slots",
+                "influence_reserved_slots": 10,
+                "influence_allow_genre_cap_override": True,
+                "influence_allow_consecutive_override": False,
+                "influence_allow_score_threshold_override": True,
+            },
+        },
+    )
+
+    controls = resolve_bl007_controls(run_config_path)
+
+    assert controls["influence_enabled"] is True
+    assert controls["influence_track_ids"] == ["x1", "x2"]
+    assert controls["influence_policy_mode"] == "reserved_slots"
+    assert controls["influence_reserved_slots"] == 4
+    assert controls["influence_allow_genre_cap_override"] is True
+    assert controls["influence_allow_consecutive_override"] is False
+    assert controls["influence_allow_score_threshold_override"] is True

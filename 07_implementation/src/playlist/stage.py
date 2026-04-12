@@ -81,6 +81,13 @@ class PlaylistStage:
             use_semantic_strength_for_tiebreak=controls.use_semantic_strength_for_tiebreak,
             emit_opportunity_cost_metrics=controls.emit_opportunity_cost_metrics,
             detail_log_top_k=controls.detail_log_top_k,
+            influence_enabled=controls.influence_enabled,
+            influence_track_ids=set(controls.influence_track_ids),
+            influence_policy_mode=controls.influence_policy_mode,
+            influence_reserved_slots=controls.influence_reserved_slots,
+            influence_allow_genre_cap_override=controls.influence_allow_genre_cap_override,
+            influence_allow_consecutive_override=controls.influence_allow_consecutive_override,
+            influence_allow_score_threshold_override=controls.influence_allow_score_threshold_override,
         )
 
     @staticmethod
@@ -100,6 +107,13 @@ class PlaylistStage:
             lead_genre_fallback_strategy=context.lead_genre_fallback_strategy,
             use_component_contributions_for_tiebreak=context.use_component_contributions_for_tiebreak,
             use_semantic_strength_for_tiebreak=context.use_semantic_strength_for_tiebreak,
+            influence_enabled=context.influence_enabled,
+            influence_track_ids=set(context.influence_track_ids),
+            influence_policy_mode=context.influence_policy_mode,
+            influence_reserved_slots=context.influence_reserved_slots,
+            influence_allow_genre_cap_override=context.influence_allow_genre_cap_override,
+            influence_allow_consecutive_override=context.influence_allow_consecutive_override,
+            influence_allow_score_threshold_override=context.influence_allow_score_threshold_override,
         )
         return PlaylistAggregation(
             playlist=playlist,
@@ -133,6 +147,13 @@ class PlaylistStage:
                 "use_semantic_strength_for_tiebreak": context.use_semantic_strength_for_tiebreak,
                 "emit_opportunity_cost_metrics": context.emit_opportunity_cost_metrics,
                 "detail_log_top_k": context.detail_log_top_k,
+                "influence_enabled": context.influence_enabled,
+                "influence_track_ids": sorted(context.influence_track_ids),
+                "influence_policy_mode": context.influence_policy_mode,
+                "influence_reserved_slots": context.influence_reserved_slots,
+                "influence_allow_genre_cap_override": context.influence_allow_genre_cap_override,
+                "influence_allow_consecutive_override": context.influence_allow_consecutive_override,
+                "influence_allow_score_threshold_override": context.influence_allow_score_threshold_override,
             },
             "playlist_length": len(playlist),
             "tracks": playlist,

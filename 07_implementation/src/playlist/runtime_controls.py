@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from shared_utils.constants import (
     DEFAULT_ASSEMBLY_CONTROLS,
+    VALID_INFLUENCE_POLICY_MODES,
     VALID_LEAD_GENRE_FALLBACK_STRATEGIES,
     VALID_UTILITY_STRATEGIES,
 )
@@ -71,6 +72,31 @@ def _sanitize_bl007_controls(controls: dict[str, object]) -> dict[str, object]:
         controls.get("emit_opportunity_cost_metrics", False)
     )
     controls["detail_log_top_k"] = max(1, coerce_int(controls.get("detail_log_top_k"), 100))
+
+    controls["influence_enabled"] = bool(controls.get("influence_enabled", False))
+    raw_influence_track_ids = controls.get("influence_track_ids")
+    influence_track_iterable = raw_influence_track_ids if isinstance(raw_influence_track_ids, list) else []
+    controls["influence_track_ids"] = [
+        str(value).strip()
+        for value in influence_track_iterable
+        if str(value).strip()
+    ]
+    controls["influence_policy_mode"] = coerce_enum(
+        controls.get("influence_policy_mode"), VALID_INFLUENCE_POLICY_MODES, "competitive"
+    )
+    controls["influence_reserved_slots"] = max(0, coerce_int(controls.get("influence_reserved_slots"), 0))
+    controls["influence_allow_genre_cap_override"] = bool(
+        controls.get("influence_allow_genre_cap_override", False)
+    )
+    controls["influence_allow_consecutive_override"] = bool(
+        controls.get("influence_allow_consecutive_override", False)
+    )
+    controls["influence_allow_score_threshold_override"] = bool(
+        controls.get("influence_allow_score_threshold_override", False)
+    )
+
+    if controls["influence_reserved_slots"] > controls["target_size"]:
+        controls["influence_reserved_slots"] = controls["target_size"]
     return controls
 
 
@@ -111,6 +137,19 @@ def _load_bl007_controls_from_env() -> dict[str, object]:
         ),
         "emit_opportunity_cost_metrics": env_bool("BL007_EMIT_OPPORTUNITY_COST_METRICS", False),
         "detail_log_top_k": env_int("BL007_DETAIL_LOG_TOP_K", 100),
+        "influence_enabled": env_bool("BL007_INFLUENCE_ENABLED", False),
+        "influence_track_ids": [],
+        "influence_policy_mode": env_str("BL007_INFLUENCE_POLICY_MODE", "competitive"),
+        "influence_reserved_slots": env_int("BL007_INFLUENCE_RESERVED_SLOTS", 0),
+        "influence_allow_genre_cap_override": env_bool(
+            "BL007_INFLUENCE_ALLOW_GENRE_CAP_OVERRIDE", False
+        ),
+        "influence_allow_consecutive_override": env_bool(
+            "BL007_INFLUENCE_ALLOW_CONSECUTIVE_OVERRIDE", False
+        ),
+        "influence_allow_score_threshold_override": env_bool(
+            "BL007_INFLUENCE_ALLOW_SCORE_THRESHOLD_OVERRIDE", False
+        ),
     }
 
 

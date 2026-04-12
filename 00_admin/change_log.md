@@ -8,7 +8,7 @@ Ordering convention (standardized 2026-03-24):
 - New entries must be appended at the end; historical entries remain unchanged except for explicit correction records.
 
 Maintenance snapshot (2026-04-12):
-- Highest change ID currently present: `C-293`
+- Highest change ID currently present: `C-298`
 - Maintenance snapshot (2026-03-28): prior snapshot stated `C-205`; superseded by the 2026-03-29 architecture migration + documentation sync wave (C-204 through C-219).
 - Known legacy correction applied in this file: prior duplicate `C-079` entry has been normalized to `C-135` for unique-ID compliance.
 
@@ -1738,6 +1738,17 @@ Maintenance snapshot (2026-04-12):
 - status: accepted
 - change_summary: Add a compact "Latest Open Priorities" execution snapshot to `thesis_state.md` so current governance focus is visible from the primary state file.
 - reason: User approved final polish to improve one-file visibility of active next actions.
+
+## C-297
+- date: 2026-04-12
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Implemented end-to-end influence-policy contract propagation for BL-007 and BL-009 with additive controls, deterministic reserved-slot behavior, override-aware assembly flow, expanded trace schema, and per-track influence diagnostics.
+- reason: User requested implementation start for ranked item 4 and required contract-consistent propagation across dependent code paths.
+- evidence_basis: Code updates across BL-007 and BL-009 runtime surfaces; focused contract suite pass (`45/45`), full pytest pass (`342/342`), pyright pass (`0 errors`), wrapper validate pass (`BL013-ENTRYPOINT-20260412-150114-734913`, `BL014-SANITY-20260412-150146-906654`, `28/28`).
+- affected_components: `07_implementation/src/shared_utils/constants.py`, `07_implementation/src/run_config/run_config_utils.py`, `07_implementation/src/playlist/models.py`, `07_implementation/src/playlist/runtime_controls.py`, `07_implementation/src/playlist/rules.py`, `07_implementation/src/playlist/stage.py`, `07_implementation/src/playlist/io_layer.py`, `07_implementation/src/observability/main.py`, `07_implementation/tests/test_playlist_runtime_controls.py`, `07_implementation/tests/test_playlist_rules.py`, `07_implementation/tests/test_run_config_utils.py`, `07_implementation/tests/test_orchestration_stage_payload_handoff.py`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/timeline.md`, `00_admin/thesis_state.md`
+- impact_assessment: High-positive. Closes a controllability/transparency contract gap with backward-compatible defaults and explicit diagnostics for influence-track outcomes.
+- approval_record: Requested by user in chat on 2026-04-12 ("Start implementation" and contract-propagation directive).
 - evidence_basis: Added prioritized open-item block to `00_admin/thesis_state.md` covering UI-008 closure, UI-003 closure, Day 4 to Day 7 sprint continuation, and bounded website hardening scope.
 - affected_components: `00_admin/thesis_state.md`, `00_admin/change_log.md`
 - impact_assessment: Medium-positive. Reduces control-friction by making active priorities immediately visible during session starts and status checks.
@@ -2170,3 +2181,7 @@ Maintenance snapshot (2026-04-12):
 | C-291 | 2026-04-12 | Copilot | Closed REB-M3 tranche-3 gate by fixing BL-009 observability schema placement: moved `validity_boundaries` to the required top-level report field in `07_implementation/src/observability/main.py`, reran validate-only chain (`BL013-ENTRYPOINT-20260412-140726-924263`; `BL014-SANITY-20260412-140755-116563`, `28/28`), and confirmed tranche-3 pass (`REB-M3-TRANCHE3-GATE-20260412-140805-553785`, `9/9`) with refreshed gate outputs in `07_implementation/src/quality/outputs/`. |
 | C-292 | 2026-04-12 | Copilot | Added REB-M3 regression hardening for BL-009 validity-boundary contract by requiring `validity_boundaries` in `ensure_required_sections` (`07_implementation/src/observability/main.py`) and adding unit tests in `07_implementation/tests/test_observability_required_sections.py` for present/missing behavior; revalidated with pytest `338/338`, validate-only pass (`BL013-ENTRYPOINT-20260412-141352-373476`; `BL014-SANITY-20260412-141423-183313`, `28/28`), and tranche-3 gate pass (`REB-M3-TRANCHE3-GATE-20260412-141431-157169`, `9/9`). |
 | C-293 | 2026-04-12 | Copilot | Completed the missed governance mirror for the BL-009 follow-up hardening slice by updating `00_admin/thesis_state.md` to reflect the D-063/C-292 REB-M3 tranche-3 regression-hardening checkpoint and latest validation evidence, bringing thesis-state posture back into sync with `00_admin/timeline.md`, `00_admin/decision_log.md`, and `00_admin/change_log.md`. |
+| C-294 | 2026-04-12 | Copilot | Started REB-M4 chapter-evidence rebuild by rewriting `08_writing/chapter4.md` and `08_writing/chapter5.md` around the active O1 to O6 objective-to-evidence contract, replacing legacy MVP framing and stale evidence paths with current REB-M3 tranche-gate results and `07_implementation/src` output artifacts; synchronized the shift in `00_admin/thesis_state.md`, `00_admin/timeline.md`, and `00_admin/decision_log.md` (`D-064`). |
+| C-295 | 2026-04-12 | Copilot | Synchronized REB-M4 quality-control mirrors to the rebuilt chapter posture by updating `09_quality_control/chapter_readiness_checks.md`, `09_quality_control/ui003_claim_verdicts_ch3_ch5.md`, and `09_quality_control/rq_alignment_checks.md` so they now reference the rebuilt title/RQ, active O1 to O6 evidence contract, and current Chapter 4/5 interpretation surface; logged the QC-sync decision in `00_admin/decision_log.md` (`D-065`). |
+| C-296 | 2026-04-12 | Copilot | Completed the final in-repo REB-M4 hardening pass by adding literature anchors to Chapter 4/5 interpretation and limitation sections (`08_writing/chapter4.md`, `08_writing/chapter5.md`), recording the resulting RQ-alignment closure in `09_quality_control/rq_alignment_checks.md` (`RQC-016`), and updating milestone state surfaces in `00_admin/thesis_state.md`, `00_admin/timeline.md`, and `00_admin/decision_log.md` to close REB-M3 and REB-M4 in-repo under `D-066`. |
+| C-298 | 2026-04-12 | Copilot | Executed controlled non-default influence-policy evidence runs for BL-007 using `reserved_slots` and `hybrid_override` profiles (both BL-013/BL-014 pass), added profile artifacts `run_config_ui013_tuning_v1g_reserved_slots.json` and `run_config_ui013_tuning_v1h_hybrid_override.json`, and archived per-run BL-007/BL-009/orchestration snapshots under `07_implementation/src/playlist/outputs/evidence_snapshots/`. Evidence indicates zero policy-level playlist divergence in this dataset slice because all requested influence track IDs were absent from the BL-007 candidate pool (`not_found_in_candidate_pool`). |

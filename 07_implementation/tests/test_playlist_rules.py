@@ -139,3 +139,60 @@ def test_assemble_bucketed_respects_consecutive_limit() -> None:
 
     for i in range(len(playlist) - 1):
         assert playlist[i]["lead_genre"] != playlist[i + 1]["lead_genre"]
+
+
+def test_assemble_bucketed_reserves_influence_slots() -> None:
+    candidates = [
+        _cand(1, "rock", 0.9),
+        _cand(2, "pop", 0.88),
+        _cand(3, "jazz", 0.86),
+    ]
+    candidates[2]["track_id"] = "influence_track"
+    rule_hits: Counter[str] = Counter()
+
+    playlist, trace_rows = assemble_bucketed(
+        candidates=candidates,
+        target_size=2,
+        min_score_threshold=0.35,
+        max_per_genre=2,
+        max_consecutive=2,
+        rule_hits=rule_hits,
+        influence_enabled=True,
+        influence_track_ids={"influence_track"},
+        influence_policy_mode="reserved_slots",
+        influence_reserved_slots=1,
+    )
+
+    assert len(playlist) == 2
+    assert any(row["track_id"] == "influence_track" for row in playlist)
+    influence_trace = next(row for row in trace_rows if row["track_id"] == "influence_track")
+    assert influence_trace["decision"] == "included"
+    assert influence_trace["inclusion_path"] == "reserved_slot"
+
+
+def test_assemble_bucketed_allows_influence_score_threshold_override() -> None:
+    candidates = [
+        {"track_id": "influence_low", "lead_genre": "rock", "final_score": 0.2, "rank": 1},
+        {"track_id": "normal_high", "lead_genre": "pop", "final_score": 0.9, "rank": 2},
+    ]
+    rule_hits: Counter[str] = Counter()
+
+    playlist, trace_rows = assemble_bucketed(
+        candidates=candidates,
+        target_size=2,
+        min_score_threshold=0.35,
+        max_per_genre=2,
+        max_consecutive=2,
+        rule_hits=rule_hits,
+        influence_enabled=True,
+        influence_track_ids={"influence_low"},
+        influence_policy_mode="hybrid_override",
+        influence_allow_score_threshold_override=True,
+    )
+
+    assert any(row["track_id"] == "influence_low" for row in playlist)
+    threshold_excluded = [
+        row for row in trace_rows
+        if row["track_id"] == "influence_low" and row["exclusion_reason"] == "below_score_threshold"
+    ]
+    assert threshold_excluded == []

@@ -1806,6 +1806,7 @@ def resolve_bl006_controls(run_config_path: str | Path | None) -> dict[str, Any]
 def resolve_bl007_controls(run_config_path: str | Path | None) -> dict[str, Any]:
     effective, resolved_path = resolve_effective_run_config(run_config_path)
     assembly = effective["assembly_controls"]
+    influence = effective["influence_tracks"]
     defaults = DEFAULT_RUN_CONFIG["assembly_controls"]
     min_threshold = assembly.get("min_score_threshold")
     utility_strategy_raw = str(assembly.get("utility_strategy") or defaults["utility_strategy"]).strip().lower()
@@ -1885,13 +1886,31 @@ def resolve_bl007_controls(run_config_path: str | Path | None) -> dict[str, Any]
         else str(defaults.get("lead_genre_fallback_strategy", "none"))
     )
 
+    influence_policy_mode_raw = str(
+        assembly.get("influence_policy_mode") or defaults.get("influence_policy_mode", "competitive")
+    ).strip().lower()
+    influence_policy_mode = (
+        influence_policy_mode_raw
+        if influence_policy_mode_raw in {"competitive", "reserved_slots", "hybrid_override"}
+        else str(defaults.get("influence_policy_mode", "competitive"))
+    )
+
+    target_size = _coerce_positive_int(
+        assembly.get("target_size"),
+        defaults["target_size"],
+    )
+    influence_reserved_slots = _validate_non_negative_int(
+        assembly.get("influence_reserved_slots"),
+        "assembly_controls.influence_reserved_slots",
+        int(defaults.get("influence_reserved_slots", 0)),
+    )
+    if influence_reserved_slots > target_size:
+        influence_reserved_slots = target_size
+
     return {
         "config_path": str(resolved_path) if resolved_path else None,
         "schema_version": effective["schema_version"],
-        "target_size": _coerce_positive_int(
-            assembly.get("target_size"),
-            defaults["target_size"],
-        ),
+        "target_size": target_size,
         "min_score_threshold": _validate_positive_float(
             min_threshold if min_threshold is not None else defaults["min_score_threshold"],
             "assembly_controls.min_score_threshold"
@@ -1924,6 +1943,29 @@ def resolve_bl007_controls(run_config_path: str | Path | None) -> dict[str, Any]
         "detail_log_top_k": _coerce_positive_int(
             assembly.get("detail_log_top_k"),
             int(defaults.get("detail_log_top_k", 100)),
+        ),
+        "influence_enabled": _coerce_bool(
+            influence.get("enabled"),
+            bool(DEFAULT_RUN_CONFIG["influence_tracks"]["enabled"]),
+        ),
+        "influence_track_ids": _validate_string_list(
+            influence.get("track_ids"),
+            "run_config.influence_tracks.track_ids",
+            list(DEFAULT_RUN_CONFIG["influence_tracks"]["track_ids"]),
+        ),
+        "influence_policy_mode": influence_policy_mode,
+        "influence_reserved_slots": influence_reserved_slots,
+        "influence_allow_genre_cap_override": _coerce_bool(
+            assembly.get("influence_allow_genre_cap_override"),
+            bool(defaults.get("influence_allow_genre_cap_override", False)),
+        ),
+        "influence_allow_consecutive_override": _coerce_bool(
+            assembly.get("influence_allow_consecutive_override"),
+            bool(defaults.get("influence_allow_consecutive_override", False)),
+        ),
+        "influence_allow_score_threshold_override": _coerce_bool(
+            assembly.get("influence_allow_score_threshold_override"),
+            bool(defaults.get("influence_allow_score_threshold_override", False)),
         ),
     }
 

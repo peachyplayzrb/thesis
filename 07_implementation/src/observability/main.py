@@ -179,6 +179,7 @@ def main() -> None:
     bl003_match_total = safe_int(bl003_counts.get("matched_events_rows"), 0)
 
     bl005_decisions = load_csv_rows(paths["bl005_decisions"])
+    bl006_scored = load_csv_rows(paths["bl006_scored"])
     bl007_trace = load_csv_rows(paths["bl007_trace"])
     playlist = load_required_json_object(paths["bl007_playlist"], label="BL-007 playlist", stage_label="BL-009")
     bl008_payloads = load_required_json_object(paths["bl008_payloads"], label="BL-008 explanation payloads", stage_label="BL-009")
@@ -223,6 +224,18 @@ def main() -> None:
         interaction_types_included.append("recently_played")
 
     seed_summary = _object_mapping(profile.get("seed_summary"))
+    bl003_influence_tracks = _object_mapping(bl003_inputs.get("influence_tracks"))
+    raw_requested_influence_track_ids = bl003_influence_tracks.get("track_ids")
+    requested_track_values = (
+        raw_requested_influence_track_ids
+        if isinstance(raw_requested_influence_track_ids, list)
+        else []
+    )
+    requested_influence_track_ids = [
+        str(v).strip()
+        for v in requested_track_values
+        if str(v).strip()
+    ]
     seed_counts_by_type = _object_mapping(seed_summary.get("counts_by_interaction_type"))
     influence_track_count = safe_int(seed_counts_by_type.get("influence"), 0)
     history_track_count = safe_int(seed_counts_by_type.get("history"), 0)
@@ -262,6 +275,52 @@ def main() -> None:
         (row for row in assembly_excluded if row.get("exclusion_reason") == "length_cap_reached"),
         None,
     )
+
+    scored_track_ids = {
+        str(row.get("track_id", "")).strip()
+        for row in bl006_scored
+        if str(row.get("track_id", "")).strip()
+    }
+    trace_by_track_id = {
+        str(row.get("track_id", "")).strip(): row
+        for row in bl007_trace
+        if str(row.get("track_id", "")).strip()
+    }
+    playlist_tracks = _object_mapping(playlist).get("tracks")
+    playlist_track_rows = list(playlist_tracks) if isinstance(playlist_tracks, list) else []
+    playlist_position_by_track_id = {
+        str(row.get("track_id", "")).strip(): safe_int(row.get("playlist_position"), 0)
+        for row in playlist_track_rows
+        if str(row.get("track_id", "")).strip()
+    }
+
+    influence_track_diagnostics: list[dict[str, object]] = []
+    for track_id in requested_influence_track_ids:
+        trace_row = trace_by_track_id.get(track_id)
+        in_candidate_pool = track_id in scored_track_ids
+        included = bool(
+            trace_row is not None and str(trace_row.get("decision", "")) == "included"
+        )
+
+        exclusion_reason = ""
+        inclusion_path = ""
+        if trace_row is not None:
+            exclusion_reason = str(trace_row.get("exclusion_reason", ""))
+            inclusion_path = str(trace_row.get("inclusion_path", ""))
+        elif not in_candidate_pool:
+            exclusion_reason = "not_found_in_candidate_pool"
+
+        influence_track_diagnostics.append(
+            {
+                "track_id": track_id,
+                "requested": True,
+                "in_candidate_pool": in_candidate_pool,
+                "included_in_playlist": included,
+                "playlist_position": playlist_position_by_track_id.get(track_id) if included else None,
+                "inclusion_path": inclusion_path or ("competitive" if included else ""),
+                "exclusion_reason": "" if included else exclusion_reason,
+            }
+        )
 
     script_keys = {
         "bl004_script",
@@ -446,6 +505,7 @@ def main() -> None:
                 "playlist_genre_mix": bl007_report["playlist_genre_mix"],
                 "playlist_score_range": bl007_report["playlist_score_range"],
                 "playlist_length": playlist["playlist_length"],
+                "influence_track_diagnostics": influence_track_diagnostics,
             },
             "transparency": {
                 "task": "BL-008",

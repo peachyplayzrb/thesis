@@ -20,6 +20,8 @@ def decide_candidate(
     max_per_genre: int,
     max_consecutive: int,
     rule_hits: Counter,
+    ignore_genre_cap: bool = False,
+    ignore_consecutive: bool = False,
 ) -> tuple[str, str]:
     """Apply BL-007 diversity rules (R2, R3, R4) and return decision plus exclusion reason.
 
@@ -30,19 +32,21 @@ def decide_candidate(
         rule_hits["R4_length_cap"] += 1
         return "excluded", "length_cap_reached"
 
-    if sum(
-        1
-        for track in playlist
-        if str(track.get("_assembly_genre", track.get("lead_genre", ""))) == assembly_genre
-    ) >= max_per_genre:
-        rule_hits["R2_genre_cap"] += 1
-        return "excluded", "genre_cap_exceeded"
+    if not ignore_genre_cap:
+        if sum(
+            1
+            for track in playlist
+            if str(track.get("_assembly_genre", track.get("lead_genre", ""))) == assembly_genre
+        ) >= max_per_genre:
+            rule_hits["R2_genre_cap"] += 1
+            return "excluded", "genre_cap_exceeded"
 
-    if len(playlist) >= max_consecutive and all(
-        genre == assembly_genre for genre in last_n_genres(playlist, max_consecutive)
-    ):
-        rule_hits["R3_consecutive_run"] += 1
-        return "excluded", "consecutive_genre_run"
+    if not ignore_consecutive:
+        if len(playlist) >= max_consecutive and all(
+            genre == assembly_genre for genre in last_n_genres(playlist, max_consecutive)
+        ):
+            rule_hits["R3_consecutive_run"] += 1
+            return "excluded", "consecutive_genre_run"
 
     return "included", ""
 
@@ -251,11 +255,27 @@ def assemble_bucketed(
     lead_genre_fallback_strategy: str = "none",
     use_component_contributions_for_tiebreak: bool = False,
     use_semantic_strength_for_tiebreak: bool = False,
+    influence_enabled: bool = False,
+    influence_track_ids: set[str] | None = None,
+    influence_policy_mode: str = "competitive",
+    influence_reserved_slots: int = 0,
+    influence_allow_genre_cap_override: bool = False,
+    influence_allow_consecutive_override: bool = False,
+    influence_allow_score_threshold_override: bool = False,
 ) -> tuple[list[dict[str, object]], list[dict[str, object]]]:
     """Assemble playlist by round-robin across genre buckets to avoid deep-rank cliffs."""
     utility_weights = utility_weights or {}
     adaptive_limits = adaptive_limits or {}
     controlled_relaxation = controlled_relaxation or {}
+    influence_track_ids = influence_track_ids or set()
+
+    if influence_policy_mode not in {"competitive", "reserved_slots", "hybrid_override"}:
+        influence_policy_mode = "competitive"
+
+    policy_active = bool(influence_enabled) and bool(influence_track_ids)
+    reserved_slot_target = 0
+    if policy_active and influence_policy_mode in {"reserved_slots", "hybrid_override"}:
+        reserved_slot_target = min(target_size, max(0, int(influence_reserved_slots)))
 
     normalized_candidates = _normalize_candidates(
         candidates,
@@ -268,7 +288,14 @@ def assemble_bucketed(
     # Apply threshold upfront and keep explicit exclusion rows.
     eligible_by_rank: list[dict[str, object]] = []
     for cand in normalized_candidates:
-        if safe_float(cand["final_score"], 0.0) < min_score_threshold:
+        is_influence_requested = str(cand.get("track_id", "")) in influence_track_ids
+        score_override_allowed = (
+            policy_active
+            and influence_policy_mode in {"reserved_slots", "hybrid_override"}
+            and influence_allow_score_threshold_override
+            and is_influence_requested
+        )
+        if safe_float(cand["final_score"], 0.0) < min_score_threshold and not score_override_allowed:
             rule_hits["R1_score_threshold"] += 1
             trace_rows.append(
                 {
@@ -279,6 +306,8 @@ def assemble_bucketed(
                     "decision": "excluded",
                     "playlist_position": "",
                     "exclusion_reason": "below_score_threshold",
+                    "influence_requested": is_influence_requested,
+                    "inclusion_path": "",
                 }
             )
             continue
@@ -297,6 +326,57 @@ def assemble_bucketed(
     relaxation_enabled = bool(controlled_relaxation.get("enabled", False))
     max_relaxation_rounds = max(1, safe_int(controlled_relaxation.get("max_relaxation_rounds"), 2))
     relaxation_round = 0
+
+    if reserved_slot_target > 0:
+        influence_ranked = [
+            cand for cand in remaining if str(cand.get("track_id", "")) in influence_track_ids
+        ]
+        influence_ranked.sort(key=lambda row: (safe_int(row["score_rank"], 0), str(row["track_id"])))
+        for cand in influence_ranked:
+            if len(playlist) >= reserved_slot_target or len(playlist) >= target_size:
+                break
+            if cand not in remaining:
+                continue
+
+            decision, exclusion_reason = decide_candidate(
+                playlist=playlist,
+                assembly_genre=str(cand["assembly_genre"]),
+                target_size=target_size,
+                max_per_genre=effective_max_per_genre,
+                max_consecutive=effective_max_consecutive,
+                rule_hits=rule_hits,
+                ignore_genre_cap=influence_allow_genre_cap_override,
+                ignore_consecutive=influence_allow_consecutive_override,
+            )
+            if decision != "included":
+                continue
+
+            playlist_position = len(playlist) + 1
+            playlist.append(
+                {
+                    "playlist_position": playlist_position,
+                    "track_id": cand["track_id"],
+                    "lead_genre": cand["lead_genre"],
+                    "_assembly_genre": cand["assembly_genre"],
+                    "final_score": cand["final_score"],
+                    "score_rank": cand["score_rank"],
+                }
+            )
+            finalized_ids.add(str(cand["track_id"]))
+            remaining.remove(cand)
+            trace_rows.append(
+                {
+                    "score_rank": cand["score_rank"],
+                    "track_id": cand["track_id"],
+                    "lead_genre": cand["lead_genre"],
+                    "final_score": cand["final_score"],
+                    "decision": "included",
+                    "playlist_position": playlist_position,
+                    "exclusion_reason": "",
+                    "influence_requested": True,
+                    "inclusion_path": "reserved_slot",
+                }
+            )
 
     while len(playlist) < target_size and remaining:
         deferred: list[dict[str, object]] = []
@@ -328,6 +408,17 @@ def assemble_bucketed(
             if cand not in remaining:
                 continue
 
+            track_id = str(cand.get("track_id", ""))
+            is_influence_requested = track_id in influence_track_ids
+            can_override = (
+                policy_active
+                and influence_policy_mode in {"reserved_slots", "hybrid_override"}
+                and is_influence_requested
+            )
+
+            ignore_genre_cap = bool(can_override and influence_allow_genre_cap_override)
+            ignore_consecutive = bool(can_override and influence_allow_consecutive_override)
+
             decision, exclusion_reason = decide_candidate(
                 playlist=playlist,
                 assembly_genre=str(cand["assembly_genre"]),
@@ -335,7 +426,24 @@ def assemble_bucketed(
                 max_per_genre=effective_max_per_genre,
                 max_consecutive=effective_max_consecutive,
                 rule_hits=rule_hits,
+                ignore_genre_cap=ignore_genre_cap,
+                ignore_consecutive=ignore_consecutive,
             )
+
+            inclusion_path = ""
+            if decision == "included":
+                inclusion_path = "competitive"
+                if can_override and (ignore_genre_cap or ignore_consecutive):
+                    baseline_decision, _ = decide_candidate(
+                        playlist=playlist,
+                        assembly_genre=str(cand["assembly_genre"]),
+                        target_size=target_size,
+                        max_per_genre=effective_max_per_genre,
+                        max_consecutive=effective_max_consecutive,
+                        rule_hits=Counter(),
+                    )
+                    if baseline_decision == "excluded":
+                        inclusion_path = "policy_override"
 
             relaxable_exclusion = exclusion_reason in {"genre_cap_exceeded", "consecutive_genre_run"}
             if decision == "excluded" and relaxable_exclusion and relaxation_enabled and relaxation_round < max_relaxation_rounds:
@@ -371,6 +479,8 @@ def assemble_bucketed(
                     "decision": decision,
                     "playlist_position": playlist_position,
                     "exclusion_reason": exclusion_reason,
+                    "influence_requested": is_influence_requested,
+                    "inclusion_path": inclusion_path,
                 }
             )
 
@@ -412,6 +522,8 @@ def assemble_bucketed(
                         "decision": "excluded",
                         "playlist_position": "",
                         "exclusion_reason": final_reason,
+                        "influence_requested": str(cand.get("track_id", "")) in influence_track_ids,
+                        "inclusion_path": "",
                     }
                 )
 
@@ -436,6 +548,8 @@ def assemble_bucketed(
                     "decision": "excluded",
                     "playlist_position": "",
                     "exclusion_reason": "length_cap_reached",
+                    "influence_requested": str(cand.get("track_id", "")) in influence_track_ids,
+                    "inclusion_path": "",
                 }
             )
 

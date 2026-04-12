@@ -29,6 +29,13 @@ class PlaylistControls:
     use_semantic_strength_for_tiebreak: bool
     emit_opportunity_cost_metrics: bool
     detail_log_top_k: int
+    influence_enabled: bool
+    influence_track_ids: list[str]
+    influence_policy_mode: str
+    influence_reserved_slots: int
+    influence_allow_genre_cap_override: bool
+    influence_allow_consecutive_override: bool
+    influence_allow_score_threshold_override: bool
 
     def as_mapping(self) -> dict[str, object]:
         return {
@@ -48,6 +55,13 @@ class PlaylistControls:
             "use_semantic_strength_for_tiebreak": self.use_semantic_strength_for_tiebreak,
             "emit_opportunity_cost_metrics": self.emit_opportunity_cost_metrics,
             "detail_log_top_k": self.detail_log_top_k,
+            "influence_enabled": self.influence_enabled,
+            "influence_track_ids": list(self.influence_track_ids),
+            "influence_policy_mode": self.influence_policy_mode,
+            "influence_reserved_slots": self.influence_reserved_slots,
+            "influence_allow_genre_cap_override": self.influence_allow_genre_cap_override,
+            "influence_allow_consecutive_override": self.influence_allow_consecutive_override,
+            "influence_allow_score_threshold_override": self.influence_allow_score_threshold_override,
         }
 
 
@@ -71,6 +85,13 @@ class PlaylistContext:
     use_semantic_strength_for_tiebreak: bool
     emit_opportunity_cost_metrics: bool
     detail_log_top_k: int
+    influence_enabled: bool
+    influence_track_ids: set[str]
+    influence_policy_mode: str
+    influence_reserved_slots: int
+    influence_allow_genre_cap_override: bool
+    influence_allow_consecutive_override: bool
+    influence_allow_score_threshold_override: bool
 
 
 @dataclass(frozen=True)
@@ -118,6 +139,13 @@ def controls_from_mapping(payload: Mapping[str, Any]) -> PlaylistControls:
         use_semantic_strength_for_tiebreak=bool(payload.get("use_semantic_strength_for_tiebreak", False)),
         emit_opportunity_cost_metrics=bool(payload.get("emit_opportunity_cost_metrics", False)),
         detail_log_top_k=int(payload.get("detail_log_top_k", 100)),
+        influence_enabled=bool(payload.get("influence_enabled", False)),
+        influence_track_ids=[str(v) for v in list(payload.get("influence_track_ids") or []) if str(v).strip()],
+        influence_policy_mode=str(payload.get("influence_policy_mode", "competitive")),
+        influence_reserved_slots=int(payload.get("influence_reserved_slots", 0)),
+        influence_allow_genre_cap_override=bool(payload.get("influence_allow_genre_cap_override", False)),
+        influence_allow_consecutive_override=bool(payload.get("influence_allow_consecutive_override", False)),
+        influence_allow_score_threshold_override=bool(payload.get("influence_allow_score_threshold_override", False)),
     )
 
 
@@ -152,6 +180,13 @@ def context_from_mapping(payload: Mapping[str, Any]) -> PlaylistContext:
         use_semantic_strength_for_tiebreak=bool(payload.get("use_semantic_strength_for_tiebreak", False)),
         emit_opportunity_cost_metrics=bool(payload.get("emit_opportunity_cost_metrics", False)),
         detail_log_top_k=int(payload.get("detail_log_top_k", 100)),
+        influence_enabled=bool(payload.get("influence_enabled", False)),
+        influence_track_ids={str(v) for v in list(payload.get("influence_track_ids") or []) if str(v).strip()},
+        influence_policy_mode=str(payload.get("influence_policy_mode", "competitive")),
+        influence_reserved_slots=int(payload.get("influence_reserved_slots", 0)),
+        influence_allow_genre_cap_override=bool(payload.get("influence_allow_genre_cap_override", False)),
+        influence_allow_consecutive_override=bool(payload.get("influence_allow_consecutive_override", False)),
+        influence_allow_score_threshold_override=bool(payload.get("influence_allow_score_threshold_override", False)),
     )
 
 
@@ -170,4 +205,11 @@ def context_as_mapping(context: PlaylistContext) -> dict[str, object]:
         "use_semantic_strength_for_tiebreak": context.use_semantic_strength_for_tiebreak,
         "emit_opportunity_cost_metrics": context.emit_opportunity_cost_metrics,
         "detail_log_top_k": context.detail_log_top_k,
+        "influence_enabled": context.influence_enabled,
+        "influence_track_ids": sorted(context.influence_track_ids),
+        "influence_policy_mode": context.influence_policy_mode,
+        "influence_reserved_slots": context.influence_reserved_slots,
+        "influence_allow_genre_cap_override": context.influence_allow_genre_cap_override,
+        "influence_allow_consecutive_override": context.influence_allow_consecutive_override,
+        "influence_allow_score_threshold_override": context.influence_allow_score_threshold_override,
     }

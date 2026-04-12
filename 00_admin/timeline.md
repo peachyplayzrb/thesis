@@ -17,7 +17,7 @@ Full architecture rebuild initiated (D-052). Chapter 2 is the only confirmed com
 	- Define the active control/evidence surface needed to test uncertainty handling, controllability, and reproducibility claims.
 	- Produce a bounded Chapter 3 rebuild outline before any implementation restart decisions.
 	- Status update (2026-04-12): completed via objective-anchored Chapter 3 design lock and requirements-map rebuild (D-055, C-284).
-- REB-M3 (2026-04-12 onwards): Rebuild implementation and evaluation to match re-grounded design [in progress]
+- REB-M3 (2026-04-12 onwards): Rebuild implementation and evaluation to match re-grounded design [completed]
 	- Apply artefact-definition switch from checkpoint wording to implementation-entry control/evidence contract.
 	- Rebuild implementation surfaces only where O1 to O6 traceability and evidence contracts can be preserved.
 	- Gate each implementation tranche on reproducibility, controllability, transparency-fidelity, and uncertainty-visibility checks.
@@ -26,7 +26,15 @@ Full architecture rebuild initiated (D-052). Chapter 2 is the only confirmed com
 	- Status update (2026-04-12): tranche-2 executable O4 to O6 gate implemented at `07_implementation/src/quality/reb_m3_tranche2_gate.py` and documented for execution (D-058, C-287).
 	- Status update (2026-04-12): tranche-3 control-causality/validity-boundary gate is now passing (`REB-M3-TRANCHE3-GATE-20260412-140805-553785`, `9/9`) after BL-009 schema correction that restores top-level `validity_boundaries` contract alignment (D-062, C-291).
 	- Status update (2026-04-12): follow-up regression hardening is complete for BL-009 section validation; `ensure_required_sections` now requires top-level `validity_boundaries` and dedicated tests pass, with full validation chain still green (`338/338`, `BL013-ENTRYPOINT-20260412-141352-373476`, `BL014-SANITY-20260412-141423-183313`, tranche-3 `REB-M3-TRANCHE3-GATE-20260412-141431-157169`) (D-063, C-292).
-- REB-M4 (TBD — after REB-M3): Rebuild Chapter 4/5 from re-evidenced implementation and evaluation [not started]
+	- Closure update (2026-04-12): REB-M3 implementation/evidence rebuild is complete; tranche gates, wrapper validation, and regression hardening are green, and remaining work has moved to chapter proofing and submission packaging (D-066, C-296).
+	- Post-closure enhancement update (2026-04-12): item-4 influence-policy implementation wave is now active and passing validation with additive BL-007 policy controls plus BL-009 per-track influence diagnostics (`342/342`, pyright clean, `BL013-ENTRYPOINT-20260412-150114-734913`, `BL014-SANITY-20260412-150146-906654`) (D-067, C-297).
+- REB-M4 (2026-04-12 onwards): Rebuild Chapter 4/5 from re-evidenced implementation and evaluation [completed]
+	- Replace pre-rebuild Chapter 4/5 framing with objective-linked implementation, evaluation, and discussion structure.
+	- Anchor chapter claims to active `07_implementation/src` evidence artifacts and REB-M3 tranche gates.
+	- Keep all Chapter 5 interpretation bounded to explicit uncertainty, control, and validity-boundary evidence.
+	- Status update (2026-04-12): kickoff accepted via D-064; `08_writing/chapter4.md` and `08_writing/chapter5.md` were rebuilt to the active O1 to O6 evidence contract using current tranche-gate and validation artifacts (C-294).
+	- Status update (2026-04-12): quality-control mirrors were synchronized to the rebuild posture via updated readiness, RQ-alignment, claim-evidence, and claim-verdict surfaces (`09_quality_control/chapter_readiness_checks.md`, `09_quality_control/rq_alignment_checks.md`, `09_quality_control/claim_evidence_map.md`, `09_quality_control/ui003_claim_verdicts_ch3_ch5.md`) under D-065 / C-295.
+	- Closure update (2026-04-12): Chapter 4/5 citation-density hardening is complete, chapter-facing interpretation now carries explicit literature anchors, and the remaining open work is outside REB-M4 (submission proofing/packaging) rather than rebuild alignment (D-066, C-296).
 
 ---
 

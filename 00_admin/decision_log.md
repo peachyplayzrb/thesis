@@ -6,9 +6,9 @@ Ordering convention (standardized 2026-03-24):
 - New entries must be appended at the end and may include `superseded_by` when a prior decision is replaced.
 
 Maintenance snapshot (2026-04-12):
-- Highest decision ID currently present: `D-063`
-- Total decision entries: 63
-- Status distribution: accepted=59, superseded=3, rejected=1
+- Highest decision ID currently present: `D-067`
+- Total decision entries: 66
+- Status distribution: accepted=62, superseded=3, rejected=1
 - ID integrity check: no duplicate decision IDs detected
 
 Current posture snapshot (2026-03-25):
@@ -1468,3 +1468,55 @@ review_date: none
 - evidence_basis: `07_implementation/src/observability/main.py` (`ensure_required_sections` now requires `validity_boundaries`), new test file `07_implementation/tests/test_observability_required_sections.py`, validation passes: pytest `338/338`, BL-013 pass (`BL013-ENTRYPOINT-20260412-141352-373476`), BL-014 pass (`BL014-SANITY-20260412-141423-183313`, `28/28`), tranche-3 gate pass (`REB-M3-TRANCHE3-GATE-20260412-141431-157169`, `9/9`).
 - impacted_files: `07_implementation/src/observability/main.py`, `07_implementation/tests/test_observability_required_sections.py`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/timeline.md`
 - next_steps: Continue REB-M3 closure hardening by transitioning status surfaces toward REB-M4 chapter evidence synthesis once no further contract regressions are observed.
+
+## D-064
+- date: 2026-04-12
+- entity_id: REB-M4 chapter evidence synthesis framing
+- proposed_by: user + Copilot
+- status: accepted
+- decision: Rebuild Chapter 4 and Chapter 5 around the active O1 to O6 objective-to-control-to-evidence contract, using REB-M3 tranche-gate results and current `07_implementation/src` artifacts as the canonical implementation/evaluation evidence surface instead of the legacy MVP reporting frame.
+- context: REB-M3 code-surface hardening is complete through D-063, but the active chapter drafts for implementation/evaluation and discussion still reflected the pre-rebuild research question, legacy evidence paths, and outdated interpretation frame.
+- alternatives_considered: postpone chapter rebuild until all possible future hardening is complete (rejected: leaves writing layer materially stale against current implementation); patch only a few run IDs while retaining legacy framing (rejected: preserves conceptual drift); rewrite chapters as benchmark-comparison discussion (rejected: incompatible with bounded engineering-evidence contribution).
+- rationale: Chapter 4 and Chapter 5 must now describe the artefact the thesis actually built and validated, which is an objective-linked deterministic pipeline with explicit uncertainty, control, reproducibility, and validity-boundary evidence contracts.
+- evidence_basis: `08_writing/chapter4.md`, `08_writing/chapter5.md`, REB-M3 tranche gate reports under `07_implementation/src/quality/outputs/`, BL-013 pass `BL013-ENTRYPOINT-20260412-141352-373476`, BL-014 pass `BL014-SANITY-20260412-141423-183313`.
+- impacted_files: `08_writing/chapter4.md`, `08_writing/chapter5.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`, `00_admin/decision_log.md`, `00_admin/change_log.md`
+- next_steps: Continue REB-M4 by replacing remaining legacy wording in chapter-facing evidence tables and synchronizing quality-control claim maps to the rebuild-era chapter text.
+
+## D-065
+- date: 2026-04-12
+- entity_id: REB-M4 quality-control mirror synchronization
+- proposed_by: user + Copilot
+- status: accepted
+- decision: Synchronize Chapter 4/5 quality-control mirrors to the rebuild posture by updating readiness, RQ-alignment, and claim-verdict surfaces so they reference the rebuilt title/RQ and the active O1 to O6 evidence contract instead of the pre-rebuild MVP framing.
+- context: After the REB-M4 chapter rewrite, the main chapter text and governance state were current, but quality-control surfaces still described legacy Chapter 4/5 expectations and the prior title/research question wording.
+- alternatives_considered: leave QC mirrors stale until final submission sweep (rejected: allows avoidable governance drift); only update chapter text without QC surfaces (rejected: breaks audit traceability); rewrite QC surfaces as fresh standalone audits disconnected from prior logs (rejected: loses continuity).
+- rationale: The thesis workflow requires control files and QC ledgers to remain synchronized with the active writing posture; otherwise later review passes can incorrectly flag resolved rebuild changes as drift.
+- evidence_basis: `09_quality_control/chapter_readiness_checks.md`, `09_quality_control/ui003_claim_verdicts_ch3_ch5.md`, `09_quality_control/rq_alignment_checks.md`, active rebuild state in `00_admin/thesis_state.md`, rebuilt chapter text in `08_writing/chapter4.md` and `08_writing/chapter5.md`.
+- impacted_files: `09_quality_control/chapter_readiness_checks.md`, `09_quality_control/ui003_claim_verdicts_ch3_ch5.md`, `09_quality_control/rq_alignment_checks.md`, `00_admin/decision_log.md`, `00_admin/change_log.md`
+- next_steps: Continue REB-M4 with any remaining claim-map or citation-placement cleanup needed for final chapter hardening, but keep QC mirrors aligned after each substantive rewrite.
+
+## D-066
+- date: 2026-04-12
+- entity_id: REB-M3 and REB-M4 closure after chapter citation hardening
+- proposed_by: user + Copilot
+- status: accepted
+- decision: Treat REB-M3 and REB-M4 as complete in-repo after the Chapter 4/5 citation-density hardening pass, because implementation gates, wrapper validation, chapter rebuild, and QC mirror synchronization are now closed; keep only submission proofing and packaging outside these rebuild milestones.
+- context: After D-064 and D-065, the remaining in-repo risk was that rebuilt Chapter 4/5 interpretation sections were still lighter on literature anchors than the rest of the thesis, even though their evidence contract and governance posture were already aligned.
+- alternatives_considered: keep REB-M4 open until final submission packaging is complete (rejected: mixes rebuild alignment work with external submission logistics); leave Chapter 4/5 discussion prose citation-light (rejected: avoidable writing-quality risk); close REB-M4 without updating milestone status surfaces (rejected: preserves stale in-progress posture).
+- rationale: The rebuild milestones were scoped to re-derive the thesis question/design, rebuild the implementation evidence contract, and rewrite the chapter-facing interpretation around that contract. Those objectives are now complete inside the repository.
+- evidence_basis: `08_writing/chapter4.md`, `08_writing/chapter5.md`, `09_quality_control/rq_alignment_checks.md` (`RQC-016`), REB-M3 tranche gate outputs, BL-013 `BL013-ENTRYPOINT-20260412-141352-373476`, BL-014 `BL014-SANITY-20260412-141423-183313`, and the synchronized chapter/QC/admin mirrors updated through C-295.
+- impacted_files: `08_writing/chapter4.md`, `08_writing/chapter5.md`, `09_quality_control/rq_alignment_checks.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`, `00_admin/decision_log.md`, `00_admin/change_log.md`
+- next_steps: Limit remaining work to final submission-proofing and packaging tasks, plus any mentor-directed wording refinements that do not reopen the rebuild posture.
+
+## D-067
+- date: 2026-04-12
+- entity_id: BL-007 influence policy contract and observability diagnostics
+- proposed_by: user + Copilot
+- status: accepted
+- decision: Introduce an additive influence-policy contract for BL-007 with opt-in modes (`competitive`, `reserved_slots`, `hybrid_override`), bounded reserved-slot handling, and explicit override controls, while preserving legacy competitive behavior as the default. Extend BL-009 to emit per-track influence inclusion/exclusion diagnostics.
+- context: Post-REB-M3 closure analysis showed influence tracks could alter profile/scoring but often had weak or opaque playlist-level effects under assembly constraints, with limited per-track audit visibility.
+- alternatives_considered: keep legacy behavior only and rely on manual interpretation (rejected: weak controllability traceability); force influence overrides as a new default (rejected: backward-compatibility risk); add diagnostics only without assembly controls (rejected: does not close controllability gap).
+- rationale: Additive opt-in controls provide measurable policy actuation without breaking existing default semantics, and per-track diagnostics improve mechanism-level transparency for inclusion/exclusion outcomes.
+- evidence_basis: BL-007 runtime/rules/model updates and BL-009 diagnostics updates under `07_implementation/src`; validation evidence: pytest `342/342`, pyright `0 errors`, BL-013 pass `BL013-ENTRYPOINT-20260412-150114-734913`, BL-014 pass `BL014-SANITY-20260412-150146-906654`.
+- impacted_files: `07_implementation/src/shared_utils/constants.py`, `07_implementation/src/run_config/run_config_utils.py`, `07_implementation/src/playlist/models.py`, `07_implementation/src/playlist/runtime_controls.py`, `07_implementation/src/playlist/rules.py`, `07_implementation/src/playlist/stage.py`, `07_implementation/src/playlist/io_layer.py`, `07_implementation/src/observability/main.py`, `07_implementation/tests/*`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/timeline.md`, `00_admin/thesis_state.md`.
+- next_steps: Use non-default influence modes in controlled runs to quantify playlist-level effect size and update chapter-facing evidence mapping if this enhancement is promoted into final reporting claims.

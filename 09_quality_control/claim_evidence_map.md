@@ -12,6 +12,11 @@
 - Lexical summary (post-reword rerun): `supported=1`, `partially_supported=16`, `weak_support=23`, `no_match=0`.
 - Divergence policy: manual PDF verdicts override lexical scores.
 
+## REB-M4 Chapter-Facing Evidence Note (2026-04-12)
+- Active Chapter 4 and Chapter 5 implementation/discussion claims now resolve through the rebuilt objective-to-evidence contract rather than the pre-rebuild MVP matrix.
+- Literature-backed framing claims remain mapped in this file; rebuild-era chapter verdict status for implementation-facing claims is tracked in `09_quality_control/ui003_claim_verdicts_ch3_ch5.md`.
+- Canonical non-literature execution evidence for rebuilt Chapter 4/5 includes REB-M3 tranche-gate outputs under `07_implementation/src/quality/outputs/`, BL-013 `BL013-ENTRYPOINT-20260412-141352-373476`, BL-014 `BL014-SANITY-20260412-141423-183313`, BL-009 observability output, BL-010 reproducibility output, and BL-011 controllability output.
+
 ## C-CLM-001
 - Claim: Accuracy-only evaluation is insufficient for recommender systems when transparency and user understanding matter.
 - Source: P-002 (`tintarev_survey_2007`), P-003 (`tintarev_evaluating_2012`), P-001 (`zhang_explainable_2020`)

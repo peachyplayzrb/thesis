@@ -3,11 +3,11 @@
 DOCUMENT STATUS: active
 CONFIDENCE: medium
 ROLE: recurring validation log for research-question/title alignment
-LAST_UPDATED: 2026-03-15
+LAST_UPDATED: 2026-04-12
 
 ## Current Locked Reference
-- Title: Engineering an Automated, Transparent, and Controllable Playlist Generation Pipeline Using Cross-Source Music Preference Data
-- Research question: What design considerations shape the engineering of a transparent, controllable, and observable automated playlist generation pipeline using cross-source music preference data?
+- Title: Engineering an Auditable and Controllable Playlist Generation Pipeline Under Cross-Source Preference Uncertainty
+- Research question: How can a deterministic playlist generation pipeline be engineered and evaluated so that preference inference, candidate generation, and playlist assembly remain transparent, controllable, and reproducible under cross-source uncertainty and multi-objective playlist trade-offs?
 - Source of truth: `00_admin/thesis_state.md`
 
 ## Check Rules
@@ -31,10 +31,13 @@ LAST_UPDATED: 2026-03-15
 | 2026-03-15 | RQC-011 | Chapter 2 temp-cycle hardening (non-freeze) | `08_writing/chapter2_temp.md`, `09_quality_control/chapter2_temp_verbatim_audit.md`, `09_quality_control/citation_checks.md`, `00_admin/thesis_state.md` | aligned | Temp-draft hardening cycle reached `weak_support=0` without changing locked title/RQ/scope language; all edits remain within evidence-discipline and wording-boundary controls. | Keep temp version as working artifact only (no freeze swap), retain final/frozen Chapter 2 trace, and continue implementation/evaluation pipeline. | AI |
 | 2026-03-15 | RQC-012 | Project-wide Chapter 2 draft lock and sync pass | `08_writing/chapter2_temp2.md`, `08_writing/chapter2.md`, `08_writing/chapter2_draft_locked_2026-03-15.md`, `09_quality_control/chapter_readiness_checks.md`, `09_quality_control/citation_checks.md` | aligned | Canonical Chapter 2 now synchronized to the latest approved temp2 wording with dated lock snapshot; no title/RQ/scope drift introduced. | Proceed with Chapter 4 implementation/evaluation evidence generation; keep Chapter 2 as locked reference unless an explicit new change request is approved. | AI |
 | 2026-03-15 | RQC-013 | Thesis currency reconciliation pass for active Chapter 2 | `08_writing/chapter2_draft_v11.md`, `08_writing/chapter2.md`, `09_quality_control/chapter2_verbatim_audit.md`, `09_quality_control/chapter_readiness_checks.md`, `09_quality_control/citation_checks.md`, `00_admin/unresolved_issues.md` | aligned | Canonical Chapter 2 was re-synced to v11 with lock parity preserved; RQ alignment remains intact. A tooling limitation was logged because the current automated verbatim parser does not capture author-year citation style (`total_claim_checks=0`). | Keep RQ status aligned, treat verbatim automation as open tooling issue, and close it via parser extension or manual sampled citation-verification protocol. | AI |
+| 2026-04-12 | RQC-014 | REB-M1 / REB-M2 rebuild lock | `00_admin/thesis_state.md`, `02_foundation/current_title_and_rq.md`, `02_foundation/objectives.md`, `05_design/chapter3_information_sheet.md`, `05_design/requirements_to_design_map.md` | aligned | The thesis title, rebuilt research question, and O1 to O6 objectives are synchronized across active foundation and design authority files. | none | AI |
+| 2026-04-12 | RQC-015 | REB-M4 Chapter 4/5 rewrite synchronization | `08_writing/chapter4.md`, `08_writing/chapter5.md`, `09_quality_control/chapter_readiness_checks.md`, `09_quality_control/ui003_claim_verdicts_ch3_ch5.md`, `00_admin/thesis_state.md` | aligned | The rebuilt Chapter 4/5 drafts now answer the active research question and use the rebuild evidence contract rather than the legacy MVP framing. | Keep remaining QC maps synchronized to the rebuild posture as further chapter edits occur. | AI |
+| 2026-04-12 | RQC-016 | REB-M4 citation-density hardening pass | `08_writing/chapter4.md`, `08_writing/chapter5.md`, `09_quality_control/claim_evidence_map.md`, `09_quality_control/citation_checks.md`, `00_admin/thesis_state.md` | aligned | The rebuilt Chapter 4/5 interpretation sections now carry explicit literature anchors for evaluation discipline, explanation fidelity, control interpretation, and bounded-guidance claims, reducing the remaining chapter-facing citation-density risk without changing the locked rebuild RQ. | Keep only normal final submission proofing and packaging checks open. | AI |
 
 ## Current Risk Notes
 - Residual risk remains on music-specific alignment benchmark evidence (cross-domain ER support is strong but not fully music-specific).
-- This is an evidence-strength risk, not a current RQ misalignment signal.
+- These are evidence-strength risks, not current RQ misalignment signals.
 
 ## RQ Viability Gate (2026-03-14)
 - Overall verdict: `CAUTION-GO` (proceed with Chapter 2 plan; do not change locked RQ).
@@ -59,4 +62,3 @@ LAST_UPDATED: 2026-03-15
 
 ### Freeze Decision Rule
 - Chapter 2 can be frozen only when all four must-do items are either implemented or explicitly logged as unresolved with bounded impact in `09_quality_control/citation_checks.md`.
-

@@ -25,19 +25,18 @@
 - [x] Controllability/transparency mechanisms are concrete, not aspirational.
 
 ## Chapter 4 (Implementation And Evaluation)
-- [x] Chapter 4 structure is drafted and aligned to `00_admin/evaluation_plan.md` criteria.
-- [x] Chapter 3-to-4 continuity mapping is explicit in `08_writing/chapter4.md`.
-- [x] Required evidence artifact paths are declared for reproducibility and audit traceability.
-- [x] Implemented artifact behavior matches locked MVP scope.
-- [x] Reproducibility tests are documented with run evidence.
-- [x] Controllability and inspectability results are reported with traceable artifacts.
-- [x] Rule compliance outcomes and failure cases are included.
+- [x] Chapter 4 structure is rebuilt around the active O1 to O6 objective-to-evidence contract.
+- [x] Chapter 3-to-4 continuity mapping is explicit in `08_writing/chapter4.md` and resolves through current `07_implementation/src` artifacts.
+- [x] Required evidence artifact paths are declared for tranche-gate, wrapper-validation, and run-level audit traceability.
+- [x] Implemented artifact behavior is described against the rebuild contract rather than the legacy MVP scope.
+- [x] Reproducibility, controllability, and observability evidence are documented with current run-linked references.
+- [x] Control-causality, validity-boundary, and bounded-guidance reporting are explicitly included.
 
 ## Chapter 5 (Discussion And Conclusion)
-- [x] Findings answer the research question directly.
-- [x] Limitations are explicit and tied to observed evidence.
-- [x] Future work is realistic and separated from MVP claims.
-- [x] Critical evaluation framing is evidence-grounded and scope-bounded (initial section drafted in `08_writing/chapter5.md`).
+- [x] Findings answer the rebuilt research question directly.
+- [x] Limitations are explicit, evidence-linked, and bounded to the rebuild artefact scope.
+- [x] Future work extends the rebuild evidence contract rather than reintroducing legacy MVP assumptions.
+- [x] Critical evaluation framing is evidence-grounded and aligned to uncertainty handling, control trade-offs, and mechanism-linked explanation quality.
 
 ## Submission-Wide Checks
 - [x] Referencing style is consistent with module guidance.
@@ -84,4 +83,5 @@ Progress note (2026-03-28): UI-003 Chapter 4 re-audit synchronized. `09_quality_
 Progress note (2026-03-28): UI-003 Chapter 3 mismatch closure completed. `08_writing/chapter3.md` Section 3.4.1 now uses run-linked alignment values (`match_rate=0.1595`, `unmatched_rate=0.8405`), and `09_quality_control/ui003_claim_verdicts_ch3_ch5.md` now records `mismatch=0`.
 Progress note (2026-03-28): Chapter 2 verbatim audit rerun completed via `09_quality_control/verbatim_audits/run_ch2_verbatim_audit.py`; current snapshot is `total_claim_checks=40`, `supported=2`, `partially_supported=38`, `weak_support=0`, `no_match=0` in `09_quality_control/chapter2_verbatim_audit.md`.
 Progress note (2026-04-10): Full-strength Chapter 2 wording implementation pass completed in `08_writing/chapter2.md` for all previously partial-support rows identified by the zero-trust audit. Authoritative zero-trust matrix is now synchronized to `supported=31`, `partially_supported=0`, `unsupported=0`, `misframed=0` in `09_quality_control/chapter2_reference_audit_zero_trust_2026-04-10.md`, with lexical cross-check rerun as non-authoritative comparator in `09_quality_control/chapter2_verbatim_audit.md`.
+Progress note (2026-04-12): REB-M4 chapter rebuild synchronization completed. `08_writing/chapter4.md` and `08_writing/chapter5.md` now align to the rebuilt title/RQ and the active O1 to O6 objective-to-evidence contract, using REB-M3 tranche-gate outputs plus current `07_implementation/src` artefact paths as the canonical evidence surface. Related QC mirrors in `09_quality_control/ui003_claim_verdicts_ch3_ch5.md` and `09_quality_control/rq_alignment_checks.md` were refreshed to the rebuild posture.
 Session-close note (2026-04-10): The final submission-wide formatting gate remains intentionally open after closeout review. Repository evidence confirms the guidance/templates exist in `01_requirements/formatting_rules.md`, `01_requirements/submission_requirements.md`, `01_requirements/university_documents/Project Cover Page.docx`, and `01_requirements/university_documents/Logbook.docx`, but the completed packaging artifacts needed for closure are still not verifiable in-repo: no explicit professionalism companion report artifact is present under `08_writing/`, no explicit final logbook/project-management evidence artifact path is declared for submission packaging, and Canvas/Turnitin/declaration attachment checks remain external to the repository.

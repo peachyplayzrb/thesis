@@ -54,6 +54,8 @@ def write_assembly_trace(path: Path, trace_rows: list[dict[str, object]]) -> Non
         "decision",
         "playlist_position",
         "exclusion_reason",
+        "influence_requested",
+        "inclusion_path",
     ]
     with open_text_write(path, newline="") as handle:
         writer = csv.DictWriter(handle, fieldnames=trace_fields)

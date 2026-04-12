@@ -223,6 +223,12 @@ def test_stage_payload_uses_run_config_overrides(tmp_path: Path) -> None:
                 },
                 "assembly_controls": {
                     "target_size": 12,
+                    "influence_policy_mode": "reserved_slots",
+                    "influence_reserved_slots": 2,
+                },
+                "influence_tracks": {
+                    "enabled": True,
+                    "track_ids": ["abc"],
                 },
             }
         ),
@@ -240,3 +246,6 @@ def test_stage_payload_uses_run_config_overrides(tmp_path: Path) -> None:
     assert dict(payloads["BL-005"]["controls"])["profile_top_tag_limit"] == 22
     assert dict(payloads["BL-006"]["controls"])["numeric_confidence_floor"] == 0.25
     assert dict(payloads["BL-007"]["controls"])["target_size"] == 12
+    assert dict(payloads["BL-007"]["controls"])["influence_policy_mode"] == "reserved_slots"
+    assert dict(payloads["BL-007"]["controls"])["influence_reserved_slots"] == 2
+    assert dict(payloads["BL-007"]["controls"])["influence_track_ids"] == ["abc"]

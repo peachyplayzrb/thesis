@@ -76,3 +76,33 @@ def test_runtime_controls_payload_does_not_inherit_env_for_missing_keys(monkeypa
 
     assert controls["config_source"] == "defaults"
     assert controls["min_score_threshold"] == 0.35
+
+
+def test_runtime_controls_sanitizes_influence_policy_bounds(monkeypatch) -> None:
+    monkeypatch.setenv(
+        "BL_STAGE_CONFIG_JSON",
+        json.dumps(
+            {
+                "controls": {
+                    "target_size": 5,
+                    "influence_enabled": True,
+                    "influence_track_ids": ["a", "", "a", "b"],
+                    "influence_policy_mode": "invalid_mode",
+                    "influence_reserved_slots": 99,
+                    "influence_allow_genre_cap_override": True,
+                    "influence_allow_consecutive_override": True,
+                    "influence_allow_score_threshold_override": True,
+                }
+            }
+        ),
+    )
+
+    controls = runtime_controls.resolve_bl007_runtime_controls()
+
+    assert controls["influence_enabled"] is True
+    assert controls["influence_track_ids"] == ["a", "a", "b"]
+    assert controls["influence_policy_mode"] == "competitive"
+    assert controls["influence_reserved_slots"] == 5
+    assert controls["influence_allow_genre_cap_override"] is True
+    assert controls["influence_allow_consecutive_override"] is True
+    assert controls["influence_allow_score_threshold_override"] is True
