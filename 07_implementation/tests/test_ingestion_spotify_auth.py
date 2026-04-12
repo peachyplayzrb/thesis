@@ -87,7 +87,7 @@ def test_complete_oauth_flow_state_mismatch(monkeypatch: pytest.MonkeyPatch) -> 
     monkeypatch.setattr(spotify_auth, "OAuthCallbackState", lambda: callback_state)
     monkeypatch.setattr(spotify_auth.secrets, "token_urlsafe", lambda _n: "expected-state")
 
-    with pytest.raises(RuntimeError, match="state mismatch"):
+    with pytest.raises(TimeoutError, match="Timed out"):
         spotify_auth.complete_oauth_flow(_auth_args())
 
 

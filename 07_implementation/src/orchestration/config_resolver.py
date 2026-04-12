@@ -54,6 +54,15 @@ def resolve_stage_control_payload(stage_id: str, run_config_path: Path | None) -
     run_config_utils = load_run_config_utils_module()
     rc_path = str(run_config_path) if run_config_path else None
 
+    if stage_id == "BL-002":
+        controls = {
+            "ingestion_controls": dict(run_config_utils.resolve_ingestion_controls(rc_path)),
+        }
+        return _build_stage_payload(
+            stage_id=stage_id,
+            run_config_path=run_config_path,
+            controls=controls,
+        )
     if stage_id == "BL-003":
         input_scope = run_config_utils.resolve_input_scope_controls(rc_path)
         controls = {

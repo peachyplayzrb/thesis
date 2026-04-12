@@ -64,6 +64,10 @@ def _build_behavior_controls(
         input_scope=dict(input_scope),
         top_range_weights=dict(seed_controls.get("top_range_weights") or {}),
         source_base_weights=dict(seed_controls.get("source_base_weights") or {}),
+        source_resilience_policy={
+            str(key): str(value).strip().lower()
+            for key, value in (seed_controls.get("source_resilience_policy") or {}).items()
+        },
         decay_half_lives=dict(seed_controls.get("decay_half_lives") or {}),
         match_rate_min_threshold=float(seed_controls.get("match_rate_min_threshold", 0.0)),
         fuzzy_matching_controls={

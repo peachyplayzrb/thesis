@@ -12,9 +12,12 @@ from pathlib import Path
 from typing import Any, Dict, List
 
 from shared_utils.path_utils import impl_root
+from shared_utils.config_loader import load_run_config_utils_module
+from shared_utils.stage_runtime_resolver import get_stage_payload, get_stage_payload_controls, resolve_run_config_path
 
 try:
     from .spotify_auth import complete_oauth_flow
+    from .spotify_resilience import apply_ingestion_controls
     from .spotify_client import (
         RateLimitCooldownError,
         SpotifyApiClient,
@@ -37,6 +40,7 @@ try:
     )
 except ImportError:
     from spotify_auth import complete_oauth_flow  # pyright: ignore[reportMissingImports]
+    from spotify_resilience import apply_ingestion_controls  # pyright: ignore[reportMissingImports]
     from spotify_client import (  # pyright: ignore[reportMissingImports]
         RateLimitCooldownError,
         SpotifyApiClient,
@@ -96,6 +100,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--request-timeout-seconds", type=int, default=60)
     parser.add_argument("--oauth-timeout-seconds", type=int, default=180)
     parser.add_argument("--max-retries", type=int, default=4)
+    parser.add_argument("--base-backoff-delay-seconds", type=float, default=1.0)
     parser.add_argument("--max-retry-after-seconds", type=int, default=600)
     parser.add_argument("--batch-size-top-tracks", type=int, default=50)
     parser.add_argument("--batch-size-saved-tracks", type=int, default=50)
@@ -124,6 +129,44 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--no-browser", action="store_true")
     parser.add_argument("--force-auth", action="store_true")
     return parser.parse_args()
+
+
+def _resolve_runtime_ingestion_controls() -> dict[str, Any]:
+    payload = get_stage_payload()
+    if payload is not None:
+        payload_controls = get_stage_payload_controls(payload)
+        runtime_controls = payload_controls.get("ingestion_controls")
+        if isinstance(runtime_controls, dict):
+            return dict(runtime_controls)
+
+    run_config_path = resolve_run_config_path()
+    if not run_config_path:
+        return {}
+    try:
+        run_config_utils = load_run_config_utils_module()
+        return dict(run_config_utils.resolve_ingestion_controls(run_config_path))
+    except Exception as exc:
+        print(
+            f"[config] warning: failed to resolve ingestion_controls from run config ({exc}); using runtime defaults",
+            flush=True,
+        )
+        return {}
+
+
+def _apply_runtime_ingestion_controls(args: argparse.Namespace) -> dict[str, Any]:
+    controls = _resolve_runtime_ingestion_controls()
+    if not controls:
+        return {}
+
+    apply_ingestion_controls(controls)
+    args.max_retries = max(1, int(controls.get("max_retries", args.max_retries)))
+    args.base_backoff_delay_seconds = max(
+        0.01,
+        float(controls.get("base_backoff_delay_seconds", args.base_backoff_delay_seconds)),
+    )
+    throttle_sleep_seconds = float(controls.get("throttle_sleep_seconds", args.min_request_interval_ms / 1000.0))
+    args.min_request_interval_ms = max(0, int(round(throttle_sleep_seconds * 1000.0)))
+    return controls
 
 
 def _normalize_optional_cap(value: int) -> int | None:
@@ -341,6 +384,65 @@ def _build_summary_artifacts(root: Path, output_dir: Path, staging_dir: Path, ar
     }
 
 
+def _build_source_outcomes(
+    *,
+    selection: dict[str, Any],
+    endpoint_counts: dict[str, int],
+    written_artifacts: dict[str, dict[str, Any]],
+) -> dict[str, dict[str, Any]]:
+    source_specs = {
+        "top_tracks": {
+            "selected": bool(selection.get("include_top_tracks", False)),
+            "count": int(endpoint_counts.get("top_tracks_short_term", 0))
+            + int(endpoint_counts.get("top_tracks_medium_term", 0))
+            + int(endpoint_counts.get("top_tracks_long_term", 0)),
+            "required_artifact": "spotify_top_tracks_flat.csv",
+        },
+        "saved_tracks": {
+            "selected": bool(selection.get("include_saved_tracks", False)),
+            "count": int(endpoint_counts.get("saved_tracks", 0)),
+            "required_artifact": "spotify_saved_tracks_flat.csv",
+        },
+        "playlist_items": {
+            "selected": bool(selection.get("include_playlists", False)),
+            "count": int(endpoint_counts.get("playlist_items", 0)),
+            "required_artifact": "spotify_playlist_items_flat.csv",
+        },
+        "recently_played": {
+            "selected": bool(selection.get("include_recently_played", False)),
+            "count": int(endpoint_counts.get("recently_played", 0)),
+            "required_artifact": "spotify_recently_played_flat.csv",
+        },
+    }
+
+    outcomes: dict[str, dict[str, Any]] = {}
+    for source, spec in source_specs.items():
+        selected = bool(spec["selected"])
+        count = int(spec["count"])
+        required_artifact = str(spec["required_artifact"])
+        artifact_written = required_artifact in written_artifacts
+        forbidden_count = int(endpoint_counts.get("playlists_items_forbidden", 0)) if source == "playlist_items" else 0
+        if not selected:
+            status = "skipped_not_selected"
+        elif source == "playlist_items" and count == 0 and forbidden_count > 0:
+            status = "forbidden"
+        elif count > 0 and artifact_written:
+            status = "has_data"
+        elif count == 0:
+            status = "zero_results"
+        else:
+            status = "missing_unexpected"
+        outcomes[source] = {
+            "status": status,
+            "selected": selected,
+            "count": count,
+            "artifact_written": artifact_written,
+            "required_artifact": required_artifact,
+            "forbidden_count": forbidden_count,
+        }
+    return outcomes
+
+
 def _rename_directory(source: Path, target: Path) -> None:
     source.replace(target)
 
@@ -381,6 +483,7 @@ def main() -> None:
     args = parse_args()
     root = impl_root()
     print("[start] spotify export initializing", flush=True)
+    ingestion_controls = _apply_runtime_ingestion_controls(args)
 
     for attr in ("batch_size_top_tracks", "batch_size_saved_tracks", "batch_size_playlists", "batch_size_playlist_items"):
         setattr(args, attr, clamp_page_size(getattr(args, attr)))
@@ -440,9 +543,19 @@ def main() -> None:
     )
     print(
         f"[config] rate_limit min_request_interval_ms={args.min_request_interval_ms} "
-        f"max_requests_per_minute={args.max_requests_per_minute} max_retries={args.max_retries}",
+        f"max_requests_per_minute={args.max_requests_per_minute} "
+        f"max_retries={args.max_retries} base_backoff_delay_seconds={args.base_backoff_delay_seconds}",
         flush=True,
     )
+    if ingestion_controls:
+        print(
+            "[config] runtime ingestion_controls applied "
+            f"cache_ttl_seconds={ingestion_controls.get('cache_ttl_seconds')} "
+            f"throttle_sleep_seconds={ingestion_controls.get('throttle_sleep_seconds')} "
+            f"max_retries={ingestion_controls.get('max_retries')} "
+            f"base_backoff_delay_seconds={ingestion_controls.get('base_backoff_delay_seconds')}",
+            flush=True,
+        )
 
     try:
         data = _fetch_all_data(client=client, args=args)
@@ -500,6 +613,28 @@ def main() -> None:
         "api_calls_logged": len(client.request_log),
     }
 
+    selection = {
+        "include_top_tracks": args.include_top_tracks,
+        "include_saved_tracks": args.include_saved_tracks,
+        "include_playlists": args.include_playlists,
+        "include_recently_played": args.include_recently_played,
+        "top_time_ranges": _normalize_requested_time_ranges(args.top_time_ranges),
+        "top_caps": {
+            "short_term": _normalize_optional_cap(args.top_max_items_short_term),
+            "medium_term": _normalize_optional_cap(args.top_max_items_medium_term),
+            "long_term": _normalize_optional_cap(args.top_max_items_long_term),
+        },
+        "saved_max_items": _normalize_optional_cap(args.saved_max_items),
+        "playlists_max_items": _normalize_optional_cap(args.playlists_max_items),
+        "playlist_items_max_per_playlist": _normalize_optional_cap(args.playlist_items_max_per_playlist),
+        "recently_played_limit": max(1, min(50, int(args.recently_played_limit))),
+    }
+    summary_artifacts = _build_summary_artifacts(
+        root=root,
+        output_dir=output_dir,
+        staging_dir=staging_dir,
+        artifacts=artifacts,
+    )
     summary = {
         "task": "BL-002-spotify-api-export",
         "run_id": run_id,
@@ -516,28 +651,18 @@ def main() -> None:
             "product": data["profile"].get("product"),
         },
         "counts": endpoint_counts,
-        "selection": {
-            "include_top_tracks": args.include_top_tracks,
-            "include_saved_tracks": args.include_saved_tracks,
-            "include_playlists": args.include_playlists,
-            "include_recently_played": args.include_recently_played,
-            "top_time_ranges": _normalize_requested_time_ranges(args.top_time_ranges),
-            "top_caps": {
-                "short_term": _normalize_optional_cap(args.top_max_items_short_term),
-                "medium_term": _normalize_optional_cap(args.top_max_items_medium_term),
-                "long_term": _normalize_optional_cap(args.top_max_items_long_term),
-            },
-            "saved_max_items": _normalize_optional_cap(args.saved_max_items),
-            "playlists_max_items": _normalize_optional_cap(args.playlists_max_items),
-            "playlist_items_max_per_playlist": _normalize_optional_cap(args.playlist_items_max_per_playlist),
-            "recently_played_limit": max(1, min(50, int(args.recently_played_limit))),
-        },
+        "selection": selection,
+        "source_outcomes": _build_source_outcomes(
+            selection=selection,
+            endpoint_counts=endpoint_counts,
+            written_artifacts=summary_artifacts,
+        ),
         "elapsed_seconds": elapsed_seconds,
         "resilience": {
             "cache_enabled": False,
             "cache_note": "Endpoint cache disabled; all pages fetched directly from Spotify API",
         },
-        "artifacts": _build_summary_artifacts(root=root, output_dir=output_dir, staging_dir=staging_dir, artifacts=artifacts),
+        "artifacts": summary_artifacts,
         "notes": {
             "api_reference_basis": [
                 "Authorization Code Flow tutorial",

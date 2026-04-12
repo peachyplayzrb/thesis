@@ -11,8 +11,18 @@ from typing import Any
 logger = logging.getLogger(__name__)
 
 from shared_utils.constants import (
+    DEFAULT_LEAD_GENRE_PARTIAL_MATCH_THRESHOLD,
+    DEFAULT_NUMERIC_SUPPORT_MIN_PASS,
+    DEFAULT_NUMERIC_SUPPORT_MIN_SCORE,
+    DEFAULT_PROFILE_TOP_GENRE_LIMIT,
+    DEFAULT_PROFILE_TOP_LEAD_GENRE_LIMIT,
+    DEFAULT_PROFILE_TOP_TAG_LIMIT,
+    DEFAULT_RETRIEVAL_CONTROLS,
+    DEFAULT_SEMANTIC_MIN_KEEP_SCORE,
+    DEFAULT_SEMANTIC_STRONG_KEEP_SCORE,
     NUMERIC_FEATURE_SPECS,
 )
+from shared_utils.coerce import clamp, to_float, to_int, to_mapping, to_string_list
 from shared_utils.io_utils import load_csv_rows, load_json, open_text_write, sha256_of_file, utc_now
 from shared_utils.path_utils import impl_root
 from shared_utils.parsing import safe_float, safe_int
@@ -81,38 +91,6 @@ class RetrievalStage:
     def __init__(self, root: Path | None = None) -> None:
         self.root = root if root is not None else impl_root()
 
-    @staticmethod
-    def _clamp_0_1(value: float) -> float:
-        return max(0.0, min(1.0, value))
-
-    @staticmethod
-    def _safe_float(raw: object, fallback: float = 0.0) -> float:
-        try:
-            return float(str(raw))
-        except (TypeError, ValueError):
-            return fallback
-
-    @staticmethod
-    def _safe_int(raw: object, fallback: int = 0) -> int:
-        try:
-            return int(str(raw))
-        except (TypeError, ValueError):
-            return fallback
-
-    @staticmethod
-    def _mapping(raw: object) -> dict[str, object]:
-        if isinstance(raw, dict):
-            return {str(key): value for key, value in raw.items()}
-        return {}
-
-    @staticmethod
-    def _string_list(raw: object) -> list[str]:
-        if isinstance(raw, list):
-            return [str(value) for value in raw if str(value)]
-        if isinstance(raw, tuple):
-            return [str(value) for value in raw if str(value)]
-        return []
-
     def resolve_paths(self) -> RetrievalPaths:
         return RetrievalPaths(
             profile_path=self.root / "profile" / "outputs" / "bl004_preference_profile.json",
@@ -123,6 +101,7 @@ class RetrievalStage:
 
     def resolve_runtime_controls(self) -> RetrievalControls:
         payload = resolve_bl005_runtime_controls()
+        defaults = DEFAULT_RETRIEVAL_CONTROLS
         return RetrievalControls(
             config_source=str(payload.get("config_source") or "environment"),
             run_config_path=(str(payload["run_config_path"]) if payload.get("run_config_path") else None),
@@ -131,62 +110,117 @@ class RetrievalStage:
                 if payload.get("run_config_schema_version")
                 else None
             ),
-            signal_mode={str(k): v for k, v in RetrievalStage._mapping(payload.get("signal_mode")).items()},
-            profile_top_lead_genre_limit=RetrievalStage._safe_int(payload.get("profile_top_lead_genre_limit"), 6),
-            profile_top_tag_limit=RetrievalStage._safe_int(payload.get("profile_top_tag_limit"), 10),
-            profile_top_genre_limit=RetrievalStage._safe_int(payload.get("profile_top_genre_limit"), 8),
-            semantic_strong_keep_score=RetrievalStage._safe_int(payload.get("semantic_strong_keep_score"), 2),
-            semantic_min_keep_score=RetrievalStage._safe_int(payload.get("semantic_min_keep_score"), 1),
-            numeric_support_min_pass=RetrievalStage._safe_int(payload.get("numeric_support_min_pass"), 1),
-            numeric_support_min_score=RetrievalStage._safe_float(payload.get("numeric_support_min_score"), 1.0),
-            lead_genre_partial_match_threshold=RetrievalStage._safe_float(
-                payload.get("lead_genre_partial_match_threshold"), 0.5
+            signal_mode={str(k): v for k, v in to_mapping(payload.get("signal_mode")).items()},
+            profile_top_lead_genre_limit=to_int(
+                payload.get("profile_top_lead_genre_limit"),
+                DEFAULT_PROFILE_TOP_LEAD_GENRE_LIMIT,
+            ),
+            profile_top_tag_limit=to_int(
+                payload.get("profile_top_tag_limit"),
+                DEFAULT_PROFILE_TOP_TAG_LIMIT,
+            ),
+            profile_top_genre_limit=to_int(
+                payload.get("profile_top_genre_limit"),
+                DEFAULT_PROFILE_TOP_GENRE_LIMIT,
+            ),
+            semantic_strong_keep_score=to_int(
+                payload.get("semantic_strong_keep_score"),
+                DEFAULT_SEMANTIC_STRONG_KEEP_SCORE,
+            ),
+            semantic_min_keep_score=to_int(
+                payload.get("semantic_min_keep_score"),
+                DEFAULT_SEMANTIC_MIN_KEEP_SCORE,
+            ),
+            numeric_support_min_pass=to_int(
+                payload.get("numeric_support_min_pass"),
+                DEFAULT_NUMERIC_SUPPORT_MIN_PASS,
+            ),
+            numeric_support_min_score=to_float(
+                payload.get("numeric_support_min_score"),
+                DEFAULT_NUMERIC_SUPPORT_MIN_SCORE,
+            ),
+            lead_genre_partial_match_threshold=to_float(
+                payload.get("lead_genre_partial_match_threshold"),
+                DEFAULT_LEAD_GENRE_PARTIAL_MATCH_THRESHOLD,
             ),
             use_weighted_semantics=bool(payload.get("use_weighted_semantics", False)),
             use_continuous_numeric=bool(payload.get("use_continuous_numeric", False)),
             enable_popularity_numeric=bool(payload.get("enable_popularity_numeric", False)),
             language_filter_enabled=bool(payload.get("language_filter_enabled", False)),
-            language_filter_codes=RetrievalStage._string_list(payload.get("language_filter_codes")),
+            language_filter_codes=to_string_list(payload.get("language_filter_codes"), allow_tuple=True, drop_empty=True),
             recency_years_min_offset=(
-                RetrievalStage._safe_int(payload["recency_years_min_offset"])
+                to_int(payload["recency_years_min_offset"])
                 if payload.get("recency_years_min_offset") is not None
                 else None
             ),
             numeric_thresholds={
-                str(k): RetrievalStage._safe_float(v)
-                for k, v in RetrievalStage._mapping(payload.get("numeric_thresholds")).items()
+                str(k): to_float(v)
+                for k, v in to_mapping(payload.get("numeric_thresholds")).items()
             },
-            profile_quality_penalty_enabled=bool(payload.get("profile_quality_penalty_enabled", True)),
-            profile_quality_threshold=RetrievalStage._safe_float(payload.get("profile_quality_threshold"), 0.90),
-            profile_entropy_low_threshold=RetrievalStage._safe_float(payload.get("profile_entropy_low_threshold"), 0.35),
-            influence_share_threshold=RetrievalStage._safe_float(payload.get("influence_share_threshold"), 0.60),
-            profile_quality_penalty_increment=RetrievalStage._safe_float(
-                payload.get("profile_quality_penalty_increment"), 0.20
+            profile_quality_penalty_enabled=bool(
+                payload.get("profile_quality_penalty_enabled", defaults["profile_quality_penalty_enabled"])
             ),
-            profile_entropy_penalty_increment=RetrievalStage._safe_float(
-                payload.get("profile_entropy_penalty_increment"), 0.20
+            profile_quality_threshold=to_float(
+                payload.get("profile_quality_threshold"),
+                to_float(defaults["profile_quality_threshold"], 0.90),
             ),
-            influence_share_penalty_increment=RetrievalStage._safe_float(
-                payload.get("influence_share_penalty_increment"), 0.15
+            profile_entropy_low_threshold=to_float(
+                payload.get("profile_entropy_low_threshold"),
+                to_float(defaults["profile_entropy_low_threshold"], 0.35),
             ),
-            numeric_penalty_scale=RetrievalStage._safe_float(payload.get("numeric_penalty_scale"), 0.50),
-            semantic_overlap_damping_mid_entropy_threshold=RetrievalStage._safe_float(
-                payload.get("semantic_overlap_damping_mid_entropy_threshold"), 0.60
+            influence_share_threshold=to_float(
+                payload.get("influence_share_threshold"),
+                to_float(defaults["influence_share_threshold"], 0.60),
             ),
-            semantic_overlap_damping_low_entropy=RetrievalStage._safe_float(
-                payload.get("semantic_overlap_damping_low_entropy"), 0.85
+            profile_quality_penalty_increment=to_float(
+                payload.get("profile_quality_penalty_increment"),
+                to_float(defaults["profile_quality_penalty_increment"], 0.20),
             ),
-            semantic_overlap_damping_mid_entropy=RetrievalStage._safe_float(
-                payload.get("semantic_overlap_damping_mid_entropy"), 0.92
+            profile_entropy_penalty_increment=to_float(
+                payload.get("profile_entropy_penalty_increment"),
+                to_float(defaults["profile_entropy_penalty_increment"], 0.20),
             ),
-            enable_numeric_confidence_scaling=bool(payload.get("enable_numeric_confidence_scaling", True)),
-            numeric_confidence_floor=RetrievalStage._safe_float(payload.get("numeric_confidence_floor"), 0.0),
-            profile_numeric_confidence_mode=str(payload.get("profile_numeric_confidence_mode") or "direct"),
-            profile_numeric_confidence_blend_weight=RetrievalStage._safe_float(
-                payload.get("profile_numeric_confidence_blend_weight", 1.0)
+            influence_share_penalty_increment=to_float(
+                payload.get("influence_share_penalty_increment"),
+                to_float(defaults["influence_share_penalty_increment"], 0.15),
             ),
-            numeric_support_score_mode=str(payload.get("numeric_support_score_mode") or "weighted_absolute"),
-            emit_profile_policy_diagnostics=bool(payload.get("emit_profile_policy_diagnostics", True)),
+            numeric_penalty_scale=to_float(
+                payload.get("numeric_penalty_scale"),
+                to_float(defaults["numeric_penalty_scale"], 0.50),
+            ),
+            semantic_overlap_damping_mid_entropy_threshold=to_float(
+                payload.get("semantic_overlap_damping_mid_entropy_threshold"),
+                to_float(defaults["semantic_overlap_damping_mid_entropy_threshold"], 0.60),
+            ),
+            semantic_overlap_damping_low_entropy=to_float(
+                payload.get("semantic_overlap_damping_low_entropy"),
+                to_float(defaults["semantic_overlap_damping_low_entropy"], 0.85),
+            ),
+            semantic_overlap_damping_mid_entropy=to_float(
+                payload.get("semantic_overlap_damping_mid_entropy"),
+                to_float(defaults["semantic_overlap_damping_mid_entropy"], 0.92),
+            ),
+            enable_numeric_confidence_scaling=bool(
+                payload.get("enable_numeric_confidence_scaling", defaults["enable_numeric_confidence_scaling"])
+            ),
+            numeric_confidence_floor=to_float(
+                payload.get("numeric_confidence_floor"),
+                to_float(defaults["numeric_confidence_floor"], 0.0),
+            ),
+            profile_numeric_confidence_mode=str(
+                payload.get("profile_numeric_confidence_mode")
+                or defaults["profile_numeric_confidence_mode"]
+            ),
+            profile_numeric_confidence_blend_weight=to_float(
+                payload.get("profile_numeric_confidence_blend_weight"),
+                to_float(defaults["profile_numeric_confidence_blend_weight"], 1.0),
+            ),
+            numeric_support_score_mode=str(
+                payload.get("numeric_support_score_mode") or defaults["numeric_support_score_mode"]
+            ),
+            emit_profile_policy_diagnostics=bool(
+                payload.get("emit_profile_policy_diagnostics", defaults["emit_profile_policy_diagnostics"])
+            ),
         )
 
     @staticmethod
@@ -287,8 +321,8 @@ class RetrievalStage:
             confidence_by_feature_obj if isinstance(confidence_by_feature_obj, dict) else {}
         )
         feature_confidence_by_name = {
-            feature: RetrievalStage._clamp_0_1(
-                RetrievalStage._safe_float(confidence_by_feature.get(feature), 1.0)
+            feature: clamp(
+                to_float(confidence_by_feature.get(feature), 1.0)
             )
             for feature in active_numeric_specs
         }
@@ -299,7 +333,7 @@ class RetrievalStage:
             )
 
         if controls.enable_numeric_confidence_scaling:
-            numeric_confidence_floor = RetrievalStage._clamp_0_1(controls.numeric_confidence_floor)
+            numeric_confidence_floor = clamp(controls.numeric_confidence_floor)
             feature_confidence_by_name = {
                 key: max(numeric_confidence_floor, value)
                 for key, value in feature_confidence_by_name.items()
@@ -312,7 +346,7 @@ class RetrievalStage:
             }
 
         if controls.profile_numeric_confidence_mode == "blended":
-            blend_weight = RetrievalStage._clamp_0_1(controls.profile_numeric_confidence_blend_weight)
+            blend_weight = clamp(controls.profile_numeric_confidence_blend_weight)
             profile_numeric_confidence_factor = (
                 blend_weight * profile_numeric_confidence_factor_base
             ) + ((1.0 - blend_weight) * 1.0)
@@ -326,8 +360,8 @@ class RetrievalStage:
         bl003_quality_obj = inputs.profile.get("bl003_quality")
         bl003_quality = bl003_quality_obj if isinstance(bl003_quality_obj, dict) else {}
 
-        profile_match_quality = RetrievalStage._clamp_0_1(
-            RetrievalStage._safe_float(
+        profile_match_quality = clamp(
+            to_float(
                 signal_vector.get(
                     "alignment_match_rate",
                     bl003_quality.get("match_rate", 1.0),
@@ -335,21 +369,21 @@ class RetrievalStage:
                 1.0,
             )
         )
-        top_genre_entropy = RetrievalStage._clamp_0_1(
-            RetrievalStage._safe_float(signal_vector.get("top_genre_entropy"), 0.0)
+        top_genre_entropy = clamp(
+            to_float(signal_vector.get("top_genre_entropy"), 0.0)
         )
-        top_tag_entropy = RetrievalStage._clamp_0_1(
-            RetrievalStage._safe_float(signal_vector.get("top_tag_entropy"), 0.0)
+        top_tag_entropy = clamp(
+            to_float(signal_vector.get("top_tag_entropy"), 0.0)
         )
-        history_weight_share = RetrievalStage._clamp_0_1(
-            RetrievalStage._safe_float(signal_vector.get("history_weight_share"), 1.0)
+        history_weight_share = clamp(
+            to_float(signal_vector.get("history_weight_share"), 1.0)
         )
         # When BL-003 injection is disabled (BL003_INJECT_INFLUENCE_TRACKS=false) and influence
         # ownership moves to BL-006, influence events are excluded from the profile. In that case
         # influence_weight_share will be 0.0 so the penalty branch below will not fire — this is
         # intentional graceful behaviour during the migration, not a bug.
-        influence_weight_share = RetrievalStage._clamp_0_1(
-            RetrievalStage._safe_float(signal_vector.get("influence_weight_share"), 0.0)
+        influence_weight_share = clamp(
+            to_float(signal_vector.get("influence_weight_share"), 0.0)
         )
 
         average_entropy = (top_genre_entropy + top_tag_entropy) / 2.0

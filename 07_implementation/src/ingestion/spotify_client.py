@@ -95,7 +95,8 @@ class SpotifyApiClient:
                     time.sleep(wait_seconds)
                     continue
                 if 500 <= status < 600 and attempts <= self.args.max_retries:
-                    backoff_seconds = min(float(2 ** attempts), 30.0)
+                    base_delay_seconds = max(0.01, float(getattr(self.args, "base_backoff_delay_seconds", 1.0)))
+                    backoff_seconds = min(float((2 ** attempts) * base_delay_seconds), 30.0)
                     self.request_log.append(
                         {
                             "timestamp_utc": now_utc(),
@@ -112,7 +113,8 @@ class SpotifyApiClient:
                 raise RuntimeError(f"Spotify token refresh failed with status {status}: {body}")
             except urllib.error.URLError as error:
                 if attempts <= self.args.max_retries:
-                    backoff_seconds = min(float(2 ** attempts), 30.0)
+                    base_delay_seconds = max(0.01, float(getattr(self.args, "base_backoff_delay_seconds", 1.0)))
+                    backoff_seconds = min(float((2 ** attempts) * base_delay_seconds), 30.0)
                     self.request_log.append(
                         {
                             "timestamp_utc": now_utc(),
@@ -232,6 +234,8 @@ class SpotifyApiClient:
 
             except urllib.error.URLError as error:
                 if attempts <= self.args.max_retries:
+                    base_delay_seconds = max(0.01, float(getattr(self.args, "base_backoff_delay_seconds", 1.0)))
+                    backoff_seconds = min(float((2 ** attempts) * base_delay_seconds), 30.0)
                     self.request_log.append(
                         {
                             "timestamp_utc": now_utc(),
@@ -242,7 +246,7 @@ class SpotifyApiClient:
                             "reason": str(error.reason),
                         }
                     )
-                    time.sleep(min(float(2 ** attempts), 30.0))
+                    time.sleep(backoff_seconds)
                     continue
                 raise RuntimeError(f"Network error calling Spotify API path {path}: {error.reason}")
 

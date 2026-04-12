@@ -64,6 +64,12 @@ def test_context_entrypoint_writes_expected_contract_payload(monkeypatch, tmp_pa
             "playlist_items": 0.4,
             "recently_played": 0.5,
         },
+        "source_resilience_policy": {
+            "top_tracks": "required",
+            "saved_tracks": "optional",
+            "playlist_items": "optional",
+            "recently_played": "advisory",
+        },
         "decay_half_lives": {"recently_played": 90.0, "saved_tracks": 365.0},
         "match_rate_min_threshold": 0.0,
         "fuzzy_matching_controls": {"enabled": False},
@@ -132,6 +138,9 @@ def test_context_entrypoint_writes_expected_contract_payload(monkeypatch, tmp_pa
                 "recently_played": True,
             },
             missing_selected_sources=[],
+            source_resilience_policy=behavior_controls["source_resilience_policy"],
+            missing_required_sources=[],
+            degraded_optional_sources=[],
             allow_missing_selected_sources=False,
             source_stats={
                 "top_tracks": {"file_present": True, "rows_available": 0, "rows_selected": 0},

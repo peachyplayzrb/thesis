@@ -8,6 +8,7 @@ from pathlib import Path
 from typing import Any
 
 from observability.runtime_controls import resolve_bl009_runtime_controls
+from shared_utils.coerce import to_mapping
 from shared_utils.artifact_registry import bl009_required_paths
 from shared_utils.hashing import sha256_of_values
 from shared_utils.io_utils import (
@@ -18,6 +19,7 @@ from shared_utils.io_utils import (
 )
 from shared_utils.path_utils import impl_root
 from shared_utils.parsing import safe_float, safe_int
+from shared_utils.coerce import to_string_list
 from shared_utils.stage_utils import ensure_paths_exist, ensure_required_keys, load_required_json_object, relpath, safe_relpath
 
 
@@ -25,21 +27,19 @@ BL009_OBSERVABILITY_SCHEMA_VERSION = "bl009-observability-v1"
 
 
 def _object_mapping(value: object) -> dict[str, object]:
-    if isinstance(value, dict):
-        return {str(key): item for key, item in value.items()}
-    return {}
+    return to_mapping(value)
 
 
 def build_signal_mode_calibration_summary(
     bl005_diagnostics: dict[str, object],
     bl006_summary: dict[str, object],
 ) -> dict[str, object]:
-    retrieval_config = _object_mapping(bl005_diagnostics.get("config"))
-    scoring_config = _object_mapping(bl006_summary.get("config"))
-    signal_mode = _object_mapping(retrieval_config.get("signal_mode") or scoring_config.get("signal_mode"))
-    popularity_profile = _object_mapping(signal_mode.get("popularity_profile"))
-    component_weights = _object_mapping(scoring_config.get("base_component_weights"))
-    numeric_thresholds = _object_mapping(retrieval_config.get("numeric_thresholds"))
+    retrieval_config = to_mapping(bl005_diagnostics.get("config"))
+    scoring_config = to_mapping(bl006_summary.get("config"))
+    signal_mode = to_mapping(retrieval_config.get("signal_mode") or scoring_config.get("signal_mode"))
+    popularity_profile = to_mapping(signal_mode.get("popularity_profile"))
+    component_weights = to_mapping(scoring_config.get("base_component_weights"))
+    numeric_thresholds = to_mapping(retrieval_config.get("numeric_thresholds"))
 
     return {
         "mode_name": signal_mode.get("name"),
@@ -74,6 +74,75 @@ def parse_exclusion_samples(rows: list[dict[str, str]], field: str, limit: int) 
             continue
         grouped[key].append(row)
     return grouped
+
+
+def build_source_resilience_diagnostics(bl003_summary: dict[str, object]) -> dict[str, object]:
+    inputs = _object_mapping(bl003_summary.get("inputs"))
+    source_stats = _object_mapping(bl003_summary.get("source_stats"))
+
+    expected_sources = {
+        str(key): bool(value)
+        for key, value in _object_mapping(inputs.get("selected_sources_expected")).items()
+    }
+    available_sources = {
+        str(key): bool(value)
+        for key, value in _object_mapping(inputs.get("selected_sources_available")).items()
+    }
+    source_resilience_policy = {
+        str(key): str(value)
+        for key, value in _object_mapping(inputs.get("source_resilience_policy")).items()
+    }
+
+    missing_selected_sources = set(
+        to_string_list(inputs.get("missing_selected_sources"), allow_tuple=True, drop_empty=True)
+    )
+    missing_required_sources = set(
+        to_string_list(inputs.get("missing_required_sources"), allow_tuple=True, drop_empty=True)
+    )
+    degraded_optional_sources = set(
+        to_string_list(inputs.get("degraded_optional_sources"), allow_tuple=True, drop_empty=True)
+    )
+
+    source_decisions: dict[str, dict[str, object]] = {}
+    for source in sorted(set(expected_sources) | set(source_stats)):
+        source_stat = _object_mapping(source_stats.get(source))
+        expected = bool(expected_sources.get(source, False))
+        available = bool(available_sources.get(source, False))
+        selected = expected
+
+        if source in missing_required_sources:
+            reason_code = "missing_required"
+        elif source in degraded_optional_sources:
+            reason_code = "degraded_optional"
+        elif source in missing_selected_sources:
+            reason_code = "missing_selected"
+        elif selected and available:
+            reason_code = "selected_and_available"
+        elif not selected:
+            reason_code = "not_selected"
+        else:
+            reason_code = "unknown"
+
+        source_decisions[source] = {
+            "selected": selected,
+            "expected": expected,
+            "available": available,
+            "resilience_policy": source_resilience_policy.get(source),
+            "export_outcome_status": source_stat.get("export_outcome_status"),
+            "degraded_missing": bool(source_stat.get("degraded_missing", False)),
+            "missing_required": bool(source_stat.get("missing_required", False)),
+            "reason_code": reason_code,
+        }
+
+    return {
+        "expected_sources": expected_sources,
+        "available_sources": available_sources,
+        "source_resilience_policy": source_resilience_policy,
+        "missing_selected_sources": sorted(missing_selected_sources),
+        "missing_required_sources": sorted(missing_required_sources),
+        "degraded_optional_sources": sorted(degraded_optional_sources),
+        "source_decisions": source_decisions,
+    }
 
 
 def ensure_required_sections(run_log: dict) -> None:
@@ -174,6 +243,7 @@ def main() -> None:
 
     bl003_counts = _object_mapping(bl003_summary.get("counts"))
     bl003_inputs = _object_mapping(bl003_summary.get("inputs"))
+    source_resilience_diagnostics = build_source_resilience_diagnostics(bl003_summary)
     bl003_fuzzy_controls = _object_mapping(bl003_inputs.get("fuzzy_matching"))
     bl003_match_by_fuzzy = safe_int(bl003_counts.get("matched_by_fuzzy"), 0)
     bl003_match_total = safe_int(bl003_counts.get("matched_events_rows"), 0)
@@ -438,6 +508,7 @@ def main() -> None:
                 ),
                 "fuzzy_matching": bl003_fuzzy_controls,
             },
+            "source_resilience_diagnostics": source_resilience_diagnostics,
         },
         "stage_diagnostics": {
             "data_layer": (

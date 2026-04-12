@@ -119,6 +119,12 @@ DEFAULT_SEED_CONTROLS: dict[str, Any] = {
     "match_rate_min_threshold": 0.0,
     "top_range_weights": dict(DEFAULT_TOP_RANGE_WEIGHTS),
     "source_base_weights": dict(DEFAULT_SOURCE_BASE_WEIGHTS),
+    "source_resilience_policy": {
+        "top_tracks": "required",
+        "saved_tracks": "optional",
+        "playlist_items": "optional",
+        "recently_played": "advisory",
+    },
     "decay_half_lives": {
         "recently_played": DEFAULT_RECENTLY_PLAYED_DECAY_HALF_LIFE_DAYS,
         "saved_tracks": DEFAULT_SAVED_TRACKS_DECAY_HALF_LIFE_DAYS,

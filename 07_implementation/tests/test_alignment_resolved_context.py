@@ -31,6 +31,12 @@ def _behavior_controls() -> AlignmentBehaviorControls:
             "playlist_items": 0.4,
             "recently_played": 0.5,
         },
+        source_resilience_policy={
+            "top_tracks": "required",
+            "saved_tracks": "optional",
+            "playlist_items": "optional",
+            "recently_played": "advisory",
+        },
         decay_half_lives={"saved_tracks": 365.0, "recently_played": 90.0},
         match_rate_min_threshold=0.0,
         fuzzy_matching_controls={

@@ -33,6 +33,22 @@ def test_resolve_stage_control_payload_bl003_includes_all_seed_controls() -> Non
     assert "aggregation_policy" in seed
     assert "decay_half_lives" in seed
     assert "match_rate_min_threshold" in seed
+    assert "source_resilience_policy" in seed
+
+
+def test_resolve_stage_control_payload_bl002_includes_ingestion_controls() -> None:
+    payload = config_resolver.resolve_stage_control_payload("BL-002", run_config_path=None)
+
+    assert isinstance(payload, dict)
+    assert payload["stage_id"] == "BL-002"
+    assert payload["schema_version"] == "1.0"
+    controls = dict(payload["controls"])
+    assert "ingestion_controls" in controls
+    ingestion_controls = dict(controls["ingestion_controls"])
+    assert "cache_ttl_seconds" in ingestion_controls
+    assert "throttle_sleep_seconds" in ingestion_controls
+    assert "max_retries" in ingestion_controls
+    assert "base_backoff_delay_seconds" in ingestion_controls
 
 
 def test_resolve_stage_control_payload_bl004_includes_all_profile_controls() -> None:

@@ -4,9 +4,18 @@ from dataclasses import dataclass
 import json
 import time
 from pathlib import Path
-from typing import Any
+from typing import Any, Mapping
 
-from alignment.constants import ALIGNMENT_DEFAULT_RELATIVE_PATHS, ALIGNMENT_OUTPUT_FILENAMES, SOURCE_SCOPE_SPECS, SOURCE_TYPES, SPOTIFY_EXPORT_FILENAMES
+from alignment.constants import (
+    ALIGNMENT_DEFAULT_RELATIVE_PATHS,
+    ALIGNMENT_OUTPUT_FILENAMES,
+    DEFAULT_SOURCE_RESILIENCE_POLICY,
+    SOURCE_RESILIENCE_ALLOWED_MODES,
+    SOURCE_RESILIENCE_REQUIRED,
+    SOURCE_SCOPE_SPECS,
+    SOURCE_TYPES,
+    SPOTIFY_EXPORT_FILENAMES,
+)
 from alignment.aggregation import aggregate_matched_events
 from alignment.influence import inject_influence_tracks
 from alignment.match_pipeline import match_events
@@ -43,8 +52,11 @@ class _ScopeSelectionResult:
     export_selection: dict[str, object]
     expected_sources: dict[str, bool]
     available_sources: dict[str, bool]
+    source_resilience_policy: dict[str, str]
     missing_selected_sources: list[str]
-    source_stats: dict[str, dict[str, int | bool]]
+    missing_required_sources: list[str]
+    degraded_optional_sources: list[str]
+    source_stats: dict[str, dict[str, Any]]
 
 
 @dataclass(frozen=True)
@@ -97,7 +109,7 @@ class AlignmentStage:
         return resolve_alignment_context()
 
     @staticmethod
-    def load_export_selection(spotify_export_dir: Path) -> dict[str, object]:
+    def _load_export_summary_payload(spotify_export_dir: Path) -> dict[str, object]:
         summary_path = spotify_export_dir / "spotify_export_run_summary.json"
         if not summary_path.exists():
             return {}
@@ -107,6 +119,14 @@ class AlignmentStage:
             raise RuntimeError(
                 f"BL-003 could not parse BL-002 export summary: {summary_path}"
             ) from exc
+        return payload if isinstance(payload, dict) else {}
+
+    @staticmethod
+    def load_export_selection(spotify_export_dir: Path) -> dict[str, object]:
+        payload = AlignmentStage._load_export_summary_payload(spotify_export_dir)
+        if not payload:
+            return {}
+        summary_path = spotify_export_dir / "spotify_export_run_summary.json"
         selection = payload.get("selection")
         if not isinstance(selection, dict):
             raise RuntimeError(
@@ -114,6 +134,20 @@ class AlignmentStage:
                 f"{summary_path}"
             )
         return selection
+
+    @staticmethod
+    def load_export_source_outcomes(spotify_export_dir: Path) -> dict[str, dict[str, object]]:
+        payload = AlignmentStage._load_export_summary_payload(spotify_export_dir)
+        if not payload:
+            return {}
+        raw_outcomes = payload.get("source_outcomes")
+        if not isinstance(raw_outcomes, dict):
+            return {}
+        return {
+            str(source): dict(outcome)
+            for source, outcome in raw_outcomes.items()
+            if isinstance(outcome, dict)
+        }
 
     @staticmethod
     def resolve_expected_sources(
@@ -137,19 +171,45 @@ class AlignmentStage:
         *,
         expected_sources: dict[str, bool],
         available_sources: dict[str, bool],
-    ) -> list[str]:
+        source_resilience_policy: dict[str, str],
+    ) -> tuple[list[str], list[str], list[str]]:
         missing_selected_sources = [
             source
             for source, expected in expected_sources.items()
             if expected and not available_sources.get(source, False)
         ]
-        if missing_selected_sources and not self.allow_missing_selected_sources:
+
+        missing_required_sources = [
+            source
+            for source in missing_selected_sources
+            if source_resilience_policy.get(source, SOURCE_RESILIENCE_REQUIRED) == SOURCE_RESILIENCE_REQUIRED
+        ]
+        degraded_optional_sources = [
+            source
+            for source in missing_selected_sources
+            if source not in missing_required_sources
+        ]
+
+        if missing_required_sources and not self.allow_missing_selected_sources:
             raise RuntimeError(
                 "BL-003 strict selected-source check failed. Missing required source files from BL-002 selection: "
-                f"{', '.join(missing_selected_sources)}. Re-run BL-002 export or pass "
+                f"{', '.join(missing_required_sources)}. Re-run BL-002 export or pass "
                 "--allow-missing-selected-sources to continue."
             )
-        return missing_selected_sources
+        return missing_selected_sources, missing_required_sources, degraded_optional_sources
+
+    @staticmethod
+    def resolve_source_resilience_policy(source_resilience_policy: Mapping[str, object] | None) -> dict[str, str]:
+        resolved = dict(DEFAULT_SOURCE_RESILIENCE_POLICY)
+        if isinstance(source_resilience_policy, dict):
+            for source in SOURCE_TYPES:
+                raw_mode = source_resilience_policy.get(source)
+                if raw_mode is None:
+                    continue
+                mode = str(raw_mode).strip().lower()
+                if mode in SOURCE_RESILIENCE_ALLOWED_MODES:
+                    resolved[source] = mode
+        return resolved
 
     def load_source_rows(self, paths: AlignmentPaths) -> AlignmentSourceRows:
         def load_if_present(path: Path) -> tuple[list[dict[str, str]], bool]:
@@ -196,14 +256,27 @@ class AlignmentStage:
             input_scope=input_scope,
             export_selection=export_selection,
         )
+        export_source_outcomes = self.load_export_source_outcomes(paths.spotify_dir)
+        source_resilience_policy = self.resolve_source_resilience_policy(
+            context.behavior_controls.source_resilience_policy,
+        )
 
         available_sources = {
             source: bool(getattr(source_rows, str(SOURCE_SCOPE_SPECS[source]["exists_attr"])))
             for source in SOURCE_TYPES
         }
-        missing_selected_sources = self.enforce_selected_source_requirements(
+        for source in SOURCE_TYPES:
+            if available_sources.get(source, False):
+                continue
+            outcome = export_source_outcomes.get(source, {})
+            status = str(outcome.get("status", "")).strip().lower()
+            if status in {"zero_results", "forbidden"}:
+                available_sources[source] = True
+
+        missing_selected_sources, missing_required_sources, degraded_optional_sources = self.enforce_selected_source_requirements(
             expected_sources=expected_sources,
             available_sources=available_sources,
+            source_resilience_policy=source_resilience_policy,
         )
 
         source_stats = {
@@ -211,6 +284,12 @@ class AlignmentStage:
                 "file_present": bool(getattr(source_rows, str(SOURCE_SCOPE_SPECS[source]["exists_attr"]))),
                 "rows_available": len(getattr(source_rows, str(SOURCE_SCOPE_SPECS[source]["rows_attr"]))),
                 "rows_selected": len(selected_rows[source]),
+                "export_outcome_status": str(
+                    export_source_outcomes.get(source, {}).get("status", "unknown")
+                ),
+                "resilience_policy": source_resilience_policy[source],
+                "degraded_missing": source in degraded_optional_sources,
+                "missing_required": source in missing_required_sources,
             }
             for source in SOURCE_TYPES
         }
@@ -222,7 +301,10 @@ class AlignmentStage:
             export_selection=export_selection,
             expected_sources=expected_sources,
             available_sources=available_sources,
+            source_resilience_policy=source_resilience_policy,
             missing_selected_sources=missing_selected_sources,
+            missing_required_sources=missing_required_sources,
+            degraded_optional_sources=degraded_optional_sources,
             source_stats=source_stats,
         )
 
@@ -302,7 +384,10 @@ class AlignmentStage:
             influence_contract=match_result.influence_contract,
             expected_sources=scope_result.expected_sources,
             available_sources=scope_result.available_sources,
+            source_resilience_policy=scope_result.source_resilience_policy,
             missing_selected_sources=scope_result.missing_selected_sources,
+            missing_required_sources=scope_result.missing_required_sources,
+            degraded_optional_sources=scope_result.degraded_optional_sources,
             allow_missing_selected_sources=self.allow_missing_selected_sources,
             source_stats=scope_result.source_stats,
             scope_filter_stats=scope_result.scope_filter_stats,

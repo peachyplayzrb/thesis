@@ -6,9 +6,9 @@ Ordering convention (standardized 2026-03-24):
 - New entries must be appended at the end and may include `superseded_by` when a prior decision is replaced.
 
 Maintenance snapshot (2026-04-12):
-- Highest decision ID currently present: `D-067`
-- Total decision entries: 66
-- Status distribution: accepted=62, superseded=3, rejected=1
+- Highest decision ID currently present: `D-077`
+- Total decision entries: 74
+- Status distribution: accepted=70, superseded=3, rejected=1
 - ID integrity check: no duplicate decision IDs detected
 
 Current posture snapshot (2026-03-25):
@@ -1520,3 +1520,133 @@ review_date: none
 - evidence_basis: BL-007 runtime/rules/model updates and BL-009 diagnostics updates under `07_implementation/src`; validation evidence: pytest `342/342`, pyright `0 errors`, BL-013 pass `BL013-ENTRYPOINT-20260412-150114-734913`, BL-014 pass `BL014-SANITY-20260412-150146-906654`.
 - impacted_files: `07_implementation/src/shared_utils/constants.py`, `07_implementation/src/run_config/run_config_utils.py`, `07_implementation/src/playlist/models.py`, `07_implementation/src/playlist/runtime_controls.py`, `07_implementation/src/playlist/rules.py`, `07_implementation/src/playlist/stage.py`, `07_implementation/src/playlist/io_layer.py`, `07_implementation/src/observability/main.py`, `07_implementation/tests/*`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/timeline.md`, `00_admin/thesis_state.md`.
 - next_steps: Use non-default influence modes in controlled runs to quantify playlist-level effect size and update chapter-facing evidence mapping if this enhancement is promoted into final reporting claims.
+
+## D-068
+- date: 2026-04-12
+- entity_id: run-config scoring-controls schema migration boundary
+- proposed_by: Copilot
+- status: accepted
+- decision: Migrate `scoring_controls` field validation in `resolve_effective_run_config` to declarative `FieldSpec` schema validation for enum/fraction/bool-like fields, while keeping `component_weights`, numeric-threshold coupling, and `influence_track_bonus_scale` coercion on dedicated legacy validators to preserve behavioral parity.
+- context: `profile_controls` and `retrieval_controls` had already moved to schema-driven validation, but `scoring_controls` still used per-field imperative parsing, increasing maintenance drift risk and making cross-section validation patterns inconsistent.
+- alternatives_considered: fully migrate all scoring fields including component weights and threshold maps into schema primitives now (rejected: current schema types do not cover the existing sum/coupling constraints cleanly); keep imperative scoring validation unchanged (rejected: continued duplication and higher drift risk).
+- rationale: A hybrid migration captures immediate maintainability gains and consistency with prior sections without weakening existing coupling and weight-sum contracts.
+- evidence_basis: `07_implementation/src/run_config/run_config_utils.py`, `07_implementation/tests/test_run_config_utils.py`, pytest pass (`358/358`), pyright pass (`0 errors, 0 warnings`).
+- impacted_files: `07_implementation/src/run_config/run_config_utils.py`, `07_implementation/tests/test_run_config_utils.py`, `00_admin/decision_log.md`, `00_admin/change_log.md`
+- next_steps: Continue section-by-section schema migration for remaining imperative run-config surfaces while retaining current contract checks until equivalent schema primitives exist.
+
+## D-069
+- date: 2026-04-12
+- entity_id: run-config observability/transparency numeric schema boundary and non-negative fallback parity
+- proposed_by: Copilot
+- status: accepted
+- decision: Migrate `observability_controls.diagnostic_sample_limit` plus `transparency_controls.top_contributor_limit` and `transparency_controls.primary_contributor_tie_delta` to declarative schema validation, while preserving legacy bool fallback behavior for `observability_controls.bootstrap_mode` and `transparency_controls.blend_primary_contributor_on_near_tie`. Adjust declarative `non_negative_float` coercion to fallback-to-default on negatives for parity with legacy `_coerce_non_negative_float` semantics.
+- context: After D-068, small manual validation islands remained in `resolve_effective_run_config`. A direct schema migration for these numeric fields was low-risk, but initial declarative non-negative behavior diverged from established fallback semantics.
+- alternatives_considered: migrate these controls and tighten invalid bool handling to strict errors (rejected: breaks existing fallback semantics); leave manual blocks unchanged (rejected: slows schema migration and keeps duplicate imperative logic).
+- rationale: This slice continues declarative migration while preserving runtime behavior at the bool and non-negative fallback boundaries.
+- evidence_basis: `07_implementation/src/run_config/schema.py`, `07_implementation/src/run_config/run_config_utils.py`, `07_implementation/tests/test_run_config_utils.py`, targeted pytest (`28/28`), full pytest (`359/359`), pyright (`0 errors, 0 warnings`).
+- impacted_files: `07_implementation/src/run_config/schema.py`, `07_implementation/src/run_config/run_config_utils.py`, `07_implementation/tests/test_run_config_utils.py`, `00_admin/decision_log.md`, `00_admin/change_log.md`
+- next_steps: Continue migration of remaining imperative resolver surfaces and reduce duplicated post-resolution coercion in `resolve_bl005_controls` and `resolve_bl006_controls` while preserving contract checks.
+
+## D-070
+- date: 2026-04-12
+- entity_id: BL-005 and BL-006 resolver de-duplication boundary
+- proposed_by: Copilot
+- status: accepted
+- decision: Simplify `resolve_bl005_controls` and `resolve_bl006_controls` to use already-validated effective run-config values directly for schema-covered fields, while preserving explicit contract checks for retrieval/scoring numeric thresholds and scoring component-weight sum enforcement.
+- context: After D-068 and D-069, these resolvers still repeated many coercion/validation steps already guaranteed by `resolve_effective_run_config`, increasing maintenance overhead and drift risk.
+- alternatives_considered: remove all post-resolution checks including thresholds and component-weight checks (rejected: weakens explicit contract boundaries at resolver outputs); keep full duplicate coercion logic (rejected: unnecessary duplication and higher drift risk).
+- rationale: Direct use of validated effective controls reduces duplication while retained threshold/weight checks keep the critical coupling and normalization contracts explicit.
+- evidence_basis: `07_implementation/src/run_config/run_config_utils.py`, `07_implementation/tests/test_run_config_utils.py`, targeted pytest (`24/24`), full pytest (`360/360`), pyright (`0 errors, 0 warnings`).
+- impacted_files: `07_implementation/src/run_config/run_config_utils.py`, `07_implementation/tests/test_run_config_utils.py`, `00_admin/decision_log.md`, `00_admin/change_log.md`
+- next_steps: Continue reducing duplicated coercion in remaining resolver surfaces and assess whether threshold/weight contract checks should be centralized once schema primitives fully cover those contracts.
+
+## D-071
+- date: 2026-04-12
+- entity_id: BL-008 and BL-009 resolver de-duplication boundary
+- proposed_by: Copilot
+- status: accepted
+- decision: Simplify `resolve_bl008_controls` and `resolve_bl009_controls` to return already-validated effective transparency/observability values directly, while preserving the existing control-mode payload shape in BL-009.
+- context: After D-070, BL-008/BL-009 still duplicated coercion of fields that are validated in `resolve_effective_run_config`, creating maintenance overhead without adding contract safety.
+- alternatives_considered: keep duplicate coercion in BL-008/BL-009 for defensive redundancy (rejected: no additional contract value after effective validation); remove BL-009 control-mode shaping as part of cleanup (rejected: unnecessary output-shape change risk).
+- rationale: Reducing duplicated resolver logic improves maintainability while retaining external resolver contracts and behavior parity.
+- evidence_basis: `07_implementation/src/run_config/run_config_utils.py`, `07_implementation/tests/test_run_config_utils.py`, targeted pytest (`25/25`), full pytest (`361/361`), pyright (`0 errors, 0 warnings`).
+- impacted_files: `07_implementation/src/run_config/run_config_utils.py`, `07_implementation/tests/test_run_config_utils.py`, `00_admin/decision_log.md`, `00_admin/change_log.md`
+- next_steps: Continue incremental migration by collapsing remaining duplicate coercion in BL-007/BL-011 resolver internals where effective-config guarantees already exist, while preserving explicit policy/constraint checks.
+
+## D-072
+- date: 2026-04-12
+- entity_id: BL-003 weighting-policy resolver de-duplication boundary
+- proposed_by: Copilot
+- status: accepted
+- decision: Simplify `resolve_bl003_weighting_policy` to read directly from validated `seed_controls.weighting_policy` in effective config instead of re-merging defaults at resolver output time.
+- context: After prior resolver cleanup waves, BL-003 weighting-policy resolution still duplicated default-merging logic that was already guaranteed by `_validate_bl003_seed_controls` during effective config resolution.
+- alternatives_considered: keep local default fallback merge in resolver (rejected: duplicate logic and higher drift risk); remove weighting-policy validation from effective resolver and keep it only in BL-003 resolver (rejected: weakens central contract boundary).
+- rationale: Using effective validated controls as the single source of truth reduces duplication and preserves deterministic behavior.
+- evidence_basis: `07_implementation/src/run_config/run_config_utils.py`, `07_implementation/tests/test_run_config_utils.py`, targeted pytest (`26/26`), full pytest (`362/362`), pyright (`0 errors, 0 warnings`).
+- impacted_files: `07_implementation/src/run_config/run_config_utils.py`, `07_implementation/tests/test_run_config_utils.py`, `00_admin/decision_log.md`, `00_admin/change_log.md`
+- next_steps: Continue trimming duplicated resolver coercion where effective-config contracts already guarantee shape/type/defaults, while retaining explicit guardrails for cross-section coupling and policy constraints.
+
+## D-073
+- date: 2026-04-12
+- entity_id: BL-003 selected-source resilience policy baseline
+- proposed_by: user + Copilot
+- status: accepted
+- decision: Introduce per-source resilience policy for BL-003 selected-source enforcement (`required|optional|advisory`) with baseline defaults `top_tracks=required`, `saved_tracks=optional`, `playlist_items=optional`, `recently_played=advisory`, while preserving strict fail behavior for required sources and preserving the explicit `--allow-missing-selected-sources` override.
+- context: Cross-user Spotify exports can legitimately produce missing selected source files (especially playlist-items) due account/API access constraints, causing BL-003 strict selected-source failures that block BL-013/BL-014 even when sufficient data exists for deterministic execution.
+- alternatives_considered: keep global strict behavior for all selected sources (rejected: brittle under legitimate provider/account variance); disable strict checks globally (rejected: weakens contract guarantees for core required sources); rely only on manual `--allow-missing-selected-sources` use (rejected: high operator-friction and weak default robustness).
+- rationale: Source-level resilience preserves contract strictness where it matters (core required signal surfaces) while allowing predictable degradation for lower-criticality sources that are frequently unavailable in real accounts.
+- evidence_basis: `07_implementation/src/alignment/constants.py`, `07_implementation/src/shared_utils/constants.py`, `07_implementation/src/run_config/run_config_utils.py`, `07_implementation/src/alignment/stage.py`, `07_implementation/src/alignment/resolved_context.py`, `07_implementation/src/alignment/writers.py`, `07_implementation/src/ingestion/export_spotify_max_dataset.py`, tests `07_implementation/tests/test_alignment_stage.py` + `07_implementation/tests/test_ingestion_spotify_export.py` (`10/10`), pyright touched modules (`0 errors`), wrapper validate-only pass (`BL013-ENTRYPOINT-20260412-172644-378068`, `BL014-SANITY-20260412-172705-698023`, `28/28`).
+- impacted_files: `07_implementation/src/alignment/constants.py`, `07_implementation/src/shared_utils/constants.py`, `07_implementation/src/run_config/run_config_utils.py`, `07_implementation/src/alignment/models.py`, `07_implementation/src/alignment/resolved_context.py`, `07_implementation/src/alignment/stage.py`, `07_implementation/src/alignment/writers.py`, `07_implementation/src/ingestion/export_spotify_max_dataset.py`, `07_implementation/src/orchestration/seed_freshness.py`, `07_implementation/tests/test_alignment_stage.py`, `07_implementation/tests/test_ingestion_spotify_export.py`, `00_admin/decision_log.md`, `00_admin/change_log.md`.
+- next_steps: Extend orchestration payload controls for BL-001/BL-002 resilience activation and add full matrix tests for selected/not-selected/zero/forbidden/missing outcomes across all import options.
+
+## D-074
+- date: 2026-04-12
+- entity_id: BL-003 selected-source availability semantics for zero-results/forbidden outcomes
+- proposed_by: user + Copilot
+- status: accepted
+- decision: When BL-002 summary explicitly reports a selected source outcome of `zero_results` or `forbidden`, BL-003 should treat that source as available for selected-source strictness checks even if the corresponding flat CSV file is absent; strict failure remains for sources with no file and no explicit zero/forbidden outcome evidence.
+- context: The prior resilience policy introduced required/optional/advisory handling, but strict checks still depended primarily on file existence. Accounts with legitimate API-side restrictions or zero-result pulls could still trigger avoidable strict failures when BL-002 emitted clear non-data outcomes without materialized flat CSVs.
+- alternatives_considered: require zero-row CSV emission for all selected sources before relaxing strictness (rejected for this slice: broader emission-contract change and migration risk); keep file-only availability semantics (rejected: retains avoidable brittleness despite explicit outcome evidence); disable strictness whenever any outcome metadata exists (rejected: weakens required-source guarantees).
+- rationale: Source-outcome-aware availability preserves strict contract intent while distinguishing true missing-data regressions from explicit, expected non-data outcomes recorded by BL-002.
+- evidence_basis: `07_implementation/src/alignment/stage.py` (outcome-aware availability), `07_implementation/src/ingestion/export_spotify_max_dataset.py` (`forbidden` outcome emission), tests `07_implementation/tests/test_alignment_stage.py` and `07_implementation/tests/test_ingestion_spotify_export.py` (`12/12`), pyright touched modules (`0 errors`), wrapper validate-only pass (`BL013-ENTRYPOINT-20260412-173055-590271`, `BL014-SANITY-20260412-173116-866099`, `28/28`).
+- impacted_files: `07_implementation/src/alignment/stage.py`, `07_implementation/src/ingestion/export_spotify_max_dataset.py`, `07_implementation/tests/test_alignment_stage.py`, `07_implementation/tests/test_ingestion_spotify_export.py`, `00_admin/decision_log.md`, `00_admin/change_log.md`.
+- next_steps: Expand BL-002 source-outcome contract tests across all source types and add orchestration-level assertions that BL-013 summary captures degraded-but-valid selected-source scenarios without regressions.
+
+## D-075
+- date: 2026-04-12
+- entity_id: phase-4/phase-5 control propagation and BL-002 runtime-ingestion activation precedence
+- proposed_by: user + Copilot
+- status: accepted
+- decision: Enforce payload-first/runtime-config-fallback precedence for BL-002 ingestion resilience controls and complete control propagation so `seed_controls.source_resilience_policy` is carried through orchestration payload contracts. Specifically: (1) BL-003 payload contracts must include `source_resilience_policy`; (2) BL-002 stage payload contract now carries `ingestion_controls`; (3) BL-002 exporter resolves ingestion controls via `BL_STAGE_CONFIG_JSON` first, then `BL_RUN_CONFIG_PATH`, then local defaults, and applies resolved controls to live retry/backoff runtime behavior.
+- context: After D-073/D-074, source-resilience semantics existed but orchestration payload propagation was incomplete (`source_resilience_policy` dropped from BL-003 seed payload), and BL-002 runtime ingestion controls were validated in run-config but not fully activated in the exporter execution path.
+- alternatives_considered: keep BL-003 payload omission and rely on defaults (rejected: run-config resilience intent is lost under orchestration payload mode); keep BL-002 run-config ingestion controls as non-operational metadata (rejected: violates phase-5 activation objective); use run-config only and ignore stage payload for BL-002 (rejected: breaks payload-first contract consistency used by staged orchestration).
+- rationale: Completing payload propagation and runtime activation closes the contract gap between declared controls and effective behavior, while preserving deterministic precedence semantics across stages.
+- evidence_basis: `07_implementation/src/run_config/run_config_utils.py`, `07_implementation/src/orchestration/config_resolver.py`, `07_implementation/src/ingestion/export_spotify_max_dataset.py`, `07_implementation/src/ingestion/spotify_client.py`, `07_implementation/tests/test_orchestration_stage_payload_handoff.py`, `07_implementation/tests/test_run_config_utils.py`, `07_implementation/tests/test_ingestion_spotify_export.py`, `07_implementation/tests/test_alignment_resolved_context.py`, `07_implementation/tests/test_alignment_summary_builder.py`, `07_implementation/tests/test_ingestion_spotify_auth.py`, validation evidence (`pytest 369/369`, pyright `0 errors`, wrapper validate-only BL-013/BL-014 pass `28/28`).
+- impacted_files: `07_implementation/src/run_config/run_config_utils.py`, `07_implementation/src/orchestration/config_resolver.py`, `07_implementation/src/ingestion/export_spotify_max_dataset.py`, `07_implementation/src/ingestion/spotify_client.py`, `07_implementation/tests/test_orchestration_stage_payload_handoff.py`, `07_implementation/tests/test_run_config_utils.py`, `07_implementation/tests/test_ingestion_spotify_export.py`, `07_implementation/tests/test_alignment_resolved_context.py`, `07_implementation/tests/test_alignment_summary_builder.py`, `07_implementation/tests/test_ingestion_spotify_auth.py`, `00_admin/decision_log.md`, `00_admin/change_log.md`.
+- next_steps: Add BL-002 orchestration execution-path assertions once BL-001/BL-002 are brought into staged orchestration order, and extend ingestion-control matrix tests for mixed payload/run-config/env fallback combinations.
+
+## D-076
+- date: 2026-04-12
+- entity_id: BL-002 ingestion-control resolution fail-safe fallback behavior
+- proposed_by: user + Copilot
+- status: accepted
+- decision: When BL-002 runtime ingestion-control resolution cannot load or resolve run-config controls, fallback must be non-fatal: log a warning and continue with runtime defaults. Payload-first precedence remains unchanged, and run-config fallback remains preferred when resolvable.
+- context: The phase-5 activation introduced run-config fallback for BL-002 ingestion controls; however, resolution failures in local/tooling contexts could terminate exporter runs unnecessarily even when safe defaults are available.
+- alternatives_considered: keep fail-fast on run-config resolution exceptions (rejected: brittle for optional control overlays); silently swallow failures without diagnostics (rejected: weak observability for operators).
+- rationale: A warning-plus-default fallback preserves robustness for standalone/operator runs while retaining traceable diagnostics and payload-first precedence semantics.
+- evidence_basis: `07_implementation/src/ingestion/export_spotify_max_dataset.py` (exception-handled fallback warning path), `07_implementation/tests/test_ingestion_spotify_export.py` (mixed-precedence and run-config-failure fallback tests), validation evidence (`pytest 371/371`, pyright `0 errors`, wrapper validate-only BL-013/BL-014 pass `28/28`).
+- impacted_files: `07_implementation/src/ingestion/export_spotify_max_dataset.py`, `07_implementation/tests/test_ingestion_spotify_export.py`, `00_admin/decision_log.md`, `00_admin/change_log.md`.
+- next_steps: Add orchestration-level BL-002 payload injection assertions once BL-002 is part of staged execution order, and broaden fallback matrix tests for malformed payload envelopes and partial-control merges.
+
+## D-077
+- date: 2026-04-12
+- entity_id: BL-009 source-resilience diagnostics contract and BL-002 mixed-precedence fallback matrix completion
+- proposed_by: user + Copilot
+- status: accepted
+- decision: Promote a new BL-009 observability contract section `ingestion_alignment_diagnostics.source_resilience_diagnostics` derived from BL-003 summary (`selected_sources_expected/available`, resilience policy, missing/degraded source sets, and per-source reason-code decisions), and finalize phase-7 mixed-precedence hardening with explicit regression coverage for malformed payload fallback to run-config and partial payload control merges preserving existing defaults.
+- context: After D-075/D-076, resilience behavior and fallback safety were implemented but run-level observability did not yet expose compact source-resilience reason codes for downstream evidence interpretation, and matrix coverage still lacked malformed-payload and partial-merge edge cases.
+- alternatives_considered: keep resilience interpretation implicit in raw BL-003 fields only (rejected: weaker BL-009 contract clarity for chapter/evidence consumers); add diagnostics without reason-code taxonomy (rejected: inconsistent interpretation across runs); defer malformed/partial precedence cases to later (rejected: leaves a known test-matrix gap).
+- rationale: A normalized diagnostics block with explicit reason codes improves auditability and comparability of degraded-source behavior, while expanded matrix tests close the remaining precedence/fallback coverage gap without changing payload-first semantics.
+- evidence_basis: `07_implementation/src/observability/main.py` (`build_source_resilience_diagnostics` + BL-009 payload wiring), `07_implementation/tests/test_observability_signal_mode_summary.py` (reason-code assertions), `07_implementation/tests/test_ingestion_spotify_export.py` (malformed payload fallback + partial merge preservation), validation evidence (`pytest 374/374`, pyright `0 errors`, wrapper validate-only pass `BL013-ENTRYPOINT-20260412-175314-201328`, `BL014-SANITY-20260412-175333-508512`, `28/28`).
+- impacted_files: `07_implementation/src/observability/main.py`, `07_implementation/tests/test_observability_signal_mode_summary.py`, `07_implementation/tests/test_ingestion_spotify_export.py`, `00_admin/decision_log.md`, `00_admin/change_log.md`.
+- next_steps: Add BL-009 contract-level assertions in orchestration-facing summary/report consumers and continue extending BL-002 precedence matrix coverage as new stage-payload envelope variants are introduced.

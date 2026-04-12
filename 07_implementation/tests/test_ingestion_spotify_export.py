@@ -20,6 +20,7 @@ def _args(tmp_path: Path) -> argparse.Namespace:
         request_timeout_seconds=5,
         oauth_timeout_seconds=5,
         max_retries=2,
+        base_backoff_delay_seconds=1.0,
         max_retry_after_seconds=10,
         batch_size_top_tracks=50,
         batch_size_saved_tracks=50,
@@ -43,6 +44,176 @@ def _args(tmp_path: Path) -> argparse.Namespace:
         no_browser=True,
         force_auth=False,
     )
+
+
+def test_resolve_runtime_ingestion_controls_prefers_stage_payload(monkeypatch: pytest.MonkeyPatch) -> None:
+    payload = {
+        "stage_id": "BL-002",
+        "schema_version": "1.0",
+        "resolved_from": "run_config",
+        "controls": {
+            "ingestion_controls": {
+                "cache_ttl_seconds": 10,
+                "throttle_sleep_seconds": 0.35,
+                "max_retries": 9,
+                "base_backoff_delay_seconds": 2.5,
+            }
+        },
+    }
+    monkeypatch.setenv("BL_STAGE_CONFIG_JSON", json.dumps(payload))
+    monkeypatch.delenv("BL_RUN_CONFIG_PATH", raising=False)
+
+    controls = export_module._resolve_runtime_ingestion_controls()
+
+    assert controls["cache_ttl_seconds"] == 10
+    assert controls["throttle_sleep_seconds"] == 0.35
+    assert controls["max_retries"] == 9
+    assert controls["base_backoff_delay_seconds"] == 2.5
+
+
+def test_resolve_runtime_ingestion_controls_uses_run_config_when_payload_missing(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.delenv("BL_STAGE_CONFIG_JSON", raising=False)
+    monkeypatch.setenv("BL_RUN_CONFIG_PATH", "dummy/run_config.json")
+
+    class _FakeRunConfigUtils:
+        @staticmethod
+        def resolve_ingestion_controls(_run_config_path: str) -> dict[str, object]:
+            return {
+                "cache_ttl_seconds": 11,
+                "throttle_sleep_seconds": 0.25,
+                "max_retries": 8,
+                "base_backoff_delay_seconds": 1.2,
+            }
+
+    monkeypatch.setattr(export_module, "load_run_config_utils_module", lambda: _FakeRunConfigUtils)
+
+    controls = export_module._resolve_runtime_ingestion_controls()
+
+    assert controls["cache_ttl_seconds"] == 11
+    assert controls["throttle_sleep_seconds"] == 0.25
+    assert controls["max_retries"] == 8
+    assert controls["base_backoff_delay_seconds"] == 1.2
+
+
+def test_resolve_runtime_ingestion_controls_payload_missing_section_falls_back_to_run_config(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    payload = {
+        "stage_id": "BL-002",
+        "schema_version": "1.0",
+        "resolved_from": "run_config",
+        "controls": {},
+    }
+    monkeypatch.setenv("BL_STAGE_CONFIG_JSON", json.dumps(payload))
+    monkeypatch.setenv("BL_RUN_CONFIG_PATH", "dummy/run_config.json")
+
+    class _FakeRunConfigUtils:
+        @staticmethod
+        def resolve_ingestion_controls(_run_config_path: str) -> dict[str, object]:
+            return {
+                "cache_ttl_seconds": 17,
+                "throttle_sleep_seconds": 0.19,
+                "max_retries": 5,
+                "base_backoff_delay_seconds": 1.4,
+            }
+
+    monkeypatch.setattr(export_module, "load_run_config_utils_module", lambda: _FakeRunConfigUtils)
+
+    controls = export_module._resolve_runtime_ingestion_controls()
+
+    assert controls["cache_ttl_seconds"] == 17
+    assert controls["throttle_sleep_seconds"] == 0.19
+    assert controls["max_retries"] == 5
+    assert controls["base_backoff_delay_seconds"] == 1.4
+
+
+def test_resolve_runtime_ingestion_controls_run_config_failure_falls_back_to_defaults(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.delenv("BL_STAGE_CONFIG_JSON", raising=False)
+    monkeypatch.setenv("BL_RUN_CONFIG_PATH", "dummy/run_config.json")
+
+    def _raise_load_error() -> object:
+        raise RuntimeError("run-config module unavailable")
+
+    monkeypatch.setattr(export_module, "load_run_config_utils_module", _raise_load_error)
+
+    controls = export_module._resolve_runtime_ingestion_controls()
+
+    assert controls == {}
+
+
+def test_resolve_runtime_ingestion_controls_malformed_payload_falls_back_to_run_config(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setenv("BL_STAGE_CONFIG_JSON", "{invalid json")
+    monkeypatch.setenv("BL_RUN_CONFIG_PATH", "dummy/run_config.json")
+
+    class _FakeRunConfigUtils:
+        @staticmethod
+        def resolve_ingestion_controls(_run_config_path: str) -> dict[str, object]:
+            return {
+                "cache_ttl_seconds": 21,
+                "throttle_sleep_seconds": 0.55,
+                "max_retries": 3,
+                "base_backoff_delay_seconds": 0.9,
+            }
+
+    monkeypatch.setattr(export_module, "load_run_config_utils_module", lambda: _FakeRunConfigUtils)
+
+    controls = export_module._resolve_runtime_ingestion_controls()
+
+    assert controls["cache_ttl_seconds"] == 21
+    assert controls["throttle_sleep_seconds"] == 0.55
+    assert controls["max_retries"] == 3
+    assert controls["base_backoff_delay_seconds"] == 0.9
+
+
+def test_apply_runtime_ingestion_controls_updates_args(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+    args = _args(tmp_path)
+    applied: dict[str, object] = {}
+    controls = {
+        "cache_ttl_seconds": 7,
+        "throttle_sleep_seconds": 0.42,
+        "max_retries": 6,
+        "base_backoff_delay_seconds": 1.7,
+    }
+    monkeypatch.setattr(export_module, "_resolve_runtime_ingestion_controls", lambda: controls)
+    monkeypatch.setattr(export_module, "apply_ingestion_controls", lambda config: applied.update(config))
+
+    resolved = export_module._apply_runtime_ingestion_controls(args)
+
+    assert resolved == controls
+    assert applied == controls
+    assert args.max_retries == 6
+    assert args.base_backoff_delay_seconds == 1.7
+    assert args.min_request_interval_ms == 420
+
+
+def test_apply_runtime_ingestion_controls_partial_payload_preserves_existing_defaults(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    args = _args(tmp_path)
+    args.max_retries = 4
+    args.base_backoff_delay_seconds = 1.1
+    args.min_request_interval_ms = 275
+    applied: dict[str, object] = {}
+    controls = {
+        "max_retries": 9,
+    }
+    monkeypatch.setattr(export_module, "_resolve_runtime_ingestion_controls", lambda: controls)
+    monkeypatch.setattr(export_module, "apply_ingestion_controls", lambda config: applied.update(config))
+
+    resolved = export_module._apply_runtime_ingestion_controls(args)
+
+    assert resolved == controls
+    assert applied == controls
+    assert args.max_retries == 9
+    assert args.base_backoff_delay_seconds == 1.1
+    assert args.min_request_interval_ms == 275
 
 
 def test_replace_export_directory_restores_backup_on_failure(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
@@ -252,6 +423,8 @@ def test_main_writes_summary_to_staging_before_swap(tmp_path: Path, monkeypatch:
         assert request_log_path.exists()
         summary = json.loads(summary_path.read_text(encoding="utf-8"))
         assert summary["artifacts"]["spotify_profile.json"]["path"] == "exports/spotify_api_export/spotify_profile.json"
+        assert summary["source_outcomes"]["top_tracks"]["status"] == "zero_results"
+        assert summary["source_outcomes"]["playlist_items"]["status"] == "zero_results"
 
     monkeypatch.setattr(export_module, "parse_args", lambda: args)
     monkeypatch.setattr(export_module, "impl_root", lambda: tmp_path)
@@ -275,3 +448,27 @@ def test_main_writes_summary_to_staging_before_swap(tmp_path: Path, monkeypatch:
     export_module.main()
 
     assert swap_check["called"] is True
+
+
+def test_build_source_outcomes_marks_playlist_forbidden() -> None:
+    outcomes = export_module._build_source_outcomes(
+        selection={
+            "include_top_tracks": True,
+            "include_saved_tracks": False,
+            "include_playlists": True,
+            "include_recently_played": False,
+        },
+        endpoint_counts={
+            "top_tracks_short_term": 0,
+            "top_tracks_medium_term": 0,
+            "top_tracks_long_term": 0,
+            "saved_tracks": 0,
+            "playlist_items": 0,
+            "playlists_items_forbidden": 3,
+            "recently_played": 0,
+        },
+        written_artifacts={},
+    )
+
+    assert outcomes["playlist_items"]["status"] == "forbidden"
+    assert outcomes["playlist_items"]["forbidden_count"] == 3

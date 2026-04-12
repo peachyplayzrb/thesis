@@ -36,7 +36,9 @@ from scoring.scoring_engine import (
     compute_final_score,
     compute_weighted_contributions,
 )
+from shared_utils.coerce import clamp, to_float
 from shared_utils.constants import (
+    DEFAULT_SCORING_CONTROLS,
     VALID_LEAD_GENRE_STRATEGIES,
     VALID_SEMANTIC_ALPHA_MODES,
     VALID_SEMANTIC_OVERLAP_STRATEGIES,
@@ -51,17 +53,6 @@ class ScoringStage:
 
     def __init__(self, root: Path | None = None) -> None:
         self.root = root if root is not None else impl_root()
-
-    @staticmethod
-    def _to_float(value: object, default: float = 0.0) -> float:
-        try:
-            return float(str(value))
-        except (TypeError, ValueError):
-            return default
-
-    @staticmethod
-    def _clamp_0_1(value: float) -> float:
-        return max(0.0, min(1.0, value))
 
     def resolve_paths(self) -> ScoringPaths:
         return ScoringPaths(
@@ -107,7 +98,7 @@ class ScoringStage:
             for track_id in (track_ids_raw or [])
             if str(track_id).strip()
         } if isinstance(track_ids_raw, list) else set()
-        preference_weight = ScoringStage._to_float(influence.get("preference_weight", 0.0), 0.0)
+        preference_weight = to_float(influence.get("preference_weight", 0.0), 0.0)
         return enabled, track_ids, max(0.0, preference_weight)
 
     @staticmethod
@@ -136,7 +127,7 @@ class ScoringStage:
                 "threshold": float(
                     numeric_threshold_overrides.get(
                         key,
-                        ScoringStage._to_float(spec.get("threshold", 0.0)),
+                        to_float(spec.get("threshold", 0.0)),
                     )
                 ),
             }
@@ -163,16 +154,19 @@ class ScoringStage:
 
         numeric_confidence_by_feature_raw = profile_scoring_data.get("numeric_confidence_by_feature")
         numeric_confidence_by_feature = {
-            str(k): ScoringStage._clamp_0_1(ScoringStage._to_float(v, 1.0))
+            str(k): clamp(to_float(v, 1.0))
             for k, v in dict(numeric_confidence_by_feature_raw).items()
             if str(k) in active_numeric_specs
         } if isinstance(numeric_confidence_by_feature_raw, dict) else {}
-        profile_numeric_confidence_factor_base = ScoringStage._clamp_0_1(
-            ScoringStage._to_float(profile_scoring_data.get("profile_numeric_confidence_factor", 1.0), 1.0)
+        profile_numeric_confidence_factor_base = clamp(
+            to_float(profile_scoring_data.get("profile_numeric_confidence_factor", 1.0), 1.0)
         )
         semantic_precision_alpha_profile = max(
             0.0,
-            ScoringStage._to_float(profile_scoring_data.get("semantic_precision_alpha", 0.35), 0.35),
+            to_float(
+                profile_scoring_data.get("semantic_precision_alpha"),
+                to_float(DEFAULT_SCORING_CONTROLS["semantic_precision_alpha_fixed"], 0.35),
+            ),
         )
 
         lead_genre_strategy_raw = controls.lead_genre_strategy.strip().lower()
@@ -191,9 +185,14 @@ class ScoringStage:
         semantic_precision_alpha_mode = (
             semantic_precision_alpha_mode_raw
             if semantic_precision_alpha_mode_raw in VALID_SEMANTIC_ALPHA_MODES
-            else "profile_adaptive"
+            else str(DEFAULT_SCORING_CONTROLS["semantic_precision_alpha_mode"])
         )
-        semantic_precision_alpha_fixed = ScoringStage._clamp_0_1(controls.semantic_precision_alpha_fixed)
+        semantic_precision_alpha_fixed = clamp(
+            to_float(
+                controls.semantic_precision_alpha_fixed,
+                to_float(DEFAULT_SCORING_CONTROLS["semantic_precision_alpha_fixed"], 0.35),
+            )
+        )
         semantic_precision_alpha = (
             semantic_precision_alpha_fixed
             if semantic_precision_alpha_mode == "fixed"
@@ -204,9 +203,9 @@ class ScoringStage:
         profile_numeric_confidence_mode = (
             profile_numeric_confidence_mode_raw
             if profile_numeric_confidence_mode_raw in {"direct", "blended"}
-            else "direct"
+            else str(DEFAULT_SCORING_CONTROLS["profile_numeric_confidence_mode"])
         )
-        profile_numeric_confidence_blend_weight = ScoringStage._clamp_0_1(
+        profile_numeric_confidence_blend_weight = clamp(
             controls.profile_numeric_confidence_blend_weight
         )
         if profile_numeric_confidence_mode == "blended":
@@ -216,7 +215,7 @@ class ScoringStage:
         else:
             profile_numeric_confidence_factor = profile_numeric_confidence_factor_base
         enable_numeric_confidence_scaling = bool(controls.enable_numeric_confidence_scaling)
-        numeric_confidence_floor = ScoringStage._clamp_0_1(controls.numeric_confidence_floor)
+        numeric_confidence_floor = clamp(controls.numeric_confidence_floor)
 
         influence_enabled, influence_track_ids, influence_preference_weight = (
             ScoringStage._extract_bl003_influence_contract(bl003_summary)
@@ -300,7 +299,7 @@ class ScoringStage:
                     context.influence_preference_weight * context.influence_track_bonus_scale
                 )
                 final_score = round(
-                    ScoringStage._clamp_0_1(final_score + influence_bonus),
+                    clamp(final_score + influence_bonus),
                     6,
                 )
             matched_genres_raw = component_scores.get("matched_genres")
@@ -342,7 +341,7 @@ class ScoringStage:
 
         scored_rows.sort(
             key=lambda item: (
-                -ScoringStage._to_float(item.get("final_score", 0.0)),
+                -to_float(item.get("final_score", 0.0)),
                 str(item.get("track_id", "")),
             )
         )
@@ -387,7 +386,7 @@ class ScoringStage:
             }
             for row in scored_rows[:10]
         ]
-        score_values = [ScoringStage._to_float(row.get("final_score", 0.0)) for row in scored_rows]
+        score_values = [to_float(row.get("final_score", 0.0)) for row in scored_rows]
         top_100_rows = scored_rows[:100]
         top_500_rows = scored_rows[:500]
 

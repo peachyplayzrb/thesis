@@ -52,7 +52,27 @@ def test_enforce_selected_source_requirements_raises_when_strict(tmp_path) -> No
         stage.enforce_selected_source_requirements(
             expected_sources={"top_tracks": True},
             available_sources={"top_tracks": False},
+            source_resilience_policy={"top_tracks": "required"},
         )
+
+
+def test_enforce_selected_source_requirements_degrades_optional_sources(tmp_path) -> None:
+    stage = AlignmentStage(
+        ds001_path=tmp_path / "ds001.csv",
+        spotify_dir=tmp_path / "spotify",
+        output_dir=tmp_path / "out",
+        allow_missing_selected_sources=False,
+    )
+
+    missing_selected, missing_required, degraded_optional = stage.enforce_selected_source_requirements(
+        expected_sources={"top_tracks": True, "playlist_items": True},
+        available_sources={"top_tracks": True, "playlist_items": False},
+        source_resilience_policy={"top_tracks": "required", "playlist_items": "optional"},
+    )
+
+    assert missing_selected == ["playlist_items"]
+    assert missing_required == []
+    assert degraded_optional == ["playlist_items"]
 
 
 def test_run_writes_summary_on_empty_input_events(tmp_path, monkeypatch) -> None:
@@ -109,3 +129,42 @@ def test_run_writes_summary_on_empty_input_events(tmp_path, monkeypatch) -> None
     assert scope_manifest["structural_contract"]["contract_hash"]
     assert artifacts.matched_events_rows == 0
     assert artifacts.seed_table_rows == 0
+
+
+def test_run_treats_zero_results_source_outcome_as_available_in_strict_mode(tmp_path, monkeypatch) -> None:
+    monkeypatch.delenv("BL_RUN_CONFIG_PATH", raising=False)
+    monkeypatch.delenv("BL003_INPUT_SCOPE_JSON", raising=False)
+
+    ds001_path = tmp_path / "ds001_candidates.csv"
+    _write_minimal_ds001_csv(ds001_path)
+
+    spotify_dir = tmp_path / "spotify_export"
+    spotify_dir.mkdir(parents=True, exist_ok=True)
+    (spotify_dir / "spotify_export_run_summary.json").write_text(
+        json.dumps(
+            {
+                "selection": {
+                    "include_top_tracks": True,
+                    "include_saved_tracks": False,
+                    "include_playlists": False,
+                    "include_recently_played": False,
+                },
+                "source_outcomes": {
+                    "top_tracks": {"status": "zero_results"},
+                },
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    output_dir = tmp_path / "alignment_outputs"
+    stage = AlignmentStage(
+        ds001_path=ds001_path,
+        spotify_dir=spotify_dir,
+        output_dir=output_dir,
+        allow_missing_selected_sources=False,
+    )
+
+    artifacts = stage.run()
+    summary = json.loads(artifacts.summary_path.read_text(encoding="utf-8"))
+    assert summary["inputs"]["missing_required_sources"] == []

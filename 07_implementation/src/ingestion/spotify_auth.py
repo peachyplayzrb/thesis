@@ -110,15 +110,25 @@ def complete_oauth_flow(args: Any) -> Dict[str, Any]:
         webbrowser.open(authorize_url)
 
     try:
-        if not callback_state.event.wait(timeout=args.oauth_timeout_seconds):
-            raise TimeoutError("Timed out waiting for Spotify OAuth callback.")
+        deadline = time.time() + float(args.oauth_timeout_seconds)
+        while True:
+            remaining = max(0.0, deadline - time.time())
+            if remaining <= 0.0 or not callback_state.event.wait(timeout=remaining):
+                raise TimeoutError("Timed out waiting for Spotify OAuth callback.")
 
-        if callback_state.error:
-            raise RuntimeError(f"Spotify authorization error: {callback_state.error}")
-        if callback_state.state != state:
-            raise RuntimeError("Spotify OAuth state mismatch.")
-        if not callback_state.code:
-            raise RuntimeError("Missing authorization code in callback.")
+            if callback_state.error:
+                raise RuntimeError(f"Spotify authorization error: {callback_state.error}")
+            if callback_state.state != state:
+                # Ignore stale callbacks from prior auth attempts and keep waiting.
+                print("[auth] ignored stale OAuth callback state", flush=True)
+                callback_state.code = None
+                callback_state.state = None
+                callback_state.error = None
+                callback_state.event.clear()
+                continue
+            if not callback_state.code:
+                raise RuntimeError("Missing authorization code in callback.")
+            break
 
         token_response = request_token(
             client_id=args.client_id,

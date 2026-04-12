@@ -45,6 +45,7 @@ from shared_utils.constants import (
 
 from shared_utils.io_utils import open_text_write
 from shared_utils.parsing import safe_float, safe_int
+from run_config.schema import FieldSpec, RunConfigSchemaError, validate_section
 
 RUN_CONFIG_SCHEMA_VERSION = "run-config-v1"
 RUN_INTENT_ARTIFACT_SCHEMA_VERSION = "run-intent-v1"
@@ -161,6 +162,7 @@ def _build_default_run_config() -> dict[str, Any]:
             "match_rate_min_threshold": DEFAULT_SEED_CONTROLS["match_rate_min_threshold"],
             "top_range_weights": _coerce_object_mapping(DEFAULT_SEED_CONTROLS["top_range_weights"]),
             "source_base_weights": _coerce_object_mapping(DEFAULT_SEED_CONTROLS["source_base_weights"]),
+            "source_resilience_policy": _coerce_object_mapping(DEFAULT_SEED_CONTROLS["source_resilience_policy"]),
             "fuzzy_matching": _coerce_object_mapping(DEFAULT_SEED_CONTROLS["fuzzy_matching"]),
             "match_strategy": _coerce_object_mapping(DEFAULT_SEED_CONTROLS["match_strategy"]),
             "match_strategy_order": _coerce_str_list(DEFAULT_SEED_CONTROLS["match_strategy_order"]),
@@ -215,6 +217,190 @@ def _coerce_optional_int(value: Any, default: int | None = None) -> int | None:
 
 
 DEFAULT_RUN_CONFIG: dict[str, Any] = _build_default_run_config()
+
+PROFILE_CONTROLS_SCHEMA: dict[str, FieldSpec] = {
+    "top_tag_limit": FieldSpec(type="positive_int", default=safe_int(DEFAULT_PROFILE_CONTROLS["top_tag_limit"])),
+    "top_genre_limit": FieldSpec(type="positive_int", default=safe_int(DEFAULT_PROFILE_CONTROLS["top_genre_limit"])),
+    "top_lead_genre_limit": FieldSpec(
+        type="positive_int", default=safe_int(DEFAULT_PROFILE_CONTROLS["top_lead_genre_limit"])
+    ),
+    "confidence_weighting_mode": FieldSpec(
+        type="enum",
+        default=str(DEFAULT_PROFILE_CONTROLS["confidence_weighting_mode"]),
+        choices=("linear_half_bias", "direct_confidence", "none"),
+    ),
+    "confidence_bin_high_threshold": FieldSpec(
+        type="fraction",
+        default=safe_float(DEFAULT_PROFILE_CONTROLS["confidence_bin_high_threshold"]),
+    ),
+    "confidence_bin_medium_threshold": FieldSpec(
+        type="fraction",
+        default=safe_float(DEFAULT_PROFILE_CONTROLS["confidence_bin_medium_threshold"]),
+    ),
+    "interaction_attribution_mode": FieldSpec(
+        type="enum",
+        default=str(DEFAULT_PROFILE_CONTROLS["interaction_attribution_mode"]),
+        choices=("split_selected_types_equal_share", "primary_type_only"),
+    ),
+    "emit_profile_policy_diagnostics": FieldSpec(
+        type="bool",
+        default=bool(DEFAULT_PROFILE_CONTROLS["emit_profile_policy_diagnostics"]),
+    ),
+}
+
+RETRIEVAL_CONTROLS_SCHEMA: dict[str, FieldSpec] = {
+    "profile_top_tag_limit": FieldSpec(
+        type="positive_int",
+        default=safe_int(DEFAULT_RETRIEVAL_CONTROLS["profile_top_tag_limit"]),
+    ),
+    "profile_top_genre_limit": FieldSpec(
+        type="positive_int",
+        default=safe_int(DEFAULT_RETRIEVAL_CONTROLS["profile_top_genre_limit"]),
+    ),
+    "profile_top_lead_genre_limit": FieldSpec(
+        type="positive_int",
+        default=safe_int(DEFAULT_RETRIEVAL_CONTROLS["profile_top_lead_genre_limit"]),
+    ),
+    "profile_quality_penalty_enabled": FieldSpec(
+        type="bool",
+        default=bool(DEFAULT_RETRIEVAL_CONTROLS["profile_quality_penalty_enabled"]),
+    ),
+    "profile_quality_threshold": FieldSpec(
+        type="fraction",
+        default=safe_float(DEFAULT_RETRIEVAL_CONTROLS["profile_quality_threshold"]),
+    ),
+    "profile_entropy_low_threshold": FieldSpec(
+        type="fraction",
+        default=safe_float(DEFAULT_RETRIEVAL_CONTROLS["profile_entropy_low_threshold"]),
+    ),
+    "influence_share_threshold": FieldSpec(
+        type="fraction",
+        default=safe_float(DEFAULT_RETRIEVAL_CONTROLS["influence_share_threshold"]),
+    ),
+    "profile_quality_penalty_increment": FieldSpec(
+        type="non_negative_float",
+        default=safe_float(DEFAULT_RETRIEVAL_CONTROLS["profile_quality_penalty_increment"]),
+    ),
+    "profile_entropy_penalty_increment": FieldSpec(
+        type="non_negative_float",
+        default=safe_float(DEFAULT_RETRIEVAL_CONTROLS["profile_entropy_penalty_increment"]),
+    ),
+    "influence_share_penalty_increment": FieldSpec(
+        type="non_negative_float",
+        default=safe_float(DEFAULT_RETRIEVAL_CONTROLS["influence_share_penalty_increment"]),
+    ),
+    "numeric_penalty_scale": FieldSpec(
+        type="non_negative_float",
+        default=safe_float(DEFAULT_RETRIEVAL_CONTROLS["numeric_penalty_scale"]),
+    ),
+    "semantic_overlap_damping_mid_entropy_threshold": FieldSpec(
+        type="fraction",
+        default=safe_float(DEFAULT_RETRIEVAL_CONTROLS["semantic_overlap_damping_mid_entropy_threshold"]),
+    ),
+    "semantic_overlap_damping_low_entropy": FieldSpec(
+        type="fraction",
+        default=safe_float(DEFAULT_RETRIEVAL_CONTROLS["semantic_overlap_damping_low_entropy"]),
+    ),
+    "semantic_overlap_damping_mid_entropy": FieldSpec(
+        type="fraction",
+        default=safe_float(DEFAULT_RETRIEVAL_CONTROLS["semantic_overlap_damping_mid_entropy"]),
+    ),
+    "enable_numeric_confidence_scaling": FieldSpec(
+        type="bool",
+        default=bool(DEFAULT_RETRIEVAL_CONTROLS["enable_numeric_confidence_scaling"]),
+    ),
+    "numeric_confidence_floor": FieldSpec(
+        type="fraction",
+        default=safe_float(DEFAULT_RETRIEVAL_CONTROLS["numeric_confidence_floor"]),
+    ),
+    "profile_numeric_confidence_mode": FieldSpec(
+        type="enum",
+        default=str(DEFAULT_RETRIEVAL_CONTROLS["profile_numeric_confidence_mode"]),
+        choices=("direct", "blended"),
+    ),
+    "profile_numeric_confidence_blend_weight": FieldSpec(
+        type="fraction",
+        default=safe_float(DEFAULT_RETRIEVAL_CONTROLS["profile_numeric_confidence_blend_weight"]),
+    ),
+    "numeric_support_score_mode": FieldSpec(
+        type="enum",
+        default=str(DEFAULT_RETRIEVAL_CONTROLS["numeric_support_score_mode"]),
+        choices=("raw", "weighted", "weighted_absolute"),
+    ),
+    "emit_profile_policy_diagnostics": FieldSpec(
+        type="bool",
+        default=bool(DEFAULT_RETRIEVAL_CONTROLS["emit_profile_policy_diagnostics"]),
+    ),
+}
+
+SCORING_CONTROLS_SCHEMA: dict[str, FieldSpec] = {
+    "lead_genre_strategy": FieldSpec(
+        type="enum",
+        default=str(DEFAULT_SCORING_CONTROLS["lead_genre_strategy"]),
+        choices=("single_anchor", "weighted_top_lead_genres"),
+    ),
+    "semantic_overlap_strategy": FieldSpec(
+        type="enum",
+        default=str(DEFAULT_SCORING_CONTROLS["semantic_overlap_strategy"]),
+        choices=("overlap_only", "precision_aware"),
+    ),
+    "semantic_precision_alpha_mode": FieldSpec(
+        type="enum",
+        default=str(DEFAULT_SCORING_CONTROLS["semantic_precision_alpha_mode"]),
+        choices=("profile_adaptive", "fixed"),
+    ),
+    "semantic_precision_alpha_fixed": FieldSpec(
+        type="fraction",
+        default=safe_float(DEFAULT_SCORING_CONTROLS["semantic_precision_alpha_fixed"]),
+    ),
+    "enable_numeric_confidence_scaling": FieldSpec(
+        type="bool",
+        default=bool(DEFAULT_SCORING_CONTROLS["enable_numeric_confidence_scaling"]),
+    ),
+    "numeric_confidence_floor": FieldSpec(
+        type="fraction",
+        default=safe_float(DEFAULT_SCORING_CONTROLS["numeric_confidence_floor"]),
+    ),
+    "profile_numeric_confidence_mode": FieldSpec(
+        type="enum",
+        default=str(DEFAULT_SCORING_CONTROLS["profile_numeric_confidence_mode"]),
+        choices=("direct", "blended"),
+    ),
+    "profile_numeric_confidence_blend_weight": FieldSpec(
+        type="fraction",
+        default=safe_float(DEFAULT_SCORING_CONTROLS["profile_numeric_confidence_blend_weight"]),
+    ),
+    "emit_confidence_impact_diagnostics": FieldSpec(
+        type="bool",
+        default=bool(DEFAULT_SCORING_CONTROLS["emit_confidence_impact_diagnostics"]),
+    ),
+    "emit_semantic_precision_diagnostics": FieldSpec(
+        type="bool",
+        default=bool(DEFAULT_SCORING_CONTROLS["emit_semantic_precision_diagnostics"]),
+    ),
+    "apply_bl003_influence_tracks": FieldSpec(
+        type="bool",
+        default=bool(DEFAULT_SCORING_CONTROLS["apply_bl003_influence_tracks"]),
+    ),
+}
+
+OBSERVABILITY_CONTROLS_SCHEMA: dict[str, FieldSpec] = {
+    "diagnostic_sample_limit": FieldSpec(
+        type="positive_int",
+        default=safe_int(DEFAULT_OBSERVABILITY_CONTROLS["diagnostic_sample_limit"]),
+    ),
+}
+
+TRANSPARENCY_CONTROLS_SCHEMA: dict[str, FieldSpec] = {
+    "top_contributor_limit": FieldSpec(
+        type="positive_int",
+        default=safe_int(DEFAULT_TOP_CONTRIBUTOR_LIMIT),
+    ),
+    "primary_contributor_tie_delta": FieldSpec(
+        type="non_negative_float",
+        default=safe_float(DEFAULT_TRANSPARENCY_CONTROLS["primary_contributor_tie_delta"]),
+    ),
+}
 
 
 def _deep_merge(base: dict[str, Any], override: dict[str, Any]) -> dict[str, Any]:
@@ -676,6 +862,11 @@ def _validate_bl003_seed_controls(seed_controls: Any, defaults: dict[str, Any]) 
         dict(defaults.get("aggregation_policy") or {}),
     )
 
+    source_resilience_policy = _validate_source_resilience_policy(
+        seed_controls.get("source_resilience_policy"),
+        dict(defaults.get("source_resilience_policy") or {}),
+    )
+
     return {
         "match_rate_min_threshold": _validate_fraction_zero_to_one(
             seed_controls.get("match_rate_min_threshold"),
@@ -692,6 +883,7 @@ def _validate_bl003_seed_controls(seed_controls: Any, defaults: dict[str, Any]) 
             dict(defaults["source_base_weights"]),
             "run_config.seed_controls.source_base_weights",
         ),
+        "source_resilience_policy": dict(source_resilience_policy),
         "decay_half_lives": _validate_non_negative_float_map(
             seed_controls.get("decay_half_lives"),
             dict(defaults["decay_half_lives"]),
@@ -754,6 +946,28 @@ def _validate_bl003_seed_controls(seed_controls: Any, defaults: dict[str, Any]) 
             dict(defaults["weighting_policy"]),
         ),
     }
+
+
+def _validate_source_resilience_policy(value: Any, defaults: dict[str, Any]) -> dict[str, str]:
+    context = "run_config.seed_controls.source_resilience_policy"
+    if value is None:
+        value = {}
+    if not isinstance(value, dict):
+        raise RunConfigError(f"{context} must be an object")
+
+    _validate_allowed_keys(value, set(defaults), context)
+
+    allowed_modes = {"required", "optional", "advisory"}
+    normalized: dict[str, str] = {}
+    for source, default_mode in defaults.items():
+        raw_mode = value.get(source, default_mode)
+        mode = str(raw_mode).strip().lower()
+        if mode not in allowed_modes:
+            raise RunConfigError(
+                f"{context}.{source} must be one of required|optional|advisory"
+            )
+        normalized[str(source)] = mode
+    return normalized
 
 
 def _validate_bl003_influence_tracks(influence_tracks: Any, defaults: dict[str, Any]) -> dict[str, Any]:
@@ -1040,56 +1254,21 @@ def resolve_effective_run_config(run_config_path: str | Path | None) -> tuple[di
     profile_controls = effective.setdefault("profile_controls", {})
     if not isinstance(profile_controls, dict):
         raise RunConfigError("run_config.profile_controls must be an object")
-    profile_controls["top_tag_limit"] = _coerce_positive_int(
-        profile_controls.get("top_tag_limit"),
-        DEFAULT_RUN_CONFIG["profile_controls"]["top_tag_limit"],
-    )
-    profile_controls["top_genre_limit"] = _coerce_positive_int(
-        profile_controls.get("top_genre_limit"),
-        DEFAULT_RUN_CONFIG["profile_controls"]["top_genre_limit"],
-    )
-    profile_controls["top_lead_genre_limit"] = _coerce_positive_int(
-        profile_controls.get("top_lead_genre_limit"),
-        DEFAULT_RUN_CONFIG["profile_controls"]["top_lead_genre_limit"],
-    )
-    confidence_weighting_mode_raw = str(
-        profile_controls.get("confidence_weighting_mode")
-        or DEFAULT_RUN_CONFIG["profile_controls"]["confidence_weighting_mode"]
-    ).strip().lower()
-    profile_controls["confidence_weighting_mode"] = (
-        confidence_weighting_mode_raw
-        if confidence_weighting_mode_raw in {"linear_half_bias", "direct_confidence", "none"}
-        else str(DEFAULT_RUN_CONFIG["profile_controls"]["confidence_weighting_mode"])
-    )
-    profile_controls["confidence_bin_high_threshold"] = _validate_fraction_zero_to_one(
-        profile_controls.get("confidence_bin_high_threshold"),
-        "profile_controls.confidence_bin_high_threshold",
-        float(DEFAULT_RUN_CONFIG["profile_controls"]["confidence_bin_high_threshold"]),
-    )
-    profile_controls["confidence_bin_medium_threshold"] = _validate_fraction_zero_to_one(
-        profile_controls.get("confidence_bin_medium_threshold"),
-        "profile_controls.confidence_bin_medium_threshold",
-        float(DEFAULT_RUN_CONFIG["profile_controls"]["confidence_bin_medium_threshold"]),
-    )
+    try:
+        profile_controls = validate_section(
+            profile_controls,
+            PROFILE_CONTROLS_SCHEMA,
+            section="profile_controls",
+        )
+    except RunConfigSchemaError as exc:
+        raise RunConfigError(str(exc)) from exc
+
+    effective["profile_controls"] = profile_controls
     if float(profile_controls["confidence_bin_medium_threshold"]) > float(profile_controls["confidence_bin_high_threshold"]):
         raise RunConfigError(
             "profile_controls.confidence_bin_medium_threshold must be <= "
             "profile_controls.confidence_bin_high_threshold"
         )
-    interaction_attribution_mode_raw = str(
-        profile_controls.get("interaction_attribution_mode")
-        or DEFAULT_RUN_CONFIG["profile_controls"]["interaction_attribution_mode"]
-    ).strip().lower()
-    profile_controls["interaction_attribution_mode"] = (
-        interaction_attribution_mode_raw
-        if interaction_attribution_mode_raw in {"split_selected_types_equal_share", "primary_type_only"}
-        else str(DEFAULT_RUN_CONFIG["profile_controls"]["interaction_attribution_mode"])
-    )
-    profile_controls["emit_profile_policy_diagnostics"] = _validate_bool_like(
-        profile_controls.get("emit_profile_policy_diagnostics"),
-        "profile_controls.emit_profile_policy_diagnostics",
-        bool(DEFAULT_RUN_CONFIG["profile_controls"]["emit_profile_policy_diagnostics"]),
-    )
 
     interaction_scope = effective.setdefault("interaction_scope", {})
     if not isinstance(interaction_scope, dict):
@@ -1182,18 +1361,17 @@ def resolve_effective_run_config(run_config_path: str | Path | None) -> tuple[di
     if not isinstance(retrieval_controls, dict):
         raise RunConfigError("run_config.retrieval_controls must be an object")
     retrieval_defaults = DEFAULT_RUN_CONFIG["retrieval_controls"]
-    retrieval_controls["profile_top_tag_limit"] = _coerce_positive_int(
-        retrieval_controls.get("profile_top_tag_limit"),
-        retrieval_defaults["profile_top_tag_limit"],
-    )
-    retrieval_controls["profile_top_genre_limit"] = _coerce_positive_int(
-        retrieval_controls.get("profile_top_genre_limit"),
-        retrieval_defaults["profile_top_genre_limit"],
-    )
-    retrieval_controls["profile_top_lead_genre_limit"] = _coerce_positive_int(
-        retrieval_controls.get("profile_top_lead_genre_limit"),
-        retrieval_defaults["profile_top_lead_genre_limit"],
-    )
+    try:
+        retrieval_controls.update(
+            validate_section(
+                retrieval_controls,
+                RETRIEVAL_CONTROLS_SCHEMA,
+                section="retrieval_controls",
+            )
+        )
+    except RunConfigSchemaError as exc:
+        raise RunConfigError(str(exc)) from exc
+
     retrieval_controls["language_filter_enabled"] = _coerce_bool(
         retrieval_controls.get("language_filter_enabled"),
         bool(retrieval_defaults["language_filter_enabled"]),
@@ -1206,98 +1384,22 @@ def resolve_effective_run_config(run_config_path: str | Path | None) -> tuple[di
         retrieval_controls.get("recency_years_min_offset"),
         retrieval_defaults["recency_years_min_offset"],
     )
-    retrieval_controls["profile_quality_penalty_enabled"] = _validate_bool_like(
-        retrieval_controls.get("profile_quality_penalty_enabled"),
-        "retrieval_controls.profile_quality_penalty_enabled",
-        bool(retrieval_defaults["profile_quality_penalty_enabled"]),
-    )
-    retrieval_controls["profile_quality_threshold"] = _validate_fraction_zero_to_one(
-        retrieval_controls.get("profile_quality_threshold"),
-        "retrieval_controls.profile_quality_threshold",
-        float(retrieval_defaults["profile_quality_threshold"]),
-    )
-    retrieval_controls["profile_entropy_low_threshold"] = _validate_fraction_zero_to_one(
-        retrieval_controls.get("profile_entropy_low_threshold"),
-        "retrieval_controls.profile_entropy_low_threshold",
-        float(retrieval_defaults["profile_entropy_low_threshold"]),
-    )
-    retrieval_controls["influence_share_threshold"] = _validate_fraction_zero_to_one(
-        retrieval_controls.get("influence_share_threshold"),
-        "retrieval_controls.influence_share_threshold",
-        float(retrieval_defaults["influence_share_threshold"]),
-    )
-    retrieval_controls["profile_quality_penalty_increment"] = _coerce_non_negative_float(
-        retrieval_controls.get("profile_quality_penalty_increment"),
-        float(retrieval_defaults["profile_quality_penalty_increment"]),
-    )
-    retrieval_controls["profile_entropy_penalty_increment"] = _coerce_non_negative_float(
-        retrieval_controls.get("profile_entropy_penalty_increment"),
-        float(retrieval_defaults["profile_entropy_penalty_increment"]),
-    )
-    retrieval_controls["influence_share_penalty_increment"] = _coerce_non_negative_float(
-        retrieval_controls.get("influence_share_penalty_increment"),
-        float(retrieval_defaults["influence_share_penalty_increment"]),
-    )
-    retrieval_controls["numeric_penalty_scale"] = _coerce_non_negative_float(
-        retrieval_controls.get("numeric_penalty_scale"),
-        float(retrieval_defaults["numeric_penalty_scale"]),
-    )
-    retrieval_controls["semantic_overlap_damping_mid_entropy_threshold"] = _validate_fraction_zero_to_one(
-        retrieval_controls.get("semantic_overlap_damping_mid_entropy_threshold"),
-        "retrieval_controls.semantic_overlap_damping_mid_entropy_threshold",
-        float(retrieval_defaults["semantic_overlap_damping_mid_entropy_threshold"]),
-    )
-    retrieval_controls["semantic_overlap_damping_low_entropy"] = _validate_fraction_zero_to_one(
-        retrieval_controls.get("semantic_overlap_damping_low_entropy"),
-        "retrieval_controls.semantic_overlap_damping_low_entropy",
-        float(retrieval_defaults["semantic_overlap_damping_low_entropy"]),
-    )
-    retrieval_controls["semantic_overlap_damping_mid_entropy"] = _validate_fraction_zero_to_one(
-        retrieval_controls.get("semantic_overlap_damping_mid_entropy"),
-        "retrieval_controls.semantic_overlap_damping_mid_entropy",
-        float(retrieval_defaults["semantic_overlap_damping_mid_entropy"]),
-    )
-    retrieval_controls["enable_numeric_confidence_scaling"] = _validate_bool_like(
-        retrieval_controls.get("enable_numeric_confidence_scaling"),
-        "retrieval_controls.enable_numeric_confidence_scaling",
-        bool(retrieval_defaults["enable_numeric_confidence_scaling"]),
-    )
-    retrieval_controls["numeric_confidence_floor"] = _validate_fraction_zero_to_one(
-        retrieval_controls.get("numeric_confidence_floor"),
-        "retrieval_controls.numeric_confidence_floor",
-        float(retrieval_defaults["numeric_confidence_floor"]),
-    )
-    profile_numeric_mode_raw = str(
-        retrieval_controls.get("profile_numeric_confidence_mode") or retrieval_defaults["profile_numeric_confidence_mode"]
-    ).strip().lower()
-    retrieval_controls["profile_numeric_confidence_mode"] = (
-        profile_numeric_mode_raw
-        if profile_numeric_mode_raw in {"direct", "blended"}
-        else str(retrieval_defaults["profile_numeric_confidence_mode"])
-    )
-    retrieval_controls["profile_numeric_confidence_blend_weight"] = _validate_fraction_zero_to_one(
-        retrieval_controls.get("profile_numeric_confidence_blend_weight"),
-        "retrieval_controls.profile_numeric_confidence_blend_weight",
-        float(retrieval_defaults["profile_numeric_confidence_blend_weight"]),
-    )
-    numeric_support_mode_raw = str(
-        retrieval_controls.get("numeric_support_score_mode") or retrieval_defaults["numeric_support_score_mode"]
-    ).strip().lower()
-    retrieval_controls["numeric_support_score_mode"] = (
-        numeric_support_mode_raw
-        if numeric_support_mode_raw in {"raw", "weighted", "weighted_absolute"}
-        else str(retrieval_defaults["numeric_support_score_mode"])
-    )
-    retrieval_controls["emit_profile_policy_diagnostics"] = _validate_bool_like(
-        retrieval_controls.get("emit_profile_policy_diagnostics"),
-        "retrieval_controls.emit_profile_policy_diagnostics",
-        bool(retrieval_defaults["emit_profile_policy_diagnostics"]),
-    )
 
     scoring_controls = effective.setdefault("scoring_controls", {})
     if not isinstance(scoring_controls, dict):
         raise RunConfigError("run_config.scoring_controls must be an object")
     scoring_defaults = DEFAULT_RUN_CONFIG["scoring_controls"]
+    try:
+        scoring_controls.update(
+            validate_section(
+                scoring_controls,
+                SCORING_CONTROLS_SCHEMA,
+                section="scoring_controls",
+            )
+        )
+    except RunConfigSchemaError as exc:
+        raise RunConfigError(str(exc)) from exc
+
     validated_component_weights = _validate_component_weights(
         scoring_controls.get("component_weights") or scoring_defaults["component_weights"],
         "scoring_controls.component_weights",
@@ -1317,77 +1419,6 @@ def resolve_effective_run_config(run_config_path: str | Path | None) -> tuple[di
         _enforce_numeric_threshold_coupling(retrieval_thresholds, scoring_thresholds)
     retrieval_controls["numeric_thresholds"] = retrieval_thresholds
     scoring_controls["numeric_thresholds"] = scoring_thresholds
-
-    lead_genre_strategy_raw = str(
-        scoring_controls.get("lead_genre_strategy") or scoring_defaults["lead_genre_strategy"]
-    ).strip().lower()
-    scoring_controls["lead_genre_strategy"] = (
-        lead_genre_strategy_raw
-        if lead_genre_strategy_raw in {"single_anchor", "weighted_top_lead_genres"}
-        else str(scoring_defaults["lead_genre_strategy"])
-    )
-
-    overlap_strategy_raw = str(
-        scoring_controls.get("semantic_overlap_strategy") or scoring_defaults["semantic_overlap_strategy"]
-    ).strip().lower()
-    scoring_controls["semantic_overlap_strategy"] = (
-        overlap_strategy_raw
-        if overlap_strategy_raw in {"overlap_only", "precision_aware"}
-        else str(scoring_defaults["semantic_overlap_strategy"])
-    )
-
-    precision_mode_raw = str(
-        scoring_controls.get("semantic_precision_alpha_mode") or scoring_defaults["semantic_precision_alpha_mode"]
-    ).strip().lower()
-    scoring_controls["semantic_precision_alpha_mode"] = (
-        precision_mode_raw
-        if precision_mode_raw in {"profile_adaptive", "fixed"}
-        else str(scoring_defaults["semantic_precision_alpha_mode"])
-    )
-    scoring_controls["semantic_precision_alpha_fixed"] = _validate_fraction_zero_to_one(
-        scoring_controls.get("semantic_precision_alpha_fixed"),
-        "scoring_controls.semantic_precision_alpha_fixed",
-        float(scoring_defaults["semantic_precision_alpha_fixed"]),
-    )
-    scoring_controls["enable_numeric_confidence_scaling"] = _validate_bool_like(
-        scoring_controls.get("enable_numeric_confidence_scaling"),
-        "scoring_controls.enable_numeric_confidence_scaling",
-        bool(scoring_defaults["enable_numeric_confidence_scaling"]),
-    )
-    scoring_controls["numeric_confidence_floor"] = _validate_fraction_zero_to_one(
-        scoring_controls.get("numeric_confidence_floor"),
-        "scoring_controls.numeric_confidence_floor",
-        float(scoring_defaults["numeric_confidence_floor"]),
-    )
-
-    profile_conf_mode_raw = str(
-        scoring_controls.get("profile_numeric_confidence_mode") or scoring_defaults["profile_numeric_confidence_mode"]
-    ).strip().lower()
-    scoring_controls["profile_numeric_confidence_mode"] = (
-        profile_conf_mode_raw
-        if profile_conf_mode_raw in {"direct", "blended"}
-        else str(scoring_defaults["profile_numeric_confidence_mode"])
-    )
-    scoring_controls["profile_numeric_confidence_blend_weight"] = _validate_fraction_zero_to_one(
-        scoring_controls.get("profile_numeric_confidence_blend_weight"),
-        "scoring_controls.profile_numeric_confidence_blend_weight",
-        float(scoring_defaults["profile_numeric_confidence_blend_weight"]),
-    )
-    scoring_controls["emit_confidence_impact_diagnostics"] = _validate_bool_like(
-        scoring_controls.get("emit_confidence_impact_diagnostics"),
-        "scoring_controls.emit_confidence_impact_diagnostics",
-        bool(scoring_defaults["emit_confidence_impact_diagnostics"]),
-    )
-    scoring_controls["emit_semantic_precision_diagnostics"] = _validate_bool_like(
-        scoring_controls.get("emit_semantic_precision_diagnostics"),
-        "scoring_controls.emit_semantic_precision_diagnostics",
-        bool(scoring_defaults["emit_semantic_precision_diagnostics"]),
-    )
-    scoring_controls["apply_bl003_influence_tracks"] = _validate_bool_like(
-        scoring_controls.get("apply_bl003_influence_tracks"),
-        "scoring_controls.apply_bl003_influence_tracks",
-        bool(scoring_defaults["apply_bl003_influence_tracks"]),
-    )
     scoring_controls["influence_track_bonus_scale"] = _coerce_non_negative_float(
         scoring_controls.get("influence_track_bonus_scale"),
         float(scoring_defaults["influence_track_bonus_scale"]),
@@ -1399,10 +1430,17 @@ def resolve_effective_run_config(run_config_path: str | Path | None) -> tuple[di
     if not isinstance(observability_controls, dict):
         raise RunConfigError("run_config.observability_controls must be an object")
     observability_defaults = DEFAULT_RUN_CONFIG["observability_controls"]
-    observability_controls["diagnostic_sample_limit"] = _coerce_positive_int(
-        observability_controls.get("diagnostic_sample_limit"),
-        int(observability_defaults["diagnostic_sample_limit"]),
-    )
+    try:
+        observability_controls.update(
+            validate_section(
+                observability_controls,
+                OBSERVABILITY_CONTROLS_SCHEMA,
+                section="observability_controls",
+            )
+        )
+    except RunConfigSchemaError as exc:
+        raise RunConfigError(str(exc)) from exc
+
     observability_controls["bootstrap_mode"] = _coerce_bool(
         observability_controls.get("bootstrap_mode"),
         bool(observability_defaults["bootstrap_mode"]),
@@ -1412,17 +1450,20 @@ def resolve_effective_run_config(run_config_path: str | Path | None) -> tuple[di
     if not isinstance(transparency_controls, dict):
         raise RunConfigError("run_config.transparency_controls must be an object")
     transparency_defaults = DEFAULT_RUN_CONFIG["transparency_controls"]
-    transparency_controls["top_contributor_limit"] = _coerce_positive_int(
-        transparency_controls.get("top_contributor_limit"),
-        int(transparency_defaults["top_contributor_limit"]),
-    )
+    try:
+        transparency_controls.update(
+            validate_section(
+                transparency_controls,
+                TRANSPARENCY_CONTROLS_SCHEMA,
+                section="transparency_controls",
+            )
+        )
+    except RunConfigSchemaError as exc:
+        raise RunConfigError(str(exc)) from exc
+
     transparency_controls["blend_primary_contributor_on_near_tie"] = _coerce_bool(
         transparency_controls.get("blend_primary_contributor_on_near_tie"),
         bool(transparency_defaults["blend_primary_contributor_on_near_tie"]),
-    )
-    transparency_controls["primary_contributor_tie_delta"] = _coerce_non_negative_float(
-        transparency_controls.get("primary_contributor_tie_delta"),
-        float(transparency_defaults["primary_contributor_tie_delta"]),
     )
 
     return effective, path
@@ -1484,6 +1525,7 @@ def resolve_bl003_seed_controls(run_config_path: str | Path | None) -> dict[str,
         "match_rate_min_threshold": float(seed["match_rate_min_threshold"]),
         "top_range_weights": dict(seed["top_range_weights"]),
         "source_base_weights": dict(seed["source_base_weights"]),
+        "source_resilience_policy": dict(seed.get("source_resilience_policy") or {}),
         "decay_half_lives": dict(seed.get("decay_half_lives") or {}),
         "fuzzy_matching": dict(seed.get("fuzzy_matching") or {}),
         "match_strategy": dict(seed.get("match_strategy") or {}),
@@ -1566,173 +1608,60 @@ def resolve_bl003_weighting_policy(run_config_path: str | Path | None) -> dict[s
     """
     effective, _ = resolve_effective_run_config(run_config_path)
     seed = effective["seed_controls"]
-    raw = (seed.get("weighting_policy") or {})
-    default_top = DEFAULT_WEIGHTING_POLICY["top_tracks"]
-    default_pl = DEFAULT_WEIGHTING_POLICY["playlist_items"]
-
-    raw_top = raw.get("top_tracks") or {}
-    raw_pl = raw.get("playlist_items") or {}
+    weighting_policy = seed.get("weighting_policy") or {}
+    top_tracks = weighting_policy.get("top_tracks") or {}
+    playlist_items = weighting_policy.get("playlist_items") or {}
 
     return {
-        "top_tracks_min_rank_floor": float(
-            raw_top.get("min_rank_floor", default_top["min_rank_floor"])
-        ),
-        "top_tracks_scale_multiplier": float(
-            raw_top.get("scale_multiplier", default_top["scale_multiplier"])
-        ),
-        "top_tracks_default_time_range_weight": float(
-            raw_top.get("default_time_range_weight", default_top["default_time_range_weight"])
-        ),
-        "playlist_items_min_position_floor": float(
-            raw_pl.get("min_position_floor", default_pl["min_position_floor"])
-        ),
-        "playlist_items_scale_multiplier": float(
-            raw_pl.get("scale_multiplier", default_pl["scale_multiplier"])
-        ),
+        "top_tracks_min_rank_floor": float(top_tracks["min_rank_floor"]),
+        "top_tracks_scale_multiplier": float(top_tracks["scale_multiplier"]),
+        "top_tracks_default_time_range_weight": float(top_tracks["default_time_range_weight"]),
+        "playlist_items_min_position_floor": float(playlist_items["min_position_floor"]),
+        "playlist_items_scale_multiplier": float(playlist_items["scale_multiplier"]),
     }
 
 
 def resolve_bl005_controls(run_config_path: str | Path | None) -> dict[str, Any]:
     effective, resolved_path = resolve_effective_run_config(run_config_path)
     retrieval = effective["retrieval_controls"]
-    defaults = DEFAULT_RUN_CONFIG["retrieval_controls"]
     return {
         "config_path": str(resolved_path) if resolved_path else None,
         "schema_version": effective["schema_version"],
         "signal_mode": dict(effective.get("signal_mode") or {}),
-        "profile_top_lead_genre_limit": _coerce_positive_int(
-            retrieval.get("profile_top_lead_genre_limit"),
-            defaults["profile_top_lead_genre_limit"],
-        ),
-        "profile_top_tag_limit": _coerce_positive_int(
-            retrieval.get("profile_top_tag_limit"),
-            defaults["profile_top_tag_limit"],
-        ),
-        "profile_top_genre_limit": _coerce_positive_int(
-            retrieval.get("profile_top_genre_limit"),
-            defaults["profile_top_genre_limit"],
-        ),
-        "semantic_strong_keep_score": _coerce_positive_int(
-            retrieval.get("semantic_strong_keep_score"),
-            defaults["semantic_strong_keep_score"],
-        ),
-        "semantic_min_keep_score": _coerce_positive_int(
-            retrieval.get("semantic_min_keep_score"),
-            defaults["semantic_min_keep_score"],
-        ),
-        "numeric_support_min_pass": _coerce_positive_int(
-            retrieval.get("numeric_support_min_pass"),
-            defaults["numeric_support_min_pass"],
-        ),
-        "numeric_support_min_score": _coerce_non_negative_float(
-            retrieval.get("numeric_support_min_score"),
-            float(defaults["numeric_support_min_score"]),
-        ),
-        "use_weighted_semantics": _coerce_bool(
-            retrieval.get("use_weighted_semantics"),
-            bool(defaults["use_weighted_semantics"]),
-        ),
-        "use_continuous_numeric": _coerce_bool(
-            retrieval.get("use_continuous_numeric"),
-            bool(defaults["use_continuous_numeric"]),
-        ),
-        "enable_popularity_numeric": _coerce_bool(
-            retrieval.get("enable_popularity_numeric"),
-            bool(defaults["enable_popularity_numeric"]),
-        ),
-        "language_filter_enabled": _coerce_bool(
-            retrieval.get("language_filter_enabled"),
-            bool(defaults["language_filter_enabled"]),
-        ),
-        "language_filter_codes": _normalize_string_tokens(
-            retrieval.get("language_filter_codes"),
-            list(defaults["language_filter_codes"]),
-        ),
-        "recency_years_min_offset": _coerce_optional_positive_int(
-            retrieval.get("recency_years_min_offset"),
-            defaults["recency_years_min_offset"],
-        ),
+        "profile_top_lead_genre_limit": int(retrieval["profile_top_lead_genre_limit"]),
+        "profile_top_tag_limit": int(retrieval["profile_top_tag_limit"]),
+        "profile_top_genre_limit": int(retrieval["profile_top_genre_limit"]),
+        "semantic_strong_keep_score": int(retrieval["semantic_strong_keep_score"]),
+        "semantic_min_keep_score": int(retrieval["semantic_min_keep_score"]),
+        "numeric_support_min_pass": int(retrieval["numeric_support_min_pass"]),
+        "numeric_support_min_score": float(retrieval["numeric_support_min_score"]),
+        "use_weighted_semantics": bool(retrieval["use_weighted_semantics"]),
+        "use_continuous_numeric": bool(retrieval["use_continuous_numeric"]),
+        "enable_popularity_numeric": bool(retrieval["enable_popularity_numeric"]),
+        "language_filter_enabled": bool(retrieval["language_filter_enabled"]),
+        "language_filter_codes": list(retrieval["language_filter_codes"]),
+        "recency_years_min_offset": retrieval["recency_years_min_offset"],
         "numeric_thresholds": _validate_positive_thresholds(
-            retrieval.get("numeric_thresholds") or defaults["numeric_thresholds"],
+            retrieval.get("numeric_thresholds") or {},
             "retrieval_controls.numeric_thresholds"
         ),
-        "profile_quality_penalty_enabled": _validate_bool_like(
-            retrieval.get("profile_quality_penalty_enabled"),
-            "retrieval_controls.profile_quality_penalty_enabled",
-            bool(defaults["profile_quality_penalty_enabled"]),
-        ),
-        "profile_quality_threshold": _validate_fraction_zero_to_one(
-            retrieval.get("profile_quality_threshold"),
-            "retrieval_controls.profile_quality_threshold",
-            float(defaults["profile_quality_threshold"]),
-        ),
-        "profile_entropy_low_threshold": _validate_fraction_zero_to_one(
-            retrieval.get("profile_entropy_low_threshold"),
-            "retrieval_controls.profile_entropy_low_threshold",
-            float(defaults["profile_entropy_low_threshold"]),
-        ),
-        "influence_share_threshold": _validate_fraction_zero_to_one(
-            retrieval.get("influence_share_threshold"),
-            "retrieval_controls.influence_share_threshold",
-            float(defaults["influence_share_threshold"]),
-        ),
-        "profile_quality_penalty_increment": _coerce_non_negative_float(
-            retrieval.get("profile_quality_penalty_increment"),
-            float(defaults["profile_quality_penalty_increment"]),
-        ),
-        "profile_entropy_penalty_increment": _coerce_non_negative_float(
-            retrieval.get("profile_entropy_penalty_increment"),
-            float(defaults["profile_entropy_penalty_increment"]),
-        ),
-        "influence_share_penalty_increment": _coerce_non_negative_float(
-            retrieval.get("influence_share_penalty_increment"),
-            float(defaults["influence_share_penalty_increment"]),
-        ),
-        "numeric_penalty_scale": _coerce_non_negative_float(
-            retrieval.get("numeric_penalty_scale"),
-            float(defaults["numeric_penalty_scale"]),
-        ),
-        "semantic_overlap_damping_mid_entropy_threshold": _validate_fraction_zero_to_one(
-            retrieval.get("semantic_overlap_damping_mid_entropy_threshold"),
-            "retrieval_controls.semantic_overlap_damping_mid_entropy_threshold",
-            float(defaults["semantic_overlap_damping_mid_entropy_threshold"]),
-        ),
-        "semantic_overlap_damping_low_entropy": _validate_fraction_zero_to_one(
-            retrieval.get("semantic_overlap_damping_low_entropy"),
-            "retrieval_controls.semantic_overlap_damping_low_entropy",
-            float(defaults["semantic_overlap_damping_low_entropy"]),
-        ),
-        "semantic_overlap_damping_mid_entropy": _validate_fraction_zero_to_one(
-            retrieval.get("semantic_overlap_damping_mid_entropy"),
-            "retrieval_controls.semantic_overlap_damping_mid_entropy",
-            float(defaults["semantic_overlap_damping_mid_entropy"]),
-        ),
-        "enable_numeric_confidence_scaling": _validate_bool_like(
-            retrieval.get("enable_numeric_confidence_scaling"),
-            "retrieval_controls.enable_numeric_confidence_scaling",
-            bool(defaults["enable_numeric_confidence_scaling"]),
-        ),
-        "numeric_confidence_floor": _validate_fraction_zero_to_one(
-            retrieval.get("numeric_confidence_floor"),
-            "retrieval_controls.numeric_confidence_floor",
-            float(defaults["numeric_confidence_floor"]),
-        ),
-        "profile_numeric_confidence_mode": str(
-            retrieval.get("profile_numeric_confidence_mode") or defaults["profile_numeric_confidence_mode"]
-        ),
-        "profile_numeric_confidence_blend_weight": _validate_fraction_zero_to_one(
-            retrieval.get("profile_numeric_confidence_blend_weight"),
-            "retrieval_controls.profile_numeric_confidence_blend_weight",
-            float(defaults["profile_numeric_confidence_blend_weight"]),
-        ),
-        "numeric_support_score_mode": str(
-            retrieval.get("numeric_support_score_mode") or defaults["numeric_support_score_mode"]
-        ),
-        "emit_profile_policy_diagnostics": _validate_bool_like(
-            retrieval.get("emit_profile_policy_diagnostics"),
-            "retrieval_controls.emit_profile_policy_diagnostics",
-            bool(defaults["emit_profile_policy_diagnostics"]),
-        ),
+        "profile_quality_penalty_enabled": bool(retrieval["profile_quality_penalty_enabled"]),
+        "profile_quality_threshold": float(retrieval["profile_quality_threshold"]),
+        "profile_entropy_low_threshold": float(retrieval["profile_entropy_low_threshold"]),
+        "influence_share_threshold": float(retrieval["influence_share_threshold"]),
+        "profile_quality_penalty_increment": float(retrieval["profile_quality_penalty_increment"]),
+        "profile_entropy_penalty_increment": float(retrieval["profile_entropy_penalty_increment"]),
+        "influence_share_penalty_increment": float(retrieval["influence_share_penalty_increment"]),
+        "numeric_penalty_scale": float(retrieval["numeric_penalty_scale"]),
+        "semantic_overlap_damping_mid_entropy_threshold": float(retrieval["semantic_overlap_damping_mid_entropy_threshold"]),
+        "semantic_overlap_damping_low_entropy": float(retrieval["semantic_overlap_damping_low_entropy"]),
+        "semantic_overlap_damping_mid_entropy": float(retrieval["semantic_overlap_damping_mid_entropy"]),
+        "enable_numeric_confidence_scaling": bool(retrieval["enable_numeric_confidence_scaling"]),
+        "numeric_confidence_floor": float(retrieval["numeric_confidence_floor"]),
+        "profile_numeric_confidence_mode": str(retrieval["profile_numeric_confidence_mode"]),
+        "profile_numeric_confidence_blend_weight": float(retrieval["profile_numeric_confidence_blend_weight"]),
+        "numeric_support_score_mode": str(retrieval["numeric_support_score_mode"]),
+        "emit_profile_policy_diagnostics": bool(retrieval["emit_profile_policy_diagnostics"]),
     }
 
 
@@ -1740,9 +1669,8 @@ def resolve_bl006_controls(run_config_path: str | Path | None) -> dict[str, Any]
     effective, resolved_path = resolve_effective_run_config(run_config_path)
     scoring = effective["scoring_controls"]
     control_mode = effective.get("control_mode") or {}
-    defaults = DEFAULT_RUN_CONFIG["scoring_controls"]
     component_weights = _validate_component_weights(
-        scoring.get("component_weights") or defaults["component_weights"],
+        scoring.get("component_weights") or {},
         "scoring_controls.component_weights",
         enforce_sum=not bool(control_mode.get("allow_weight_auto_normalization", False)),
     )
@@ -1752,54 +1680,21 @@ def resolve_bl006_controls(run_config_path: str | Path | None) -> dict[str, Any]
         "signal_mode": dict(effective.get("signal_mode") or {}),
         "component_weights": component_weights,
         "numeric_thresholds": _validate_positive_thresholds(
-            scoring.get("numeric_thresholds") or defaults["numeric_thresholds"],
+            scoring.get("numeric_thresholds") or {},
             "scoring_controls.numeric_thresholds"
         ),
-        "lead_genre_strategy": str(scoring.get("lead_genre_strategy") or defaults["lead_genre_strategy"]),
-        "semantic_overlap_strategy": str(scoring.get("semantic_overlap_strategy") or defaults["semantic_overlap_strategy"]),
-        "semantic_precision_alpha_mode": str(scoring.get("semantic_precision_alpha_mode") or defaults["semantic_precision_alpha_mode"]),
-        "semantic_precision_alpha_fixed": _validate_fraction_zero_to_one(
-            scoring.get("semantic_precision_alpha_fixed"),
-            "scoring_controls.semantic_precision_alpha_fixed",
-            float(defaults["semantic_precision_alpha_fixed"]),
-        ),
-        "enable_numeric_confidence_scaling": _validate_bool_like(
-            scoring.get("enable_numeric_confidence_scaling"),
-            "scoring_controls.enable_numeric_confidence_scaling",
-            bool(defaults["enable_numeric_confidence_scaling"]),
-        ),
-        "numeric_confidence_floor": _validate_fraction_zero_to_one(
-            scoring.get("numeric_confidence_floor"),
-            "scoring_controls.numeric_confidence_floor",
-            float(defaults["numeric_confidence_floor"]),
-        ),
-        "profile_numeric_confidence_mode": str(
-            scoring.get("profile_numeric_confidence_mode") or defaults["profile_numeric_confidence_mode"]
-        ),
-        "profile_numeric_confidence_blend_weight": _validate_fraction_zero_to_one(
-            scoring.get("profile_numeric_confidence_blend_weight"),
-            "scoring_controls.profile_numeric_confidence_blend_weight",
-            float(defaults["profile_numeric_confidence_blend_weight"]),
-        ),
-        "emit_confidence_impact_diagnostics": _validate_bool_like(
-            scoring.get("emit_confidence_impact_diagnostics"),
-            "scoring_controls.emit_confidence_impact_diagnostics",
-            bool(defaults["emit_confidence_impact_diagnostics"]),
-        ),
-        "emit_semantic_precision_diagnostics": _validate_bool_like(
-            scoring.get("emit_semantic_precision_diagnostics"),
-            "scoring_controls.emit_semantic_precision_diagnostics",
-            bool(defaults["emit_semantic_precision_diagnostics"]),
-        ),
-        "apply_bl003_influence_tracks": _validate_bool_like(
-            scoring.get("apply_bl003_influence_tracks"),
-            "scoring_controls.apply_bl003_influence_tracks",
-            bool(defaults["apply_bl003_influence_tracks"]),
-        ),
-        "influence_track_bonus_scale": _coerce_non_negative_float(
-            scoring.get("influence_track_bonus_scale"),
-            float(defaults["influence_track_bonus_scale"]),
-        ),
+        "lead_genre_strategy": str(scoring["lead_genre_strategy"]),
+        "semantic_overlap_strategy": str(scoring["semantic_overlap_strategy"]),
+        "semantic_precision_alpha_mode": str(scoring["semantic_precision_alpha_mode"]),
+        "semantic_precision_alpha_fixed": float(scoring["semantic_precision_alpha_fixed"]),
+        "enable_numeric_confidence_scaling": bool(scoring["enable_numeric_confidence_scaling"]),
+        "numeric_confidence_floor": float(scoring["numeric_confidence_floor"]),
+        "profile_numeric_confidence_mode": str(scoring["profile_numeric_confidence_mode"]),
+        "profile_numeric_confidence_blend_weight": float(scoring["profile_numeric_confidence_blend_weight"]),
+        "emit_confidence_impact_diagnostics": bool(scoring["emit_confidence_impact_diagnostics"]),
+        "emit_semantic_precision_diagnostics": bool(scoring["emit_semantic_precision_diagnostics"]),
+        "apply_bl003_influence_tracks": bool(scoring["apply_bl003_influence_tracks"]),
+        "influence_track_bonus_scale": float(scoring["influence_track_bonus_scale"]),
     }
 
 
@@ -1973,22 +1868,12 @@ def resolve_bl007_controls(run_config_path: str | Path | None) -> dict[str, Any]
 def resolve_bl008_controls(run_config_path: str | Path | None) -> dict[str, Any]:
     effective, resolved_path = resolve_effective_run_config(run_config_path)
     transparency = effective["transparency_controls"]
-    defaults = DEFAULT_RUN_CONFIG["transparency_controls"]
     return {
         "config_path": str(resolved_path) if resolved_path else None,
         "schema_version": effective["schema_version"],
-        "top_contributor_limit": _coerce_positive_int(
-            transparency.get("top_contributor_limit"),
-            defaults["top_contributor_limit"],
-        ),
-        "blend_primary_contributor_on_near_tie": _coerce_bool(
-            transparency.get("blend_primary_contributor_on_near_tie"),
-            bool(defaults["blend_primary_contributor_on_near_tie"]),
-        ),
-        "primary_contributor_tie_delta": _coerce_non_negative_float(
-            transparency.get("primary_contributor_tie_delta"),
-            float(defaults["primary_contributor_tie_delta"]),
-        ),
+        "top_contributor_limit": int(transparency["top_contributor_limit"]),
+        "blend_primary_contributor_on_near_tie": bool(transparency["blend_primary_contributor_on_near_tie"]),
+        "primary_contributor_tie_delta": float(transparency["primary_contributor_tie_delta"]),
     }
 
 
@@ -1996,7 +1881,6 @@ def resolve_bl009_controls(run_config_path: str | Path | None) -> dict[str, Any]
     effective, resolved_path = resolve_effective_run_config(run_config_path)
     observability = effective["observability_controls"]
     control_mode = effective.get("control_mode") or {}
-    defaults = DEFAULT_RUN_CONFIG["observability_controls"]
     return {
         "config_path": str(resolved_path) if resolved_path else None,
         "schema_version": effective["schema_version"],
@@ -2005,14 +1889,8 @@ def resolve_bl009_controls(run_config_path: str | Path | None) -> dict[str, Any]
             "allow_threshold_decoupling": bool(control_mode.get("allow_threshold_decoupling", False)),
             "allow_weight_auto_normalization": bool(control_mode.get("allow_weight_auto_normalization", False)),
         },
-        "diagnostic_sample_limit": _coerce_positive_int(
-            observability.get("diagnostic_sample_limit"),
-            defaults["diagnostic_sample_limit"],
-        ),
-        "bootstrap_mode": _coerce_bool(
-            observability.get("bootstrap_mode"),
-            bool(defaults["bootstrap_mode"]),
-        ),
+        "diagnostic_sample_limit": int(observability["diagnostic_sample_limit"]),
+        "bootstrap_mode": bool(observability["bootstrap_mode"]),
     }
 
 

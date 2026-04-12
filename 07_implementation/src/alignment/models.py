@@ -28,6 +28,7 @@ class AlignmentBehaviorControls:
     input_scope: dict[str, object]
     top_range_weights: dict[str, float]
     source_base_weights: dict[str, float]
+    source_resilience_policy: dict[str, str]
     decay_half_lives: dict[str, float]
     match_rate_min_threshold: float
     fuzzy_matching_controls: dict[str, Any]
@@ -487,7 +488,10 @@ class AlignmentSummaryContext:
     influence_contract: dict[str, Any]
     expected_sources: dict[str, bool]
     available_sources: dict[str, bool]
+    source_resilience_policy: dict[str, str]
     missing_selected_sources: list[str]
+    missing_required_sources: list[str]
+    degraded_optional_sources: list[str]
     allow_missing_selected_sources: bool
     source_stats: dict[str, Any]
     scope_filter_stats: dict[str, Any]
