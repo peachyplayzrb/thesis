@@ -255,7 +255,10 @@ def write_suite_artifacts(
     if extra_sections:
         report.update(extra_sections)
 
-    matrix_rows = [{"check_id": item["id"], "status": item["status"], "details": item["details"]} for item in checks]
+    matrix_rows: list[dict[str, object]] = [
+        {"check_id": item["id"], "status": item["status"], "details": item["details"]}
+        for item in checks
+    ]
     write_json_ascii(report_path, report)
     write_csv_rows(matrix_path, matrix_rows)
 

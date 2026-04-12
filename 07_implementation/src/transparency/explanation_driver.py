@@ -2,11 +2,15 @@
 
 from __future__ import annotations
 
+from typing import Mapping, Sequence
+
+from shared_utils.parsing import safe_float
+
 
 def build_why_selected(
     lead_genre: str,
     final_score: float,
-    top_contributors: list[dict[str, object]],
+    top_contributors: Sequence[Mapping[str, object]],
     playlist_position: int,
     top_contributor_limit: int,
 ) -> str:
@@ -25,12 +29,12 @@ def build_why_selected(
 
 
 def select_primary_explanation_driver(
-    top_contributors: list[dict[str, object]],
+    top_contributors: Sequence[Mapping[str, object]],
     playlist_position: int,
     *,
     enable_near_tie_blend: bool,
     near_tie_delta: float,
-) -> dict[str, object]:
+) -> Mapping[str, object]:
     """Select the primary explanation driver with optional near-tie rotation."""
     if not top_contributors:
         return {
@@ -44,11 +48,11 @@ def select_primary_explanation_driver(
     if not enable_near_tie_blend or len(top_contributors) == 1:
         return top_contributors[0]
 
-    best = float(top_contributors[0].get("contribution", 0.0))
+    best = safe_float(top_contributors[0].get("contribution", 0.0))
     near_tied = [
         c
         for c in top_contributors
-        if best - float(c.get("contribution", 0.0)) <= near_tie_delta
+        if best - safe_float(c.get("contribution", 0.0)) <= near_tie_delta
     ]
     if len(near_tied) <= 1:
         return top_contributors[0]

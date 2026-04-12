@@ -5,7 +5,13 @@ from pathlib import Path
 
 import pytest
 
-from quality.sanity_checks import csv_header, csv_row_count, ensure_exists, sha256_file
+from quality.sanity_checks import (
+    bl005_filtered_has_required_columns,
+    csv_header,
+    csv_row_count,
+    ensure_exists,
+    sha256_file,
+)
 
 
 def _write_csv(path: Path, rows: list[list[str]]) -> None:
@@ -44,3 +50,36 @@ def test_sha256_file_returns_uppercase_hex(tmp_path: Path) -> None:
     digest = sha256_file(file_path)
     assert len(digest) == 64
     assert digest == digest.upper()
+
+
+def test_bl005_filtered_has_required_columns_accepts_cid_contract() -> None:
+    header = [
+        "cid",
+        "artist",
+        "song",
+        "tags",
+        "genres",
+        "tempo",
+        "duration_ms",
+        "key",
+        "mode",
+        "track_id",
+    ]
+
+    assert bl005_filtered_has_required_columns(header) is True
+
+
+def test_bl005_filtered_has_required_columns_requires_source_identifier() -> None:
+    header = [
+        "artist",
+        "song",
+        "tags",
+        "genres",
+        "tempo",
+        "duration_ms",
+        "key",
+        "mode",
+        "track_id",
+    ]
+
+    assert bl005_filtered_has_required_columns(header) is False

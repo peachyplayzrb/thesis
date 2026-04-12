@@ -1,13 +1,31 @@
 """Text normalization and candidate selection helpers for BL-003 matching."""
 from __future__ import annotations
 
+from difflib import SequenceMatcher
+from importlib import import_module
 from typing import Any
 
 from alignment.constants import ARTIST_NAME_DELIMITERS
-from rapidfuzz import fuzz
 
 from shared_utils.constants import DEFAULT_SEED_CONTROLS
-from shared_utils.parsing import normalize_ascii_text, parse_int
+from shared_utils.parsing import normalize_ascii_text, parse_int, safe_float
+
+
+def _compute_ratio(left: str, right: str) -> float:
+    try:
+        fuzz_module = import_module("rapidfuzz.fuzz")
+    except ModuleNotFoundError:
+        return SequenceMatcher(None, left, right).ratio() * 100.0
+    ratio_fn = getattr(fuzz_module, "ratio", None)
+    if callable(ratio_fn):
+        return safe_float(ratio_fn(left, right))
+    return SequenceMatcher(None, left, right).ratio() * 100.0
+
+
+class fuzz:
+    @staticmethod
+    def ratio(left: str, right: str) -> float:
+        return _compute_ratio(left, right)
 
 
 def normalize_text(value: str) -> str:
@@ -87,7 +105,7 @@ def fuzzy_find_candidate(
     artist_matches: list[tuple[str, float]] = []
     artist_cutoff = float(fuzzy_controls["artist_threshold"])
     for candidate_artist_key in artist_keys:
-        artist_score = float(fuzz.ratio(artist_key, candidate_artist_key)) / 100.0
+        artist_score = fuzz.ratio(artist_key, candidate_artist_key) / 100.0
         if artist_score >= artist_cutoff:
             artist_matches.append((candidate_artist_key, artist_score))
 
@@ -117,7 +135,7 @@ def fuzzy_find_candidate(
         if not candidate_title_key:
             continue
 
-        title_score = float(fuzz.ratio(title_key, candidate_title_key)) / 100.0
+        title_score = fuzz.ratio(title_key, candidate_title_key) / 100.0
         if title_score < fuzzy_controls["title_threshold"]:
             continue
 

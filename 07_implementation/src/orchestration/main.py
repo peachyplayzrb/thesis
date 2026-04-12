@@ -11,6 +11,7 @@ from orchestration.cli import parse_args, validate_stage_order
 from orchestration.config_resolver import (
     emit_run_config_artifact_pair,
     resolve_orchestration_controls,
+    resolve_stage_control_payload,
     resolve_stage_control_payloads,
 )
 from orchestration.seed_freshness import validate_bl003_seed_freshness
@@ -42,7 +43,6 @@ def main() -> None:
         stage_order = list(DEFAULT_STAGE_ORDER)
 
     effective_continue_on_error: bool = bool(args.continue_on_error) or oc_continue
-    stage_control_payloads = resolve_stage_control_payloads(stage_order, run_config_path)
 
     if oc_refresh_policy == "always":
         effective_refresh_seed = True
@@ -50,6 +50,12 @@ def main() -> None:
         effective_refresh_seed = False
     else:  # "auto_if_stale" or any unknown value
         effective_refresh_seed = bool(args.refresh_seed)
+
+    stage_control_payloads = resolve_stage_control_payloads(
+        stage_order,
+        run_config_path,
+        include_stage_ids=["BL-003"] if effective_refresh_seed else None,
+    )
 
     output_dir = root / args.output_dir
     output_dir.mkdir(parents=True, exist_ok=True)
@@ -111,6 +117,11 @@ def main() -> None:
             )
 
     if effective_refresh_seed:
+        if "BL-003" not in stage_control_payloads:
+            stage_control_payloads["BL-003"] = resolve_stage_control_payload(
+                "BL-003",
+                run_config_path,
+            )
         seed_result = run_bl003_seed_refresh(
             args.python,
             root,

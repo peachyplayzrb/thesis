@@ -52,6 +52,22 @@ def csv_row_count(path: Path) -> int:
         return sum(1 for _ in reader)
 
 
+def bl005_filtered_has_required_columns(header: list[str]) -> bool:
+    required = {
+        "track_id",
+        "artist",
+        "song",
+        "tags",
+        "genres",
+        "tempo",
+        "duration_ms",
+        "key",
+        "mode",
+    }
+    header_set = set(header)
+    return required.issubset(header_set) and ({"id", "cid"} & header_set) != set()
+
+
 def ensure_exists(path: Path) -> None:
     if not path.exists():
         raise FileNotFoundError(f"Missing required artifact: {path}")
@@ -145,18 +161,6 @@ def main() -> int:
         "BL-004 summary contains required top-level keys",
     )
 
-    filtered_required_cols = {
-        "track_id",
-        "id",
-        "artist",
-        "song",
-        "tags",
-        "genres",
-        "tempo",
-        "duration_ms",
-        "key",
-        "mode",
-    }
     candidate_stub_path = resolve_existing_path(
         Path(bl005_diag["input_artifacts"]["candidate_stub_path"]),
         REPO_ROOT / "data_layer/outputs/ds001_working_candidate_dataset.csv",
@@ -166,7 +170,7 @@ def main() -> int:
 
     check(
         "schema_bl005_filtered_csv",
-        filtered_required_cols.issubset(set(csv_header(artifacts["bl005_filtered"]))),
+        bl005_filtered_has_required_columns(csv_header(artifacts["bl005_filtered"])),
         "BL-005 filtered candidates CSV contains required columns",
     )
 

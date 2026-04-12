@@ -7,6 +7,12 @@ from pathlib import Path
 from shared_utils.io_utils import sha256_of_file
 
 
+def _mapping(value: object) -> dict[str, object]:
+    if isinstance(value, dict):
+        return {str(key): item for key, item in value.items()}
+    return {}
+
+
 def count_rows(path: Path) -> int:
     with path.open("r", encoding="utf-8", newline="") as handle:
         reader = csv.reader(handle)
@@ -30,11 +36,7 @@ def main() -> None:
     if manifest_output_path.is_file():
         with manifest_output_path.open("r", encoding="utf-8") as handle:
             manifest_payload = json.load(handle)
-        expected_hash = (
-            (manifest_payload.get("output") or {}).get("dataset_sha256")
-            if isinstance(manifest_payload, dict)
-            else None
-        )
+        expected_hash = _mapping(_mapping(manifest_payload).get("output")).get("dataset_sha256")
         if isinstance(expected_hash, str) and expected_hash.strip():
             manifest_hash_matches = expected_hash.strip().upper() == dataset_hash
 

@@ -16,6 +16,19 @@ from pathlib import Path
 from typing import Dict, Any, Optional
 
 from .models import NewingestionControls, DEFAULT_NEWINGESTION_CONTROLS
+from shared_utils.parsing import safe_float, safe_int
+
+
+def _env_text(key: str) -> str | None:
+    value = os.environ.get(key)
+    return value if isinstance(value, str) else None
+
+
+def _env_bool(key: str) -> Optional[bool]:
+    value = _env_text(key)
+    if value is None:
+        return None
+    return value.lower() in ["true", "1", "yes"]
 
 
 def get_newingestion_payload() -> Optional[Dict[str, Any]]:
@@ -88,49 +101,56 @@ def load_newingestion_controls_from_env() -> Dict[str, Any]:
     # Boolean flags
     for flag in ["include_top_tracks", "include_saved_tracks", "include_playlists", "include_recently_played"]:
         env_key = f"BL_NEWINGESTION_{flag.upper()}"
-        if env_key in os.environ:
-            env_controls[flag] = os.environ.get(env_key).lower() in ["true", "1", "yes"]
+        parsed = _env_bool(env_key)
+        if parsed is not None:
+            env_controls[flag] = parsed
 
     # Integer limits
     for limit in ["max_top_tracks", "max_saved_tracks", "max_playlist_items", "max_recently_played"]:
         env_key = f"BL_NEWINGESTION_{limit.upper()}"
-        if env_key in os.environ:
+        value = _env_text(env_key)
+        if value is not None:
             try:
-                env_controls[limit] = int(os.environ.get(env_key))
+                env_controls[limit] = safe_int(value)
             except (ValueError, TypeError):
                 pass
 
     # Float settings
     for setting in ["throttle_sleep_seconds", "base_backoff_delay_seconds"]:
         env_key = f"BL_NEWINGESTION_{setting.upper()}"
-        if env_key in os.environ:
+        value = _env_text(env_key)
+        if value is not None:
             try:
-                env_controls[setting] = float(os.environ.get(env_key))
+                env_controls[setting] = safe_float(value)
             except (ValueError, TypeError):
                 pass
 
     # String settings
     for setting in ["source_type"]:
         env_key = f"BL_NEWINGESTION_{setting.upper()}"
-        if env_key in os.environ:
-            env_controls[setting] = os.environ.get(env_key)
+        value = _env_text(env_key)
+        if value is not None:
+            env_controls[setting] = value
 
     # OAuth settings
-    if "BL_NEWINGESTION_ENABLE_INTERACTIVE_OAUTH" in os.environ:
-        env_controls["enable_interactive_oauth"] = os.environ.get("BL_NEWINGESTION_ENABLE_INTERACTIVE_OAUTH").lower() in ["true", "1", "yes"]
-    if "BL_NEWINGESTION_OAUTH_CLIENT_ID" in os.environ:
-        env_controls["oauth_client_id"] = os.environ.get("BL_NEWINGESTION_OAUTH_CLIENT_ID")
-    if "BL_NEWINGESTION_OAUTH_CLIENT_SECRET" in os.environ:
-        env_controls["oauth_client_secret"] = os.environ.get("BL_NEWINGESTION_OAUTH_CLIENT_SECRET")
-    if "BL_NEWINGESTION_OAUTH_REDIRECT_URI" in os.environ:
-        env_controls["oauth_redirect_uri"] = os.environ.get("BL_NEWINGESTION_OAUTH_REDIRECT_URI")
-    if "BL_NEWINGESTION_OAUTH_TIMEOUT_SECONDS" in os.environ:
-        try:
-            env_controls["oauth_timeout_seconds"] = int(os.environ.get("BL_NEWINGESTION_OAUTH_TIMEOUT_SECONDS"))
-        except (ValueError, TypeError):
-            pass
-    if "BL_NEWINGESTION_OAUTH_NO_BROWSER" in os.environ:
-        env_controls["oauth_no_browser"] = os.environ.get("BL_NEWINGESTION_OAUTH_NO_BROWSER").lower() in ["true", "1", "yes"]
+    parsed_interactive = _env_bool("BL_NEWINGESTION_ENABLE_INTERACTIVE_OAUTH")
+    if parsed_interactive is not None:
+        env_controls["enable_interactive_oauth"] = parsed_interactive
+    oauth_client_id = _env_text("BL_NEWINGESTION_OAUTH_CLIENT_ID")
+    if oauth_client_id is not None:
+        env_controls["oauth_client_id"] = oauth_client_id
+    oauth_client_secret = _env_text("BL_NEWINGESTION_OAUTH_CLIENT_SECRET")
+    if oauth_client_secret is not None:
+        env_controls["oauth_client_secret"] = oauth_client_secret
+    oauth_redirect_uri = _env_text("BL_NEWINGESTION_OAUTH_REDIRECT_URI")
+    if oauth_redirect_uri is not None:
+        env_controls["oauth_redirect_uri"] = oauth_redirect_uri
+    oauth_timeout_seconds = _env_text("BL_NEWINGESTION_OAUTH_TIMEOUT_SECONDS")
+    if oauth_timeout_seconds is not None:
+        env_controls["oauth_timeout_seconds"] = safe_int(oauth_timeout_seconds)
+    oauth_no_browser = _env_bool("BL_NEWINGESTION_OAUTH_NO_BROWSER")
+    if oauth_no_browser is not None:
+        env_controls["oauth_no_browser"] = oauth_no_browser
 
     return env_controls
 

@@ -44,6 +44,7 @@ from shared_utils.constants import (
 )
 
 from shared_utils.io_utils import open_text_write
+from shared_utils.parsing import safe_float, safe_int
 
 RUN_CONFIG_SCHEMA_VERSION = "run-config-v1"
 RUN_INTENT_ARTIFACT_SCHEMA_VERSION = "run-intent-v1"
@@ -71,118 +72,149 @@ def _build_default_run_config() -> dict[str, Any]:
         "influence_tracks": dict(DEFAULT_INFLUENCE_TRACKS),
         "ingestion_controls": dict(DEFAULT_INGESTION_CONTROLS),
         "profile_controls": {
-            "top_tag_limit": int(DEFAULT_PROFILE_CONTROLS["top_tag_limit"]),
-            "top_genre_limit": int(DEFAULT_PROFILE_CONTROLS["top_genre_limit"]),
-            "top_lead_genre_limit": int(DEFAULT_PROFILE_CONTROLS["top_lead_genre_limit"]),
+            "top_tag_limit": safe_int(DEFAULT_PROFILE_CONTROLS["top_tag_limit"]),
+            "top_genre_limit": safe_int(DEFAULT_PROFILE_CONTROLS["top_genre_limit"]),
+            "top_lead_genre_limit": safe_int(DEFAULT_PROFILE_CONTROLS["top_lead_genre_limit"]),
             "confidence_weighting_mode": str(DEFAULT_PROFILE_CONTROLS["confidence_weighting_mode"]),
-            "confidence_bin_high_threshold": float(DEFAULT_PROFILE_CONTROLS["confidence_bin_high_threshold"]),
-            "confidence_bin_medium_threshold": float(DEFAULT_PROFILE_CONTROLS["confidence_bin_medium_threshold"]),
+            "confidence_bin_high_threshold": safe_float(DEFAULT_PROFILE_CONTROLS["confidence_bin_high_threshold"]),
+            "confidence_bin_medium_threshold": safe_float(DEFAULT_PROFILE_CONTROLS["confidence_bin_medium_threshold"]),
             "interaction_attribution_mode": str(DEFAULT_PROFILE_CONTROLS["interaction_attribution_mode"]),
             "emit_profile_policy_diagnostics": bool(DEFAULT_PROFILE_CONTROLS["emit_profile_policy_diagnostics"]),
         },
         "retrieval_controls": {
-            "profile_top_tag_limit": int(DEFAULT_RETRIEVAL_CONTROLS["profile_top_tag_limit"]),
-            "profile_top_genre_limit": int(DEFAULT_RETRIEVAL_CONTROLS["profile_top_genre_limit"]),
-            "profile_top_lead_genre_limit": int(DEFAULT_RETRIEVAL_CONTROLS["profile_top_lead_genre_limit"]),
-            "semantic_strong_keep_score": int(DEFAULT_RETRIEVAL_CONTROLS["semantic_strong_keep_score"]),
-            "semantic_min_keep_score": int(DEFAULT_RETRIEVAL_CONTROLS["semantic_min_keep_score"]),
-            "numeric_support_min_pass": int(DEFAULT_RETRIEVAL_CONTROLS["numeric_support_min_pass"]),
-            "numeric_support_min_score": float(DEFAULT_RETRIEVAL_CONTROLS["numeric_support_min_score"]),
+            "profile_top_tag_limit": safe_int(DEFAULT_RETRIEVAL_CONTROLS["profile_top_tag_limit"]),
+            "profile_top_genre_limit": safe_int(DEFAULT_RETRIEVAL_CONTROLS["profile_top_genre_limit"]),
+            "profile_top_lead_genre_limit": safe_int(DEFAULT_RETRIEVAL_CONTROLS["profile_top_lead_genre_limit"]),
+            "semantic_strong_keep_score": safe_int(DEFAULT_RETRIEVAL_CONTROLS["semantic_strong_keep_score"]),
+            "semantic_min_keep_score": safe_int(DEFAULT_RETRIEVAL_CONTROLS["semantic_min_keep_score"]),
+            "numeric_support_min_pass": safe_int(DEFAULT_RETRIEVAL_CONTROLS["numeric_support_min_pass"]),
+            "numeric_support_min_score": safe_float(DEFAULT_RETRIEVAL_CONTROLS["numeric_support_min_score"]),
             "use_weighted_semantics": bool(DEFAULT_RETRIEVAL_CONTROLS["use_weighted_semantics"]),
             "use_continuous_numeric": bool(DEFAULT_RETRIEVAL_CONTROLS["use_continuous_numeric"]),
             "enable_popularity_numeric": bool(DEFAULT_RETRIEVAL_CONTROLS["enable_popularity_numeric"]),
             "language_filter_enabled": bool(DEFAULT_RETRIEVAL_CONTROLS["language_filter_enabled"]),
-            "language_filter_codes": list(DEFAULT_RETRIEVAL_CONTROLS["language_filter_codes"]),
-            "recency_years_min_offset": DEFAULT_RETRIEVAL_CONTROLS["recency_years_min_offset"],
-            "numeric_thresholds": dict(DEFAULT_RETRIEVAL_CONTROLS["numeric_thresholds"]),
+            "language_filter_codes": _coerce_str_list(DEFAULT_RETRIEVAL_CONTROLS["language_filter_codes"]),
+            "recency_years_min_offset": _coerce_optional_int(
+                DEFAULT_RETRIEVAL_CONTROLS["recency_years_min_offset"],
+                DEFAULT_RECENCY_YEARS_MIN_OFFSET,
+            ),
+            "numeric_thresholds": _coerce_object_mapping(DEFAULT_RETRIEVAL_CONTROLS["numeric_thresholds"]),
             "profile_quality_penalty_enabled": bool(DEFAULT_RETRIEVAL_CONTROLS["profile_quality_penalty_enabled"]),
-            "profile_quality_threshold": float(DEFAULT_RETRIEVAL_CONTROLS["profile_quality_threshold"]),
-            "profile_entropy_low_threshold": float(DEFAULT_RETRIEVAL_CONTROLS["profile_entropy_low_threshold"]),
-            "influence_share_threshold": float(DEFAULT_RETRIEVAL_CONTROLS["influence_share_threshold"]),
-            "profile_quality_penalty_increment": float(DEFAULT_RETRIEVAL_CONTROLS["profile_quality_penalty_increment"]),
-            "profile_entropy_penalty_increment": float(DEFAULT_RETRIEVAL_CONTROLS["profile_entropy_penalty_increment"]),
-            "influence_share_penalty_increment": float(DEFAULT_RETRIEVAL_CONTROLS["influence_share_penalty_increment"]),
-            "numeric_penalty_scale": float(DEFAULT_RETRIEVAL_CONTROLS["numeric_penalty_scale"]),
-            "semantic_overlap_damping_mid_entropy_threshold": float(
+            "profile_quality_threshold": safe_float(DEFAULT_RETRIEVAL_CONTROLS["profile_quality_threshold"]),
+            "profile_entropy_low_threshold": safe_float(DEFAULT_RETRIEVAL_CONTROLS["profile_entropy_low_threshold"]),
+            "influence_share_threshold": safe_float(DEFAULT_RETRIEVAL_CONTROLS["influence_share_threshold"]),
+            "profile_quality_penalty_increment": safe_float(DEFAULT_RETRIEVAL_CONTROLS["profile_quality_penalty_increment"]),
+            "profile_entropy_penalty_increment": safe_float(DEFAULT_RETRIEVAL_CONTROLS["profile_entropy_penalty_increment"]),
+            "influence_share_penalty_increment": safe_float(DEFAULT_RETRIEVAL_CONTROLS["influence_share_penalty_increment"]),
+            "numeric_penalty_scale": safe_float(DEFAULT_RETRIEVAL_CONTROLS["numeric_penalty_scale"]),
+            "semantic_overlap_damping_mid_entropy_threshold": safe_float(
                 DEFAULT_RETRIEVAL_CONTROLS["semantic_overlap_damping_mid_entropy_threshold"]
             ),
-            "semantic_overlap_damping_low_entropy": float(DEFAULT_RETRIEVAL_CONTROLS["semantic_overlap_damping_low_entropy"]),
-            "semantic_overlap_damping_mid_entropy": float(DEFAULT_RETRIEVAL_CONTROLS["semantic_overlap_damping_mid_entropy"]),
+            "semantic_overlap_damping_low_entropy": safe_float(DEFAULT_RETRIEVAL_CONTROLS["semantic_overlap_damping_low_entropy"]),
+            "semantic_overlap_damping_mid_entropy": safe_float(DEFAULT_RETRIEVAL_CONTROLS["semantic_overlap_damping_mid_entropy"]),
             "enable_numeric_confidence_scaling": bool(DEFAULT_RETRIEVAL_CONTROLS["enable_numeric_confidence_scaling"]),
-            "numeric_confidence_floor": float(DEFAULT_RETRIEVAL_CONTROLS["numeric_confidence_floor"]),
+            "numeric_confidence_floor": safe_float(DEFAULT_RETRIEVAL_CONTROLS["numeric_confidence_floor"]),
             "profile_numeric_confidence_mode": str(DEFAULT_RETRIEVAL_CONTROLS["profile_numeric_confidence_mode"]),
-            "profile_numeric_confidence_blend_weight": float(
+            "profile_numeric_confidence_blend_weight": safe_float(
                 DEFAULT_RETRIEVAL_CONTROLS["profile_numeric_confidence_blend_weight"]
             ),
             "numeric_support_score_mode": str(DEFAULT_RETRIEVAL_CONTROLS["numeric_support_score_mode"]),
             "emit_profile_policy_diagnostics": bool(DEFAULT_RETRIEVAL_CONTROLS["emit_profile_policy_diagnostics"]),
         },
         "scoring_controls": {
-            "component_weights": dict(DEFAULT_SCORING_CONTROLS["component_weights"]),
-            "numeric_thresholds": dict(DEFAULT_SCORING_CONTROLS["numeric_thresholds"]),
+            "component_weights": _coerce_object_mapping(DEFAULT_SCORING_CONTROLS["component_weights"]),
+            "numeric_thresholds": _coerce_object_mapping(DEFAULT_SCORING_CONTROLS["numeric_thresholds"]),
             "lead_genre_strategy": str(DEFAULT_SCORING_CONTROLS["lead_genre_strategy"]),
             "semantic_overlap_strategy": str(DEFAULT_SCORING_CONTROLS["semantic_overlap_strategy"]),
             "semantic_precision_alpha_mode": str(DEFAULT_SCORING_CONTROLS["semantic_precision_alpha_mode"]),
-            "semantic_precision_alpha_fixed": float(DEFAULT_SCORING_CONTROLS["semantic_precision_alpha_fixed"]),
+            "semantic_precision_alpha_fixed": safe_float(DEFAULT_SCORING_CONTROLS["semantic_precision_alpha_fixed"]),
             "enable_numeric_confidence_scaling": bool(DEFAULT_SCORING_CONTROLS["enable_numeric_confidence_scaling"]),
-            "numeric_confidence_floor": float(DEFAULT_SCORING_CONTROLS["numeric_confidence_floor"]),
+            "numeric_confidence_floor": safe_float(DEFAULT_SCORING_CONTROLS["numeric_confidence_floor"]),
             "profile_numeric_confidence_mode": str(DEFAULT_SCORING_CONTROLS["profile_numeric_confidence_mode"]),
-            "profile_numeric_confidence_blend_weight": float(DEFAULT_SCORING_CONTROLS["profile_numeric_confidence_blend_weight"]),
+            "profile_numeric_confidence_blend_weight": safe_float(DEFAULT_SCORING_CONTROLS["profile_numeric_confidence_blend_weight"]),
             "emit_confidence_impact_diagnostics": bool(DEFAULT_SCORING_CONTROLS["emit_confidence_impact_diagnostics"]),
             "emit_semantic_precision_diagnostics": bool(DEFAULT_SCORING_CONTROLS["emit_semantic_precision_diagnostics"]),
             "apply_bl003_influence_tracks": bool(DEFAULT_SCORING_CONTROLS["apply_bl003_influence_tracks"]),
-            "influence_track_bonus_scale": float(DEFAULT_SCORING_CONTROLS["influence_track_bonus_scale"]),
+            "influence_track_bonus_scale": safe_float(DEFAULT_SCORING_CONTROLS["influence_track_bonus_scale"]),
         },
         "assembly_controls": dict(DEFAULT_ASSEMBLY_CONTROLS),
         "transparency_controls": {
             "top_contributor_limit": DEFAULT_TOP_CONTRIBUTOR_LIMIT,
             "blend_primary_contributor_on_near_tie": bool(DEFAULT_TRANSPARENCY_CONTROLS["blend_primary_contributor_on_near_tie"]),
-            "primary_contributor_tie_delta": float(DEFAULT_TRANSPARENCY_CONTROLS["primary_contributor_tie_delta"]),
+            "primary_contributor_tie_delta": safe_float(DEFAULT_TRANSPARENCY_CONTROLS["primary_contributor_tie_delta"]),
         },
         "observability_controls": dict(DEFAULT_OBSERVABILITY_CONTROLS),
         "reporting_controls": {
-            "score_thresholds": dict(DEFAULT_REPORTING_SCORE_THRESHOLDS),
+            "score_thresholds": _coerce_object_mapping(DEFAULT_REPORTING_SCORE_THRESHOLDS),
         },
         "controllability_controls": {
             **dict(DEFAULT_CONTROLLABILITY_CONTROLS),
             "scenario_policy": {
-                "enabled_scenario_ids": list(DEFAULT_SCENARIO_POLICY["enabled_scenario_ids"]),
-                "repeat_count": int(DEFAULT_SCENARIO_POLICY["repeat_count"]),
-                "stage_scope": list(DEFAULT_SCENARIO_POLICY["stage_scope"]),
+                "enabled_scenario_ids": _coerce_str_list(DEFAULT_SCENARIO_POLICY["enabled_scenario_ids"]),
+                "repeat_count": safe_int(DEFAULT_SCENARIO_POLICY["repeat_count"]),
+                "stage_scope": _coerce_str_list(DEFAULT_SCENARIO_POLICY["stage_scope"]),
                 "comparison_mode": str(DEFAULT_SCENARIO_POLICY["comparison_mode"]),
             },
-            "scenario_definitions": list(DEFAULT_SCENARIO_DEFINITIONS),
+            "scenario_definitions": _coerce_object_list(DEFAULT_SCENARIO_DEFINITIONS),
         },
         "seed_controls": {
             "match_rate_min_threshold": DEFAULT_SEED_CONTROLS["match_rate_min_threshold"],
-            "top_range_weights": dict(DEFAULT_SEED_CONTROLS["top_range_weights"]),
-            "source_base_weights": dict(DEFAULT_SEED_CONTROLS["source_base_weights"]),
-            "fuzzy_matching": dict(DEFAULT_SEED_CONTROLS["fuzzy_matching"]),
-            "match_strategy": dict(DEFAULT_SEED_CONTROLS["match_strategy"]),
-            "match_strategy_order": list(DEFAULT_SEED_CONTROLS["match_strategy_order"]),
-            "temporal_controls": dict(DEFAULT_SEED_CONTROLS["temporal_controls"]),
-            "aggregation_policy": dict(DEFAULT_SEED_CONTROLS["aggregation_policy"]),
-            "decay_half_lives": dict(DEFAULT_SEED_CONTROLS["decay_half_lives"]),
+            "top_range_weights": _coerce_object_mapping(DEFAULT_SEED_CONTROLS["top_range_weights"]),
+            "source_base_weights": _coerce_object_mapping(DEFAULT_SEED_CONTROLS["source_base_weights"]),
+            "fuzzy_matching": _coerce_object_mapping(DEFAULT_SEED_CONTROLS["fuzzy_matching"]),
+            "match_strategy": _coerce_object_mapping(DEFAULT_SEED_CONTROLS["match_strategy"]),
+            "match_strategy_order": _coerce_str_list(DEFAULT_SEED_CONTROLS["match_strategy_order"]),
+            "temporal_controls": _coerce_object_mapping(DEFAULT_SEED_CONTROLS["temporal_controls"]),
+            "aggregation_policy": _coerce_object_mapping(DEFAULT_SEED_CONTROLS["aggregation_policy"]),
+            "decay_half_lives": _coerce_object_mapping(DEFAULT_SEED_CONTROLS["decay_half_lives"]),
             "weighting_policy": {
-                "top_tracks": dict(DEFAULT_WEIGHTING_POLICY["top_tracks"]),
-                "playlist_items": dict(DEFAULT_WEIGHTING_POLICY["playlist_items"]),
+                "top_tracks": _coerce_object_mapping(DEFAULT_WEIGHTING_POLICY["top_tracks"]),
+                "playlist_items": _coerce_object_mapping(DEFAULT_WEIGHTING_POLICY["playlist_items"]),
             },
         },
         "orchestration_controls": {
-            "stage_order": DEFAULT_ORCHESTRATION_CONTROLS["stage_order"],
+            "stage_order": _coerce_str_list(DEFAULT_ORCHESTRATION_CONTROLS["stage_order"]),
             "continue_on_error": bool(DEFAULT_ORCHESTRATION_CONTROLS["continue_on_error"]),
             "refresh_seed_policy": str(DEFAULT_ORCHESTRATION_CONTROLS["refresh_seed_policy"]),
-            "required_stable_artifacts": list(DEFAULT_ORCHESTRATION_CONTROLS["required_stable_artifacts"]),
+            "required_stable_artifacts": _coerce_str_list(DEFAULT_ORCHESTRATION_CONTROLS["required_stable_artifacts"]),
         },
     }
+class RunConfigError(RuntimeError):
+    pass
+
+
+def _coerce_str_list(value: Any) -> list[str]:
+    if isinstance(value, list):
+        return [str(item) for item in value]
+    if isinstance(value, tuple):
+        return [str(item) for item in value]
+    return []
+
+
+def _coerce_object_list(value: Any) -> list[object]:
+    if isinstance(value, list):
+        return list(value)
+    if isinstance(value, tuple):
+        return list(value)
+    return []
+
+
+def _coerce_object_mapping(value: Any) -> dict[str, object]:
+    if isinstance(value, dict):
+        return {str(key): item for key, item in value.items()}
+    return {}
+
+
+def _coerce_optional_int(value: Any, default: int | None = None) -> int | None:
+    if value is None:
+        return default
+    try:
+        return int(value)
+    except (TypeError, ValueError):
+        return default
 
 
 DEFAULT_RUN_CONFIG: dict[str, Any] = _build_default_run_config()
-
-
-
-class RunConfigError(RuntimeError):
-    pass
 
 
 def _deep_merge(base: dict[str, Any], override: dict[str, Any]) -> dict[str, Any]:
@@ -244,19 +276,13 @@ def _coerce_validation_profile(value: Any, default: str) -> str:
 
 
 def _coerce_non_negative_float(value: Any, default: float) -> float:
-    try:
-        parsed = float(value)
-    except (TypeError, ValueError):
-        return default
+    parsed = safe_float(value, default)
     return parsed if parsed >= 0 else default
 
 
 def _coerce_min_positive_float(value: Any, default: float, *, min_value: float = 0.001) -> float:
     """Coerce to float and clamp to a minimum positive value, falling back on parse errors."""
-    try:
-        parsed = float(value)
-    except (TypeError, ValueError):
-        parsed = default
+    parsed = safe_float(value, default)
     return max(min_value, parsed)
 
 

@@ -14,6 +14,7 @@ from shared_utils.hashing import sha256_of_file
 from shared_utils.artifact_registry import bl010_required_paths
 from shared_utils.io_utils import load_csv_rows, load_json, utc_now
 from shared_utils.path_utils import impl_root
+from shared_utils.parsing import safe_float, safe_int
 from shared_utils.report_utils import write_csv_rows, write_json_ascii
 from shared_utils.stage_utils import relpath
 
@@ -21,25 +22,43 @@ from shared_utils.stage_utils import relpath
 DEFAULT_REPLAY_COUNT = 3
 
 
+def _object_mapping(value: object) -> dict[str, object]:
+    if isinstance(value, dict):
+        return {str(key): item for key, item in value.items()}
+    return {}
+
+
+def _object_dict_list(value: object) -> list[dict[str, object]]:
+    if not isinstance(value, list):
+        return []
+    return [item for item in value if isinstance(item, dict)]
+
+
+def _string_list(value: object) -> list[str]:
+    if not isinstance(value, list):
+        return []
+    return [str(item) for item in value]
+
+
 def build_signal_mode_calibration_snapshot(
     bl005_diagnostics: dict[str, object],
     bl006_summary: dict[str, object],
 ) -> dict[str, object]:
-    retrieval_config = dict(bl005_diagnostics.get("config") or {})
-    scoring_config = dict(bl006_summary.get("config") or {})
-    signal_mode = dict(retrieval_config.get("signal_mode") or scoring_config.get("signal_mode") or {})
-    popularity_profile = dict(signal_mode.get("popularity_profile") or {})
-    component_weights = dict(scoring_config.get("base_component_weights") or {})
+    retrieval_config = _object_mapping(bl005_diagnostics.get("config"))
+    scoring_config = _object_mapping(bl006_summary.get("config"))
+    signal_mode = _object_mapping(retrieval_config.get("signal_mode") or scoring_config.get("signal_mode"))
+    popularity_profile = _object_mapping(signal_mode.get("popularity_profile"))
+    component_weights = _object_mapping(scoring_config.get("base_component_weights"))
 
     return {
         "mode_name": signal_mode.get("name"),
         "semantic_profile": signal_mode.get("semantic_profile"),
         "numeric_profile": signal_mode.get("numeric_profile"),
-        "retrieval_numeric_support_min_score": float(retrieval_config.get("numeric_support_min_score", 0.0) or 0.0),
+        "retrieval_numeric_support_min_score": safe_float(retrieval_config.get("numeric_support_min_score"), 0.0),
         "retrieval_use_weighted_semantics": bool(retrieval_config.get("use_weighted_semantics", False)),
         "retrieval_use_continuous_numeric": bool(retrieval_config.get("use_continuous_numeric", False)),
         "retrieval_popularity_numeric_enabled": bool(popularity_profile.get("retrieval_enabled", False)),
-        "scoring_popularity_weight": float(component_weights.get("popularity", 0.0) or 0.0),
+        "scoring_popularity_weight": safe_float(component_weights.get("popularity"), 0.0),
         "scoring_popularity_enabled": bool(popularity_profile.get("scoring_enabled", False)),
     }
 
@@ -490,14 +509,16 @@ def run_stage(
     canonical_script_path = relpath(script_path, root)
     final_attempt = attempts[-1]
     command_suffix = ""
+    stdout_lines = final_attempt.get("stdout")
+    stderr_lines = final_attempt.get("stderr")
     return {
         "stage": stage_id,
         "script": script_path.name,
         "script_path": canonical_script_path,
         "command": f"python {canonical_script_path}{command_suffix}",
         "elapsed_seconds": round(time.time() - started, 3),
-        "stdout": list(final_attempt["stdout"]),
-        "stderr": list(final_attempt["stderr"]),
+        "stdout": [str(item) for item in stdout_lines] if isinstance(stdout_lines, list) else [],
+        "stderr": [str(item) for item in stderr_lines] if isinstance(stderr_lines, list) else [],
         "attempt_count": len(attempts),
         "had_retry": len(attempts) > 1,
         "attempts": attempts,
@@ -638,15 +659,18 @@ def main() -> None:
         reference_now_utc=reference_now_utc,
     )
 
-    stable_hashes_by_run = [record["stable_hashes"] for record in replay_records]
+    stable_hashes_by_run = [
+        {str(key): str(value) for key, value in _object_mapping(record.get("stable_hashes")).items()}
+        for record in replay_records
+    ]
     baseline_stable = stable_hashes_by_run[0]
     deterministic_match = all(candidate == baseline_stable for candidate in stable_hashes_by_run[1:])
     first_mismatch_artifact = first_mismatch(stable_hashes_by_run)
 
-    raw_playlist_hash_match = len({record["raw_hashes"]["playlist"] for record in replay_records}) == 1
-    raw_explanation_hash_match = len({record["raw_hashes"]["bl008_payloads"] for record in replay_records}) == 1
-    raw_observability_hash_match = len({record["raw_hashes"]["bl009_log"] for record in replay_records}) == 1
-    all_stage_runs = [stage_run for record in replay_records for stage_run in record["stage_runs"]]
+    raw_playlist_hash_match = len({_object_mapping(record.get("raw_hashes")).get("playlist") for record in replay_records}) == 1
+    raw_explanation_hash_match = len({_object_mapping(record.get("raw_hashes")).get("bl008_payloads") for record in replay_records}) == 1
+    raw_observability_hash_match = len({_object_mapping(record.get("raw_hashes")).get("bl009_log") for record in replay_records}) == 1
+    all_stage_runs = [stage_run for record in replay_records for stage_run in _object_dict_list(record.get("stage_runs"))]
     stage_runs_with_retries = [
         {
             "replay_number": record["replay_number"],
@@ -654,34 +678,41 @@ def main() -> None:
             "attempt_count": stage_run["attempt_count"],
         }
         for record in replay_records
-        for stage_run in record["stage_runs"]
+        for stage_run in _object_dict_list(record.get("stage_runs"))
         if bool(stage_run.get("had_retry"))
     ]
 
     summary_rows: list[dict[str, object]] = []
     for record in replay_records:
-        retry_count = sum(1 for stage_run in record["stage_runs"] if bool(stage_run.get("had_retry")))
+        stage_runs = _object_dict_list(record.get("stage_runs"))
+        stage_run_ids = _object_mapping(record.get("stage_run_ids"))
+        stable_hashes = _object_mapping(record.get("stable_hashes"))
+        raw_hashes = _object_mapping(record.get("raw_hashes"))
+        semantic_snapshots = _object_mapping(record.get("semantic_snapshots"))
+        alignment_match_counts = _object_mapping(semantic_snapshots.get("alignment_match_counts"))
+        alignment_fuzzy_matching = _object_mapping(semantic_snapshots.get("alignment_fuzzy_matching"))
+        retry_count = sum(1 for stage_run in stage_runs if bool(stage_run.get("had_retry")))
         row = {
             "replay_number": record["replay_number"],
-            "bl003_generated_at_utc": record["stage_run_ids"]["BL-003"],
-            "bl004_run_id": record["stage_run_ids"]["BL-004"],
-            "bl005_run_id": record["stage_run_ids"]["BL-005"],
-            "bl006_run_id": record["stage_run_ids"]["BL-006"],
-            "bl007_run_id": record["stage_run_ids"]["BL-007"],
-            "bl008_run_id": record["stage_run_ids"]["BL-008"],
-            "bl009_run_id": record["stage_run_ids"]["BL-009"],
-            "alignment_summary_hash": record["stable_hashes"]["alignment_summary_hash"],
-            "ranked_output_hash": record["stable_hashes"]["ranked_output_hash"],
-            "playlist_output_hash": record["stable_hashes"]["playlist_output_hash"],
-            "explanation_output_hash": record["stable_hashes"]["explanation_output_hash"],
-            "observability_output_hash": record["stable_hashes"]["observability_output_hash"],
-            "matched_by_fuzzy": int(record["semantic_snapshots"]["alignment_match_counts"].get("matched_by_fuzzy", 0)),
-            "fuzzy_enabled": int(bool(record["semantic_snapshots"]["alignment_fuzzy_matching"].get("enabled", False))),
-            "raw_playlist_hash": record["raw_hashes"]["playlist"],
-            "raw_explanation_hash": record["raw_hashes"]["bl008_payloads"],
-            "raw_observability_hash": record["raw_hashes"]["bl009_log"],
-            "dataset_version": record["semantic_snapshots"]["observability_dataset_version"],
-            "pipeline_version": record["semantic_snapshots"]["observability_pipeline_version"],
+            "bl003_generated_at_utc": stage_run_ids.get("BL-003"),
+            "bl004_run_id": stage_run_ids.get("BL-004"),
+            "bl005_run_id": stage_run_ids.get("BL-005"),
+            "bl006_run_id": stage_run_ids.get("BL-006"),
+            "bl007_run_id": stage_run_ids.get("BL-007"),
+            "bl008_run_id": stage_run_ids.get("BL-008"),
+            "bl009_run_id": stage_run_ids.get("BL-009"),
+            "alignment_summary_hash": stable_hashes.get("alignment_summary_hash"),
+            "ranked_output_hash": stable_hashes.get("ranked_output_hash"),
+            "playlist_output_hash": stable_hashes.get("playlist_output_hash"),
+            "explanation_output_hash": stable_hashes.get("explanation_output_hash"),
+            "observability_output_hash": stable_hashes.get("observability_output_hash"),
+            "matched_by_fuzzy": safe_int(alignment_match_counts.get("matched_by_fuzzy"), 0),
+            "fuzzy_enabled": int(bool(alignment_fuzzy_matching.get("enabled", False))),
+            "raw_playlist_hash": raw_hashes.get("playlist"),
+            "raw_explanation_hash": raw_hashes.get("bl008_payloads"),
+            "raw_observability_hash": raw_hashes.get("bl009_log"),
+            "dataset_version": semantic_snapshots.get("observability_dataset_version"),
+            "pipeline_version": semantic_snapshots.get("observability_pipeline_version"),
             "stage_retry_count": retry_count,
             "archive_dir": record["archive_dir"],
         }
@@ -739,10 +770,22 @@ def main() -> None:
                 "bl009_log_raw_hash_match": raw_observability_hash_match,
             },
             "observed_reason_for_raw_hash_variation": "run_id, generated_at_utc, elapsed_seconds, and upstream run linkage fields vary across identical replays even when stable recommendation content remains unchanged",
-            "playlist_track_ids_match": len({tuple(record["semantic_snapshots"]["playlist_track_ids"]) for record in replay_records}) == 1,
-            "explanation_track_ids_match": len({tuple(record["semantic_snapshots"]["explanation_track_ids"]) for record in replay_records}) == 1,
-            "dataset_version_match": len({record["semantic_snapshots"]["observability_dataset_version"] for record in replay_records}) == 1,
-            "pipeline_version_match": len({record["semantic_snapshots"]["observability_pipeline_version"] for record in replay_records}) == 1,
+            "playlist_track_ids_match": len({
+                tuple(_string_list(_object_mapping(record.get("semantic_snapshots")).get("playlist_track_ids")))
+                for record in replay_records
+            }) == 1,
+            "explanation_track_ids_match": len({
+                tuple(_string_list(_object_mapping(record.get("semantic_snapshots")).get("explanation_track_ids")))
+                for record in replay_records
+            }) == 1,
+            "dataset_version_match": len({
+                _object_mapping(record.get("semantic_snapshots")).get("observability_dataset_version")
+                for record in replay_records
+            }) == 1,
+            "pipeline_version_match": len({
+                _object_mapping(record.get("semantic_snapshots")).get("observability_pipeline_version")
+                for record in replay_records
+            }) == 1,
             "all_stage_runs_succeeded_without_retry": all(not bool(stage_run.get("had_retry")) for stage_run in all_stage_runs),
             "replay_count_with_retries": len({item["replay_number"] for item in stage_runs_with_retries}),
             "stages_requiring_retry": stage_runs_with_retries,

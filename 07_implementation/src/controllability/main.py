@@ -31,10 +31,16 @@ from controllability.pipeline_runner import (
     build_active_seed_events,
     execute_scenario,
 )
-from shared_utils.parsing import normalize_candidate_row
+from shared_utils.parsing import normalize_candidate_row, safe_int
 from shared_utils.path_utils import impl_root
 from shared_utils.report_utils import write_text
 from shared_utils.stage_utils import ensure_required_keys, load_required_json_object, relpath
+
+
+def _mapping(value: object) -> dict[str, object]:
+    if isinstance(value, dict):
+        return {str(key): item for key, item in value.items()}
+    return {}
 
 
 def parse_args() -> argparse.Namespace:
@@ -67,8 +73,9 @@ def main() -> None:
     ensure_baseline_snapshot_shape(baseline_snapshot)
     bl003_summary = load_required_json_object(paths["bl003_summary"], label="BL-003 alignment summary", stage_label="BL-011")
     ensure_required_keys(bl003_summary, ["inputs", "counts"], label="BL-003 alignment summary", stage_label="BL-011")
-    alignment_fuzzy_controls = dict((bl003_summary.get("inputs") or {}).get("fuzzy_matching") or {})
-    alignment_counts = dict(bl003_summary.get("counts") or {})
+    bl003_inputs = _mapping(bl003_summary.get("inputs"))
+    alignment_fuzzy_controls = _mapping(bl003_inputs.get("fuzzy_matching"))
+    alignment_counts = _mapping(bl003_summary.get("counts"))
     seed_rows = load_csv_rows(paths["active_seed_trace"])
     events = build_active_seed_events(seed_rows)
     candidate_rows = [normalize_candidate_row(row) for row in load_csv_rows(paths["active_candidates"])]
@@ -104,12 +111,12 @@ def main() -> None:
             "fuzzy_matching": alignment_fuzzy_controls,
         },
         "alignment_counts": {
-            "input_event_rows": int(alignment_counts.get("input_event_rows", 0)),
-            "matched_by_spotify_id": int(alignment_counts.get("matched_by_spotify_id", 0)),
-            "matched_by_metadata": int(alignment_counts.get("matched_by_metadata", 0)),
-            "matched_by_fuzzy": int(alignment_counts.get("matched_by_fuzzy", 0)),
-            "unmatched": int(alignment_counts.get("unmatched", 0)),
-            "seed_table_rows": int(alignment_counts.get("seed_table_rows", 0)),
+            "input_event_rows": safe_int(alignment_counts.get("input_event_rows"), 0),
+            "matched_by_spotify_id": safe_int(alignment_counts.get("matched_by_spotify_id"), 0),
+            "matched_by_metadata": safe_int(alignment_counts.get("matched_by_metadata"), 0),
+            "matched_by_fuzzy": safe_int(alignment_counts.get("matched_by_fuzzy"), 0),
+            "unmatched": safe_int(alignment_counts.get("unmatched"), 0),
+            "seed_table_rows": safe_int(alignment_counts.get("seed_table_rows"), 0),
         },
         "fixed_inputs": fixed_inputs,
         "optional_dependency_availability": {
@@ -162,7 +169,10 @@ def main() -> None:
 
     matrix_rows = []
     for record in scenario_records:
-        comparison = record["comparison_to_baseline"]
+        comparison = _mapping(record.get("comparison_to_baseline"))
+        metrics = _mapping(record.get("metrics"))
+        rank_shift_summary = _mapping(comparison.get("rank_shift_summary"))
+        stable_hashes = _mapping(record.get("stable_hashes"))
         matrix_rows.append(
             {
                 "scenario_id": record["scenario_id"],
@@ -170,20 +180,20 @@ def main() -> None:
                 "control_surface": record["control_surface"],
                 "repeat_consistent": record["repeat_consistent"],
                 "config_hash": record["config_hash"],
-                "candidate_pool_size": record["metrics"]["candidate_pool_size"],
-                "candidate_pool_size_delta": comparison["candidate_pool_size_delta"],
-                "playlist_length": record["metrics"]["playlist_length"],
-                "top10_overlap_count": comparison["top10_overlap_count"],
-                "playlist_overlap_count": comparison["playlist_overlap_count"],
-                "mean_abs_rank_delta": comparison["rank_shift_summary"]["mean_abs_rank_delta"],
-                "observable_shift": comparison["observable_shift"],
-                "expected_direction_met": comparison["expected_direction_met"],
-                "profile_semantic_hash": record["stable_hashes"]["profile_semantic_hash"],
-                "ranked_output_hash": record["stable_hashes"]["ranked_output_hash"],
-                "playlist_output_hash": record["stable_hashes"]["playlist_output_hash"],
+                "candidate_pool_size": metrics.get("candidate_pool_size"),
+                "candidate_pool_size_delta": comparison.get("candidate_pool_size_delta"),
+                "playlist_length": metrics.get("playlist_length"),
+                "top10_overlap_count": comparison.get("top10_overlap_count"),
+                "playlist_overlap_count": comparison.get("playlist_overlap_count"),
+                "mean_abs_rank_delta": rank_shift_summary.get("mean_abs_rank_delta"),
+                "observable_shift": comparison.get("observable_shift"),
+                "expected_direction_met": comparison.get("expected_direction_met"),
+                "profile_semantic_hash": stable_hashes.get("profile_semantic_hash"),
+                "ranked_output_hash": stable_hashes.get("ranked_output_hash"),
+                "playlist_output_hash": stable_hashes.get("playlist_output_hash"),
                 "archive_dir": record["archive_dir"],
                 "alignment_fuzzy_enabled": bool(alignment_fuzzy_controls.get("enabled", False)),
-                "alignment_matched_by_fuzzy": int(alignment_counts.get("matched_by_fuzzy", 0)),
+                "alignment_matched_by_fuzzy": safe_int(alignment_counts.get("matched_by_fuzzy"), 0),
             }
         )
 
@@ -204,7 +214,7 @@ def main() -> None:
                 "effective_config": record["effective_config"],
                 "stable_hashes": record["stable_hashes"],
                 "metrics": {
-                    key: value for key, value in record["metrics"].items() if key != "rank_map"
+                    key: value for key, value in _mapping(record.get("metrics")).items() if key != "rank_map"
                 },
                 "comparison_to_baseline": record["comparison_to_baseline"],
                 "archive_dir": record["archive_dir"],

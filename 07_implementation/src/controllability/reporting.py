@@ -6,6 +6,12 @@ from pathlib import Path
 from shared_utils.report_utils import render_csv_text, write_text
 
 
+def _mapping(value: object) -> dict[str, object]:
+    if isinstance(value, dict):
+        return {str(key): item for key, item in value.items()}
+    return {}
+
+
 def json_text(payload: object) -> str:
     return json.dumps(payload, indent=2, ensure_ascii=True) + "\n"
 
@@ -24,7 +30,7 @@ def merge_stage_maps(*maps: dict[str, str]) -> dict[str, str]:
 def write_scenario_outputs(output_dir: Path, scenario_result: dict[str, object]) -> None:
     scenario_dir = output_dir / "scenarios" / str(scenario_result["scenario_id"])
     scenario_dir.mkdir(parents=True, exist_ok=True)
-    for filename, text in scenario_result["texts"].items():
-        write_text(scenario_dir / filename, text)
+    for filename, text in _mapping(scenario_result.get("texts")).items():
+        write_text(scenario_dir / filename, str(text))
     config_path = scenario_dir / "scenario_effective_config.json"
     write_text(config_path, json_text(scenario_result["effective_config"]))

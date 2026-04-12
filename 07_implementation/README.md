@@ -58,6 +58,33 @@ Run with post-pipeline BL-014 validation:
 python main.py --validate-only
 ```
 
+## Local Web Viewer (Minimal Wrapper)
+
+You can launch a tiny local website and API wrapper to run the pipeline and inspect latest artifacts.
+
+Start server from `07_implementation/`:
+
+```bash
+python finalized/web_server.py
+```
+
+Open:
+
+```text
+http://127.0.0.1:8000
+```
+
+Main API routes:
+
+- `GET /api/configs` -> list available run-config profiles from `config/profiles/`
+- `GET /api/status` -> latest BL-013 and BL-014 status snapshot
+- `GET /api/artifacts` -> key output artifact manifest (exists/size/mtime)
+- `GET /api/artifact?name=<artifact_name>` -> safe preview for whitelisted artifacts
+- `POST /api/run` -> execute `main.py` (supports `config_path`, `validate_only`, `continue_on_error`)
+- `GET /api/run-stream` -> SSE live stream of wrapper execution
+
+This wrapper is additive and does not modify core runtime logic under `src/`.
+
 Continue past non-fatal stage failures:
 
 ```bash

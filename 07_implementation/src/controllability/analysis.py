@@ -2,6 +2,37 @@ from __future__ import annotations
 
 from typing import Any
 
+from shared_utils.parsing import safe_float, safe_int
+
+
+def _mapping(value: object) -> dict[str, object]:
+    if isinstance(value, dict):
+        return {str(key): item for key, item in value.items()}
+    return {}
+
+
+def _string_list(value: object) -> list[str]:
+    if not isinstance(value, list):
+        return []
+    return [str(item) for item in value]
+
+
+def _int_mapping(value: object) -> dict[str, int]:
+    normalized: dict[str, int] = {}
+    for key, item in _mapping(value).items():
+        normalized[str(key)] = safe_int(item, 0)
+    return normalized
+
+
+def _object_list(value: object) -> list[object]:
+    if isinstance(value, list):
+        return list(value)
+    return []
+
+
+def _dict_list(value: object) -> list[dict[str, Any]]:
+    return [item for item in _object_list(value) if isinstance(item, dict)]
+
 
 def _expects_no_shift(expected_effect: str) -> bool:
     """Return True if expected_effect text signals that no observable shift is expected."""
@@ -36,7 +67,9 @@ def _evaluate_acceptance_bounds(
     Returns True if all required rules pass, False if any required rule fails.
     Rules that reference an unknown metric are skipped.
     """
-    rank_shift = dict(comparison.get("rank_shift_summary") or {})
+    rank_shift = _mapping(comparison.get("rank_shift_summary"))
+    scenario_hashes = _mapping(scenario_result.get("stable_hashes"))
+    baseline_hashes = _mapping(baseline_result.get("stable_hashes"))
     metrics: dict[str, object] = {
         "observable_shift": comparison["observable_shift"],
         "candidate_pool_size_delta": comparison["candidate_pool_size_delta"],
@@ -47,8 +80,8 @@ def _evaluate_acceptance_bounds(
         "playlist_overlap_ratio": comparison["playlist_overlap_ratio"],
         "mean_abs_rank_delta": rank_shift.get("mean_abs_rank_delta", 0.0),
         "profile_hash_changed": (
-            scenario_result["stable_hashes"]["profile_semantic_hash"]
-            != baseline_result["stable_hashes"]["profile_semantic_hash"]
+            scenario_hashes.get("profile_semantic_hash")
+            != baseline_hashes.get("profile_semantic_hash")
         ),
     }
     _comparators = {
@@ -95,14 +128,16 @@ def _evaluate_expected_direction(
     """
     control_surface = str(scenario_result.get("control_surface", ""))
     scenario_id = str(scenario_result.get("scenario_id", "")).strip().lower()
-    effective_config = dict(scenario_result.get("effective_config") or {})
+    effective_config = _mapping(scenario_result.get("effective_config"))
+    scenario_hashes = _mapping(scenario_result.get("stable_hashes"))
+    baseline_hashes = _mapping(baseline_result.get("stable_hashes"))
     observable_shift = bool(partial_comparison["observable_shift"])
-    candidate_pool_size_delta = int(partial_comparison["candidate_pool_size_delta"])
-    component_delta = dict(partial_comparison.get("component_mean_delta") or {})
-    rank_shift = dict(partial_comparison.get("rank_shift_summary") or {})
+    candidate_pool_size_delta = safe_int(partial_comparison.get("candidate_pool_size_delta"), 0)
+    component_delta = _mapping(partial_comparison.get("component_mean_delta"))
+    rank_shift = _mapping(partial_comparison.get("rank_shift_summary"))
 
     # Config-driven acceptance bounds (for scenario definitions loaded from config).
-    acceptance_bounds = list(effective_config.get("acceptance_bounds") or [])
+    acceptance_bounds = _dict_list(effective_config.get("acceptance_bounds"))
     if acceptance_bounds:
         return _evaluate_acceptance_bounds(acceptance_bounds, partial_comparison, scenario_result, baseline_result)
 
@@ -112,8 +147,8 @@ def _evaluate_expected_direction(
 
     if control_surface == "influence_tracks":
         profile_hash_changed = (
-            scenario_result["stable_hashes"]["profile_semantic_hash"]
-            != baseline_result["stable_hashes"]["profile_semantic_hash"]
+            scenario_hashes.get("profile_semantic_hash")
+            != baseline_hashes.get("profile_semantic_hash")
         )
         return profile_hash_changed and observable_shift
 
@@ -121,17 +156,17 @@ def _evaluate_expected_direction(
         return not observable_shift
 
     override_component = str(
-        effective_config.get("scoring", {}).get("weight_override_component") or ""
+        _mapping(effective_config.get("scoring")).get("weight_override_component") or ""
     )
     if control_surface == "feature_weight" or override_component:
         return (
-            component_delta.get(override_component, 0.0) > 0
-            and float(rank_shift.get("mean_abs_rank_delta", 0.0)) > 0
+            safe_float(component_delta.get(override_component), 0.0) > 0
+            and safe_float(rank_shift.get("mean_abs_rank_delta"), 0.0) > 0
         )
 
     if control_surface == "candidate_threshold":
-        retrieval_config = dict(effective_config.get("retrieval") or {})
-        threshold_scale = float(retrieval_config.get("threshold_scale") or 1.0)
+        retrieval_config = _mapping(effective_config.get("retrieval"))
+        threshold_scale = safe_float(retrieval_config.get("threshold_scale"), 1.0)
         if threshold_scale < 1.0:
             return candidate_pool_size_delta < 0   # stricter → pool must shrink
         if threshold_scale > 1.0:
@@ -189,49 +224,55 @@ def build_rank_shift_summary(baseline_rank_map: dict[str, int], scenario_rank_ma
 
 
 def compare_to_baseline(baseline_result: dict[str, object], scenario_result: dict[str, object]) -> dict[str, object]:
-    baseline_metrics = baseline_result["metrics"]
-    scenario_metrics = scenario_result["metrics"]
-    baseline_top10 = baseline_metrics["top10_track_ids"]
-    scenario_top10 = scenario_metrics["top10_track_ids"]
-    baseline_playlist = baseline_metrics["playlist_track_ids"]
-    scenario_playlist = scenario_metrics["playlist_track_ids"]
+    baseline_metrics = _mapping(baseline_result.get("metrics"))
+    scenario_metrics = _mapping(scenario_result.get("metrics"))
+    baseline_top10 = _string_list(baseline_metrics.get("top10_track_ids"))
+    scenario_top10 = _string_list(scenario_metrics.get("top10_track_ids"))
+    baseline_playlist = _string_list(baseline_metrics.get("playlist_track_ids"))
+    scenario_playlist = _string_list(scenario_metrics.get("playlist_track_ids"))
+    baseline_component_contributions = _mapping(baseline_metrics.get("mean_component_contributions"))
+    scenario_component_contributions = _mapping(scenario_metrics.get("mean_component_contributions"))
+    baseline_rank_map = _int_mapping(baseline_metrics.get("rank_map"))
+    scenario_rank_map = _int_mapping(scenario_metrics.get("rank_map"))
+    scenario_hashes = _mapping(scenario_result.get("stable_hashes"))
+    baseline_hashes = _mapping(baseline_result.get("stable_hashes"))
 
     top10_overlap = sorted(set(baseline_top10).intersection(scenario_top10))
     playlist_overlap = sorted(set(baseline_playlist).intersection(scenario_playlist))
     component_delta = {
         key: round(
-            float(scenario_metrics["mean_component_contributions"].get(key, 0.0))
-            - float(baseline_metrics["mean_component_contributions"].get(key, 0.0)),
+            safe_float(scenario_component_contributions.get(key), 0.0)
+            - safe_float(baseline_component_contributions.get(key), 0.0),
             6,
         )
         for key in sorted(
-            set(baseline_metrics["mean_component_contributions"]).union(
-                scenario_metrics["mean_component_contributions"]
+            set(baseline_component_contributions).union(
+                scenario_component_contributions
             )
         )
     }
     rank_shift_summary = build_rank_shift_summary(
-        baseline_metrics["rank_map"], scenario_metrics["rank_map"]
+        baseline_rank_map, scenario_rank_map
     )
 
     observable_shift = any(
         [
-            scenario_metrics["candidate_pool_size"] != baseline_metrics["candidate_pool_size"],
-            scenario_metrics["playlist_track_ids"] != baseline_metrics["playlist_track_ids"],
-            scenario_metrics["top10_track_ids"] != baseline_metrics["top10_track_ids"],
-            rank_shift_summary["mean_abs_rank_delta"] > 0,
-            scenario_result["stable_hashes"]["profile_semantic_hash"]
-            != baseline_result["stable_hashes"]["profile_semantic_hash"],
+            scenario_metrics.get("candidate_pool_size") != baseline_metrics.get("candidate_pool_size"),
+            scenario_playlist != baseline_playlist,
+            scenario_top10 != baseline_top10,
+            safe_float(rank_shift_summary.get("mean_abs_rank_delta"), 0.0) > 0,
+            scenario_hashes.get("profile_semantic_hash")
+            != baseline_hashes.get("profile_semantic_hash"),
         ]
     )
 
     partial_comparison: dict[str, object] = {
         "observable_shift": observable_shift,
         "candidate_pool_size_delta": (
-            scenario_metrics["candidate_pool_size"] - baseline_metrics["candidate_pool_size"]
+            safe_int(scenario_metrics.get("candidate_pool_size"), 0) - safe_int(baseline_metrics.get("candidate_pool_size"), 0)
         ),
         "playlist_length_delta": (
-            scenario_metrics["playlist_length"] - baseline_metrics["playlist_length"]
+            safe_int(scenario_metrics.get("playlist_length"), 0) - safe_int(baseline_metrics.get("playlist_length"), 0)
         ),
         "top10_overlap_count": len(top10_overlap),
         "top10_overlap_ratio": round(len(top10_overlap) / max(len(baseline_top10), 1), 3),
@@ -257,15 +298,19 @@ def compare_to_baseline(baseline_result: dict[str, object], scenario_result: dic
         "playlist_removed_track_ids": [
             track_id for track_id in baseline_playlist if track_id not in scenario_playlist
         ],
-        "profile_lead_genres_before": baseline_metrics["dominant_lead_genres"],
-        "profile_lead_genres_after": scenario_metrics["dominant_lead_genres"],
+        "profile_lead_genres_before": _string_list(baseline_metrics.get("dominant_lead_genres")),
+        "profile_lead_genres_after": _string_list(scenario_metrics.get("dominant_lead_genres")),
     }
 
 
 def build_baseline_comparison(baseline_result: dict[str, object]) -> dict[str, object]:
-    baseline_metrics = baseline_result["metrics"]
-    top10_count = len(baseline_metrics["top10_track_ids"])
-    playlist_len = int(baseline_metrics["playlist_length"])
+    baseline_metrics = _mapping(baseline_result.get("metrics"))
+    top10_track_ids = _string_list(baseline_metrics.get("top10_track_ids"))
+    rank_map = _int_mapping(baseline_metrics.get("rank_map"))
+    mean_component_contributions = _mapping(baseline_metrics.get("mean_component_contributions"))
+    dominant_lead_genres = _string_list(baseline_metrics.get("dominant_lead_genres"))
+    top10_count = len(top10_track_ids)
+    playlist_len = safe_int(baseline_metrics.get("playlist_length"), 0)
     return {
         "observable_shift": False,
         "expected_direction_met": True,
@@ -279,13 +324,13 @@ def build_baseline_comparison(baseline_result: dict[str, object]) -> dict[str, o
         "top10_removed_track_ids": [],
         "playlist_added_track_ids": [],
         "playlist_removed_track_ids": [],
-        "profile_lead_genres_before": baseline_metrics["dominant_lead_genres"],
-        "profile_lead_genres_after": baseline_metrics["dominant_lead_genres"],
+        "profile_lead_genres_before": dominant_lead_genres,
+        "profile_lead_genres_after": dominant_lead_genres,
         "component_mean_delta": {
-            key: 0.0 for key in baseline_metrics["mean_component_contributions"]
+            key: 0.0 for key in mean_component_contributions
         },
         "rank_shift_summary": build_rank_shift_summary(
-            baseline_metrics["rank_map"], baseline_metrics["rank_map"]
+            rank_map, rank_map
         ),
     }
 
@@ -296,15 +341,15 @@ def evaluate_results_status(scenario_records: list[dict[str, object]]) -> dict[s
     ]
     all_repeat = all(record["repeat_consistent"] for record in scenario_records)
     all_shift = all(
-        record["comparison_to_baseline"]["observable_shift"] for record in non_baseline_records
+        _mapping(record.get("comparison_to_baseline")).get("observable_shift") for record in non_baseline_records
         if not _record_expects_no_shift(record)
     )
     all_expected_no_shift = all(
-        not record["comparison_to_baseline"]["observable_shift"] for record in non_baseline_records
+        not _mapping(record.get("comparison_to_baseline")).get("observable_shift") for record in non_baseline_records
         if _record_expects_no_shift(record)
     )
     all_direction = all(
-        record["comparison_to_baseline"]["expected_direction_met"]
+        _mapping(record.get("comparison_to_baseline")).get("expected_direction_met")
         for record in non_baseline_records
     )
     return {

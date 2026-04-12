@@ -803,6 +803,8 @@ class ProfileStage:
             controls,
             inputs,
         )
+        source_coverage = canonical_blocks["source_coverage"] if isinstance(canonical_blocks.get("source_coverage"), dict) else {}
+        bl003_quality = canonical_blocks["bl003_quality"] if isinstance(canonical_blocks.get("bl003_quality"), dict) else {}
         diagnostics: dict[str, object] = {
             "events_total": aggregation.input_row_count,
             "matched_seed_count": aggregation.matched_seed_count,
@@ -949,6 +951,18 @@ class ProfileStage:
             controls,
             inputs,
         )
+        source_coverage_obj = canonical_blocks.get("source_coverage")
+        source_coverage: dict[str, object] = (
+            source_coverage_obj
+            if isinstance(source_coverage_obj, dict)
+            else {}
+        )
+        bl003_quality_obj = canonical_blocks.get("bl003_quality")
+        bl003_quality: dict[str, object] = (
+            bl003_quality_obj
+            if isinstance(bl003_quality_obj, dict)
+            else {}
+        )
 
         return {
             "run_id": run_id,
@@ -1009,9 +1023,12 @@ class ProfileStage:
                 "structural_contract_hash": inputs.bl003_structural_contract_hash,
             },
             "bl003_coverage": {
-                "rows_selected": dict(canonical_blocks["source_coverage"]["rows_selected"]),
-                "rows_available": dict(canonical_blocks["source_coverage"]["rows_available"]),
-                "match_counts": dict(canonical_blocks["bl003_quality"]),
+                "rows_selected": ProfileStage._normalize_int_mapping(source_coverage.get("rows_selected")),
+                "rows_available": ProfileStage._normalize_int_mapping(source_coverage.get("rows_available")),
+                "match_counts": {
+                    str(key): value
+                    for key, value in bl003_quality.items()
+                },
             },
         }
 

@@ -117,16 +117,37 @@ def _load_bl005_controls_from_env() -> dict[str, object]:
         "run_config_path": None,
         "run_config_schema_version": None,
         "signal_mode": {},
-        "profile_top_lead_genre_limit": env_int("BL005_PROFILE_TOP_LEAD_GENRE_LIMIT", int(defaults["profile_top_lead_genre_limit"])),
-        "profile_top_tag_limit": env_int("BL005_PROFILE_TOP_TAG_LIMIT", int(defaults["profile_top_tag_limit"])),
-        "profile_top_genre_limit": env_int("BL005_PROFILE_TOP_GENRE_LIMIT", int(defaults["profile_top_genre_limit"])),
-        "semantic_strong_keep_score": env_int("BL005_SEMANTIC_STRONG_KEEP_SCORE", int(defaults["semantic_strong_keep_score"])),
-        "semantic_min_keep_score": env_int("BL005_SEMANTIC_MIN_KEEP_SCORE", int(defaults["semantic_min_keep_score"])),
-        "numeric_support_min_pass": env_int("BL005_NUMERIC_SUPPORT_MIN_PASS", int(defaults["numeric_support_min_pass"])),
-        "numeric_support_min_score": env_float("BL005_NUMERIC_SUPPORT_MIN_SCORE", float(defaults["numeric_support_min_score"])),
+        "profile_top_lead_genre_limit": env_int(
+            "BL005_PROFILE_TOP_LEAD_GENRE_LIMIT",
+            coerce_int(defaults["profile_top_lead_genre_limit"], 6),
+        ),
+        "profile_top_tag_limit": env_int(
+            "BL005_PROFILE_TOP_TAG_LIMIT",
+            coerce_int(defaults["profile_top_tag_limit"], 10),
+        ),
+        "profile_top_genre_limit": env_int(
+            "BL005_PROFILE_TOP_GENRE_LIMIT",
+            coerce_int(defaults["profile_top_genre_limit"], 8),
+        ),
+        "semantic_strong_keep_score": env_int(
+            "BL005_SEMANTIC_STRONG_KEEP_SCORE",
+            coerce_int(defaults["semantic_strong_keep_score"], 2),
+        ),
+        "semantic_min_keep_score": env_int(
+            "BL005_SEMANTIC_MIN_KEEP_SCORE",
+            coerce_int(defaults["semantic_min_keep_score"], 1),
+        ),
+        "numeric_support_min_pass": env_int(
+            "BL005_NUMERIC_SUPPORT_MIN_PASS",
+            coerce_int(defaults["numeric_support_min_pass"], 1),
+        ),
+        "numeric_support_min_score": env_float(
+            "BL005_NUMERIC_SUPPORT_MIN_SCORE",
+            coerce_float(defaults["numeric_support_min_score"], 1.0),
+        ),
         "lead_genre_partial_match_threshold": env_float(
             "BL005_LEAD_GENRE_PARTIAL_MATCH_THRESHOLD",
-            float(defaults["lead_genre_partial_match_threshold"]),
+            coerce_float(defaults["lead_genre_partial_match_threshold"], 0.5),
         ),
         "use_weighted_semantics": env_bool("BL005_USE_WEIGHTED_SEMANTICS", bool(defaults["use_weighted_semantics"])),
         "use_continuous_numeric": env_bool("BL005_USE_CONTINUOUS_NUMERIC", bool(defaults["use_continuous_numeric"])),
@@ -143,49 +164,61 @@ def _load_bl005_controls_from_env() -> dict[str, object]:
             "BL005_PROFILE_QUALITY_PENALTY_ENABLED",
             bool(defaults["profile_quality_penalty_enabled"]),
         ),
-        "profile_quality_threshold": env_float("BL005_PROFILE_QUALITY_THRESHOLD", float(defaults["profile_quality_threshold"])),
+        "profile_quality_threshold": env_float(
+            "BL005_PROFILE_QUALITY_THRESHOLD",
+            coerce_float(defaults["profile_quality_threshold"], 0.90),
+        ),
         "profile_entropy_low_threshold": env_float(
             "BL005_PROFILE_ENTROPY_LOW_THRESHOLD",
-            float(defaults["profile_entropy_low_threshold"]),
+            coerce_float(defaults["profile_entropy_low_threshold"], 0.35),
         ),
-        "influence_share_threshold": env_float("BL005_INFLUENCE_SHARE_THRESHOLD", float(defaults["influence_share_threshold"])),
+        "influence_share_threshold": env_float(
+            "BL005_INFLUENCE_SHARE_THRESHOLD",
+            coerce_float(defaults["influence_share_threshold"], 0.60),
+        ),
         "profile_quality_penalty_increment": env_float(
             "BL005_PROFILE_QUALITY_PENALTY_INCREMENT",
-            float(defaults["profile_quality_penalty_increment"]),
+            coerce_float(defaults["profile_quality_penalty_increment"], 0.20),
         ),
         "profile_entropy_penalty_increment": env_float(
             "BL005_PROFILE_ENTROPY_PENALTY_INCREMENT",
-            float(defaults["profile_entropy_penalty_increment"]),
+            coerce_float(defaults["profile_entropy_penalty_increment"], 0.20),
         ),
         "influence_share_penalty_increment": env_float(
             "BL005_INFLUENCE_SHARE_PENALTY_INCREMENT",
-            float(defaults["influence_share_penalty_increment"]),
+            coerce_float(defaults["influence_share_penalty_increment"], 0.15),
         ),
-        "numeric_penalty_scale": env_float("BL005_NUMERIC_PENALTY_SCALE", float(defaults["numeric_penalty_scale"])),
+        "numeric_penalty_scale": env_float(
+            "BL005_NUMERIC_PENALTY_SCALE",
+            coerce_float(defaults["numeric_penalty_scale"], 0.50),
+        ),
         "semantic_overlap_damping_mid_entropy_threshold": env_float(
             "BL005_SEMANTIC_DAMPING_MID_THRESHOLD",
-            float(defaults["semantic_overlap_damping_mid_entropy_threshold"]),
+            coerce_float(defaults["semantic_overlap_damping_mid_entropy_threshold"], 0.60),
         ),
         "semantic_overlap_damping_low_entropy": env_float(
             "BL005_SEMANTIC_DAMPING_LOW_ENTROPY",
-            float(defaults["semantic_overlap_damping_low_entropy"]),
+            coerce_float(defaults["semantic_overlap_damping_low_entropy"], 0.85),
         ),
         "semantic_overlap_damping_mid_entropy": env_float(
             "BL005_SEMANTIC_DAMPING_MID_ENTROPY",
-            float(defaults["semantic_overlap_damping_mid_entropy"]),
+            coerce_float(defaults["semantic_overlap_damping_mid_entropy"], 0.92),
         ),
         "enable_numeric_confidence_scaling": env_bool(
             "BL005_ENABLE_NUMERIC_CONFIDENCE_SCALING",
             bool(defaults["enable_numeric_confidence_scaling"]),
         ),
-        "numeric_confidence_floor": env_float("BL005_NUMERIC_CONFIDENCE_FLOOR", float(defaults["numeric_confidence_floor"])),
+        "numeric_confidence_floor": env_float(
+            "BL005_NUMERIC_CONFIDENCE_FLOOR",
+            coerce_float(defaults["numeric_confidence_floor"], 0.0),
+        ),
         "profile_numeric_confidence_mode": env_str(
             "BL005_PROFILE_NUMERIC_CONFIDENCE_MODE",
             str(defaults["profile_numeric_confidence_mode"]),
         ),
         "profile_numeric_confidence_blend_weight": env_float(
             "BL005_PROFILE_NUMERIC_CONFIDENCE_BLEND_WEIGHT",
-            float(defaults["profile_numeric_confidence_blend_weight"]),
+            coerce_float(defaults["profile_numeric_confidence_blend_weight"], 1.0),
         ),
         "numeric_support_score_mode": env_str("BL005_NUMERIC_SUPPORT_SCORE_MODE", str(defaults["numeric_support_score_mode"])),
         "emit_profile_policy_diagnostics": env_bool(

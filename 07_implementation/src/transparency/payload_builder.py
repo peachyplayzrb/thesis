@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from collections import Counter
+from typing import Mapping
 
 from shared_utils.parsing import safe_float
 
@@ -40,7 +41,7 @@ def canonical_component_name(name: str) -> str:
     return name.removesuffix("_score")
 
 
-def build_ordered_components(active_weights: dict[str, object]) -> list[str]:
+def build_ordered_components(active_weights: Mapping[str, object]) -> list[str]:
     ordered_components: list[str] = []
     active_keys = list(active_weights.keys())
     for canonical in COMPONENT_ORDER:
@@ -58,9 +59,9 @@ def build_ordered_components(active_weights: dict[str, object]) -> list[str]:
 
 
 def build_score_breakdown(
-    scored_row: dict[str, object],
+    scored_row: Mapping[str, object],
     ordered_components: list[str],
-    active_weights: dict[str, object],
+    active_weights: Mapping[str, object],
 ) -> list[dict[str, object]]:
     score_breakdown: list[dict[str, object]] = []
     for component in ordered_components:
@@ -96,8 +97,8 @@ def build_track_payload(
     final_score: float,
     score_breakdown: list[dict[str, object]],
     top_contributors: list[dict[str, object]],
-    primary_driver: dict[str, object],
-    trace_row: dict[str, object],
+    primary_driver: Mapping[str, object],
+    trace_row: Mapping[str, object],
     why_selected: str,
 ) -> dict[str, object]:
     exclusion_reason = str(trace_row.get("exclusion_reason", ""))

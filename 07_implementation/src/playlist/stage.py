@@ -35,7 +35,7 @@ from playlist.runtime_controls import resolve_bl007_runtime_controls
 from shared_utils.io_utils import sha256_of_file, utc_now
 from shared_utils.env_utils import env_path
 from shared_utils.path_utils import impl_root
-from shared_utils.parsing import safe_int
+from shared_utils.parsing import safe_float, safe_int
 from shared_utils.stage_utils import ensure_paths_exist
 
 
@@ -153,22 +153,32 @@ class PlaylistStage:
     ) -> tuple[dict[str, object], dict[str, object], dict[str, int], dict[str, object]]:
         included = [row for row in aggregation.trace_rows if row["decision"] == "included"]
         excluded = [row for row in aggregation.trace_rows if row["decision"] != "included"]
-        genre_mix = Counter(track["lead_genre"] for track in aggregation.playlist)
+        config_obj = playlist_payload.get("config")
+        config: dict[str, object] = config_obj if isinstance(config_obj, dict) else {}
+        genre_mix = Counter(
+            str(track.get("lead_genre", ""))
+            for track in aggregation.playlist
+            if str(track.get("lead_genre", ""))
+        )
 
         undersized_diagnostics = build_undersized_diagnostics(
-            target_size=int(playlist_payload["config"]["target_size"]),
+            target_size=safe_int(config.get("target_size"), 0),
             playlist_size=len(aggregation.playlist),
             candidates_evaluated=candidates_evaluated,
             trace_rows=aggregation.trace_rows,
         )
         rank_continuity_diagnostics = build_rank_continuity_diagnostics(aggregation.playlist)
         assembly_pressure_diagnostics = build_assembly_pressure_diagnostics(aggregation.trace_rows)
+        output_artifact_hashes = {
+            "playlist.json": sha256_of_file(playlist_path),
+            "bl007_assembly_trace.csv": sha256_of_file(trace_path),
+        }
 
-        report = {
+        report: dict[str, object] = {
             "run_id": run_id,
             "generated_at_utc": playlist_payload["generated_at_utc"],
             "elapsed_seconds": elapsed_seconds,
-            "config": playlist_payload["config"],
+            "config": config,
             "counts": {
                 "candidates_evaluated": candidates_evaluated,
                 "tracks_included": len(included),
@@ -178,10 +188,10 @@ class PlaylistStage:
             "undersized_playlist_warning": undersized_diagnostics,
             "playlist_genre_mix": dict(genre_mix),
             "playlist_score_range": {
-                "max": round(max(track["final_score"] for track in aggregation.playlist), 6)
+                "max": round(max(safe_float(track.get("final_score")) for track in aggregation.playlist), 6)
                 if aggregation.playlist
                 else None,
-                "min": round(min(track["final_score"] for track in aggregation.playlist), 6)
+                "min": round(min(safe_float(track.get("final_score")) for track in aggregation.playlist), 6)
                 if aggregation.playlist
                 else None,
             },
@@ -190,19 +200,16 @@ class PlaylistStage:
             "input_artifact_hashes": {
                 "bl006_scored_candidates.csv": sha256_of_file(paths.scored_candidates_path),
             },
-            "output_artifact_hashes": {
-                "playlist.json": sha256_of_file(playlist_path),
-                "bl007_assembly_trace.csv": sha256_of_file(trace_path),
-            },
+            "output_artifact_hashes": output_artifact_hashes,
         }
-        if bool(playlist_payload["config"].get("emit_opportunity_cost_metrics", False)):
+        if bool(config.get("emit_opportunity_cost_metrics", False)):
             report["opportunity_cost_diagnostics"] = build_opportunity_cost_diagnostics(
                 aggregation.trace_rows,
                 top_k_examples=10,
             )
         detail_log = build_assembly_detail_log(
             aggregation.trace_rows,
-            top_k=safe_int(playlist_payload["config"].get("detail_log_top_k"), 100),
+            top_k=safe_int(config.get("detail_log_top_k"), 100),
         )
         return report, undersized_diagnostics, dict(genre_mix), detail_log
 
@@ -216,7 +223,10 @@ class PlaylistStage:
         controls = self.resolve_runtime_controls()
         context = self.build_runtime_context(controls)
 
-        aggregation = self.aggregate(candidates=inputs.candidates, context=context)
+        aggregation = self.aggregate(
+            candidates=[dict(candidate) for candidate in inputs.candidates],
+            context=context,
+        )
 
         elapsed_seconds = round(time.time() - start_time, 3)
         now = datetime.now(timezone.utc).strftime("%Y%m%d-%H%M%S-%f")
@@ -250,7 +260,9 @@ class PlaylistStage:
             detail_log_path=detail_log_path,
         )
         write_detail_log(detail_log_path, detail_log)
-        report["output_artifact_hashes"]["bl007_assembly_detail_log.json"] = sha256_of_file(detail_log_path)
+        output_hashes = report.get("output_artifact_hashes")
+        if isinstance(output_hashes, dict):
+            output_hashes["bl007_assembly_detail_log.json"] = sha256_of_file(detail_log_path)
         write_report(report_path, report)
 
         return PlaylistArtifacts(

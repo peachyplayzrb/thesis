@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 
 from shared_utils.parsing import parse_csv_labels
+from shared_utils.parsing import safe_float
 
 
 def parse_weighted_list(raw_value: str, key_name: str, score_name: str) -> list[tuple[str, float]]:
@@ -21,9 +22,8 @@ def parse_weighted_list(raw_value: str, key_name: str, score_name: str) -> list[
         score = item.get(score_name)
         if not isinstance(label, str) or not label.strip():
             continue
-        try:
-            score_value = float(score)
-        except (TypeError, ValueError):
+        score_value = safe_float(score, default=-1.0)
+        if score_value < 0:
             continue
         items.append((label.strip(), score_value))
     return items
@@ -104,9 +104,8 @@ def normalize_weight_map(items: list[dict[str, object]], top_k: int) -> tuple[di
         weight = item.get("weight")
         if not isinstance(label, str):
             continue
-        try:
-            numeric_weight = float(weight)
-        except (TypeError, ValueError):
+        numeric_weight = safe_float(weight, default=-1.0)
+        if numeric_weight < 0:
             continue
         weight_map[label] = numeric_weight
         total += numeric_weight

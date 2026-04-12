@@ -7,6 +7,7 @@ throttling, and persistent job progress tracking.
 """
 
 import json
+from importlib import import_module
 import sqlite3
 import time
 from datetime import datetime, timedelta, timezone
@@ -280,7 +281,12 @@ def safe_call(
 
     Returns: (success, data, status_code, error_message)
     """
-    from spotipy.exceptions import SpotifyException
+    try:
+        spotify_exceptions = import_module("spotipy.exceptions")
+        SpotifyException = getattr(spotify_exceptions, "SpotifyException")
+    except ModuleNotFoundError:
+        class SpotifyException(Exception):
+            http_status: int | None = None
 
     retries = int(max_retries) if max_retries is not None else int(MAX_RETRIES)
     delay = float(base_delay) if base_delay is not None else float(BASE_DELAY_SEC)

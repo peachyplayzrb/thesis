@@ -59,6 +59,17 @@ def test_resolve_stage_control_payloads_produces_per_stage_map() -> None:
         assert isinstance(payload, dict), f"Payload for {stage_id} should be dict"
 
 
+def test_resolve_stage_control_payloads_can_include_seed_refresh_stage_outside_run_order() -> None:
+    payloads = config_resolver.resolve_stage_control_payloads(
+        ["BL-004", "BL-005"],
+        run_config_path=None,
+        include_stage_ids=["BL-003"],
+    )
+
+    assert set(payloads.keys()) == {"BL-003", "BL-004", "BL-005"}
+    assert payloads["BL-003"]["stage_id"] == "BL-003"
+
+
 def test_stage_payload_can_be_json_serialized() -> None:
     """Verify payload can be serialized to JSON for env var passing (Phase 2 handoff)."""
     payload = config_resolver.resolve_stage_control_payload("BL-003", run_config_path=None)

@@ -35,6 +35,16 @@ DEFAULT_INFLUENCE_CONTROLS: dict[str, Any] = {
 }
 
 
+def _mapping(value: object) -> dict[str, Any]:
+    return value if isinstance(value, dict) else {}
+
+
+def _string_list(value: object) -> list[str]:
+    if not isinstance(value, list):
+        return []
+    return [str(item) for item in value]
+
+
 def _load_stage_config_payload() -> dict[str, Any] | None:
     """Try to load orchestration-injected BL_STAGE_CONFIG_JSON payload (Phase 2 handoff).
 
@@ -87,33 +97,23 @@ def _resolve_from_orchestration_payload(payload: dict[str, Any]) -> AlignmentRes
     }
     """
     # Use the orchestration-resolved controls directly
-    input_scope_controls = dict(payload.get("input_scope_controls") or {})
-    seed_controls = dict(payload.get("seed_controls") or {})
+    input_scope_controls = _mapping(payload.get("input_scope_controls"))
+    seed_controls = _mapping(payload.get("seed_controls"))
     weighting_policy = payload.get("weighting_policy")
-    influence_controls = dict(payload.get("influence_controls") or DEFAULT_INFLUENCE_CONTROLS)
+    influence_controls = _mapping(payload.get("influence_controls") or DEFAULT_INFLUENCE_CONTROLS)
 
     # Extract seed control fields
-    top_range_weights = dict(seed_controls.get("top_range_weights", DEFAULT_TOP_RANGE_WEIGHTS))
-    source_base_weights = dict(seed_controls.get("source_base_weights", DEFAULT_SOURCE_BASE_WEIGHTS))
-    fuzzy_matching_controls = dict(
-        seed_controls.get("fuzzy_matching") or DEFAULT_SEED_CONTROLS.get("fuzzy_matching") or {}
-    )
-    match_strategy = dict(
-        seed_controls.get("match_strategy") or DEFAULT_SEED_CONTROLS.get("match_strategy") or {}
-    )
-    match_strategy_order = list(
-        seed_controls.get("match_strategy_order") or DEFAULT_SEED_CONTROLS.get("match_strategy_order") or []
-    )
-    temporal_controls = dict(
-        seed_controls.get("temporal_controls") or DEFAULT_SEED_CONTROLS.get("temporal_controls") or {}
-    )
-    aggregation_policy = dict(
-        seed_controls.get("aggregation_policy") or DEFAULT_SEED_CONTROLS.get("aggregation_policy") or {}
-    )
+    top_range_weights = _mapping(seed_controls.get("top_range_weights") or DEFAULT_TOP_RANGE_WEIGHTS)
+    source_base_weights = _mapping(seed_controls.get("source_base_weights") or DEFAULT_SOURCE_BASE_WEIGHTS)
+    fuzzy_matching_controls = _mapping(seed_controls.get("fuzzy_matching") or DEFAULT_SEED_CONTROLS.get("fuzzy_matching"))
+    match_strategy = _mapping(seed_controls.get("match_strategy") or DEFAULT_SEED_CONTROLS.get("match_strategy"))
+    match_strategy_order = _string_list(seed_controls.get("match_strategy_order") or DEFAULT_SEED_CONTROLS.get("match_strategy_order"))
+    temporal_controls = _mapping(seed_controls.get("temporal_controls") or DEFAULT_SEED_CONTROLS.get("temporal_controls"))
+    aggregation_policy = _mapping(seed_controls.get("aggregation_policy") or DEFAULT_SEED_CONTROLS.get("aggregation_policy"))
     match_rate_min_threshold = float(seed_controls.get("match_rate_min_threshold", 0.0))
 
     # Decay half-lives
-    seed_decay_half_lives = dict(seed_controls.get("decay_half_lives") or {})
+    seed_decay_half_lives = _mapping(seed_controls.get("decay_half_lives"))
     decay_half_lives = {
         "recently_played": float(
             seed_decay_half_lives.get(
@@ -150,7 +150,7 @@ def _resolve_from_orchestration_payload(payload: dict[str, Any]) -> AlignmentRes
             match_strategy_order=list(match_strategy_order),
             temporal_controls=dict(temporal_controls),
             aggregation_policy=dict(aggregation_policy),
-            weighting_policy=(dict(weighting_policy) if weighting_policy is not None else None),
+            weighting_policy=(_mapping(weighting_policy) if weighting_policy is not None else None),
             influence_controls=dict(influence_controls),
         ),
         structural_contract=AlignmentStructuralContract.from_defaults(),
@@ -160,7 +160,7 @@ def _resolve_from_orchestration_payload(payload: dict[str, Any]) -> AlignmentRes
 def _resolve_from_legacy_sources() -> AlignmentResolvedContext:
     """Resolve alignment context from env/defaults when payload is unavailable."""
     runtime_scope = resolve_bl003_runtime_scope()
-    input_scope = dict(runtime_scope["input_scope"])
+    input_scope = _mapping(runtime_scope.get("input_scope"))
 
     top_range_weights: dict[str, float] = dict(DEFAULT_TOP_RANGE_WEIGHTS)
     source_base_weights: dict[str, float] = dict(DEFAULT_SOURCE_BASE_WEIGHTS)
@@ -169,13 +169,11 @@ def _resolve_from_legacy_sources() -> AlignmentResolvedContext:
         "saved_tracks": DEFAULT_SAVED_TRACKS_DECAY_HALF_LIFE_DAYS,
     }
     match_rate_min_threshold = 0.0
-    fuzzy_matching_controls: dict[str, Any] = dict(
-        DEFAULT_SEED_CONTROLS.get("fuzzy_matching") or {}
-    )
-    match_strategy: dict[str, bool] = dict(DEFAULT_SEED_CONTROLS.get("match_strategy") or {})
-    match_strategy_order: list[str] = list(DEFAULT_SEED_CONTROLS.get("match_strategy_order") or [])
-    temporal_controls: dict[str, Any] = dict(DEFAULT_SEED_CONTROLS.get("temporal_controls") or {})
-    aggregation_policy: dict[str, Any] = dict(DEFAULT_SEED_CONTROLS.get("aggregation_policy") or {})
+    fuzzy_matching_controls: dict[str, Any] = _mapping(DEFAULT_SEED_CONTROLS.get("fuzzy_matching"))
+    match_strategy: dict[str, bool] = {str(k): bool(v) for k, v in _mapping(DEFAULT_SEED_CONTROLS.get("match_strategy")).items()}
+    match_strategy_order: list[str] = _string_list(DEFAULT_SEED_CONTROLS.get("match_strategy_order"))
+    temporal_controls: dict[str, Any] = _mapping(DEFAULT_SEED_CONTROLS.get("temporal_controls"))
+    aggregation_policy: dict[str, Any] = _mapping(DEFAULT_SEED_CONTROLS.get("aggregation_policy"))
     weighting_policy: dict[str, Any] | None = None
     influence_controls: dict[str, Any] = dict(DEFAULT_INFLUENCE_CONTROLS)
 

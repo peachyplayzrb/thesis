@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Any
+from typing import Any, Mapping
 
 from shared_utils.config_loader import load_run_config_utils_module
 from shared_utils.stage_runtime_resolver import PAYLOAD_SCHEMA_VERSION
@@ -11,13 +11,13 @@ def _build_stage_payload(
     *,
     stage_id: str,
     run_config_path: Path | None,
-    controls: dict[str, object],
+    controls: Mapping[str, object],
 ) -> dict[str, object]:
     return {
         "stage_id": stage_id,
         "schema_version": PAYLOAD_SCHEMA_VERSION,
         "resolved_from": "run_config" if run_config_path else "defaults",
-        "controls": controls,
+        "controls": dict(controls),
     }
 
 
@@ -119,9 +119,19 @@ def resolve_stage_control_payload(stage_id: str, run_config_path: Path | None) -
 def resolve_stage_control_payloads(
     stage_order: list[str],
     run_config_path: Path | None,
+    *,
+    include_stage_ids: list[str] | None = None,
 ) -> dict[str, dict[str, object]]:
     """Resolve controls for all stages in run order for orchestration handoff."""
+    ordered_stage_ids: list[str] = []
+    for stage_id in stage_order:
+        if stage_id not in ordered_stage_ids:
+            ordered_stage_ids.append(stage_id)
+    for stage_id in include_stage_ids or []:
+        if stage_id not in ordered_stage_ids:
+            ordered_stage_ids.append(stage_id)
+
     return {
         stage_id: resolve_stage_control_payload(stage_id, run_config_path)
-        for stage_id in stage_order
+        for stage_id in ordered_stage_ids
     }

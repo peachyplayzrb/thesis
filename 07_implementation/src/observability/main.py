@@ -17,22 +17,29 @@ from shared_utils.io_utils import (
     utc_now,
 )
 from shared_utils.path_utils import impl_root
+from shared_utils.parsing import safe_float, safe_int
 from shared_utils.stage_utils import ensure_paths_exist, ensure_required_keys, load_required_json_object, relpath, safe_relpath
 
 
 BL009_OBSERVABILITY_SCHEMA_VERSION = "bl009-observability-v1"
 
 
+def _object_mapping(value: object) -> dict[str, object]:
+    if isinstance(value, dict):
+        return {str(key): item for key, item in value.items()}
+    return {}
+
+
 def build_signal_mode_calibration_summary(
     bl005_diagnostics: dict[str, object],
     bl006_summary: dict[str, object],
 ) -> dict[str, object]:
-    retrieval_config = dict(bl005_diagnostics.get("config") or {})
-    scoring_config = dict(bl006_summary.get("config") or {})
-    signal_mode = dict(retrieval_config.get("signal_mode") or scoring_config.get("signal_mode") or {})
-    popularity_profile = dict(signal_mode.get("popularity_profile") or {})
-    component_weights = dict(scoring_config.get("base_component_weights") or {})
-    numeric_thresholds = dict(retrieval_config.get("numeric_thresholds") or {})
+    retrieval_config = _object_mapping(bl005_diagnostics.get("config"))
+    scoring_config = _object_mapping(bl006_summary.get("config"))
+    signal_mode = _object_mapping(retrieval_config.get("signal_mode") or scoring_config.get("signal_mode"))
+    popularity_profile = _object_mapping(signal_mode.get("popularity_profile"))
+    component_weights = _object_mapping(scoring_config.get("base_component_weights"))
+    numeric_thresholds = _object_mapping(retrieval_config.get("numeric_thresholds"))
 
     return {
         "mode_name": signal_mode.get("name"),
@@ -41,12 +48,12 @@ def build_signal_mode_calibration_summary(
         "retrieval": {
             "use_weighted_semantics": bool(retrieval_config.get("use_weighted_semantics", False)),
             "use_continuous_numeric": bool(retrieval_config.get("use_continuous_numeric", False)),
-            "numeric_support_min_score": float(retrieval_config.get("numeric_support_min_score", 0.0) or 0.0),
+            "numeric_support_min_score": safe_float(retrieval_config.get("numeric_support_min_score"), 0.0),
             "popularity_numeric_enabled": bool(popularity_profile.get("retrieval_enabled", False)),
             "numeric_feature_count": len(numeric_thresholds),
         },
         "scoring": {
-            "popularity_weight": float(component_weights.get("popularity", 0.0) or 0.0),
+            "popularity_weight": safe_float(component_weights.get("popularity"), 0.0),
             "popularity_scoring_enabled": bool(popularity_profile.get("scoring_enabled", False)),
         },
     }
@@ -133,9 +140,9 @@ def build_artifact_maps(
 
 def main() -> None:
     runtime_controls = resolve_bl009_runtime_controls()
-    control_mode = dict(runtime_controls.get("control_mode") or {})
-    input_scope = dict(runtime_controls["input_scope"])
-    diagnostic_sample_limit = int(runtime_controls["diagnostic_sample_limit"])
+    control_mode = _object_mapping(runtime_controls.get("control_mode"))
+    input_scope = _object_mapping(runtime_controls.get("input_scope"))
+    diagnostic_sample_limit = safe_int(runtime_controls.get("diagnostic_sample_limit"), 5)
     bootstrap_mode = bool(runtime_controls.get("bootstrap_mode", True))
     root = impl_root()
     output_dir = root / "observability" / "outputs"
@@ -164,10 +171,11 @@ def main() -> None:
     ensure_required_keys(bl007_report, ["run_id", "counts", "rule_hits", "playlist_genre_mix", "playlist_score_range", "config"], label="BL-007 assembly report", stage_label="BL-009")
     ensure_required_keys(bl008_summary, ["run_id", "playlist_track_count", "top_contributor_distribution"], label="BL-008 explanation summary", stage_label="BL-009")
 
-    bl003_counts = dict(bl003_summary.get("counts") or {})
-    bl003_fuzzy_controls = dict((bl003_summary.get("inputs") or {}).get("fuzzy_matching") or {})
-    bl003_match_by_fuzzy = int(bl003_counts.get("matched_by_fuzzy", 0))
-    bl003_match_total = int(bl003_counts.get("matched_events_rows", 0))
+    bl003_counts = _object_mapping(bl003_summary.get("counts"))
+    bl003_inputs = _object_mapping(bl003_summary.get("inputs"))
+    bl003_fuzzy_controls = _object_mapping(bl003_inputs.get("fuzzy_matching"))
+    bl003_match_by_fuzzy = safe_int(bl003_counts.get("matched_by_fuzzy"), 0)
+    bl003_match_total = safe_int(bl003_counts.get("matched_events_rows"), 0)
 
     bl005_decisions = load_csv_rows(paths["bl005_decisions"])
     bl007_trace = load_csv_rows(paths["bl007_trace"])
@@ -213,9 +221,10 @@ def main() -> None:
     if input_scope.get("include_recently_played"):
         interaction_types_included.append("recently_played")
 
-    seed_counts_by_type = profile.get("seed_summary", {}).get("counts_by_interaction_type", {})
-    influence_track_count = int(seed_counts_by_type.get("influence", 0))
-    history_track_count = int(seed_counts_by_type.get("history", 0))
+    seed_summary = _object_mapping(profile.get("seed_summary"))
+    seed_counts_by_type = _object_mapping(seed_summary.get("counts_by_interaction_type"))
+    influence_track_count = safe_int(seed_counts_by_type.get("influence"), 0)
+    history_track_count = safe_int(seed_counts_by_type.get("history"), 0)
     influence_tracks_included = influence_track_count > 0
 
     rejected_non_seed = [
@@ -264,8 +273,8 @@ def main() -> None:
 
     canonical_config_artifacts = resolve_canonical_config_artifacts(runtime_controls, root)
     artifact_hashes, artifact_sizes = build_artifact_maps(paths, root, script_keys)
-    retrieval_signal_mode = dict((bl005_diagnostics.get("config") or {}).get("signal_mode") or {})
-    scoring_signal_mode = dict((bl006_summary.get("config") or {}).get("signal_mode") or {})
+    retrieval_signal_mode = _object_mapping(_object_mapping(bl005_diagnostics.get("config")).get("signal_mode"))
+    scoring_signal_mode = _object_mapping(_object_mapping(bl006_summary.get("config")).get("signal_mode"))
     signal_mode = retrieval_signal_mode or scoring_signal_mode
     signal_mode_calibration = build_signal_mode_calibration_summary(bl005_diagnostics, bl006_summary)
 
@@ -337,8 +346,10 @@ def main() -> None:
             "assembly": bl007_report["config"],
             "alignment_seed_controls": {
                 "fuzzy_matching": bl003_fuzzy_controls,
-                "match_rate_min_threshold": float(
-                    ((bl003_counts.get("match_rate_validation") or {}).get("min_threshold") or 0.0)
+                "match_rate_validation": _object_mapping(bl003_counts.get("match_rate_validation")),
+                "match_rate_min_threshold": safe_float(
+                    _object_mapping(bl003_counts.get("match_rate_validation")).get("min_threshold"),
+                    0.0,
                 ),
             },
             "transparency": {
@@ -356,11 +367,11 @@ def main() -> None:
             },
             "alignment_summary": {
                 "summary_path": relpath(paths["bl003_summary"], root),
-                "matched_by_spotify_id": int(bl003_counts.get("matched_by_spotify_id", 0)),
-                "matched_by_metadata": int(bl003_counts.get("matched_by_metadata", 0)),
+                "matched_by_spotify_id": safe_int(bl003_counts.get("matched_by_spotify_id"), 0),
+                "matched_by_metadata": safe_int(bl003_counts.get("matched_by_metadata"), 0),
                 "matched_by_fuzzy": bl003_match_by_fuzzy,
                 "matched_events_rows": bl003_match_total,
-                "unmatched_rows": int(bl003_counts.get("unmatched_rows", 0)),
+                "unmatched_rows": safe_int(bl003_counts.get("unmatched_rows"), 0),
                 "fuzzy_match_ratio": round(
                     (bl003_match_by_fuzzy / bl003_match_total) if bl003_match_total > 0 else 0.0,
                     6,
@@ -387,12 +398,12 @@ def main() -> None:
                 "task": "BL-003",
                 "summary_path": relpath(paths["bl003_summary"], root),
                 "counts": {
-                    "input_event_rows": int(bl003_counts.get("input_event_rows", 0)),
-                    "matched_by_spotify_id": int(bl003_counts.get("matched_by_spotify_id", 0)),
-                    "matched_by_metadata": int(bl003_counts.get("matched_by_metadata", 0)),
+                    "input_event_rows": safe_int(bl003_counts.get("input_event_rows"), 0),
+                    "matched_by_spotify_id": safe_int(bl003_counts.get("matched_by_spotify_id"), 0),
+                    "matched_by_metadata": safe_int(bl003_counts.get("matched_by_metadata"), 0),
                     "matched_by_fuzzy": bl003_match_by_fuzzy,
-                    "unmatched": int(bl003_counts.get("unmatched", 0)),
-                    "seed_table_rows": int(bl003_counts.get("seed_table_rows", 0)),
+                    "unmatched": safe_int(bl003_counts.get("unmatched"), 0),
+                    "seed_table_rows": safe_int(bl003_counts.get("seed_table_rows"), 0),
                 },
                 "fuzzy_matching": bl003_fuzzy_controls,
             },

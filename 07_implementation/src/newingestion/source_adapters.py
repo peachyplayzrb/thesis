@@ -7,6 +7,7 @@ and return raw data in a consistent format that can be normalized to CanonicalTr
 
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
+from types import SimpleNamespace
 from typing import Dict, Any, List, Optional
 from pathlib import Path
 import csv
@@ -19,6 +20,7 @@ import urllib.error
 
 from .models import NewingestionControls
 from ingestion.spotify_auth import request_token, complete_oauth_flow
+from shared_utils.parsing import safe_int
 
 
 @dataclass
@@ -40,6 +42,10 @@ class IngestionSourceAdapter(ABC):
     Concrete adapters implement specific provider protocols (Spotify API, CSV history, etc.)
     and return raw data in a provider-native format (typically a dict with lists of objects).
     """
+
+
+def _mapping(value: Any) -> Dict[str, Any]:
+    return value if isinstance(value, dict) else {}
 
     @property
     @abstractmethod
@@ -148,17 +154,15 @@ class SpotifyApiSourceAdapter(IngestionSourceAdapter):
 
                 if oauth_client_id and oauth_client_secret:
                     try:
-                        # Build minimal args-like object for complete_oauth_flow
-                        class OAuthArgs:
-                            pass
-                        args = OAuthArgs()
-                        args.client_id = oauth_client_id
-                        args.client_secret = oauth_client_secret
-                        args.redirect_uri = self._controls.oauth_redirect_uri
-                        args.scopes = " ".join(self._required_scopes(self._controls))
-                        args.no_browser = self._controls.oauth_no_browser
-                        args.oauth_timeout_seconds = self._controls.oauth_timeout_seconds
-                        args.request_timeout_seconds = 30
+                        args = SimpleNamespace(
+                            client_id=oauth_client_id,
+                            client_secret=oauth_client_secret,
+                            redirect_uri=self._controls.oauth_redirect_uri,
+                            scopes=" ".join(self._required_scopes(self._controls)),
+                            no_browser=self._controls.oauth_no_browser,
+                            oauth_timeout_seconds=self._controls.oauth_timeout_seconds,
+                            request_timeout_seconds=30,
+                        )
 
                         print(f"[newingestion] attempting interactive OAuth with redirect_uri={args.redirect_uri}", flush=True)
                         token_response = complete_oauth_flow(args)
@@ -387,7 +391,10 @@ class SpotifyApiSourceAdapter(IngestionSourceAdapter):
             playlist_items: List[Dict[str, Any]] = []
             market = output["user_profile"].get("country") if isinstance(output["user_profile"], dict) else None
             for playlist in playlists:
-                playlist_id = playlist.get("id")
+                if not isinstance(playlist, dict):
+                    continue
+                playlist_map: Dict[str, Any] = playlist
+                playlist_id = playlist_map.get("id")
                 if not playlist_id:
                     continue
                 playlist_params: Optional[Dict[str, Any]] = None
@@ -428,21 +435,26 @@ class SpotifyApiSourceAdapter(IngestionSourceAdapter):
                         continue
                     enriched_item = dict(item)
                     enriched_item["playlist_id"] = playlist_id
-                    enriched_item["playlist_name"] = playlist.get("name")
-                    owner = playlist.get("owner") if isinstance(playlist.get("owner"), dict) else {}
+                    enriched_item["playlist_name"] = playlist_map.get("name")
+                    owner: Dict[str, Any] = _mapping(playlist_map.get("owner"))
                     enriched_item["playlist_owner_id"] = owner.get("id")
                     enriched_item["playlist_owner_name"] = owner.get("display_name") or owner.get("id")
-                    enriched_item["playlist_snapshot_id"] = playlist.get("snapshot_id")
-                    enriched_item["playlist_tracks_total"] = (playlist.get("tracks") or {}).get("total") if isinstance(playlist.get("tracks"), dict) else None
+                    enriched_item["playlist_snapshot_id"] = playlist_map.get("snapshot_id")
+                    playlist_tracks: Dict[str, Any] = _mapping(playlist_map.get("tracks"))
+                    enriched_item["playlist_tracks_total"] = playlist_tracks.get("total")
                     enriched_item["playlist_position"] = item_index
-                    if playlist.get("description") is not None:
-                        enriched_item["description"] = playlist.get("description")
-                    if playlist.get("uri") is not None:
-                        enriched_item["uri"] = playlist.get("uri")
-                    if playlist.get("external_urls") is not None:
-                        enriched_item["external_urls"] = playlist.get("external_urls")
-                    if playlist.get("collaborative") is not None:
-                        enriched_item["collaborative"] = playlist.get("collaborative")
+                    description = playlist_map.get("description")
+                    if description is not None:
+                        enriched_item["description"] = description
+                    uri = playlist_map.get("uri")
+                    if uri is not None:
+                        enriched_item["uri"] = uri
+                    external_urls = playlist_map.get("external_urls")
+                    if external_urls is not None:
+                        enriched_item["external_urls"] = external_urls
+                    collaborative = playlist_map.get("collaborative")
+                    if collaborative is not None:
+                        enriched_item["collaborative"] = collaborative
                     if playlist.get("public") is not None:
                         enriched_item["public"] = playlist.get("public")
                     playlist_items.append(enriched_item)
@@ -538,9 +550,9 @@ class CsvHistorySourceAdapter(IngestionSourceAdapter):
                             "name": row.get("track_name") or row.get("name") or "",
                             "artists": [{"name": artist_name}] if artist_name else [],
                             "album": {"name": row.get("album_name") or ""},
-                            "duration_ms": int(row.get("duration_ms")) if row.get("duration_ms") else None,
+                            "duration_ms": safe_int(row.get("duration_ms"), 0) if row.get("duration_ms") else None,
                             "explicit": str(row.get("explicit", "")).lower() in {"true", "1", "yes"},
-                            "popularity": int(row.get("popularity")) if row.get("popularity") else None,
+                            "popularity": safe_int(row.get("popularity"), 0) if row.get("popularity") else None,
                             "external_ids": {"isrc": row.get("isrc")},
                             "is_local": str(row.get("is_local", "")).lower() in {"true", "1", "yes"},
                         },

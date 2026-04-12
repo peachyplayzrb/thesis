@@ -7,6 +7,7 @@ from typing import Any
 from alignment.constants import DEFAULT_TOP_TIME_RANGES, SOURCE_PLAYLIST_ITEMS, SOURCE_RECENTLY_PLAYED, SOURCE_SAVED_TRACKS, SOURCE_TOP_TRACKS
 from alignment.models import AlignmentBehaviorControls
 from shared_utils.constants import DEFAULT_INPUT_SCOPE
+from shared_utils.parsing import safe_int
 
 
 def resolve_bl003_runtime_scope() -> dict[str, object]:
@@ -59,10 +60,7 @@ def resolve_bl003_runtime_scope() -> dict[str, object]:
 def as_positive_int_or_none(value: object) -> int | None:
     if value is None:
         return None
-    try:
-        parsed = int(value)
-    except (TypeError, ValueError):
-        return None
+    parsed = safe_int(value, 0)
     return parsed if parsed > 0 else None
 
 

@@ -71,7 +71,8 @@ class IngestionStage:
     def normalize(self, raw_data: dict, controls: NewingestionControls) -> IngestionDomainBundle:
         from .normalizer import normalize_raw_data_to_bundle
 
-        return normalize_raw_data_to_bundle(raw_data, controls, self.run_id)
+        run_id = self.run_id or "INGESTION-UNKNOWN"
+        return normalize_raw_data_to_bundle(raw_data, controls, run_id)
 
     def validate(self, bundle: IngestionDomainBundle, controls: NewingestionControls) -> IngestionDomainBundle:
         from .validator import validate_bundle
@@ -81,7 +82,8 @@ class IngestionStage:
     def write_outputs(self, bundle: IngestionDomainBundle, paths: NewingestionPaths, controls: NewingestionControls) -> NewingestionArtifacts:
         from .writer import write_outputs
 
-        return write_outputs(bundle, paths.outputs_dir, self.run_id, controls)
+        run_id = self.run_id or "INGESTION-UNKNOWN"
+        return write_outputs(bundle, paths.outputs_dir, run_id, controls)
 
     def build_summary(self, artifacts: NewingestionArtifacts) -> dict:
         return {

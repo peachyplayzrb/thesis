@@ -70,6 +70,8 @@ def normalize_candidate_row(row: dict[str, str]) -> dict[str, str]:
         track_id = (normalized.get("id") or "").strip()
     if not track_id:
         track_id = (normalized.get("ds001_id") or "").strip()
+    if not track_id:
+        track_id = (normalized.get("cid") or "").strip()
     normalized["track_id"] = track_id
     return normalized
 

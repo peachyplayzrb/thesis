@@ -25,6 +25,16 @@ from .models import (
 )
 
 
+def _mapping(value: Any) -> Dict[str, Any]:
+    return value if isinstance(value, dict) else {}
+
+
+def _mapping_list(value: Any) -> List[Dict[str, Any]]:
+    if not isinstance(value, list):
+        return []
+    return [item for item in value if isinstance(item, dict)]
+
+
 def _parse_datetime(value: Any) -> Optional[datetime]:
     if not isinstance(value, str) or not value:
         return None
@@ -47,7 +57,7 @@ def _extract_track_object(raw_track: Dict[str, Any]) -> Optional[Dict[str, Any]]
     if not isinstance(raw_track, dict):
         return None
     track_obj = raw_track.get("track") if "track" in raw_track else raw_track
-    return track_obj if isinstance(track_obj, dict) else None
+    return _mapping(track_obj) or None
 
 
 def normalize_spotify_track(raw_track: Dict[str, Any]) -> Optional[SpotifyTrack]:
@@ -59,9 +69,9 @@ def normalize_spotify_track(raw_track: Dict[str, Any]) -> Optional[SpotifyTrack]
     if not track_id:
         return None
 
-    external_urls = track_obj.get("external_urls") if isinstance(track_obj.get("external_urls"), dict) else {}
-    external_ids = track_obj.get("external_ids") if isinstance(track_obj.get("external_ids"), dict) else {}
-    album = track_obj.get("album") if isinstance(track_obj.get("album"), dict) else {}
+    external_urls = _mapping(track_obj.get("external_urls"))
+    external_ids = _mapping(track_obj.get("external_ids"))
+    album = _mapping(track_obj.get("album"))
 
     return SpotifyTrack(
         track_id=track_id,
@@ -81,15 +91,15 @@ def _extract_album(raw_track: Dict[str, Any]) -> Optional[SpotifyAlbum]:
     track_obj = _extract_track_object(raw_track)
     if not track_obj:
         return None
-    album = track_obj.get("album")
-    if not isinstance(album, dict):
+    album = _mapping(track_obj.get("album"))
+    if not album:
         return None
 
     album_id = album.get("id") or _fallback_id("spotify:album", album.get("name"))
     if not album_id:
         return None
 
-    external_urls = album.get("external_urls") if isinstance(album.get("external_urls"), dict) else {}
+    external_urls = _mapping(album.get("external_urls"))
     return SpotifyAlbum(
         album_id=album_id,
         name=album.get("name", ""),
@@ -119,7 +129,7 @@ def _extract_artists_and_relations(raw_track: Dict[str, Any], track_id: str) -> 
         artist_id = artist.get("id") or _fallback_id("spotify:artist", artist.get("name"))
         if not artist_id:
             continue
-        external_urls = artist.get("external_urls") if isinstance(artist.get("external_urls"), dict) else {}
+        external_urls = _mapping(artist.get("external_urls"))
         artists.append(
             SpotifyArtist(
                 artist_id=artist_id,
@@ -139,9 +149,9 @@ def _extract_playlist(raw_playlist: Dict[str, Any]) -> Optional[SpotifyPlaylist]
     playlist_id = raw_playlist.get("id") or raw_playlist.get("playlist_id")
     if not playlist_id:
         return None
-    owner = raw_playlist.get("owner") if isinstance(raw_playlist.get("owner"), dict) else {}
-    external_urls = raw_playlist.get("external_urls") if isinstance(raw_playlist.get("external_urls"), dict) else {}
-    tracks = raw_playlist.get("tracks") if isinstance(raw_playlist.get("tracks"), dict) else {}
+    owner = _mapping(raw_playlist.get("owner"))
+    external_urls = _mapping(raw_playlist.get("external_urls"))
+    tracks = _mapping(raw_playlist.get("tracks"))
     return SpotifyPlaylist(
         playlist_id=playlist_id,
         name=raw_playlist.get("name", ""),
@@ -163,8 +173,8 @@ def _extract_account_profile(raw_profile: Any) -> Optional[SpotifyAccountProfile
     user_id = raw_profile.get("id")
     if not user_id:
         return None
-    external_urls = raw_profile.get("external_urls") if isinstance(raw_profile.get("external_urls"), dict) else {}
-    followers = raw_profile.get("followers") if isinstance(raw_profile.get("followers"), dict) else {}
+    external_urls = _mapping(raw_profile.get("external_urls"))
+    followers = _mapping(raw_profile.get("followers"))
     return SpotifyAccountProfile(
         user_id=user_id,
         country=raw_profile.get("country"),
@@ -215,14 +225,14 @@ def normalize_raw_data_to_bundle(
         return track.track_id
 
     if controls.include_playlists:
-        for raw_playlist in raw_data.get("playlists", []):
+        for raw_playlist in _mapping_list(raw_data.get("playlists")):
             playlist = _extract_playlist(raw_playlist)
             if playlist:
                 playlists_by_id.setdefault(playlist.playlist_id, playlist)
 
     if controls.include_top_tracks:
         for time_range, key in (("short_term", "top_tracks_short"), ("medium_term", "top_tracks_medium"), ("long_term", "top_tracks_long")):
-            for index, raw_track in enumerate(raw_data.get(key, [])):
+            for index, raw_track in enumerate(_mapping_list(raw_data.get(key))):
                 track_id = ingest_track(raw_track)
                 if not track_id:
                     continue
@@ -231,19 +241,19 @@ def normalize_raw_data_to_bundle(
                     break
 
     if controls.include_saved_tracks:
-        for index, raw_track in enumerate(raw_data.get("saved_tracks", [])):
+        for index, raw_track in enumerate(_mapping_list(raw_data.get("saved_tracks"))):
             track_id = ingest_track(raw_track)
             if not track_id:
                 continue
-            added_at = _parse_datetime(raw_track.get("added_at") if isinstance(raw_track, dict) else None)
+            added_at = _parse_datetime(raw_track.get("added_at"))
             saved_track_memberships.append(SavedTrackMembership(track_id=track_id, added_at=added_at))
             if controls.max_saved_tracks > 0 and index + 1 >= controls.max_saved_tracks:
                 break
 
     if controls.include_playlists:
-        for index, raw_item in enumerate(raw_data.get("playlist_items", [])):
+        for index, raw_item in enumerate(_mapping_list(raw_data.get("playlist_items"))):
             track_id = ingest_track(raw_item)
-            if not track_id or not isinstance(raw_item, dict):
+            if not track_id:
                 continue
             playlist_id = raw_item.get("playlist_id")
             if not playlist_id:
@@ -251,8 +261,8 @@ def normalize_raw_data_to_bundle(
             playlist = _extract_playlist(raw_item)
             if playlist:
                 playlists_by_id.setdefault(playlist.playlist_id, playlist)
-            added_by = raw_item.get("added_by") if isinstance(raw_item.get("added_by"), dict) else {}
-            track_payload = raw_item.get("track") if isinstance(raw_item.get("track"), dict) else {}
+            added_by = _mapping(raw_item.get("added_by"))
+            track_payload = _mapping(raw_item.get("track"))
             playlist_track_memberships.append(
                 PlaylistTrackMembership(
                     playlist_id=playlist_id,
@@ -268,11 +278,11 @@ def normalize_raw_data_to_bundle(
                 break
 
     if controls.include_recently_played:
-        for index, raw_item in enumerate(raw_data.get("recently_played", [])):
+        for index, raw_item in enumerate(_mapping_list(raw_data.get("recently_played"))):
             track_id = ingest_track(raw_item)
-            if not track_id or not isinstance(raw_item, dict):
+            if not track_id:
                 continue
-            context = raw_item.get("context") if isinstance(raw_item.get("context"), dict) else {}
+            context = _mapping(raw_item.get("context"))
             recently_played_events.append(
                 RecentlyPlayedEvent(
                     track_id=track_id,
@@ -284,7 +294,7 @@ def normalize_raw_data_to_bundle(
             if controls.max_recently_played > 0 and index + 1 >= controls.max_recently_played:
                 break
 
-    account_profile = _extract_account_profile(raw_data.get("user_profile") if isinstance(raw_data, dict) else None)
+    account_profile = _extract_account_profile(raw_data.get("user_profile"))
     selection_flags = {
         "include_top_tracks": controls.include_top_tracks,
         "include_saved_tracks": controls.include_saved_tracks,

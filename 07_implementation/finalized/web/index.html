@@ -19,6 +19,14 @@
             margin-bottom: 10px;
         }
 
+        .row.wrap {
+            flex-wrap: wrap;
+        }
+
+        .grow {
+            flex: 1;
+        }
+
         input,
         select {
             flex: 1;
@@ -36,6 +44,53 @@
             cursor: pointer;
         }
 
+        button.small {
+            padding: 4px 8px;
+            font-size: 12px;
+        }
+
+        label {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+        }
+
+        .panel {
+            border: 1px solid #333;
+            background: #0a0a0a;
+            margin-bottom: 10px;
+            padding: 10px;
+        }
+
+        .title {
+            margin: 0 0 8px;
+            font-size: 14px;
+            color: #a0a0a0;
+        }
+
+        .kv {
+            display: grid;
+            grid-template-columns: 220px 1fr;
+            gap: 6px 10px;
+            font-size: 13px;
+            margin-bottom: 8px;
+        }
+
+        .artifact-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 8px;
+            border-top: 1px solid #222;
+            padding: 6px 0;
+            font-size: 12px;
+        }
+
+        .artifact-item:first-child {
+            border-top: none;
+        }
+
         pre {
             margin: 0;
             padding: 10px;
@@ -51,8 +106,39 @@
 
 <body>
     <div class="row">
-        <select id="configPath"></select>
+        <select id="configPath" class="grow"></select>
         <button id="runBtn" type="button">Run</button>
+        <button id="refreshBtn" type="button">Refresh</button>
+    </div>
+
+    <div class="row wrap">
+        <label><input id="validateOnly" type="checkbox" checked />Validate Only</label>
+        <label><input id="continueOnError" type="checkbox" />Continue On Error</label>
+        <label><input id="streamMode" type="checkbox" checked />Live Stream</label>
+    </div>
+
+    <div class="panel">
+        <h3 class="title">Latest Status</h3>
+        <div class="kv" id="statusPanel">
+            <div>BL-013 run id</div>
+            <div>-</div>
+            <div>BL-013 status</div>
+            <div>-</div>
+            <div>BL-014 run id</div>
+            <div>-</div>
+            <div>BL-014 status</div>
+            <div>-</div>
+        </div>
+    </div>
+
+    <div class="panel">
+        <h3 class="title">Artifacts</h3>
+        <div id="artifactList"></div>
+    </div>
+
+    <div class="panel">
+        <h3 class="title">Artifact Preview</h3>
+        <pre id="artifactPreview">Select an artifact preview.</pre>
     </div>
 
     <pre id="terminal">Waiting for command...</pre>
@@ -60,7 +146,15 @@
     <script>
         const configPathInput = document.getElementById("configPath");
         const runBtn = document.getElementById("runBtn");
+        const refreshBtn = document.getElementById("refreshBtn");
+        const validateOnlyInput = document.getElementById("validateOnly");
+        const continueOnErrorInput = document.getElementById("continueOnError");
+        const streamModeInput = document.getElementById("streamMode");
+        const statusPanel = document.getElementById("statusPanel");
+        const artifactList = document.getElementById("artifactList");
+        const artifactPreview = document.getElementById("artifactPreview");
         const terminal = document.getElementById("terminal");
+        let activeEventSource = null;
 
         async function loadConfigOptions() {
             try {
@@ -74,7 +168,7 @@
                     option.value = "";
                     option.textContent = "No config files found";
                     configPathInput.appendChild(option);
-                    runBtn.disabled = false;
+                    runBtn.disabled = true;
                     return;
                 }
 
@@ -86,33 +180,191 @@
                 }
                 runBtn.disabled = false;
             } catch (_) {
-                runBtn.disabled = false;
+                runBtn.disabled = true;
             }
+        }
+
+        function renderStatus(status) {
+            const bl013 = status && status.bl013 ? status.bl013 : {};
+            const bl014 = status && status.bl014 ? status.bl014 : {};
+            statusPanel.innerHTML = "";
+
+            const rows = [
+                ["BL-013 run id", bl013.run_id || "-"],
+                ["BL-013 status", bl013.overall_status || "-"],
+                ["BL-014 run id", bl014.run_id || "-"],
+                ["BL-014 status", bl014.overall_status || "-"],
+                ["BL-014 checks", (bl014.checks_passed != null && bl014.checks_total != null) ? `${bl014.checks_passed}/${bl014.checks_total}` : "-"],
+            ];
+
+            for (const [k, v] of rows) {
+                const key = document.createElement("div");
+                key.textContent = k;
+                const val = document.createElement("div");
+                val.textContent = String(v);
+                statusPanel.appendChild(key);
+                statusPanel.appendChild(val);
+            }
+        }
+
+        async function refreshStatus() {
+            try {
+                const response = await fetch("/api/status");
+                const data = await response.json();
+                renderStatus(data);
+            } catch (_) {
+                renderStatus(null);
+            }
+        }
+
+        function renderArtifacts(items) {
+            artifactList.innerHTML = "";
+            const artifacts = Array.isArray(items) ? items : [];
+            if (artifacts.length === 0) {
+                artifactList.textContent = "No artifact metadata available.";
+                return;
+            }
+
+            for (const item of artifacts) {
+                const row = document.createElement("div");
+                row.className = "artifact-item";
+
+                const meta = document.createElement("div");
+                const existsTag = item.exists ? "exists" : "missing";
+                meta.textContent = `${item.name} | ${existsTag} | ${item.path}`;
+
+                const action = document.createElement("button");
+                action.className = "small";
+                action.type = "button";
+                action.textContent = "Preview";
+                action.disabled = !item.exists;
+                action.addEventListener("click", () => loadArtifactPreview(item.name));
+
+                row.appendChild(meta);
+                row.appendChild(action);
+                artifactList.appendChild(row);
+            }
+        }
+
+        async function refreshArtifacts() {
+            try {
+                const response = await fetch("/api/artifacts");
+                const data = await response.json();
+                renderArtifacts(data.artifacts);
+            } catch (_) {
+                renderArtifacts([]);
+            }
+        }
+
+        async function loadArtifactPreview(name) {
+            artifactPreview.textContent = "Loading preview...";
+            try {
+                const response = await fetch(`/api/artifact?name=${encodeURIComponent(name)}`);
+                const data = await response.json();
+                if (!response.ok) {
+                    artifactPreview.textContent = data.error || "Preview failed.";
+                    return;
+                }
+                artifactPreview.textContent = data.preview || "(empty)";
+            } catch (error) {
+                artifactPreview.textContent = `Preview failed: ${error}`;
+            }
+        }
+
+        function stopActiveStream() {
+            if (activeEventSource) {
+                activeEventSource.close();
+                activeEventSource = null;
+            }
+        }
+
+        async function runThesisSync(configPath, validateOnly, continueOnError) {
+            const response = await fetch("/api/run", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    config_path: configPath,
+                    validate_only: validateOnly,
+                    continue_on_error: continueOnError,
+                }),
+            });
+            const data = await response.json();
+            terminal.textContent = data.terminal_output || "";
+            if (data.status) {
+                renderStatus(data.status);
+            }
+        }
+
+        function runThesisStream(configPath, validateOnly, continueOnError) {
+            const params = new URLSearchParams({
+                config_path: configPath,
+                validate_only: String(validateOnly),
+                continue_on_error: String(continueOnError),
+            });
+
+            terminal.textContent = "";
+            stopActiveStream();
+            activeEventSource = new EventSource(`/api/run-stream?${params.toString()}`);
+
+            activeEventSource.addEventListener("line", (event) => {
+                terminal.textContent += `${event.data}\n`;
+                terminal.scrollTop = terminal.scrollHeight;
+            });
+
+            activeEventSource.addEventListener("done", (event) => {
+                try {
+                    const payload = JSON.parse(event.data);
+                    if (payload.status) {
+                        renderStatus(payload.status);
+                    }
+                } catch (_) {
+                }
+                stopActiveStream();
+                runBtn.disabled = false;
+                refreshArtifacts();
+            });
+
+            activeEventSource.onerror = () => {
+                stopActiveStream();
+                runBtn.disabled = false;
+            };
         }
 
         async function runThesis() {
             const configPath = configPathInput.value.trim();
+            const validateOnly = !!validateOnlyInput.checked;
+            const continueOnError = !!continueOnErrorInput.checked;
+            const streamMode = !!streamModeInput.checked;
 
             runBtn.disabled = true;
             terminal.textContent = "Running...";
 
             try {
-                const response = await fetch("/api/run", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ config_path: configPath }),
-                });
-                const data = await response.json();
-                terminal.textContent = data.terminal_output || "";
+                if (streamMode) {
+                    runThesisStream(configPath, validateOnly, continueOnError);
+                    return;
+                }
+                await runThesisSync(configPath, validateOnly, continueOnError);
             } catch (error) {
                 terminal.textContent = `Request failed: ${error}`;
             } finally {
-                runBtn.disabled = false;
+                if (!streamMode) {
+                    runBtn.disabled = false;
+                    refreshStatus();
+                    refreshArtifacts();
+                }
             }
         }
 
         runBtn.addEventListener("click", runThesis);
+        refreshBtn.addEventListener("click", () => {
+            refreshStatus();
+            refreshArtifacts();
+        });
+
         loadConfigOptions();
+        refreshStatus();
+        refreshArtifacts();
     </script>
 </body>
 
