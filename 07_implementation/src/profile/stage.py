@@ -679,12 +679,12 @@ class ProfileStage:
             for genre in genres:
                 genre_weights[genre] = genre_weights.get(genre, 0.0) + effective_weight
 
-            row_has_numeric_value = False
+            has_numeric_features = False
             for column in NUMERIC_FEATURE_COLUMNS:
                 parsed_value = parse_float(str(row.get(column, "")))
                 if parsed_value is None:
                     continue
-                row_has_numeric_value = True
+                has_numeric_features = True
                 numeric_sums[column] += parsed_value * effective_weight
                 numeric_weights[column] += effective_weight
                 numeric_observations[column] += 1
@@ -693,7 +693,7 @@ class ProfileStage:
                     key_circular_sum_x += math.cos(angle) * effective_weight
                     key_circular_sum_y += math.sin(angle) * effective_weight
 
-            if not row_has_numeric_value:
+            if not has_numeric_features:
                 if track_id:
                     missing_numeric_track_ids.append(track_id)
                 else:
@@ -718,8 +718,6 @@ class ProfileStage:
                     "effective_weight": round(effective_weight, 6),
                     "lead_genre": lead_genre,
                     "top_tag": tags[0] if tags else "",
-                    "numeric_feature_coverage": "1" if row_has_numeric_value else "0",
-                    "lastfm_status": "not_applicable_ds001",
                 }
             )
 
