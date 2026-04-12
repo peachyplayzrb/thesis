@@ -35,8 +35,7 @@ Out-of-scope position for this thesis:
 - Multi-adapter feature expansion beyond the locked MVP boundary.
 
 ## 1.5 Contribution Positioning
-The contribution is an engineering and design evidence contribution, not a new model class. Claims are intentionally bounded to implemented artifact behavior, documented run evidence, and explicitly stated limitations.
+The contribution is an engineering and design evidence contribution that demonstrates a single deterministic pipeline can co-engineer transparency, controllability, reproducibility, and observability through separately auditable stages with explicit inputs, outputs, and logged behavior, including documented cross-source alignment handling. It is not a new model class, and claims are intentionally bounded to implemented artefact behavior, documented run evidence, and explicitly stated limitations.
 
 ## 1.6 Chapter Summary
 Chapter 1 defines the thesis problem framing and contribution boundary, states the locked research question and objectives, and sets in-scope versus out-of-scope constraints. This establishes the evaluation lens used in later chapters: transparent, controllable, observable, and reproducible system behavior under a constrained MVP context.
-

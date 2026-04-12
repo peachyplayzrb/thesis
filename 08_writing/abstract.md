@@ -6,5 +6,4 @@ The final implementation is stabilized on the v1f run-configuration baseline. On
 
 Evaluation shows strong evidence for deterministic engineering goals under bounded scope: BL-010 reproducibility checks report deterministic replay match, BL-011 controllability scenarios report repeat-consistent and observable parameter effects, and quality checks remain green on the active baseline. The work also surfaces explicit limitations, including high alignment miss rate, corpus dependence, and bounded external validity due to single-user deterministic scope.
 
-The contribution is therefore a validated engineering design for transparent and controllable playlist generation under BSc-feasible constraints, rather than a claim of universal recommendation superiority.
-
+The contribution is therefore a validated engineering design demonstrating that transparency, controllability, reproducibility, and observability can be co-engineered in one deterministic playlist pipeline under BSc-feasible constraints, rather than a performance claim against learning-based recommendation systems.
