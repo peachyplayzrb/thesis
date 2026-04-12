@@ -920,6 +920,41 @@ def _validate_bl003_seed_controls(seed_controls: Any, defaults: dict[str, Any]) 
                 "run_config.seed_controls.fuzzy_matching.max_artist_candidates",
                 int(fuzzy_defaults.get("max_artist_candidates", 5)),
             ),
+            "enable_album_scoring": _validate_bool_like(
+                fuzzy_matching.get("enable_album_scoring"),
+                "run_config.seed_controls.fuzzy_matching.enable_album_scoring",
+                bool(fuzzy_defaults.get("enable_album_scoring", True)),
+            ),
+            "enable_secondary_artist_retry": _validate_bool_like(
+                fuzzy_matching.get("enable_secondary_artist_retry"),
+                "run_config.seed_controls.fuzzy_matching.enable_secondary_artist_retry",
+                bool(fuzzy_defaults.get("enable_secondary_artist_retry", False)),
+            ),
+            "enable_relaxed_second_pass": _validate_bool_like(
+                fuzzy_matching.get("enable_relaxed_second_pass"),
+                "run_config.seed_controls.fuzzy_matching.enable_relaxed_second_pass",
+                bool(fuzzy_defaults.get("enable_relaxed_second_pass", False)),
+            ),
+            "relaxed_second_pass_artist_threshold": _validate_fraction_zero_to_one(
+                fuzzy_matching.get("relaxed_second_pass_artist_threshold"),
+                "run_config.seed_controls.fuzzy_matching.relaxed_second_pass_artist_threshold",
+                float(fuzzy_defaults.get("relaxed_second_pass_artist_threshold", 0.80)),
+            ),
+            "relaxed_second_pass_title_threshold": _validate_fraction_zero_to_one(
+                fuzzy_matching.get("relaxed_second_pass_title_threshold"),
+                "run_config.seed_controls.fuzzy_matching.relaxed_second_pass_title_threshold",
+                float(fuzzy_defaults.get("relaxed_second_pass_title_threshold", 0.80)),
+            ),
+            "relaxed_second_pass_combined_threshold": _validate_fraction_zero_to_one(
+                fuzzy_matching.get("relaxed_second_pass_combined_threshold"),
+                "run_config.seed_controls.fuzzy_matching.relaxed_second_pass_combined_threshold",
+                float(fuzzy_defaults.get("relaxed_second_pass_combined_threshold", 0.80)),
+            ),
+            "emit_fuzzy_diagnostics": _validate_bool_like(
+                fuzzy_matching.get("emit_fuzzy_diagnostics"),
+                "run_config.seed_controls.fuzzy_matching.emit_fuzzy_diagnostics",
+                bool(fuzzy_defaults.get("emit_fuzzy_diagnostics", True)),
+            ),
         },
         "match_strategy": {
             "enable_spotify_id_match": _validate_bool_like(
@@ -1249,6 +1284,14 @@ def resolve_effective_run_config(run_config_path: str | Path | None) -> tuple[di
     input_scope["recently_played_limit"] = _coerce_optional_positive_int(
         input_scope.get("recently_played_limit"),
         input_defaults["recently_played_limit"],
+    )
+    input_scope["include_user_csv"] = _coerce_bool(
+        input_scope.get("include_user_csv"),
+        bool(input_defaults.get("include_user_csv", True)),
+    )
+    input_scope["user_csv_limit"] = _coerce_optional_positive_int(
+        input_scope.get("user_csv_limit"),
+        input_defaults.get("user_csv_limit", None),
     )
 
     profile_controls = effective.setdefault("profile_controls", {})

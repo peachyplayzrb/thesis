@@ -18,6 +18,7 @@ from alignment.constants import (
     SOURCE_PLAYLIST_ITEMS,
     SOURCE_RECENTLY_PLAYED,
     SOURCE_SAVED_TRACKS,
+    SOURCE_USER_CSV,
     SPOTIFY_EXPORT_FILENAMES,
     TRACE_FIELDNAMES,
 )
@@ -73,6 +74,7 @@ class SourceEvent:
     isrc: str
     track_name: str
     artist_names: str
+    album_name: str
     duration_ms: str
     event_time: str
     time_range: str
@@ -88,6 +90,8 @@ class SourceEvent:
             event_time = (row.get("added_at") or "").strip()
         elif source_type == SOURCE_RECENTLY_PLAYED:
             event_time = (row.get("played_at") or "").strip()
+        elif source_type == SOURCE_USER_CSV:
+            event_time = (row.get("added_at") or "").strip()
 
         return cls(
             source_type=source_type,
@@ -96,6 +100,7 @@ class SourceEvent:
             isrc=(row.get("isrc") or "").strip(),
             track_name=(row.get("track_name") or "").strip(),
             artist_names=(row.get("artist_names") or "").strip(),
+            album_name=(row.get("album_name") or "").strip(),
             duration_ms=(row.get("duration_ms") or "").strip(),
             event_time=event_time,
             time_range=(row.get("time_range") or "").strip(),
@@ -114,6 +119,7 @@ class SourceEvent:
             isrc=str(payload.get("isrc", "")),
             track_name=str(payload.get("track_name", "")),
             artist_names=str(payload.get("artist_names", "")),
+            album_name=str(payload.get("album_name", "")),
             duration_ms=str(payload.get("duration_ms", "")),
             event_time=str(payload.get("event_time", "")),
             time_range=str(payload.get("time_range", "")),
@@ -131,6 +137,7 @@ class SourceEvent:
             "isrc": self.isrc,
             "track_name": self.track_name,
             "artist_names": self.artist_names,
+            "album_name": self.album_name,
             "duration_ms": self.duration_ms,
             "event_time": self.event_time,
             "time_range": self.time_range,
@@ -165,6 +172,10 @@ class MatchTrace:
     fuzzy_title_score: str = ""
     fuzzy_artist_score: str = ""
     fuzzy_combined_score: str = ""
+    fuzzy_album_score: str = ""
+    fuzzy_pass_used: str = ""
+    fuzzy_artist_attempt_count: str = ""
+    fuzzy_candidate_count: str = ""
     reason: str = ""
     preference_weight: str = ""
 
@@ -211,6 +222,10 @@ class MatchTrace:
             "fuzzy_title_score": self.fuzzy_title_score,
             "fuzzy_artist_score": self.fuzzy_artist_score,
             "fuzzy_combined_score": self.fuzzy_combined_score,
+            "fuzzy_album_score": self.fuzzy_album_score,
+            "fuzzy_pass_used": self.fuzzy_pass_used,
+            "fuzzy_artist_attempt_count": self.fuzzy_artist_attempt_count,
+            "fuzzy_candidate_count": self.fuzzy_candidate_count,
             "reason": self.reason,
             "preference_weight": self.preference_weight,
         }
@@ -438,6 +453,7 @@ class AlignmentPaths:
     saved_path: Path
     playlist_items_path: Path
     recently_played_path: Path
+    user_csv_path: Path
     summary_path: Path
     source_scope_manifest_path: Path
 
@@ -448,10 +464,12 @@ class AlignmentSourceRows:
     saved_rows: list[dict[str, str]]
     playlist_rows: list[dict[str, str]]
     recent_rows: list[dict[str, str]]
+    user_csv_rows: list[dict[str, str]]
     top_exists: bool
     saved_exists: bool
     playlist_exists: bool
     recent_exists: bool
+    user_csv_exists: bool
 
 
 @dataclass(frozen=True, slots=True)

@@ -14,8 +14,10 @@ from alignment.constants import (
     SOURCE_RESILIENCE_REQUIRED,
     SOURCE_SCOPE_SPECS,
     SOURCE_TYPES,
+    SOURCE_USER_CSV,
     SPOTIFY_EXPORT_FILENAMES,
 )
+from alignment.user_csv_schema import normalize_user_csv_rows
 from alignment.aggregation import aggregate_matched_events
 from alignment.influence import inject_influence_tracks
 from alignment.match_pipeline import match_events
@@ -100,6 +102,7 @@ class AlignmentStage:
             saved_path=spotify / SPOTIFY_EXPORT_FILENAMES["saved_tracks"],
             playlist_items_path=spotify / SPOTIFY_EXPORT_FILENAMES["playlist_items"],
             recently_played_path=spotify / SPOTIFY_EXPORT_FILENAMES["recently_played"],
+            user_csv_path=spotify / SPOTIFY_EXPORT_FILENAMES["user_csv"],
             summary_path=out / ALIGNMENT_OUTPUT_FILENAMES["summary_json"],
             source_scope_manifest_path=out / ALIGNMENT_OUTPUT_FILENAMES["source_scope_manifest_json"],
         )
@@ -222,15 +225,29 @@ class AlignmentStage:
         playlist_rows, playlist_exists = load_if_present(paths.playlist_items_path)
         recent_rows, recent_exists = load_if_present(paths.recently_played_path)
 
+        user_csv_raw, user_csv_exists = load_if_present(paths.user_csv_path)
+        if user_csv_exists and user_csv_raw:
+            user_csv_rows, schema_report = normalize_user_csv_rows(user_csv_raw, paths.user_csv_path)
+            print(
+                f"BL-003 user_csv schema report: "
+                f"mapped={schema_report['mapped']}, "
+                f"unmapped={schema_report['unmapped']}, "
+                f"viable={schema_report['viable']}"
+            )
+        else:
+            user_csv_rows = []
+
         return AlignmentSourceRows(
             top_rows=top_rows,
             saved_rows=saved_rows,
             playlist_rows=playlist_rows,
             recent_rows=recent_rows,
+            user_csv_rows=user_csv_rows,
             top_exists=top_exists,
             saved_exists=saved_exists,
             playlist_exists=playlist_exists,
             recent_exists=recent_exists,
+            user_csv_exists=user_csv_exists,
         )
 
     def _resolve_scope_selection(
@@ -248,6 +265,7 @@ class AlignmentStage:
             source_rows.playlist_rows,
             source_rows.recent_rows,
             context.behavior_controls,
+            user_csv_rows=source_rows.user_csv_rows,
         )
 
         export_selection = self.load_export_selection(paths.spotify_dir)

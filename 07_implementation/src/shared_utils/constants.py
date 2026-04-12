@@ -18,6 +18,7 @@ DEFAULT_SOURCE_BASE_WEIGHTS = {
     "saved_tracks": 0.60,
     "playlist_items": 0.40,
     "recently_played": 0.50,
+    "user_csv": 0.75,
 }
 DEFAULT_SOURCE_BASE_WEIGHT_FALLBACK = 0.25
 
@@ -79,6 +80,8 @@ DEFAULT_INPUT_SCOPE: dict[str, object] = {
     "playlist_items_per_playlist_limit": None,
     "include_recently_played": True,
     "recently_played_limit": 50,
+    "include_user_csv": True,
+    "user_csv_limit": None,
 }
 
 # BL-004 Interaction Scope Default
@@ -124,6 +127,7 @@ DEFAULT_SEED_CONTROLS: dict[str, Any] = {
         "saved_tracks": "optional",
         "playlist_items": "optional",
         "recently_played": "advisory",
+        "user_csv": "advisory",
     },
     "decay_half_lives": {
         "recently_played": DEFAULT_RECENTLY_PLAYED_DECAY_HALF_LIFE_DAYS,
@@ -136,6 +140,13 @@ DEFAULT_SEED_CONTROLS: dict[str, Any] = {
         "combined_threshold": 0.90,
         "max_duration_delta_ms": 5000,
         "max_artist_candidates": 5,
+        "enable_album_scoring": True,
+        "enable_secondary_artist_retry": False,
+        "enable_relaxed_second_pass": False,
+        "relaxed_second_pass_artist_threshold": 0.80,
+        "relaxed_second_pass_title_threshold": 0.80,
+        "relaxed_second_pass_combined_threshold": 0.80,
+        "emit_fuzzy_diagnostics": True,
     },
     "match_strategy": {
         "enable_spotify_id_match": True,

@@ -37,6 +37,7 @@ def test_resolve_expected_sources_run_config_scope() -> None:
         "saved_tracks": False,
         "playlist_items": True,
         "recently_played": False,
+        "user_csv": True,
     }
 
 

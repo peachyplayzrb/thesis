@@ -8,6 +8,7 @@ from alignment.text_matching import (
     fuzzy_find_candidate,
     normalize_text,
     resolve_fuzzy_controls,
+    split_artists,
 )
 
 
@@ -53,6 +54,11 @@ class TestFirstArtist:
     def test_pipe_has_priority_over_comma(self):
         # pipe separator takes precedence
         assert first_artist("A, B | C") == "A, B"
+
+
+class TestSplitArtists:
+    def test_returns_ordered_unique_artists(self):
+        assert split_artists("A | B; A, C") == ["A", "B", "C"]
 
 
 # ---------------------------------------------------------------------------
@@ -216,6 +222,10 @@ class TestFuzzyControls:
         assert controls["combined_threshold"] == 0.90
         assert controls["max_duration_delta_ms"] == 5000
         assert controls["max_artist_candidates"] == 5
+        assert controls["enable_album_scoring"] is True
+        assert controls["enable_secondary_artist_retry"] is False
+        assert controls["enable_relaxed_second_pass"] is False
+        assert controls["emit_fuzzy_diagnostics"] is True
 
     def test_controls_are_clamped_and_sanitized(self):
         controls = resolve_fuzzy_controls(
@@ -234,6 +244,8 @@ class TestFuzzyControls:
         assert controls["combined_threshold"] == 0.85
         assert controls["max_duration_delta_ms"] == 1
         assert controls["max_artist_candidates"] == 1
+        assert controls["enable_album_scoring"] is True
+        assert controls["enable_secondary_artist_retry"] is False
 
 
 class TestFuzzyFindCandidate:
@@ -265,7 +277,7 @@ class TestFuzzyFindCandidate:
                 "combined_threshold": 0.90,
             }
         )
-        row, delta, title_score, artist_score, combined = fuzzy_find_candidate(
+        row, delta, title_score, artist_score, combined, diagnostics = fuzzy_find_candidate(
             title_key="song a",
             artist_key="artist a",
             event_duration=200000,
@@ -277,6 +289,7 @@ class TestFuzzyFindCandidate:
         assert title_score == 0.9
         assert artist_score == 0.9
         assert combined == 0.9
+        assert diagnostics["failure_reason"] == "matched"
 
     def test_duration_gate_boundary_5000_is_inclusive(self, monkeypatch):
         monkeypatch.setattr("alignment.text_matching.fuzz.ratio", lambda *_: 100.0)
@@ -287,7 +300,7 @@ class TestFuzzyFindCandidate:
             ]
         }
         controls = resolve_fuzzy_controls({"enabled": True, "max_duration_delta_ms": 5000})
-        row, delta, _, _, _ = fuzzy_find_candidate(
+        row, delta, _, _, _, diagnostics = fuzzy_find_candidate(
             title_key="song a",
             artist_key="artist a",
             event_duration=200000,
@@ -297,6 +310,7 @@ class TestFuzzyFindCandidate:
         assert row is not None
         assert row["id"] == "id-pass"
         assert delta == 5000
+        assert diagnostics["failure_reason"] == "matched"
 
     def test_tie_break_prefers_lexicographically_smaller_ds001_id(self, monkeypatch):
         monkeypatch.setattr("alignment.text_matching.fuzz.ratio", lambda *_: 95.0)
@@ -307,7 +321,7 @@ class TestFuzzyFindCandidate:
             ]
         }
         controls = resolve_fuzzy_controls({"enabled": True})
-        row, _, _, _, _ = fuzzy_find_candidate(
+        row, _, _, _, _, diagnostics = fuzzy_find_candidate(
             title_key="song a",
             artist_key="artist a",
             event_duration=200000,
@@ -316,6 +330,28 @@ class TestFuzzyFindCandidate:
         )
         assert row is not None
         assert row["id"] == "track-a"
+        assert diagnostics["failure_reason"] == "matched"
+
+    def test_reports_title_threshold_failure(self, monkeypatch):
+        monkeypatch.setattr(
+            "alignment.text_matching.fuzz.ratio",
+            lambda left, right: 100.0 if left == right == "artist a" else 10.0,
+        )
+        controls = resolve_fuzzy_controls(
+            {
+                "enabled": True,
+                "artist_threshold": 0.90,
+                "title_threshold": 0.90,
+            }
+        )
+        _, _, _, _, _, diagnostics = fuzzy_find_candidate(
+            title_key="song a",
+            artist_key="artist a",
+            event_duration=None,
+            by_artist={"artist a": [{"id": "id-1", "song": "Different Song", "artist": "Artist A"}]},
+            fuzzy_controls=controls,
+        )
+        assert diagnostics["failure_reason"] == "title_threshold"
 
 
 class TestExactMatchPrecedence:
@@ -348,3 +384,105 @@ class TestExactMatchPrecedence:
         assert counts["matched_by_fuzzy"] == 0
         assert matched[0]["match_method"] == "spotify_id_exact"
         assert matched[0]["ds001_id"] == "exact-track"
+
+
+def test_match_events_can_retry_secondary_artist(monkeypatch):
+    def _fake_fuzzy_find_candidate(**kwargs):
+        if kwargs["artist_key"] == "artist b":
+            return (
+                {"id": "track_fuzzy", "song": "Song", "artist": "Artist B"},
+                0,
+                1.0,
+                1.0,
+                1.0,
+                {
+                    "album_score": None,
+                    "artist_match_count": 1,
+                    "candidate_count_after_artist_filter": 1,
+                    "failure_reason": "matched",
+                },
+            )
+        return (
+            None,
+            None,
+            None,
+            None,
+            None,
+            {
+                "album_score": None,
+                "artist_match_count": 0,
+                "candidate_count_after_artist_filter": 0,
+                "failure_reason": "artist_threshold",
+            },
+        )
+
+    monkeypatch.setattr("alignment.match_pipeline.fuzzy_find_candidate", _fake_fuzzy_find_candidate)
+
+    _, matched, _, counts = match_events(
+        [_event(track_name="Song", artist_names="Artist A | Artist B", duration_ms="200000")],
+        {},
+        {},
+        {"artist b": []},
+        TOP_RANGE_WEIGHTS,
+        SOURCE_BASE_WEIGHTS,
+        fuzzy_controls={"enabled": True, "enable_secondary_artist_retry": True},
+    )
+
+    assert counts["matched_by_fuzzy"] == 1
+    assert matched[0]["match_method"] == "fuzzy_title_artist"
+
+
+def test_match_events_can_use_relaxed_second_pass(monkeypatch):
+    attempts: list[float] = []
+
+    def _fake_fuzzy_find_candidate(**kwargs):
+        attempts.append(float(kwargs["fuzzy_controls"]["combined_threshold"]))
+        if float(kwargs["fuzzy_controls"]["combined_threshold"]) < 0.9:
+            return (
+                {"id": "track_relaxed", "song": "Song", "artist": "Artist"},
+                0,
+                0.85,
+                0.85,
+                0.85,
+                {
+                    "album_score": None,
+                    "artist_match_count": 1,
+                    "candidate_count_after_artist_filter": 1,
+                    "failure_reason": "matched",
+                },
+            )
+        return (
+            None,
+            None,
+            None,
+            None,
+            None,
+            {
+                "album_score": None,
+                "artist_match_count": 1,
+                "candidate_count_after_artist_filter": 1,
+                "failure_reason": "combined_threshold",
+            },
+        )
+
+    monkeypatch.setattr("alignment.match_pipeline.fuzzy_find_candidate", _fake_fuzzy_find_candidate)
+
+    trace, matched, _, counts = match_events(
+        [_event(track_name="Song", artist_names="Artist", duration_ms="200000")],
+        {},
+        {},
+        {"artist": []},
+        TOP_RANGE_WEIGHTS,
+        SOURCE_BASE_WEIGHTS,
+        fuzzy_controls={
+            "enabled": True,
+            "enable_relaxed_second_pass": True,
+            "combined_threshold": 0.9,
+            "relaxed_second_pass_combined_threshold": 0.8,
+        },
+    )
+
+    assert counts["matched_by_fuzzy"] == 1
+    assert counts["fuzzy_second_pass_matches"] == 1
+    assert attempts == [0.9, 0.8]
+    assert trace[0]["fuzzy_pass_used"] == "pass_2_relaxed"

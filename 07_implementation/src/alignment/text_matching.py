@@ -8,6 +8,7 @@ from shared_utils.text_matching import (
     fuzzy_find_candidate,
     normalize_text,
     resolve_fuzzy_controls,
+    split_artists,
 )
 
 # Keep this module-level alias so existing monkeypatches on alignment.text_matching.fuzz

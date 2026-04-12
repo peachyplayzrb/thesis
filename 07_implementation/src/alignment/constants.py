@@ -10,6 +10,7 @@ SOURCE_TOP_TRACKS: Final[str] = "top_tracks"
 SOURCE_SAVED_TRACKS: Final[str] = "saved_tracks"
 SOURCE_PLAYLIST_ITEMS: Final[str] = "playlist_items"
 SOURCE_RECENTLY_PLAYED: Final[str] = "recently_played"
+SOURCE_USER_CSV: Final[str] = "user_csv"
 SOURCE_INFLUENCE: Final[str] = "influence"
 
 SOURCE_TYPES: Final[tuple[str, ...]] = (
@@ -17,6 +18,7 @@ SOURCE_TYPES: Final[tuple[str, ...]] = (
     SOURCE_SAVED_TRACKS,
     SOURCE_PLAYLIST_ITEMS,
     SOURCE_RECENTLY_PLAYED,
+    SOURCE_USER_CSV,
 )
 
 SOURCE_RESILIENCE_REQUIRED: Final[str] = "required"
@@ -32,6 +34,7 @@ DEFAULT_SOURCE_RESILIENCE_POLICY: Final[dict[str, str]] = {
     SOURCE_SAVED_TRACKS: SOURCE_RESILIENCE_OPTIONAL,
     SOURCE_PLAYLIST_ITEMS: SOURCE_RESILIENCE_OPTIONAL,
     SOURCE_RECENTLY_PLAYED: SOURCE_RESILIENCE_ADVISORY,
+    SOURCE_USER_CSV: SOURCE_RESILIENCE_ADVISORY,
 }
 
 SOURCE_SCOPE_SPECS: Final[dict[str, dict[str, str]]] = {
@@ -59,6 +62,12 @@ SOURCE_SCOPE_SPECS: Final[dict[str, dict[str, str]]] = {
         "rows_attr": "recent_rows",
         "exists_attr": "recent_exists",
     },
+    SOURCE_USER_CSV: {
+        "input_scope_flag": "include_user_csv",
+        "export_selection_flag": "include_user_csv",
+        "rows_attr": "user_csv_rows",
+        "exists_attr": "user_csv_exists",
+    },
 }
 
 SPOTIFY_EXPORT_FILENAMES: Final[dict[str, str]] = {
@@ -66,6 +75,7 @@ SPOTIFY_EXPORT_FILENAMES: Final[dict[str, str]] = {
     SOURCE_SAVED_TRACKS: "spotify_saved_tracks_flat.csv",
     SOURCE_PLAYLIST_ITEMS: "spotify_playlist_items_flat.csv",
     SOURCE_RECENTLY_PLAYED: "spotify_recently_played_flat.csv",
+    SOURCE_USER_CSV: "user_csv_flat.csv",
 }
 
 ALIGNMENT_OUTPUT_FILENAMES: Final[dict[str, str]] = {
@@ -100,6 +110,10 @@ TRACE_FIELDNAMES: Final[list[str]] = [
     "fuzzy_title_score",
     "fuzzy_artist_score",
     "fuzzy_combined_score",
+    "fuzzy_album_score",
+    "fuzzy_pass_used",
+    "fuzzy_artist_attempt_count",
+    "fuzzy_candidate_count",
     "reason",
     "preference_weight",
 ]
@@ -152,6 +166,10 @@ MATCH_METHOD_INFLUENCE_DIRECT: Final[str] = "influence_direct"
 
 UNMATCHED_REASON_MISSING_KEYS: Final[str] = "missing_track_id_and_metadata"
 UNMATCHED_REASON_NO_CANDIDATE: Final[str] = "no_ds001_candidate"
+UNMATCHED_REASON_FUZZY_ARTIST_THRESHOLD_FAILED: Final[str] = "fuzzy_artist_threshold_failed"
+UNMATCHED_REASON_FUZZY_TITLE_THRESHOLD_FAILED: Final[str] = "fuzzy_title_threshold_failed"
+UNMATCHED_REASON_FUZZY_COMBINED_THRESHOLD_FAILED: Final[str] = "fuzzy_combined_threshold_failed"
+UNMATCHED_REASON_FUZZY_DURATION_REJECTED: Final[str] = "fuzzy_duration_rejected"
 
 INTERACTION_TYPE_HISTORY: Final[str] = "history"
 INTERACTION_TYPE_INFLUENCE: Final[str] = "influence"

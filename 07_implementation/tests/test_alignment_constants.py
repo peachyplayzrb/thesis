@@ -32,6 +32,7 @@ def test_source_types_contract_order_is_stable() -> None:
         "saved_tracks",
         "playlist_items",
         "recently_played",
+        "user_csv",
     )
 
 
@@ -41,6 +42,7 @@ def test_export_filename_contract_is_stable() -> None:
         "saved_tracks": "spotify_saved_tracks_flat.csv",
         "playlist_items": "spotify_playlist_items_flat.csv",
         "recently_played": "spotify_recently_played_flat.csv",
+        "user_csv": "user_csv_flat.csv",
     }
 
 
@@ -101,6 +103,10 @@ def test_csv_schema_field_order_contracts_are_stable() -> None:
         "fuzzy_title_score",
         "fuzzy_artist_score",
         "fuzzy_combined_score",
+        "fuzzy_album_score",
+        "fuzzy_pass_used",
+        "fuzzy_artist_attempt_count",
+        "fuzzy_candidate_count",
         "reason",
         "preference_weight",
     ]

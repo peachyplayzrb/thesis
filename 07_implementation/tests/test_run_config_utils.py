@@ -59,6 +59,10 @@ def test_bl003_resolvers_return_validated_overrides(tmp_path: Path) -> None:
                     "combined_threshold": 0.82,
                     "max_duration_delta_ms": 0,
                     "max_artist_candidates": 7,
+                    "enable_secondary_artist_retry": True,
+                    "enable_relaxed_second_pass": True,
+                    "relaxed_second_pass_artist_threshold": 0.7,
+                    "emit_fuzzy_diagnostics": False,
                 },
                 "weighting_policy": {
                     "top_tracks": {"scale_multiplier": 42.0},
@@ -89,6 +93,10 @@ def test_bl003_resolvers_return_validated_overrides(tmp_path: Path) -> None:
     assert seed_controls["fuzzy_matching"]["combined_threshold"] == 0.82
     assert seed_controls["fuzzy_matching"]["max_duration_delta_ms"] == 0
     assert seed_controls["fuzzy_matching"]["max_artist_candidates"] == 7
+    assert seed_controls["fuzzy_matching"]["enable_secondary_artist_retry"] is True
+    assert seed_controls["fuzzy_matching"]["enable_relaxed_second_pass"] is True
+    assert seed_controls["fuzzy_matching"]["relaxed_second_pass_artist_threshold"] == 0.7
+    assert seed_controls["fuzzy_matching"]["emit_fuzzy_diagnostics"] is False
     assert seed_controls["match_strategy"] == {
         "enable_spotify_id_match": True,
         "enable_metadata_match": False,

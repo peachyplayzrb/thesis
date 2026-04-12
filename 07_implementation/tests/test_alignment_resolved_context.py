@@ -30,12 +30,14 @@ def _behavior_controls() -> AlignmentBehaviorControls:
             "saved_tracks": 0.6,
             "playlist_items": 0.4,
             "recently_played": 0.5,
+            "user_csv": 0.75,
         },
         source_resilience_policy={
             "top_tracks": "required",
             "saved_tracks": "optional",
             "playlist_items": "optional",
             "recently_played": "advisory",
+            "user_csv": "advisory",
         },
         decay_half_lives={"saved_tracks": 365.0, "recently_played": 90.0},
         match_rate_min_threshold=0.0,
@@ -306,7 +308,19 @@ def test_match_events_respects_strategy_order_with_fuzzy_first(monkeypatch) -> N
     )
 
     def _fake_fuzzy_find_candidate(**_kwargs):
-        return ({"id": "track_fuzzy", "song": "Song", "artist": "Artist"}, 0, 1.0, 1.0, 1.0)
+        return (
+            {"id": "track_fuzzy", "song": "Song", "artist": "Artist"},
+            0,
+            1.0,
+            1.0,
+            1.0,
+            {
+                "album_score": None,
+                "artist_match_count": 1,
+                "candidate_count_after_artist_filter": 1,
+                "failure_reason": "matched",
+            },
+        )
 
     monkeypatch.setattr("alignment.match_pipeline.fuzzy_find_candidate", _fake_fuzzy_find_candidate)
 

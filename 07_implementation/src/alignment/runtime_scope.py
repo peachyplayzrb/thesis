@@ -4,7 +4,7 @@ import json
 import os
 from typing import Any
 
-from alignment.constants import DEFAULT_TOP_TIME_RANGES, SOURCE_PLAYLIST_ITEMS, SOURCE_RECENTLY_PLAYED, SOURCE_SAVED_TRACKS, SOURCE_TOP_TRACKS
+from alignment.constants import DEFAULT_TOP_TIME_RANGES, SOURCE_PLAYLIST_ITEMS, SOURCE_RECENTLY_PLAYED, SOURCE_SAVED_TRACKS, SOURCE_TOP_TRACKS, SOURCE_USER_CSV
 from alignment.models import AlignmentBehaviorControls
 from shared_utils.constants import DEFAULT_INPUT_SCOPE
 from shared_utils.parsing import safe_int
@@ -110,6 +110,8 @@ def apply_input_scope_filters(
     playlist_rows: list[dict[str, str]],
     recent_rows: list[dict[str, str]],
     input_scope: dict[str, object] | AlignmentBehaviorControls,
+    *,
+    user_csv_rows: list[dict[str, str]] | None = None,
 ) -> tuple[dict[str, list[dict[str, str]]], dict[str, object]]:
     scope_mapping = (
         dict(input_scope.input_scope)
@@ -120,6 +122,7 @@ def apply_input_scope_filters(
     include_saved_tracks = bool(scope_mapping.get("include_saved_tracks", True))
     include_playlists = bool(scope_mapping.get("include_playlists", True))
     include_recently_played = bool(scope_mapping.get("include_recently_played", True))
+    include_user_csv = bool(scope_mapping.get("include_user_csv", True))
 
     top_time_ranges_raw = scope_mapping.get("top_time_ranges")
     top_time_ranges = {
@@ -136,6 +139,7 @@ def apply_input_scope_filters(
         scope_mapping.get("playlist_items_per_playlist_limit")
     )
     recently_played_limit = as_positive_int_or_none(scope_mapping.get("recently_played_limit"))
+    user_csv_limit = as_positive_int_or_none(scope_mapping.get("user_csv_limit"))
 
     top_rows_selected = filter_top_tracks_rows(top_rows, top_time_ranges) if include_top_tracks else []
     saved_rows_selected = list(saved_rows[:saved_tracks_limit]) if include_saved_tracks else []
@@ -155,11 +159,17 @@ def apply_input_scope_filters(
     if include_recently_played and recently_played_limit is None:
         recent_rows_selected = list(recent_rows)
 
+    _user_csv = list(user_csv_rows) if user_csv_rows is not None else []
+    user_csv_rows_selected = list(_user_csv[:user_csv_limit]) if include_user_csv else []
+    if include_user_csv and user_csv_limit is None:
+        user_csv_rows_selected = list(_user_csv)
+
     selected_rows = {
         SOURCE_TOP_TRACKS: top_rows_selected,
         SOURCE_SAVED_TRACKS: saved_rows_selected,
         SOURCE_PLAYLIST_ITEMS: playlist_rows_selected,
         SOURCE_RECENTLY_PLAYED: recent_rows_selected,
+        SOURCE_USER_CSV: user_csv_rows_selected,
     }
     scope_filter_stats = {
         "requested_input_scope": scope_mapping,
@@ -168,18 +178,21 @@ def apply_input_scope_filters(
             "playlists_limit": playlists_limit,
             "playlist_items_per_playlist_limit": playlist_items_per_playlist_limit,
             "recently_played_limit": recently_played_limit,
+            "user_csv_limit": user_csv_limit,
         },
         "rows_available": {
             SOURCE_TOP_TRACKS: len(top_rows),
             SOURCE_SAVED_TRACKS: len(saved_rows),
             SOURCE_PLAYLIST_ITEMS: len(playlist_rows),
             SOURCE_RECENTLY_PLAYED: len(recent_rows),
+            SOURCE_USER_CSV: len(_user_csv),
         },
         "rows_selected": {
             SOURCE_TOP_TRACKS: len(top_rows_selected),
             SOURCE_SAVED_TRACKS: len(saved_rows_selected),
             SOURCE_PLAYLIST_ITEMS: len(playlist_rows_selected),
             SOURCE_RECENTLY_PLAYED: len(recent_rows_selected),
+            SOURCE_USER_CSV: len(user_csv_rows_selected),
         },
     }
 
