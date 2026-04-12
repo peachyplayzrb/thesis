@@ -20,6 +20,7 @@ from alignment.constants import (
 )
 from alignment.models import AlignmentBehaviorControls
 from alignment.resolved_context import AlignmentResolvedContext
+from shared_utils.index_builder import resolve_ds001_id
 
 _DS001_PASSTHROUGH_FIELDS: tuple[str, ...] = (
     "song", "release", "duration_ms", "popularity",
@@ -32,6 +33,7 @@ def _make_influence_event(
     event_id: str,
     infl_weight: float,
 ) -> dict[str, Any]:
+    resolved_ds001_id = resolve_ds001_id(candidate)
     return {
         "event_id": event_id,
         "source_type": SOURCE_INFLUENCE,
@@ -43,7 +45,7 @@ def _make_influence_event(
         "spotify_artist_names": candidate.get("artist", ""),
         "match_method": MATCH_METHOD_INFLUENCE_DIRECT,
         "duration_delta_ms": None,
-        "ds001_id": candidate.get("id", ""),
+        "ds001_id": resolved_ds001_id,
         "ds001_spotify_id": candidate.get("spotify_id", ""),
         "artist": candidate.get("artist", ""),
         **{f: candidate.get(f, "") for f in _DS001_PASSTHROUGH_FIELDS},

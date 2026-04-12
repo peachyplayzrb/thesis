@@ -8,15 +8,14 @@ The problem is further amplified when user preference data is collected from ext
 
 Accordingly, the thesis addresses the following engineering problem:
 
-How can a single-user playlist generation pipeline be engineered so that it remains automated while also being transparent, controllable, observable, and reproducible when using cross-source music preference data?
+How can a deterministic single-user playlist generation pipeline be engineered and evaluated so that preference inference, candidate generation, and playlist assembly remain transparent, controllable, and reproducible under cross-source uncertainty and competing playlist objectives?
 
 This problem is addressed within a bounded MVP scope:
 
 - single-user recommendation context
-- deterministic, content-based methods rather than machine-learning model novelty
-- DS-002 (MSD subset + Last.fm tags) as the candidate track corpus
-- one practical ingestion path with ISRC-first alignment
-- explicit rule-based scoring and playlist assembly with inspectable run logs
+- deterministic methods rather than machine-learning model novelty
+- cross-source alignment with confidence-aware identifier and metadata handling
+- one practical ingestion path within bounded project constraints
+- explicit candidate-generation, scoring, and assembly controls with inspectable run evidence
 
-Solving this problem contributes design and implementation evidence for building recommendation pipelines whose behaviour can be explained and audited, rather than only judged by output quality. The intended outcome is a defensible artefact and evaluation basis that aligns with the research question on design considerations for transparent, controllable, and observable playlist generation.
-
+Solving this problem contributes design and implementation evidence for building recommendation pipelines whose behaviour can be explained and audited, rather than only judged by output quality. The intended outcome is a defensible artefact and evaluation basis that aligns with the rebuilt research question on uncertainty-aware, controllable, and reproducible playlist engineering.

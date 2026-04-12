@@ -6,13 +6,26 @@ Last updated: 2026-04-12
 
 Full architecture rebuild initiated (D-052). Chapter 2 is the only confirmed component. All milestones and work packages below are now pre-rebuild legacy reference unless explicitly re-opened in this rebuild phase.
 
-- REB-M1 (2026-04-12 onwards): Re-derive RQ and objectives from Chapter 2 gaps and themes [in progress]
+- REB-M1 (2026-04-12 onwards): Re-derive RQ and objectives from Chapter 2 gaps and themes [completed]
 	- Identify unresolved contradictions in Chapter 2 (transparency/accuracy, explanation fidelity, candidate-generation primacy, cross-source alignment, multi-objective quality)
 	- Re-derive the research question and objectives that address those gaps in a DSR/engineering-evidence framing
 	- Confirm scope and artefact definition before any implementation restarts
+	- Status update (2026-04-12): completed via D-053 and D-054 with synchronized foundation/admin updates (C-283).
 
-- REB-M2 (TBD — after REB-M1): Rebuild Chapter 3 (design) anchored in Chapter 2 conclusions [not started]
-- REB-M3 (TBD — after REB-M2): Rebuild implementation and evaluation to match re-grounded design [not started]
+- REB-M2 (2026-04-12 onwards): Rebuild Chapter 3 (design) anchored in Chapter 2 conclusions [completed]
+	- Convert the six active objectives into explicit design requirements and traceability links.
+	- Define the active control/evidence surface needed to test uncertainty handling, controllability, and reproducibility claims.
+	- Produce a bounded Chapter 3 rebuild outline before any implementation restart decisions.
+	- Status update (2026-04-12): completed via objective-anchored Chapter 3 design lock and requirements-map rebuild (D-055, C-284).
+- REB-M3 (2026-04-12 onwards): Rebuild implementation and evaluation to match re-grounded design [in progress]
+	- Apply artefact-definition switch from checkpoint wording to implementation-entry control/evidence contract.
+	- Rebuild implementation surfaces only where O1 to O6 traceability and evidence contracts can be preserved.
+	- Gate each implementation tranche on reproducibility, controllability, transparency-fidelity, and uncertainty-visibility checks.
+	- Status update (2026-04-12): kickoff accepted via D-056 and synchronized in C-285.
+	- Status update (2026-04-12): tranche-1 executable O1 to O3 gate implemented at `07_implementation/src/quality/reb_m3_tranche1_gate.py` and documented for execution (D-057, C-286).
+	- Status update (2026-04-12): tranche-2 executable O4 to O6 gate implemented at `07_implementation/src/quality/reb_m3_tranche2_gate.py` and documented for execution (D-058, C-287).
+	- Status update (2026-04-12): tranche-3 control-causality/validity-boundary gate is now passing (`REB-M3-TRANCHE3-GATE-20260412-140805-553785`, `9/9`) after BL-009 schema correction that restores top-level `validity_boundaries` contract alignment (D-062, C-291).
+	- Status update (2026-04-12): follow-up regression hardening is complete for BL-009 section validation; `ensure_required_sections` now requires top-level `validity_boundaries` and dedicated tests pass, with full validation chain still green (`338/338`, `BL013-ENTRYPOINT-20260412-141352-373476`, `BL014-SANITY-20260412-141423-183313`, tranche-3 `REB-M3-TRANCHE3-GATE-20260412-141431-157169`) (D-063, C-292).
 - REB-M4 (TBD — after REB-M3): Rebuild Chapter 4/5 from re-evidenced implementation and evaluation [not started]
 
 ---

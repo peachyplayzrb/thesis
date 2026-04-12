@@ -6,6 +6,11 @@ from collections import defaultdict
 from shared_utils.text_matching import normalize_text
 
 
+def resolve_ds001_id(row: dict[str, str]) -> str:
+    """Return a stable DS-001 identifier across schema variants."""
+    return ((row.get("id") or row.get("ds001_id") or row.get("cid") or "").strip())
+
+
 def build_ds001_indices(
     rows: list[dict[str, str]],
 ) -> tuple[
@@ -33,9 +38,9 @@ def build_ds001_indices(
             by_artist[artist_key].append(row)
 
     for candidate_rows in by_title_artist.values():
-        candidate_rows.sort(key=lambda r: (r.get("id") or ""))
+        candidate_rows.sort(key=resolve_ds001_id)
 
     for candidate_rows in by_artist.values():
-        candidate_rows.sort(key=lambda r: (r.get("id") or ""))
+        candidate_rows.sort(key=resolve_ds001_id)
 
     return by_spotify_id, by_title_artist, by_artist

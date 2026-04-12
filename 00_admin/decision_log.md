@@ -6,9 +6,9 @@ Ordering convention (standardized 2026-03-24):
 - New entries must be appended at the end and may include `superseded_by` when a prior decision is replaced.
 
 Maintenance snapshot (2026-04-12):
-- Highest decision ID currently present: `D-052`
-- Total decision entries: 46
-- Status distribution: accepted=37, superseded=3, rejected=1
+- Highest decision ID currently present: `D-063`
+- Total decision entries: 63
+- Status distribution: accepted=59, superseded=3, rejected=1
 - ID integrity check: no duplicate decision IDs detected
 
 Current posture snapshot (2026-03-25):
@@ -1325,3 +1325,146 @@ review_date: none
 - evidence_basis: `08_writing/chapter2.md`, `08_writing/_versions/chapter2finalv1.md`, `09_quality_control/chapter2_reference_audit_zero_trust_2026-04-10.md`
 - impacted_files: `00_admin/thesis_state.md`, `00_admin/timeline.md`, `00_admin/unresolved_issues.md`, `00_admin/decision_log.md`, `00_admin/change_log.md`
 - next_steps: Re-derive RQ and objectives from Chapter 2 gaps and unresolved contradictions; rebuild Chapter 3 anchored in those conclusions; restart implementation only after design is re-grounded.
+
+## D-053
+- date: 2026-04-12
+- entity_id: rebuilt research question and objective set
+- proposed_by: user + Copilot
+- status: accepted
+- decision: Adopt a rebuilt RQ centered on engineering and evaluating deterministic playlist generation under cross-source uncertainty and multi-objective trade-offs, with six objectives that explicitly cover uncertainty-aware profiling, confidence-aware alignment and candidate generation, controllable scoring and assembly trade-offs, mechanism-linked explanations, reproducibility and controllability evaluation, and bounded design guidance.
+- context: Under D-052 rebuild posture, Chapter 2 was confirmed as the only authoritative baseline and UI-014 blocked all forward work until RQ/objective re-derivation was completed.
+- alternatives_considered: Reuse the legacy RQ/objectives unchanged (rejected: does not reflect Chapter 2 contradiction structure); derive objectives first without RQ lock (rejected: high drift risk across foundation/governance surfaces); split into multiple narrow RQs (rejected for current scope: would fragment design and evaluation coherence).
+- rationale: One integrated RQ with explicit objective-level decomposition preserves Chapter 2-grounded problem structure while remaining implementable within bounded thesis scope.
+- evidence_basis: `08_writing/chapter2.md`, `00_admin/unresolved_issues.md` (UI-014 trigger and required actions), `00_admin/timeline.md` (REB-M1 intent), `02_foundation/contribution_statement.md`.
+- impacted_files: `00_admin/thesis_state.md`, `02_foundation/current_title_and_rq.md`, `02_foundation/objectives.md`, `02_foundation/contribution_statement.md`, `00_admin/decision_log.md`, `00_admin/change_log.md`
+- next_steps: Lock scope and artefact definition against the new RQ/objective set and close UI-014.
+
+## D-054
+- date: 2026-04-12
+- entity_id: rebuild scope and artefact lock after RQ derivation
+- proposed_by: user + Copilot
+- status: accepted
+- decision: Lock rebuild scope to a single-user deterministic engineering-evidence contribution focused on auditable uncertainty handling, controllable trade-off behavior, and reproducible process-level evidence. Keep Chapter 2 fixed as baseline and start REB-M2 design reconstruction from the new objective set.
+- context: After D-053 RQ/objective acceptance, governance surfaces required a scope/artefact lock to prevent immediate drift during Chapter 3 rebuild planning.
+- alternatives_considered: Reopen Chapter 2 wording during RQ lock (rejected: Chapter 2 is confirmed baseline); reactivate legacy implementation as active build target immediately (rejected: design must be rebuilt first); widen scope to multi-user or model-novelty track (rejected: exceeds bounded rebuild posture).
+- rationale: A hard scope lock keeps REB-M2 design work coherent and preserves the Chapter 2-first reconstruction logic established in D-052.
+- evidence_basis: `00_admin/thesis_state.md` (rebuild checkpoint), `02_foundation/assumptions.md`, `02_foundation/limitations.md`, `00_admin/timeline.md` (REB-M2 transition), `00_admin/unresolved_issues.md` (UI-014 closure record).
+- impacted_files: `00_admin/thesis_state.md`, `02_foundation/assumptions.md`, `02_foundation/limitations.md`, `00_admin/timeline.md`, `00_admin/unresolved_issues.md`, `00_admin/decision_log.md`, `00_admin/change_log.md`
+- next_steps: Execute REB-M2 by converting the new objectives into a Chapter 3 design-control blueprint before any implementation restart.
+
+## D-055
+- date: 2026-04-12
+- entity_id: REB-M2 chapter3 design-control lock
+- proposed_by: user + Copilot
+- status: accepted
+- decision: Lock REB-M2 by adopting an objective-anchored Chapter 3 design blueprint and requirements-to-design map that convert O1 to O6 into explicit design requirements, stage responsibilities, and evidence contracts for uncertainty handling, controllability, transparency fidelity, and reproducibility.
+- context: After D-053 and D-054, REB-M2 required formal design authority before any artefact-switch or REB-M3 implementation restart. Legacy Chapter 3 design sheets still reflected pre-rebuild title, RQ, and requirement framing.
+- alternatives_considered: defer design lock and restart implementation directly (rejected: high architecture drift risk); keep legacy Chapter 3 maps with only minor wording patches (rejected: does not satisfy objective-level traceability under rebuilt RQ); broaden scope to multi-user/model-novelty controls during REB-M2 (rejected: out of current bounded scope).
+- rationale: A locked objective-to-design-to-evidence contract prevents implementation-first drift and preserves Chapter 2-first reconstruction coherence.
+- evidence_basis: `05_design/chapter3_information_sheet.md`, `05_design/requirements_to_design_map.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`.
+- impacted_files: `05_design/chapter3_information_sheet.md`, `05_design/requirements_to_design_map.md`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`
+- next_steps: Execute artefact-definition switch under the locked REB-M2 design contract, then start REB-M3 implementation rebuild with control/evidence contract checks as entry gates.
+
+## D-056
+- date: 2026-04-12
+- entity_id: artefact-definition switch and REB-M3 kickoff contract
+- proposed_by: user + Copilot
+- status: accepted
+- decision: Switch the active artefact definition to an implementation-entry contract aligned to the REB-M2 design lock, and start REB-M3 with strict objective-to-control-to-evidence traceability gates.
+- context: REB-M2 is complete and Chapter 3 design authority is locked (D-055). The next continuation step requires replacing checkpoint-level artefact wording with an executable rebuild contract before implementation changes proceed.
+- alternatives_considered: keep artefact wording unchanged while starting code changes (rejected: weak implementation-entry contract); defer REB-M3 until additional writing-only passes (rejected: continuation objective is implementation restart); reactivate legacy implementation posture as active baseline (rejected: conflicts with rebuild governance).
+- rationale: A formal artefact-definition switch establishes a clear contract for what REB-M3 implementation must produce and how it will be validated.
+- evidence_basis: `00_admin/thesis_state.md`, `00_admin/timeline.md`, `05_design/chapter3_information_sheet.md`, `05_design/requirements_to_design_map.md`.
+- impacted_files: `00_admin/thesis_state.md`, `00_admin/timeline.md`, `00_admin/decision_log.md`, `00_admin/change_log.md`
+- next_steps: Execute REB-M3 implementation tranches under D-056 contract, beginning with surfaces that emit required uncertainty, control, and mechanism-linked evidence fields.
+
+## D-057
+- date: 2026-04-12
+- entity_id: REB-M3 tranche-1 executable gate for O1 to O3
+- proposed_by: user + Copilot
+- status: accepted
+- decision: Implement an executable REB-M3 tranche-1 gate at `07_implementation/src/quality/reb_m3_tranche1_gate.py` that verifies O1 to O3 minimum evidence contracts against current BL-003 to BL-006 outputs.
+- context: REB-M3 started under D-056, but continuation required a concrete implementation artifact that operationalizes entry-gate checks before broader tranche expansion.
+- alternatives_considered: rely on manual checklist-only gating (rejected: non-executable and drift-prone); jump directly to wide code refactors without gate checks (rejected: weak contract discipline for rebuild posture).
+- rationale: An executable gate tightens implementation discipline by failing fast when required uncertainty, alignment/exclusion, or scoring-control evidence fields are missing.
+- evidence_basis: `07_implementation/src/quality/reb_m3_tranche1_gate.py`, `07_implementation/README.md`, `07_implementation/src/profile/outputs/bl004_preference_profile.json`, `07_implementation/src/alignment/outputs/bl003_ds001_spotify_summary.json`, `07_implementation/src/retrieval/outputs/bl005_candidate_diagnostics.json`, `07_implementation/src/scoring/outputs/bl006_score_summary.json`.
+- impacted_files: `07_implementation/src/quality/reb_m3_tranche1_gate.py`, `07_implementation/README.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`, `00_admin/decision_log.md`, `00_admin/change_log.md`
+- next_steps: Run the tranche-1 gate and log baseline pass/fail evidence, then extend REB-M3 to O4 to O6 gating surfaces.
+
+## D-058
+- date: 2026-04-12
+- entity_id: REB-M3 tranche-2 executable gate for O4 to O6
+- proposed_by: user + Copilot
+- status: accepted
+- decision: Implement an executable REB-M3 tranche-2 gate at `07_implementation/src/quality/reb_m3_tranche2_gate.py` that verifies O4 to O6 minimum evidence contracts against current BL-007 to BL-011 outputs.
+- context: REB-M3 tranche-1 (D-057) closed O1 to O3 entry checks. Continuation required extending executable governance to explanation/observability fidelity, reproducibility/controllability evidence, and bounded-guidance reporting surfaces.
+- alternatives_considered: keep O4 to O6 as manual checklist-only validation (rejected: drift-prone and non-executable); jump directly to broad refactors without tranche-2 evidence gating (rejected: weak contract discipline under rebuild posture).
+- rationale: A second executable gate preserves objective-to-control-to-evidence discipline across the full O1 to O6 surface before broader REB-M3 implementation expansion.
+- evidence_basis: `07_implementation/src/quality/reb_m3_tranche2_gate.py`, `07_implementation/README.md`, `07_implementation/src/playlist/outputs/bl007_assembly_report.json`, `07_implementation/src/transparency/outputs/bl008_explanation_payloads.json`, `07_implementation/src/observability/outputs/bl009_run_observability_log.json`, `07_implementation/src/reproducibility/outputs/reproducibility_report.json`, `07_implementation/src/controllability/outputs/controllability_report.json`.
+- impacted_files: `07_implementation/src/quality/reb_m3_tranche2_gate.py`, `07_implementation/README.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`, `00_admin/decision_log.md`, `00_admin/change_log.md`
+- next_steps: Run the tranche-2 gate, record baseline pass/fail evidence, then proceed to REB-M3 code-surface refactors tied to failing or weak evidence checks.
+
+## D-059
+- date: 2026-04-12
+- entity_id: BL-003 DS-001 identifier normalization
+- proposed_by: user + Copilot
+- status: accepted
+- decision: Normalize DS-001 identifier resolution in BL-003 to accept schema variants (`id`, `ds001_id`, `cid`) and use this resolver consistently in index ordering, matched-event construction, and influence lookup mapping.
+- context: BL-004 was producing a single row because BL-003 matched events were aggregating under an empty DS-001 key. The active DS-001 dataset uses `cid`, while BL-003 hardcoded `id`, causing all matched events to collapse into one aggregate row.
+- alternatives_considered: Keep strict `id`-only lookup and patch outputs manually (rejected: fragile and non-reproducible); add one-off fallback only in BL-004 (rejected: fixes symptom not root cause); reformat DS-001 source file columns as a preprocessing requirement (rejected: unnecessary coupling and higher operational risk).
+- rationale: Resolver-based normalization is the smallest robust change that preserves deterministic behavior across known DS-001 schema variants and prevents future row-collapse regressions at the BL-003 to BL-004 contract boundary.
+- evidence_basis: `07_implementation/src/shared_utils/index_builder.py`, `07_implementation/src/alignment/stage.py`, `07_implementation/src/alignment/match_pipeline.py`; verification rerun showing `seed_table_rows=1592` and `bl004_seed_trace_rows=1592` after patch (previously both `1`).
+- impacted_files: `07_implementation/src/shared_utils/index_builder.py`, `07_implementation/src/alignment/stage.py`, `07_implementation/src/alignment/match_pipeline.py`, `00_admin/decision_log.md`, `00_admin/change_log.md`
+- next_steps: Keep the resolver as the canonical DS-001 id contract for BL-003 and add focused regression coverage when the next alignment test wave is run.
+
+## D-060
+- date: 2026-04-12
+- entity_id: REB-M3 additive transparency payload compatibility
+- proposed_by: user + Copilot
+- status: accepted
+- decision: Keep `control_provenance` as an additive field in BL-008 payloads but make it optional in `build_track_payload` so existing callers/tests remain valid during REB-M3 tranche expansion.
+- context: The broad reconciliation wave introduced a required `control_provenance` argument in transparency payload building, which broke existing test callers and caused avoidable compatibility drift.
+- alternatives_considered: keep `control_provenance` required and patch every caller immediately (rejected: unnecessary churn for additive contract); revert the control-provenance feature entirely (rejected: loses tranche-3 control-causality evidence objective).
+- rationale: Optional additive fields preserve backward compatibility while still exposing the new evidence surface for callers that supply it.
+- evidence_basis: `07_implementation/src/transparency/main.py`, `07_implementation/src/transparency/payload_builder.py`, and test validation pass (`333/333` after compatibility patch).
+- impacted_files: `07_implementation/src/transparency/payload_builder.py`, `00_admin/decision_log.md`, `00_admin/change_log.md`
+- next_steps: Keep additive payload fields backward-compatible by default unless a deliberate schema-version bump is approved.
+
+## D-061
+- date: 2026-04-12
+- entity_id: BL-003 canonical DS-001 ID contract for influence path
+- proposed_by: user + Copilot
+- status: accepted
+- decision: Treat `resolve_ds001_id` as the canonical DS-001 identifier resolver for all BL-003 paths, including influence-track injection, and enforce this with regression tests spanning shared utility, matching, and stage execution.
+- context: After fixing BL-004 row-collapse for `cid` datasets, influence-track injection still emitted empty `ds001_id` when DS-001 rows lacked `id`, creating a hidden contract inconsistency.
+- alternatives_considered: keep influence path `id`-only (rejected: inconsistent with matching/stage behavior); normalize only in tests without code change (rejected: leaves runtime contract drift unresolved).
+- rationale: One canonical resolver across all BL-003 identifier touchpoints prevents schema-variant regressions and keeps downstream profile/trace contracts stable.
+- evidence_basis: `07_implementation/src/alignment/influence.py` now resolves identifier via `resolve_ds001_id`; new tests in `07_implementation/tests/test_alignment_ds001_id_resolution.py`; validation suite pass (`336/336`) and full-contract pass (`BL013-ENTRYPOINT-20260412-140426-225972`, `BL014-SANITY-20260412-140500-928684`, `28/28`).
+- impacted_files: `07_implementation/src/alignment/influence.py`, `07_implementation/tests/test_alignment_ds001_id_resolution.py`, `00_admin/decision_log.md`, `00_admin/change_log.md`
+- next_steps: Reuse this canonical identifier resolver for any future DS-001 ingest/normalization migrations before contract version bumps.
+
+## D-062
+- date: 2026-04-12
+- entity_id: REB-M3 tranche-3 validity-boundary contract closure
+- proposed_by: user + Copilot
+- status: accepted
+- decision: Enforce BL-009 `validity_boundaries` as a top-level observability contract field and accept REB-M3 tranche-3 closure only after the tranche-3 gate passes on BL-008/BL-009/BL-011 control-causality and boundary-evidence checks.
+- context: Initial tranche-3 execution failed due missing/invalid BL-009 validity-boundary checks because `validity_boundaries` was nested under `exclusion_diagnostics.assembly` instead of the gate-expected top-level location.
+- alternatives_considered: relax tranche-3 gate checks to accept nested validity-boundary fields (rejected: weakens objective contract and hides schema drift); keep current structure and defer fix to later tranche work (rejected: blocks REB-M3 closure discipline).
+- rationale: The top-level placement is the explicit gate contract for auditability and bounded-guidance visibility, so schema alignment must be fixed at source rather than tolerated in gate logic.
+- evidence_basis: `07_implementation/src/observability/main.py` (schema correction), validate-only pass (`BL013-ENTRYPOINT-20260412-140726-924263`, `BL014-SANITY-20260412-140755-116563`, `28/28`), tranche-3 gate pass (`REB-M3-TRANCHE3-GATE-20260412-140805-553785`, `9/9`) with artifacts in `07_implementation/src/quality/outputs/reb_m3_tranche3_gate_report.json` and `07_implementation/src/quality/outputs/reb_m3_tranche3_gate_matrix.csv`.
+- impacted_files: `07_implementation/src/observability/main.py`, `00_admin/thesis_state.md`, `00_admin/timeline.md`, `00_admin/decision_log.md`, `00_admin/change_log.md`
+- next_steps: Add focused BL-009 regression coverage for top-level `validity_boundaries` placement to prevent future schema-nesting regressions.
+
+## D-063
+- date: 2026-04-12
+- entity_id: BL-009 required-sections hardening for validity-boundary contract
+- proposed_by: user + Copilot
+- status: accepted
+- decision: Enforce `validity_boundaries` as a required top-level section in BL-009 output validation (`ensure_required_sections`) and lock this with unit regression tests so missing or nested-only boundary blocks fail fast.
+- context: D-062 fixed runtime schema placement and closed tranche-3, but BL-009 section validation still allowed reports that omitted top-level `validity_boundaries`, leaving a regression gap.
+- alternatives_considered: rely only on tranche-3 gate checks (rejected: weaker unit-level contract guard); keep optional section semantics in BL-009 validator (rejected: allows silent schema drift until later gate execution).
+- rationale: Adding the requirement to BL-009 section validation plus direct tests creates an immediate contract boundary that prevents recurrence of the nesting omission.
+- evidence_basis: `07_implementation/src/observability/main.py` (`ensure_required_sections` now requires `validity_boundaries`), new test file `07_implementation/tests/test_observability_required_sections.py`, validation passes: pytest `338/338`, BL-013 pass (`BL013-ENTRYPOINT-20260412-141352-373476`), BL-014 pass (`BL014-SANITY-20260412-141423-183313`, `28/28`), tranche-3 gate pass (`REB-M3-TRANCHE3-GATE-20260412-141431-157169`, `9/9`).
+- impacted_files: `07_implementation/src/observability/main.py`, `07_implementation/tests/test_observability_required_sections.py`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/timeline.md`
+- next_steps: Continue REB-M3 closure hardening by transitioning status surfaces toward REB-M4 chapter evidence synthesis once no further contract regressions are observed.

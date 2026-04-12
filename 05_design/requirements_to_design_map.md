@@ -1,54 +1,56 @@
 # Requirements To Design Map
 
-DOCUMENT STATUS: implementation-synchronized traceability map
-LAST SYNCHRONIZED: 2026-03-29 UTC
-CONFIDENCE: high for design-to-implementation mapping, medium for literature-strength grading
-ROLE: requirement-to-design-to-implementation bridge
+DOCUMENT STATUS: REB-M2 objective-anchored design traceability map
+LAST SYNCHRONIZED: 2026-04-12 UTC
+CONFIDENCE: medium-high for objective-to-design mapping, medium for implementation readiness boundaries
+ROLE: requirement-to-design and design-to-evidence bridge
 
-## 1) Requirement to Mechanism Traceability
+## 1) Objective to Design Requirement Traceability
 
-| Requirement Theme | Design Requirement | Implemented Mechanism | Primary Stage Surface | Status |
+| Objective | Design Requirement | Design Mechanism Class | Required Evidence Contract | Status |
 | --- | --- | --- | --- | --- |
-| Transparency | Recommendation process must be inspectable | Deterministic scoring plus per-track explanation payloads | BL-006 and BL-008 | Implemented (partial causal depth) |
-| Controllability | Users can influence recommendation behavior through bounded controls | Run-config/env control surfaces across retrieval, scoring, and assembly | BL-005, BL-006, BL-007 | Implemented (partial in effect strength) |
-| Playlist quality beyond ranking | Playlist-level constraints and sequencing needed | Rule-based assembly with threshold and diversity constraints | BL-007 | Implemented |
-| Cross-source alignment reliability | Source events must map into candidate corpus | Alignment pipeline with source-scope and matching strategies | BL-003 | Implemented (known unmatched-rate boundary) |
-| Reproducibility/observability | Runs must be replayable and auditable | Config provenance, stage diagnostics, artifact hashing, observability log | BL-009 (+ BL-010/BL-011 evaluation layers) | Implemented |
+| O1 Uncertainty-aware profiling | Profile assumptions and source reliability must be inspectable | Profile confidence metadata, source coverage, interaction attribution | Profile uncertainty/coverage outputs and diagnostics are emitted | Design locked |
+| O2 Confidence-aware alignment and candidate generation | Alignment confidence and exclusion logic must be explicit | Confidence-aware matching and retrieval exclusion tracing | Alignment/retrieval artifacts include confidence and exclusion reason fields | Design locked |
+| O3 Controllable trade-offs in scoring and assembly | Coherence/diversity/novelty/ordering trade-offs must be tunable and bounded | Deterministic control surfaces in scoring and playlist assembly | Parameter-change experiments show directional output shifts | Design locked |
+| O4 Mechanism-linked explanations and observability | Explanations must correspond to actual mechanism behavior | Contribution-grounded explanation payloads plus run observability logs | Explanation fields and observability logs map back to mechanism-level inputs | Design locked |
+| O5 Reproducibility and controllability evaluation | Runs must be replayable and control-actuation effects measurable | Explicit config/payload contracts and run provenance | Reproducibility and controllability checks runnable from declared artifacts | Design locked |
+| O6 Bounded design guidance | Claims must state validity limits and uncertainty boundaries | Scope/assumption/limitation-aware reporting contract | Results include bounded claims and explicit failure/limit reporting | Design locked |
 
-## 2) BL Stage Coverage Map
+## 2) Requirement to Stage Responsibility Map
 
-| BL Stage | Design Role | Key Requirement Contribution |
+| Stage Surface | Primary Design Responsibility | Linked Objectives |
 | --- | --- | --- |
-| BL-003 Alignment | Source normalization and seed construction | Data reliability and inspectable matching lineage |
-| BL-004 Profile | Preference signal aggregation | Interpretable profile representation |
-| BL-005 Retrieval | Candidate filtering | Controlled pool shaping and rejection traceability |
-| BL-006 Scoring | Deterministic relevance scoring | Faithful contribution-level decision basis |
-| BL-007 Playlist | Constraint-based assembly | Playlist-level quality constraints |
-| BL-008 Transparency | Explanation payload generation | Human-readable, score-grounded justification |
-| BL-009 Observability | Run-level audit aggregation | End-to-end traceability and reproducibility evidence |
+| BL-003 Alignment | Cross-source matching confidence and exclusion traceability | O2, O5 |
+| BL-004 Profile | Uncertainty-aware profile construction and inspectable assumptions | O1, O4 |
+| BL-005 Retrieval | Confidence-aware candidate shaping and rejection diagnostics | O2, O3 |
+| BL-006 Scoring | Deterministic trade-off weighting and contribution traceability | O3, O4 |
+| BL-007 Playlist | Deterministic assembly controls for quality trade-offs | O3, O5 |
+| BL-008 Transparency | Mechanism-linked explanation payload emission | O4, O6 |
+| BL-009 Observability | Run-level provenance, diagnostics, and contract traceability | O4, O5, O6 |
 
-## 3) Requirement Fulfillment Posture
-1. Transparency: implemented with score-grounded explanations; limited by missing counterfactual and full control-causality surfaces.
-2. Controllability: implemented via stage controls; influence-track effect remains weak in current behavior.
-3. Reproducibility: implemented via deterministic pipeline behavior and run-level provenance/hashing.
-4. Observability: implemented via BL-009 aggregated diagnostics and required artifact contracts.
-5. Playlist quality controls: implemented through BL-007 constraints with partial control-policy tunability.
+## 3) Design-to-Evaluation Contract Map
 
-## 4) Design Assumptions Still in Force
-1. Deterministic recommendation behavior is preferred for inspectability and reproducibility goals.
-2. Single-user scope is sufficient for thesis artefact evaluation goals.
-3. Candidate-side features and metadata are sufficient for controllability/transparency evaluation in scope.
+| Evaluation Theme | Required Design Instrumentation | Pass Condition Type |
+| --- | --- | --- |
+| Reproducibility | Deterministic control resolution, run config capture, artifact lineage | Same input/config yields stable outputs within declared contract |
+| Controllability | Explicit control knobs with directional-effect diagnostics | Planned parameter deltas produce observable and attributable output shifts |
+| Transparency fidelity | Contribution-level and rule-level mechanism traces | Explanation claims can be traced to generated mechanism fields |
+| Uncertainty visibility | Confidence and exclusion diagnostics at alignment/profile/retrieval surfaces | Uncertainty is represented explicitly, not inferred post hoc |
+| Bounded guidance quality | Scope and failure-boundary reporting contract | Claims include where results hold and where evidence is limited |
 
-## 5) Known Requirement Gaps
-1. Control-causality requirement is only partially satisfied (no unified per-track causal contract).
-2. Influence-track controllability requirement is partially satisfied (weak measured effect).
-3. Counterfactual explanation requirement is not implemented.
+## 4) Active Assumptions (Rebuild)
+1. Deterministic single-user scope remains the valid boundary for this thesis artefact.
+2. Cross-source uncertainty handling is addressed through explicit confidence and exclusion signaling rather than probabilistic model-family expansion.
+3. Evidence quality depends on explicit control/evidence contracts, not only on output quality metrics.
 
-## 6) Evidence and Governance Linkage
-Implementation-consistency references:
-1. Architecture baseline: `05_design/architecture.md`.
-2. Control posture source: `05_design/CONTROL_SURFACE_REGISTRY.md`.
-3. Transparency posture source: `05_design/TRANSPARENCY_SPEC.md`.
+## 5) Known Open Risks for REB-M3 Transition
+1. Control-causality can drift if control intent/effect/diagnostic linkage is not kept one-to-one.
+2. Explanation fidelity can drift if explanation fields are decoupled from scoring/assembly mechanisms.
+3. Artefact scope can drift if implementation introduces undeclared defaults or out-of-scope adaptation logic.
 
-This map should be updated whenever stage ownership or required artifact contracts change.
+## 6) Governance Linkage
+1. Design authority: `05_design/chapter3_information_sheet.md`.
+2. Rebuild posture authority: `00_admin/thesis_state.md` and `00_admin/timeline.md`.
+3. Decision and change anchors for this lock: `00_admin/decision_log.md` and `00_admin/change_log.md`.
 
+Update this map whenever objective wording, stage ownership, or evaluation evidence contracts change.

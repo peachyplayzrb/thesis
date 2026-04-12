@@ -97,6 +97,20 @@ def main() -> None:
     active_weights = _mapping_from_json(
         _mapping_from_json(score_summary.get("config", {})).get("active_component_weights", {})
     )
+    scoring_config = _mapping_from_json(score_summary.get("config", {}))
+    control_provenance = {
+        "scoring": {
+            "active_component_weights": dict(active_weights),
+            "lead_genre_strategy": scoring_config.get("lead_genre_strategy"),
+            "semantic_overlap_strategy": scoring_config.get("semantic_overlap_strategy"),
+            "signal_mode": scoring_config.get("signal_mode"),
+        },
+        "transparency": {
+            "top_contributor_limit": top_contributor_limit,
+            "blend_primary_contributor_on_near_tie": blend_primary_contributor_on_near_tie,
+            "primary_contributor_tie_delta": primary_contributor_tie_delta,
+        },
+    }
     ordered_components = build_ordered_components(active_weights)
 
     # Load BL-007 playlist (ordered)
@@ -150,6 +164,7 @@ def main() -> None:
                 primary_driver=primary_driver,
                 trace_row=trace_row,
                 why_selected=why_selected,
+                control_provenance=control_provenance,
             )
         )
 

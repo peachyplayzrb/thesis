@@ -67,6 +67,8 @@ def normalize_candidate_row(row: dict[str, str]) -> dict[str, str]:
     normalized = dict(row)
     track_id = (normalized.get("track_id") or "").strip()
     if not track_id:
+        track_id = (normalized.get("spotify_id") or "").strip()
+    if not track_id:
         track_id = (normalized.get("id") or "").strip()
     if not track_id:
         track_id = (normalized.get("ds001_id") or "").strip()

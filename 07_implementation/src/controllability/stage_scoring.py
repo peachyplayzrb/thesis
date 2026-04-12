@@ -25,8 +25,6 @@ def execute_scoring_stage(
     semantic_profile = cast(dict[str, Any], profile["semantic_profile"])
     numeric_feature_profile = cast(dict[str, Any], profile["numeric_feature_profile"])
     candidates = cast(list[dict[str, str]], retrieval_stage["kept_rows"])
-    if not candidates:
-        raise RuntimeError(f"Scenario {scenario_id} has no BL-005 candidates for BL-006")
 
     raw_component_weights = (
         scoring_config.get("component_weights")
@@ -154,19 +152,32 @@ def execute_scoring_stage(
         },
         "counts": {
             "candidates_scored": len(scored_rows),
-            "score_max": round(max(score_values), 6),
-            "score_min": round(min(score_values), 6),
+            "score_max": round(max(score_values), 6) if score_values else 0.0,
+            "score_min": round(min(score_values), 6) if score_values else 0.0,
         },
         "top_candidates": top_candidates,
         "mean_component_contributions": {
-            key: round(component_totals[key] / len(scored_rows), 6) for key in component_totals
+            key: (round(component_totals[key] / len(scored_rows), 6) if scored_rows else 0.0)
+            for key in component_totals
         },
     }
 
-    scored_fields = list(scored_rows[0].keys())
-    if "rank" in scored_fields:
-        scored_fields.remove("rank")
-        scored_fields.insert(0, "rank")
+    scored_fields = [
+        "rank",
+        "track_id",
+        "lead_genre",
+        "matched_genres",
+        "matched_tags",
+        "final_score",
+    ]
+    ordered_components = list(numeric_components) + [
+        component
+        for component in ["lead_genre", "genre_overlap", "tag_overlap"]
+        if component in component_weights
+    ]
+    for component in ordered_components:
+        scored_fields.append(f"{component}_similarity")
+        scored_fields.append(f"{component}_contribution")
     scored_text = csv_text(scored_fields, scored_rows)
     summary_text = json_text(summary)
 

@@ -1,6 +1,6 @@
 # Thesis State
 
-Last updated: 2026-04-12 UTC (architecture rebuild initiated — Chapter 2 confirmed baseline)
+Last updated: 2026-04-12 UTC (REB-M3 tranche-3 hardening checkpoint)
 
 ## REBUILD POSTURE (active from 2026-04-12)
 
@@ -9,10 +9,10 @@ A full architecture rebuild was initiated on 2026-04-12 (D-052).
 **Confirmed good:** Chapter 2 (Literature Review) — finalized, mentor-hardened, citations fully verified (see `08_writing/_versions/chapter2finalv1.md` and `08_writing/chapter2.md`).
 
 **Scrapped / under reconstruction from Chapter 2 outwards:**
-- Research question and objectives (to be re-derived from Chapter 2 themes and gaps)
+- Research question and objectives (re-derived and locked in REB-M1; now active rebuild baseline)
 - All chapter drafts except Chapter 2 (Chapter 1, 3, 4, 5 — treat as legacy skeleton only)
-- Artefact definition and methodology position (to be re-established once RQ is re-derived)
-- `07_implementation/` pipeline — archived/frozen as legacy reference; not the active build target until design reconstruction is complete
+- Artefact definition and methodology position (re-established; artefact switched to design-contract-first form for REB-M3)
+- `07_implementation/` legacy behavior remains frozen as historical reference; REB-M3 rebuild work proceeds only under the locked Chapter 3 control/evidence contract
 
 **Rebuild entry point:** Use Chapter 2 themes and unresolved contradictions (transparency vs accuracy, explanation fidelity vs persuasiveness, candidate generation as first-order decision, cross-source alignment uncertainty, multi-objective playlist quality) to re-derive the RQ, then rebuild design → implementation → evaluation in that order.
 
@@ -21,6 +21,84 @@ A full architecture rebuild was initiated on 2026-04-12 (D-052).
 2. Re-derive the RQ and objectives that address those gaps in an engineering/design-evidence framing
 3. Rebuild Chapter 3 (design) to anchor directly in those Chapter 2 conclusions
 4. Rebuild implementation and evaluation chapters from the re-grounded design
+
+### REB-M1 Closure Checkpoint (2026-04-12)
+
+- Rebuild milestone outcome: RQ and objectives are now re-derived from confirmed Chapter 2 tensions.
+- Decision anchors: `D-053` (RQ and objective derivation) and `D-054` (scope and artefact lock).
+
+#### Active title
+Engineering an Auditable and Controllable Playlist Generation Pipeline Under Cross-Source Preference Uncertainty
+
+#### Active research question
+How can a deterministic playlist generation pipeline be engineered and evaluated so that preference inference, candidate generation, and playlist assembly remain transparent, controllable, and reproducible under cross-source uncertainty and multi-objective playlist trade-offs?
+
+#### Active objectives
+1. Formalize uncertainty-aware preference profiling from implicit cross-source signals and make profile assumptions explicitly inspectable.
+2. Implement confidence-aware cross-source alignment and candidate-generation controls that expose exclusion logic and alignment risk.
+3. Engineer deterministic scoring and playlist assembly mechanisms with explicit controls for coherence, diversity, novelty, and ordering trade-offs.
+4. Produce mechanism-linked explanation and run-level observability outputs that distinguish explanation fidelity from persuasive narrative.
+5. Evaluate reproducibility, controllability, and objective-trade-off behavior through structured, repeatable experiments.
+6. Derive bounded engineering design guidance that states where conclusions hold and where evidence remains limited.
+
+#### Active artefact definition (rebuild lock)
+A deterministic, single-user playlist generation pipeline with explicit uncertainty signaling at profile and alignment stages, confidence-aware candidate-generation controls, traceable scoring and assembly trade-off controls, mechanism-linked explanation outputs, and run-level evidence for reproducibility and controllability.
+
+#### Active methodology position (rebuild lock)
+Design Science Research with a literature-grounded reconstruction flow from confirmed Chapter 2 gaps to RQ and objectives, then to design, implementation, and evaluation. Contribution focus is engineering evidence quality and traceability, not model-family novelty.
+
+#### Active scope boundary (rebuild lock)
+Single-user deterministic scope remains active. The thesis contribution is bounded to auditable engineering behavior under cross-source uncertainty; collaborative/deep model novelty and large-scale user studies remain out of scope.
+
+### REB-M2 Design Lock Checkpoint (2026-04-12)
+
+- Rebuild milestone outcome: Chapter 3 design authority is now objective-anchored and explicitly tied to control/evidence contracts.
+- Decision anchor: `D-055`.
+
+#### Locked design-control surfaces
+1. `05_design/chapter3_information_sheet.md` now acts as the active Chapter 3 design blueprint under rebuild posture.
+2. `05_design/requirements_to_design_map.md` now maps O1 to O6 into stage responsibilities and evidence contracts.
+
+#### REB-M3 readiness rule
+Implementation restart must preserve one-to-one linkage among objective intent, exposed controls, and measurable evidence artifacts. Hidden default behavior is out of contract.
+
+### REB-M3 Kickoff Checkpoint (2026-04-12)
+
+- Rebuild milestone outcome: artefact definition has been switched from checkpoint-level wording to an implementation-entry contract derived from the REB-M2 design lock.
+- Decision anchor: `D-056`.
+
+#### Active artefact definition (implementation-entry contract)
+A deterministic, single-user playlist generation artefact rebuilt under explicit objective-to-control-to-evidence contracts, where cross-source uncertainty signaling, confidence-aware alignment/candidate shaping, controllable scoring/assembly trade-offs, mechanism-linked explanations, and run-level reproducibility/controllability evidence are mandatory outputs rather than optional diagnostics.
+
+#### REB-M3 execution boundary
+Implementation changes are valid only when they can be traced to O1 to O6 design requirements and produce measurable evidence fields declared in the REB-M2 map.
+
+### REB-M3 Tranche-1 Checkpoint (2026-04-12)
+
+- Tranche scope: O1 to O3 entry surfaces (BL-003 to BL-006 evidence contract checks).
+- Decision anchor: `D-057`.
+
+#### Implemented tranche artifact
+`07_implementation/src/quality/reb_m3_tranche1_gate.py` provides an executable gate for uncertainty-aware profiling evidence, alignment/exclusion confidence evidence, and deterministic scoring trade-off control evidence.
+
+### REB-M3 Tranche-2 Checkpoint (2026-04-12)
+
+- Tranche scope: O4 to O6 entry surfaces (BL-007 to BL-011 mechanism, observability, reproducibility, controllability, and bounded-guidance evidence checks).
+- Decision anchor: `D-058`.
+
+#### Implemented tranche artifact
+`07_implementation/src/quality/reb_m3_tranche2_gate.py` provides an executable gate for mechanism-linked explanation/observability evidence, reproducibility/controllability evaluation evidence, and bounded failure-boundary reporting evidence.
+
+### REB-M3 Tranche-3 Checkpoint (2026-04-12)
+
+- Tranche scope: control-causality and validity-boundary contract closure across BL-008/BL-009/BL-011 under REB-M3 gate enforcement.
+- Decision anchor: `D-062`.
+
+#### Implemented tranche artifact and closure evidence
+`07_implementation/src/quality/reb_m3_tranche3_gate.py` is now passing with run `REB-M3-TRANCHE3-GATE-20260412-140805-553785` (`9/9` checks), after correcting BL-009 report schema placement so `validity_boundaries` is emitted at the top-level contract location in `07_implementation/src/observability/main.py`.
+
+#### Follow-up hardening checkpoint
+BL-009 section validation is now hardened so `ensure_required_sections` fails fast when top-level `validity_boundaries` is missing, closing the regression gap left after the initial tranche-3 runtime fix. This follow-up is anchored by `D-063` / `C-292` and revalidated by pytest (`338/338`), validate-only (`BL013-ENTRYPOINT-20260412-141352-373476`, `BL014-SANITY-20260412-141423-183313`, `28/28`), and tranche-3 gate rerun `REB-M3-TRANCHE3-GATE-20260412-141431-157169` (`9/9`).
 
 ---
 

@@ -178,6 +178,27 @@ BL-011 controllability evaluation:
 PYTHONPATH=. python controllability/main.py
 ```
 
+REB-M3 tranche-1 gate (O1 to O3 evidence surfaces):
+
+```bash
+# From 07_implementation/src
+PYTHONPATH=. python quality/reb_m3_tranche1_gate.py
+```
+
+REB-M3 tranche-2 gate (O4 to O6 evidence surfaces):
+
+```bash
+# From 07_implementation/src
+PYTHONPATH=. python quality/reb_m3_tranche2_gate.py
+```
+
+REB-M3 tranche-3 gate (control-causality hardening surfaces):
+
+```bash
+# From 07_implementation/src
+PYTHONPATH=. python quality/reb_m3_tranche3_gate.py
+```
+
 ## Output Artifacts
 
 Core artifacts (under src/*/outputs):

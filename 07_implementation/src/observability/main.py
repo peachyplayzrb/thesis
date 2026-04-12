@@ -84,6 +84,7 @@ def ensure_required_sections(run_log: dict) -> None:
         "ingestion_alignment_diagnostics",
         "stage_diagnostics",
         "exclusion_diagnostics",
+        "validity_boundaries",
         "output_artifacts",
     ]
     missing = [key for key in required_keys if key not in run_log]
@@ -474,6 +475,35 @@ def main() -> None:
                     else None
                 ),
                 "sample_exclusions_by_rule": assembly_rule_samples,
+            },
+        },
+        "validity_boundaries": {
+            "scope": {
+                "single_user_deterministic": True,
+                "source_family": input_scope.get("source_family"),
+                "interaction_types_included": interaction_types_included,
+            },
+            "known_limits": {
+                "explanation_fidelity_vs_persuasiveness": (
+                    "BL-008 explanations are mechanism-linked, but human usefulness does not by itself prove full causal fidelity."
+                ),
+                "candidate_generation_dependency": (
+                    "Ranking and playlist outcomes are bounded by BL-005 candidate shaping and exclusion behavior."
+                ),
+                "reproducibility_contract_boundary": (
+                    "Reproducibility claims are bounded to declared fixed inputs/config snapshots and stable-content checks."
+                ),
+            },
+            "run_caveats": {
+                "bl003_unmatched_events": safe_int(bl003_counts.get("unmatched"), 0),
+                "bl003_match_rate_actual": safe_float(
+                    _object_mapping(bl003_counts.get("match_rate_validation")).get("actual_match_rate"),
+                    0.0,
+                ),
+                "bl007_undersized_playlist": bool(
+                    _object_mapping(bl007_report.get("undersized_playlist_warning")).get("is_undersized", False)
+                ),
+                "bl010_retry_required": None,
             },
         },
         "output_artifacts": {

@@ -20,6 +20,7 @@ from alignment.constants import (
 from alignment.models import AlignmentBehaviorControls, MatchTrace, MatchedEvent, SourceEvent
 from alignment.resolved_context import AlignmentResolvedContext
 from shared_utils.parsing import parse_int
+from shared_utils.index_builder import resolve_ds001_id
 from shared_utils.text_matching import (
     choose_best_duration_match,
     first_artist,
@@ -193,7 +194,8 @@ def match_events(
 
         trace.match_status = MATCH_STATUS_MATCHED
         trace.match_method = match_method
-        trace.matched_ds001_id = matched_row.get("id", "")
+        matched_ds001_id = resolve_ds001_id(matched_row)
+        trace.matched_ds001_id = matched_ds001_id
         trace.matched_song = matched_row.get("song", "")
         trace.matched_artist = matched_row.get("artist", "")
         trace.duration_delta_ms = "" if duration_delta is None else str(duration_delta)
@@ -220,7 +222,7 @@ def match_events(
             fuzzy_title_score=fuzzy_title_score,
             fuzzy_artist_score=fuzzy_artist_score,
             fuzzy_combined_score=fuzzy_combined_score,
-            ds001_id=matched_row.get("id", ""),
+            ds001_id=matched_ds001_id,
             ds001_spotify_id=matched_row.get("spotify_id", ""),
             artist=matched_row.get("artist", ""),
             song=matched_row.get("song", ""),

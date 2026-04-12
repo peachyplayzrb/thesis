@@ -100,6 +100,7 @@ def build_track_payload(
     primary_driver: Mapping[str, object],
     trace_row: Mapping[str, object],
     why_selected: str,
+    control_provenance: Mapping[str, object] | None = None,
 ) -> dict[str, object]:
     exclusion_reason = str(trace_row.get("exclusion_reason", ""))
     assembly_context = {
@@ -118,6 +119,7 @@ def build_track_payload(
         "top_score_contributors": top_contributors,
         "score_breakdown": score_breakdown,
         "assembly_context": assembly_context,
+        "control_provenance": dict(control_provenance or {}),
     }
 
 

@@ -3,18 +3,7 @@
 Last updated: 2026-04-12
 
 ## Active
-
-### UI-014 — Architecture rebuild: re-derive RQ and objectives from Chapter 2 (opened 2026-04-12)
-- **priority:** critical
-- **status:** open
-- **trigger:** Full architecture rebuild initiated by user (D-052). Chapter 2 is the only confirmed component. RQ, objectives, artefact definition, and all chapters except Chapter 2 must be reconstructed from Chapter 2 outwards.
-- **blocker for:** Everything — no new implementation, design, or chapter writing can proceed until the RQ is re-derived and confirmed.
-- **required actions:**
-  1. Identify the key unresolved contradictions and gaps Chapter 2 surfaces (transparency vs accuracy, explanation fidelity vs persuasiveness, candidate generation as first-order decision, cross-source alignment uncertainty, multi-objective playlist quality tension)
-  2. Re-derive a research question and objectives that address those gaps in an engineering/design-evidence framing
-  3. Confirm scope and artefact definition before any chapter drafting or implementation restarts
-  4. Update `00_admin/thesis_state.md` and `02_foundation/` files once RQ is confirmed
-- **risk if unresolved:** No thesis chapters, design, or implementation will be grounded in the confirmed literature; structural incoherence persists
+None.
 
 
 Active-set sync note (2026-03-25 18:25 UTC): Open items are UI-003 (citation package closure) and UI-013 (pipeline optimization and evidence-hygiene closure).
@@ -36,6 +25,13 @@ Active-set sync note (2026-04-09 runtime-root governance): Confirmed no active b
 Active-set sync note (2026-04-10 zero-trust audit closeout): Confirmed no new unresolved blocker from the Chapter 2 zero-trust reference audit cycle; all citations extracted from the frozen Chapter 2 baseline received manual verdicts, and no citation remained unverifiable.
 
 ## Resolved (Recent)
+
+- UI-014 (2026-04-12): Architecture rebuild RQ/objective derivation blocker.
+	- resolution: Closed. RQ and objective set were derived from confirmed Chapter 2 tensions, scope and artefact definition were locked for rebuild posture, and governance/foundation mirrors were synchronized.
+	- evidence:
+		1. `00_admin/decision_log.md` (`D-053`, `D-054`).
+		2. `00_admin/change_log.md` (`C-283`).
+		3. `00_admin/thesis_state.md`, `02_foundation/current_title_and_rq.md`, `02_foundation/objectives.md`, `02_foundation/contribution_statement.md`, `02_foundation/assumptions.md`, `02_foundation/limitations.md`, `00_admin/timeline.md`.
 
 - UI-003 (2026-03-19): Thesis-wide citation verification and literature leverage synthesis closure.
 	- resolution: Closed at control-record level. Claim-citation matrix expansion for Chapters 3 to 5 is complete, verdict labels were recorded (`supported`, `partially_supported`, `weak_support`, `mismatch`), and chapter-targeted hardening notes were documented for remaining weak/mismatch text locations.

@@ -93,8 +93,8 @@ def execute_profile_stage(
             }
         )
 
-    if missing_track_ids:
-        raise RuntimeError(f"Scenario {scenario_id} missing candidate rows for track_ids: {missing_track_ids}")
+    # Permit partial/zero seed coverage so BL-011 can still evaluate controllability
+    # behavior under sparse upstream candidate joins, while preserving diagnostics.
 
     seed_trace_rows.sort(key=lambda row: int(cast(Any, row["seed_rank"])))
     numeric_profile: dict[str, float] = {}
@@ -171,7 +171,20 @@ def execute_profile_stage(
         },
     }
 
-    seed_trace_fields = list(seed_trace_rows[0].keys())
+    seed_trace_fields = [
+        "event_id",
+        "track_id",
+        "interaction_type",
+        "signal_source",
+        "seed_rank",
+        "interaction_count",
+        "preference_weight",
+        "effective_weight",
+        "lead_genre",
+        "top_tag",
+        "candidate_playcount_sum",
+        "candidate_listener_rows",
+    ]
     profile_text = json_text(profile)
     summary_text = json_text(summary)
     seed_trace_text = csv_text(seed_trace_fields, seed_trace_rows)

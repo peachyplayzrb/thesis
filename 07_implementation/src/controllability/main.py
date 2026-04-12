@@ -222,6 +222,29 @@ def main() -> None:
         )
 
     results_summary = evaluate_results_status(scenario_records)
+
+    def _expects_no_shift(record: dict[str, object]) -> bool:
+        expected_effect = str(record.get("expected_effect", "")).lower()
+        scenario_id = str(record.get("scenario_id", "")).strip().lower()
+        return ("no shift" in expected_effect) or ("not expected" in expected_effect) or scenario_id in {"fuzzy_enabled_strict"}
+
+    no_op_control_diagnostics = []
+    for record in scenario_records:
+        if record.get("scenario_id") == "baseline":
+            continue
+        comparison = _mapping(record.get("comparison_to_baseline"))
+        observable_shift = bool(comparison.get("observable_shift", False))
+        if (not observable_shift) and (not _expects_no_shift(record)):
+            no_op_control_diagnostics.append(
+                {
+                    "scenario_id": record.get("scenario_id"),
+                    "control_surface": record.get("control_surface"),
+                    "expected_effect": record.get("expected_effect"),
+                    "candidate_pool_size_delta": comparison.get("candidate_pool_size_delta"),
+                    "playlist_overlap_ratio": comparison.get("playlist_overlap_ratio"),
+                }
+            )
+
     report = {
         "run_metadata": {
             "run_id": run_id,
@@ -244,7 +267,11 @@ def main() -> None:
             "repeat_method": "each scenario was executed twice with identical parameters and compared via stable stage hashes",
         },
         "scenario_results": scenario_report_records,
-        "results": results_summary,
+        "results": {
+            **results_summary,
+            "no_op_control_diagnostics": no_op_control_diagnostics,
+            "no_op_controls_count": len(no_op_control_diagnostics),
+        },
         "output_artifacts": {
             "config_snapshot_path": relpath(config_snapshot_path, root),
             "run_matrix_path": relpath(run_matrix_path, root),

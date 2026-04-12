@@ -30,7 +30,7 @@ from alignment.resolved_context import AlignmentResolvedContext, resolve_alignme
 from alignment.runtime_scope import apply_input_scope_filters
 from alignment.weighting import to_event_rows
 from shared_utils.io_utils import load_csv_rows
-from shared_utils.index_builder import build_ds001_indices
+from shared_utils.index_builder import build_ds001_indices, resolve_ds001_id
 from shared_utils.path_utils import impl_root
 
 
@@ -236,9 +236,9 @@ class AlignmentStage:
         ds001_rows = load_csv_rows(paths.ds001_path)
         by_spotify_id, by_title_artist, by_artist = build_ds001_indices(ds001_rows)
         by_ds001_id = {
-            str(row.get("id", "")).strip(): row
+            resolve_ds001_id(row): row
             for row in ds001_rows
-            if row.get("id", "").strip()
+            if resolve_ds001_id(row)
         }
         events: list[dict[str, str]] = []
         for source in SOURCE_TYPES:
