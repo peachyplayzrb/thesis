@@ -5,10 +5,10 @@ Ordering convention (standardized 2026-03-24):
 - Entry IDs remain unique identifiers, but physical entry order reflects historical insertion timing (not strict numeric sorting).
 - New entries must be appended at the end and may include `superseded_by` when a prior decision is replaced.
 
-Maintenance snapshot (2026-04-08):
-- Highest decision ID currently present: `D-045`
-- Total decision entries: 41
-- Status distribution: accepted=32, superseded=3, rejected=1
+Maintenance snapshot (2026-04-11):
+- Highest decision ID currently present: `D-051`
+- Total decision entries: 45
+- Status distribution: accepted=36, superseded=3, rejected=1
 - ID integrity check: no duplicate decision IDs detected
 
 Current posture snapshot (2026-03-25):
@@ -1247,3 +1247,68 @@ review_date: none
 - evidence_basis: `07_implementation/scripts/autopilot_launch.ps1`, `07_implementation/scripts/autopilot_report.py`, `.vscode/tasks.json`, `00_admin/handoff_friend_chat_playbook.md`, `00_admin/change_log.md` (C-224).
 - impacted_files: `07_implementation/scripts/autopilot_launch.ps1`, `07_implementation/scripts/autopilot_report.py`, `.vscode/tasks.json`, `00_admin/handoff_friend_chat_playbook.md`, `00_admin/decision_log.md`, `00_admin/change_log.md`
 - next_steps: Validate launcher modes in live runs, confirm report artifact quality for both pass and fail BL-014 outcomes, and then extend to state-aware routing in a subsequent phase.
+
+## D-047
+- date: 2026-04-09
+- entity_id: governance and instruction surface simplification
+- proposed_by: user + Copilot
+- status: accepted
+- decision: Adopt a core-file governance workflow that runs on natural-language plus agents without prompt-file dependence and without requiring missing implementation tracking files. Active startup context is now `thesis_state`, `timeline`, `change_log`, `decision_log`, `unresolved_issues`, and `recurring_issues`.
+- context: The prior workflow expected `07_implementation/backlog.md` and `07_implementation/experiment_log.md`, which are absent in the current repo, and still carried prompt-era startup assumptions. This created avoidable startup friction and stale dependency checks.
+- alternatives_considered: Recreate backlog/experiment files as stubs (rejected: introduces empty governance artifacts and extra maintenance); keep prompt files active as optional-but-present utilities (rejected: unnecessary surface area after natural-language workflow adoption); leave current setup unchanged and rely on operator memory (rejected: repeat startup failures).
+- rationale: Consolidating on existing core governance files keeps workflow robust and predictable while reducing overhead. Archiving prompts and non-core admin docs preserves history without keeping inactive surfaces in the active control path.
+- evidence_basis: `.github/copilot-instructions.md`, `.github/agents/thesis-ask.agent.md`, `.github/agents/thesis-autopilot.agent.md`, `00_admin/operating_protocol.md`, `00_admin/README.md`, `00_admin/thesis_state.md`, `.github/archives/prompts_2026-04-09/`, `00_admin/archives/admin_consolidation_2026-04-09/`, `00_admin/change_log.md` (C-226).
+- impacted_files: `.github/copilot-instructions.md`, `.github/agents/thesis-ask.agent.md`, `.github/agents/thesis-autopilot.agent.md`, `00_admin/operating_protocol.md`, `00_admin/README.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`, `.github/prompts/*.prompt.md`, `00_admin/Artefact_MVP_definition.md`, `00_admin/evaluation_plan.md`, `00_admin/methodology_definition.md`, `00_admin/thesis_scope_lock.md`, `00_admin/handoff_friend_chat_playbook.md`, `00_admin/autopilot_session_2026-04-07-221646.md`, `00_admin/autopilot_session_2026-04-07-222549.md`, `00_admin/INGESTION_DECACHING_CHANGELOG_2026-03-28.md`.
+- next_steps: Keep periodic integrity checks for stale references and only reintroduce additional workflow files if they become active, with explicit checklist updates.
+
+## D-048
+- date: 2026-04-09
+- entity_id: active runtime/workflow surface authority
+- proposed_by: user + Copilot
+- status: accepted
+- decision: Explicitly enforce `07_implementation/` as the only active runtime/workflow surface and treat `_scratch/` (including `_scratch/final_artefact_bundle/`) as reference-only unless the user explicitly asks for historical inspection or edits there.
+- context: Repeated session friction showed stale references to `07_implementation/ACTIVE_BASELINE.md` while the only remaining baseline markdown file lived under `_scratch/final_artefact_bundle/ACTIVE_BASELINE.md`, creating ambiguity about active authority.
+- alternatives_considered: Restore `07_implementation/ACTIVE_BASELINE.md` as a live control file (rejected: revives stale surface and duplicates authority); leave references unchanged and rely on manual interpretation (rejected: recurring confusion risk).
+- rationale: Keeping one active runtime root (`07_implementation`) and clearly labeling `_scratch` as historical minimizes operator drift and keeps workflow behavior deterministic across sessions and collaborators.
+- evidence_basis: `.github/copilot-instructions.md`, `.github/agents/thesis-ask.agent.md`, `.github/agents/thesis-autopilot.agent.md`, `00_admin/README.md`, `_scratch/final_artefact_bundle/ACTIVE_BASELINE.md`, `00_admin/recurring_issues.md` (RI-006).
+- impacted_files: `.github/copilot-instructions.md`, `.github/agents/thesis-ask.agent.md`, `.github/agents/thesis-autopilot.agent.md`, `00_admin/README.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`, `00_admin/unresolved_issues.md`, `00_admin/recurring_issues.md`, `_scratch/final_artefact_bundle/ACTIVE_BASELINE.md`, `00_admin/decision_log.md`, `00_admin/change_log.md`
+- next_steps: Keep stale-path integrity checks in normal admin sync waves and avoid reintroducing active-control references inside `_scratch`.
+
+## D-049
+- date: 2026-04-09
+- entity_id: config-first final artefact wrapper architecture
+- proposed_by: user + Copilot
+- status: accepted
+- decision: Implement the new final artefact as a config-first package under `07_implementation/final_artefact/` that reuses the validated `07_implementation/src` pipeline as the execution engine, requires one explicit artefact config per run, generates the orchestration-compatible `run-config-v1` payload from that config, and removes wrapper-level hidden defaults such as a hardcoded profile name.
+- context: The user requested a new finalized artefact surface where operator-facing behavior is not hidden in code defaults and can be controlled from one config folder, while preserving correctness and avoiding an unnecessary full rewrite of the validated pipeline.
+- alternatives_considered: Keep using `07_implementation/main.py` with the hardcoded v1f profile and forced refresh-seed flag (rejected: operator-facing behavior remains hidden in code); rewrite the full pipeline into a new standalone runtime immediately (rejected: high regression risk and duplicated logic); copy old archived final-artefact surfaces back into active use (rejected: revives stale authority and outdated packaging assumptions).
+- rationale: A config-first wrapper over the existing validated pipeline gives one operator-facing control surface without discarding proven stage behavior. Generating the current orchestration run-config from the richer artefact config preserves compatibility while opening a path to move additional path, quality, reporting, and runtime controls into one schema over subsequent iterations.
+- evidence_basis: `07_implementation/final_artefact/main.py`, `07_implementation/final_artefact/core/app_config.py`, `07_implementation/final_artefact/core/runner.py`, `07_implementation/final_artefact/config/profiles/final_artefact_config_v1.json`, `07_implementation/tests/test_final_artefact_app_config.py`, `07_implementation/tests/test_final_artefact_runner.py`, `07_implementation/src/orchestration/main.py`, `07_implementation/src/orchestration/config_resolver.py`, `00_admin/change_log.md` (C-230).
+- impacted_files: `07_implementation/final_artefact/**`, `07_implementation/tests/test_final_artefact_app_config.py`, `07_implementation/tests/test_final_artefact_runner.py`, `07_implementation/tests/conftest.py`, `07_implementation/src/orchestration/main.py`, `07_implementation/src/orchestration/config_resolver.py`, `07_implementation/tests/test_orchestration_stage_payload_handoff.py`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`
+- next_steps: Migrate additional operator-facing controls into the artefact config schema, starting with path controls, quality/validation policy, and output/reporting policy, while keeping BL-013/BL-014 validation green on each iteration.
+
+## D-050
+- date: 2026-04-10
+- entity_id: chapter2 full-strength citation-fit closure
+- proposed_by: user + Copilot
+- status: accepted
+- decision: Execute a full-strength Chapter 2 wording-hardening pass that resolves all zero-trust `partially_supported` rows by narrowing overextended causal/scope phrasing to evidence-bounded claims, then synchronize QC ledgers to the revised text baseline.
+- context: The report-only zero-trust pass closed at `supported=23`, `partially_supported=8`, with residual risk concentrated in wording sharpness. The user requested implementation start to finish Chapter 2.
+- alternatives_considered: Keep report-only posture without chapter edits (rejected: leaves avoidable partial-support risk); replace citations with new sources (rejected for this pass: unnecessary if wording can be evidence-aligned under existing mapped PDFs).
+- rationale: Precision rewording preserves chapter structure and citation coverage while maximizing direct claim-to-evidence fit under the existing verified PDF set.
+- evidence_basis: `08_writing/chapter2.md`, `09_quality_control/chapter2_reference_audit_zero_trust_2026-04-10.md`, `09_quality_control/citation_checks.md`, `09_quality_control/claim_evidence_map.md`, `09_quality_control/chapter2_verbatim_audit.md`.
+- impacted_files: `08_writing/chapter2.md`, `09_quality_control/chapter2_reference_audit_zero_trust_2026-04-10.md`, `09_quality_control/citation_checks.md`, `09_quality_control/claim_evidence_map.md`, `00_admin/decision_log.md`, `00_admin/change_log.md`
+- next_steps: Complete external submission-format and packaging checks, then close the remaining submission-wide gate in `09_quality_control/chapter_readiness_checks.md`.
+
+## D-051
+- date: 2026-04-11
+- entity_id: chapter2 literature-purity implementation rule
+- proposed_by: user + Copilot
+- status: accepted
+- decision: Apply a literature-purity rewrite rule to Chapter 2 draft variants: remove hidden methodology/system-design language, preserve citation set and chapter structure, and strengthen explicit paper-versus-paper adjudication where literature conflicts.
+- context: Mentor feedback highlighted that Chapter 2 still sounded partly like system defense and methodology guidance instead of a literature-critical chapter. The user requested immediate implementation start.
+- alternatives_considered: Keep current wording and defer to Chapter 3 separation later (rejected: leaves mentor-raised risk unaddressed); perform a full structural rewrite with new sources (rejected: unnecessary scope expansion for this pass).
+- rationale: A bounded wording/function correction directly addresses chapter-function risk while preserving established evidence mapping and avoiding citation drift.
+- evidence_basis: `08_writing/_versions/chapter2finalv1.md`, `09_quality_control/citation_checks.md`, mentor-feedback constraints recorded in active session context.
+- impacted_files: `08_writing/_versions/chapter2finalv1.md`, `00_admin/decision_log.md`, `00_admin/change_log.md`
+- next_steps: Run a final comparative-density check and, if approved, promote the revised version into canonical Chapter 2 flow.

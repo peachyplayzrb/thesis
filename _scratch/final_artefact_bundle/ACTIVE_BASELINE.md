@@ -1,5 +1,8 @@
 # Active Baseline Authority
 
+> Status note (2026-04-09): This file is retained for historical/reference use under `_scratch` and is **not** the active runtime/workflow authority.
+> Active runtime surface is `07_implementation/` (entrypoint: `07_implementation/main.py`).
+
 Last updated: 2026-03-27 20:36 UTC
 
 ## Purpose

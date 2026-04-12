@@ -4,13 +4,20 @@
 This repo must work well when the user starts with ordinary natural-language chat messages.
 
 Do not depend on slash prompts as the main entry path.
-Treat `.github/prompts/` as optional helpers for recurring structured tasks, not as the required way to start work.
+Do not depend on `.github/prompts/` for normal operation; the active workflow is natural-language plus agent routing.
 
 When a new chat begins, infer the intended mode from the user request:
 - Ask-style requests: explanation, review, triage, repo navigation, impact analysis, planning, or "what next" questions.
 - Plan/Autopilot-style requests: implementation, writing updates, repo edits, running checks, logging, or end-to-end execution.
 
 If the request is ambiguous, infer the lightest reasonable mode first, explain what you are checking, and continue without waiting for the user to restate the request in a predefined format.
+
+## Active Runtime Surface Rule
+The canonical active implementation/runtime surface is `07_implementation/`.
+
+- Treat `_scratch/` (including `_scratch/final_artefact_bundle/`) as legacy/reference material unless the user explicitly asks to work there.
+- Do not infer active workflow authority from `_scratch` files when `07_implementation` and `00_admin` governance files exist.
+- If stale references point to removed paths (for example `07_implementation/ACTIVE_BASELINE.md`), align workflow guidance to active surfaces instead of reviving removed files.
 
 ## Session Start Rule
 At the start of every new chat session, and before any substantial implementation, writing, or research work, perform the following checklist WITHOUT waiting to be asked.
@@ -22,13 +29,12 @@ For quick lightweight questions that only need a brief explanation and no repo c
 For Plan/Autopilot or any edit/run request, always run the full checklist first:
 
 1. Read `00_admin/thesis_state.md` — confirm current title, RQ, and scope are unchanged.
-2. Read `07_implementation/backlog.md` — identify which items are `done`, `in-progress`, and `todo`.
-3. Read `07_implementation/experiment_log.md` — check whether every `done` backlog item has a corresponding `EXP-XXX` entry. If any are missing, create them.
-4. Read `00_admin/change_log.md` — confirm the highest `C-###` ID and check for any empty/stub entries. Fix any stubs found.
-5. Read `00_admin/decision_log.md` — confirm the highest `D-###` ID.
-6. Read `00_admin/unresolved_issues.md` — note any open issues that may block current work.
-7. Read `00_admin/recurring_issues.md` — review known friction patterns to avoid repeating them.
-8. Report what was found and what (if anything) was fixed before proceeding.
+2. Read `00_admin/timeline.md` — confirm current execution posture and next bounded work.
+3. Read `00_admin/change_log.md` — confirm highest `C-###` ID and check for empty/stub entries.
+4. Read `00_admin/decision_log.md` — confirm highest `D-###` ID.
+5. Read `00_admin/unresolved_issues.md` — note blockers that affect this session.
+6. Read `00_admin/recurring_issues.md` — apply known friction-prevention patterns.
+7. Report findings (including any inconsistencies fixed) before starting edits.
 
 This checklist must run before any implementation, writing, or research work begins in the session.
 
@@ -58,38 +64,37 @@ When the user says things like:
 - "finish the current work"
 
 use thesis state, backlog, unresolved issues, experiment log, and the current file/editor context to determine the most likely continuation path.
+use thesis state, timeline, unresolved issues, recent decisions/changes, and the current file/editor context to determine the most likely continuation path.
 
 ## Collaborator Handoff Mode
 If a collaborator is taking over this repo, enforce the same workflow used by the original owner:
 - Run the session-start checklist automatically on the first task message in every new chat.
 - Use the same checklist and logging strictness as the original workflow.
-- Keep implementation updates synchronized across backlog, experiment, decision, change, and unresolved-issues files.
+- Keep implementation updates synchronized across thesis state, timeline, decision, change, unresolved-issues, and recurring-issues files.
 - If a request is ambiguous, resolve ambiguity without skipping governance updates.
 - Before ending chat, run a full logging-completeness pass and report any gaps fixed.
 
 ## Session Close Rule
 At the end of every chat session where any file updates, run activity, or governance changes occurred:
-1. Verify backlog, experiment, change, decision, and unresolved-issues synchronization.
+1. Verify thesis state, timeline, change, decision, unresolved-issues, and recurring-issues synchronization.
 2. Apply any missing updates directly.
 3. Report the closure status and remaining blockers.
 
 Do this automatically without requiring the user to type "log everything".
 
 ## Prompt Role
-Prompt files under `.github/prompts/` are optional specialist utilities for recurring structured tasks.
+Prompt files are not part of the active workflow surface for this repo.
 
-Do not assume the user will invoke them.
-Do not redirect the user into prompts when the same work can be inferred from a normal chat request.
+Do not assume prompt invocation.
+Do not redirect the user into prompts when the same work can be inferred from normal chat requests.
 
 ## Implementation Session Rule
 During any implementation session:
-- Before writing code for a backlog item, create an `EXP-XXX` entry in `07_implementation/experiment_log.md` with `status: planned`.
-- After the run completes (pass or fail), update that entry with actual results, metrics, artifact paths, and `deterministic_repeat_checked`.
 - If a design choice is made during implementation (e.g. which algorithm, which schema field, which threshold), log a `D-###` entry in `00_admin/decision_log.md`.
 - After any meaningful set of changes to tracked files, add a `C-###` entry in `00_admin/change_log.md`.
-- Update the backlog item status in `07_implementation/backlog.md` as soon as work changes state.
+- Synchronize `00_admin/thesis_state.md`, `00_admin/timeline.md`, and `00_admin/unresolved_issues.md` whenever implementation posture or blockers change.
 
-For repo-tooling or workflow customizations that are not tied cleanly to an existing BL item, still keep change and decision logs synchronized and create an experiment-log entry when the work meaningfully changes how execution in this repo is supposed to happen.
+For repo-tooling or workflow customizations that are not tied to a specific BL item, still keep change and decision logs synchronized and include concrete artifact or validation evidence in the change entry.
 
 ## Automatic Improvement Rule
 This repo should become easier to use over time.
@@ -115,7 +120,7 @@ Examples of friction that should trigger improvement:
 - Update linked files when new evidence affects themes, design, or gap statements.
 - Keep terminology consistent with current thesis state.
 - Do not overstate claims; flag weak support in `09_quality_control/citation_checks.md`.
-- Add mentor questions to `00_admin/mentor_question_log.md` when ambiguity affects assessment risk.
+- Record unresolved mentor-dependent ambiguity in `00_admin/unresolved_issues.md` if it can affect assessment risk.
 - Prefer concise, reusable outputs over long freeform text.
 - Follow schemas and ID formats in `00_admin/operating_protocol.md`.
 

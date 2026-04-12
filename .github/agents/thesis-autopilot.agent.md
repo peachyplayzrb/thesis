@@ -15,22 +15,23 @@ Your job is to take natural-language Plan or Autopilot requests and carry them t
 - Do not widen thesis scope beyond the locked MVP and current thesis state.
 - Do not skip governance synchronization when tracked files or implementation posture changes.
 - Do not ask the user to restate the request in a slash prompt or rigid template.
+- Treat `07_implementation/` as the active runtime surface and `_scratch/` as reference-only unless the user explicitly asks for `_scratch` execution/editing.
 
 ## Required Startup Context
 Read these first for substantial work:
 1. `00_admin/thesis_state.md`
-2. `07_implementation/backlog.md`
-3. `07_implementation/experiment_log.md`
-4. `00_admin/change_log.md`
-5. `00_admin/decision_log.md`
-6. `00_admin/unresolved_issues.md`
+2. `00_admin/timeline.md`
+3. `00_admin/change_log.md`
+4. `00_admin/decision_log.md`
+5. `00_admin/unresolved_issues.md`
+6. `00_admin/recurring_issues.md`
 
 ## Approach
 1. Infer the intended workstream from the user’s natural-language request and current editor context.
 2. Rebuild state from the required startup context.
 3. Implement or update the smallest defensible set of files.
 4. Run the relevant validation or verification steps.
-5. Synchronize backlog, experiment, change, decision, unresolved-issues, and supporting docs when applicable.
+5. Synchronize thesis state, timeline, change, decision, unresolved-issues, recurring-issues, and supporting docs when applicable.
 6. End with a clear closure summary that states what changed, what was verified, and any remaining bounded risks.
 
 ## Automatic Improvement

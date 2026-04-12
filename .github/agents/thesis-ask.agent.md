@@ -15,6 +15,7 @@ Your job is to answer quickly and accurately for users who mostly start with nat
 - Do not run terminal commands.
 - Do not turn light analysis requests into implementation sessions.
 - Do not ask the user to invoke prompts or restate the task in a formal template when the likely intent is already clear.
+- Treat `07_implementation/` as the active runtime surface and `_scratch/` as reference-only unless the user explicitly asks for `_scratch` work.
 
 ## Approach
 1. Rebuild the minimum amount of thesis context needed from canonical control files and the current editor context.
@@ -25,4 +26,4 @@ Your job is to answer quickly and accurately for users who mostly start with nat
 ## Output Format
 - For review requests: findings first, ordered by severity.
 - For explanation or navigation requests: short direct answer, then the most relevant next step.
-- For planning requests: a compact action plan grounded in current thesis state and backlog.
+- For planning requests: a compact action plan grounded in current thesis state, timeline, and unresolved issues.

@@ -1,6 +1,6 @@
 ﻿# Thesis Timeline
 
-Last updated: 2026-03-30
+Last updated: 2026-04-12
 
 ## Milestones
 - M1 (2026-03-13 to 2026-03-20): Planning baseline finalized [completed]
@@ -27,6 +27,7 @@ Last updated: 2026-03-30
 - M6 (2026-05-21 to 2026-06-10): Writing and submission hardening [in progress]
 	- Finalize chapter drafts, references, and formatting compliance.
 	- Complete final quality-control passes and viva/demo preparation.
+	- Status note (2026-04-12): Chapter 2 mentor-ready draft sent for supervisor review; awaiting feedback under `MQ-009`.
 
 ## Active Work Packages
 - WP-CITE-001 (2026-03-19 to 2026-03-29): Thesis-wide citation hardening and literature leverage pass [completed]
@@ -77,9 +78,12 @@ Last updated: 2026-03-30
 - Documentation sync wave recorded (2026-03-29): governance and design docs synchronized to BL-003 through BL-007 source-code behavior; BL-007 wording corrected to partially configurable (C-219).
 - 00_admin full synchronization wave recorded (2026-03-29): all admin files synchronized to current canonical baseline (C-220).
 - Aggressive root archival wave recorded (2026-03-30): moved `.controllability-transparency.instructions.md`, `.gitattributes`, `requirements.txt`, `pyrightconfig.json`, `main_standalone.py`, and `final_artefact.py` into `_deep_archive_march2026/_packages_reference_2026-03-30/`, expanded `.gitignore` to ignore deep archive, and synchronized admin logs/state (D-044, C-222).
+- Pyright/full-contract closure recorded (2026-04-09): the active `07_implementation` runtime path is back to full green after the April typing-remediation wave; pytest passed (`361/361`), pyright returned `0 errors, 0 warnings, 0 informations`, BL-013 passed (`BL013-ENTRYPOINT-20260409-180340-350614`), and BL-014 passed (`BL014-SANITY-20260409-180356-824725`, `28/28`).
+- Runtime-root governance sync recorded (2026-04-09): instruction and admin control surfaces now explicitly enforce `07_implementation/` as the only active runtime/workflow surface and classify `_scratch/` as reference-only unless user-requested for historical inspection (D-048, C-229).
+- Config-first final artefact wrapper slice recorded (2026-04-09): added the new active `07_implementation/final_artefact/` package with explicit artefact config, generated run-config bridging to the validated `src` pipeline, focused wrapper tests, and a BL-013 fix for seed-refresh payload resolution outside the visible stage order. Validation: focused pytest `15/15`, wrapper validate pass (`BL013-ENTRYPOINT-20260409-184945-119248`, `BL014-SANITY-20260409-184955-724616`), and full contract pass after changes (`366/366`, pyright `0 errors`, BL-013 `BL013-ENTRYPOINT-20260409-185031-056745`, BL-014 `BL014-SANITY-20260409-185043-887580`) (D-049, C-230).
 
 ## Notes
 - Dates are a working baseline for execution control and can be refined against official module deadlines.
-- Scope remains locked to the MVP boundary in `00_admin/thesis_state.md` and `00_admin/Artefact_MVP_definition.md`.
+- Scope remains locked to the MVP boundary defined in `00_admin/thesis_state.md`.
 - Operational source of truth for open blockers remains `00_admin/unresolved_issues.md`.
 - Sprint execution truth remains `00_admin/mentor_draft_7day_sprint_2026-03-23.md`.

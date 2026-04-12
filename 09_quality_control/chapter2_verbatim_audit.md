@@ -10,23 +10,29 @@ Method note: automated lexical matching (RapidFuzz token-set ratio) with manual 
 - mapping_method: bib_attachment_exact_stem
 - claim_checks:
   - claim_1_status: partially_supported
-    score: 50.0
-    claim: "Recommender systems emerged to address this problem, and a substantial body of research has since built up around how to estimate what a user is likely to value from sparse, incomplete evidence (Adomavicius and Tuzhilin, 2005; Lu et al., 2015)."
-    quote_candidate: "Recommender systems are usually classified according to their approach to rating estimation and, in the next section, we will present such a classification that was proposed in the literature and will provide a survey of different types of recommender systems."
-    secondary_score: 48.53556485355649
-    secondary_quote: "Although there has been some progress made on incorporating user and item profiles into some of the methods since the earlier days of recommender systems [13], [76], [79], these profiles still tend to be quite simple and do not utilize some of the more advanced profiling techniques."
-  - claim_2_status: supported
-    score: 71.81818181818181
-    claim: "Recommender systems are broadly grouped into content-based, collaborative, and hybrid families (Adomavicius and Tuzhilin, 2005; Lu et al., 2015)."
-    quote_candidate: "Toward the Next Generation of Recommender Systems: A Survey of the State-of-the-Art and Possible Extensions Gediminas Adomavicius, Member , IEEE, and Alexander Tuzhilin, Member , IEEE Abstract—This paper presents an overview of the field of recommender systems and describes the current generation of recommendation methods that are usually classified into the following three main categories: content-based, collaborative, and hybrid recommendation approaches."
-    secondary_score: 59.23344947735192
-    secondary_quote: "2.3.1 Combining Separate Recommenders One way to build hybrid recommender systems is to implement separate collaborative and content-based sys- tems."
-  - claim_3_status: partially_supported
-    score: 51.91740412979351
-    claim: "Collaborative filtering takes a different route, inferring relevance from patterns of interaction across users and items (Adomavicius and Tuzhilin, 2005)."
+    score: 50.442477876106196
+    claim: "Foundational surveys frame recommendation as utility estimation under uncertainty rather than direct preference detection, because available evidence is partial, noisy, and context-dependent (Adomavicius and Tuzhilin, 2005; Lu et al., 2015)."
+    quote_candidate: "Many real-life recommendation applications, including several business applications, such as the ones described above, are arguably more complex than a movie recommender system and would require taking more factors into the recommendation consideration."
+    secondary_score: 49.586776859504134
+    secondary_quote: "The interest in this area still remains high because it constitutes a problem-rich research area and because of the abundance of practical applications that help users to deal with information overload and provide personalized recommendations, content, and services to them."
+  - claim_2_status: partially_supported
+    score: 51.18483412322275
+    claim: "Content-based, collaborative, and hybrid systems remain the dominant paradigm families (Adomavicius and Tuzhilin, 2005; Lu et al., 2015), yet this taxonomy conceals substantive disagreement regarding evidential reliability."
+    quote_candidate: "In particular, since collaborative systems use other users’ recommendations (ratings), they can deal with any kind of content and recommend any items, even the ones that are dissimilar to those seen in the past."
+    secondary_score: 48.36601307189542
+    secondary_quote: "discussed above, recommender systems can be categorized as being 1) content-based, collaborative,o r hybrid, based on the recommendation approach used, and 2) heuristic-based or model-based, based on the types of recommendation techni- ques used for the rating estimation."
+  - claim_3_status: weak_support
+    score: 49.46236559139785
+    claim: "Collaborative filtering estimates relevance from user-item interaction patterns and often achieves strong performance when behavioural matrices are dense (Adomavicius and Tuzhilin, 2005)."
     quote_candidate: "A statistical model for collaborative filtering was proposed in [105], and several different algorithms for estimating the model parameters were compared, including K-means clustering and Gibbs sampling."
-    secondary_score: 51.824817518248175
-    secondary_quote: "Note that both the content-based and the collaborative approaches use the same cosine measure from information retrieval literature."
+    secondary_score: 49.282296650717704
+    secondary_quote: "Extrapolations from known to unknown ratings are usually done by 1) specifying heuristics that define the utility function and empirically validating its performance and 2) estimating the utility function that optimizes certain performance criterion, such as the mean square error."
+  - claim_4_status: weak_support
+    score: 43.888888888888886
+    claim: "Aggregating interaction history can stabilise noise, but it also encodes assumptions about recency, repetition, and signal reliability (Adomavicius and Tuzhilin, 2005; Roy and Dutta, 2022)."
+    quote_candidate: ";d n and also includes inter- action effects among these dimensions (i.e., interaction effects, as defined by matrixfxijg in (15), should be extended to include other dimensions)."
+    secondary_score: 43.47826086956522
+    secondary_quote: "In addition, [43] argued that the inclusion of the knowledge about the user’s task into the recommendation algorithm in certain applications can lead to better recommendations."
 
 ## afroogh_trust_2024
 - title: Trust in AI: progress, challenges, and future directions
@@ -35,11 +41,11 @@ Method note: automated lexical matching (RapidFuzz token-set ratio) with manual 
 - mapping_method: bib_attachment_exact_stem
 - claim_checks:
   - claim_1_status: partially_supported
-    score: 54.794520547945204
-    claim: "For systems that aim to support user agency, the same literature highlights the importance of non-expert-oriented explanation design (Jin et al., 2020; Afroogh et al., 2024)."
-    quote_candidate: "Transparency and explainability are the most important factors of trust in healthcare systems (Caspers, 2021; Gille et al., 2020)."
-    secondary_score: 52.44755244755245
-    secondary_quote: "Transparency is one of the fundamental ethical principles in creating trust in users toward AI decisions (Lockey et al., 2021)."
+    score: 55.51020408163265
+    claim: "Broader AI trust literature similarly reinforces that user and application context shape trust outcomes (Afroogh et al., 2024)."
+    quote_candidate: "Transparency is one of the fundamental ethical principles in creating trust in users toward AI decisions (Lockey et al., 2021)."
+    secondary_score: 54.47761194029851
+    secondary_quote: "It was shown that the humanness of AI applications is an important basis for trusting bonds in human –machine interactions (Troshani et al., 2021)."
 
 ## andjelkovic_moodplay_2019
 - title: Moodplay: Interactive music recommendation based on Artists' mood similarity
@@ -47,12 +53,12 @@ Method note: automated lexical matching (RapidFuzz token-set ratio) with manual 
 - mapping_score: 1000
 - mapping_method: bib_attachment_exact_stem
 - claim_checks:
-  - claim_1_status: partially_supported
-    score: 51.204819277108435
-    claim: "This is consistent with controllability research that treats user influence as useful when it is explicit, bounded, and testable (Jin et al., 2020; Andjelkovic et al., 2019)."
-    quote_candidate: "Therefore, we allow users to adjust the mood inﬂuence via a slider control which dynamically re-sizes a catchment area around the current avatar position (Figure 2.1 and 2.2)."
-    secondary_score: 50.24630541871921
-    secondary_quote: "This trend is further supported by results showing that user satisfaction does not depend on recommendation accuracy only, but on factors such as serendipity, nov- elty, control and transparency as well ( Konstan and Riedl, 2012; Mc- Nee et al., 2006 )."
+  - claim_1_status: weak_support
+    score: 49.14004914004914
+    claim: "Explicit user-correction mechanisms — including influence track injection (Jin et al., 2020) and mood-based interactive filtering (Andjelkovic et al., 2019) — are proposed as pathways to introduce user-steerable profile adjustment signals."
+    quote_candidate: "Building on these aspects, this paper introduces MoodPlay , an interactive music-artists recommender system which integrates content and mood-based ﬁltering in a novel interface."
+    secondary_score: 47.0873786407767
+    secondary_quote: "Parra et al., 2014; Verbert et al., 2013 ) demonstrate the importance of building interactive recommender interfaces, that go beyond the static- ranked list paradigm to improve user satisfaction."
 
 ## anelli_elliot_2021
 - title: Elliot: A Comprehensive and Rigorous Framework for Reproducible Recommender Systems Evaluation
@@ -60,31 +66,18 @@ Method note: automated lexical matching (RapidFuzz token-set ratio) with manual 
 - mapping_score: 105
 - mapping_method: fuzzy_title_author_year
 - claim_checks:
-  - claim_1_status: partially_supported
-    score: 52.63157894736842
-    claim: "Within this literature, transparency claims are commonly operationalized by tracing explanation values to score components, while reproducibility claims are framed around documenting sufficient run context (configuration, preprocessing, evaluation protocol, and comparison context) for independent replication and cross-framework comparison rather than prose-only reporting (Anelli et al., 2021; Bellogin et al., 2021; Ferrari Dacrema et al., 2021)."
-    quote_candidate: "Beyond independent relevance: methods and evaluation metrics for subtopic retrieval."
-    secondary_score: 48.663101604278076
-    secondary_quote: "Some researchers argue that to enhance reproducibility, and to facilitate fair comparisons between different works (either frame- works, research papers, or published artifacts), at least the following four stages must be identified within the evaluation protocol [81]: data splitting, item recommendations, candidate item generation, and performance measurement."
+  - claim_1_status: weak_support
+    score: 46.06741573033708
+    claim: "Methodological reviews indicate that under-specified preprocessing, split logic, and software or implementation detail can undermine independent reconstruction (Beel et al., 2016; Anelli et al., 2021; Cavenaghi et al., 2023)."
+    quote_candidate: "Additionally, the user can design computationally expensive prefiltering and splitting procedures that can be stored and loaded to save future computation."
+    secondary_score: 44.83627204030227
+    secondary_quote: "Moreover, machine learning (and recently also deep learn- ing) techniques are prominent in algorithmic research and require their hyperparameter optimization strategies and procedures [6, 92]."
   - claim_2_status: partially_supported
-    score: 50.799289520426285
-    claim: "Multiple reviews of recommender systems research document that absent or under-specified preprocessing steps, configuration choices, and dependency declarations can reduce the practical feasibility of independent result verification (Ferrari Dacrema et al., 2021; Bellogin et al., 2021; Zhu et al., 2022; Anelli et al., 2021)."
-    quote_candidate: "The core idea is to feed the system with a simple and straightforward configuration file that drives the framework through the experimental setting choices.Elliot natively provides for widespread research evaluation features, like the analysis of multiple cut-offs and several RSs (50)."
-    secondary_score: 49.12280701754386
-    secondary_quote: "Rethinking the recommender research ecosystem: reproducibility, openness, and LensKit."
-
-## barlaug_neural_2021
-- title: Neural Networks for Entity Matching: A Survey
-- mapped_pdf: c:\Users\peach\Desktop\thesis-main (3)\thesis-main\thesis-main\10_resources\papers\Barlaug and Gulla - 2021 - Neural Networks for Entity Matching A Survey.pdf
-- mapping_score: 105
-- mapping_method: fuzzy_title_author_year
-- claim_checks:
-  - claim_1_status: partially_supported
-    score: 53.09278350515464
-    claim: "Neural entity-matching methods vary in what matching problems they solve and how they implement those solutions (Barlaug and Gulla, 2021), and they remain a relevant comparator family for difficult cases."
-    quote_candidate: "With this is in mind, we formulate the following research questions: —How do methods using neural networks for entity matching differ in what they solve, and how do the methods that address the same aspects differ in their approaches?"
-    secondary_score: 50.87719298245614
-    secondary_quote: "We also discuss contributions from deep learning in entity matching compared to traditional methods, and propose a taxonomy of deep neural networks for entity matching."
+    score: 50.77262693156733
+    claim: "Reproducibility failures in recommender research are repeatedly linked to incomplete protocol specification, hidden preprocessing steps, and dependency drift (Ferrari Dacrema et al., 2021; Bellogin and Said, 2021; Zhu et al., 2022; Anelli et al., 2021)."
+    quote_candidate: "In Proceedings of the International Workshop on Reproducibility and Replication in Recommender Systems Evaluation, RepSys 2013, Hong Kong, China, October 12, 2013, Alejandro Bellogín, Pablo Castells, Alan Said, and Domonkos Tikk (Eds.)."
+    secondary_score: 45.30120481927711
+    secondary_quote: "Moreover, machine learning (and recently also deep learn- ing) techniques are prominent in algorithmic research and require their hyperparameter optimization strategies and procedures [6, 92]."
 
 ## bauer_exploring_2024
 - title: Exploring the Landscape of Recommender Systems Evaluation: Practices and Perspectives
@@ -94,10 +87,29 @@ Method note: automated lexical matching (RapidFuzz token-set ratio) with manual 
 - claim_checks:
   - claim_1_status: supported
     score: 67.9245283018868
-    claim: "That distinction matters because recommender evaluation is sensitive to how experiments are set up — preprocessing decisions, metric framing, and protocol choices can all shift results substantially, and strong performance numbers under one set of conditions do not reliably transfer to contexts where inspectable engineering is the primary contribution (Herlocker et al., 2004; Ferrari Dacrema et al., 2021; Bauer et al., 2024)."
+    claim: "However, methodological analyses challenge this claim by showing that reported improvements are highly sensitive to preprocessing, split design, and metric framing (Herlocker et al., 2004; Ferrari Dacrema et al., 2021; Bauer et al., 2024)."
     quote_candidate: "For example, Ferrari Dacrema et al."
-    secondary_score: 67.15328467153284
-    secondary_quote: "(d) The paper does not make a contribution regarding the evaluation of recommender systems."
+    secondary_score: 65.45454545454545
+    secondary_quote: "[98] TOIS 2022 Ferrari Dacrema et al."
+  - claim_2_status: weak_support
+    score: 45.848375451263536
+    claim: "The accountability-oriented critique is currently better evidenced, because documented reproducibility failures and protocol fragility are repeatedly observed across recommender evaluations (Ferrari Dacrema et al., 2021; Bauer et al., 2024), whereas many accuracy-centered claims still depend on tightly controlled benchmark assumptions."
+    quote_candidate: "that work is a recommendation model, it also contributes to evaluation, because the experiments demonstrate that performance measurements may heavily depend on statistical properties of the input data, which the authors discuss in detail."
+    secondary_score: 44.70938897168406
+    secondary_quote: "Moreover, as our article aims to cover research that revolves around methodological issues of evaluation, we identified that a search with the keywordsreproducible or reproducibility has strong overlaps with a search for the keywordevaluation but also yields additionalhits.Similarly,usingthekeywords method ormethodology hasprovenusefultoidentify additional works."
+
+## beel_towards_2016
+- title: Towards reproducibility in recommender-systems research
+- mapped_pdf: c:\Users\peach\Desktop\thesis-main (3)\thesis-main\thesis-main\10_resources\papers\Beel et al. - 2016 - Towards reproducibility in recommender-systems research.pdf
+- mapping_score: 105
+- mapping_method: fuzzy_title_author_year
+- claim_checks:
+  - claim_1_status: weak_support
+    score: 47.953216374269005
+    claim: "Methodological reviews indicate that under-specified preprocessing, split logic, and software or implementation detail can undermine independent reconstruction (Beel et al., 2016; Anelli et al., 2021; Cavenaghi et al., 2023)."
+    quote_candidate: "A “recommender system” is a fully functional software system that applies at least one implementation for generating recommendations."
+    secondary_score: 46.96569920844327
+    secondary_quote: "Apparently, one or more unidentiﬁed contextual determinants are interacting in a way that leads to different levels of effectiveness for the selected document ﬁelds (e.g."
 
 ## bellogin_improving_2021
 - title: Improving accountability in recommender systems research through reproducibility
@@ -106,17 +118,11 @@ Method note: automated lexical matching (RapidFuzz token-set ratio) with manual 
 - mapping_method: fuzzy_title_author_year
 - claim_checks:
   - claim_1_status: partially_supported
-    score: 52.672750977835726
-    claim: "Within this literature, transparency claims are commonly operationalized by tracing explanation values to score components, while reproducibility claims are framed around documenting sufficient run context (configuration, preprocessing, evaluation protocol, and comparison context) for independent replication and cross-framework comparison rather than prose-only reporting (Anelli et al., 2021; Bellogin et al., 2021; Ferrari Dacrema et al., 2021)."
-    quote_candidate: "Analogously, in a series of prior works focusing on the evaluation, replication, and reproducibility of Recommender Systems algo- rithms and evaluation results, we have identified a set of aspects that need to be taken into consideration when comparing the results of recommender systems from different research papers, software frameworks, or evaluation contexts (Said and Bellogín 2014; Said et al."
-    secondary_score: 52.366863905325445
-    secondary_quote: "In conclusion, a framework for the evaluation of recommender systems should clearly identify and satisfy the proposed stages to ensure accountability in its entire process; otherwise, reproducibility and/or transparency will be com- promised and accountability of published research work will not be possible."
-  - claim_2_status: partially_supported
-    score: 54.3247344461305
-    claim: "Multiple reviews of recommender systems research document that absent or under-specified preprocessing steps, configuration choices, and dependency declarations can reduce the practical feasibility of independent result verification (Ferrari Dacrema et al., 2021; Bellogin et al., 2021; Zhu et al., 2022; Anelli et al., 2021)."
-    quote_candidate: "Analogously, in a series of prior works focusing on the evaluation, replication, and reproducibility of Recommender Systems algo- rithms and evaluation results, we have identified a set of aspects that need to be taken into consideration when comparing the results of recommender systems from different research papers, software frameworks, or evaluation contexts (Said and Bellogín 2014; Said et al."
-    secondary_score: 53.10077519379845
-    secondary_quote: "A critical analysis is necessary in order to ensure an 947 1 3 Improving accountability in recommender systems research… advance in the field, not just marginal effects based on strategic design choices (Fer - rari Dacrema et al."
+    score: 53.333333333333336
+    claim: "Reproducibility failures in recommender research are repeatedly linked to incomplete protocol specification, hidden preprocessing steps, and dependency drift (Ferrari Dacrema et al., 2021; Bellogin and Said, 2021; Zhu et al., 2022; Anelli et al., 2021)."
+    quote_candidate: "A critical analysis is necessary in order to ensure an 947 1 3 Improving accountability in recommender systems research… advance in the field, not just marginal effects based on strategic design choices (Fer - rari Dacrema et al."
+    secondary_score: 50.212765957446805
+    secondary_quote: "Reproducibility is a cornerstone of scientific process and is one of two critical issues to achieve progress, as identified by Kon- stan and Adomavicius (2013), and one of the priorities that should be reflected in experimental methodologies according to Ferro et al."
 
 ## bogdanov_semantic_2013
 - title: Semantic audio content-based music recommendation and visualization based on user preference examples
@@ -125,11 +131,30 @@ Method note: automated lexical matching (RapidFuzz token-set ratio) with manual 
 - mapping_method: bib_attachment_exact_stem
 - claim_checks:
   - claim_1_status: partially_supported
-    score: 53.987730061349694
-    claim: "When preference profiles and candidate scores are computed from explicit descriptors, recommendation drivers can be reported with clearer attribution (Bogdanov et al., 2013)."
-    quote_candidate: "Music recommendation The ﬁrst considered application exploits the computed user model to generate music recommendations based on seman- tic descriptors."
-    secondary_score: 53.503184713375795
-    secondary_quote: "These semantic descriptors are computed from an explicit set of music tracks deﬁned by a given user as evidence of her/his musical preferences."
+    score: 52.11267605633803
+    claim: "Content-based music studies support explicit profile representations built from interpretable descriptors (Bogdanov et al., 2013; Deldjoo et al., 2024)."
+    quote_candidate: "These semantic descriptors are computed from an explicit set of music tracks deﬁned by a given user as evidence of her/his musical preferences."
+    secondary_score: 49.375
+    secondary_quote: "Start- ing from an explicit set of music tracks provided by the user as evidence of his/her preferences, we infer high-level semantic descriptors for each track obtaining a user model."
+  - claim_2_status: weak_support
+    score: 46.95259593679458
+    claim: "Feature-based scoring pipelines support descriptor-level attribution of rank variation, and this can improve post-hoc inspectability of observed outputs (Bogdanov et al., 2013; Deldjoo et al., 2024)."
+    quote_candidate: "As the procedure of the low-level signal analysis and the details of semantic descriptor extraction are out of the scope of this paper, we refer the interested reader to the aforecited literature on low-level features, and to ( Bogdanov et al., 2009, 2011), and references therein, for details on the SVM implementation."
+    secondary_score: 46.103896103896105
+    secondary_quote: "The latter hypothesis is based on similar evidence in the case of music similarity estimation ( Bogdanov et al., 2009 )."
+
+## bonnin_automated_2015
+- title: Automated Generation of Music Playlists: Survey and Experiments
+- mapped_pdf: c:\Users\peach\Desktop\thesis-main (3)\thesis-main\thesis-main\10_resources\papers\nw\files\569\Bonnin and Jannach - 2015 - Automated Generation of Music Playlists Survey and Experiments.pdf
+- mapping_score: 105
+- mapping_method: fuzzy_title_author_year
+- claim_checks:
+  - claim_1_status: weak_support
+    score: 46.829268292682926
+    claim: "Playlist studies show that coherence, diversity, novelty, and order operate as competing objectives rather than jointly maximisable targets (Ferraro et al., 2018; Vall et al., 2019; Bonnin and Jannach, 2015; Schweiger et al., 2025)."
+    quote_candidate: "Another potential problem is that not all types of metadata are objective, and annotations regarding, for example, the mood or the genre of a track can be imprecise or inconsistent [Celma 2010; Lee and Cho 2011]."
+    secondary_score: 45.063291139240505
+    secondary_quote: "Specifying Target Characteristics for Playlists Automating the playlist generation process requires that the desired target character- istics are speciﬁed in a machine-interpretable form."
 
 ## cano_hybrid_2017
 - title: Hybrid recommender systems: A systematic literature review
@@ -138,17 +163,24 @@ Method note: automated lexical matching (RapidFuzz token-set ratio) with manual 
 - mapping_method: bib_attachment_exact_stem
 - claim_checks:
   - claim_1_status: partially_supported
-    score: 51.47679324894515
-    claim: "Hybrid systems can combine strengths from multiple approaches, but the semantic integration adds layers of complexity to reasoning and audit unless interpretability is deliberately engineered as a first-class design concern (Çano and Morisio, 2017)."
-    quote_candidate: "Morisio / Hybrid recommender systems: A systematic literature review 1489 The continuously growing industrial interest in the recent and promising domains of mobile and social web has been followed by a similar increase of academic interest in RSs."
-    secondary_score: 51.20967741935484
-    secondary_quote: "Papers from conferences and journals Papers published from 2005 to 2015 Papers written in English language only Exclusion criteria Papers not addressing recommender systems at all Papers addressing RSs but not implying any hybridization or combination of different approaches or data mining techniques."
-  - claim_2_status: partially_supported
-    score: 51.351351351351354
-    claim: "Neural and hybrid recommender systems remain strong comparator families, with reported gains often demonstrated in benchmarked, data-rich settings (Çano and Morisio, 2017; He et al., 2017)."
-    quote_candidate: "In recommender systems this conclusions are of the form"
-    secondary_score: 51.111111111111114
-    secondary_quote: "Morisio / Hybrid recommender systems: A systematic literature review the extracted information was stored in Nvivo3 which was used to manage data extraction and synthesis process."
+    score: 54.23728813559322
+    claim: "Hybrid systems are often presented as resolving the weaknesses of individual paradigms by combining complementary evidence sources (Cano and Morisio, 2017)."
+    quote_candidate: "Hybrid recommender systems combine two or more recommendation strategies in differ- ent ways to beneﬁt from their complementary advantages."
+    secondary_score: 51.42857142857143
+    secondary_quote: "Morisio / Hybrid recommender systems: A systematic literature review 1489 The continuously growing industrial interest in the recent and promising domains of mobile and social web has been followed by a similar increase of academic interest in RSs."
+
+## cavenaghi_systematic_2023
+- title: A Systematic Study on Reproducibility of Reinforcement Learning in Recommendation Systems
+- mapped_pdf: c:\Users\peach\Desktop\thesis-main (3)\thesis-main\thesis-main\10_resources\papers\Cavenaghi et al. - 2023 - A Systematic Study on Reproducibility of Reinforcement Learning in Recommendation Systems.pdf
+- mapping_score: 105
+- mapping_method: fuzzy_title_author_year
+- claim_checks:
+  - claim_1_status: weak_support
+    score: 47.90419161676647
+    claim: "Methodological reviews indicate that under-specified preprocessing, split logic, and software or implementation detail can undermine independent reconstruction (Beel et al., 2016; Anelli et al., 2021; Cavenaghi et al., 2023)."
+    quote_candidate: "We collected a total of 60 papers and analysed them by defining a set of variables to inspect the most important aspects that enable reproducibility, such as dataset, pre-processing code, hardware specifica- tions, software dependencies, algorithm implementation, algorithm hyperparameters, and experiment code."
+    secondary_score: 46.63865546218487
+    secondary_quote: "However, we marked aswithout artifactstwo candidates: [76]b e c a u s et h e shared implementation only implements a simplified version of the algorithm and [67]b e c a u s e the shared repository2 did not report the implementation of the algorithm presented in the paper, but proposed a benchmark to evaluate RL algorithms applied to RSs."
 
 ## deldjoo_content-driven_2024
 - title: Content-driven music recommendation: Evolution, state of the art, and challenges
@@ -157,11 +189,49 @@ Method note: automated lexical matching (RapidFuzz token-set ratio) with manual 
 - mapping_method: bib_attachment_exact_stem
 - claim_checks:
   - claim_1_status: partially_supported
-    score: 51.49051490514905
-    claim: "Within transparency-oriented analyses, a recurring advantage is that ranking depends on explicit features, making recommendation reasoning more traceable to named inputs (Deldjoo et al., 2024)."
-    quote_candidate: "The first phase employs a CF model that generates a list of candidate rec- ommendations based on collaborative data, narrowing the search space from millions to hundreds of objects."
-    secondary_score: 50.659630606860155
-    secondary_quote: "Providing transparency and explanations ( Table 3): To pro- vide the user with insights about the music recommendations made, various works resort to content information on different levels."
+    score: 54.13533834586466
+    claim: "Content-based recommendation in music relies on metadata, tags, lyrics, and audio descriptors, enabling interpretable feature-level modelling across multiple content layers (Deldjoo et al., 2024)."
+    quote_candidate: "In contrast, leveraging the expressive power of descriptive features extracted from the audio and other multi- media signals (e.g., music video clips) can generate more informed and less trivial recommendations."
+    secondary_score: 53.46534653465346
+    secondary_quote: "[26] provide a survey on context-aware music recommendation and retrieval."
+  - claim_2_status: partially_supported
+    score: 50.40650406504065
+    claim: "Content-based music studies support explicit profile representations built from interpretable descriptors (Bogdanov et al., 2013; Deldjoo et al., 2024)."
+    quote_candidate: "[93] adopt AudioLIME [139] to create listenable explanations of content-based music recommenda- tions."
+    secondary_score: 47.83861671469741
+    secondary_quote: "This also reflects a continuum from strictly objective and numeric item descriptors (inner) to more subjective and semantically charged content data stemming from cultural practices of dealing with music (outer)."
+  - claim_3_status: weak_support
+    score: 45.69892473118279
+    claim: "Feature-based scoring pipelines support descriptor-level attribution of rank variation, and this can improve post-hoc inspectability of observed outputs (Bogdanov et al., 2013; Deldjoo et al., 2024)."
+    quote_candidate: "According to [5], extended memory-based CF and extended model- based CF are two paradigms for integrating content as side information, and this may be applied to any sort of content described by the onion model."
+    secondary_score: 45.59270516717325
+    secondary_quote: "We collected all resulting papers since the first edition of the RecSys conference and ISMIR, and those published between 2010 and 2020 for the other venues."
+
+## elmagarmid_duplicate_2007
+- title: Duplicate Record Detection: A Survey
+- mapped_pdf: c:\Users\peach\Desktop\thesis-main (3)\thesis-main\thesis-main\10_resources\papers\Elmagarmid et al. - 2007 - Duplicate Record Detection A Survey.pdf
+- mapping_score: 105
+- mapping_method: fuzzy_title_author_year
+- claim_checks:
+  - claim_1_status: weak_support
+    score: 47.524752475247524
+    claim: "Entity-resolution literature supports matching pipelines that manage combinatorial search and uncertainty, with blocking and filtering explicitly formalized in later survey work (Elmagarmid et al., 2007; Papadakis et al., 2021)."
+    quote_candidate: "Although blocking can substantially increase the speed of the comparison process, it can also lead to an increased number of false mismatches due to the failure of comparing records that do not agree on the blocking field."
+    secondary_score: 47.432762836185816
+    secondary_quote: "It can also lead to an increased number of missed matches due to errors in the blocking step that placed entries in the wrong buckets, thereby preventing them from being compared to actual matching entries."
+
+## ferraro_automatic_2018
+- title: Automatic playlist continuation using a hybrid recommender system combining features from text and audio
+- mapped_pdf: c:\Users\peach\Desktop\thesis-main (3)\thesis-main\thesis-main\10_resources\papers\Ferraro et al. - 2018 - Automatic playlist continuation using a hybrid recommender system combining features from text and a.pdf
+- mapping_score: 1000
+- mapping_method: bib_attachment_exact_stem
+- claim_checks:
+  - claim_1_status: weak_support
+    score: 43.63636363636363
+    claim: "Playlist studies show that coherence, diversity, novelty, and order operate as competing objectives rather than jointly maximisable targets (Ferraro et al., 2018; Vall et al., 2019; Bonnin and Jannach, 2015; Schweiger et al., 2025)."
+    quote_candidate: "Existing research on music recom- mender systems has considered a number of related tasks, inc lud- ing Automatic Playlist Generation (APG) and Automatic Play list Continuation (APC)."
+    secondary_score: 43.47826086956522
+    secondary_quote: "In order to generate new recommendations for a playlist that we want to continue, we add this incomplete playlist when tra in- ing the model to get its latent representation."
 
 ## fkih_similarity_2022
 - title: Similarity measures for Collaborative Filtering-based Recommender Systems: Review and experimental comparison
@@ -169,25 +239,18 @@ Method note: automated lexical matching (RapidFuzz token-set ratio) with manual 
 - mapping_score: 1000
 - mapping_method: bib_attachment_exact_stem
 - claim_checks:
-  - claim_1_status: partially_supported
-    score: 54.054054054054056
-    claim: "The choice of distance function fundamentally shapes how similarity is computed in feature space (Fkih, 2022)."
-    quote_candidate: "The Euclidean distance should be normalized to become a similarity measure."
-    secondary_score: 52.79187817258883
-    secondary_quote: "We mention that the similarity computation phase will be further detailed in Section 3."
-
-## he_neural_2017
-- title: Neural Collaborative Filtering
-- mapped_pdf: c:\Users\peach\Desktop\thesis-main (3)\thesis-main\thesis-main\10_resources\previous_drafts\lit_review_resource_pack\files\436\He et al. - 2017 - Neural Collaborative Filtering.pdf
-- mapping_score: 1000
-- mapping_method: bib_attachment_exact_stem
-- claim_checks:
-  - claim_1_status: partially_supported
-    score: 50.79365079365079
-    claim: "Neural and hybrid recommender systems remain strong comparator families, with reported gains often demonstrated in benchmarked, data-rich settings (Çano and Morisio, 2017; He et al., 2017)."
-    quote_candidate: "Moreover, we are particularly interested in building recommender systems for multi-media items, an in- teresting task but has received relatively less scrutiny in the recommendation community [3]."
-    secondary_score: 48.07692307692308
-    secondary_quote: "The deep compo- nent similarly uses a MLP on feature embeddings, which has been reported to have strong generalization ability."
+  - claim_1_status: weak_support
+    score: 48.50498338870432
+    claim: "Similarity functions, normalisation schemes, and thresholds are model-defining choices that reshape neighbourhood geometry and rank outcomes (Fkih, 2022)."
+    quote_candidate: "To reach this purpose, we used the methodology described in the Section 2: we computed the similarity matrix, we selected the neighborhood and we predicted the missing ratings."
+    secondary_score: 48.249027237354085
+    secondary_quote: "This process consists of three steps: similarity computation, neighborhood selection and rating prediction."
+  - claim_2_status: weak_support
+    score: 48.333333333333336
+    claim: "Distance functions define local structure in feature space and therefore shape neighbour selection and final rank behaviour (Fkih, 2022)."
+    quote_candidate: "This process consists of three steps: similarity computation, neighborhood selection and rating prediction."
+    secondary_score: 48.0
+    secondary_quote: "As same as the User-based CF tech- nique, the Item-based CF process can be summarized into three steps: similarity computation, neighborhood selection and ratings prediction."
 
 ## herlocker_evaluating_2004
 - title: Evaluating collaborative filtering recommender systems
@@ -195,12 +258,12 @@ Method note: automated lexical matching (RapidFuzz token-set ratio) with manual 
 - mapping_score: 105
 - mapping_method: fuzzy_title_author_year
 - claim_checks:
-  - claim_1_status: partially_supported
-    score: 60.714285714285715
-    claim: "That distinction matters because recommender evaluation is sensitive to how experiments are set up — preprocessing decisions, metric framing, and protocol choices can all shift results substantially, and strong performance numbers under one set of conditions do not reliably transfer to contexts where inspectable engineering is the primary contribution (Herlocker et al., 2004; Ferrari Dacrema et al., 2021; Bauer et al., 2024)."
-    quote_candidate: "usability evaluation of the interfaces."
-    secondary_score: 48.466257668711656
-    secondary_quote: "—When evaluating a recommender in a new domain where there is signiﬁcant research on the structure of user preferences, but no data sets, it may be ap- propriate to ﬁrst evaluate algorithms against synthetic data sets to identify the promising ones for further study."
+  - claim_1_status: weak_support
+    score: 45.78313253012048
+    claim: "However, methodological analyses challenge this claim by showing that reported improvements are highly sensitive to preprocessing, split design, and metric framing (Herlocker et al., 2004; Ferrari Dacrema et al., 2021; Bauer et al., 2024)."
+    quote_candidate: "Clearly identifying the best algorithm for a given purpose has proven challenging, in part because researchers disagree on which attributes should be measured, and on which metrics should be used for each attribute."
+    secondary_score: 44.66501240694789
+    secondary_quote: "Once the proper tasks have been identi ﬁed, the evaluator must select a dataset to which evaluation methods can be applied, a process that will most likely be constrained by the user tasks identiﬁed."
 
 ## jin_effects_2020
 - title: Effects of personal characteristics in control-oriented user interfaces for music recommender systems
@@ -208,30 +271,18 @@ Method note: automated lexical matching (RapidFuzz token-set ratio) with manual 
 - mapping_score: 1000
 - mapping_method: bib_attachment_exact_stem
 - claim_checks:
-  - claim_1_status: partially_supported
-    score: 52.58964143426295
-    claim: "Controllability means the user can actively influence behaviour through explicit parameters or inputs (Jin et al., 2020)."
-    quote_candidate: "Controllability often allows users to steer the recommendation process to obtain sug- gestions that are better suited to them (He et al."
-    secondary_score: 49.28909952606635
-    secondary_quote: "Personality traits can affect the performance and preference of a user (Aykin and Aykin 1991)."
-  - claim_2_status: partially_supported
-    score: 51.94805194805195
-    claim: "For systems that aim to support user agency, the same literature highlights the importance of non-expert-oriented explanation design (Jin et al., 2020; Afroogh et al., 2024)."
-    quote_candidate: "For instance, the streaming platform Spotify currently has 180 million active users and provides a collec- tion of more than 35 million songs (July 2018)."
-    secondary_score: 50.64935064935065
-    secondary_quote: "( 2013) present a system that increases the effectiveness of making a choice by explaining the provenance of recommendations and offering control to users."
-  - claim_3_status: partially_supported
-    score: 56.024096385542165
-    claim: "For controllability to be meaningful, studies emphasize deliberate control design with attention to user characteristics and interface complexity (Jin et al., 2020)."
-    quote_candidate: "However, a better understanding of the effects of personal characteristics in association with the three levels of user control on music recommender systems has yet to be realized."
-    secondary_score: 54.395604395604394
-    secondary_quote: "More speciﬁcally, we studied the inﬂuence of these characteristics on the design of (a)visualizations for enhancing recommendation diversity and (b) the optimal level of user controls while minimizing cognitive load."
-  - claim_4_status: partially_supported
-    score: 54.25867507886435
-    claim: "This is consistent with controllability research that treats user influence as useful when it is explicit, bounded, and testable (Jin et al., 2020; Andjelkovic et al., 2019)."
+  - claim_1_status: weak_support
+    score: 49.86449864498645
+    claim: "Transparency concerns visibility of system logic, explainability concerns intelligibility of specific outputs, controllability concerns user influence over behaviour (Jin et al., 2020), and observability concerns run-level diagnostic visibility."
     quote_candidate: "(2016), we previously devised different levels of user control (low, middle, and high) associated with various components of a recommender system (Jin et al."
-    secondary_score: 51.52354570637119
-    secondary_quote: "For example, when investigating inter- active user interfaces, users’ experience may be seen as their level of familiarity with computers (Zhang and Chignell 2001) or with visualizations (Carenini et al."
+    secondary_score: 47.82608695652174
+    secondary_quote: "2018a) and Experiment 2 (Jin et al."
+  - claim_2_status: partially_supported
+    score: 50.0
+    claim: "Explicit user-correction mechanisms — including influence track injection (Jin et al., 2020) and mood-based interactive filtering (Andjelkovic et al., 2019) — are proposed as pathways to introduce user-steerable profile adjustment signals."
+    quote_candidate: "2018), b V enn dia- grams (Andjelkovic et al."
+    secondary_score: 47.916666666666664
+    secondary_quote: "Based on the interactive recommendation framework proposed by Chen et al."
 
 ## knijnenburg_explaining_2012
 - title: Explaining the user experience of recommender systems
@@ -240,37 +291,11 @@ Method note: automated lexical matching (RapidFuzz token-set ratio) with manual 
 - mapping_method: bib_attachment_exact_stem
 - claim_checks:
   - claim_1_status: partially_supported
-    score: 54.641909814323604
-    claim: "User-experience research indicates that understanding and trust in recommender explanations depends on factors beyond the underlying algorithm, including explanation design and interface characteristics (Knijnenburg et al., 2012)."
-    quote_candidate: "Not surprisingly, a significant part of the research on recommender systems concerns creating and evaluating better prediction algorithms (McNee et al."
-    secondary_score: 52.916666666666664
-    secondary_quote: "3.5 Personal and situational characteristics in context The user experience cannot be entirely attributed to the recommender system itself, it may also depend on characteristics of the user (Personal Characteristics, or PC) and the situation in which the user is using the system (Situational Characteristics, or SC) (Chin 2001 )."
-
-## liu_aggregating_2025
-- title: Aggregating Contextual Information for Multi-Criteria Online Music Recommendations
-- mapped_pdf: c:\Users\peach\Desktop\thesis-main (3)\thesis-main\thesis-main\10_resources\papers\Liu - 2025 - Aggregating Contextual Information for Multi-Criteria Online Music Recommendations.pdf
-- mapping_score: 105
-- mapping_method: fuzzy_title_author_year
-- claim_checks:
-  - claim_1_status: partially_supported
-    score: 52.083333333333336
-    claim: "Recent music-domain work also shows that contextual aggregation and multimodal representations can improve recommendation behavior under specific task conditions (Liu, 2025; Liu et al., 2025)."
-    quote_candidate: "CAMCMusic integrates contextual information into a multi-criteria decision-making framework to align music genre recommendations with the user’s contextual situation for generating Top-N music recommendations."
-    secondary_score: 51.94805194805195
-    secondary_quote: "The subjective nature of musical taste, the multifaceted attributes of music, and the influence of contextual factors such as time, location, and emotional state complicate the recommendation process [13], [14]."
-
-## liu_multimodal_2025
-- title: Multimodal Recommender Systems: A Survey
-- mapped_pdf: c:\Users\peach\Desktop\thesis-main (3)\thesis-main\thesis-main\10_resources\previous_drafts\lit_review_resource_pack\files\411\Liu et al. - 2025 - Multimodal Recommender Systems A Survey.pdf
-- mapping_score: 1000
-- mapping_method: bib_attachment_exact_stem
-- claim_checks:
-  - claim_1_status: partially_supported
-    score: 55.6390977443609
-    claim: "Recent music-domain work also shows that contextual aggregation and multimodal representations can improve recommendation behavior under specific task conditions (Liu, 2025; Liu et al., 2025)."
-    quote_candidate: "Filtering out noisy data in multimodal recommendation tasks can usually improve the recommendation performance."
-    secondary_score: 54.54545454545455
-    secondary_quote: "They show that introducing multimodal data without updating encoder parameters can also improve the recommendation performance."
+    score: 57.6
+    claim: "(2020) report that control-oriented interfaces are associated with higher recommendation acceptance and perceived usefulness under some user-characteristic conditions, whereas usability-oriented studies suggest that explanation utility depends on user and situational characteristics (Knijnenburg et al., 2012)."
+    quote_candidate: "It also includes personal and in situational characteristics that moderate these effects."
+    secondary_score: 54.752851711026615
+    secondary_quote: "if they perceive differences in recommendation quality for these different algorithms), and how these perceptions, together with per- sonal and situational characteristics, result in speciﬁc user experience and interac- tion with the system (e.g."
 
 ## lu_recommender_2015
 - title: Recommender system application developments: A survey
@@ -279,36 +304,30 @@ Method note: automated lexical matching (RapidFuzz token-set ratio) with manual 
 - mapping_method: bib_attachment_exact_stem
 - claim_checks:
   - claim_1_status: partially_supported
-    score: 50.0
-    claim: "Recommender systems emerged to address this problem, and a substantial body of research has since built up around how to estimate what a user is likely to value from sparse, incomplete evidence (Adomavicius and Tuzhilin, 2005; Lu et al., 2015)."
-    quote_candidate: "A systematic algorithm, TidalTrust, was proposed by Golbeck [54] to address the trust-based rating prediction problem and is considered to be effective in the forming process of numeric trust net- works in several systems."
-    secondary_score: 49.152542372881356
-    secondary_quote: "Early research in recommender systems grew out of information re- trieval and ﬁltering research [4], and recommender systems emerged as an independent research area in the mid-1990s when researchers started to focus on recommendation problems that explicitly rely on the rating structure [3]."
-  - claim_2_status: partially_supported
-    score: 61.53846153846154
-    claim: "Recommender systems are broadly grouped into content-based, collaborative, and hybrid families (Adomavicius and Tuzhilin, 2005; Lu et al., 2015)."
+    score: 50.12658227848101
+    claim: "Foundational surveys frame recommendation as utility estimation under uncertainty rather than direct preference detection, because available evidence is partial, noisy, and context-dependent (Adomavicius and Tuzhilin, 2005; Lu et al., 2015)."
     quote_candidate: "For example, the paper by Adomavicius and Tuzhilin [3] presented an overview of content-based, collaborative ﬁltering-based, and hybrid recommendation approaches."
-    secondary_score: 49.44649446494465
-    secondary_quote: "Recommender systems can be used in digital library applications to help users locate and select information and knowledge sources[95]."
-
-## nauta_anecdotal_2023
-- title: From Anecdotal Evidence to Quantitative Evaluation Methods: A Systematic Review on Evaluating Explainable AI
-- mapped_pdf: c:\Users\peach\Desktop\thesis-main (3)\thesis-main\thesis-main\10_resources\previous_drafts\lit_review_resource_pack\files\426\Nauta et al. - 2023 - From Anecdotal Evidence to Quantitative Evaluation Methods A Systematic Review on Evaluating Explai.pdf
-- mapping_score: 1000
-- mapping_method: bib_attachment_exact_stem
-- claim_checks:
-  - claim_1_status: partially_supported
-    score: 51.04602510460251
-    claim: "Research in the explanation literature shows that explanations can enhance perceived satisfaction in some settings, though the relationship between explanation design and genuine user understanding remains nuanced and is sensitive to context (Nauta et al., 2023)."
-    quote_candidate: "•Readers interested in theory of XAI evaluation:Section 2 is recommended as back- ground reading, as it summarizes related work, presents pros and cons of evaluating with users, and discusses the discrepancy between objective and subjective evaluation."
-    secondary_score: 50.450450450450454
-    secondary_quote: "[10] argue that user studies imply a strong bias towards simpler explanations that are closer to the user’s expectations, “at the cost of penalizing those methods that might more closely reflect the network behavior” [10]."
+    secondary_score: 48.792270531400966
+    secondary_quote: "In addition, users often need to be educated about the product-space, especially if they are to understand what is available and why certain options are recommended by the sales assistant."
   - claim_2_status: partially_supported
-    score: 52.81899109792285
-    claim: "Related evaluation work argues for moving beyond anecdotal evidence toward quantitative methods that document how parameter changes affect recommendation outputs (Nauta et al., 2023)."
-    quote_candidate: "This survey also contributes to the call for objective, quantifiable evaluation methods by presenting an ex- tensive overview of quantitative XAI evaluation methods."
-    secondary_score: 52.50737463126843
-    secondary_quote: "They argue that the lack of quantitative evaluation impedes interpretability research, since anecdotal inspection is not sufficient for robust verification."
+    score: 50.92838196286472
+    claim: "Content-based, collaborative, and hybrid systems remain the dominant paradigm families (Adomavicius and Tuzhilin, 2005; Lu et al., 2015), yet this taxonomy conceals substantive disagreement regarding evidential reliability."
+    quote_candidate: "For example, the paper by Adomavicius and Tuzhilin [3] presented an overview of content-based, collaborative ﬁltering-based, and hybrid recommendation approaches."
+    secondary_score: 49.12280701754386
+    secondary_quote: "In the systems developed by Garﬁnkel et al."
+
+## papadakis_blocking_2021
+- title: Blocking and Filtering Techniques for Entity Resolution: A Survey
+- mapped_pdf: c:\Users\peach\Desktop\thesis-main (3)\thesis-main\thesis-main\10_resources\papers\Papadakis et al. - 2021 - Blocking and Filtering Techniques for Entity Resolution A Survey.pdf
+- mapping_score: 105
+- mapping_method: fuzzy_title_author_year
+- claim_checks:
+  - claim_1_status: weak_support
+    score: 46.568627450980394
+    claim: "Entity-resolution literature supports matching pipelines that manage combinatorial search and uncertainty, with blocking and filtering explicitly formalized in later survey work (Elmagarmid et al., 2007; Papadakis et al., 2021)."
+    quote_candidate: "So far, though, they have been developed independently of one another: their combination and, more generally, their relation have been overlooked in the literature, with the exception of very few works (e.g., [82])."
+    secondary_score: 46.3768115942029
+    secondary_quote: "The task of Entity Resolu- tion (ER) is to find all matching entities within an entity collection or across two or more entity collections."
 
 ## roy_systematic_2022
 - title: A systematic review and research perspective on recommender systems
@@ -316,18 +335,31 @@ Method note: automated lexical matching (RapidFuzz token-set ratio) with manual 
 - mapping_score: 1000
 - mapping_method: bib_attachment_exact_stem
 - claim_checks:
-  - claim_1_status: partially_supported
-    score: 50.74626865671642
-    claim: "Acting on that evidence still requires deliberate choices about how to aggregate it, what to filter out, and how to account for what it cannot tell you (Roy and Dutta, 2022)."
-    quote_candidate: "Then, the algorithmic analysis on various recom- mender systems is performed and a taxonomy is framed that accounts for various components required for developing an effective recommender system."
-    secondary_score: 47.491638795986624
-    secondary_quote: "Using content-based filtering may resolve this issue, but it may introduce overspeciali - zation and decrease the computing time and system performance."
-  - claim_2_status: partially_supported
-    score: 52.661064425770306
-    claim: "The thesis draws on imported listening history, which provides implicit preference evidence rather than a direct statement of what the user wants (Roy and Dutta, 2022)."
-    quote_candidate: "These techniques also need two steps for prediction—the first step is to build the model, and the second step is to predict ratings using a function (f) which takes the model defined in the first step and the user profile as input."
-    secondary_score: 52.3961661341853
-    secondary_quote: "In essence, recommender systems deal with two entities—users and items, where each user gives a rating (or preference value) to an item (or product)."
+  - claim_1_status: weak_support
+    score: 48.95522388059702
+    claim: "Interaction logs such as play counts and session traces are frequently interpreted as behavioural indicators of preference, yet they remain indirect and interpretation-dependent (Roy and Dutta, 2022)."
+    quote_candidate: "Latency problem The latency problem is specific to collaborative filtering approaches and occurs when new items are frequently inserted into the database."
+    secondary_score: 48.0
+    secondary_quote: "This hybrid incorporation of different techniques generally results in increased performance and increased accuracy in many recommender applications."
+  - claim_2_status: weak_support
+    score: 44.19475655430712
+    claim: "Aggregating interaction history can stabilise noise, but it also encodes assumptions about recency, repetition, and signal reliability (Adomavicius and Tuzhilin, 2005; Roy and Dutta, 2022)."
+    quote_candidate: "Hence, this paper can demonstrate its validity and reliability as a literature review."
+    secondary_score: 42.19653179190752
+    secondary_quote: "The images or other third party material in this article are included in the article’s Creative Commons licence, unless indicated otherwise in a credit line to the mate- rial."
+
+## ru_improving_2023
+- title: Improving Music Genre Classification from multi-modal Properties of Music and Genre Correlations Perspective
+- mapped_pdf: c:\Users\peach\Desktop\thesis-main (3)\thesis-main\thesis-main\10_resources\papers\Ru et al. - 2023 - Improving Music Genre Classification from multi-modal Properties of Music and Genre Correlations Per.pdf
+- mapping_score: 99
+- mapping_method: fuzzy_title_author_year
+- claim_checks:
+  - claim_1_status: weak_support
+    score: 47.02549575070822
+    claim: "Music4All supports reproducible multimodal experimentation through metadata, tags, lyrics, and audio-related attributes (Pegoraro Santana et al., 2020), and subsequent work shows utility in multimodal genre-related tasks (Ru et al., 2023)."
+    quote_candidate: "Pandeya’s model uses both audio informa- tion and lyrics information as input and shows the state-of-art performance in multi-label MGC task."
+    secondary_score: 45.22613065326633
+    secondary_quote: "Considering that Music4All dataset is noisy and contains mul- tiple languages in music lyrics, we filtered out music tracks with missing information or non-English lyrics in our exper- iment."
 
 ## schweiger_impact_2025
 - title: The impact of playlist characteristics on coherence in user-curated music playlists
@@ -335,18 +367,12 @@ Method note: automated lexical matching (RapidFuzz token-set ratio) with manual 
 - mapping_score: 105
 - mapping_method: fuzzy_title_author_year
 - claim_checks:
-  - claim_1_status: partially_supported
-    score: 52.961672473867594
-    claim: "In music recommendation, coherence outcomes are tied to playlist characteristics and distance-feature construction choices in user-curated playlists (Schweiger et al., 2025)."
+  - claim_1_status: weak_support
+    score: 44.30769230769231
+    claim: "Playlist studies show that coherence, diversity, novelty, and order operate as competing objectives rather than jointly maximisable targets (Ferraro et al., 2018; Vall et al., 2019; Bonnin and Jannach, 2015; Schweiger et al., 2025)."
     quote_candidate: "[8]p r o p o s e s a hybrid recommendation system that balances coherence and diversity based on given Schweigeretal."
-    secondary_score: 51.80327868852459
-    secondary_quote: "4 CPs can lead to playlists containing more diverse music, as the musical tastes of multiple users feed into one playlist [24, 40]."
-  - claim_2_status: partially_supported
-    score: 52.56797583081571
-    claim: "In music recommendation specifically, playlist-level objectives like coherence are affected by distance-metric and feature-combination choices, including coherence-diversity balancing settings (Schweiger et al., 2025)."
-    quote_candidate: "[8]p r o p o s e s a hybrid recommendation system that balances coherence and diversity based on given Schweigeretal."
-    secondary_score: 47.8021978021978
-    secondary_quote: "Example 3 Understanding coherence and its relationship with other playlist character- istics can be applied to tasks beyond track recommendations."
+    secondary_score: 43.42857142857143
+    secondary_quote: "The remainder of the paper is structured as follows: Sect.2presents previous research on track order, coherence, and other related topics."
 
 ## sotirou_musiclime_2025
 - title: MusicLIME: Explainable Multimodal Music Understanding
@@ -355,24 +381,37 @@ Method note: automated lexical matching (RapidFuzz token-set ratio) with manual 
 - mapping_method: fuzzy_title_author_year
 - claim_checks:
   - claim_1_status: partially_supported
-    score: 50.580046403712295
-    claim: "Explainable recommendation research and recent music explainability work both emphasize the need to make model decisions interpretable and inspectable rather than presenting outcomes alone (Zhang and Chen, 2020; Sotirou et al., 2025)."
-    quote_candidate: "Through this work, we contribute to improving the interpretability of multimodal music models, empowering users to make informed choices, and fostering more equitable, fair, and transparent music understanding systems."
-    secondary_score: 50.580046403712295
-    secondary_quote: "While existing XAI methods have advanced explainability in the music domain, there is a notable gap in approaches tailored to multimodal models, particularly in music, which combines both audio and lyrical data."
+    score: 52.131147540983605
+    claim: "While result-focused reporting remains common, recent explainability work in music contexts demonstrates that feature-level mechanism explanations, showing which specific modalities and attributes drive individual outputs, provide more informative auditing than aggregate prediction scores alone (Sotirou et al., 2025)."
+    quote_candidate: "Additionally, genre prediction proved more accurate than emotion prediction, which may be attributed to the inherently subjective nature of human emotions [28] on one side, but also to the distinctive features of various genres, whether in lyrics (e.g., hip hop) or audio (e.g., vocals and drums in punk music)."
+    secondary_score: 51.14503816793893
+    secondary_quote: "While the aforementioned approaches provide useful explanations for unimodal models, the multimodal nature of music requires an adaptation that can capture the intricate interplay between its different modalities."
 
-## tintarev_evaluating_2012
-- title: Evaluating the effectiveness of explanations for recommender systems
-- mapped_pdf: c:\Users\peach\Desktop\thesis-main (3)\thesis-main\thesis-main\10_resources\papers\Tintarev and Masthoff - 2012 - Evaluating the effectiveness of explanations for recommender systems Methodological issues and empi.pdf
+## tintarev_survey_2007
+- title: A Survey of Explanations in Recommender Systems
+- mapped_pdf: c:\Users\peach\Desktop\thesis-main (3)\thesis-main\thesis-main\10_resources\previous_drafts\lit_review_resource_pack\files\389\Tintarev and Masthoff - 2007 - A Survey of Explanations in Recommender Systems.pdf
 - mapping_score: 1000
 - mapping_method: bib_attachment_exact_stem
 - claim_checks:
   - claim_1_status: partially_supported
-    score: 53.57142857142857
-    claim: "Their later evaluation work showed that these goals do not always move together, and that systems capable of generating convincing explanations may not actually support genuine user understanding (Tintarev and Masthoff, 2012)."
-    quote_candidate: "Three types of explanations were used: 1."
-    secondary_score: 53.1578947368421
-    secondary_quote: "If an explanation helps users make good decisions, getting more (accurate and balanced) information or trying the product should not change their valuation of the product greatly."
+    score: 59.701492537313435
+    claim: "Explanation research has long argued that recommendation quality is multidimensional, extending beyond predictive utility to include transparency, trust, effectiveness, and scrutability (Tintarev and Masthoff, 2007, 2012)."
+    quote_candidate: "transparency, user trust, as well as satisfaction."
+    secondary_score: 50.95890410958904
+    secondary_quote: "A system that can explain to the user in their own terms why items are recommended is likely to increase user trust, as well as system transparency and scrutability."
+
+## vall_feature-combination_2019
+- title: Feature-combination hybrid recommender systems for automated music playlist continuation
+- mapped_pdf: c:\Users\peach\Desktop\thesis-main (3)\thesis-main\thesis-main\10_resources\papers\Vall et al. - 2019 - Feature-combination hybrid recommender systems for automated music playlist continuation.pdf
+- mapping_score: 1000
+- mapping_method: bib_attachment_exact_stem
+- claim_checks:
+  - claim_1_status: weak_support
+    score: 49.39467312348668
+    claim: "Playlist studies show that coherence, diversity, novelty, and order operate as competing objectives rather than jointly maximisable targets (Ferraro et al., 2018; Vall et al., 2019; Bonnin and Jannach, 2015; Schweiger et al., 2025)."
+    quote_candidate: "2017b, 2019), and Bonnin and Jannach (2014) proposed a successful variation consisting in computing similarities between artists instead of between songs, even when the ultimate recommendations were at the song level."
+    secondary_score: 45.539906103286384
+    secondary_quote: "Still, playlist-neighbors CF systems require a careful implementation to efﬁciently compute the similarity between out-of-set playlists and large training playlist collections (Bon- nin and Jannach 2014, Appendix A.1)."
 
 ## zamani_analysis_2019
 - title: An Analysis of Approaches Taken in the ACM RecSys Challenge 2018 for Automatic Music Playlist Continuation
@@ -380,37 +419,12 @@ Method note: automated lexical matching (RapidFuzz token-set ratio) with manual 
 - mapping_score: 100
 - mapping_method: fuzzy_title_author_year
 - claim_checks:
-  - claim_1_status: partially_supported
-    score: 54.82233502538071
-    claim: "Analyses of RecSys Challenge playlist-continuation systems show that even one added seed track can change automatic playlist continuation performance, and that input/candidate formulation choices materially influence recommendation accuracy (Zamani et al., 2019)."
-    quote_candidate: "[46] have recently identified the task of automatic music playlist continuation as one of the grand challenges in music recommender systems research."
-    secondary_score: 50.328227571115974
-    secondary_quote: "Considered a variation of automatic playlist generation, the task ofautomatic playlist continu- ation (APC) consists of adding one or more tracks to a playlist in a way that fits the same target characteristics of the original playlist [4, 46]."
-
-## zhang_explainable_2020
-- title: Explainable Recommendation: A Survey and New Perspectives
-- mapped_pdf: c:\Users\peach\Desktop\thesis-main (3)\thesis-main\thesis-main\10_resources\previous_drafts\lit_review_resource_pack\files\387\Zhang and Chen - 2020 - Explainable Recommendation A Survey and New Perspectives.pdf
-- mapping_score: 1000
-- mapping_method: bib_attachment_exact_stem
-- claim_checks:
-  - claim_1_status: partially_supported
-    score: 55.342465753424655
-    claim: "In practice, this can reduce direct feature-level inspectability unless additional explanation mechanisms are engineered around the ranking process (Zhang and Chen, 2020)."
-    quote_candidate: "The model-intrinsic approach develops interpretable models, whose decision mechanism is transparent, and thus, we can naturally provide explanations for the model decisions (Zhanget al., 2014a)."
-    secondary_score: 50.450450450450454
-    secondary_quote: "The model-agnostic approach (Wang et al., 2018d), or sometimes called the post-hoc explanation approach (Peake and Wang, 2018), allows the decision mechanism to be a blackbox."
-  - claim_2_status: partially_supported
-    score: 56.06936416184971
-    claim: "Post-hoc explanations can sound plausible while remaining only loosely connected to the mechanism that actually produced the ranking (Zhang and Chen, 2020)."
-    quote_candidate: "The model-intrinsic approach develops interpretable models, whose decision mechanism is transparent, and thus, we can naturally provide explanations for the model decisions (Zhanget al., 2014a)."
-    secondary_score: 52.22929936305732
-    secondary_quote: "The model-agnostic approach (Wang et al., 2018d), or sometimes called the post-hoc explanation approach (Peake and Wang, 2018), allows the decision mechanism to be a blackbox."
-  - claim_3_status: partially_supported
-    score: 55.23809523809524
-    claim: "Explainable recommendation research and recent music explainability work both emphasize the need to make model decisions interpretable and inspectable rather than presenting outcomes alone (Zhang and Chen, 2020; Sotirou et al., 2025)."
-    quote_candidate: "The model-intrinsic approach develops interpretable models, whose decision mechanism is transparent, and thus, we can naturally provide explanations for the model decisions (Zhanget al., 2014a)."
-    secondary_score: 54.1019955654102
-    secondary_quote: "Another example is visually explainable recommendation (Chenet al., 2019b), which proposes a deep model to generate image regional-of-interest explanations, and it belongs to the “deep learning with visual explanation” category."
+  - claim_1_status: weak_support
+    score: 45.58404558404558
+    claim: "Recommendation behaviour is strongly conditioned by pre-scoring pool composition, and playlist-continuation studies show high sensitivity to candidate handling decisions (Zamani et al., 2019)."
+    quote_candidate: "These models mostly create an incomplete playlist-track matrix and use matrix fac- torization to learn a low-dimensional dense representation for each playlist and track."
+    secondary_score: 44.96124031007752
+    secondary_quote: "linearly combined the results produced by two dif- ferentmodels:anautoencodermodelandaconvolutionalneuralnetwork.Theautoencodermodel tries to reconstruct track lists and artist lists for each playlist."
 
 ## zhu_bars_2022
 - title: BARS
@@ -419,15 +433,15 @@ Method note: automated lexical matching (RapidFuzz token-set ratio) with manual 
 - mapping_method: fuzzy_title_author_year
 - claim_checks:
   - claim_1_status: partially_supported
-    score: 50.810810810810814
-    claim: "Multiple reviews of recommender systems research document that absent or under-specified preprocessing steps, configuration choices, and dependency declarations can reduce the practical feasibility of independent result verification (Ferrari Dacrema et al., 2021; Bellogin et al., 2021; Zhu et al., 2022; Anelli et al., 2021)."
-    quote_candidate: "By setting up an open benchmarking leaderboard, together with the freely available benchmarking artifacts (e.g., datasets, code, configurations, results, and reproducing steps), we hope that the BARS project could benefit all researchers, practitioners, and edu- cators in the community."
-    secondary_score: 49.37759336099585
-    secondary_quote: "We also call for generous contributions from the whole community to improve this open benchmarking project and to keep healthy development with the rapid evolution of recommender systems research."
+    score: 52.63157894736842
+    claim: "Reproducibility failures in recommender research are repeatedly linked to incomplete protocol specification, hidden preprocessing steps, and dependency drift (Ferrari Dacrema et al., 2021; Bellogin and Said, 2021; Zhu et al., 2022; Anelli et al., 2021)."
+    quote_candidate: "7 CONCLUSION Reproducibility is an open issue in the field of recommender sys- tems."
+    secondary_score: 49.094567404426556
+    secondary_quote: "The pipeline and required artifacts for open benchmarking specified in Section 3 are new to the community and allow researchers to easily expand the benchmarks to more tasks (e.g., re-ranking, sequential recommendation) and vertical scenarios (e.g., news recommenda- tion, music recommendation)."
 
 ## Summary
 - total_claim_checks: 40
-- supported: 2
-- partially_supported: 38
-- weak_support: 0
+- supported: 1
+- partially_supported: 16
+- weak_support: 23
 - no_match: 0

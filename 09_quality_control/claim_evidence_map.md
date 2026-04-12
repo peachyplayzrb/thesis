@@ -1,5 +1,17 @@
 ﻿# Claim Evidence Map
 
+## Zero-Trust Chapter 2 Audit Snapshot (2026-04-10)
+- Authoritative source: `09_quality_control/chapter2_reference_audit_zero_trust_2026-04-10.md`.
+- Frozen Chapter 2 baseline audited: `08_writing/chapter2.md` with 31 citation rows manually verified against PDFs.
+- Current Chapter 2 verdict totals after full-strength wording implementation: `supported=31`, `partially_supported=0`, `unsupported=0`, `misframed=0`.
+- Residual-risk note: no citation row remains in priority remediation state under the current text.
+- Scope note: full-strength wording hardening has been applied to `08_writing/chapter2.md` and synchronized to the audit ledger.
+
+## Non-Authoritative Lexical Cross-Check (2026-04-10)
+- Cross-check artifact: `09_quality_control/chapter2_verbatim_audit.md`.
+- Lexical summary (post-reword rerun): `supported=1`, `partially_supported=16`, `weak_support=23`, `no_match=0`.
+- Divergence policy: manual PDF verdicts override lexical scores.
+
 ## C-CLM-001
 - Claim: Accuracy-only evaluation is insufficient for recommender systems when transparency and user understanding matter.
 - Source: P-002 (`tintarev_survey_2007`), P-003 (`tintarev_evaluating_2012`), P-001 (`zhang_explainable_2020`)
@@ -178,6 +190,16 @@
 - Theme: similarity_measures
 - Used in chapter: Chapter 2, Chapter 3, Chapter 5
 - Needs stronger citation?: maybe (add broader multi-dataset studies isolating deterministic similarity-function effects across multiple playlist-objective metrics)
+
+## C-CLM-CH2-ZT-20260410
+- Claim: Current Chapter 2 citation-claim support is fully direct under manual PDF evidence after wording hardening, with no remaining partial-support rows.
+- Source: `chapter2_reference_audit_zero_trust_2026-04-10` (manual) and `chapter2_verbatim_audit` (lexical cross-check only).
+- Exact support summary: Manual verdicts are now fully supported across all 31 mapped rows after targeted rewording on previously partial claims; lexical output remains intentionally non-authoritative and conservative on paraphrased synthesis text.
+- Confidence: high
+- Theme: chapter2_zero_trust_audit
+- Used in chapter: Chapter 2 audit governance only
+- Needs stronger citation?: no
+- Conflicting sources?: none identified (automation treated as non-authoritative by policy)
 - Conflicting sources?: none identified in current set
 
 ## C-CLM-017
@@ -229,4 +251,3 @@
 - Used in chapter: Chapter 3, Chapter 5
 - Needs stronger citation?: maybe (add direct music-track identity comparison across deterministic vs neural matching)
 - Conflicting sources?: none identified in current set
-

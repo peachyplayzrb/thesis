@@ -1,6 +1,6 @@
 # Unresolved Issues
 
-Last updated: 2026-03-30
+Last updated: 2026-04-09
 
 ## Active
 
@@ -21,6 +21,9 @@ Active-set sync note (2026-03-27 01:22 UTC): v1f evidence refresh and document-c
 Active-set sync note (2026-03-27 03:05 UTC): UI-003 closure package is now complete at control-record level. Chapters 3 to 5 claim-verdict matrix and chapter-targeted hardening notes are logged in `09_quality_control/ui003_claim_verdicts_ch3_ch5.md` and `09_quality_control/ui003_chapter_hardening_notes_ch3_ch5.md`. No active unresolved issues remain.
 Active-set sync note (2026-03-29 UTC): Confirmed no active unresolved issues. Architecture migration wave (BL-003 typed boundaries + stage-shell, BL-004 through BL-007 OO migration + controllable-logic uplift) is complete and logged. Documentation sync C-219 is complete. 00_admin full synchronization wave C-220 is in progress. Only remaining active scope is physical submission packaging.
 Active-set sync note (2026-03-30 UTC): Aggressive root archival wave accepted and executed (D-044/C-222). No new unresolved blocker opened by this operation; active runtime posture remains `07_implementation/main.py` with archived root wrappers/config surfaces retained in deep archive.
+Active-set sync note (2026-04-09 UTC): Confirmed no active unresolved issues after the pyright/full-contract closure wave. The active `07_implementation` runtime path revalidated clean with pytest `361/361`, pyright `0 errors, 0 warnings, 0 informations`, BL-013 pass `BL013-ENTRYPOINT-20260409-180340-350614`, and BL-014 pass `BL014-SANITY-20260409-180356-824725` (`28/28`).
+Active-set sync note (2026-04-09 runtime-root governance): Confirmed no active blocker. Workflow authority is now explicitly anchored to `07_implementation/`; `_scratch/` (including `_scratch/final_artefact_bundle/`) is reference-only and should not be treated as active runtime control surface.
+Active-set sync note (2026-04-10 zero-trust audit closeout): Confirmed no new unresolved blocker from the Chapter 2 zero-trust reference audit cycle; all citations extracted from the frozen Chapter 2 baseline received manual verdicts, and no citation remained unverifiable.
 
 ## Resolved (Recent)
 

@@ -1,6 +1,6 @@
 # Thesis State
 
-Last updated: 2026-04-01 UTC (runtime-control centralization + orchestration evidence refresh)
+Last updated: 2026-04-09 UTC (config-first final artefact implementation wave)
 
 ## Official Current State
 
@@ -80,7 +80,7 @@ Priority status checkpoint (2026-03-27 16:54 UTC): Additional same-day run wave 
 
 Priority status checkpoint (2026-03-27 18:49 UTC): BL-023 website integration hardening now includes a FastAPI-based local server, typed POST validation, localhost-only CORS, preserved `{"error": ...}` API compatibility, and automated regression coverage (`07_implementation/setup/test_website_api_server.py`) in addition to the live smoke script. External behavior remains stable on the 7-stage pipeline surface; canonical reporting baseline remains v1f.
 
-Priority status checkpoint (2026-03-28 03:41 UTC): Admin-first synchronization pass completed before chapter implementation edits. `07_implementation/ACTIVE_BASELINE.md` is confirmed as canonical evidence authority with no run-ID changes in this checkpoint; `00_admin/Artefact_MVP_definition.md`, `09_quality_control/chapter_readiness_checks.md`, and `00_admin/timeline.md` were synchronized to this baseline posture. Next execution step remains chapter hardening with strict run-linked references.
+Priority status checkpoint (2026-03-28 03:41 UTC): Admin-first synchronization pass completed before chapter implementation edits. `07_implementation/ACTIVE_BASELINE.md` is confirmed as canonical evidence authority with no run-ID changes in this checkpoint; governance surfaces and `09_quality_control/chapter_readiness_checks.md` were synchronized to this baseline posture. Next execution step remains chapter hardening with strict run-linked references.
 
 Priority status checkpoint (2026-03-28 03:46 UTC): Chapter hardening execution is now in progress with first-pass implementation applied. `08_writing/chapter3.md` alignment-limitation metrics were synchronized to canonical baseline wording (`match_rate=0.1595`, threshold posture aligned to v1f controls), and `08_writing/chapter4.md` Sections 4.8 to 4.10 were populated with run-linked reproducibility/controllability/rule-compliance/explanation-fidelity results. Chapter 4 readiness gate for rule-compliance/failure-case write-through is now closed in `09_quality_control/chapter_readiness_checks.md`.
 
@@ -105,6 +105,10 @@ Priority status checkpoint (2026-03-29 README/admin sync): `07_implementation/RE
 Priority status checkpoint (2026-03-30 aggressive archive wave): By accepted decision D-044, root-level control/runtime surfaces `.controllability-transparency.instructions.md`, `.gitattributes`, `requirements.txt`, `pyrightconfig.json`, `main_standalone.py`, and `final_artefact.py` were moved to `_deep_archive_march2026/_packages_reference_2026-03-30/` and deep archive is ignored in git. Active runtime posture remains anchored on `07_implementation/main.py`; governance references were synchronized across admin control files.
 
 Priority status checkpoint (2026-04-01 runtime-control centralization wave): Runtime control resolution for BL-004 through BL-009 is now centralized for orchestrated execution by using canonical payload-default merges instead of ambient stage env fallbacks when `BL_STAGE_CONFIG_JSON` is present. Shared resolver behavior was extended to support explicit payload-default loaders, stage runtime modules were aligned, and cross-stage defaults completeness tests were added to lock behavior. Validation snapshot: focused runtime-control suites pass (`38/38`), broader runtime-controls selector pass (`29/29` selected), orchestration payload-handoff/runner/default-completeness suite pass (`19/19`), and full BL-013 orchestration pass `BL013-ENTRYPOINT-20260401-150246-160721` completed with status `pass`.
+
+Priority status checkpoint (2026-04-09 pyright/full-contract closure wave): Active runtime validation is fully green after the remediation wave. Full contract completed with exit code `0`; pytest passed (`361/361`), pyright returned `0 errors, 0 warnings, 0 informations`, BL-013 passed (`BL013-ENTRYPOINT-20260409-180340-350614`), and BL-014 passed (`BL014-SANITY-20260409-180356-824725`, `28/28`).
+Priority status checkpoint (2026-04-09 runtime-root governance sync): Workflow authority is explicitly anchored to `07_implementation/` and `_scratch/` is explicitly reference-only unless user-directed for historical inspection. Stale references to `07_implementation/ACTIVE_BASELINE.md` are now treated as historical drift and must not be revived as an active control file.
+Priority status checkpoint (2026-04-09 config-first final artefact wave): Initial implementation of the new active `07_implementation/final_artefact/` package is complete. The new wrapper requires an explicit artefact config, generates an orchestration-compatible `run-config-v1` payload from that config, and runs the validated `07_implementation/src` pipeline without a hardcoded default profile. An orchestration bug exposed by this path was fixed so BL-003 payloads are resolved whenever seed refresh is active outside the visible stage order. Validation snapshot: focused pytest `15/15`, wrapper validate pass (`BL013-ENTRYPOINT-20260409-184945-119248`, `BL014-SANITY-20260409-184955-724616`), and full contract pass after changes (`366/366`, pyright `0 errors`, BL-013 `BL013-ENTRYPOINT-20260409-185031-056745`, BL-014 `BL014-SANITY-20260409-185043-887580`).
 
 ## Current Implementation Status
 
@@ -133,6 +137,7 @@ Priority status checkpoint (2026-04-01 runtime-control centralization wave): Run
 - **Implementation Quality Status**: Pipeline closed on the active v1f baseline (`run_config_ui013_tuning_v1f.json`). BL-014 passes 22/22. All 10 scoring components active. BL-010 determinism and BL-011 controllability confirmed on their respective pinned states. No open implementation closure risks.
 - **Implementation Modularity Status** (2026-03-29): Orchestration, controllability, and alignment runtime surfaces are now split into focused helper modules with thin compatibility entrypoints/wrappers retained at `main.py`, `pipeline_runner.py`, `scenarios.py`, `matching.py`, and `reporting.py`. BL-004, BL-005, and BL-006 now also follow a consistent typed stage pattern (`models.py` + `stage.py` + wrapper `main.py`) to reduce script-level coupling and preserve a stable API surface. Current risk is low and limited to normal maintenance drift rather than monolithic-script fragility.
 - **BL-003 Typed Boundary Status** (2026-03-29): Phase 2 model-boundary migration is complete in `07_implementation/src/alignment/`. Typed dataclasses now back source events, match traces, matched events, and aggregation internals; output contracts and writer schemas remain unchanged for downstream compatibility.
+- **Final Artefact Package Status** (2026-04-09): A new config-first wrapper package now exists at `07_implementation/final_artefact/`. It currently centralizes wrapper execution behavior, path controls, and generated run-config creation in one artefact config while delegating execution to the validated `src` pipeline. Remaining work is to migrate additional operator-facing path, quality/validation, and reporting controls into this single config surface without regressing BL-013/BL-014 behavior.
 
 ### BL-021 Source-Scope Control State (as of 2026-03-26)
 - Source-scope contract is baseline behavior (no longer deferred): implemented, validated, and traceable in run artifacts.
@@ -151,14 +156,14 @@ See: `07_implementation/BL020_HANDOFF_AUDIT_2026-03-21.md` for comprehensive pre
 ## Update Control
 
 - Last updated:
-2026-04-01 (runtime-control centralization + orchestration evidence refresh)
+2026-04-09 (config-first final artefact implementation wave)
 
 - Reason for last update:
-(1) Runtime-control centralization implementation progressed from plan to validated code for BL-004 through BL-009 payload resolution behavior.
-(2) Orchestration-level payload-authority evidence was added and revalidated with fresh BL-013 and targeted pytest runs.
-(3) Admin controls were updated to reflect current implementation posture and latest evidence IDs.
+(1) Initial implementation of the new `07_implementation/final_artefact/` package is now in place with a config-first wrapper over the validated pipeline.
+(2) The wrapper execution path exposed and closed a BL-013 payload-resolution bug affecting seed refresh runs outside the visible stage order.
+(3) Admin state was synchronized to reflect that in-repo implementation work has reopened for final artefact hardening while active runtime authority remains anchored on `07_implementation/`.
 
 ## Locked Definitions
-- Artefact scope lock: `00_admin/Artefact_MVP_definition.md`
-- Evaluation plan: `00_admin/evaluation_plan.md`
-- Methodology definition: `00_admin/methodology_definition.md`
+- Artefact scope lock: this file (`Current artefact definition`, `Current system scope`)
+- Evaluation direction: this file (`Current evaluation direction`)
+- Methodology definition: this file (`Current methodology position`)

@@ -191,10 +191,10 @@ During any AI-assisted chat session:
 - If new information contradicts or supersedes an existing entry (e.g. in `dataset_registry.md`, `decision_log.md`, `assumptions.md`), the existing entry must be updated in the same response, not left stale.
 - Logging targets by information type:
   - Dataset acquisition / file confirmations → `06_data_and_sources/dataset_registry.md`
-  - Implementation runs or plans → `07_implementation/experiment_log.md`
+  - Implementation runs or plans → implementation artifacts under `07_implementation/` plus `00_admin/change_log.md`
   - Design decisions → `00_admin/decision_log.md`
   - Scope changes → `00_admin/change_log.md` + `00_admin/thesis_state.md`
-  - Mentor questions or follow-ups → `00_admin/mentor_question_log.md`
+  - Mentor-dependent ambiguity → `00_admin/unresolved_issues.md`
 - AI applies this rule automatically — no explicit "log this" instruction required per message.
 
 - If architecture, literature themes, and claimed gap conflict, log the conflict and propose options; do not force agreement.
@@ -203,30 +203,29 @@ During any AI-assisted chat session:
 
 These rules apply whenever implementation work is in progress (Phase A onward).
 
-### Per backlog item
-Every backlog item that moves to `in-progress` or `done` requires:
-1. An `EXP-XXX` entry in `07_implementation/experiment_log.md` — created with `status: planned` before coding starts, updated to `pass` or `fail` after the run.
-2. A backlog row status update in `07_implementation/backlog.md`.
-3. A `C-###` entry in `00_admin/change_log.md` covering the affected files and reason.
+### Per implementation scope
+Every meaningful implementation scope requires:
+1. A `C-###` entry in `00_admin/change_log.md` covering affected files, reason, and validation evidence.
+2. Synchronization of `00_admin/thesis_state.md`, `00_admin/timeline.md`, and `00_admin/unresolved_issues.md` when posture/blockers change.
 
 ### Per design decision
 Any implementation-time choice (algorithm selection, schema field definition, threshold value, scoring weight, assembly rule) must produce a `D-###` entry in `00_admin/decision_log.md` with full rationale and alternatives considered.
 
 ### Evidence artifacts
-Each completed `EXP-XXX` entry must link to at least one concrete output artifact (e.g. a JSONL, JSON, CSV, or log file under `07_implementation/implementation_notes/run_outputs/`). No backlog item is `done` without a linked artifact.
+Each completed implementation scope must link to at least one concrete output artifact (for example JSON, CSV, markdown reports, or logs under `07_implementation/`).
 
 ### Reproducibility check
-Every implementation run must include a deterministic repeat run (same inputs + config → same outputs). The result (`yes`/`no` + hash comparison if applicable) must be recorded in the `EXP-XXX` entry.
+Every implementation run must include a deterministic repeat run when applicable (same inputs + config → same outputs). Record result (`yes`/`no` + hash comparison if applicable) in linked evidence and summarize in `00_admin/change_log.md`.
 
 ## 15) Session Start Checklist
 
 At the start of every session (or on any "make sure everything is logged" prompt), the AI must:
 1. Read `00_admin/thesis_state.md` — verify title/RQ/scope unchanged.
-2. Read `07_implementation/backlog.md` — note current item statuses.
-3. Read `07_implementation/experiment_log.md` — check every `done` backlog item has an `EXP-XXX` entry. Create any that are missing.
-4. Read `00_admin/change_log.md` — confirm highest `C-###` and fix any stub/empty entries.
-5. Read `00_admin/decision_log.md` — confirm highest `D-###`.
-6. Read `00_admin/unresolved_issues.md` — flag any open blockers.
+2. Read `00_admin/timeline.md` — note execution posture and next bounded work.
+3. Read `00_admin/change_log.md` — confirm highest `C-###` and fix any stub/empty entries.
+4. Read `00_admin/decision_log.md` — confirm highest `D-###`.
+5. Read `00_admin/unresolved_issues.md` — flag any open blockers.
+6. Read `00_admin/recurring_issues.md` — apply known friction-prevention patterns.
 7. Report findings and fixes before starting work.
 
 ## 16) Collaborator Handoff Continuity
@@ -234,16 +233,21 @@ At the start of every session (or on any "make sure everything is logged" prompt
 When a collaborator takes over this repository, they must follow the same AI workflow and logging strictness already established.
 
 Required startup artifacts:
-1. `00_admin/handoff_friend_chat_playbook.md`
-2. `.github/copilot-instructions.md`
-3. `.github/prompts/session-start-check.prompt.md`
-4. `.github/prompts/log-everything.prompt.md`
+1. `.github/copilot-instructions.md`
+2. `.github/agents/thesis-ask.agent.md`
+3. `.github/agents/thesis-autopilot.agent.md`
+4. `00_admin/thesis_state.md`
+5. `00_admin/timeline.md`
+6. `00_admin/change_log.md`
+7. `00_admin/decision_log.md`
+8. `00_admin/unresolved_issues.md`
+9. `00_admin/recurring_issues.md`
 
 Required collaborator start action:
-- In a new chat, run the session-start prompt workflow before any implementation or writing updates.
+- In a new chat, run the session-start checklist workflow before any implementation or writing updates.
 
 Required collaborator close action:
-- Before ending chat, run a full logging-completeness pass and update backlog/experiment/change/decision/unresolved-issues files where needed.
+- Before ending chat, run a full logging-completeness pass and update thesis-state/timeline/change/decision/unresolved-issues/recurring-issues files where needed.
 
 ## 17) Control Testing & Transparency Audit Protocol
 

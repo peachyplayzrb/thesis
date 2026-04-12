@@ -1,6 +1,6 @@
 # Recurring Issues Log
 
-Last updated: 2026-03-29
+Last updated: 2026-04-09
 
 ## Purpose
 Track friction patterns that appear more than once so future sessions can avoid them automatically.
@@ -51,3 +51,15 @@ None.
 - last_seen: 2026-03-29
 - pattern: `handoff_friend_chat_playbook.md` Priority Queue and sprint-state note are not updated when unresolved issues close, causing collaborators to receive stale "open issue" instructions.
 - fix_applied: Admin sync waves include a handoff-playbook update step. Apply this whenever any UI is closed or a sprint day is completed.
+
+### RI-005 — Startup checklist references missing workflow files
+- first_seen: 2026-04-08
+- last_seen: 2026-04-09
+- pattern: Active instructions expected `07_implementation/backlog.md` and `07_implementation/experiment_log.md`, but those files do not exist in the current repository posture, causing avoidable startup friction.
+- fix_applied: Rebased startup/closeout rules on core governance files (`thesis_state`, `timeline`, `change_log`, `decision_log`, `unresolved_issues`, `recurring_issues`) and removed prompt-file dependency from active workflow surfaces.
+
+### RI-006 — Stale active-baseline path points to removed location
+- first_seen: 2026-04-09
+- last_seen: 2026-04-09
+- pattern: Multiple docs still referenced `07_implementation/ACTIVE_BASELINE.md` after runtime-root consolidation, while the only remaining baseline markdown was under `_scratch/final_artefact_bundle/`, causing workflow confusion about active authority.
+- fix_applied: Enforced active-root rule in instruction surfaces and admin docs (`07_implementation/` active, `_scratch/` reference-only), added explicit status note in `_scratch/final_artefact_bundle/ACTIVE_BASELINE.md`, and logged decision/change sync (D-048/C-229).

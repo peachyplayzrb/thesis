@@ -1,9 +1,9 @@
 ﻿# Mentor Question Log
 
 Status checkpoint (2026-03-29):
-- Open: MQ-001, MQ-002, MQ-003, MQ-004, MQ-007
+- Open: MQ-001, MQ-002, MQ-003, MQ-004, MQ-007, MQ-009
 - Deferred: MQ-005, MQ-006, MQ-008
-- Note: no new mentor interaction since 2026-03-13; questions remain open pending first supervisor meeting.
+- Note: Chapter 2 has been sent for mentor review on 2026-04-12; MQ-009 tracks the open feedback request.
 
 id: MQ-001
 date: 2026-03-13
@@ -104,3 +104,15 @@ affected_files:
 urgency: medium
 status: deferred
 deferred_reason: Access route is closed operationally (credentials released and DS-001 active). Remaining mentor input concerns corpus-sufficiency and governance-interpretation judgment, which is review-stage rather than run-stage blocking.
+
+id: MQ-009
+date: 2026-04-12
+topic: Chapter 2 mentor review feedback request
+question: Chapter 2 has been sent for review. Please provide feedback on argumentative coherence, literature critique depth, citation adequacy, and readiness for final submission framing.
+why_it_matters: Determines whether any final pre-submission revisions are needed before thesis freeze.
+affected_files:
+- 08_writing/chapter2.md
+- 09_quality_control/chapter_readiness_checks.md
+- 00_admin/timeline.md
+urgency: medium
+status: open
