@@ -229,6 +229,10 @@ Priority status checkpoint (2026-04-09 pyright/full-contract closure wave): Acti
 Priority status checkpoint (2026-04-09 runtime-root governance sync): Workflow authority is explicitly anchored to `07_implementation/` and `_scratch/` is explicitly reference-only unless user-directed for historical inspection. Stale references to `07_implementation/ACTIVE_BASELINE.md` are now treated as historical drift and must not be revived as an active control file.
 Priority status checkpoint (2026-04-09 config-first final artefact wave): Initial implementation of the new active `07_implementation/final_artefact/` package is complete. The new wrapper requires an explicit artefact config, generates an orchestration-compatible `run-config-v1` payload from that config, and runs the validated `07_implementation/src` pipeline without a hardcoded default profile. An orchestration bug exposed by this path was fixed so BL-003 payloads are resolved whenever seed refresh is active outside the visible stage order. Validation snapshot: focused pytest `15/15`, wrapper validate pass (`BL013-ENTRYPOINT-20260409-184945-119248`, `BL014-SANITY-20260409-184955-724616`), and full contract pass after changes (`366/366`, pyright `0 errors`, BL-013 `BL013-ENTRYPOINT-20260409-185031-056745`, BL-014 `BL014-SANITY-20260409-185043-887580`).
 
+Priority status checkpoint (2026-04-12 BL-003 user_csv + album fuzzy scoring): BL-003 ingestion surface extended with `user_csv` as a 5th advisory source (dynamic alias-tolerant schema detection, viability check, opt-in scope controls). `SourceEvent` now carries `album_name` for all 5 sources. `fuzzy_find_candidate` now uses a 3-factor scoring branch (artist+title+album) when `album_key` is non-empty, falling back to the existing 2-factor branch otherwise. All registry constants, models, stage orchestration, runtime scope, and run-config normalization updated. Validation: full pytest `407/407`, wrapper pass `BL013-ENTRYPOINT-20260412-211514-304085`, sanity pass `BL014-SANITY-20260412-211538-292523` (`28/28`), and BL-003/BL-009 outputs both record `user_csv=10` rows selected from the sample alias-exercising input.
+
+Priority status checkpoint (2026-04-12 BL-003 configurable fuzzy fallback wave 1): BL-003 fuzzy fallback is now config-gated beyond the original on/off thresholds. The active runtime now supports explicit album-scoring control, ordered secondary-artist retry, optional relaxed second pass, and additive fuzzy trace diagnostics (`fuzzy_album_score`, `fuzzy_pass_used`, artist-attempt count, candidate-count). Exact Spotify-ID and exact metadata matching remain unchanged and still take precedence. Validation: targeted pytest `97/97`, full pytest `411/411`, wrapper pass `BL013-ENTRYPOINT-20260412-213836-591492`, sanity pass `BL014-SANITY-20260412-213859-249947` (`28/28`).
+
 ## Current Implementation Status
 
 ### BL-020 Implementation State (as of 2026-03-29)
@@ -275,12 +279,14 @@ See: `07_implementation/BL020_HANDOFF_AUDIT_2026-03-21.md` for comprehensive pre
 ## Update Control
 
 - Last updated:
-2026-04-09 (config-first final artefact implementation wave)
+2026-04-12 (BL-003 configurable fuzzy fallback wave 1; D-079 / C-312)
 
 - Reason for last update:
-(1) Initial implementation of the new `07_implementation/final_artefact/` package is now in place with a config-first wrapper over the validated pipeline.
-(2) The wrapper execution path exposed and closed a BL-013 payload-resolution bug affecting seed refresh runs outside the visible stage order.
-(3) Admin state was synchronized to reflect that in-repo implementation work has reopened for final artefact hardening while active runtime authority remains anchored on `07_implementation/`.
+(1) BL-003 fuzzy fallback now exposes additive run-config controls for album scoring, secondary-artist retry, relaxed second pass, and fuzzy diagnostics.
+(2) Exact Spotify-ID and exact metadata matching remain unchanged and keep precedence over fuzzy fallback.
+(3) BL-003 trace schema now emits additive fuzzy diagnostics including album score, pass used, artist attempt count, and candidate count.
+(4) Targeted BL-003 fuzzy/config tests pass (`97/97`) and full regression pytest is green (`411/411`).
+(5) Wrapper validation remains green after the fuzzy-control rollout (`BL013-ENTRYPOINT-20260412-213836-591492`, `BL014-SANITY-20260412-213859-249947`, `28/28`).
 
 ## Locked Definitions
 - Artefact scope lock: this file (`Current artefact definition`, `Current system scope`)
