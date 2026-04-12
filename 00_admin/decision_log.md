@@ -5,10 +5,10 @@ Ordering convention (standardized 2026-03-24):
 - Entry IDs remain unique identifiers, but physical entry order reflects historical insertion timing (not strict numeric sorting).
 - New entries must be appended at the end and may include `superseded_by` when a prior decision is replaced.
 
-Maintenance snapshot (2026-04-11):
-- Highest decision ID currently present: `D-051`
-- Total decision entries: 45
-- Status distribution: accepted=36, superseded=3, rejected=1
+Maintenance snapshot (2026-04-12):
+- Highest decision ID currently present: `D-052`
+- Total decision entries: 46
+- Status distribution: accepted=37, superseded=3, rejected=1
 - ID integrity check: no duplicate decision IDs detected
 
 Current posture snapshot (2026-03-25):
@@ -1312,3 +1312,16 @@ review_date: none
 - evidence_basis: `08_writing/_versions/chapter2finalv1.md`, `09_quality_control/citation_checks.md`, mentor-feedback constraints recorded in active session context.
 - impacted_files: `08_writing/_versions/chapter2finalv1.md`, `00_admin/decision_log.md`, `00_admin/change_log.md`
 - next_steps: Run a final comparative-density check and, if approved, promote the revised version into canonical Chapter 2 flow.
+
+## D-052
+- date: 2026-04-12
+- entity_id: full architecture rebuild from Chapter 2 baseline
+- proposed_by: user
+- status: accepted
+- decision: Execute a full thesis architecture rebuild starting from Chapter 2 as the only confirmed good component. All other artefacts — research question, objectives, artefact definition, methodology position, Chapter 1/3/4/5 drafts, and the `07_implementation/` pipeline — are scrapped and will be reconstructed from Chapter 2 outwards. The existing `07_implementation/` codebase is frozen as legacy reference material, not the active build target.
+- context: The user decided the existing architecture did not flow cleanly from the literature established in Chapter 2. Chapter 2 is the only chapter confirmed to be good (finalized, mentor-hardened, all 31 citations verified). The rebuild approach works backwards: use Chapter 2 themes and unresolved literature contradictions to re-derive the RQ, then rebuild design → implementation → evaluation in that order.
+- alternatives_considered: Patch individual chapter drafts in place (rejected: piecemeal patching does not address the structural misalignment); retain existing RQ and patch supporting chapters (rejected: user confirmed full reset was needed); treat implementation as active build target during rebuild (rejected: implementation should follow from design, which follows from RQ, which follows from literature).
+- rationale: Starting from the confirmed Chapter 2 baseline and rebuilding forwards ensures the entire thesis argument chain is grounded in the verified literature evidence rather than inherited assumptions from an earlier design pass.
+- evidence_basis: `08_writing/chapter2.md`, `08_writing/_versions/chapter2finalv1.md`, `09_quality_control/chapter2_reference_audit_zero_trust_2026-04-10.md`
+- impacted_files: `00_admin/thesis_state.md`, `00_admin/timeline.md`, `00_admin/unresolved_issues.md`, `00_admin/decision_log.md`, `00_admin/change_log.md`
+- next_steps: Re-derive RQ and objectives from Chapter 2 gaps and unresolved contradictions; rebuild Chapter 3 anchored in those conclusions; restart implementation only after design is re-grounded.

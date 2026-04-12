@@ -1,8 +1,34 @@
 # Thesis State
 
-Last updated: 2026-04-09 UTC (config-first final artefact implementation wave)
+Last updated: 2026-04-12 UTC (architecture rebuild initiated — Chapter 2 confirmed baseline)
 
-## Official Current State
+## REBUILD POSTURE (active from 2026-04-12)
+
+A full architecture rebuild was initiated on 2026-04-12 (D-052).
+
+**Confirmed good:** Chapter 2 (Literature Review) — finalized, mentor-hardened, citations fully verified (see `08_writing/_versions/chapter2finalv1.md` and `08_writing/chapter2.md`).
+
+**Scrapped / under reconstruction from Chapter 2 outwards:**
+- Research question and objectives (to be re-derived from Chapter 2 themes and gaps)
+- All chapter drafts except Chapter 2 (Chapter 1, 3, 4, 5 — treat as legacy skeleton only)
+- Artefact definition and methodology position (to be re-established once RQ is re-derived)
+- `07_implementation/` pipeline — archived/frozen as legacy reference; not the active build target until design reconstruction is complete
+
+**Rebuild entry point:** Use Chapter 2 themes and unresolved contradictions (transparency vs accuracy, explanation fidelity vs persuasiveness, candidate generation as first-order decision, cross-source alignment uncertainty, multi-objective playlist quality) to re-derive the RQ, then rebuild design → implementation → evaluation in that order.
+
+**Working backwards from Chapter 2 means:**
+1. Identify what the literature leaves unresolved or under-evidenced (gaps Chapter 2 surfaces)
+2. Re-derive the RQ and objectives that address those gaps in an engineering/design-evidence framing
+3. Rebuild Chapter 3 (design) to anchor directly in those Chapter 2 conclusions
+4. Rebuild implementation and evaluation chapters from the re-grounded design
+
+---
+
+## Pre-Rebuild Legacy Reference (frozen 2026-04-12)
+
+The content below is the last confirmed pre-rebuild thesis state. It is retained for audit continuity and as a reference point, but is NOT the active posture. All implementation, writing, and evaluation work now proceeds from the rebuild posture above.
+
+## Official Current State (LEGACY — pre-rebuild)
 
 - Current title:
 Engineering an Automated, Transparent, and Controllable Playlist Generation Pipeline Using Cross-Source Music Preference Data

@@ -15,7 +15,7 @@ Your job is to take natural-language Plan or Autopilot requests and carry them t
 - Do not widen thesis scope beyond the locked MVP and current thesis state.
 - Do not skip governance synchronization when tracked files or implementation posture changes.
 - Do not ask the user to restate the request in a slash prompt or rigid template.
-- Treat `07_implementation/` as the active runtime surface and `_scratch/` as reference-only unless the user explicitly asks for `_scratch` execution/editing.
+- **REBUILD POSTURE (active from 2026-04-12):** Chapter 2 is the only confirmed component. All other chapters, the RQ, objectives, artefact definition, and `07_implementation/` are scrapped or frozen. Treat `07_implementation/` as frozen legacy reference — do NOT treat it as the active build target until the RQ is re-derived and a new design is established. Treat `_scratch/` as reference-only. New work flows from Chapter 2 outwards: gaps → RQ → design → implementation → evaluation.
 
 ## Required Startup Context
 Read these first for substantial work:

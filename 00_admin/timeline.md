@@ -2,7 +2,24 @@
 
 Last updated: 2026-04-12
 
-## Milestones
+## REBUILD PHASE (active from 2026-04-12)
+
+Full architecture rebuild initiated (D-052). Chapter 2 is the only confirmed component. All milestones and work packages below are now pre-rebuild legacy reference unless explicitly re-opened in this rebuild phase.
+
+- REB-M1 (2026-04-12 onwards): Re-derive RQ and objectives from Chapter 2 gaps and themes [in progress]
+	- Identify unresolved contradictions in Chapter 2 (transparency/accuracy, explanation fidelity, candidate-generation primacy, cross-source alignment, multi-objective quality)
+	- Re-derive the research question and objectives that address those gaps in a DSR/engineering-evidence framing
+	- Confirm scope and artefact definition before any implementation restarts
+
+- REB-M2 (TBD — after REB-M1): Rebuild Chapter 3 (design) anchored in Chapter 2 conclusions [not started]
+- REB-M3 (TBD — after REB-M2): Rebuild implementation and evaluation to match re-grounded design [not started]
+- REB-M4 (TBD — after REB-M3): Rebuild Chapter 4/5 from re-evidenced implementation and evaluation [not started]
+
+---
+
+## Legacy Milestones (pre-rebuild — frozen 2026-04-12)
+
+
 - M1 (2026-03-13 to 2026-03-20): Planning baseline finalized [completed]
 	- Populate backlog, implementation plan, and chapter readiness checklist.
 	- Confirm evaluation protocol and reproducibility evidence format.
