@@ -6,9 +6,9 @@ Ordering convention (standardized 2026-03-24):
 - New entries must be appended at the end and may include `superseded_by` when a prior decision is replaced.
 
 Maintenance snapshot (2026-04-13):
-- Highest decision ID currently present: `D-091`
-- Total decision entries: 87
-- Status distribution: accepted=77, superseded=3, rejected=1
+- Highest decision ID currently present: `D-092`
+- Total decision entries: 88
+- Status distribution: accepted=78, superseded=3, rejected=1
 - ID integrity check: no duplicate decision IDs detected
 
 Current posture snapshot (2026-03-25):
@@ -1832,3 +1832,16 @@ review_date: none
 - evidence_basis: `07_implementation/src/quality/sanity_checks.py` (new advisory helper + config-snapshot advisory threshold), `07_implementation/tests/test_quality_sanity_checks.py` (new warn-volume advisory tests); validation evidence: focused pytest (`14/14`) and wrapper validate-only pass (`BL013-ENTRYPOINT-20260413-104436-925545`, `BL014-SANITY-20260413-104503-647428`, `30/30`).
 - impacted_files: `07_implementation/src/quality/sanity_checks.py`, `07_implementation/tests/test_quality_sanity_checks.py`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`, `00_admin/unresolved_issues.md`.
 - next_steps: If repeated runs show persistent advisory volume, add an optional policy recommendation report that summarizes warn-volume trend and strict-readiness criteria.
+
+## D-092
+- date: 2026-04-13
+- entity_id: BL-004↔BL-005 handshake parity closure with row-quality strictness and BL-014 negative-fixture symmetry
+- proposed_by: user + Copilot
+- status: accepted
+- decision: Close the remaining BL-004↔BL-005 parity gaps by (1) extending retrieval handshake validation to include seed-trace confidence row-quality checks (missing/non-numeric/out-of-range) and (2) adding a BL-014 main-level negative fixture proving `quality.sanity_checks.main()` fails specifically on `schema_bl004_bl005_handshake_contract` when BL-004 handshake-required profile fields are removed. Keep all changes additive and policy-gated.
+- context: After D-090 and D-091, BL-005 had policy-gated stage validation and wrapper-level contract checks, but remained slightly behind BL-003↔BL-004 in row-quality strictness depth and end-to-end negative-fixture symmetry at BL-014 main level.
+- alternatives_considered: keep BL-005 validator at key-presence-only depth (rejected: weaker contract integrity vs BL-003↔BL-004); rely on helper-only tests without a main-level BL-014 negative fixture (rejected: weaker proof of wrapper-level failure behavior); hard-fail by default for new row-quality violations (rejected: unnecessary compatibility risk).
+- rationale: Row-quality validation and main-level fixture symmetry provide equivalent contract-hardening evidence quality with minimal runtime risk by preserving existing allow/warn/strict policy semantics.
+- evidence_basis: `07_implementation/src/retrieval/input_validation.py`, `07_implementation/tests/test_retrieval_input_validation.py`, `07_implementation/tests/test_quality_sanity_checks.py`; validation evidence: targeted pytest (`20/20`) and wrapper validate-only pass (`BL013-ENTRYPOINT-20260413-105724-234842`, `BL014-SANITY-20260413-105751-328487`, `30/30`).
+- impacted_files: `07_implementation/src/retrieval/input_validation.py`, `07_implementation/tests/test_retrieval_input_validation.py`, `07_implementation/tests/test_quality_sanity_checks.py`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`, `00_admin/unresolved_issues.md`.
+- next_steps: If future policy-hardening slices continue, add one bounded BL-014 advisory for malformed-confidence prevalence trend to support controlled warn-to-strict promotion decisions.

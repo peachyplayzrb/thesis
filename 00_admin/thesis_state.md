@@ -1,6 +1,6 @@
 # Thesis State
 
-Last updated: 2026-04-13 UTC (REB-M4 + Slice 15 checkpoint)
+Last updated: 2026-04-13 UTC (REB-M4 + Slice 16 checkpoint)
 
 ## REBUILD POSTURE (active from 2026-04-12)
 
@@ -135,6 +135,9 @@ BL-005 retrieval now enforces policy-gated BL-004 handshake validation (`allow|w
 
 #### Post-closure enhancement checkpoint (Slice 15 BL-014 handshake warn-volume advisory)
 BL-014 sanity checks now emit a bounded advisory (`advisory_bl005_handshake_warning_volume`) when BL-005 handshake validation remains in `warn` mode with elevated violation volume beyond threshold, while preserving existing pass/fail checks and wrapper compatibility. The BL-014 config snapshot now records the advisory threshold contract for audit clarity. Validation remains green via focused pytest (`14/14`) and wrapper validate-only (`BL013-ENTRYPOINT-20260413-104436-925545`, `BL014-SANITY-20260413-104503-647428`, `30/30`) under decision/change anchors `D-091` / `C-324`.
+
+#### Post-closure enhancement checkpoint (Slice 16 BL-005 parity closure)
+BL-004↔BL-005 handshake validation now includes additive seed-trace confidence row-quality checks (missing/non-numeric/out-of-range) in retrieval-stage validation while preserving policy-gated behavior (`allow|warn|strict`), and BL-014 now has symmetric main-level negative-fixture proof that wrapper sanity fails specifically on `schema_bl004_bl005_handshake_contract` when BL-004 handshake-required profile fields are removed. Validation remains green via targeted pytest (`20/20`) and wrapper validate-only (`BL013-ENTRYPOINT-20260413-105724-234842`, `BL014-SANITY-20260413-105751-328487`, `30/30`) under decision/change anchors `D-092` / `C-325`.
 
 ### REB-M4 Kickoff Checkpoint (2026-04-12)
 

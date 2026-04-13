@@ -31,7 +31,13 @@ def _write_json(path: Path, payload: dict) -> None:
     path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
 
 
-def _build_bl014_fixture(tmp_path: Path, *, include_runtime_scope_diagnostics: bool) -> Path:
+def _build_bl014_fixture(
+    tmp_path: Path,
+    *,
+    include_runtime_scope_diagnostics: bool,
+    include_numeric_confidence: bool = True,
+    include_bl005_handshake_policy: bool = True,
+) -> Path:
     repo_root = tmp_path / "impl"
     repo_root.mkdir(parents=True, exist_ok=True)
 
@@ -107,28 +113,27 @@ def _build_bl014_fixture(tmp_path: Path, *, include_runtime_scope_diagnostics: b
         },
     )
 
-    _write_json(
-        profile_path,
-        {
-            "run_id": "BL004-PROFILE-TEST",
-            "semantic_profile": {
-                "top_tags": [{"label": "rock", "weight": 1.0}],
-                "top_genres": [{"label": "rock", "weight": 1.0}],
-                "top_lead_genres": [{"label": "rock", "weight": 1.0}],
-            },
-            "numeric_feature_profile": {"tempo": 120.0},
-            "numeric_confidence": {"confidence_by_feature": {"tempo": 1.0}},
-            "diagnostics": {
-                "validation_policies": {
-                    "bl003_handshake_validation_policy": "warn",
-                }
-            },
-            "input_artifacts": {
-                "seed_table_path": str(bl003_seed_table_path),
-                "seed_table_sha256": sha256_file(bl003_seed_table_path),
-            },
+    profile_payload = {
+        "run_id": "BL004-PROFILE-TEST",
+        "semantic_profile": {
+            "top_tags": [{"label": "rock", "weight": 1.0}],
+            "top_genres": [{"label": "rock", "weight": 1.0}],
+            "top_lead_genres": [{"label": "rock", "weight": 1.0}],
         },
-    )
+        "numeric_feature_profile": {"tempo": 120.0},
+        "diagnostics": {
+            "validation_policies": {
+                "bl003_handshake_validation_policy": "warn",
+            }
+        },
+        "input_artifacts": {
+            "seed_table_path": str(bl003_seed_table_path),
+            "seed_table_sha256": sha256_file(bl003_seed_table_path),
+        },
+    }
+    if include_numeric_confidence:
+        profile_payload["numeric_confidence"] = {"confidence_by_feature": {"tempo": 1.0}}
+    _write_json(profile_path, profile_payload)
     _write_json(
         bl004_summary_path,
         {
@@ -145,28 +150,28 @@ def _build_bl014_fixture(tmp_path: Path, *, include_runtime_scope_diagnostics: b
         },
     )
 
-    _write_json(
-        bl005_diag_path,
-        {
-            "run_id": "BL005-FILTER-TEST",
-            "config": {
-                "validation_policies": {
-                    "bl004_bl005_handshake_validation_policy": "warn",
-                }
-            },
-            "counts": {"kept_candidates": 1},
-            "input_artifacts": {
-                "profile_sha256": sha256_file(profile_path),
-                "seed_trace_sha256": sha256_file(bl004_seed_trace_path),
-                "candidate_stub_path": str(candidate_stub_path),
-                "candidate_stub_sha256": sha256_file(candidate_stub_path),
-            },
-            "output_hashes_sha256": {
-                "bl005_filtered_candidates.csv": sha256_file(bl005_filtered_path),
-                "bl005_candidate_decisions.csv": sha256_file(bl005_decisions_path),
-            },
+    bl005_diagnostics_payload = {
+        "run_id": "BL005-FILTER-TEST",
+        "config": {
+            "validation_policies": {
+                "bl004_bl005_handshake_validation_policy": "warn",
+            }
         },
-    )
+        "counts": {"kept_candidates": 1},
+        "input_artifacts": {
+            "profile_sha256": sha256_file(profile_path),
+            "seed_trace_sha256": sha256_file(bl004_seed_trace_path),
+            "candidate_stub_path": str(candidate_stub_path),
+            "candidate_stub_sha256": sha256_file(candidate_stub_path),
+        },
+        "output_hashes_sha256": {
+            "bl005_filtered_candidates.csv": sha256_file(bl005_filtered_path),
+            "bl005_candidate_decisions.csv": sha256_file(bl005_decisions_path),
+        },
+    }
+    if not include_bl005_handshake_policy:
+        bl005_diagnostics_payload["config"] = {"validation_policies": {}}
+    _write_json(bl005_diag_path, bl005_diagnostics_payload)
     _write_json(
         bl006_summary_path,
         {
@@ -471,3 +476,35 @@ def test_bl014_main_fails_on_missing_handshake_contract(monkeypatch: pytest.Monk
     assert report["overall_status"] == "fail"
     assert set(failed_checks) == {"schema_bl003_bl004_handshake_contract"}
     assert "missing summary input keys" in failed_checks["schema_bl003_bl004_handshake_contract"]["details"]
+
+
+def test_bl014_main_fails_on_missing_bl004_bl005_handshake_contract(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    repo_root = _build_bl014_fixture(
+        tmp_path,
+        include_runtime_scope_diagnostics=True,
+        include_numeric_confidence=False,
+    )
+    output_dir = tmp_path / "quality_outputs"
+
+    monkeypatch.setattr(sanity_checks, "REPO_ROOT", repo_root)
+    monkeypatch.setattr(sanity_checks, "OUTPUT_DIR", output_dir)
+    monkeypatch.setattr(
+        sanity_checks,
+        "bl003_required_paths",
+        lambda _root: {
+            "summary": repo_root / "alignment/outputs/bl003_ds001_spotify_summary.json",
+            "seed_table": repo_root / "alignment/outputs/bl003_ds001_spotify_seed_table.csv",
+        },
+    )
+
+    exit_code = sanity_checks.main()
+
+    assert exit_code == 1
+    report = json.loads((output_dir / "bl014_sanity_report.json").read_text(encoding="utf-8"))
+    failed_checks = {check["id"]: check for check in report["checks"] if check["status"] == "fail"}
+    assert report["overall_status"] == "fail"
+    assert set(failed_checks) == {"schema_bl004_bl005_handshake_contract"}
+    assert "missing BL-004 profile keys" in failed_checks["schema_bl004_bl005_handshake_contract"]["details"]
