@@ -127,6 +127,9 @@ def _build_default_run_config() -> dict[str, Any]:
             ),
             "numeric_support_score_mode": str(DEFAULT_RETRIEVAL_CONTROLS["numeric_support_score_mode"]),
             "emit_profile_policy_diagnostics": bool(DEFAULT_RETRIEVAL_CONTROLS["emit_profile_policy_diagnostics"]),
+            "bl004_bl005_handshake_validation_policy": str(
+                DEFAULT_RETRIEVAL_CONTROLS["bl004_bl005_handshake_validation_policy"]
+            ),
         },
         "scoring_controls": {
             "component_weights": _coerce_object_mapping(DEFAULT_SCORING_CONTROLS["component_weights"]),
@@ -356,6 +359,11 @@ RETRIEVAL_CONTROLS_SCHEMA: dict[str, FieldSpec] = {
     "emit_profile_policy_diagnostics": FieldSpec(
         type="bool",
         default=bool(DEFAULT_RETRIEVAL_CONTROLS["emit_profile_policy_diagnostics"]),
+    ),
+    "bl004_bl005_handshake_validation_policy": FieldSpec(
+        type="enum",
+        default=str(DEFAULT_RETRIEVAL_CONTROLS["bl004_bl005_handshake_validation_policy"]),
+        choices=("allow", "warn", "strict"),
     ),
 }
 
@@ -1334,13 +1342,21 @@ def resolve_effective_run_config(run_config_path: str | Path | None) -> tuple[di
         raise RunConfigError(str(exc)) from exc
 
     effective["profile_controls"] = profile_controls
+    numeric_malformed_default = _coerce_optional_positive_int(
+        DEFAULT_PROFILE_CONTROLS.get("numeric_malformed_row_threshold"),
+        None,
+    )
+    no_numeric_signal_default = _coerce_optional_positive_int(
+        DEFAULT_PROFILE_CONTROLS.get("no_numeric_signal_row_threshold"),
+        None,
+    )
     profile_controls["numeric_malformed_row_threshold"] = _coerce_optional_positive_int(
         raw_profile_controls.get("numeric_malformed_row_threshold"),
-        DEFAULT_PROFILE_CONTROLS["numeric_malformed_row_threshold"],
+        numeric_malformed_default,
     )
     profile_controls["no_numeric_signal_row_threshold"] = _coerce_optional_positive_int(
         raw_profile_controls.get("no_numeric_signal_row_threshold"),
-        DEFAULT_PROFILE_CONTROLS["no_numeric_signal_row_threshold"],
+        no_numeric_signal_default,
     )
     if float(profile_controls["confidence_bin_medium_threshold"]) > float(profile_controls["confidence_bin_high_threshold"]):
         raise RunConfigError(
@@ -1746,6 +1762,9 @@ def resolve_bl005_controls(run_config_path: str | Path | None) -> dict[str, Any]
         "profile_numeric_confidence_blend_weight": float(retrieval["profile_numeric_confidence_blend_weight"]),
         "numeric_support_score_mode": str(retrieval["numeric_support_score_mode"]),
         "emit_profile_policy_diagnostics": bool(retrieval["emit_profile_policy_diagnostics"]),
+        "bl004_bl005_handshake_validation_policy": str(
+            retrieval["bl004_bl005_handshake_validation_policy"]
+        ),
     }
 
 

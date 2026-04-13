@@ -32,6 +32,15 @@ OUTPUT_DIR = Path(__file__).resolve().parent / "outputs"
 
 BL004_HANDSHAKE_REQUIRED_SUMMARY_INPUT_KEYS: tuple[str, ...] = ("runtime_scope_diagnostics",)
 BL004_HANDSHAKE_REQUIRED_SEED_FIELDS: tuple[str, ...] = ("match_confidence_score",)
+BL005_HANDSHAKE_REQUIRED_PROFILE_KEYS: tuple[str, ...] = (
+    "semantic_profile",
+    "numeric_feature_profile",
+    "numeric_confidence",
+    "input_artifacts",
+)
+BL005_HANDSHAKE_REQUIRED_SEED_TRACE_FIELDS: tuple[str, ...] = (
+    "track_id",
+)
 
 
 def sha256_file(path: Path) -> str:
@@ -112,6 +121,38 @@ def bl003_bl004_handshake_contract_ok(
         detail_parts.append("missing BL-004 diagnostics.validation_policies.bl003_handshake_validation_policy")
 
     return False, "BL-003↔BL-004 handshake contract incomplete: " + "; ".join(detail_parts)
+
+
+def bl004_bl005_handshake_contract_ok(
+    bl004_profile: dict[str, Any],
+    bl005_diagnostics: dict[str, Any],
+    bl004_seed_trace_header: list[str],
+) -> tuple[bool, str]:
+    missing_profile_keys = [
+        key for key in BL005_HANDSHAKE_REQUIRED_PROFILE_KEYS if key not in bl004_profile
+    ]
+    missing_seed_fields = [
+        field for field in BL005_HANDSHAKE_REQUIRED_SEED_TRACE_FIELDS if field not in bl004_seed_trace_header
+    ]
+
+    config_raw = bl005_diagnostics.get("config")
+    config = dict(config_raw) if isinstance(config_raw, dict) else {}
+    policies_raw = config.get("validation_policies")
+    policies = dict(policies_raw) if isinstance(policies_raw, dict) else {}
+    has_policy = "bl004_bl005_handshake_validation_policy" in policies
+
+    if not missing_profile_keys and not missing_seed_fields and has_policy:
+        return True, "BL-004↔BL-005 handshake contract fields and policy metadata are present"
+
+    detail_parts: list[str] = []
+    if missing_profile_keys:
+        detail_parts.append(f"missing BL-004 profile keys={missing_profile_keys}")
+    if missing_seed_fields:
+        detail_parts.append(f"missing BL-004 seed trace fields={missing_seed_fields}")
+    if not has_policy:
+        detail_parts.append("missing BL-005 config.validation_policies.bl004_bl005_handshake_validation_policy")
+
+    return False, "BL-004↔BL-005 handshake contract incomplete: " + "; ".join(detail_parts)
 
 
 def ensure_exists(path: Path) -> None:
@@ -287,6 +328,16 @@ def main() -> int:
         "schema_bl003_bl004_handshake_contract",
         handshake_ok,
         handshake_details,
+    )
+    bl004_bl005_ok, bl004_bl005_details = bl004_bl005_handshake_contract_ok(
+        profile,
+        bl005_diag,
+        csv_header(artifacts["bl004_seed_trace"]),
+    )
+    check(
+        "schema_bl004_bl005_handshake_contract",
+        bl004_bl005_ok,
+        bl004_bl005_details,
     )
 
     # Hash-link integrity checks

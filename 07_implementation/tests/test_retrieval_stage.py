@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+from typing import Any, cast
 
 from retrieval.models import RetrievalArtifacts, RetrievalControls, RetrievalEvaluationResult, RetrievalInputs, RetrievalPaths
 from retrieval.stage import RetrievalStage
@@ -29,6 +30,7 @@ def _controls(*, recency_offset: int | None = 5) -> RetrievalControls:
         language_filter_codes=["en"],
         recency_years_min_offset=recency_offset,
         numeric_thresholds={"tempo": 17.0},
+        bl004_bl005_handshake_validation_policy="warn",
     )
 
 
@@ -94,7 +96,7 @@ def test_build_diagnostics_payload_includes_expected_counts(tmp_path: Path) -> N
     filtered_path.write_text("track_id\ncand_1\n", encoding="utf-8")
     decisions_path.write_text("track_id,decision\ncand_1,keep\n", encoding="utf-8")
 
-    summary = {
+    summary: dict[str, object] = {
         "decision_counts": {"seed_excluded": 1, "rejected_threshold": 2},
         "decision_path_counts": {"reject_language_filter": 1, "reject_recency_gate": 1},
         "semantic_rule_hits": {"lead_genre": 1},
@@ -113,13 +115,18 @@ def test_build_diagnostics_payload_includes_expected_counts(tmp_path: Path) -> N
         kept_rows=inputs.candidate_rows,
         output_paths={"filtered_path": filtered_path, "decisions_path": decisions_path},
     )
+    payload_obj = cast(dict[str, Any], payload)
+    counts = cast(dict[str, Any], payload_obj["counts"])
+    config = cast(dict[str, Any], payload_obj["config"])
+    language_filter = cast(dict[str, Any], config["language_filter"])
+    output_files = cast(dict[str, Any], payload_obj["output_files"])
 
-    assert payload["task"] == "BL-005"
-    assert payload["counts"]["seed_tracks_excluded"] == 1
-    assert payload["counts"]["rejected_by_language_filter"] == 1
-    assert payload["config"]["signal_mode"]["name"] == "custom"
-    assert payload["config"]["language_filter"]["enabled"] is True
-    assert payload["output_files"]["filtered_candidates_path"] == str(filtered_path)
+    assert payload_obj["task"] == "BL-005"
+    assert counts["seed_tracks_excluded"] == 1
+    assert counts["rejected_by_language_filter"] == 1
+    assert cast(dict[str, Any], config["signal_mode"])["name"] == "custom"
+    assert language_filter["enabled"] is True
+    assert output_files["filtered_candidates_path"] == str(filtered_path)
 
 
 def test_run_returns_typed_artifacts(monkeypatch, tmp_path: Path) -> None:
@@ -155,7 +162,7 @@ def test_run_returns_typed_artifacts(monkeypatch, tmp_path: Path) -> None:
     monkeypatch.setattr("retrieval.stage.ensure_paths_exist", lambda *_args, **_kwargs: None)
     monkeypatch.setattr(RetrievalStage, "resolve_paths", lambda self: paths)
     monkeypatch.setattr(RetrievalStage, "resolve_runtime_controls", lambda self: controls)
-    monkeypatch.setattr(RetrievalStage, "load_inputs", staticmethod(lambda _: inputs))
+    monkeypatch.setattr(RetrievalStage, "load_inputs", staticmethod(lambda *_args, **_kwargs: inputs))
     monkeypatch.setattr(RetrievalStage, "build_runtime_context", staticmethod(lambda **_kwargs: context))
     monkeypatch.setattr("retrieval.stage.RetrievalEvaluator", _FakeRetrievalEvaluator)
 

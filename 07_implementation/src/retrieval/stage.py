@@ -29,6 +29,7 @@ from shared_utils.parsing import safe_float, safe_int
 from shared_utils.stage_utils import ensure_paths_exist
 
 from retrieval.candidate_evaluator import RetrievalEvaluator
+from retrieval.input_validation import validate_bl004_bl005_handshake
 from retrieval.candidate_parser import normalize_candidate_row
 from retrieval.models import NumericFeatureSpec, RetrievalContext, RetrievalControls, RetrievalInputs, RetrievalPaths
 from retrieval.models import RetrievalArtifacts
@@ -221,10 +222,14 @@ class RetrievalStage:
             emit_profile_policy_diagnostics=bool(
                 payload.get("emit_profile_policy_diagnostics", defaults["emit_profile_policy_diagnostics"])
             ),
+            bl004_bl005_handshake_validation_policy=str(
+                payload.get("bl004_bl005_handshake_validation_policy")
+                or defaults["bl004_bl005_handshake_validation_policy"]
+            ),
         )
 
     @staticmethod
-    def load_inputs(paths: RetrievalPaths) -> RetrievalInputs:
+    def load_inputs(paths: RetrievalPaths, controls: RetrievalControls | None = None) -> RetrievalInputs:
         profile = load_json(paths.profile_path)
         if not isinstance(profile, dict):
             raise RuntimeError("BL-005 profile artifact is malformed; expected JSON object")
@@ -233,6 +238,35 @@ class RetrievalStage:
             raise RuntimeError("BL-005 candidate corpus is empty; cannot build retrieval outputs")
         candidate_rows = [normalize_candidate_row(row) for row in candidate_rows_raw]
         seed_trace_rows = load_csv_rows(paths.seed_trace_path)
+        numeric_thresholds = (
+            controls.numeric_thresholds
+            if controls is not None
+            else {
+                str(key): to_float(value)
+                for key, value in to_mapping(DEFAULT_RETRIEVAL_CONTROLS.get("numeric_thresholds")).items()
+            }
+        )
+
+        handshake_validation = validate_bl004_bl005_handshake(
+            profile=profile,
+            seed_trace_rows=seed_trace_rows,
+            numeric_thresholds=numeric_thresholds,
+            policy=(controls.bl004_bl005_handshake_validation_policy if controls else "warn"),
+        )
+        if handshake_validation["status"] == "fail":
+            violations_obj = handshake_validation.get("sampled_violations")
+            violations = list(violations_obj) if isinstance(violations_obj, list) else []
+            raise RuntimeError(
+                "BL-005 handshake validation failed under strict policy: " + "; ".join(str(v) for v in violations)
+            )
+        if handshake_validation["status"] in {"warn", "allow"}:
+            logger.warning(
+                "BL-005 handshake validation status=%s policy=%s violations=%s",
+                handshake_validation.get("status"),
+                handshake_validation.get("policy"),
+                handshake_validation.get("sampled_violations"),
+            )
+
         return RetrievalInputs(
             profile=profile,
             candidate_rows=candidate_rows,
@@ -521,15 +555,24 @@ class RetrievalStage:
         elapsed_seconds: float,
         paths: RetrievalPaths,
         runtime_context: RetrievalContext,
+        controls: RetrievalControls | None = None,
         summary: dict[str, object],
         candidate_rows: list[dict[str, str]],
         kept_rows: list[dict[str, str]],
         output_paths: dict[str, Path],
+        handshake_validation: dict[str, object] | None = None,
     ) -> dict[str, object]:
         decision_counts_obj = summary.get("decision_counts")
         decision_counts = decision_counts_obj if isinstance(decision_counts_obj, dict) else {}
         decision_path_counts_obj = summary.get("decision_path_counts")
         decision_path_counts = decision_path_counts_obj if isinstance(decision_path_counts_obj, dict) else {}
+
+        validation = dict(handshake_validation or {})
+        handshake_policy = "warn"
+        if controls is not None:
+            handshake_policy = controls.bl004_bl005_handshake_validation_policy
+        profile_numeric_features_available_obj = validation.get("profile_numeric_features_available")
+        numeric_threshold_keys_obj = validation.get("numeric_threshold_keys")
 
         return {
             "run_id": run_id,
@@ -594,6 +637,9 @@ class RetrievalStage:
                     else f"keep if not seed and semantic_score >= {runtime_context.effective_semantic_min_keep_score:.3f}"
                 ),
                 "semantic_source": "ds001_tags_and_genres_columns",
+                "validation_policies": {
+                    "bl004_bl005_handshake_validation_policy": handshake_policy,
+                },
                 "profile_quality_inputs": {
                     "profile_match_quality": round(runtime_context.profile_match_quality, 6),
                     "top_genre_entropy": round(runtime_context.top_genre_entropy, 6),
@@ -651,6 +697,23 @@ class RetrievalStage:
                 "effective_numeric_support_min_score": summary.get("effective_numeric_support_min_score_distribution", {}),
             },
             "top_kept_track_ids": [str(row["track_id"]) for row in kept_rows[:15]],
+            "validation": validation,
+            "handshake": {
+                "bl004_bl005_policy": handshake_policy,
+                "profile_schema_valid": bool(validation.get("bl004_profile_schema_valid", False)),
+                "seed_trace_schema_valid": bool(validation.get("seed_trace_schema_valid", False)),
+                "control_constraints_valid": bool(validation.get("control_constraints_valid", False)),
+                "profile_numeric_features_available": (
+                    list(profile_numeric_features_available_obj)
+                    if isinstance(profile_numeric_features_available_obj, list)
+                    else []
+                ),
+                "numeric_threshold_keys": (
+                    list(numeric_threshold_keys_obj)
+                    if isinstance(numeric_threshold_keys_obj, list)
+                    else []
+                ),
+            },
             "elapsed_seconds": round(elapsed_seconds, 3),
             "output_files": {
                 "filtered_candidates_path": str(output_paths["filtered_path"]),
@@ -687,7 +750,13 @@ class RetrievalStage:
         )
 
         controls = self.resolve_runtime_controls()
-        inputs = self.load_inputs(paths)
+        inputs = self.load_inputs(paths, controls)
+        handshake_validation = validate_bl004_bl005_handshake(
+            profile=inputs.profile,
+            seed_trace_rows=inputs.seed_trace_rows,
+            numeric_thresholds=controls.numeric_thresholds,
+            policy=controls.bl004_bl005_handshake_validation_policy,
+        )
         context = self.build_runtime_context(inputs=inputs, controls=controls)
 
         start_time = time.time()
@@ -707,10 +776,12 @@ class RetrievalStage:
             elapsed_seconds=elapsed_seconds,
             paths=paths,
             runtime_context=context,
+            controls=controls,
             summary=evaluation.summary,
             candidate_rows=inputs.candidate_rows,
             kept_rows=evaluation.kept_rows,
             output_paths=output_paths,
+            handshake_validation=handshake_validation,
         )
 
         diagnostics_path = paths.output_dir / "bl005_candidate_diagnostics.json"

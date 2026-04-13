@@ -48,6 +48,7 @@ DEFAULT_LEAD_GENRE_PARTIAL_MATCH_THRESHOLD = 0.5
 DEFAULT_RETRIEVAL_USE_WEIGHTED_SEMANTICS = False
 DEFAULT_RETRIEVAL_USE_CONTINUOUS_NUMERIC = False
 DEFAULT_RETRIEVAL_ENABLE_POPULARITY_NUMERIC = False
+DEFAULT_BL005_HANDSHAKE_VALIDATION_POLICY = "warn"
 DEFAULT_SIGNAL_MODE_NAME = "v1f-compat"
 ENHANCED_SIGNAL_MODE_NAME = "v1g-enhanced"
 CUSTOM_SIGNAL_MODE_NAME = "custom"
@@ -226,6 +227,7 @@ DEFAULT_RETRIEVAL_CONTROLS: dict[str, object] = {
     "profile_numeric_confidence_blend_weight": 1.0,
     "numeric_support_score_mode": "weighted_absolute",
     "emit_profile_policy_diagnostics": True,
+    "bl004_bl005_handshake_validation_policy": DEFAULT_BL005_HANDSHAKE_VALIDATION_POLICY,
 }
 
 DEFAULT_SCORING_NUMERIC_THRESHOLDS: dict[str, float] = dict(DEFAULT_RETRIEVAL_NUMERIC_THRESHOLDS)

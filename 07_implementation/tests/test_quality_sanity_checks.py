@@ -8,6 +8,7 @@ import pytest
 
 from quality import sanity_checks
 from quality.sanity_checks import (
+    bl004_bl005_handshake_contract_ok,
     bl003_bl004_handshake_contract_ok,
     bl005_filtered_has_required_columns,
     csv_header,
@@ -59,7 +60,10 @@ def _build_bl014_fixture(tmp_path: Path, *, include_runtime_scope_diagnostics: b
             ["track_1", "1.0"],
         ],
     )
-    _write_csv(bl004_seed_trace_path, [["seed_rank", "track_id"], ["1", "track_1"]])
+    _write_csv(
+        bl004_seed_trace_path,
+        [["seed_rank", "track_id", "match_confidence_score"], ["1", "track_1", "1.0"]],
+    )
     _write_csv(
         bl005_filtered_path,
         [
@@ -106,6 +110,13 @@ def _build_bl014_fixture(tmp_path: Path, *, include_runtime_scope_diagnostics: b
         profile_path,
         {
             "run_id": "BL004-PROFILE-TEST",
+            "semantic_profile": {
+                "top_tags": [{"label": "rock", "weight": 1.0}],
+                "top_genres": [{"label": "rock", "weight": 1.0}],
+                "top_lead_genres": [{"label": "rock", "weight": 1.0}],
+            },
+            "numeric_feature_profile": {"tempo": 120.0},
+            "numeric_confidence": {"confidence_by_feature": {"tempo": 1.0}},
             "diagnostics": {
                 "validation_policies": {
                     "bl003_handshake_validation_policy": "warn",
@@ -137,6 +148,11 @@ def _build_bl014_fixture(tmp_path: Path, *, include_runtime_scope_diagnostics: b
         bl005_diag_path,
         {
             "run_id": "BL005-FILTER-TEST",
+            "config": {
+                "validation_policies": {
+                    "bl004_bl005_handshake_validation_policy": "warn",
+                }
+            },
             "counts": {"kept_candidates": 1},
             "input_artifacts": {
                 "profile_sha256": sha256_file(profile_path),
@@ -352,6 +368,41 @@ def test_bl003_bl004_handshake_contract_fails_when_fields_missing() -> None:
     assert "missing summary input keys" in details
     assert "missing structural seed fields" in details
     assert "missing BL-004 diagnostics.validation_policies.bl003_handshake_validation_policy" in details
+
+
+def test_bl004_bl005_handshake_contract_ok_when_fields_present() -> None:
+    ok, details = bl004_bl005_handshake_contract_ok(
+        bl004_profile={
+            "semantic_profile": {},
+            "numeric_feature_profile": {},
+            "numeric_confidence": {},
+            "input_artifacts": {},
+        },
+        bl005_diagnostics={
+            "config": {
+                "validation_policies": {
+                    "bl004_bl005_handshake_validation_policy": "warn",
+                }
+            }
+        },
+        bl004_seed_trace_header=["track_id", "match_confidence_score"],
+    )
+
+    assert ok is True
+    assert "present" in details
+
+
+def test_bl004_bl005_handshake_contract_fails_when_fields_missing() -> None:
+    ok, details = bl004_bl005_handshake_contract_ok(
+        bl004_profile={"run_id": "BL004-PROFILE-TEST"},
+        bl005_diagnostics={"config": {}},
+        bl004_seed_trace_header=[],
+    )
+
+    assert ok is False
+    assert "missing BL-004 profile keys" in details
+    assert "missing BL-004 seed trace fields" in details
+    assert "missing BL-005 config.validation_policies.bl004_bl005_handshake_validation_policy" in details
 
 
 def test_bl014_main_fails_on_missing_handshake_contract(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:

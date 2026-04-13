@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from shared_utils.constants import (
+    DEFAULT_BL005_HANDSHAKE_VALIDATION_POLICY,
     DEFAULT_RETRIEVAL_CONTROLS,
     VALID_NUMERIC_CONFIDENCE_MODES,
     VALID_NUMERIC_SUPPORT_SCORE_MODES,
@@ -106,6 +107,11 @@ def _sanitize_bl005_controls(controls: dict[str, object]) -> dict[str, object]:
         controls.get("numeric_support_score_mode", "weighted_absolute"), VALID_NUMERIC_SUPPORT_SCORE_MODES, "weighted_absolute"
     )
     controls["emit_profile_policy_diagnostics"] = bool(controls.get("emit_profile_policy_diagnostics", True))
+    controls["bl004_bl005_handshake_validation_policy"] = coerce_enum(
+        controls.get("bl004_bl005_handshake_validation_policy", DEFAULT_BL005_HANDSHAKE_VALIDATION_POLICY),
+        frozenset({"allow", "warn", "strict"}),
+        DEFAULT_BL005_HANDSHAKE_VALIDATION_POLICY,
+    )
 
     return controls
 
@@ -224,6 +230,10 @@ def _load_bl005_controls_from_env() -> dict[str, object]:
         "emit_profile_policy_diagnostics": env_bool(
             "BL005_EMIT_PROFILE_POLICY_DIAGNOSTICS",
             bool(defaults["emit_profile_policy_diagnostics"]),
+        ),
+        "bl004_bl005_handshake_validation_policy": env_str(
+            "BL005_HANDSHAKE_VALIDATION_POLICY",
+            str(defaults["bl004_bl005_handshake_validation_policy"]),
         ),
     }
 

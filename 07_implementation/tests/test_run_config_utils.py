@@ -284,6 +284,7 @@ def test_retrieval_controls_schema_fallback_and_enum_normalization(tmp_path: Pat
                 "profile_top_genre_limit": "8",
                 "profile_numeric_confidence_mode": "blended",
                 "numeric_support_score_mode": "unknown",
+                "bl004_bl005_handshake_validation_policy": "UNSUPPORTED",
             }
         },
     )
@@ -295,6 +296,7 @@ def test_retrieval_controls_schema_fallback_and_enum_normalization(tmp_path: Pat
     assert retrieval_controls["profile_top_genre_limit"] == 8
     assert retrieval_controls["profile_numeric_confidence_mode"] == "blended"
     assert retrieval_controls["numeric_support_score_mode"] == "weighted_absolute"
+    assert retrieval_controls["bl004_bl005_handshake_validation_policy"] == "warn"
 
 
 def test_retrieval_controls_schema_bool_like_validation_error(tmp_path: Path) -> None:
@@ -396,6 +398,7 @@ def test_bl005_bl006_resolvers_follow_effective_validated_controls(tmp_path: Pat
                 "profile_top_tag_limit": "0",
                 "numeric_support_score_mode": "unknown",
                 "emit_profile_policy_diagnostics": "false",
+                "bl004_bl005_handshake_validation_policy": "strict",
             },
             "scoring_controls": {
                 "lead_genre_strategy": "single_anchor",
@@ -414,6 +417,10 @@ def test_bl005_bl006_resolvers_follow_effective_validated_controls(tmp_path: Pat
     assert (
         bl005["emit_profile_policy_diagnostics"]
         == effective["retrieval_controls"]["emit_profile_policy_diagnostics"]
+    )
+    assert (
+        bl005["bl004_bl005_handshake_validation_policy"]
+        == effective["retrieval_controls"]["bl004_bl005_handshake_validation_policy"]
     )
     assert bl006["lead_genre_strategy"] == effective["scoring_controls"]["lead_genre_strategy"]
     assert bl006["semantic_overlap_strategy"] == effective["scoring_controls"]["semantic_overlap_strategy"]

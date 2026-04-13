@@ -51,6 +51,7 @@ class RetrievalControls:
     profile_numeric_confidence_blend_weight: float = 1.0
     numeric_support_score_mode: str = "weighted_absolute"
     emit_profile_policy_diagnostics: bool = True
+    bl004_bl005_handshake_validation_policy: str = "warn"
 
 
 @dataclass(frozen=True)

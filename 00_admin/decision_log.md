@@ -6,7 +6,7 @@ Ordering convention (standardized 2026-03-24):
 - New entries must be appended at the end and may include `superseded_by` when a prior decision is replaced.
 
 Maintenance snapshot (2026-04-13):
-- Highest decision ID currently present: `D-089`
+- Highest decision ID currently present: `D-090`
 - Total decision entries: 86
 - Status distribution: accepted=76, superseded=3, rejected=1
 - ID integrity check: no duplicate decision IDs detected
@@ -1806,3 +1806,16 @@ review_date: none
 - evidence_basis: `07_implementation/src/profile/models.py`, `07_implementation/src/profile/stage.py`, `07_implementation/tests/test_profile_stage.py`; validation evidence: focused pytest (`24/24`) and wrapper validate-only pass (`BL013-ENTRYPOINT-20260413-014731-291681`, `BL014-SANITY-20260413-014753-532309`, `29/29`).
 - impacted_files: `07_implementation/src/profile/models.py`, `07_implementation/src/profile/stage.py`, `07_implementation/tests/test_profile_stage.py`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`, `00_admin/unresolved_issues.md`.
 - next_steps: If contract strictness is increased later, add an optional BL-014 semantic-consistency check that validates declared diagnostics bases against expected row/event totals.
+
+## D-090
+- date: 2026-04-13
+- entity_id: BL-004↔BL-005 handshake hardening with policy-gated validation and wrapper continuity checks (Slice 14)
+- proposed_by: user + Copilot
+- status: accepted
+- decision: Add an explicit BL-005 handshake validation surface with `allow|warn|strict` policy (`bl004_bl005_handshake_validation_policy`) resolved through run-config/runtime controls, enforce bounded BL-004 profile and seed-trace contract checks before retrieval evaluation, emit additive handshake/validation diagnostics in BL-005 outputs, and extend BL-014 with wrapper-level `schema_bl004_bl005_handshake_contract` continuity checks.
+- context: BL-003↔BL-004 hardening slices were complete, but BL-005 still depended on implicit profile/seed contract assumptions that could drift silently and only surface as downstream metric anomalies.
+- alternatives_considered: rely on existing retrieval defaults and downstream count checks only (rejected: weak cross-stage fault localization); strict fail-fast by default (rejected: compatibility risk for existing warn-tolerant pipelines); BL-014-only enforcement without stage-local validation (rejected: delayed detection and reduced stage diagnostics quality).
+- rationale: Policy-gated stage-local validation plus wrapper-level continuity checks improves contract transparency and controllability while preserving backward-compatible warn defaults.
+- evidence_basis: `07_implementation/src/retrieval/input_validation.py`, `07_implementation/src/retrieval/stage.py`, `07_implementation/src/retrieval/runtime_controls.py`, `07_implementation/src/retrieval/models.py`, `07_implementation/src/run_config/run_config_utils.py`, `07_implementation/src/shared_utils/constants.py`, `07_implementation/src/quality/sanity_checks.py`, `07_implementation/tests/test_retrieval_input_validation.py`, `07_implementation/tests/test_retrieval_stage.py`, `07_implementation/tests/test_retrieval_runtime_controls.py`, `07_implementation/tests/test_quality_sanity_checks.py`, `07_implementation/tests/test_run_config_utils.py`; validation evidence: focused pytest (`48/48`), touched-file pyright (`0 errors`), wrapper validate-only pass (`BL013-ENTRYPOINT-20260413-103628-028213`, `BL014-SANITY-20260413-103658-484887`, `30/30`).
+- impacted_files: `07_implementation/src/retrieval/input_validation.py`, `07_implementation/src/retrieval/stage.py`, `07_implementation/src/retrieval/runtime_controls.py`, `07_implementation/src/retrieval/models.py`, `07_implementation/src/run_config/run_config_utils.py`, `07_implementation/src/shared_utils/constants.py`, `07_implementation/src/quality/sanity_checks.py`, `07_implementation/tests/test_retrieval_input_validation.py`, `07_implementation/tests/test_retrieval_stage.py`, `07_implementation/tests/test_retrieval_runtime_controls.py`, `07_implementation/tests/test_quality_sanity_checks.py`, `07_implementation/tests/test_run_config_utils.py`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`, `00_admin/unresolved_issues.md`.
+- next_steps: If policy hardening continues, add an optional BL-014 advisory threshold on handshake warning volume to support gradual promotion from `warn` to `strict` in controlled runs.
