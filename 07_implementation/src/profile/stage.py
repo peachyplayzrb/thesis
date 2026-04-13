@@ -565,6 +565,11 @@ class ProfileStage:
         influence_interaction_count_sum_value = 0.0
         mixed_interaction_row_count = 0
         primary_type_attribution_row_count = 0
+        confidence_fallback_row_count = 0
+        defaulted_interaction_type_row_count = 0
+        synthetic_interaction_count_row_count = 0
+        synthetic_history_weight_row_count = 0
+        synthetic_influence_weight_row_count = 0
         attribution_weight_by_type = {"history": 0.0, "influence": 0.0}
         attribution_interaction_count_by_type = {"history": 0.0, "influence": 0.0}
         attribution_row_share_by_type = {"history": 0.0, "influence": 0.0}
@@ -578,11 +583,14 @@ class ProfileStage:
             spotify_ids = str(row.get("spotify_track_ids", "")).strip().split("|")
             spotify_id = next((item for item in spotify_ids if item), "")
             trace_track_id = track_id or (spotify_id if spotify_id else f"missing_ds001_id_{index:06d}")
+            raw_itypes = str(row.get("interaction_types", "") or row.get("interaction_type", "")).strip()
 
             selected_interaction_types = ProfileStage._parse_selected_interaction_types(
                 row,
                 include_interaction_types,
             )
+            if raw_itypes and not selected_interaction_types:
+                defaulted_interaction_type_row_count += 1
             if not selected_interaction_types:
                 continue
             if len(selected_interaction_types) > 1:
@@ -601,14 +609,17 @@ class ProfileStage:
             preference_weight = parse_float(str(row.get("preference_weight_sum", ""))) or 0.0
             if preference_weight <= 0:
                 continue
-            interaction_count = int(
-                parse_float(str(row.get("interaction_count_sum", "")))
-                or max(1, round(preference_weight * 10))
-            )
+            parsed_interaction_count = parse_float(str(row.get("interaction_count_sum", "")))
+            if parsed_interaction_count is None:
+                synthetic_interaction_count_row_count += 1
+                interaction_count = max(1, round(preference_weight * 10))
+            else:
+                interaction_count = int(parsed_interaction_count)
 
-            confidence = ProfileStage._clamp_confidence(
-                row.get("match_confidence_score", "")
-            )
+            raw_confidence = str(row.get("match_confidence_score", "")).strip()
+            if not raw_confidence or parse_float(raw_confidence) is None:
+                confidence_fallback_row_count += 1
+            confidence = ProfileStage._clamp_confidence(raw_confidence)
             confidence_adjusted_weight = preference_weight * ProfileStage._resolve_confidence_weight_multiplier(
                 confidence,
                 controls.confidence_weighting_mode,
@@ -629,8 +640,10 @@ class ProfileStage:
                 str(row.get("influence_preference_weight_sum", ""))
             )
             if history_weight_component is None and "history" in selected_interaction_types:
+                synthetic_history_weight_row_count += 1
                 history_weight_component = preference_weight * attribution_shares.get("history", 0.0)
             if influence_weight_component is None and "influence" in selected_interaction_types:
+                synthetic_influence_weight_row_count += 1
                 influence_weight_component = preference_weight * attribution_shares.get("influence", 0.0)
             history_preference_weight_sum += max(0.0, history_weight_component or 0.0)
             influence_preference_weight_sum += max(0.0, influence_weight_component or 0.0)
@@ -772,6 +785,11 @@ class ProfileStage:
             history_interaction_count_sum=int(round(history_interaction_count_sum_value)),
             influence_interaction_count_sum=int(round(influence_interaction_count_sum_value)),
             matched_seed_count=matched_seed_count,
+            confidence_fallback_row_count=confidence_fallback_row_count,
+            defaulted_interaction_type_row_count=defaulted_interaction_type_row_count,
+            synthetic_interaction_count_row_count=synthetic_interaction_count_row_count,
+            synthetic_history_weight_row_count=synthetic_history_weight_row_count,
+            synthetic_influence_weight_row_count=synthetic_influence_weight_row_count,
             mixed_interaction_row_count=mixed_interaction_row_count,
             primary_type_attribution_row_count=primary_type_attribution_row_count,
             attribution_weight_by_type=attribution_weight_by_type,
@@ -818,7 +836,12 @@ class ProfileStage:
                 6,
             ),
             "confidence_bins": dict(aggregation.confidence_bins),
+            "confidence_fallback_row_count": aggregation.confidence_fallback_row_count,
             "match_method_counts": dict(aggregation.match_method_counts),
+            "defaulted_interaction_type_row_count": aggregation.defaulted_interaction_type_row_count,
+            "synthetic_interaction_count_row_count": aggregation.synthetic_interaction_count_row_count,
+            "synthetic_history_weight_row_count": aggregation.synthetic_history_weight_row_count,
+            "synthetic_influence_weight_row_count": aggregation.synthetic_influence_weight_row_count,
             "bl003_source_rows_selected": dict(inputs.bl003_rows_selected),
             "bl003_source_rows_available": dict(inputs.bl003_rows_available),
             "elapsed_seconds": round(elapsed_seconds, 3),

@@ -6,8 +6,8 @@ Ordering convention (standardized 2026-03-24):
 - New entries must be appended at the end and may include `superseded_by` when a prior decision is replaced.
 
 Maintenance snapshot (2026-04-12):
-- Highest decision ID currently present: `D-077`
-- Total decision entries: 74
+- Highest decision ID currently present: `D-081`
+- Total decision entries: 78
 - Status distribution: accepted=70, superseded=3, rejected=1
 - ID integrity check: no duplicate decision IDs detected
 
@@ -1689,3 +1689,16 @@ review_date: none
 - evidence_basis: `07_implementation/src/alignment/constants.py`, `07_implementation/src/alignment/models.py`, `07_implementation/src/alignment/aggregation.py`, `07_implementation/src/alignment/writers.py`, `07_implementation/tests/test_alignment_constants.py`, `07_implementation/tests/test_alignment_aggregation.py`, `07_implementation/tests/test_profile_stage.py`; validation evidence: targeted pytest (`33/33`) and wrapper validate-only pass (`BL013-ENTRYPOINT-20260412-235719-274910`, `BL014-SANITY-20260412-235744-006676`, `28/28`).
 - impacted_files: `07_implementation/src/alignment/constants.py`, `07_implementation/src/alignment/models.py`, `07_implementation/src/alignment/aggregation.py`, `07_implementation/src/alignment/writers.py`, `07_implementation/tests/test_alignment_constants.py`, `07_implementation/tests/test_alignment_aggregation.py`, `07_implementation/tests/test_profile_stage.py`, `00_admin/decision_log.md`, `00_admin/change_log.md`.
 - next_steps: If fuzzy-match share increases in future runs, evaluate whether confidence aggregation mode should be exposed as a bounded BL-003 control (`weighted_mean|max|mean`) with explicit contract tests.
+
+## D-081
+- date: 2026-04-13
+- entity_id: BL-003/BL-004 diagnostics-first fallback hardening (Phase A)
+- proposed_by: user + Copilot
+- status: accepted
+- decision: Add additive, non-blocking diagnostics for previously silent fallback paths in BL-003 runtime scope resolution and BL-004 profile aggregation, without changing existing output contracts or decision behavior. BL-003 now emits scope-resolution parse diagnostics (`payload_json_parse_error`, `input_scope_json_parse_error`, `resolution_path`) and BL-004 now tracks fallback counters for confidence, interaction-type defaulting, synthetic interaction count, and synthetic attribution-weight reconstruction.
+- context: A profile-risk audit identified that several fallback/default paths could mask upstream data/contract regressions because they failed silently and only influenced downstream numbers indirectly.
+- alternatives_considered: keep behavior unchanged and rely on manual CSV/JSON spot checks (rejected: weak observability and high drift risk); convert fallback conditions to hard failures immediately (rejected: too disruptive for this bounded slice and may block valid degraded runs); add diagnostics only in BL-009 observability layer (rejected: delayed and less local root-cause visibility).
+- rationale: Diagnostics-first hardening improves traceability while preserving deterministic behavior and backward compatibility. This creates a safe foundation for later policy tightening if needed.
+- evidence_basis: `07_implementation/src/alignment/runtime_scope.py`, `07_implementation/src/alignment/writers.py`, `07_implementation/src/profile/models.py`, `07_implementation/src/profile/stage.py`, `07_implementation/tests/test_alignment_runtime_scope.py`, `07_implementation/tests/test_profile_stage.py`; validation evidence: targeted pytest (`38/38`) and wrapper validate-only pass (`BL013-ENTRYPOINT-20260413-001017-614914`, `BL014-SANITY-20260413-001042-070086`, `28/28`).
+- impacted_files: `07_implementation/src/alignment/runtime_scope.py`, `07_implementation/src/alignment/writers.py`, `07_implementation/src/profile/models.py`, `07_implementation/src/profile/stage.py`, `07_implementation/tests/test_alignment_runtime_scope.py`, `07_implementation/tests/test_profile_stage.py`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/timeline.md`, `00_admin/thesis_state.md`.
+- next_steps: Use the new counters/diagnostics to quantify fallback frequency across multiple runs, then decide whether specific fallback categories should remain permissive, become warning-gated in BL-014, or fail-fast under strict mode.

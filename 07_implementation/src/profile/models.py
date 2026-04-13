@@ -89,6 +89,11 @@ class ProfileAggregation:
     history_interaction_count_sum: int
     influence_interaction_count_sum: int
     matched_seed_count: int
+    confidence_fallback_row_count: int = 0
+    defaulted_interaction_type_row_count: int = 0
+    synthetic_interaction_count_row_count: int = 0
+    synthetic_history_weight_row_count: int = 0
+    synthetic_influence_weight_row_count: int = 0
     mixed_interaction_row_count: int = 0
     primary_type_attribution_row_count: int = 0
     attribution_weight_by_type: dict[str, float] = field(

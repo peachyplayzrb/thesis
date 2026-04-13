@@ -103,6 +103,9 @@ BL-009 section validation is now hardened so `ensure_required_sections` fails fa
 #### Post-closure enhancement checkpoint
 Influence-policy hardening for ranked item 4 is now implemented additively in the active runtime surface: BL-007 exposes opt-in policy modes (`competitive`, `reserved_slots`, `hybrid_override`) with bounded reserved slots and override controls, and BL-009 now emits per-track influence inclusion/exclusion diagnostics. Validation remains green (`342/342`, pyright `0 errors`, `BL013-ENTRYPOINT-20260412-150114-734913`, `BL014-SANITY-20260412-150146-906654`, `28/28`) under decision/change anchors `D-067` / `C-297`.
 
+#### Post-closure enhancement checkpoint (Phase A diagnostics hardening)
+Diagnostics-first fallback hardening is now implemented additively across BL-003 and BL-004. BL-003 emits explicit runtime-scope parse diagnostics (`payload_json_parse_error`, `input_scope_json_parse_error`) plus `resolution_path`, and BL-004 emits explicit fallback counters for confidence/default/synthetic paths in profile diagnostics. Validation remains green via targeted pytest (`38/38`) and wrapper validate-only (`BL013-ENTRYPOINT-20260413-001017-614914`, `BL014-SANITY-20260413-001042-070086`, `28/28`) under decision/change anchors `D-081` / `C-314`.
+
 ### REB-M4 Kickoff Checkpoint (2026-04-12)
 
 - Rebuild milestone outcome: Chapter 4 and Chapter 5 are now being rebuilt around the active O1 to O6 objective-to-evidence contract rather than the pre-rebuild MVP framing.

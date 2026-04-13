@@ -313,6 +313,119 @@ def test_aggregate_inputs_supports_primary_type_only_attribution() -> None:
     assert aggregation.attribution_weight_by_type["history"] == 0.0
 
 
+def test_aggregate_inputs_tracks_fallback_diagnostics() -> None:
+    inputs = _inputs(
+        [
+            {
+                "ds001_id": "track_1",
+                "spotify_track_ids": "sp_1",
+                "interaction_types": "garbage",
+                "preference_weight_sum": "1.2",
+                "interaction_count_sum": "",
+                "match_confidence_score": "bad-value",
+                "tags": "rock",
+                "genres": "rock",
+                "tempo": "120",
+                "release": "2010",
+                "key": "1",
+                "artist": "A",
+                "song": "S1",
+            },
+            {
+                "ds001_id": "track_2",
+                "spotify_track_ids": "sp_2",
+                "interaction_types": "history",
+                "preference_weight_sum": "1.0",
+                "interaction_count_sum": "",
+                "match_confidence_score": "bad-value",
+                "tags": "jazz",
+                "genres": "jazz",
+                "tempo": "110",
+                "release": "2012",
+                "key": "2",
+                "artist": "B",
+                "song": "S2",
+            }
+        ]
+    )
+
+    aggregation = ProfileStage.aggregate_inputs(inputs, _controls())
+
+    assert aggregation.confidence_fallback_row_count == 1
+    assert aggregation.defaulted_interaction_type_row_count == 1
+    assert aggregation.synthetic_interaction_count_row_count == 1
+    assert aggregation.synthetic_history_weight_row_count == 1
+    assert aggregation.synthetic_influence_weight_row_count == 0
+
+
+def test_build_profile_payload_emits_fallback_diagnostics_keys(tmp_path: Path) -> None:
+    aggregation = ProfileAggregation(
+        input_row_count=1,
+        seed_trace_rows=[{"seed_rank": 1}],
+        numeric_profile={"tempo": 100.0},
+        tag_weights={},
+        genre_weights={},
+        lead_genre_weights={},
+        counts_by_type={"history": 1, "influence": 0},
+        weight_by_type={"history": 1.0, "influence": 0.0},
+        interaction_count_sum_by_type={"history": 10, "influence": 0},
+        numeric_observations={column: 0 for column in NUMERIC_FEATURE_COLUMNS},
+        missing_numeric_track_ids=[],
+        blank_track_id_row_count=0,
+        total_effective_weight=1.0,
+        confidence_adjusted_weight_sum=1.0,
+        confidence_bins={
+            "high_0_9_plus": 1,
+            "medium_0_5_to_0_9": 0,
+            "low_below_0_5": 0,
+        },
+        match_method_counts={
+            "spotify_id_exact": 1,
+            "metadata_fallback": 0,
+            "fuzzy_title_artist": 0,
+        },
+        history_preference_weight_sum=1.0,
+        influence_preference_weight_sum=0.0,
+        history_interaction_count_sum=10,
+        influence_interaction_count_sum=0,
+        matched_seed_count=1,
+        confidence_fallback_row_count=1,
+        defaulted_interaction_type_row_count=2,
+        synthetic_interaction_count_row_count=3,
+        synthetic_history_weight_row_count=4,
+        synthetic_influence_weight_row_count=5,
+    )
+
+    controls = _controls()
+    seed_table_path = tmp_path / "seed.csv"
+    seed_table_path.write_text("ds001_id\ntrack_1\n", encoding="utf-8")
+    paths = ProfilePaths(
+        seed_table_path=seed_table_path,
+        bl003_summary_path=Path("bl003_summary.json"),
+        bl003_manifest_path=Path("bl003_manifest.json"),
+        output_dir=Path("outputs"),
+        seed_trace_path=Path("seed_trace.csv"),
+        profile_path=Path("profile.json"),
+        summary_path=Path("summary.json"),
+    )
+
+    payload = ProfileStage.build_profile_payload(
+        run_id="BL004-test",
+        controls=controls,
+        paths=paths,
+        inputs=_inputs([]),
+        aggregation=aggregation,
+        elapsed_seconds=0.1,
+    )
+    diagnostics = payload["diagnostics"]
+
+    assert diagnostics["confidence_fallback_row_count"] == 1
+    assert diagnostics["defaulted_interaction_type_row_count"] == 2
+    assert diagnostics["synthetic_interaction_count_row_count"] == 3
+    assert diagnostics["synthetic_history_weight_row_count"] == 4
+    assert diagnostics["synthetic_influence_weight_row_count"] == 5
+
+
 def test_validate_seed_table_schema_raises_on_missing_contract_columns() -> None:
     seed_rows = [
         {

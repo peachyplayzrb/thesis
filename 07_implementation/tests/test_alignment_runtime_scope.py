@@ -70,6 +70,17 @@ class TestResolveBl003RuntimeScope:
         monkeypatch.setenv("BL003_INPUT_SCOPE_JSON", "not-json")
         result = resolve_bl003_runtime_scope()
         assert result["config_source"] == "export_selection"
+        diagnostics = result["scope_resolution_diagnostics"]
+        assert diagnostics["input_scope_json_parse_error"] is True
+        assert diagnostics["resolution_path"] == "export_selection"
+
+    def test_invalid_payload_json_records_diagnostic(self, monkeypatch):
+        monkeypatch.setenv("BL_STAGE_CONFIG_JSON", "not-json")
+        monkeypatch.delenv("BL003_INPUT_SCOPE_JSON", raising=False)
+        result = resolve_bl003_runtime_scope()
+        diagnostics = result["scope_resolution_diagnostics"]
+        assert diagnostics["payload_json_parse_error"] is True
+        assert diagnostics["resolution_path"] == "export_selection"
 
 
 # ---------------------------------------------------------------------------

@@ -14,12 +14,17 @@ def resolve_bl003_runtime_scope() -> dict[str, object]:
     payload_json = os.environ.get("BL_STAGE_CONFIG_JSON", "").strip()
     input_scope_json = os.environ.get("BL003_INPUT_SCOPE_JSON", "").strip()
     default_scope = dict(DEFAULT_INPUT_SCOPE)
+    diagnostics: dict[str, object] = {
+        "payload_json_parse_error": False,
+        "input_scope_json_parse_error": False,
+    }
 
     if payload_json:
         try:
             payload = json.loads(payload_json)
         except (json.JSONDecodeError, TypeError, ValueError):
             payload = None
+            diagnostics["payload_json_parse_error"] = True
         if isinstance(payload, dict):
             stage_controls = payload.get("controls")
             payload_controls = dict(stage_controls) if isinstance(stage_controls, dict) else dict(payload)
@@ -32,6 +37,10 @@ def resolve_bl003_runtime_scope() -> dict[str, object]:
                     "run_config_path": None,
                     "run_config_schema_version": str(payload.get("schema_version") or "") or None,
                     "input_scope": merged_scope,
+                    "scope_resolution_diagnostics": {
+                        **diagnostics,
+                        "resolution_path": "orchestration_payload",
+                    },
                 }
 
     if input_scope_json:
@@ -45,15 +54,23 @@ def resolve_bl003_runtime_scope() -> dict[str, object]:
                     "run_config_path": None,
                     "run_config_schema_version": None,
                     "input_scope": merged_scope,
+                    "scope_resolution_diagnostics": {
+                        **diagnostics,
+                        "resolution_path": "environment",
+                    },
                 }
         except (json.JSONDecodeError, TypeError, ValueError):
-            pass
+            diagnostics["input_scope_json_parse_error"] = True
 
     return {
         "config_source": "export_selection",
         "run_config_path": None,
         "run_config_schema_version": None,
         "input_scope": default_scope,
+        "scope_resolution_diagnostics": {
+            **diagnostics,
+            "resolution_path": "export_selection",
+        },
     }
 
 

@@ -270,6 +270,9 @@ def _build_summary_payload(
             "config_source": context.runtime_scope["config_source"],
             "run_config_path": context.runtime_scope["run_config_path"],
             "run_config_schema_version": context.runtime_scope["run_config_schema_version"],
+            "runtime_scope_diagnostics": dict(
+                context.runtime_scope.get("scope_resolution_diagnostics", {})
+            ),
             "input_scope": context.input_scope,
             "influence_tracks": context.influence_contract,
             "fuzzy_matching": dict(context.fuzzy_matching_controls),
