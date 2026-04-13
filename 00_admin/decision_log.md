@@ -6,9 +6,9 @@ Ordering convention (standardized 2026-03-24):
 - New entries must be appended at the end and may include `superseded_by` when a prior decision is replaced.
 
 Maintenance snapshot (2026-04-12):
-- Highest decision ID currently present: `D-084`
-- Total decision entries: 81
-- Status distribution: accepted=71, superseded=3, rejected=1
+- Highest decision ID currently present: `D-085`
+- Total decision entries: 82
+- Status distribution: accepted=72, superseded=3, rejected=1
 - ID integrity check: no duplicate decision IDs detected
 
 Current posture snapshot (2026-03-25):
@@ -1741,3 +1741,16 @@ review_date: none
 - evidence_basis: `07_implementation/src/shared_utils/constants.py`, `07_implementation/src/run_config/run_config_utils.py`, `07_implementation/src/profile/models.py`, `07_implementation/src/profile/runtime_controls.py`, `07_implementation/src/profile/stage.py`, `07_implementation/tests/test_profile_stage.py`, `07_implementation/tests/test_run_config_utils.py`; validation evidence: focused pytest (`43/43`) and wrapper validate-only pass (`BL013-ENTRYPOINT-20260413-003304-652082`, `BL014-SANITY-20260413-003326-987801`, `28/28`).
 - impacted_files: `07_implementation/src/shared_utils/constants.py`, `07_implementation/src/run_config/run_config_utils.py`, `07_implementation/src/profile/models.py`, `07_implementation/src/profile/runtime_controls.py`, `07_implementation/src/profile/stage.py`, `07_implementation/tests/test_profile_stage.py`, `07_implementation/tests/test_run_config_utils.py`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/timeline.md`, `00_admin/thesis_state.md`.
 - next_steps: Add one explicit strict-mode negative wrapper scenario in quality checks to verify fail-fast messaging when handshake-required fields are removed.
+
+## D-085
+- date: 2026-04-13
+- entity_id: BL-004 handshake strict-negative test hardening (Slice 9)
+- proposed_by: user + Copilot
+- status: accepted
+- decision: Close the immediate D-084 follow-up with targeted stage-level strict-negative coverage in unit tests, rather than introducing a synthetic wrapper-level fixture at this slice. Added handshake warn/strict tests for BL-004 helper and input-loading paths, plus run-config schema normalization coverage for `bl003_handshake_validation_policy`.
+- context: D-084 introduced policy-gated handshake enforcement and flagged strict-mode negative-path evidence as the next hardening step.
+- alternatives_considered: implement an end-to-end wrapper negative scenario by mutating BL-003 artifacts at runtime (rejected in this slice: higher fixture complexity and lower isolation for contract-local behavior); leave handshake tests unchanged (rejected: strict path not explicitly exercised).
+- rationale: Stage-local tests are the fastest and most deterministic way to prove strict handshake failure semantics and warning propagation without adding brittle orchestration fixtures.
+- evidence_basis: `07_implementation/tests/test_profile_stage.py`, `07_implementation/tests/test_run_config_utils.py`; validation evidence: focused pytest (`47/47`) and wrapper validate-only pass (`BL013-ENTRYPOINT-20260413-003752-142736`, `BL014-SANITY-20260413-003814-485246`, `28/28`).
+- impacted_files: `07_implementation/tests/test_profile_stage.py`, `07_implementation/tests/test_run_config_utils.py`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/timeline.md`, `00_admin/thesis_state.md`.
+- next_steps: If needed for CI contract gates, add a dedicated BL-014 negative fixture that intentionally strips handshake-required BL-003 fields and asserts strict fail-fast messaging at wrapper level.

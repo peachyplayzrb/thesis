@@ -13,6 +13,102 @@ from profile.stage import NUMERIC_FEATURE_COLUMNS, ProfileStage
 from shared_utils.constants import DEFAULT_INPUT_SCOPE, DEFAULT_PROFILE_CONTROLS
 
 
+def _write_load_inputs_artifacts(
+    tmp_path: Path,
+    *,
+    include_runtime_scope_diagnostics: bool,
+) -> ProfilePaths:
+    seed_table_path = tmp_path / "seed.csv"
+    numeric_headers = ",".join(NUMERIC_FEATURE_COLUMNS)
+    numeric_values = "0.5,0.5,0.5,120,1,1,50,180000,2010"
+    seed_table_path.write_text(
+        (
+            "ds001_id,spotify_track_ids,interaction_types,preference_weight_sum,"
+            f"interaction_count_sum,match_confidence_score,tags,genres,artist,song,{numeric_headers}\n"
+            f"track_1,sp_1,history,1.0,5,1.0,rock,rock,artist_a,song_a,{numeric_values}\n"
+        ),
+        encoding="utf-8",
+    )
+
+    summary_inputs: dict[str, object] = {
+        "seed_contract": {
+            "seed_contract_schema_version": "bl003-seed-contract-v1",
+            "contract_hash": "seed-hash",
+        },
+        "structural_contract": {
+            "structural_contract_schema_version": "bl003-structural-contract-v1",
+            "contract_hash": "struct-hash",
+            "seed_table_fieldnames": [
+                "ds001_id",
+                "spotify_track_ids",
+                "interaction_types",
+                "preference_weight_sum",
+                "interaction_count_sum",
+                "match_confidence_score",
+                "tags",
+                "genres",
+                "artist",
+                "song",
+                *NUMERIC_FEATURE_COLUMNS,
+            ],
+        },
+    }
+    if include_runtime_scope_diagnostics:
+        summary_inputs["runtime_scope_diagnostics"] = {"resolution_path": "run_config"}
+
+    summary_payload = {
+        "inputs": summary_inputs,
+        "counts": {
+            "input_event_rows": 1,
+            "matched_by_spotify_id": 1,
+            "matched_by_metadata": 0,
+            "matched_by_fuzzy": 0,
+            "unmatched": 0,
+        },
+    }
+    summary_path = tmp_path / "bl003_summary.json"
+    summary_path.write_text(json.dumps(summary_payload), encoding="utf-8")
+
+    manifest_payload = {
+        "rows_selected": {"top_tracks": 1},
+        "rows_available": {"top_tracks": 1},
+        "seed_contract": {
+            "seed_contract_schema_version": "bl003-seed-contract-v1",
+            "contract_hash": "seed-hash",
+        },
+        "structural_contract": {
+            "structural_contract_schema_version": "bl003-structural-contract-v1",
+            "contract_hash": "struct-hash",
+            "seed_table_fieldnames": [
+                "ds001_id",
+                "spotify_track_ids",
+                "interaction_types",
+                "preference_weight_sum",
+                "interaction_count_sum",
+                "match_confidence_score",
+                "tags",
+                "genres",
+                "artist",
+                "song",
+                *NUMERIC_FEATURE_COLUMNS,
+            ],
+        },
+    }
+    manifest_path = tmp_path / "bl003_manifest.json"
+    manifest_path.write_text(json.dumps(manifest_payload), encoding="utf-8")
+
+    output_dir = tmp_path / "outputs"
+    return ProfilePaths(
+        seed_table_path=seed_table_path,
+        bl003_summary_path=summary_path,
+        bl003_manifest_path=manifest_path,
+        output_dir=output_dir,
+        seed_trace_path=output_dir / "seed_trace.csv",
+        profile_path=output_dir / "profile.json",
+        summary_path=output_dir / "summary.json",
+    )
+
+
 def _controls(include_types: list[str] | None = None, **overrides: object) -> ProfileControls:
     base = ProfileControls(
         config_source="test",
@@ -385,6 +481,50 @@ def test_aggregate_inputs_strict_confidence_policy_raises() -> None:
         ProfileStage.aggregate_inputs(inputs, controls)
 
 
+def test_validate_bl003_handshake_warn_policy_collects_warnings() -> None:
+    warnings = ProfileStage._validate_bl003_handshake(
+        summary_payload={"inputs": {}},
+        structural_contract={"seed_table_fieldnames": []},
+        policy="warn",
+    )
+
+    assert warnings == [
+        "missing BL-003 summary input key: runtime_scope_diagnostics",
+        "missing BL-003 structural seed field: match_confidence_score",
+    ]
+
+
+def test_validate_bl003_handshake_strict_policy_raises() -> None:
+    with pytest.raises(RuntimeError, match="BL-004 handshake validation failed"):
+        ProfileStage._validate_bl003_handshake(
+            summary_payload={"inputs": {}},
+            structural_contract={"seed_table_fieldnames": []},
+            policy="strict",
+        )
+
+
+def test_load_inputs_warn_handshake_policy_tracks_warning(tmp_path: Path) -> None:
+    paths = _write_load_inputs_artifacts(
+        tmp_path,
+        include_runtime_scope_diagnostics=False,
+    )
+    inputs = ProfileStage.load_inputs(paths, _controls(bl003_handshake_validation_policy="warn"))
+
+    assert inputs.bl003_handshake_warnings == [
+        "missing BL-003 summary input key: runtime_scope_diagnostics"
+    ]
+
+
+def test_load_inputs_strict_handshake_policy_raises(tmp_path: Path) -> None:
+    paths = _write_load_inputs_artifacts(
+        tmp_path,
+        include_runtime_scope_diagnostics=False,
+    )
+
+    with pytest.raises(RuntimeError, match="BL-004 handshake validation failed"):
+        ProfileStage.load_inputs(paths, _controls(bl003_handshake_validation_policy="strict"))
+
+
 def test_aggregate_inputs_tracks_malformed_numeric_diagnostics() -> None:
     inputs = _inputs(
         [
@@ -659,6 +799,7 @@ def test_resolve_bl004_runtime_controls_defaults_input_scope(monkeypatch) -> Non
     assert controls["confidence_validation_policy"] == "warn"
     assert controls["interaction_type_validation_policy"] == "warn"
     assert controls["synthetic_data_validation_policy"] == "warn"
+    assert controls["bl003_handshake_validation_policy"] == "warn"
     assert controls["numeric_malformed_row_threshold"] is None
     assert controls["no_numeric_signal_row_threshold"] is None
 
@@ -682,3 +823,4 @@ def test_resolve_bl004_runtime_controls_payload_uses_defaults_not_env(monkeypatc
     assert controls["top_tag_limit"] == int(DEFAULT_PROFILE_CONTROLS["top_tag_limit"])
     assert controls["top_genre_limit"] == 6
     assert controls["confidence_validation_policy"] == "warn"
+    assert controls["bl003_handshake_validation_policy"] == "warn"

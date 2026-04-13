@@ -115,6 +115,9 @@ BL-004 now distinguishes malformed numeric and attribution inputs from true no-s
 #### Post-closure enhancement checkpoint (Slice 8 cross-BL handshake)
 BL-004 now enforces a bounded BL-003 handshake contract during input loading using policy-controlled validation (`bl003_handshake_validation_policy`: `allow|warn|strict`). Required upstream fields are now explicitly checked (`runtime_scope_diagnostics` in BL-003 summary inputs and `match_confidence_score` in BL-003 seed rows), with additive warning diagnostics and optional strict fail-fast behavior. Validation remains green via focused pytest (`43/43`) and wrapper validate-only (`BL013-ENTRYPOINT-20260413-003304-652082`, `BL014-SANITY-20260413-003326-987801`, `28/28`) under decision/change anchors `D-084` / `C-317`.
 
+#### Post-closure enhancement checkpoint (Slice 9 strict-negative handshake coverage)
+BL-004 handshake controls now have explicit strict/warn test coverage at the stage boundary: warn mode records missing-handshake warnings, and strict mode fails fast when required BL-003 contract fields are absent. Run-config schema tests also now assert normalization/fallback behavior for `bl003_handshake_validation_policy`. Validation remains green via focused pytest (`47/47`) and wrapper validate-only (`BL013-ENTRYPOINT-20260413-003752-142736`, `BL014-SANITY-20260413-003814-485246`, `28/28`) under decision/change anchors `D-085` / `C-318`.
+
 ### REB-M4 Kickoff Checkpoint (2026-04-12)
 
 - Rebuild milestone outcome: Chapter 4 and Chapter 5 are now being rebuilt around the active O1 to O6 objective-to-evidence contract rather than the pre-rebuild MVP framing.
