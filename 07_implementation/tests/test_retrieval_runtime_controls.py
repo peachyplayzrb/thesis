@@ -15,6 +15,9 @@ def test_runtime_controls_environment_defaults(monkeypatch) -> None:
     assert controls["signal_mode"] == {}
     assert controls["language_filter_enabled"] is False
     assert controls["bl004_bl005_handshake_validation_policy"] == "warn"
+    diagnostics = cast(dict[str, object], controls["runtime_control_resolution_diagnostics"])
+    assert diagnostics["resolution_path"] == "environment"
+    assert diagnostics["payload_json_parse_error"] is False
 
 
 def test_runtime_controls_payload_defaults_missing_sections(monkeypatch) -> None:
@@ -75,3 +78,41 @@ def test_runtime_controls_handshake_policy_normalized(monkeypatch) -> None:
     controls = resolve_bl005_runtime_controls()
 
     assert controls["bl004_bl005_handshake_validation_policy"] == "strict"
+
+
+def test_runtime_controls_emits_normalization_diagnostics(monkeypatch) -> None:
+    monkeypatch.setenv(
+        "BL_STAGE_CONFIG_JSON",
+        json.dumps(
+            {
+                "controls": {
+                    "numeric_support_min_pass": "bad",
+                    "profile_numeric_confidence_mode": "invalid",
+                    "language_filter_codes": ["EN", "en", "", "FR"],
+                }
+            }
+        ),
+    )
+
+    controls = resolve_bl005_runtime_controls()
+
+    diagnostics = cast(dict[str, object], controls["runtime_control_resolution_diagnostics"])
+    assert diagnostics["resolution_path"] == "orchestration_payload"
+    assert diagnostics["normalization_event_count"]
+    counts = cast(dict[str, int], diagnostics["normalization_event_counts_by_field"])
+    assert counts["numeric_support_min_pass"] >= 1
+    assert counts["profile_numeric_confidence_mode"] >= 1
+    assert controls["language_filter_codes"] == ["en", "fr"]
+
+
+def test_runtime_controls_payload_parse_error_warns_and_falls_back(monkeypatch) -> None:
+    monkeypatch.setenv("BL_STAGE_CONFIG_JSON", "{not-json")
+
+    controls = resolve_bl005_runtime_controls()
+
+    diagnostics = cast(dict[str, object], controls["runtime_control_resolution_diagnostics"])
+    warnings = cast(list[str], controls["runtime_control_validation_warnings"])
+
+    assert diagnostics["payload_json_parse_error"] is True
+    assert diagnostics["resolution_path"] == "environment"
+    assert any("parse failed" in warning for warning in warnings)

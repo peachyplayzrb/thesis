@@ -31,6 +31,11 @@ def _controls(*, recency_offset: int | None = 5) -> RetrievalControls:
         recency_years_min_offset=recency_offset,
         numeric_thresholds={"tempo": 17.0},
         bl004_bl005_handshake_validation_policy="warn",
+        runtime_control_resolution_diagnostics={
+            "resolution_path": "environment",
+            "normalization_event_count": 1,
+        },
+        runtime_control_validation_warnings=["test warning"],
     )
 
 
@@ -110,6 +115,7 @@ def test_build_diagnostics_payload_includes_expected_counts(tmp_path: Path) -> N
         elapsed_seconds=0.123,
         paths=paths,
         runtime_context=context,
+        controls=_controls(recency_offset=None),
         summary=summary,
         candidate_rows=inputs.candidate_rows,
         kept_rows=inputs.candidate_rows,
@@ -120,6 +126,7 @@ def test_build_diagnostics_payload_includes_expected_counts(tmp_path: Path) -> N
     config = cast(dict[str, Any], payload_obj["config"])
     language_filter = cast(dict[str, Any], config["language_filter"])
     output_files = cast(dict[str, Any], payload_obj["output_files"])
+    runtime_control_resolution = cast(dict[str, Any], config["runtime_control_resolution"])
 
     assert payload_obj["task"] == "BL-005"
     assert counts["seed_tracks_excluded"] == 1
@@ -127,6 +134,8 @@ def test_build_diagnostics_payload_includes_expected_counts(tmp_path: Path) -> N
     assert cast(dict[str, Any], config["signal_mode"])["name"] == "custom"
     assert language_filter["enabled"] is True
     assert output_files["filtered_candidates_path"] == str(filtered_path)
+    assert runtime_control_resolution["resolution_path"] == "environment"
+    assert payload_obj["runtime_control_validation_warnings"] == ["test warning"]
 
 
 def test_run_returns_typed_artifacts(monkeypatch, tmp_path: Path) -> None:

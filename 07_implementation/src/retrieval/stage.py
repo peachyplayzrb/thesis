@@ -226,6 +226,16 @@ class RetrievalStage:
                 payload.get("bl004_bl005_handshake_validation_policy")
                 or defaults["bl004_bl005_handshake_validation_policy"]
             ),
+            runtime_control_resolution_diagnostics=(
+                dict(payload["runtime_control_resolution_diagnostics"])
+                if isinstance(payload.get("runtime_control_resolution_diagnostics"), dict)
+                else {}
+            ),
+            runtime_control_validation_warnings=(
+                [str(item) for item in payload["runtime_control_validation_warnings"]]
+                if isinstance(payload.get("runtime_control_validation_warnings"), list)
+                else []
+            ),
         )
 
     @staticmethod
@@ -640,6 +650,11 @@ class RetrievalStage:
                 "validation_policies": {
                     "bl004_bl005_handshake_validation_policy": handshake_policy,
                 },
+                "runtime_control_resolution": (
+                    dict(controls.runtime_control_resolution_diagnostics)
+                    if controls is not None
+                    else {}
+                ),
                 "profile_quality_inputs": {
                     "profile_match_quality": round(runtime_context.profile_match_quality, 6),
                     "top_genre_entropy": round(runtime_context.top_genre_entropy, 6),
@@ -715,6 +730,11 @@ class RetrievalStage:
                 ),
             },
             "elapsed_seconds": round(elapsed_seconds, 3),
+            "runtime_control_validation_warnings": (
+                list(controls.runtime_control_validation_warnings)
+                if controls is not None
+                else []
+            ),
             "output_files": {
                 "filtered_candidates_path": str(output_paths["filtered_path"]),
                 "candidate_decisions_path": str(output_paths["decisions_path"]),
@@ -750,6 +770,11 @@ class RetrievalStage:
         )
 
         controls = self.resolve_runtime_controls()
+        if controls.runtime_control_validation_warnings:
+            logger.warning(
+                "BL-005 runtime control validation warnings=%s",
+                controls.runtime_control_validation_warnings,
+            )
         inputs = self.load_inputs(paths, controls)
         handshake_validation = validate_bl004_bl005_handshake(
             profile=inputs.profile,

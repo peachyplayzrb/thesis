@@ -2,6 +2,9 @@
 
 from __future__ import annotations
 
+import json
+import os
+
 from shared_utils.constants import (
     DEFAULT_BL005_HANDSHAKE_VALIDATION_POLICY,
     DEFAULT_RETRIEVAL_CONTROLS,
@@ -24,17 +27,122 @@ from shared_utils.stage_runtime_resolver import (
 )
 
 
-def _sanitize_bl005_controls(controls: dict[str, object]) -> dict[str, object]:
-    controls["profile_top_lead_genre_limit"] = max(1, coerce_int(controls.get("profile_top_lead_genre_limit", 6), 6))
-    controls["profile_top_tag_limit"] = max(1, coerce_int(controls.get("profile_top_tag_limit", 10), 10))
-    controls["profile_top_genre_limit"] = max(1, coerce_int(controls.get("profile_top_genre_limit", 8), 8))
-    controls["semantic_strong_keep_score"] = max(0, min(3, coerce_int(controls.get("semantic_strong_keep_score", 2), 2)))
-    controls["semantic_min_keep_score"] = max(0, min(3, coerce_int(controls.get("semantic_min_keep_score", 1), 1)))
-    controls["numeric_support_min_pass"] = max(0, coerce_int(controls.get("numeric_support_min_pass", 1), 1))
-    controls["numeric_support_min_score"] = max(0.0, coerce_float(controls.get("numeric_support_min_score", 1.0), 1.0))
-    controls["lead_genre_partial_match_threshold"] = max(
-        0.0, min(1.0, coerce_float(controls.get("lead_genre_partial_match_threshold", 0.5), 0.5)),
+def _record_normalization_event(
+    events: list[dict[str, object]],
+    counts_by_field: dict[str, int],
+    *,
+    field: str,
+    raw_value: object,
+    normalized_value: object,
+    reason: str,
+) -> None:
+    if raw_value == normalized_value:
+        return
+    counts_by_field[field] = counts_by_field.get(field, 0) + 1
+    events.append(
+        {
+            "field": field,
+            "reason": reason,
+            "raw": raw_value,
+            "normalized": normalized_value,
+        }
     )
+
+
+def _sanitize_bl005_controls(controls: dict[str, object]) -> dict[str, object]:
+    normalization_events: list[dict[str, object]] = []
+    normalization_event_counts_by_field: dict[str, int] = {}
+
+    raw_profile_top_lead_genre_limit = controls.get("profile_top_lead_genre_limit", 6)
+    controls["profile_top_lead_genre_limit"] = max(1, coerce_int(raw_profile_top_lead_genre_limit, 6))
+    _record_normalization_event(
+        normalization_events,
+        normalization_event_counts_by_field,
+        field="profile_top_lead_genre_limit",
+        raw_value=raw_profile_top_lead_genre_limit,
+        normalized_value=controls["profile_top_lead_genre_limit"],
+        reason="coerced_to_positive_int",
+    )
+
+    raw_profile_top_tag_limit = controls.get("profile_top_tag_limit", 10)
+    controls["profile_top_tag_limit"] = max(1, coerce_int(raw_profile_top_tag_limit, 10))
+    _record_normalization_event(
+        normalization_events,
+        normalization_event_counts_by_field,
+        field="profile_top_tag_limit",
+        raw_value=raw_profile_top_tag_limit,
+        normalized_value=controls["profile_top_tag_limit"],
+        reason="coerced_to_positive_int",
+    )
+
+    raw_profile_top_genre_limit = controls.get("profile_top_genre_limit", 8)
+    controls["profile_top_genre_limit"] = max(1, coerce_int(raw_profile_top_genre_limit, 8))
+    _record_normalization_event(
+        normalization_events,
+        normalization_event_counts_by_field,
+        field="profile_top_genre_limit",
+        raw_value=raw_profile_top_genre_limit,
+        normalized_value=controls["profile_top_genre_limit"],
+        reason="coerced_to_positive_int",
+    )
+
+    raw_semantic_strong_keep_score = controls.get("semantic_strong_keep_score", 2)
+    controls["semantic_strong_keep_score"] = max(0, min(3, coerce_int(raw_semantic_strong_keep_score, 2)))
+    _record_normalization_event(
+        normalization_events,
+        normalization_event_counts_by_field,
+        field="semantic_strong_keep_score",
+        raw_value=raw_semantic_strong_keep_score,
+        normalized_value=controls["semantic_strong_keep_score"],
+        reason="coerced_and_clamped_to_range_0_3",
+    )
+
+    raw_semantic_min_keep_score = controls.get("semantic_min_keep_score", 1)
+    controls["semantic_min_keep_score"] = max(0, min(3, coerce_int(raw_semantic_min_keep_score, 1)))
+    _record_normalization_event(
+        normalization_events,
+        normalization_event_counts_by_field,
+        field="semantic_min_keep_score",
+        raw_value=raw_semantic_min_keep_score,
+        normalized_value=controls["semantic_min_keep_score"],
+        reason="coerced_and_clamped_to_range_0_3",
+    )
+
+    raw_numeric_support_min_pass = controls.get("numeric_support_min_pass", 1)
+    controls["numeric_support_min_pass"] = max(0, coerce_int(raw_numeric_support_min_pass, 1))
+    _record_normalization_event(
+        normalization_events,
+        normalization_event_counts_by_field,
+        field="numeric_support_min_pass",
+        raw_value=raw_numeric_support_min_pass,
+        normalized_value=controls["numeric_support_min_pass"],
+        reason="coerced_to_non_negative_int",
+    )
+
+    raw_numeric_support_min_score = controls.get("numeric_support_min_score", 1.0)
+    controls["numeric_support_min_score"] = max(0.0, coerce_float(raw_numeric_support_min_score, 1.0))
+    _record_normalization_event(
+        normalization_events,
+        normalization_event_counts_by_field,
+        field="numeric_support_min_score",
+        raw_value=raw_numeric_support_min_score,
+        normalized_value=controls["numeric_support_min_score"],
+        reason="coerced_to_non_negative_float",
+    )
+
+    raw_lead_genre_partial_match_threshold = controls.get("lead_genre_partial_match_threshold", 0.5)
+    controls["lead_genre_partial_match_threshold"] = max(
+        0.0, min(1.0, coerce_float(raw_lead_genre_partial_match_threshold, 0.5)),
+    )
+    _record_normalization_event(
+        normalization_events,
+        normalization_event_counts_by_field,
+        field="lead_genre_partial_match_threshold",
+        raw_value=raw_lead_genre_partial_match_threshold,
+        normalized_value=controls["lead_genre_partial_match_threshold"],
+        reason="coerced_and_clamped_to_range_0_1",
+    )
+
     controls["use_weighted_semantics"] = bool(controls.get("use_weighted_semantics", False))
     controls["use_continuous_numeric"] = bool(controls.get("use_continuous_numeric", False))
     controls["enable_popularity_numeric"] = bool(controls.get("enable_popularity_numeric", False))
@@ -50,7 +158,25 @@ def _sanitize_bl005_controls(controls: dict[str, object]) -> dict[str, object]:
             seen.add(code)
             normalized_codes.append(code)
     controls["language_filter_codes"] = normalized_codes
+    _record_normalization_event(
+        normalization_events,
+        normalization_event_counts_by_field,
+        field="language_filter_codes",
+        raw_value=codes,
+        normalized_value=normalized_codes,
+        reason="normalized_to_unique_lowercase_codes",
+    )
+
+    raw_language_filter_enabled = controls.get("language_filter_enabled", False)
     controls["language_filter_enabled"] = bool(controls.get("language_filter_enabled", False)) and bool(normalized_codes)
+    _record_normalization_event(
+        normalization_events,
+        normalization_event_counts_by_field,
+        field="language_filter_enabled",
+        raw_value=raw_language_filter_enabled,
+        normalized_value=controls["language_filter_enabled"],
+        reason="disabled_when_no_valid_language_codes",
+    )
 
     recency_raw = str(controls.get("recency_years_min_offset", "")).strip()
     if recency_raw:
@@ -61,6 +187,14 @@ def _sanitize_bl005_controls(controls: dict[str, object]) -> dict[str, object]:
             controls["recency_years_min_offset"] = None
     else:
         controls["recency_years_min_offset"] = None
+    _record_normalization_event(
+        normalization_events,
+        normalization_event_counts_by_field,
+        field="recency_years_min_offset",
+        raw_value=controls.get("recency_years_min_offset") if recency_raw == "" else recency_raw,
+        normalized_value=controls["recency_years_min_offset"],
+        reason="invalid_or_non_positive_values_reset_to_none",
+    )
 
     numeric_thresholds_raw = controls.get("numeric_thresholds")
     numeric_thresholds: dict[str, float] = {}
@@ -73,6 +207,14 @@ def _sanitize_bl005_controls(controls: dict[str, object]) -> dict[str, object]:
             if parsed_val > 0:
                 numeric_thresholds[str(key)] = parsed_val
     controls["numeric_thresholds"] = numeric_thresholds
+    _record_normalization_event(
+        normalization_events,
+        normalization_event_counts_by_field,
+        field="numeric_thresholds",
+        raw_value=numeric_thresholds_raw,
+        normalized_value=numeric_thresholds,
+        reason="kept_positive_numeric_thresholds_only",
+    )
 
     controls["profile_quality_penalty_enabled"] = bool(controls.get("profile_quality_penalty_enabled", True))
     controls["profile_quality_threshold"] = max(0.0, min(1.0, coerce_float(controls.get("profile_quality_threshold", 0.90), 0.90)))
@@ -97,21 +239,71 @@ def _sanitize_bl005_controls(controls: dict[str, object]) -> dict[str, object]:
 
     controls["enable_numeric_confidence_scaling"] = bool(controls.get("enable_numeric_confidence_scaling", True))
     controls["numeric_confidence_floor"] = max(0.0, min(1.0, coerce_float(controls.get("numeric_confidence_floor", 0.0), 0.0)))
+    raw_profile_numeric_confidence_mode = controls.get("profile_numeric_confidence_mode", "direct")
     controls["profile_numeric_confidence_mode"] = coerce_enum(
-        controls.get("profile_numeric_confidence_mode", "direct"), VALID_NUMERIC_CONFIDENCE_MODES, "direct"
+        raw_profile_numeric_confidence_mode, VALID_NUMERIC_CONFIDENCE_MODES, "direct"
     )
+    _record_normalization_event(
+        normalization_events,
+        normalization_event_counts_by_field,
+        field="profile_numeric_confidence_mode",
+        raw_value=raw_profile_numeric_confidence_mode,
+        normalized_value=controls["profile_numeric_confidence_mode"],
+        reason="normalized_to_supported_enum",
+    )
+
+    raw_profile_numeric_confidence_blend_weight = controls.get("profile_numeric_confidence_blend_weight", 1.0)
     controls["profile_numeric_confidence_blend_weight"] = max(
-        0.0, min(1.0, coerce_float(controls.get("profile_numeric_confidence_blend_weight", 1.0), 1.0)),
+        0.0, min(1.0, coerce_float(raw_profile_numeric_confidence_blend_weight, 1.0)),
     )
+    _record_normalization_event(
+        normalization_events,
+        normalization_event_counts_by_field,
+        field="profile_numeric_confidence_blend_weight",
+        raw_value=raw_profile_numeric_confidence_blend_weight,
+        normalized_value=controls["profile_numeric_confidence_blend_weight"],
+        reason="coerced_and_clamped_to_range_0_1",
+    )
+
+    raw_numeric_support_score_mode = controls.get("numeric_support_score_mode", "weighted_absolute")
     controls["numeric_support_score_mode"] = coerce_enum(
-        controls.get("numeric_support_score_mode", "weighted_absolute"), VALID_NUMERIC_SUPPORT_SCORE_MODES, "weighted_absolute"
+        raw_numeric_support_score_mode, VALID_NUMERIC_SUPPORT_SCORE_MODES, "weighted_absolute"
     )
+    _record_normalization_event(
+        normalization_events,
+        normalization_event_counts_by_field,
+        field="numeric_support_score_mode",
+        raw_value=raw_numeric_support_score_mode,
+        normalized_value=controls["numeric_support_score_mode"],
+        reason="normalized_to_supported_enum",
+    )
+
     controls["emit_profile_policy_diagnostics"] = bool(controls.get("emit_profile_policy_diagnostics", True))
+    raw_handshake_policy = controls.get("bl004_bl005_handshake_validation_policy", DEFAULT_BL005_HANDSHAKE_VALIDATION_POLICY)
     controls["bl004_bl005_handshake_validation_policy"] = coerce_enum(
-        controls.get("bl004_bl005_handshake_validation_policy", DEFAULT_BL005_HANDSHAKE_VALIDATION_POLICY),
+        raw_handshake_policy,
         frozenset({"allow", "warn", "strict"}),
         DEFAULT_BL005_HANDSHAKE_VALIDATION_POLICY,
     )
+    _record_normalization_event(
+        normalization_events,
+        normalization_event_counts_by_field,
+        field="bl004_bl005_handshake_validation_policy",
+        raw_value=raw_handshake_policy,
+        normalized_value=controls["bl004_bl005_handshake_validation_policy"],
+        reason="normalized_to_supported_enum",
+    )
+
+    diagnostics_existing = controls.get("runtime_control_resolution_diagnostics")
+    diagnostics = dict(diagnostics_existing) if isinstance(diagnostics_existing, dict) else {}
+    diagnostics.update(
+        {
+            "normalization_event_count": len(normalization_events),
+            "normalization_event_counts_by_field": normalization_event_counts_by_field,
+            "normalization_events_sampled": normalization_events[:10],
+        }
+    )
+    controls["runtime_control_resolution_diagnostics"] = diagnostics
 
     return controls
 
@@ -240,8 +432,41 @@ def _load_bl005_controls_from_env() -> dict[str, object]:
 
 def resolve_bl005_runtime_controls() -> dict[str, object]:
     """Resolve BL-005 controls with payload-first precedence."""
-    return resolve_stage_controls(
+    payload_json_raw = os.environ.get("BL_STAGE_CONFIG_JSON", "").strip()
+    payload_present = bool(payload_json_raw)
+    payload_json_parse_error = False
+    if payload_present:
+        try:
+            payload_candidate = json.loads(payload_json_raw)
+            payload_present = isinstance(payload_candidate, dict)
+            payload_json_parse_error = not payload_present
+        except (json.JSONDecodeError, TypeError, ValueError):
+            payload_json_parse_error = True
+            payload_present = False
+
+    controls = resolve_stage_controls(
         load_from_env=_load_bl005_controls_from_env,
         load_payload_defaults=defaults_loader(DEFAULT_RETRIEVAL_CONTROLS),
         sanitize=_sanitize_bl005_controls,
     )
+    diagnostics_existing = controls.get("runtime_control_resolution_diagnostics")
+    diagnostics = dict(diagnostics_existing) if isinstance(diagnostics_existing, dict) else {}
+    diagnostics.update(
+        {
+            "payload_json_present": bool(payload_json_raw),
+            "payload_json_parse_error": payload_json_parse_error,
+            "resolution_path": "orchestration_payload" if payload_present else "environment",
+        }
+    )
+    controls["runtime_control_resolution_diagnostics"] = diagnostics
+
+    warnings: list[str] = []
+    warnings_existing = controls.get("runtime_control_validation_warnings")
+    if isinstance(warnings_existing, list):
+        warnings.extend(str(item) for item in warnings_existing)
+    if payload_json_parse_error:
+        warnings.append(
+            "BL_STAGE_CONFIG_JSON parse failed for BL-005 controls; environment/default fallback path was used"
+        )
+    controls["runtime_control_validation_warnings"] = warnings
+    return controls

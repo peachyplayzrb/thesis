@@ -1,6 +1,6 @@
 # Thesis State
 
-Last updated: 2026-04-13 UTC (REB-M4 + Slice 16 checkpoint)
+Last updated: 2026-04-13 UTC (REB-M4 + Slice 17 checkpoint)
 
 ## REBUILD POSTURE (active from 2026-04-12)
 
@@ -138,6 +138,9 @@ BL-014 sanity checks now emit a bounded advisory (`advisory_bl005_handshake_warn
 
 #### Post-closure enhancement checkpoint (Slice 16 BL-005 parity closure)
 BL-004↔BL-005 handshake validation now includes additive seed-trace confidence row-quality checks (missing/non-numeric/out-of-range) in retrieval-stage validation while preserving policy-gated behavior (`allow|warn|strict`), and BL-014 now has symmetric main-level negative-fixture proof that wrapper sanity fails specifically on `schema_bl004_bl005_handshake_contract` when BL-004 handshake-required profile fields are removed. Validation remains green via targeted pytest (`20/20`) and wrapper validate-only (`BL013-ENTRYPOINT-20260413-105724-234842`, `BL014-SANITY-20260413-105751-328487`, `30/30`) under decision/change anchors `D-092` / `C-325`.
+
+#### Post-closure enhancement checkpoint (Slice 17 BL-005 runtime-control diagnostics parity)
+BL-005 runtime control resolution now emits explicit diagnostics for fallback/coercion behavior: payload parse-failure detection, resolved control-source path, and sampled normalization events with per-field counts. These diagnostics are now persisted in BL-005 stage outputs (`config.runtime_control_resolution` plus `runtime_control_validation_warnings`) to remove silent normalization drift while preserving existing retrieval behavior and policy defaults. Validation remains green via focused pytest (`9/9`) and wrapper validate-only (`BL013-ENTRYPOINT-20260413-111111-723084`, `BL014-SANITY-20260413-111136-703270`, `30/30`) under decision/change anchors `D-093` / `C-326`.
 
 ### REB-M4 Kickoff Checkpoint (2026-04-12)
 

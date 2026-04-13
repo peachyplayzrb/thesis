@@ -6,9 +6,9 @@ Ordering convention (standardized 2026-03-24):
 - New entries must be appended at the end and may include `superseded_by` when a prior decision is replaced.
 
 Maintenance snapshot (2026-04-13):
-- Highest decision ID currently present: `D-092`
-- Total decision entries: 88
-- Status distribution: accepted=78, superseded=3, rejected=1
+- Highest decision ID currently present: `D-093`
+- Total decision entries: 89
+- Status distribution: accepted=79, superseded=3, rejected=1
 - ID integrity check: no duplicate decision IDs detected
 
 Current posture snapshot (2026-03-25):
@@ -1845,3 +1845,16 @@ review_date: none
 - evidence_basis: `07_implementation/src/retrieval/input_validation.py`, `07_implementation/tests/test_retrieval_input_validation.py`, `07_implementation/tests/test_quality_sanity_checks.py`; validation evidence: targeted pytest (`20/20`) and wrapper validate-only pass (`BL013-ENTRYPOINT-20260413-105724-234842`, `BL014-SANITY-20260413-105751-328487`, `30/30`).
 - impacted_files: `07_implementation/src/retrieval/input_validation.py`, `07_implementation/tests/test_retrieval_input_validation.py`, `07_implementation/tests/test_quality_sanity_checks.py`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`, `00_admin/unresolved_issues.md`.
 - next_steps: If future policy-hardening slices continue, add one bounded BL-014 advisory for malformed-confidence prevalence trend to support controlled warn-to-strict promotion decisions.
+
+## D-093
+- date: 2026-04-13
+- entity_id: BL-005 runtime-control fallback diagnostics parity hardening (Slice 17)
+- proposed_by: user + Copilot
+- status: accepted
+- decision: Add explicit BL-005 runtime-control resolution diagnostics that surface payload parse failures, control normalization/coercion events, and fallback path selection; propagate these diagnostics and warnings into BL-005 stage diagnostics output while preserving existing runtime behavior and policy defaults.
+- context: Post-Slice 16 review confirmed cross-stage handshake hardening parity, but BL-005 still normalized invalid runtime-control inputs with limited explicit diagnostics compared to BL-003/BL-004 diagnostics-first fallback handling.
+- alternatives_considered: keep existing silent normalization behavior (rejected: weaker auditability for control drift); enforce strict fail-fast for all malformed control values (rejected: unnecessary compatibility break for warn-compatible posture); emit diagnostics in logs only without artifact payload fields (rejected: weaker downstream evidence traceability).
+- rationale: Diagnostics-first control-resolution visibility improves auditability and controlled hardening readiness without changing retrieval scoring/filtering semantics.
+- evidence_basis: `07_implementation/src/retrieval/runtime_controls.py`, `07_implementation/src/retrieval/stage.py`, `07_implementation/src/retrieval/models.py`, `07_implementation/tests/test_retrieval_runtime_controls.py`, `07_implementation/tests/test_retrieval_stage.py`; validation evidence: focused pytest (`9/9`) and wrapper validate-only pass (`BL013-ENTRYPOINT-20260413-111111-723084`, `BL014-SANITY-20260413-111136-703270`, `30/30`).
+- impacted_files: `07_implementation/src/retrieval/runtime_controls.py`, `07_implementation/src/retrieval/stage.py`, `07_implementation/src/retrieval/models.py`, `07_implementation/tests/test_retrieval_runtime_controls.py`, `07_implementation/tests/test_retrieval_stage.py`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`, `00_admin/unresolved_issues.md`.
+- next_steps: If warning-volume patterns persist, add an additive BL-014 advisory for repeated runtime-control normalization events to support bounded warn-to-strict promotion planning.
