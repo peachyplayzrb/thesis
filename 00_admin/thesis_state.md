@@ -112,6 +112,9 @@ BL-004 fallback enforcement now supports explicit per-family policy controls (`a
 #### Post-closure enhancement checkpoint (Slice 7 attribution and numeric integrity)
 BL-004 now distinguishes malformed numeric and attribution inputs from true no-signal rows via additive diagnostics and supports optional fail-fast thresholds (`numeric_malformed_row_threshold`, `no_numeric_signal_row_threshold`). New counters cover malformed confidence, interaction-count, history/influence component weights, and per-feature numeric parse anomalies. Validation remains green via focused pytest (`43/43`) and wrapper validate-only (`BL013-ENTRYPOINT-20260413-002608-855860`, `BL014-SANITY-20260413-002636-061270`, `28/28`) under decision/change anchors `D-083` / `C-316`.
 
+#### Post-closure enhancement checkpoint (Slice 8 cross-BL handshake)
+BL-004 now enforces a bounded BL-003 handshake contract during input loading using policy-controlled validation (`bl003_handshake_validation_policy`: `allow|warn|strict`). Required upstream fields are now explicitly checked (`runtime_scope_diagnostics` in BL-003 summary inputs and `match_confidence_score` in BL-003 seed rows), with additive warning diagnostics and optional strict fail-fast behavior. Validation remains green via focused pytest (`43/43`) and wrapper validate-only (`BL013-ENTRYPOINT-20260413-003304-652082`, `BL014-SANITY-20260413-003326-987801`, `28/28`) under decision/change anchors `D-084` / `C-317`.
+
 ### REB-M4 Kickoff Checkpoint (2026-04-12)
 
 - Rebuild milestone outcome: Chapter 4 and Chapter 5 are now being rebuilt around the active O1 to O6 objective-to-evidence contract rather than the pre-rebuild MVP framing.

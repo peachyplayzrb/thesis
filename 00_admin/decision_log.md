@@ -6,9 +6,9 @@ Ordering convention (standardized 2026-03-24):
 - New entries must be appended at the end and may include `superseded_by` when a prior decision is replaced.
 
 Maintenance snapshot (2026-04-12):
-- Highest decision ID currently present: `D-083`
-- Total decision entries: 80
-- Status distribution: accepted=70, superseded=3, rejected=1
+- Highest decision ID currently present: `D-084`
+- Total decision entries: 81
+- Status distribution: accepted=71, superseded=3, rejected=1
 - ID integrity check: no duplicate decision IDs detected
 
 Current posture snapshot (2026-03-25):
@@ -1728,3 +1728,16 @@ review_date: none
 - evidence_basis: `07_implementation/src/shared_utils/constants.py`, `07_implementation/src/run_config/run_config_utils.py`, `07_implementation/src/profile/models.py`, `07_implementation/src/profile/runtime_controls.py`, `07_implementation/src/profile/stage.py`, `07_implementation/tests/test_profile_stage.py`, `07_implementation/tests/test_run_config_utils.py`; validation evidence: focused pytest (`43/43`) and wrapper validate-only pass (`BL013-ENTRYPOINT-20260413-002608-855860`, `BL014-SANITY-20260413-002636-061270`, `28/28`).
 - impacted_files: `07_implementation/src/shared_utils/constants.py`, `07_implementation/src/run_config/run_config_utils.py`, `07_implementation/src/profile/models.py`, `07_implementation/src/profile/runtime_controls.py`, `07_implementation/src/profile/stage.py`, `07_implementation/tests/test_profile_stage.py`, `07_implementation/tests/test_run_config_utils.py`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/timeline.md`, `00_admin/thesis_state.md`.
 - next_steps: Implement cross-BL handshake checks so BL-004 enforces contract-critical BL-003 summary/seed expectations before aggregation begins.
+
+## D-084
+- date: 2026-04-13
+- entity_id: BL-003 to BL-004 contract handshake enforcement (Slice 8)
+- proposed_by: user + Copilot
+- status: accepted
+- decision: Add an explicit BL-003 to BL-004 handshake validation surface in BL-004 input loading, with bounded `allow|warn|strict` policy control (`bl003_handshake_validation_policy`) and additive warning diagnostics. The handshake checks require BL-003 summary inputs to expose `runtime_scope_diagnostics` and BL-003 seed rows to expose `match_confidence_score` before aggregation proceeds.
+- context: Prior hardening slices made fallback and numeric integrity issues visible and enforceable, but BL-004 still assumed critical BL-003 contract fields implicitly. A missing upstream field could degrade evidence quality without a clearly typed handshake boundary.
+- alternatives_considered: keep implicit assumptions and rely on downstream anomalies (rejected: weak root-cause localization); enforce strict handshake unconditionally (rejected: avoid disruptive behavior changes on existing profiles); move handshake checks to BL-014 only (rejected: late failure surface and weaker stage-local diagnostics).
+- rationale: Stage-local handshake checks provide explicit cross-BL contract observability and controllable enforcement without breaking default compatibility. Policy-based gating supports gradual hardening from warn to strict.
+- evidence_basis: `07_implementation/src/shared_utils/constants.py`, `07_implementation/src/run_config/run_config_utils.py`, `07_implementation/src/profile/models.py`, `07_implementation/src/profile/runtime_controls.py`, `07_implementation/src/profile/stage.py`, `07_implementation/tests/test_profile_stage.py`, `07_implementation/tests/test_run_config_utils.py`; validation evidence: focused pytest (`43/43`) and wrapper validate-only pass (`BL013-ENTRYPOINT-20260413-003304-652082`, `BL014-SANITY-20260413-003326-987801`, `28/28`).
+- impacted_files: `07_implementation/src/shared_utils/constants.py`, `07_implementation/src/run_config/run_config_utils.py`, `07_implementation/src/profile/models.py`, `07_implementation/src/profile/runtime_controls.py`, `07_implementation/src/profile/stage.py`, `07_implementation/tests/test_profile_stage.py`, `07_implementation/tests/test_run_config_utils.py`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/timeline.md`, `00_admin/thesis_state.md`.
+- next_steps: Add one explicit strict-mode negative wrapper scenario in quality checks to verify fail-fast messaging when handshake-required fields are removed.

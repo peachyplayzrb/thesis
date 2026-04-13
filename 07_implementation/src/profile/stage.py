@@ -24,6 +24,13 @@ from shared_utils.constants import (
 from shared_utils.io_utils import load_csv_rows, open_text_write, parse_csv_labels, parse_float, sha256_of_file, utc_now
 from shared_utils.path_utils import impl_root
 
+BL004_HANDSHAKE_REQUIRED_SUMMARY_INPUT_KEYS: list[str] = [
+    "runtime_scope_diagnostics",
+]
+BL004_HANDSHAKE_REQUIRED_SEED_FIELDS: list[str] = [
+    "match_confidence_score",
+]
+
 
 NUMERIC_FEATURE_COLUMNS: list[str] = [
     "danceability",
@@ -140,6 +147,7 @@ class ProfileStage:
             confidence_validation_policy=str(controls["confidence_validation_policy"]),
             interaction_type_validation_policy=str(controls["interaction_type_validation_policy"]),
             synthetic_data_validation_policy=str(controls["synthetic_data_validation_policy"]),
+            bl003_handshake_validation_policy=str(controls["bl003_handshake_validation_policy"]),
             numeric_malformed_row_threshold=(
                 int(str(controls["numeric_malformed_row_threshold"]))
                 if controls.get("numeric_malformed_row_threshold") is not None
@@ -501,7 +509,41 @@ class ProfileStage:
         return "influence" if "influence" in selected_interaction_types else "history"
 
     @staticmethod
-    def load_inputs(paths: ProfilePaths) -> ProfileInputs:
+    def _validate_bl003_handshake(
+        summary_payload: dict[str, object],
+        structural_contract: dict[str, object],
+        policy: str,
+    ) -> list[str]:
+        warnings: list[str] = []
+        inputs_raw = summary_payload.get("inputs")
+        summary_inputs = dict(inputs_raw) if isinstance(inputs_raw, dict) else {}
+
+        for key in BL004_HANDSHAKE_REQUIRED_SUMMARY_INPUT_KEYS:
+            if key not in summary_inputs:
+                message = f"missing BL-003 summary input key: {key}"
+                if policy == "strict":
+                    raise RuntimeError(f"BL-004 handshake validation failed: {message}")
+                if policy == "warn":
+                    warnings.append(message)
+
+        fieldnames_raw = structural_contract.get("seed_table_fieldnames")
+        expected_fieldnames = (
+            [str(value) for value in fieldnames_raw if str(value).strip()]
+            if isinstance(fieldnames_raw, list)
+            else []
+        )
+        for required_field in BL004_HANDSHAKE_REQUIRED_SEED_FIELDS:
+            if required_field not in expected_fieldnames:
+                message = f"missing BL-003 structural seed field: {required_field}"
+                if policy == "strict":
+                    raise RuntimeError(f"BL-004 handshake validation failed: {message}")
+                if policy == "warn":
+                    warnings.append(message)
+
+        return warnings
+
+    @staticmethod
+    def load_inputs(paths: ProfilePaths, controls: ProfileControls) -> ProfileInputs:
         seed_rows = load_csv_rows(paths.seed_table_path)
         summary_payload = ProfileStage._load_required_json_object(
             paths.bl003_summary_path,
@@ -523,6 +565,11 @@ class ProfileStage:
             for row in seed_rows
         ]
         ProfileStage._validate_seed_table_schema(normalized_rows, structural_contract)
+        handshake_warnings = ProfileStage._validate_bl003_handshake(
+            summary_payload,
+            structural_contract,
+            controls.bl003_handshake_validation_policy,
+        )
         rows_selected = ProfileStage._normalize_int_mapping(manifest_payload.get("rows_selected"))
         rows_available = ProfileStage._normalize_int_mapping(manifest_payload.get("rows_available"))
         bl003_quality = ProfileStage._extract_bl003_quality(summary_payload)
@@ -542,6 +589,7 @@ class ProfileStage:
                 rows_selected,
                 rows_available,
             ),
+            bl003_handshake_warnings=handshake_warnings,
         )
 
     @staticmethod
@@ -777,6 +825,7 @@ class ProfileStage:
             "confidence_validation_policy": controls.confidence_validation_policy,
             "interaction_type_validation_policy": controls.interaction_type_validation_policy,
             "synthetic_data_validation_policy": controls.synthetic_data_validation_policy,
+            "bl003_handshake_validation_policy": controls.bl003_handshake_validation_policy,
             "numeric_malformed_row_threshold": controls.numeric_malformed_row_threshold,
             "no_numeric_signal_row_threshold": controls.no_numeric_signal_row_threshold,
         }
@@ -1195,7 +1244,7 @@ class ProfileStage:
         paths.output_dir.mkdir(parents=True, exist_ok=True)
 
         controls = self.resolve_runtime_controls()
-        inputs = self.load_inputs(paths)
+        inputs = self.load_inputs(paths, controls)
 
         start_time = time.time()
         run_id = f"BL004-PROFILE-{datetime.now(timezone.utc).strftime('%Y%m%d-%H%M%S-%f')}"

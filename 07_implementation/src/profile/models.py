@@ -34,6 +34,7 @@ class ProfileControls:
     confidence_validation_policy: str = "warn"
     interaction_type_validation_policy: str = "warn"
     synthetic_data_validation_policy: str = "warn"
+    bl003_handshake_validation_policy: str = "warn"
     numeric_malformed_row_threshold: int | None = None
     no_numeric_signal_row_threshold: int | None = None
 
@@ -54,6 +55,7 @@ class ProfileControls:
             "confidence_validation_policy": self.confidence_validation_policy,
             "interaction_type_validation_policy": self.interaction_type_validation_policy,
             "synthetic_data_validation_policy": self.synthetic_data_validation_policy,
+            "bl003_handshake_validation_policy": self.bl003_handshake_validation_policy,
             "numeric_malformed_row_threshold": self.numeric_malformed_row_threshold,
             "no_numeric_signal_row_threshold": self.no_numeric_signal_row_threshold,
             "user_id": self.user_id,
@@ -74,6 +76,7 @@ class ProfileInputs:
     bl003_rows_selected: dict[str, int] = field(default_factory=dict)
     bl003_rows_available: dict[str, int] = field(default_factory=dict)
     bl003_coverage_rate_by_source: dict[str, float] = field(default_factory=dict)
+    bl003_handshake_warnings: list[str] = field(default_factory=list)
 
 
 @dataclass(frozen=True)

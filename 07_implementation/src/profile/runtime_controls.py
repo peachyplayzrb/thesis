@@ -89,6 +89,11 @@ def _sanitize_bl004_controls(controls: dict[str, object]) -> dict[str, object]:
         ("allow", "warn", "strict"),
         str(defaults["synthetic_data_validation_policy"]),
     )
+    controls["bl003_handshake_validation_policy"] = coerce_enum(
+        controls.get("bl003_handshake_validation_policy", defaults["bl003_handshake_validation_policy"]),
+        ("allow", "warn", "strict"),
+        str(defaults["bl003_handshake_validation_policy"]),
+    )
     malformed_threshold = coerce_int(
         controls.get("numeric_malformed_row_threshold", defaults["numeric_malformed_row_threshold"]),
         0,
@@ -151,6 +156,10 @@ def _load_bl004_controls_from_env() -> dict[str, object]:
         "synthetic_data_validation_policy": env_str(
             "BL004_SYNTHETIC_DATA_VALIDATION_POLICY",
             str(defaults["synthetic_data_validation_policy"]),
+        ),
+        "bl003_handshake_validation_policy": env_str(
+            "BL004_BL003_HANDSHAKE_VALIDATION_POLICY",
+            str(defaults["bl003_handshake_validation_policy"]),
         ),
         "numeric_malformed_row_threshold": env_int(
             "BL004_NUMERIC_MALFORMED_ROW_THRESHOLD",
