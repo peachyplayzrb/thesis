@@ -1,6 +1,6 @@
 # Thesis State
 
-Last updated: 2026-04-13 UTC (REB-M4 + Slice 12 checkpoint)
+Last updated: 2026-04-13 UTC (REB-M4 + Slice 13 checkpoint)
 
 ## REBUILD POSTURE (active from 2026-04-12)
 
@@ -126,6 +126,9 @@ BL-014 now has explicit negative-fixture evidence for the wrapper-level handshak
 
 #### Post-closure enhancement checkpoint (Slice 12 row-quality handshake + unmatched classification)
 BL-004 handshake enforcement now includes row-quality validation for `match_confidence_score` values (missing/non-numeric/out-of-range) with policy-driven warn/strict behavior, and strict synthetic-data policy now fails fast when attribution-weight reconstruction is required. BL-004 diagnostics now include synthetic reconstruction counters and sampled track IDs. BL-003 summary outputs now include `unmatched_reason_counts` and bounded unmatched-reason classification buckets to separate dataset-coverage-likely effects from input-quality and fuzzy-rejection categories. Validation remains green via focused pytest (`25/25`) and wrapper validate-only (`BL013-ENTRYPOINT-20260413-011824-759642`, `BL014-SANITY-20260413-011850-557804`, `29/29`) under decision/change anchors `D-088` / `C-321`.
+
+#### Post-closure enhancement checkpoint (Slice 13 semantic-alignment clarity)
+BL-004 output semantics are now explicitly disambiguated for audit consumers: row-level totals retain BL-004 seed-row meaning, while inherited BL-003 event-level match-method counters are now emitted with explicit basis metadata and companion event-row totals. BL-004 profile and summary outputs now also carry `bl003_config_source` to preserve cross-stage provenance continuity from BL-003 runtime scope resolution. Validation remains green via focused pytest (`24/24`), touched-file pyright clean (`0 errors` on edited profile files), and wrapper validate-only (`BL013-ENTRYPOINT-20260413-014731-291681`, `BL014-SANITY-20260413-014753-532309`, `29/29`) under decision/change anchors `D-089` / `C-322`.
 
 ### REB-M4 Kickoff Checkpoint (2026-04-12)
 

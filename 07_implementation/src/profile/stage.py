@@ -596,6 +596,13 @@ class ProfileStage:
         rows_selected = ProfileStage._normalize_int_mapping(manifest_payload.get("rows_selected"))
         rows_available = ProfileStage._normalize_int_mapping(manifest_payload.get("rows_available"))
         bl003_quality = ProfileStage._extract_bl003_quality(summary_payload)
+        summary_inputs_raw = summary_payload.get("inputs")
+        summary_inputs = dict(summary_inputs_raw) if isinstance(summary_inputs_raw, dict) else {}
+        bl003_config_source = str(
+            summary_inputs.get("config_source")
+            or manifest_payload.get("config_source")
+            or "unknown"
+        ).strip() or "unknown"
 
         return ProfileInputs(
             seed_rows=normalized_rows,
@@ -613,6 +620,7 @@ class ProfileStage:
                 rows_available,
             ),
             bl003_handshake_warnings=handshake_warnings,
+            bl003_config_source=bl003_config_source,
         )
 
     @staticmethod
@@ -638,11 +646,12 @@ class ProfileStage:
             "medium_0_5_to_0_9": 0,
             "low_below_0_5": 0,
         }
-        match_method_counts = {
+        bl003_event_level_match_method_counts = {
             "spotify_id_exact": int(inputs.bl003_quality.get("matched_by_spotify_id", 0) or 0),
             "metadata_fallback": int(inputs.bl003_quality.get("matched_by_metadata", 0) or 0),
             "fuzzy_title_artist": int(inputs.bl003_quality.get("matched_by_fuzzy", 0) or 0),
         }
+        match_method_counts = dict(bl003_event_level_match_method_counts)
         history_preference_weight_sum = 0.0
         influence_preference_weight_sum = 0.0
         history_interaction_count_sum_value = 0.0
@@ -1001,6 +1010,8 @@ class ProfileStage:
             attribution_weight_by_type=attribution_weight_by_type,
             attribution_interaction_count_by_type=attribution_interaction_count_by_type,
             attribution_row_share_by_type=attribution_row_share_by_type,
+            bl003_event_level_match_method_counts=bl003_event_level_match_method_counts,
+            bl003_input_event_rows_total=int(inputs.bl003_quality.get("input_event_rows", 0) or 0),
         )
 
     @staticmethod
@@ -1029,11 +1040,13 @@ class ProfileStage:
         bl003_quality = canonical_blocks["bl003_quality"] if isinstance(canonical_blocks.get("bl003_quality"), dict) else {}
         diagnostics: dict[str, object] = {
             "events_total": aggregation.input_row_count,
+            "events_total_basis": "bl004_seed_rows",
             "matched_seed_count": aggregation.matched_seed_count,
             "missing_numeric_track_count": len(aggregation.missing_numeric_track_ids),
             "missing_numeric_track_ids": aggregation.missing_numeric_track_ids[:50],
             "blank_track_id_rows": aggregation.blank_track_id_row_count,
             "candidate_rows_total": aggregation.input_row_count,
+            "candidate_rows_total_basis": "bl004_seed_rows",
             "numeric_observations": aggregation.numeric_observations,
             "key_aggregation_method": "weighted_circular_mean",
             "total_effective_weight": round(aggregation.total_effective_weight, 6),
@@ -1045,6 +1058,11 @@ class ProfileStage:
             "confidence_fallback_row_count": aggregation.confidence_fallback_row_count,
             "confidence_malformed_row_count": aggregation.confidence_malformed_row_count,
             "match_method_counts": dict(aggregation.match_method_counts),
+            "match_method_counts_basis": "bl003_event_level_matched_events",
+            "bl003_input_event_rows_total": aggregation.bl003_input_event_rows_total,
+            "bl003_event_level_match_method_counts": dict(
+                aggregation.bl003_event_level_match_method_counts
+            ),
             "defaulted_interaction_type_row_count": aggregation.defaulted_interaction_type_row_count,
             "synthetic_interaction_count_row_count": aggregation.synthetic_interaction_count_row_count,
             "interaction_count_malformed_row_count": aggregation.interaction_count_malformed_row_count,
@@ -1088,6 +1106,7 @@ class ProfileStage:
             "generated_at_utc": utc_now(),
             "user_id": controls.user_id,
             "config_source": controls.config_source,
+            "bl003_config_source": inputs.bl003_config_source,
             "run_config_path": controls.run_config_path,
             "run_config_schema_version": controls.run_config_schema_version,
             "input_artifacts": {
@@ -1112,6 +1131,9 @@ class ProfileStage:
                         or ""
                     ),
                     "contract_hash": inputs.bl003_structural_contract_hash,
+                },
+                "bl003_source_context": {
+                    "config_source": inputs.bl003_config_source,
                 },
             },
             "config": {
@@ -1215,6 +1237,7 @@ class ProfileStage:
             "output_contract_version": BL004_OUTPUT_CONTRACT_VERSION,
             "user_id": controls.user_id,
             "config_source": controls.config_source,
+            "bl003_config_source": inputs.bl003_config_source,
             "run_config_path": controls.run_config_path,
             "run_config_schema_version": controls.run_config_schema_version,
             "input_scope": controls.input_scope,
@@ -1232,6 +1255,11 @@ class ProfileStage:
                 6,
             ),
             "match_method_counts": dict(aggregation.match_method_counts),
+            "match_method_counts_basis": "bl003_event_level_matched_events",
+            "bl003_input_event_rows_total": aggregation.bl003_input_event_rows_total,
+            "bl003_event_level_match_method_counts": dict(
+                aggregation.bl003_event_level_match_method_counts
+            ),
             "history_vs_influence": {
                 "preference_weight_sum": {
                     "history": round(aggregation.history_preference_weight_sum, 6),
@@ -1265,6 +1293,7 @@ class ProfileStage:
             "bl003_provenance": {
                 "seed_contract_hash": inputs.bl003_seed_contract_hash,
                 "structural_contract_hash": inputs.bl003_structural_contract_hash,
+                "config_source": inputs.bl003_config_source,
             },
             "bl003_coverage": {
                 "rows_selected": ProfileStage._normalize_int_mapping(source_coverage.get("rows_selected")),

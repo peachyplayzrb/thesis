@@ -6,9 +6,9 @@ Ordering convention (standardized 2026-03-24):
 - New entries must be appended at the end and may include `superseded_by` when a prior decision is replaced.
 
 Maintenance snapshot (2026-04-13):
-- Highest decision ID currently present: `D-088`
-- Total decision entries: 85
-- Status distribution: accepted=75, superseded=3, rejected=1
+- Highest decision ID currently present: `D-089`
+- Total decision entries: 86
+- Status distribution: accepted=76, superseded=3, rejected=1
 - ID integrity check: no duplicate decision IDs detected
 
 Current posture snapshot (2026-03-25):
@@ -1793,3 +1793,16 @@ review_date: none
 - evidence_basis: `07_implementation/src/profile/stage.py`, `07_implementation/src/profile/models.py`, `07_implementation/src/alignment/stage.py`, `07_implementation/src/alignment/models.py`, `07_implementation/src/alignment/writers.py`, `07_implementation/tests/test_profile_stage.py`, `07_implementation/tests/test_alignment_summary_builder.py`; validation evidence: focused pytest (`25/25`) and wrapper validate-only pass (`BL013-ENTRYPOINT-20260413-011824-759642`, `BL014-SANITY-20260413-011850-557804`, `29/29`).
 - impacted_files: `07_implementation/src/profile/stage.py`, `07_implementation/src/profile/models.py`, `07_implementation/src/alignment/stage.py`, `07_implementation/src/alignment/models.py`, `07_implementation/src/alignment/writers.py`, `07_implementation/tests/test_profile_stage.py`, `07_implementation/tests/test_alignment_summary_builder.py`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/timeline.md`, `00_admin/thesis_state.md`, `00_admin/unresolved_issues.md`.
 - next_steps: If needed for reporting quality gates, add a bounded BL-014 check that flags unusually high malformed-confidence row share under warn mode before promoting strict policy defaults.
+
+## D-089
+- date: 2026-04-13
+- entity_id: BL-003/BL-004 semantic-alignment clarity for diagnostics granularity and provenance continuity
+- proposed_by: user + Copilot
+- status: accepted
+- decision: Keep BL-004 `match_method_counts` backward-compatible but explicitly classify it as BL-003 event-level evidence, and add additive BL-003 provenance carry-through (`bl003_config_source`) to BL-004 profile/summary outputs. Also add additive diagnostics basis fields so seed-row totals and event-level counters are no longer semantically conflated.
+- context: Post-slice review found non-blocking interpretation drift: BL-004 diagnostic totals are seed-row based while `match_method_counts` reflects BL-003 event-level counts, and BL-004 outputs did not preserve upstream BL-003 config-source provenance used during orchestration.
+- alternatives_considered: rename/remove existing `match_method_counts` immediately (rejected: avoid downstream compatibility break); recompute BL-004 match method counts at seed-row level (rejected in this slice: seed table does not retain per-row match method lineage); leave semantics as-is with no additive labels (rejected: ambiguity persists for audit consumers).
+- rationale: Additive basis metadata and provenance carry-through remove interpretation ambiguity without changing core matching/profile behavior or breaking existing consumers.
+- evidence_basis: `07_implementation/src/profile/models.py`, `07_implementation/src/profile/stage.py`, `07_implementation/tests/test_profile_stage.py`; validation evidence: focused pytest (`24/24`) and wrapper validate-only pass (`BL013-ENTRYPOINT-20260413-014731-291681`, `BL014-SANITY-20260413-014753-532309`, `29/29`).
+- impacted_files: `07_implementation/src/profile/models.py`, `07_implementation/src/profile/stage.py`, `07_implementation/tests/test_profile_stage.py`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`, `00_admin/unresolved_issues.md`.
+- next_steps: If contract strictness is increased later, add an optional BL-014 semantic-consistency check that validates declared diagnostics bases against expected row/event totals.

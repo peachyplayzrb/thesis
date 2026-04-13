@@ -18,6 +18,7 @@ def _write_load_inputs_artifacts(
     *,
     include_runtime_scope_diagnostics: bool,
     confidence_value: str = "1.0",
+    bl003_config_source: str = "orchestration_payload",
 ) -> ProfilePaths:
     seed_table_path = tmp_path / "seed.csv"
     numeric_headers = ",".join(NUMERIC_FEATURE_COLUMNS)
@@ -32,6 +33,7 @@ def _write_load_inputs_artifacts(
     )
 
     summary_inputs: dict[str, object] = {
+        "config_source": bl003_config_source,
         "seed_contract": {
             "seed_contract_schema_version": "bl003-seed-contract-v1",
             "contract_hash": "seed-hash",
@@ -71,6 +73,7 @@ def _write_load_inputs_artifacts(
     summary_path.write_text(json.dumps(summary_payload), encoding="utf-8")
 
     manifest_payload = {
+        "config_source": bl003_config_source,
         "rows_selected": {"top_tracks": 1},
         "rows_available": {"top_tracks": 1},
         "seed_contract": {
@@ -514,6 +517,7 @@ def test_load_inputs_warn_handshake_policy_tracks_warning(tmp_path: Path) -> Non
     assert inputs.bl003_handshake_warnings == [
         "missing BL-003 summary input key: runtime_scope_diagnostics"
     ]
+    assert inputs.bl003_config_source == "orchestration_payload"
 
 
 def test_load_inputs_strict_handshake_policy_raises(tmp_path: Path) -> None:
@@ -724,6 +728,9 @@ def test_build_profile_payload_emits_fallback_diagnostics_keys(tmp_path: Path) -
     assert diagnostics["synthetic_weight_reconstruction_track_ids"] == ["track_a", "track_b"]
     assert diagnostics["validation_policies"]["confidence_validation_policy"] == "warn"
     assert diagnostics["validation_warnings"] == ["warned"]
+    assert diagnostics["events_total_basis"] == "bl004_seed_rows"
+    assert diagnostics["match_method_counts_basis"] == "bl003_event_level_matched_events"
+    assert payload["bl003_config_source"] == "unknown"
 
 
 def test_validate_seed_table_schema_raises_on_missing_contract_columns() -> None:
@@ -794,6 +801,7 @@ def test_build_summary_payload_includes_bl003_coverage() -> None:
         bl003_structural_contract={"structural_contract_schema_version": "bl003-structural-contract-v1"},
         bl003_seed_contract_hash="seed-hash",
         bl003_structural_contract_hash="struct-hash",
+        bl003_config_source="orchestration_payload",
     )
     aggregation = ProfileAggregation(
         input_row_count=1,
@@ -841,6 +849,8 @@ def test_build_summary_payload_includes_bl003_coverage() -> None:
     assert coverage["rows_available"]["top_tracks"] == 60
     assert coverage["match_counts"]["matched_total"] == 8
     assert coverage["match_counts"]["match_rate"] == 0.8
+    assert payload["bl003_config_source"] == "orchestration_payload"
+    assert payload["bl003_provenance"]["config_source"] == "orchestration_payload"
 
 
 def test_resolve_bl004_runtime_controls_defaults_input_scope(monkeypatch) -> None:

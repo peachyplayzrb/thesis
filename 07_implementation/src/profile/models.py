@@ -77,6 +77,7 @@ class ProfileInputs:
     bl003_rows_available: dict[str, int] = field(default_factory=dict)
     bl003_coverage_rate_by_source: dict[str, float] = field(default_factory=dict)
     bl003_handshake_warnings: list[str] = field(default_factory=list)
+    bl003_config_source: str = "unknown"
 
 
 @dataclass(frozen=True)
@@ -129,6 +130,8 @@ class ProfileAggregation:
     attribution_row_share_by_type: dict[str, float] = field(
         default_factory=lambda: {"history": 0.0, "influence": 0.0}
     )
+    bl003_event_level_match_method_counts: dict[str, int] = field(default_factory=dict)
+    bl003_input_event_rows_total: int = 0
 
 
 @dataclass(frozen=True)
