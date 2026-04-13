@@ -131,6 +131,7 @@ def test_csv_schema_field_order_contracts_are_stable() -> None:
         "interaction_count_sum",
         "preference_weight_sum",
         "preference_weight_max",
+        "match_confidence_score",
         "source_types",
         "spotify_track_ids",
         "interaction_types",

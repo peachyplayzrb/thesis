@@ -22,7 +22,8 @@ _DS001_DEFAULTS = {
 
 
 def _event(ds001_id, source_type="saved_tracks", interaction_type="history",
-           spotify_track_id="sp1", preference_weight=1.0, interaction_count=5, **kwargs):
+           spotify_track_id="sp1", preference_weight=1.0, interaction_count=5,
+           match_method="metadata_fallback", **kwargs):
     event = dict(_DS001_DEFAULTS)
     event.update({
         "ds001_id": ds001_id,
@@ -31,6 +32,7 @@ def _event(ds001_id, source_type="saved_tracks", interaction_type="history",
         "spotify_track_id": spotify_track_id,
         "preference_weight": preference_weight,
         "interaction_count": interaction_count,
+        "match_method": match_method,
     })
     event.update(kwargs)
     return event
@@ -136,3 +138,43 @@ class TestAggregateMatchedEvents:
             aggregation_policy={"preference_weight_mode": "capped", "preference_weight_cap_per_event": 1.2},
         )["ds1"]
         assert agg["preference_weight_sum"] == 2.2
+
+    def test_confidence_defaults_to_one_for_exact_and_metadata_methods(self):
+        events = [
+            _event("ds1", match_method="spotify_id_exact", preference_weight=1.0),
+            _event("ds1", match_method="metadata_fallback", preference_weight=2.0),
+        ]
+        agg = aggregate_matched_events(events)["ds1"]
+        assert agg["match_confidence_score"] == 1.0
+
+    def test_confidence_uses_fuzzy_combined_score_for_fuzzy_method(self):
+        events = [
+            _event(
+                "ds1",
+                match_method="fuzzy_title_artist",
+                fuzzy_combined_score=0.42,
+                preference_weight=1.0,
+            )
+        ]
+        agg = aggregate_matched_events(events)["ds1"]
+        assert agg["match_confidence_score"] == 0.42
+
+    def test_confidence_weighted_mean_uses_preference_weight(self):
+        events = [
+            _event("ds1", match_method="spotify_id_exact", preference_weight=1.0),
+            _event(
+                "ds1",
+                match_method="fuzzy_title_artist",
+                fuzzy_combined_score=0.4,
+                preference_weight=3.0,
+            ),
+        ]
+        agg = aggregate_matched_events(events)["ds1"]
+        assert agg["match_confidence_score"] == 0.55
+
+    def test_confidence_fuzzy_missing_score_falls_back_to_one(self):
+        events = [
+            _event("ds1", match_method="fuzzy_title_artist", fuzzy_combined_score=None),
+        ]
+        agg = aggregate_matched_events(events)["ds1"]
+        assert agg["match_confidence_score"] == 1.0

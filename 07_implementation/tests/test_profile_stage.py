@@ -44,6 +44,7 @@ def _inputs(seed_rows: list[dict[str, object]]) -> ProfileInputs:
                 "interaction_types",
                 "preference_weight_sum",
                 "interaction_count_sum",
+                "match_confidence_score",
                 "tags",
                 "genres",
                 "artist",

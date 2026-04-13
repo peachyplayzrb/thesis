@@ -168,6 +168,7 @@ def write_alignment_outputs(
                 "interaction_count_sum": agg["interaction_count_sum"],
                 "preference_weight_sum": f"{float(agg['preference_weight_sum']):.{FLOAT_PRECISION_DECIMALS}f}",
                 "preference_weight_max": f"{float(agg['preference_weight_max']):.{FLOAT_PRECISION_DECIMALS}f}",
+                "match_confidence_score": f"{float(agg.get('match_confidence_score', 1.0)):.{FLOAT_PRECISION_DECIMALS}f}",
                 "source_types": "|".join(sorted(agg["source_types"])),
                 "interaction_types": (
                     "|".join(sorted(agg["interaction_types"]))

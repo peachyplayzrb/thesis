@@ -139,6 +139,7 @@ SEED_TABLE_FIELDNAMES: Final[list[str]] = [
     "interaction_count_sum",
     "preference_weight_sum",
     "preference_weight_max",
+    "match_confidence_score",
     "source_types",
     "spotify_track_ids",
     "interaction_types",

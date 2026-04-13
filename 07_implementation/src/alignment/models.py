@@ -378,6 +378,7 @@ class AggregatedEvent:
     interaction_count_sum: int = 0
     preference_weight_sum: float = 0.0
     preference_weight_max: float = 0.0
+    match_confidence_score: float = 1.0
     source_types: set[str] = field(default_factory=set)
     interaction_types: set[str] = field(default_factory=set)
     spotify_track_ids: set[str] = field(default_factory=set)
@@ -438,6 +439,7 @@ class AggregatedEvent:
             "interaction_count_sum": self.interaction_count_sum,
             "preference_weight_sum": self.preference_weight_sum,
             "preference_weight_max": self.preference_weight_max,
+            "match_confidence_score": self.match_confidence_score,
             "source_types": self.source_types,
             "interaction_types": self.interaction_types,
             "spotify_track_ids": self.spotify_track_ids,
