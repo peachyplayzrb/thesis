@@ -1,6 +1,6 @@
 # Thesis State
 
-Last updated: 2026-04-13 UTC (REB-M4 + Slice 17 checkpoint)
+Last updated: 2026-04-13 UTC (REB-M4 + Slice 18 checkpoint)
 
 ## REBUILD POSTURE (active from 2026-04-12)
 
@@ -141,6 +141,9 @@ BL-004↔BL-005 handshake validation now includes additive seed-trace confidence
 
 #### Post-closure enhancement checkpoint (Slice 17 BL-005 runtime-control diagnostics parity)
 BL-005 runtime control resolution now emits explicit diagnostics for fallback/coercion behavior: payload parse-failure detection, resolved control-source path, and sampled normalization events with per-field counts. These diagnostics are now persisted in BL-005 stage outputs (`config.runtime_control_resolution` plus `runtime_control_validation_warnings`) to remove silent normalization drift while preserving existing retrieval behavior and policy defaults. Validation remains green via focused pytest (`9/9`) and wrapper validate-only (`BL013-ENTRYPOINT-20260413-111111-723084`, `BL014-SANITY-20260413-111136-703270`, `30/30`) under decision/change anchors `D-093` / `C-326`.
+
+#### Post-closure enhancement checkpoint (Slice 18 BL-014 control-resolution advisory visibility)
+BL-014 now emits a bounded non-failing advisory (`advisory_bl005_control_resolution_fallback_volume`) when BL-005 runtime-control normalization/coercion event volume exceeds threshold, and the threshold contract is now recorded in BL-014 config snapshot metadata. This closes wrapper-level visibility for elevated BL-005 control-resolution fallback conditions while preserving pass/fail compatibility. Validation remains green via focused pytest (`27/27`) and wrapper validate-only (`BL013-ENTRYPOINT-20260413-111934-887225`, `BL014-SANITY-20260413-111957-022045`, `30/30`) under decision/change anchors `D-094` / `C-327`.
 
 ### REB-M4 Kickoff Checkpoint (2026-04-12)
 

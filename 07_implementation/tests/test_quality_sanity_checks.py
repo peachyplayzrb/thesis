@@ -8,6 +8,7 @@ import pytest
 
 from quality import sanity_checks
 from quality.sanity_checks import (
+    bl005_control_resolution_fallback_volume_advisory,
     bl005_handshake_warning_volume_advisory,
     bl004_bl005_handshake_contract_ok,
     bl003_bl004_handshake_contract_ok,
@@ -37,6 +38,7 @@ def _build_bl014_fixture(
     include_runtime_scope_diagnostics: bool,
     include_numeric_confidence: bool = True,
     include_bl005_handshake_policy: bool = True,
+    runtime_control_normalization_event_count: int = 0,
 ) -> Path:
     repo_root = tmp_path / "impl"
     repo_root.mkdir(parents=True, exist_ok=True)
@@ -155,7 +157,21 @@ def _build_bl014_fixture(
         "config": {
             "validation_policies": {
                 "bl004_bl005_handshake_validation_policy": "warn",
-            }
+            },
+            "runtime_control_resolution": {
+                "normalization_event_count": runtime_control_normalization_event_count,
+                "normalization_event_counts_by_field": {
+                    "profile_top_tag_limit": runtime_control_normalization_event_count,
+                },
+                "normalization_events_sampled": [
+                    {
+                        "field": "profile_top_tag_limit",
+                        "reason": "coerced_to_positive_int",
+                        "raw": "bad",
+                        "normalized": 10,
+                    }
+                ],
+            },
         },
         "counts": {"kept_candidates": 1},
         "input_artifacts": {
@@ -453,6 +469,42 @@ def test_bl005_handshake_warning_volume_advisory_not_emitted_when_within_thresho
     assert advisory is None
 
 
+def test_bl005_control_resolution_fallback_volume_advisory_emits_when_volume_exceeds_threshold() -> None:
+    advisory = bl005_control_resolution_fallback_volume_advisory(
+        {
+            "config": {
+                "runtime_control_resolution": {
+                    "normalization_event_count": 4,
+                    "normalization_event_counts_by_field": {
+                        "profile_top_tag_limit": 4,
+                    },
+                    "normalization_events_sampled": [{"field": "profile_top_tag_limit"}],
+                }
+            }
+        },
+        threshold=3,
+    )
+
+    assert advisory is not None
+    assert advisory["id"] == "advisory_bl005_control_resolution_fallback_volume"
+    assert "4 > 3" in advisory["details"]
+
+
+def test_bl005_control_resolution_fallback_volume_advisory_not_emitted_when_within_threshold() -> None:
+    advisory = bl005_control_resolution_fallback_volume_advisory(
+        {
+            "config": {
+                "runtime_control_resolution": {
+                    "normalization_event_count": 3,
+                }
+            }
+        },
+        threshold=3,
+    )
+
+    assert advisory is None
+
+
 def test_bl014_main_fails_on_missing_handshake_contract(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
     repo_root = _build_bl014_fixture(tmp_path, include_runtime_scope_diagnostics=False)
     output_dir = tmp_path / "quality_outputs"
@@ -508,3 +560,34 @@ def test_bl014_main_fails_on_missing_bl004_bl005_handshake_contract(
     assert report["overall_status"] == "fail"
     assert set(failed_checks) == {"schema_bl004_bl005_handshake_contract"}
     assert "missing BL-004 profile keys" in failed_checks["schema_bl004_bl005_handshake_contract"]["details"]
+
+
+def test_bl014_main_emits_control_resolution_advisory(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    repo_root = _build_bl014_fixture(
+        tmp_path,
+        include_runtime_scope_diagnostics=True,
+        runtime_control_normalization_event_count=5,
+    )
+    output_dir = tmp_path / "quality_outputs"
+
+    monkeypatch.setattr(sanity_checks, "REPO_ROOT", repo_root)
+    monkeypatch.setattr(sanity_checks, "OUTPUT_DIR", output_dir)
+    monkeypatch.setattr(
+        sanity_checks,
+        "bl003_required_paths",
+        lambda _root: {
+            "summary": repo_root / "alignment/outputs/bl003_ds001_spotify_summary.json",
+            "seed_table": repo_root / "alignment/outputs/bl003_ds001_spotify_seed_table.csv",
+        },
+    )
+
+    exit_code = sanity_checks.main()
+
+    assert exit_code == 0
+    report = json.loads((output_dir / "bl014_sanity_report.json").read_text(encoding="utf-8"))
+    advisories = {item["id"]: item for item in report["advisories"]}
+    assert report["overall_status"] == "pass"
+    assert "advisory_bl005_control_resolution_fallback_volume" in advisories

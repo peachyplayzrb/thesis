@@ -6,9 +6,9 @@ Ordering convention (standardized 2026-03-24):
 - New entries must be appended at the end and may include `superseded_by` when a prior decision is replaced.
 
 Maintenance snapshot (2026-04-13):
-- Highest decision ID currently present: `D-093`
-- Total decision entries: 89
-- Status distribution: accepted=79, superseded=3, rejected=1
+- Highest decision ID currently present: `D-094`
+- Total decision entries: 90
+- Status distribution: accepted=80, superseded=3, rejected=1
 - ID integrity check: no duplicate decision IDs detected
 
 Current posture snapshot (2026-03-25):
@@ -1858,3 +1858,16 @@ review_date: none
 - evidence_basis: `07_implementation/src/retrieval/runtime_controls.py`, `07_implementation/src/retrieval/stage.py`, `07_implementation/src/retrieval/models.py`, `07_implementation/tests/test_retrieval_runtime_controls.py`, `07_implementation/tests/test_retrieval_stage.py`; validation evidence: focused pytest (`9/9`) and wrapper validate-only pass (`BL013-ENTRYPOINT-20260413-111111-723084`, `BL014-SANITY-20260413-111136-703270`, `30/30`).
 - impacted_files: `07_implementation/src/retrieval/runtime_controls.py`, `07_implementation/src/retrieval/stage.py`, `07_implementation/src/retrieval/models.py`, `07_implementation/tests/test_retrieval_runtime_controls.py`, `07_implementation/tests/test_retrieval_stage.py`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`, `00_admin/unresolved_issues.md`.
 - next_steps: If warning-volume patterns persist, add an additive BL-014 advisory for repeated runtime-control normalization events to support bounded warn-to-strict promotion planning.
+
+## D-094
+- date: 2026-04-13
+- entity_id: BL-014 advisory visibility for BL-005 control-resolution fallback volume (Slice 18)
+- proposed_by: user + Copilot
+- status: accepted
+- decision: Add a non-failing BL-014 advisory (`advisory_bl005_control_resolution_fallback_volume`) that triggers when BL-005 runtime-control normalization/coercion event volume exceeds a bounded threshold, and expose the threshold in BL-014 config snapshot metadata.
+- context: Slice 17 made BL-005 control-resolution fallback/coercion diagnostics explicit in stage outputs, but wrapper-level quality reporting still lacked a bounded escalation signal for elevated fallback volume.
+- alternatives_considered: keep diagnostics-only visibility without BL-014 advisory (rejected: weaker quality-surface visibility); convert fallback-volume signal into hard BL-014 failure (rejected: too disruptive for diagnostics-first posture); emit advisory only in retrieval logs (rejected: reduced wrapper/report traceability).
+- rationale: A wrapper-level non-failing advisory preserves compatibility while making fallback-volume escalation explicit for policy-hardening decisions.
+- evidence_basis: `07_implementation/src/quality/sanity_checks.py`, `07_implementation/tests/test_quality_sanity_checks.py`; validation evidence: focused pytest (`27/27`) and wrapper validate-only pass (`BL013-ENTRYPOINT-20260413-111934-887225`, `BL014-SANITY-20260413-111957-022045`, `30/30`).
+- impacted_files: `07_implementation/src/quality/sanity_checks.py`, `07_implementation/tests/test_quality_sanity_checks.py`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`, `00_admin/unresolved_issues.md`.
+- next_steps: Optional follow-up is to add trend-based aggregation for repeated control-resolution advisories before considering strict policy promotion.

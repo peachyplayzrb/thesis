@@ -42,6 +42,7 @@ BL005_HANDSHAKE_REQUIRED_SEED_TRACE_FIELDS: tuple[str, ...] = (
     "track_id",
 )
 BL005_HANDSHAKE_WARN_MAX_VIOLATIONS_ADVISORY_THRESHOLD = 3
+BL005_RUNTIME_CONTROL_FALLBACK_ADVISORY_THRESHOLD = 3
 
 
 def sha256_file(path: Path) -> str:
@@ -186,6 +187,36 @@ def bl005_handshake_warning_volume_advisory(
             f"BL-005 handshake validation is running in warn mode with elevated violation volume "
             f"({violation_count} > {threshold}); consider strict policy after remediation. "
             f"Sampled violations={sampled[:5]}"
+        ),
+    }
+
+
+def bl005_control_resolution_fallback_volume_advisory(
+    bl005_diagnostics: dict[str, Any],
+    *,
+    threshold: int = BL005_RUNTIME_CONTROL_FALLBACK_ADVISORY_THRESHOLD,
+) -> dict[str, str] | None:
+    config_raw = bl005_diagnostics.get("config")
+    config = dict(config_raw) if isinstance(config_raw, dict) else {}
+    runtime_resolution_raw = config.get("runtime_control_resolution")
+    runtime_resolution = (
+        dict(runtime_resolution_raw) if isinstance(runtime_resolution_raw, dict) else {}
+    )
+
+    fallback_event_count = int(runtime_resolution.get("normalization_event_count", 0) or 0)
+    if fallback_event_count <= threshold:
+        return None
+
+    counts_raw = runtime_resolution.get("normalization_event_counts_by_field")
+    counts_by_field = dict(counts_raw) if isinstance(counts_raw, dict) else {}
+    sampled_raw = runtime_resolution.get("normalization_events_sampled")
+    sampled = list(sampled_raw) if isinstance(sampled_raw, list) else []
+    return {
+        "id": "advisory_bl005_control_resolution_fallback_volume",
+        "details": (
+            f"BL-005 control resolution recorded elevated fallback/coercion volume "
+            f"({fallback_event_count} > {threshold}). "
+            f"Counts by field={counts_by_field}; sampled events={sampled[:5]}"
         ),
     }
 
@@ -377,6 +408,11 @@ def main() -> int:
     handshake_warning_advisory = bl005_handshake_warning_volume_advisory(bl005_diag)
     if handshake_warning_advisory is not None:
         advisories.append(handshake_warning_advisory)
+    control_resolution_advisory = bl005_control_resolution_fallback_volume_advisory(
+        bl005_diag
+    )
+    if control_resolution_advisory is not None:
+        advisories.append(control_resolution_advisory)
 
     # Hash-link integrity checks
     profile_seed_table_path = resolve_existing_path(
@@ -600,6 +636,7 @@ def main() -> int:
         ],
         "advisory_thresholds": {
             "bl005_handshake_warn_max_violations": BL005_HANDSHAKE_WARN_MAX_VIOLATIONS_ADVISORY_THRESHOLD,
+            "bl005_control_resolution_fallback_max_events": BL005_RUNTIME_CONTROL_FALLBACK_ADVISORY_THRESHOLD,
         },
     }
 
