@@ -118,6 +118,9 @@ BL-004 now enforces a bounded BL-003 handshake contract during input loading usi
 #### Post-closure enhancement checkpoint (Slice 9 strict-negative handshake coverage)
 BL-004 handshake controls now have explicit strict/warn test coverage at the stage boundary: warn mode records missing-handshake warnings, and strict mode fails fast when required BL-003 contract fields are absent. Run-config schema tests also now assert normalization/fallback behavior for `bl003_handshake_validation_policy`. Validation remains green via focused pytest (`47/47`) and wrapper validate-only (`BL013-ENTRYPOINT-20260413-003752-142736`, `BL014-SANITY-20260413-003814-485246`, `28/28`) under decision/change anchors `D-085` / `C-318`.
 
+#### Post-closure enhancement checkpoint (Slice 10 wrapper-level handshake gate)
+BL-014 sanity checks now enforce wrapper-level BL-003↔BL-004 handshake continuity with `schema_bl003_bl004_handshake_contract`, validating presence of BL-003 summary/runtime-scope inputs, BL-003 structural seed handshake fields, and BL-004 diagnostics handshake-policy metadata. Validation remains green via targeted pytest (`56/56`) and wrapper validate-only (`BL013-ENTRYPOINT-20260413-004155-782240`, `BL014-SANITY-20260413-004220-078507`, `29/29`) under decision/change anchors `D-086` / `C-319`.
+
 ### REB-M4 Kickoff Checkpoint (2026-04-12)
 
 - Rebuild milestone outcome: Chapter 4 and Chapter 5 are now being rebuilt around the active O1 to O6 objective-to-evidence contract rather than the pre-rebuild MVP framing.

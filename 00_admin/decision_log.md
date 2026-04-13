@@ -6,9 +6,9 @@ Ordering convention (standardized 2026-03-24):
 - New entries must be appended at the end and may include `superseded_by` when a prior decision is replaced.
 
 Maintenance snapshot (2026-04-12):
-- Highest decision ID currently present: `D-085`
-- Total decision entries: 82
-- Status distribution: accepted=72, superseded=3, rejected=1
+- Highest decision ID currently present: `D-086`
+- Total decision entries: 83
+- Status distribution: accepted=73, superseded=3, rejected=1
 - ID integrity check: no duplicate decision IDs detected
 
 Current posture snapshot (2026-03-25):
@@ -1754,3 +1754,16 @@ review_date: none
 - evidence_basis: `07_implementation/tests/test_profile_stage.py`, `07_implementation/tests/test_run_config_utils.py`; validation evidence: focused pytest (`47/47`) and wrapper validate-only pass (`BL013-ENTRYPOINT-20260413-003752-142736`, `BL014-SANITY-20260413-003814-485246`, `28/28`).
 - impacted_files: `07_implementation/tests/test_profile_stage.py`, `07_implementation/tests/test_run_config_utils.py`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/timeline.md`, `00_admin/thesis_state.md`.
 - next_steps: If needed for CI contract gates, add a dedicated BL-014 negative fixture that intentionally strips handshake-required BL-003 fields and asserts strict fail-fast messaging at wrapper level.
+
+## D-086
+- date: 2026-04-13
+- entity_id: BL-014 wrapper-level BL-003↔BL-004 handshake contract gate (Slice 10)
+- proposed_by: user + Copilot
+- status: accepted
+- decision: Add a new BL-014 sanity check (`schema_bl003_bl004_handshake_contract`) that enforces wrapper-level continuity for BL-003↔BL-004 handshake-critical fields: BL-003 summary inputs must include `runtime_scope_diagnostics`, BL-003 structural contract fieldnames must include `match_confidence_score`, and BL-004 profile diagnostics must include `validation_policies.bl003_handshake_validation_policy`.
+- context: D-085 closed stage-level strict/warn negative coverage, and the remaining risk was cross-stage drift at wrapper/quality-gate level where generated artifacts might lose handshake metadata without immediate detection.
+- alternatives_considered: keep handshake checks only at BL-004 runtime and unit tests (rejected: insufficient wrapper-level guardrail); add a destructive wrapper mutation scenario immediately (rejected in this slice: higher fixture complexity and lower maintainability).
+- rationale: BL-014 contract checks provide lightweight, deterministic cross-stage protection that catches handshake metadata regressions in normal validate-only runs.
+- evidence_basis: `07_implementation/src/quality/sanity_checks.py`, `07_implementation/tests/test_quality_sanity_checks.py`; validation evidence: targeted pytest (`56/56`) and wrapper validate-only pass (`BL013-ENTRYPOINT-20260413-004155-782240`, `BL014-SANITY-20260413-004220-078507`, `29/29`).
+- impacted_files: `07_implementation/src/quality/sanity_checks.py`, `07_implementation/tests/test_quality_sanity_checks.py`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/timeline.md`, `00_admin/thesis_state.md`.
+- next_steps: If future CI policy requires fail-mode evidence, add a dedicated negative fixture that strips handshake fields and asserts BL-014 failure with this check id.

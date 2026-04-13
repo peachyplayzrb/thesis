@@ -30,6 +30,9 @@ from shared_utils.report_utils import write_csv_rows, write_json_ascii
 REPO_ROOT = impl_root()
 OUTPUT_DIR = Path(__file__).resolve().parent / "outputs"
 
+BL004_HANDSHAKE_REQUIRED_SUMMARY_INPUT_KEYS: tuple[str, ...] = ("runtime_scope_diagnostics",)
+BL004_HANDSHAKE_REQUIRED_SEED_FIELDS: tuple[str, ...] = ("match_confidence_score",)
+
 
 def sha256_file(path: Path) -> str:
     return sha256_of_file(path).upper()
@@ -66,6 +69,49 @@ def bl005_filtered_has_required_columns(header: list[str]) -> bool:
     }
     header_set = set(header)
     return required.issubset(header_set) and ({"id", "cid"} & header_set) != set()
+
+
+def bl003_bl004_handshake_contract_ok(
+    bl003_summary: dict[str, Any],
+    bl004_profile: dict[str, Any],
+) -> tuple[bool, str]:
+    inputs_raw = bl003_summary.get("inputs")
+    summary_inputs = dict(inputs_raw) if isinstance(inputs_raw, dict) else {}
+
+    missing_summary_keys = [
+        key for key in BL004_HANDSHAKE_REQUIRED_SUMMARY_INPUT_KEYS if key not in summary_inputs
+    ]
+
+    structural_contract_raw = summary_inputs.get("structural_contract")
+    structural_contract = (
+        dict(structural_contract_raw) if isinstance(structural_contract_raw, dict) else {}
+    )
+    fieldnames_raw = structural_contract.get("seed_table_fieldnames")
+    seed_fieldnames = [str(value) for value in fieldnames_raw] if isinstance(fieldnames_raw, list) else []
+    missing_seed_fields = [
+        field for field in BL004_HANDSHAKE_REQUIRED_SEED_FIELDS if field not in seed_fieldnames
+    ]
+
+    diagnostics_raw = bl004_profile.get("diagnostics")
+    diagnostics = dict(diagnostics_raw) if isinstance(diagnostics_raw, dict) else {}
+    validation_policies_raw = diagnostics.get("validation_policies")
+    validation_policies = (
+        dict(validation_policies_raw) if isinstance(validation_policies_raw, dict) else {}
+    )
+    has_policy = "bl003_handshake_validation_policy" in validation_policies
+
+    if not missing_summary_keys and not missing_seed_fields and has_policy:
+        return True, "BL-003↔BL-004 handshake contract fields and policy metadata are present"
+
+    detail_parts: list[str] = []
+    if missing_summary_keys:
+        detail_parts.append(f"missing summary input keys={missing_summary_keys}")
+    if missing_seed_fields:
+        detail_parts.append(f"missing structural seed fields={missing_seed_fields}")
+    if not has_policy:
+        detail_parts.append("missing BL-004 diagnostics.validation_policies.bl003_handshake_validation_policy")
+
+    return False, "BL-003↔BL-004 handshake contract incomplete: " + "; ".join(detail_parts)
 
 
 def ensure_exists(path: Path) -> None:
@@ -232,6 +278,15 @@ def main() -> int:
         "schema_bl003_fuzzy_controls",
         isinstance((bl003_summary.get("inputs") or {}).get("fuzzy_matching"), dict),
         "BL-003 summary includes fuzzy matching control block",
+    )
+    handshake_ok, handshake_details = bl003_bl004_handshake_contract_ok(
+        bl003_summary,
+        profile,
+    )
+    check(
+        "schema_bl003_bl004_handshake_contract",
+        handshake_ok,
+        handshake_details,
     )
 
     # Hash-link integrity checks
@@ -433,6 +488,7 @@ def main() -> int:
             "BL-008 explanation count consistency",
             "BL-009 required top-level observability sections",
             "BL-003 fuzzy control block presence",
+            "BL-003↔BL-004 handshake contract fields and policy metadata",
         ],
         "integrity_checks": [
             "BL-004 seed table hash links to BL-003 seed table",

@@ -6,6 +6,7 @@ from pathlib import Path
 import pytest
 
 from quality.sanity_checks import (
+    bl003_bl004_handshake_contract_ok,
     bl005_filtered_has_required_columns,
     csv_header,
     csv_row_count,
@@ -83,3 +84,38 @@ def test_bl005_filtered_has_required_columns_requires_source_identifier() -> Non
     ]
 
     assert bl005_filtered_has_required_columns(header) is False
+
+
+def test_bl003_bl004_handshake_contract_ok_when_fields_present() -> None:
+    ok, details = bl003_bl004_handshake_contract_ok(
+        bl003_summary={
+            "inputs": {
+                "runtime_scope_diagnostics": {"resolution_path": "run_config"},
+                "structural_contract": {
+                    "seed_table_fieldnames": ["match_confidence_score", "ds001_id"],
+                },
+            }
+        },
+        bl004_profile={
+            "diagnostics": {
+                "validation_policies": {
+                    "bl003_handshake_validation_policy": "warn",
+                }
+            }
+        },
+    )
+
+    assert ok is True
+    assert "present" in details
+
+
+def test_bl003_bl004_handshake_contract_fails_when_fields_missing() -> None:
+    ok, details = bl003_bl004_handshake_contract_ok(
+        bl003_summary={"inputs": {"structural_contract": {"seed_table_fieldnames": ["ds001_id"]}}},
+        bl004_profile={"diagnostics": {"validation_policies": {}}},
+    )
+
+    assert ok is False
+    assert "missing summary input keys" in details
+    assert "missing structural seed fields" in details
+    assert "missing BL-004 diagnostics.validation_policies.bl003_handshake_validation_policy" in details
