@@ -76,22 +76,22 @@ def _sanitize_bl004_controls(controls: dict[str, object]) -> dict[str, object]:
     )
     controls["confidence_validation_policy"] = coerce_enum(
         controls.get("confidence_validation_policy", defaults["confidence_validation_policy"]),
-        ("allow", "warn", "strict"),
+        frozenset({"allow", "warn", "strict"}),
         str(defaults["confidence_validation_policy"]),
     )
     controls["interaction_type_validation_policy"] = coerce_enum(
         controls.get("interaction_type_validation_policy", defaults["interaction_type_validation_policy"]),
-        ("allow", "warn", "strict"),
+        frozenset({"allow", "warn", "strict"}),
         str(defaults["interaction_type_validation_policy"]),
     )
     controls["synthetic_data_validation_policy"] = coerce_enum(
         controls.get("synthetic_data_validation_policy", defaults["synthetic_data_validation_policy"]),
-        ("allow", "warn", "strict"),
+        frozenset({"allow", "warn", "strict"}),
         str(defaults["synthetic_data_validation_policy"]),
     )
     controls["bl003_handshake_validation_policy"] = coerce_enum(
         controls.get("bl003_handshake_validation_policy", defaults["bl003_handshake_validation_policy"]),
-        ("allow", "warn", "strict"),
+        frozenset({"allow", "warn", "strict"}),
         str(defaults["bl003_handshake_validation_policy"]),
     )
     malformed_threshold = coerce_int(
@@ -163,11 +163,11 @@ def _load_bl004_controls_from_env() -> dict[str, object]:
         ),
         "numeric_malformed_row_threshold": env_int(
             "BL004_NUMERIC_MALFORMED_ROW_THRESHOLD",
-            int(defaults.get("numeric_malformed_row_threshold") or 0),
+            coerce_int(defaults.get("numeric_malformed_row_threshold"), 0),
         ),
         "no_numeric_signal_row_threshold": env_int(
             "BL004_NO_NUMERIC_SIGNAL_ROW_THRESHOLD",
-            int(defaults.get("no_numeric_signal_row_threshold") or 0),
+            coerce_int(defaults.get("no_numeric_signal_row_threshold"), 0),
         ),
         "user_id": env_str("BL004_USER_ID", "unknown_user"),
         "include_interaction_types": _normalize_include_interaction_types(

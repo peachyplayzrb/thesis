@@ -32,6 +32,16 @@ def _sanitize_bl007_controls(controls: dict[str, object]) -> dict[str, object]:
     controls["utility_strategy"] = coerce_enum(
         controls.get("utility_strategy"), VALID_UTILITY_STRATEGIES, "rank_round_robin"
     )
+    controls["utility_decay_factor"] = max(
+        0.0,
+        min(
+            1.0,
+            coerce_float(
+                controls.get("utility_decay_factor"),
+                coerce_float(DEFAULT_ASSEMBLY_CONTROLS.get("utility_decay_factor"), 0.0),
+            ),
+        ),
+    )
 
     utility_weights = coerce_dict(controls.get("utility_weights"))
     controls["utility_weights"] = {
@@ -71,6 +81,13 @@ def _sanitize_bl007_controls(controls: dict[str, object]) -> dict[str, object]:
     controls["emit_opportunity_cost_metrics"] = bool(
         controls.get("emit_opportunity_cost_metrics", False)
     )
+    controls["opportunity_cost_top_k_examples"] = max(
+        1,
+        coerce_int(
+            controls.get("opportunity_cost_top_k_examples"),
+            coerce_int(DEFAULT_ASSEMBLY_CONTROLS.get("opportunity_cost_top_k_examples"), 10),
+        ),
+    )
     controls["detail_log_top_k"] = max(1, coerce_int(controls.get("detail_log_top_k"), 100))
 
     controls["influence_enabled"] = bool(controls.get("influence_enabled", False))
@@ -97,6 +114,11 @@ def _sanitize_bl007_controls(controls: dict[str, object]) -> dict[str, object]:
 
     if controls["influence_reserved_slots"] > controls["target_size"]:
         controls["influence_reserved_slots"] = controls["target_size"]
+
+    raw_policy = str(controls.get("bl006_bl007_handshake_validation_policy", "warn")).strip().lower()
+    controls["bl006_bl007_handshake_validation_policy"] = (
+        raw_policy if raw_policy in {"allow", "warn", "strict"} else "warn"
+    )
     return controls
 
 
@@ -110,6 +132,7 @@ def _load_bl007_controls_from_env() -> dict[str, object]:
         "max_per_genre": env_int("BL007_MAX_PER_GENRE", 4),
         "max_consecutive": env_int("BL007_MAX_CONSECUTIVE", 2),
         "utility_strategy": env_str("BL007_UTILITY_STRATEGY", "rank_round_robin"),
+        "utility_decay_factor": env_float("BL007_UTILITY_DECAY_FACTOR", 0.0),
         "utility_weights": {
             "score_weight": env_float("BL007_UTILITY_SCORE_WEIGHT", 1.0),
             "novelty_weight": env_float("BL007_UTILITY_NOVELTY_WEIGHT", 0.0),
@@ -136,6 +159,7 @@ def _load_bl007_controls_from_env() -> dict[str, object]:
             "BL007_USE_SEMANTIC_STRENGTH_FOR_TIEBREAK", False,
         ),
         "emit_opportunity_cost_metrics": env_bool("BL007_EMIT_OPPORTUNITY_COST_METRICS", False),
+        "opportunity_cost_top_k_examples": env_int("BL007_OPPORTUNITY_COST_TOP_K_EXAMPLES", 10),
         "detail_log_top_k": env_int("BL007_DETAIL_LOG_TOP_K", 100),
         "influence_enabled": env_bool("BL007_INFLUENCE_ENABLED", False),
         "influence_track_ids": [],
@@ -149,6 +173,9 @@ def _load_bl007_controls_from_env() -> dict[str, object]:
         ),
         "influence_allow_score_threshold_override": env_bool(
             "BL007_INFLUENCE_ALLOW_SCORE_THRESHOLD_OVERRIDE", False
+        ),
+        "bl006_bl007_handshake_validation_policy": env_str(
+            "BL007_BL006_HANDSHAKE_VALIDATION_POLICY", "warn"
         ),
     }
 

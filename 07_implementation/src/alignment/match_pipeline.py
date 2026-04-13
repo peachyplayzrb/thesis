@@ -188,15 +188,24 @@ def match_events(
                 fuzzy_pass_controls: list[tuple[str, dict[str, Any]]] = [("pass_1", dict(resolved_fuzzy_controls))]
                 if resolved_fuzzy_controls.get("enable_relaxed_second_pass"):
                     relaxed_controls = dict(resolved_fuzzy_controls)
-                    relaxed_controls["artist_threshold"] = float(
-                        resolved_fuzzy_controls.get("relaxed_second_pass_artist_threshold")
-                    )
-                    relaxed_controls["title_threshold"] = float(
-                        resolved_fuzzy_controls.get("relaxed_second_pass_title_threshold")
-                    )
-                    relaxed_controls["combined_threshold"] = float(
-                        resolved_fuzzy_controls.get("relaxed_second_pass_combined_threshold")
-                    )
+                    relaxed_controls["artist_threshold"] = float(str(
+                        resolved_fuzzy_controls.get(
+                            "relaxed_second_pass_artist_threshold",
+                            resolved_fuzzy_controls.get("artist_threshold", 0.0),
+                        )
+                    ))
+                    relaxed_controls["title_threshold"] = float(str(
+                        resolved_fuzzy_controls.get(
+                            "relaxed_second_pass_title_threshold",
+                            resolved_fuzzy_controls.get("title_threshold", 0.0),
+                        )
+                    ))
+                    relaxed_controls["combined_threshold"] = float(str(
+                        resolved_fuzzy_controls.get(
+                            "relaxed_second_pass_combined_threshold",
+                            resolved_fuzzy_controls.get("combined_threshold", 0.0),
+                        )
+                    ))
                     fuzzy_pass_controls.append(("pass_2_relaxed", relaxed_controls))
 
                 failure_rank = {

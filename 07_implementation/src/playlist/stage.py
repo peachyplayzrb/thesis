@@ -14,6 +14,7 @@ from playlist.io_layer import (
     write_playlist,
     write_report,
 )
+from playlist.input_validation import validate_bl006_bl007_handshake
 from playlist.models import (
     PlaylistAggregation,
     PlaylistArtifacts,
@@ -26,6 +27,7 @@ from playlist.models import (
 from playlist.reporting import (
     build_assembly_detail_log,
     build_assembly_pressure_diagnostics,
+    build_influence_effectiveness_diagnostics,
     build_opportunity_cost_diagnostics,
     build_rank_continuity_diagnostics,
     build_undersized_diagnostics,
@@ -73,6 +75,7 @@ class PlaylistStage:
             max_per_genre=controls.max_per_genre,
             max_consecutive=controls.max_consecutive,
             utility_strategy=controls.utility_strategy,
+            utility_decay_factor=controls.utility_decay_factor,
             utility_weights=dict(controls.utility_weights),
             adaptive_limits=dict(controls.adaptive_limits),
             controlled_relaxation=dict(controls.controlled_relaxation),
@@ -80,6 +83,7 @@ class PlaylistStage:
             use_component_contributions_for_tiebreak=controls.use_component_contributions_for_tiebreak,
             use_semantic_strength_for_tiebreak=controls.use_semantic_strength_for_tiebreak,
             emit_opportunity_cost_metrics=controls.emit_opportunity_cost_metrics,
+            opportunity_cost_top_k_examples=controls.opportunity_cost_top_k_examples,
             detail_log_top_k=controls.detail_log_top_k,
             influence_enabled=controls.influence_enabled,
             influence_track_ids=set(controls.influence_track_ids),
@@ -101,6 +105,7 @@ class PlaylistStage:
             max_consecutive=context.max_consecutive,
             rule_hits=rule_hits,
             utility_strategy=context.utility_strategy,
+            utility_decay_factor=context.utility_decay_factor,
             utility_weights=dict(context.utility_weights),
             adaptive_limits=dict(context.adaptive_limits),
             controlled_relaxation=dict(context.controlled_relaxation),
@@ -128,6 +133,7 @@ class PlaylistStage:
         elapsed_seconds: float,
         context: PlaylistContext,
         playlist: list[dict[str, object]],
+        validation_policy: str = "warn",
     ) -> dict[str, object]:
         return {
             "run_id": run_id,
@@ -139,6 +145,7 @@ class PlaylistStage:
                 "max_per_genre": context.max_per_genre,
                 "max_consecutive": context.max_consecutive,
                 "utility_strategy": context.utility_strategy,
+                "utility_decay_factor": context.utility_decay_factor,
                 "utility_weights": dict(context.utility_weights),
                 "adaptive_limits": dict(context.adaptive_limits),
                 "controlled_relaxation": dict(context.controlled_relaxation),
@@ -146,6 +153,7 @@ class PlaylistStage:
                 "use_component_contributions_for_tiebreak": context.use_component_contributions_for_tiebreak,
                 "use_semantic_strength_for_tiebreak": context.use_semantic_strength_for_tiebreak,
                 "emit_opportunity_cost_metrics": context.emit_opportunity_cost_metrics,
+                "opportunity_cost_top_k_examples": context.opportunity_cost_top_k_examples,
                 "detail_log_top_k": context.detail_log_top_k,
                 "influence_enabled": context.influence_enabled,
                 "influence_track_ids": sorted(context.influence_track_ids),
@@ -154,6 +162,9 @@ class PlaylistStage:
                 "influence_allow_genre_cap_override": context.influence_allow_genre_cap_override,
                 "influence_allow_consecutive_override": context.influence_allow_consecutive_override,
                 "influence_allow_score_threshold_override": context.influence_allow_score_threshold_override,
+                "validation_policies": {
+                    "bl006_bl007_handshake_validation_policy": validation_policy,
+                },
             },
             "playlist_length": len(playlist),
             "tracks": playlist,
@@ -168,9 +179,11 @@ class PlaylistStage:
         playlist_payload: dict[str, object],
         aggregation: PlaylistAggregation,
         candidates_evaluated: int,
+        candidate_track_ids: set[str],
         playlist_path: Path,
         trace_path: Path,
         detail_log_path: Path,
+        handshake_validation: dict[str, object] | None = None,
     ) -> tuple[dict[str, object], dict[str, object], dict[str, int], dict[str, object]]:
         included = [row for row in aggregation.trace_rows if row["decision"] == "included"]
         excluded = [row for row in aggregation.trace_rows if row["decision"] != "included"]
@@ -190,6 +203,30 @@ class PlaylistStage:
         )
         rank_continuity_diagnostics = build_rank_continuity_diagnostics(aggregation.playlist)
         assembly_pressure_diagnostics = build_assembly_pressure_diagnostics(aggregation.trace_rows)
+        influence_track_ids_obj = config.get("influence_track_ids")
+        influence_track_ids_values = (
+            influence_track_ids_obj
+            if isinstance(influence_track_ids_obj, list)
+            else []
+        )
+        influence_track_ids = {
+            str(track_id)
+            for track_id in influence_track_ids_values
+            if str(track_id).strip()
+        }
+        influence_enabled = bool(config.get("influence_enabled", False))
+        policy_mode = str(config.get("influence_policy_mode") or "competitive")
+        reserved_slot_target = 0
+        if influence_enabled and policy_mode in {"reserved_slots", "hybrid_override"}:
+            reserved_slot_target = max(0, safe_int(config.get("influence_reserved_slots"), 0))
+        influence_effectiveness_diagnostics = build_influence_effectiveness_diagnostics(
+            aggregation.trace_rows,
+            influence_track_ids=influence_track_ids,
+            candidate_track_ids=candidate_track_ids,
+            policy_mode=policy_mode,
+            influence_enabled=influence_enabled,
+            reserved_slot_target=reserved_slot_target,
+        )
         output_artifact_hashes = {
             "playlist.json": sha256_of_file(playlist_path),
             "bl007_assembly_trace.csv": sha256_of_file(trace_path),
@@ -218,15 +255,18 @@ class PlaylistStage:
             },
             "rank_continuity_diagnostics": rank_continuity_diagnostics,
             "assembly_pressure_diagnostics": assembly_pressure_diagnostics,
+            "influence_effectiveness_diagnostics": influence_effectiveness_diagnostics,
             "input_artifact_hashes": {
                 "bl006_scored_candidates.csv": sha256_of_file(paths.scored_candidates_path),
             },
             "output_artifact_hashes": output_artifact_hashes,
         }
+        if handshake_validation is not None:
+            report["validation"] = handshake_validation
         if bool(config.get("emit_opportunity_cost_metrics", False)):
             report["opportunity_cost_diagnostics"] = build_opportunity_cost_diagnostics(
                 aggregation.trace_rows,
-                top_k_examples=10,
+                top_k_examples=max(1, safe_int(config.get("opportunity_cost_top_k_examples"), 10)),
             )
         detail_log = build_assembly_detail_log(
             aggregation.trace_rows,
@@ -242,6 +282,27 @@ class PlaylistStage:
         ensure_paths_exist([paths.scored_candidates_path], stage_label="BL-007")
         inputs = self.load_inputs(paths)
         controls = self.resolve_runtime_controls()
+        validation_policy = controls.bl006_bl007_handshake_validation_policy
+
+        handshake_validation = validate_bl006_bl007_handshake(
+            candidates=inputs.candidates,
+            policy=validation_policy,
+        )
+        if handshake_validation["status"] == "fail":
+            violations_obj = handshake_validation.get("sampled_violations")
+            violations = list(violations_obj) if isinstance(violations_obj, list) else []
+            raise RuntimeError(
+                "BL-007 handshake validation failed under strict policy: "
+                + "; ".join(str(v) for v in violations)
+            )
+        if handshake_validation["status"] in {"warn", "allow"}:
+            import logging
+            logging.getLogger(__name__).warning(
+                "BL-007 handshake validation status=%s policy=%s violations=%s",
+                handshake_validation.get("status"),
+                handshake_validation.get("policy"),
+                handshake_validation.get("sampled_violations"),
+            )
         context = self.build_runtime_context(controls)
 
         aggregation = self.aggregate(
@@ -258,6 +319,7 @@ class PlaylistStage:
             elapsed_seconds=elapsed_seconds,
             context=context,
             playlist=aggregation.playlist,
+            validation_policy=validation_policy,
         )
 
         playlist_path = paths.output_dir / "playlist.json"
@@ -276,9 +338,11 @@ class PlaylistStage:
             playlist_payload=playlist_payload,
             aggregation=aggregation,
             candidates_evaluated=len(inputs.candidates),
+            candidate_track_ids={str(candidate.get("track_id", "")) for candidate in inputs.candidates},
             playlist_path=playlist_path,
             trace_path=trace_path,
             detail_log_path=detail_log_path,
+            handshake_validation=handshake_validation,
         )
         write_detail_log(detail_log_path, detail_log)
         output_hashes = report.get("output_artifact_hashes")

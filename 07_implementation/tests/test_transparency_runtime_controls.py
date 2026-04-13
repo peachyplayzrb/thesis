@@ -10,6 +10,8 @@ def test_runtime_controls_environment_defaults(monkeypatch) -> None:
     monkeypatch.delenv("BL008_TOP_CONTRIBUTOR_LIMIT", raising=False)
     monkeypatch.delenv("BL008_BLEND_PRIMARY_CONTRIBUTOR_ON_NEAR_TIE", raising=False)
     monkeypatch.delenv("BL008_PRIMARY_CONTRIBUTOR_TIE_DELTA", raising=False)
+    monkeypatch.delenv("BL008_INCLUDE_PER_TRACK_CONTROL_PROVENANCE", raising=False)
+    monkeypatch.delenv("BL008_EMIT_RUN_LEVEL_CONTROL_PROVENANCE_SUMMARY", raising=False)
 
     controls = runtime_controls.resolve_bl008_runtime_controls()
 
@@ -17,6 +19,8 @@ def test_runtime_controls_environment_defaults(monkeypatch) -> None:
     assert controls["top_contributor_limit"] == 3
     assert controls["blend_primary_contributor_on_near_tie"] is False
     assert controls["primary_contributor_tie_delta"] == 0.02
+    assert controls["include_per_track_control_provenance"] is True
+    assert controls["emit_run_level_control_provenance_summary"] is True
 
 
 def test_runtime_controls_environment_sanitizes_bounds(monkeypatch) -> None:
@@ -47,6 +51,8 @@ def test_runtime_controls_payload_defaults_missing_sections(monkeypatch) -> None
     assert controls["top_contributor_limit"] == 4
     assert controls["blend_primary_contributor_on_near_tie"] is False
     assert controls["primary_contributor_tie_delta"] == 0.02
+    assert controls["include_per_track_control_provenance"] is True
+    assert controls["emit_run_level_control_provenance_summary"] is True
 
 
 def test_runtime_controls_payload_does_not_inherit_env_for_missing_keys(monkeypatch) -> None:
@@ -66,3 +72,13 @@ def test_runtime_controls_payload_does_not_inherit_env_for_missing_keys(monkeypa
 
     assert controls["config_source"] == "defaults"
     assert controls["primary_contributor_tie_delta"] == 0.02
+
+
+def test_runtime_controls_env_provenance_toggles(monkeypatch) -> None:
+    monkeypatch.setenv("BL008_INCLUDE_PER_TRACK_CONTROL_PROVENANCE", "false")
+    monkeypatch.setenv("BL008_EMIT_RUN_LEVEL_CONTROL_PROVENANCE_SUMMARY", "false")
+
+    controls = runtime_controls.resolve_bl008_runtime_controls()
+
+    assert controls["include_per_track_control_provenance"] is False
+    assert controls["emit_run_level_control_provenance_summary"] is False

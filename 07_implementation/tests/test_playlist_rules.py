@@ -196,3 +196,63 @@ def test_assemble_bucketed_allows_influence_score_threshold_override() -> None:
         if row["track_id"] == "influence_low" and row["exclusion_reason"] == "below_score_threshold"
     ]
     assert threshold_excluded == []
+
+
+def test_assemble_bucketed_marks_post_fill_candidates_separately() -> None:
+    candidates = [
+        _cand(1, "pop", 0.91),
+        _cand(2, "rock", 0.90),
+        _cand(3, "jazz", 0.89),
+    ]
+    rule_hits: Counter[str] = Counter()
+
+    playlist, trace_rows = assemble_bucketed(
+        candidates=candidates,
+        target_size=2,
+        min_score_threshold=0.35,
+        max_per_genre=4,
+        max_consecutive=2,
+        rule_hits=rule_hits,
+    )
+
+    assert len(playlist) == 2
+    post_fill_rows = [
+        row for row in trace_rows
+        if row["decision"] == "excluded" and row["exclusion_reason"] == "post_fill_unprocessed"
+    ]
+    assert len(post_fill_rows) == 1
+    assert post_fill_rows[0]["track_id"] == "track_3"
+    assert rule_hits.get("R4_length_cap", 0) == 0
+
+
+def test_assemble_bucketed_utility_decay_prefers_higher_rank_under_utility_greedy() -> None:
+    candidates = [
+        _cand(1, "pop", 0.65),
+        _cand(2, "rock", 0.80),
+    ]
+    rule_hits: Counter[str] = Counter()
+
+    playlist_no_decay, _ = assemble_bucketed(
+        candidates=candidates,
+        target_size=1,
+        min_score_threshold=0.35,
+        max_per_genre=4,
+        max_consecutive=2,
+        rule_hits=rule_hits,
+        utility_strategy="utility_greedy",
+        utility_decay_factor=0.0,
+    )
+
+    playlist_with_decay, _ = assemble_bucketed(
+        candidates=candidates,
+        target_size=1,
+        min_score_threshold=0.35,
+        max_per_genre=4,
+        max_consecutive=2,
+        rule_hits=Counter(),
+        utility_strategy="utility_greedy",
+        utility_decay_factor=1.0,
+    )
+
+    assert playlist_no_decay[0]["track_id"] == "track_2"
+    assert playlist_with_decay[0]["track_id"] == "track_1"

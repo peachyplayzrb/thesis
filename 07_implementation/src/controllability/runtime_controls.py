@@ -1,7 +1,9 @@
 """Runtime control resolution for BL-011 controllability."""
 from __future__ import annotations
 
+from controllability.input_validation import normalize_validation_policy
 from shared_utils.constants import (
+    DEFAULT_BL011_BL010_VALIDATION_POLICY,
     DEFAULT_CONTROLLABILITY_CONTROLS,
     DEFAULT_SCENARIO_DEFINITIONS,
     DEFAULT_SCENARIO_POLICY,
@@ -16,6 +18,7 @@ def _load_bl011_controls_from_env() -> dict[str, object]:
         **DEFAULT_CONTROLLABILITY_CONTROLS,
         "scenario_policy": dict(DEFAULT_SCENARIO_POLICY),
         "scenario_definitions": list(DEFAULT_SCENARIO_DEFINITIONS),
+        "bl010_bl011_handshake_validation_policy": DEFAULT_BL011_BL010_VALIDATION_POLICY,
     }
 
 
@@ -28,4 +31,7 @@ def resolve_bl011_runtime_controls() -> dict[str, object]:
     controls.setdefault("run_config_path", None)
     controls.setdefault("scenario_policy", dict(DEFAULT_SCENARIO_POLICY))
     controls.setdefault("scenario_definitions", list(DEFAULT_SCENARIO_DEFINITIONS))
+    controls["bl010_bl011_handshake_validation_policy"] = normalize_validation_policy(
+        controls.get("bl010_bl011_handshake_validation_policy", DEFAULT_BL011_BL010_VALIDATION_POLICY)
+    )
     return controls

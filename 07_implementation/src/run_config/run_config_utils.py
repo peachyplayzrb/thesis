@@ -146,6 +146,9 @@ def _build_default_run_config() -> dict[str, Any]:
             "emit_semantic_precision_diagnostics": bool(DEFAULT_SCORING_CONTROLS["emit_semantic_precision_diagnostics"]),
             "apply_bl003_influence_tracks": bool(DEFAULT_SCORING_CONTROLS["apply_bl003_influence_tracks"]),
             "influence_track_bonus_scale": safe_float(DEFAULT_SCORING_CONTROLS["influence_track_bonus_scale"]),
+            "bl005_bl006_handshake_validation_policy": str(
+                DEFAULT_SCORING_CONTROLS["bl005_bl006_handshake_validation_policy"]
+            ),
         },
         "assembly_controls": dict(DEFAULT_ASSEMBLY_CONTROLS),
         "transparency_controls": {
@@ -416,12 +419,22 @@ SCORING_CONTROLS_SCHEMA: dict[str, FieldSpec] = {
         type="bool",
         default=bool(DEFAULT_SCORING_CONTROLS["apply_bl003_influence_tracks"]),
     ),
+    "bl005_bl006_handshake_validation_policy": FieldSpec(
+        type="enum",
+        default=str(DEFAULT_SCORING_CONTROLS["bl005_bl006_handshake_validation_policy"]),
+        choices=("allow", "warn", "strict"),
+    ),
 }
 
 OBSERVABILITY_CONTROLS_SCHEMA: dict[str, FieldSpec] = {
     "diagnostic_sample_limit": FieldSpec(
         type="positive_int",
         default=safe_int(DEFAULT_OBSERVABILITY_CONTROLS["diagnostic_sample_limit"]),
+    ),
+    "bl008_bl009_handshake_validation_policy": FieldSpec(
+        type="enum",
+        default=str(DEFAULT_OBSERVABILITY_CONTROLS["bl008_bl009_handshake_validation_policy"]),
+        choices=("allow", "warn", "strict"),
     ),
 }
 
@@ -1798,6 +1811,9 @@ def resolve_bl006_controls(run_config_path: str | Path | None) -> dict[str, Any]
         "emit_semantic_precision_diagnostics": bool(scoring["emit_semantic_precision_diagnostics"]),
         "apply_bl003_influence_tracks": bool(scoring["apply_bl003_influence_tracks"]),
         "influence_track_bonus_scale": float(scoring["influence_track_bonus_scale"]),
+        "bl005_bl006_handshake_validation_policy": str(
+            scoring["bl005_bl006_handshake_validation_policy"]
+        ),
     }
 
 
@@ -1922,6 +1938,10 @@ def resolve_bl007_controls(run_config_path: str | Path | None) -> dict[str, Any]
             defaults["max_consecutive"],
         ),
         "utility_strategy": utility_strategy,
+        "utility_decay_factor": _coerce_fraction_zero_to_one(
+            assembly.get("utility_decay_factor"),
+            float(defaults.get("utility_decay_factor", 0.0)),
+        ),
         "utility_weights": utility_weights,
         "adaptive_limits": adaptive_limits,
         "controlled_relaxation": controlled_relaxation,
@@ -1937,6 +1957,10 @@ def resolve_bl007_controls(run_config_path: str | Path | None) -> dict[str, Any]
         "emit_opportunity_cost_metrics": _coerce_bool(
             assembly.get("emit_opportunity_cost_metrics"),
             bool(defaults.get("emit_opportunity_cost_metrics", False)),
+        ),
+        "opportunity_cost_top_k_examples": _coerce_positive_int(
+            assembly.get("opportunity_cost_top_k_examples"),
+            int(defaults.get("opportunity_cost_top_k_examples", 10)),
         ),
         "detail_log_top_k": _coerce_positive_int(
             assembly.get("detail_log_top_k"),
@@ -1964,6 +1988,10 @@ def resolve_bl007_controls(run_config_path: str | Path | None) -> dict[str, Any]
         "influence_allow_score_threshold_override": _coerce_bool(
             assembly.get("influence_allow_score_threshold_override"),
             bool(defaults.get("influence_allow_score_threshold_override", False)),
+        ),
+        "bl006_bl007_handshake_validation_policy": str(
+            assembly.get("bl006_bl007_handshake_validation_policy")
+            or defaults.get("bl006_bl007_handshake_validation_policy", "warn")
         ),
     }
 
@@ -1994,6 +2022,38 @@ def resolve_bl009_controls(run_config_path: str | Path | None) -> dict[str, Any]
         },
         "diagnostic_sample_limit": int(observability["diagnostic_sample_limit"]),
         "bootstrap_mode": bool(observability["bootstrap_mode"]),
+        "bl008_bl009_handshake_validation_policy": str(
+            observability["bl008_bl009_handshake_validation_policy"]
+        ),
+    }
+
+
+def resolve_bl010_controls(run_config_path: str | Path | None) -> dict[str, Any]:
+    effective, resolved_path = resolve_effective_run_config(run_config_path)
+    reproducibility = effective.get("reproducibility_controls") or {}
+    return {
+        "config_path": str(resolved_path) if resolved_path else None,
+        "schema_version": effective["schema_version"],
+        "bl009_bl010_handshake_validation_policy": str(
+            reproducibility.get("bl009_bl010_handshake_validation_policy", "warn")
+        ),
+    }
+
+
+def resolve_bl011_controls_extended(run_config_path: str | Path | None) -> dict[str, Any]:
+    effective, resolved_path = resolve_effective_run_config(run_config_path)
+    controllability = effective.get("controllability_controls") or {}
+    return {
+        "config_path": str(resolved_path) if resolved_path else None,
+        "schema_version": effective["schema_version"],
+        "bl010_bl011_handshake_validation_policy": str(
+            controllability.get("bl010_bl011_handshake_validation_policy", "warn")
+        ),
+        "weight_override_value_if_component_present": float(controllability.get("weight_override_value_if_component_present", 1.0)),
+        "weight_override_increment_fallback": float(controllability.get("weight_override_increment_fallback", 0.05)),
+        "weight_override_cap_fallback": float(controllability.get("weight_override_cap_fallback", 0.5)),
+        "stricter_threshold_scale": float(controllability.get("stricter_threshold_scale", 1.1)),
+        "looser_threshold_scale": float(controllability.get("looser_threshold_scale", 0.9)),
     }
 
 

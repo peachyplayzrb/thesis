@@ -3,6 +3,7 @@
 from playlist.reporting import (
     build_assembly_detail_log,
     build_assembly_pressure_diagnostics,
+    build_influence_effectiveness_diagnostics,
     build_rank_continuity_diagnostics,
     build_undersized_diagnostics,
 )
@@ -68,3 +69,40 @@ def test_build_assembly_detail_log_links_next_included_rank() -> None:
     first_row = detail["rows"][0]
     assert first_row["track_id"] == "t1"
     assert first_row["selected_alternative_rank"] == 2
+
+
+def test_build_influence_effectiveness_diagnostics_counts_paths() -> None:
+    trace_rows = [
+        {
+            "decision": "included",
+            "influence_requested": True,
+            "inclusion_path": "reserved_slot",
+        },
+        {
+            "decision": "included",
+            "influence_requested": True,
+            "inclusion_path": "competitive",
+        },
+        {
+            "decision": "excluded",
+            "influence_requested": True,
+            "inclusion_path": "",
+        },
+    ]
+    diagnostics = build_influence_effectiveness_diagnostics(
+        trace_rows,
+        influence_track_ids={"a", "b", "c"},
+        candidate_track_ids={"a", "b", "x", "y"},
+        policy_mode="reserved_slots",
+        influence_enabled=True,
+        reserved_slot_target=2,
+    )
+
+    assert diagnostics["requested_track_ids_count"] == 3
+    assert diagnostics["matched_candidate_track_ids_count"] == 2
+    assert diagnostics["included_track_ids_count"] == 2
+    assert diagnostics["effectiveness_rate"] == 1.0
+    assert diagnostics["reserved_slot_included_count"] == 1
+    assert diagnostics["reserved_slot_utilization_rate"] == 0.5
+    assert diagnostics["inclusion_path_counts"]["reserved_slot"] == 1
+    assert diagnostics["inclusion_path_counts"]["competitive"] == 1

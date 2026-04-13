@@ -20,12 +20,33 @@ def build_why_selected(
         for c in top_contributors[:top_contributor_limit]
     ]
     contributors_str = ", ".join(top_labels)
+    if final_score >= 0.75:
+        strength_phrase = "shows a strong profile match"
+    elif final_score >= 0.5:
+        strength_phrase = "shows a moderate profile match"
+    else:
+        strength_phrase = "shows a weaker but acceptable profile match"
     return (
         f"Selected at playlist position {playlist_position} "
-        f"(score {final_score:.4f}) because it strongly matches the preference profile "
+        f"(score {final_score:.4f}) because it {strength_phrase} "
         f"on {contributors_str}. "
         f"Lead genre is '{lead_genre}'."
     )
+
+
+def select_causal_driver(
+    top_contributors: Sequence[Mapping[str, object]],
+) -> Mapping[str, object]:
+    """Pick the highest-contribution driver as the mechanism-linked cause."""
+    if not top_contributors:
+        return {
+            "component": "unknown",
+            "label": "Unknown",
+            "weight": 0.0,
+            "similarity": 0.0,
+            "contribution": 0.0,
+        }
+    return top_contributors[0]
 
 
 def select_primary_explanation_driver(

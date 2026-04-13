@@ -23,6 +23,7 @@ from typing import Any
 from shared_utils.artifact_registry import bl003_required_paths
 from shared_utils.io_utils import load_json as load_json_shared
 from shared_utils.io_utils import sha256_of_file, format_utc_iso
+from shared_utils.parsing import safe_float
 from shared_utils.path_utils import impl_root
 from shared_utils.report_utils import write_csv_rows, write_json_ascii
 
@@ -41,8 +42,40 @@ BL005_HANDSHAKE_REQUIRED_PROFILE_KEYS: tuple[str, ...] = (
 BL005_HANDSHAKE_REQUIRED_SEED_TRACE_FIELDS: tuple[str, ...] = (
     "track_id",
 )
+BL006_HANDSHAKE_REQUIRED_BL005_FILTERED_FIELDS: tuple[str, ...] = (
+    "track_id",
+    "artist",
+    "song",
+    "tags",
+    "genres",
+    "tempo",
+    "duration_ms",
+    "key",
+    "mode",
+)
 BL005_HANDSHAKE_WARN_MAX_VIOLATIONS_ADVISORY_THRESHOLD = 3
 BL005_RUNTIME_CONTROL_FALLBACK_ADVISORY_THRESHOLD = 3
+BL007_HANDSHAKE_REQUIRED_BL006_SCORED_FIELDS: tuple[str, ...] = (
+    "rank",
+    "track_id",
+    "lead_genre",
+    "final_score",
+)
+BL007_HANDSHAKE_SCORING_COMPONENT_INDICATORS: tuple[str, ...] = (
+    "lead_genre_contribution",
+    "genre_overlap_contribution",
+    "tag_overlap_contribution",
+)
+BL008_HANDSHAKE_REQUIRED_PLAYLIST_TRACK_FIELDS: tuple[str, ...] = (
+    "track_id",
+    "final_score",
+    "playlist_position",
+)
+BL009_HANDSHAKE_REQUIRED_BL008_SUMMARY_KEYS: tuple[str, ...] = (
+    "run_id",
+    "playlist_track_count",
+    "top_contributor_distribution",
+)
 
 
 def sha256_file(path: Path) -> str:
@@ -157,6 +190,286 @@ def bl004_bl005_handshake_contract_ok(
     return False, "BL-004↔BL-005 handshake contract incomplete: " + "; ".join(detail_parts)
 
 
+
+def bl006_bl007_handshake_contract_ok(
+    bl006_scored_header: list[str],
+    bl007_report: dict[str, Any],
+) -> tuple[bool, str]:
+    missing_scored_fields = [
+        field
+        for field in BL007_HANDSHAKE_REQUIRED_BL006_SCORED_FIELDS
+        if field not in bl006_scored_header
+    ]
+    active_scoring_components = [
+        field for field in BL007_HANDSHAKE_SCORING_COMPONENT_INDICATORS if field in bl006_scored_header
+    ]
+    scoring_components_absent = len(active_scoring_components) == 0
+
+    config_raw = bl007_report.get("config")
+    config = dict(config_raw) if isinstance(config_raw, dict) else {}
+    policies_raw = config.get("validation_policies")
+    policies = dict(policies_raw) if isinstance(policies_raw, dict) else {}
+    has_policy = "bl006_bl007_handshake_validation_policy" in policies
+
+    validation_raw = bl007_report.get("validation")
+    validation = dict(validation_raw) if isinstance(validation_raw, dict) else {}
+    has_validation_status = isinstance(validation.get("status"), str)
+
+    if (
+        not missing_scored_fields
+        and not scoring_components_absent
+        and has_policy
+        and has_validation_status
+    ):
+        return True, "BL-006↔BL-007 handshake contract fields and policy metadata are present"
+
+    detail_parts: list[str] = []
+    if missing_scored_fields:
+        detail_parts.append(f"missing BL-006 scored fields={missing_scored_fields}")
+    if scoring_components_absent:
+        detail_parts.append("missing BL-006 scoring component contribution columns")
+    if not has_policy:
+        detail_parts.append(
+            "missing BL-007 config.validation_policies.bl006_bl007_handshake_validation_policy"
+        )
+    if not has_validation_status:
+        detail_parts.append("missing BL-007 report validation.status")
+
+    return False, "BL-006↔BL-007 handshake contract incomplete: " + "; ".join(detail_parts)
+
+
+def bl007_bl008_handshake_contract_ok(
+    playlist_data: dict[str, Any],
+    bl008_summary: dict[str, Any],
+) -> tuple[bool, str]:
+    tracks_raw = playlist_data.get("tracks")
+    tracks = list(tracks_raw) if isinstance(tracks_raw, list) else []
+    first_track = dict(tracks[0]) if (tracks and isinstance(tracks[0], dict)) else {}
+    first_track_keys = list(first_track.keys())
+
+    missing_track_fields = [
+        field for field in BL008_HANDSHAKE_REQUIRED_PLAYLIST_TRACK_FIELDS
+        if field not in first_track_keys
+    ]
+    playlist_is_empty = len(tracks) == 0
+
+    config_raw = bl008_summary.get("config")
+    config = dict(config_raw) if isinstance(config_raw, dict) else {}
+    policies_raw = config.get("validation_policies")
+    policies = dict(policies_raw) if isinstance(policies_raw, dict) else {}
+    has_policy = "bl007_bl008_handshake_validation_policy" in policies
+
+    validation_raw = bl008_summary.get("validation")
+    validation = dict(validation_raw) if isinstance(validation_raw, dict) else {}
+    has_validation_status = isinstance(validation.get("status"), str)
+
+    if (
+        not playlist_is_empty
+        and not missing_track_fields
+        and has_policy
+        and has_validation_status
+    ):
+        return True, "BL-007↔BL-008 handshake contract fields and policy metadata are present"
+
+    detail_parts: list[str] = []
+    if playlist_is_empty:
+        detail_parts.append("playlist tracks list is empty")
+    if missing_track_fields:
+        detail_parts.append(f"missing BL-007 playlist track fields={missing_track_fields}")
+    if not has_policy:
+        detail_parts.append(
+            "missing BL-008 config.validation_policies.bl007_bl008_handshake_validation_policy"
+        )
+    if not has_validation_status:
+        detail_parts.append("missing BL-008 summary validation.status")
+
+    return False, "BL-007↔BL-008 handshake contract incomplete: " + "; ".join(detail_parts)
+
+
+def bl008_bl009_handshake_contract_ok(
+    bl008_summary: dict[str, Any],
+    bl008_payloads: dict[str, Any],
+    bl009_log: dict[str, Any],
+) -> tuple[bool, str]:
+    missing_summary_keys = [
+        key for key in BL009_HANDSHAKE_REQUIRED_BL008_SUMMARY_KEYS if key not in bl008_summary
+    ]
+
+    explanations_raw = bl008_payloads.get("explanations")
+    explanations = list(explanations_raw) if isinstance(explanations_raw, list) else []
+    has_explanations = isinstance(explanations_raw, list)
+
+    summary_track_count_raw = bl008_summary.get("playlist_track_count")
+    payload_track_count_raw = bl008_payloads.get("playlist_track_count")
+    if summary_track_count_raw is None:
+        summary_track_count = None
+    else:
+        try:
+            summary_track_count = int(str(summary_track_count_raw))
+        except (TypeError, ValueError):
+            summary_track_count = None
+
+    if payload_track_count_raw is None:
+        payload_track_count = None
+    else:
+        try:
+            payload_track_count = int(str(payload_track_count_raw))
+        except (TypeError, ValueError):
+            payload_track_count = None
+
+    count_mismatch = (
+        summary_track_count is None
+        or payload_track_count is None
+        or summary_track_count != payload_track_count
+        or summary_track_count != len(explanations)
+    )
+
+    run_config_raw = bl009_log.get("run_config")
+    run_config = dict(run_config_raw) if isinstance(run_config_raw, dict) else {}
+    observability_raw = run_config.get("observability")
+    observability = dict(observability_raw) if isinstance(observability_raw, dict) else {}
+    policies_raw = observability.get("validation_policies")
+    policies = dict(policies_raw) if isinstance(policies_raw, dict) else {}
+    has_policy = "bl008_bl009_handshake_validation_policy" in policies
+
+    validation_raw = bl009_log.get("validation")
+    validation = dict(validation_raw) if isinstance(validation_raw, dict) else {}
+    has_validation_status = isinstance(validation.get("status"), str)
+
+    if (
+        not missing_summary_keys
+        and has_explanations
+        and not count_mismatch
+        and has_policy
+        and has_validation_status
+    ):
+        return True, "BL-008↔BL-009 handshake contract fields and policy metadata are present"
+
+    detail_parts: list[str] = []
+    if missing_summary_keys:
+        detail_parts.append(f"missing BL-008 summary keys={missing_summary_keys}")
+    if not has_explanations:
+        detail_parts.append("missing BL-008 payload explanations list")
+    if count_mismatch:
+        detail_parts.append("BL-008 summary/payload explanation counts are inconsistent")
+    if not has_policy:
+        detail_parts.append(
+            "missing BL-009 run_config.observability.validation_policies.bl008_bl009_handshake_validation_policy"
+        )
+    if not has_validation_status:
+        detail_parts.append("missing BL-009 log validation.status")
+
+    return False, "BL-008↔BL-009 handshake contract incomplete: " + "; ".join(detail_parts)
+
+
+def bl009_bl010_handshake_contract_ok(
+    bl010_snapshot: dict[str, Any],
+) -> tuple[bool, str]:
+    """Check BL-010 validation of BL-009 outputs recorded in reproducibility config snapshot."""
+    # Auto-pass if BL-010 snapshot is empty (reproducibility stage not executed).
+    if not bl010_snapshot:
+        return True, "BL-010 reproducibility not executed (optional diagnostic stage)"
+
+    validation_raw = bl010_snapshot.get("validation")
+    validation = dict(validation_raw) if isinstance(validation_raw, dict) else {}
+
+    has_policy = isinstance(validation.get("policy"), str)
+    has_status = isinstance(validation.get("status"), str)
+    has_violations_list = isinstance(validation.get("violations"), list)
+    has_details = isinstance(validation.get("details"), dict)
+
+    if has_policy and has_status and has_violations_list and has_details:
+        return True, "BL-009↔BL-010 handshake validation recorded in BL-010 snapshot"
+
+    detail_parts: list[str] = []
+    if not has_policy:
+        detail_parts.append("missing BL-010 validation.policy")
+    if not has_status:
+        detail_parts.append("missing BL-010 validation.status")
+    if not has_violations_list:
+        detail_parts.append("missing BL-010 validation.violations")
+    if not has_details:
+        detail_parts.append("missing BL-010 validation.details")
+
+    return False, "BL-009↔BL-010 handshake contract incomplete: " + "; ".join(detail_parts)
+
+def bl010_bl011_handshake_contract_ok(
+    bl011_snapshot: dict[str, Any],
+) -> tuple[bool, str]:
+    """Check BL-011 validation of BL-010 baseline snapshot recorded in controllability config snapshot."""
+    # Auto-pass if BL-011 snapshot is empty (controllability stage not executed).
+    if not bl011_snapshot:
+        return True, "BL-011 controllability not executed (optional diagnostic stage)"
+
+    validation_raw = bl011_snapshot.get("validation")
+    validation = dict(validation_raw) if isinstance(validation_raw, dict) else {}
+
+    has_policy = isinstance(validation.get("policy"), str)
+    has_status = isinstance(validation.get("status"), str)
+    has_violations_list = isinstance(validation.get("violations"), list)
+    has_details = isinstance(validation.get("details"), dict)
+
+    if has_policy and has_status and has_violations_list and has_details:
+        return True, "BL-010↔BL-011 handshake validation recorded in BL-011 snapshot"
+
+    detail_parts: list[str] = []
+    if not has_policy:
+        detail_parts.append("missing BL-011 validation.policy")
+    if not has_status:
+        detail_parts.append("missing BL-011 validation.status")
+    if not has_violations_list:
+        detail_parts.append("missing BL-011 validation.violations")
+    if not has_details:
+        detail_parts.append("missing BL-011 validation.details")
+
+    return False, "BL-010↔BL-011 handshake contract incomplete: " + "; ".join(detail_parts)
+
+def bl005_bl006_handshake_contract_ok(
+    bl005_filtered_header: list[str],
+    bl006_summary: dict[str, Any],
+) -> tuple[bool, str]:
+    missing_bl005_filtered_fields = [
+        field
+        for field in BL006_HANDSHAKE_REQUIRED_BL005_FILTERED_FIELDS
+        if field not in bl005_filtered_header
+    ]
+    has_source_identifier = "id" in bl005_filtered_header or "cid" in bl005_filtered_header
+
+    config_raw = bl006_summary.get("config")
+    config = dict(config_raw) if isinstance(config_raw, dict) else {}
+    policies_raw = config.get("validation_policies")
+    policies = dict(policies_raw) if isinstance(policies_raw, dict) else {}
+    has_policy = "bl005_bl006_handshake_validation_policy" in policies
+
+    validation_raw = bl006_summary.get("validation")
+    validation = dict(validation_raw) if isinstance(validation_raw, dict) else {}
+    has_validation_status = isinstance(validation.get("status"), str)
+
+    if (
+        not missing_bl005_filtered_fields
+        and has_source_identifier
+        and has_policy
+        and has_validation_status
+    ):
+        return True, "BL-005↔BL-006 handshake contract fields and policy metadata are present"
+
+    detail_parts: list[str] = []
+    if missing_bl005_filtered_fields:
+        detail_parts.append(
+            f"missing BL-005 filtered fields={missing_bl005_filtered_fields}"
+        )
+    if not has_source_identifier:
+        detail_parts.append("missing BL-005 source identifier field=id_or_cid")
+    if not has_policy:
+        detail_parts.append(
+            "missing BL-006 config.validation_policies.bl005_bl006_handshake_validation_policy"
+        )
+    if not has_validation_status:
+        detail_parts.append("missing BL-006 validation.status")
+
+    return False, "BL-005↔BL-006 handshake contract incomplete: " + "; ".join(detail_parts)
+
+
 def bl005_handshake_warning_volume_advisory(
     bl005_diagnostics: dict[str, Any],
     *,
@@ -221,6 +534,94 @@ def bl005_control_resolution_fallback_volume_advisory(
     }
 
 
+def _score_band_phrase(final_score: float) -> str:
+    if final_score >= 0.75:
+        return "strong profile match"
+    if final_score >= 0.5:
+        return "moderate profile match"
+    return "weaker but acceptable profile match"
+
+
+def bl008_explanation_fidelity_warnings(
+    bl008_payloads: dict[str, Any],
+) -> list[str]:
+    explanations_raw = bl008_payloads.get("explanations")
+    explanations = list(explanations_raw) if isinstance(explanations_raw, list) else []
+    warnings: list[str] = []
+
+    for idx, payload_raw in enumerate(explanations):
+        payload = dict(payload_raw) if isinstance(payload_raw, dict) else {}
+        prefix = f"payload_index={idx}"
+
+        score_breakdown_raw = payload.get("score_breakdown")
+        score_breakdown = list(score_breakdown_raw) if isinstance(score_breakdown_raw, list) else []
+        top_contributors_raw = payload.get("top_score_contributors")
+        top_contributors = list(top_contributors_raw) if isinstance(top_contributors_raw, list) else []
+
+        if not score_breakdown:
+            warnings.append(f"{prefix}: missing_score_breakdown")
+            continue
+
+        positive_contributions = [
+            max(0.0, safe_float(dict(item).get("contribution", 0.0)))
+            for item in score_breakdown
+            if isinstance(item, dict)
+        ]
+        total_positive = sum(positive_contributions)
+        share_sum = sum(
+            safe_float(dict(item).get("contribution_share_pct", 0.0))
+            for item in score_breakdown
+            if isinstance(item, dict)
+        )
+        if total_positive > 0.0 and abs(share_sum - 100.0) > 0.5:
+            warnings.append(f"{prefix}: contribution_share_sum_out_of_bounds={share_sum}")
+
+        negative_margin = any(
+            safe_float(dict(item).get("margin_vs_next_contributor", 0.0)) < 0.0
+            for item in score_breakdown
+            if isinstance(item, dict)
+        )
+        if negative_margin:
+            warnings.append(f"{prefix}: negative_margin_vs_next_contributor")
+
+        primary_driver_raw = payload.get("primary_explanation_driver")
+        primary_driver = dict(primary_driver_raw) if isinstance(primary_driver_raw, dict) else {}
+        primary_label = str(primary_driver.get("label", ""))
+        top_labels = {
+            str(dict(item).get("label", ""))
+            for item in top_contributors
+            if isinstance(item, dict)
+        }
+        if primary_label and top_labels and primary_label not in top_labels:
+            warnings.append(f"{prefix}: primary_driver_not_in_top_contributors")
+
+        causal_driver_raw = payload.get("causal_driver")
+        causal_driver = dict(causal_driver_raw) if isinstance(causal_driver_raw, dict) else {}
+        causal_label = str(causal_driver.get("label", ""))
+        sorted_breakdown = sorted(
+            [dict(item) for item in score_breakdown if isinstance(item, dict)],
+            key=lambda item: safe_float(item.get("contribution", 0.0)),
+            reverse=True,
+        )
+        expected_causal = str(sorted_breakdown[0].get("label", "")) if sorted_breakdown else ""
+        if causal_label and expected_causal and causal_label != expected_causal:
+            warnings.append(f"{prefix}: causal_driver_mismatch_expected={expected_causal}")
+
+        why_selected = str(payload.get("why_selected", ""))
+        final_score = safe_float(payload.get("final_score", 0.0))
+        required_phrase = _score_band_phrase(final_score)
+        if required_phrase not in why_selected:
+            warnings.append(f"{prefix}: why_selected_score_band_mismatch")
+
+        assembly_context_raw = payload.get("assembly_context")
+        assembly_context = dict(assembly_context_raw) if isinstance(assembly_context_raw, dict) else {}
+        required_context_keys = {"decision", "admission_rule", "genre_at_position"}
+        if not required_context_keys.issubset(set(assembly_context.keys())):
+            warnings.append(f"{prefix}: assembly_context_incomplete")
+
+    return warnings
+
+
 def ensure_exists(path: Path) -> None:
     if not path.exists():
         raise FileNotFoundError(f"Missing required artifact: {path}")
@@ -260,6 +661,11 @@ def main() -> int:
     }
 
     for artifact_path in artifacts.values():
+        if artifact_path.exists():
+            continue
+        # BL-010 and BL-011 diagnostic outputs are optional (only required if tests executed)
+        if "bl010_snapshot" in str(artifact_path) or "bl011_snapshot" in str(artifact_path):
+            continue
         ensure_exists(artifact_path)
 
     bl003_summary = load_json(artifacts["bl003_summary"])
@@ -272,6 +678,10 @@ def main() -> int:
     bl008_payloads = load_json(artifacts["bl008_payloads"])
     playlist = load_json(artifacts["playlist"])
     bl009_log = load_json(artifacts["bl009_log"])
+    bl010_path = REPO_ROOT / "reproducibility/outputs/reproducibility_config_snapshot.json"
+    bl011_path = REPO_ROOT / "controllability/outputs/controllability_config_snapshot.json"
+    bl010_snapshot = load_json(bl010_path) if bl010_path.exists() else {}
+    bl011_snapshot = load_json(bl011_path) if bl011_path.exists() else {}
 
     with artifacts["bl009_index"].open("r", encoding="utf-8", newline="") as handle:
         reader = csv.DictReader(handle)
@@ -405,6 +815,43 @@ def main() -> int:
         bl004_bl005_ok,
         bl004_bl005_details,
     )
+    bl005_bl006_ok, bl005_bl006_details = bl005_bl006_handshake_contract_ok(
+        csv_header(artifacts["bl005_filtered"]),
+        bl006_summary,
+    )
+    check(
+        "schema_bl005_bl006_handshake_contract",
+        bl005_bl006_ok,
+        bl005_bl006_details,
+    )
+    bl006_bl007_ok, bl006_bl007_details = bl006_bl007_handshake_contract_ok(
+        csv_header(artifacts["bl006_scored"]),
+        bl007_report,
+    )
+    check(
+        "schema_bl006_bl007_handshake_contract",
+        bl006_bl007_ok,
+        bl006_bl007_details,
+    )
+    bl007_bl008_ok, bl007_bl008_details = bl007_bl008_handshake_contract_ok(
+        playlist,
+        bl008_summary,
+    )
+    check(
+        "schema_bl007_bl008_handshake_contract",
+        bl007_bl008_ok,
+        bl007_bl008_details,
+    )
+    bl008_bl009_ok, bl008_bl009_details = bl008_bl009_handshake_contract_ok(
+        bl008_summary,
+        bl008_payloads,
+        bl009_log,
+    )
+    check(
+        "schema_bl008_bl009_handshake_contract",
+        bl008_bl009_ok,
+        bl008_bl009_details,
+    )
     handshake_warning_advisory = bl005_handshake_warning_volume_advisory(bl005_diag)
     if handshake_warning_advisory is not None:
         advisories.append(handshake_warning_advisory)
@@ -413,6 +860,18 @@ def main() -> int:
     )
     if control_resolution_advisory is not None:
         advisories.append(control_resolution_advisory)
+    bl008_fidelity_warnings = bl008_explanation_fidelity_warnings(bl008_payloads)
+    if bl008_fidelity_warnings:
+        advisories.append(
+            {
+                "id": "advisory_bl008_explanation_fidelity",
+                "details": (
+                    "BL-008 explanation fidelity warnings detected in warn-safe mode; "
+                    f"warning_count={len(bl008_fidelity_warnings)} "
+                    f"sampled={bl008_fidelity_warnings[:5]}"
+                ),
+            }
+        )
 
     # Hash-link integrity checks
     profile_seed_table_path = resolve_existing_path(
@@ -484,6 +943,24 @@ def main() -> int:
         and bl009_index["explanation_payloads_sha256"].upper() == hashes["bl008_payloads"]
         and bl009_index["observability_log_sha256"].upper() == hashes["bl009_log"],
         "BL-009 index hashes match playlist, explanation payloads, and observability log",
+    )
+
+    bl009_bl010_ok, bl009_bl010_details = bl009_bl010_handshake_contract_ok(
+        bl010_snapshot,
+    )
+    check(
+        "schema_bl009_bl010_handshake_contract",
+        bl009_bl010_ok if bl010_snapshot else True,  # Skip if BL-010 not executed
+        bl009_bl010_details if bl010_snapshot else "BL-010 reproducibility not executed (optional)",
+    )
+
+    bl010_bl011_ok, bl010_bl011_details = bl010_bl011_handshake_contract_ok(
+        bl011_snapshot,
+    )
+    check(
+        "schema_bl010_bl011_handshake_contract",
+        bl010_bl011_ok if bl011_snapshot else True,  # Skip if BL-011 not executed
+        bl010_bl011_details if bl011_snapshot else "BL-011 controllability not executed (optional)",
     )
 
     bl003_fuzzy = dict((bl003_summary.get("inputs") or {}).get("fuzzy_matching") or {})
@@ -614,6 +1091,7 @@ def main() -> int:
             "BL-009 required top-level observability sections",
             "BL-003 fuzzy control block presence",
             "BL-003↔BL-004 handshake contract fields and policy metadata",
+            "BL-005↔BL-006 handshake contract fields and policy metadata",
         ],
         "integrity_checks": [
             "BL-004 seed table hash links to BL-003 seed table",

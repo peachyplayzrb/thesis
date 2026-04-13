@@ -88,6 +88,53 @@ def build_assembly_pressure_diagnostics(
     }
 
 
+def build_influence_effectiveness_diagnostics(
+    trace_rows: list[dict[str, object]],
+    *,
+    influence_track_ids: set[str],
+    candidate_track_ids: set[str],
+    policy_mode: str,
+    influence_enabled: bool,
+    reserved_slot_target: int,
+) -> dict[str, object]:
+    """Summarize effectiveness of influence-policy controls for BL-007."""
+    requested_count = len(influence_track_ids)
+    matched_track_ids = {track_id for track_id in influence_track_ids if track_id in candidate_track_ids}
+    matched_count = len(matched_track_ids)
+
+    influence_included_rows = [
+        row for row in trace_rows
+        if row.get("decision") == "included" and bool(row.get("influence_requested", False))
+    ]
+    included_count = len(influence_included_rows)
+
+    inclusion_path_counts = Counter(
+        str(row.get("inclusion_path") or "competitive")
+        for row in influence_included_rows
+    )
+    reserved_slot_included = int(inclusion_path_counts.get("reserved_slot", 0))
+
+    effectiveness_rate = round(float(included_count) / float(matched_count), 6) if matched_count > 0 else 0.0
+    slot_utilization = (
+        round(float(reserved_slot_included) / float(reserved_slot_target), 6)
+        if reserved_slot_target > 0
+        else 0.0
+    )
+
+    return {
+        "influence_enabled": bool(influence_enabled),
+        "policy_mode": str(policy_mode),
+        "requested_track_ids_count": requested_count,
+        "matched_candidate_track_ids_count": matched_count,
+        "included_track_ids_count": included_count,
+        "effectiveness_rate": effectiveness_rate,
+        "reserved_slot_target": int(reserved_slot_target),
+        "reserved_slot_included_count": reserved_slot_included,
+        "reserved_slot_utilization_rate": slot_utilization,
+        "inclusion_path_counts": dict(inclusion_path_counts),
+    }
+
+
 def build_assembly_detail_log(
     trace_rows: list[dict[str, object]],
     *,

@@ -226,15 +226,12 @@ class RetrievalStage:
                 payload.get("bl004_bl005_handshake_validation_policy")
                 or defaults["bl004_bl005_handshake_validation_policy"]
             ),
-            runtime_control_resolution_diagnostics=(
-                dict(payload["runtime_control_resolution_diagnostics"])
-                if isinstance(payload.get("runtime_control_resolution_diagnostics"), dict)
-                else {}
-            ),
-            runtime_control_validation_warnings=(
-                [str(item) for item in payload["runtime_control_validation_warnings"]]
-                if isinstance(payload.get("runtime_control_validation_warnings"), list)
-                else []
+            runtime_control_resolution_diagnostics={
+                str(key): value
+                for key, value in to_mapping(payload.get("runtime_control_resolution_diagnostics")).items()
+            },
+            runtime_control_validation_warnings=to_string_list(
+                payload.get("runtime_control_validation_warnings")
             ),
         )
 

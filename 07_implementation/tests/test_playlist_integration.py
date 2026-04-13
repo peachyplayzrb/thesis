@@ -47,7 +47,12 @@ def test_playlist_main_generates_consistent_outputs(tmp_path: Path, monkeypatch)
     assert playlist["playlist_length"] == 3
     assert report["counts"]["tracks_included"] == 3
     assert report["counts"]["tracks_excluded"] == 1
-    assert report["rule_hits"].get("R2_genre_cap", 0) + report["rule_hits"].get("R4_length_cap", 0) >= 1
+
+    # Verify that at least one excluded track was logged in the trace
+    trace_rows = list(csv.DictReader(trace_path.open(encoding="utf-8")))
+    excluded_rows = [r for r in trace_rows if r.get("decision") != "included"]
+    assert len(excluded_rows) >= 1, "Expected at least one excluded track in assembly trace"
+
     assert report["playlist_genre_mix"] == {"pop": 1, "rock": 2}
 
 

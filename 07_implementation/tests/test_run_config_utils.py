@@ -204,11 +204,13 @@ def test_resolve_bl007_controls_includes_influence_policy_contract(tmp_path: Pat
             },
             "assembly_controls": {
                 "target_size": 4,
+                "utility_decay_factor": 0.4,
                 "influence_policy_mode": "reserved_slots",
                 "influence_reserved_slots": 10,
                 "influence_allow_genre_cap_override": True,
                 "influence_allow_consecutive_override": False,
                 "influence_allow_score_threshold_override": True,
+                "opportunity_cost_top_k_examples": "25",
             },
         },
     )
@@ -217,11 +219,31 @@ def test_resolve_bl007_controls_includes_influence_policy_contract(tmp_path: Pat
 
     assert controls["influence_enabled"] is True
     assert controls["influence_track_ids"] == ["x1", "x2"]
+    assert controls["utility_decay_factor"] == 0.4
     assert controls["influence_policy_mode"] == "reserved_slots"
     assert controls["influence_reserved_slots"] == 4
     assert controls["influence_allow_genre_cap_override"] is True
     assert controls["influence_allow_consecutive_override"] is False
     assert controls["influence_allow_score_threshold_override"] is True
+    assert controls["opportunity_cost_top_k_examples"] == 25
+    assert controls["bl006_bl007_handshake_validation_policy"] == "warn"
+
+
+def test_resolve_bl007_controls_falls_back_for_non_positive_opportunity_cost_top_k(tmp_path: Path) -> None:
+    run_config_path = _write_run_config(
+        tmp_path,
+        {
+            "assembly_controls": {
+                "opportunity_cost_top_k_examples": 0,
+                "utility_decay_factor": -0.5,
+            },
+        },
+    )
+
+    controls = resolve_bl007_controls(run_config_path)
+
+    assert controls["opportunity_cost_top_k_examples"] == 10
+    assert controls["utility_decay_factor"] == 0.0
 
 
 def test_profile_controls_schema_coercion_and_fallback(tmp_path: Path) -> None:
@@ -327,6 +349,7 @@ def test_scoring_controls_schema_fallback_and_enum_normalization(tmp_path: Path)
                 "semantic_precision_alpha_fixed": "0.45",
                 "emit_confidence_impact_diagnostics": "false",
                 "influence_track_bonus_scale": -1,
+                "bl005_bl006_handshake_validation_policy": "UNSUPPORTED",
             }
         },
     )
@@ -340,6 +363,10 @@ def test_scoring_controls_schema_fallback_and_enum_normalization(tmp_path: Path)
     assert scoring_controls["semantic_precision_alpha_fixed"] == 0.45
     assert scoring_controls["emit_confidence_impact_diagnostics"] is False
     assert scoring_controls["influence_track_bonus_scale"] == default_scoring["influence_track_bonus_scale"]
+    assert (
+        scoring_controls["bl005_bl006_handshake_validation_policy"]
+        == default_scoring["bl005_bl006_handshake_validation_policy"]
+    )
 
 
 def test_scoring_controls_schema_bool_like_validation_error(tmp_path: Path) -> None:
@@ -404,6 +431,7 @@ def test_bl005_bl006_resolvers_follow_effective_validated_controls(tmp_path: Pat
                 "lead_genre_strategy": "single_anchor",
                 "semantic_overlap_strategy": "PRECISION_AWARE",
                 "emit_confidence_impact_diagnostics": "false",
+                "bl005_bl006_handshake_validation_policy": "strict",
             },
         },
     )
@@ -428,6 +456,10 @@ def test_bl005_bl006_resolvers_follow_effective_validated_controls(tmp_path: Pat
         bl006["emit_confidence_impact_diagnostics"]
         == effective["scoring_controls"]["emit_confidence_impact_diagnostics"]
     )
+    assert (
+        bl006["bl005_bl006_handshake_validation_policy"]
+        == effective["scoring_controls"]["bl005_bl006_handshake_validation_policy"]
+    )
 
 
 def test_bl008_bl009_resolvers_follow_effective_validated_controls(tmp_path: Path) -> None:
@@ -442,6 +474,7 @@ def test_bl008_bl009_resolvers_follow_effective_validated_controls(tmp_path: Pat
             "observability_controls": {
                 "diagnostic_sample_limit": "0",
                 "bootstrap_mode": "not_bool",
+                "bl008_bl009_handshake_validation_policy": "invalid",
             },
         },
     )
@@ -461,6 +494,10 @@ def test_bl008_bl009_resolvers_follow_effective_validated_controls(tmp_path: Pat
     )
     assert bl009["diagnostic_sample_limit"] == effective["observability_controls"]["diagnostic_sample_limit"]
     assert bl009["bootstrap_mode"] == effective["observability_controls"]["bootstrap_mode"]
+    assert (
+        bl009["bl008_bl009_handshake_validation_policy"]
+        == effective["observability_controls"]["bl008_bl009_handshake_validation_policy"]
+    )
 
 
 def test_bl003_weighting_policy_resolver_follows_effective_validated_controls(tmp_path: Path) -> None:

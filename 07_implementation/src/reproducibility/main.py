@@ -2,6 +2,7 @@
 
 import argparse
 import json
+import logging
 import os
 import shutil
 import subprocess
@@ -9,6 +10,8 @@ import sys
 import time
 from pathlib import Path
 
+from reproducibility.input_validation import validate_bl009_outputs
+from reproducibility.runtime_controls import resolve_bl010_runtime_controls
 from shared_utils.hashing import canonical_json_hash as shared_canonical_json_hash
 from shared_utils.hashing import sha256_of_file
 from shared_utils.artifact_registry import bl010_required_paths
@@ -18,6 +21,9 @@ from shared_utils.path_utils import impl_root
 from shared_utils.parsing import safe_float, safe_int
 from shared_utils.report_utils import write_csv_rows, write_json_ascii
 from shared_utils.stage_utils import relpath
+
+logger = logging.getLogger(__name__)
+
 
 
 DEFAULT_REPLAY_COUNT = 3
@@ -616,6 +622,19 @@ def main() -> None:
     paths = build_paths(root)
     ensure_required_inputs(paths, root)
 
+    # Validate BL-009 outputs before starting reproducibility replay
+    bl009_output_dir = str(root / "observability/outputs")
+    bl010_controls = resolve_bl010_runtime_controls()
+    validation_policy = str(bl010_controls.get("bl009_bl010_handshake_validation_policy", "warn"))
+    validation_result = validate_bl009_outputs(bl009_output_dir, validation_policy)
+
+    if validation_result["status"] == "fail":
+        raise RuntimeError(
+            f"BL-010 reproducibility validation failed: {validation_result['violations']}"
+        )
+    elif validation_result["status"] == "warn":
+        logger.warning(f"BL-010 validation warnings: {validation_result['violations']}")
+
     config_snapshot = build_config_snapshot(
         paths,
         root,
@@ -720,6 +739,12 @@ def main() -> None:
             "bootstrap_mode": bool(config_snapshot["bootstrap_mode"]),
             "config_hash": config_hash,
             "fixed_input_source": config_snapshot["fixed_input_source"],
+        },
+        "validation": {
+            "policy": validation_result["policy"],
+            "status": validation_result["status"],
+            "violations": validation_result["violations"],
+            "details": validation_result["details"],
         },
         "inputs": {
             "config_snapshot_path": relpath(config_path, root),

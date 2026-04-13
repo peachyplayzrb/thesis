@@ -1,10 +1,12 @@
 ﻿from __future__ import annotations
 
 import argparse
+import logging
 import time
 from datetime import datetime, timezone
 
 
+from controllability.input_validation import validate_bl010_baseline_snapshot
 from shared_utils.io_utils import (
     canonical_json_hash,
     load_csv_rows,
@@ -35,6 +37,8 @@ from shared_utils.parsing import normalize_candidate_row, safe_int
 from shared_utils.path_utils import impl_root
 from shared_utils.report_utils import write_text
 from shared_utils.stage_utils import ensure_required_keys, load_required_json_object, relpath
+
+logger = logging.getLogger(__name__)
 
 
 def _mapping(value: object) -> dict[str, object]:
@@ -71,6 +75,18 @@ def main() -> None:
 
     baseline_snapshot = load_required_json_object(paths["baseline_snapshot"], label="BL-010 baseline snapshot", stage_label="BL-011")
     ensure_baseline_snapshot_shape(baseline_snapshot)
+
+    # Validate BL-010 baseline snapshot structure before scenario building
+    validation_policy = str(runtime_controls.get("bl010_bl011_handshake_validation_policy", "warn"))
+    validation_result = validate_bl010_baseline_snapshot(baseline_snapshot, validation_policy)
+
+    if validation_result["status"] == "fail":
+        raise RuntimeError(
+            f"BL-011 controllability validation failed: {validation_result['violations']}"
+        )
+    elif validation_result["status"] == "warn":
+        logger.warning(f"BL-011 validation warnings: {validation_result['violations']}")
+
     bl003_summary = load_required_json_object(paths["bl003_summary"], label="BL-003 alignment summary", stage_label="BL-011")
     ensure_required_keys(bl003_summary, ["inputs", "counts"], label="BL-003 alignment summary", stage_label="BL-011")
     bl003_inputs = _mapping(bl003_summary.get("inputs"))
@@ -253,6 +269,12 @@ def main() -> None:
             "elapsed_seconds": round(time.time() - run_started, 3),
             "baseline_config_hash": baseline_config_hash,
             "scenario_count": len(scenario_records),
+        },
+        "validation": {
+            "policy": validation_result["policy"],
+            "status": validation_result["status"],
+            "violations": validation_result["violations"],
+            "details": validation_result["details"],
         },
         "inputs": {
             "baseline_snapshot_path": relpath(paths["baseline_snapshot"], root),

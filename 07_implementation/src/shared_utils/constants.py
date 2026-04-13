@@ -49,6 +49,12 @@ DEFAULT_RETRIEVAL_USE_WEIGHTED_SEMANTICS = False
 DEFAULT_RETRIEVAL_USE_CONTINUOUS_NUMERIC = False
 DEFAULT_RETRIEVAL_ENABLE_POPULARITY_NUMERIC = False
 DEFAULT_BL005_HANDSHAKE_VALIDATION_POLICY = "warn"
+DEFAULT_BL006_HANDSHAKE_VALIDATION_POLICY = "warn"
+DEFAULT_BL007_HANDSHAKE_VALIDATION_POLICY = "warn"
+DEFAULT_BL008_HANDSHAKE_VALIDATION_POLICY = "warn"
+DEFAULT_BL009_HANDSHAKE_VALIDATION_POLICY = "warn"
+DEFAULT_BL010_BL009_VALIDATION_POLICY = "warn"
+DEFAULT_BL011_BL010_VALIDATION_POLICY = "warn"
 DEFAULT_SIGNAL_MODE_NAME = "v1f-compat"
 ENHANCED_SIGNAL_MODE_NAME = "v1g-enhanced"
 CUSTOM_SIGNAL_MODE_NAME = "custom"
@@ -248,6 +254,7 @@ DEFAULT_SCORING_CONTROLS: dict[str, object] = {
     "emit_semantic_precision_diagnostics": False,
     "apply_bl003_influence_tracks": False,
     "influence_track_bonus_scale": 0.0,
+    "bl005_bl006_handshake_validation_policy": DEFAULT_BL006_HANDSHAKE_VALIDATION_POLICY,
 }
 
 DEFAULT_ASSEMBLY_CONTROLS: dict[str, object] = {
@@ -256,6 +263,7 @@ DEFAULT_ASSEMBLY_CONTROLS: dict[str, object] = {
     "max_per_genre": 4,
     "max_consecutive": 2,
     "utility_strategy": "rank_round_robin",
+    "utility_decay_factor": 0.0,
     "utility_weights": {
         "score_weight": 1.0,
         "novelty_weight": 0.0,
@@ -278,12 +286,14 @@ DEFAULT_ASSEMBLY_CONTROLS: dict[str, object] = {
     "use_component_contributions_for_tiebreak": False,
     "use_semantic_strength_for_tiebreak": False,
     "emit_opportunity_cost_metrics": False,
+    "opportunity_cost_top_k_examples": 10,
     "detail_log_top_k": 100,
     "influence_policy_mode": "competitive",
     "influence_reserved_slots": 0,
     "influence_allow_genre_cap_override": False,
     "influence_allow_consecutive_override": False,
     "influence_allow_score_threshold_override": False,
+    "bl006_bl007_handshake_validation_policy": DEFAULT_BL007_HANDSHAKE_VALIDATION_POLICY,
 }
 
 # BL-008 Transparency Default
@@ -293,6 +303,9 @@ DEFAULT_TRANSPARENCY_CONTROLS: dict[str, Any] = {
     "top_contributor_limit": DEFAULT_TOP_CONTRIBUTOR_LIMIT,
     "blend_primary_contributor_on_near_tie": False,
     "primary_contributor_tie_delta": 0.02,
+    "include_per_track_control_provenance": True,
+    "emit_run_level_control_provenance_summary": True,
+    "bl007_bl008_handshake_validation_policy": DEFAULT_BL008_HANDSHAKE_VALIDATION_POLICY,
 }
 
 DEFAULT_OBSERVABILITY_CONTROLS: dict[str, Any] = {
@@ -300,6 +313,7 @@ DEFAULT_OBSERVABILITY_CONTROLS: dict[str, Any] = {
     "input_scope": dict(DEFAULT_INPUT_SCOPE),
     "diagnostic_sample_limit": 5,
     "bootstrap_mode": True,
+    "bl008_bl009_handshake_validation_policy": DEFAULT_BL009_HANDSHAKE_VALIDATION_POLICY,
 }
 
 DEFAULT_REPORTING_SCORE_THRESHOLDS: dict[str, float] = {

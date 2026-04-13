@@ -5,11 +5,13 @@ from __future__ import annotations
 from typing import Mapping
 
 from shared_utils.constants import (
+    DEFAULT_BL009_HANDSHAKE_VALIDATION_POLICY,
     DEFAULT_CONTROL_MODE,
     DEFAULT_INPUT_SCOPE,
     DEFAULT_OBSERVABILITY_CONTROLS,
 )
-from shared_utils.env_utils import coerce_int, env_bool, env_int
+from shared_utils.env_utils import coerce_int, env_bool, env_int, env_str
+from observability.input_validation import normalize_validation_policy
 from shared_utils.stage_runtime_resolver import defaults_loader, resolve_run_config_path, resolve_stage_controls
 
 
@@ -30,6 +32,10 @@ def _load_bl009_controls_from_env() -> dict[str, object]:
         "bootstrap_mode": env_bool(
             "BL009_BOOTSTRAP_MODE",
             bool(DEFAULT_OBSERVABILITY_CONTROLS["bootstrap_mode"]),
+        ),
+        "bl008_bl009_handshake_validation_policy": env_str(
+            "BL009_BL008_HANDSHAKE_VALIDATION_POLICY",
+            DEFAULT_BL009_HANDSHAKE_VALIDATION_POLICY,
         ),
     }
 
@@ -61,6 +67,12 @@ def _sanitize_bl009_controls(controls: dict[str, object]) -> dict[str, object]:
     )
     controls["bootstrap_mode"] = bool(
         controls.get("bootstrap_mode", DEFAULT_OBSERVABILITY_CONTROLS["bootstrap_mode"])
+    )
+    controls["bl008_bl009_handshake_validation_policy"] = normalize_validation_policy(
+        controls.get(
+            "bl008_bl009_handshake_validation_policy",
+            DEFAULT_BL009_HANDSHAKE_VALIDATION_POLICY,
+        )
     )
     return controls
 

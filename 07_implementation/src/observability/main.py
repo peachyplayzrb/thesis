@@ -2,12 +2,14 @@
 
 import csv
 import json
+import logging
 import time
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
 from observability.runtime_controls import resolve_bl009_runtime_controls
+from observability.input_validation import validate_bl008_bl009_handshake
 from shared_utils.coerce import to_mapping
 from shared_utils.artifact_registry import bl009_required_paths
 from shared_utils.hashing import sha256_of_values
@@ -214,6 +216,9 @@ def main() -> None:
     input_scope = _object_mapping(runtime_controls.get("input_scope"))
     diagnostic_sample_limit = safe_int(runtime_controls.get("diagnostic_sample_limit"), 5)
     bootstrap_mode = bool(runtime_controls.get("bootstrap_mode", True))
+    bl008_bl009_handshake_validation_policy = str(
+        runtime_controls.get("bl008_bl009_handshake_validation_policy", "warn")
+    )
     root = impl_root()
     output_dir = root / "observability" / "outputs"
     output_dir.mkdir(parents=True, exist_ok=True)
@@ -255,6 +260,25 @@ def main() -> None:
     bl008_payloads = load_required_json_object(paths["bl008_payloads"], label="BL-008 explanation payloads", stage_label="BL-009")
     ensure_required_keys(playlist, ["playlist_length"], label="BL-007 playlist", stage_label="BL-009")
     ensure_required_keys(bl008_payloads, ["explanations"], label="BL-008 explanation payloads", stage_label="BL-009")
+    handshake_validation = validate_bl008_bl009_handshake(
+        bl008_summary=bl008_summary,
+        bl008_payloads=bl008_payloads,
+        policy=bl008_bl009_handshake_validation_policy,
+    )
+    if handshake_validation["status"] == "fail":
+        violations_obj = handshake_validation.get("control_constraint_violations")
+        violations = list(violations_obj) if isinstance(violations_obj, list) else []
+        raise RuntimeError(
+            "BL-008↔BL-009 handshake validation failed: "
+            + "; ".join(str(item) for item in violations)
+        )
+    if handshake_validation["status"] in {"warn", "allow"}:
+        logging.getLogger(__name__).warning(
+            "BL-008↔BL-009 handshake validation status=%s policy=%s sampled=%s",
+            handshake_validation["status"],
+            handshake_validation["policy"],
+            handshake_validation.get("sampled_violations", []),
+        )
 
     generated_at_utc = utc_now()
     run_id = f"BL009-OBSERVE-{datetime.now(timezone.utc).strftime('%Y%m%d-%H%M%S-%f')}"
@@ -455,6 +479,13 @@ def main() -> None:
         "run_config": {
             "control_mode": control_mode,
             "input_scope": input_scope,
+            "observability": {
+                "diagnostic_sample_limit": diagnostic_sample_limit,
+                "bootstrap_mode": bootstrap_mode,
+                "validation_policies": {
+                    "bl008_bl009_handshake_validation_policy": bl008_bl009_handshake_validation_policy,
+                },
+            },
             "signal_mode": signal_mode,
             "signal_mode_calibration": signal_mode_calibration,
             "canonical_config_artifacts": canonical_config_artifacts,
@@ -487,6 +518,11 @@ def main() -> None:
                 "top_contributor_distribution": bl008_summary["top_contributor_distribution"],
                 "explanation_payload_rule": "top 3 contributors by weighted contribution; sentence derived from top contributors and playlist position",
             },
+        },
+        "validation": {
+            "status": handshake_validation["status"],
+            "policy": handshake_validation["policy"],
+            "sampled_violations": handshake_validation["sampled_violations"],
         },
         "ingestion_alignment_diagnostics": {
             "stage_status": "active_bl004_to_bl008_mode",

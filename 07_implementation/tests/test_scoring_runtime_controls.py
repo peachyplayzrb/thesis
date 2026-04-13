@@ -85,6 +85,7 @@ def test_resolve_bl006_runtime_controls_sanitizes_invalid_values(monkeypatch) ->
             "profile_numeric_confidence_mode": "invalid_value",
             "profile_numeric_confidence_blend_weight": 3.0,
             "influence_track_bonus_scale": -1.0,
+            "bl005_bl006_handshake_validation_policy": "invalid_value",
         }
     }
     monkeypatch.setenv("BL_STAGE_CONFIG_JSON", json.dumps(payload))
@@ -99,6 +100,19 @@ def test_resolve_bl006_runtime_controls_sanitizes_invalid_values(monkeypatch) ->
     assert resolved["profile_numeric_confidence_mode"] == "direct"
     assert resolved["profile_numeric_confidence_blend_weight"] == 1.0
     assert resolved["influence_track_bonus_scale"] == 0.0
+    assert resolved["bl005_bl006_handshake_validation_policy"] == "warn"
+
+
+def test_resolve_bl006_runtime_controls_parse_failure_emits_warning(monkeypatch) -> None:
+    monkeypatch.setenv("BL_STAGE_CONFIG_JSON", "{not-json")
+    monkeypatch.setenv("BL006_COMPONENT_WEIGHTS_JSON", '{"tag_overlap_score": 1.0}')
+
+    resolved = resolve_bl006_runtime_controls()
+
+    assert resolved["runtime_control_resolution_diagnostics"]["payload_json_parse_error"] is True
+    assert resolved["runtime_control_resolution_diagnostics"]["resolution_path"] == "environment"
+    assert resolved["runtime_control_validation_warnings"]
+    assert "parse failed" in resolved["runtime_control_validation_warnings"][0].lower()
 
 
 def test_resolve_bl006_runtime_controls_payload_missing_keys_use_defaults_not_env(monkeypatch) -> None:

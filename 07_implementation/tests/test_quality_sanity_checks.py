@@ -8,8 +8,13 @@ import pytest
 
 from quality import sanity_checks
 from quality.sanity_checks import (
+    bl008_explanation_fidelity_warnings,
+    bl008_bl009_handshake_contract_ok,
     bl005_control_resolution_fallback_volume_advisory,
     bl005_handshake_warning_volume_advisory,
+    bl007_bl008_handshake_contract_ok,
+    bl006_bl007_handshake_contract_ok,
+    bl005_bl006_handshake_contract_ok,
     bl004_bl005_handshake_contract_ok,
     bl003_bl004_handshake_contract_ok,
     bl005_filtered_has_required_columns,
@@ -38,6 +43,10 @@ def _build_bl014_fixture(
     include_runtime_scope_diagnostics: bool,
     include_numeric_confidence: bool = True,
     include_bl005_handshake_policy: bool = True,
+    include_bl006_handshake_policy: bool = True,
+    include_bl007_handshake_policy: bool = True,
+    include_bl008_handshake_policy: bool = True,
+    include_bl009_handshake_policy: bool = True,
     runtime_control_normalization_event_count: int = 0,
 ) -> Path:
     repo_root = tmp_path / "impl"
@@ -88,7 +97,7 @@ def _build_bl014_fixture(
         bl006_scored_path,
         [["rank", "track_id", "lead_genre", "final_score", "lead_genre_contribution", "genre_overlap_contribution", "tag_overlap_contribution"], ["1", "track_1", "rock", "0.95", "0.3", "0.3", "0.35"]],
     )
-    _write_csv(bl007_trace_path, [["rank", "track_id"], ["1", "track_1"]])
+    _write_csv(bl007_trace_path, [["rank", "track_id", "decision", "score_rank"], ["1", "track_1", "included", "1"]])
     _write_csv(candidate_stub_path, [["track_id", "artist", "song"], ["track_1", "Artist A", "Song A"]])
 
     summary_inputs = {
@@ -193,6 +202,12 @@ def _build_bl014_fixture(
         {
             "run_id": "BL006-SCORE-TEST",
             "counts": {"candidates_scored": 1},
+            "config": {
+                "validation_policies": {
+                    "bl005_bl006_handshake_validation_policy": "warn",
+                }
+            },
+            "validation": {"status": "pass"},
             "input_artifacts": {
                 "profile_sha256": sha256_file(profile_path),
                 "filtered_candidates_sha256": sha256_file(bl005_filtered_path),
@@ -202,11 +217,28 @@ def _build_bl014_fixture(
             },
         },
     )
+    if not include_bl006_handshake_policy:
+        _write_json(
+            bl006_summary_path,
+            {
+                "run_id": "BL006-SCORE-TEST",
+                "counts": {"candidates_scored": 1},
+                "config": {"validation_policies": {}},
+                "validation": {},
+                "input_artifacts": {
+                    "profile_sha256": sha256_file(profile_path),
+                    "filtered_candidates_sha256": sha256_file(bl005_filtered_path),
+                },
+                "output_hashes_sha256": {
+                    "bl006_scored_candidates.csv": sha256_file(bl006_scored_path),
+                },
+            },
+        )
     _write_json(
         playlist_path,
         {
             "playlist_length": 1,
-            "tracks": [{"track_id": "track_1"}],
+            "tracks": [{"track_id": "track_1", "final_score": 0.85, "playlist_position": 1}],
             "config": {"target_size": 1},
         },
     )
@@ -214,6 +246,12 @@ def _build_bl014_fixture(
         bl007_report_path,
         {
             "run_id": "BL007-ASSEMBLE-TEST",
+            "config": {
+                "validation_policies": {
+                    "bl006_bl007_handshake_validation_policy": "warn",
+                }
+            },
+            "validation": {"status": "pass"},
             "input_artifact_hashes": {
                 "bl006_scored_candidates.csv": sha256_file(bl006_scored_path),
             },
@@ -223,17 +261,64 @@ def _build_bl014_fixture(
             },
         },
     )
+    if not include_bl007_handshake_policy:
+        _write_json(
+            bl007_report_path,
+            {
+                "run_id": "BL007-ASSEMBLE-TEST",
+                "config": {"validation_policies": {}},
+                "validation": {},
+                "input_artifact_hashes": {
+                    "bl006_scored_candidates.csv": sha256_file(bl006_scored_path),
+                },
+                "output_artifact_hashes": {
+                    "playlist.json": sha256_file(playlist_path),
+                    "bl007_assembly_trace.csv": sha256_file(bl007_trace_path),
+                },
+            },
+        )
     _write_json(
         bl008_payloads_path,
         {
             "playlist_track_count": 1,
-            "explanations": [{"track_id": "track_1"}],
+            "explanations": [
+                {
+                    "track_id": "track_1",
+                    "final_score": 0.85,
+                    "why_selected": "Selected at playlist position 1 (score 0.8500) because it shows a strong profile match on Lead genre match. Lead genre is 'rock'.",
+                    "primary_explanation_driver": {"label": "Lead genre match"},
+                    "causal_driver": {"label": "Lead genre match"},
+                    "narrative_driver": {"label": "Lead genre match"},
+                    "top_score_contributors": [{"label": "Lead genre match"}],
+                    "score_breakdown": [
+                        {
+                            "label": "Lead genre match",
+                            "contribution": 0.95,
+                            "contribution_share_pct": 100.0,
+                            "margin_vs_next_contributor": 0.0,
+                        }
+                    ],
+                    "assembly_context": {
+                        "decision": "included",
+                        "admission_rule": "Admitted on first evaluation",
+                        "genre_at_position": "rock",
+                    },
+                }
+            ],
         },
     )
     _write_json(
         bl008_summary_path,
         {
             "run_id": "BL008-EXPLAIN-TEST",
+            "playlist_track_count": 1,
+            "top_contributor_distribution": {"Lead genre match": 1},
+            "config": {
+                "validation_policies": {
+                    "bl007_bl008_handshake_validation_policy": "warn",
+                }
+            },
+            "validation": {"status": "pass"},
             "input_artifact_hashes": {
                 "bl006_scored_candidates.csv": sha256_file(bl006_scored_path),
                 "bl006_score_summary.json": sha256_file(bl006_summary_path),
@@ -245,17 +330,61 @@ def _build_bl014_fixture(
             },
         },
     )
+    if not include_bl008_handshake_policy:
+        _write_json(
+            bl008_summary_path,
+            {
+                "run_id": "BL008-EXPLAIN-TEST",
+                "playlist_track_count": 1,
+                "top_contributor_distribution": {"Lead genre match": 1},
+                "config": {"validation_policies": {}},
+                "validation": {},
+                "input_artifact_hashes": {
+                    "bl006_scored_candidates.csv": sha256_file(bl006_scored_path),
+                    "bl006_score_summary.json": sha256_file(bl006_summary_path),
+                    "playlist.json": sha256_file(playlist_path),
+                    "bl007_assembly_trace.csv": sha256_file(bl007_trace_path),
+                },
+                "output_artifact_hashes": {
+                    "bl008_explanation_payloads.json": sha256_file(bl008_payloads_path),
+                },
+            },
+        )
     _write_json(
         bl009_log_path,
         {
             "run_metadata": {},
-            "run_config": {"alignment_seed_controls": {"fuzzy_matching": {"enabled": False}}},
+            "run_config": {
+                "alignment_seed_controls": {"fuzzy_matching": {"enabled": False}},
+                "observability": {
+                    "validation_policies": {
+                        "bl008_bl009_handshake_validation_policy": "warn"
+                    }
+                },
+            },
+            "validation": {"status": "pass"},
             "ingestion_alignment_diagnostics": {},
             "stage_diagnostics": {"alignment": {"counts": {"matched_by_fuzzy": 0}}},
             "exclusion_diagnostics": {},
             "output_artifacts": {},
         },
     )
+    if not include_bl009_handshake_policy:
+        _write_json(
+            bl009_log_path,
+            {
+                "run_metadata": {},
+                "run_config": {
+                    "alignment_seed_controls": {"fuzzy_matching": {"enabled": False}},
+                    "observability": {"validation_policies": {}},
+                },
+                "validation": {},
+                "ingestion_alignment_diagnostics": {},
+                "stage_diagnostics": {"alignment": {"counts": {"matched_by_fuzzy": 0}}},
+                "exclusion_diagnostics": {},
+                "output_artifacts": {},
+            },
+        )
     _write_csv(
         bl009_index_path,
         [[
@@ -427,6 +556,47 @@ def test_bl004_bl005_handshake_contract_fails_when_fields_missing() -> None:
     assert "missing BL-005 config.validation_policies.bl004_bl005_handshake_validation_policy" in details
 
 
+def test_bl005_bl006_handshake_contract_ok_when_fields_present() -> None:
+    ok, details = bl005_bl006_handshake_contract_ok(
+        bl005_filtered_header=[
+            "cid",
+            "track_id",
+            "artist",
+            "song",
+            "tags",
+            "genres",
+            "tempo",
+            "duration_ms",
+            "key",
+            "mode",
+        ],
+        bl006_summary={
+            "config": {
+                "validation_policies": {
+                    "bl005_bl006_handshake_validation_policy": "warn",
+                }
+            },
+            "validation": {"status": "pass"},
+        },
+    )
+
+    assert ok is True
+    assert "present" in details
+
+
+def test_bl005_bl006_handshake_contract_fails_when_fields_missing() -> None:
+    ok, details = bl005_bl006_handshake_contract_ok(
+        bl005_filtered_header=["track_id"],
+        bl006_summary={"config": {}, "validation": {}},
+    )
+
+    assert ok is False
+    assert "missing BL-005 filtered fields" in details
+    assert "missing BL-005 source identifier field=id_or_cid" in details
+    assert "missing BL-006 config.validation_policies.bl005_bl006_handshake_validation_policy" in details
+    assert "missing BL-006 validation.status" in details
+
+
 def test_bl005_handshake_warning_volume_advisory_emits_when_warn_volume_exceeds_threshold() -> None:
     advisory = bl005_handshake_warning_volume_advisory(
         {
@@ -503,6 +673,71 @@ def test_bl005_control_resolution_fallback_volume_advisory_not_emitted_when_with
     )
 
     assert advisory is None
+
+
+def test_bl008_explanation_fidelity_warnings_none_for_coherent_payload() -> None:
+    warnings = bl008_explanation_fidelity_warnings(
+        {
+            "explanations": [
+                {
+                    "final_score": 0.8,
+                    "why_selected": "Selected because it shows a strong profile match on Tempo (BPM).",
+                    "primary_explanation_driver": {"label": "Tempo (BPM)"},
+                    "causal_driver": {"label": "Tempo (BPM)"},
+                    "top_score_contributors": [{"label": "Tempo (BPM)"}],
+                    "score_breakdown": [
+                        {
+                            "label": "Tempo (BPM)",
+                            "contribution": 0.4,
+                            "contribution_share_pct": 100.0,
+                            "margin_vs_next_contributor": 0.0,
+                        }
+                    ],
+                    "assembly_context": {
+                        "decision": "included",
+                        "admission_rule": "Admitted on first evaluation",
+                        "genre_at_position": "rock",
+                    },
+                }
+            ]
+        }
+    )
+    assert warnings == []
+
+
+def test_bl008_explanation_fidelity_warnings_detect_mismatch() -> None:
+    warnings = bl008_explanation_fidelity_warnings(
+        {
+            "explanations": [
+                {
+                    "final_score": 0.82,
+                    "why_selected": "Selected because it shows a moderate profile match on Tag overlap.",
+                    "primary_explanation_driver": {"label": "Tag overlap"},
+                    "causal_driver": {"label": "Tag overlap"},
+                    "top_score_contributors": [{"label": "Tempo (BPM)"}],
+                    "score_breakdown": [
+                        {
+                            "label": "Tempo (BPM)",
+                            "contribution": 0.4,
+                            "contribution_share_pct": 70.0,
+                            "margin_vs_next_contributor": -0.1,
+                        },
+                        {
+                            "label": "Tag overlap",
+                            "contribution": 0.2,
+                            "contribution_share_pct": 20.0,
+                            "margin_vs_next_contributor": 0.0,
+                        },
+                    ],
+                    "assembly_context": {"decision": "included"},
+                }
+            ]
+        }
+    )
+    assert any("primary_driver_not_in_top_contributors" in warning for warning in warnings)
+    assert any("why_selected_score_band_mismatch" in warning for warning in warnings)
+    assert any("negative_margin_vs_next_contributor" in warning for warning in warnings)
+    assert any("assembly_context_incomplete" in warning for warning in warnings)
 
 
 def test_bl014_main_fails_on_missing_handshake_contract(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
@@ -591,3 +826,419 @@ def test_bl014_main_emits_control_resolution_advisory(
     advisories = {item["id"]: item for item in report["advisories"]}
     assert report["overall_status"] == "pass"
     assert "advisory_bl005_control_resolution_fallback_volume" in advisories
+
+
+def test_bl014_main_fails_on_missing_bl005_bl006_handshake_contract(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    repo_root = _build_bl014_fixture(
+        tmp_path,
+        include_runtime_scope_diagnostics=True,
+        include_bl006_handshake_policy=False,
+    )
+    output_dir = tmp_path / "quality_outputs"
+
+    monkeypatch.setattr(sanity_checks, "REPO_ROOT", repo_root)
+    monkeypatch.setattr(sanity_checks, "OUTPUT_DIR", output_dir)
+    monkeypatch.setattr(
+        sanity_checks,
+        "bl003_required_paths",
+        lambda _root: {
+            "summary": repo_root / "alignment/outputs/bl003_ds001_spotify_summary.json",
+            "seed_table": repo_root / "alignment/outputs/bl003_ds001_spotify_seed_table.csv",
+        },
+    )
+
+    exit_code = sanity_checks.main()
+
+    assert exit_code == 1
+    report = json.loads((output_dir / "bl014_sanity_report.json").read_text(encoding="utf-8"))
+    failed_checks = {check["id"]: check for check in report["checks"] if check["status"] == "fail"}
+    assert report["overall_status"] == "fail"
+    assert set(failed_checks) == {"schema_bl005_bl006_handshake_contract"}
+    assert "missing BL-006 config.validation_policies.bl005_bl006_handshake_validation_policy" in failed_checks[
+        "schema_bl005_bl006_handshake_contract"
+    ]["details"]
+
+
+# ---------------------------------------------------------------------------
+# Unit tests for bl006_bl007_handshake_contract_ok
+# ---------------------------------------------------------------------------
+
+
+def _bl006_scored_header_full() -> list[str]:
+    return [
+        "rank",
+        "track_id",
+        "lead_genre",
+        "final_score",
+        "matched_genres",
+        "matched_tags",
+        "lead_genre_contribution",
+        "genre_overlap_contribution",
+        "tag_overlap_contribution",
+    ]
+
+
+def _bl007_report_full() -> dict:
+    return {
+        "run_id": "BL007-TEST",
+        "config": {
+            "validation_policies": {
+                "bl006_bl007_handshake_validation_policy": "warn",
+            }
+        },
+        "validation": {"status": "pass"},
+    }
+
+
+def test_bl006_bl007_handshake_contract_ok_when_fields_present() -> None:
+    ok, details = bl006_bl007_handshake_contract_ok(
+        _bl006_scored_header_full(),
+        _bl007_report_full(),
+    )
+
+    assert ok is True
+    assert "present" in details
+
+
+def test_bl006_bl007_handshake_contract_fails_missing_required_scored_fields() -> None:
+    header = ["track_id", "final_score", "lead_genre_contribution"]  # missing rank/matched_*
+
+    ok, details = bl006_bl007_handshake_contract_ok(header, _bl007_report_full())
+
+    assert ok is False
+    assert "missing BL-006 scored fields" in details
+
+
+def test_bl006_bl007_handshake_contract_fails_when_no_scoring_component_columns() -> None:
+    header = ["rank", "track_id", "lead_genre", "final_score", "matched_genres", "matched_tags"]
+
+    ok, details = bl006_bl007_handshake_contract_ok(header, _bl007_report_full())
+
+    assert ok is False
+    assert "missing BL-006 scoring component contribution columns" in details
+
+
+def test_bl006_bl007_handshake_contract_fails_when_policy_missing() -> None:
+    report = {
+        "config": {"validation_policies": {}},
+        "validation": {"status": "pass"},
+    }
+
+    ok, details = bl006_bl007_handshake_contract_ok(_bl006_scored_header_full(), report)
+
+    assert ok is False
+    assert "missing BL-007 config.validation_policies.bl006_bl007_handshake_validation_policy" in details
+
+
+def test_bl006_bl007_handshake_contract_fails_when_validation_status_missing() -> None:
+    report = {
+        "config": {
+            "validation_policies": {"bl006_bl007_handshake_validation_policy": "warn"}
+        },
+        "validation": {},
+    }
+
+    ok, details = bl006_bl007_handshake_contract_ok(_bl006_scored_header_full(), report)
+
+    assert ok is False
+    assert "missing BL-007 report validation.status" in details
+
+
+# ---------------------------------------------------------------------------
+# BL-014 integration — schema_bl006_bl007_handshake_contract
+# ---------------------------------------------------------------------------
+
+
+def test_bl014_main_fails_on_missing_bl006_bl007_handshake_contract(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    repo_root = _build_bl014_fixture(
+        tmp_path,
+        include_runtime_scope_diagnostics=True,
+        include_bl007_handshake_policy=False,
+    )
+    output_dir = tmp_path / "quality_outputs"
+
+    monkeypatch.setattr(sanity_checks, "REPO_ROOT", repo_root)
+    monkeypatch.setattr(sanity_checks, "OUTPUT_DIR", output_dir)
+    monkeypatch.setattr(
+        sanity_checks,
+        "bl003_required_paths",
+        lambda _root: {
+            "summary": repo_root / "alignment/outputs/bl003_ds001_spotify_summary.json",
+            "seed_table": repo_root / "alignment/outputs/bl003_ds001_spotify_seed_table.csv",
+        },
+    )
+
+    exit_code = sanity_checks.main()
+
+    assert exit_code == 1
+    report = json.loads((output_dir / "bl014_sanity_report.json").read_text(encoding="utf-8"))
+    failed_checks = {check["id"]: check for check in report["checks"] if check["status"] == "fail"}
+    assert report["overall_status"] == "fail"
+    assert set(failed_checks) == {"schema_bl006_bl007_handshake_contract"}
+    assert "missing BL-007 config.validation_policies.bl006_bl007_handshake_validation_policy" in failed_checks[
+        "schema_bl006_bl007_handshake_contract"
+    ]["details"]
+
+
+# ---------------------------------------------------------------------------
+# Unit tests for bl007_bl008_handshake_contract_ok
+# ---------------------------------------------------------------------------
+
+
+def _bl007_playlist_full() -> dict:
+    return {
+        "playlist_length": 1,
+        "tracks": [{"track_id": "track_1", "final_score": 0.85, "playlist_position": 1}],
+    }
+
+
+def _bl008_summary_full() -> dict:
+    return {
+        "run_id": "BL008-TEST",
+        "config": {
+            "validation_policies": {
+                "bl007_bl008_handshake_validation_policy": "warn",
+            }
+        },
+        "validation": {"status": "pass"},
+    }
+
+
+def test_bl007_bl008_handshake_contract_ok_when_fields_present() -> None:
+    ok, details = bl007_bl008_handshake_contract_ok(
+        _bl007_playlist_full(),
+        _bl008_summary_full(),
+    )
+
+    assert ok is True
+    assert "present" in details
+
+
+def test_bl007_bl008_handshake_contract_fails_when_playlist_empty() -> None:
+    playlist = {"playlist_length": 0, "tracks": []}
+
+    ok, details = bl007_bl008_handshake_contract_ok(playlist, _bl008_summary_full())
+
+    assert ok is False
+    assert "playlist tracks list is empty" in details
+
+
+def test_bl007_bl008_handshake_contract_fails_when_track_fields_missing() -> None:
+    playlist = {
+        "playlist_length": 1,
+        "tracks": [{"track_id": "t1", "final_score": 0.8}],  # missing playlist_position
+    }
+
+    ok, details = bl007_bl008_handshake_contract_ok(playlist, _bl008_summary_full())
+
+    assert ok is False
+    assert "missing BL-007 playlist track fields" in details
+    assert "playlist_position" in details
+
+
+def test_bl007_bl008_handshake_contract_fails_when_policy_missing() -> None:
+    summary = {
+        "config": {"validation_policies": {}},
+        "validation": {"status": "pass"},
+    }
+
+    ok, details = bl007_bl008_handshake_contract_ok(_bl007_playlist_full(), summary)
+
+    assert ok is False
+    assert "missing BL-008 config.validation_policies.bl007_bl008_handshake_validation_policy" in details
+
+
+def test_bl007_bl008_handshake_contract_fails_when_validation_status_missing() -> None:
+    summary = {
+        "config": {
+            "validation_policies": {"bl007_bl008_handshake_validation_policy": "warn"}
+        },
+        "validation": {},
+    }
+
+    ok, details = bl007_bl008_handshake_contract_ok(_bl007_playlist_full(), summary)
+
+    assert ok is False
+    assert "missing BL-008 summary validation.status" in details
+
+
+def _bl009_log_full() -> dict:
+    return {
+        "run_config": {
+            "observability": {
+                "validation_policies": {
+                    "bl008_bl009_handshake_validation_policy": "warn"
+                }
+            }
+        },
+        "validation": {"status": "pass"},
+    }
+
+
+def test_bl008_bl009_handshake_contract_ok_when_fields_present() -> None:
+    ok, details = bl008_bl009_handshake_contract_ok(
+        {
+            "run_id": "BL008-TEST",
+            "playlist_track_count": 1,
+            "top_contributor_distribution": {"Lead genre match": 1},
+        },
+        {
+            "playlist_track_count": 1,
+            "explanations": [{"track_id": "track_1"}],
+        },
+        _bl009_log_full(),
+    )
+
+    assert ok is True
+    assert "present" in details
+
+
+def test_bl008_bl009_handshake_contract_fails_when_summary_keys_missing() -> None:
+    ok, details = bl008_bl009_handshake_contract_ok(
+        {"run_id": "BL008-TEST"},
+        {"playlist_track_count": 1, "explanations": [{"track_id": "track_1"}]},
+        _bl009_log_full(),
+    )
+
+    assert ok is False
+    assert "missing BL-008 summary keys" in details
+
+
+def test_bl008_bl009_handshake_contract_fails_when_counts_mismatch() -> None:
+    ok, details = bl008_bl009_handshake_contract_ok(
+        {
+            "run_id": "BL008-TEST",
+            "playlist_track_count": 2,
+            "top_contributor_distribution": {"Lead genre match": 1},
+        },
+        {
+            "playlist_track_count": 1,
+            "explanations": [{"track_id": "track_1"}],
+        },
+        _bl009_log_full(),
+    )
+
+    assert ok is False
+    assert "counts are inconsistent" in details
+
+
+def test_bl008_bl009_handshake_contract_fails_when_policy_missing() -> None:
+    ok, details = bl008_bl009_handshake_contract_ok(
+        {
+            "run_id": "BL008-TEST",
+            "playlist_track_count": 1,
+            "top_contributor_distribution": {"Lead genre match": 1},
+        },
+        {
+            "playlist_track_count": 1,
+            "explanations": [{"track_id": "track_1"}],
+        },
+        {"run_config": {"observability": {"validation_policies": {}}}, "validation": {"status": "pass"}},
+    )
+
+    assert ok is False
+    assert "missing BL-009 run_config.observability.validation_policies.bl008_bl009_handshake_validation_policy" in details
+
+
+def test_bl008_bl009_handshake_contract_fails_when_validation_status_missing() -> None:
+    ok, details = bl008_bl009_handshake_contract_ok(
+        {
+            "run_id": "BL008-TEST",
+            "playlist_track_count": 1,
+            "top_contributor_distribution": {"Lead genre match": 1},
+        },
+        {
+            "playlist_track_count": 1,
+            "explanations": [{"track_id": "track_1"}],
+        },
+        {
+            "run_config": {
+                "observability": {
+                    "validation_policies": {"bl008_bl009_handshake_validation_policy": "warn"}
+                }
+            },
+            "validation": {},
+        },
+    )
+
+    assert ok is False
+    assert "missing BL-009 log validation.status" in details
+
+
+# ---------------------------------------------------------------------------
+# BL-014 integration — schema_bl007_bl008_handshake_contract
+# ---------------------------------------------------------------------------
+
+
+def test_bl014_main_fails_on_missing_bl007_bl008_handshake_contract(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    repo_root = _build_bl014_fixture(
+        tmp_path,
+        include_runtime_scope_diagnostics=True,
+        include_bl008_handshake_policy=False,
+    )
+    output_dir = tmp_path / "quality_outputs"
+
+    monkeypatch.setattr(sanity_checks, "REPO_ROOT", repo_root)
+    monkeypatch.setattr(sanity_checks, "OUTPUT_DIR", output_dir)
+    monkeypatch.setattr(
+        sanity_checks,
+        "bl003_required_paths",
+        lambda _root: {
+            "summary": repo_root / "alignment/outputs/bl003_ds001_spotify_summary.json",
+            "seed_table": repo_root / "alignment/outputs/bl003_ds001_spotify_seed_table.csv",
+        },
+    )
+
+    exit_code = sanity_checks.main()
+
+    assert exit_code == 1
+    report = json.loads((output_dir / "bl014_sanity_report.json").read_text(encoding="utf-8"))
+    failed_checks = {check["id"]: check for check in report["checks"] if check["status"] == "fail"}
+    assert report["overall_status"] == "fail"
+    assert set(failed_checks) == {"schema_bl007_bl008_handshake_contract"}
+    assert "missing BL-008 config.validation_policies.bl007_bl008_handshake_validation_policy" in failed_checks[
+        "schema_bl007_bl008_handshake_contract"
+    ]["details"]
+
+
+def test_bl014_main_fails_on_missing_bl008_bl009_handshake_contract(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    repo_root = _build_bl014_fixture(
+        tmp_path,
+        include_runtime_scope_diagnostics=True,
+        include_bl009_handshake_policy=False,
+    )
+    output_dir = tmp_path / "quality_outputs"
+
+    monkeypatch.setattr(sanity_checks, "REPO_ROOT", repo_root)
+    monkeypatch.setattr(sanity_checks, "OUTPUT_DIR", output_dir)
+    monkeypatch.setattr(
+        sanity_checks,
+        "bl003_required_paths",
+        lambda _root: {
+            "summary": repo_root / "alignment/outputs/bl003_ds001_spotify_summary.json",
+            "seed_table": repo_root / "alignment/outputs/bl003_ds001_spotify_seed_table.csv",
+        },
+    )
+
+    exit_code = sanity_checks.main()
+
+    assert exit_code == 1
+    report = json.loads((output_dir / "bl014_sanity_report.json").read_text(encoding="utf-8"))
+    failed_checks = {check["id"]: check for check in report["checks"] if check["status"] == "fail"}
+    assert report["overall_status"] == "fail"
+    assert set(failed_checks) == {"schema_bl008_bl009_handshake_contract"}
+    assert "missing BL-009 run_config.observability.validation_policies.bl008_bl009_handshake_validation_policy" in failed_checks[
+        "schema_bl008_bl009_handshake_contract"
+    ]["details"]

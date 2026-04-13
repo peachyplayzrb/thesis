@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Mapping
 
@@ -69,6 +69,9 @@ class ScoringControls:
     emit_semantic_precision_diagnostics: bool = False
     apply_bl003_influence_tracks: bool = False
     influence_track_bonus_scale: float = 0.0
+    bl005_bl006_handshake_validation_policy: str = "warn"
+    runtime_control_resolution_diagnostics: dict[str, object] = field(default_factory=dict)
+    runtime_control_validation_warnings: list[str] = field(default_factory=list)
 
     def as_mapping(self) -> dict[str, object]:
         return {
@@ -90,6 +93,9 @@ class ScoringControls:
             "emit_semantic_precision_diagnostics": self.emit_semantic_precision_diagnostics,
             "apply_bl003_influence_tracks": self.apply_bl003_influence_tracks,
             "influence_track_bonus_scale": self.influence_track_bonus_scale,
+            "bl005_bl006_handshake_validation_policy": self.bl005_bl006_handshake_validation_policy,
+            "runtime_control_resolution_diagnostics": dict(self.runtime_control_resolution_diagnostics),
+            "runtime_control_validation_warnings": list(self.runtime_control_validation_warnings),
         }
 
 
@@ -185,6 +191,22 @@ def controls_from_mapping(payload: Mapping[str, Any]) -> ScoringControls:
             payload["influence_track_bonus_scale"]
             if payload.get("influence_track_bonus_scale") is not None
             else 0.0
+        ),
+        bl005_bl006_handshake_validation_policy=str(
+            payload.get("bl005_bl006_handshake_validation_policy") or "warn"
+        ),
+        runtime_control_resolution_diagnostics=(
+            {
+                str(k): v
+                for k, v in dict(payload.get("runtime_control_resolution_diagnostics") or {}).items()
+            }
+            if isinstance(payload.get("runtime_control_resolution_diagnostics"), Mapping)
+            else {}
+        ),
+        runtime_control_validation_warnings=(
+            [str(item) for item in payload.get("runtime_control_validation_warnings") or []]
+            if isinstance(payload.get("runtime_control_validation_warnings"), list)
+            else []
         ),
     )
 

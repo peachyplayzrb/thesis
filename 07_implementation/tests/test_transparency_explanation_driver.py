@@ -2,6 +2,7 @@
 
 from transparency.explanation_driver import (
     build_why_selected,
+    select_causal_driver,
     select_primary_explanation_driver,
 )
 
@@ -16,8 +17,31 @@ def test_build_why_selected_includes_position_score_and_lead_genre() -> None:
     )
     assert "position 3" in text
     assert "0.8123" in text
+    assert "strong profile match" in text
     assert "Tempo (BPM), Genre overlap" in text
     assert "Lead genre is 'indie'" in text
+
+
+def test_build_why_selected_uses_moderate_wording_band() -> None:
+    text = build_why_selected(
+        lead_genre="electronic",
+        final_score=0.62,
+        top_contributors=[{"label": "Tag overlap"}],
+        playlist_position=1,
+        top_contributor_limit=1,
+    )
+    assert "moderate profile match" in text
+
+
+def test_build_why_selected_uses_weaker_wording_band() -> None:
+    text = build_why_selected(
+        lead_genre="pop",
+        final_score=0.41,
+        top_contributors=[{"label": "Tempo (BPM)"}],
+        playlist_position=4,
+        top_contributor_limit=1,
+    )
+    assert "weaker but acceptable profile match" in text
 
 
 def test_select_primary_explanation_driver_returns_unknown_when_empty() -> None:
@@ -50,3 +74,11 @@ def test_select_primary_explanation_driver_rotates_when_near_tied() -> None:
     )
     assert picked_pos1["label"] == "Tempo"
     assert picked_pos2["label"] == "Tag overlap"
+
+
+def test_select_causal_driver_prefers_top_contributor() -> None:
+    top = [
+        {"label": "Tempo", "contribution": 0.4},
+        {"label": "Tag overlap", "contribution": 0.39},
+    ]
+    assert select_causal_driver(top)["label"] == "Tempo"

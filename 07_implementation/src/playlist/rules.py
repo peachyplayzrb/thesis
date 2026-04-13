@@ -163,6 +163,7 @@ def _candidate_utility(
     candidate: dict[str, object],
     *,
     playlist: list[dict[str, object]],
+    utility_decay_factor: float,
     utility_weights: dict[str, float],
     use_component_contributions_for_tiebreak: bool,
     use_semantic_strength_for_tiebreak: bool,
@@ -183,11 +184,14 @@ def _candidate_utility(
         last_genre = str(playlist[-1].get("_assembly_genre", playlist[-1].get("lead_genre", "")))
         repetition_penalty = 1.0 if last_genre == assembly_genre else 0.0
 
+    rank_position = max(1, safe_int(candidate.get("score_rank"), 1))
+    rank_decay = 1.0 / (1.0 + max(0.0, utility_decay_factor) * float(rank_position - 1))
+
     utility = (
         score_weight * safe_float(candidate.get("final_score"), 0.0)
         + novelty_weight * novelty
         - repetition_penalty_weight * repetition_penalty
-    )
+    ) * rank_decay
     if use_component_contributions_for_tiebreak:
         utility += safe_float(candidate.get("component_strength"), 0.0) * 0.0001
     if use_semantic_strength_for_tiebreak:
@@ -249,6 +253,7 @@ def assemble_bucketed(
     max_consecutive: int,
     rule_hits: Counter,
     utility_strategy: str = "rank_round_robin",
+    utility_decay_factor: float = 0.0,
     utility_weights: dict[str, float] | None = None,
     adaptive_limits: dict[str, object] | None = None,
     controlled_relaxation: dict[str, object] | None = None,
@@ -389,6 +394,7 @@ def assemble_bucketed(
                     -_candidate_utility(
                         cand,
                         playlist=playlist,
+                        utility_decay_factor=utility_decay_factor,
                         utility_weights=utility_weights,
                         use_component_contributions_for_tiebreak=use_component_contributions_for_tiebreak,
                         use_semantic_strength_for_tiebreak=use_semantic_strength_for_tiebreak,
@@ -530,14 +536,13 @@ def assemble_bucketed(
             # No further candidates can pass active diversity constraints.
             break
 
-    # Preserve full-trace semantics by marking unprocessed eligible candidates as length-capped
+    # Preserve full-trace semantics by marking unprocessed eligible candidates
     # once target size is reached.
     if len(playlist) >= target_size:
         for cand in remaining:
             track_id = str(cand["track_id"])
             if track_id in finalized_ids:
                 continue
-            rule_hits["R4_length_cap"] += 1
             finalized_ids.add(track_id)
             trace_rows.append(
                 {
@@ -547,7 +552,7 @@ def assemble_bucketed(
                     "final_score": cand["final_score"],
                     "decision": "excluded",
                     "playlist_position": "",
-                    "exclusion_reason": "length_cap_reached",
+                    "exclusion_reason": "post_fill_unprocessed",
                     "influence_requested": str(cand.get("track_id", "")) in influence_track_ids,
                     "inclusion_path": "",
                 }

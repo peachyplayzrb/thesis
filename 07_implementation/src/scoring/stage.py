@@ -17,6 +17,7 @@ from scoring.diagnostics import (
     build_score_distribution_diagnostics,
     contribution_breakdown,
 )
+from scoring.input_validation import validate_bl005_bl006_handshake
 from scoring.models import (
     NUMERIC_COMPONENTS,
     NUMERIC_FEATURE_SPECS,
@@ -368,6 +369,8 @@ class ScoringStage:
         diagnostics_path: Path,
         scored_path: Path,
         confidence_impact_diagnostics: dict[str, object] | None = None,
+        handshake_validation: dict[str, object] | None = None,
+        runtime_controls: ScoringControls | None = None,
     ) -> dict[str, object]:
         context = (
             runtime_context
@@ -389,6 +392,15 @@ class ScoringStage:
         score_values = [to_float(row.get("final_score", 0.0)) for row in scored_rows]
         top_100_rows = scored_rows[:100]
         top_500_rows = scored_rows[:500]
+
+        validation_payload = dict(handshake_validation or {})
+        validation_policy = "warn"
+        runtime_resolution_diagnostics: dict[str, object] = {}
+        runtime_validation_warnings: list[str] = []
+        if runtime_controls is not None:
+            validation_policy = runtime_controls.bl005_bl006_handshake_validation_policy
+            runtime_resolution_diagnostics = dict(runtime_controls.runtime_control_resolution_diagnostics)
+            runtime_validation_warnings = list(runtime_controls.runtime_control_validation_warnings)
 
         return {
             "run_id": run_id,
@@ -457,7 +469,12 @@ class ScoringStage:
                 "genre_overlap_normalization": "weighted overlap with unmatched-label precision penalty",
                 "tag_overlap_normalization": "weighted overlap with unmatched-label precision penalty",
                 "semantic_source": "ds001_tags_and_genres_columns",
+                "validation_policies": {
+                    "bl005_bl006_handshake_validation_policy": validation_policy,
+                },
+                "runtime_control_resolution": runtime_resolution_diagnostics,
             },
+            "validation": validation_payload,
             "counts": {
                 "candidates_scored": len(scored_rows),
             },
@@ -474,6 +491,7 @@ class ScoringStage:
             },
             "score_distribution_diagnostics": distribution_diagnostics,
             "confidence_impact_diagnostics": confidence_impact_diagnostics or {},
+            "runtime_control_validation_warnings": runtime_validation_warnings,
             "top_candidates": top_candidates,
             "elapsed_seconds": round(elapsed_seconds, 3),
             "output_files": {
@@ -490,6 +508,31 @@ class ScoringStage:
         inputs = self.load_inputs(paths)
 
         runtime_controls = self.resolve_runtime_controls()
+        if runtime_controls.runtime_control_validation_warnings:
+            logger.warning(
+                "BL-006 runtime control resolution warnings detected: %s",
+                runtime_controls.runtime_control_validation_warnings,
+            )
+
+        handshake_validation = validate_bl005_bl006_handshake(
+            candidates=inputs.candidates,
+            policy=runtime_controls.bl005_bl006_handshake_validation_policy,
+        )
+        if handshake_validation["status"] == "fail":
+            violations_obj = handshake_validation.get("sampled_violations")
+            violations = list(violations_obj) if isinstance(violations_obj, list) else []
+            raise RuntimeError(
+                "BL-006 handshake validation failed under strict policy: "
+                + "; ".join(str(v) for v in violations)
+            )
+        if handshake_validation["status"] in {"warn", "allow"}:
+            logger.warning(
+                "BL-006 handshake validation status=%s policy=%s violations=%s",
+                handshake_validation.get("status"),
+                handshake_validation.get("policy"),
+                handshake_validation.get("sampled_violations"),
+            )
+
         runtime_context = self.build_runtime_context(
             profile=inputs.profile,
             bl003_summary=inputs.bl003_summary,
@@ -536,6 +579,8 @@ class ScoringStage:
             scored_rows=scored_rows,
             distribution_diagnostics=distribution_diagnostics,
             confidence_impact_diagnostics=confidence_impact_diagnostics,
+            handshake_validation=handshake_validation,
+            runtime_controls=runtime_controls,
             diagnostics_path=diagnostics_path,
             scored_path=scored_path,
         )

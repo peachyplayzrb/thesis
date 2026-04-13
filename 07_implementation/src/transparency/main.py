@@ -34,8 +34,10 @@ from shared_utils.path_utils import impl_root
 from shared_utils.stage_utils import ensure_named_paths_exist, load_required_json_object
 from transparency.runtime_controls import resolve_bl008_runtime_controls
 from transparency.data_layer import read_csv_index
+from transparency.input_validation import validate_bl007_bl008_handshake
 from transparency.explanation_driver import (
     build_why_selected,
+    select_causal_driver,
     select_primary_explanation_driver,
 )
 from transparency.payload_builder import (
@@ -52,6 +54,7 @@ DEFAULT_SCORED_CSV = Path("scoring/outputs/bl006_scored_candidates.csv")
 DEFAULT_SCORE_SUMMARY_JSON = Path("scoring/outputs/bl006_score_summary.json")
 DEFAULT_PLAYLIST_JSON = Path("playlist/outputs/playlist.json")
 DEFAULT_TRACE_CSV = Path("playlist/outputs/bl007_assembly_trace.csv")
+DEFAULT_ASSEMBLY_REPORT_JSON = Path("playlist/outputs/bl007_assembly_report.json")
 DEFAULT_OUTPUT_DIR = Path("transparency/outputs")
 
 
@@ -76,6 +79,10 @@ def main() -> None:
     score_summary_json = env_path("BL008_SCORE_SUMMARY_PATH", impl_root() / DEFAULT_SCORE_SUMMARY_JSON)
     playlist_json = env_path("BL008_PLAYLIST_PATH", impl_root() / DEFAULT_PLAYLIST_JSON)
     trace_csv = env_path("BL008_TRACE_CSV_PATH", impl_root() / DEFAULT_TRACE_CSV)
+    assembly_report_json = env_path(
+        "BL008_ASSEMBLY_REPORT_PATH",
+        impl_root() / DEFAULT_ASSEMBLY_REPORT_JSON,
+    )
     output_dir = env_path("BL008_OUTPUT_DIR", impl_root() / DEFAULT_OUTPUT_DIR)
     output_dir.mkdir(parents=True, exist_ok=True)
 
@@ -83,6 +90,15 @@ def main() -> None:
     top_contributor_limit = safe_int(runtime_controls["top_contributor_limit"], 3)
     blend_primary_contributor_on_near_tie = bool(runtime_controls["blend_primary_contributor_on_near_tie"])
     primary_contributor_tie_delta = safe_float(runtime_controls["primary_contributor_tie_delta"], 0.0)
+    include_per_track_control_provenance = bool(
+        runtime_controls.get("include_per_track_control_provenance", True)
+    )
+    emit_run_level_control_provenance_summary = bool(
+        runtime_controls.get("emit_run_level_control_provenance_summary", True)
+    )
+    bl007_bl008_handshake_validation_policy = str(
+        runtime_controls.get("bl007_bl008_handshake_validation_policy", "warn")
+    )
 
     ensure_named_paths_exist({
         "scored_csv": scored_csv,
@@ -120,6 +136,37 @@ def main() -> None:
     # Load BL-007 assembly trace keyed by track_id
     trace_index = read_csv_index(trace_csv, "track_id")
 
+    # BL-007 ↔ BL-008 handshake validation
+    with trace_csv.open("r", encoding="utf-8", newline="") as _th:
+        trace_header = next(csv.reader(_th))
+    handshake_validation = validate_bl007_bl008_handshake(
+        playlist_tracks=list(playlist_tracks),
+        trace_header=trace_header,
+        policy=bl007_bl008_handshake_validation_policy,
+    )
+    if handshake_validation["status"] == "fail":
+        violations = handshake_validation.get("sampled_violations")
+        raise RuntimeError(
+            "BL-008 handshake validation failed under strict policy: "
+            f"violations={violations}"
+        )
+    if handshake_validation["status"] in {"warn", "allow"}:
+        import logging
+        logging.getLogger(__name__).warning(
+            "BL-008 handshake validation status=%s policy=%s violations=%s",
+            handshake_validation.get("status"),
+            handshake_validation.get("policy"),
+            handshake_validation.get("sampled_violations"),
+        )
+
+    assembly_report: dict[str, object] = {}
+    if assembly_report_json.exists():
+        assembly_report = load_required_json_object(
+            assembly_report_json,
+            label="BL-007 assembly report",
+            stage_label="BL-008",
+        )
+
     payloads: list[dict[str, object]] = []
 
     for pt in playlist_tracks:
@@ -146,6 +193,8 @@ def main() -> None:
             enable_near_tie_blend=blend_primary_contributor_on_near_tie,
             near_tie_delta=primary_contributor_tie_delta,
         )
+        causal_driver = select_causal_driver(top_contributors)
+        narrative_driver = primary_driver
 
         why_selected = build_why_selected(
             lead_genre, final_score, top_contributors, playlist_pos,
@@ -162,9 +211,13 @@ def main() -> None:
                 score_breakdown=score_breakdown,
                 top_contributors=top_contributors,
                 primary_driver=primary_driver,
+                causal_driver=causal_driver,
+                narrative_driver=narrative_driver,
                 trace_row=trace_row,
                 why_selected=why_selected,
-                control_provenance=control_provenance,
+                control_provenance_ref=("run_level" if emit_run_level_control_provenance_summary else "inline"),
+                control_provenance=(control_provenance if include_per_track_control_provenance else {}),
+                assembly_report=assembly_report,
             )
         )
 
@@ -179,6 +232,9 @@ def main() -> None:
         "generated_at_utc": utc_now(),
         "elapsed_seconds":  elapsed,
         "playlist_track_count": len(payloads),
+        "control_provenance_summary": (
+            control_provenance if emit_run_level_control_provenance_summary else {}
+        ),
         "explanations":     payloads,
     }
     write_json(payloads_path, payloads_obj)
@@ -192,6 +248,15 @@ def main() -> None:
         "elapsed_seconds":  elapsed,
         "playlist_track_count": len(payloads),
         "top_contributor_distribution": top_contributor_counts(payloads),
+        "config": {
+            "validation_policies": {
+                "bl007_bl008_handshake_validation_policy": bl007_bl008_handshake_validation_policy,
+            },
+        },
+        "validation": {
+            "status": handshake_validation.get("status", "pass"),
+            "policy": handshake_validation.get("policy", bl007_bl008_handshake_validation_policy),
+        },
         "input_artifact_hashes": {
             "bl006_scored_candidates.csv":   sha256_of_file(scored_csv),
             "bl006_score_summary.json":      sha256_of_file(score_summary_json),
