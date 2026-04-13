@@ -31,6 +31,9 @@ class ProfileControls:
     confidence_bin_medium_threshold: float = 0.50
     interaction_attribution_mode: str = "split_selected_types_equal_share"
     emit_profile_policy_diagnostics: bool = True
+    confidence_validation_policy: str = "warn"
+    interaction_type_validation_policy: str = "warn"
+    synthetic_data_validation_policy: str = "warn"
 
     def as_mapping(self) -> dict[str, object]:
         return {
@@ -46,6 +49,9 @@ class ProfileControls:
             "confidence_bin_medium_threshold": self.confidence_bin_medium_threshold,
             "interaction_attribution_mode": self.interaction_attribution_mode,
             "emit_profile_policy_diagnostics": self.emit_profile_policy_diagnostics,
+            "confidence_validation_policy": self.confidence_validation_policy,
+            "interaction_type_validation_policy": self.interaction_type_validation_policy,
+            "synthetic_data_validation_policy": self.synthetic_data_validation_policy,
             "user_id": self.user_id,
             "include_interaction_types": list(self.include_interaction_types),
         }
@@ -94,6 +100,8 @@ class ProfileAggregation:
     synthetic_interaction_count_row_count: int = 0
     synthetic_history_weight_row_count: int = 0
     synthetic_influence_weight_row_count: int = 0
+    validation_policies: dict[str, str] = field(default_factory=dict)
+    validation_warnings: list[str] = field(default_factory=list)
     mixed_interaction_row_count: int = 0
     primary_type_attribution_row_count: int = 0
     attribution_weight_by_type: dict[str, float] = field(

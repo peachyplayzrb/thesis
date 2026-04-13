@@ -106,6 +106,9 @@ Influence-policy hardening for ranked item 4 is now implemented additively in th
 #### Post-closure enhancement checkpoint (Phase A diagnostics hardening)
 Diagnostics-first fallback hardening is now implemented additively across BL-003 and BL-004. BL-003 emits explicit runtime-scope parse diagnostics (`payload_json_parse_error`, `input_scope_json_parse_error`) plus `resolution_path`, and BL-004 emits explicit fallback counters for confidence/default/synthetic paths in profile diagnostics. Validation remains green via targeted pytest (`38/38`) and wrapper validate-only (`BL013-ENTRYPOINT-20260413-001017-614914`, `BL014-SANITY-20260413-001042-070086`, `28/28`) under decision/change anchors `D-081` / `C-314`.
 
+#### Post-closure enhancement checkpoint (Phase B strict validation controls)
+BL-004 fallback enforcement now supports explicit per-family policy controls (`allow|warn|strict`) for confidence, interaction-type, and synthetic-data fallback paths, with warn-compatible defaults and strict-mode fail-fast behavior. Policies are wired through run-config, runtime control resolution, and profile diagnostics outputs. Validation remains green via focused pytest (`41/41`) and wrapper validate-only (`BL013-ENTRYPOINT-20260413-001816-449005`, `BL014-SANITY-20260413-001850-553405`, `28/28`) under decision/change anchors `D-082` / `C-315`.
+
 ### REB-M4 Kickoff Checkpoint (2026-04-12)
 
 - Rebuild milestone outcome: Chapter 4 and Chapter 5 are now being rebuilt around the active O1 to O6 objective-to-evidence contract rather than the pre-rebuild MVP framing.

@@ -81,6 +81,9 @@ def _build_default_run_config() -> dict[str, Any]:
             "confidence_bin_medium_threshold": safe_float(DEFAULT_PROFILE_CONTROLS["confidence_bin_medium_threshold"]),
             "interaction_attribution_mode": str(DEFAULT_PROFILE_CONTROLS["interaction_attribution_mode"]),
             "emit_profile_policy_diagnostics": bool(DEFAULT_PROFILE_CONTROLS["emit_profile_policy_diagnostics"]),
+            "confidence_validation_policy": str(DEFAULT_PROFILE_CONTROLS["confidence_validation_policy"]),
+            "interaction_type_validation_policy": str(DEFAULT_PROFILE_CONTROLS["interaction_type_validation_policy"]),
+            "synthetic_data_validation_policy": str(DEFAULT_PROFILE_CONTROLS["synthetic_data_validation_policy"]),
         },
         "retrieval_controls": {
             "profile_top_tag_limit": safe_int(DEFAULT_RETRIEVAL_CONTROLS["profile_top_tag_limit"]),
@@ -245,6 +248,21 @@ PROFILE_CONTROLS_SCHEMA: dict[str, FieldSpec] = {
     "emit_profile_policy_diagnostics": FieldSpec(
         type="bool",
         default=bool(DEFAULT_PROFILE_CONTROLS["emit_profile_policy_diagnostics"]),
+    ),
+    "confidence_validation_policy": FieldSpec(
+        type="enum",
+        default=str(DEFAULT_PROFILE_CONTROLS["confidence_validation_policy"]),
+        choices=("allow", "warn", "strict"),
+    ),
+    "interaction_type_validation_policy": FieldSpec(
+        type="enum",
+        default=str(DEFAULT_PROFILE_CONTROLS["interaction_type_validation_policy"]),
+        choices=("allow", "warn", "strict"),
+    ),
+    "synthetic_data_validation_policy": FieldSpec(
+        type="enum",
+        default=str(DEFAULT_PROFILE_CONTROLS["synthetic_data_validation_policy"]),
+        choices=("allow", "warn", "strict"),
     ),
 }
 
@@ -1531,6 +1549,9 @@ def resolve_bl004_controls(run_config_path: str | Path | None) -> dict[str, Any]
         "confidence_bin_medium_threshold": float(profile_controls["confidence_bin_medium_threshold"]),
         "interaction_attribution_mode": profile_controls["interaction_attribution_mode"],
         "emit_profile_policy_diagnostics": bool(profile_controls["emit_profile_policy_diagnostics"]),
+        "confidence_validation_policy": profile_controls["confidence_validation_policy"],
+        "interaction_type_validation_policy": profile_controls["interaction_type_validation_policy"],
+        "synthetic_data_validation_policy": profile_controls["synthetic_data_validation_policy"],
         "include_interaction_types": list(interaction_scope["include_interaction_types"]),
         "influence_enabled": bool(influence["enabled"]),
         "influence_track_ids": list(influence["track_ids"]),

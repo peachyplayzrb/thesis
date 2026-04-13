@@ -6,8 +6,8 @@ Ordering convention (standardized 2026-03-24):
 - New entries must be appended at the end and may include `superseded_by` when a prior decision is replaced.
 
 Maintenance snapshot (2026-04-12):
-- Highest decision ID currently present: `D-081`
-- Total decision entries: 78
+- Highest decision ID currently present: `D-082`
+- Total decision entries: 79
 - Status distribution: accepted=70, superseded=3, rejected=1
 - ID integrity check: no duplicate decision IDs detected
 
@@ -1702,3 +1702,16 @@ review_date: none
 - evidence_basis: `07_implementation/src/alignment/runtime_scope.py`, `07_implementation/src/alignment/writers.py`, `07_implementation/src/profile/models.py`, `07_implementation/src/profile/stage.py`, `07_implementation/tests/test_alignment_runtime_scope.py`, `07_implementation/tests/test_profile_stage.py`; validation evidence: targeted pytest (`38/38`) and wrapper validate-only pass (`BL013-ENTRYPOINT-20260413-001017-614914`, `BL014-SANITY-20260413-001042-070086`, `28/28`).
 - impacted_files: `07_implementation/src/alignment/runtime_scope.py`, `07_implementation/src/alignment/writers.py`, `07_implementation/src/profile/models.py`, `07_implementation/src/profile/stage.py`, `07_implementation/tests/test_alignment_runtime_scope.py`, `07_implementation/tests/test_profile_stage.py`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/timeline.md`, `00_admin/thesis_state.md`.
 - next_steps: Use the new counters/diagnostics to quantify fallback frequency across multiple runs, then decide whether specific fallback categories should remain permissive, become warning-gated in BL-014, or fail-fast under strict mode.
+
+## D-082
+- date: 2026-04-13
+- entity_id: BL-004 fallback strictness policy controls (Phase B)
+- proposed_by: user + Copilot
+- status: accepted
+- decision: Introduce bounded BL-004 policy controls for fallback enforcement with per-family `allow|warn|strict` modes: `confidence_validation_policy`, `interaction_type_validation_policy`, and `synthetic_data_validation_policy`. Keep default posture warn-compatible, emit policy/warning diagnostics in BL-004 outputs, and fail fast only when an explicit strict mode is selected.
+- context: Phase A diagnostics made fallback paths visible but still permissive. The next hardening step requires controllable enforcement semantics without breaking default execution.
+- alternatives_considered: keep diagnostics-only behavior (rejected: does not provide fail-fast option); enforce strict mode by default (rejected: backward-compatibility and operational disruption risk); create one global strict switch for all fallback categories (rejected: less precise control and weaker troubleshooting isolation).
+- rationale: Per-family policy controls preserve compatibility while allowing targeted strictness in controlled runs and CI-style checks.
+- evidence_basis: `07_implementation/src/shared_utils/constants.py`, `07_implementation/src/run_config/run_config_utils.py`, `07_implementation/src/profile/models.py`, `07_implementation/src/profile/runtime_controls.py`, `07_implementation/src/profile/stage.py`, `07_implementation/tests/test_profile_stage.py`, `07_implementation/tests/test_run_config_utils.py`; validation evidence: focused pytest (`41/41`) and wrapper validate-only pass (`BL013-ENTRYPOINT-20260413-001816-449005`, `BL014-SANITY-20260413-001850-553405`, `28/28`).
+- impacted_files: `07_implementation/src/shared_utils/constants.py`, `07_implementation/src/run_config/run_config_utils.py`, `07_implementation/src/profile/models.py`, `07_implementation/src/profile/runtime_controls.py`, `07_implementation/src/profile/stage.py`, `07_implementation/tests/test_profile_stage.py`, `07_implementation/tests/test_run_config_utils.py`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/timeline.md`, `00_admin/thesis_state.md`.
+- next_steps: Add one bounded strict-policy negative execution path in wrapper-level checks (or quality gates) to verify fail-fast signaling in end-to-end runs.

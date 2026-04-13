@@ -234,6 +234,9 @@ def test_profile_controls_schema_coercion_and_fallback(tmp_path: Path) -> None:
                 "confidence_weighting_mode": "unknown",
                 "interaction_attribution_mode": "primary_type_only",
                 "emit_profile_policy_diagnostics": "false",
+                "confidence_validation_policy": "STRICT",
+                "interaction_type_validation_policy": "unsupported",
+                "synthetic_data_validation_policy": "allow",
             }
         },
     )
@@ -247,6 +250,9 @@ def test_profile_controls_schema_coercion_and_fallback(tmp_path: Path) -> None:
     assert profile_controls["confidence_weighting_mode"] == "linear_half_bias"
     assert profile_controls["interaction_attribution_mode"] == "primary_type_only"
     assert profile_controls["emit_profile_policy_diagnostics"] is False
+    assert profile_controls["confidence_validation_policy"] == "strict"
+    assert profile_controls["interaction_type_validation_policy"] == "warn"
+    assert profile_controls["synthetic_data_validation_policy"] == "allow"
 
 
 def test_profile_controls_schema_fraction_validation_error(tmp_path: Path) -> None:

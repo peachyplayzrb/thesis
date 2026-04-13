@@ -356,6 +356,33 @@ def test_aggregate_inputs_tracks_fallback_diagnostics() -> None:
     assert aggregation.synthetic_interaction_count_row_count == 1
     assert aggregation.synthetic_history_weight_row_count == 1
     assert aggregation.synthetic_influence_weight_row_count == 0
+    assert len(aggregation.validation_warnings) == 3
+
+
+def test_aggregate_inputs_strict_confidence_policy_raises() -> None:
+    inputs = _inputs(
+        [
+            {
+                "ds001_id": "track_1",
+                "spotify_track_ids": "sp_1",
+                "interaction_types": "history",
+                "preference_weight_sum": "1.0",
+                "interaction_count_sum": "5",
+                "match_confidence_score": "bad-value",
+                "tags": "rock",
+                "genres": "rock",
+                "tempo": "120",
+                "release": "2010",
+                "key": "1",
+                "artist": "A",
+                "song": "S1",
+            }
+        ]
+    )
+    controls = _controls(confidence_validation_policy="strict")
+
+    with pytest.raises(RuntimeError, match="BL-004 strict validation failed"):
+        ProfileStage.aggregate_inputs(inputs, controls)
 
 
 def test_build_profile_payload_emits_fallback_diagnostics_keys(tmp_path: Path) -> None:
@@ -394,6 +421,12 @@ def test_build_profile_payload_emits_fallback_diagnostics_keys(tmp_path: Path) -
         synthetic_interaction_count_row_count=3,
         synthetic_history_weight_row_count=4,
         synthetic_influence_weight_row_count=5,
+        validation_policies={
+            "confidence_validation_policy": "warn",
+            "interaction_type_validation_policy": "warn",
+            "synthetic_data_validation_policy": "warn",
+        },
+        validation_warnings=["warned"],
     )
 
     controls = _controls()
@@ -424,6 +457,8 @@ def test_build_profile_payload_emits_fallback_diagnostics_keys(tmp_path: Path) -
     assert diagnostics["synthetic_interaction_count_row_count"] == 3
     assert diagnostics["synthetic_history_weight_row_count"] == 4
     assert diagnostics["synthetic_influence_weight_row_count"] == 5
+    assert diagnostics["validation_policies"]["confidence_validation_policy"] == "warn"
+    assert diagnostics["validation_warnings"] == ["warned"]
 
 
 def test_validate_seed_table_schema_raises_on_missing_contract_columns() -> None:
@@ -553,6 +588,9 @@ def test_resolve_bl004_runtime_controls_defaults_input_scope(monkeypatch) -> Non
     controls = resolve_bl004_runtime_controls()
 
     assert controls["input_scope"] == dict(DEFAULT_INPUT_SCOPE)
+    assert controls["confidence_validation_policy"] == "warn"
+    assert controls["interaction_type_validation_policy"] == "warn"
+    assert controls["synthetic_data_validation_policy"] == "warn"
 
 
 def test_resolve_bl004_runtime_controls_payload_uses_defaults_not_env(monkeypatch) -> None:
@@ -573,3 +611,4 @@ def test_resolve_bl004_runtime_controls_payload_uses_defaults_not_env(monkeypatc
     assert controls["config_source"] == "defaults"
     assert controls["top_tag_limit"] == int(DEFAULT_PROFILE_CONTROLS["top_tag_limit"])
     assert controls["top_genre_limit"] == 6
+    assert controls["confidence_validation_policy"] == "warn"

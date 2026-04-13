@@ -74,6 +74,21 @@ def _sanitize_bl004_controls(controls: dict[str, object]) -> dict[str, object]:
     controls["emit_profile_policy_diagnostics"] = bool(
         controls.get("emit_profile_policy_diagnostics", defaults["emit_profile_policy_diagnostics"])
     )
+    controls["confidence_validation_policy"] = coerce_enum(
+        controls.get("confidence_validation_policy", defaults["confidence_validation_policy"]),
+        ("allow", "warn", "strict"),
+        str(defaults["confidence_validation_policy"]),
+    )
+    controls["interaction_type_validation_policy"] = coerce_enum(
+        controls.get("interaction_type_validation_policy", defaults["interaction_type_validation_policy"]),
+        ("allow", "warn", "strict"),
+        str(defaults["interaction_type_validation_policy"]),
+    )
+    controls["synthetic_data_validation_policy"] = coerce_enum(
+        controls.get("synthetic_data_validation_policy", defaults["synthetic_data_validation_policy"]),
+        ("allow", "warn", "strict"),
+        str(defaults["synthetic_data_validation_policy"]),
+    )
 
     controls["include_interaction_types"] = _normalize_include_interaction_types(
         controls.get("include_interaction_types")
@@ -114,6 +129,18 @@ def _load_bl004_controls_from_env() -> dict[str, object]:
         "emit_profile_policy_diagnostics": env_bool(
             "BL004_EMIT_PROFILE_POLICY_DIAGNOSTICS",
             bool(defaults["emit_profile_policy_diagnostics"]),
+        ),
+        "confidence_validation_policy": env_str(
+            "BL004_CONFIDENCE_VALIDATION_POLICY",
+            str(defaults["confidence_validation_policy"]),
+        ),
+        "interaction_type_validation_policy": env_str(
+            "BL004_INTERACTION_TYPE_VALIDATION_POLICY",
+            str(defaults["interaction_type_validation_policy"]),
+        ),
+        "synthetic_data_validation_policy": env_str(
+            "BL004_SYNTHETIC_DATA_VALIDATION_POLICY",
+            str(defaults["synthetic_data_validation_policy"]),
         ),
         "user_id": env_str("BL004_USER_ID", "unknown_user"),
         "include_interaction_types": _normalize_include_interaction_types(

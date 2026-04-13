@@ -137,6 +137,9 @@ class ProfileStage:
             confidence_bin_medium_threshold=float(str(controls["confidence_bin_medium_threshold"])),
             interaction_attribution_mode=str(controls["interaction_attribution_mode"]),
             emit_profile_policy_diagnostics=bool(controls["emit_profile_policy_diagnostics"]),
+            confidence_validation_policy=str(controls["confidence_validation_policy"]),
+            interaction_type_validation_policy=str(controls["interaction_type_validation_policy"]),
+            synthetic_data_validation_policy=str(controls["synthetic_data_validation_policy"]),
             user_id=str(controls["user_id"]),
             include_interaction_types=list(
                 controls["include_interaction_types"]  # type: ignore[arg-type]
@@ -734,6 +737,52 @@ class ProfileStage:
                 }
             )
 
+
+        validation_policies = {
+            "confidence_validation_policy": controls.confidence_validation_policy,
+            "interaction_type_validation_policy": controls.interaction_type_validation_policy,
+            "synthetic_data_validation_policy": controls.synthetic_data_validation_policy,
+        }
+        validation_warnings: list[str] = []
+
+        if confidence_fallback_row_count > 0 and controls.confidence_validation_policy != "allow":
+            message = (
+                "confidence_validation_policy triggered: "
+                f"confidence_fallback_row_count={confidence_fallback_row_count}"
+            )
+            if controls.confidence_validation_policy == "strict":
+                raise RuntimeError(f"BL-004 strict validation failed: {message}")
+            validation_warnings.append(message)
+
+        if (
+            defaulted_interaction_type_row_count > 0
+            and controls.interaction_type_validation_policy != "allow"
+        ):
+            message = (
+                "interaction_type_validation_policy triggered: "
+                "defaulted_interaction_type_row_count="
+                f"{defaulted_interaction_type_row_count}"
+            )
+            if controls.interaction_type_validation_policy == "strict":
+                raise RuntimeError(f"BL-004 strict validation failed: {message}")
+            validation_warnings.append(message)
+
+        synthetic_total = (
+            synthetic_interaction_count_row_count
+            + synthetic_history_weight_row_count
+            + synthetic_influence_weight_row_count
+        )
+        if synthetic_total > 0 and controls.synthetic_data_validation_policy != "allow":
+            message = (
+                "synthetic_data_validation_policy triggered: "
+                f"synthetic_interaction_count_row_count={synthetic_interaction_count_row_count}; "
+                f"synthetic_history_weight_row_count={synthetic_history_weight_row_count}; "
+                f"synthetic_influence_weight_row_count={synthetic_influence_weight_row_count}"
+            )
+            if controls.synthetic_data_validation_policy == "strict":
+                raise RuntimeError(f"BL-004 strict validation failed: {message}")
+            validation_warnings.append(message)
+
         total_effective_weight = sum(weight_by_type.values())
         matched_seed_count = len(seed_trace_rows)
         if not seed_trace_rows:
@@ -790,6 +839,8 @@ class ProfileStage:
             synthetic_interaction_count_row_count=synthetic_interaction_count_row_count,
             synthetic_history_weight_row_count=synthetic_history_weight_row_count,
             synthetic_influence_weight_row_count=synthetic_influence_weight_row_count,
+            validation_policies=validation_policies,
+            validation_warnings=validation_warnings,
             mixed_interaction_row_count=mixed_interaction_row_count,
             primary_type_attribution_row_count=primary_type_attribution_row_count,
             attribution_weight_by_type=attribution_weight_by_type,
@@ -842,16 +893,22 @@ class ProfileStage:
             "synthetic_interaction_count_row_count": aggregation.synthetic_interaction_count_row_count,
             "synthetic_history_weight_row_count": aggregation.synthetic_history_weight_row_count,
             "synthetic_influence_weight_row_count": aggregation.synthetic_influence_weight_row_count,
+            "validation_policies": dict(aggregation.validation_policies),
             "bl003_source_rows_selected": dict(inputs.bl003_rows_selected),
             "bl003_source_rows_available": dict(inputs.bl003_rows_available),
             "elapsed_seconds": round(elapsed_seconds, 3),
         }
+        if aggregation.validation_warnings:
+            diagnostics["validation_warnings"] = list(aggregation.validation_warnings)
         if controls.emit_profile_policy_diagnostics:
             diagnostics["profile_policy_effective"] = {
                 "confidence_weighting_mode": controls.confidence_weighting_mode,
                 "confidence_bin_high_threshold": controls.confidence_bin_high_threshold,
                 "confidence_bin_medium_threshold": controls.confidence_bin_medium_threshold,
                 "interaction_attribution_mode": controls.interaction_attribution_mode,
+                "confidence_validation_policy": controls.confidence_validation_policy,
+                "interaction_type_validation_policy": controls.interaction_type_validation_policy,
+                "synthetic_data_validation_policy": controls.synthetic_data_validation_policy,
             }
             diagnostics["profile_policy_impact"] = {
                 "mixed_interaction_row_count": aggregation.mixed_interaction_row_count,
