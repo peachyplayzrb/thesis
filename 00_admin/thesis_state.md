@@ -109,6 +109,9 @@ Diagnostics-first fallback hardening is now implemented additively across BL-003
 #### Post-closure enhancement checkpoint (Phase B strict validation controls)
 BL-004 fallback enforcement now supports explicit per-family policy controls (`allow|warn|strict`) for confidence, interaction-type, and synthetic-data fallback paths, with warn-compatible defaults and strict-mode fail-fast behavior. Policies are wired through run-config, runtime control resolution, and profile diagnostics outputs. Validation remains green via focused pytest (`41/41`) and wrapper validate-only (`BL013-ENTRYPOINT-20260413-001816-449005`, `BL014-SANITY-20260413-001850-553405`, `28/28`) under decision/change anchors `D-082` / `C-315`.
 
+#### Post-closure enhancement checkpoint (Slice 7 attribution and numeric integrity)
+BL-004 now distinguishes malformed numeric and attribution inputs from true no-signal rows via additive diagnostics and supports optional fail-fast thresholds (`numeric_malformed_row_threshold`, `no_numeric_signal_row_threshold`). New counters cover malformed confidence, interaction-count, history/influence component weights, and per-feature numeric parse anomalies. Validation remains green via focused pytest (`43/43`) and wrapper validate-only (`BL013-ENTRYPOINT-20260413-002608-855860`, `BL014-SANITY-20260413-002636-061270`, `28/28`) under decision/change anchors `D-083` / `C-316`.
+
 ### REB-M4 Kickoff Checkpoint (2026-04-12)
 
 - Rebuild milestone outcome: Chapter 4 and Chapter 5 are now being rebuilt around the active O1 to O6 objective-to-evidence contract rather than the pre-rebuild MVP framing.

@@ -140,6 +140,16 @@ class ProfileStage:
             confidence_validation_policy=str(controls["confidence_validation_policy"]),
             interaction_type_validation_policy=str(controls["interaction_type_validation_policy"]),
             synthetic_data_validation_policy=str(controls["synthetic_data_validation_policy"]),
+            numeric_malformed_row_threshold=(
+                int(str(controls["numeric_malformed_row_threshold"]))
+                if controls.get("numeric_malformed_row_threshold") is not None
+                else None
+            ),
+            no_numeric_signal_row_threshold=(
+                int(str(controls["no_numeric_signal_row_threshold"]))
+                if controls.get("no_numeric_signal_row_threshold") is not None
+                else None
+            ),
             user_id=str(controls["user_id"]),
             include_interaction_types=list(
                 controls["include_interaction_types"]  # type: ignore[arg-type]
@@ -569,10 +579,17 @@ class ProfileStage:
         mixed_interaction_row_count = 0
         primary_type_attribution_row_count = 0
         confidence_fallback_row_count = 0
+        confidence_malformed_row_count = 0
         defaulted_interaction_type_row_count = 0
         synthetic_interaction_count_row_count = 0
+        interaction_count_malformed_row_count = 0
         synthetic_history_weight_row_count = 0
+        history_weight_malformed_row_count = 0
         synthetic_influence_weight_row_count = 0
+        influence_weight_malformed_row_count = 0
+        malformed_numeric_row_count = 0
+        malformed_numeric_value_count_by_feature = {column: 0 for column in NUMERIC_FEATURE_COLUMNS}
+        no_numeric_signal_row_count = 0
         attribution_weight_by_type = {"history": 0.0, "influence": 0.0}
         attribution_interaction_count_by_type = {"history": 0.0, "influence": 0.0}
         attribution_row_share_by_type = {"history": 0.0, "influence": 0.0}
@@ -612,16 +629,22 @@ class ProfileStage:
             preference_weight = parse_float(str(row.get("preference_weight_sum", ""))) or 0.0
             if preference_weight <= 0:
                 continue
-            parsed_interaction_count = parse_float(str(row.get("interaction_count_sum", "")))
+            raw_interaction_count = str(row.get("interaction_count_sum", "")).strip()
+            parsed_interaction_count = parse_float(raw_interaction_count)
             if parsed_interaction_count is None:
+                if raw_interaction_count:
+                    interaction_count_malformed_row_count += 1
                 synthetic_interaction_count_row_count += 1
                 interaction_count = max(1, round(preference_weight * 10))
             else:
                 interaction_count = int(parsed_interaction_count)
 
             raw_confidence = str(row.get("match_confidence_score", "")).strip()
-            if not raw_confidence or parse_float(raw_confidence) is None:
+            parsed_confidence = parse_float(raw_confidence)
+            if not raw_confidence or parsed_confidence is None:
                 confidence_fallback_row_count += 1
+                if raw_confidence and parsed_confidence is None:
+                    confidence_malformed_row_count += 1
             confidence = ProfileStage._clamp_confidence(raw_confidence)
             confidence_adjusted_weight = preference_weight * ProfileStage._resolve_confidence_weight_multiplier(
                 confidence,
@@ -636,12 +659,14 @@ class ProfileStage:
             else:
                 confidence_bins["low_below_0_5"] += 1
 
-            history_weight_component = parse_float(
-                str(row.get("history_preference_weight_sum", ""))
-            )
-            influence_weight_component = parse_float(
-                str(row.get("influence_preference_weight_sum", ""))
-            )
+            raw_history_weight = str(row.get("history_preference_weight_sum", "")).strip()
+            raw_influence_weight = str(row.get("influence_preference_weight_sum", "")).strip()
+            history_weight_component = parse_float(raw_history_weight)
+            influence_weight_component = parse_float(raw_influence_weight)
+            if raw_history_weight and history_weight_component is None:
+                history_weight_malformed_row_count += 1
+            if raw_influence_weight and influence_weight_component is None:
+                influence_weight_malformed_row_count += 1
             if history_weight_component is None and "history" in selected_interaction_types:
                 synthetic_history_weight_row_count += 1
                 history_weight_component = preference_weight * attribution_shares.get("history", 0.0)
@@ -696,9 +721,14 @@ class ProfileStage:
                 genre_weights[genre] = genre_weights.get(genre, 0.0) + effective_weight
 
             has_numeric_features = False
+            has_malformed_numeric_values = False
             for column in NUMERIC_FEATURE_COLUMNS:
-                parsed_value = parse_float(str(row.get(column, "")))
+                raw_value = str(row.get(column, "")).strip()
+                parsed_value = parse_float(raw_value)
                 if parsed_value is None:
+                    if raw_value:
+                        has_malformed_numeric_values = True
+                        malformed_numeric_value_count_by_feature[column] += 1
                     continue
                 has_numeric_features = True
                 numeric_sums[column] += parsed_value * effective_weight
@@ -709,7 +739,12 @@ class ProfileStage:
                     key_circular_sum_x += math.cos(angle) * effective_weight
                     key_circular_sum_y += math.sin(angle) * effective_weight
 
+            if has_malformed_numeric_values:
+                malformed_numeric_row_count += 1
+
             if not has_numeric_features:
+                if not has_malformed_numeric_values:
+                    no_numeric_signal_row_count += 1
                 if track_id:
                     missing_numeric_track_ids.append(track_id)
                 else:
@@ -742,6 +777,8 @@ class ProfileStage:
             "confidence_validation_policy": controls.confidence_validation_policy,
             "interaction_type_validation_policy": controls.interaction_type_validation_policy,
             "synthetic_data_validation_policy": controls.synthetic_data_validation_policy,
+            "numeric_malformed_row_threshold": controls.numeric_malformed_row_threshold,
+            "no_numeric_signal_row_threshold": controls.no_numeric_signal_row_threshold,
         }
         validation_warnings: list[str] = []
 
@@ -782,6 +819,28 @@ class ProfileStage:
             if controls.synthetic_data_validation_policy == "strict":
                 raise RuntimeError(f"BL-004 strict validation failed: {message}")
             validation_warnings.append(message)
+
+        if (
+            controls.numeric_malformed_row_threshold is not None
+            and malformed_numeric_row_count > controls.numeric_malformed_row_threshold
+        ):
+            raise RuntimeError(
+                "BL-004 numeric integrity threshold failed: "
+                "malformed_numeric_row_count="
+                f"{malformed_numeric_row_count} exceeds numeric_malformed_row_threshold="
+                f"{controls.numeric_malformed_row_threshold}"
+            )
+
+        if (
+            controls.no_numeric_signal_row_threshold is not None
+            and no_numeric_signal_row_count > controls.no_numeric_signal_row_threshold
+        ):
+            raise RuntimeError(
+                "BL-004 numeric integrity threshold failed: "
+                "no_numeric_signal_row_count="
+                f"{no_numeric_signal_row_count} exceeds no_numeric_signal_row_threshold="
+                f"{controls.no_numeric_signal_row_threshold}"
+            )
 
         total_effective_weight = sum(weight_by_type.values())
         matched_seed_count = len(seed_trace_rows)
@@ -835,10 +894,17 @@ class ProfileStage:
             influence_interaction_count_sum=int(round(influence_interaction_count_sum_value)),
             matched_seed_count=matched_seed_count,
             confidence_fallback_row_count=confidence_fallback_row_count,
+            confidence_malformed_row_count=confidence_malformed_row_count,
             defaulted_interaction_type_row_count=defaulted_interaction_type_row_count,
             synthetic_interaction_count_row_count=synthetic_interaction_count_row_count,
+            interaction_count_malformed_row_count=interaction_count_malformed_row_count,
             synthetic_history_weight_row_count=synthetic_history_weight_row_count,
+            history_weight_malformed_row_count=history_weight_malformed_row_count,
             synthetic_influence_weight_row_count=synthetic_influence_weight_row_count,
+            influence_weight_malformed_row_count=influence_weight_malformed_row_count,
+            no_numeric_signal_row_count=no_numeric_signal_row_count,
+            malformed_numeric_row_count=malformed_numeric_row_count,
+            malformed_numeric_value_count_by_feature=malformed_numeric_value_count_by_feature,
             validation_policies=validation_policies,
             validation_warnings=validation_warnings,
             mixed_interaction_row_count=mixed_interaction_row_count,
@@ -888,11 +954,20 @@ class ProfileStage:
             ),
             "confidence_bins": dict(aggregation.confidence_bins),
             "confidence_fallback_row_count": aggregation.confidence_fallback_row_count,
+            "confidence_malformed_row_count": aggregation.confidence_malformed_row_count,
             "match_method_counts": dict(aggregation.match_method_counts),
             "defaulted_interaction_type_row_count": aggregation.defaulted_interaction_type_row_count,
             "synthetic_interaction_count_row_count": aggregation.synthetic_interaction_count_row_count,
+            "interaction_count_malformed_row_count": aggregation.interaction_count_malformed_row_count,
             "synthetic_history_weight_row_count": aggregation.synthetic_history_weight_row_count,
+            "history_weight_malformed_row_count": aggregation.history_weight_malformed_row_count,
             "synthetic_influence_weight_row_count": aggregation.synthetic_influence_weight_row_count,
+            "influence_weight_malformed_row_count": aggregation.influence_weight_malformed_row_count,
+            "no_numeric_signal_row_count": aggregation.no_numeric_signal_row_count,
+            "malformed_numeric_row_count": aggregation.malformed_numeric_row_count,
+            "malformed_numeric_value_count_by_feature": dict(
+                aggregation.malformed_numeric_value_count_by_feature
+            ),
             "validation_policies": dict(aggregation.validation_policies),
             "bl003_source_rows_selected": dict(inputs.bl003_rows_selected),
             "bl003_source_rows_available": dict(inputs.bl003_rows_available),

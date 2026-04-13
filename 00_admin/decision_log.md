@@ -6,8 +6,8 @@ Ordering convention (standardized 2026-03-24):
 - New entries must be appended at the end and may include `superseded_by` when a prior decision is replaced.
 
 Maintenance snapshot (2026-04-12):
-- Highest decision ID currently present: `D-082`
-- Total decision entries: 79
+- Highest decision ID currently present: `D-083`
+- Total decision entries: 80
 - Status distribution: accepted=70, superseded=3, rejected=1
 - ID integrity check: no duplicate decision IDs detected
 
@@ -1715,3 +1715,16 @@ review_date: none
 - evidence_basis: `07_implementation/src/shared_utils/constants.py`, `07_implementation/src/run_config/run_config_utils.py`, `07_implementation/src/profile/models.py`, `07_implementation/src/profile/runtime_controls.py`, `07_implementation/src/profile/stage.py`, `07_implementation/tests/test_profile_stage.py`, `07_implementation/tests/test_run_config_utils.py`; validation evidence: focused pytest (`41/41`) and wrapper validate-only pass (`BL013-ENTRYPOINT-20260413-001816-449005`, `BL014-SANITY-20260413-001850-553405`, `28/28`).
 - impacted_files: `07_implementation/src/shared_utils/constants.py`, `07_implementation/src/run_config/run_config_utils.py`, `07_implementation/src/profile/models.py`, `07_implementation/src/profile/runtime_controls.py`, `07_implementation/src/profile/stage.py`, `07_implementation/tests/test_profile_stage.py`, `07_implementation/tests/test_run_config_utils.py`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/timeline.md`, `00_admin/thesis_state.md`.
 - next_steps: Add one bounded strict-policy negative execution path in wrapper-level checks (or quality gates) to verify fail-fast signaling in end-to-end runs.
+
+## D-083
+- date: 2026-04-13
+- entity_id: BL-004 attribution and numeric-integrity hardening thresholds (Slice 7)
+- proposed_by: user + Copilot
+- status: accepted
+- decision: Add explicit malformed-vs-missing attribution diagnostics in BL-004 and introduce bounded fail-fast thresholds for numeric-integrity drift. New controls are `numeric_malformed_row_threshold` and `no_numeric_signal_row_threshold` (optional, positive-int thresholds) with default disabled behavior for compatibility.
+- context: BL-004 already reported missing numeric outcomes and fallback counters, but malformed upstream numeric signals were not separated from true no-signal rows, reducing root-cause clarity and preventing threshold-based guardrails.
+- alternatives_considered: keep counters only and rely on manual trend monitoring (rejected: no automated protection); enforce hard fail on any malformed numeric row by default (rejected: disruptive under existing data variability); add one combined threshold for all numeric issues (rejected: weaker diagnosis and less targeted control).
+- rationale: Distinguishing malformed and no-signal paths improves auditability while optional thresholds enable controlled fail-fast behavior in stricter execution modes.
+- evidence_basis: `07_implementation/src/shared_utils/constants.py`, `07_implementation/src/run_config/run_config_utils.py`, `07_implementation/src/profile/models.py`, `07_implementation/src/profile/runtime_controls.py`, `07_implementation/src/profile/stage.py`, `07_implementation/tests/test_profile_stage.py`, `07_implementation/tests/test_run_config_utils.py`; validation evidence: focused pytest (`43/43`) and wrapper validate-only pass (`BL013-ENTRYPOINT-20260413-002608-855860`, `BL014-SANITY-20260413-002636-061270`, `28/28`).
+- impacted_files: `07_implementation/src/shared_utils/constants.py`, `07_implementation/src/run_config/run_config_utils.py`, `07_implementation/src/profile/models.py`, `07_implementation/src/profile/runtime_controls.py`, `07_implementation/src/profile/stage.py`, `07_implementation/tests/test_profile_stage.py`, `07_implementation/tests/test_run_config_utils.py`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/timeline.md`, `00_admin/thesis_state.md`.
+- next_steps: Implement cross-BL handshake checks so BL-004 enforces contract-critical BL-003 summary/seed expectations before aggregation begins.

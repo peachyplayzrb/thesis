@@ -89,6 +89,16 @@ def _sanitize_bl004_controls(controls: dict[str, object]) -> dict[str, object]:
         ("allow", "warn", "strict"),
         str(defaults["synthetic_data_validation_policy"]),
     )
+    malformed_threshold = coerce_int(
+        controls.get("numeric_malformed_row_threshold", defaults["numeric_malformed_row_threshold"]),
+        0,
+    )
+    controls["numeric_malformed_row_threshold"] = malformed_threshold if malformed_threshold > 0 else None
+    no_signal_threshold = coerce_int(
+        controls.get("no_numeric_signal_row_threshold", defaults["no_numeric_signal_row_threshold"]),
+        0,
+    )
+    controls["no_numeric_signal_row_threshold"] = no_signal_threshold if no_signal_threshold > 0 else None
 
     controls["include_interaction_types"] = _normalize_include_interaction_types(
         controls.get("include_interaction_types")
@@ -141,6 +151,14 @@ def _load_bl004_controls_from_env() -> dict[str, object]:
         "synthetic_data_validation_policy": env_str(
             "BL004_SYNTHETIC_DATA_VALIDATION_POLICY",
             str(defaults["synthetic_data_validation_policy"]),
+        ),
+        "numeric_malformed_row_threshold": env_int(
+            "BL004_NUMERIC_MALFORMED_ROW_THRESHOLD",
+            int(defaults.get("numeric_malformed_row_threshold") or 0),
+        ),
+        "no_numeric_signal_row_threshold": env_int(
+            "BL004_NO_NUMERIC_SIGNAL_ROW_THRESHOLD",
+            int(defaults.get("no_numeric_signal_row_threshold") or 0),
         ),
         "user_id": env_str("BL004_USER_ID", "unknown_user"),
         "include_interaction_types": _normalize_include_interaction_types(

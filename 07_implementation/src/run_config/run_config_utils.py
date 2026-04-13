@@ -84,6 +84,8 @@ def _build_default_run_config() -> dict[str, Any]:
             "confidence_validation_policy": str(DEFAULT_PROFILE_CONTROLS["confidence_validation_policy"]),
             "interaction_type_validation_policy": str(DEFAULT_PROFILE_CONTROLS["interaction_type_validation_policy"]),
             "synthetic_data_validation_policy": str(DEFAULT_PROFILE_CONTROLS["synthetic_data_validation_policy"]),
+            "numeric_malformed_row_threshold": DEFAULT_PROFILE_CONTROLS["numeric_malformed_row_threshold"],
+            "no_numeric_signal_row_threshold": DEFAULT_PROFILE_CONTROLS["no_numeric_signal_row_threshold"],
         },
         "retrieval_controls": {
             "profile_top_tag_limit": safe_int(DEFAULT_RETRIEVAL_CONTROLS["profile_top_tag_limit"]),
@@ -1315,6 +1317,7 @@ def resolve_effective_run_config(run_config_path: str | Path | None) -> tuple[di
     profile_controls = effective.setdefault("profile_controls", {})
     if not isinstance(profile_controls, dict):
         raise RunConfigError("run_config.profile_controls must be an object")
+    raw_profile_controls = dict(profile_controls)
     try:
         profile_controls = validate_section(
             profile_controls,
@@ -1325,6 +1328,14 @@ def resolve_effective_run_config(run_config_path: str | Path | None) -> tuple[di
         raise RunConfigError(str(exc)) from exc
 
     effective["profile_controls"] = profile_controls
+    profile_controls["numeric_malformed_row_threshold"] = _coerce_optional_positive_int(
+        raw_profile_controls.get("numeric_malformed_row_threshold"),
+        DEFAULT_PROFILE_CONTROLS["numeric_malformed_row_threshold"],
+    )
+    profile_controls["no_numeric_signal_row_threshold"] = _coerce_optional_positive_int(
+        raw_profile_controls.get("no_numeric_signal_row_threshold"),
+        DEFAULT_PROFILE_CONTROLS["no_numeric_signal_row_threshold"],
+    )
     if float(profile_controls["confidence_bin_medium_threshold"]) > float(profile_controls["confidence_bin_high_threshold"]):
         raise RunConfigError(
             "profile_controls.confidence_bin_medium_threshold must be <= "
@@ -1552,6 +1563,8 @@ def resolve_bl004_controls(run_config_path: str | Path | None) -> dict[str, Any]
         "confidence_validation_policy": profile_controls["confidence_validation_policy"],
         "interaction_type_validation_policy": profile_controls["interaction_type_validation_policy"],
         "synthetic_data_validation_policy": profile_controls["synthetic_data_validation_policy"],
+        "numeric_malformed_row_threshold": profile_controls["numeric_malformed_row_threshold"],
+        "no_numeric_signal_row_threshold": profile_controls["no_numeric_signal_row_threshold"],
         "include_interaction_types": list(interaction_scope["include_interaction_types"]),
         "influence_enabled": bool(influence["enabled"]),
         "influence_track_ids": list(influence["track_ids"]),

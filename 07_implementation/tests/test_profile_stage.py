@@ -385,6 +385,74 @@ def test_aggregate_inputs_strict_confidence_policy_raises() -> None:
         ProfileStage.aggregate_inputs(inputs, controls)
 
 
+def test_aggregate_inputs_tracks_malformed_numeric_diagnostics() -> None:
+    inputs = _inputs(
+        [
+            {
+                "ds001_id": "track_1",
+                "spotify_track_ids": "sp_1",
+                "interaction_types": "history",
+                "preference_weight_sum": "1.0",
+                "interaction_count_sum": "bad-count",
+                "match_confidence_score": "bad-confidence",
+                "history_preference_weight_sum": "bad-history",
+                "influence_preference_weight_sum": "",
+                "tempo": "fast",
+                "release": "",
+                "key": "",
+                "artist": "A",
+                "song": "S1",
+                "tags": "rock",
+                "genres": "rock",
+            }
+        ]
+    )
+
+    aggregation = ProfileStage.aggregate_inputs(inputs, _controls())
+
+    assert aggregation.confidence_malformed_row_count == 1
+    assert aggregation.interaction_count_malformed_row_count == 1
+    assert aggregation.history_weight_malformed_row_count == 1
+    assert aggregation.malformed_numeric_row_count == 1
+    assert aggregation.no_numeric_signal_row_count == 0
+    assert aggregation.malformed_numeric_value_count_by_feature["tempo"] == 1
+
+
+def test_aggregate_inputs_numeric_malformed_threshold_raises() -> None:
+    inputs = _inputs(
+        [
+            {
+                "ds001_id": "track_1",
+                "spotify_track_ids": "sp_1",
+                "interaction_types": "history",
+                "preference_weight_sum": "1.0",
+                "interaction_count_sum": "5",
+                "tempo": "bad",
+                "artist": "A",
+                "song": "S1",
+                "tags": "rock",
+                "genres": "rock",
+            },
+            {
+                "ds001_id": "track_2",
+                "spotify_track_ids": "sp_2",
+                "interaction_types": "history",
+                "preference_weight_sum": "1.0",
+                "interaction_count_sum": "5",
+                "tempo": "still-bad",
+                "artist": "B",
+                "song": "S2",
+                "tags": "pop",
+                "genres": "pop",
+            }
+        ]
+    )
+
+    controls = _controls(numeric_malformed_row_threshold=1)
+    with pytest.raises(RuntimeError, match="numeric integrity threshold failed"):
+        ProfileStage.aggregate_inputs(inputs, controls)
+
+
 def test_build_profile_payload_emits_fallback_diagnostics_keys(tmp_path: Path) -> None:
     aggregation = ProfileAggregation(
         input_row_count=1,
@@ -591,6 +659,8 @@ def test_resolve_bl004_runtime_controls_defaults_input_scope(monkeypatch) -> Non
     assert controls["confidence_validation_policy"] == "warn"
     assert controls["interaction_type_validation_policy"] == "warn"
     assert controls["synthetic_data_validation_policy"] == "warn"
+    assert controls["numeric_malformed_row_threshold"] is None
+    assert controls["no_numeric_signal_row_threshold"] is None
 
 
 def test_resolve_bl004_runtime_controls_payload_uses_defaults_not_env(monkeypatch) -> None:

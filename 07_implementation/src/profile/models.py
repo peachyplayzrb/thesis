@@ -34,6 +34,8 @@ class ProfileControls:
     confidence_validation_policy: str = "warn"
     interaction_type_validation_policy: str = "warn"
     synthetic_data_validation_policy: str = "warn"
+    numeric_malformed_row_threshold: int | None = None
+    no_numeric_signal_row_threshold: int | None = None
 
     def as_mapping(self) -> dict[str, object]:
         return {
@@ -52,6 +54,8 @@ class ProfileControls:
             "confidence_validation_policy": self.confidence_validation_policy,
             "interaction_type_validation_policy": self.interaction_type_validation_policy,
             "synthetic_data_validation_policy": self.synthetic_data_validation_policy,
+            "numeric_malformed_row_threshold": self.numeric_malformed_row_threshold,
+            "no_numeric_signal_row_threshold": self.no_numeric_signal_row_threshold,
             "user_id": self.user_id,
             "include_interaction_types": list(self.include_interaction_types),
         }
@@ -96,10 +100,17 @@ class ProfileAggregation:
     influence_interaction_count_sum: int
     matched_seed_count: int
     confidence_fallback_row_count: int = 0
+    confidence_malformed_row_count: int = 0
     defaulted_interaction_type_row_count: int = 0
     synthetic_interaction_count_row_count: int = 0
+    interaction_count_malformed_row_count: int = 0
     synthetic_history_weight_row_count: int = 0
+    history_weight_malformed_row_count: int = 0
     synthetic_influence_weight_row_count: int = 0
+    influence_weight_malformed_row_count: int = 0
+    no_numeric_signal_row_count: int = 0
+    malformed_numeric_row_count: int = 0
+    malformed_numeric_value_count_by_feature: dict[str, int] = field(default_factory=dict)
     validation_policies: dict[str, str] = field(default_factory=dict)
     validation_warnings: list[str] = field(default_factory=list)
     mixed_interaction_row_count: int = 0

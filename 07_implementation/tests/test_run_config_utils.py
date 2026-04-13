@@ -237,6 +237,8 @@ def test_profile_controls_schema_coercion_and_fallback(tmp_path: Path) -> None:
                 "confidence_validation_policy": "STRICT",
                 "interaction_type_validation_policy": "unsupported",
                 "synthetic_data_validation_policy": "allow",
+                "numeric_malformed_row_threshold": "3",
+                "no_numeric_signal_row_threshold": "0",
             }
         },
     )
@@ -253,6 +255,8 @@ def test_profile_controls_schema_coercion_and_fallback(tmp_path: Path) -> None:
     assert profile_controls["confidence_validation_policy"] == "strict"
     assert profile_controls["interaction_type_validation_policy"] == "warn"
     assert profile_controls["synthetic_data_validation_policy"] == "allow"
+    assert profile_controls["numeric_malformed_row_threshold"] == 3
+    assert profile_controls["no_numeric_signal_row_threshold"] is None
 
 
 def test_profile_controls_schema_fraction_validation_error(tmp_path: Path) -> None:
