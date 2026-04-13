@@ -1,4 +1,4 @@
-﻿# Change Log
+# Change Log
 
 Use schema from `00_admin/operating_protocol.md`.
 
@@ -8,7 +8,7 @@ Ordering convention (standardized 2026-03-24):
 - New entries must be appended at the end; historical entries remain unchanged except for explicit correction records.
 
 Maintenance snapshot (2026-04-13):
-- Highest change ID currently present: `C-327`
+- Highest change ID currently present: `C-340`
 - Maintenance snapshot (2026-03-28): prior snapshot stated `C-205`; superseded by the 2026-03-29 architecture migration + documentation sync wave (C-204 through C-219).
 - Known legacy correction applied in this file: prior duplicate `C-079` entry has been normalized to `C-135` for unique-ID compliance.
 
@@ -2037,6 +2037,17 @@ Maintenance snapshot (2026-04-13):
 ## C-159
 - date: 2026-03-25
 - proposed_by: user + AI
+
+## C-331
+- date: 2026-04-13
+- proposed_by: Copilot
+- status: accepted
+- change_summary: Completed BL-007 Slice 22 by wiring additive `utility_decay_factor` through defaults, run-config resolution, runtime controls, stage context/payload emission, and rules behavior; added focused regression tests for resolver/runtime bounds and utility-greedy decay behavior.
+- reason: Slice 22 was partially implemented and required end-to-end behavioral activation plus validation evidence to close the control-surface contract.
+- evidence_basis: Focused pytest pass (`47/47`) on `tests/test_playlist_runtime_controls.py`, `tests/test_playlist_rules.py`, `tests/test_playlist_reporting.py`, and `tests/test_run_config_utils.py`; wrapper validate-only pass (`BL013-ENTRYPOINT-20260413-121526-609780`); BL-014 sanity pass (`BL014-SANITY-20260413-121545-776184`, `31/31`).
+- affected_components: `07_implementation/src/shared_utils/constants.py`, `07_implementation/src/playlist/models.py`, `07_implementation/src/playlist/runtime_controls.py`, `07_implementation/src/playlist/rules.py`, `07_implementation/src/playlist/stage.py`, `07_implementation/src/run_config/run_config_utils.py`, `07_implementation/tests/test_playlist_runtime_controls.py`, `07_implementation/tests/test_playlist_rules.py`, `07_implementation/tests/test_run_config_utils.py`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`, `00_admin/unresolved_issues.md`.
+- impact_assessment: Medium-positive. Adds deterministic ordering-pressure controllability for BL-007 utility-greedy mode while preserving backward-compatible default behavior and existing wrapper contracts.
+- approval_record: Executed as continuation of user-approved BL-007 slice implementation wave.
 - status: accepted
 - change_summary: Added a comprehensive Tier-1 hardening execution log that consolidates all remediation actions, run evidence, validation outcomes, and governance updates into a single traceable admin artifact.
 - reason: User requested full logging coverage ("log everythig"). Centralized logging improves auditability and reduces evidence fragmentation across multiple files.
@@ -2214,3 +2225,116 @@ Maintenance snapshot (2026-04-13):
 | C-325 | 2026-04-13 | Copilot | Implemented BL-005 parity-closure Slice 16 (D-092): extended BL-004↔BL-005 retrieval handshake validation with seed-trace confidence row-quality checks (missing/non-numeric/out-of-range), added focused validator tests, added symmetric BL-014 main-level negative fixture proving failure on `schema_bl004_bl005_handshake_contract` when BL-004 profile handshake fields are removed, and revalidated with targeted pytest (`20/20`) plus wrapper validate-only pass (`BL013-ENTRYPOINT-20260413-105724-234842`; `BL014-SANITY-20260413-105751-328487`, `30/30`). |
 | C-326 | 2026-04-13 | Copilot | Implemented BL-005 Slice 17 runtime-control diagnostics parity hardening (D-093): added explicit runtime-control resolution diagnostics in BL-005 (`payload_json_parse_error`, `resolution_path`, normalization event counts/samples), surfaced runtime-control validation warnings and resolution diagnostics in BL-005 diagnostics payload, added focused regression coverage for normalization + parse-error fallback behavior, and revalidated with focused pytest (`9/9`) plus wrapper validate-only pass (`BL013-ENTRYPOINT-20260413-111111-723084`; `BL014-SANITY-20260413-111136-703270`, `30/30`). |
 | C-327 | 2026-04-13 | Copilot | Implemented BL-005 Slice 18 wrapper advisory visibility hardening (D-094): added BL-014 non-failing advisory `advisory_bl005_control_resolution_fallback_volume` for elevated BL-005 runtime-control normalization volume, added threshold metadata in BL-014 config snapshot, expanded quality tests (helper + main-level advisory assertion), and revalidated with focused pytest (`27/27`) plus wrapper validate-only pass (`BL013-ENTRYPOINT-20260413-111934-887225`; `BL014-SANITY-20260413-111957-022045`, `30/30`). |
+| C-328 | 2026-04-13 | Copilot | Implemented BL-006 hardening Slice 19 (D-095): added policy-gated BL-005↔BL-006 handshake validation (`allow|warn|strict`) in scoring stage, introduced BL-006 runtime-control diagnostics/warnings parity fields and payload parse fallback visibility, wired `bl005_bl006_handshake_validation_policy` through shared constants and run-config schema/resolvers, and extended BL-014 with `schema_bl005_bl006_handshake_contract` wrapper continuity checks. Added focused regression coverage (`test_scoring_input_validation.py`, `test_scoring_runtime_controls.py`, `test_run_config_utils.py`, `test_quality_sanity_checks.py`) and revalidated with focused pytest (`58/58`) plus wrapper validate-only pass (`BL013-ENTRYPOINT-20260413-114004-966558`; `BL014-SANITY-20260413-114023-656004`, `31/31`). |
+| C-329 | 2026-04-13 | Copilot | Implemented BL-007 quality-uplift Slice 20 (D-096): improved diagnostics fidelity by separating post-fill unprocessed exclusions from true in-loop length-cap exclusions (`post_fill_unprocessed`), added additive BL-007 report telemetry `influence_effectiveness_diagnostics` (requested/matched/included counts, path distribution, reserved-slot utilization), and updated focused playlist rules/reporting tests. Revalidated with focused pytest (`14/14`) and wrapper validate-only pass (`BL013-ENTRYPOINT-20260413-120151-300654`; `BL014-SANITY-20260413-120211-217312`, `31/31`). |
+| C-330 | 2026-04-13 | Copilot | Implemented BL-007 Slice 21 control-surface expansion (D-097): added additive `opportunity_cost_top_k_examples` across assembly defaults, BL-007 runtime control resolution, run-config BL-007 resolver output, playlist typed models/context mapping, and stage report generation for configurable opportunity-cost sample sizing with unchanged defaults. Added focused regression coverage in playlist runtime-controls and run-config resolver tests. Revalidated with focused pytest (`46/46`) and wrapper validate-only pass (`BL013-ENTRYPOINT-20260413-120730-444412`; `BL014-SANITY-20260413-120749-603771`, `31/31`). |
+
+## C-331
+- date: 2026-04-13
+- proposed_by: Copilot
+- status: accepted
+- change_summary: Completed BL-007 Slice 22 by wiring additive `utility_decay_factor` through defaults, run-config resolution, runtime controls, stage payload/report config, and rules behavior; added focused regression tests for resolver/runtime bounds and utility-greedy decay behavior.
+- reason: Slice 22 was partially landed and required end-to-end behavior activation plus validation evidence to close the control-surface contract.
+- evidence_basis: Focused pytest pass (`47/47`) on `test_playlist_runtime_controls.py`, `test_playlist_rules.py`, `test_playlist_reporting.py`, `test_run_config_utils.py`; wrapper validate-only pass `BL013-ENTRYPOINT-20260413-121526-609780`; BL-014 sanity pass `BL014-SANITY-20260413-121545-776184` (`31/31`).
+- affected_components: `07_implementation/src/shared_utils/constants.py`, `07_implementation/src/playlist/models.py`, `07_implementation/src/playlist/runtime_controls.py`, `07_implementation/src/playlist/rules.py`, `07_implementation/src/playlist/stage.py`, `07_implementation/src/run_config/run_config_utils.py`, `07_implementation/tests/test_playlist_runtime_controls.py`, `07_implementation/tests/test_playlist_rules.py`, `07_implementation/tests/test_run_config_utils.py`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`, `00_admin/unresolved_issues.md`.
+- impact_assessment: Medium-positive. Adds deterministic ordering-pressure controllability for BL-007 utility-greedy mode while preserving backward-compatible default behavior and existing wrapper contracts.
+- approval_record: Executed as continuation of user-approved BL-007 slice implementation wave.
+
+## C-332
+- date: 2026-04-13
+- proposed_by: Copilot
+- status: accepted
+- change_summary: Implemented BL-007 Slice 23 (D-099): policy-gated BL-006↔BL-007 handshake validation. Created `playlist/input_validation.py` with `validate_bl006_bl007_handshake()` (allow|warn|strict policy), wired `bl006_bl007_handshake_validation_policy` through shared constants, run-config resolver, runtime controls sanitization/env fallback, `PlaylistControls` dataclass, stage `run()` call, and `_build_playlist_payload`/`_build_report_payload`. Added `bl006_bl007_handshake_contract_ok()` helper and `schema_bl006_bl007_handshake_contract` check to BL-014 sanity script. Updated `_build_bl014_fixture` with `validation_policies` and `validation.status` in bl007_report. Fixed a pre-existing stale assertion in `test_playlist_integration.py` (R4_length_cap removed in Slice 22; assertion now checks trace exclusion count instead). Fixed a syntax error in `sanity_checks.py` (duplicate function opener from prior session's failed patch).
+- reason: Slice 23 closes the final unguarded stage boundary in the BL-007 hardening wave and brings BL-014 to 32/32 checks.
+- evidence_basis: Focused pytest pass (`77/77`) on `test_playlist_input_validation.py`, `test_playlist_runtime_controls.py`, `test_run_config_utils.py`, `test_quality_sanity_checks.py`; full pytest pass (`482/482`); wrapper validate-only pass; BL-014 sanity pass `BL014-SANITY-20260413-125444-585602` (`32/32`).
+- affected_components: `07_implementation/src/playlist/input_validation.py` (new), `07_implementation/src/shared_utils/constants.py`, `07_implementation/src/run_config/run_config_utils.py`, `07_implementation/src/playlist/runtime_controls.py`, `07_implementation/src/playlist/models.py`, `07_implementation/src/playlist/stage.py`, `07_implementation/src/quality/sanity_checks.py`, `07_implementation/tests/test_playlist_input_validation.py` (new), `07_implementation/tests/test_playlist_runtime_controls.py`, `07_implementation/tests/test_run_config_utils.py`, `07_implementation/tests/test_quality_sanity_checks.py`, `07_implementation/tests/test_playlist_integration.py`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`, `00_admin/unresolved_issues.md`.
+- impact_assessment: Medium-positive. Closes the BL-007 handshake hardening wave, lifts BL-014 to 32 checks, and enables early error surfacing when BL-006 output is malformed before assembly begins.
+- approval_record: Executed as continuation of user-approved BL-007 slice implementation wave.
+
+## C-333
+- date: 2026-04-13
+- proposed_by: Copilot
+- status: accepted
+- change_summary: Implemented BL-008 explanation fidelity hardening slice (D-100) with additive warn-safe BL-014 advisory checks and completed initial BL-008 payload/wording upgrades. Added BL-008 score-breakdown primitives (`contribution_share_pct`, `margin_vs_next_contributor`), score-banded explanation wording, and additive `causal_driver`/`narrative_driver` fields while preserving `primary_explanation_driver` compatibility. Extended BL-014 `sanity_checks.py` with `bl008_explanation_fidelity_warnings()` and non-failing advisory `advisory_bl008_explanation_fidelity`, then expanded quality/transparency unit coverage.
+- reason: The active BL-008 improvement wave required objective explanation-fidelity verification in BL-014 without introducing breaking strict-fail behavior during rollout.
+- evidence_basis: Focused pytest pass (`43/43`) on `tests/test_quality_sanity_checks.py`, `tests/test_transparency_payload_builder.py`, `tests/test_transparency_explanation_driver.py`, and `tests/test_transparency_integration.py`.
+- affected_components: `07_implementation/src/transparency/payload_builder.py`, `07_implementation/src/transparency/explanation_driver.py`, `07_implementation/src/transparency/main.py`, `07_implementation/src/quality/sanity_checks.py`, `07_implementation/tests/test_transparency_payload_builder.py`, `07_implementation/tests/test_transparency_explanation_driver.py`, `07_implementation/tests/test_quality_sanity_checks.py`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`, `00_admin/unresolved_issues.md`.
+- impact_assessment: Medium-positive. Improves BL-008 explanation fidelity and audit visibility with additive compatibility-safe fields and warn-safe quality checks.
+- approval_record: Executed as continuation of user request to start implementation and proceed through BL-008 hardening slices.
+
+## C-334
+- date: 2026-04-13
+- proposed_by: Copilot
+- status: accepted
+- change_summary: Implemented BL-008 provenance de-dup slice (D-101) with additive run-level provenance summary and per-track provenance references while preserving compatibility defaults. Added BL-008 control toggles (`include_per_track_control_provenance`, `emit_run_level_control_provenance_summary`) across shared defaults and runtime resolution; payloads now emit `control_provenance_summary` at run level and `control_provenance_ref` per track.
+- reason: The BL-008 improvement roadmap required reducing repeated per-track provenance payload bloat without breaking existing consumers.
+- evidence_basis: Focused pytest pass (`49/49`) on `tests/test_transparency_runtime_controls.py`, `tests/test_transparency_payload_builder.py`, `tests/test_transparency_explanation_driver.py`, `tests/test_transparency_integration.py`, and `tests/test_quality_sanity_checks.py`.
+- affected_components: `07_implementation/src/shared_utils/constants.py`, `07_implementation/src/transparency/runtime_controls.py`, `07_implementation/src/transparency/main.py`, `07_implementation/src/transparency/payload_builder.py`, `07_implementation/tests/test_transparency_runtime_controls.py`, `07_implementation/tests/test_transparency_integration.py`, `07_implementation/tests/test_transparency_payload_builder.py`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`, `00_admin/unresolved_issues.md`.
+- impact_assessment: Medium-positive. Adds contract-safe provenance de-dup capability and supports gradual migration to leaner BL-008 payloads.
+- approval_record: Executed as continuation of user request to continue implementation.
+
+## C-335
+- date: 2026-04-13
+- proposed_by: Copilot
+- status: accepted
+- change_summary: Implemented BL-008 Slice 26 assembly-context enrichment by wiring optional BL-007 assembly report intake and expanding per-track `assembly_context` with trace/report-derived policy metadata (`exclusion_reason`, `influence_requested`, `inclusion_path`, `source_score_rank`, `policy_mode`, `influence_enabled`, `influence_reserved_slots`, `bl006_bl007_handshake_validation_policy`, `influence_effectiveness_rate`) while preserving existing keys and compatibility behavior.
+- reason: The BL-008 roadmap required richer mechanism-linked context for explanation payload consumers without changing existing required fields.
+- evidence_basis: Focused pytest pass (`50/50`) on `tests/test_transparency_payload_builder.py`, `tests/test_transparency_explanation_driver.py`, `tests/test_transparency_runtime_controls.py`, `tests/test_transparency_integration.py`, and `tests/test_quality_sanity_checks.py`.
+- affected_components: `07_implementation/src/transparency/main.py`, `07_implementation/src/transparency/payload_builder.py`, `07_implementation/tests/test_transparency_integration.py`, `07_implementation/tests/test_transparency_payload_builder.py`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`, `00_admin/unresolved_issues.md`.
+- impact_assessment: Medium-positive. Improves BL-008 explanation interpretability and policy-traceability while preserving backward compatibility.
+- approval_record: Executed as continuation of user request to continue implementation.
+
+## C-336
+- date: 2026-04-13
+- proposed_by: Copilot
+- status: accepted
+- change_summary: Implemented BL-007↔BL-008 handshake validation (Slice 27 / D-103). Created `transparency/input_validation.py` with `validate_bl007_bl008_handshake()` enforcing allow|warn|strict policy against required BL-007 playlist track fields (`track_id`, `final_score`, `playlist_position`) and assembly trace header fields (`track_id`, `decision`, `score_rank`). Wired `bl007_bl008_handshake_validation_policy` through `DEFAULT_TRANSPARENCY_CONTROLS`, BL-008 runtime_controls sanitizer and env fallback (`BL008_BL007_HANDSHAKE_VALIDATION_POLICY`), and BL-008 `main.py` entry point. BL-008 explanation summary now records `config.validation_policies.bl007_bl008_handshake_validation_policy` and `validation.status`. Added `bl007_bl008_handshake_contract_ok()` helper and `schema_bl007_bl008_handshake_contract` check to BL-014 `sanity_checks.py`, raising check total to 33/33. Added 13 unit tests in `test_transparency_input_validation.py`, 1 integration test in `test_transparency_integration.py`, and 5 unit + 1 integration test in `test_quality_sanity_checks.py`.
+- reason: Completes the handshake hardening wave (BL-003↔BL-004, BL-004↔BL-005, BL-005↔BL-006, BL-006↔BL-007) by extending the same policy-gated boundary contract to BL-007→BL-008.
+- evidence_basis: Focused pytest pass (`58/58`) on `tests/test_transparency_input_validation.py`, `tests/test_transparency_runtime_controls.py`, `tests/test_transparency_integration.py`, and `tests/test_quality_sanity_checks.py`. No type errors on all modified files.
+- affected_components: `07_implementation/src/shared_utils/constants.py`, `07_implementation/src/transparency/input_validation.py`, `07_implementation/src/transparency/runtime_controls.py`, `07_implementation/src/transparency/main.py`, `07_implementation/src/quality/sanity_checks.py`, `07_implementation/tests/test_transparency_input_validation.py`, `07_implementation/tests/test_transparency_integration.py`, `07_implementation/tests/test_quality_sanity_checks.py`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`, `00_admin/unresolved_issues.md`.
+- impact_assessment: Medium-positive. Enforces structural contract on BL-007 outputs before BL-008 consumes them; surfaces data quality issues early without blocking normal runs (warn default).
+- approval_record: Executed as continuation of user request to continue implementation.
+
+## C-337
+- date: 2026-04-13
+- proposed_by: Copilot
+- status: accepted
+- change_summary: Implemented BL-008↔BL-009 handshake validation (Slice 28 / D-104). Added `observability/input_validation.py` with `validate_bl008_bl009_handshake()` enforcing allow|warn|strict policy across required BL-008 summary keys (`run_id`, `playlist_track_count`, `top_contributor_distribution`) and payload keys (`playlist_track_count`, `explanations`) plus summary/payload explanation-count consistency. Wired `bl008_bl009_handshake_validation_policy` through shared constants, BL-009 runtime_controls sanitizer and env fallback (`BL009_BL008_HANDSHAKE_VALIDATION_POLICY`), effective run-config validation/schema, and BL-009 `main.py` entry point. BL-009 run logs now record `run_config.observability.validation_policies.bl008_bl009_handshake_validation_policy` and top-level `validation.status`. Added `bl008_bl009_handshake_contract_ok()` helper and `schema_bl008_bl009_handshake_contract` check to BL-014 `sanity_checks.py`, raising check total to 34/34. Added focused unit coverage in `test_observability_input_validation.py`, extended `test_observability_runtime_controls.py`, `test_run_config_utils.py`, and `test_quality_sanity_checks.py` for the new boundary.
+- reason: Continues the handshake hardening wave downstream so BL-009 no longer consumes BL-008 artifacts without an explicit structural boundary contract.
+- evidence_basis: Focused pytest pass (`80/80`) on `tests/test_observability_input_validation.py`, `tests/test_observability_runtime_controls.py`, `tests/test_run_config_utils.py`, and `tests/test_quality_sanity_checks.py`. No type errors on all modified files.
+- affected_components: `07_implementation/src/shared_utils/constants.py`, `07_implementation/src/observability/input_validation.py`, `07_implementation/src/observability/runtime_controls.py`, `07_implementation/src/run_config/run_config_utils.py`, `07_implementation/src/observability/main.py`, `07_implementation/src/quality/sanity_checks.py`, `07_implementation/tests/test_observability_input_validation.py`, `07_implementation/tests/test_observability_runtime_controls.py`, `07_implementation/tests/test_run_config_utils.py`, `07_implementation/tests/test_quality_sanity_checks.py`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`, `00_admin/unresolved_issues.md`.
+- impact_assessment: Medium-positive. Enforces structural continuity from transparency outputs into observability logging while preserving warn-default execution compatibility.
+- approval_record: Executed as continuation of user request to continue implementation.
+
+## C-338
+- date: 2026-04-13
+- proposed_by: Copilot
+- status: accepted
+- change_summary: Implemented BL-009↔BL-010 and BL-010↔BL-011 handshake hardening (Slices 29-30). Extended the continuous boundary validation wave downstream by adding two new BL-014 helpers with optional-stage auto-pass semantics, integrated into wrapper sanity checks, and validated across full test suite.
+- reason: Completes the handshake hardening wave through all active inter-stage boundaries. BL-010 and BL-011 are diagnostic-only evaluation stages, not part of core orchestration; optional-stage auto-pass semantics preserve validation contract continuity without forcing unnecessary execution.
+- evidence_basis: Modified files: 07_implementation/src/quality/sanity_checks.py (helpers bl009_bl010_handshake_contract_ok() and bl010_bl011_handshake_contract_ok() with optional-stage auto-pass logic), 07_implementation/tests/test_quality_sanity_checks.py (all 41 tests passing). Validation suite: focused pytest on sanity_checks (41/41 tests), full pytest suite (526/526 all tests), wrapper validate-only (BL-014 sanity 36/36 checks with both new checks passing as optional pass when snapshots empty).
+- affected_components: 07_implementation/src/quality/sanity_checks.py, 07_implementation/tests/test_quality_sanity_checks.py, validation test coverage (41/41 sanity checks tests, 526/526 full suite tests).
+- impact_assessment: High-positive. Extends the proven handshake pattern to optional diagnostic stages, maintaining continuous boundary validation through 8 inter-stage connections (BL-003↔BL-004, BL-004↔BL-005, BL-005↔BL-006, BL-006↔BL-007, BL-007↔BL-008, BL-008↔BL-009, BL-009↔BL-010, BL-010↔BL-011) with BL-014 check count raised from 34/34 to 36/36.
+- approval_record: Implementation completed within single session based on user continuation request 'keep going' from Option 2 plan discussion. Full validation passed with no test regressions or blockers.
+
+## C-339
+- date: 2026-04-13
+- proposed_by: Copilot
+- status: accepted
+- change_summary: Performed post-slice stabilization and integrity repair pass: cleaned hidden control-character corruption in `C-338` evidence lines in `00_admin/change_log.md`, then fixed pyright typing regressions introduced by the handshake hardening wave across BL-009 to BL-011 helper integrations and related runtime-control/payload narrowing paths.
+- reason: `C-338` governance text contained malformed non-printable characters after prior sanitization, and typecheck had 41 errors including newly introduced object-to-str and mapping/list narrowing issues that obscured real remaining static-analysis debt.
+- evidence_basis: Integrity verification reported `CONTROL_CHARS_NONE` for `00_admin/change_log.md` after cleanup. Validation results: full pytest pass (`526/526`), pyright reduced from 41 errors to 6 residual errors in `alignment/match_pipeline.py` (unchanged pre-existing area).
+- affected_components: `00_admin/change_log.md`, `07_implementation/src/controllability/main.py`, `07_implementation/src/observability/input_validation.py`, `07_implementation/src/observability/main.py`, `07_implementation/src/playlist/stage.py`, `07_implementation/src/reproducibility/input_validation.py`, `07_implementation/src/reproducibility/main.py`, `07_implementation/src/retrieval/stage.py`, `07_implementation/src/transparency/payload_builder.py`, `07_implementation/src/profile/runtime_controls.py`, `07_implementation/src/quality/sanity_checks.py`.
+- impact_assessment: High-positive for session stability and governance integrity. Restores clean auditable changelog text and materially lowers static-analysis noise so remaining pyright items are isolated to non-touched alignment code.
+- approval_record: Executed as direct continuation of user instruction to start implementation and carry through blocker resolution.
+
+## C-340
+- date: 2026-04-13
+- proposed_by: Copilot
+- status: accepted
+- change_summary: Closed the final static-analysis tail by fixing BL-003 alignment relaxed-pass threshold coercion typing in `alignment/match_pipeline.py`, eliminating the remaining six pyright errors and restoring full typecheck green status.
+- reason: After C-339, only six pyright errors remained in BL-003 alignment around `float()` conversion on optional control values; this blocked complete quality-gate closure for the active implementation surface.
+- evidence_basis: `07_implementation/src/alignment/match_pipeline.py` updated to use safe string-coercion before float conversion for relaxed second-pass threshold fields; pyright task now reports `0 errors, 0 warnings, 0 informations` on `src`.
+- affected_components: `07_implementation/src/alignment/match_pipeline.py`, `00_admin/change_log.md`.
+- impact_assessment: Medium-positive. Restores full static-analysis compliance on the active runtime surface and removes the last residual typecheck blocker from the current implementation wave.
+- approval_record: Executed as direct continuation request (`continue`) in implementation mode.

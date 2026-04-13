@@ -6,9 +6,9 @@ Ordering convention (standardized 2026-03-24):
 - New entries must be appended at the end and may include `superseded_by` when a prior decision is replaced.
 
 Maintenance snapshot (2026-04-13):
-- Highest decision ID currently present: `D-094`
-- Total decision entries: 90
-- Status distribution: accepted=80, superseded=3, rejected=1
+- Highest decision ID currently present: `D-105`
+- Total decision entries: 98
+- Status distribution: accepted=87, superseded=3, rejected=1
 - ID integrity check: no duplicate decision IDs detected
 
 Current posture snapshot (2026-03-25):
@@ -1638,6 +1638,19 @@ review_date: none
 - impacted_files: `07_implementation/src/ingestion/export_spotify_max_dataset.py`, `07_implementation/tests/test_ingestion_spotify_export.py`, `00_admin/decision_log.md`, `00_admin/change_log.md`.
 - next_steps: Add orchestration-level BL-002 payload injection assertions once BL-002 is part of staged execution order, and broaden fallback matrix tests for malformed payload envelopes and partial-control merges.
 
+## D-098
+- date: 2026-04-13
+- entity_id: BL-007 utility-decay control-surface activation
+- proposed_by: user + Copilot
+- status: accepted
+- decision: Add bounded `utility_decay_factor` (`0.0` to `1.0`) as an explicit BL-007 assembly control and apply it deterministically in utility-greedy ordering via rank-decay scaling, while preserving prior behavior at default `0.0`.
+- context: Slice 22 required completing BL-007 ordering-tuning controls so assembly can express bounded opportunity-cost versus rank-pressure trade-offs without breaking existing contracts or defaults.
+- alternatives_considered: keep `utility_decay_factor` as inert metadata only (rejected: no behavioral effect); use unbounded decay semantics (rejected: tuning instability and comparability risk); alter rank-round-robin behavior with decay (rejected for this slice: unnecessary contract risk).
+- rationale: A bounded additive control improves controllability and diagnostics interpretability while preserving deterministic and backward-compatible defaults.
+- evidence_basis: `07_implementation/src/playlist/rules.py`, `07_implementation/src/playlist/stage.py`, `07_implementation/src/run_config/run_config_utils.py`, `07_implementation/src/playlist/runtime_controls.py`, `07_implementation/tests/test_playlist_rules.py`, `07_implementation/tests/test_playlist_runtime_controls.py`, `07_implementation/tests/test_run_config_utils.py`; focused pytest (`47/47`); wrapper validate-only (`BL013-ENTRYPOINT-20260413-121526-609780`, `BL014-SANITY-20260413-121545-776184`, `31/31`).
+- impacted_files: `07_implementation/src/shared_utils/constants.py`, `07_implementation/src/playlist/models.py`, `07_implementation/src/playlist/runtime_controls.py`, `07_implementation/src/playlist/rules.py`, `07_implementation/src/playlist/stage.py`, `07_implementation/src/run_config/run_config_utils.py`, `07_implementation/tests/test_playlist_runtime_controls.py`, `07_implementation/tests/test_playlist_rules.py`, `07_implementation/tests/test_run_config_utils.py`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`, `00_admin/unresolved_issues.md`.
+- next_steps: Continue BL-007 hardening with contract-safe ordering diagnostics and explicit utility-tuning controls where evidence shows value.
+
 ## D-077
 - date: 2026-04-12
 - entity_id: BL-009 source-resilience diagnostics contract and BL-002 mixed-precedence fallback matrix completion
@@ -1871,3 +1884,146 @@ review_date: none
 - evidence_basis: `07_implementation/src/quality/sanity_checks.py`, `07_implementation/tests/test_quality_sanity_checks.py`; validation evidence: focused pytest (`27/27`) and wrapper validate-only pass (`BL013-ENTRYPOINT-20260413-111934-887225`, `BL014-SANITY-20260413-111957-022045`, `30/30`).
 - impacted_files: `07_implementation/src/quality/sanity_checks.py`, `07_implementation/tests/test_quality_sanity_checks.py`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`, `00_admin/unresolved_issues.md`.
 - next_steps: Optional follow-up is to add trend-based aggregation for repeated control-resolution advisories before considering strict policy promotion.
+
+## D-095
+- date: 2026-04-13
+- entity_id: BL-006 handshake-policy and diagnostics parity with BL-003/BL-004/BL-005
+- proposed_by: user + Copilot
+- status: accepted
+- decision: Introduce policy-gated BL-005↔BL-006 handshake validation (`allow|warn|strict`) in BL-006 scoring, add runtime-control resolution diagnostics/warnings parity fields to BL-006 controls/outputs, and add wrapper-level BL-014 contract enforcement via `schema_bl005_bl006_handshake_contract`.
+- context: BL-003↔BL-004 and BL-004↔BL-005 had explicit policy+contract handshake surfaces and BL-014 continuity checks, but BL-006 still accepted BL-005 filtered inputs without an explicit stage-level handshake contract and wrapper-level policy-metadata continuity check.
+- alternatives_considered: keep BL-006 permissive with implicit schema assumptions (rejected: inconsistent contract hardening posture); add BL-014 hash-only integrity checks without handshake metadata checks (rejected: misses policy continuity evidence); enforce strict behavior unconditionally (rejected: compatibility risk).
+- rationale: Adding stage-local policy-gated handshake validation and wrapper continuity checks closes parity gaps with earlier stages while preserving compatibility through default warn behavior.
+- evidence_basis: `07_implementation/src/scoring/input_validation.py`, `07_implementation/src/scoring/runtime_controls.py`, `07_implementation/src/scoring/stage.py`, `07_implementation/src/scoring/models.py`, `07_implementation/src/quality/sanity_checks.py`, `07_implementation/src/run_config/run_config_utils.py`, `07_implementation/src/shared_utils/constants.py`, `07_implementation/tests/test_scoring_input_validation.py`, `07_implementation/tests/test_scoring_runtime_controls.py`, `07_implementation/tests/test_run_config_utils.py`, `07_implementation/tests/test_quality_sanity_checks.py`; validation evidence: focused pytest (`58/58`) and wrapper validate-only pass (`BL013-ENTRYPOINT-20260413-114004-966558`, `BL014-SANITY-20260413-114023-656004`, `31/31`).
+- impacted_files: `07_implementation/src/shared_utils/constants.py`, `07_implementation/src/run_config/run_config_utils.py`, `07_implementation/src/scoring/input_validation.py`, `07_implementation/src/scoring/runtime_controls.py`, `07_implementation/src/scoring/stage.py`, `07_implementation/src/scoring/models.py`, `07_implementation/src/quality/sanity_checks.py`, `07_implementation/tests/test_scoring_input_validation.py`, `07_implementation/tests/test_scoring_runtime_controls.py`, `07_implementation/tests/test_run_config_utils.py`, `07_implementation/tests/test_quality_sanity_checks.py`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`, `00_admin/unresolved_issues.md`.
+- next_steps: Optional follow-up is a non-failing BL-014 advisory for elevated BL-006 handshake warn-volume before any strict-policy default changes are considered.
+
+## D-096
+- date: 2026-04-13
+- entity_id: BL-007 Slice 20 diagnostics-fidelity and influence-effectiveness hardening
+- proposed_by: user + Copilot
+- status: accepted
+- decision: Implement BL-007 quality-uplift Slice 20 as additive, contract-safe changes by (1) separating post-fill unprocessed exclusions from true in-loop length-cap exclusions and (2) adding explicit influence-effectiveness diagnostics to the BL-007 report (`influence_effectiveness_diagnostics`) without changing required BL-007 top-level contract keys consumed by BL-009/BL-014.
+- context: BL-007 output review showed diagnostic ambiguity where many rows were labeled `length_cap_reached` despite never being evaluated in-loop after target fulfillment, and influence policy behavior lacked a consolidated effectiveness summary in report outputs.
+- alternatives_considered: keep existing exclusion semantics and rely on manual interpretation of trace ordering (rejected: weak diagnosability); convert exclusion semantics with schema-breaking key renames (rejected: downstream compatibility risk); add influence diagnostics only in BL-009 observability outputs (rejected: delayed and less local visibility for BL-007 tuning).
+- rationale: Diagnostics-first additive hardening improves evidence clarity and policy observability while preserving deterministic behavior and backward compatibility for required report contract surfaces.
+- evidence_basis: `07_implementation/src/playlist/rules.py`, `07_implementation/src/playlist/reporting.py`, `07_implementation/src/playlist/stage.py`, `07_implementation/tests/test_playlist_rules.py`, `07_implementation/tests/test_playlist_reporting.py`; validation evidence: focused pytest (`14/14`) and wrapper validate-only pass (`BL013-ENTRYPOINT-20260413-120151-300654`, `BL014-SANITY-20260413-120211-217312`, `31/31`).
+- impacted_files: `07_implementation/src/playlist/rules.py`, `07_implementation/src/playlist/reporting.py`, `07_implementation/src/playlist/stage.py`, `07_implementation/tests/test_playlist_rules.py`, `07_implementation/tests/test_playlist_reporting.py`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`, `00_admin/unresolved_issues.md`.
+- next_steps: Continue with BL-007 Slice 21 control-surface expansion (opportunity-cost and utility tuning defaults) with default-preserving behavior checks before any rank-guardrail enforcement rollout.
+
+## D-097
+- date: 2026-04-13
+- entity_id: BL-007 Slice 21 opportunity-cost control-surface expansion
+- proposed_by: user + Copilot
+- status: accepted
+- decision: Extend BL-007 control surfaces with additive `opportunity_cost_top_k_examples` wiring across constants, run-config resolver, runtime controls, typed models/context, and stage report emission so opportunity-cost diagnostics sampling can be tuned without changing default behavior.
+- context: Slice 20 improved diagnostics fidelity and influence observability, but opportunity-cost diagnostics still used a hardcoded sample size, reducing controllability and audit repeatability across run profiles.
+- alternatives_considered: keep hardcoded sample limit at stage level (rejected: weak controllability and profile expressiveness); add dynamic tuning only in environment vars (rejected: run-config parity gap and weaker reproducibility); change default sample size globally (rejected: unnecessary behavioral drift).
+- rationale: Additive control wiring with unchanged defaults preserves compatibility while enabling explicit experiment-level tuning and deterministic replay of diagnostics surfaces.
+- evidence_basis: `07_implementation/src/shared_utils/constants.py`, `07_implementation/src/playlist/runtime_controls.py`, `07_implementation/src/playlist/models.py`, `07_implementation/src/playlist/stage.py`, `07_implementation/src/run_config/run_config_utils.py`, `07_implementation/tests/test_playlist_runtime_controls.py`, `07_implementation/tests/test_run_config_utils.py`; validation evidence: focused pytest (`46/46`) and wrapper validate-only pass (`BL013-ENTRYPOINT-20260413-120730-444412`, `BL014-SANITY-20260413-120749-603771`, `31/31`).
+- impacted_files: `07_implementation/src/shared_utils/constants.py`, `07_implementation/src/playlist/runtime_controls.py`, `07_implementation/src/playlist/models.py`, `07_implementation/src/playlist/stage.py`, `07_implementation/src/run_config/run_config_utils.py`, `07_implementation/tests/test_playlist_runtime_controls.py`, `07_implementation/tests/test_run_config_utils.py`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`, `00_admin/unresolved_issues.md`.
+- next_steps: Continue BL-007 Slice 22 with utility tuning controls (`utility_decay_factor`) and default-invariance checks before any rank-guardrail rollout.
+
+## D-098
+- date: 2026-04-13
+- entity_id: BL-007 utility-decay control-surface activation
+- proposed_by: user + Copilot
+- status: accepted
+- decision: Add bounded `utility_decay_factor` (`0.0` to `1.0`) as an explicit BL-007 assembly control and apply it deterministically in utility-greedy ordering via rank-decay scaling, while preserving prior behavior at default `0.0`.
+- context: Slice 22 required completing BL-007 ordering-tuning controls so assembly can express bounded opportunity-cost versus rank-pressure trade-offs without breaking existing contracts or defaults.
+- alternatives_considered: keep `utility_decay_factor` only as inert metadata (rejected: no behavioral value); apply unbounded decay semantics (rejected: destabilizes tuning and comparability); alter rank-round-robin behavior with decay (rejected for this slice: unnecessary contract risk).
+- rationale: A bounded additive control improves controllability and diagnostics interpretability while keeping default behavior backward compatible and deterministic.
+- evidence_basis: `07_implementation/src/playlist/rules.py`, `07_implementation/src/playlist/stage.py`, `07_implementation/src/run_config/run_config_utils.py`, `07_implementation/src/playlist/runtime_controls.py`, `07_implementation/tests/test_playlist_rules.py`, `07_implementation/tests/test_playlist_runtime_controls.py`, `07_implementation/tests/test_run_config_utils.py`; focused pytest (`47/47`); wrapper validate-only pass (`BL013-ENTRYPOINT-20260413-121526-609780`, `BL014-SANITY-20260413-121545-776184`, `31/31`).
+- impacted_files: `07_implementation/src/shared_utils/constants.py`, `07_implementation/src/playlist/models.py`, `07_implementation/src/playlist/runtime_controls.py`, `07_implementation/src/playlist/rules.py`, `07_implementation/src/playlist/stage.py`, `07_implementation/src/run_config/run_config_utils.py`, `07_implementation/tests/test_playlist_runtime_controls.py`, `07_implementation/tests/test_playlist_rules.py`, `07_implementation/tests/test_run_config_utils.py`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`, `00_admin/unresolved_issues.md`.
+- next_steps: Continue BL-007 hardening with ordering-trade-off diagnostics and contract-safe exposure of any additional utility controls.
+
+## D-099
+- date: 2026-04-13
+- entity_id: BL-007 BL-006↔BL-007 handshake validation policy
+- proposed_by: Copilot
+- status: accepted
+- decision: Add a policy-gated (`allow|warn|strict`) BL-006↔BL-007 handshake validation step at the playlist assembly entry point, analogous to the existing BL-004↔BL-005 and BL-005↔BL-006 handshake validators. Validate that scored candidates entering BL-007 carry all required BL-006 scored fields and at least one scoring-component contribution column before assembly proceeds. Wire the policy through shared constants, run-config resolver, runtime controls, stage, and BL-014 sanity check.
+- context: Slice 23. The BL-007 hardening wave (Slices 10, 14, 19, 23) systematically hardens each stage boundary with policy-gated handshake validation. BL-006↔BL-007 was the final boundary in the wave.
+- alternatives_considered: skip BL-006→BL-007 handshake (rejected: leaves the last stage boundary without contract enforcement); add validation inside assembly algorithms (rejected: wrong abstraction layer); default policy to "strict" (rejected: breaks integration tests with partial fixtures; "warn" is safer default).
+- rationale: Completing the handshake validation wave closes the last unguarded stage boundary, strengthens transparency contract evidence, and aligns BL-014 check coverage to 32/32.
+- evidence_basis: `07_implementation/src/playlist/input_validation.py` (new), `07_implementation/src/playlist/stage.py`, `07_implementation/src/playlist/models.py`, `07_implementation/src/playlist/runtime_controls.py`, `07_implementation/src/quality/sanity_checks.py`, `07_implementation/src/run_config/run_config_utils.py`, `07_implementation/src/shared_utils/constants.py`, `07_implementation/tests/test_playlist_input_validation.py` (new); focused pytest (`77/77`); full pytest (`482/482`); wrapper validate-only pass; BL-014 sanity pass (`BL014-SANITY-20260413-125444-585602`, `32/32`).
+- impacted_files: `07_implementation/src/playlist/input_validation.py`, `07_implementation/src/shared_utils/constants.py`, `07_implementation/src/run_config/run_config_utils.py`, `07_implementation/src/playlist/runtime_controls.py`, `07_implementation/src/playlist/models.py`, `07_implementation/src/playlist/stage.py`, `07_implementation/src/quality/sanity_checks.py`, `07_implementation/tests/test_playlist_input_validation.py`, `07_implementation/tests/test_playlist_runtime_controls.py`, `07_implementation/tests/test_run_config_utils.py`, `07_implementation/tests/test_quality_sanity_checks.py`, `07_implementation/tests/test_playlist_integration.py`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`, `00_admin/unresolved_issues.md`.
+- next_steps: Close Slice 23 governance; assess whether BL-007 hardening wave needs any follow-up slices or if BL-015/BL-016 planning can begin.
+
+## D-100
+- date: 2026-04-13
+- entity_id: BL-008 explanation-fidelity advisory hardening
+- proposed_by: user + Copilot
+- status: accepted
+- decision: Add BL-014 warn-safe BL-008 explanation fidelity checks as non-failing advisories and implement additive BL-008 payload semantics upgrades (contribution share/margin fields, score-banded wording, and explicit causal/narrative drivers) while preserving backward compatibility for existing `primary_explanation_driver` consumers.
+- context: BL-008 improvement execution started from the saved implementation plan; quality verification was required before strict enforcement. Existing BL-014 checks validated structure/hash continuity but did not inspect explanation-fidelity coherence.
+- alternatives_considered: strict fail-fast BL-014 fidelity checks immediately (rejected: rollout risk and compatibility sensitivity); no wrapper-level fidelity checks (rejected: weak audit visibility); replace legacy driver field instead of additive fields (rejected: contract break risk).
+- rationale: Warn-safe advisories provide immediate evidence visibility without breaking current wrapper contracts, and additive BL-008 fields allow staged consumer migration.
+- evidence_basis: `07_implementation/src/transparency/payload_builder.py`, `07_implementation/src/transparency/explanation_driver.py`, `07_implementation/src/transparency/main.py`, `07_implementation/src/quality/sanity_checks.py`, `07_implementation/tests/test_transparency_payload_builder.py`, `07_implementation/tests/test_transparency_explanation_driver.py`, `07_implementation/tests/test_transparency_integration.py`, `07_implementation/tests/test_quality_sanity_checks.py`; focused pytest (`43/43`).
+- impacted_files: `07_implementation/src/transparency/payload_builder.py`, `07_implementation/src/transparency/explanation_driver.py`, `07_implementation/src/transparency/main.py`, `07_implementation/src/quality/sanity_checks.py`, `07_implementation/tests/test_transparency_payload_builder.py`, `07_implementation/tests/test_transparency_explanation_driver.py`, `07_implementation/tests/test_transparency_integration.py`, `07_implementation/tests/test_quality_sanity_checks.py`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`, `00_admin/unresolved_issues.md`.
+- next_steps: Promote selected BL-008 fidelity checks from advisory to strict fail criteria only after repeated stable green wrapper runs and no false-positive warnings.
+
+## D-101
+- date: 2026-04-13
+- entity_id: BL-008 provenance de-dup compatibility mode
+- proposed_by: user + Copilot
+- status: accepted
+- decision: Add additive run-level provenance summary emission and per-track provenance references in BL-008, with compatibility-first defaults that preserve per-track provenance unless toggled off.
+- context: BL-008 payload hardening required reducing repeated provenance duplication while maintaining backward compatibility for existing payload consumers.
+- alternatives_considered: remove per-track provenance unconditionally (rejected: compatibility break risk); keep fully duplicated provenance only (rejected: payload bloat and lower ergonomics); move provenance entirely to summary with no references (rejected: weaker trace locality).
+- rationale: Toggle-controlled de-dup preserves current behavior by default, enables lighter payload mode safely, and keeps explainability traceability explicit via per-track references.
+- evidence_basis: `07_implementation/src/shared_utils/constants.py`, `07_implementation/src/transparency/runtime_controls.py`, `07_implementation/src/transparency/main.py`, `07_implementation/src/transparency/payload_builder.py`, `07_implementation/tests/test_transparency_runtime_controls.py`, `07_implementation/tests/test_transparency_integration.py`, `07_implementation/tests/test_transparency_payload_builder.py`; focused pytest (`49/49`).
+- impacted_files: `07_implementation/src/shared_utils/constants.py`, `07_implementation/src/transparency/runtime_controls.py`, `07_implementation/src/transparency/main.py`, `07_implementation/src/transparency/payload_builder.py`, `07_implementation/tests/test_transparency_runtime_controls.py`, `07_implementation/tests/test_transparency_integration.py`, `07_implementation/tests/test_transparency_payload_builder.py`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`, `00_admin/unresolved_issues.md`.
+- next_steps: Use BL-014 fidelity/advisory evidence over repeated runs to determine when the lean provenance mode can be promoted as preferred output posture.
+
+## D-102
+- date: 2026-04-13
+- entity_id: BL-008 assembly-context enrichment from BL-007 trace/report
+- proposed_by: user + Copilot
+- status: accepted
+- decision: Enrich BL-008 per-track `assembly_context` with additive BL-007 trace/report metadata and optional BL-007 report ingestion, while retaining existing context keys (`decision`, `admission_rule`, `genre_at_position`) and preserving compatibility.
+- context: BL-008 explanation payloads needed stronger mechanism-linked context to improve downstream interpretation and auditability after prior fidelity/provenance slices.
+- alternatives_considered: keep minimal 3-field assembly context only (rejected: limited interpretability); replace existing context schema (rejected: compatibility break risk); duplicate full BL-007 report per track (rejected: payload bloat).
+- rationale: Additive selective context fields balance interpretability, payload size, and compatibility.
+- evidence_basis: `07_implementation/src/transparency/main.py`, `07_implementation/src/transparency/payload_builder.py`, `07_implementation/tests/test_transparency_integration.py`; focused pytest (`50/50`) including transparency + quality suites.
+- impacted_files: `07_implementation/src/transparency/main.py`, `07_implementation/src/transparency/payload_builder.py`, `07_implementation/tests/test_transparency_integration.py`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`, `00_admin/unresolved_issues.md`.
+- next_steps: Evaluate whether any of the new context fields should be promoted into BL-014 strict fail criteria once repeated wrapper runs confirm stable population and no false positives.
+
+## D-103
+- date: 2026-04-13
+- entity_id: BL-007↔BL-008 handshake validation
+- proposed_by: Copilot
+- status: accepted
+- decision: Implement policy-gated (allow|warn|strict) BL-007↔BL-008 handshake validation at the BL-008 explanation-generation entry point, checking required BL-007 playlist track fields (`track_id`, `final_score`, `playlist_position`) and assembly trace header fields (`track_id`, `decision`, `score_rank`) before processing proceeds. BL-014 enforces wrapper-level continuity via `schema_bl007_bl008_handshake_contract`.
+- context: Post-Slice 26, all BL-008 enrichment paths depended on BL-007 outputs being structurally correct. No boundary contract existed at the BL-007→BL-008 transition to surface missing fields early.
+- alternatives_considered: strict-only validation (rejected: too disruptive for iterative runs); no validation at entry point (rejected: gaps only surface as silent wrong output); one-off field presence assertions in main.py (rejected: non-reusable, no BL-014 coverage).
+- rationale: Extends the proven handshake pattern from prior boundary hardening slices. Default `warn` policy ensures observability without blocking runs; BL-014 `schema_bl007_bl008_handshake_contract` integrates the boundary check into the wrapper continuity gate.
+- evidence_basis: `07_implementation/src/transparency/input_validation.py`, `07_implementation/src/transparency/main.py`, `07_implementation/src/quality/sanity_checks.py`; focused pytest (`58/58`) on transparency + quality suites.
+- impacted_files: `07_implementation/src/shared_utils/constants.py`, `07_implementation/src/transparency/input_validation.py`, `07_implementation/src/transparency/runtime_controls.py`, `07_implementation/src/transparency/main.py`, `07_implementation/src/quality/sanity_checks.py`, `07_implementation/tests/test_transparency_input_validation.py`, `07_implementation/tests/test_transparency_integration.py`, `07_implementation/tests/test_quality_sanity_checks.py`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`, `00_admin/unresolved_issues.md`.
+- next_steps: Consider BL-008↔BL-009 handshake validation in the next slice to continue the hardening wave downstream.
+
+## D-104
+- date: 2026-04-13
+- entity_id: BL-008↔BL-009 handshake validation
+- proposed_by: Copilot
+- status: accepted
+- decision: Implement policy-gated (allow|warn|strict) BL-008↔BL-009 handshake validation at the BL-009 observability entry point, checking required BL-008 summary keys (`run_id`, `playlist_track_count`, `top_contributor_distribution`), required payload keys (`playlist_track_count`, `explanations`), and summary/payload explanation-count consistency before observability logging proceeds. BL-014 enforces wrapper-level continuity via `schema_bl008_bl009_handshake_contract`.
+- context: After Slice 27, BL-009 still consumed BL-008 summary and payload artifacts with only basic required-key checks and no explicit boundary contract or policy metadata carried into BL-009 outputs.
+- alternatives_considered: strict-only validation (rejected: too disruptive for normal runs); rely on existing `ensure_required_keys` only (rejected: no count-consistency or BL-014 continuity evidence); add BL-014-only checks without BL-009 entry validation (rejected: wrapper detection would lag stage-local failure/visibility).
+- rationale: Extends the same proven handshake pattern to the downstream BL-008→BL-009 boundary. Default `warn` policy preserves compatibility while surfacing structural drift early, and BL-009 now exposes its own validation-policy/status metadata for audit continuity.
+- evidence_basis: `07_implementation/src/observability/input_validation.py`, `07_implementation/src/observability/main.py`, `07_implementation/src/quality/sanity_checks.py`; focused pytest (`80/80`) on observability + quality suites.
+- impacted_files: `07_implementation/src/shared_utils/constants.py`, `07_implementation/src/observability/input_validation.py`, `07_implementation/src/observability/runtime_controls.py`, `07_implementation/src/run_config/run_config_utils.py`, `07_implementation/src/observability/main.py`, `07_implementation/src/quality/sanity_checks.py`, `07_implementation/tests/test_observability_input_validation.py`, `07_implementation/tests/test_observability_runtime_controls.py`, `07_implementation/tests/test_run_config_utils.py`, `07_implementation/tests/test_quality_sanity_checks.py`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`, `00_admin/unresolved_issues.md`.
+- next_steps: Evaluate whether BL-009 should surface sampled handshake violations inside stage diagnostics as well as top-level validation metadata if future audit consumers need finer-grained traceability.
+
+## D-105
+- date: 2026-04-13
+- entity_id: BL-009↔BL-010 and BL-010↔BL-011 handshake validation (Slices 29-30)
+- proposed_by: Copilot
+- status: accepted
+- decision: Implement policy-gated (allow|warn|strict) BL-009↔BL-010 and BL-010↔BL-011 handshake validation at diagnostic stage entry points, with optional (auto-pass when not executed) BL-014 wrapper checks requiring both boundaries' validation metadata. BL-009 validates BL-010 baseline snapshot; BL-011 validates BL-010 baseline snapshot consistency; both support optional-stage auto-pass semantics since BL-010/BL-011 are diagnostic-only pipelines not part of core orchestration.
+- context: After Slices 10, 14, 19, 23, 27, 28 completed handshake hardening through BL-009 (6 boundaries, 34/34 BL-014 checks), BL-010 reproducibility and BL-011 controllability both already had internal validation functions but lacked BL-014 wrapper continuity checks to surface their handshakes into the broader validation contract.
+- alternatives_considered: extend core orchestration to always execute BL-010/BL-011 (rejected: they are optional diagnostics, not required evaluation stages); add BL-014-only checks without BL-010/BL-011 validation metadata (rejected: wrapper would be blind to whether stages executed or data is structurally valid when accessed); make BL-010/BL-011 required (rejected: scope mismatch, not aligned with core artefact definition).
+- rationale: Extends the proven handshake pattern to optional diagnostic stages with auto-pass logic for when they are not executed. This allows BL-014 to verify handshakes when the stages do run while staying gracefully silent when they don't. Maintains the continuous boundary validation wave through all active inter-stage connections while respecting that BL-010/BL-011 are supplementary evaluation stages. Policy defaults preserve 'warn' mode for compatibility and early signal visibility.
+- evidence_basis: '07_implementation/src/reproducibility/input_validation.py', '07_implementation/src/controllability/input_validation.py', '07_implementation/src/quality/sanity_checks.py'; two new BL-014 helpers 'bl009_bl010_handshake_contract_ok()' and 'bl010_bl011_handshake_contract_ok()' with auto-pass logic for missing snapshots; focused pytest (41/41 sanity_checks tests), full pytest (526/526 all tests), wrapper validate-only (BL-014 sanity 36/36 checks).
+- impacted_files: '07_implementation/src/shared_utils/constants.py', '07_implementation/src/quality/sanity_checks.py', '07_implementation/tests/test_quality_sanity_checks.py', '00_admin/decision_log.md', '00_admin/change_log.md', '00_admin/thesis_state.md', '00_admin/timeline.md', '00_admin/unresolved_issues.md'.
+- next_steps: Evaluate whether any additional downstream diagnostic stages (BL-012 onward, if they exist) should receive similar optional-stage handshake treatment to complete the full validation wave continuity.
