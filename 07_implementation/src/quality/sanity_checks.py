@@ -41,6 +41,7 @@ BL005_HANDSHAKE_REQUIRED_PROFILE_KEYS: tuple[str, ...] = (
 BL005_HANDSHAKE_REQUIRED_SEED_TRACE_FIELDS: tuple[str, ...] = (
     "track_id",
 )
+BL005_HANDSHAKE_WARN_MAX_VIOLATIONS_ADVISORY_THRESHOLD = 3
 
 
 def sha256_file(path: Path) -> str:
@@ -153,6 +154,40 @@ def bl004_bl005_handshake_contract_ok(
         detail_parts.append("missing BL-005 config.validation_policies.bl004_bl005_handshake_validation_policy")
 
     return False, "BL-004↔BL-005 handshake contract incomplete: " + "; ".join(detail_parts)
+
+
+def bl005_handshake_warning_volume_advisory(
+    bl005_diagnostics: dict[str, Any],
+    *,
+    threshold: int = BL005_HANDSHAKE_WARN_MAX_VIOLATIONS_ADVISORY_THRESHOLD,
+) -> dict[str, str] | None:
+    config_raw = bl005_diagnostics.get("config")
+    config = dict(config_raw) if isinstance(config_raw, dict) else {}
+    policies_raw = config.get("validation_policies")
+    policies = dict(policies_raw) if isinstance(policies_raw, dict) else {}
+    policy = str(policies.get("bl004_bl005_handshake_validation_policy", "warn")).strip().lower()
+
+    validation_raw = bl005_diagnostics.get("validation")
+    validation = dict(validation_raw) if isinstance(validation_raw, dict) else {}
+    status = str(validation.get("status", "pass")).strip().lower()
+
+    violations_raw = validation.get("control_constraint_violations")
+    violations = list(violations_raw) if isinstance(violations_raw, list) else []
+    violation_count = len(violations)
+
+    if policy != "warn" or status != "warn" or violation_count <= threshold:
+        return None
+
+    sampled_raw = validation.get("sampled_violations")
+    sampled = list(sampled_raw) if isinstance(sampled_raw, list) else []
+    return {
+        "id": "advisory_bl005_handshake_warning_volume",
+        "details": (
+            f"BL-005 handshake validation is running in warn mode with elevated violation volume "
+            f"({violation_count} > {threshold}); consider strict policy after remediation. "
+            f"Sampled violations={sampled[:5]}"
+        ),
+    }
 
 
 def ensure_exists(path: Path) -> None:
@@ -339,6 +374,9 @@ def main() -> int:
         bl004_bl005_ok,
         bl004_bl005_details,
     )
+    handshake_warning_advisory = bl005_handshake_warning_volume_advisory(bl005_diag)
+    if handshake_warning_advisory is not None:
+        advisories.append(handshake_warning_advisory)
 
     # Hash-link integrity checks
     profile_seed_table_path = resolve_existing_path(
@@ -560,6 +598,9 @@ def main() -> int:
             "BL-009 index counts align with upstream stage outputs",
             "BL-009 run_id linkage aligns with upstream stage summaries",
         ],
+        "advisory_thresholds": {
+            "bl005_handshake_warn_max_violations": BL005_HANDSHAKE_WARN_MAX_VIOLATIONS_ADVISORY_THRESHOLD,
+        },
     }
 
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)

@@ -8,6 +8,7 @@ import pytest
 
 from quality import sanity_checks
 from quality.sanity_checks import (
+    bl005_handshake_warning_volume_advisory,
     bl004_bl005_handshake_contract_ok,
     bl003_bl004_handshake_contract_ok,
     bl005_filtered_has_required_columns,
@@ -403,6 +404,48 @@ def test_bl004_bl005_handshake_contract_fails_when_fields_missing() -> None:
     assert "missing BL-004 profile keys" in details
     assert "missing BL-004 seed trace fields" in details
     assert "missing BL-005 config.validation_policies.bl004_bl005_handshake_validation_policy" in details
+
+
+def test_bl005_handshake_warning_volume_advisory_emits_when_warn_volume_exceeds_threshold() -> None:
+    advisory = bl005_handshake_warning_volume_advisory(
+        {
+            "config": {
+                "validation_policies": {
+                    "bl004_bl005_handshake_validation_policy": "warn",
+                }
+            },
+            "validation": {
+                "status": "warn",
+                "control_constraint_violations": ["v1", "v2", "v3", "v4"],
+                "sampled_violations": ["v1", "v2", "v3", "v4"],
+            },
+        },
+        threshold=3,
+    )
+
+    assert advisory is not None
+    assert advisory["id"] == "advisory_bl005_handshake_warning_volume"
+    assert "4 > 3" in advisory["details"]
+
+
+def test_bl005_handshake_warning_volume_advisory_not_emitted_when_within_threshold() -> None:
+    advisory = bl005_handshake_warning_volume_advisory(
+        {
+            "config": {
+                "validation_policies": {
+                    "bl004_bl005_handshake_validation_policy": "warn",
+                }
+            },
+            "validation": {
+                "status": "warn",
+                "control_constraint_violations": ["v1", "v2", "v3"],
+                "sampled_violations": ["v1", "v2", "v3"],
+            },
+        },
+        threshold=3,
+    )
+
+    assert advisory is None
 
 
 def test_bl014_main_fails_on_missing_handshake_contract(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:

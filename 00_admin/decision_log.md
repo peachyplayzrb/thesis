@@ -6,9 +6,9 @@ Ordering convention (standardized 2026-03-24):
 - New entries must be appended at the end and may include `superseded_by` when a prior decision is replaced.
 
 Maintenance snapshot (2026-04-13):
-- Highest decision ID currently present: `D-090`
-- Total decision entries: 86
-- Status distribution: accepted=76, superseded=3, rejected=1
+- Highest decision ID currently present: `D-091`
+- Total decision entries: 87
+- Status distribution: accepted=77, superseded=3, rejected=1
 - ID integrity check: no duplicate decision IDs detected
 
 Current posture snapshot (2026-03-25):
@@ -1819,3 +1819,16 @@ review_date: none
 - evidence_basis: `07_implementation/src/retrieval/input_validation.py`, `07_implementation/src/retrieval/stage.py`, `07_implementation/src/retrieval/runtime_controls.py`, `07_implementation/src/retrieval/models.py`, `07_implementation/src/run_config/run_config_utils.py`, `07_implementation/src/shared_utils/constants.py`, `07_implementation/src/quality/sanity_checks.py`, `07_implementation/tests/test_retrieval_input_validation.py`, `07_implementation/tests/test_retrieval_stage.py`, `07_implementation/tests/test_retrieval_runtime_controls.py`, `07_implementation/tests/test_quality_sanity_checks.py`, `07_implementation/tests/test_run_config_utils.py`; validation evidence: focused pytest (`48/48`), touched-file pyright (`0 errors`), wrapper validate-only pass (`BL013-ENTRYPOINT-20260413-103628-028213`, `BL014-SANITY-20260413-103658-484887`, `30/30`).
 - impacted_files: `07_implementation/src/retrieval/input_validation.py`, `07_implementation/src/retrieval/stage.py`, `07_implementation/src/retrieval/runtime_controls.py`, `07_implementation/src/retrieval/models.py`, `07_implementation/src/run_config/run_config_utils.py`, `07_implementation/src/shared_utils/constants.py`, `07_implementation/src/quality/sanity_checks.py`, `07_implementation/tests/test_retrieval_input_validation.py`, `07_implementation/tests/test_retrieval_stage.py`, `07_implementation/tests/test_retrieval_runtime_controls.py`, `07_implementation/tests/test_quality_sanity_checks.py`, `07_implementation/tests/test_run_config_utils.py`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`, `00_admin/unresolved_issues.md`.
 - next_steps: If policy hardening continues, add an optional BL-014 advisory threshold on handshake warning volume to support gradual promotion from `warn` to `strict` in controlled runs.
+
+## D-091
+- date: 2026-04-13
+- entity_id: BL-014 handshake warning-volume advisory for BL-005 warn mode (Slice 15)
+- proposed_by: user + Copilot
+- status: accepted
+- decision: Add a non-failing BL-014 advisory that triggers when BL-005 handshake validation is in `warn` mode and the recorded handshake-control violation volume exceeds a bounded threshold. Keep the existing BL-014 pass/fail contract unchanged, and surface the advisory through the existing `advisories` channel plus config-snapshot threshold metadata.
+- context: D-090 completed BL-004↔BL-005 handshake hardening with policy-gated validation and wrapper continuity checks. The remaining follow-on risk was warn-mode normalization of elevated handshake violations without a clear escalation signal in quality outputs.
+- alternatives_considered: keep warn mode without additional BL-014 signal (rejected: elevated warn-state drift remains easy to miss); promote warning volume to a hard BL-014 failure immediately (rejected: too disruptive for backward-compatible warn posture); enforce escalation only in stage logs (rejected: weaker wrapper-level visibility for downstream quality consumers).
+- rationale: A bounded advisory gives explicit escalation visibility while preserving pass/fail compatibility and allowing gradual policy promotion from `warn` to `strict` in controlled runs.
+- evidence_basis: `07_implementation/src/quality/sanity_checks.py` (new advisory helper + config-snapshot advisory threshold), `07_implementation/tests/test_quality_sanity_checks.py` (new warn-volume advisory tests); validation evidence: focused pytest (`14/14`) and wrapper validate-only pass (`BL013-ENTRYPOINT-20260413-104436-925545`, `BL014-SANITY-20260413-104503-647428`, `30/30`).
+- impacted_files: `07_implementation/src/quality/sanity_checks.py`, `07_implementation/tests/test_quality_sanity_checks.py`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`, `00_admin/unresolved_issues.md`.
+- next_steps: If repeated runs show persistent advisory volume, add an optional policy recommendation report that summarizes warn-volume trend and strict-readiness criteria.
