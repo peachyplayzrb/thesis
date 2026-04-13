@@ -249,6 +249,14 @@ def _build_summary_payload(
         "source_scope_manifest",
         summary_path.parent / ALIGNMENT_OUTPUT_FILENAMES["source_scope_manifest_json"],
     )
+    unmatched_reason_counts = dict(context.metrics.unmatched_reason_counts)
+    no_candidate_count = int(unmatched_reason_counts.get("no_ds001_candidate", 0))
+    missing_keys_count = int(unmatched_reason_counts.get("missing_track_id_and_metadata", 0))
+    fuzzy_rejected_count = sum(
+        count
+        for reason, count in unmatched_reason_counts.items()
+        if reason.startswith("fuzzy_")
+    )
 
     summary: dict[str, Any] = {
         "task": SUMMARY_TASK_NAME,
@@ -332,6 +340,19 @@ def _build_summary_payload(
             "policy": SUMMARY_NOTE_POLICY,
             "logging": SUMMARY_NOTE_LOGGING,
             "seed_table_enrichment": SUMMARY_NOTE_SEED_TABLE_ENRICHMENT,
+        },
+        "analysis": {
+            "unmatched_reason_counts": unmatched_reason_counts,
+            "unmatched_reason_classification": {
+                "dataset_coverage_likely": no_candidate_count,
+                "input_missing_keys": missing_keys_count,
+                "fuzzy_filter_rejected": fuzzy_rejected_count,
+                "other_or_unspecified": max(
+                    0,
+                    int(context.metrics.unmatched_rows)
+                    - (no_candidate_count + missing_keys_count + fuzzy_rejected_count),
+                ),
+            },
         },
     }
 

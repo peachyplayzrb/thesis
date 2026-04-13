@@ -513,6 +513,7 @@ class ProfileStage:
         summary_payload: dict[str, object],
         structural_contract: dict[str, object],
         policy: str,
+        seed_rows: list[dict[str, object]] | None = None,
     ) -> list[str]:
         warnings: list[str] = []
         inputs_raw = summary_payload.get("inputs")
@@ -535,6 +536,27 @@ class ProfileStage:
         for required_field in BL004_HANDSHAKE_REQUIRED_SEED_FIELDS:
             if required_field not in expected_fieldnames:
                 message = f"missing BL-003 structural seed field: {required_field}"
+                if policy == "strict":
+                    raise RuntimeError(f"BL-004 handshake validation failed: {message}")
+                if policy == "warn":
+                    warnings.append(message)
+
+        # Structural checks alone are insufficient when confidence values are present but malformed.
+        if seed_rows and "match_confidence_score" in expected_fieldnames:
+            malformed_confidence_rows = 0
+            for row in seed_rows:
+                raw_confidence = str(row.get("match_confidence_score", "")).strip()
+                parsed_confidence = parse_float(raw_confidence)
+                if not raw_confidence or parsed_confidence is None:
+                    malformed_confidence_rows += 1
+                    continue
+                if parsed_confidence < 0.0 or parsed_confidence > 1.0:
+                    malformed_confidence_rows += 1
+            if malformed_confidence_rows > 0:
+                message = (
+                    "BL-003 handshake confidence row-quality check failed: "
+                    f"malformed_or_missing_match_confidence_score_rows={malformed_confidence_rows}"
+                )
                 if policy == "strict":
                     raise RuntimeError(f"BL-004 handshake validation failed: {message}")
                 if policy == "warn":
@@ -569,6 +591,7 @@ class ProfileStage:
             summary_payload,
             structural_contract,
             controls.bl003_handshake_validation_policy,
+            normalized_rows,
         )
         rows_selected = ProfileStage._normalize_int_mapping(manifest_payload.get("rows_selected"))
         rows_available = ProfileStage._normalize_int_mapping(manifest_payload.get("rows_available"))
@@ -635,6 +658,8 @@ class ProfileStage:
         history_weight_malformed_row_count = 0
         synthetic_influence_weight_row_count = 0
         influence_weight_malformed_row_count = 0
+        synthetic_weight_reconstruction_row_count = 0
+        synthetic_weight_reconstruction_track_ids: list[str] = []
         malformed_numeric_row_count = 0
         malformed_numeric_value_count_by_feature = {column: 0 for column in NUMERIC_FEATURE_COLUMNS}
         no_numeric_signal_row_count = 0
@@ -715,12 +740,25 @@ class ProfileStage:
                 history_weight_malformed_row_count += 1
             if raw_influence_weight and influence_weight_component is None:
                 influence_weight_malformed_row_count += 1
+            synthetic_weight_reconstructed = False
             if history_weight_component is None and "history" in selected_interaction_types:
                 synthetic_history_weight_row_count += 1
                 history_weight_component = preference_weight * attribution_shares.get("history", 0.0)
+                synthetic_weight_reconstructed = True
             if influence_weight_component is None and "influence" in selected_interaction_types:
                 synthetic_influence_weight_row_count += 1
                 influence_weight_component = preference_weight * attribution_shares.get("influence", 0.0)
+                synthetic_weight_reconstructed = True
+            if synthetic_weight_reconstructed:
+                synthetic_weight_reconstruction_row_count += 1
+                if len(synthetic_weight_reconstruction_track_ids) < 25:
+                    synthetic_weight_reconstruction_track_ids.append(trace_track_id)
+                if controls.synthetic_data_validation_policy == "strict":
+                    raise RuntimeError(
+                        "BL-004 strict validation failed: "
+                        "synthetic_data_validation_policy triggered: "
+                        f"synthetic_weight_reconstruction_row_track_id={trace_track_id}"
+                    )
             history_preference_weight_sum += max(0.0, history_weight_component or 0.0)
             influence_preference_weight_sum += max(0.0, influence_weight_component or 0.0)
 
@@ -951,6 +989,8 @@ class ProfileStage:
             history_weight_malformed_row_count=history_weight_malformed_row_count,
             synthetic_influence_weight_row_count=synthetic_influence_weight_row_count,
             influence_weight_malformed_row_count=influence_weight_malformed_row_count,
+            synthetic_weight_reconstruction_row_count=synthetic_weight_reconstruction_row_count,
+            synthetic_weight_reconstruction_track_ids=synthetic_weight_reconstruction_track_ids,
             no_numeric_signal_row_count=no_numeric_signal_row_count,
             malformed_numeric_row_count=malformed_numeric_row_count,
             malformed_numeric_value_count_by_feature=malformed_numeric_value_count_by_feature,
@@ -1012,6 +1052,8 @@ class ProfileStage:
             "history_weight_malformed_row_count": aggregation.history_weight_malformed_row_count,
             "synthetic_influence_weight_row_count": aggregation.synthetic_influence_weight_row_count,
             "influence_weight_malformed_row_count": aggregation.influence_weight_malformed_row_count,
+            "synthetic_weight_reconstruction_row_count": aggregation.synthetic_weight_reconstruction_row_count,
+            "synthetic_weight_reconstruction_track_ids": aggregation.synthetic_weight_reconstruction_track_ids[:25],
             "no_numeric_signal_row_count": aggregation.no_numeric_signal_row_count,
             "malformed_numeric_row_count": aggregation.malformed_numeric_row_count,
             "malformed_numeric_value_count_by_feature": dict(

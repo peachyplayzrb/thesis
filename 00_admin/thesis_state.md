@@ -1,6 +1,6 @@
 # Thesis State
 
-Last updated: 2026-04-12 UTC (REB-M4 closure checkpoint)
+Last updated: 2026-04-13 UTC (REB-M4 + Slice 12 checkpoint)
 
 ## REBUILD POSTURE (active from 2026-04-12)
 
@@ -123,6 +123,9 @@ BL-014 sanity checks now enforce wrapper-level BL-003↔BL-004 handshake continu
 
 #### Post-closure enhancement checkpoint (Slice 11 handshake negative fixture)
 BL-014 now has explicit negative-fixture evidence for the wrapper-level handshake gate. A temporary coherent artifact-chain test proves `quality.sanity_checks.main()` fails specifically on `schema_bl003_bl004_handshake_contract` when BL-003 handshake-required summary inputs are removed, while normal validate-only runs remain green. Validation remains green via targeted pytest (`57/57`) and wrapper validate-only (`BL013-ENTRYPOINT-20260413-004657-028023`, `BL014-SANITY-20260413-004719-088476`, `29/29`) under decision/change anchors `D-087` / `C-320`.
+
+#### Post-closure enhancement checkpoint (Slice 12 row-quality handshake + unmatched classification)
+BL-004 handshake enforcement now includes row-quality validation for `match_confidence_score` values (missing/non-numeric/out-of-range) with policy-driven warn/strict behavior, and strict synthetic-data policy now fails fast when attribution-weight reconstruction is required. BL-004 diagnostics now include synthetic reconstruction counters and sampled track IDs. BL-003 summary outputs now include `unmatched_reason_counts` and bounded unmatched-reason classification buckets to separate dataset-coverage-likely effects from input-quality and fuzzy-rejection categories. Validation remains green via focused pytest (`25/25`) and wrapper validate-only (`BL013-ENTRYPOINT-20260413-011824-759642`, `BL014-SANITY-20260413-011850-557804`, `29/29`) under decision/change anchors `D-088` / `C-321`.
 
 ### REB-M4 Kickoff Checkpoint (2026-04-12)
 

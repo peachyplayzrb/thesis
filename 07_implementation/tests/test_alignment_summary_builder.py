@@ -165,6 +165,10 @@ def test_context_entrypoint_writes_expected_contract_payload(monkeypatch, tmp_pa
                 seed_table_rows=0,
                 trace_rows=0,
                 unmatched_rows=0,
+                unmatched_reason_counts={
+                    "no_ds001_candidate": 0,
+                    "missing_track_id_and_metadata": 0,
+                },
             ),
             output_paths=output_paths,
             match_rate_min_threshold=0.0,
@@ -188,3 +192,5 @@ def test_context_entrypoint_writes_expected_contract_payload(monkeypatch, tmp_pa
     ]
     assert context_summary["inputs"]["structural_contract"]["structural_contract_schema_version"] == "bl003-structural-contract-v1"
     assert context_summary["inputs"]["structural_contract"]["output_filenames"]["summary_json"] == "bl003_ds001_spotify_summary.json"
+    assert context_summary["analysis"]["unmatched_reason_counts"]["no_ds001_candidate"] == 0
+    assert context_summary["analysis"]["unmatched_reason_classification"]["dataset_coverage_likely"] == 0

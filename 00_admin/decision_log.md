@@ -5,10 +5,10 @@ Ordering convention (standardized 2026-03-24):
 - Entry IDs remain unique identifiers, but physical entry order reflects historical insertion timing (not strict numeric sorting).
 - New entries must be appended at the end and may include `superseded_by` when a prior decision is replaced.
 
-Maintenance snapshot (2026-04-12):
-- Highest decision ID currently present: `D-087`
-- Total decision entries: 84
-- Status distribution: accepted=74, superseded=3, rejected=1
+Maintenance snapshot (2026-04-13):
+- Highest decision ID currently present: `D-088`
+- Total decision entries: 85
+- Status distribution: accepted=75, superseded=3, rejected=1
 - ID integrity check: no duplicate decision IDs detected
 
 Current posture snapshot (2026-03-25):
@@ -1780,3 +1780,16 @@ review_date: none
 - evidence_basis: `07_implementation/tests/test_quality_sanity_checks.py`; validation evidence: targeted pytest (`57/57`) and wrapper validate-only pass (`BL013-ENTRYPOINT-20260413-004657-028023`, `BL014-SANITY-20260413-004719-088476`, `29/29`).
 - impacted_files: `07_implementation/tests/test_quality_sanity_checks.py`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/timeline.md`, `00_admin/thesis_state.md`.
 - next_steps: No further in-repo handshake hardening is required unless CI policy expands toward additional destructive fixture matrices.
+
+## D-088
+- date: 2026-04-13
+- entity_id: BL-004 handshake row-quality hardening + BL-003 unmatched classification (Slice 12)
+- proposed_by: user + Copilot
+- status: accepted
+- decision: Extend BL-004 handshake validation from structural field presence to row-quality confidence checks and enforce strict synthetic-weight reconstruction failure at aggregation time, while extending BL-003 summary outputs with unmatched-reason histogram and bounded classification buckets for dataset-coverage interpretation.
+- context: After Slice 11, wrapper/stage handshake surfaces were structurally enforced but still permissive to malformed per-row confidence values, and BL-003 unmatched evidence remained primarily aggregate-rate oriented without reason-bucket interpretation for downstream reporting.
+- alternatives_considered: keep structural-only handshake checks and rely on downstream confidence fallback counters (rejected: weak contract strictness); make all synthetic reconstruction strict by default (rejected: backward-compatibility risk); keep BL-003 unmatched reporting as a raw count only (rejected: insufficient evidence framing for coverage vs input-quality interpretation).
+- rationale: Row-quality handshake checks tighten cross-BL contract integrity where it directly affects confidence-weighted behavior, strict synthetic reconstruction fail-fast improves reliability when explicitly requested by policy, and unmatched reason classification improves BL-003 evidence interpretability without altering matching behavior.
+- evidence_basis: `07_implementation/src/profile/stage.py`, `07_implementation/src/profile/models.py`, `07_implementation/src/alignment/stage.py`, `07_implementation/src/alignment/models.py`, `07_implementation/src/alignment/writers.py`, `07_implementation/tests/test_profile_stage.py`, `07_implementation/tests/test_alignment_summary_builder.py`; validation evidence: focused pytest (`25/25`) and wrapper validate-only pass (`BL013-ENTRYPOINT-20260413-011824-759642`, `BL014-SANITY-20260413-011850-557804`, `29/29`).
+- impacted_files: `07_implementation/src/profile/stage.py`, `07_implementation/src/profile/models.py`, `07_implementation/src/alignment/stage.py`, `07_implementation/src/alignment/models.py`, `07_implementation/src/alignment/writers.py`, `07_implementation/tests/test_profile_stage.py`, `07_implementation/tests/test_alignment_summary_builder.py`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/timeline.md`, `00_admin/thesis_state.md`, `00_admin/unresolved_issues.md`.
+- next_steps: If needed for reporting quality gates, add a bounded BL-014 check that flags unusually high malformed-confidence row share under warn mode before promoting strict policy defaults.

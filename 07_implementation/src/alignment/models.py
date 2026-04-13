@@ -491,6 +491,7 @@ class AlignmentSummaryMetrics:
     seed_table_rows: int
     trace_rows: int
     unmatched_rows: int
+    unmatched_reason_counts: dict[str, int] = field(default_factory=dict)
 
 
 @dataclass(frozen=True, slots=True)

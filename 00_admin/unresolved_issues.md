@@ -1,6 +1,6 @@
 # Unresolved Issues
 
-Last updated: 2026-04-12
+Last updated: 2026-04-13
 
 ## Active
 None.
@@ -25,6 +25,7 @@ Active-set sync note (2026-04-09 runtime-root governance): Confirmed no active b
 Active-set sync note (2026-04-10 zero-trust audit closeout): Confirmed no new unresolved blocker from the Chapter 2 zero-trust reference audit cycle; all citations extracted from the frozen Chapter 2 baseline received manual verdicts, and no citation remained unverifiable.
 Active-set sync note (2026-04-12 user_csv validation closeout): Confirmed no active blocker after BL-003 `user_csv` integration validation. Wrapper pass `BL013-ENTRYPOINT-20260412-211514-304085` and sanity pass `BL014-SANITY-20260412-211538-292523` (`28/28`) succeeded with a live sample `user_csv_flat.csv`; BL-003 summary and BL-009 observability outputs both record `user_csv=10` rows under advisory policy.
 Active-set sync note (2026-04-12 configurable fuzzy wave-1 closeout): Confirmed no active blocker after the BL-003 fuzzy-control rollout. Targeted BL-003 tests passed (`97/97`), full pytest passed (`411/411`), and wrapper validation remained green (`BL013-ENTRYPOINT-20260412-213836-591492`, `BL014-SANITY-20260412-213859-249947`, `28/28`) with exact-match precedence unchanged.
+Active-set sync note (2026-04-13 row-quality handshake + unmatched-classification closeout): Confirmed no active blocker after Slice 12 completion. BL-004 row-quality handshake checks and strict synthetic-reconstruction enforcement plus BL-003 unmatched-reason classification are implemented and validated (`pytest 25/25`; `BL013-ENTRYPOINT-20260413-011824-759642`; `BL014-SANITY-20260413-011850-557804`, `29/29`).
 
 ## Resolved (Recent)
 

@@ -67,6 +67,7 @@ class _MatchAggregationResult:
     matched_events: list[dict[str, Any]]
     unmatched_rows: list[dict[str, Any]]
     summary_counts: dict[str, int]
+    unmatched_reason_counts: dict[str, int]
     influence_contract: dict[str, Any]
     aggregated: Any
 
@@ -106,6 +107,14 @@ class AlignmentStage:
             summary_path=out / ALIGNMENT_OUTPUT_FILENAMES["summary_json"],
             source_scope_manifest_path=out / ALIGNMENT_OUTPUT_FILENAMES["source_scope_manifest_json"],
         )
+
+    @staticmethod
+    def _count_unmatched_reasons(unmatched_rows: list[dict[str, Any]]) -> dict[str, int]:
+        reason_counts: dict[str, int] = {}
+        for row in unmatched_rows:
+            reason = str(row.get("reason", "")).strip() or "unspecified"
+            reason_counts[reason] = reason_counts.get(reason, 0) + 1
+        return dict(sorted(reason_counts.items(), key=lambda item: item[0]))
 
     @staticmethod
     def resolve_runtime_controls() -> AlignmentResolvedContext:
@@ -352,6 +361,7 @@ class AlignmentStage:
             context=context,
         )
         summary_counts = {"input_event_rows": len(events), **match_counts}
+        unmatched_reason_counts = self._count_unmatched_reasons(unmatched_rows)
 
         influence_contract = inject_influence_tracks(
             matched_events,
@@ -368,6 +378,7 @@ class AlignmentStage:
             matched_events=matched_events,
             unmatched_rows=unmatched_rows,
             summary_counts=summary_counts,
+            unmatched_reason_counts=unmatched_reason_counts,
             influence_contract=influence_contract,
             aggregated=aggregated,
         )
@@ -417,6 +428,7 @@ class AlignmentStage:
                 seed_table_rows=len(match_result.aggregated),
                 trace_rows=len(match_result.trace_rows),
                 unmatched_rows=len(match_result.unmatched_rows),
+                unmatched_reason_counts=match_result.unmatched_reason_counts,
             ),
             output_paths=output_paths,
             match_rate_min_threshold=float(behavior_controls.match_rate_min_threshold),

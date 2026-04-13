@@ -17,6 +17,7 @@ def _write_load_inputs_artifacts(
     tmp_path: Path,
     *,
     include_runtime_scope_diagnostics: bool,
+    confidence_value: str = "1.0",
 ) -> ProfilePaths:
     seed_table_path = tmp_path / "seed.csv"
     numeric_headers = ",".join(NUMERIC_FEATURE_COLUMNS)
@@ -25,7 +26,7 @@ def _write_load_inputs_artifacts(
         (
             "ds001_id,spotify_track_ids,interaction_types,preference_weight_sum,"
             f"interaction_count_sum,match_confidence_score,tags,genres,artist,song,{numeric_headers}\n"
-            f"track_1,sp_1,history,1.0,5,1.0,rock,rock,artist_a,song_a,{numeric_values}\n"
+            f"track_1,sp_1,history,1.0,5,{confidence_value},rock,rock,artist_a,song_a,{numeric_values}\n"
         ),
         encoding="utf-8",
     )
@@ -525,6 +526,31 @@ def test_load_inputs_strict_handshake_policy_raises(tmp_path: Path) -> None:
         ProfileStage.load_inputs(paths, _controls(bl003_handshake_validation_policy="strict"))
 
 
+def test_load_inputs_warn_handshake_policy_tracks_confidence_row_quality_warning(tmp_path: Path) -> None:
+    paths = _write_load_inputs_artifacts(
+        tmp_path,
+        include_runtime_scope_diagnostics=True,
+        confidence_value="not-a-number",
+    )
+
+    inputs = ProfileStage.load_inputs(paths, _controls(bl003_handshake_validation_policy="warn"))
+
+    assert inputs.bl003_handshake_warnings == [
+        "BL-003 handshake confidence row-quality check failed: malformed_or_missing_match_confidence_score_rows=1"
+    ]
+
+
+def test_load_inputs_strict_handshake_policy_raises_on_confidence_row_quality(tmp_path: Path) -> None:
+    paths = _write_load_inputs_artifacts(
+        tmp_path,
+        include_runtime_scope_diagnostics=True,
+        confidence_value="not-a-number",
+    )
+
+    with pytest.raises(RuntimeError, match="BL-004 handshake validation failed"):
+        ProfileStage.load_inputs(paths, _controls(bl003_handshake_validation_policy="strict"))
+
+
 def test_aggregate_inputs_tracks_malformed_numeric_diagnostics() -> None:
     inputs = _inputs(
         [
@@ -593,6 +619,33 @@ def test_aggregate_inputs_numeric_malformed_threshold_raises() -> None:
         ProfileStage.aggregate_inputs(inputs, controls)
 
 
+def test_aggregate_inputs_strict_synthetic_data_policy_raises_on_weight_reconstruction() -> None:
+    inputs = _inputs(
+        [
+            {
+                "ds001_id": "track_1",
+                "spotify_track_ids": "sp_1",
+                "interaction_types": "history",
+                "preference_weight_sum": "1.0",
+                "interaction_count_sum": "5",
+                "match_confidence_score": "1.0",
+                "history_preference_weight_sum": "",
+                "tags": "rock",
+                "genres": "rock",
+                "tempo": "120",
+                "release": "2010",
+                "key": "1",
+                "artist": "A",
+                "song": "S1",
+            }
+        ]
+    )
+    controls = _controls(synthetic_data_validation_policy="strict")
+
+    with pytest.raises(RuntimeError, match="synthetic_data_validation_policy triggered"):
+        ProfileStage.aggregate_inputs(inputs, controls)
+
+
 def test_build_profile_payload_emits_fallback_diagnostics_keys(tmp_path: Path) -> None:
     aggregation = ProfileAggregation(
         input_row_count=1,
@@ -629,6 +682,8 @@ def test_build_profile_payload_emits_fallback_diagnostics_keys(tmp_path: Path) -
         synthetic_interaction_count_row_count=3,
         synthetic_history_weight_row_count=4,
         synthetic_influence_weight_row_count=5,
+        synthetic_weight_reconstruction_row_count=6,
+        synthetic_weight_reconstruction_track_ids=["track_a", "track_b"],
         validation_policies={
             "confidence_validation_policy": "warn",
             "interaction_type_validation_policy": "warn",
@@ -665,6 +720,8 @@ def test_build_profile_payload_emits_fallback_diagnostics_keys(tmp_path: Path) -
     assert diagnostics["synthetic_interaction_count_row_count"] == 3
     assert diagnostics["synthetic_history_weight_row_count"] == 4
     assert diagnostics["synthetic_influence_weight_row_count"] == 5
+    assert diagnostics["synthetic_weight_reconstruction_row_count"] == 6
+    assert diagnostics["synthetic_weight_reconstruction_track_ids"] == ["track_a", "track_b"]
     assert diagnostics["validation_policies"]["confidence_validation_policy"] == "warn"
     assert diagnostics["validation_warnings"] == ["warned"]
 

@@ -111,6 +111,8 @@ class ProfileAggregation:
     history_weight_malformed_row_count: int = 0
     synthetic_influence_weight_row_count: int = 0
     influence_weight_malformed_row_count: int = 0
+    synthetic_weight_reconstruction_row_count: int = 0
+    synthetic_weight_reconstruction_track_ids: list[str] = field(default_factory=list)
     no_numeric_signal_row_count: int = 0
     malformed_numeric_row_count: int = 0
     malformed_numeric_value_count_by_feature: dict[str, int] = field(default_factory=dict)
