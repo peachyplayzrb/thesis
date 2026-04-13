@@ -121,6 +121,9 @@ BL-004 handshake controls now have explicit strict/warn test coverage at the sta
 #### Post-closure enhancement checkpoint (Slice 10 wrapper-level handshake gate)
 BL-014 sanity checks now enforce wrapper-level BL-003↔BL-004 handshake continuity with `schema_bl003_bl004_handshake_contract`, validating presence of BL-003 summary/runtime-scope inputs, BL-003 structural seed handshake fields, and BL-004 diagnostics handshake-policy metadata. Validation remains green via targeted pytest (`56/56`) and wrapper validate-only (`BL013-ENTRYPOINT-20260413-004155-782240`, `BL014-SANITY-20260413-004220-078507`, `29/29`) under decision/change anchors `D-086` / `C-319`.
 
+#### Post-closure enhancement checkpoint (Slice 11 handshake negative fixture)
+BL-014 now has explicit negative-fixture evidence for the wrapper-level handshake gate. A temporary coherent artifact-chain test proves `quality.sanity_checks.main()` fails specifically on `schema_bl003_bl004_handshake_contract` when BL-003 handshake-required summary inputs are removed, while normal validate-only runs remain green. Validation remains green via targeted pytest (`57/57`) and wrapper validate-only (`BL013-ENTRYPOINT-20260413-004657-028023`, `BL014-SANITY-20260413-004719-088476`, `29/29`) under decision/change anchors `D-087` / `C-320`.
+
 ### REB-M4 Kickoff Checkpoint (2026-04-12)
 
 - Rebuild milestone outcome: Chapter 4 and Chapter 5 are now being rebuilt around the active O1 to O6 objective-to-evidence contract rather than the pre-rebuild MVP framing.

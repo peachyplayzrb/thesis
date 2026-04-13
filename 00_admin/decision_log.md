@@ -6,9 +6,9 @@ Ordering convention (standardized 2026-03-24):
 - New entries must be appended at the end and may include `superseded_by` when a prior decision is replaced.
 
 Maintenance snapshot (2026-04-12):
-- Highest decision ID currently present: `D-086`
-- Total decision entries: 83
-- Status distribution: accepted=73, superseded=3, rejected=1
+- Highest decision ID currently present: `D-087`
+- Total decision entries: 84
+- Status distribution: accepted=74, superseded=3, rejected=1
 - ID integrity check: no duplicate decision IDs detected
 
 Current posture snapshot (2026-03-25):
@@ -1767,3 +1767,16 @@ review_date: none
 - evidence_basis: `07_implementation/src/quality/sanity_checks.py`, `07_implementation/tests/test_quality_sanity_checks.py`; validation evidence: targeted pytest (`56/56`) and wrapper validate-only pass (`BL013-ENTRYPOINT-20260413-004155-782240`, `BL014-SANITY-20260413-004220-078507`, `29/29`).
 - impacted_files: `07_implementation/src/quality/sanity_checks.py`, `07_implementation/tests/test_quality_sanity_checks.py`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/timeline.md`, `00_admin/thesis_state.md`.
 - next_steps: If future CI policy requires fail-mode evidence, add a dedicated negative fixture that strips handshake fields and asserts BL-014 failure with this check id.
+
+## D-087
+- date: 2026-04-13
+- entity_id: BL-014 negative fixture for handshake gate failure evidence (Slice 11)
+- proposed_by: user + Copilot
+- status: accepted
+- decision: Implement a dedicated BL-014 negative fixture test that constructs a minimal coherent artifact chain, intentionally removes a handshake-required BL-003 field, runs `quality.sanity_checks.main()`, and asserts failure occurs specifically on `schema_bl003_bl004_handshake_contract` while other checks remain green.
+- context: D-086 added wrapper-level handshake enforcement, but the negative path remained only an intended follow-up. The remaining hardening value was proof that BL-014 itself fails for the expected reason when artifacts drift.
+- alternatives_considered: rely on helper-level negative tests only (rejected: does not prove `main()` report behavior); build a heavier integration harness outside pytest (rejected: unnecessary overhead for this bounded contract test).
+- rationale: A temp-artifact negative fixture provides precise, deterministic evidence that the wrapper-level gate is actionable and fails on the correct check id without destabilizing live outputs.
+- evidence_basis: `07_implementation/tests/test_quality_sanity_checks.py`; validation evidence: targeted pytest (`57/57`) and wrapper validate-only pass (`BL013-ENTRYPOINT-20260413-004657-028023`, `BL014-SANITY-20260413-004719-088476`, `29/29`).
+- impacted_files: `07_implementation/tests/test_quality_sanity_checks.py`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/timeline.md`, `00_admin/thesis_state.md`.
+- next_steps: No further in-repo handshake hardening is required unless CI policy expands toward additional destructive fixture matrices.
