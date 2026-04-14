@@ -46,6 +46,12 @@ pip install -r requirements.txt
 python main.py
 ```
 
+Dependency profile notes:
+
+- `requirements.txt` is intentionally minimal for the active BL-003 to BL-014 runtime path.
+- `rapidfuzz` is included for enhanced fuzzy matching; BL-003 has a standard-library fallback when unavailable.
+- Spotify export/ingestion utility flows can additionally use `spotipy` (optional install).
+
 Run with explicit config:
 
 ```bash
@@ -80,8 +86,23 @@ Main API routes:
 - `GET /api/status` -> latest BL-013 and BL-014 status snapshot
 - `GET /api/artifacts` -> key output artifact manifest (exists/size/mtime)
 - `GET /api/artifact?name=<artifact_name>` -> safe preview for whitelisted artifacts
+- `GET /api/explainer/flow` -> BL-003 to BL-009 stage flow with readiness state
+- `GET /api/explainer/stage?stage=<bl_id>` -> per-stage explainer details and metrics
+- `GET /api/explainer/explanations?limit=<n>` -> BL-008 explanation-card view for top tracks
+- `GET /api/explainer/evidence` -> BL-013/BL-014/BL-009 evidence summary dashboard payload
+- `GET /api/explainer/guide` -> guided next-step checklist derived from latest artifact availability
+- `GET /api/config-builder/schema` -> complete run-config setting inventory with defaults and per-setting descriptions
+- `GET /api/config-builder/profile?name=<config_path>` -> load an existing profile into the config builder
 - `POST /api/run` -> execute `main.py` (supports `config_path`, `validate_only`, `continue_on_error`)
 - `GET /api/run-stream` -> SSE live stream of wrapper execution
+
+Website panels now include:
+
+- Pipeline Explainer (flow + stage details)
+- BL-008 Explanation Viewer (track-level explanation cards)
+- Run Evidence Dashboard (BL-013 stage statuses + BL-014 checks + BL-009 evidence context)
+- Guided Flow (recommended next action from run and evidence readiness)
+- Profile Config Builder (edit/export full run-config surface with inline explanations)
 
 This wrapper is additive and does not modify core runtime logic under `src/`.
 

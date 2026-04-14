@@ -1,0 +1,186 @@
+"""Scenario construction for BL-011 controllability runs."""
+from __future__ import annotations
+
+from typing import Any, cast
+
+from controllability.pathing import build_paths, ensure_required_inputs
+from controllability.runtime_controls import resolve_bl011_runtime_controls
+from .weights import normalize_component_weight_keys, normalized_weights_with_override
+
+
+def build_scenarios(baseline_snapshot: dict, runtime_controls: dict[str, object]) -> list[dict[str, object]]:
+    """Build baseline and variant scenarios from the BL-010 snapshot plus controls."""
+    stage_configs = cast(dict[str, dict[str, object]], baseline_snapshot["stage_configs"])
+    base_profile = cast(dict[str, object], stage_configs["profile"])
+    base_retrieval = cast(dict[str, object], stage_configs["retrieval"])
+    base_scoring = cast(dict[str, object], stage_configs["scoring"])
+    base_assembly = cast(dict[str, object], stage_configs["assembly"])
+    raw_scoring_weights = cast(
+        dict[str, Any],
+        base_scoring.get("component_weights")
+        or base_scoring.get("active_component_weights")
+        or base_scoring.get("base_component_weights")
+        or {},
+    )
+    scoring_weights = normalize_component_weight_keys(
+        {key: float(value) for key, value in raw_scoring_weights.items()}
+    )
+    if not scoring_weights:
+        raise RuntimeError("BL-011 could not resolve scoring component weights from baseline snapshot")
+    override_if_present = float(cast(Any, runtime_controls["weight_override_value_if_component_present"]))
+    override_increment_fallback = float(cast(Any, runtime_controls["weight_override_increment_fallback"]))
+    override_cap_fallback = float(cast(Any, runtime_controls["weight_override_cap_fallback"]))
+    stricter_threshold_scale = float(cast(Any, runtime_controls["stricter_threshold_scale"]))
+    looser_threshold_scale = float(cast(Any, runtime_controls["looser_threshold_scale"]))
+    if "valence" in scoring_weights:
+        override_component = "valence"
+        override_raw_value = override_if_present
+    elif "V_mean" in scoring_weights:
+        override_component = "V_mean"
+        override_raw_value = override_if_present
+    else:
+        override_component = next(iter(scoring_weights.keys()))
+        override_raw_value = min(override_cap_fallback, float(scoring_weights[override_component]) + override_increment_fallback)
+
+    built_scenarios = [
+        {
+            "scenario_id": "baseline",
+            "test_id": "baseline",
+            "control_surface": "fixed_bl010_baseline",
+            "description": "BL-010 fixed baseline carried forward unchanged for BL-011 comparisons.",
+            "profile": {
+                **base_profile,
+                "include_interaction_types": ["history", "influence"],
+            },
+            "retrieval": {
+                **base_retrieval,
+                "threshold_scale": 1.0,
+            },
+            "scoring": {
+                **base_scoring,
+                "weight_override_component": None,
+                "raw_override_value": None,
+            },
+            "assembly": dict(base_assembly),
+            "expected_effect": "reference",
+        },
+        {
+            "scenario_id": "no_influence_tracks",
+            "test_id": "EP-CTRL-001",
+            "control_surface": "influence_tracks",
+            "description": "Disable influence-track interactions while keeping all other inputs and parameters fixed.",
+            "profile": {
+                **base_profile,
+                "include_interaction_types": ["history"],
+            },
+            "retrieval": {
+                **base_retrieval,
+                "threshold_scale": 1.0,
+            },
+            "scoring": {
+                **base_scoring,
+                "weight_override_component": None,
+                "raw_override_value": None,
+            },
+            "assembly": dict(base_assembly),
+            "expected_effect": "profile and ranking shift away from influence-steered indie/alternative emphasis",
+        },
+        {
+            "scenario_id": "valence_weight_up",
+            "test_id": "EP-CTRL-002",
+            "control_surface": "feature_weight",
+            "description": "Increase one score-component raw weight and renormalize all score weights to preserve a 1.0 total.",
+            "profile": {
+                **base_profile,
+                "include_interaction_types": ["history", "influence"],
+            },
+            "retrieval": {
+                **base_retrieval,
+                "threshold_scale": 1.0,
+            },
+            "scoring": {
+                **base_scoring,
+                "component_weights": normalized_weights_with_override(scoring_weights, override_component, override_raw_value),
+                "weight_override_component": override_component,
+                "raw_override_value": override_raw_value,
+            },
+            "assembly": dict(base_assembly),
+            "expected_effect": "tracks with stronger fit on the boosted component should gain score contribution and rank position",
+        },
+        {
+            "scenario_id": "stricter_thresholds",
+            "test_id": "EP-CTRL-003",
+            "control_surface": "candidate_threshold",
+            "description": f"Tighten all numeric retrieval thresholds by multiplying them by {stricter_threshold_scale:.2f}.",
+            "profile": {
+                **base_profile,
+                "include_interaction_types": ["history", "influence"],
+            },
+            "retrieval": {
+                **base_retrieval,
+                "threshold_scale": stricter_threshold_scale,
+            },
+            "scoring": {
+                **base_scoring,
+                "weight_override_component": None,
+                "raw_override_value": None,
+            },
+            "assembly": dict(base_assembly),
+            "expected_effect": "candidate pool should shrink and playlist overlap should reduce or reorder",
+        },
+        {
+            "scenario_id": "looser_thresholds",
+            "test_id": "EP-CTRL-003",
+            "control_surface": "candidate_threshold",
+            "description": f"Loosen all numeric retrieval thresholds by multiplying them by {looser_threshold_scale:.2f}.",
+            "profile": {
+                **base_profile,
+                "include_interaction_types": ["history", "influence"],
+            },
+            "retrieval": {
+                **base_retrieval,
+                "threshold_scale": looser_threshold_scale,
+            },
+            "scoring": {
+                **base_scoring,
+                "weight_override_component": None,
+                "raw_override_value": None,
+            },
+            "assembly": dict(base_assembly),
+            "expected_effect": "candidate pool should expand and downstream ranking or playlist composition should change",
+        },
+        {
+            "scenario_id": "fuzzy_enabled_strict",
+            "test_id": "EP-CTRL-004",
+            "control_surface": "alignment_fuzzy_mode",
+            "description": "Record strict fuzzy-enabled upstream alignment controls while keeping BL-004 to BL-007 inputs fixed for isolation evidence.",
+            "profile": {
+                **base_profile,
+                "include_interaction_types": ["history", "influence"],
+            },
+            "retrieval": {
+                **base_retrieval,
+                "threshold_scale": 1.0,
+            },
+            "scoring": {
+                **base_scoring,
+                "weight_override_component": None,
+                "raw_override_value": None,
+            },
+            "assembly": dict(base_assembly),
+            "alignment_seed_controls": {
+                "fuzzy_matching": {
+                    "enabled": True,
+                    "artist_threshold": 0.90,
+                    "title_threshold": 0.90,
+                    "combined_threshold": 0.90,
+                    "max_duration_delta_ms": 5000,
+                    "max_artist_candidates": 5,
+                }
+            },
+            "expected_effect": "no BL-004 to BL-007 shift expected because controllability reuses fixed active seed inputs",
+        },
+    ]
+    from controllability.scenario_loader import filter_scenarios_by_policy
+    scenario_policy = cast(dict[str, Any], runtime_controls.get("scenario_policy") or {})
+    return filter_scenarios_by_policy(built_scenarios, scenario_policy)

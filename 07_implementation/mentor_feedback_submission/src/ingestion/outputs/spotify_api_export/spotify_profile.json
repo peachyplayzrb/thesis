@@ -1,0 +1,32 @@
+{
+  "country": "MT",
+  "display_name": "Tara Palmier",
+  "explicit_content": {
+    "filter_enabled": false,
+    "filter_locked": false
+  },
+  "external_urls": {
+    "spotify": "https://open.spotify.com/user/21yrb2bzr5yljzuvocg76cbli"
+  },
+  "followers": {
+    "href": null,
+    "total": 3
+  },
+  "href": "https://api.spotify.com/v1/users/21yrb2bzr5yljzuvocg76cbli",
+  "id": "21yrb2bzr5yljzuvocg76cbli",
+  "images": [
+    {
+      "height": 300,
+      "url": "https://platform-lookaside.fbsbx.com/platform/profilepic/?asid=1605753099707830&height=300&width=300&ext=1778571123&hash=AT-OD1gHK2nNlAtZuL1irJ9s",
+      "width": 300
+    },
+    {
+      "height": 64,
+      "url": "https://platform-lookaside.fbsbx.com/platform/profilepic/?asid=1605753099707830&height=50&width=50&ext=1778571123&hash=AT9ht9_xfe0NmG7o4Z2FqhlB",
+      "width": 64
+    }
+  ],
+  "product": "premium",
+  "type": "user",
+  "uri": "spotify:user:21yrb2bzr5yljzuvocg76cbli"
+}

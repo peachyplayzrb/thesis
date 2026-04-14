@@ -1,7 +1,5 @@
-fastapi>=0.111.0
-h5py==3.16.0
-httpx>=0.27.0
-pypdf==6.9.1
+# Minimal active runtime dependencies (BL-003 to BL-014 pipeline path)
 rapidfuzz==3.14.3
-spotipy==2.23.0
-uvicorn[standard]>=0.29.0
+
+# Optional dependency for Spotify export/ingestion utility flows:
+# spotipy==2.23.0

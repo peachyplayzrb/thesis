@@ -1,0 +1,5 @@
+# Minimal active runtime dependencies for the mentor feedback bundle
+rapidfuzz==3.14.3
+
+# Optional dependency for Spotify export/ingestion utility flows:
+# spotipy==2.23.0

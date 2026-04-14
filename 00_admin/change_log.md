@@ -8,7 +8,7 @@ Ordering convention (standardized 2026-03-24):
 - New entries must be appended at the end; historical entries remain unchanged except for explicit correction records.
 
 Maintenance snapshot (2026-04-13):
-- Highest change ID currently present: `C-340`
+- Highest change ID currently present: `C-366`
 - Maintenance snapshot (2026-03-28): prior snapshot stated `C-205`; superseded by the 2026-03-29 architecture migration + documentation sync wave (C-204 through C-219).
 - Known legacy correction applied in this file: prior duplicate `C-079` entry has been normalized to `C-135` for unique-ID compliance.
 
@@ -2338,3 +2338,289 @@ Maintenance snapshot (2026-04-13):
 - affected_components: `07_implementation/src/alignment/match_pipeline.py`, `00_admin/change_log.md`.
 - impact_assessment: Medium-positive. Restores full static-analysis compliance on the active runtime surface and removes the last residual typecheck blocker from the current implementation wave.
 - approval_record: Executed as direct continuation request (`continue`) in implementation mode.
+
+## C-341
+- date: 2026-04-13
+- proposed_by: Copilot
+- status: accepted
+- change_summary: Started the website explainability implementation on the finalized wrapper surface without touching `07_implementation/src`: added new explainer endpoints (`/api/explainer/flow`, `/api/explainer/stage`) in `finalized/web_server.py`, added stage-level metric extraction helpers (BL-003 to BL-009 artifact-grounded summaries), and extended `finalized/web/index.html` with a Pipeline Explainer panel that renders stage readiness and JSON stage details.
+- reason: User requested to start implementation under the no-src-change website plan and maintain compatibility with the current core pipeline.
+- evidence_basis: Focused web-wrapper regression run `pytest tests/test_finalized_web_server.py -q` with `9 passed`; added tests for pipeline-flow payload shape and stage-explainer payload handling in `07_implementation/tests/test_finalized_web_server.py`.
+- affected_components: `07_implementation/finalized/web_server.py`, `07_implementation/finalized/web/index.html`, `07_implementation/tests/test_finalized_web_server.py`, `07_implementation/README.md`, `00_admin/decision_log.md`, `00_admin/change_log.md`.
+- impact_assessment: Medium-positive. Establishes an API-backed explainability foundation in the website layer while preserving existing run/status/artifact workflows and core `src` behavior.
+- approval_record: Executed on user request (`Start implementation`) in implementation mode.
+
+## C-342
+- date: 2026-04-13
+- proposed_by: Copilot
+- status: accepted
+- change_summary: Continued website explainability implementation by adding BL-008 explanation and run-evidence surfaces in the finalized wrapper/UI only: introduced `/api/explainer/explanations` and `/api/explainer/evidence` endpoints in `finalized/web_server.py`, added explanation/evidence panels and refresh wiring in `finalized/web/index.html`, and expanded finalized web regression tests for explanation/evidence payload helpers.
+- reason: User requested continuation of implementation, and the next phase required turning raw BL-008/BL-009/BL-013/BL-014 artifacts into operator-friendly explainer views while preserving route compatibility and no-src-change constraints.
+- evidence_basis: Focused regression run `pytest tests/test_finalized_web_server.py -q` with `11 passed`; no diagnostics errors reported on modified files.
+- affected_components: `07_implementation/finalized/web_server.py`, `07_implementation/finalized/web/index.html`, `07_implementation/tests/test_finalized_web_server.py`, `00_admin/decision_log.md`, `00_admin/change_log.md`.
+- impact_assessment: Medium-positive. Expands explainability coverage from stage-flow into explanation-content and run-evidence interpretation without altering pipeline behavior under `07_implementation/src`.
+- approval_record: Executed on user request (`continue`) in implementation mode.
+
+## C-343
+- date: 2026-04-13
+- proposed_by: Copilot
+- status: accepted
+- change_summary: Completed compatibility hardening for finalized explainer payloads by adding a bounded maximum track limit for `/api/explainer/explanations` responses and adding explicit edge-case regression coverage for missing BL-008 artifacts, malformed explanation payloads, and large-limit clamping behavior.
+- reason: Continuation work required turning the explainer endpoints into safer operator surfaces with guardrails and repeatable regression evidence before further expansion.
+- evidence_basis: Focused regression run `pytest tests/test_finalized_web_server.py -q` with `14 passed`; diagnostics check reports no errors on modified finalized wrapper/test files.
+- affected_components: `07_implementation/finalized/web_server.py`, `07_implementation/tests/test_finalized_web_server.py`, `00_admin/decision_log.md`, `00_admin/change_log.md`.
+- impact_assessment: Medium-positive. Improves robustness and response safety for the website explainer surface without modifying runtime pipeline logic under `07_implementation/src`.
+- approval_record: Executed on user request (`continue`) in implementation mode.
+
+## C-344
+- date: 2026-04-13
+- proposed_by: Copilot
+- status: accepted
+- change_summary: Extended finalized website explainer regression depth by adding compatibility tests that validate BL-008 narrative-driver distribution aggregation and BL-014 failed-check extraction shaping in the evidence dashboard payload path.
+- reason: Continuing implementation required higher-confidence guardrails for wrapper-level transformation logic beyond basic malformed/missing payload checks.
+- evidence_basis: Focused regression run `pytest tests/test_finalized_web_server.py -q` with `16 passed`; diagnostics check reports no errors in modified test file.
+- affected_components: `07_implementation/tests/test_finalized_web_server.py`, `00_admin/decision_log.md`, `00_admin/change_log.md`.
+- impact_assessment: Medium-positive. Improves compatibility safety for explainer UI data shaping while keeping pipeline runtime code untouched.
+- approval_record: Executed on user request (`continue`) in implementation mode.
+
+## C-345
+- date: 2026-04-13
+- proposed_by: Copilot
+- status: accepted
+- change_summary: Added finalized evidence empty-state compatibility fields by extending the evidence dashboard payload with per-surface availability and note fields (`bl013.available/note`, `bl014.available/note`, `bl009.available/note`) and expanded regression coverage for minimum-limit clamping and missing-artifact evidence behavior.
+- reason: Continuation work required explicit payload contracts for UI empty states and deterministic regression protection for limit and missing-artifact edge cases.
+- evidence_basis: Focused regression run `pytest tests/test_finalized_web_server.py -q` with `18 passed`; diagnostics check reports no errors in modified wrapper/test files.
+- affected_components: `07_implementation/finalized/web_server.py`, `07_implementation/tests/test_finalized_web_server.py`, `00_admin/decision_log.md`, `00_admin/change_log.md`.
+- impact_assessment: Medium-positive. Strengthens compatibility and operator-facing resilience of the finalized explainer surface while preserving zero changes under `07_implementation/src`.
+- approval_record: Executed on user request (`continue`) in implementation mode.
+
+## C-346
+- date: 2026-04-13
+- proposed_by: Copilot
+- status: accepted
+- change_summary: Implemented guided-flow onboarding support on finalized website surfaces by adding `/api/explainer/guide` payload shaping in `finalized/web_server.py`, wiring a new Guided Flow panel in `finalized/web/index.html`, and adding regression tests for guide payload shape and missing-artifact fallback behavior.
+- reason: User requested plan continuation; the next additive slice prioritized onboarding guidance so operators can see the recommended next step from current artifact readiness.
+- evidence_basis: Focused regression run `pytest tests/test_finalized_web_server.py -q` with `20 passed`; diagnostics checks showed no new errors on modified files.
+- affected_components: `07_implementation/finalized/web_server.py`, `07_implementation/finalized/web/index.html`, `07_implementation/tests/test_finalized_web_server.py`, `07_implementation/README.md`, `00_admin/decision_log.md`, `00_admin/change_log.md`.
+- impact_assessment: Medium-positive. Improves usability and onboarding clarity for the wrapper UI while preserving additive compatibility and no changes under `07_implementation/src`.
+- approval_record: Executed on user request (`continue the plan`) in implementation mode.
+
+## C-347
+- date: 2026-04-13
+- proposed_by: Copilot
+- status: accepted
+- change_summary: Added a profile-config builder to the finalized website with full setting inventory and per-setting explanations. Implemented new wrapper endpoints (`/api/config-builder/schema`, `/api/config-builder/profile`) in `finalized/web_server.py`, added dynamic builder UI controls/search/export in `finalized/web/index.html`, and expanded finalized web regression tests for config-builder payloads.
+- reason: User requested a website page that exposes all settable profile config settings with explanations and editable controls.
+- evidence_basis: Focused regression run `pytest tests/test_finalized_web_server.py -q` with `22 passed`; diagnostics checks reported no errors in modified files.
+- affected_components: `07_implementation/finalized/web_server.py`, `07_implementation/finalized/web/index.html`, `07_implementation/tests/test_finalized_web_server.py`, `07_implementation/README.md`, `00_admin/decision_log.md`, `00_admin/change_log.md`.
+- impact_assessment: High-positive for operator ergonomics and configuration transparency. Users can now inspect and edit the full run-config surface from the website while preserving wrapper-only scope and unchanged core runtime behavior.
+- approval_record: Executed on user request (`add a profile config builder page to the website`) in implementation mode.
+
+## C-348
+- date: 2026-04-14
+- proposed_by: Copilot
+- status: accepted
+- change_summary: Updated `07_implementation` dependency baseline to a minimal active-runtime profile by trimming stale requirements entries and aligning README dependency guidance with the new policy.
+- reason: User requested implementation of the up-to-date requirements plan with minimal-runtime scope for active BL-003 to BL-014 execution.
+- evidence_basis: Dependency edits in `07_implementation/requirements.txt` and guidance sync in `07_implementation/README.md`; validation results: wrapper validate-only ran successfully through BL-013, BL-014 produced `34/36` (existing optional-stage handshake gap on BL-010/BL-011 metadata under validate-only path), full pytest pass (`542/542`), and pyright pass (`0 errors, 0 warnings, 0 informations`).
+- affected_components: `07_implementation/requirements.txt`, `07_implementation/README.md`, `00_admin/decision_log.md`, `00_admin/change_log.md`.
+- impact_assessment: Medium-positive. Reduces dependency drift and installation overhead for runtime/handoff scenarios while preserving active pipeline behavior and explicit optional-flow documentation.
+- approval_record: Executed on user request (`Start implementation`) following accepted minimal-runtime scope.
+
+## C-349
+- date: 2026-04-14
+- proposed_by: Copilot
+- status: accepted
+- change_summary: Created a dedicated runnable `mentor_feedback_submission` bundle containing a clean copy of `src`, a bundle-local wrapper entrypoint, minimal requirements, canonical config, and mentor-facing usage instructions.
+- reason: User requested a separate mentor handoff folder centered on the artefact code, with no `__pycache__`, empty generated outputs, updated requirements, and an updated README explaining how to run the program.
+- evidence_basis: Created `07_implementation/mentor_feedback_submission/main.py`, `07_implementation/mentor_feedback_submission/requirements.txt`, `07_implementation/mentor_feedback_submission/README.md`, copied `07_implementation/mentor_feedback_submission/config/profiles/run_config_ui013_tuning_v1f.json`, and copied/cleaned `07_implementation/mentor_feedback_submission/src/**`; first cold-start exposed over-cleaning of embedded runtime inputs, after restoring preserved assets the bundle passed BL-013 via `python main.py` with run `BL013-ENTRYPOINT-20260414-105209-780679`; final submission-state verification confirmed `PYCACHE_COUNT=0`, `data_layer/outputs=2`, `ingestion/outputs=1`, and all other copied `outputs/` directories empty.
+- affected_components: `07_implementation/mentor_feedback_submission/main.py`, `07_implementation/mentor_feedback_submission/requirements.txt`, `07_implementation/mentor_feedback_submission/README.md`, `07_implementation/mentor_feedback_submission/config/profiles/run_config_ui013_tuning_v1f.json`, `07_implementation/mentor_feedback_submission/src/**`, `00_admin/decision_log.md`, `00_admin/change_log.md`.
+- impact_assessment: High-positive for mentor handoff clarity. Produces a focused, runnable artefact package while preserving the active runtime contract and removing caches plus regenerated outputs from the review copy.
+- approval_record: Executed on user request (`Start implementation`) after confirming the mentor bundle should remain runnable rather than review-only.
+
+## C-350
+- date: 2026-04-14
+- proposed_by: Copilot
+- status: accepted
+- change_summary: Completed Phase 1 of the mentor-bundle comment rewrite by normalizing all `shared_utils` module docstrings, function docstrings, and comment headings to the agreed student-style voice without changing code behaviour.
+- reason: User requested the implementation start on the comment-cleanup plan and specifically wanted comments to be consistent with the new student-authored style rather than preserving the existing formal wording.
+- evidence_basis: Rewrote comment/docstring surfaces in `07_implementation/mentor_feedback_submission/src/shared_utils/__init__.py`, `artifact_registry.py`, `coerce.py`, `config_loader.py`, `constants.py`, `env_utils.py`, `genre_utils.py`, `hashing.py`, `index_builder.py`, `io_utils.py`, `parsing.py`, `path_utils.py`, `report_utils.py`, `stage_runtime_resolver.py`, `stage_utils.py`, `text_matching.py`, and `types.py`; consistency sweep found no remaining `Args:`/`Returns:`/`Raises:` blocks in `shared_utils`; validation evidence: `get_errors` reported no errors for `07_implementation/mentor_feedback_submission/src/shared_utils`.
+- affected_components: `07_implementation/mentor_feedback_submission/src/shared_utils/**`, `/memories/session/plan.md`, `00_admin/decision_log.md`, `00_admin/change_log.md`.
+- impact_assessment: Medium-positive. The shared utilities package now reads more consistently and more naturally for mentor review while preserving the runnable handoff bundle unchanged at the logic level.
+- approval_record: Executed on user request (`start`) following the Phase 1 plan.
+
+## C-351
+- date: 2026-04-14
+- proposed_by: Copilot
+- status: accepted
+- change_summary: Completed Phase 2 of the mentor-bundle comment rewrite by normalizing the `alignment` package docstrings and explanatory comments, including BL-003 entrypoint/context wording and the main matching/runtime-scope decision points.
+- reason: Continuation of the accepted comment-style normalization wave under D-115, with the user request to keep moving through the bundle package-by-package and make comments read consistently like student-authored implementation notes.
+- evidence_basis: Rewrote comment/docstring surfaces in `07_implementation/mentor_feedback_submission/src/alignment/__init__.py`, `aggregation.py`, `constants.py`, `index_builder.py`, `influence.py`, `main.py`, `match_pipeline.py`, `models.py`, `resolved_context.py`, `runtime_scope.py`, `stage.py`, `text_matching.py`, `user_csv_schema.py`, `validation.py`, `weighting.py`, and `writers.py`; added targeted inline rationale comments around strategy ordering, fuzzy fallback, payload precedence, and weighting choices; validation evidence: `get_errors` reported no errors for `07_implementation/mentor_feedback_submission/src/alignment`.
+- affected_components: `07_implementation/mentor_feedback_submission/src/alignment/**`, `/memories/session/plan.md`, `00_admin/change_log.md`.
+- impact_assessment: Medium-positive. The BL-003 alignment package now reads more coherently for review, especially the matching/fallback logic, without altering the runtime behavior of the mentor bundle.
+- approval_record: Executed on user request (`continue`) as the Phase 2 implementation step.
+
+## C-352
+- date: 2026-04-14
+- proposed_by: Copilot
+- status: accepted
+- change_summary: Completed Phase 3 of the mentor-bundle comment rewrite by normalizing the `run_config` package docstrings so the config loader and schema helpers read like student-authored implementation notes rather than formal API documentation.
+- reason: Continuation of the accepted comment-style normalization wave under D-115, with the user request to keep applying the same tone and structure package-by-package across the mentor handoff bundle.
+- evidence_basis: Rewrote comment/docstring surfaces in `07_implementation/mentor_feedback_submission/src/run_config/run_config_utils.py` and `schema.py`; added short module framing for the config-resolution and schema-helper files; converted the remaining formal validation/resolution docstrings in `run_config_utils.py` into plain prose; validation evidence: `get_errors` reported no errors for `07_implementation/mentor_feedback_submission/src/run_config`, and a follow-up wording sweep found no remaining `Args:`/`Returns:`/`Raises:` blocks in the package.
+- affected_components: `07_implementation/mentor_feedback_submission/src/run_config/run_config_utils.py`, `07_implementation/mentor_feedback_submission/src/run_config/schema.py`, `/memories/session/plan.md`, `00_admin/change_log.md`.
+- impact_assessment: Medium-positive. The run-config package now explains the control-surface behavior more naturally for mentor review while keeping the handoff bundle behavior unchanged.
+- approval_record: Executed on user request (`continue`) as the Phase 3 implementation step.
+
+## C-353
+- date: 2026-04-14
+- proposed_by: Copilot
+- status: accepted
+- change_summary: Completed Phase 4 of the mentor-bundle comment rewrite by adding student-style framing to the `data_layer` integrity check and clarifying why the embedded dataset and manifest hash are verified before the rest of the pipeline runs.
+- reason: Continuation of the accepted comment-style normalization wave under D-115, with the user request to keep rewriting package comments in a consistent student-authored voice without changing behavior.
+- evidence_basis: Rewrote the module docstring and added rationale comments in `07_implementation/mentor_feedback_submission/src/data_layer/main.py`; validation evidence: `get_errors` reported no errors for `07_implementation/mentor_feedback_submission/src/data_layer`, and a wording sweep found no remaining formal `Args:`/`Returns:`/`Raises:` blocks in the package.
+- affected_components: `07_implementation/mentor_feedback_submission/src/data_layer/main.py`, `/memories/session/plan.md`, `00_admin/change_log.md`.
+- impact_assessment: Low-to-medium positive. The bundle's embedded-data check now reads more clearly for mentor review while leaving the executable behavior untouched.
+- approval_record: Executed on user request (`continue`) as the Phase 4 implementation step.
+
+## C-354
+- date: 2026-04-14
+- proposed_by: Copilot
+- status: accepted
+- change_summary: Completed Phase 5 of the mentor-bundle comment rewrite by normalizing the `ingestion` package module framing and flattening the remaining formal resilience-layer docstrings into a more natural student-written style.
+- reason: Continuation of the accepted comment-style normalization wave under D-115, with the user request to keep carrying the same voice through the runnable mentor bundle package-by-package.
+- evidence_basis: Rewrote comment/docstring surfaces in `07_implementation/mentor_feedback_submission/src/ingestion/export_spotify_max_dataset.py`, `spotify_auth.py`, `spotify_client.py`, `spotify_io.py`, `spotify_mapping.py`, `spotify_artifacts.py`, `ingest_history_parser.py`, and `spotify_resilience.py`; added short rationale comments around standalone import fallback, callback-state handling, cached failure behavior, and runtime resilience overrides; validation evidence: `get_errors` reported no errors for `07_implementation/mentor_feedback_submission/src/ingestion`.
+- affected_components: `07_implementation/mentor_feedback_submission/src/ingestion/**`, `/memories/session/plan.md`, `00_admin/change_log.md`.
+- impact_assessment: Medium-positive. The ingestion package now reads more consistently for mentor review, especially around the Spotify auth/export and resilience behavior, without changing runtime behavior.
+- approval_record: Executed on user request (`continue`) as the Phase 5 implementation step.
+
+## C-355
+- date: 2026-04-14
+- proposed_by: Copilot
+- status: accepted
+- change_summary: Completed Phase 6 of the mentor-bundle comment rewrite by normalizing the `profile` package framing and clarifying the main BL-004 control and confidence-weighting rationale in a student-authored voice.
+- reason: Continuation of the accepted comment-style normalization wave under D-115, with the user request to keep comments consistent across the mentor bundle while leaving code behavior untouched.
+- evidence_basis: Rewrote comment/docstring surfaces in `07_implementation/mentor_feedback_submission/src/profile/main.py`, `models.py`, `runtime_controls.py`, and `stage.py`; added small rationale comments for interaction-type allow-list handling and the default confidence-weighting mode; validation evidence: `get_errors` reported no errors for `07_implementation/mentor_feedback_submission/src/profile`, and a wording sweep found no remaining formal `Args:`/`Returns:`/`Raises:` blocks in the package.
+- affected_components: `07_implementation/mentor_feedback_submission/src/profile/**`, `/memories/session/plan.md`, `00_admin/change_log.md`.
+- impact_assessment: Medium-positive. The BL-004 profile package now reads more naturally for mentor review while preserving the existing control surface and aggregation behavior.
+- approval_record: Executed on user request (`continue`) as the Phase 6 implementation step.
+
+## C-356
+- date: 2026-04-14
+- proposed_by: Copilot
+- status: accepted
+- change_summary: Completed Phase 7 of the mentor-bundle comment rewrite by normalizing the `retrieval` package framing and flattening the remaining formal BL-005 decision, parser, and diagnostics docstrings into plain prose.
+- reason: Continuation of the accepted comment-style normalization wave under D-115, with the user request to keep moving through the mentor bundle package-by-package in the same student-authored voice.
+- evidence_basis: Rewrote comment/docstring surfaces in `07_implementation/mentor_feedback_submission/src/retrieval/main.py`, `filtering_logic.py`, `candidate_evaluator.py`, `profile_builder.py`, `candidate_parser.py`, `decision_tracker.py`, `runtime_controls.py`, `stage.py`, `models.py`, and `input_validation.py`; validation evidence: `get_errors` reported no errors for `07_implementation/mentor_feedback_submission/src/retrieval`, and a wording sweep found no remaining formal `Args:`/`Returns:`/`Raises:` blocks in the package.
+- affected_components: `07_implementation/mentor_feedback_submission/src/retrieval/**`, `/memories/session/plan.md`, `00_admin/change_log.md`.
+- impact_assessment: Medium-positive. The BL-005 retrieval package now reads more coherently for mentor review, especially the keep/reject logic and diagnostic tracking, without changing runtime behavior.
+- approval_record: Executed on user request (`continue`) as the Phase 7 implementation step.
+
+## C-357
+- date: 2026-04-14
+- proposed_by: Copilot
+- status: accepted
+- change_summary: Completed Phase 8 of the mentor-bundle comment rewrite by normalizing the `scoring` package framing and flattening BL-006 parser, profile-extraction, scoring-engine, and reporting docstrings into plain student-style prose.
+- reason: Continuation of the accepted comment-style normalization wave under D-115, with the user request to keep carrying the same readable student-authored tone through all remaining bundle packages.
+- evidence_basis: Rewrote comment/docstring surfaces in `07_implementation/mentor_feedback_submission/src/scoring/main.py`, `models.py`, `stage.py`, `runtime_controls.py`, `diagnostics.py`, `candidate_parsed.py`, `profile_extractor.py`, `result_reporter.py`, and `scoring_engine.py`; validation evidence: `get_errors` reported no errors for `07_implementation/mentor_feedback_submission/src/scoring`, and a wording sweep found no remaining formal `Args:`/`Returns:`/`Raises:` blocks in the package.
+- affected_components: `07_implementation/mentor_feedback_submission/src/scoring/**`, `/memories/session/plan.md`, `00_admin/change_log.md`.
+- impact_assessment: Medium-positive. The BL-006 scoring package now reads more naturally for mentor review while preserving all scoring behavior and control semantics.
+- approval_record: Executed on user request (`continuee`) as the Phase 8 implementation step.
+
+## C-358
+- date: 2026-04-14
+- proposed_by: Copilot
+- status: accepted
+- change_summary: Completed Phase 9 of the mentor-bundle comment rewrite by normalizing the `playlist` package framing and clarifying BL-007 assembly-rule rationale in concise student-style comments.
+- reason: Continuation of the accepted comment-style normalization wave under D-115, with the user request to keep progressing package-by-package across the mentor handoff source tree.
+- evidence_basis: Rewrote comment/docstring surfaces in `07_implementation/mentor_feedback_submission/src/playlist/main.py`, `stage.py`, `models.py`, `runtime_controls.py`, `rules.py`, `io_layer.py`, `input_validation.py`, and `reporting.py`; added short rationale comments around diversity rules (R2/R3/R4) and utility-weight sanitization; validation evidence: `get_errors` reported no errors for `07_implementation/mentor_feedback_submission/src/playlist`, and a wording sweep found no remaining formal `Args:`/`Returns:`/`Raises:` blocks in the package.
+- affected_components: `07_implementation/mentor_feedback_submission/src/playlist/**`, `/memories/session/plan.md`, `00_admin/change_log.md`.
+- impact_assessment: Medium-positive. The BL-007 playlist package now reads more clearly for mentor review while keeping assembly behavior and control semantics unchanged.
+- approval_record: Executed on user request (`continuee`) as the Phase 9 implementation step.
+
+## C-359
+- date: 2026-04-14
+- proposed_by: Copilot
+- status: accepted
+- change_summary: Completed Phase 10 of the mentor-bundle comment rewrite by simplifying the `transparency` package framing and normalizing BL-008 explanation/payload/validation comments into concise student-style prose.
+- reason: Continuation of the accepted comment-style normalization wave under D-115, with the user request to keep continuing package-by-package through the mentor bundle.
+- evidence_basis: Rewrote comment/docstring surfaces in `07_implementation/mentor_feedback_submission/src/transparency/main.py`, `payload_builder.py`, `explanation_driver.py`, `data_layer.py`, `runtime_controls.py`, and `input_validation.py`; replaced section-header style comments in `main.py` with plain contextual notes; validation evidence: `get_errors` reported no errors for `07_implementation/mentor_feedback_submission/src/transparency`, and a wording sweep found no remaining formal `Args:`/`Returns:`/`Raises:` blocks in the package.
+- affected_components: `07_implementation/mentor_feedback_submission/src/transparency/**`, `/memories/session/plan.md`, `00_admin/change_log.md`.
+- impact_assessment: Medium-positive. The BL-008 transparency package now reads more naturally for mentor review without changing payload or validation behavior.
+- approval_record: Executed on user request (`continuee`) as the Phase 10 implementation step.
+
+## C-360
+- date: 2026-04-14
+- proposed_by: Copilot
+- status: accepted
+- change_summary: Completed Phase 11 of the mentor-bundle comment rewrite by normalizing the `observability` package framing and adding concise rationale docstrings around BL-009 run-log synthesis and handshake validation helpers.
+- reason: Continuation of the accepted comment-style normalization wave under D-115, with the user request to continue package-by-package through the remaining mentor-bundle source tree.
+- evidence_basis: Rewrote comment/docstring surfaces in `07_implementation/mentor_feedback_submission/src/observability/main.py`, `runtime_controls.py`, and `input_validation.py`; added short explanatory notes for required-input gating, signal-mode calibration summary, and run-log section enforcement; validation evidence: `get_errors` reported no errors for `07_implementation/mentor_feedback_submission/src/observability`, and a wording sweep found no remaining formal `Args:`/`Returns:`/`Raises:` blocks in the package.
+- affected_components: `07_implementation/mentor_feedback_submission/src/observability/**`, `/memories/session/plan.md`, `00_admin/change_log.md`.
+- impact_assessment: Medium-positive. The BL-009 observability package now reads more clearly for mentor review while preserving the existing audit-log contract and runtime behavior.
+- approval_record: Executed on user request (`continue`) as the Phase 11 implementation step.
+
+## C-361
+- date: 2026-04-14
+- proposed_by: Copilot
+- status: accepted
+- change_summary: Completed Phase 12 of the mentor-bundle comment rewrite by normalizing the `orchestration` package module/function docstrings and key run-control comments into concise student-style prose.
+- reason: Continuation of the accepted comment-style normalization wave under D-115, with the user request to continue phase-by-phase and keep the mentor bundle readable without altering runtime behavior.
+- evidence_basis: Rewrote comment/docstring surfaces in `07_implementation/mentor_feedback_submission/src/orchestration/cli.py`, `config_resolver.py`, `main.py`, `seed_freshness.py`, `stage_registry.py`, `stage_runner.py`, and `summary_builder.py`; added brief rationale comments for config precedence, seed-freshness guard behavior, and subprocess environment payload injection; validation evidence: `get_errors` reported no errors for `07_implementation/mentor_feedback_submission/src/orchestration`, and a wording sweep found no remaining formal `Args:`/`Returns:`/`Raises:` blocks in the package.
+- affected_components: `07_implementation/mentor_feedback_submission/src/orchestration/**`, `/memories/session/plan.md`, `00_admin/change_log.md`.
+- impact_assessment: Medium-positive. The BL-013 orchestration package now reads more naturally for mentor review while preserving control resolution, stage execution, and summary behavior.
+- approval_record: Executed on user request (`continue`) as the Phase 12 implementation step.
+
+## C-362
+- date: 2026-04-14
+- proposed_by: Copilot
+- status: accepted
+- change_summary: Completed Phase 13 of the mentor-bundle comment rewrite by normalizing the `reproducibility` package module/function docstrings and BL-009 handshake validation comments into concise student-style prose.
+- reason: Continuation of the accepted comment-style normalization wave under D-115, with the user request to continue package-by-package while preserving code behavior and interfaces.
+- evidence_basis: Rewrote comment/docstring surfaces in `07_implementation/mentor_feedback_submission/src/reproducibility/runtime_controls.py`, `input_validation.py`, and `main.py`; simplified formal validation-return wording and policy comments in BL-010 input checks; validation evidence: `get_errors` reported no errors for `07_implementation/mentor_feedback_submission/src/reproducibility`, and a wording sweep found no remaining formal `Args:`/`Returns:`/`Raises:` blocks in the package.
+- affected_components: `07_implementation/mentor_feedback_submission/src/reproducibility/**`, `/memories/session/plan.md`, `00_admin/change_log.md`.
+- impact_assessment: Medium-positive. The BL-010 reproducibility package now reads more clearly for mentor review while preserving replay, hashing, and validation behavior.
+- approval_record: Executed on user request (`continue`) as the Phase 13 implementation step.
+
+## C-363
+- date: 2026-04-14
+- proposed_by: Copilot
+- status: accepted
+- change_summary: Completed Phase 14 of the mentor-bundle comment rewrite by normalizing the `controllability` package module/function docstrings and scenario-validation comments into concise student-style prose.
+- reason: Continuation of the accepted comment-style normalization wave under D-115, with the user request to keep progressing through the remaining packages without changing runtime logic.
+- evidence_basis: Rewrote comment/docstring surfaces in `07_implementation/mentor_feedback_submission/src/controllability/analysis.py`, `input_validation.py`, `main.py`, `pathing.py`, `pipeline_runner.py`, `reporting.py`, `runtime_controls.py`, `scenario_loader.py`, `scenarios.py`, and `weights.py`; simplified formal acceptance-bound and policy-validation wording while keeping scenario logic and thresholds unchanged; validation evidence: `get_errors` reported no errors for `07_implementation/mentor_feedback_submission/src/controllability`, and a wording sweep found no remaining formal `Args:`/`Returns:`/`Raises:` blocks in the package.
+- affected_components: `07_implementation/mentor_feedback_submission/src/controllability/**`, `/memories/session/plan.md`, `00_admin/change_log.md`.
+- impact_assessment: Medium-positive. The BL-011 controllability package now reads more naturally for mentor review while preserving scenario generation, replay comparison, and report evaluation behavior.
+- approval_record: Executed on user request (`continue`) as the Phase 14 implementation step.
+
+## C-364
+- date: 2026-04-14
+- proposed_by: Copilot
+- status: accepted
+- change_summary: Completed Phase 15 of the mentor-bundle comment rewrite by normalizing the `quality` package module docstrings and gate-check helper wording into concise student-style prose.
+- reason: Continuation and closure of the accepted comment-style normalization wave under D-115, with the user request to continue through the final package while preserving executable behavior.
+- evidence_basis: Rewrote comment/docstring surfaces in `07_implementation/mentor_feedback_submission/src/quality/freshness.py`, `reb_m3_tranche1_gate.py`, `reb_m3_tranche2_gate.py`, `reb_m3_tranche3_gate.py`, `run_active_freshness_suite.py`, `sanity_checks.py`, and `suite.py`; simplified module-level formal bullet-list descriptions and handshake helper docstrings; validation evidence: `get_errors` reported no errors for `07_implementation/mentor_feedback_submission/src/quality`, and wording sweeps found no `Returns:` or `Raises:` formal-block markers in the package.
+- affected_components: `07_implementation/mentor_feedback_submission/src/quality/**`, `/memories/session/plan.md`, `00_admin/change_log.md`.
+- impact_assessment: Medium-positive. The BL-014 quality package now reads more naturally for mentor review while preserving gate-check, freshness, and suite orchestration behavior.
+- approval_record: Executed on user request (`continue`) as the Phase 15 implementation step.
+
+## C-365
+- date: 2026-04-14
+- proposed_by: Copilot
+- status: accepted
+- change_summary: Fixed a mentor-bundle-only BL-007 syntax defect in `playlist/rules.py` and revalidated the packaged `07_implementation/mentor_feedback_submission/` wrapper end-to-end.
+- reason: Validation and packaging for the mentor handoff bundle exposed a bundle-local syntax error that prevented BL-013 orchestration from reaching BL-014, so the package needed a targeted fix before it could be treated as commit-ready.
+- evidence_basis: Removed two stray triple-quoted strings that had been injected into the `all(...)` condition in `07_implementation/mentor_feedback_submission/src/playlist/rules.py`; bundle wrapper rerun passed with BL-013 `BL013-ENTRYPOINT-20260414-121918-379574`; bundle BL-014 sanity run passed `36/36` via `BL014-SANITY-20260414-121945-312010`; the remaining BL-005 handshake warning stayed non-blocking in warn policy.
+- affected_components: `07_implementation/mentor_feedback_submission/src/playlist/rules.py`, `07_implementation/mentor_feedback_submission/src/orchestration/outputs/*`, `07_implementation/mentor_feedback_submission/src/quality/outputs/*`, `00_admin/change_log.md`, `00_admin/timeline.md`, `00_admin/thesis_state.md`, `00_admin/unresolved_issues.md`.
+- impact_assessment: High-positive. The mentor feedback bundle is now executable again through the wrapper entrypoint and has current validation evidence to support handoff/package closure.
+- approval_record: Executed under the user-approved validation + packaging continuation path for the mentor bundle.
+
+## C-366
+- date: 2026-04-14
+- proposed_by: Copilot
+- status: accepted
+- change_summary: Removed generated BL-003 to BL-014 runtime output artifacts from the mentor feedback bundle so the package matches its documented pre-run handoff state.
+- reason: The bundle README explicitly states that generated `src/*/outputs/` folders should be empty before handoff except for preserved embedded input assets. The successful validation reruns were useful for repair evidence, but those generated artifacts should not stay in the clean mentor package.
+- evidence_basis: Deleted generated output files under `07_implementation/mentor_feedback_submission/src/alignment/outputs/`, `profile/outputs/`, `retrieval/outputs/`, `scoring/outputs/`, `playlist/outputs/`, `transparency/outputs/`, `observability/outputs/`, `orchestration/outputs/`, `quality/outputs/`, and `run_config/outputs/`; preserved only the embedded bundle inputs documented in `07_implementation/mentor_feedback_submission/README.md` (`src/data_layer/outputs/ds001_working_candidate_dataset.csv`, `src/data_layer/outputs/ds001_working_candidate_dataset_manifest.json`, and `src/ingestion/outputs/spotify_api_export/`).
+- affected_components: `07_implementation/mentor_feedback_submission/src/**/outputs/*` (generated artifacts only), `00_admin/change_log.md`, `00_admin/timeline.md`.
+- impact_assessment: High-positive. Restores the mentor bundle to the intended clean packaging contract while keeping the source-code fix and embedded runtime inputs intact.
+- approval_record: Executed from the user-selected packaging-cleanup path (`2`) after confirming the bundle README contract.

@@ -1,6 +1,6 @@
 # Thesis Timeline
 
-Last updated: 2026-04-13
+Last updated: 2026-04-14
 
 ## REBUILD PHASE (active from 2026-04-12)
 
@@ -152,4 +152,5 @@ Full architecture rebuild initiated (D-052). Chapter 2 is the only confirmed com
 - Operational source of truth for open blockers remains `00_admin/unresolved_issues.md`.
 - Sprint execution truth remains `00_admin/mentor_draft_7day_sprint_2026-03-23.md`.
 - Post-closure enhancement update (2026-04-13): BL-010/BL-011 Slices 29-30 optional-stage handshake hardening is complete. BL-014 now includes optional-stage validation for diagnostic stages via helpers bl009_bl010_handshake_contract_ok() and bl010_bl011_handshake_contract_ok() with auto-pass logic when stages are not executed. Both require validation metadata presence when snapshots exist. BL-014 check count raised to 36/36. Completes the handshake hardening wave through all 8 inter-stage boundaries (BL-003↔BL-004, BL-004↔BL-005, BL-005↔BL-006, BL-006↔BL-007, BL-007↔BL-008, BL-008↔BL-009, BL-009↔BL-010, BL-010↔BL-011). Validation remains green on focused pytest (41/41), full pytest (526/526), and wrapper validate-only (36/36) (D-105, C-338).
-
+- Mentor-bundle packaging checkpoint (2026-04-14): `07_implementation/mentor_feedback_submission/` is validated again after fixing a bundle-local BL-007 syntax defect in `src/playlist/rules.py`; bundle wrapper BL-013 passed (`BL013-ENTRYPOINT-20260414-121918-379574`) and bundle BL-014 sanity passed (`BL014-SANITY-20260414-121945-312010`, `36/36`) (C-365).
+- Mentor-bundle clean-package checkpoint (2026-04-14): generated BL-003 to BL-014 runtime artifacts were trimmed back out of `07_implementation/mentor_feedback_submission/src/*/outputs/` so the handoff bundle again matches its README-stated pre-run state, while preserving embedded input assets under `src/data_layer/outputs/` and `src/ingestion/outputs/spotify_api_export/` (C-366).

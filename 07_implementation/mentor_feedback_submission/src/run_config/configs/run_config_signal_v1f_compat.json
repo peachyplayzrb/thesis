@@ -1,0 +1,30 @@
+{
+  "schema_version": "run-config-v1",
+  "control_mode": {
+    "validation_profile": "strict",
+    "allow_threshold_decoupling": false,
+    "allow_weight_auto_normalization": false
+  },
+  "retrieval_controls": {
+    "use_weighted_semantics": false,
+    "use_continuous_numeric": false,
+    "enable_popularity_numeric": false,
+    "numeric_support_min_pass": 1,
+    "numeric_support_min_score": 1.0
+  },
+  "scoring_controls": {
+    "component_weights": {
+      "danceability": 0.1,
+      "energy": 0.1,
+      "valence": 0.08,
+      "tempo": 0.1,
+      "duration_ms": 0.07,
+      "popularity": 0.0,
+      "key": 0.06,
+      "mode": 0.04,
+      "lead_genre": 0.17,
+      "genre_overlap": 0.12,
+      "tag_overlap": 0.16
+    }
+  }
+}

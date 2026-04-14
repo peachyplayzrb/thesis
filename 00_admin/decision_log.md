@@ -6,9 +6,9 @@ Ordering convention (standardized 2026-03-24):
 - New entries must be appended at the end and may include `superseded_by` when a prior decision is replaced.
 
 Maintenance snapshot (2026-04-13):
-- Highest decision ID currently present: `D-105`
-- Total decision entries: 98
-- Status distribution: accepted=87, superseded=3, rejected=1
+- Highest decision ID currently present: `D-115`
+- Total decision entries: 106
+- Status distribution: accepted=95, superseded=3, rejected=1
 - ID integrity check: no duplicate decision IDs detected
 
 Current posture snapshot (2026-03-25):
@@ -2027,3 +2027,133 @@ review_date: none
 - evidence_basis: '07_implementation/src/reproducibility/input_validation.py', '07_implementation/src/controllability/input_validation.py', '07_implementation/src/quality/sanity_checks.py'; two new BL-014 helpers 'bl009_bl010_handshake_contract_ok()' and 'bl010_bl011_handshake_contract_ok()' with auto-pass logic for missing snapshots; focused pytest (41/41 sanity_checks tests), full pytest (526/526 all tests), wrapper validate-only (BL-014 sanity 36/36 checks).
 - impacted_files: '07_implementation/src/shared_utils/constants.py', '07_implementation/src/quality/sanity_checks.py', '07_implementation/tests/test_quality_sanity_checks.py', '00_admin/decision_log.md', '00_admin/change_log.md', '00_admin/thesis_state.md', '00_admin/timeline.md', '00_admin/unresolved_issues.md'.
 - next_steps: Evaluate whether any additional downstream diagnostic stages (BL-012 onward, if they exist) should receive similar optional-stage handshake treatment to complete the full validation wave continuity.
+
+## D-106
+- date: 2026-04-13
+- entity_id: Finalized website explainer API-first rollout
+- proposed_by: user + Copilot
+- status: accepted
+- decision: Start website explainability implementation as additive read-only surfaces in the finalized web wrapper (`finalized/web_server.py` and `finalized/web/index.html`), introducing dedicated explainer endpoints and stage-metric rendering while keeping all pipeline behavior unchanged under `07_implementation/src`.
+- context: User requested implementation start after approving a no-src-change website plan. Existing website features focused on run/status/artifact preview but lacked explicit stage-flow explanation views.
+- alternatives_considered: modify core stage code to emit web-specific explainability payloads (rejected: violates no-src-change constraint); defer backend API additions and implement UI-only static descriptions (rejected: weak artifact-grounded traceability); replace existing endpoints instead of additive routes (rejected: unnecessary compatibility risk).
+- rationale: Additive wrapper-layer endpoints preserve runtime contracts and allow immediate UI explainability value grounded in existing artifacts, with low risk and zero stage-logic drift.
+- evidence_basis: `07_implementation/finalized/web_server.py`, `07_implementation/finalized/web/index.html`, `07_implementation/tests/test_finalized_web_server.py`; focused pytest pass (`9/9`) for finalized web server regression coverage.
+- impacted_files: `07_implementation/finalized/web_server.py`, `07_implementation/finalized/web/index.html`, `07_implementation/tests/test_finalized_web_server.py`, `00_admin/decision_log.md`, `00_admin/change_log.md`.
+- next_steps: Continue phase implementation with route compatibility checks and richer stage diagnostics while preserving the no-src-change constraint.
+
+## D-107
+- date: 2026-04-13
+- entity_id: Finalized website explainer evidence and BL-008 viewer expansion
+- proposed_by: user + Copilot
+- status: accepted
+- decision: Extend the finalized website explainer with additive read-only evidence and explanation endpoints (`/api/explainer/explanations`, `/api/explainer/evidence`) and corresponding UI panels, while preserving all existing routes and keeping `07_implementation/src` unchanged.
+- context: After D-106 stage-flow rollout, the website still required artifact-grounded detail views for BL-008 narrative outputs and BL-009/BL-013/BL-014 run evidence to complete the next planned explainer phase.
+- alternatives_considered: reuse raw artifact preview only (rejected: low usability and weak operator guidance); move summarization logic into core stage outputs (rejected: violates no-src-change constraint); replace existing endpoints with a breaking v2 contract (rejected: unnecessary compatibility risk).
+- rationale: Additive wrapper-level summarization improves interpretability and onboarding while preserving compatibility and runtime contract stability.
+- evidence_basis: `07_implementation/finalized/web_server.py`, `07_implementation/finalized/web/index.html`, `07_implementation/tests/test_finalized_web_server.py`; focused pytest pass (`11/11`) on finalized web server tests.
+- impacted_files: `07_implementation/finalized/web_server.py`, `07_implementation/finalized/web/index.html`, `07_implementation/tests/test_finalized_web_server.py`, `00_admin/decision_log.md`, `00_admin/change_log.md`.
+- next_steps: Continue with route-level compatibility tests and documentation updates for the expanded explainer surface.
+
+## D-108
+- date: 2026-04-13
+- entity_id: Finalized explainer payload safety bounds and edge-case regression hardening
+- proposed_by: user + Copilot
+- status: accepted
+- decision: Enforce an upper bound for BL-008 explainer payload item count in the finalized wrapper (`EXPLAINER_TRACK_LIMIT_MAX`) and add explicit regression tests for missing artifact, malformed explanation structure, and large-limit clamping behavior.
+- context: After D-107, the explainer surface worked on nominal artifacts but still needed explicit compatibility hardening for malformed/missing states and response-size safety.
+- alternatives_considered: leave limits unbounded (rejected: response-size risk); rely only on manual checks (rejected: regression risk); move guardrails into core stage outputs (rejected: violates no-src-change constraint).
+- rationale: Wrapper-level clamping and edge-case tests provide deterministic safety and compatibility assurance without changing pipeline behavior under `07_implementation/src`.
+- evidence_basis: `07_implementation/finalized/web_server.py`, `07_implementation/tests/test_finalized_web_server.py`; focused pytest pass (`14/14`) on finalized web server suite.
+- impacted_files: `07_implementation/finalized/web_server.py`, `07_implementation/tests/test_finalized_web_server.py`, `00_admin/decision_log.md`, `00_admin/change_log.md`.
+- next_steps: Continue with optional route-level integration tests for full endpoint compatibility while preserving existing run/status/artifact contracts.
+
+## D-109
+- date: 2026-04-13
+- entity_id: Finalized explainer compatibility depth expansion (distribution and evidence-failure shaping)
+- proposed_by: user + Copilot
+- status: accepted
+- decision: Expand finalized explainer regression coverage to verify narrative-driver distribution aggregation and BL-014 failed-check extraction behavior in evidence dashboard payload shaping, using mocked artifact inputs to guarantee deterministic compatibility checks.
+- context: After D-108 hardening, payload bounds and malformed/missing states were covered; remaining compatibility risk was subtle shaping drift in aggregation logic used by UI explanation/evidence panels.
+- alternatives_considered: rely on live artifact snapshots only (rejected: brittle and environment-coupled); defer distribution/evidence extraction tests to manual validation (rejected: regression risk); move shaping logic to core runtime outputs (rejected: violates no-src-change constraint).
+- rationale: Deterministic mocked tests increase confidence in wrapper-only interpretation logic while preserving stable core pipeline behavior.
+- evidence_basis: `07_implementation/tests/test_finalized_web_server.py`; focused pytest pass (`16/16`) after adding distribution and failed-check extraction assertions.
+- impacted_files: `07_implementation/tests/test_finalized_web_server.py`, `00_admin/decision_log.md`, `00_admin/change_log.md`.
+- next_steps: Continue route-level compatibility expansion if needed, but keep additions wrapper-only and evidence-driven.
+
+## D-110
+- date: 2026-04-13
+- entity_id: Finalized evidence empty-state compatibility contract
+- proposed_by: user + Copilot
+- status: accepted
+- decision: Add explicit artifact availability and note fields to the finalized evidence dashboard payload sections (`bl013`, `bl014`, `bl009`) and extend explainer regression tests to enforce minimum limit clamping plus missing-artifact empty-state behavior.
+- context: After D-109, aggregation shaping coverage was in place but payloads still lacked explicit availability semantics needed for stable UI empty-state rendering.
+- alternatives_considered: infer availability only from null run IDs in UI (rejected: brittle contract); keep empty-state handling untested (rejected: regression risk); add availability flags in core stage outputs (rejected: violates no-src-change constraint).
+- rationale: Wrapper-level availability contracts and deterministic tests make UI behavior resilient to missing artifacts while preserving compatibility with existing payload consumers.
+- evidence_basis: `07_implementation/finalized/web_server.py`, `07_implementation/tests/test_finalized_web_server.py`; focused pytest pass (`18/18`) on finalized web server suite.
+- impacted_files: `07_implementation/finalized/web_server.py`, `07_implementation/tests/test_finalized_web_server.py`, `00_admin/decision_log.md`, `00_admin/change_log.md`.
+- next_steps: Continue optional route-level compatibility tests if needed, keeping all additions in finalized wrapper and tests only.
+
+## D-111
+- date: 2026-04-13
+- entity_id: Finalized guided-flow onboarding endpoint and UI panel
+- proposed_by: user + Copilot
+- status: accepted
+- decision: Add an additive guided-flow explainer payload endpoint (`/api/explainer/guide`) and corresponding website panel that recommends the next action from current BL-013/BL-014/BL-008/BL-009 artifact readiness, while preserving existing routes and keeping `07_implementation/src` unchanged.
+- context: After D-110 empty-state compatibility hardening, the finalized website had evidence and explanation visibility but still lacked an explicit operator-oriented next-step surface for onboarding and fast triage.
+- alternatives_considered: keep guidance implicit in separate panels (rejected: slower operator flow); add guidance logic in core stage outputs (rejected: violates no-src-change constraint); replace existing explainer contracts with a merged route (rejected: compatibility risk).
+- rationale: A wrapper-only guided-flow endpoint improves usability and onboarding while maintaining additive compatibility and zero runtime-stage drift.
+- evidence_basis: `07_implementation/finalized/web_server.py`, `07_implementation/finalized/web/index.html`, `07_implementation/tests/test_finalized_web_server.py`; focused pytest pass (`20/20`) on finalized web server suite.
+- impacted_files: `07_implementation/finalized/web_server.py`, `07_implementation/finalized/web/index.html`, `07_implementation/tests/test_finalized_web_server.py`, `07_implementation/README.md`, `00_admin/decision_log.md`, `00_admin/change_log.md`.
+- next_steps: Continue optional wrapper-only compatibility expansion (route integration checks and UI polish) if user requests further plan continuation.
+
+## D-112
+- date: 2026-04-13
+- entity_id: Finalized profile-config builder in website wrapper
+- proposed_by: user + Copilot
+- status: accepted
+- decision: Add a full run-config profile builder surface to the finalized website using wrapper-only read/write-safe behavior: expose all configurable settings from default run-config schema, attach per-setting explanations, allow loading existing profiles, and support JSON export from the browser UI.
+- context: User requested a website config-builder page with explanations for each setting and complete editable setting coverage while preserving no-src-change constraints for runtime behavior.
+- alternatives_considered: expose only raw JSON text editor (rejected: poor operator ergonomics and weak guidance); duplicate run-config logic manually in UI (rejected: drift risk); implement profile builder inside `src` runtime components (rejected: violates wrapper-only scope).
+- rationale: Serving schema/defaults through additive wrapper endpoints provides comprehensive configuration visibility with low compatibility risk and no pipeline-stage behavior changes.
+- evidence_basis: `07_implementation/finalized/web_server.py`, `07_implementation/finalized/web/index.html`, `07_implementation/tests/test_finalized_web_server.py`; focused pytest pass (`22/22`) on finalized web server suite.
+- impacted_files: `07_implementation/finalized/web_server.py`, `07_implementation/finalized/web/index.html`, `07_implementation/tests/test_finalized_web_server.py`, `07_implementation/README.md`, `00_admin/decision_log.md`, `00_admin/change_log.md`.
+- next_steps: Add optional route-level integration coverage for config-builder API and optional profile-save endpoint if users request in-browser persistence.
+
+## D-113
+- date: 2026-04-14
+- entity_id: 07_implementation minimal runtime dependency policy
+- proposed_by: user + Copilot
+- status: accepted
+- decision: Treat `07_implementation/requirements.txt` as a minimal active-runtime dependency surface for BL-003 to BL-014 execution, retaining only `rapidfuzz` and moving non-runtime packages out of the required baseline; keep `spotipy` documented as optional for Spotify export utility flows.
+- context: Dependency review showed several packages in requirements were not used by active runtime code paths. The user explicitly selected a minimal-runtime posture for handoff and reproducibility.
+- alternatives_considered: keep broad historical dependency list unchanged (rejected: stale and misleading); keep optional utility packages as required runtime deps (rejected: unnecessary installation burden); remove all third-party packages including `rapidfuzz` (rejected: degrades matching behavior despite fallback path).
+- rationale: A minimal runtime dependency contract improves reproducibility and packaging clarity for mentor/assessor handoff while preserving active pipeline behavior and optional utility flexibility.
+- evidence_basis: `07_implementation/requirements.txt`, `07_implementation/README.md`, `07_implementation/src/shared_utils/text_matching.py`, `07_implementation/src/ingestion/spotify_resilience.py`; validation evidence: pytest (`542/542`) and pyright (`0 errors, 0 warnings, 0 informations`).
+- impacted_files: `07_implementation/requirements.txt`, `07_implementation/README.md`, `00_admin/decision_log.md`, `00_admin/change_log.md`.
+- next_steps: If utility-heavy workflows need a pinned install profile, add a separate optional dependency manifest rather than expanding the minimal runtime list.
+
+## D-114
+- date: 2026-04-14
+- entity_id: mentor_feedback_submission runnable handoff bundle policy
+- proposed_by: user + Copilot
+- status: accepted
+- decision: Create a dedicated `07_implementation/mentor_feedback_submission/` bundle for mentor review that includes a clean `src` copy without `__pycache__`, preserves only embedded runtime input assets inside output folders, leaves all generated runtime output folders empty, and includes a self-contained wrapper entrypoint, canonical config, minimal requirements file, and mentor-focused README.
+- context: The user requested a clean mentor handoff package centered on the core artefact code rather than the full implementation workspace. A literal “all outputs empty” copy would break runtime because the active implementation stores embedded dataset/export inputs under output folders.
+- alternatives_considered: ship the entire `07_implementation` folder unchanged (rejected: too noisy for mentor review); create a review-only src snapshot with all outputs emptied (rejected: not runnable); relocate embedded inputs outside `src` and refactor pathing first (rejected: unnecessary scope expansion for a handoff bundle).
+- rationale: This packaging policy gives the mentor a focused and runnable artefact bundle while preserving the current runtime contract and avoiding unrelated files, caches, and generated outputs.
+- evidence_basis: `07_implementation/mentor_feedback_submission/main.py`, `07_implementation/mentor_feedback_submission/README.md`, `07_implementation/mentor_feedback_submission/requirements.txt`, `07_implementation/mentor_feedback_submission/config/profiles/run_config_ui013_tuning_v1f.json`, and cleaned `07_implementation/mentor_feedback_submission/src/**`; validation evidence: bundle cold-start BL-013 pass (`BL013-ENTRYPOINT-20260414-105209-780679`), `PYCACHE_COUNT=0`, output-state verification showing only preserved input assets remaining in `data_layer/outputs` and `ingestion/outputs`.
+- impacted_files: `07_implementation/mentor_feedback_submission/`, `00_admin/decision_log.md`, `00_admin/change_log.md`.
+- next_steps: If the mentor needs an even smaller package, optionally add a zip/export step and a short cover note that points to the canonical entrypoint and known validation posture.
+
+## D-115
+- date: 2026-04-14
+- entity_id: mentor feedback bundle comment-style normalization wave
+- proposed_by: user + Copilot
+- status: accepted
+- decision: Rewrite comment and docstring surfaces in `07_implementation/mentor_feedback_submission/src/` package-by-package so the bundle reads like student-authored implementation code rather than mentor-facing API documentation, while keeping all logic and interfaces unchanged.
+- context: After the runnable mentor bundle was created under D-114, the user requested a systematic pass over the copied source to make comments cleaner, more natural, and consistent with a student-written project voice. The first execution slice covered `shared_utils`.
+- alternatives_considered: leave the original repo-style comments in place (rejected: too formal and uneven for the bundle audience); rewrite comments opportunistically file-by-file without a consistent rule set (rejected: likely to drift in tone); refactor code structure while touching comments (rejected: out of scope for this handoff cleanup).
+- rationale: A bounded comment-only rewrite improves readability for mentor review without changing runtime behaviour, and the package-by-package approach keeps the work auditable and low risk.
+- evidence_basis: `/memories/session/plan.md` phase plan; `07_implementation/mentor_feedback_submission/src/shared_utils/*.py`; validation evidence: `get_errors` on `07_implementation/mentor_feedback_submission/src/shared_utils` returned no errors after the Phase 1 rewrite.
+- impacted_files: `07_implementation/mentor_feedback_submission/src/shared_utils/`, `00_admin/decision_log.md`, `00_admin/change_log.md`.
+- next_steps: Continue the same comment-only style pass through the remaining package phases, keeping each phase scoped to one package and validating after each rewrite.

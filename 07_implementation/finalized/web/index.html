@@ -36,6 +36,17 @@
             border: 1px solid #444;
         }
 
+        textarea {
+            width: 100%;
+            min-height: 70px;
+            padding: 8px;
+            background: #1a1a1a;
+            color: #eee;
+            border: 1px solid #444;
+            font-family: Consolas, "Courier New", monospace;
+            font-size: 12px;
+        }
+
         button {
             padding: 8px 12px;
             border: 1px solid #555;
@@ -91,6 +102,25 @@
             border-top: none;
         }
 
+        .builder-item {
+            border-top: 1px solid #222;
+            padding: 8px 0;
+            font-size: 12px;
+        }
+
+        .builder-item:first-child {
+            border-top: none;
+        }
+
+        .builder-path {
+            color: #8fc6ff;
+            margin-bottom: 4px;
+        }
+
+        .muted {
+            color: #a0a0a0;
+        }
+
         pre {
             margin: 0;
             padding: 10px;
@@ -137,6 +167,47 @@
     </div>
 
     <div class="panel">
+        <h3 class="title">Pipeline Explainer</h3>
+        <div class="row">
+            <select id="stageSelect" class="grow"></select>
+            <button id="stageExplainBtn" type="button">Explain Stage</button>
+        </div>
+        <div id="pipelineFlow"></div>
+        <pre id="stageExplainer">Select a stage to view details.</pre>
+    </div>
+
+    <div class="panel">
+        <h3 class="title">BL-008 Explanation Viewer</h3>
+        <pre id="explanationView">Loading explanations...</pre>
+    </div>
+
+    <div class="panel">
+        <h3 class="title">Run Evidence Dashboard</h3>
+        <pre id="evidenceView">Loading run evidence...</pre>
+    </div>
+
+    <div class="panel">
+        <h3 class="title">Guided Flow</h3>
+        <pre id="guideView">Loading guided flow...</pre>
+    </div>
+
+    <div class="panel">
+        <h3 class="title">Profile Config Builder</h3>
+        <p class="muted">Edit any run-config setting with inline descriptions, then export JSON.</p>
+        <div class="row">
+            <select id="builderProfileSelect" class="grow"></select>
+            <button id="builderLoadProfileBtn" type="button">Load Profile</button>
+            <button id="builderResetBtn" type="button">Reset Defaults</button>
+            <button id="builderExportBtn" type="button">Export JSON</button>
+        </div>
+        <div class="row">
+            <input id="builderSearch" type="text" placeholder="Filter settings by path or description" />
+        </div>
+        <div id="builderSettings"></div>
+        <pre id="builderOutput">Loading config builder schema...</pre>
+    </div>
+
+    <div class="panel">
         <h3 class="title">Artifact Preview</h3>
         <pre id="artifactPreview">Select an artifact preview.</pre>
     </div>
@@ -153,8 +224,241 @@
         const statusPanel = document.getElementById("statusPanel");
         const artifactList = document.getElementById("artifactList");
         const artifactPreview = document.getElementById("artifactPreview");
+        const stageSelect = document.getElementById("stageSelect");
+        const stageExplainBtn = document.getElementById("stageExplainBtn");
+        const pipelineFlow = document.getElementById("pipelineFlow");
+        const stageExplainer = document.getElementById("stageExplainer");
+        const explanationView = document.getElementById("explanationView");
+        const evidenceView = document.getElementById("evidenceView");
+        const guideView = document.getElementById("guideView");
+        const builderProfileSelect = document.getElementById("builderProfileSelect");
+        const builderLoadProfileBtn = document.getElementById("builderLoadProfileBtn");
+        const builderResetBtn = document.getElementById("builderResetBtn");
+        const builderExportBtn = document.getElementById("builderExportBtn");
+        const builderSearch = document.getElementById("builderSearch");
+        const builderSettings = document.getElementById("builderSettings");
+        const builderOutput = document.getElementById("builderOutput");
         const terminal = document.getElementById("terminal");
         let activeEventSource = null;
+        let builderSchema = [];
+        let builderState = {};
+        let builderDefaults = {};
+
+        function deepClone(value) {
+            return JSON.parse(JSON.stringify(value));
+        }
+
+        function setPathValue(root, path, value) {
+            const parts = String(path).split(".");
+            let current = root;
+            for (let index = 0; index < parts.length - 1; index += 1) {
+                const key = parts[index];
+                if (!current[key] || typeof current[key] !== "object" || Array.isArray(current[key])) {
+                    current[key] = {};
+                }
+                current = current[key];
+            }
+            current[parts[parts.length - 1]] = value;
+        }
+
+        function getPathValue(root, path) {
+            const parts = String(path).split(".");
+            let current = root;
+            for (const key of parts) {
+                if (!current || typeof current !== "object") {
+                    return undefined;
+                }
+                current = current[key];
+            }
+            return current;
+        }
+
+        function refreshBuilderOutput() {
+            builderOutput.textContent = JSON.stringify(builderState, null, 2);
+        }
+
+        function parseStructuredInput(rawValue) {
+            const trimmed = String(rawValue || "").trim();
+            if (!trimmed) {
+                return null;
+            }
+            return JSON.parse(trimmed);
+        }
+
+        function buildInputControl(setting) {
+            const currentValue = getPathValue(builderState, setting.path);
+            const controlWrapper = document.createElement("div");
+
+            if (Array.isArray(setting.choices) && setting.choices.length > 0) {
+                const select = document.createElement("select");
+                for (const choice of setting.choices) {
+                    const option = document.createElement("option");
+                    option.value = String(choice);
+                    option.textContent = String(choice);
+                    select.appendChild(option);
+                }
+                select.value = String(currentValue ?? "");
+                select.addEventListener("change", () => {
+                    setPathValue(builderState, setting.path, select.value);
+                    refreshBuilderOutput();
+                });
+                controlWrapper.appendChild(select);
+                return controlWrapper;
+            }
+
+            if (setting.type === "bool") {
+                const checkbox = document.createElement("input");
+                checkbox.type = "checkbox";
+                checkbox.checked = !!currentValue;
+                checkbox.addEventListener("change", () => {
+                    setPathValue(builderState, setting.path, !!checkbox.checked);
+                    refreshBuilderOutput();
+                });
+                controlWrapper.appendChild(checkbox);
+                return controlWrapper;
+            }
+
+            if (setting.type === "int" || setting.type === "float") {
+                const numberInput = document.createElement("input");
+                numberInput.type = "number";
+                if (setting.type === "float") {
+                    numberInput.step = "any";
+                }
+                numberInput.value = currentValue == null ? "" : String(currentValue);
+                numberInput.addEventListener("change", () => {
+                    const parsed = numberInput.value.trim();
+                    if (!parsed) {
+                        setPathValue(builderState, setting.path, null);
+                    } else if (setting.type === "int") {
+                        setPathValue(builderState, setting.path, parseInt(parsed, 10));
+                    } else {
+                        setPathValue(builderState, setting.path, parseFloat(parsed));
+                    }
+                    refreshBuilderOutput();
+                });
+                controlWrapper.appendChild(numberInput);
+                return controlWrapper;
+            }
+
+            if (setting.type === "list" || setting.type === "object" || setting.type === "null") {
+                const textArea = document.createElement("textarea");
+                textArea.value = JSON.stringify(currentValue, null, 2);
+                textArea.addEventListener("change", () => {
+                    try {
+                        const parsed = parseStructuredInput(textArea.value);
+                        setPathValue(builderState, setting.path, parsed);
+                        textArea.style.borderColor = "#444";
+                        refreshBuilderOutput();
+                    } catch (_) {
+                        textArea.style.borderColor = "#aa3333";
+                    }
+                });
+                controlWrapper.appendChild(textArea);
+                return controlWrapper;
+            }
+
+            const textInput = document.createElement("input");
+            textInput.type = "text";
+            textInput.value = currentValue == null ? "" : String(currentValue);
+            textInput.addEventListener("change", () => {
+                setPathValue(builderState, setting.path, textInput.value);
+                refreshBuilderOutput();
+            });
+            controlWrapper.appendChild(textInput);
+            return controlWrapper;
+        }
+
+        function renderConfigBuilder() {
+            builderSettings.innerHTML = "";
+            const filterText = String(builderSearch.value || "").trim().toLowerCase();
+            const visibleSettings = builderSchema.filter((setting) => {
+                if (!filterText) {
+                    return true;
+                }
+                const haystack = `${setting.path} ${setting.description || ""}`.toLowerCase();
+                return haystack.includes(filterText);
+            });
+
+            if (visibleSettings.length === 0) {
+                builderSettings.textContent = "No settings matched the current filter.";
+                return;
+            }
+
+            for (const setting of visibleSettings) {
+                const row = document.createElement("div");
+                row.className = "builder-item";
+
+                const pathNode = document.createElement("div");
+                pathNode.className = "builder-path";
+                pathNode.textContent = setting.path;
+
+                const descNode = document.createElement("div");
+                descNode.className = "muted";
+                descNode.textContent = setting.description || "";
+
+                const inputNode = buildInputControl(setting);
+
+                row.appendChild(pathNode);
+                row.appendChild(descNode);
+                row.appendChild(inputNode);
+                builderSettings.appendChild(row);
+            }
+        }
+
+        async function refreshConfigBuilderSchema() {
+            builderOutput.textContent = "Loading config builder schema...";
+            try {
+                const response = await fetch("/api/config-builder/schema");
+                const data = await response.json();
+                if (!response.ok) {
+                    builderOutput.textContent = data.error || "Failed to load config builder schema.";
+                    return;
+                }
+                builderSchema = Array.isArray(data.settings) ? data.settings : [];
+                builderDefaults = data.defaults && typeof data.defaults === "object" ? deepClone(data.defaults) : {};
+                builderState = deepClone(builderDefaults);
+                renderConfigBuilder();
+                refreshBuilderOutput();
+            } catch (error) {
+                builderOutput.textContent = `Config builder schema request failed: ${error}`;
+            }
+        }
+
+        async function loadBuilderProfile() {
+            const selected = String(builderProfileSelect.value || "").trim();
+            if (!selected) {
+                return;
+            }
+
+            builderOutput.textContent = "Loading selected profile...";
+            try {
+                const response = await fetch(`/api/config-builder/profile?name=${encodeURIComponent(selected)}`);
+                const data = await response.json();
+                if (!response.ok) {
+                    builderOutput.textContent = data.error || "Failed to load selected profile.";
+                    return;
+                }
+                if (data.profile && typeof data.profile === "object") {
+                    builderState = deepClone(data.profile);
+                    renderConfigBuilder();
+                    refreshBuilderOutput();
+                }
+            } catch (error) {
+                builderOutput.textContent = `Profile load failed: ${error}`;
+            }
+        }
+
+        function exportBuilderConfig() {
+            const content = JSON.stringify(builderState, null, 2);
+            const blob = new Blob([content], { type: "application/json;charset=utf-8" });
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.download = "run_config_custom.json";
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(link.href);
+        }
 
         async function loadConfigOptions() {
             try {
@@ -163,11 +467,16 @@
                 const configs = Array.isArray(data.configs) ? data.configs : [];
 
                 configPathInput.innerHTML = "";
+                builderProfileSelect.innerHTML = "";
                 if (configs.length === 0) {
                     const option = document.createElement("option");
                     option.value = "";
                     option.textContent = "No config files found";
                     configPathInput.appendChild(option);
+                    const builderOption = document.createElement("option");
+                    builderOption.value = "";
+                    builderOption.textContent = "No config files found";
+                    builderProfileSelect.appendChild(builderOption);
                     runBtn.disabled = true;
                     return;
                 }
@@ -177,6 +486,11 @@
                     option.value = path;
                     option.textContent = path.replace("config/", "");
                     configPathInput.appendChild(option);
+
+                    const builderOption = document.createElement("option");
+                    builderOption.value = path;
+                    builderOption.textContent = path.replace("config/", "");
+                    builderProfileSelect.appendChild(builderOption);
                 }
                 runBtn.disabled = false;
             } catch (_) {
@@ -271,6 +585,117 @@
             }
         }
 
+        function renderPipelineFlow(items) {
+            pipelineFlow.innerHTML = "";
+            const stages = Array.isArray(items) ? items : [];
+            if (stages.length === 0) {
+                pipelineFlow.textContent = "No stage data available.";
+                return;
+            }
+
+            for (const stage of stages) {
+                const row = document.createElement("div");
+                row.className = "artifact-item";
+
+                const meta = document.createElement("div");
+                const readyText = stage.ready ? "ready" : "pending";
+                meta.textContent = `${stage.stage_id.toUpperCase()} | ${readyText} | ${stage.description}`;
+
+                const action = document.createElement("button");
+                action.className = "small";
+                action.type = "button";
+                action.textContent = "Explain";
+                action.addEventListener("click", () => {
+                    stageSelect.value = stage.stage_id;
+                    explainStage(stage.stage_id);
+                });
+
+                row.appendChild(meta);
+                row.appendChild(action);
+                pipelineFlow.appendChild(row);
+            }
+        }
+
+        async function refreshPipelineFlow() {
+            try {
+                const response = await fetch("/api/explainer/flow");
+                const data = await response.json();
+                const stages = Array.isArray(data.stages) ? data.stages : [];
+                renderPipelineFlow(stages);
+
+                stageSelect.innerHTML = "";
+                for (const stage of stages) {
+                    const option = document.createElement("option");
+                    option.value = stage.stage_id;
+                    option.textContent = `${stage.stage_id.toUpperCase()} - ${stage.label}`;
+                    stageSelect.appendChild(option);
+                }
+                stageExplainBtn.disabled = stages.length === 0;
+            } catch (_) {
+                renderPipelineFlow([]);
+                stageSelect.innerHTML = "";
+                stageExplainBtn.disabled = true;
+            }
+        }
+
+        async function explainStage(stageId) {
+            const selected = String(stageId || "").trim();
+            if (!selected) {
+                stageExplainer.textContent = "No stage selected.";
+                return;
+            }
+
+            stageExplainer.textContent = "Loading stage details...";
+            try {
+                const response = await fetch(`/api/explainer/stage?stage=${encodeURIComponent(selected)}`);
+                const data = await response.json();
+                if (!response.ok) {
+                    stageExplainer.textContent = data.error || "Failed to load stage details.";
+                    return;
+                }
+                stageExplainer.textContent = JSON.stringify(data, null, 2);
+            } catch (error) {
+                stageExplainer.textContent = `Stage detail request failed: ${error}`;
+            }
+        }
+
+        async function refreshExplanationView() {
+            explanationView.textContent = "Loading explanations...";
+            try {
+                const response = await fetch("/api/explainer/explanations?limit=10");
+                const data = await response.json();
+                if (!response.ok) {
+                    explanationView.textContent = data.error || "Explanation data unavailable.";
+                    return;
+                }
+                explanationView.textContent = JSON.stringify(data, null, 2);
+            } catch (error) {
+                explanationView.textContent = `Explanation request failed: ${error}`;
+            }
+        }
+
+        async function refreshEvidenceView() {
+            evidenceView.textContent = "Loading run evidence...";
+            try {
+                const response = await fetch("/api/explainer/evidence");
+                const data = await response.json();
+                evidenceView.textContent = JSON.stringify(data, null, 2);
+            } catch (error) {
+                evidenceView.textContent = `Evidence request failed: ${error}`;
+            }
+        }
+
+        async function refreshGuideView() {
+            guideView.textContent = "Loading guided flow...";
+            try {
+                const response = await fetch("/api/explainer/guide");
+                const data = await response.json();
+                guideView.textContent = JSON.stringify(data, null, 2);
+            } catch (error) {
+                guideView.textContent = `Guide request failed: ${error}`;
+            }
+        }
+
         function stopActiveStream() {
             if (activeEventSource) {
                 activeEventSource.close();
@@ -322,6 +747,10 @@
                 stopActiveStream();
                 runBtn.disabled = false;
                 refreshArtifacts();
+                refreshPipelineFlow();
+                refreshExplanationView();
+                refreshEvidenceView();
+                refreshGuideView();
             });
 
             activeEventSource.onerror = () => {
@@ -352,6 +781,10 @@
                     runBtn.disabled = false;
                     refreshStatus();
                     refreshArtifacts();
+                    refreshPipelineFlow();
+                    refreshExplanationView();
+                    refreshEvidenceView();
+                    refreshGuideView();
                 }
             }
         }
@@ -360,11 +793,33 @@
         refreshBtn.addEventListener("click", () => {
             refreshStatus();
             refreshArtifacts();
+            refreshPipelineFlow();
+            refreshExplanationView();
+            refreshEvidenceView();
+            refreshGuideView();
         });
 
+        stageExplainBtn.addEventListener("click", () => {
+            explainStage(stageSelect.value);
+        });
+
+        builderSearch.addEventListener("input", renderConfigBuilder);
+        builderLoadProfileBtn.addEventListener("click", loadBuilderProfile);
+        builderResetBtn.addEventListener("click", () => {
+            builderState = deepClone(builderDefaults);
+            renderConfigBuilder();
+            refreshBuilderOutput();
+        });
+        builderExportBtn.addEventListener("click", exportBuilderConfig);
+
         loadConfigOptions();
+        refreshConfigBuilderSchema();
         refreshStatus();
         refreshArtifacts();
+        refreshPipelineFlow();
+        refreshExplanationView();
+        refreshEvidenceView();
+        refreshGuideView();
     </script>
 </body>
 

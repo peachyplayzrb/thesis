@@ -1,6 +1,6 @@
 # Thesis State
 
-Last updated: 2026-04-13 UTC (REB-M4 + Slice 30 checkpoint)
+Last updated: 2026-04-14 UTC (mentor bundle validation checkpoint)
 
 ## REBUILD POSTURE (active from 2026-04-12)
 
@@ -174,6 +174,9 @@ BL-008 now has policy-gated BL-007↔BL-008 handshake validation (`allow|warn|st
 
 #### Post-closure enhancement checkpoint (Slice 28 BL-008↔BL-009 handshake hardening)
 BL-009 now has policy-gated BL-008↔BL-009 handshake validation (`allow|warn|strict`) at the observability entry point, checking required BL-008 summary keys (`run_id`, `playlist_track_count`, `top_contributor_distribution`), required payload keys (`playlist_track_count`, `explanations`), and summary/payload explanation-count consistency before observability logging proceeds. The policy is wired through shared constants (`DEFAULT_BL009_HANDSHAKE_VALIDATION_POLICY`), BL-009 runtime_controls sanitizer and env fallback (`BL009_BL008_HANDSHAKE_VALIDATION_POLICY`), effective run-config validation/schema, and BL-009 `main.py` entry point. BL-009 run logs now record `run_config.observability.validation_policies.bl008_bl009_handshake_validation_policy` and top-level `validation.status`. BL-014 now enforces wrapper-level continuity via `schema_bl008_bl009_handshake_contract`, raising check total to 34/34 and extending the handshake hardening wave downstream through BL-009. Validation remains green via focused pytest (`80/80`) under decision/change anchors `D-104` / `C-337`.
+
+#### Mentor bundle validation checkpoint (2026-04-14)
+The dedicated mentor handoff package at `07_implementation/mentor_feedback_submission/` is currently runnable and validated again after a bundle-local BL-007 syntax fix in `src/playlist/rules.py`. The package wrapper now passes BL-013 (`BL013-ENTRYPOINT-20260414-121918-379574`) and BL-014 (`BL014-SANITY-20260414-121945-312010`, `36/36`), so the mentor bundle is back to a clean executable handoff posture without changing the active thesis RQ, scope, or methodology lock.
 ### REB-M4 Kickoff Checkpoint (2026-04-12)
 
 - Rebuild milestone outcome: Chapter 4 and Chapter 5 are now being rebuilt around the active O1 to O6 objective-to-evidence contract rather than the pre-rebuild MVP framing.
