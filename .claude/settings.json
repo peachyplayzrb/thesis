@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(find \"c:/Users/peach/Desktop/thesis-main \\(3\\)/thesis-main/thesis-main/07_implementation/src\" -name \"*.py\" -exec wc -l {} +)",
+      "Bash(ls \"c:/Users/peach/Desktop/thesis-main \\(3\\)/thesis-main/thesis-main/07_implementation/src/\"*/)"
+    ]
+  }
+}
