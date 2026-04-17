@@ -1,9 +1,48 @@
 # Unresolved Issues
 
-Last updated: 2026-04-14
+Last updated: 2026-04-17 UTC (Literature integration depth-pass; three design-verification items flagged)
 
 ## Active
-None.
+
+### UNDO-A: Profile intake validation — Roy & Dutta (2022) input data quality caveat
+
+**Status**: Open, Medium priority (design verification)
+
+**Trigger**: Chapter 3 Section 3.6 states alignment treats uncertainty as visible through diagnostics, and Section 3.7 states profile construction is normative. Roy & Dutta (2022) finding: interaction evidence may reflect convenience/exposure rather than stable preference. Design question: does profile intake reject/flag low-fidelity evidence before it enters downstream operations?
+
+**Description**: While Chapter 3 emphasizes that uncertainty remains visible at the point where evidence enters the system, Chapter 3 does not explicitly specify what profile-intake validation prevents structurally low-quality rows from entering profile construction. Investigate whether BL-004 (profiling stage) enforces explicit row-quality gates that distinguish and surface low-confidence/weak-evidence rows in observability output.
+
+**Implementation contact**: `07_implementation/src/profiling.py` (BL-004); `07_implementation/implementation_notes/bl004_profiling/`
+
+**Blocking**: No (design verification, not critical path); planned investigation after Chapter 5/6 proofing or as pre-submission design audit.
+
+---
+
+### UNDO-B: Sequential coherence in playlist assembly — Schedl et al. (2018) music-specific dynamics caveat
+
+**Status**: Open, Medium-High priority (design verification)
+
+**Trigger**: Chapter 3 Section 3.10 describes multi-objective playlist assembly (coherence, diversity, novelty, ordering) but does not explicitly ground coherence in music-specific sequential/relational listening. Schedl et al. (2018) finding: music consumption is sequential and relational, not purely itemwise. Design question: does BL-007 assembly model sequential/transition coherence between adjacent tracks?
+
+**Description**: Chapter 3 lists coherence as one of four competing objectives in playlist assembly but does not specify whether coherence models sequential relationships or only item-level similarity. Investigate whether BL-007 (assembly stage) constrains transition coherence or only item-level feature similarity.
+
+**Implementation contact**: `07_implementation/src/playlist/rules.py` (BL-007); Chapter 4 Sections 4.6-4.7 (assembly rule implementation)
+
+**Blocking**: No; escalate to decision entry if sequential coherence is absent and design claims sequential sensitivity.
+
+---
+
+### UNDO-C: Candidate-shaping diagnostics fidelity — Zamani & Ferraro (2018/2019) visibility caveat
+
+**Status**: Open, Medium priority (design verification)
+
+**Trigger**: Chapter 3 Section 3.8 emphasizes candidate shaping must "show how many items were retained, why other items were filtered out, and how strongly the current profile settings determined the reachable search space." Zamani/Ferraro finding: candidate generation is most consequential but least visible. Design question: do BL-005 diagnostics expose threshold effects, exclusion categories, and pool-size trends with sufficient detail?
+
+**Description**: Chapter 3 Section 3.8 states candidate shaping must show filtering logic completely. Investigate whether BL-005 (retrieval/candidate-shaping stage) surfaces threshold-effect counts, exclusion category diagnostics, candidate-pool size trends, and control-effect observability at the detail level claimed by design.
+
+**Implementation contact**: `07_implementation/src/retrieval.py` (BL-005); `07_implementation/src/observability.py` (BL-009); `07_implementation/implementation_notes/bl005_retrieval/`
+
+**Blocking**: No; planned investigation during Chapter 5 evaluation setup or design-audit pass.
 
 Active-set sync note (2026-04-14 mentor bundle validation): Confirmed no new active blocker after the mentor handoff bundle validation/package pass. A bundle-local BL-007 syntax defect in `07_implementation/mentor_feedback_submission/src/playlist/rules.py` was corrected, and the bundle wrapper now passes BL-013 (`BL013-ENTRYPOINT-20260414-121918-379574`) plus BL-014 (`BL014-SANITY-20260414-121945-312010`, `36/36`).
 
@@ -137,4 +176,6 @@ Active-set sync note (2026-04-13 BL-009 handshake hardening closeout): Confirmed
 
 - UI-001 (2026-03-15): Parser mismatch between author-year Chapter 2 style and key-based claim extractor.
 	- resolution: Extended `09_quality_control/run_ch2_verbatim_audit.py` to map author-year citations to source-index keys and regenerate non-zero claim extraction.
-	- evidence: `09_quality_control/run_ch2_verbatim_audit.py`; `09_quality_control/chapter2_verbatim_audit.md`; `00_admin/change_log.md` (`C-009`).
+        - evidence: `09_quality_control/run_ch2_verbatim_audit.py`; `09_quality_control/chapter2_verbatim_audit.md`; `00_admin/change_log.md` (`C-009`).
+
+**Active-set sync note (2026-04-17 literature integration wave):** Three design-verification items flagged (UNDO-A, UNDO-B, UNDO-C) after Chapter 3 literature-gap analysis and targeted prose-depth integration pass (C-421). All items are Medium priority, non-blocking, and deferred to post-Chapter-3-finalization investigation phase. Prose additions to Chapter 3 sections 3.5, 3.7, 3.9, 3.11 deepen design reasoning with specific literature caveats (Flexer & Grill, Herlocker, Knijnenburg, Afroogh). No chapter restructuring; section numbering unchanged.

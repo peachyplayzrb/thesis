@@ -8,7 +8,7 @@ The problem is further amplified when user preference data is collected from ext
 
 Accordingly, the thesis addresses the following engineering problem:
 
-How can a deterministic single-user playlist generation pipeline be engineered and evaluated so that preference inference, candidate generation, and playlist assembly remain transparent, controllable, and reproducible under cross-source uncertainty and competing playlist objectives?
+How can a deterministic playlist generation pipeline be designed and evaluated so that it remains transparent, controllable, and reproducible when user preference data and candidate tracks come from different sources?
 
 This problem is addressed within a bounded MVP scope:
 

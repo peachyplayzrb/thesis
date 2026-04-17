@@ -2,7 +2,7 @@
 
 Use schema from `00_admin/operating_protocol.md`.
 
-Last updated: 2026-04-10
+Last updated: 2026-04-15
 
 ## MF-001
 - id: MF-001
@@ -39,4 +39,23 @@ Last updated: 2026-04-10
 	- `09_quality_control/chapter2_verbatim_audit.md`
 	- `09_quality_control/claim_evidence_map.md`
 - decision_outcome: Audit report produced and synchronized; Chapter 2 wording unchanged; follow-on wording revisions remain optional and separately scoped.
+- follow_up_needed: no
+
+## MF-003
+- id: MF-003
+- date: 2026-04-15
+- source: Mentor feedback on current Chapter 2 review after MQ-009 submission (`08_writing/chapter2.md`)
+- feedback_summary:
+	1. The chapter has improved substantially overall.
+	2. Add one explicit closing bridge sentence at the very end of the literature review stating that this thesis addresses the identified gap.
+	3. Add simple framework diagrams to give visual anchors for the discussed concepts, such as recommender-paradigm comparison and pipeline-stage flow.
+	4. No broader quality objection was raised beyond these final additions.
+- action_required: No immediate action remaining in this pass. The requested Chapter 2 additions have now been implemented.
+- files_updated:
+	- `08_writing/chapter2.md`
+	- `00_admin/decision_log.md`
+	- `00_admin/change_log.md`
+	- `00_admin/timeline.md`
+	- `00_admin/mentor_feedback_log.md`
+- decision_outcome: Feedback accepted and implemented using a bounded closeout strategy: inserted two argument-led framework diagrams (`Figure 2.1` and `Figure 2.2`), then strengthened the chapter ending by replacing the single bridge sentence with a structured `Research Gap and Thesis Contribution` section and six-row gap table.
 - follow_up_needed: no

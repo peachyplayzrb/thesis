@@ -2,17 +2,17 @@
 
 ## Primary Objective
 
-Design and evaluate a deterministic playlist generation pipeline that provides auditable transparency, actionable controllability, and reproducible behavior under cross-source preference uncertainty and competing playlist objectives.
+Build and evaluate a playlist generation pipeline where every stage can be inspected, adjusted, and reproduced, even when user data and candidate tracks come from different sources.
 
 ## Specific Objectives
 
-1. Formalize uncertainty-aware preference profiling from implicit cross-source signals and make profile assumptions explicitly inspectable.
-2. Implement confidence-aware cross-source alignment and candidate-generation controls that expose exclusion logic and alignment risk.
-3. Engineer deterministic scoring and playlist assembly mechanisms with explicit controls for coherence, diversity, novelty, and ordering trade-offs.
-4. Produce mechanism-linked explanation and run-level observability outputs that distinguish explanation fidelity from persuasive narrative.
-5. Evaluate reproducibility, controllability, and objective-trade-off behavior through structured, repeatable experiments.
-6. Derive bounded engineering design guidance that states where conclusions hold and where evidence remains limited.
+1. Design a preference profiling approach from user listening history across different data sources.
+2. Implement cross-source alignment and candidate filtering with explicit uncertainty handling.
+3. Implement deterministic scoring and playlist assembly with controls for coherence, diversity, novelty, and ordering.
+4. Produce explanation and logging outputs that show how pipeline decisions were made.
+5. Evaluate how well the pipeline reproduces results and how playlist quality changes when settings are adjusted.
+6. Identify the limits of the results and the conditions under which the conclusions apply.
 
 ## Scope Note
 
-These objectives are bounded to a single-user deterministic pipeline where engineering evidence quality (traceability, controllability, reproducibility, and explicit uncertainty handling) is the contribution focus. Collaborative filtering, deep-learning model novelty, and large-scale user studies remain outside the core artefact scope.
+These objectives are bounded to a single-user deterministic pipeline. Collaborative filtering, deep-learning model novelty, and large-scale user studies remain outside the core artefact scope.

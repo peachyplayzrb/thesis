@@ -5,10 +5,10 @@ Ordering convention (standardized 2026-03-24):
 - Entry IDs remain unique identifiers, but physical entry order reflects historical insertion timing (not strict numeric sorting).
 - New entries must be appended at the end and may include `superseded_by` when a prior decision is replaced.
 
-Maintenance snapshot (2026-04-13):
-- Highest decision ID currently present: `D-115`
-- Total decision entries: 106
-- Status distribution: accepted=95, superseded=3, rejected=1
+Maintenance snapshot (2026-04-17):
+- Highest decision ID currently present: `D-143`
+- Total decision entries: 133
+- Status distribution: accepted=122, superseded=3, rejected=1
 - ID integrity check: no duplicate decision IDs detected
 
 Current posture snapshot (2026-03-25):
@@ -258,6 +258,38 @@ evidence_basis:
 - `07_implementation/implementation_notes/bl010_reproducibility/outputs/bl010_reproducibility_config_snapshot.json`
 - `07_implementation/implementation_notes/bl011_controllability/outputs/bl011_controllability_report.json`
 - `07_implementation/implementation_notes/bl011_controllability/outputs/bl011_controllability_run_matrix.csv`
+
+id: D-134
+date: 2026-04-17
+status: accepted
+
+context:
+User requested implementation of examiner-style Chapter 3 critique focused on weak tentative wording, missing overall architecture visualization, limited justification of rejected alternatives, and low-fidelity ASCII logic diagrams in the active `chapter3_v3.md` draft.
+
+decision:
+Strengthen `08_writing/chapter3_v3.md` as a thesis-facing design chapter by (1) using declarative present-tense design wording for the intended artefact behavior, (2) adding one explicit overall architecture figure plus explicit alternatives-considered rationale, and (3) replacing the remaining ASCII process diagrams with Mermaid figures that preserve inspectable stage logic.
+
+alternatives_considered:
+- Keep the prior text and defer critique response to supervisor review
+- Retain ASCII diagrams and improve captions only
+- Move architecture/alternatives discussion to Chapter 4 instead of strengthening Chapter 3 as design authority
+
+rationale:
+The critique targets examiner-facing defensibility rather than implementation correctness. Chapter 3 needs to read as a confident design specification tied to Chapter 1 objectives and Chapter 2 gap logic, while still remaining honest about scope and bounded contribution. Declarative wording, explicit architectural overview, alternatives-considered disclosure, and clearer diagrams improve academic readability without changing the artefact boundary or making unsupported performance claims.
+
+evidence_basis:
+- `08_writing/chapter3_v3.md` sections 3.4 to 3.10 after the 2026-04-17 hardening pass
+- user critique in chat requesting stronger architecture visualization, alternatives rationale, and removal of tentative `should` wording
+
+impacted_files:
+- `00_admin/decision_log.md`
+- `00_admin/change_log.md`
+- `00_admin/thesis_state.md`
+- `00_admin/timeline.md`
+- `08_writing/chapter3_v3.md`
+
+review_date:
+none
 - `07_implementation/experiment_log.md` (`EXP-013`)
 
 impacted_files:
@@ -2157,3 +2189,354 @@ review_date: none
 - evidence_basis: `/memories/session/plan.md` phase plan; `07_implementation/mentor_feedback_submission/src/shared_utils/*.py`; validation evidence: `get_errors` on `07_implementation/mentor_feedback_submission/src/shared_utils` returned no errors after the Phase 1 rewrite.
 - impacted_files: `07_implementation/mentor_feedback_submission/src/shared_utils/`, `00_admin/decision_log.md`, `00_admin/change_log.md`.
 - next_steps: Continue the same comment-only style pass through the remaining package phases, keeping each phase scoped to one package and validating after each rewrite.
+
+## D-116
+- date: 2026-04-14
+- entity_id: mentor walkthrough guide in bundle root
+- proposed_by: user + Copilot
+- status: accepted
+- decision: Add a dedicated walkthrough script file inside `07_implementation/mentor_feedback_submission/` that gives a low-stress demo order, exact Windows run commands, folder-by-folder explanation prompts, and a short speaking script for mentor video recording.
+- context: After the mentor handoff bundle was validated, cleaned, committed, and pushed, the user reported that the mentor specifically requested a video demonstration of how the code works and asked for a comprehensive but easy-to-follow explanation file because they were anxious about presenting it.
+- alternatives_considered: rely only on `README.md` (rejected: setup-oriented and too light for a spoken demo); give advice only in chat (rejected: harder to follow while recording); add more code comments instead (rejected: does not solve the user's need for a presentation script).
+- rationale: A dedicated walkthrough file reduces presentation friction without changing runtime behavior, keeps the mentor bundle self-explanatory, and gives the user one canonical script for showing entrypoint, config, stage ordering, preserved input assets, and generated outputs.
+- evidence_basis: user request for a comprehensive mentor-video guide; existing mentor bundle entrypoint and packaging contract in `07_implementation/mentor_feedback_submission/main.py` and `07_implementation/mentor_feedback_submission/README.md`; canonical config in `07_implementation/mentor_feedback_submission/config/profiles/run_config_ui013_tuning_v1f.json`.
+- impacted_files: `07_implementation/mentor_feedback_submission/MENTOR_VIDEO_WALKTHROUGH.md`, `00_admin/decision_log.md`, `00_admin/change_log.md`.
+- next_steps: Use the walkthrough file during recording and, if needed, trim it down into a shorter cover email or viva-style script later.
+
+## D-117
+- date: 2026-04-15
+- entity_id: chapter2 mentor-closeout figure strategy
+- proposed_by: user + Copilot
+- status: accepted
+- decision: Implement the mentor-requested Chapter 2 closeout using exactly two argument-led original synthesis diagrams (paradigm trade-off matrix and uncertainty-aware pipeline flow) plus one concise end-of-review bridge sentence, while deferring the optional evaluation-dimensions diagram unless readability gains clearly justify inclusion.
+- context: Mentor feedback under MF-003 requested two additions: an explicit "this thesis addresses this gap" closing bridge sentence and simple framework diagrams. The user approved a phased plan that prioritizes the bridge sentence and limits revision scope.
+- alternatives_considered: Add three diagrams immediately (rejected: increased clutter/scope risk); add only the bridge sentence without diagrams (rejected: leaves visual-anchor request unresolved); perform broad prose rewrites with new citations (rejected: unnecessary risk at closeout stage).
+- rationale: Two targeted diagrams plus one bridge sentence satisfy mentor feedback with low risk, preserve literature-review boundaries, and reinforce argument flow without reopening chapter-wide rewriting.
+- evidence_basis: `08_writing/chapter2.md`, MF-003 in `00_admin/mentor_feedback_log.md`, execution plan in `/memories/session/plan.md`.
+- impacted_files: `08_writing/chapter2.md`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/timeline.md`, `00_admin/mentor_feedback_log.md`.
+- next_steps: Validate caption claims against existing Chapter 2 evidence posture and share mentor-ready preview containing the bridge sentence and two inserted figures.
+
+## D-118
+- date: 2026-04-15
+- entity_id: chapter2 structured research-gap closeout
+- proposed_by: user + Copilot
+- status: accepted
+- decision: Replace the single-sentence Chapter 2 bridge closeout with a structured end section titled `Research Gap and Thesis Contribution`, containing (1) an identified-gap paragraph, (2) a thesis-response subsection with numbered points, and (3) a six-row gap summary table derived only from claims already established in the chapter.
+- context: After the initial mentor-closeout implementation, the user requested a stronger and more explicit ending that better surfaces the research gap and thesis contribution while keeping the rest of the chapter body unchanged and literature-first in tone.
+- alternatives_considered: keep the one-sentence bridge only (rejected: too compressed for the now-stated closeout goal); rewrite multiple body sections for stronger gap signalling (rejected: unnecessary scope expansion); add new citations to support the new closeout section (rejected: violates bounded-closeout intent).
+- rationale: A structured closing section makes the chapter's contribution logic clearer without reopening the main literature discussion, and the table format strengthens traceability from existing evidence to the stated thesis response.
+- evidence_basis: `08_writing/chapter2.md`, user-specified closeout structure in chat on 2026-04-15, MF-003 mentor feedback context in `00_admin/mentor_feedback_log.md`.
+- impacted_files: `08_writing/chapter2.md`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/timeline.md`, `00_admin/mentor_feedback_log.md`.
+- next_steps: Validate that each gap-table row traces to claims already made in Chapter 2 and keep the revised closeout literature-first rather than method-heavy.
+
+## D-119
+- date: 2026-04-15
+- entity_id: chapter2 closeout simplification to two-paragraph form
+- proposed_by: user + Copilot
+- status: accepted
+- decision: Replace the structured Chapter 2 closeout block (numbered thesis-response list plus six-row table) with a concise two-paragraph ending under `Research Gap and Thesis Positioning`, while keeping figures and body content unchanged.
+- context: After reviewing the strengthened closeout, the user judged the ending as overworked and requested a cleaner narrative finish that avoids repetitive structure while preserving the same literature-grounded argument.
+- alternatives_considered: Keep the existing structured list-and-table ending (rejected: presentation felt overcomplicated); remove all closeout synthesis and return to only a one-sentence bridge (rejected: too weak for explicit gap-positioning); rewrite broader chapter body sections (rejected: unnecessary scope expansion).
+- rationale: A concise two-paragraph close preserves the integrated gap argument and thesis positioning without repeating content across multiple formatting layers, improving readability and coherence at the chapter endpoint.
+- evidence_basis: Updated closeout section in `08_writing/chapter2.md`; user request in chat on 2026-04-15 to remove the numbered list and table and keep a tighter two-paragraph ending.
+- impacted_files: `08_writing/chapter2.md`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/timeline.md`.
+- next_steps: Confirm final mentor-readability pass on Chapter 2 and keep any further edits bounded to wording polish unless new feedback introduces substantive evidence changes.
+
+## D-120
+- date: 2026-04-15
+- entity_id: chapter2 closeout citation-anchor and boundary hardening
+- proposed_by: user + Copilot
+- status: accepted
+- decision: Keep the two-paragraph closeout format, but harden it by (1) adding compact citation anchors to the integrated-gap and thesis-positioning claims, (2) tightening repeated phrasing relative to the immediate synthesis paragraph, and (3) adding one explicit boundary sentence stating the contribution scope.
+- context: After simplifying the Chapter 2 ending, the user confirmed three targeted quality upgrades: citation anchors, reduced repetition, and a bounded closeout statement that remains concise.
+- alternatives_considered: leave the simplified ending unchanged (rejected: lower citation-density confidence at the chapter endpoint); restore the prior list/table structure (rejected: user judged that format overcomplicated); expand into broader chapter rewrites (rejected: unnecessary scope expansion).
+- rationale: This preserves readability gains from simplification while improving examiner-facing traceability and scope discipline at the end of the chapter.
+- evidence_basis: Final closeout wording in `08_writing/chapter2.md` under `Research Gap and Thesis Positioning`, including added citation anchors and explicit deterministic single-user contribution boundary.
+- impacted_files: `08_writing/chapter2.md`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/timeline.md`.
+- next_steps: Keep any remaining Chapter 2 changes limited to micro-level wording polish unless new mentor feedback requires substantive evidence updates.
+
+## D-121
+- date: 2026-04-15
+- entity_id: chapter2 figure-area prose simplification pass
+- proposed_by: user + Copilot
+- status: accepted
+- decision: Apply the user-proposed micro-level wording refinements in the Figure 2.1/2.2 section by using shorter, cleaner captions and replacing the labeled `Cross-cutting caveat` sentence with direct narrative prose.
+- context: User requested targeted readability edits to three specific lines in Chapter 2 while keeping the underlying claims and structure unchanged.
+- alternatives_considered: keep existing wording (rejected: more report-like tone than desired); rewrite broader surrounding paragraphs (rejected: unnecessary scope expansion); alter figure content or logic (rejected: user requested wording-only refinement).
+- rationale: The selected edits improve flow and stylistic consistency without introducing new claims or changing evidence boundaries.
+- evidence_basis: Updated Figure 2.1 caption, the sentence immediately below Figure 2.1, and Figure 2.2 caption in `08_writing/chapter2.md`.
+- impacted_files: `08_writing/chapter2.md`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/timeline.md`.
+- next_steps: Keep future edits in this section constrained to wording polish unless new mentor feedback requires structural revision.
+
+## D-122
+- date: 2026-04-15
+- entity_id: chapter2 final submission polish closure
+- proposed_by: user + Copilot
+- status: accepted
+- decision: Apply the final optional Chapter 2 cleanup items before submission by adding compact citation anchors to the synthesis limitations sentence and normalizing the remaining `behavior` spellings to UK `behaviour` wherever they appear in chapter-facing text.
+- context: A final submission-readiness review found no blocking issues and identified only two optional polish debts: one citation-density reinforcement point and one spelling-consistency issue.
+- alternatives_considered: leave the optional items unchanged (rejected: avoidable polish debt remains visible); rewrite broader passages for stylistic smoothing (rejected: unnecessary scope expansion); change substantive claims or references (rejected: not needed for final polish).
+- rationale: This closes the last visible submission polish gaps while preserving the established argument, evidence scope, and chapter structure.
+- evidence_basis: Updated `08_writing/chapter2.md` limitations sentence with anchor citations and normalized remaining `behavior` instances in the table, prose, and Mermaid figure text.
+- impacted_files: `08_writing/chapter2.md`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/timeline.md`.
+- next_steps: Chapter 2 should now remain frozen except for external formatting/layout requirements or new mentor-directed changes.
+
+## D-123
+- date: 2026-04-15
+- entity_id: chapter2 ending synthesis merge
+- proposed_by: user + Copilot
+- status: accepted
+- decision: Replace the two overlapping paragraphs immediately before `Research Gap and Thesis Positioning` with one merged synthesis/limitations paragraph, and soften the earlier `The literature progresses...` transition sentence using the user-provided replacement, while leaving the gap paragraph and thesis-positioning paragraph unchanged.
+- context: After the latest submission-polish wave, the user identified one remaining structural issue in the ending: two adjacent paragraphs before the gap section overlapped in function by both emphasizing fragmentation, limitations, and context-bounded conclusions.
+- alternatives_considered: keep the two existing paragraphs (rejected: avoidable redundancy remains); remove one paragraph without replacement (rejected: loses useful synthesis/limitations balance); rewrite the gap and thesis-positioning paragraphs too (rejected: user explicitly asked to keep them).
+- rationale: One merged paragraph gives the ending a cleaner four-part sequence and removes repetition without changing the chapter’s established argument or evidence boundaries.
+- evidence_basis: Updated `08_writing/chapter2.md` with the exact merged paragraph supplied by the user and the softer transition sentence above the paradigms section.
+- impacted_files: `08_writing/chapter2.md`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/timeline.md`.
+- next_steps: Keep Chapter 2 frozen after this pass unless there is external formatting work or new supervisor feedback.
+
+## D-124
+- date: 2026-04-15
+- entity_id: title and positioning phrase alignment
+- proposed_by: user + Copilot
+- status: accepted
+- decision: Adopt the new active thesis title and align the Chapter 2 thesis-positioning paragraph with two targeted edits: switch `engineering and evaluating` to `designing and evaluating`, and replace the contribution-boundary sentence with the title-explicit transparent/controllable playlist pipeline wording under cross-source data conditions.
+- context: User explicitly set a new title and requested exact title-to-positioning consistency while keeping the rest of the paragraph unchanged.
+- alternatives_considered: leave Chapter 2 wording unchanged under the new title (rejected: title-positioning mismatch); rewrite broader paragraph/chapter language (rejected: unnecessary scope expansion); defer title update to later governance pass (rejected: user requested immediate thesis-state update).
+- rationale: A two-phrase update preserves validated chapter structure while ensuring direct lexical and conceptual alignment between the active title and stated contribution boundary.
+- evidence_basis: Updated active title in `00_admin/thesis_state.md` and targeted wording replacements in `08_writing/chapter2.md` positioning paragraph.
+- impacted_files: `00_admin/thesis_state.md`, `08_writing/chapter2.md`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/timeline.md`.
+- next_steps: Keep remaining Chapter 2 wording unchanged unless new mentor feedback requests further edits.
+
+## D-125
+- date: 2026-04-15
+- entity_id: chapter4 chapter5 structural split with chapter6 discussion surface
+- proposed_by: user + Copilot
+- status: accepted
+- decision: Split the prior mixed `Chapter 4: Implementation and Evaluation` structure into three clearer writing surfaces: Chapter 4 for implementation architecture and evidence surfaces, Chapter 5 for evaluation/results, and a new Chapter 6 for discussion, contribution interpretation, and future work.
+- context: User requested implementation of the previously proposed split plan to separate implementation reporting from evaluation interpretation and reduce mixed-purpose chapter flow.
+- alternatives_considered: keep current Chapter 4/5 structure unchanged (rejected: implementation/evaluation/discussion overlap remains); split into only two chapters by merging evaluation and discussion (rejected: leaves interpretation still entangled with result reporting); rewrite all chapters from scratch (rejected: unnecessary scope expansion).
+- rationale: A three-surface split preserves existing validated content while improving narrative separation, cross-chapter traceability, and final hardening efficiency.
+- evidence_basis: `08_writing/chapter4.md` rewritten to implementation/evidence-surface scope; `08_writing/chapter5.md` rewritten as evaluation/results scope; `08_writing/chapter6.md` created from prior discussion-layer content; `08_writing/chapter3.md` references synchronized to Chapter 4/5 evaluation boundary.
+- impacted_files: `08_writing/chapter3.md`, `08_writing/chapter4.md`, `08_writing/chapter5.md`, `08_writing/chapter6.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`, `00_admin/decision_log.md`, `00_admin/change_log.md`.
+- next_steps: Run a focused coherence pass across Chapters 3 to 6 to ensure section cross-references and numbering remain consistent in the final merged thesis draft.
+
+## D-126
+- date: 2026-04-16
+- entity_id: chapter3 design only variant derived from current chapter2
+- proposed_by: user + Copilot
+- status: accepted
+- decision: Create a separate Chapter 3 alternative draft derived directly from the current Chapter 2 gap and thesis-positioning logic while deliberately avoiding reflection of the current implementation surface.
+- context: User requested a second Chapter 3 variant that follows the new Chapter 2 and stays design-oriented rather than implementation-descriptive.
+- alternatives_considered: reuse the current `chapter3.md` wording (rejected: too implementation-synchronized for the requested purpose); reuse `chapter3_v2.md` unchanged (rejected: cleaner prose, but still anchored to older Chapter 4-only evaluation structure and older design assumptions); overwrite the active `chapter3.md` (rejected: user asked for a separate alternative, not replacement).
+- rationale: A separate design-only draft preserves current governed chapter files while giving the user a cleaner Chapter 2-derived architecture version for comparison or later merge.
+- evidence_basis: Added `08_writing/chapter3_v3.md` as a new alternative Chapter 3 draft emphasizing uncertainty-aware evidence handling, candidate-generation visibility, playlist trade-off control, mechanism-linked explanations, and run-level evidence contracts derived from the current Chapter 2 ending.
+- impacted_files: `08_writing/chapter3_v3.md`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/timeline.md`.
+- next_steps: Compare `chapter3_v3.md` against `chapter3.md` and `chapter3_v2.md` to decide whether to merge prose improvements into the active Chapter 3.
+
+## D-127
+- date: 2026-04-16
+- entity_id: chapter3_v3 simplification and compression pass
+- proposed_by: user + Copilot
+- status: accepted
+- decision: Simplify `chapter3_v3.md` into a more thesis-ready chapter by removing internal mapping scaffolds, embedding the two figures inside the relevant design sections, tightening repeated caveat language, and replacing abstract phrasing with clearer wording.
+- context: User provided detailed editorial feedback that the draft was conceptually strong but overengineered, repetitive, and too scaffold-heavy for a thesis chapter.
+- alternatives_considered: keep the existing draft unchanged (rejected: readability and structural efficiency concerns remain); remove only a few phrases without restructuring sections (rejected: would not address the main density problem); replace the draft with a much shorter minimalist outline (rejected: would lose useful design substance).
+- rationale: A focused compression pass preserves the intellectual backbone of the chapter while making it shorter, clearer, and more readable as a thesis chapter rather than an internal design memo.
+- evidence_basis: `08_writing/chapter3_v3.md` now has a simplified objective, a tighter methodology section, a requirement table instead of six heavy paragraphs, a reduced top-level architecture list, embedded alignment and scoring/assembly figures, a renamed control section, and the removal of the two mapping sections.
+- impacted_files: `08_writing/chapter3_v3.md`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/timeline.md`.
+- next_steps: Re-read the simplified draft against `chapter3_v2.md` and the active `chapter3.md` to decide whether it is now strong enough to replace or merge into the governed Chapter 3.
+
+## D-128
+- date: 2026-04-16
+- entity_id: chapter1 academic-style rebuild and structure alignment
+- proposed_by: user + Copilot
+- status: accepted
+- decision: Rebuild `chapter1.md` from internal workflow wording into an academic introduction chapter structure aligned with university sample expectations, including motivation/background sections, a prominent standalone research question block, separated aim/objective bullets, a report-framework section, and a chapter-close summary.
+- context: User feedback indicated that the prior Chapter 1 draft read like internal documentation and was missing expected introductory chapter components.
+- alternatives_considered: keep the existing Chapter 1 and only remove flagged words (rejected: missing structure problems would remain); apply only sentence-level style edits (rejected: still insufficient for examiner-facing chapter expectations); replace Chapter 1 with the external sample structure verbatim (rejected: must preserve thesis-specific research framing and scope).
+- rationale: A full structure-aligned rewrite preserves thesis content while improving readability, academic tone, and examiner-oriented accessibility for readers unfamiliar with the project context.
+- evidence_basis: `08_writing/chapter1.md` now includes motivation and technical background sections, a quoted standalone research question, explicit aim and objective bullet sets, scope and contribution sections in thesis style, a report-framework section, and a summary that bridges to Chapter 2.
+- impacted_files: `08_writing/chapter1.md`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/timeline.md`.
+- next_steps: Harmonize Chapter 1 wording with final Chapter 3 phrasing and chapter numbering references after the Chapter 3 selection decision is finalized.
+
+## D-129
+- date: 2026-04-16
+- entity_id: chapter2 opening-signpost alignment
+- proposed_by: user + Copilot
+- status: accepted
+- decision: Add a short chapter-level signposting paragraph at the start of `chapter2.md` to mirror expected dissertation literature-review framing and make section coverage explicit before detailed analysis begins.
+- context: User comparison against the sample report identified one minor gap: Chapter 2 lacked a brief introductory signpost paragraph.
+- alternatives_considered: keep chapter opening unchanged (rejected: leaves the only identified gap unresolved); add a longer multi-paragraph introduction (rejected: unnecessary expansion for a minor gap).
+- rationale: A concise signpost paragraph improves reader orientation and examiner-facing structure while preserving existing analytical depth and chapter flow.
+- evidence_basis: `08_writing/chapter2.md` now opens with a two-sentence overview of chapter scope and sequence before the first substantive section.
+- impacted_files: `08_writing/chapter2.md`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/timeline.md`.
+- next_steps: Keep Chapter 2 citations and analytical density unchanged; no further structural adjustment required unless supervisor feedback requests it.
+
+## D-130
+- date: 2026-04-16
+- entity_id: chapter1-chapter2 canonical wording sync
+- proposed_by: user + Copilot
+- status: accepted
+- decision: Treat the user-provided Chapter 1 and Chapter 2 wording as the current canonical chapter baseline and align governance wording to that baseline while preserving existing in-repo figure assets where no replacement image file was supplied.
+- context: The user supplied updated full-text Chapter 1 and Chapter 2 wording and requested that the repository be synchronized to that current version.
+- alternatives_considered: leave chapter/governance wording partially drifted (rejected: violates current-state sync requirement); replace existing figure representations with missing file placeholders (rejected: would degrade the repository state without a real asset).
+- rationale: The current chapter text is the authoritative thesis-facing wording, so thesis state and logs should match it. Preserving working figure assets avoids introducing broken references when no new image file is available in the workspace.
+- evidence_basis: `08_writing/chapter1.md` and `08_writing/chapter2.md` now reflect the supplied wording deltas; `00_admin/thesis_state.md` objectives now match the Chapter 1 objective set; Chapter 2 includes the supplied progression paragraph and chapter summary.
+- impacted_files: `08_writing/chapter1.md`, `08_writing/chapter2.md`, `00_admin/thesis_state.md`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/timeline.md`.
+- next_steps: Use this synced wording baseline for any further chapter proofing or export formatting passes.
+
+## D-131
+- date: 2026-04-16
+- entity_id: chapter3_v3 objective-traceability and observability wording harmonization
+- proposed_by: user + Copilot
+- status: accepted
+- decision: Update `chapter3_v3.md` to explicitly map Chapter 1 objectives (O1 to O6) to Chapter 3 design sections and harmonize the chapter objective sentence to include observability alongside uncertainty, inspectability, and reproducibility.
+- context: User requested implementation of previously identified alignment improvements after the Chapter 3 alignment review.
+- alternatives_considered: leave Chapter 3 as-is with only implicit alignment (rejected: weaker examiner-facing traceability); rewrite broader chapter structure (rejected: unnecessary scope expansion for a targeted alignment pass); change objective wording only (rejected: would not close O1 to O6 traceability gap).
+- rationale: A small, explicit mapping table improves assessment traceability and makes objective-to-design linkage auditable without changing design intent, contribution boundary, or chapter flow.
+- evidence_basis: `08_writing/chapter3_v3.md` now includes an O1 to O6 mapping table in Section 3.2 and revised chapter objective wording that explicitly includes observability.
+- impacted_files: `08_writing/chapter3_v3.md`, `00_admin/decision_log.md`, `00_admin/change_log.md`.
+- next_steps: Use the mapping table as the traceability bridge when finalizing the governed Chapter 3 selection and when cross-referencing Chapter 4/5 evaluation evidence.
+
+## D-132
+- date: 2026-04-17
+- entity_id: chapter3_v3 thesis-format correction pass
+- proposed_by: user + Copilot
+- status: accepted
+- decision: Restructure `chapter3_v3.md` to remove internal-documentation framing and align chapter presentation with thesis-facing format expectations by (1) deleting the top "Chapter objective" line, (2) adding a short 3.1 introduction paragraph, (3) renumbering all subsequent sections, (4) adding an explicit technology-stack section, and (5) explicitly naming the selected profile/scoring feature set.
+- context: User flagged repeated format/content gaps against the sample Chapter 3 structure and requested direct implementation.
+- alternatives_considered: keep existing numbering and only edit wording (rejected: structural mismatch remains); add a short note without sectioning changes (rejected: does not address missing introduction/stack sections); defer edits until chapter-selection decision (rejected: user requested immediate correction).
+- rationale: These changes improve examiner-facing readability and traceability while preserving the existing design intent and contribution boundary.
+- evidence_basis: `08_writing/chapter3_v3.md` now starts with `3.1 Introduction`, includes `3.5 Technology Stack and Implementation Environment`, explicitly lists danceability/energy/valence/tempo/key/mode plus genre/tag signals, and uses a consistent renumbered structure through `3.11 Chapter Summary`.
+- impacted_files: `08_writing/chapter3_v3.md`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/thesis_state.md`.
+- next_steps: Decide whether `chapter3_v3.md` replaces the governed Chapter 3 baseline and, if adopted, mirror the same section structure in the active `chapter3.md` surface.
+
+## D-133
+- date: 2026-04-17
+- entity_id: chapter3_v3 thesis-facing polish pass
+- proposed_by: user + Copilot
+- status: accepted
+- decision: Refine `chapter3_v3.md` to read more like a final thesis chapter by tightening the opening flow, softening governance-sounding traceability wording, aligning the technology section with the actual Spotify export/runtime posture, formalizing the feature specification into clearer groups, and making the architecture and observability surfaces more concrete through explicit artifact wording.
+- context: User requested implementation of the previously prepared Chapter 3 improvement plan rather than a new structural rewrite.
+- alternatives_considered: leave the post-D-132 version unchanged (rejected: still read as a strong draft rather than a final thesis chapter); add more implementation specifics and thresholds (rejected: would drift into Chapter 4 detail); remove the O1 to O6 table entirely (rejected: loses useful examiner-facing traceability).
+- rationale: A focused prose and framing pass improves readability, coherence, and submission-facing tone while preserving the existing chapter structure and design intent.
+- evidence_basis: `08_writing/chapter3_v3.md` now previews chapter flow more clearly in `3.1`, uses a thesis-facing lead-in to the O1 to O6 table, describes the active Spotify export plus optional OAuth utility posture in `3.5`, groups the feature set into rhythmic/harmonic, affective/intensity, and semantic/contextual categories in `3.7`, and names concrete intermediate artifacts in `3.4` and `3.9`.
+- impacted_files: `08_writing/chapter3_v3.md`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/thesis_state.md`.
+- next_steps: Re-read `chapter3_v3.md` against Chapters 1 and 2, then decide whether this draft is ready to replace the governed `chapter3.md` baseline.
+
+## D-135
+- date: 2026-04-17
+- entity_id: chapter3_v3 methodology citation and experimental protocol hardening
+- proposed_by: user + Copilot
+- status: accepted
+- decision: Strengthen `chapter3_v3.md` by explicitly citing Design Science Research in Section 3.2 and by defining Section 3.10 with a concrete evaluation protocol: three fixed-baseline replays plus one-parameter-at-a-time controlled-variation checks whose expected effects are examined across intermediate and final artifacts.
+- context: User review identified one clear missing citation for the DSR claim and noted that Section 3.10 remained too thin relative to the thesis's reproducibility and controllability claims.
+- alternatives_considered: add only the DSR citation and leave 3.10 brief (rejected: leaves the protocol under-specified); expand 3.10 with generic wording but no concrete replay count (rejected: still weak on examiner-facing design specificity); move protocol specifics to Chapter 5 only (rejected: Chapter 3 should define the intended evaluation logic before results are shown).
+- rationale: Reproducibility and controllability are core thesis claims, so Chapter 3 needs to specify what the design treats as sufficient evidence of stable replay and interpretable control effects. Defining the protocol at design level improves traceability without drifting into Chapter 5 result discussion.
+- evidence_basis: `08_writing/chapter3_v3.md` now cites Peffers et al. (2007) in `3.2`, cites feature-space grounding at the point of feature definition in `3.7`, and expands `3.10` to specify three baseline replays plus one-factor variation evidence across alignment, candidate, scoring, assembly, and output surfaces; `03_literature/source_index.csv` now tracks the Peffers methodology source as `P-066`.
+- impacted_files: `08_writing/chapter3_v3.md`, `03_literature/source_index.csv`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`.
+- next_steps: Keep Chapter 5 aligned to this declared protocol when writing the evaluation-method and results framing.
+
+## D-136
+- date: 2026-04-17
+- entity_id: chapter3_v3 final examiner-facing clarity refinement
+- proposed_by: user + Copilot
+- status: accepted
+- decision: Apply one final Chapter 3 wording refinement pass that (1) justifies the three-replay threshold in Section 3.10 as a bounded deterministic consistency check under thesis scope, (2) softens the O1-O6 table lead-in from governance phrasing to reader-facing chapter guidance, and (3) clarifies the Spotify input wording so the design clearly uses a static local export as fixed input rather than a runtime-bundled live dependency.
+- context: After the citation-and-protocol hardening pass, the remaining review findings were examiner-facing clarity issues rather than structural or evidential gaps.
+- alternatives_considered: leave the current wording unchanged (rejected: preserves small but avoidable ambiguity in three places); remove the O1-O6 table entirely (rejected: loses useful objective-to-design orientation); add more implementation detail to clarify the Spotify/export and replay wording (rejected: would push Chapter 3 toward Chapter 4 detail).
+- rationale: These refinements reduce likely examiner misreadings without changing design scope, evidence claims, or chapter structure. The replay sentence still names a concrete protocol, but now frames it as sufficient under thesis scope rather than universally normative.
+- evidence_basis: `08_writing/chapter3_v3.md` now introduces the O1-O6 table with reader-facing wording, describes the user-data basis as a static local Spotify export generated outside the deterministic pipeline, and frames the three-repeat baseline protocol as a bounded consistency check rather than an arbitrary or universal threshold.
+- impacted_files: `08_writing/chapter3_v3.md`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`.
+- next_steps: Re-read the chapter for final selection readiness, then decide whether `chapter3_v3.md` should replace the governed `chapter3.md` baseline.
+
+## D-137
+- date: 2026-04-17
+- entity_id: chapter3_v3 structural refinement for section balance and scope clarity
+- proposed_by: user + Copilot
+- status: accepted
+- decision: Restructure `chapter3_v3.md` to improve thesis-facing section balance by (1) adding an explicit assumptions-and-boundaries subsection under the architecture discussion, (2) retitling the technology section toward design-realisation context, (3) making the alignment procedure more concrete through a fixed matching-order description, (4) separating preference profiling from candidate shaping, and (5) separating deterministic scoring from playlist assembly with downstream renumbering.
+- context: After the wording and citation passes, the remaining review recommendations were structural rather than evidential: the chapter still compressed profiling with candidate shaping, compressed scoring with assembly, and lacked one explicit place where scope assumptions were gathered.
+- alternatives_considered: leave the current structure unchanged (rejected: preserves the main readability imbalance identified in review); add more detail inside the existing combined sections without splitting them (rejected: would keep the same conceptual compression); move the extra detail into Chapter 4 (rejected: these are design-structure clarifications, not implementation findings).
+- rationale: The chapter already had a strong argument spine, so the remaining work was to make its internal logic easier to follow. Separating these stages sharpens causal interpretation: profile construction defines preference evidence, candidate shaping defines the reachable search space, scoring ranks that space, and assembly constructs the final list under playlist-level trade-offs.
+- evidence_basis: `08_writing/chapter3_v3.md` now includes `3.4.1 Assumptions and Boundaries`, renames `3.5` to `Technology Choices and Realisation Context`, describes a fixed alignment order in `3.6`, splits the former combined profiling/candidate section into `3.7` and `3.8`, splits the former scoring/assembly section into `3.9` and `3.10`, and renumbers the later chapter sections through `3.13`.
+- impacted_files: `08_writing/chapter3_v3.md`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`.
+- next_steps: Perform one final chapter-readiness comparison against `chapter3.md`, then decide whether `chapter3_v3.md` becomes the canonical Chapter 3 baseline.
+
+## D-138
+- date: 2026-04-17
+- entity_id: chapter3 canonical baseline selection and limitation carry-forward
+- proposed_by: user + Copilot
+- status: accepted
+- decision: Adopt the restructured `chapter3_v3.md` as the canonical Chapter 3 baseline by synchronizing its content into `08_writing/chapter3.md`, retain `chapter3_v3.md` as comparison history, and carry the strongest concrete corpus-coverage limitation wording into the evaluation and discussion chapters rather than back into the design chapter.
+- context: After the final comparison pass, the v3 chapter was clearly stronger as a thesis-facing design chapter, while the older `chapter3.md` remained useful mainly for one concrete limitation passage about low corpus coverage.
+- alternatives_considered: keep `chapter3.md` as the canonical baseline and leave `chapter3_v3.md` separate (rejected: preserves the weaker chapter as the live surface); replace `chapter3.md` but discard the old limitation wording entirely (rejected: loses one of the few stronger concrete implementation-boundary statements from the old draft); move the limitation back into the selected Chapter 3 text (rejected: pushes empirical implementation detail into the design chapter).
+- rationale: This resolves the long-running comparison state cleanly. Chapter 3 should now use the strongest thesis-facing structure and prose, while the concrete 15.95% corpus-coverage limitation is more appropriately interpreted in Chapters 5 and 6, where evidence limits and bounded claims are discussed directly.
+- evidence_basis: `08_writing/chapter3.md` now mirrors the selected v3 structure and prose; `08_writing/chapter5.md` now states that only 15.95% of imported history aligns to the offline corpus and interprets the 15% gate as a minimum viability threshold; `08_writing/chapter6.md` now carries the same limitation into bounded discussion framing.
+- impacted_files: `08_writing/chapter3.md`, `08_writing/chapter3_v3.md`, `08_writing/chapter5.md`, `08_writing/chapter6.md`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`.
+- next_steps: Use `08_writing/chapter3.md` as the canonical Chapter 3 surface for any remaining cross-chapter proofing and Chapter 4 to 6 continuity checks.
+
+## D-139
+- date: 2026-04-17
+- entity_id: chapter3 final polish for mechanism specificity and prose flow
+- proposed_by: user + Copilot
+- status: accepted
+- decision: Apply one final Chapter 3 polish pass to the canonical `chapter3.md` surface by adding a slightly more concrete mechanism sentence in candidate shaping and deterministic scoring, renaming Section 3.11 to better match its content, and splitting the densest sentences in Section 3.12 for readability without changing the chapter structure.
+- context: User review judged the chapter structurally strong and thesis-ready, with the remaining issues limited to polish: minor abstraction in Sections 3.8 and 3.9, slight title-content drift in 3.11, and sentence density in 3.12.
+- alternatives_considered: leave the chapter unchanged (rejected: misses easy readability gains); add implementation-specific details or formulas (rejected: would push Chapter 3 toward Chapter 4 detail); do a full stylistic rewrite across the whole chapter (rejected: unnecessary risk after the structural issues were already resolved).
+- rationale: The chapter no longer needed structural change. It needed a small increase in design tangibility and a light smoothing pass so the strongest sections were matched by equally clear local prose in the remaining dense areas.
+- evidence_basis: `08_writing/chapter3.md` now states that candidate shaping combines profile-similarity thresholds, metadata-based exclusions, and bounded influence-track expansion; `3.9` now states that scoring combines weighted feature similarity with bounded rule adjustments; `3.11` is renamed to `Explanation and Run-Level Observability`; and `3.12` now presents baseline replay and controlled-variation mode in shorter, clearer sentences.
+- impacted_files: `08_writing/chapter3.md`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`.
+- next_steps: Continue Chapter 4 to 6 continuity proofing against the polished canonical Chapter 3 baseline.
+
+## D-140
+- date: 2026-04-17
+- entity_id: chapter3 micro-edit pass for tone and transition strength
+- proposed_by: user + Copilot
+- status: accepted
+- decision: Apply a final micro-edit pass to `chapter3.md` that (1) makes the preference-profile output form slightly more tangible, (2) tightens a few software-engineering-leaning phrases in the assumptions, technology, and alignment sections, (3) reduces a small number of repeated sentence openings, and (4) strengthens the Chapter 3 closing sentence as a bridge into Chapter 4.
+- context: User review judged the chapter structurally complete and very close to final, with the remaining gap being examiner-facing smoothness rather than any missing architectural content.
+- alternatives_considered: leave the text unchanged (rejected: misses easy thesis-tone gains); do a full prose rewrite across the whole chapter (rejected: unnecessary risk at the final polish stage); add more implementation detail to make sections feel concrete (rejected: would blur the design/implementation boundary).
+- rationale: The chapter already had the right structure and the right design argument. The remaining value came from smoothing tone, making one abstract section slightly more tangible, and improving the chapter-to-chapter transition.
+- evidence_basis: `08_writing/chapter3.md` now describes the profile as a bounded weighted summary of aligned evidence in the candidate-facing feature space; `3.4.1`, `3.5`, and `3.6` now use slightly more thesis-facing wording (`single-user inspectability under deterministic execution`, `treated as negligible`, `reliable downstream handling`); a few repeated sentence openings are varied; and `3.13` now closes by pointing explicitly to how Chapter 4 examines realization of the intended architecture.
+- impacted_files: `08_writing/chapter3.md`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`.
+- next_steps: Continue Chapter 4 to 6 continuity proofing against the now fully polished Chapter 3 baseline.
+
+## D-141
+- date: 2026-04-17
+- entity_id: chapter4 continuity pass for design-property visibility
+- proposed_by: user + Copilot
+- status: accepted
+- decision: Tighten `chapter4.md` so it does more than inventory implementation surfaces: it should explicitly show how the design properties defined in Chapter 3 become visible in execution through stage outputs, evidence packaging, and objective-linked checks.
+- context: After Chapter 3 was finalized, the main continuity risk shifted to Chapter 4. The existing draft named the right implementation surfaces, but it could state more clearly how those surfaces make uncertainty handling, candidate shaping, scoring transparency, assembly trade-offs, explanation fidelity, and run-level observability visible in execution.
+- alternatives_considered: leave Chapter 4 unchanged (rejected: weakens the Chapter 3 to Chapter 4 handoff promised in the new Chapter 3 summary); expand Chapter 4 with extensive runtime detail or result interpretation (rejected: would blur the Chapter 4 vs Chapter 5 boundary); postpone continuity tightening until a later global proofread (rejected: the new Chapter 3 close now makes the continuity requirement explicit).
+- rationale: Chapter 4 should validate the Chapter 3 handoff at the level of implementation architecture and inspectable evidence surfaces. Making that visibility explicit improves coherence across chapters without turning Chapter 4 into an evaluation chapter.
+- evidence_basis: `08_writing/chapter4.md` now states in `4.1` that the chapter shows how Chapter 3 design properties become visible in execution; `4.2` now explains why the mapping matters; `4.3` now ties each BL stage to one or more visible design properties; `4.4` now frames the outputs as one inspectable evidence bundle; and `4.5` now summarizes Chapter 4 in those same terms.
+- impacted_files: `08_writing/chapter4.md`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`.
+- next_steps: Continue Chapter 5 and Chapter 6 continuity proofing using the now-explicit Chapter 3 to Chapter 4 execution bridge.
+
+## D-142
+- date: 2026-04-17
+- entity_id: chapter3 targeted citation/rationale insertions in 3.8 and 3.10
+- proposed_by: user + Copilot
+- status: accepted
+- decision: Add three targeted citation/rationale insertions to Chapter 3 sections 3.8 and 3.10 to close the 'just stated' gaps identified by external review: a rationale clause for the 'two reasons for candidate absence' claim, explicit Zamani/Ferraro citations for the candidate-generation visibility sentence, and the Bonnin/Vall/Schweiger citations brought through to the 3.10 opening.
+- context: External-style review identified that sections 3.6–3.10 had several un-supported design claims. Most were already justified but three specific spots remained 'just stated' without citation or explicit engineering rationale.
+- alternatives_considered: add no citations and rely on the requirements table reference (rejected: weakens the specific design-decision traceability within the section); add citations in all uncited sentences (rejected: would bloat the chapter beyond word limit and contradict the reviewer's own advice).
+- rationale: The three insertions close the most visible citation gaps without adding bulk — each is a pinpoint fix at a genuine justification gap.
+- evidence_basis: `08_writing/chapter3.md` section 3.8 now cites Tintarev and Masthoff (2007) and Steck et al. (2021) for the filtering/explanation-fidelity claim; Zamani et al. (2019) and Ferraro et al. (2018) for the candidate-generation visibility bridge sentence; section 3.10 now opens with the Bonnin and Jannach (2015), Vall et al. (2019), and Schweiger et al. (2025) citations at the point of the competing-objectives claim.
+- impacted_files: `08_writing/chapter3.md`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`.
+- next_steps: Continue Chapter 5 and Chapter 6 continuity proofing.
+
+## D-143
+- date: 2026-04-17
+- entity_id: chapter3 design-level pull-back of sections 3.5, 3.9, 3.10, 3.12
+- proposed_by: user + Copilot
+- status: accepted
+- decision: Raise the abstraction level of four sections in Chapter 3 (3.5, 3.9, 3.10, 3.12) from implementation detail to design rationale. Remove named tools and artefact formats from 3.5; replace implementation-formula sentence in 3.9 with design-level decomposition statement; replace specific rule list in 3.10 with abstract constraint categories; replace exact repeat count in 3.12 with 'repeated fixed-configuration replays' deferring the count to Chapter 4.
+- context: After successive concrete-ness improvements, several sections had drifted to answering 'how exactly is it implemented?' rather than 'what is the design and why?'. A design chapter should specify properties and justify design choices, not transcribe code-level parameters.
+- alternatives_considered: leave all detail in place and add a note that implementation specifics appear in Chapter 4 (rejected: the chapter still reads as implementation rather than design); remove all detail selectively with inline footnotes (rejected: footnotes would add word count without solving the level mismatch).
+- rationale: A design chapter builds credibility by showing that choices are principled. Moving implementation specifics to Chapter 4 sharpens the contribution claim and removes redundancy between chapters.
+- evidence_basis: `08_writing/chapter3.md` updated; all four target sections now operate at design-rationale level.
+- impacted_files: `08_writing/chapter3.md`, `00_admin/decision_log.md`, `00_admin/change_log.md`.
+- next_steps: Verify Chapter 4 carries the deferred detail; proceed with final chapter review.

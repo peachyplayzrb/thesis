@@ -1,9 +1,10 @@
 ﻿# Mentor Question Log
 
-Status checkpoint (2026-03-29):
-- Open: MQ-001, MQ-002, MQ-003, MQ-004, MQ-007, MQ-009
+Status checkpoint (2026-04-15):
+- Open: MQ-001, MQ-002, MQ-003, MQ-004, MQ-007
+- Answered: MQ-009
 - Deferred: MQ-005, MQ-006, MQ-008
-- Note: Chapter 2 has been sent for mentor review on 2026-04-12; MQ-009 tracks the open feedback request.
+- Note: Chapter 2 feedback was received on 2026-04-15 and logged as MF-003; the requested chapter additions remain pending a separate edit pass.
 
 id: MQ-001
 date: 2026-03-13
@@ -115,4 +116,6 @@ affected_files:
 - 09_quality_control/chapter_readiness_checks.md
 - 00_admin/timeline.md
 urgency: medium
-status: open
+status: answered
+answer_summary: Mentor response was positive overall and identified two final additions before completion: (1) add one explicit end-of-review bridge sentence stating that this thesis addresses the identified gap, and (2) add simple framework diagrams to support the conceptual discussion.
+next_action: Feedback logged only in this session; do not modify `08_writing/chapter2.md` until a separate user-approved edit pass.

@@ -2,14 +2,14 @@
 
 ## Current Title
 
-Engineering an Auditable and Controllable Playlist Generation Pipeline Under Cross-Source Preference Uncertainty
+Designing and Evaluating a Transparent and Controllable Playlist Generation Pipeline Using Cross-Source Music Preference Data
 
 ## Current Research Question
 
-How can a deterministic playlist generation pipeline be engineered and evaluated so that preference inference, candidate generation, and playlist assembly remain transparent, controllable, and reproducible under cross-source uncertainty and multi-objective playlist trade-offs?
+How can a deterministic playlist generation pipeline be designed and evaluated so that it remains transparent, controllable, and reproducible when user preference data and candidate tracks come from different sources?
 
 ## Control Note
 
 This file must remain aligned with `00_admin/thesis_state.md`.
 
-- Last confirmed against locked thesis state: 2026-04-12
+- Last confirmed against locked thesis state: 2026-04-16 (Chapter 1 finalized, C-401)
