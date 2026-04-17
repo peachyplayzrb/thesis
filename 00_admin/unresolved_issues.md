@@ -1,6 +1,6 @@
 # Unresolved Issues
 
-Last updated: 2026-04-17 UTC (Literature integration depth-pass; three design-verification items flagged)
+Last updated: 2026-04-17 UTC (Design-chapter implementation upgrade triage; nine design-verification items flagged)
 
 ## Active
 
@@ -43,6 +43,90 @@ Last updated: 2026-04-17 UTC (Literature integration depth-pass; three design-ve
 **Implementation contact**: `07_implementation/src/retrieval.py` (BL-005); `07_implementation/src/observability.py` (BL-009); `07_implementation/implementation_notes/bl005_retrieval/`
 
 **Blocking**: No; planned investigation during Chapter 5 evaluation setup or design-audit pass.
+
+---
+
+### UNDO-D: Scoring sensitivity diagnostics hardening — Fkih et al. (2022) and Flexer (2016) metric-subjectivity caveat
+
+**Status**: Open, Medium-High priority (design verification)
+
+**Trigger**: Chapter 3 Section 3.9 positions deterministic scoring as a weighted approximation of preference fit. Fkih et al. (2022) indicates similarity-function choice materially changes recommendation outcomes, and Flexer (2016) indicates music similarity has subjective agreement limits. Design question: does BL-006 expose run-level sensitivity and uncertainty-facing diagnostics that make this dependency explicit?
+
+**Description**: Current BL-006 outputs report component contributions but do not provide a dedicated sensitivity slice that quantifies score/rank movement under bounded scoring-component perturbations. Investigate whether BL-006 should emit additive sensitivity diagnostics (for example top-k overlap shift, rank volatility, and component-dominance change) so scoring claims remain explicitly approximation-bounded.
+
+**Implementation contact**: `07_implementation/src/scoring/scoring_engine.py` (BL-006); `07_implementation/src/scoring/result_reporter.py`; `07_implementation/src/quality/sanity_checks.py` (BL-014 advisories)
+
+**Blocking**: No; escalate to decision entry if scoring rationale in Chapter 3/5 remains stronger than emitted sensitivity evidence.
+
+---
+
+### UNDO-E: Multi-dimensional explanation-quality metrics — Nauta et al. (2023) and Lopes et al. (2022) evaluation-fragmentation caveat
+
+**Status**: Open, Medium priority (design verification)
+
+**Trigger**: Chapter 3 and Chapter 5 frame explanation quality as evaluable and reproducible. Nauta et al. (2023) and Lopes et al. (2022) emphasize multi-criteria quantitative evaluation rather than anecdotal or single-metric explainability judgement. Design question: do BL-008 and BL-014 expose a sufficiently explicit explanation-quality metric vector at run level?
+
+**Description**: BL-014 currently emits `advisory_bl008_explanation_fidelity` warnings when internal consistency checks fail, but it does not emit a compact multi-dimensional metric surface for comparison across runs. Investigate whether BL-008/BL-009/BL-014 should emit additive quantitative dimensions (for example completeness, consistency, sparsity/readability proxy, and replay stability) with explicit thresholds or comparison baselines.
+
+**Implementation contact**: `07_implementation/src/transparency/main.py` (BL-008); `07_implementation/src/observability/main.py` (BL-009); `07_implementation/src/quality/sanity_checks.py` (BL-014)
+
+**Blocking**: No; planned as a design-audit enhancement before final Chapter 5 evaluation hardening.
+
+---
+
+### UNDO-F: Human-centered controllability interpretation proxies — Knijnenburg et al. (2012) and Afroogh (2024) trust-boundary caveat
+
+**Status**: Open, Medium priority (design verification)
+
+**Trigger**: BL-011 currently verifies that configuration variants produce observable shifts, but literature indicates trust/acceptance is multi-factor and not inferable from transparency alone. Design question: does controllability evaluation include interpretable proxy summaries that avoid over-claiming human-centered outcomes?
+
+**Description**: Current BL-011 evidence demonstrates deterministic and observable variant shifts, but lacks an explicit proxy layer that summarizes whether those shifts remain interpretable to a human reviewer (for example concentration of effects, rank-locality of change, and explanation-driver stability under variant perturbation). Investigate whether additive BL-011 reporting should expose these bounded interpretation proxies.
+
+**Implementation contact**: `07_implementation/src/controllability/analysis.py` (BL-011); `07_implementation/src/controllability/reporting.py`; `07_implementation/src/observability/main.py` (validity boundaries)
+
+**Blocking**: No; escalate to decision entry if Chapter 6 contribution language risks implying trust or UX outcomes beyond current evidence.
+
+---
+
+### UNDO-G: Control-effect gate enforcement in orchestration — Control Testing Protocol and Control Surface Registry contract gap
+
+**Status**: Open, Medium-High priority (design verification)
+
+**Trigger**: `05_design/CONTROL_TESTING_PROTOCOL.md` and `05_design/CONTROL_SURFACE_REGISTRY.md` require measurable control effects and escalation for zero-effect controls. Design question: is control-effect validation enforced as a first-class gate in the active BL-013/BL-014 execution flow rather than as an external manual check?
+
+**Description**: Current protocol guidance defines measurable-effect thresholds and escalation behavior, but the active wrapper/sanity path does not yet enforce a generalized control-effect gate for selected control families. Investigate adding an additive gate that computes effect metrics (composition/rank/pool/score-distribution deltas) and emits pass/warn/fail status for declared control experiments.
+
+**Implementation contact**: `07_implementation/src/quality/suite.py` (BL-013 orchestration quality flow); `07_implementation/src/quality/sanity_checks.py` (BL-014 checks); `07_implementation/src/controllability/analysis.py` (effect metrics)
+
+**Blocking**: No; escalate to decision entry if Chapter 5 controllability claims rely on controls without enforced measurable-effect evidence.
+
+---
+
+### UNDO-H: Unified control-causality payload contract — Transparency Design/Addendum cross-stage trace gap
+
+**Status**: Open, Medium priority (design verification)
+
+**Trigger**: `05_design/transparency_design.md`, `05_design/transparency_design_addendum.md`, and `05_design/TRANSPARENCY_SPEC.md` require explicit linkage from user controls to downstream decisions. Design question: do BL-008/BL-009 expose one unified control-causality block per track/run that ties accepted/rejected outcomes to concrete control values?
+
+**Description**: Existing explanations and observability outputs expose contributors and diagnostics, but control-application traceability is fragmented across stages. Investigate adding a normalized `control_causality` payload surface that records controlling parameters, direction of effect, and evidence source fields for each recommendation decision.
+
+**Implementation contact**: `07_implementation/src/transparency/main.py` (BL-008 payloads); `07_implementation/src/observability/main.py` (BL-009 aggregation); `07_implementation/src/playlist/stage.py` and `07_implementation/src/retrieval.py` (source diagnostics)
+
+**Blocking**: No; planned as a transparency-contract hardening slice before final submission packaging.
+
+---
+
+### UNDO-I: BL-005 threshold-attribution and what-if diagnostics — Design-level filtering rationale gap
+
+**Status**: Open, Medium priority (design verification)
+
+**Trigger**: `05_design/transparency_design_addendum.md` identifies partial BL-005 rejection rationale and missing threshold-impact summaries/counterfactual hints. Design question: does retrieval diagnostics show which thresholds dominate rejection volume and what directional pool change is expected under bounded threshold relaxation/tightening?
+
+**Description**: BL-005 currently reports pass/fail and some exclusion categories, but does not provide a concise threshold-attribution leaderboard plus bounded what-if estimates. Investigate additive diagnostics that summarize threshold-level rejection counts, dominant rejection features, and estimated candidate-pool delta under predefined threshold perturbations.
+
+**Implementation contact**: `07_implementation/src/retrieval.py` (BL-005 diagnostics); `07_implementation/src/observability/main.py` (BL-009 summary surfaces); `07_implementation/src/quality/sanity_checks.py` (contract checks)
+
+**Blocking**: No; escalate to decision entry if Chapter 5 filtering-logic interpretation remains stronger than emitted threshold-attribution evidence.
 
 Active-set sync note (2026-04-14 mentor bundle validation): Confirmed no new active blocker after the mentor handoff bundle validation/package pass. A bundle-local BL-007 syntax defect in `07_implementation/mentor_feedback_submission/src/playlist/rules.py` was corrected, and the bundle wrapper now passes BL-013 (`BL013-ENTRYPOINT-20260414-121918-379574`) plus BL-014 (`BL014-SANITY-20260414-121945-312010`, `36/36`).
 
@@ -179,3 +263,7 @@ Active-set sync note (2026-04-13 BL-009 handshake hardening closeout): Confirmed
         - evidence: `09_quality_control/run_ch2_verbatim_audit.py`; `09_quality_control/chapter2_verbatim_audit.md`; `00_admin/change_log.md` (`C-009`).
 
 **Active-set sync note (2026-04-17 literature integration wave):** Three design-verification items flagged (UNDO-A, UNDO-B, UNDO-C) after Chapter 3 literature-gap analysis and targeted prose-depth integration pass (C-421). All items are Medium priority, non-blocking, and deferred to post-Chapter-3-finalization investigation phase. Prose additions to Chapter 3 sections 3.5, 3.7, 3.9, 3.11 deepen design reasoning with specific literature caveats (Flexer & Grill, Herlocker, Knijnenburg, Afroogh). No chapter restructuring; section numbering unchanged.
+
+**Active-set sync note (2026-04-17 literature-to-implementation upgrade triage):** Three additional non-blocking design-verification items were added (`UNDO-D`, `UNDO-E`, `UNDO-F`) after checking normalized literature notes against active implementation surfaces (`BL-006`, `BL-008`, `BL-009`, `BL-011`, `BL-014`). The unresolved set now tracks six medium-priority implementation-upgrade verifications in total.
+
+**Active-set sync note (2026-04-17 design-chapter implementation triage):** Three additional design-to-implementation upgrade items were added (`UNDO-G`, `UNDO-H`, `UNDO-I`) after mapping Chapter 3 design authority and design-control specs to active runtime behavior (`chapter3_information_sheet`, `CONTROL_TESTING_PROTOCOL`, `CONTROL_SURFACE_REGISTRY`, `transparency_design*`). The unresolved set now tracks nine non-blocking implementation-verification upgrades in total.

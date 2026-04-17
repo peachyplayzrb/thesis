@@ -28,6 +28,9 @@ theme_mapping:
 - playlist_generation
 - sequence_quality
 
+gap_implications:
+Sequencing research identifies regularities that are rarely operationalized transparently in recommender pipelines; the thesis uses this gap to justify explicit deterministic ordering rules in playlist assembly.
+
 design_implications:
 - Justify ordering rules using observed sequencing regularities.
 

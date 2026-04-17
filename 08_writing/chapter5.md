@@ -3,6 +3,8 @@
 ## 5.1 Chapter Aim and Scope
 This chapter evaluates the implementation surfaces defined in Chapter 4 against the objective-to-control-to-evidence contract formalized in Chapter 3. It is not a benchmark-comparison chapter. Instead, it tests whether the rebuilt deterministic pipeline satisfies objective-linked success conditions under bounded scope [@jannach_measuring_2019; @bauer_exploring_2024; @anelli_elliot_2021].
 
+It also operationalizes the design-selection claim stated in Section 3.3.1: the deterministic staged architecture is assessed here as a scope-aligned option for transparency, controllability, and reproducibility evidence quality, rather than as a universal replacement for hybrid, collaborative, or neural alternatives.
+
 The evaluation scope is bounded to six questions:
 
 1. Does the pipeline make cross-source preference uncertainty explicit rather than hiding it in aggregate outputs?
@@ -69,6 +71,8 @@ The follow-up hardening step added a direct section-validator requirement for to
 
 ## 5.7 Interpretation Discipline
 Results in this chapter are interpreted as engineering-evidence results, not as proof that the recommender is globally optimal or universally preferable. A pass verdict means that the intended control/evidence contract is currently implemented and auditable under bounded scope. It does not mean that the pipeline eliminates ambiguity, perfectly reflects human preference, or dominates alternative recommender families [@tintarev_evaluating_2012; @jannach_measuring_2019; @bauer_exploring_2024].
+
+In that sense, this chapter tests whether the selected option from Section 3.3.1 is internally coherent and evidentially defensible under the declared thesis constraints. It does not claim that non-selected options are invalid in other data regimes or contribution settings.
 
 ## 5.8 Current Limits Visible in the Evidence
 The current evidence surface still has explicit limits.

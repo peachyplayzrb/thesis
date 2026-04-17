@@ -2,6 +2,7 @@ id: P-053
 citation_key: betello_reproducible_2025
 full_reference: A Reproducible Analysis of Sequential Recommender Systems. IEEE Access (2025). doi:10.1109/ACCESS.2024.3522049.
 document_status: processed_paper_note
+source_index_status: screened_keep
 confidence: high
 
 research_problem:

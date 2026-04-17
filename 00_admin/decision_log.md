@@ -2540,3 +2540,120 @@ review_date: none
 - evidence_basis: `08_writing/chapter3.md` updated; all four target sections now operate at design-rationale level.
 - impacted_files: `08_writing/chapter3.md`, `00_admin/decision_log.md`, `00_admin/change_log.md`.
 - next_steps: Verify Chapter 4 carries the deferred detail; proceed with final chapter review.
+
+## D-144
+- date: 2026-04-17
+- entity_id: paper-note baseline alignment wave 1
+- proposed_by: user + Copilot
+- status: accepted
+- decision: Start the paper-note upgrade sequence with a narrow baseline-alignment batch that restores missing note coverage before broader schema normalization or Chapter 3 rewriting. In this first wave, add the missing `P-066` note for Peffers et al. (2007) and log the batch in the literature coverage tracker.
+- context: The current next-step plan requires literature-note normalization before Chapter 3 decision-rationale upgrades. The immediate structural gap is one missing note file for `P-066`, even though the source is already present in the bibliography, source index, and Chapter 3 citations.
+- alternatives_considered: start directly with Chapter 3 edits (rejected: would leave note coverage incomplete and weaken literature-traceability discipline); attempt full note-schema normalization across the whole corpus first (rejected: higher-risk first batch and unnecessary before closing the known coverage hole); leave `P-066` as source-index-only support (rejected: breaks one-to-one note coverage for the active source set).
+- rationale: Coverage closure is the cleanest first implementation step because it removes an objective traceability gap without forcing a premature schema-wide refactor. It also gives Chapter 3 methodology wording a processed note surface that can be cited and reused in later design-rationale upgrades.
+- evidence_basis: `03_literature/paper_notes/P-066_peffers_design_2007.md` now exists using the active paper-note schema, and `03_literature/coverage_tracker.md` records the 2026-04-17 baseline-alignment batch.
+- impacted_files: `03_literature/paper_notes/P-066_peffers_design_2007.md`, `03_literature/coverage_tracker.md`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/thesis_state.md`.
+- next_steps: Continue Phase 1 by reconciling note-status vocabulary and normalizing older notes where optional fields or theme mappings are inconsistent.
+
+## D-145
+- date: 2026-04-17
+- entity_id: paper-note status vocabulary normalization
+- proposed_by: user + Copilot
+- status: accepted
+- decision: Preserve both meanings in the literature-note schema by keeping `document_status` as the note-processing field and adding `source_index_status` to notes whose source-index entries remain classified as `screened_keep` or `screened_support`.
+- context: The first implementation batch restored missing note coverage, but a structural vocabulary mismatch remained: all paper notes used `document_status: processed_paper_note`, while the source index still carried reviewer-facing triage distinctions (`processed`, `screened_keep`, `screened_support`). Replacing one with the other would collapse either processing-state meaning or triage-state meaning.
+- alternatives_considered: rewrite the source index to `processed` for all noted sources (rejected: loses useful keep/support distinctions); replace `document_status` in notes with source-index values (rejected: conflates processing state with triage state); leave the mismatch unresolved (rejected: keeps the schema ambiguous and undermines later Chapter 3 evidence traceability work).
+- rationale: The safest normalization is additive. It preserves the established note schema, avoids destructive source-index edits, and makes the distinction between note existence and source triage explicit for later writing and governance use.
+- evidence_basis: 22 note files tied to `screened_keep` or `screened_support` source-index entries now include an explicit `source_index_status` field, and `03_literature/coverage_tracker.md` records the applied policy.
+- impacted_files: `03_literature/paper_notes/P-041_pegoraro_santana_music4all_2020.md`, `03_literature/paper_notes/P-042_sotirou_musiclime_2025.md`, `03_literature/paper_notes/P-043_liu_aggregating_2025.md`, `03_literature/paper_notes/P-044_ru_improving_2023.md`, `03_literature/paper_notes/P-045_moysis_music_2023.md`, `03_literature/paper_notes/P-046_kang_are_2025.md`, `03_literature/paper_notes/P-047_zhu_muq_2025.md`, `03_literature/paper_notes/P-048_knox_loss_2021.md`, `03_literature/paper_notes/P-049_pandeya_multi-modal_2021.md`, `03_literature/paper_notes/P-050_schedl_investigating_2017.md`, `03_literature/paper_notes/P-051_siedenburg_modeling_2017.md`, `03_literature/paper_notes/P-052_anelli_elliot_2021.md`, `03_literature/paper_notes/P-053_betello_reproducible_2025.md`, `03_literature/paper_notes/P-054_shakespeare_reframing_2025.md`, `03_literature/paper_notes/P-055_jannach_measuring_2019.md`, `03_literature/paper_notes/P-056_sanchez_pointofinterest_2022.md`, `03_literature/paper_notes/P-057_bauer_exploring_2024.md`, `03_literature/paper_notes/P-058_yu_self_supervised_2024.md`, `03_literature/paper_notes/P-061_bonnin_automated_2015.md`, `03_literature/paper_notes/P-062_mcfee_million_2012.md`, `03_literature/paper_notes/P-063_bertin_mahieux_million_2011.md`, `03_literature/paper_notes/P-066_peffers_design_2007.md`, `03_literature/coverage_tracker.md`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/thesis_state.md`.
+- next_steps: Normalize older note optional fields and theme mappings, then use the clarified note metadata to support the Chapter 3 option-space and selected-design rationale rewrite.
+
+## D-146
+- date: 2026-04-17
+- entity_id: paper-note supported-architecture-layer backfill
+- proposed_by: user + Copilot
+- status: accepted
+- decision: Complete the remaining `supported_architecture_layer` backfill for the five oldest core notes that still lacked it, using the current architecture-layer vocabulary already present in later notes.
+- context: After the status-normalization batch, the smallest remaining optional-field inconsistency was concentrated in five foundational notes (`P-001` to `P-005`). Those notes already contained clear `relevance_to_thesis`, `design_implications`, and `chapter_use_cases` sections, so the missing architecture-layer mapping was a schema gap rather than a content ambiguity.
+- alternatives_considered: leave the five notes unchanged until a larger gap-implications batch (rejected: leaves an avoidable core-note inconsistency in the most reused sources); invent a new layer vocabulary for older notes (rejected: would create more schema drift); backfill every remaining optional-field gap in one large pass (rejected: unnecessary risk for this slice).
+- rationale: This is a low-risk cleanup with clear value because these five notes are foundational sources that feed Chapter 2 and Chapter 3 reasoning. Completing their layer mapping now makes the note set more internally uniform before the larger `gap_implications` wave.
+- evidence_basis: `P-001` to `P-005` now include `supported_architecture_layer`, and `03_literature/coverage_tracker.md` records the optional-field normalization batch.
+- impacted_files: `03_literature/paper_notes/P-001_zhang_chen_2020.md`, `03_literature/paper_notes/P-002_tintarev_masthoff_2007.md`, `03_literature/paper_notes/P-003_tintarev_masthoff_2012.md`, `03_literature/paper_notes/P-004_jin_et_al_2020.md`, `03_literature/paper_notes/P-005_schedl_et_al_2018.md`, `03_literature/coverage_tracker.md`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/thesis_state.md`.
+- next_steps: Backfill `gap_implications` for the older notes that still lack it, then begin the Chapter 3 option-space and selected-design rationale upgrade.
+
+## D-147
+- date: 2026-04-17
+- entity_id: paper-note gap-implications backfill
+- proposed_by: user + Copilot
+- status: accepted
+- decision: Backfill the remaining missing `gap_implications` fields across the 23-note older normalization cohort in one coherent batch because each note already had enough thesis-specific context to support a grounded gap statement.
+- context: After closing the `supported_architecture_layer` gap in `P-001` to `P-005`, the main remaining optional-field inconsistency was the missing `gap_implications` field across `P-006` to `P-028` in selected files. A follow-up audit grouped these notes into four coherent themes: foundational scope justification, music-domain feature processing, playlist assembly, and transparency/explanation evaluation.
+- alternatives_considered: leave the field absent in older notes (rejected: preserves avoidable schema inconsistency and weakens downstream Chapter 3 evidence tracing); split into four separate edit waves (rejected: more log overhead without reducing semantic risk after audit); backfill with generic boilerplate language (rejected: would weaken note-specific value).
+- rationale: These notes already expressed thesis relevance, architecture linkage, and design implications clearly enough that the missing field could be added without inventing new claims. Completing the backfill now gives the normalized note set a more complete evidence-to-gap chain before Chapter 3 rewriting.
+- evidence_basis: `P-006` through `P-028` in the targeted older cohort now contain `gap_implications`, and `03_literature/coverage_tracker.md` records the 2026-04-17 gap-implications backfill batch.
+- impacted_files: `03_literature/paper_notes/P-006_deldjoo_schedl_knees_2024.md`, `03_literature/paper_notes/P-007_bogdanov_et_al_2013.md`, `03_literature/paper_notes/P-008_vall_et_al_2019.md`, `03_literature/paper_notes/P-009_ferraro_et_al_2018.md`, `03_literature/paper_notes/P-010_nauta_et_al_2023.md`, `03_literature/paper_notes/P-011_adomavicius_toward_2005.md`, `03_literature/paper_notes/P-012_lu_recommender_2015.md`, `03_literature/paper_notes/P-013_roy_systematic_2022.md`, `03_literature/paper_notes/P-014_tsai_explaining_2018.md`, `03_literature/paper_notes/P-015_balog_transparent_2019.md`, `03_literature/paper_notes/P-016_flexer_problem_2016.md`, `03_literature/paper_notes/P-017_neto_algorithmic_2023.md`, `03_literature/paper_notes/P-018_liu_multimodal_2025.md`, `03_literature/paper_notes/P-019_assuncao_considering_2022.md`, `03_literature/paper_notes/P-020_andjelkovic_moodplay_2019.md`, `03_literature/paper_notes/P-021_knijnenburg_explaining_2012.md`, `03_literature/paper_notes/P-022_lopes_xai_2022.md`, `03_literature/paper_notes/P-023_afroogh_trust_2024.md`, `03_literature/paper_notes/P-024_cano_hybrid_2017.md`, `03_literature/paper_notes/P-025_fkih_similarity_2022.md`, `03_literature/paper_notes/P-026_bo_shao_music_2009.md`, `03_literature/paper_notes/P-027_he_neural_2017.md`, `03_literature/paper_notes/P-028_gatzioura_hybrid_2019.md`, `03_literature/coverage_tracker.md`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/thesis_state.md`.
+- next_steps: Run a final theme-mapping drift review across the normalized note set, then use the cleaned note corpus to strengthen Chapter 3 option-space and selected-design rationale writing.
+
+## D-148
+- date: 2026-04-17
+- entity_id: paper-note theme-mapping singleton normalization
+- proposed_by: user + Copilot
+- status: accepted
+- decision: Normalize only the remaining low-risk singleton theme-tag drifts (`transparency`/`scrutability`, `auditability`, `traceability_and_auditability`, `music_evaluation_challenges`) while preserving broader theme clusters that remain conceptually distinct.
+- context: After the optional-field cleanup, the final literature-note normalization risk was retrieval fragmentation from a small number of singleton or near-singleton theme tags. A vocabulary audit showed that most high-frequency clusters were meaningfully distinct, but four singleton tags created noise without adding durable categorization value.
+- alternatives_considered: leave all theme tags untouched (rejected: preserves avoidable search fragmentation before Chapter 3 evidence synthesis); perform a broad theme-taxonomy rewrite (rejected: too risky and unnecessary before writing work); collapse all transparency/evaluation themes into a minimal set (rejected: would erase useful distinctions).
+- rationale: Restricting normalization to the lowest-risk singleton drifts improves note retrieval and corpus consistency while preserving the richer thematic distinctions needed for Chapter 2 and Chapter 3 reasoning.
+- evidence_basis: `P-002`, `P-032`, `P-046`, and `P-066` now use the normalized tags, and `03_literature/coverage_tracker.md` records the theme-mapping drift cleanup batch.
+- impacted_files: `03_literature/paper_notes/P-002_tintarev_masthoff_2007.md`, `03_literature/paper_notes/P-032_beel_towards_2016.md`, `03_literature/paper_notes/P-046_kang_are_2025.md`, `03_literature/paper_notes/P-066_peffers_design_2007.md`, `03_literature/coverage_tracker.md`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/thesis_state.md`.
+- next_steps: Use the normalized literature-note corpus to strengthen Chapter 3 option-space coverage and selected-design rationale.
+
+## D-149
+- date: 2026-04-17
+- entity_id: chapter3 option-space and selected-design rationale insertion
+- proposed_by: user + Copilot
+- status: accepted
+- decision: Add an explicit Chapter 3 subsection in the canonical `chapter3.md` that compares the main architecture options and states why the deterministic staged pipeline is selected under the thesis scope.
+- context: The next bounded writing task after literature-note normalization was to make Chapter 3 show the option space and justify the selected design directly from the normalized literature set. The canonical chapter had strong design sections but no single explicit option-comparison block.
+- alternatives_considered: keep rationale distributed across existing sections only (rejected: option-space logic remains implicit and harder to assess quickly); replace the deterministic baseline with a hybrid/neural core (rejected: weakens inspectability and replay-focused contribution framing under current scope); add long implementation-level comparisons in Chapter 3 (rejected: would blur the Chapter 3 versus Chapter 4 boundary).
+- rationale: A compact option-space subsection improves examiner-facing traceability by making the selection logic explicit: the chosen architecture is a goal-aligned design decision for transparency, controllability, and reproducibility evidence, not a universal model-superiority claim.
+- evidence_basis: `08_writing/chapter3.md` now includes Section `3.3.1 Design Option Space and Selected-Design Rationale` with three alternatives and a documented selection outcome aligned to Chapter 1 objectives and Chapter 2 evidence.
+- impacted_files: `08_writing/chapter3.md`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`.
+- next_steps: Continue with Chapter 5 and Chapter 6 continuity proofing using the now-explicit Chapter 3 selection rationale as the design anchor.
+
+## D-150
+- date: 2026-04-17
+- entity_id: chapter5 chapter6 continuity anchoring to chapter3 option-space rationale
+- proposed_by: user + Copilot
+- status: accepted
+- decision: Add explicit continuity statements in Chapter 5 and Chapter 6 that interpret evaluation and discussion evidence against the Chapter 3.3.1 option-space selection logic.
+- context: After adding explicit option-space and selected-design rationale in canonical Chapter 3, the next continuity risk was leaving that rationale isolated from later interpretation chapters.
+- alternatives_considered: keep Chapter 5/6 unchanged and rely on implicit continuity (rejected: weaker traceability); add broad new comparative-results sections in Chapter 5/6 (rejected: would overreach current evidence and blur chapter boundaries); revisit option-space text only in Chapter 3 (rejected: does not close cross-chapter continuity).
+- rationale: A compact continuity pass keeps the selected-design rationale operational through evaluation and discussion without turning the thesis into a benchmark-comparison narrative.
+- evidence_basis: `08_writing/chapter5.md` now states that evaluation operationalizes the selected option from Section 3.3.1 under bounded scope; `08_writing/chapter6.md` now explicitly frames discussion conclusions relative to the Chapter 3 option-space and selected deterministic path.
+- impacted_files: `08_writing/chapter5.md`, `08_writing/chapter6.md`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`.
+- next_steps: Continue final Chapter 5 and Chapter 6 proofing for citation-density and flow consistency, then run a final chapter-readiness sync across writing and quality-control surfaces.
+
+## D-151
+- date: 2026-04-17
+- entity_id: literature-to-implementation upgrade triage logging policy
+- proposed_by: user + Copilot
+- status: accepted
+- decision: Convert the latest literature review check into explicit implementation-facing unresolved items by adding three new non-blocking design-verification upgrades (`UNDO-D`, `UNDO-E`, `UNDO-F`) rather than making immediate code changes without scoped evidence checks.
+- context: User requested a literature check focused on implementation upgrades and asked that required upgrades be added as unresolved issues. Existing unresolved items (`UNDO-A` to `UNDO-C`) already captured profile intake, sequence coherence, and candidate-shaping visibility. The new literature pass identified three additional gaps not yet tracked in unresolved governance: scoring sensitivity diagnostics, multi-dimensional explanation-quality metrics, and human-centered controllability interpretation proxies.
+- alternatives_considered: implement all three upgrades immediately in runtime code (rejected: would bypass bounded verification and risk scope drift late in thesis hardening); leave findings as informal notes only (rejected: weak governance traceability and easy to lose before final pass); collapse all findings into one generic issue (rejected: reduces implementation-action clarity and test-surface mapping).
+- rationale: Logging these as explicit unresolved issues preserves the current stable green baseline while making literature-grounded upgrade work visible, scoped, and auditable. This keeps implementation changes deliberate and evidence-led.
+- evidence_basis: `00_admin/unresolved_issues.md` now includes `UNDO-D`, `UNDO-E`, and `UNDO-F` with concrete BL-stage contacts (`BL-006`, `BL-008`, `BL-009`, `BL-011`, `BL-014`) and bounded trigger/description text anchored to normalized literature notes (`P-010`, `P-016`, `P-021`, `P-022`, `P-023`, `P-025`).
+- impacted_files: `00_admin/unresolved_issues.md`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`.
+- next_steps: Prioritize UNDO-D and UNDO-E for pre-submission design-audit investigation while Chapter 5/6 proofing continues, then reassess whether any item should graduate to implementation change scope.
+
+## D-152
+- date: 2026-04-17
+- entity_id: design-chapter to implementation upgrade triage logging policy
+- proposed_by: user + Copilot
+- status: accepted
+- decision: Convert design-chapter control/transparency specifications into explicit implementation-facing unresolved upgrades by adding three new non-blocking verification items (`UNDO-G`, `UNDO-H`, `UNDO-I`) instead of treating design gaps as implicit future work.
+- context: User requested identifying additions to implementation from the design chapter and recording them in unresolved issues. A targeted pass over `05_design/chapter3_information_sheet.md`, `requirements_to_design_map.md`, `CONTROL_SURFACE_REGISTRY.md`, `CONTROL_TESTING_PROTOCOL.md`, `TRANSPARENCY_SPEC.md`, and transparency/controllability addendums identified three net-new upgrade needs not already tracked by `UNDO-A` to `UNDO-F`.
+- alternatives_considered: implement all upgrades immediately (rejected: risks scope creep against current stable validated baseline); keep notes only in design docs (rejected: weak execution tracking); merge all gaps into one generic unresolved item (rejected: poor stage/test mapping and weak actionability).
+- rationale: Explicit unresolved entries preserve design-to-implementation traceability and make the next implementation-hardening slices concrete, testable, and auditable without destabilizing the current green pipeline posture.
+- evidence_basis: `00_admin/unresolved_issues.md` now includes: (1) control-effect gate enforcement in orchestration (`UNDO-G`), (2) unified control-causality payload contract (`UNDO-H`), and (3) BL-005 threshold-attribution plus what-if diagnostics (`UNDO-I`), each mapped to concrete stage files.
+- impacted_files: `00_admin/unresolved_issues.md`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`.
+- next_steps: Prioritize `UNDO-G` and `UNDO-I` as the most implementation-ready slices, then integrate `UNDO-H` as cross-stage contract hardening.

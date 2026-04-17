@@ -2,6 +2,7 @@ id: P-046
 citation_key: kang_are_2025
 full_reference: Are We There Yet? A Brief Survey of Music Emotion Prediction Datasets, Models and Outstanding Challenges. IEEE Transactions on Affective Computing (2025). doi:10.1109/TAFFC.2025.3583505.
 document_status: processed_paper_note
+source_index_status: screened_support
 confidence: medium
 
 research_problem:
@@ -26,7 +27,7 @@ supported_architecture_layer:
 
 theme_mapping:
 - benchmarking_and_protocol_rigor
-- music_evaluation_challenges
+- evaluation_challenges
 
 gap_implications:
 Strengthens argument for careful protocol reporting and cautious cross-task generalization claims.

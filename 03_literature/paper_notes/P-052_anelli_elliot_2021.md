@@ -2,6 +2,7 @@ id: P-052
 citation_key: anelli_elliot_2021
 full_reference: Elliot: A Comprehensive and Rigorous Framework for Reproducible Recommender Systems Evaluation. Proceedings of the 44th International ACM SIGIR Conference on Research and Development in Information Retrieval (2021). doi:10.1145/3404835.3463245.
 document_status: processed_paper_note
+source_index_status: screened_keep
 confidence: high
 
 research_problem:

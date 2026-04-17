@@ -5,6 +5,8 @@ Chapter objective: interpret the Chapter 5 evaluation evidence against the activ
 ## 6.1 Interpretation Frame
 The rebuilt research question asks how a deterministic playlist-generation pipeline can be engineered and evaluated so that preference inference, candidate generation, and playlist assembly remain transparent, controllable, and reproducible under cross-source uncertainty and multi-objective playlist trade-offs.
 
+This discussion is anchored to the explicit design-option comparison in Chapter 3.3.1. The question here is therefore whether the selected deterministic staged option delivered the promised evidence quality under scope, not whether all other architecture families are inferior in general.
+
 Chapter 6 therefore interprets results through three lenses that follow directly from the rebuild posture:
 
 1. uncertainty handling,
@@ -43,6 +45,8 @@ What the thesis now demonstrates is not that one deterministic playlist pipeline
 5. explicit validity-boundary reporting.
 
 Taken together, these give the thesis a clearer and more defensible contribution than the earlier pre-rebuild framing, which concentrated more on generic transparency/observability language than on explicit objective-to-evidence traceability [@balog_transparent_2019; @knijnenburg_explaining_2012; @afroogh_trust_2024].
+
+Relative to the option space defined in Section 3.3.1, the current evidence supports the selected deterministic path because it yields the strongest mechanism-level traceability within this thesis boundary. This should be interpreted as a bounded design-fit result under current objectives and constraints, not as a cross-regime performance verdict against hybrid or neural alternatives.
 
 ## 6.4 Limits of the Current Evidence
 The current evidence still has important limits.

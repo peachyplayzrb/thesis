@@ -2,6 +2,7 @@ id: P-041
 citation_key: pegoraro_santana_music4all_2020
 full_reference: Music4All: A New Music Database and Its Applications. 2020 International Conference on Systems, Signals and Image Processing (IWSSIP) (2020). doi:10.1109/IWSSIP48289.2020.9145170.
 document_status: processed_paper_note
+source_index_status: screened_keep
 confidence: medium
 
 research_problem:

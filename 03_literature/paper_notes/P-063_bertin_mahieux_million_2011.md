@@ -2,6 +2,7 @@ id: P-063
 citation_key: bertin_mahieux_million_2011
 full_reference: Bertin-Mahieux, T., Ellis, D. P. W., Whitman, B., and Lamere, P. (2011) The Million Song Dataset. In Proceedings of the 12th International Society for Music Information Retrieval Conference (ISMIR 2011).
 document_status: processed_paper_note
+source_index_status: screened_support
 confidence: medium
 
 research_problem:

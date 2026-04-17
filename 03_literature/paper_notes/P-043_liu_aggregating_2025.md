@@ -2,6 +2,7 @@ id: P-043
 citation_key: liu_aggregating_2025
 full_reference: Aggregating Contextual Information for Multi-Criteria Online Music Recommendations. IEEE Access (2025). doi:10.1109/ACCESS.2025.3527512.
 document_status: processed_paper_note
+source_index_status: screened_keep
 confidence: medium
 
 research_problem:

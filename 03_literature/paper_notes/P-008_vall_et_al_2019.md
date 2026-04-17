@@ -32,6 +32,9 @@ theme_mapping:
 - candidate_filtering
 - feature_combination
 
+gap_implications:
+Playlist continuation work often improves coverage through hybrid signal fusion without preserving transparency; the thesis fills that gap by framing a deterministic alternative for playlist assembly with inspectable feature combination.
+
 design_implications:
 - Keep playlist assembly as explicit architecture stage.
 - Justify deterministic simplification against hybrid complexity for BSc feasibility.

@@ -30,6 +30,9 @@ theme_mapping:
 - transparency_and_scrutability
 - explainable_interfaces
 
+gap_implications:
+Explanation quality depends on interface design as much as algorithm choice; the thesis uses this gap to justify mechanism-linked, user-facing explanation outputs instead of treating explanations as a post-processing add-on.
+
 design_implications:
 - Keep explanation outputs concise and goal-driven for user interpretability.
 

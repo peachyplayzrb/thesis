@@ -29,6 +29,9 @@ theme_mapping:
 - similarity_measures
 - evaluation_challenges
 
+gap_implications:
+Similarity-metric choice materially affects recommendation outcomes yet is often under-justified; the thesis uses this gap to make metric selection and sensitivity reasoning explicit in the scoring design.
+
 design_implications:
 - Justify scoring metric selection and include parameter/metric sensitivity checks.
 

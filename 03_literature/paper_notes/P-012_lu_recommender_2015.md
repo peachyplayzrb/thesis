@@ -29,6 +29,9 @@ theme_mapping:
 - recommender_foundations
 - evaluation_challenges
 
+gap_implications:
+General recommender surveys emphasize domain-dependent trade-offs without showing how transparency goals should dominate method selection in music settings; the thesis addresses that by treating music-domain transparency and controllability as first-order scope constraints.
+
 design_implications:
 - Tie architecture decisions to domain-specific objectives rather than generic best-performance claims.
 

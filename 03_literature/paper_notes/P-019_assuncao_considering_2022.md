@@ -29,6 +29,9 @@ theme_mapping:
 - music_recommenders
 - evaluation_challenges
 
+gap_implications:
+Emotion-aware recommendation adds rich context coupling that complicates transparent reasoning and controllable behaviour; the thesis addresses this by deferring complex context modelling and focusing on a transparent core recommendation mechanism.
+
 design_implications:
 - Explicitly state context/emotion modelling as deferred feature beyond MVP.
 

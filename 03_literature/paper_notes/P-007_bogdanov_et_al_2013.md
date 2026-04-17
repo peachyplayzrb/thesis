@@ -32,6 +32,9 @@ theme_mapping:
 - content_based_profiles
 - semantic_audio_descriptors
 
+gap_implications:
+Semantic audio preference modelling shows interpretable feature-based personalization remains viable; the thesis uses that opening to justify a transparent content-driven preference layer instead of opaque latent modelling.
+
 design_implications:
 - Feature normalization and semantic interpretability should be documented explicitly.
 - Preference profile representation can remain interpretable without latent-only modelling.

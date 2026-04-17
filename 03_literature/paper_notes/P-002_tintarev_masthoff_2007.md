@@ -22,10 +22,13 @@ limitations:
 relevance_to_thesis:
 High relevance for thesis evaluation criteria and for justifying controllability/scrutability requirements.
 
+supported_architecture_layer:
+- Output and Explanation Layer
+- Evaluation and Comparator Framing
+
 theme_mapping:
 - explainable_recommenders
-- transparency
-- scrutability
+- transparency_and_scrutability
 - human_centered_evaluation
 
 gap_implications:

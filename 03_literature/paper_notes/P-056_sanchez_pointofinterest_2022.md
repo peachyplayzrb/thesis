@@ -2,6 +2,7 @@ id: P-056
 citation_key: sanchez_pointofinterest_2022
 full_reference: Point-of-Interest Recommender Systems Based on Location-Based Social Networks: A Survey from an Experimental Perspective. ACM Computing Surveys (2022). doi:10.1145/3510409.
 document_status: processed_paper_note
+source_index_status: screened_support
 confidence: medium
 
 research_problem:

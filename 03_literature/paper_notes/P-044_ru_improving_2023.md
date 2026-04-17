@@ -2,6 +2,7 @@ id: P-044
 citation_key: ru_improving_2023
 full_reference: Improving Music Genre Classification from multi-modal Properties of Music and Genre Correlations Perspective. ICASSP 2023 (2023). doi:10.1109/ICASSP49357.2023.10097241.
 document_status: processed_paper_note
+source_index_status: screened_support
 confidence: medium
 
 research_problem:

@@ -2,6 +2,7 @@ id: P-062
 citation_key: mcfee_million_2012
 full_reference: McFee, B., Bertin-Mahieux, T., Ellis, D. P. W., and Lanckriet, G. R. G. (2012) The million song dataset challenge. In Proceedings of the 21st International Conference on World Wide Web, 909-916. doi:10.1145/2187980.2188222.
 document_status: processed_paper_note
+source_index_status: screened_support
 confidence: medium-high
 
 research_problem:

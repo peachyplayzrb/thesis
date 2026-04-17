@@ -1,6 +1,6 @@
 # Thesis State
 
-Last updated: 2026-04-17 UTC (C-431 bibliography and paper store fully clean — 76 PDFs, 0 broken links, all metadata complete; C-430 paper store populated from lit review bundle; C-429 stub entries enriched with DOIs/venues; C-428 three unnamed PDFs identified; C-427 10 uncatalogued PDFs added; C-426 McFee PDF import — bibliography 66/66 complete)
+Last updated: 2026-04-17 UTC (C-440 design-chapter implementation triage added three new unresolved design-verification items for control-effect gating, control-causality payloads, and BL-005 threshold-attribution/what-if diagnostics; C-439 literature-to-implementation upgrade triage added three new unresolved design-verification items for BL-006/BL-008/BL-009/BL-011/BL-014; C-438 Chapter 5 and Chapter 6 now explicitly anchor evaluation/discussion interpretation to Chapter 3 option-space selection logic; C-437 canonical Chapter 3 now includes an explicit option-space comparison and selected-design rationale subsection; C-436 paper-note theme-mapping drift cleanup normalized the remaining low-risk singleton theme tags and closed the literature-note normalization phase; C-435 paper-note gap-implications backfill completed the remaining missing gap_implications fields across the older normalization cohort; C-434 paper-note optional-field normalization closed the remaining missing supported_architecture_layer fields in the five oldest core notes; C-433 paper-note status normalization added explicit source-index triage metadata to screened notes; C-432 paper-note baseline alignment started with P-066 coverage closure; C-431 bibliography and paper store fully clean — 76 PDFs, 0 broken links, all metadata complete; C-430 paper store populated from lit review bundle; C-429 stub entries enriched with DOIs/venues; C-428 three unnamed PDFs identified; C-427 10 uncatalogued PDFs added; C-426 McFee PDF import — bibliography 66/66 complete)
 
 > Full historical audit trail (priority checkpoints, post-closure enhancement logs) is in `00_admin/thesis_state_ARCHIVE_20260416.md` and `00_admin/change_log.md`.
 
@@ -16,14 +16,14 @@ Last updated: 2026-04-17 UTC (C-431 bibliography and paper store fully clean —
 |---------|--------|---------------|
 | Chapter 1 — Introduction | **Final** (user-edited and locked) | C-402, 2026-04-16 |
 | Chapter 2 — Literature Review | **Final** (mentor-hardened, citations verified, formatting locked) | C-403, 2026-04-16 |
-| Chapter 3 — Design | Canonical active draft now synchronized and polished in `08_writing/chapter3.md`; `chapter3_v3.md` retained as comparison history | D-132, D-133, D-134, D-136, D-137, D-138, D-139, D-140, D-143; C-418, C-419 |
+| Chapter 3 — Design | Canonical active draft now includes explicit option-space and selected-design rationale coverage in `08_writing/chapter3.md`; `chapter3_v3.md` retained as comparison history | D-132, D-133, D-134, D-136, D-137, D-138, D-139, D-140, D-143, D-149; C-418, C-419, C-437 |
 | Chapter 4 — Implementation | Rebuild-era draft with explicit Chapter 3 continuity hardening (`08_writing/chapter4.md`) | D-064, D-125, D-141 |
-| Chapter 5 — Evaluation | Rebuild-era draft (`08_writing/chapter5.md`, split from Ch4 per D-125) | D-125, C-390 |
-| Chapter 6 — Discussion | Rebuild-era draft (`08_writing/chapter6.md`) | D-125, C-390 |
+| Chapter 5 — Evaluation | Rebuild-era draft with explicit continuity to Chapter 3 option-space selection rationale (`08_writing/chapter5.md`) | D-125, D-150; C-390, C-438 |
+| Chapter 6 — Discussion | Rebuild-era draft with explicit continuity to Chapter 3 option-space selection rationale (`08_writing/chapter6.md`) | D-125, D-150; C-390, C-438 |
 
-**Implementation status:** All pipeline stages (BL-003 to BL-009) are green. Latest validated state: pytest 526/526, pyright 0 errors, BL-013 pass, BL-014 36/36 sanity checks (`BL014-SANITY-20260414-121945-312010` — mentor bundle). No active unresolved issues.
+**Implementation status:** All pipeline stages (BL-003 to BL-009) are green. Latest validated state: pytest 526/526, pyright 0 errors, BL-013 pass, BL-014 36/36 sanity checks (`BL014-SANITY-20260414-121945-312010` — mentor bundle). No implementation blocker is active; nine non-blocking design-verification items are now logged for bounded follow-up.
 
-**Next work:** Continue Chapter 5 and Chapter 6 proofing and continuity checks against the now-stabilized Chapter 3 baseline and the hardened Chapter 4 execution bridge after the 2026-04-17 Chapter 3 refinement wave, including the design-level pull-back and final wording-and-flow polish (D-132/C-406, D-133/C-407, D-134/C-408, D-135/C-409, D-136/C-410, D-137/C-412, D-138/C-413, D-139/C-414, D-140/C-415, D-141/C-416, D-143/C-418, C-419).
+**Next work:** Continue final Chapter 5 and Chapter 6 proofing with citation-density and flow checks, then run a final chapter-readiness synchronization pass across writing and quality-control surfaces. After that pass, prioritize design-driven implementation verification for `UNDO-G` and `UNDO-I`, then `UNDO-H`.
 
 ---
 
@@ -99,9 +99,9 @@ Active dataset: DS-001 (Music4All). Active config profile: `run_config_ui013_tun
 
 | Item | Current value |
 |------|--------------|
-| Highest change ID | C-426 |
-| Highest decision ID | D-143 |
-| Active unresolved issues | None |
+| Highest change ID | C-440 |
+| Highest decision ID | D-152 |
+| Active unresolved issues | 9 non-blocking design-verification items (`UNDO-A` to `UNDO-I`) |
 | Admin log files | `change_log.md`, `decision_log.md`, `unresolved_issues.md`, `timeline.md` |
 | Foundation files | `02_foundation/current_title_and_rq.md`, `objectives.md`, `contribution_statement.md`, `problem_statement.md` |
 | Historical state (pre-cleanup) | `00_admin/thesis_state_ARCHIVE_20260416.md` |

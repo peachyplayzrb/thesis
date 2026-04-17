@@ -32,6 +32,9 @@ theme_mapping:
 - hybrid_baselines
 - feature_and_context_signals
 
+gap_implications:
+Multi-source playlist continuation improves effectiveness but obscures causal transparency; the thesis addresses this by keeping playlist logic modular and deterministic rather than relying on black-box signal fusion.
+
 design_implications:
 - Use as contrast baseline context rather than direct architecture copy.
 - Maintain modular execution pipeline design with explicit configuration.

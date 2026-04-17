@@ -8,9 +8,53 @@ Ordering convention (standardized 2026-03-24):
 - New entries must be appended at the end; historical entries remain unchanged except for explicit correction records.
 
 Maintenance snapshot (2026-04-17):
-- Highest change ID currently present: `C-426`
+- Highest change ID currently present: `C-440`
 - Maintenance snapshot (2026-03-28): prior snapshot stated `C-205`; superseded by the 2026-03-29 architecture migration + documentation sync wave (C-204 through C-219).
 - Known legacy correction applied in this file: prior duplicate `C-079` entry has been normalized to `C-135` for unique-ID compliance.
+
+## C-440
+- date: 2026-04-17
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Completed a design-chapter-to-implementation triage pass and added three new unresolved upgrade items (`UNDO-G`, `UNDO-H`, `UNDO-I`) derived from active design control and transparency specifications.
+- reason: User requested identifying what can be added to implementation from the design chapter and logging those additions in unresolved issues.
+- evidence_basis: `00_admin/unresolved_issues.md` now tracks (1) orchestration-level control-effect gate enforcement, (2) unified control-causality payload contract, and (3) BL-005 threshold-attribution plus bounded what-if diagnostics, each linked to concrete BL-stage implementation contacts.
+- affected_components: `00_admin/unresolved_issues.md`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`
+- impact_assessment: Medium-positive. Improves design-to-runtime traceability and converts design-spec gaps into explicit implementation hardening targets without changing current runtime behavior.
+- approval_record: Requested directly by the user in chat on 2026-04-17.
+
+## C-439
+- date: 2026-04-17
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Completed a literature-to-implementation upgrade triage pass and added three new implementation-facing unresolved design-verification items (`UNDO-D`, `UNDO-E`, `UNDO-F`) to the active unresolved register.
+- reason: User explicitly requested checking the literature for implementation upgrades and logging those upgrades as unresolved issues.
+- evidence_basis: `00_admin/unresolved_issues.md` now includes: (1) scoring sensitivity diagnostics hardening (`UNDO-D`), (2) multi-dimensional explanation-quality metrics (`UNDO-E`), and (3) human-centered controllability interpretation proxies (`UNDO-F`), each mapped to concrete stage files.
+- affected_components: `00_admin/unresolved_issues.md`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`
+- impact_assessment: Medium-positive. Improves literature-to-implementation traceability and preserves a stable runtime baseline by converting upgrade needs into explicit, auditable follow-up scope.
+- approval_record: Requested directly by the user in chat on 2026-04-17.
+
+## C-438
+- date: 2026-04-17
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Applied Chapter 5 and Chapter 6 continuity hardening so both chapters explicitly interpret evidence through the Chapter 3.3.1 option-space and selected-design rationale.
+- reason: User requested continuation on the canonical chapter path, and the immediate next bounded task was to carry the newly explicit Chapter 3 rationale into downstream evaluation/discussion interpretation.
+- evidence_basis: `08_writing/chapter5.md` now includes explicit selected-option interpretation framing in Sections 5.1 and 5.7; `08_writing/chapter6.md` now anchors interpretation to Chapter 3.3.1 in Sections 6.1 and 6.3.
+- affected_components: `08_writing/chapter5.md`, `08_writing/chapter6.md`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`
+- impact_assessment: Medium-positive. Improves cross-chapter coherence and examiner-facing traceability without changing thesis scope or adding unsupported comparative claims.
+- approval_record: Requested directly by the user in chat on 2026-04-17.
+
+## C-437
+- date: 2026-04-17
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Added an explicit option-space and selected-design rationale subsection to the canonical `chapter3.md`, comparing realistic architecture alternatives and documenting why the deterministic staged pipeline is selected within thesis scope.
+- reason: User requested that the option-space rationale be inserted into the actual Chapter 3 file rather than a versioned draft.
+- evidence_basis: `08_writing/chapter3.md` now includes `3.3.1 Design Option Space and Selected-Design Rationale` with a three-option comparison table (hybrid/neural-first, multimodal adaptive, deterministic staged) and an explicit selection explanation tied to transparency, controllability, and reproducibility objectives.
+- affected_components: `08_writing/chapter3.md`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`
+- impact_assessment: Medium-positive. Strengthens Chapter 3 examiner-facing justification by making the design-selection logic explicit while preserving chapter scope and structure.
+- approval_record: Requested directly by the user in chat on 2026-04-17.
 
 ## C-001
 | C-160 | 2026-03-25 01:54 | Copilot | Added consolidated Tier-1 hardening execution log cross-links to admin control files and synchronized thesis state/timeline after integrated validation closure. |
@@ -138,6 +182,61 @@ Maintenance snapshot (2026-04-17):
 - date: 2026-04-17
 - proposed_by: user + Copilot
 - status: accepted
+
+## C-432
+- date: 2026-04-17
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Started the paper-note upgrade implementation sequence with a baseline-alignment batch: added the missing `P-066` note for Peffers et al. (2007), recorded the batch in `03_literature/coverage_tracker.md`, and synchronized stale change-ID metadata in `thesis_state.md` and `change_log.md`.
+- reason: User requested implementation start for the literature-note then Chapter 3 upgrade plan; the first verified gap was incomplete note coverage for `P-066`.
+- evidence_basis: `03_literature/paper_notes/P-066_peffers_design_2007.md` now exists and uses the active paper-note schema; `03_literature/coverage_tracker.md` now records the 2026-04-17 paper-note baseline-alignment batch; `00_admin/thesis_state.md` and the `change_log.md` maintenance snapshot now reflect the actual pre-existing highest change ID (`C-431`) before this new entry.
+- affected_components: `03_literature/paper_notes/P-066_peffers_design_2007.md`, `03_literature/coverage_tracker.md`, `00_admin/thesis_state.md`, `00_admin/decision_log.md`, `00_admin/change_log.md`
+- impact_assessment: Low-positive. Restores one-to-one active-source note coverage and removes a small but real governance inconsistency before wider note normalization.
+- approval_record: Requested directly by the user in chat on 2026-04-17.
+
+## C-433
+- date: 2026-04-17
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Normalized literature-note status semantics by adding explicit `source_index_status` metadata to all processed notes whose source-index entries remain `screened_keep` or `screened_support`, while preserving `document_status` as the note-processing field.
+- reason: The first implementation batch exposed a schema ambiguity between note-processing status and source-triage status; this batch resolves that ambiguity additively instead of collapsing one meaning into the other.
+- evidence_basis: 22 note files now include `source_index_status` values aligned to `03_literature/source_index.csv`; `03_literature/coverage_tracker.md` records the policy; `00_admin/thesis_state.md` now points next work at optional-field/theme normalization before Chapter 3 rewriting.
+- affected_components: `03_literature/paper_notes/P-041_pegoraro_santana_music4all_2020.md`, `03_literature/paper_notes/P-042_sotirou_musiclime_2025.md`, `03_literature/paper_notes/P-043_liu_aggregating_2025.md`, `03_literature/paper_notes/P-044_ru_improving_2023.md`, `03_literature/paper_notes/P-045_moysis_music_2023.md`, `03_literature/paper_notes/P-046_kang_are_2025.md`, `03_literature/paper_notes/P-047_zhu_muq_2025.md`, `03_literature/paper_notes/P-048_knox_loss_2021.md`, `03_literature/paper_notes/P-049_pandeya_multi-modal_2021.md`, `03_literature/paper_notes/P-050_schedl_investigating_2017.md`, `03_literature/paper_notes/P-051_siedenburg_modeling_2017.md`, `03_literature/paper_notes/P-052_anelli_elliot_2021.md`, `03_literature/paper_notes/P-053_betello_reproducible_2025.md`, `03_literature/paper_notes/P-054_shakespeare_reframing_2025.md`, `03_literature/paper_notes/P-055_jannach_measuring_2019.md`, `03_literature/paper_notes/P-056_sanchez_pointofinterest_2022.md`, `03_literature/paper_notes/P-057_bauer_exploring_2024.md`, `03_literature/paper_notes/P-058_yu_self_supervised_2024.md`, `03_literature/paper_notes/P-061_bonnin_automated_2015.md`, `03_literature/paper_notes/P-062_mcfee_million_2012.md`, `03_literature/paper_notes/P-063_bertin_mahieux_million_2011.md`, `03_literature/paper_notes/P-066_peffers_design_2007.md`, `03_literature/coverage_tracker.md`, `00_admin/thesis_state.md`, `00_admin/decision_log.md`, `00_admin/change_log.md`
+- impact_assessment: Low-positive. Clarifies literature-note semantics and preserves triage information needed for later writing and governance work.
+- approval_record: Requested directly by the user in chat on 2026-04-17.
+
+## C-434
+- date: 2026-04-17
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Backfilled the missing `supported_architecture_layer` field in the five oldest core literature notes (`P-001` to `P-005`) and recorded the optional-field normalization batch in the literature coverage tracker.
+- reason: After the status-normalization pass, these five core notes were the smallest remaining optional-field inconsistency with clear architecture mappings already implied by their existing content.
+- evidence_basis: `P-001_zhang_chen_2020.md`, `P-002_tintarev_masthoff_2007.md`, `P-003_tintarev_masthoff_2012.md`, `P-004_jin_et_al_2020.md`, and `P-005_schedl_et_al_2018.md` now include `supported_architecture_layer`; `03_literature/coverage_tracker.md` records the 2026-04-17 optional-field normalization batch.
+- affected_components: `03_literature/paper_notes/P-001_zhang_chen_2020.md`, `03_literature/paper_notes/P-002_tintarev_masthoff_2007.md`, `03_literature/paper_notes/P-003_tintarev_masthoff_2012.md`, `03_literature/paper_notes/P-004_jin_et_al_2020.md`, `03_literature/paper_notes/P-005_schedl_et_al_2018.md`, `03_literature/coverage_tracker.md`, `00_admin/thesis_state.md`, `00_admin/decision_log.md`, `00_admin/change_log.md`
+- impact_assessment: Low-positive. Completes the remaining supported-architecture-layer gap in the most foundational notes before larger gap-implications cleanup.
+- approval_record: Requested directly by the user in chat on 2026-04-17.
+
+## C-435
+- date: 2026-04-17
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Backfilled the missing `gap_implications` field across the remaining 23-note older literature-note normalization cohort and recorded the batch in the literature coverage tracker.
+- reason: These notes already had enough thesis-specific context to support a grounded gap statement, and completing the backfill removes the largest remaining optional-field inconsistency before Chapter 3 rationale work.
+- evidence_basis: `P-006_deldjoo_schedl_knees_2024.md`, `P-007_bogdanov_et_al_2013.md`, `P-008_vall_et_al_2019.md`, `P-009_ferraro_et_al_2018.md`, `P-010_nauta_et_al_2023.md`, `P-011_adomavicius_toward_2005.md`, `P-012_lu_recommender_2015.md`, `P-013_roy_systematic_2022.md`, `P-014_tsai_explaining_2018.md`, `P-015_balog_transparent_2019.md`, `P-016_flexer_problem_2016.md`, `P-017_neto_algorithmic_2023.md`, `P-018_liu_multimodal_2025.md`, `P-019_assuncao_considering_2022.md`, `P-020_andjelkovic_moodplay_2019.md`, `P-021_knijnenburg_explaining_2012.md`, `P-022_lopes_xai_2022.md`, `P-023_afroogh_trust_2024.md`, `P-024_cano_hybrid_2017.md`, `P-025_fkih_similarity_2022.md`, `P-026_bo_shao_music_2009.md`, `P-027_he_neural_2017.md`, and `P-028_gatzioura_hybrid_2019.md` now include `gap_implications`; `03_literature/coverage_tracker.md` records the 2026-04-17 gap-implications backfill batch.
+- affected_components: `03_literature/paper_notes/P-006_deldjoo_schedl_knees_2024.md`, `03_literature/paper_notes/P-007_bogdanov_et_al_2013.md`, `03_literature/paper_notes/P-008_vall_et_al_2019.md`, `03_literature/paper_notes/P-009_ferraro_et_al_2018.md`, `03_literature/paper_notes/P-010_nauta_et_al_2023.md`, `03_literature/paper_notes/P-011_adomavicius_toward_2005.md`, `03_literature/paper_notes/P-012_lu_recommender_2015.md`, `03_literature/paper_notes/P-013_roy_systematic_2022.md`, `03_literature/paper_notes/P-014_tsai_explaining_2018.md`, `03_literature/paper_notes/P-015_balog_transparent_2019.md`, `03_literature/paper_notes/P-016_flexer_problem_2016.md`, `03_literature/paper_notes/P-017_neto_algorithmic_2023.md`, `03_literature/paper_notes/P-018_liu_multimodal_2025.md`, `03_literature/paper_notes/P-019_assuncao_considering_2022.md`, `03_literature/paper_notes/P-020_andjelkovic_moodplay_2019.md`, `03_literature/paper_notes/P-021_knijnenburg_explaining_2012.md`, `03_literature/paper_notes/P-022_lopes_xai_2022.md`, `03_literature/paper_notes/P-023_afroogh_trust_2024.md`, `03_literature/paper_notes/P-024_cano_hybrid_2017.md`, `03_literature/paper_notes/P-025_fkih_similarity_2022.md`, `03_literature/paper_notes/P-026_bo_shao_music_2009.md`, `03_literature/paper_notes/P-027_he_neural_2017.md`, `03_literature/paper_notes/P-028_gatzioura_hybrid_2019.md`, `03_literature/coverage_tracker.md`, `00_admin/thesis_state.md`, `00_admin/decision_log.md`, `00_admin/change_log.md`
+- impact_assessment: Low-positive. Completes the largest remaining optional-field normalization wave and strengthens note-to-gap traceability ahead of Chapter 3 revision.
+- approval_record: Requested directly by the user in chat on 2026-04-17.
+
+## C-436
+- date: 2026-04-17
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Audited theme-tag drift across the literature-note corpus and normalized four low-risk singleton tags that were causing avoidable search fragmentation.
+- reason: After optional-field cleanup, only a few singleton theme tags still needed normalization; broader theme families remained meaningfully distinct and were left unchanged.
+- evidence_basis: `P-002_tintarev_masthoff_2007.md` now uses `transparency_and_scrutability`; `P-032_beel_towards_2016.md` and `P-066_peffers_design_2007.md` now use `observability_and_auditability`; `P-046_kang_are_2025.md` now uses `evaluation_challenges`; `03_literature/coverage_tracker.md` records the 2026-04-17 theme-mapping drift cleanup batch.
+- affected_components: `03_literature/paper_notes/P-002_tintarev_masthoff_2007.md`, `03_literature/paper_notes/P-032_beel_towards_2016.md`, `03_literature/paper_notes/P-046_kang_are_2025.md`, `03_literature/paper_notes/P-066_peffers_design_2007.md`, `03_literature/coverage_tracker.md`, `00_admin/thesis_state.md`, `00_admin/decision_log.md`, `00_admin/change_log.md`
+- impact_assessment: Low-positive. Reduces retrieval fragmentation while preserving conceptually meaningful theme distinctions needed for later writing.
+- approval_record: Requested directly by the user in chat on 2026-04-17.
 - change_summary: Imported Bonnin and Jannach (2015) PDF (Zotero ID 597) into `10_resources/papers/`; added `file` field to `bonnin_automated_2015` entry in `references.bib`. Bibliography now 65/66 linked, 0 broken. Only `mcfee_million_2012` remains without a file field (not cited in canonical chapter2.md).
 - reason: User provided Zotero export (`export`) containing the Bonnin 2015 PDF.
 - evidence_basis: Post-import audit: `TOTAL=66`, `WITH_FILE=65`, `NO_FILE=1`, `MISSING_PDF=0`.

@@ -28,6 +28,9 @@ theme_mapping:
 - recommender_foundations
 - evaluation_challenges
 
+gap_implications:
+Neural collaborative filtering improves representational power at the cost of transparency and optimisation complexity; the thesis uses this contrast to justify an interpretable deterministic alternative for the MVP.
+
 design_implications:
 - Use for boundary justification: interpretable deterministic system chosen over neural opacity for thesis goals.
 

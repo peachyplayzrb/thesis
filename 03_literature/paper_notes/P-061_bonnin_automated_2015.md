@@ -2,6 +2,7 @@ id: P-061
 citation_key: bonnin_automated_2015
 full_reference: Bonnin, G., and Jannach, D. (2015) Automated Generation of Music Playlists: Survey and Experiments. ACM Computing Surveys, 47(2), 1-35. doi:10.1145/2652481.
 document_status: processed_paper_note
+source_index_status: screened_keep
 confidence: high
 
 research_problem:

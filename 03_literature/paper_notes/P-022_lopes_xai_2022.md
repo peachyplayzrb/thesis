@@ -29,6 +29,9 @@ theme_mapping:
 - evaluation_of_explainable_systems
 - observability_and_auditability
 
+gap_implications:
+XAI evaluation remains method-fragmented and purpose-sensitive; the thesis uses that gap to justify a multi-criteria assessment frame tied to design goals rather than a single generic explainability metric.
+
 design_implications:
 - Document evaluation dimensions explicitly and map each metric to a design goal.
 

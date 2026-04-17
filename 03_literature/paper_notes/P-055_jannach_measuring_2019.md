@@ -2,6 +2,7 @@ id: P-055
 citation_key: jannach_measuring_2019
 full_reference: Measuring the Business Value of Recommender Systems. ACM Transactions on Management Information Systems (2019). doi:10.1145/3370082.
 document_status: processed_paper_note
+source_index_status: screened_keep
 confidence: high
 
 research_problem:

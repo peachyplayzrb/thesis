@@ -2,6 +2,7 @@ id: P-049
 citation_key: pandeya_multi-modal_2021
 full_reference: Multi-modal, Multi-task and Multi-label for Music Genre Classification and Emotion Regression. 2021 International Conference on Information and Communication Technology Convergence (ICTC) (2021). doi:10.1109/ICTC52510.2021.9620826.
 document_status: processed_paper_note
+source_index_status: screened_support
 confidence: low
 
 research_problem:

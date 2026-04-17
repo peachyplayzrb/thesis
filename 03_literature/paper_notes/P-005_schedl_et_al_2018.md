@@ -22,6 +22,10 @@ limitations:
 relevance_to_thesis:
 High relevance for positioning architecture decisions in known music-RS challenge space.
 
+supported_architecture_layer:
+- Playlist Assembly Layer
+- Evaluation and Comparator Framing
+
 theme_mapping:
 - music_recommenders
 - playlist_generation

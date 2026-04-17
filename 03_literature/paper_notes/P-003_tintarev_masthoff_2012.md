@@ -23,6 +23,10 @@ limitations:
 relevance_to_thesis:
 High relevance for defining balanced evaluation of transparency, controllability, and user outcomes.
 
+supported_architecture_layer:
+- Output and Explanation Layer
+- Evaluation and Comparator Framing
+
 theme_mapping:
 - explainable_recommenders
 - evaluation_of_explainable_systems

@@ -2,6 +2,7 @@ id: P-054
 citation_key: shakespeare_reframing_2025
 full_reference: Reframing the filter bubble through diverse scale effects in online music consumption. Scientific Reports (2025). doi:10.1038/s41598-024-75967-0.
 document_status: processed_paper_note
+source_index_status: screened_support
 confidence: medium
 
 research_problem:

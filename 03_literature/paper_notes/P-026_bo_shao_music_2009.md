@@ -29,6 +29,9 @@ theme_mapping:
 - feature_engineering_music
 - music_recommenders
 
+gap_implications:
+Historical music recommendation work supports acoustic-feature approaches but leaves modern transparency framing implicit; the thesis uses that gap to restate feature-based recommendation as an explicitly interpretable design choice.
+
 design_implications:
 - Position deterministic feature-based baseline relative to richer fusion alternatives.
 

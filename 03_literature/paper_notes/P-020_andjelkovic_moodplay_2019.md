@@ -29,6 +29,9 @@ theme_mapping:
 - controllability_in_music_rs
 - explainable_interfaces
 
+gap_implications:
+Interactive music interfaces show the value of user control but also expose cognitive-load risks; the thesis uses this gap to justify a controllable UI with a deliberately small, interpretable parameter set.
+
 design_implications:
 - Keep control UI interpretable and avoid cognitive overload in parameter design.
 

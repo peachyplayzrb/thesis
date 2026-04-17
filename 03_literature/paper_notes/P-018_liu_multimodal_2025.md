@@ -29,6 +29,9 @@ theme_mapping:
 - candidate_dataset_and_filtering
 - feature_engineering_music
 
+gap_implications:
+Multimodal recommendation expands modelling power but increases opacity and implementation complexity; the thesis responds by constraining the MVP to a simpler transparent modality choice that can be justified and inspected end to end.
+
 design_implications:
 - Use as contrast to justify deterministic MVP boundaries and future work, not core mechanism.
 

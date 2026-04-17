@@ -29,6 +29,9 @@ theme_mapping:
 - transparency_and_scrutability
 - evaluation_challenges
 
+gap_implications:
+Trust is multi-factor and cannot be inferred from transparency alone; the thesis uses this gap to position transparency as necessary but insufficient within a broader human-centered evaluation frame.
+
 design_implications:
 - Avoid over-claiming trust improvements without dedicated trust evaluation evidence.
 

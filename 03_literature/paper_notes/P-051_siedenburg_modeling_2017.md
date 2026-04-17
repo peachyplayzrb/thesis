@@ -2,6 +2,7 @@ id: P-051
 citation_key: siedenburg_modeling_2017
 full_reference: Modeling Timbre Similarity of Short Music Clips. Frontiers in Psychology (2017). doi:10.3389/fpsyg.2017.00639.
 document_status: processed_paper_note
+source_index_status: screened_keep
 confidence: medium
 
 research_problem:

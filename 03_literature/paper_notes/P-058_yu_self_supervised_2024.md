@@ -2,6 +2,7 @@ id: P-058
 citation_key: yu_self_supervised_2024
 full_reference: Self-Supervised Learning for Recommender Systems: A Survey. IEEE Transactions on Knowledge and Data Engineering (2024). doi:10.1109/TKDE.2023.3282907.
 document_status: processed_paper_note
+source_index_status: screened_support
 confidence: high
 
 research_problem:

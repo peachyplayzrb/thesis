@@ -2,6 +2,7 @@ id: P-057
 citation_key: bauer_exploring_2024
 full_reference: Exploring the Landscape of Recommender Systems Evaluation: Practices and Perspectives. ACM Transactions on Recommender Systems (2024). doi:10.1145/3629170.
 document_status: processed_paper_note
+source_index_status: screened_keep
 confidence: high
 
 research_problem:

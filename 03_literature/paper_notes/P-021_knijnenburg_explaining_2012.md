@@ -29,6 +29,9 @@ theme_mapping:
 - evaluation_of_explainable_systems
 - transparency_and_scrutability
 
+gap_implications:
+Recommendation quality cannot be reduced to accuracy alone; the thesis addresses this by evaluating explanation usability and controllability outcomes alongside deterministic execution checks.
+
 design_implications:
 - Include human-centered interpretation in evaluation reporting alongside deterministic checks.
 

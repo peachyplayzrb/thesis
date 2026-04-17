@@ -29,6 +29,9 @@ theme_mapping:
 - playlist_generation
 - music_recommenders
 
+gap_implications:
+Playlist generation requires an explicit coherence-diversity balance that many systems leave opaque; the thesis addresses this by exposing deterministic sequence-level trade-offs through auditable assembly logic.
+
 design_implications:
 - Retain explicit playlist-assembly stage and diversity/coherence controls in deterministic form.
 

@@ -2,6 +2,7 @@ id: P-048
 citation_key: knox_loss_2021
 full_reference: Loss Function Approaches for Multi-label Music Tagging. 2021 International Conference on Content-Based Multimedia Indexing (CBMI) (2021). doi:10.1109/CBMI50038.2021.9461913.
 document_status: processed_paper_note
+source_index_status: screened_support
 confidence: low
 
 research_problem:

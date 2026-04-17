@@ -33,17 +33,6 @@
   | O5. Evaluate reproducibility and quality shifts under settings changes | Section 3.12 defines baseline replay and one-parameter-at-a-time controlled variation for interpretable effect testing. |
   | O6. Identify limits and applicability boundaries | Sections 3.4 and 3.13 maintain explicit single-user, deterministic, bounded-scope framing for later limitation analysis. |
 
-  ### 3.3.1 Design Option Space and Selected-Design Rationale
-  The Chapter 2 synthesis supports more than one technically plausible architecture, so the selected design is justified by objective alignment rather than by assuming a universal best model family. Three realistic options were considered.
-
-  | Option | Main strengths | Main risk under this thesis scope | Selection outcome |
-  | --- | --- | --- | --- |
-  | Hybrid or neural-first recommender core | Strong representational power and broad benchmark relevance (Cano and Morisio, 2017; He et al., 2017). | Reduced mechanism inspectability and weaker causal traceability of score drivers under bounded single-user scope. | Not selected as primary architecture; retained as comparator context. |
-  | Context-rich multimodal adaptive stack | Potential gains in richer preference representation and context sensitivity (Ru et al., 2023; Liu et al., 2025). | Higher modelling and data-dependency complexity, making reproducibility and control-effect interpretation harder to defend in this project boundary. | Not selected as primary architecture; positioned as future-work extension path. |
-  | Deterministic feature-based staged pipeline | High transparency, controllability, and replay interpretability across explicit stages (Tintarev and Masthoff, 2007; Beel et al., 2016; Zamani et al., 2019). | Bounded representational flexibility compared with richer adaptive model families. | Selected as the primary architecture. |
-
-  The selected option is therefore a deliberate fit to the research question and objectives rather than a claim that deterministic design dominates all alternatives. It is chosen because the thesis contribution is engineering evidence quality under cross-source uncertainty: explicit uncertainty handling at intake, inspectable candidate-space shaping, decomposable scoring, playlist-level rule visibility, and run-level reproducibility diagnostics. Those requirements are methodologically easier to satisfy and evaluate when the architecture remains deterministic and stage-explicit.
-
   ## 3.4 Design Scope and Overall Architecture
   The proposed architecture is a deterministic pipeline with seven main stages:
 

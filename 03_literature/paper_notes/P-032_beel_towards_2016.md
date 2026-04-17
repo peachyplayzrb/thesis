@@ -27,7 +27,7 @@ supported_architecture_layer:
 
 theme_mapping:
 - reproducibility_in_recommenders
-- auditability
+- observability_and_auditability
 
 gap_implications:
 Substantially strengthens recommender-specific reproducibility evidence and narrows the audit-layer gap.

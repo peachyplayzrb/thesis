@@ -22,6 +22,10 @@ limitations:
 relevance_to_thesis:
 High relevance for defining transparent-by-design choices and for distinguishing faithful scoring-derived explanations from post-hoc rationalizations.
 
+supported_architecture_layer:
+- Output and Explanation Layer
+- Evaluation and Comparator Framing
+
 theme_mapping:
 - transparency_by_design
 - explainable_recommenders

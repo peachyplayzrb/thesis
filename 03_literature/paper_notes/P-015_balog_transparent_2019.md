@@ -29,6 +29,9 @@ theme_mapping:
 - transparency_and_scrutability
 - controllability_in_music_rs
 
+gap_implications:
+Opaque user representations limit both trust and controllability; the thesis addresses this by making preference profiles and parameter effects scrutable enough to inspect and adjust.
+
 design_implications:
 - Expose controllable profile/parameter effects in a user-understandable way.
 

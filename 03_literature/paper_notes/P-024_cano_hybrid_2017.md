@@ -29,6 +29,9 @@ theme_mapping:
 - recommender_foundations
 - candidate_dataset_and_filtering
 
+gap_implications:
+Hybrid music recommenders often prioritize performance gains without equally strong user-facing justification for added complexity; the thesis addresses this by defending a simpler deterministic MVP on transparency and auditability grounds.
+
 design_implications:
 - Use as contrast to justify not adopting hybrid complexity in MVP core.
 

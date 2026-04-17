@@ -31,6 +31,9 @@ theme_mapping:
 - recommender_foundations
 - candidate_dataset_and_filtering
 
+gap_implications:
+Foundational recommender taxonomies validate the content-based paradigm but do not resolve transparency-first MVP scoping; the thesis fills that gap by documenting why an interpretable deterministic path is chosen within the broader design space.
+
 design_implications:
 - Document paradigm choice explicitly as deliberate scope decision.
 - Use limitations as motivation for transparency and controllability focus.

@@ -32,6 +32,9 @@ theme_mapping:
 - quantitative_xai_evaluation
 - reproducibility_of_explanation_assessment
 
+gap_implications:
+XAI literature still lacks consistent, reproducible evaluation practice; the thesis uses this gap to justify an explicit transparency assessment frame instead of relying on anecdotal explanation quality claims.
+
 design_implications:
 - Avoid anecdotal-only explanation claims; include explicit quantitative checks where feasible.
 - Record evaluation configuration and outputs to enable comparison and replay.

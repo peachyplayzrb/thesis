@@ -33,6 +33,9 @@ theme_mapping:
 - playlist_generation
 - evaluation_challenges
 
+gap_implications:
+Content-driven music recommendation surveys still leave transparency and sequence-quality gaps under-specified; the thesis addresses this by making playlist assembly and feature rationale explicit inside a deterministic pipeline.
+
 design_implications:
 - Justify using a fixed content-feature corpus for tractable MVP experiments.
 - Explicitly position playlist assembly as distinct from ranking.

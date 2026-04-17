@@ -29,6 +29,9 @@ theme_mapping:
 - feature_engineering_music
 - evaluation_challenges
 
+gap_implications:
+Music similarity remains inherently subjective and evaluation-bounded, so deterministic outputs cannot claim perfect semantic alignment; the thesis treats similarity scores as inspectable approximations with explicit evaluation limits.
+
 design_implications:
 - Frame score outputs as approximations, not objective ground truth.
 - Include limitation discussion tied to subjective similarity.

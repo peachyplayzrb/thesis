@@ -2,6 +2,7 @@ id: P-050
 citation_key: schedl_investigating_2017
 full_reference: Investigating country-specific music preferences and music recommendation algorithms with the LFM-1b dataset. International Journal of Multimedia Information Retrieval (2017). doi:10.1007/s13735-017-0118-y.
 document_status: processed_paper_note
+source_index_status: screened_support
 confidence: medium
 
 research_problem:

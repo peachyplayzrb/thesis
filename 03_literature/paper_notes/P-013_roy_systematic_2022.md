@@ -29,6 +29,9 @@ theme_mapping:
 - evaluation_challenges
 - recommender_foundations
 
+gap_implications:
+Recent recommender surveys surface wide method diversity and unresolved trade-offs, reinforcing the need for bounded scope; the thesis responds by preferring a narrower transparent MVP over attempting to absorb the full modern complexity space.
+
 design_implications:
 - Keep method scope narrow and justify it against known RS complexity challenges.
 

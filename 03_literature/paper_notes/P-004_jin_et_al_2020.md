@@ -22,6 +22,10 @@ limitations:
 relevance_to_thesis:
 Direct relevance for controllability layer design and parameter exposure strategy.
 
+supported_architecture_layer:
+- User Interaction Layer
+- Output and Explanation Layer
+
 theme_mapping:
 - controllability
 - music_recommenders
