@@ -7,8 +7,8 @@ Ordering convention (standardized 2026-03-24):
 - Entry order reflects historical insertion timing and may not be numerically contiguous in older sections.
 - New entries must be appended at the end; historical entries remain unchanged except for explicit correction records.
 
-Maintenance snapshot (2026-04-13):
-- Highest change ID currently present: `C-366`
+Maintenance snapshot (2026-04-17):
+- Highest change ID currently present: `C-426`
 - Maintenance snapshot (2026-03-28): prior snapshot stated `C-205`; superseded by the 2026-03-29 architecture migration + documentation sync wave (C-204 through C-219).
 - Known legacy correction applied in this file: prior duplicate `C-079` entry has been normalized to `C-135` for unique-ID compliance.
 
@@ -56,6 +56,292 @@ Maintenance snapshot (2026-04-13):
 - affected_components: `07_implementation/implementation_notes/bl004_profile/build_bl004_preference_profile.py`, `07_implementation/implementation_notes/bl005_retrieval/build_bl005_candidate_filter.py`, `07_implementation/implementation_notes/bl006_scoring/build_bl006_scored_candidates.py`, `00_admin/unresolved_issues.md`, `07_implementation/test_notes.md`, `00_admin/change_log.md`
 - impact_assessment: High-positive. Removes a real semantic inconsistency from retrieval and scoring, improving the internal validity of the hybrid preference-matching pipeline.
 - approval_record: Requested and confirmed by user in chat on 2026-03-25.
+
+## C-431
+- date: 2026-04-17
+- proposed_by: Copilot
+- status: accepted
+- change_summary: Bibliography and paper store fully verified clean. Final state: 76 PDFs in `10_resources/papers/`, 0 broken `file=` links, 0 non-PDFs, 0 numeric-named files, 0 duplicates. All bib entries have DOI and venue where publicly available (3 expected gaps: `bertin_mahieux_million_2011`, `araz_discogsvi_2024`, `ens_metamidi_2021` — ISMIR/arXiv, no CrossRef DOIs). Added DOI for `teinemaa_composition_2018` (`10.1145/3267471.3267482`). Cleaned up Gemilang filename mismatch in bib; deleted 2 duplicate PDFs (underscore Self-Supervised and unaccented Sanchez variant); renamed Ens all-caps file.
+- reason: End-of-session verification pass after C-427–C-430 work.
+- evidence_basis: PowerShell audit: PDFs=76, missing links=0, non-PDF=0, numeric=0.
+- affected_components: `08_writing/references.bib`, `10_resources/papers/`, `00_admin/thesis_state.md`
+- impact_assessment: Low-positive. All bibliography and paper store hygiene tasks complete.
+- approval_record: User-initiated in chat on 2026-04-17.
+
+## C-430
+- date: 2026-04-17
+- proposed_by: Copilot
+- status: accepted
+- change_summary: Copied 23 missing PDFs from `10_resources/previous_drafts/lit_review_resource_pack/files/` into `10_resources/papers/`. Paper store grew from 55 to 78 PDFs. All bib `file=` links now resolve. 3 files skipped (already present: Deldjoo, Ferraro, Vall).
+- reason: Audit revealed 23 core literature PDFs were in the old lit review export bundle but never in the main paper store.
+- evidence_basis: `Copy-Item` run confirmed 23 copied, 3 skipped. Final count: 78 PDFs.
+- affected_components: `10_resources/papers/`
+- impact_assessment: Low-positive. Paper store is now fully populated.
+- approval_record: User confirmed in chat on 2026-04-17.
+
+## C-429
+- date: 2026-04-17
+- proposed_by: Copilot
+- status: accepted
+- change_summary: Enriched all 10 C-427 stub bib entries (IDs 599–608) with full metadata: entry types corrected (`@dataset`/`@article` → `@misc`/`@inproceedings`/`@article` as appropriate), DOIs added for 9 entries (Araz = arXiv preprint, no DOI), venues/journals added for all 10. Authors corrected for Araz (R. Oguz Araz, Xavier Serra, Dmitry Bogdanov). Dular entry updated with NeuroImage DOI.
+- reason: Stubs lacked venue, DOI, and correct entry types; metadata retrieved via CrossRef API and Google Scholar.
+- evidence_basis: CrossRef confirmed DOIs for Askin, Doh, Dular, Gemilang, Miyakawa, Nurraharjo, Ostermann, Revathy. Google Scholar confirmed Araz is arXiv:2410.17400; Ens confirmed as ISMIR 2021.
+- affected_components: `08_writing/references.bib`
+- impact_assessment: Low-positive. Bibliography stubs are now fully populated.
+- approval_record: User-initiated in chat on 2026-04-17.
+
+## C-428
+- date: 2026-04-17
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Identified and catalogued the 3 previously unnamed numeric PDFs in `10_resources/papers/` (3370082, 3510409, 3629170). BibTeX entries were added by user directly to `references.bib`: `jannach_measuring_2019` (Jannach & Jugovac 2019, DOI 10.1145/3370082, files/467), `sanchez_pointofinterest_2022` (Sánchez & Bellogín 2022, DOI 10.1145/3510409, files/468), `bauer_exploring_2024` (Bauer, Zangerle & Said 2024, DOI 10.1145/3629170, files/469). Renamed `3510409.pdf` to descriptive name; deleted duplicate numeric copies of the other two (descriptive names already existed). Paper store now has no numeric-named files.
+- reason: User requested cataloguing of all unidentified PDFs in the paper store.
+- evidence_basis: ACM DL lookup confirmed identities. `references.bib` now has entries for all 3. No numeric-named PDFs remain in `10_resources/papers/`.
+- affected_components: `08_writing/references.bib`, `10_resources/papers/`, `00_admin/change_log.md`
+- impact_assessment: Low-positive. All PDFs in the paper store are now fully catalogued.
+- approval_record: Requested by user in chat on 2026-04-17.
+
+## C-427
+- date: 2026-04-17
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Added BibTeX entries for 10 uncatalogued PDFs already present in `10_resources/papers/` (IDs 599–608): Araz 2024 (Discogs-VI), Askin & Mauskapf 2017, Doh et al. 2024, Dular & Špiclin 2024, Ens & Pasquier 2021, Gemilang & Toto Wibowo 2025, Miyakawa & Utsuro 2024, Nurraharjo et al. 2022, Ostermann et al. 2023, Revathy & Pillai 2022. Three unnamed PDFs (3370082, 3510409, 3629170) not yet catalogued pending identification.
+- reason: User confirmed "yes" to adding all uncatalogued papers to the bib for later filtering at submission.
+- evidence_basis: 10 new entries appended to `08_writing/references.bib`; bib now 76 entries (66 core + 10 supplemental). The Self-Supervised survey (`Self-Supervised_Learning_for_Recommender_Systems_A_Survey.pdf`) was already present as ID 470.
+- affected_components: `08_writing/references.bib`, `00_admin/change_log.md`
+- impact_assessment: Low-positive. Expands bib library for potential citation use; excess entries will be pruned at submission.
+- approval_record: Confirmed by user in chat on 2026-04-17.
+
+## C-422
+- date: 2026-04-17
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Imported Peffers DSR methodology export artifacts into the active literature workflow by copying the PDF into the thesis paper store and integrating the missing `peffers_design_2007` entry into the canonical bibliography.
+- reason: User requested moving exported items from Downloads into the correct thesis locations so the source can be processed in the normal citation workflow.
+- evidence_basis: `10_resources/papers/Peffers et al. - 2007 - A Design Science Research Methodology for Information Systems Research.pdf` now exists in the canonical paper store; `10_resources/papers/peffers_exported_items.bib` was retained as intake evidence; `08_writing/references.bib` now contains `@article{peffers_design_2007}`.
+- affected_components: `10_resources/papers/Peffers et al. - 2007 - A Design Science Research Methodology for Information Systems Research.pdf`, `10_resources/papers/peffers_exported_items.bib`, `08_writing/references.bib`, `00_admin/change_log.md`
+- impact_assessment: Low-positive. Removes citation-ingestion friction and restores consistency between Chapter 3 in-text citation and bibliography coverage.
+- approval_record: Requested directly by the user in chat on 2026-04-17.
+
+## C-426
+- date: 2026-04-17
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Imported McFee et al. (2012) PDF into `10_resources/papers/` as canonical name; added `file` field (ID 598) to `mcfee_million_2012` entry in `references.bib`. Bibliography is now 66/66 linked, 0 broken — fully complete.
+- reason: User provided the PDF directly.
+- evidence_basis: Post-import audit: `TOTAL=66`, `WITH_FILE=66`, `NO_FILE=0`, `MISSING_PDF=0`.
+- affected_components: `08_writing/references.bib`, `10_resources/papers/`
+- impact_assessment: Low-positive. Bibliography now fully linked with no gaps.
+- approval_record: Initiated by user dropping PDF path in chat on 2026-04-17.
+
+## C-425
+- date: 2026-04-17
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Imported Bonnin and Jannach (2015) PDF (Zotero ID 597) into `10_resources/papers/`; added `file` field to `bonnin_automated_2015` entry in `references.bib`. Bibliography now 65/66 linked, 0 broken. Only `mcfee_million_2012` remains without a file field (not cited in canonical chapter2.md).
+- reason: User provided Zotero export (`export`) containing the Bonnin 2015 PDF.
+- evidence_basis: Post-import audit: `TOTAL=66`, `WITH_FILE=65`, `NO_FILE=1`, `MISSING_PDF=0`.
+- affected_components: `08_writing/references.bib`, `10_resources/papers/`
+- impact_assessment: Low-positive. Active citation now fully linked.
+- approval_record: Initiated by user dropping export folder path in chat on 2026-04-17.
+
+## C-424
+- date: 2026-04-17
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Imported `furini_social_2024` and `schweiger_impact_2025` PDFs from Downloads into `10_resources/papers/`; added corresponding `file` fields (IDs 593, 594) in `references.bib`; fixed curly-apostrophe filename mismatch in the Furini PDF. Bibliography now at 64/66 linked, 0 broken.
+- reason: User provided Zotero export (`Exported Items2`) containing the two previously missing PDFs.
+- evidence_basis: Post-import audit: `TOTAL=66`, `WITH_FILE=64`, `NO_FILE=2`, `MISSING_PDF=0`. Remaining no-file keys: `bonnin_automated_2015`, `mcfee_million_2012`.
+- affected_components: `08_writing/references.bib`, `10_resources/papers/`
+- impact_assessment: Low-positive. Two more citations now have fully-linked PDFs in the repo.
+- approval_record: Initiated by user dropping `Exported Items2` folder path in chat on 2026-04-17.
+
+## C-423
+- date: 2026-04-17
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Performed bibliography file-link normalization in `references.bib`: added `file` fields for entries with confirmed PDFs in the paper store, normalized the Bauer file-path ID outlier, and left only genuinely missing-PDF references without `file` fields.
+- reason: User requested a full consistency check and then approved the cleanup pass.
+- evidence_basis: Post-cleanup audit reports `TOTAL=66`, `WITH_FILE=62`, `NO_FILE=4`, `MISSING_PDF=0`, and `OUTLIER_IDS_GE900=0`. Remaining no-file keys are `bonnin_automated_2015`, `mcfee_million_2012`, `furini_social_2024`, and `schweiger_impact_2025`.
+- affected_components: `08_writing/references.bib`, `00_admin/change_log.md`
+- impact_assessment: Medium-positive. Improves citation-asset traceability and removes file-link inconsistencies without changing cited claim content.
+- approval_record: Requested directly by the user in chat on 2026-04-17.
+
+## C-420
+- date: 2026-04-17
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Synchronized `00_admin/thesis_state.md` to the current Chapter 3 governance baseline after the final design-level pull-back and wording-flow polish wave.
+- reason: `thesis_state.md` was stale after Chapter 3 advanced through D-143, C-418, and C-419, leaving the last-updated line, Chapter 3 status row, next-work summary, and governance quickref out of sync with the canonical logs.
+- evidence_basis: `thesis_state.md` now reflects the Chapter 3 polished baseline, references D-143/C-418/C-419 in current posture wording, and updates the highest governance IDs to `C-420` / `D-143`.
+- affected_components: `00_admin/thesis_state.md`, `00_admin/change_log.md`
+- impact_assessment: Low-positive. Removes handoff drift and restores admin-state accuracy without changing thesis scope, chapter claims, or implementation posture.
+- approval_record: Requested directly by the user in chat on 2026-04-17.
+
+## C-419
+- date: 2026-04-17
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Applied a final Chapter 3 wording-and-flow polish pass: replaced the code-like chapter-sequence notation in 3.2 with thesis prose, split and tightened the dense closing paragraph in 3.7, and sharpened the 3.13 handoff so Chapter 4 more explicitly picks up visibility-in-execution continuity.
+- reason: After the design-level restructuring and consistency pass, the remaining useful work was readability and chapter-to-chapter flow rather than further structural change.
+- evidence_basis: `3.2` now describes the workflow as moving from literature to requirements, design, implementation, and evaluation; `3.7` now separates profile-construction flow from the interpretability rationale; `3.13` now states that Chapter 4 examines where the Chapter 3 design properties become visible in execution.
+- affected_components: `08_writing/chapter3.md`, `00_admin/change_log.md`
+- impact_assessment: Low-positive. Improves readability and Chapter 3 to Chapter 4 continuity without changing design scope, claims, or evidence posture.
+- approval_record: Requested directly by the user in chat on 2026-04-17.
+
+## C-412
+- date: 2026-04-17
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Applied the planned structural refinement wave to `08_writing/chapter3_v3.md`: added an explicit assumptions-and-boundaries subsection, retitled the technology section toward design realisation context, made the alignment procedure more concrete, split preference profiling from candidate shaping, split deterministic scoring from playlist assembly, and renumbered the downstream sections accordingly.
+- reason: User requested implementation to begin on the broader Chapter 3 recommendations after the planning pass, and the remaining meaningful work was structural rather than citation-level.
+- evidence_basis: `3.4` now includes `3.4.1 Assumptions and Boundaries`; `3.5` is now `Technology Choices and Realisation Context`; `3.6` now describes a fixed identifier-first then bounded-metadata alignment order with explicit confident/ambiguous/unmatched outcomes; the former combined `3.7` is split into `3.7 Preference Profiling` and `3.8 Candidate Shaping`; the former combined `3.8` is split into `3.9 Deterministic Scoring` and `3.10 Playlist Assembly`; later sections are renumbered through `3.13 Chapter Summary`; markdown validation returned no file errors.
+- affected_components: `08_writing/chapter3_v3.md`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`
+- impact_assessment: Medium-positive. Improves examiner-facing structure, clarifies stage boundaries, and makes the chapter easier to map onto later implementation and evaluation evidence without changing thesis scope.
+- approval_record: Requested directly by the user in chat on 2026-04-17.
+
+## C-413
+- date: 2026-04-17
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Completed Chapter 3 selection by promoting the restructured v3 chapter into the canonical `08_writing/chapter3.md` surface, retained `chapter3_v3.md` as comparison history with cleaned heading formatting, and carried the concrete 15.95% corpus-coverage limitation into Chapters 5 and 6 where bounded evidence claims are interpreted.
+- reason: User approved the recommendation to adopt the stronger v3 chapter as the live baseline and to preserve only the strongest concrete limitation material from the older chapter in evaluation/discussion rather than in the design chapter itself.
+- evidence_basis: `08_writing/chapter3.md` now mirrors the v3 design structure through `3.13`; `08_writing/chapter3_v3.md` heading formatting is normalized in the split sections; `08_writing/chapter5.md` now interprets the 15.95% match rate and 15% gate in the evidence-limits section; `08_writing/chapter6.md` now uses the same concrete figure in the bounded-limits discussion.
+- affected_components: `08_writing/chapter3.md`, `08_writing/chapter3_v3.md`, `08_writing/chapter5.md`, `08_writing/chapter6.md`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`
+- impact_assessment: Medium-positive. Resolves the Chapter 3 baseline split, improves cross-chapter consistency, and preserves the strongest concrete validity-boundary wording in the chapters where it is methodologically most appropriate.
+- approval_record: Requested directly by the user in chat on 2026-04-17.
+
+## C-414
+- date: 2026-04-17
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Applied the final Chapter 3 polish pass on the canonical `08_writing/chapter3.md` baseline by adding one more concrete mechanism sentence in candidate shaping, clarifying the intended score form in deterministic scoring, renaming Section 3.11 to match its content more closely, and splitting the densest protocol sentences in Section 3.12 for readability.
+- reason: User review concluded that the chapter was now structurally strong and mainly needed polish-level refinement for specificity, prose flow, and section-title fit.
+- evidence_basis: `3.8` now specifies shaping as a combination of profile-similarity thresholds, metadata-based exclusions, and bounded influence-track expansion; `3.9` now states that the score combines weighted feature similarity with bounded rule adjustments; `3.11` is renamed `Explanation and Run-Level Observability` and now links the evidence bundle more explicitly to reproducibility; `3.12` now expresses baseline replay and controlled variation in shorter, clearer sentences.
+- affected_components: `08_writing/chapter3.md`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`
+- impact_assessment: Low-to-medium positive. Improves readability and design tangibility without changing chapter structure, scope, or claims.
+- approval_record: Requested directly by the user in chat on 2026-04-17.
+
+## C-415
+- date: 2026-04-17
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Applied the final Chapter 3 micro-edit pass by making the preference-profile output form more tangible, tightening a few implementation-leaning phrases in Sections 3.4.1 to 3.6, varying some repeated sentence constructions, and strengthening the final Chapter 3 sentence as a bridge into Chapter 4.
+- reason: User review judged the chapter structurally complete and requested only a final polish for tone, precision, and examiner-facing smoothness.
+- evidence_basis: `3.7` now describes the profile as a bounded weighted summary of aligned evidence in the candidate-facing feature space; `3.4.1` now uses `single-user inspectability under deterministic execution`; `3.5` trims the OAuth sentence back toward design justification; `3.6` now refers to `reliable downstream handling`; several repeated `This stage` / `This keeps` constructions are softened; and `3.13` now ends with an explicit bridge to Chapter 4 implementation realization.
+- affected_components: `08_writing/chapter3.md`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`
+- impact_assessment: Low-positive. Improves tone and flow at the final proofreading stage without changing structure, scope, or claims.
+- approval_record: Requested directly by the user in chat on 2026-04-17.
+
+## C-416
+- date: 2026-04-17
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Applied the first Chapter 4 continuity-proofing pass so the implementation chapter now states more explicitly how the design properties defined in Chapter 3 become visible in execution, rather than only listing stage outputs and artifact paths.
+- reason: User confirmed Chapter 3 is complete and directed work to move on to Chapter 4; the main continuity gap was that Chapter 4 named implementation surfaces but did not yet state strongly enough how those surfaces realize the Chapter 3 design promises in execution.
+- evidence_basis: `4.1` now frames the chapter as showing how Chapter 3 design properties become visible in execution; `4.2` now explains the continuity mapping as a visibility bridge rather than a static inventory; `4.3` now links each BL stage to visible design properties such as uncertainty handling, candidate-space definition, mechanism-traceable scoring, assembly trade-offs, explanation fidelity, and run-level observability; `4.4` now defines the outputs as one coherent evidence bundle; and `4.5` now summarizes the chapter in the same continuity terms.
+- affected_components: `08_writing/chapter4.md`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`
+- impact_assessment: Low-to-medium positive. Strengthens Chapter 3 to Chapter 4 coherence and makes the implementation chapter better support the explicit handoff promised at the end of Chapter 3 without collapsing Chapter 4 into Chapter 5 evaluation.
+- approval_record: Requested directly by the user in chat on 2026-04-17.
+
+## C-418
+- date: 2026-04-17
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Surgical design-level pull-back of Chapter 3 sections 3.5, 3.9, 3.10, and 3.12 to remove implementation-specific detail and restore design-rationale framing.
+- reason: Chapter 3 had drifted toward implementation-detail level after successive rounds of concrete-ness improvements. The four sections named specific tools, formula structures, parameter lists, and exact iteration counts that belong in Chapter 4.
+- evidence_basis: Section 3.5 now describes design properties (lightweight local execution, no live network dependency at runtime, inspectable artefact formats, fuzzy fallback preference) rather than naming Python/RapidFuzz/CSV. Section 3.9 replaces the weighted-sum formula description with a design-level decomposability statement plus Fkih (2022) citation. Section 3.10 replaces specific rule parameters with abstract constraint categories (repetition, diversity pressure, novelty allowance, score admissibility, ordering behavior). Section 3.12 replaces 'repeats the same run three times' with 'uses repeated fixed-configuration replays as a bounded consistency check'.
+- affected_components: `08_writing/chapter3.md`, `00_admin/decision_log.md`, `00_admin/change_log.md`
+- impact_assessment: Low. Four targeted replacements; no structural change; prose shortened slightly.
+- approval_record: Requested directly by the user in chat on 2026-04-17.
+
+## C-417
+- date: 2026-04-17
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Added three targeted citation/rationale insertions to Chapter 3 sections 3.8 and 3.10 to close 'just stated' design decision gaps identified by external review.
+- reason: External review noted that sections 3.6–3.10 had unevenly distributed citations and several non-trivial design claims that were asserted without literature backing or explicit engineering rationale. The three specific gaps were: the 'two reasons for candidate absence' claim (3.8), the candidate-generation visibility sentence (3.8), and the competing-objectives claim opening 3.10.
+- evidence_basis: Section 3.8 now includes Tintarev and Masthoff (2007) and Steck et al. (2021) supporting the filtering/explanation-fidelity rationale; Zamani et al. (2019) and Ferraro et al. (2018) for the candidate-generation visibility bridge sentence. Section 3.10 now opens with the Bonnin and Jannach (2015), Vall et al. (2019), and Schweiger et al. (2025) citations at the point of the competing-objectives claim rather than only in the requirements table.
+- affected_components: `08_writing/chapter3.md`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`
+- impact_assessment: Low. Three pinpoint insertions that improve citation traceability without structural change or word-count bloat.
+- approval_record: Requested directly by the user in chat on 2026-04-17.
+
+## C-409
+- date: 2026-04-17
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Applied a targeted citation-and-protocol hardening pass to `08_writing/chapter3_v3.md`: added a DSR citation in `3.2`, moved feature-space citations up to the feature-definition sentence in `3.7`, and expanded `3.10` into a more explicit reproducibility/controllability protocol with three fixed-baseline replays, one-parameter-at-a-time variation, and named evidence surfaces for expected control effects.
+- reason: User review identified the uncited DSR methodology claim and the underdeveloped experimental-control section as the main remaining examiner-facing weaknesses in the revised Chapter 3 draft.
+- evidence_basis: `3.2` now cites Peffers et al. (2007); `3.7` now attaches Bogdanov et al. (2013) and Deldjoo et al. (2024) directly to the named feature groups; `3.10` now cites Bellogin and Said (2021) and Cavenaghi et al. (2023) while defining three-repeat baseline replay, one-factor variation, and evidence at alignment/candidate/scoring/assembly/output levels; `03_literature/source_index.csv` now records Peffers as `P-066`.
+- affected_components: `08_writing/chapter3_v3.md`, `03_literature/source_index.csv`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`
+- impact_assessment: Medium-positive. Closes the most visible remaining citation gap and makes the evaluation-control design more defensible without turning Chapter 3 into a results chapter.
+- approval_record: Requested directly by the user in chat on 2026-04-17.
+
+## C-410
+- date: 2026-04-17
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Applied a final examiner-facing clarity pass to `08_writing/chapter3_v3.md`: softened the O1-O6 table lead-in into reader-facing prose, replaced the ambiguous “embedded Spotify export bundle” wording with a clearer static-local-export description, and justified the three-replay threshold in `3.10` as a bounded deterministic consistency check under thesis scope rather than a universal standard.
+- reason: User requested implementation of the remaining three wording recommendations after the Chapter 3 review and planning pass.
+- evidence_basis: `3.3` now introduces the objective table as reader guidance rather than governance traceability; `3.5` now distinguishes a static local Spotify export from the optional OAuth-based export-generation utility; `3.10` now explains why three replays are sufficient within the thesis scope while avoiding overclaiming reproducibility methodology.
+- affected_components: `08_writing/chapter3_v3.md`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`
+- impact_assessment: Low-to-medium positive. Removes small but visible sources of examiner misreading without changing the chapter’s structure, contribution boundary, or evidence claims.
+- approval_record: Requested directly by the user in chat on 2026-04-17.
+
+## C-411
+- date: 2026-04-17
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Added one supporting citation cluster to the Chapter 3 alternatives-considered paragraph so the contrast with collaborative and neural recommendation families is explicitly anchored in existing literature rather than left as uncited design reasoning.
+- reason: User requested implementation of the optional citation-strengthening recommendation after confirming that no major citation gaps remained in the chapter.
+- evidence_basis: `08_writing/chapter3_v3.md` section `3.4` now cites Cano and Morisio (2017), He et al. (2017), and Liu et al. (2025) directly in the sentence that rules out latent collaborative and neural alternatives under the thesis scope.
+- affected_components: `08_writing/chapter3_v3.md`, `00_admin/change_log.md`
+- impact_assessment: Low-positive. Slightly strengthens examiner-facing support in one already defensible paragraph without changing the chapter’s argument or structure.
+- approval_record: Requested directly by the user in chat on 2026-04-17.
+
+## C-405
+- date: 2026-04-16
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Updated `08_writing/chapter3_v3.md` to implement alignment hardening requested after review: (1) chapter objective wording now explicitly includes observability, and (2) Section 3.2 now includes a direct O1 to O6 objective-to-design traceability table.
+- reason: User requested implementation of the identified Chapter 3 alignment improvements against finalized Chapter 1 and Chapter 2 framing.
+- evidence_basis: Section 3 objective line now states uncertainty handling, inspectability, observability, and reproducibility; a six-row mapping table now links Chapter 1 objectives to Chapter 3 sections.
+- affected_components: `08_writing/chapter3_v3.md`, `00_admin/decision_log.md`, `00_admin/change_log.md`
+- impact_assessment: Low-positive. Improves examiner-facing traceability and wording consistency without changing design scope or technical claims.
+- approval_record: Requested directly by user in chat on 2026-04-16.
+
+## C-406
+- date: 2026-04-17
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Applied a thesis-format correction pass to `08_writing/chapter3_v3.md`: removed the internal "Chapter objective" line, added `3.1 Introduction`, renumbered the chapter structure, inserted `3.5 Technology Stack and Implementation Environment`, and added explicit feature specification in profiling/scoring context (danceability, energy, valence, tempo, key, mode, lead genre, genre overlap, tag overlap).
+- reason: User requested direct implementation of repeatedly flagged Chapter 3 submission-format gaps.
+- evidence_basis: Chapter now opens with a plain introductory paragraph, contains explicit technology/stack choices grounded in the implementation surface, and names the feature set that was previously implied as "interpretable feature representations".
+- affected_components: `08_writing/chapter3_v3.md`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/thesis_state.md`
+- impact_assessment: Medium-positive. Improves thesis readability, examiner-facing structure alignment, and design specificity without changing contribution scope.
+- approval_record: Requested directly by user in chat on 2026-04-17.
+
+## C-407
+- date: 2026-04-17
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Applied a thesis-facing polish pass to `08_writing/chapter3_v3.md`: clarified the chapter-opening roadmap, softened governance-style traceability wording, revised the technology section to reflect the active Spotify export posture and optional OAuth utility flow, grouped the feature set into clearer categories, and made architecture/observability outputs more concrete by naming inspectable intermediate artifacts.
+- reason: User requested that implementation of the prepared Chapter 3 improvement plan begin.
+- evidence_basis: `3.1 Introduction` now previews chapter flow; the O1 to O6 lead-in in `3.3` is thesis-facing; `3.5` now describes Python, embedded Spotify export ingestion, custom local authorization-code OAuth utility flow, RapidFuzz, and CSV/JSON evidence surfaces; `3.7` groups features into rhythmic/harmonic, affective/intensity, and semantic/contextual sets; `3.4` and `3.9` now name inspectable intermediate outputs and run-level artifacts more explicitly.
+- affected_components: `08_writing/chapter3_v3.md`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/thesis_state.md`
+- impact_assessment: Medium-positive. Improves submission-facing tone and specificity while keeping Chapter 3 within a design-level boundary.
+- approval_record: Requested directly by user in chat on 2026-04-17.
+
+## C-408
+- date: 2026-04-17
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Applied a critique-driven Chapter 3 hardening pass to `08_writing/chapter3_v3.md`: added an overall Mermaid architecture figure, added explicit alternatives-considered rationale, rewrote the technology/design sections into firmer thesis-facing prose, converted two remaining ASCII logic figures to Mermaid, and replaced tentative design language across the main design sections with clearer declarative wording.
+- reason: User requested implementation of detailed examiner-style feedback on Chapter 3 quality, especially around confidence of wording, design justification, and diagram quality.
+- evidence_basis: `3.4` now contains `Figure 3.1` architecture flow plus explicit rejected-alternatives paragraph; `3.5` now grounds the Python/Spotify export/RapidFuzz/CSV-JSON stack choices in transparency and reproducibility aims; `3.6` now classifies alignment outcomes into confident, ambiguous, and unmatched-invalid categories and presents `Figure 3.2` as Mermaid logic; `3.8` now presents `Figure 3.3` as Mermaid scoring/assembly flow; `3.6` to `3.10` now use stronger present-tense design wording.
+- affected_components: `08_writing/chapter3_v3.md`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`
+- impact_assessment: Medium-positive. Improves examiner-facing clarity and defensibility of Chapter 3 without changing technical scope or overstating claims beyond the implemented artefact boundary.
+- approval_record: Requested directly by user in chat on 2026-04-17.
 ## C-163
 - date: 2026-03-25
 - proposed_by: Copilot
@@ -2624,3 +2910,430 @@ Maintenance snapshot (2026-04-13):
 - affected_components: `07_implementation/mentor_feedback_submission/src/**/outputs/*` (generated artifacts only), `00_admin/change_log.md`, `00_admin/timeline.md`.
 - impact_assessment: High-positive. Restores the mentor bundle to the intended clean packaging contract while keeping the source-code fix and embedded runtime inputs intact.
 - approval_record: Executed from the user-selected packaging-cleanup path (`2`) after confirming the bundle README contract.
+
+## C-367
+- date: 2026-04-14
+- proposed_by: Copilot
+- status: accepted
+- change_summary: Added a dedicated mentor-video walkthrough guide to the mentor feedback bundle with exact Windows run commands, a spoken demo order, stage explanations, output-tour prompts, and short fallback scripts for anxious presentation.
+- reason: After the mentor bundle was already validated and pushed, the user reported that the mentor requested a video explanation of how the code works and asked for a comprehensive, easy-to-follow file that could be read directly while recording.
+- evidence_basis: Added `07_implementation/mentor_feedback_submission/MENTOR_VIDEO_WALKTHROUGH.md`; content is grounded in the existing wrapper entrypoint (`main.py`), packaging contract (`README.md`), canonical config (`config/profiles/run_config_ui013_tuning_v1f.json`), and actual stage layout under `src/`.
+- affected_components: `07_implementation/mentor_feedback_submission/MENTOR_VIDEO_WALKTHROUGH.md`, `00_admin/decision_log.md`, `00_admin/change_log.md`.
+- impact_assessment: Medium-positive. Improves mentor-handoff usability and reduces operator stress during the requested video demo without changing runtime behavior or thesis scope.
+- approval_record: Requested directly by the user in chat on 2026-04-14.
+
+## C-376
+- date: 2026-04-14
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Added an optional README command block for running Spotify ingestion export before pipeline validation, including required credential environment variables.
+- reason: The user requested that the Spotify-ingestion-inclusive command sequence be added to the README.
+- evidence_basis: Added a Windows PowerShell block in `07_implementation/mentor_feedback_submission/README.md` that sets Spotify env vars, runs `src/ingestion/export_spotify_max_dataset.py`, and then runs `main.py --validate-only`.
+- affected_components: `07_implementation/mentor_feedback_submission/README.md`, `00_admin/change_log.md`.
+- impact_assessment: Medium-positive. Improves operational completeness for runs that require refreshing Spotify inputs before orchestration/validation.
+- approval_record: Requested directly by the user in chat on 2026-04-14.
+
+## C-377
+- date: 2026-04-14
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Expanded the internal mentor video walkthrough with a stage-by-stage execution guide that explains each pipeline stage and lists concrete output files to show during recording.
+- reason: The user requested that the internal walkthrough explicitly state what each stage does and what each stage output is.
+- evidence_basis: Added section `4A. Stage-By-Stage: What It Does + What Output To Show` in `00_admin/mentor_video_walkthrough_internal.md` covering BL-003 through BL-014 outputs.
+- affected_components: `00_admin/mentor_video_walkthrough_internal.md`, `00_admin/change_log.md`.
+- impact_assessment: Medium-positive. Improves presentation clarity and reduces uncertainty during live stage-by-stage explanation.
+- approval_record: Requested directly by the user in chat on 2026-04-14.
+
+## C-368
+- date: 2026-04-14
+- proposed_by: Copilot
+- status: accepted
+- change_summary: Relocated the mentor video walkthrough from the handoff bundle into `00_admin` so the guide remains internal and is not packaged for mentor delivery.
+- reason: The user clarified they will not send the walkthrough file to the mentor and requested that it be moved to an admin-only location.
+- evidence_basis: Moved `07_implementation/mentor_feedback_submission/MENTOR_VIDEO_WALKTHROUGH.md` to `00_admin/mentor_video_walkthrough_internal.md`; confirmed the bundle path no longer contains a walkthrough markdown file.
+- affected_components: `00_admin/mentor_video_walkthrough_internal.md`, `07_implementation/mentor_feedback_submission/MENTOR_VIDEO_WALKTHROUGH.md`, `00_admin/change_log.md`.
+- impact_assessment: Medium-positive. Keeps the mentor submission package cleaner while preserving the walkthrough script as an internal aid.
+- approval_record: Requested directly by the user in chat on 2026-04-14.
+
+## C-369
+- date: 2026-04-14
+- proposed_by: Copilot
+- status: accepted
+- change_summary: Refreshed the mentor-package README setup and run guidance for a fresh-machine workflow, including unzip/open-folder steps, Windows and macOS/Linux setup, activation-policy fallback, expected console flow, and troubleshooting notes.
+- reason: The user requested that the mentor package README setup be fully up to date and complete for practical execution on another machine.
+- evidence_basis: Updated `07_implementation/mentor_feedback_submission/README.md` to align with the current wrapper entrypoint behavior in `main.py` and current dependency surface in `requirements.txt`.
+- affected_components: `07_implementation/mentor_feedback_submission/README.md`, `00_admin/change_log.md`.
+- impact_assessment: Medium-positive. Improves handoff usability and reduces setup ambiguity without changing runtime code.
+- approval_record: Requested directly by the user in chat on 2026-04-14.
+
+## C-370
+- date: 2026-04-14
+- proposed_by: Copilot
+- status: accepted
+- change_summary: Rewrote the mentor-package README tone to a neutral standalone project README while keeping setup/run instructions intact.
+- reason: The user requested that the README no longer read as mentor-facing and instead look like a normal project README.
+- evidence_basis: Updated title, opening description, and section labels in `07_implementation/mentor_feedback_submission/README.md`; removed mentor-facing phrasing while preserving the same executable commands and troubleshooting guidance.
+- affected_components: `07_implementation/mentor_feedback_submission/README.md`, `00_admin/change_log.md`.
+- impact_assessment: Medium-positive. Improves presentation neutrality without changing runtime behavior.
+- approval_record: Requested directly by the user in chat on 2026-04-14.
+
+## C-371
+- date: 2026-04-14
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Captured the user-edited final README version for the standalone mentor package as the pre-zip checkpoint.
+- reason: The user confirmed the README was manually updated and requested that this final version be saved in governance logs before creating the zip archive.
+- evidence_basis: Current `07_implementation/mentor_feedback_submission/README.md` state preserves neutral project tone, fresh-machine setup instructions, and the current run/validation command surface (`python main.py`, `python main.py --validate-only`, optional explicit run-config and continue-on-error flags).
+- affected_components: `07_implementation/mentor_feedback_submission/README.md`, `00_admin/change_log.md`, `00_admin/timeline.md`.
+- impact_assessment: Medium-positive. Establishes a clear packaging checkpoint for the README that is actually being shipped in the zip.
+- approval_record: Requested directly by the user in chat on 2026-04-14.
+
+## C-372
+- date: 2026-04-14
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Updated README Windows setup to a no-activation `.venv\Scripts\python.exe` workflow and added a parser-error note for rich-text pasted commands.
+- reason: The user requested the README to reflect the exact command path that worked reliably during setup and avoid prior PowerShell activation/parser friction.
+- evidence_basis: Updated `07_implementation/mentor_feedback_submission/README.md` Windows section to use conditional venv creation, direct interpreter pip install, and direct validate-only run command; added troubleshooting note for `[python.exe](http://...)` paste artifacts.
+- affected_components: `07_implementation/mentor_feedback_submission/README.md`, `00_admin/change_log.md`.
+- impact_assessment: Medium-positive. Reduces setup failure modes on fresh Windows machines without changing runtime behavior.
+- approval_record: Requested directly by the user in chat on 2026-04-14.
+
+## C-373
+- date: 2026-04-14
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Removed the rich-text parser troubleshooting note from the mentor-package README.
+- reason: The user requested removal of the rich-text formatting troubleshooting content from the README.
+- evidence_basis: Deleted the troubleshooting bullet that referenced `[python.exe](http://...)` parser artifacts in `07_implementation/mentor_feedback_submission/README.md`.
+- affected_components: `07_implementation/mentor_feedback_submission/README.md`, `00_admin/change_log.md`.
+- impact_assessment: Low-positive. Keeps the README cleaner while preserving core setup and run instructions.
+- approval_record: Requested directly by the user in chat on 2026-04-14.
+
+## C-374
+- date: 2026-04-14
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Added a single complete copy-paste Windows setup-and-run block to README with a path placeholder and no activation dependency.
+- reason: The user requested one full command block from README that can be copied directly and run with only the folder path changed.
+- evidence_basis: Updated the Windows PowerShell section in `07_implementation/mentor_feedback_submission/README.md` with a full multi-line block that sets location, creates/reuses venv, installs requirements, and runs validate-only.
+- affected_components: `07_implementation/mentor_feedback_submission/README.md`, `00_admin/change_log.md`.
+- impact_assessment: Medium-positive. Reduces setup ambiguity and improves first-run reliability on Windows.
+- approval_record: Requested directly by the user in chat on 2026-04-14.
+
+## C-375
+- date: 2026-04-14
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Removed macOS/Linux setup content from the mentor-package README and normalized setup guidance to Windows PowerShell only.
+- reason: The user requested removal of the macOS/Linux parts from README.
+- evidence_basis: Deleted the `### macOS/Linux` section in `07_implementation/mentor_feedback_submission/README.md`, updated prerequisites to Windows PowerShell-only wording, and adjusted quick-check/troubleshooting labels accordingly.
+- affected_components: `07_implementation/mentor_feedback_submission/README.md`, `00_admin/change_log.md`.
+- impact_assessment: Low-positive. Simplifies the README for the user's intended Windows execution path.
+- approval_record: Requested directly by the user in chat on 2026-04-14.
+
+## C-378
+- date: 2026-04-15
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Logged the latest Chapter 2 mentor feedback without changing the literature review text: recorded the mentor's positive overall assessment, captured the two requested additions (an explicit closing gap-to-thesis bridge sentence and simple framework diagrams), marked `MQ-009` as answered, and updated the writing timeline status.
+- reason: The user requested that the new mentor feedback be logged immediately and explicitly instructed that `08_writing/chapter2.md` must not be changed in this session.
+- evidence_basis: User-provided mentor feedback in chat on 2026-04-15; synchronized admin updates in `00_admin/mentor_feedback_log.md` (`MF-003`), `00_admin/mentor_question_log.md` (`MQ-009` answered), and `00_admin/timeline.md` (M6 feedback-received note).
+- affected_components: `00_admin/mentor_feedback_log.md`, `00_admin/mentor_question_log.md`, `00_admin/timeline.md`, `00_admin/change_log.md`.
+- impact_assessment: Medium-positive. Preserves an auditable record of the final mentor guidance while keeping the current Chapter 2 baseline unchanged until a separate approved edit pass.
+- approval_record: Requested directly by the user in chat on 2026-04-15.
+
+## C-379
+- date: 2026-04-15
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Started Chapter 2 mentor-closeout implementation by inserting two argument-led framework diagrams and one explicit final bridge sentence in the literature review chapter.
+- reason: The user requested implementation start under the approved plan, and mentor feedback MF-003 explicitly required (1) a clear "this thesis addresses this gap" closing sentence and (2) visual framework diagrams.
+- evidence_basis: Updated `08_writing/chapter2.md` with `Figure 2.1` (paradigm trade-off matrix), `Figure 2.2` (uncertainty-aware recommendation pipeline), and one closing bridge sentence appended to the final limitations paragraph; post-edit diagnostics check reported no errors for the file.
+- affected_components: `08_writing/chapter2.md`, `00_admin/decision_log.md` (`D-117`), `00_admin/timeline.md`, `00_admin/mentor_feedback_log.md`, `00_admin/change_log.md`.
+- impact_assessment: High-positive. Directly closes the two mentor-requested additions with bounded scope and preserves literature-first chapter boundaries.
+- approval_record: Requested directly by the user in chat on 2026-04-15.
+
+## C-380
+- date: 2026-04-15
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Applied a bounded wording polish to the new Chapter 2 closeout additions by tightening figure-caption phrasing and shortening the final bridge sentence while preserving argument content and citation scope.
+- reason: User requested continuation after the initial implementation pass; this step improves readability and concision without changing chapter scope or adding new claims.
+- evidence_basis: Updated `08_writing/chapter2.md` caption lines for `Figure 2.1` and `Figure 2.2`, and revised the final gap-bridge sentence to a more concise one-sentence formulation; post-edit diagnostics check reported no errors.
+- affected_components: `08_writing/chapter2.md`, `00_admin/change_log.md`.
+- impact_assessment: Medium-positive. Improves clarity and mentor-readability of the newly inserted closeout elements while preserving the same literature-grounded meaning.
+- approval_record: Requested directly by the user in chat on 2026-04-15.
+
+## C-381
+- date: 2026-04-15
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Replaced the single-sentence Chapter 2 bridge closeout with a structured `Research Gap and Thesis Contribution` section containing an identified-gap paragraph, a numbered thesis-response subsection, and a six-row gap summary table grounded in claims already made in the chapter.
+- reason: The user requested a stronger evidence-bounded ending that makes the chapter's research gap and thesis contribution clearer without rewriting any body sections.
+- evidence_basis: Updated `08_writing/chapter2.md` end section only; six table rows map to existing chapter claims on transparency versus accuracy, profile construction opacity, candidate generation neglect, controllability without measurable effect, reproducibility gaps, and multi-objective playlist evaluation; post-edit diagnostics check reported no errors.
+- affected_components: `08_writing/chapter2.md`, `00_admin/decision_log.md` (`D-118`), `00_admin/change_log.md`, `00_admin/timeline.md`, `00_admin/mentor_feedback_log.md`.
+- impact_assessment: High-positive. Strengthens the chapter ending with clearer research-gap articulation and contribution traceability while preserving literature-first tone and bounded revision scope.
+- approval_record: Requested directly by the user in chat on 2026-04-15.
+
+## C-382
+- date: 2026-04-15
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Completed the final Chapter 2 closeout formatting refinement by converting the uncertainty-aware pipeline from monospaced text into a Mermaid box-and-arrow flowchart in the chapter source and normalizing capitalization in the gap table contribution column.
+- reason: User review identified two remaining presentation issues after the structured closeout section was added: the pipeline still appeared as a plain code block rather than a diagram source, and the third-column table entries had inconsistent capitalization.
+- evidence_basis: Replaced the `Figure 2.2` text block in `08_writing/chapter2.md` with a Mermaid flowchart preserving the same stage logic and uncertainty annotations; capitalized the initial word of each `This Thesis Addresses It By` cell in the six-row gap table; post-edit diagnostics check reported no errors.
+- affected_components: `08_writing/chapter2.md`, `00_admin/change_log.md`.
+- impact_assessment: Medium-positive. Improves final presentation consistency and makes the pipeline figure easier to convert into a proper visual for thesis-document insertion without changing substantive claims.
+- approval_record: Requested directly by the user in chat on 2026-04-15.
+
+## C-383
+- date: 2026-04-15
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Simplified the Chapter 2 closing block by replacing the structured list-and-table closeout with a tighter two-paragraph `Research Gap and Thesis Positioning` section while preserving figures and the chapter body unchanged.
+- reason: User review judged the structured ending as overcomplicated and requested a cleaner close that keeps argument strength without repetitive presentation layers.
+- evidence_basis: Updated only the closing section in `08_writing/chapter2.md` (heading + two concise paragraphs), removed the numbered thesis-response list and six-row gap table, and retained the earlier `Figure 2.1` and `Figure 2.2` inserts; post-edit diagnostics reported no errors.
+- affected_components: `08_writing/chapter2.md`, `00_admin/decision_log.md` (`D-119`), `00_admin/timeline.md`, `00_admin/change_log.md`.
+- impact_assessment: High-positive. Improves readability and narrative confidence at the end of Chapter 2 while keeping all substantive claims evidence-bounded and consistent with prior mentor-closeout additions.
+- approval_record: Requested directly by the user in chat on 2026-04-15.
+
+## C-384
+- date: 2026-04-15
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Hardened the simplified Chapter 2 closeout by adding targeted citation anchors in the final two paragraphs, reducing local repetition against the preceding synthesis paragraph, and adding one explicit contribution-boundary sentence.
+- reason: User agreed with the improvement plan to make the new two-paragraph ending more examiner-proof without reintroducing list/table complexity.
+- evidence_basis: Updated `08_writing/chapter2.md` closeout wording under `Research Gap and Thesis Positioning`; added inline anchor citations to the integrated-gap and thesis-positioning claims; retained chapter body and both figure inserts unchanged; post-edit diagnostics reported no errors.
+- affected_components: `08_writing/chapter2.md`, `00_admin/decision_log.md` (`D-120`), `00_admin/timeline.md`, `00_admin/change_log.md`.
+- impact_assessment: High-positive. Improves claim-traceability and closeout precision while preserving the concise ending structure requested by the user.
+- approval_record: Requested directly by the user in chat on 2026-04-15.
+
+## C-385
+- date: 2026-04-15
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Applied a micro-level readability pass to Chapter 2 figure-area wording by simplifying the Figure 2.1 caption, replacing the `Cross-cutting caveat` label with direct prose, and shortening the Figure 2.2 caption.
+- reason: User requested specific phrasing refinements to improve flow and reduce report-like tone while preserving the same meaning.
+- evidence_basis: Updated three lines in `08_writing/chapter2.md` only: Figure 2.1 caption, the caveat sentence under Figure 2.1, and Figure 2.2 caption; no claim scope or citation set changed; post-edit diagnostics reported no errors.
+- affected_components: `08_writing/chapter2.md`, `00_admin/decision_log.md` (`D-121`), `00_admin/timeline.md`, `00_admin/change_log.md`.
+- impact_assessment: Medium-positive. Improves readability and stylistic consistency in the visual-anchor section without changing substantive literature claims.
+- approval_record: Requested directly by the user in chat on 2026-04-15.
+
+## C-386
+- date: 2026-04-15
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Completed the final Chapter 2 micro-polish by reinforcing citation density on the limitations sentence and normalizing the remaining US-spelling `behavior` instances to UK spelling across prose, table, and Mermaid figure text.
+- reason: User requested one final polish pass after submission-readiness review identified only two optional cleanup items.
+- evidence_basis: Updated `08_writing/chapter2.md` to add anchor citations for the two limitations in the synthesis close, changed `behavior` to `behaviour` in the paradigm table, metric-sensitivity prose, and Figure 2.2 Mermaid source, and retained all substantive claims unchanged; post-edit diagnostics reported no errors.
+- affected_components: `08_writing/chapter2.md`, `00_admin/decision_log.md` (`D-122`), `00_admin/timeline.md`, `00_admin/change_log.md`.
+- impact_assessment: Medium-positive. Removes the last visible polish debt before submission by improving citation support and spelling consistency without altering the chapter argument.
+- approval_record: Requested directly by the user in chat on 2026-04-15.
+
+## C-387
+- date: 2026-04-15
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Refined the Chapter 2 ending structure by replacing the early transition sentence with a softer formulation and merging the two overlapping pre-gap synthesis/limitations paragraphs into one tighter paragraph, while preserving the `Research Gap and Thesis Positioning` and thesis-positioning paragraphs unchanged.
+- reason: User requested one final structural cleanup limited to the ending so the closing sequence reads as Figure 2.2, one merged synthesis/limitations paragraph, the gap paragraph, and the thesis-positioning paragraph.
+- evidence_basis: Updated `08_writing/chapter2.md` by replacing the earlier `The literature progresses...` sentence with the user-approved softer sentence and substituting the two overlapping pre-gap paragraphs with the exact merged paragraph supplied by the user; post-edit diagnostics reported no errors.
+- affected_components: `08_writing/chapter2.md`, `00_admin/decision_log.md` (`D-123`), `00_admin/timeline.md`, `00_admin/change_log.md`.
+- impact_assessment: High-positive. Removes the last remaining redundancy in the ending and improves chapter-close flow without changing the already approved gap and thesis-positioning content.
+- approval_record: Requested directly by the user in chat on 2026-04-15.
+
+## C-388
+- date: 2026-04-15
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Aligned thesis title and Chapter 2 positioning wording to the new title baseline by updating the active title in thesis state and applying two targeted phrase changes in the thesis-positioning paragraph.
+- reason: User declared a new thesis title and requested exact wording alignment in the Chapter 2 positioning paragraph.
+- evidence_basis: Updated `00_admin/thesis_state.md` active title to `Designing and Evaluating a Transparent and Controllable Playlist Generation Pipeline Using Cross-Source Music Preference Data`; updated `08_writing/chapter2.md` positioning paragraph by changing `engineering and evaluating` to `designing and evaluating` and replacing the final contribution-boundary sentence with the user-specified title-aligned wording; post-edit diagnostics reported no errors.
+- affected_components: `00_admin/thesis_state.md`, `08_writing/chapter2.md`, `00_admin/decision_log.md` (`D-124`), `00_admin/timeline.md`, `00_admin/change_log.md`.
+- impact_assessment: High-positive. Restores title-to-positioning consistency with minimal, user-directed wording changes and no scope expansion.
+- approval_record: Requested directly by the user in chat on 2026-04-15.
+
+## C-389
+- date: 2026-04-15
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Synchronized the thesis-state update-control metadata to explicitly reflect the new active title baseline and its linked Chapter 2 positioning alignment.
+- reason: User requested that thesis state reflect the new title; the active title was already updated, so this pass aligned the file's own update-control section to the same change for internal consistency.
+- evidence_basis: Updated the `## Update Control` block in `00_admin/thesis_state.md` so `Last updated` and `Reason for last update` now reference the 2026-04-15 title/positioning alignment checkpoint and the new title text.
+- affected_components: `00_admin/thesis_state.md`, `00_admin/change_log.md`.
+- impact_assessment: Medium-positive. Removes metadata drift inside the thesis-state control file and keeps governance traceability consistent with the active title baseline.
+- approval_record: Requested directly by the user in chat on 2026-04-15.
+
+## C-390
+- date: 2026-04-15
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Implemented the chapter-structure split by separating implementation, evaluation, and discussion into distinct writing surfaces (`chapter4.md`, `chapter5.md`, `chapter6.md`) and synchronized Chapter 3/governance references.
+- reason: User requested implementation of the chapter split plan rather than a planning-only response.
+- evidence_basis: Rewrote `08_writing/chapter4.md` to implementation/evidence-surface scope; rewrote `08_writing/chapter5.md` to evaluation/results scope; added `08_writing/chapter6.md` for interpretation and bounded contribution discussion; updated Chapter 3 cross-references and synchronized timeline/thesis-state metadata.
+- affected_components: `08_writing/chapter3.md`, `08_writing/chapter4.md`, `08_writing/chapter5.md`, `08_writing/chapter6.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`, `00_admin/decision_log.md`, `00_admin/change_log.md`.
+- impact_assessment: High-positive. Reduces mixed-purpose chapter overlap, improves traceability from design to implementation to evaluation to discussion, and lowers final proofing risk.
+- approval_record: Requested directly by the user in chat on 2026-04-15.
+
+## C-391
+- date: 2026-04-16
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Added a new alternative Chapter 3 draft (`chapter3_v3.md`) derived from the current Chapter 2 research-gap and thesis-positioning logic while intentionally avoiding implementation-reflective wording.
+- reason: User requested a second Chapter 3 variant based on the new Chapter 2 rather than on the current implementation surface.
+- evidence_basis: Created `08_writing/chapter3_v3.md` with design-only sections on uncertainty-aware preference evidence, candidate-shaping visibility, playlist trade-off control, mechanism-linked explanation, observability, reproducibility, and Chapter 2-to-Chapter 3 handoff mapping; synchronized decision/timeline logging.
+- affected_components: `08_writing/chapter3_v3.md`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/timeline.md`.
+- impact_assessment: Medium-positive. Produces a cleaner comparison draft for Chapter 3 development while preserving the active governed chapter set unchanged.
+- approval_record: Requested directly by the user in chat on 2026-04-16.
+
+## C-392
+- date: 2026-04-16
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Applied a thesis-readability compression pass to `chapter3_v3.md` by shortening dense sections, removing internal mapping scaffolds, embedding the figures into the relevant sections, renaming the configuration section, and simplifying abstract wording.
+- reason: User provided detailed feedback that the draft was academically strong but overengineered, repetitive, and too framework-heavy for a thesis chapter.
+- evidence_basis: Reworked the chapter objective and methodology phrasing; converted design requirements into a compact table; reduced the architecture overview from eleven layers to seven stages; embedded the two figures inside Sections 3.4 and 3.6; replaced the run-record list with prose; removed the handoff and requirement-mapping sections; added a concise chapter summary.
+- affected_components: `08_writing/chapter3_v3.md`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/timeline.md`.
+- impact_assessment: High-positive. Preserves the chapter's design logic while making it more readable, less repetitive, and more suitable for a final thesis draft.
+- approval_record: Requested directly by the user in chat on 2026-04-16.
+
+## C-393
+- date: 2026-04-16
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Applied a focused line-edit pass to `chapter3_v3.md` for concision and concreteness, including lighter phrasing in alignment/scoring sections, a more specific profile description in Section 3.5, improved diagram labels, and removal of the repeated design-only reminder in Section 3.8.
+- reason: User review indicated that the chapter was now structurally strong but still needed small wording cleanups, reduced meta framing, and slightly more tangible design description.
+- evidence_basis: Revised the chapter objective; renamed the requirements table column to `Design rationale`; replaced abstract phrases such as `first-order design surface` and `homogeneous profile basis`; clarified the profile as weighted feature summaries from aligned events plus influence-track inputs; simplified the run-record sentence; and made the summary forward reference more direct.
+- affected_components: `08_writing/chapter3_v3.md`, `00_admin/change_log.md`, `00_admin/timeline.md`.
+- impact_assessment: Medium-positive. Improves readability and specificity without changing the chapter's structure or contribution boundary.
+- approval_record: Requested directly by the user in chat on 2026-04-16.
+
+## C-394
+- date: 2026-04-16
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Rewrote `chapter1.md` into a thesis-facing academic introduction format by removing internal project-management language and adding missing examiner-expected sections for background context and report structure.
+- reason: User requested Chapter 1 to match the structural and stylistic standard of the university sample introduction chapter.
+- evidence_basis: Added contextual motivation and technical background (recommender systems, cross-source uncertainty, transparency/controllability rationale), reformatted the research question as a standalone block quote, separated aim/objectives as bullet lists, added report framework section, added a chapter summary bridge to Chapter 2, and removed phrasing such as `locked`, `current thesis state`, and `locked MVP boundary`.
+- affected_components: `08_writing/chapter1.md`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/timeline.md`.
+- impact_assessment: High-positive. Improves academic readability, chapter completeness, and examiner-facing structure while preserving the thesis contribution boundary.
+- approval_record: Requested directly by the user in chat on 2026-04-16.
+
+## C-395
+- date: 2026-04-16
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Applied final sample-alignment refinements in Chapter 1 by adding 1.4 sub-numbering, expanding the plain-language recommender-system definition in Section 1.2, and replacing figure-instruction text with an embedded Figure 1.1 image asset.
+- reason: User requested three targeted edits to match sample-report presentation standards before Chapter 1 submission.
+- evidence_basis: Added `1.4.1 Research Question`, `1.4.2 Aim`, and `1.4.3 Objectives` sub-headings; added novice-reader context sentences in Section 1.2; created `08_writing/figures/figure_1_1_pipeline.svg` and embedded it into `08_writing/chapter1.md` as Figure 1.1.
+- affected_components: `08_writing/chapter1.md`, `08_writing/figures/figure_1_1_pipeline.svg`, `00_admin/change_log.md`, `00_admin/timeline.md`.
+- impact_assessment: Medium-positive. Improves examiner-facing readability and presentation completeness without changing thesis scope or contribution claims.
+- approval_record: Requested directly by the user in chat on 2026-04-16.
+
+## C-396
+- date: 2026-04-16
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Applied final Chapter 1 prose-polish edits to simplify dense wording, convert the aim into a normal sentence, replace objective bullets with plainer language, and lightly trim repeated phrasing in Sections 1.2 and 1.3.
+- reason: User requested a final readability pass to match sample-report clarity while preserving structure.
+- evidence_basis: Replaced targeted phrases (`mechanism-level links`, `engineering quality boundary`, `multi-objective playlist trade-offs`, and related objective wording), updated the aim sentence exactly as requested, replaced objectives with the provided plain-language list, and shortened repeated statements in Sections 1.2 and 1.3.
+- affected_components: `08_writing/chapter1.md`, `00_admin/change_log.md`, `00_admin/timeline.md`.
+- impact_assessment: Medium-positive. Improves accessibility and readability for non-specialist readers without altering chapter structure or thesis scope.
+- approval_record: Requested directly by the user in chat on 2026-04-16.
+
+## C-397
+- date: 2026-04-16
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Applied final Chapter 1 micro-edits for terminology precision and punctuation consistency across the research-question wording, scope wording, report-framework wording, and objective bullets.
+- reason: User requested five final edits before declaring Chapter 1 complete.
+- evidence_basis: Updated phrase variants (`catalogues`, `competing playlist-quality objectives`, fixed Music4All scope sentence, `evidence produced by the artefact`) and added terminal full stops to all objective bullets in Section 1.4.3.
+- affected_components: `08_writing/chapter1.md`, `00_admin/change_log.md`, `00_admin/timeline.md`.
+- impact_assessment: Low-positive. Final consistency and readability polish with no structural or scope impact.
+- approval_record: Requested directly by the user in chat on 2026-04-16.
+
+## C-398
+- date: 2026-04-16
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Applied final Chapter 1 QA residual fixes by normalizing spelling consistency and removing one remaining Chapter 1 vs thesis-state wording drift in the active research question.
+- reason: Final QA pass identified two residual consistency issues that could create reviewer-facing ambiguity.
+- evidence_basis: Updated `chapter1.md` to use `playlist trade-off behaviour` for spelling consistency and aligned the active research-question wording in `thesis_state.md` from `multi-objective playlist trade-offs` to `competing playlist-quality objectives` to match Chapter 1.
+- affected_components: `08_writing/chapter1.md`, `00_admin/thesis_state.md`, `00_admin/change_log.md`, `00_admin/timeline.md`.
+- impact_assessment: Low-positive. Consistency hardening only; no scope or contribution change.
+- approval_record: Requested directly by the user in chat on 2026-04-16.
+
+## C-399
+- date: 2026-04-16
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Added a brief signposting paragraph at the start of `chapter2.md` to explicitly introduce the chapter's review scope and progression before detailed literature analysis.
+- reason: User requested implementation of the one remaining sample-alignment gap identified for Chapter 2.
+- evidence_basis: Inserted a two-sentence opening paragraph under `Chapter 2 — Literature Review` that states what the chapter reviews and how it is structured, without changing core sections or citations.
+- affected_components: `08_writing/chapter2.md`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/timeline.md`.
+- impact_assessment: Low-positive. Improves chapter orientation and examiner readability while preserving existing analytical content.
+- approval_record: Requested directly by the user in chat on 2026-04-16.
+
+## C-400
+- date: 2026-04-16
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Synchronized Chapter 1 and Chapter 2 to the user-provided current wording baseline, aligned thesis-state objectives to the Chapter 1 objective set, restored the fuller Chapter 2 transition paragraph, and added the missing Chapter 2 summary.
+
+## C-401
+- date: 2026-04-16
+- proposed_by: user
+- status: accepted
+- change_summary: Chapter 1 locked as final (first pass). Rewrote Chapter 1 for sample-aligned style: simpler opening, conventional headings, plain RQ/Aim/Objectives block, prose scope section, de-densified section 1.3 and objectives 4–6, simplified contribution section, standard report framework list, tightened chapter summary. Final wording in `08_writing/chapter1.md`.
+- artifacts_affected: 08_writing/chapter1.md
+- impact_assessment: Low-positive. Chapter 1 is submission-ready; no content changes to RQ, objectives, or scope boundaries.
+
+## C-402
+- date: 2026-04-16
+- proposed_by: user
+- status: accepted
+- change_summary: Chapter 1 re-locked as final after user edits. User applied minor wording refinements to 1.1 (motivation paragraph phrasing). Final version confirmed in `08_writing/chapter1.md`.
+- artifacts_affected: 08_writing/chapter1.md
+- impact_assessment: Low. Wording refinements only; no structural or content changes.
+
+## C-403
+- date: 2026-04-16
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Chapter 2 formatting locked as final. Added `#`/`##` heading markers, numbered sections 2.1–2.9, and removed 4-space paragraph indentation throughout to match Chapter 1 style. Content unchanged. Final version confirmed in `08_writing/chapter2.md`.
+- artifacts_affected: 08_writing/chapter2.md
+- impact_assessment: Low-positive. Formatting now consistent with Chapter 1; no content changes.
+
+## C-401
+- date: 2026-04-16
+- proposed_by: user
+- status: accepted
+- change_summary: Chapter 1 locked as final. Rewrote Chapter 1 for sample-aligned style: simpler opening, conventional headings, plain RQ/Aim/Objectives block, prose scope section, de-densified section 1.3 and objectives 4–6, simplified contribution section, standard report framework list, tightened chapter summary. Final wording in `08_writing/chapter1.md`.
+- artifacts_affected: 08_writing/chapter1.md
+- impact_assessment: Low-positive. Chapter 1 is now submission-ready; no content changes to RQ, objectives, or scope boundaries.
+- reason: User requested that everything be synced to the current Chapter 1 and Chapter 2 versions provided in chat.
+- evidence_basis: `08_writing/chapter1.md` now uses the supplied `behavior` spellings in the objective/report-framework lines; `08_writing/chapter2.md` now includes the supplied progression paragraph and chapter summary; `00_admin/thesis_state.md` objectives now match the Chapter 1 wording baseline.
+- affected_components: `08_writing/chapter1.md`, `08_writing/chapter2.md`, `00_admin/thesis_state.md`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/timeline.md`.
+- impact_assessment: Medium-positive. Removes chapter-to-governance wording drift and restores the current chapter baseline without disturbing validated figure assets.
+- approval_record: Requested directly by the user in chat on 2026-04-16.
+
+## C-421
+- date: 2026-04-17
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Applied Chapter 3 literature-depth integration pass: added four targeted prose caveats (Flexer & Grill 2016 on feature adequacy, Herlocker et al. 2004 on metric sensitivity, Knijnenburg et al. 2012 on explanation utility limits, Afroogh et al. 2024 on local-execution trust framing) to deepen design reasoning without restructuring. Flagged three design-verification items (UNDO-A/B/C) for later investigation per Roy & Dutta, Schedl et al., and Zamani/Ferraro findings on input validation, sequential coherence, and candidate diagnostics.
+- reason: Chapter 3 literature gap analysis identified specific research findings underexplored in the design chapter. This pass deepens reasoning to ground design choices explicitly in literature while deferring implementation verification to post-Chapter-3-finalization investigation phase.
+- evidence_basis: Section 3.7 now includes Flexer & Grill caveat on feature adequacy; Section 3.9 now credits Herlocker et al. as foundational metric-sensitivity work; Section 3.11 now includes Knijnenburg caveat on explanation utility dependency on context; Section 3.5 now frames lightweight local execution via Afroogh trust model. Sections remain unnumbered; no restructuring occurred. Three unresolved issues (UNDO-A, UNDO-B, UNDO-C) added to `00_admin/unresolved_issues.md` with investigation scopes and contact paths.
+- affected_components: `08_writing/chapter3.md` (4 prose additions), `00_admin/unresolved_issues.md` (3 new investigation entries), `00_admin/thesis_state.md`, `00_admin/change_log.md`
+- impact_assessment: Low-positive. Enhances design reasoning transparency and establishes a record of deferred implementation verifications without changing chapter structure or thesis contribution scope.
+- approval_record: Requested and implemented directly by user/Copilot in chat on 2026-04-17 after literature gap analysis planning phase.
+## C-404
+- date: 2026-04-16
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Replaced  0_admin/thesis_state.md with a clean, legible current-state document. Removed embedded historical priority-status checkpoints and post-closure enhancement checkpoint blocks (which belong only in change_log.md). Active locked definitions, chapter status table, rebuild milestone summary, implementation status table, and governance quickref are now the top-level content. Old content archived verbatim to  0_admin/thesis_state_ARCHIVE_20260416.md.
+- reason: User requested a thesis state cleanup to make the document up to date and legible. The prior 371-line file was dominated by non-current historical logs that obscured the actual active state.
+- evidence_basis: New 	hesis_state.md is ~130 lines; archive file preserves prior content; no locked definitions, governance IDs, or chapter statuses were changed.
+- affected_components:  0_admin/thesis_state.md,  0_admin/thesis_state_ARCHIVE_20260416.md,  0_admin/change_log.md
+- impact_assessment: Medium-positive. Substantially improves readability and session-start clarity without changing any active thesis content or governance pointers.
+- approval_record: Requested and confirmed by user in chat on 2026-04-16.
