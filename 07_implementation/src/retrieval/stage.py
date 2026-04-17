@@ -29,6 +29,7 @@ from shared_utils.parsing import safe_float, safe_int
 from shared_utils.stage_utils import ensure_paths_exist
 
 from retrieval.candidate_evaluator import RetrievalEvaluator
+from retrieval.filtering_logic import keep_decision
 from retrieval.input_validation import validate_bl004_bl005_handshake
 from retrieval.candidate_parser import normalize_candidate_row
 from retrieval.models import NumericFeatureSpec, RetrievalContext, RetrievalControls, RetrievalInputs, RetrievalPaths
@@ -556,6 +557,196 @@ class RetrievalStage:
         }
 
     @staticmethod
+    def _build_threshold_attribution(
+        *,
+        decisions: list[dict[str, object]],
+        runtime_context: RetrievalContext,
+    ) -> dict[str, object]:
+        rejected_threshold_rows = [
+            row
+            for row in decisions
+            if str(row.get("decision_path", "")).startswith("reject_threshold")
+        ]
+        numeric_fail_counts = {
+            feature: 0 for feature in runtime_context.active_numeric_specs
+        }
+        numeric_missing_counts = {
+            feature: 0 for feature in runtime_context.active_numeric_specs
+        }
+        semantic_below_min = 0
+        semantic_between_min_and_strong = 0
+        numeric_support_below_min = 0
+
+        for row in rejected_threshold_rows:
+            semantic_score = safe_float(row.get("semantic_score", 0.0), 0.0)
+            if semantic_score < runtime_context.effective_semantic_min_keep_score:
+                semantic_below_min += 1
+            elif semantic_score < runtime_context.effective_semantic_strong_keep_score:
+                semantic_between_min_and_strong += 1
+
+            if runtime_context.use_continuous_numeric:
+                selected_score = safe_float(row.get("numeric_support_score_selected", 0.0), 0.0)
+                if selected_score < runtime_context.effective_numeric_support_min_score:
+                    numeric_support_below_min += 1
+            else:
+                pass_count = safe_int(row.get("numeric_pass_count", 0), 0)
+                if pass_count < runtime_context.effective_numeric_support_min_pass:
+                    numeric_support_below_min += 1
+
+            for feature, spec in runtime_context.active_numeric_specs.items():
+                distance_key = f"{feature}_distance"
+                distance_raw = row.get(distance_key)
+                if distance_raw in (None, ""):
+                    numeric_missing_counts[feature] += 1
+                    continue
+                distance = safe_float(distance_raw, -1.0)
+                if distance >= 0.0 and distance > spec.threshold:
+                    numeric_fail_counts[feature] += 1
+
+        rejected_total = len(rejected_threshold_rows)
+        top_failure_features = sorted(
+            [
+                {
+                    "feature": feature,
+                    "failed_count": int(count),
+                    "failed_share": round((count / rejected_total), 6) if rejected_total else 0.0,
+                    "missing_count": int(numeric_missing_counts.get(feature, 0)),
+                    "configured_threshold": round(
+                        safe_float(runtime_context.active_numeric_specs[feature].threshold, 0.0),
+                        6,
+                    ),
+                }
+                for feature, count in numeric_fail_counts.items()
+            ],
+            key=lambda item: (safe_int(item.get("failed_count", 0), 0), item.get("feature", "")),
+            reverse=True,
+        )[:5]
+
+        return {
+            "rejected_threshold_candidates": rejected_total,
+            "semantic_below_effective_min_count": semantic_below_min,
+            "semantic_between_min_and_strong_count": semantic_between_min_and_strong,
+            "numeric_support_below_effective_min_count": numeric_support_below_min,
+            "numeric_feature_fail_counts": numeric_fail_counts,
+            "numeric_feature_missing_counts": numeric_missing_counts,
+            "top_failure_features": top_failure_features,
+            "notes": (
+                "Counts are heuristic attribution summaries from candidate-level decision rows; "
+                "they are diagnostic aids, not full causal proof."
+            ),
+        }
+
+    @staticmethod
+    def _build_bounded_what_if_estimates(
+        *,
+        decisions: list[dict[str, object]],
+        runtime_context: RetrievalContext,
+    ) -> dict[str, object]:
+        candidate_rows = [
+            row
+            for row in decisions
+            if not bool(safe_int(row.get("is_seed_track", 0), 0))
+            and not str(row.get("decision_path", "")).startswith("reject_language_filter")
+            and not str(row.get("decision_path", "")).startswith("reject_recency_gate")
+        ]
+
+        def estimate_kept(
+            *,
+            semantic_strong: float,
+            semantic_min: float,
+            numeric_min_pass: int,
+            numeric_min_score: float,
+        ) -> int:
+            kept_count = 0
+            for row in candidate_rows:
+                kept, _ = keep_decision(
+                    False,
+                    safe_float(row.get("semantic_score", 0.0), 0.0),
+                    safe_int(row.get("numeric_pass_count", 0), 0),
+                    runtime_context.numeric_features_enabled,
+                    semantic_strong,
+                    semantic_min,
+                    numeric_min_pass,
+                    numeric_support_score=safe_float(row.get("numeric_support_score_selected", 0.0), 0.0),
+                    numeric_support_min_score=numeric_min_score,
+                    use_continuous_numeric=runtime_context.use_continuous_numeric,
+                    language_match=None,
+                    recency_pass=None,
+                )
+                if kept:
+                    kept_count += 1
+            return kept_count
+
+        base_kept = sum(1 for row in candidate_rows if str(row.get("decision", "")) == "keep")
+        perturbation_pct = 0.10
+
+        relaxed_semantic_min = runtime_context.effective_semantic_min_keep_score * (1.0 - perturbation_pct)
+        relaxed_semantic_strong = max(
+            relaxed_semantic_min,
+            runtime_context.effective_semantic_strong_keep_score * (1.0 - perturbation_pct),
+        )
+        if runtime_context.use_continuous_numeric:
+            relaxed_numeric_min_pass = runtime_context.effective_numeric_support_min_pass
+            relaxed_numeric_min_score = runtime_context.effective_numeric_support_min_score * (1.0 - perturbation_pct)
+        else:
+            relaxed_numeric_min_pass = max(0, runtime_context.effective_numeric_support_min_pass - 1)
+            relaxed_numeric_min_score = runtime_context.effective_numeric_support_min_score
+
+        tightened_semantic_min = runtime_context.effective_semantic_min_keep_score * (1.0 + perturbation_pct)
+        tightened_semantic_strong = max(
+            tightened_semantic_min,
+            runtime_context.effective_semantic_strong_keep_score * (1.0 + perturbation_pct),
+        )
+        if runtime_context.use_continuous_numeric:
+            tightened_numeric_min_pass = runtime_context.effective_numeric_support_min_pass
+            tightened_numeric_min_score = runtime_context.effective_numeric_support_min_score * (1.0 + perturbation_pct)
+        else:
+            tightened_numeric_min_pass = runtime_context.effective_numeric_support_min_pass + 1
+            tightened_numeric_min_score = runtime_context.effective_numeric_support_min_score
+
+        relaxed_kept = estimate_kept(
+            semantic_strong=relaxed_semantic_strong,
+            semantic_min=relaxed_semantic_min,
+            numeric_min_pass=relaxed_numeric_min_pass,
+            numeric_min_score=relaxed_numeric_min_score,
+        )
+        tightened_kept = estimate_kept(
+            semantic_strong=tightened_semantic_strong,
+            semantic_min=tightened_semantic_min,
+            numeric_min_pass=tightened_numeric_min_pass,
+            numeric_min_score=tightened_numeric_min_score,
+        )
+
+        return {
+            "considered_candidates": len(candidate_rows),
+            "base_kept_candidates": base_kept,
+            "perturbation": {
+                "label": "thresholds_plus_minus_10pct_with_discrete_pass_count_step",
+                "fraction": perturbation_pct,
+            },
+            "relaxed_estimate": {
+                "kept_candidates": relaxed_kept,
+                "delta_vs_base": relaxed_kept - base_kept,
+                "delta_share_vs_base": round(
+                    ((relaxed_kept - base_kept) / base_kept),
+                    6,
+                ) if base_kept > 0 else 0.0,
+            },
+            "tightened_estimate": {
+                "kept_candidates": tightened_kept,
+                "delta_vs_base": tightened_kept - base_kept,
+                "delta_share_vs_base": round(
+                    ((tightened_kept - base_kept) / base_kept),
+                    6,
+                ) if base_kept > 0 else 0.0,
+            },
+            "notes": (
+                "This is a bounded, row-level diagnostic estimate using existing decision features; "
+                "it is not a full rerun-level counterfactual simulation."
+            ),
+        }
+
+    @staticmethod
     def build_diagnostics_payload(
         *,
         run_id: str,
@@ -564,6 +755,7 @@ class RetrievalStage:
         runtime_context: RetrievalContext,
         controls: RetrievalControls | None = None,
         summary: dict[str, object],
+        decisions: list[dict[str, object]] | None = None,
         candidate_rows: list[dict[str, str]],
         kept_rows: list[dict[str, str]],
         output_paths: dict[str, Path],
@@ -575,6 +767,7 @@ class RetrievalStage:
         decision_path_counts = decision_path_counts_obj if isinstance(decision_path_counts_obj, dict) else {}
 
         validation = dict(handshake_validation or {})
+        resolved_decisions = decisions or []
         handshake_policy = "warn"
         if controls is not None:
             handshake_policy = controls.bl004_bl005_handshake_validation_policy
@@ -695,6 +888,14 @@ class RetrievalStage:
                 "numeric_rule_hits": summary["numeric_rule_hits"],
             },
             "decision_path_counts": summary["decision_path_counts"],
+            "threshold_attribution": RetrievalStage._build_threshold_attribution(
+                decisions=resolved_decisions,
+                runtime_context=runtime_context,
+            ),
+            "bounded_what_if_estimates": RetrievalStage._build_bounded_what_if_estimates(
+                decisions=resolved_decisions,
+                runtime_context=runtime_context,
+            ),
             "score_distributions": {
                 "semantic_score": summary["semantic_score_distribution"],
                 "numeric_pass_count": summary["numeric_pass_distribution"],
@@ -800,6 +1001,7 @@ class RetrievalStage:
             runtime_context=context,
             controls=controls,
             summary=evaluation.summary,
+            decisions=evaluation.decisions,
             candidate_rows=inputs.candidate_rows,
             kept_rows=evaluation.kept_rows,
             output_paths=output_paths,

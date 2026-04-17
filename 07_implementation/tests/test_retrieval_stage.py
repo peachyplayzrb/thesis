@@ -117,6 +117,18 @@ def test_build_diagnostics_payload_includes_expected_counts(tmp_path: Path) -> N
         runtime_context=context,
         controls=_controls(recency_offset=None),
         summary=summary,
+        decisions=[
+            {
+                "track_id": "cand_1",
+                "is_seed_track": 0,
+                "decision": "reject",
+                "decision_path": "reject_threshold",
+                "semantic_score": 0.4,
+                "numeric_pass_count": 0,
+                "numeric_support_score_selected": 0.2,
+                "tempo_distance": 25.0,
+            }
+        ],
         candidate_rows=inputs.candidate_rows,
         kept_rows=inputs.candidate_rows,
         output_paths={"filtered_path": filtered_path, "decisions_path": decisions_path},
@@ -127,6 +139,8 @@ def test_build_diagnostics_payload_includes_expected_counts(tmp_path: Path) -> N
     language_filter = cast(dict[str, Any], config["language_filter"])
     output_files = cast(dict[str, Any], payload_obj["output_files"])
     runtime_control_resolution = cast(dict[str, Any], config["runtime_control_resolution"])
+    threshold_attribution = cast(dict[str, Any], payload_obj["threshold_attribution"])
+    bounded_what_if = cast(dict[str, Any], payload_obj["bounded_what_if_estimates"])
 
     assert payload_obj["task"] == "BL-005"
     assert counts["seed_tracks_excluded"] == 1
@@ -136,6 +150,10 @@ def test_build_diagnostics_payload_includes_expected_counts(tmp_path: Path) -> N
     assert output_files["filtered_candidates_path"] == str(filtered_path)
     assert runtime_control_resolution["resolution_path"] == "environment"
     assert payload_obj["runtime_control_validation_warnings"] == ["test warning"]
+    assert threshold_attribution["rejected_threshold_candidates"] == 1
+    assert "tempo" in cast(dict[str, Any], threshold_attribution["numeric_feature_fail_counts"])
+    assert "relaxed_estimate" in bounded_what_if
+    assert "tightened_estimate" in bounded_what_if
 
 
 def test_run_returns_typed_artifacts(monkeypatch, tmp_path: Path) -> None:

@@ -96,6 +96,9 @@ def test_build_track_payload_maps_assembly_rule_label() -> None:
     assert payload["causal_driver"]["label"] == "Tempo"
     assert payload["narrative_driver"]["label"] == "Tag overlap"
     assert payload["control_provenance_ref"] == "run_level"
+    assert payload["control_causality"]["schema_version"] == "bl008-control-causality-v1"
+    assert payload["control_causality"]["decision_outcome"]["included_in_playlist"] is True
+    assert payload["control_causality"]["effect_direction"]["expected_direction"] == "promote_or_admit"
 
 
 def test_top_contributor_counts_aggregates_labels() -> None:

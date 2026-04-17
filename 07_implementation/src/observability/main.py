@@ -147,6 +147,50 @@ def build_source_resilience_diagnostics(bl003_summary: dict[str, object]) -> dic
     }
 
 
+def summarize_control_causality(explanations: list[dict[str, object]]) -> dict[str, object]:
+    required_top_keys = [
+        "schema_version",
+        "decision_outcome",
+        "controlling_parameters",
+        "effect_direction",
+        "evidence_sources",
+    ]
+    missing_top_key_counts = {key: 0 for key in required_top_keys}
+    missing_tracks: list[str] = []
+    schema_versions: dict[str, int] = {}
+
+    for explanation in explanations:
+        track_id = str(explanation.get("track_id", ""))
+        control_causality_raw = explanation.get("control_causality")
+        control_causality = to_mapping(control_causality_raw)
+
+        if not control_causality:
+            missing_tracks.append(track_id)
+            for key in required_top_keys:
+                missing_top_key_counts[key] += 1
+            continue
+
+        schema_version = str(control_causality.get("schema_version", ""))
+        schema_versions[schema_version] = schema_versions.get(schema_version, 0) + 1
+        for key in required_top_keys:
+            if key not in control_causality:
+                missing_top_key_counts[key] += 1
+
+    tracks_total = len(explanations)
+    tracks_with_control_causality = max(0, tracks_total - len(missing_tracks))
+    tracks_missing_required_keys = max(missing_top_key_counts.values()) if missing_top_key_counts else 0
+    return {
+        "required_keys": required_top_keys,
+        "schema_versions": schema_versions,
+        "tracks_total": tracks_total,
+        "tracks_with_control_causality": tracks_with_control_causality,
+        "tracks_missing_control_causality": len(missing_tracks),
+        "tracks_missing_required_keys": tracks_missing_required_keys,
+        "missing_top_key_counts": missing_top_key_counts,
+        "sample_missing_track_ids": missing_tracks[:5],
+    }
+
+
 def ensure_required_sections(run_log: dict) -> None:
     required_keys = [
         "run_metadata",
@@ -279,6 +323,20 @@ def main() -> None:
             handshake_validation["policy"],
             handshake_validation.get("sampled_violations", []),
         )
+    explanations_obj = bl008_payloads.get("explanations")
+    explanations = [
+        to_mapping(item)
+        for item in (explanations_obj if isinstance(explanations_obj, list) else [])
+        if isinstance(item, dict)
+    ]
+    rejected_causality_obj = bl008_payloads.get("rejected_track_control_causality")
+    rejected_causality = [
+        to_mapping(item)
+        for item in (rejected_causality_obj if isinstance(rejected_causality_obj, list) else [])
+        if isinstance(item, dict)
+    ]
+    control_causality_summary = summarize_control_causality(explanations)
+    rejected_control_causality_summary = summarize_control_causality(rejected_causality)
 
     generated_at_utc = utc_now()
     run_id = f"BL009-OBSERVE-{datetime.now(timezone.utc).strftime('%Y%m%d-%H%M%S-%f')}"
@@ -517,6 +575,10 @@ def main() -> None:
                 "playlist_track_count": bl008_summary["playlist_track_count"],
                 "top_contributor_distribution": bl008_summary["top_contributor_distribution"],
                 "explanation_payload_rule": "top 3 contributors by weighted contribution; sentence derived from top contributors and playlist position",
+                "rejected_track_control_causality_count": safe_int(
+                    bl008_payloads.get("rejected_track_control_causality_count"),
+                    len(rejected_causality),
+                ),
             },
         },
         "validation": {
@@ -620,6 +682,8 @@ def main() -> None:
                 "playlist_track_count": bl008_summary["playlist_track_count"],
                 "top_contributor_distribution": bl008_summary["top_contributor_distribution"],
                 "explanation_count": len(bl008_payloads["explanations"]),
+                "control_causality_summary": control_causality_summary,
+                "rejected_control_causality_summary": rejected_control_causality_summary,
             },
         },
         "exclusion_diagnostics": {
@@ -669,6 +733,14 @@ def main() -> None:
                 ),
                 "bl007_undersized_playlist": bool(
                     _object_mapping(bl007_report.get("undersized_playlist_warning")).get("is_undersized", False)
+                ),
+                "bl008_missing_control_causality_tracks": safe_int(
+                    control_causality_summary.get("tracks_missing_control_causality"),
+                    0,
+                ),
+                "bl008_missing_rejected_control_causality_tracks": safe_int(
+                    rejected_control_causality_summary.get("tracks_missing_control_causality"),
+                    0,
                 ),
                 "bl010_retry_required": None,
             },

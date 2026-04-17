@@ -6,10 +6,79 @@ Ordering convention (standardized 2026-03-24):
 - New entries must be appended at the end and may include `superseded_by` when a prior decision is replaced.
 
 Maintenance snapshot (2026-04-17):
-- Highest decision ID currently present: `D-143`
-- Total decision entries: 133
-- Status distribution: accepted=122, superseded=3, rejected=1
+- Highest decision ID currently present: `D-161`
+- Total decision entries: 140
+- Status distribution: accepted=129, superseded=3, rejected=1
 - ID integrity check: no duplicate decision IDs detected
+
+id: D-161
+date: 2026-04-17
+status: accepted
+
+context:
+UNDO-G, UNDO-H, and UNDO-I implementation/hardening slices were completed and validated in prior entries, but unresolved governance still needed explicit closure formalization to align status registers with implementation evidence.
+
+decision:
+Formally close UNDO-G, UNDO-H, and UNDO-I in governance tracking, recording them as implemented-and-closed and reducing the active design-verification unresolved set to UNDO-A through UNDO-F.
+
+alternatives_considered:
+- Keep UNDO-G/H/I as closure candidates until a later packaging phase
+- Close only one item now and defer the other two
+- Leave closure implied in thesis-state prose without unresolved-registry status changes
+
+rationale:
+Formal closure now preserves traceable consistency across admin surfaces and removes ambiguity for collaborator handoff by ensuring unresolved/state/timeline files reflect the same post-validation posture.
+
+evidence_basis:
+- `00_admin/unresolved_issues.md`
+- `00_admin/thesis_state.md`
+- `00_admin/timeline.md`
+- validation baseline: `pytest 563/563`, wrapper validate-only pass, full contract pass, pyright clean
+
+impacted_files:
+- `00_admin/unresolved_issues.md`
+- `00_admin/thesis_state.md`
+- `00_admin/timeline.md`
+- `00_admin/decision_log.md`
+- `00_admin/change_log.md`
+
+review_date:
+none
+
+id: D-160
+date: 2026-04-17
+status: accepted
+
+context:
+UNDO-I slice 1 had added BL-005 threshold-attribution and bounded what-if diagnostics plus a BL-014 warn-safe advisory, but unresolved follow-up explicitly required deciding contract-hardening posture (advisory-only versus policy-backed gate) for wrapper-level quality enforcement.
+
+decision:
+Adopt a policy-backed BL-005 threshold-diagnostics gate in BL-014 (`gate_bl005_threshold_diagnostics_contract`) with default `warn` behavior and optional `strict` fail escalation, and resolve the policy config-first from BL-009 run-config observability validation policies before env/default fallback.
+
+alternatives_considered:
+- Keep advisory-only posture with no gate result
+- Enforce strict hard-fail unconditionally with no warn compatibility mode
+- Resolve policy from environment only and ignore run-config policy surfaces
+
+rationale:
+Policy-backed gating preserves backward-compatible default behavior while enabling controlled hardening for stricter runs. Config-first resolution aligns with the established BL-014 gate-policy pattern and improves run-level reproducibility/auditability by making policy provenance explicit in config snapshot and run matrix outputs.
+
+evidence_basis:
+- `07_implementation/src/quality/sanity_checks.py`
+- `07_implementation/tests/test_quality_sanity_checks.py`
+- validation: `pytest 563/563`, wrapper validate-only pass, full contract pass (including pyright clean)
+
+impacted_files:
+- `07_implementation/src/quality/sanity_checks.py`
+- `07_implementation/tests/test_quality_sanity_checks.py`
+- `00_admin/decision_log.md`
+- `00_admin/change_log.md`
+- `00_admin/unresolved_issues.md`
+- `00_admin/thesis_state.md`
+- `00_admin/timeline.md`
+
+review_date:
+none
 
 Current posture snapshot (2026-03-25):
 - Active baseline path: DS-001 candidate corpus with direct metadata/identifier alignment (`D-028`), with DS-002 retained as validated fallback reference.
@@ -2657,3 +2726,94 @@ review_date: none
 - evidence_basis: `00_admin/unresolved_issues.md` now includes: (1) control-effect gate enforcement in orchestration (`UNDO-G`), (2) unified control-causality payload contract (`UNDO-H`), and (3) BL-005 threshold-attribution plus what-if diagnostics (`UNDO-I`), each mapped to concrete stage files.
 - impacted_files: `00_admin/unresolved_issues.md`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`.
 - next_steps: Prioritize `UNDO-G` and `UNDO-I` as the most implementation-ready slices, then integrate `UNDO-H` as cross-stage contract hardening.
+
+## D-153
+- date: 2026-04-17
+- entity_id: undo-i bl005 threshold-attribution and bounded what-if diagnostics implementation slice 1
+- proposed_by: user + Copilot
+- status: accepted
+- decision: Implement the first UNDO-I slice directly in BL-005 by emitting two additive diagnostics blocks (`threshold_attribution` and `bounded_what_if_estimates`) from retrieval decision rows, and add a warn-safe BL-014 advisory when this contract is missing.
+- context: After user request to push latest edits and start implementing unresolved improvements, `UNDO-I` was selected as the first implementation target. Existing BL-005 diagnostics exposed counts/distributions but did not summarize dominant threshold drivers or bounded directional sensitivity under small threshold perturbations.
+- alternatives_considered: defer coding and keep UNDO-I as unresolved only (rejected: user explicitly requested implementation start); build a full rerun-level counterfactual engine immediately (rejected: larger scope and slower to validate in this slice); add a hard failing BL-014 check for the new fields (rejected: would break backward compatibility for pre-slice artifacts).
+- rationale: This additive diagnostics-first slice closes the most concrete BL-005 design gap with low regression risk, preserves compatibility, and creates a measurable contract surface for follow-on hardening.
+- evidence_basis: `07_implementation/src/retrieval/stage.py` now computes and emits threshold attribution and bounded what-if diagnostics; `07_implementation/src/quality/sanity_checks.py` now emits `advisory_bl005_threshold_diagnostics_contract` when expected UNDO-I fields are absent; targeted tests pass (`tests/test_retrieval_stage.py`, `tests/test_quality_sanity_checks.py`).
+- impacted_files: `07_implementation/src/retrieval/stage.py`, `07_implementation/src/quality/sanity_checks.py`, `07_implementation/tests/test_retrieval_stage.py`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`, `00_admin/unresolved_issues.md`.
+- next_steps: Run wrapper-level BL-013 and BL-014 to regenerate artifacts on the new diagnostics contract, then continue with `UNDO-G` control-effect gate enforcement.
+
+## D-154
+- date: 2026-04-17
+- entity_id: undo-g control-effect gate enforcement implementation slice 1
+- proposed_by: user + Copilot
+- status: accepted
+- decision: Implement a first UNDO-G enforcement slice as a BL-014 control-effect advisory surface (`advisory_bl011_control_effect_gate`) that flags non-observable or direction-mismatched controllability outcomes using BL-011 result metrics, while keeping current pass/fail gate compatibility.
+- context: After UNDO-I slice 1 completion and wrapper revalidation, the next implementation target was UNDO-G. Full hard-fail gating for control effects in BL-014 would risk immediate compatibility breakage on legacy controllability snapshots; an advisory-first slice provides enforceable visibility without destabilizing baseline contract behavior.
+- alternatives_considered: immediate hard-fail gate on any non-observable controls (rejected: higher regression risk and compatibility break in current flow); keep UNDO-G unresolved with no code action (rejected: user requested continuing implementation); implement only in external docs (rejected: no runtime enforcement signal).
+- rationale: Advisory-first integration creates a first-class runtime signal in the BL-013/BL-014 path and supports incremental tightening toward pass/warn/fail policy enforcement in a later slice.
+- evidence_basis: `07_implementation/src/quality/sanity_checks.py` now computes BL-011 control-effect advisory conditions using `all_variant_shifts_observable`, `all_variant_directions_met`, and `no_op_controls_count`; `07_implementation/tests/test_quality_sanity_checks.py` now includes dedicated advisory emission/non-emission tests; validation passes (`43 passed`) and wrapper BL-014 returns `36/36 pass`.
+- impacted_files: `07_implementation/src/quality/sanity_checks.py`, `07_implementation/tests/test_quality_sanity_checks.py`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`, `00_admin/unresolved_issues.md`.
+- next_steps: Promote UNDO-G slice 2 by adding configurable pass/warn/fail control-effect gate policy (default warn), then wire policy outcome into orchestration-level quality gating.
+
+## D-155
+- date: 2026-04-17
+- entity_id: undo-g control-effect gate enforcement implementation slice 2
+- proposed_by: user + Copilot
+- status: accepted
+- decision: Implement UNDO-G slice 2 in BL-014 as a policy-backed control-effect gate that records explicit `gate_results`, defaults to warn behavior, and escalates weak BL-011 control-effect evidence to overall BL-014 failure only under strict policy.
+- context: UNDO-G slice 1 already exposed BL-011 weak/no-op controls as a warn-safe advisory, but the unresolved item still required policy-driven pass/warn/fail enforcement and gate action in the active BL-013/BL-014 flow. The current BL-011 report shows real weak-effect scenarios, so the new slice had to preserve baseline compatibility while creating a stricter escalation path.
+- alternatives_considered: convert the advisory directly into an unconditional hard-fail check (rejected: would immediately break the validated baseline on currently known BL-011 weak-effect scenarios); keep advisory-only behavior and defer policy support again (rejected: would leave UNDO-G slice 2 incomplete); add a new numbered BL-014 check and increase the canonical 36/36 total (rejected: unnecessary churn for current reporting when gate-results reporting can carry the policy state cleanly).
+- rationale: A warn-default gate with explicit status reporting is the narrowest change that completes slice 2, preserves current baseline runs, and gives BL-013/BL-014 a real escalation path when collaborators want strict enforcement.
+- evidence_basis: `07_implementation/src/quality/sanity_checks.py` now resolves `bl011_control_effect_gate_policy`, emits structured `gate_results`, and fails overall BL-014 status when policy is `strict` and BL-011 control-effect violations are present; `07_implementation/tests/test_quality_sanity_checks.py` now covers warn and strict gate behavior in both helper and `main()` paths; full validation passes (`pytest 548/548`, wrapper validate-only pass, full contract pass).
+- impacted_files: `07_implementation/src/quality/sanity_checks.py`, `07_implementation/tests/test_quality_sanity_checks.py`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`, `00_admin/unresolved_issues.md`.
+- next_steps: Advance `UNDO-H` unified control-causality payload work, then decide whether UNDO-G should be closed as-is or receive one final config-first policy-source cleanup beyond the current env/report fallback.
+
+## D-156
+- date: 2026-04-17
+- entity_id: undo-h unified control-causality payload contract implementation slice 1
+- proposed_by: user + Copilot
+- status: accepted
+- decision: Implement UNDO-H slice 1 as additive contract wiring: BL-008 explanation payloads now emit per-track `control_causality` blocks, BL-009 observability now summarizes contract coverage, and BL-014 now emits warn-safe advisory `advisory_bl008_control_causality_contract` when the contract is missing.
+- context: After UNDO-G slice 2 completion, the next unresolved implementation target was UNDO-H. Existing outputs already had `control_provenance` and `assembly_context`, but lacked one normalized causality block that directly ties decision outcome to controlling parameters and evidence source fields.
+- alternatives_considered: defer UNDO-H and move to chapter-only work (rejected: user requested continuation of implementation flow); make BL-014 fail immediately on any missing `control_causality` field (rejected: compatibility risk for old artifacts and avoidable baseline disruption); implement BL-009-only aggregation without BL-008 payload schema updates (rejected: would not satisfy per-track contract requirement).
+- rationale: Additive contract-first wiring gives immediate design-to-runtime traceability with low regression risk and creates a measurable upgrade path to stricter enforcement in a later slice.
+- evidence_basis: `07_implementation/src/transparency/payload_builder.py` now emits `control_causality` with decision-outcome, controlling-parameters, effect-direction, and evidence-source sections; `07_implementation/src/observability/main.py` now computes `control_causality_summary` and records missing-coverage caveat; `07_implementation/src/quality/sanity_checks.py` now emits `advisory_bl008_control_causality_contract` when required keys are absent; regression coverage added in transparency, observability, and quality tests; full validation passed (`pytest 552/552`, wrapper validate-only pass, full contract pass).
+- impacted_files: `07_implementation/src/transparency/payload_builder.py`, `07_implementation/src/observability/main.py`, `07_implementation/src/quality/sanity_checks.py`, `07_implementation/tests/test_transparency_payload_builder.py`, `07_implementation/tests/test_transparency_integration.py`, `07_implementation/tests/test_observability_signal_mode_summary.py`, `07_implementation/tests/test_quality_sanity_checks.py`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`, `00_admin/unresolved_issues.md`.
+- next_steps: Continue UNDO-H slice 2 by deciding whether to harden BL-014 from advisory to check and whether to extend control-causality linkage beyond included playlist tracks to explicit rejected-track decision traces.
+
+## D-157
+- date: 2026-04-17
+- entity_id: undo-h unified control-causality payload contract hardening implementation slice 2
+- proposed_by: user + Copilot
+- status: accepted
+- decision: Harden UNDO-H slice 2 posture in BL-014 by adding a policy-backed `gate_bl008_control_causality_contract` result with default warn behavior and strict-mode overall-fail escalation, while keeping the existing advisory surface for warn-mode monitoring.
+- context: UNDO-H slice 1 had already added BL-008/BL-009 contract wiring and a warn-safe BL-014 advisory for missing `control_causality` fields. The remaining slice-2 posture decision required moving from advisory-only visibility to enforceable policy behavior without destabilizing baseline compatibility.
+- alternatives_considered: keep advisory-only behavior (rejected: leaves hardening posture undecided); convert immediately to unconditional hard-fail check (rejected: unnecessary baseline disruption and poor backward compatibility for legacy artifacts); add a new numbered schema check and alter canonical check-count reporting (rejected: gate-results surface already supports policy-state reporting without check-count churn).
+- rationale: A warn-default gate with strict escalation is the narrowest compatibility-safe hardening that satisfies slice-2 posture requirements and keeps quality enforcement operator-configurable.
+- evidence_basis: `07_implementation/src/quality/sanity_checks.py` now resolves `BL014_BL008_CONTROL_CAUSALITY_GATE_POLICY`, emits structured gate status/details/violations for BL-008 control-causality contract coverage, writes policy/status into BL-014 config snapshot and run matrix, and escalates overall status under strict policy when violations exist; `07_implementation/tests/test_quality_sanity_checks.py` adds helper warn/strict tests plus strict-policy `main()` failure coverage; full validation passed (`pytest 555/555`, wrapper validate-only pass, full contract pass).
+- impacted_files: `07_implementation/src/quality/sanity_checks.py`, `07_implementation/tests/test_quality_sanity_checks.py`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`, `00_admin/unresolved_issues.md`.
+- next_steps: Keep UNDO-H open only for the remaining rejected-track linkage extension decision, then either close UNDO-H or split that extension into a dedicated follow-up item.
+
+## D-158
+- date: 2026-04-17
+- entity_id: undo-h rejected-track control-causality linkage extension implementation
+- proposed_by: user + Copilot
+- status: accepted
+- decision: Extend UNDO-H contract coverage to rejected-track traces by emitting additive BL-008 `rejected_track_control_causality` payloads and wiring BL-009 rejected-causality summaries/caveats, without changing existing included-track payload semantics.
+- context: UNDO-H slice 1 and slice 2 posture hardening were complete, but unresolved guidance still required explicit control-causality linkage beyond included playlist tracks. The remaining gap was rejected-track decision-trace visibility under the same causality contract framing.
+- alternatives_considered: leave rejected-track linkage unresolved (rejected: leaves core traceability gap open); enforce rejected-track linkage via immediate BL-014 hard-fail checks (rejected: unnecessary compatibility risk for this additive extension); mirror full included-track narrative payload for rejects (rejected: unnecessary verbosity when decision-trace scope is the primary requirement).
+- rationale: Additive rejected-trace payload and summary surfaces provide auditable design-consistent causality linkage with minimal regression risk and clear downstream observability.
+- evidence_basis: `07_implementation/src/transparency/main.py` now emits `rejected_track_control_causality` and count fields from non-included BL-007 trace rows; `07_implementation/src/transparency/payload_builder.py` now includes shared control-causality builder plus rejected-track payload constructor; `07_implementation/src/observability/main.py` now includes `rejected_control_causality_summary` and corresponding run caveat count; regression tests added in transparency integration and observability helper suites; full validation passed (`pytest 557/557`, wrapper validate-only pass, full contract pass).
+- impacted_files: `07_implementation/src/transparency/main.py`, `07_implementation/src/transparency/payload_builder.py`, `07_implementation/src/observability/main.py`, `07_implementation/tests/test_transparency_integration.py`, `07_implementation/tests/test_observability_signal_mode_summary.py`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`, `00_admin/unresolved_issues.md`.
+- next_steps: Treat UNDO-H as implementation-complete for current thesis scope and move remaining implementation follow-up focus to UNDO-G closure judgement plus optional config-first cleanup.
+
+## D-159
+- date: 2026-04-17
+- entity_id: undo-g control-effect gate policy-source cleanup config-first completion
+- proposed_by: user + Copilot
+- status: accepted
+- decision: Complete the optional UNDO-G cleanup by making BL-014 BL-011 control-effect gate policy resolution config-first, using BL-009 run-config observability validation policies as first precedence and retaining snapshot/report/env/default fallback compatibility.
+- context: UNDO-G slice 1 and slice 2 had already implemented advisory and policy-backed gate enforcement, but unresolved governance still flagged one optional cleanup for policy-source ordering beyond env/report fallback.
+- alternatives_considered: close UNDO-G without further changes (rejected: leaves known policy-source ambiguity); remove env/report fallbacks entirely (rejected: unnecessary compatibility risk for legacy artifacts); keep env-first behavior (rejected: conflicts with current config-first governance posture).
+- rationale: Config-first ordering aligns gate behavior with canonical runtime configuration while preserving backward compatibility and explicit fallback safety.
+- evidence_basis: `07_implementation/src/quality/sanity_checks.py` now resolves `bl011_control_effect_gate_policy` from `bl009_log.run_config.observability.validation_policies` before snapshot/report/env/default fallback; `07_implementation/tests/test_quality_sanity_checks.py` adds precedence and env-fallback tests; full validation passed (`pytest 559/559`, wrapper validate-only pass, full contract pass).
+- impacted_files: `07_implementation/src/quality/sanity_checks.py`, `07_implementation/tests/test_quality_sanity_checks.py`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`, `00_admin/unresolved_issues.md`.
+- next_steps: Treat UNDO-G as implemented (closure candidate) and focus remaining implementation-hardening decisions on UNDO-I contract posture.

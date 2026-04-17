@@ -9,7 +9,14 @@ import pytest
 from quality import sanity_checks
 from quality.sanity_checks import (
     bl008_explanation_fidelity_warnings,
+    bl008_control_causality_contract_gate_result,
+    bl008_control_causality_contract_advisory,
+    bl005_threshold_diagnostics_contract_gate_result,
+    bl005_threshold_diagnostics_contract_advisory,
     bl008_bl009_handshake_contract_ok,
+    bl011_control_effect_gate_advisory,
+    bl011_control_effect_gate_result,
+    resolve_bl011_control_effect_gate_policy,
     bl005_control_resolution_fallback_volume_advisory,
     bl005_handshake_warning_volume_advisory,
     bl007_bl008_handshake_contract_ok,
@@ -675,6 +682,252 @@ def test_bl005_control_resolution_fallback_volume_advisory_not_emitted_when_with
     assert advisory is None
 
 
+def test_bl005_threshold_diagnostics_contract_gate_result_warns_under_warn_policy() -> None:
+    gate_result = bl005_threshold_diagnostics_contract_gate_result(
+        {
+            "threshold_attribution": {
+                "rejected_threshold_candidates": 1,
+            },
+            "bounded_what_if_estimates": {
+                "considered_candidates": 10,
+            },
+        },
+        policy="warn",
+    )
+
+    assert gate_result is not None
+    assert gate_result["status"] == "warn"
+    assert gate_result["policy"] == "warn"
+    assert gate_result["violations"] == ["missing_fields=5"]
+
+
+def test_bl005_threshold_diagnostics_contract_gate_result_fails_under_strict_policy() -> None:
+    gate_result = bl005_threshold_diagnostics_contract_gate_result(
+        {
+            "threshold_attribution": {},
+            "bounded_what_if_estimates": {},
+        },
+        policy="strict",
+    )
+
+    assert gate_result is not None
+    assert gate_result["status"] == "fail"
+    assert gate_result["policy"] == "strict"
+    assert gate_result["violations"] == ["missing_fields=7"]
+
+
+def test_bl005_threshold_diagnostics_contract_advisory_not_emitted_when_strict_fail() -> None:
+    advisory = bl005_threshold_diagnostics_contract_advisory(
+        {
+            "threshold_attribution": {},
+            "bounded_what_if_estimates": {},
+        },
+        policy="strict",
+    )
+
+    assert advisory is None
+
+
+def test_bl011_control_effect_gate_advisory_emits_when_no_op_or_shift_failures_detected() -> None:
+    advisory = bl011_control_effect_gate_advisory(
+        {
+            "results": {
+                "all_variant_shifts_observable": False,
+                "all_variant_directions_met": False,
+                "no_op_controls_count": 2,
+                "no_op_control_diagnostics": [{"scenario_id": "stricter_thresholds"}],
+            }
+        }
+    )
+
+    assert advisory is not None
+    assert advisory["id"] == "advisory_bl011_control_effect_gate"
+    assert "no_op_controls_count=2" in advisory["details"]
+
+
+def test_bl011_control_effect_gate_result_warns_under_warn_policy() -> None:
+    gate_result = bl011_control_effect_gate_result(
+        {
+            "results": {
+                "all_variant_shifts_observable": False,
+                "all_variant_directions_met": True,
+                "no_op_controls_count": 1,
+                "no_op_control_diagnostics": [{"scenario_id": "genre_shift"}],
+            }
+        },
+        policy="warn",
+    )
+
+    assert gate_result is not None
+    assert gate_result["status"] == "warn"
+    assert gate_result["policy"] == "warn"
+    assert "all_variant_shifts_observable=false" in gate_result["violations"]
+    assert "no_op_controls_count=1" in gate_result["violations"]
+
+
+def test_bl011_control_effect_gate_result_fails_under_strict_policy() -> None:
+    gate_result = bl011_control_effect_gate_result(
+        {
+            "results": {
+                "all_variant_shifts_observable": True,
+                "all_variant_directions_met": False,
+                "no_op_controls_count": 0,
+                "no_op_control_diagnostics": [],
+            }
+        },
+        policy="strict",
+    )
+
+    assert gate_result is not None
+    assert gate_result["status"] == "fail"
+    assert gate_result["policy"] == "strict"
+    assert gate_result["violations"] == ["all_variant_directions_met=false"]
+
+
+def test_resolve_bl011_control_effect_gate_policy_prefers_bl009_run_config() -> None:
+    policy = resolve_bl011_control_effect_gate_policy(
+        {
+            "validation": {
+                "validation_policies": {
+                    "bl011_control_effect_gate_policy": "warn",
+                }
+            }
+        },
+        {
+            "config": {
+                "validation_policies": {
+                    "bl011_control_effect_gate_policy": "warn",
+                }
+            }
+        },
+        {
+            "run_config": {
+                "observability": {
+                    "validation_policies": {
+                        "bl011_control_effect_gate_policy": "strict",
+                    }
+                }
+            }
+        },
+    )
+
+    assert policy == "strict"
+
+
+def test_resolve_bl011_control_effect_gate_policy_falls_back_to_env_when_missing(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setenv("BL014_BL011_CONTROL_EFFECT_GATE_POLICY", "strict")
+
+    policy = resolve_bl011_control_effect_gate_policy(
+        {"validation": {"validation_policies": {}}},
+        {"config": {"validation_policies": {}}},
+        {"run_config": {"observability": {"validation_policies": {}}}},
+    )
+
+    assert policy == "strict"
+
+
+def test_bl011_control_effect_gate_advisory_not_emitted_when_control_effects_are_clean() -> None:
+    advisory = bl011_control_effect_gate_advisory(
+        {
+            "results": {
+                "all_variant_shifts_observable": True,
+                "all_variant_directions_met": True,
+                "no_op_controls_count": 0,
+                "no_op_control_diagnostics": [],
+            }
+        }
+    )
+
+    assert advisory is None
+
+
+def test_bl008_control_causality_contract_advisory_emits_when_missing() -> None:
+    advisory = bl008_control_causality_contract_advisory(
+        {
+            "explanations": [
+                {
+                    "track_id": "t1",
+                    "control_causality": {
+                        "schema_version": "bl008-control-causality-v1",
+                        "decision_outcome": {},
+                    },
+                }
+            ]
+        }
+    )
+
+    assert advisory is not None
+    assert advisory["id"] == "advisory_bl008_control_causality_contract"
+    assert "affected_tracks=1/1" in advisory["details"]
+
+
+def test_bl008_control_causality_contract_advisory_not_emitted_when_complete() -> None:
+    advisory = bl008_control_causality_contract_advisory(
+        {
+            "explanations": [
+                {
+                    "track_id": "t1",
+                    "control_causality": {
+                        "schema_version": "bl008-control-causality-v1",
+                        "decision_outcome": {},
+                        "controlling_parameters": {},
+                        "effect_direction": {},
+                        "evidence_sources": {},
+                    },
+                }
+            ]
+        }
+    )
+
+    assert advisory is None
+
+
+def test_bl008_control_causality_contract_gate_result_warns_under_warn_policy() -> None:
+    gate_result = bl008_control_causality_contract_gate_result(
+        {
+            "explanations": [
+                {
+                    "track_id": "t1",
+                    "control_causality": {
+                        "schema_version": "bl008-control-causality-v1",
+                        "decision_outcome": {},
+                    },
+                }
+            ]
+        },
+        policy="warn",
+    )
+
+    assert gate_result is not None
+    assert gate_result["status"] == "warn"
+    assert gate_result["policy"] == "warn"
+    assert gate_result["violations"] == ["affected_tracks=1/1"]
+
+
+def test_bl008_control_causality_contract_gate_result_fails_under_strict_policy() -> None:
+    gate_result = bl008_control_causality_contract_gate_result(
+        {
+            "explanations": [
+                {
+                    "track_id": "t1",
+                    "control_causality": {
+                        "schema_version": "bl008-control-causality-v1",
+                        "decision_outcome": {},
+                    },
+                }
+            ]
+        },
+        policy="strict",
+    )
+
+    assert gate_result is not None
+    assert gate_result["status"] == "fail"
+    assert gate_result["policy"] == "strict"
+    assert gate_result["violations"] == ["affected_tracks=1/1"]
+
+
 def test_bl008_explanation_fidelity_warnings_none_for_coherent_payload() -> None:
     warnings = bl008_explanation_fidelity_warnings(
         {
@@ -826,6 +1079,170 @@ def test_bl014_main_emits_control_resolution_advisory(
     advisories = {item["id"]: item for item in report["advisories"]}
     assert report["overall_status"] == "pass"
     assert "advisory_bl005_control_resolution_fallback_volume" in advisories
+
+
+def test_bl014_main_emits_warn_gate_result_for_bl011_control_effect_issues(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    repo_root = _build_bl014_fixture(
+        tmp_path,
+        include_runtime_scope_diagnostics=True,
+    )
+    output_dir = tmp_path / "quality_outputs"
+    _write_json(
+        repo_root / "controllability/outputs/controllability_report.json",
+        {
+            "results": {
+                "all_variant_shifts_observable": False,
+                "all_variant_directions_met": True,
+                "no_op_controls_count": 1,
+                "no_op_control_diagnostics": [{"scenario_id": "genre_shift"}],
+            }
+        },
+    )
+
+    monkeypatch.setattr(sanity_checks, "REPO_ROOT", repo_root)
+    monkeypatch.setattr(sanity_checks, "OUTPUT_DIR", output_dir)
+    monkeypatch.setattr(
+        sanity_checks,
+        "bl003_required_paths",
+        lambda _root: {
+            "summary": repo_root / "alignment/outputs/bl003_ds001_spotify_summary.json",
+            "seed_table": repo_root / "alignment/outputs/bl003_ds001_spotify_seed_table.csv",
+        },
+    )
+
+    exit_code = sanity_checks.main()
+
+    assert exit_code == 0
+    report = json.loads((output_dir / "bl014_sanity_report.json").read_text(encoding="utf-8"))
+    advisories = {item["id"]: item for item in report["advisories"]}
+    assert report["overall_status"] == "pass"
+    assert report["gate_failures_total"] == 0
+    assert report["gate_results"][0]["status"] == "warn"
+    assert report["gate_results"][0]["policy"] == "warn"
+    assert "advisory_bl011_control_effect_gate" in advisories
+
+
+def test_bl014_main_fails_under_strict_bl011_control_effect_gate_policy(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    repo_root = _build_bl014_fixture(
+        tmp_path,
+        include_runtime_scope_diagnostics=True,
+    )
+    output_dir = tmp_path / "quality_outputs"
+    _write_json(
+        repo_root / "controllability/outputs/controllability_report.json",
+        {
+            "results": {
+                "all_variant_shifts_observable": False,
+                "all_variant_directions_met": False,
+                "no_op_controls_count": 2,
+                "no_op_control_diagnostics": [{"scenario_id": "tempo_shift"}],
+            }
+        },
+    )
+
+    monkeypatch.setenv("BL014_BL011_CONTROL_EFFECT_GATE_POLICY", "strict")
+    monkeypatch.setattr(sanity_checks, "REPO_ROOT", repo_root)
+    monkeypatch.setattr(sanity_checks, "OUTPUT_DIR", output_dir)
+    monkeypatch.setattr(
+        sanity_checks,
+        "bl003_required_paths",
+        lambda _root: {
+            "summary": repo_root / "alignment/outputs/bl003_ds001_spotify_summary.json",
+            "seed_table": repo_root / "alignment/outputs/bl003_ds001_spotify_seed_table.csv",
+        },
+    )
+
+    exit_code = sanity_checks.main()
+
+    assert exit_code == 1
+    report = json.loads((output_dir / "bl014_sanity_report.json").read_text(encoding="utf-8"))
+    assert report["overall_status"] == "fail"
+    assert report["checks_failed"] == 0
+    assert report["gate_failures_total"] == 1
+    bl011_gate = next(
+        item
+        for item in report["gate_results"]
+        if item.get("id") == "gate_bl011_control_effect"
+    )
+    assert bl011_gate["status"] == "fail"
+    assert bl011_gate["policy"] == "strict"
+
+
+def test_bl014_main_fails_under_strict_bl008_control_causality_policy(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    repo_root = _build_bl014_fixture(
+        tmp_path,
+        include_runtime_scope_diagnostics=True,
+    )
+    output_dir = tmp_path / "quality_outputs"
+
+    monkeypatch.setenv("BL014_BL008_CONTROL_CAUSALITY_GATE_POLICY", "strict")
+    monkeypatch.setattr(sanity_checks, "REPO_ROOT", repo_root)
+    monkeypatch.setattr(sanity_checks, "OUTPUT_DIR", output_dir)
+    monkeypatch.setattr(
+        sanity_checks,
+        "bl003_required_paths",
+        lambda _root: {
+            "summary": repo_root / "alignment/outputs/bl003_ds001_spotify_summary.json",
+            "seed_table": repo_root / "alignment/outputs/bl003_ds001_spotify_seed_table.csv",
+        },
+    )
+
+    exit_code = sanity_checks.main()
+
+    assert exit_code == 1
+    report = json.loads((output_dir / "bl014_sanity_report.json").read_text(encoding="utf-8"))
+    assert report["overall_status"] == "fail"
+    assert report["checks_failed"] == 0
+    assert report["gate_failures_total"] == 1
+    failure_ids = {item["id"] for item in report["gate_results"] if item["status"] == "fail"}
+    assert "gate_bl008_control_causality_contract" in failure_ids
+
+
+def test_bl014_main_fails_under_strict_bl005_threshold_diagnostics_policy(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    repo_root = _build_bl014_fixture(
+        tmp_path,
+        include_runtime_scope_diagnostics=True,
+    )
+    output_dir = tmp_path / "quality_outputs"
+    bl005_diag_path = repo_root / "retrieval/outputs/bl005_candidate_diagnostics.json"
+    diagnostics_payload = json.loads(bl005_diag_path.read_text(encoding="utf-8"))
+    diagnostics_payload.pop("threshold_attribution", None)
+    diagnostics_payload.pop("bounded_what_if_estimates", None)
+    bl005_diag_path.write_text(json.dumps(diagnostics_payload, indent=2), encoding="utf-8")
+
+    monkeypatch.setenv("BL014_BL005_THRESHOLD_DIAGNOSTICS_GATE_POLICY", "strict")
+    monkeypatch.setattr(sanity_checks, "REPO_ROOT", repo_root)
+    monkeypatch.setattr(sanity_checks, "OUTPUT_DIR", output_dir)
+    monkeypatch.setattr(
+        sanity_checks,
+        "bl003_required_paths",
+        lambda _root: {
+            "summary": repo_root / "alignment/outputs/bl003_ds001_spotify_summary.json",
+            "seed_table": repo_root / "alignment/outputs/bl003_ds001_spotify_seed_table.csv",
+        },
+    )
+
+    exit_code = sanity_checks.main()
+
+    assert exit_code == 1
+    report = json.loads((output_dir / "bl014_sanity_report.json").read_text(encoding="utf-8"))
+    assert report["overall_status"] == "fail"
+    assert report["checks_failed"] == 0
+    assert report["gate_failures_total"] == 1
+    failure_ids = {item["id"] for item in report["gate_results"] if item["status"] == "fail"}
+    assert "gate_bl005_threshold_diagnostics_contract" in failure_ids
 
 
 def test_bl014_main_fails_on_missing_bl005_bl006_handshake_contract(

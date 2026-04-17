@@ -1,6 +1,10 @@
 from __future__ import annotations
 
-from observability.main import build_signal_mode_calibration_summary, build_source_resilience_diagnostics
+from observability.main import (
+    build_signal_mode_calibration_summary,
+    build_source_resilience_diagnostics,
+    summarize_control_causality,
+)
 
 
 def test_build_signal_mode_calibration_summary_extracts_comparison_fields() -> None:
@@ -92,3 +96,55 @@ def test_build_source_resilience_diagnostics_emits_reason_codes() -> None:
     assert diagnostics["source_decisions"]["saved_tracks"]["reason_code"] == "degraded_optional"
     assert diagnostics["source_decisions"]["playlist_items"]["reason_code"] == "degraded_optional"
     assert diagnostics["source_decisions"]["recently_played"]["reason_code"] == "not_selected"
+
+
+def test_summarize_control_causality_counts_complete_payloads() -> None:
+    summary = summarize_control_causality(
+        [
+            {
+                "track_id": "t1",
+                "control_causality": {
+                    "schema_version": "bl008-control-causality-v1",
+                    "decision_outcome": {},
+                    "controlling_parameters": {},
+                    "effect_direction": {},
+                    "evidence_sources": {},
+                },
+            }
+        ]
+    )
+
+    assert summary["tracks_total"] == 1
+    assert summary["tracks_with_control_causality"] == 1
+    assert summary["tracks_missing_control_causality"] == 0
+    assert summary["tracks_missing_required_keys"] == 0
+    assert summary["schema_versions"] == {"bl008-control-causality-v1": 1}
+
+
+def test_summarize_control_causality_reports_missing_contract_fields() -> None:
+    summary = summarize_control_causality(
+        [
+            {
+                "track_id": "t1",
+            },
+            {
+                "track_id": "t2",
+                "control_causality": {
+                    "schema_version": "bl008-control-causality-v1",
+                },
+            },
+        ]
+    )
+
+    assert summary["tracks_total"] == 2
+    assert summary["tracks_missing_control_causality"] == 1
+    assert summary["tracks_missing_required_keys"] >= 1
+    assert "t1" in summary["sample_missing_track_ids"]
+
+
+def test_summarize_control_causality_handles_empty_rejected_section() -> None:
+    summary = summarize_control_causality([])
+
+    assert summary["tracks_total"] == 0
+    assert summary["tracks_missing_control_causality"] == 0
+    assert summary["schema_versions"] == {}

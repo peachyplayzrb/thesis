@@ -42,6 +42,7 @@ from transparency.explanation_driver import (
 )
 from transparency.payload_builder import (
     build_ordered_components,
+    build_rejected_track_payload,
     build_score_breakdown,
     build_track_payload,
     top_contributor_counts,
@@ -135,6 +136,8 @@ def main() -> None:
 
     # Load BL-007 assembly trace keyed by track_id
     trace_index = read_csv_index(trace_csv, "track_id")
+    with trace_csv.open("r", encoding="utf-8", newline="") as trace_handle:
+        trace_rows = list(csv.DictReader(trace_handle))
 
     # BL-007 ↔ BL-008 handshake validation
     with trace_csv.open("r", encoding="utf-8", newline="") as _th:
@@ -168,6 +171,7 @@ def main() -> None:
         )
 
     payloads: list[dict[str, object]] = []
+    rejected_payloads: list[dict[str, object]] = []
 
     for pt in playlist_tracks:
         track_id         = str(pt.get("track_id", ""))
@@ -221,6 +225,56 @@ def main() -> None:
             )
         )
 
+    playlist_track_ids = {str(track.get("track_id", "")) for track in playlist_tracks}
+    emitted_rejected_track_ids: set[str] = set()
+    for trace_row in trace_rows:
+        decision = str(trace_row.get("decision", "")).strip().lower()
+        if decision == "included":
+            continue
+        track_id = str(trace_row.get("track_id", "")).strip()
+        if not track_id:
+            continue
+        if track_id in playlist_track_ids or track_id in emitted_rejected_track_ids:
+            continue
+
+        scored_row = scored_index.get(track_id, {})
+        lead_genre = str(scored_row.get("lead_genre", ""))
+        final_score = safe_float(scored_row.get("final_score", 0.0))
+        score_rank = safe_int(trace_row.get("score_rank", scored_row.get("rank", 0)))
+        score_breakdown = build_score_breakdown(scored_row, ordered_components, active_weights)
+        top_contributors = sorted(
+            score_breakdown,
+            key=lambda contributor: safe_float(contributor.get("contribution", 0.0)),
+            reverse=True,
+        )[:top_contributor_limit]
+        primary_driver = select_primary_explanation_driver(
+            top_contributors,
+            score_rank,
+            enable_near_tie_blend=blend_primary_contributor_on_near_tie,
+            near_tie_delta=primary_contributor_tie_delta,
+        )
+        causal_driver = select_causal_driver(top_contributors)
+        narrative_driver = primary_driver
+
+        rejected_payloads.append(
+            build_rejected_track_payload(
+                track_id=track_id,
+                lead_genre=lead_genre,
+                score_rank=score_rank,
+                final_score=final_score,
+                score_breakdown=score_breakdown,
+                top_contributors=top_contributors,
+                primary_driver=primary_driver,
+                causal_driver=causal_driver,
+                narrative_driver=narrative_driver,
+                trace_row=trace_row,
+                control_provenance_ref=("run_level" if emit_run_level_control_provenance_summary else "inline"),
+                control_provenance=(control_provenance if include_per_track_control_provenance else {}),
+                assembly_report=assembly_report,
+            )
+        )
+        emitted_rejected_track_ids.add(track_id)
+
     elapsed = round(time.time() - t0, 3)
     now     = datetime.now(timezone.utc).strftime("%Y%m%d-%H%M%S-%f")
     run_id  = f"BL008-EXPLAIN-{now}"
@@ -232,9 +286,11 @@ def main() -> None:
         "generated_at_utc": utc_now(),
         "elapsed_seconds":  elapsed,
         "playlist_track_count": len(payloads),
+        "rejected_track_control_causality_count": len(rejected_payloads),
         "control_provenance_summary": (
             control_provenance if emit_run_level_control_provenance_summary else {}
         ),
+        "rejected_track_control_causality": rejected_payloads,
         "explanations":     payloads,
     }
     write_json(payloads_path, payloads_obj)

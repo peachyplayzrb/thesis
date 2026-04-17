@@ -1,6 +1,6 @@
 # Unresolved Issues
 
-Last updated: 2026-04-17 UTC (Design-chapter implementation upgrade triage; nine design-verification items flagged)
+Last updated: 2026-04-17 UTC (UNDO-G/UNDO-H/UNDO-I closure decisions finalized; six active design-verification items remain)
 
 ## Active
 
@@ -90,43 +90,43 @@ Last updated: 2026-04-17 UTC (Design-chapter implementation upgrade triage; nine
 
 ### UNDO-G: Control-effect gate enforcement in orchestration — Control Testing Protocol and Control Surface Registry contract gap
 
-**Status**: Open, Medium-High priority (design verification)
+**Status**: Closed (implemented), Medium-High priority (design verification)
 
 **Trigger**: `05_design/CONTROL_TESTING_PROTOCOL.md` and `05_design/CONTROL_SURFACE_REGISTRY.md` require measurable control effects and escalation for zero-effect controls. Design question: is control-effect validation enforced as a first-class gate in the active BL-013/BL-014 execution flow rather than as an external manual check?
 
-**Description**: Current protocol guidance defines measurable-effect thresholds and escalation behavior, but the active wrapper/sanity path does not yet enforce a generalized control-effect gate for selected control families. Investigate adding an additive gate that computes effect metrics (composition/rank/pool/score-distribution deltas) and emits pass/warn/fail status for declared control experiments.
+**Description**: Current protocol guidance defines measurable-effect thresholds and escalation behavior. Implementation is now complete in BL-014: `advisory_bl011_control_effect_gate` surfaces weak/no-op controls from BL-011 result metrics, `gate_results` records policy-backed warn/strict gate status with strict fail escalation, and policy resolution is config-first from BL-009 run-config observability validation policies before snapshot/report/env/default fallback.
 
 **Implementation contact**: `07_implementation/src/quality/suite.py` (BL-013 orchestration quality flow); `07_implementation/src/quality/sanity_checks.py` (BL-014 checks); `07_implementation/src/controllability/analysis.py` (effect metrics)
 
-**Blocking**: No; escalate to decision entry if Chapter 5 controllability claims rely on controls without enforced measurable-effect evidence.
+**Blocking**: No; closure formalized on current implementation evidence.
 
 ---
 
 ### UNDO-H: Unified control-causality payload contract — Transparency Design/Addendum cross-stage trace gap
 
-**Status**: Open, Medium priority (design verification)
+**Status**: Closed (implemented), Medium priority (design verification)
 
 **Trigger**: `05_design/transparency_design.md`, `05_design/transparency_design_addendum.md`, and `05_design/TRANSPARENCY_SPEC.md` require explicit linkage from user controls to downstream decisions. Design question: do BL-008/BL-009 expose one unified control-causality block per track/run that ties accepted/rejected outcomes to concrete control values?
 
-**Description**: Existing explanations and observability outputs expose contributors and diagnostics, but control-application traceability is fragmented across stages. Investigate adding a normalized `control_causality` payload surface that records controlling parameters, direction of effect, and evidence source fields for each recommendation decision.
+**Description**: Existing explanations and observability outputs were previously fragmented across stages, but implementation is now complete. BL-008 payloads emit per-track `control_causality` blocks plus additive rejected-track control-causality payloads; BL-009 emits `control_causality_summary` and `rejected_control_causality_summary`; BL-014 emits advisory and policy-backed gate coverage (`gate_bl008_control_causality_contract`) with strict fail escalation.
 
 **Implementation contact**: `07_implementation/src/transparency/main.py` (BL-008 payloads); `07_implementation/src/observability/main.py` (BL-009 aggregation); `07_implementation/src/playlist/stage.py` and `07_implementation/src/retrieval.py` (source diagnostics)
 
-**Blocking**: No; planned as a transparency-contract hardening slice before final submission packaging.
+**Blocking**: No; closure formalized on current implementation evidence.
 
 ---
 
 ### UNDO-I: BL-005 threshold-attribution and what-if diagnostics — Design-level filtering rationale gap
 
-**Status**: Open, Medium priority (design verification)
+**Status**: Closed (implemented), Medium priority (design verification)
 
 **Trigger**: `05_design/transparency_design_addendum.md` identifies partial BL-005 rejection rationale and missing threshold-impact summaries/counterfactual hints. Design question: does retrieval diagnostics show which thresholds dominate rejection volume and what directional pool change is expected under bounded threshold relaxation/tightening?
 
-**Description**: BL-005 currently reports pass/fail and some exclusion categories, but does not provide a concise threshold-attribution leaderboard plus bounded what-if estimates. Investigate additive diagnostics that summarize threshold-level rejection counts, dominant rejection features, and estimated candidate-pool delta under predefined threshold perturbations.
+**Description**: Implementation is now complete. BL-005 diagnostics emit additive `threshold_attribution` and `bounded_what_if_estimates`; BL-014 emits advisory and policy-backed gate coverage (`gate_bl005_threshold_diagnostics_contract`) with warn default / strict fail escalation; policy resolution is config-first from BL-009 run-config validation policies before env/default fallback.
 
 **Implementation contact**: `07_implementation/src/retrieval.py` (BL-005 diagnostics); `07_implementation/src/observability/main.py` (BL-009 summary surfaces); `07_implementation/src/quality/sanity_checks.py` (contract checks)
 
-**Blocking**: No; escalate to decision entry if Chapter 5 filtering-logic interpretation remains stronger than emitted threshold-attribution evidence.
+**Blocking**: No; closure formalized on current implementation evidence.
 
 Active-set sync note (2026-04-14 mentor bundle validation): Confirmed no new active blocker after the mentor handoff bundle validation/package pass. A bundle-local BL-007 syntax defect in `07_implementation/mentor_feedback_submission/src/playlist/rules.py` was corrected, and the bundle wrapper now passes BL-013 (`BL013-ENTRYPOINT-20260414-121918-379574`) plus BL-014 (`BL014-SANITY-20260414-121945-312010`, `36/36`).
 
@@ -169,6 +169,27 @@ Active-set sync note (2026-04-13 BL-008 handshake hardening closeout): Confirmed
 Active-set sync note (2026-04-13 BL-009 handshake hardening closeout): Confirmed no active blocker after Slice 28 completion. Policy-gated BL-008↔BL-009 handshake validation now runs at the observability entry point, checking required BL-008 summary/payload structure and explanation-count consistency; BL-014 raises to 34/34 checks extending the handshake hardening wave downstream through BL-009; focused validation is green (`pytest 80/80`; `D-104`, `C-337`).
 
 ## Resolved (Recent)
+
+- UNDO-G (2026-04-17): Control-effect gate enforcement in orchestration.
+	- resolution: Closed. BL-014 now enforces policy-backed control-effect gate behavior (`warn` default / `strict` fail escalation) and resolves policy config-first from BL-009 run-config observability validation policies.
+	- evidence:
+		1. `00_admin/decision_log.md` (`D-155`, `D-159`, `D-161`).
+		2. `00_admin/change_log.md` (`C-443`, `C-447`, `C-449`).
+		3. `07_implementation/src/quality/sanity_checks.py` and full validation evidence (`pytest 563/563`, wrapper validate-only pass, full contract pass).
+
+- UNDO-H (2026-04-17): Unified control-causality payload contract.
+	- resolution: Closed. BL-008/BL-009 now expose unified control-causality surfaces for included and rejected tracks, and BL-014 enforces policy-backed contract gating (`warn` default / `strict` fail escalation).
+	- evidence:
+		1. `00_admin/decision_log.md` (`D-156`, `D-157`, `D-158`, `D-161`).
+		2. `00_admin/change_log.md` (`C-444`, `C-445`, `C-446`, `C-449`).
+		3. `07_implementation/src/transparency/main.py`, `07_implementation/src/transparency/payload_builder.py`, `07_implementation/src/observability/main.py`, `07_implementation/src/quality/sanity_checks.py`.
+
+- UNDO-I (2026-04-17): BL-005 threshold-attribution and what-if diagnostics.
+	- resolution: Closed. BL-005 diagnostics now emit threshold-attribution and bounded what-if fields, and BL-014 enforces policy-backed threshold-diagnostics gating with config-first policy resolution (`warn` default / `strict` fail escalation).
+	- evidence:
+		1. `00_admin/decision_log.md` (`D-153`, `D-160`, `D-161`).
+		2. `00_admin/change_log.md` (`C-441`, `C-448`, `C-449`).
+		3. `07_implementation/src/retrieval/stage.py`, `07_implementation/src/quality/sanity_checks.py`, `07_implementation/tests/test_quality_sanity_checks.py`.
 
 - UI-014 (2026-04-12): Architecture rebuild RQ/objective derivation blocker.
 	- resolution: Closed. RQ and objective set were derived from confirmed Chapter 2 tensions, scope and artefact definition were locked for rebuild posture, and governance/foundation mirrors were synchronized.
@@ -266,4 +287,6 @@ Active-set sync note (2026-04-13 BL-009 handshake hardening closeout): Confirmed
 
 **Active-set sync note (2026-04-17 literature-to-implementation upgrade triage):** Three additional non-blocking design-verification items were added (`UNDO-D`, `UNDO-E`, `UNDO-F`) after checking normalized literature notes against active implementation surfaces (`BL-006`, `BL-008`, `BL-009`, `BL-011`, `BL-014`). The unresolved set now tracks six medium-priority implementation-upgrade verifications in total.
 
-**Active-set sync note (2026-04-17 design-chapter implementation triage):** Three additional design-to-implementation upgrade items were added (`UNDO-G`, `UNDO-H`, `UNDO-I`) after mapping Chapter 3 design authority and design-control specs to active runtime behavior (`chapter3_information_sheet`, `CONTROL_TESTING_PROTOCOL`, `CONTROL_SURFACE_REGISTRY`, `transparency_design*`). The unresolved set now tracks nine non-blocking implementation-verification upgrades in total.
+**Active-set sync note (2026-04-17 design-chapter implementation triage):** Three additional design-to-implementation upgrade items were added (`UNDO-G`, `UNDO-H`, `UNDO-I`) after mapping Chapter 3 design authority and design-control specs to active runtime behavior (`chapter3_information_sheet`, `CONTROL_TESTING_PROTOCOL`, `CONTROL_SURFACE_REGISTRY`, `transparency_design*`).
+
+**Active-set sync note (2026-04-17 closure formalization):** `UNDO-G`, `UNDO-H`, and `UNDO-I` are now closed following implementation completion and full validation (`pytest 563/563`, wrapper validate-only pass, full contract pass). Active unresolved design-verification set is now six items (`UNDO-A` through `UNDO-F`).

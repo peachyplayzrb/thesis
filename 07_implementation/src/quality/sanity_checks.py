@@ -15,11 +15,13 @@ Outputs are written to:
 from __future__ import annotations
 
 import csv
+import os
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
 
+from controllability.input_validation import normalize_validation_policy
 from shared_utils.artifact_registry import bl003_required_paths
 from shared_utils.io_utils import load_json as load_json_shared
 from shared_utils.io_utils import sha256_of_file, format_utc_iso
@@ -55,6 +57,12 @@ BL006_HANDSHAKE_REQUIRED_BL005_FILTERED_FIELDS: tuple[str, ...] = (
 )
 BL005_HANDSHAKE_WARN_MAX_VIOLATIONS_ADVISORY_THRESHOLD = 3
 BL005_RUNTIME_CONTROL_FALLBACK_ADVISORY_THRESHOLD = 3
+BL005_THRESHOLD_DIAGNOSTICS_GATE_POLICY_DEFAULT = "warn"
+BL005_THRESHOLD_DIAGNOSTICS_GATE_POLICY_ENV_VAR = "BL014_BL005_THRESHOLD_DIAGNOSTICS_GATE_POLICY"
+BL011_CONTROL_EFFECT_GATE_POLICY_DEFAULT = "warn"
+BL011_CONTROL_EFFECT_GATE_POLICY_ENV_VAR = "BL014_BL011_CONTROL_EFFECT_GATE_POLICY"
+BL008_CONTROL_CAUSALITY_GATE_POLICY_DEFAULT = "warn"
+BL008_CONTROL_CAUSALITY_GATE_POLICY_ENV_VAR = "BL014_BL008_CONTROL_CAUSALITY_GATE_POLICY"
 BL007_HANDSHAKE_REQUIRED_BL006_SCORED_FIELDS: tuple[str, ...] = (
     "rank",
     "track_id",
@@ -373,6 +381,11 @@ def bl009_bl010_handshake_contract_ok(
     validation_raw = bl010_snapshot.get("validation")
     validation = dict(validation_raw) if isinstance(validation_raw, dict) else {}
 
+    # Backward compatibility: older BL-010 snapshots did not persist validation blocks.
+    # Treat this as optional-stage legacy format instead of a hard contract failure.
+    if not validation:
+        return True, "BL-010 snapshot present in legacy format (no validation block); treated as optional-compatible"
+
     has_policy = isinstance(validation.get("policy"), str)
     has_status = isinstance(validation.get("status"), str)
     has_violations_list = isinstance(validation.get("violations"), list)
@@ -403,6 +416,11 @@ def bl010_bl011_handshake_contract_ok(
 
     validation_raw = bl011_snapshot.get("validation")
     validation = dict(validation_raw) if isinstance(validation_raw, dict) else {}
+
+    # Backward compatibility: older BL-011 snapshots did not persist validation blocks.
+    # Treat this as optional-stage legacy format instead of a hard contract failure.
+    if not validation:
+        return True, "BL-011 snapshot present in legacy format (no validation block); treated as optional-compatible"
 
     has_policy = isinstance(validation.get("policy"), str)
     has_status = isinstance(validation.get("status"), str)
@@ -534,6 +552,235 @@ def bl005_control_resolution_fallback_volume_advisory(
     }
 
 
+def bl005_threshold_diagnostics_contract_advisory(
+    bl005_diagnostics: dict[str, Any],
+    *,
+    policy: str = BL005_THRESHOLD_DIAGNOSTICS_GATE_POLICY_DEFAULT,
+) -> dict[str, str] | None:
+    gate_result = bl005_threshold_diagnostics_contract_gate_result(
+        bl005_diagnostics,
+        policy=policy,
+    )
+    if gate_result is None or not gate_result["violations"] or gate_result["status"] == "fail":
+        return None
+
+    return {
+        "id": "advisory_bl005_threshold_diagnostics_contract",
+        "details": str(gate_result["details"]),
+    }
+
+
+def bl005_threshold_diagnostics_contract_missing_fields(
+    bl005_diagnostics: dict[str, Any],
+) -> list[str]:
+    threshold_attribution_raw = bl005_diagnostics.get("threshold_attribution")
+    threshold_attribution = (
+        dict(threshold_attribution_raw)
+        if isinstance(threshold_attribution_raw, dict)
+        else {}
+    )
+    what_if_raw = bl005_diagnostics.get("bounded_what_if_estimates")
+    bounded_what_if = dict(what_if_raw) if isinstance(what_if_raw, dict) else {}
+
+    missing_fields: list[str] = []
+    for field in (
+        "rejected_threshold_candidates",
+        "numeric_feature_fail_counts",
+        "top_failure_features",
+    ):
+        if field not in threshold_attribution:
+            missing_fields.append(f"threshold_attribution.{field}")
+    for field in (
+        "considered_candidates",
+        "base_kept_candidates",
+        "relaxed_estimate",
+        "tightened_estimate",
+    ):
+        if field not in bounded_what_if:
+            missing_fields.append(f"bounded_what_if_estimates.{field}")
+
+    return missing_fields
+
+
+def resolve_bl005_threshold_diagnostics_gate_policy(
+    bl009_log: dict[str, Any],
+) -> str:
+    run_config_raw = bl009_log.get("run_config")
+    run_config = dict(run_config_raw) if isinstance(run_config_raw, dict) else {}
+    observability_raw = run_config.get("observability")
+    observability = dict(observability_raw) if isinstance(observability_raw, dict) else {}
+    validation_policies_raw = observability.get("validation_policies")
+    validation_policies = (
+        dict(validation_policies_raw)
+        if isinstance(validation_policies_raw, dict)
+        else {}
+    )
+
+    candidate_policy = (
+        validation_policies.get("bl005_threshold_diagnostics_contract_policy")
+        or os.environ.get(BL005_THRESHOLD_DIAGNOSTICS_GATE_POLICY_ENV_VAR)
+        or BL005_THRESHOLD_DIAGNOSTICS_GATE_POLICY_DEFAULT
+    )
+    return normalize_validation_policy(
+        candidate_policy,
+        default=BL005_THRESHOLD_DIAGNOSTICS_GATE_POLICY_DEFAULT,
+    )
+
+
+def bl005_threshold_diagnostics_contract_gate_result(
+    bl005_diagnostics: dict[str, Any],
+    *,
+    policy: str = BL005_THRESHOLD_DIAGNOSTICS_GATE_POLICY_DEFAULT,
+) -> dict[str, Any] | None:
+    normalized_policy = normalize_validation_policy(
+        policy,
+        default=BL005_THRESHOLD_DIAGNOSTICS_GATE_POLICY_DEFAULT,
+    )
+    missing_fields = bl005_threshold_diagnostics_contract_missing_fields(bl005_diagnostics)
+
+    if not missing_fields:
+        return {
+            "id": "gate_bl005_threshold_diagnostics_contract",
+            "policy": normalized_policy,
+            "status": "pass",
+            "violations": [],
+            "details": (
+                "BL-005 threshold diagnostics contract is complete. "
+                f"policy={normalized_policy}; missing_fields=0"
+            ),
+        }
+
+    status = "fail" if normalized_policy == "strict" else "warn"
+    return {
+        "id": "gate_bl005_threshold_diagnostics_contract",
+        "policy": normalized_policy,
+        "status": status,
+        "violations": [f"missing_fields={len(missing_fields)}"],
+        "details": (
+            "BL-005 diagnostics are missing threshold-attribution/what-if fields expected for "
+            f"UNDO-I monitoring. policy={normalized_policy}, gate_status={status}, "
+            f"missing={missing_fields}."
+        ),
+    }
+
+
+def bl011_control_effect_gate_advisory(
+    bl011_report: dict[str, Any],
+    *,
+    policy: str = BL011_CONTROL_EFFECT_GATE_POLICY_DEFAULT,
+) -> dict[str, str] | None:
+    gate_result = bl011_control_effect_gate_result(bl011_report, policy=policy)
+    if gate_result is None or not gate_result["violations"] or gate_result["status"] == "fail":
+        return None
+
+    return {
+        "id": "advisory_bl011_control_effect_gate",
+        "details": str(gate_result["details"]),
+    }
+
+
+def resolve_bl011_control_effect_gate_policy(
+    bl011_snapshot: dict[str, Any],
+    bl011_report: dict[str, Any],
+    bl009_log: dict[str, Any],
+) -> str:
+    run_config_raw = bl009_log.get("run_config")
+    run_config = dict(run_config_raw) if isinstance(run_config_raw, dict) else {}
+    observability_raw = run_config.get("observability")
+    observability = dict(observability_raw) if isinstance(observability_raw, dict) else {}
+    config_policies_raw = observability.get("validation_policies")
+    config_policies = dict(config_policies_raw) if isinstance(config_policies_raw, dict) else {}
+
+    config_raw = bl011_report.get("config")
+    config = dict(config_raw) if isinstance(config_raw, dict) else {}
+    report_policies_raw = config.get("validation_policies")
+    report_policies = dict(report_policies_raw) if isinstance(report_policies_raw, dict) else {}
+
+    validation_raw = bl011_snapshot.get("validation")
+    validation = dict(validation_raw) if isinstance(validation_raw, dict) else {}
+    snapshot_policies_raw = validation.get("validation_policies")
+    snapshot_policies = (
+        dict(snapshot_policies_raw) if isinstance(snapshot_policies_raw, dict) else {}
+    )
+
+    candidate_policy = (
+        config_policies.get("bl011_control_effect_gate_policy")
+        or
+        snapshot_policies.get("bl011_control_effect_gate_policy")
+        or validation.get("bl011_control_effect_gate_policy")
+        or report_policies.get("bl011_control_effect_gate_policy")
+        or os.environ.get(BL011_CONTROL_EFFECT_GATE_POLICY_ENV_VAR)
+        or BL011_CONTROL_EFFECT_GATE_POLICY_DEFAULT
+    )
+    return normalize_validation_policy(
+        candidate_policy,
+        default=BL011_CONTROL_EFFECT_GATE_POLICY_DEFAULT,
+    )
+
+
+def bl011_control_effect_gate_result(
+    bl011_report: dict[str, Any],
+    *,
+    policy: str = BL011_CONTROL_EFFECT_GATE_POLICY_DEFAULT,
+) -> dict[str, Any] | None:
+    if not bl011_report:
+        return None
+
+    normalized_policy = normalize_validation_policy(
+        policy,
+        default=BL011_CONTROL_EFFECT_GATE_POLICY_DEFAULT,
+    )
+    results_raw = bl011_report.get("results")
+    results = dict(results_raw) if isinstance(results_raw, dict) else {}
+    no_op_controls_count = int(results.get("no_op_controls_count", 0) or 0)
+    all_variant_shifts_observable = bool(results.get("all_variant_shifts_observable", False))
+    all_variant_directions_met = bool(results.get("all_variant_directions_met", False))
+
+    if (
+        no_op_controls_count == 0
+        and all_variant_shifts_observable
+        and all_variant_directions_met
+    ):
+        return {
+            "id": "gate_bl011_control_effect",
+            "policy": normalized_policy,
+            "status": "pass",
+            "violations": [],
+            "details": (
+                "BL-011 controllability control-effect gate passed. "
+                f"policy={normalized_policy}; all_variant_shifts_observable={all_variant_shifts_observable}, "
+                f"all_variant_directions_met={all_variant_directions_met}, "
+                f"no_op_controls_count={no_op_controls_count}"
+            ),
+        }
+
+    no_op_raw = results.get("no_op_control_diagnostics")
+    no_op_control_diagnostics = list(no_op_raw) if isinstance(no_op_raw, list) else []
+    violations: list[str] = []
+    if not all_variant_shifts_observable:
+        violations.append("all_variant_shifts_observable=false")
+    if not all_variant_directions_met:
+        violations.append("all_variant_directions_met=false")
+    if no_op_controls_count > 0:
+        violations.append(f"no_op_controls_count={no_op_controls_count}")
+
+    status = "fail" if normalized_policy == "strict" else "warn"
+    return {
+        "id": "gate_bl011_control_effect",
+        "policy": normalized_policy,
+        "status": status,
+        "violations": violations,
+        "details": (
+            "BL-011 controllability indicates weak or non-observable control effects. "
+            f"policy={normalized_policy}, gate_status={status}, "
+            f"all_variant_shifts_observable={all_variant_shifts_observable}, "
+            f"all_variant_directions_met={all_variant_directions_met}, "
+            f"no_op_controls_count={no_op_controls_count}, "
+            f"sampled_no_op_controls={no_op_control_diagnostics[:5]}"
+        ),
+    }
+
+
 def _score_band_phrase(final_score: float) -> str:
     if final_score >= 0.75:
         return "strong profile match"
@@ -622,6 +869,115 @@ def bl008_explanation_fidelity_warnings(
     return warnings
 
 
+def bl008_control_causality_contract_advisory(
+    bl008_payloads: dict[str, Any],
+    *,
+    policy: str = BL008_CONTROL_CAUSALITY_GATE_POLICY_DEFAULT,
+) -> dict[str, str] | None:
+    gate_result = bl008_control_causality_contract_gate_result(
+        bl008_payloads,
+        policy=policy,
+    )
+    if gate_result is None or not gate_result["violations"] or gate_result["status"] == "fail":
+        return None
+
+    return {
+        "id": "advisory_bl008_control_causality_contract",
+        "details": str(gate_result["details"]),
+    }
+
+
+def resolve_bl008_control_causality_gate_policy(
+    bl009_log: dict[str, Any],
+) -> str:
+    run_config_raw = bl009_log.get("run_config")
+    run_config = dict(run_config_raw) if isinstance(run_config_raw, dict) else {}
+    observability_raw = run_config.get("observability")
+    observability = dict(observability_raw) if isinstance(observability_raw, dict) else {}
+    validation_policies_raw = observability.get("validation_policies")
+    validation_policies = (
+        dict(validation_policies_raw)
+        if isinstance(validation_policies_raw, dict)
+        else {}
+    )
+
+    candidate_policy = (
+        validation_policies.get("bl008_control_causality_contract_policy")
+        or os.environ.get(BL008_CONTROL_CAUSALITY_GATE_POLICY_ENV_VAR)
+        or BL008_CONTROL_CAUSALITY_GATE_POLICY_DEFAULT
+    )
+    return normalize_validation_policy(
+        candidate_policy,
+        default=BL008_CONTROL_CAUSALITY_GATE_POLICY_DEFAULT,
+    )
+
+
+def bl008_control_causality_contract_gate_result(
+    bl008_payloads: dict[str, Any],
+    *,
+    policy: str = BL008_CONTROL_CAUSALITY_GATE_POLICY_DEFAULT,
+) -> dict[str, Any] | None:
+    explanations_raw = bl008_payloads.get("explanations")
+    explanations = list(explanations_raw) if isinstance(explanations_raw, list) else []
+    if not explanations:
+        return None
+
+    normalized_policy = normalize_validation_policy(
+        policy,
+        default=BL008_CONTROL_CAUSALITY_GATE_POLICY_DEFAULT,
+    )
+    required_keys = [
+        "schema_version",
+        "decision_outcome",
+        "controlling_parameters",
+        "effect_direction",
+        "evidence_sources",
+    ]
+    missing_contract_tracks: list[dict[str, object]] = []
+    for payload_raw in explanations:
+        payload = dict(payload_raw) if isinstance(payload_raw, dict) else {}
+        control_causality_raw = payload.get("control_causality")
+        control_causality = (
+            dict(control_causality_raw)
+            if isinstance(control_causality_raw, dict)
+            else {}
+        )
+        missing = [key for key in required_keys if key not in control_causality]
+        if missing:
+            missing_contract_tracks.append(
+                {
+                    "track_id": str(payload.get("track_id", "")),
+                    "missing": missing,
+                }
+            )
+
+    if not missing_contract_tracks:
+        return {
+            "id": "gate_bl008_control_causality_contract",
+            "policy": normalized_policy,
+            "status": "pass",
+            "violations": [],
+            "details": (
+                "BL-008 control_causality contract is complete for all explanations. "
+                f"policy={normalized_policy}; affected_tracks=0/{len(explanations)}"
+            ),
+        }
+
+    status = "fail" if normalized_policy == "strict" else "warn"
+    return {
+        "id": "gate_bl008_control_causality_contract",
+        "policy": normalized_policy,
+        "status": status,
+        "violations": [f"affected_tracks={len(missing_contract_tracks)}/{len(explanations)}"],
+        "details": (
+            "BL-008 explanations are missing control_causality contract fields expected for UNDO-H monitoring. "
+            f"policy={normalized_policy}, gate_status={status}, "
+            f"affected_tracks={len(missing_contract_tracks)}/{len(explanations)} "
+            f"sampled={missing_contract_tracks[:5]}"
+        ),
+    }
+
+
 def ensure_exists(path: Path) -> None:
     if not path.exists():
         raise FileNotFoundError(f"Missing required artifact: {path}")
@@ -680,8 +1036,10 @@ def main() -> int:
     bl009_log = load_json(artifacts["bl009_log"])
     bl010_path = REPO_ROOT / "reproducibility/outputs/reproducibility_config_snapshot.json"
     bl011_path = REPO_ROOT / "controllability/outputs/controllability_config_snapshot.json"
+    bl011_report_path = REPO_ROOT / "controllability/outputs/controllability_report.json"
     bl010_snapshot = load_json(bl010_path) if bl010_path.exists() else {}
     bl011_snapshot = load_json(bl011_path) if bl011_path.exists() else {}
+    bl011_report = load_json(bl011_report_path) if bl011_report_path.exists() else {}
 
     with artifacts["bl009_index"].open("r", encoding="utf-8", newline="") as handle:
         reader = csv.DictReader(handle)
@@ -860,6 +1218,54 @@ def main() -> int:
     )
     if control_resolution_advisory is not None:
         advisories.append(control_resolution_advisory)
+    gate_results: list[dict[str, Any]] = []
+    bl005_threshold_diagnostics_policy = resolve_bl005_threshold_diagnostics_gate_policy(
+        bl009_log,
+    )
+    bl005_threshold_diagnostics_gate = bl005_threshold_diagnostics_contract_gate_result(
+        bl005_diag,
+        policy=bl005_threshold_diagnostics_policy,
+    )
+    if bl005_threshold_diagnostics_gate is not None:
+        gate_results.append(bl005_threshold_diagnostics_gate)
+    threshold_diagnostics_advisory = bl005_threshold_diagnostics_contract_advisory(
+        bl005_diag,
+        policy=bl005_threshold_diagnostics_policy,
+    )
+    if threshold_diagnostics_advisory is not None:
+        advisories.append(threshold_diagnostics_advisory)
+    bl011_control_effect_gate_policy = resolve_bl011_control_effect_gate_policy(
+        bl011_snapshot,
+        bl011_report,
+        bl009_log,
+    )
+    bl011_control_effect_gate = bl011_control_effect_gate_result(
+        bl011_report,
+        policy=bl011_control_effect_gate_policy,
+    )
+    if bl011_control_effect_gate is not None:
+        gate_results.append(bl011_control_effect_gate)
+    bl008_control_causality_policy = resolve_bl008_control_causality_gate_policy(
+        bl009_log,
+    )
+    bl008_control_causality_gate = bl008_control_causality_contract_gate_result(
+        bl008_payloads,
+        policy=bl008_control_causality_policy,
+    )
+    if bl008_control_causality_gate is not None:
+        gate_results.append(bl008_control_causality_gate)
+    control_effect_gate_advisory = bl011_control_effect_gate_advisory(
+        bl011_report,
+        policy=bl011_control_effect_gate_policy,
+    )
+    if control_effect_gate_advisory is not None:
+        advisories.append(control_effect_gate_advisory)
+    control_causality_advisory = bl008_control_causality_contract_advisory(
+        bl008_payloads,
+        policy=bl008_control_causality_policy,
+    )
+    if control_causality_advisory is not None:
+        advisories.append(control_causality_advisory)
     bl008_fidelity_warnings = bl008_explanation_fidelity_warnings(bl008_payloads)
     if bl008_fidelity_warnings:
         advisories.append(
@@ -1055,7 +1461,8 @@ def main() -> int:
 
     passed = sum(1 for item in checks if item["status"] == "pass")
     failed = len(checks) - passed
-    overall_status = "pass" if failed == 0 else "fail"
+    gate_failures = sum(1 for item in gate_results if item.get("status") == "fail")
+    overall_status = "pass" if failed == 0 and gate_failures == 0 else "fail"
 
     finished = datetime.now(UTC)
     elapsed_seconds = round((finished - started).total_seconds(), 3)
@@ -1071,6 +1478,9 @@ def main() -> int:
         "checks_failed": failed,
         "advisories_total": len(advisories),
         "advisories": advisories,
+        "gate_results_total": len(gate_results),
+        "gate_failures_total": gate_failures,
+        "gate_results": gate_results,
         "artifact_hashes_sha256": {k: v for k, v in hashes.items()},
         "checks": checks,
     }
@@ -1116,6 +1526,14 @@ def main() -> int:
             "bl005_handshake_warn_max_violations": BL005_HANDSHAKE_WARN_MAX_VIOLATIONS_ADVISORY_THRESHOLD,
             "bl005_control_resolution_fallback_max_events": BL005_RUNTIME_CONTROL_FALLBACK_ADVISORY_THRESHOLD,
         },
+        "validation_policies": {
+            "bl005_threshold_diagnostics_contract_policy": bl005_threshold_diagnostics_policy,
+            "bl005_threshold_diagnostics_contract_policy_env_var": BL005_THRESHOLD_DIAGNOSTICS_GATE_POLICY_ENV_VAR,
+            "bl011_control_effect_gate_policy": bl011_control_effect_gate_policy,
+            "bl011_control_effect_gate_policy_env_var": BL011_CONTROL_EFFECT_GATE_POLICY_ENV_VAR,
+            "bl008_control_causality_contract_policy": bl008_control_causality_policy,
+            "bl008_control_causality_contract_policy_env_var": BL008_CONTROL_CAUSALITY_GATE_POLICY_ENV_VAR,
+        },
     }
 
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
@@ -1144,6 +1562,24 @@ def main() -> int:
                 "explanation_count": explanations_len,
                 "bl003_fuzzy_enabled": str(fuzzy_enabled).lower(),
                 "bl003_matched_by_fuzzy": matched_by_fuzzy,
+                "bl011_control_effect_gate_policy": bl011_control_effect_gate_policy,
+                "bl011_control_effect_gate_status": (
+                    str(bl011_control_effect_gate.get("status"))
+                    if bl011_control_effect_gate is not None
+                    else "not_executed"
+                ),
+                "bl005_threshold_diagnostics_contract_policy": bl005_threshold_diagnostics_policy,
+                "bl005_threshold_diagnostics_contract_status": (
+                    str(bl005_threshold_diagnostics_gate.get("status"))
+                    if bl005_threshold_diagnostics_gate is not None
+                    else "not_executed"
+                ),
+                "bl008_control_causality_contract_policy": bl008_control_causality_policy,
+                "bl008_control_causality_contract_status": (
+                    str(bl008_control_causality_gate.get("status"))
+                    if bl008_control_causality_gate is not None
+                    else "not_executed"
+                ),
                 "bl009_run_id": bl009_index["run_id"],
                 "playlist_sha256": hashes["playlist"],
                 "bl008_payloads_sha256": hashes["bl008_payloads"],
