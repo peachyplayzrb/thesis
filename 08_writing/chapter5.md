@@ -1,74 +1,82 @@
-﻿# Chapter 5
+﻿# Chapter 5: Evaluation and Results
 
-Chapter objective: interpret the rebuilt implementation and evaluation evidence against the active research question and contribution claim, while keeping every conclusion bounded to explicit objective-linked evidence.
+## 5.1 Chapter Aim and Scope
+This chapter evaluates the implementation surfaces defined in Chapter 4 against the objective-to-control-to-evidence contract formalized in Chapter 3. It is not a benchmark-comparison chapter. Instead, it tests whether the rebuilt deterministic pipeline satisfies objective-linked success conditions under bounded scope [@jannach_measuring_2019; @bauer_exploring_2024; @anelli_elliot_2021].
 
-## 5.1 Interpretation Frame
-The rebuilt research question asks how a deterministic playlist-generation pipeline can be engineered and evaluated so that preference inference, candidate generation, and playlist assembly remain transparent, controllable, and reproducible under cross-source uncertainty and multi-objective playlist trade-offs.
+The evaluation scope is bounded to six questions:
 
-Chapter 5 therefore interprets results through three lenses that follow directly from the rebuild posture:
+1. Does the pipeline make cross-source preference uncertainty explicit rather than hiding it in aggregate outputs?
+2. Does alignment and candidate shaping expose confidence and exclusion logic?
+3. Are scoring and playlist-assembly trade-offs explicitly controllable?
+4. Do explanation and observability surfaces remain mechanism-linked?
+5. Is reproducibility and controllability evidence executable and repeatable?
+6. Are validity boundaries and failure conditions visible enough to support bounded design guidance?
 
-1. uncertainty handling,
-2. controllable trade-off engineering,
-3. mechanism-linked evidence quality.
+## 5.2 Evaluation Criteria and Success Conditions
+Evaluation in the rebuild posture is objective-linked rather than metric-first.
 
-This chapter is not a benchmark-positioning chapter. It does not argue that deterministic methods are universally preferable to hybrid, collaborative, or deep recommender families. Instead, it asks whether the implemented artefact now produces evidence strong enough to support the bounded engineering claim established in Chapters 1 to 3 [@jannach_measuring_2019; @bauer_exploring_2024; @ferrari_dacrema_troubling_2021].
+Table 5.1 defines the active Chapter 5 success conditions.
 
-## 5.2 Findings in Relation to the Research Question
-The current evidence supports five main findings.
+| Objective | Evaluation focus | Minimum success condition |
+| --- | --- | --- |
+| O1 | Uncertainty-aware profiling | BL-004 emits inspectable uncertainty, coverage, and attribution blocks; tranche-1 gate passes |
+| O2 | Confidence-aware alignment and candidate generation | BL-003 and BL-005 expose confidence, exclusion, and candidate-decision evidence; tranche-1 gate passes |
+| O3 | Controllable scoring and assembly trade-offs | BL-006 and BL-007 expose explicit control surfaces and measurable effect diagnostics; tranche-1 and BL-011 evidence remain green |
+| O4 | Mechanism-linked explanations and observability | BL-008 explanations map to scoring/assembly mechanisms and BL-009 preserves run lineage; tranche-2 gate passes |
+| O5 | Reproducibility and controllability evaluation readiness | BL-010 and BL-011 remain executable with pass verdicts and canonical config-pair traceability; tranche-2 gate passes |
+| O6 | Bounded design guidance | BL-007 and BL-009 expose failure-boundary and validity-boundary evidence; tranche-2 and tranche-3 gates pass |
 
-### 5.2.1 Explicit uncertainty handling is a design requirement, not a reporting afterthought
-The rebuild confirms that cross-source preference inference should not be treated as if imported interaction traces were direct preference truth. BL-003 and BL-004 now surface match confidence, source coverage, attribution, and uncertainty-related diagnostics directly in the active output contract. This supports the claim that uncertainty visibility must be engineered into the profiling path itself rather than inferred later from failures [@allam_improved_2018; @papadakis_blocking_2021].
+## 5.3 Evaluation Procedure
+The rebuild evaluation procedure uses a layered acceptance structure.
 
-### 5.2.2 Candidate generation is first-order recommendation logic
-The rebuild also confirms a Chapter 2 tension that was muted in the legacy framing: candidate shaping is not neutral preprocessing. BL-005 exclusion-path diagnostics and tranche-1 gate checks show that the eventual ranking and playlist outputs are strongly conditioned by which candidates survive filtering. This means explanation and evaluation claims that focus only on final ranking would understate an important part of causal behavior.
+1. Validate entry-surface completeness for O1 to O3 with the REB-M3 tranche-1 gate.
+2. Validate explanation, observability, reproducibility, controllability, and bounded-guidance surfaces for O4 to O6 with the tranche-2 gate.
+3. Validate control-causality and validity-boundary hardening with the tranche-3 gate.
+4. Confirm end-to-end wrapper execution remains green through validate-only (`BL-013`) and sanity (`BL-014`) checks.
+5. Use BL-010 and BL-011 reports as supporting evidence for repeatability and measured control effects.
 
-### 5.2.3 Deterministic scoring and assembly remain valuable because they keep trade-offs inspectable
-BL-006 and BL-007 continue to support a strong engineering argument for deterministic methods in this thesis scope: score components, rule pressure, and assembly constraints remain directly inspectable. That does not prove that deterministic methods maximize recommendation quality in every setting, but it does show that they provide a practical substrate for auditable trade-off control under bounded scope [@roy_systematic_2022; @jannach_measuring_2019].
+This layered procedure is stricter than the pre-rebuild framing because it treats evidence completeness itself as part of implementation success rather than post-hoc packaging around runtime outputs [@beel_towards_2016; @ferrari_dacrema_troubling_2021; @zhu_bars_2022].
 
-### 5.2.4 Explanation quality depends on mechanism linkage, not on narrative plausibility alone
-The tranche-2 and tranche-3 evidence strengthens the discussion around transparency. BL-008 explanations are now more useful because they preserve both direct mechanism contributors and control-provenance snapshots. This matters because explanation fidelity in the thesis is treated as alignment with actual scoring and assembly behavior, not merely as the production of convincing natural-language rationale [@zhang_explainable_2020; @tintarev_evaluating_2012; @sotirou_musiclime_2025].
+## 5.4 Objective-To-Evidence Results Matrix
+Table 5.2 summarizes the current rebuild-era evidence posture.
 
-### 5.2.5 Bounded guidance becomes more credible when limits are part of the contract
-The most important late-stage design improvement is that validity boundaries are now explicit, top-level, and test-enforced in BL-009. This changes the discussion posture: instead of adding caveats only in prose after evaluation, the artefact itself now emits scope, known limits, and run-specific caveats. That makes Chapter 5 conclusions more defensible because boundedness is operationalized rather than retrofitted [@beel_towards_2016; @bellogin_improving_2021; @cavenaghi_systematic_2023].
+| Objective | Primary acceptance evidence | Current result | Interpretation |
+| --- | --- | --- | --- |
+| O1 | REB-M3 tranche-1 gate `REB-M3-TRANCHE1-GATE-20260412-133635-735086` | `pass (9/9)` | BL-004 now emits uncertainty, coverage, attribution, and policy-effect blocks required for inspectable profiling. |
+| O2 | REB-M3 tranche-1 gate `REB-M3-TRANCHE1-GATE-20260412-133635-735086` | `pass (9/9)` | BL-003 and BL-005 expose seed-contract, match-count, and exclusion-path evidence rather than collapsing candidate shaping into hidden preprocessing. |
+| O3 | REB-M3 tranche-1 gate plus BL-011 report `BL011-CTRL-20260412-134945` | `pass` | Scoring and assembly controls are explicit, and BL-011 still reports repeat consistency with observable shifts at supported surfaces. |
+| O4 | REB-M3 tranche-2 gate `REB-M3-TRANCHE2-GATE-20260412-134111-435035` | `pass (9/9)` | BL-008 primary drivers now map back to breakdown components and BL-009 preserves upstream stage lineage. |
+| O5 | REB-M3 tranche-2 gate plus BL-010/BL-011 reports | `pass` | Reproducibility and controllability remain executable and tied to canonical config-pair and run-lineage evidence. |
+| O6 | REB-M3 tranche-2 and tranche-3 gates | `pass` | BL-007 failure-boundary reporting and BL-009 validity-boundary reporting are now explicit enough to support bounded conclusions. |
 
-## 5.3 Contribution Interpretation
-The contribution is best understood as an engineering-evidence contribution rather than a model-performance contribution.
+## 5.5 Reproducibility, Controllability, and Observability Evidence
+Table 5.3 condenses the most important current execution evidence.
 
-What the thesis now demonstrates is not that one deterministic playlist pipeline is universally best, but that it is possible to co-engineer:
+| Check | Active evidence | Result | Notes |
+| --- | --- | --- | --- |
+| Validate-only orchestration | `BL013-ENTRYPOINT-20260412-141352-373476` | `pass` | Confirms the current active wrapper path completes without contract failure. |
+| Sanity suite | `BL014-SANITY-20260412-141423-183313` | `pass (28/28)` | Confirms active stage contracts remain internally consistent after the rebuild hardening wave. |
+| Reproducibility report | `07_implementation/src/reproducibility/outputs/reproducibility_report.json` | `pass` | BL-010 records deterministic replay status and retry-boundary reporting under fixed-input replay. |
+| Controllability report | `07_implementation/src/controllability/outputs/controllability_report.json` (`run_id=BL011-CTRL-20260412-134945`) | `pass` | BL-011 reports repeat-consistent scenario execution and explicit no-op control diagnostics where effect is absent. |
+| Observability schema and scope | `07_implementation/src/observability/outputs/bl009_run_observability_log.json` (`run_id=BL009-OBSERVE-20260412-141422-422054`) | `pass` | BL-009 includes execution scope, upstream lineage, canonical config-pair traceability, and explicit validity-boundary reporting. |
 
-1. explicit uncertainty signaling during preference inference,
-2. controllable candidate and assembly trade-offs,
-3. mechanism-linked explanations,
-4. executable reproducibility and controllability evidence,
-5. explicit validity-boundary reporting.
+## 5.6 Control-Causality and Validity-Boundary Hardening
+The most important late REB-M3 result is not only that tranche-3 passed, but that the underlying contract was strengthened after the first pass.
 
-Taken together, these give the thesis a clearer and more defensible contribution than the earlier pre-rebuild framing, which concentrated more on generic transparency/observability language than on explicit objective-to-evidence traceability [@balog_transparent_2019; @knijnenburg_explaining_2012; @afroogh_trust_2024].
+First, BL-008 explanations now carry `control_provenance`, which exposes the specific scoring and transparency settings that shaped explanation output. Second, BL-009 emits `validity_boundaries` at the top level rather than burying bounded-guidance evidence inside nested diagnostics. Third, BL-011 records explicit no-op control diagnostics so weak or ineffective controls are visible rather than silently ignored.
 
-## 5.4 Limits of the Current Evidence
-The current evidence still has important limits.
+The follow-up hardening step added a direct section-validator requirement for top-level `validity_boundaries`, guarded by unit tests. This moves failure detection closer to the source of schema drift, rather than relying only on late-stage quality gates.
 
-1. Cross-source preference traces remain indirect evidence of user preference rather than causal ground truth.
-2. Alignment uncertainty remains material; unmatched or ambiguous records are measured and surfaced, but not eliminated.
-3. Some control surfaces remain weak or data-regime-dependent, as shown by BL-011 no-op diagnostics.
-4. Reproducibility claims are contract-bounded to declared fixed inputs, replay procedures, and stable-content comparisons.
-5. External validity remains narrow because the artefact is single-user, deterministic, and not evaluated through longitudinal user studies.
-6. Comparator depth remains limited because the thesis does not implement a matched hybrid or learning-based baseline.
+## 5.7 Interpretation Discipline
+Results in this chapter are interpreted as engineering-evidence results, not as proof that the recommender is globally optimal or universally preferable. A pass verdict means that the intended control/evidence contract is currently implemented and auditable under bounded scope. It does not mean that the pipeline eliminates ambiguity, perfectly reflects human preference, or dominates alternative recommender families [@tintarev_evaluating_2012; @jannach_measuring_2019; @bauer_exploring_2024].
 
-These limits do not collapse the contribution. They bound it to auditable engineering evidence under explicit scope rather than broad recommender-performance claims [@flexer_problem_2016; @papadakis_blocking_2021; @jin_effects_2020].
+## 5.8 Current Limits Visible in the Evidence
+The current evidence surface still has explicit limits.
 
-## 5.5 Implications for Design Science Positioning
-The rebuild also sharpens the methodological interpretation of the artefact. In Design Science terms, the value of the artefact lies not only in producing playlists, but in making design claims testable through explicit control and evidence contracts. The REB-M3 tranche gates are especially important here because they turn objective satisfaction into executable acceptance checks instead of relying only on narrative consistency across chapters.
+1. BL-010 reproducibility evidence is based on fixed-input replay and should be interpreted as contract-bounded repeatability, not as a claim that every raw output file hash is invariant under all runtime metadata.
+2. BL-011 includes no-op control diagnostics, which means some exposed controls remain weak or data-regime-dependent even though the measurement surface is now more honest.
+3. BL-003 still reports a substantial unmatched portion of cross-source events. In the canonical active baseline, only 15.95% of imported history aligns to the offline corpus, so the current 15% match-rate gate should be interpreted as a minimum viability threshold rather than evidence of broad corpus coverage.
+4. Bounded-guidance claims depend on visibility of scope and caveat reporting, not on wide external validation or user-study evidence [@beel_towards_2016; @bellogin_improving_2021; @cavenaghi_systematic_2023].
 
-This is a stronger DSR posture than the legacy chapter framing because it narrows the gap between design intent, implemented control surface, and reported evidence [@anelli_elliot_2021; @zhu_bars_2022].
-
-## 5.6 Future Work
-Future work should extend the artefact without breaking the evidence discipline established in the rebuild.
-
-1. Deepen control-effect analysis by moving from one-factor-at-a-time tests to interaction-aware control studies.
-2. Resolve open influence-track design questions, especially whether explicit user intent should override assembly constraints and how weak influence effects should be reported.
-3. Add comparator pipelines only when they can be evaluated under the same objective-to-evidence discipline rather than as loosely matched benchmark context.
-4. Strengthen alignment evaluation with dedicated ambiguity and error-analysis studies instead of relying only on aggregate unmatched-rate reporting.
-5. Extend bounded-guidance outputs so Chapter 5 conclusions can reference richer failure-mode taxonomies generated directly from the artefact [@andjelkovic_moodplay_2019; @liu_aggregating_2025].
-
-## 5.7 Chapter Summary
-The rebuilt evidence suggests that the central engineering challenge is not simply to generate playlists deterministically, but to do so in a way that keeps uncertainty, trade-offs, mechanism linkage, and limits visible. The artefact now provides stronger support for that bounded claim than the pre-rebuild pipeline did, because its evaluation surfaces are more explicit, more executable, and more disciplined about what the evidence does and does not justify.
+## 5.9 Chapter Summary
+Chapter 5 evaluates the rebuilt artefact through objective-linked evidence contracts rather than legacy MVP reporting. The current result is that O1 to O6 have executable acceptance evidence, wrapper validation remains green, and late hardening work has moved bounded-guidance and control-causality reporting from implied behavior to explicit, testable contract surfaces.
