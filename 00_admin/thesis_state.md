@@ -1,6 +1,6 @@
 # Thesis State
 
-Last updated: 2026-04-19 UTC (C-529 / D-238 complexity-reduction campaign complete — zero D/E/F-grade functions remain in `src/`. BL-014 `sanity_checks.main` F(67) decomposed into 8 helpers; `bl008_explanation_fidelity_warnings` E(32) cleared via 3 sub-helpers; `bl008_bl009_handshake_contract_ok` D(21) cleared via `_bl008_bl09_check_logic`; BL-007 `assemble_bucketed` D(24) cleared via `_run_candidate_loop`. Tests 611/611, ruff clean, hygiene report empty for D+.)
+Last updated: 2026-04-19 UTC (C-565 / D-273 mentor-feedback remediation implementation checklist remains complete. Optional D10 tooling surface remains active and reliability-hardened, and D6 dependency-audit reporting is now scoped to active implementation runtime requirements (`07_implementation/requirements.txt`) to keep report evidence src/runtime-focused. MFT-A1-A6, D-tooling tranche, B/E priority tranche, C-test tranche, F-doc tranche (F1-F5), G-methodology tranche (G1/G3), and H-housekeeping tranche (H1-H5) remain complete. 637 tests pass. Next: external submission/package confirmations.)
 
 > Full historical audit trail (priority checkpoints, post-closure enhancement logs) is in `00_admin/thesis_state_ARCHIVE_20260416.md` and `00_admin/change_log.md`.
 
@@ -99,9 +99,9 @@ Active dataset: DS-001 (Music4All). Active config profile: `run_config_ui013_tun
 
 | Item | Current value |
 |------|--------------|
-| Highest change ID | C-528 |
-| Highest decision ID | D-237 |
-| Active unresolved issues | No active implementation/design-verification unresolved items remain (`UNDO-P` and `UNDO-Q` are resolved). Remaining submission blockers are tracked in `09_quality_control/submission_readiness_status.md` and `01_requirements/ambiguity_flags.md` |
+| Highest change ID | C-565 |
+| Highest decision ID | D-273 |
+| Active unresolved issues | Active mentor-feedback remediation backlog now tracked as `UNDO-R` in `00_admin/unresolved_issues.md` (A-H implementation checklist complete). Submission blockers remain tracked in `09_quality_control/submission_readiness_status.md` and `01_requirements/ambiguity_flags.md` |
 | Admin log files | `change_log.md`, `decision_log.md`, `unresolved_issues.md`, `timeline.md` |
 | Foundation files | `02_foundation/current_title_and_rq.md`, `objectives.md`, `contribution_statement.md`, `problem_statement.md` |
 | Historical state (pre-cleanup) | `00_admin/thesis_state_ARCHIVE_20260416.md` |

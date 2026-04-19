@@ -1,13 +1,94 @@
 # Unresolved Issues
 
-Last updated: 2026-04-18 UTC (UNDO-P and UNDO-Q implemented via C-490/D-199 and C-491/D-200 respectively. UNDO-Q now adds a bounded BL-009 `cross_stage_influence_attribution_summary` linking BL-004, BL-005/BL-006, BL-007, and BL-009 influence-effect evidence. Remaining submission blockers tracked in `09_quality_control/submission_readiness_status.md`.)
+Last updated: 2026-04-19 UTC (MFT-A1 through MFT-A6 are now implemented under UNDO-R: BL-006 now emits additive raw-vs-final score surfaces and explicit no-op influence diagnostics, influence accounting is split into new-injected vs relabelled counters, BL-013 run effective artifacts persist environment-override provenance in `env_overrides`, wrapper pass-through parity is complete, and strict validation-profile semantics now coerce all stage handshake policies to strict. D-tooling tranche is now complete: D1-D9 implemented and D10 optional evidence tooling is now wired (interrogate advisory script/task/report surface), while remaining non-mandatory for baseline gates. B/E tranche (B1/B2/B6/E1/E2/E3) is now implemented: lockfile, Python version pin/guard, runtime-environment metadata in effective-config artifact, GitHub Actions CI workflow, bounded Python-version matrix coverage policy, and bounded cross-platform (Linux plus Windows) CI execution. C-test tranche now includes C4 property-based invariant coverage, C5 schema-key parity coverage, and C6 explicit boundary-case matrix coverage. F-doc tranche is complete (F1-F5), G-methodology tranche is complete (G1/G3), and H-housekeeping tranche is now complete (H1-H5): repository license posture aligned; `.gitignore` and generated-artifact hygiene re-verified; `pyproject.toml` metadata/tool clarity expanded; installability posture documented as script-first; input-asset redistribution/license audit completed. Remaining blockers are external submission/package confirmations tracked in `09_quality_control/submission_readiness_status.md`.)
 
 ## Active
 
-No active implementation/design-verification unresolved items remain.
+### UNDO-R: Mentor feedback remediation backlog (A-H comprehensive TODO set)
 
-Submission-preparation blockers are now tracked separately because they are not active code/design defects:
-- `09_quality_control/submission_readiness_status.md` for missing packaging artifacts and external submission confirmations.
+**Status**: Active (2026-04-19)
+
+**Trigger**: Mentor feedback review surfaced a mixed set of real implementation defects, reproducibility-hardening gaps, CI/tooling omissions, and submission-methodology packaging gaps. User requested a comprehensive actionable TODO set covering every feedback item.
+
+**Description**: Track all mentor-feedback items as explicit action-checklist tasks with completion evidence. This backlog is intentionally comprehensive and includes both code-facing and packaging-facing work.
+
+**Comprehensive TODO checklist**
+
+**A) Defects and contract correctness**
+- [x] `MFT-A1`: Add `raw_final_score` alongside `final_score` in BL-006 scored output, keep BL-008/BL-009 explanation surfaces coherent against both fields, and add regression tests for score-column contract.
+- [x] `MFT-A2`: Split influence injection accounting into `new_injected_count` vs `relabelled_count` (replace overloaded `injected_count`) and update all dependent summaries/tests.
+- [x] `MFT-A3`: Make `validation_profile=strict` enforce strict policy coercion across stage handshake policies (or remove/rename misleading strict mode semantics).
+- [x] `MFT-A4`: Persist environment-override provenance in effective config artifact (`env_overrides` with source and value-normalization notes).
+- [x] `MFT-A5`: Extend wrapper pass-through controls to include no-refresh-seed and explicit stages selection parity with orchestration CLI.
+- [x] `MFT-A6`: Emit explicit warning/diagnostic when BL-006 influence apply is enabled but BL-003 influence is disabled (silent no-op prevention).
+
+**B) Determinism and reproducibility hardening**
+- [x] `MFT-B1`: Add a lockfile or equivalent transitive dependency freeze mechanism for reproducible installs.
+- [x] `MFT-B2`: Add explicit Python version pin + fail-fast environment guard for unsupported interpreter versions.
+- [x] `MFT-B3`: Complete deterministic iteration audit for dict/set-sensitive paths and record outcome artifact. [Done: `07_implementation/DETERMINISTIC_ITERATION_AUDIT.md` — C-544]
+- [x] `MFT-B4`: Add explicit seed/randomness policy note artifact stating no stochastic runtime paths (or seed policy if any are introduced). [Done: `07_implementation/DETERMINISM_RANDOMNESS_POLICY.md` — C-544]
+- [x] `MFT-B5`: Add centralized hash-input chain summary in BL-013 (input artifacts and config authority chain). [Done: `hash_input_chain` block in `src/orchestration/summary_builder.py` + tests — C-545]
+- [x] `MFT-B6`: Add platform/runtime metadata capture (`sys.version`, locale/encoding, timezone, OS) to effective run artifact.
+- [x] `MFT-B7`: Formalize deterministic verification replay (3-replay evidence) as repeatable contract path in docs and CI/task flow. [Done: wrapper pass-through + CI validate step + task + README command path — C-546]
+
+**C) Test-depth hardening**
+- [x] `MFT-C1`: Add coverage measurement (`pytest-cov`) and define minimum threshold policy for active runtime modules.
+- [x] `MFT-C2`: Add golden-artifact [Done: test_golden_artifacts.py — C-543] reproducibility test(s) for byte/hash-stable expected outputs on fixed fixture inputs.
+- [x] `MFT-C3`: Close residual unit-test blind spots for newly identified contract-sensitive paths (A1-A6 outcomes).
+- [x] `MFT-C4`: Add bounded property-based tests (Hypothesis) for key invariants in parsing/coercion and stage contract validation.
+- [x] `MFT-C5`: Add schema-key contract parity test (declared config keys vs consumed runtime keys, including deprecations).
+- [x] `MFT-C6`: Add explicit boundary-case matrix coverage for zero/empty/single-item and threshold-edge conditions.
+
+**D) Tooling and quality automation**
+- [x] `MFT-D1`: Keep Ruff check/fix workflow as canonical lint path and close with docs/task parity verification (workflow active; README/task parity synchronized).
+- [x] `MFT-D2`: Define and document strict static-analysis posture (pyright profile, staged strict rollout, and gate behavior).
+- [x] `MFT-D3`: Wire pytest plus coverage reporting into one repeatable quality command/task surface with an explicit threshold policy.
+- [x] `MFT-D4`: Add Hypothesis dependency/tooling only after scoped property tests are introduced.
+- [x] `MFT-D5`: Add pre-commit hooks (lint/type/test lightweight gates) after D2/D3 baseline stabilization.
+- [x] `MFT-D6`: Add dependency vulnerability audit step (`pip-audit` or equivalent) in advisory-first mode with report artifacts.
+- [x] `MFT-D7`: Add security static analysis step (`bandit` advisory-first) with report artifacts for submission hardening evidence (Python 3.14 compatibility fallback to Ruff `S` rules when Bandit AST parsing fails).
+- [x] `MFT-D8`: Keep dead-code hygiene (`vulture`) active and close with documented execution cadence/threshold policy (workflow active and posture documented).
+- [x] `MFT-D9`: Keep complexity audit (`radon`) active and record explicit decision on `xenon` advisory-vs-strict posture (advisory-only for current remediation tranche).
+- [x] `MFT-D10`: Decide on docstring-coverage tooling (`interrogate`) as optional viva/submission evidence add-on (decision: keep optional, not baseline-gated; advisory tooling surface now active via `scripts/docstring_coverage_src.ps1` and `07: Docstring Coverage src (Advisory)`).
+
+**E) CI and matrix execution**
+- [x] `MFT-E1`: Add CI workflow for end-to-end contract checks (lint, tests, typecheck, validate-only path).
+- [x] `MFT-E2`: Add Python-version matrix coverage policy in CI (bounded to supported interpreter set).
+- [x] `MFT-E3`: Add cross-platform CI execution (Windows plus Linux) for reproducibility posture.
+
+**F) Documentation and demo readiness**
+- [x] `MFT-F1`: Resolve README architecture-reference drift (missing architecture reference path) and ensure implementation-doc discoverability.
+- [x] `MFT-F2`: Add unified run-config reference with control descriptions, ranges, defaults, and stage-effect mapping.
+- [x] `MFT-F3`: Add dedicated reproducibility playbook doc (operator steps + expected artifacts + interpretation boundaries).
+- [x] `MFT-F4`: Curate and label demo-ready alternate profiles (including influence-policy variants) with explicit usage guidance.
+- [x] `MFT-F5`: Expand troubleshooting section with BL-013/BL-014 failure triage and common environment issues.
+- [x] `MFT-F6`: Add concise defense/viva run script document (demo sequence + expected outputs + fallback plan). [Done: VIVA_RUN_SCRIPT.md — C-543]
+
+**G) Chapter-methodology evidence strengthening**
+- [x] `MFT-G1`: Add explicit ablation evidence table(s) aligned to implemented control surfaces.
+- [x] `MFT-G2`: Add baseline comparator evidence (bounded simple baselines) or document justified non-inclusion with stronger limitations framing. [Done: chapter6.md 6.4 item 6 expanded — C-543]
+- [x] `MFT-G3`: Add explicit sensitivity-analysis write-through using existing diagnostics in chapter-facing evidence tables.
+- [x] `MFT-G4`: Add explicit controllability-demonstration evidence for influence policy-mode transitions (for example `reserved_slots` variants). [Done: chapter5.md Table 5.3 new row — C-543]
+
+**H) Submission housekeeping and governance artifacts**
+- [x] `MFT-H1`: Add repository license file and align package/readme licensing statements.
+- [x] `MFT-H2`: Re-verify `.gitignore` and generated-artifact hygiene against current runtime and mentor-bundle workflows.
+- [x] `MFT-H3`: Expand `pyproject.toml` project metadata/tool sections as needed for reproducibility/tooling clarity.
+- [x] `MFT-H4`: Decide and document installable-package posture (`pip install -e` compatible or explicitly script-first).
+- [x] `MFT-H5`: Complete input-asset redistribution/license audit for submission package legality.
+
+**Execution priority order (mentor aligned)**
+1. ~~`MFT-B1`, `MFT-B2`, `MFT-B6`, `MFT-E1`~~ ✅ Implemented (C-542 / D-251)
+2. ~~`MFT-C2`, `MFT-F6`, `MFT-G2`, `MFT-G4`~~ ✅ Implemented (C-543 / D-236)
+3. UNDO-R implementation remediation checklist complete; remaining blockers are external submission/package confirmations.
+
+**Deferred (post-baseline or conditional)**
+- none inside UNDO-R implementation checklist; optional future tooling expansion remains discretionary.
+
+**Blocking**: Medium. Core pipeline is currently green, but this backlog represents the active remediation path for mentor-feedback closure and defense-readiness hardening.
+
+Submission-preparation blockers remain tracked in:
+- `09_quality_control/submission_readiness_status.md` for packaging artifacts and external submission confirmations.
 - `01_requirements/ambiguity_flags.md` for current-year policy or staff-confirmation uncertainties.
 
 ---

@@ -1,0 +1,30 @@
+{
+    "include": [
+        "src"
+    ],
+    "exclude": [
+        "src/**/outputs/**",
+        "mentor_feedback_submission/**",
+        "_scratch/**",
+        "_deep_archive_march2026/**"
+    ],
+    "venvPath": ".",
+    "venv": ".venv",
+    "executionEnvironments": [
+        {
+            "root": "src",
+            "extraPaths": [
+                "src"
+            ]
+        },
+        {
+            "root": "src/quality",
+            "extraPaths": [
+                "src",
+                "src/quality"
+            ]
+        }
+    ],
+    "typeCheckingMode": "standard",
+    "reportMissingTypeStubs": "none"
+}

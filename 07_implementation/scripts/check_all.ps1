@@ -66,7 +66,8 @@ try {
         Invoke-Step -Name "Bootstrap environment" -Action {
             & ".\setup.ps1"
         }
-    } else {
+    }
+    else {
         Write-Host "Skipping setup (--SkipSetup provided)." -ForegroundColor Yellow
     }
 
@@ -89,12 +90,14 @@ try {
         )
         if (Test-Path $pyrightPath) {
             Invoke-Step -Name "Type check (pyright)" -Action {
-                & $pyrightPath .\src
+                & $pyrightPath --project .\pyrightconfig.json
             }
-        } else {
+        }
+        else {
             Write-Host "WARN: pyright executable not found at $pyrightPath. Skipping typecheck." -ForegroundColor Yellow
         }
-    } else {
+    }
+    else {
         Write-Host "Skipping typecheck (--SkipTypecheck provided)." -ForegroundColor Yellow
     }
 
@@ -123,6 +126,7 @@ try {
     Write-Host "Artifacts:" -ForegroundColor Green
     Write-Host "  - src/orchestration/outputs/bl013_orchestration_run_latest.json"
     Write-Host "  - src/quality/outputs/bl014_sanity_report.json"
-} finally {
+}
+finally {
     Pop-Location
 }

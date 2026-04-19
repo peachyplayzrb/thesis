@@ -63,6 +63,35 @@ Table 5.3 condenses the most important current execution evidence.
 | Observability schema and scope | `07_implementation/src/observability/outputs/bl009_run_observability_log.json` (`run_id=BL009-OBSERVE-20260418-040529-209714`) | `pass` | BL-009 includes execution scope, upstream lineage, canonical config-pair traceability, and explicit validity-boundary reporting. |
 | Stage-flow traceability | `BL013-ENTRYPOINT-20260418-040456-884132` | `pass` | BL-013 summary emits `stage_execution` with explicit requested-stage order, executed-stage sequence, non-requested stage execution reporting, and duplicate requested-stage execution counts. |
 
+### 5.5.1 Control-Surface Ablation Evidence Table
+
+Table 5.4 makes the ablation posture explicit by listing bounded control-surface perturbations and their expected evidence surfaces. In this thesis context, "ablation" means controlled profile or scenario variation against a fixed deterministic baseline, with interpretation focused on directionality and observability rather than leaderboard optimization [@jannach_measuring_2019; @bauer_exploring_2024].
+
+| Ablation axis | Baseline setting | Variant setting | Evidence surface | Observed directionality |
+| --- | --- | --- | --- | --- |
+| Influence policy mode | `competitive` (`run_config_ui013_tuning_v1f.json`) | `reserved_slots` (`run_config_ui013_tuning_v1g_reserved_slots.json`) | BL-007 assembly diagnostics and BL-013 summary (`influence_assembly_summary`) | Influence inclusion behavior shifts from pure competition to reserved-slot injection behavior while remaining contract-valid. |
+| Influence policy override posture | `reserved_slots` (no overrides) | `hybrid_override` (`run_config_ui013_tuning_v1h_hybrid_override.json`) | BL-007 diagnostics plus BL-014 contract pass under variant | Constraint-handling flexibility increases (genre/consecutive/threshold overrides allowed), producing an observable assembly-policy shift. |
+| Influence signal strength | Mixed `history + influence` with moderate influence weight (`v1f`) | Influence-heavy swing profile (`run_config_ui013_tuning_v1e_hard_swing_influence.json`) | BL-004/BL-006/BL-007 influence-linked diagnostics | Upstream influence attribution and downstream ranking/assembly behavior shift measurably toward influence-led outcomes. |
+| Retrieval strictness | Baseline retrieval thresholds (`v1f`) | Tight retrieval profile (`run_config_ui013_tuning_v2a_retrieval_tight.json`) | BL-005 candidate decisions and BL-009 retrieval summary | Candidate pool contracts under stricter retrieval gates, with exclusion pathways remaining explicit in diagnostics. |
+| Language and recency gating | No explicit language gate, baseline recency behavior (`v1f`) | Language+recency gate profile (`run_config_ui013_tuning_v2b_language_recency_gate.json`) | BL-005 retrieval diagnostics and BL-009 observability log | Eligibility shifts by language/recency policy become visible and auditable without changing pipeline structure. |
+| Multi-parameter interaction check (BL-011) | Single-factor scenarios only | Interaction scenarios (`no_influence_plus_stricter_thresholds`, `valence_up_plus_stricter_thresholds`) | BL-011 interaction matrix and `interaction_coverage_summary` | Interaction effects are explicitly separated from single-factor effects, strengthening controllability interpretation discipline. |
+
+This table closes the remaining "implicit ablation" gap by making profile/scenario perturbations explicit and traceable to concrete evidence surfaces already executed in the active implementation.
+
+### 5.5.2 Sensitivity-Analysis Write-Through (Diagnostics To Chapter Evidence)
+
+Table 5.5 turns existing sensitivity diagnostics into explicit chapter-facing interpretation anchors. This avoids treating sensitivity as an implicit side effect of control runs and instead reports where directional change evidence is expected to appear.
+
+| Sensitivity focus | Primary diagnostic surface | Evidence interpretation in this chapter |
+| --- | --- | --- |
+| BL-006 score-component perturbation sensitivity | BL-006 `scoring_sensitivity_diagnostics` (exposed through BL-009) | Confirms that bounded component perturbations produce auditable rank-overlap and dominance-shift diagnostics rather than opaque score changes. |
+| BL-005 threshold sensitivity | BL-005 threshold-attribution and bounded what-if diagnostics (propagated to BL-009 retrieval summaries) | Shows threshold tightening/loosening effects as directional candidate-pool pressure, supporting bounded retrieval-control claims. |
+| BL-007 assembly-policy sensitivity | BL-007 tradeoff and influence assembly diagnostics under policy variants (`competitive`, `reserved_slots`, `hybrid_override`) | Links policy toggles to observable assembly behavior changes while preserving deterministic execution posture. |
+| BL-011 interaction sensitivity | BL-011 interaction matrix and `interaction_coverage_summary` | Distinguishes single-factor effects from interaction effects so controllability claims are not over-attributed to one-factor runs only. |
+| BL-009 cross-stage sensitivity traceability | BL-009 control-causality, cross-stage influence attribution, and validity-boundary summaries | Ensures sensitivity interpretation remains cross-stage traceable and bounded by explicit non-claim/validity framing. |
+
+Together, Tables 5.4 and 5.5 provide a two-layer evidence posture: ablation coverage (what was varied) and sensitivity write-through (how observed directional shifts are interpreted).
+
 ## 5.6 Control-Causality and Validity-Boundary Hardening
 The most important late REB-M3 result is not only that tranche-3 passed, but that the underlying contract was strengthened after the first pass.
 

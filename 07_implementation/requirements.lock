@@ -1,0 +1,72 @@
+# requirements.lock - Transitive dependency freeze for reproducible installs
+# Generated: 2026-04-19 from active .venv (Python 3.14.4 on Windows)
+# Usage: pip install -r requirements.lock
+# Regenerate: pip freeze > requirements.lock (from activated venv)
+#
+
+annotated-doc==0.0.4
+annotated-types==0.7.0
+anyio==4.13.0
+astroid==4.0.4
+babel==2.18.0
+backrefs==5.9
+certifi==2026.2.25
+charset-normalizer==3.4.6
+click==8.3.1
+colorama==0.4.6
+dill==0.4.1
+fastapi==0.135.2
+ghp-import==2.1.0
+h11==0.16.0
+h5py==3.16.0
+httpcore==1.0.9
+httptools==0.7.1
+httpx==0.28.1
+idna==3.11
+iniconfig==2.3.0
+isort==8.0.1
+Jinja2==3.1.6
+Markdown==3.10.2
+MarkupSafe==3.0.3
+mccabe==0.7.0
+mergedeep==1.3.4
+mkdocs==1.6.1
+mkdocs-get-deps==0.2.2
+mkdocs-material==9.6.11
+mkdocs-material-extensions==1.3.1
+nodeenv==1.10.0
+numpy==2.4.3
+packaging==26.0
+paginate==0.5.7
+pathspec==1.0.4
+platformdirs==4.9.4
+pluggy==1.6.0
+pydantic==2.12.5
+pydantic_core==2.41.5
+Pygments==2.19.2
+pylint==4.0.5
+pymdown-extensions==10.21
+pypdf==6.9.1
+pyright==1.1.408
+pytest==9.0.2
+python-dateutil==2.9.0.post0
+python-dotenv==1.2.2
+PyYAML==6.0.3
+pyyaml_env_tag==1.1
+RapidFuzz==3.14.3
+# Editable install with no version control (recommendation-implementation-standalone==1.0.0)
+-e c:\users\peach\desktop\thesis-main (3)\thesis-main\thesis-main\final_artefact
+redis==7.3.0
+requests==2.32.5
+ruff==0.11.8
+six==1.17.0
+spotipy==2.23.0
+starlette==1.0.0
+tomlkit==0.14.0
+typing-inspection==0.4.2
+typing_extensions==4.15.0
+urllib3==2.6.3
+uvicorn==0.42.0
+watchdog==6.0.0
+watchfiles==1.1.1
+websockets==16.0

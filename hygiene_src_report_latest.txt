@@ -1,5 +1,5 @@
 Hygiene workflow report
-generated_at_utc: 2026-04-19T10:42:12Z
+generated_at_utc: 2026-04-19T18:34:00Z
 scope: src
 dead_code_min_confidence: 70
 complexity_threshold: C
@@ -49,9 +49,9 @@ src\ingestion\spotify_mapping.py
 src\observability\input_validation.py
     F 29:0 validate_bl008_bl009_handshake - C (18)
 src\observability\main.py
-    F 1159:0 _prepare_retrieval_and_assembly_samples - C (18)
+    F 1160:0 _prepare_retrieval_and_assembly_samples - C (18)
     F 86:0 build_source_resilience_diagnostics - C (11)
-    F 546:0 _validate_and_prepare_bl008_handshake - C (11)
+    F 547:0 _validate_and_prepare_bl008_handshake - C (11)
 src\orchestration\config_resolver.py
     F 50:0 resolve_stage_control_payload - C (11)
 src\orchestration\main.py
@@ -60,6 +60,7 @@ src\orchestration\seed_freshness.py
     F 89:0 _build_behavior_controls - C (12)
     F 203:0 _normalized_contract_from_bl003_summary - C (12)
 src\orchestration\summary_builder.py
+    F 117:0 build_hash_input_chain_summary - C (12)
     F 14:0 _build_stage_execution_metadata - C (11)
 src\playlist\input_validation.py
     F 27:0 validate_bl006_bl007_handshake - C (16)
@@ -129,11 +130,12 @@ src\retrieval\stage.py
     M 342:4 RetrievalStage.resolve_runtime_controls - C (11)
     M 478:4 RetrievalStage.load_inputs - C (11)
 src\run_config\run_config_utils.py
-    F 846:0 _validate_bl003_seed_controls - C (19)
-    F 1074:0 _build_signal_mode_summary - C (12)
-    F 1945:0 _resolve_bl007_controlled_relaxation - C (12)
-    F 801:0 _validate_bl003_aggregation_policy - C (11)
-    F 1916:0 _resolve_bl007_adaptive_limits - C (11)
+    F 850:0 _validate_bl003_seed_controls - C (19)
+    F 1078:0 _build_signal_mode_summary - C (12)
+    F 2073:0 _resolve_bl007_controlled_relaxation - C (12)
+    F 805:0 _validate_bl003_aggregation_policy - C (11)
+    F 1697:0 _enforce_strict_validation_profile_handshake_policies - C (11)
+    F 2044:0 _resolve_bl007_adaptive_limits - C (11)
 src\scoring\diagnostics.py
     F 359:0 build_feature_availability_summary - C (18)
     F 197:0 build_scoring_sensitivity_diagnostics - C (17)
@@ -141,14 +143,14 @@ src\scoring\diagnostics.py
 src\scoring\input_validation.py
     F 7:0 validate_bl005_bl006_handshake - C (11)
 src\scoring\models.py
-    F 155:0 controls_from_mapping - C (15)
+    F 156:0 controls_from_mapping - C (15)
 src\scoring\profile_extractor.py
     F 17:0 _build_weight_map - C (12)
     F 43:0 extract_profile_scoring_data - C (11)
 src\scoring\stage.py
+    M 392:4 ScoringStage.build_summary - C (19)
     M 113:4 ScoringStage.build_runtime_context - C (18)
-    M 367:4 ScoringStage.build_summary - C (17)
-    M 264:4 ScoringStage.score_candidates - C (11)
+    M 287:4 ScoringStage.score_candidates - C (11)
 src\shared_utils\io_utils.py
     F 36:0 open_text_write - C (12)
 src\shared_utils\stage_runtime_resolver.py

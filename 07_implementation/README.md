@@ -4,7 +4,9 @@ Standalone implementation of the BL-003 to BL-014 playlist recommendation pipeli
 
 Architecture reference:
 
-- CLEAN_ARCHITECTURE.md
+- ../05_design/architecture.md
+- ../05_design/system_architecture.md
+- ../05_design/chapter3_information_sheet.md
 
 This folder is runnable as-is with embedded inputs:
 
@@ -12,6 +14,17 @@ This folder is runnable as-is with embedded inputs:
 - Embedded Spotify export bundle: src/ingestion/outputs/spotify_api_export/
 
 No raw Music4All tables are required for the default run path.
+
+Implementation documentation index:
+
+- RUN_CONFIG_REFERENCE.md
+- REPRODUCIBILITY_PLAYBOOK.md
+- DEMO_PROFILE_CATALOG.md
+- INSTALLATION_POSTURE.md
+- TOOLING_QUALITY_POSTURE.md
+- DETERMINISTIC_ITERATION_AUDIT.md
+- DETERMINISM_RANDOMNESS_POLICY.md
+- VIVA_RUN_SCRIPT.md
 
 ## What Actually Runs
 
@@ -51,6 +64,7 @@ Dependency profile notes:
 - `requirements.txt` is intentionally minimal for the active BL-003 to BL-014 runtime path.
 - `rapidfuzz` is included for enhanced fuzzy matching; BL-003 has a standard-library fallback when unavailable.
 - Spotify export/ingestion utility flows can additionally use `spotipy` (optional install).
+- Packaging posture is script-first for the active thesis runtime contract; see `INSTALLATION_POSTURE.md`.
 
 Run with explicit config:
 
@@ -62,6 +76,12 @@ Run with post-pipeline BL-014 validation:
 
 ```bash
 python main.py --validate-only
+```
+
+Run the deterministic verification contract (BL-013 + BL-010 replay x3 + BL-014):
+
+```bash
+python main.py --validate-only --verify-determinism --verify-determinism-replay-count 3
 ```
 
 ## Local Web Viewer (Minimal Wrapper)
@@ -134,6 +154,22 @@ Expected report artifacts after success:
 - src/orchestration/outputs/bl013_orchestration_run_latest.json
 - src/quality/outputs/bl014_sanity_report.json
 
+## CI Python Matrix Policy
+
+GitHub Actions CI runs contract checks on a bounded supported interpreter set:
+
+- Python 3.13
+- Python 3.14
+
+This satisfies matrix-coverage policy while keeping CI runtime and maintenance bounded.
+
+Cross-platform CI execution is also enabled with a bounded OS policy:
+
+- Linux (`ubuntu-latest`) on Python 3.13 and 3.14
+- Windows (`windows-latest`) on Python 3.14
+
+This provides Windows-plus-Linux reproducibility posture without unbounded matrix growth.
+
 ## VS Code Task Runner
 
 Use Command Palette -> `Tasks: Run Task` and pick one of:
@@ -143,8 +179,40 @@ Use Command Palette -> `Tasks: Run Task` and pick one of:
 - `07: CI Guard Phase 6`
 - `07: Tests`
 - `07: Typecheck (pyright)`
+- `07: Tests + Coverage src`
+- `07: Dependency Audit (Advisory)`
+- `07: Bandit src (Advisory)`
+- `07: Docstring Coverage src (Advisory)`
 - `07: Validate Only (Wrapper)`
+- `07: Validate + Determinism Replay x3 (Wrapper)`
 - `07: Full Contract (Preflight + Check-All)`
+- `07: Ruff Check src`
+- `07: Ruff Fix src`
+- `07: Hygiene Check src (Advisory)`
+- `07: Hygiene Check src (Strict)`
+- `07: Duplicate Check src (Advisory)`
+- `07: Duplicate Check src (Strict)`
+
+Tooling posture authority:
+
+- TOOLING_QUALITY_POSTURE.md
+
+Optional docstring evidence command:
+
+```bash
+pwsh -NoProfile -ExecutionPolicy Bypass -File scripts/docstring_coverage_src.ps1
+```
+
+Latest report artifact: `interrogate_src_report_latest.txt`.
+
+Pre-commit (optional local developer gate):
+
+```bash
+pre-commit install
+pre-commit run --all-files
+```
+
+Configuration authority is repository root `.pre-commit-config.yaml`.
 
 ## Pipeline Stages
 
@@ -258,7 +326,7 @@ Missing src directory:
 ERROR: Cannot find src directory at ...
 ```
 
-Fix: run main.py from 07_implementation/.
+Fix: run `main.py` from `07_implementation/`.
 
 Missing embedded candidate dataset:
 
@@ -268,9 +336,9 @@ ERROR: Cannot find embedded candidate dataset at .../src/data_layer/outputs/ds00
 
 Fix: ensure the dataset file exists at that path.
 
-Direct BL-013 import errors like ModuleNotFoundError: shared_utils:
+Direct BL-013 import errors like `ModuleNotFoundError: shared_utils`:
 
-Fix: run BL-013 via top-level main.py, or set PYTHONPATH=. when running from src.
+Fix: run BL-013 via top-level `main.py`, or set `PYTHONPATH=.` when running from `src`.
 
 PowerShell blocks script execution:
 
@@ -279,6 +347,56 @@ Set-ExecutionPolicy -Scope Process Bypass
 ```
 
 This applies only to the current terminal session.
+
+### BL-013 Failure Triage
+
+If BL-013 fails, check in this order:
+
+1. Run config path and schema validity (`--run-config ...` points to an existing `run-config-v1` profile).
+2. Embedded input availability (`src/data_layer/outputs/...` and ingestion export bundle paths exist).
+3. Stage execution metadata in BL-013 summary (`requested_stage_order`, `executed_stage_sequence`, missing requested stages).
+4. Effective config provenance in run-effective artifacts (check for unexpected env overrides).
+
+Recommended quick command:
+
+```bash
+python main.py --validate-only
+```
+
+Then inspect:
+- `src/orchestration/outputs/bl013_orchestration_run_latest.json`
+- `src/run_config/outputs/bl013_run_effective_config_latest.json`
+
+### BL-014 Failure Triage
+
+If BL-014 reports failures:
+
+1. Identify failing check IDs in `src/quality/outputs/bl014_sanity_report.json`.
+2. Verify upstream stage artifacts exist and are non-empty.
+3. Confirm the run used a coherent BL-013 path (no manual artifact mixing across runs).
+4. Re-run with `--validate-only` so BL-013 and BL-014 are generated as one consistent chain.
+
+Helpful direct command (from `07_implementation/src`):
+
+```bash
+PYTHONPATH=. python quality/sanity_checks.py
+```
+
+### Common Environment Issues
+
+- Wrong Python version:
+	- Expected support posture is Python 3.12+ (3.14 preferred in active workflow).
+	- Check with `python --version` and re-activate the intended venv.
+
+- venv not active:
+	- Windows: `.venv\\Scripts\\Activate.ps1`
+	- macOS/Linux: `source .venv/bin/activate`
+
+- Missing dependencies:
+	- Run `pip install -r requirements.txt` from `07_implementation/`.
+
+- Path/CWD drift:
+	- Always run wrapper commands from `07_implementation/` unless explicitly using `PYTHONPATH=.` from `src`.
 
 ## Test Entry Points
 
@@ -293,7 +411,7 @@ This applies only to the current terminal session.
 
 ## License
 
-Provided for academic and research use.
+Licensed under the repository `LICENSE` file (Academic Research Use License).
 
 Version: 1.0
 Last Updated: March 2026

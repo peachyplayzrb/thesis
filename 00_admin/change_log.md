@@ -8,9 +8,207 @@ Ordering convention (standardized 2026-03-24):
 - New entries must be appended at the end; historical entries remain unchanged except for explicit correction records.
 
 Maintenance snapshot (2026-04-19, updated):
-- Highest change ID currently present: `C-533`
+- Highest change ID currently present: `C-565`
 - Maintenance snapshot (2026-03-28): prior snapshot stated `C-205`; superseded by the 2026-03-29 architecture migration + documentation sync wave (C-204 through C-219).
 - Known legacy correction applied in this file: prior duplicate `C-079` entry has been normalized to `C-135` for unique-ID compliance.
+
+## C-565
+- date: 2026-04-19
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Scoped dependency audit reporting to active implementation runtime requirements by updating `07_implementation/scripts/dependency_audit.ps1` to audit `07_implementation/requirements.txt` rather than full environment inventory. Regenerated dependency report with src/runtime scope metadata and installed missing local developer search tooling (`ripgrep`, `fd`) for operational reliability.
+- reason: User requested report outputs to be only on src scope and asked to install missing tooling needed for agent/developer workflows.
+- evidence_basis: `pip_audit_report_latest.txt` now reports scope `src runtime requirements (07_implementation/requirements.txt)`; advisory output no longer includes unrelated environment packages. Shell confirms installed tools (`ripgrep 15.1.0`, `fd 10.4.2`).
+- affected_components: `07_implementation/scripts/dependency_audit.ps1`, `pip_audit_report_latest.txt`, `07_implementation/TOOLING_QUALITY_POSTURE.md`, `00_admin/change_log.md`, `00_admin/decision_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`
+- impact_assessment: Low-positive. Improves report relevance and reduces environment-noise false focus in advisory vulnerability outputs while improving operational tooling availability.
+- approval_record: User request in chat on 2026-04-19.
+
+## C-564
+- date: 2026-04-19
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Hardened `07_implementation/scripts/docstring_coverage_src.ps1` to resolve Python executable by probing candidate virtual environments for installed `interrogate`, preventing workspace-vs-implementation venv mismatch failures. Also regenerated advisory docstring coverage evidence report successfully after the fix.
+- reason: First execution of deferred D10 tooling failed with `No module named interrogate` due environment resolution mismatch.
+- evidence_basis: Script now selects an environment with interrogate when available; rerun writes `interrogate_src_report_latest.txt` with `RESULT: PASSED (minimum: 0.0%, actual: 26.2%)`.
+- affected_components: `07_implementation/scripts/docstring_coverage_src.ps1`, `interrogate_src_report_latest.txt`, `00_admin/change_log.md`, `00_admin/decision_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`
+- impact_assessment: Low-positive. Improves reliability of optional docstring-coverage tooling without changing runtime behavior or baseline mandatory gates.
+- approval_record: User continuation prompt on 2026-04-19.
+
+## C-563
+- date: 2026-04-19
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Added optional docstring-coverage tooling surface as deferred-tooling follow-through. Introduced `07_implementation/scripts/docstring_coverage_src.ps1` (advisory/strict modes), pinned `interrogate==1.7.0` in `07_implementation/requirements.txt`, added VS Code task `07: Docstring Coverage src (Advisory)`, and synchronized implementation docs/tooling posture to expose `interrogate_src_report_latest.txt` evidence output.
+- reason: User requested adding tooling deferred earlier.
+- evidence_basis: Script/task/dependency/doc surfaces now exist and are synchronized; touched-file diagnostics are clean.
+- affected_components: `07_implementation/scripts/docstring_coverage_src.ps1`, `07_implementation/requirements.txt`, `.vscode/tasks.json`, `07_implementation/README.md`, `07_implementation/TOOLING_QUALITY_POSTURE.md`, `00_admin/unresolved_issues.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`, `00_admin/change_log.md`, `00_admin/decision_log.md`
+- impact_assessment: Low-positive. Improves optional documentation-quality evidence posture without altering runtime behavior or baseline mandatory gates.
+- approval_record: User request in chat on 2026-04-19.
+
+## C-562
+- date: 2026-04-19
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Closed remaining deferred D-tooling items. Added repository-level pre-commit config (`.pre-commit-config.yaml`) with lightweight gates (Ruff src, Pyright project check, focused pytest wrapper test), documented pre-commit usage in `07_implementation/README.md`, and updated `07_implementation/TOOLING_QUALITY_POSTURE.md` to record D10 decision (keep `interrogate` optional and non-gating for baseline).
+- reason: User requested autonomous continuation; after C-561 the remaining in-repo deferred optional items were D5 and D10.
+- evidence_basis: Pre-commit config and documentation now exist in repo; unresolved checklist marks D5 and D10 complete; touched-file diagnostics are clean.
+- affected_components: `.pre-commit-config.yaml`, `07_implementation/README.md`, `07_implementation/TOOLING_QUALITY_POSTURE.md`, `00_admin/unresolved_issues.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`, `00_admin/change_log.md`, `00_admin/decision_log.md`
+- impact_assessment: Low-positive. Improves local commit-time quality posture and closes remaining in-repo optional tooling ambiguity without changing runtime behavior.
+- approval_record: User continuation prompt on 2026-04-19.
+
+## C-561
+- date: 2026-04-19
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Completed remaining submission-housekeeping implementation items MFT-H2 through MFT-H5. Added generated-artifact hygiene updates in `.gitignore` plus `09_quality_control/generated_artifact_hygiene_audit_2026-04-19.md`; expanded `07_implementation/pyproject.toml` metadata/tooling clarity (`description`, `readme`, `keywords`, project URLs, pytest/coverage tool sections); documented script-first installability posture in `07_implementation/INSTALLATION_POSTURE.md` and linked it from `07_implementation/README.md`; completed input-asset redistribution/license audit in `09_quality_control/input_asset_redistribution_license_audit_2026-04-19.md`.
+- reason: User requested autonomous continuation. After C-560 (H1), remaining unresolved implementation items were H2-H5.
+- evidence_basis: New audit/docs and config updates are present in-repo; touched-file diagnostics are clean; UNDO-R A-H implementation checklist now shows completed except deferred optional D5/D10.
+- affected_components: `.gitignore`, `07_implementation/README.md`, `07_implementation/pyproject.toml`, `07_implementation/INSTALLATION_POSTURE.md`, `09_quality_control/generated_artifact_hygiene_audit_2026-04-19.md`, `09_quality_control/input_asset_redistribution_license_audit_2026-04-19.md`, `00_admin/unresolved_issues.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`, `00_admin/change_log.md`, `00_admin/decision_log.md`
+- impact_assessment: Low-positive. Improves packaging/legal/tooling governance clarity without changing runtime behavior.
+- approval_record: User continuation prompt on 2026-04-19.
+
+## C-560
+- date: 2026-04-19
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Implemented MFT-H1 by adding a repository-level `LICENSE` file (Academic Research Use License), aligning `07_implementation/README.md` license wording to the repository license posture, and adding explicit project license metadata in `07_implementation/pyproject.toml`.
+- reason: User requested autonomous continuation. After C-559 (MFT-G3), MFT-H1 was the next unresolved mentor-remediation item.
+- evidence_basis: License file now exists at repository root; implementation README license section references repository license; `pyproject.toml` now includes project license metadata. Post-edit diagnostics reported no errors in touched files.
+- affected_components: `LICENSE`, `07_implementation/README.md`, `07_implementation/pyproject.toml`, `00_admin/unresolved_issues.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`, `00_admin/change_log.md`, `00_admin/decision_log.md`
+- impact_assessment: Low-positive. Clarifies repository legal posture and reduces submission-housekeeping ambiguity without changing runtime behavior.
+- approval_record: User continuation prompt on 2026-04-19.
+
+## C-559
+- date: 2026-04-19
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Implemented MFT-G3 by adding explicit sensitivity-analysis write-through to `08_writing/chapter5.md` (`Section 5.5.2`, `Table 5.5`), mapping existing diagnostics surfaces (BL-005 threshold diagnostics, BL-006 scoring sensitivity diagnostics, BL-007 policy diagnostics, BL-011 interaction coverage, BL-009 cross-stage traceability) to chapter-facing interpretation anchors.
+- reason: User requested autonomous continuation. After C-558 (MFT-G1), MFT-G3 was the next unresolved mentor-remediation item.
+- evidence_basis: Chapter 5 now contains an explicit diagnostics-to-interpretation sensitivity table directly following the new ablation table, closing the remaining chapter-facing sensitivity write-through gap without introducing unsupported numerical claims.
+- affected_components: `08_writing/chapter5.md`, `00_admin/unresolved_issues.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`, `00_admin/change_log.md`, `00_admin/decision_log.md`
+- impact_assessment: Low-positive. Strengthens methodology evidence readability and interpretation discipline without changing runtime behavior.
+- approval_record: User continuation prompt on 2026-04-19.
+
+## C-558
+- date: 2026-04-19
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Implemented MFT-G1 by adding an explicit ablation evidence table to `08_writing/chapter5.md` (`Section 5.5.1`, `Table 5.4`). The table maps bounded control-surface perturbations to concrete evidence surfaces and directionality outcomes, covering influence policy variants, influence strength posture, retrieval strictness, language/recency gating, and BL-011 interaction scenarios.
+- reason: User requested autonomous continuation. After C-557 (MFT-F5), MFT-G1 was the next unresolved mentor-remediation item.
+- evidence_basis: Chapter 5 now contains a dedicated ablation table aligned to implemented profiles and scenario surfaces already present in the active implementation and documentation (`DEMO_PROFILE_CATALOG.md`, BL-011 interaction coverage references).
+- affected_components: `08_writing/chapter5.md`, `00_admin/unresolved_issues.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`, `00_admin/change_log.md`, `00_admin/decision_log.md`
+- impact_assessment: Low-positive. Strengthens chapter-methodology evidence clarity without changing runtime behavior.
+- approval_record: User continuation prompt on 2026-04-19.
+
+## C-557
+- date: 2026-04-19
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Implemented MFT-F5 by expanding `07_implementation/README.md` troubleshooting guidance with dedicated BL-013 failure triage, BL-014 failure triage, and common environment issue handling (Python version/venv/dependency/path drift). This closes the documentation/demo-readiness tranche F1-F5.
+- reason: User requested autonomous continuation. After C-556 (MFT-F4), MFT-F5 was the next unresolved mentor-remediation item.
+- evidence_basis: README now contains explicit ordered triage flows for BL-013 and BL-014 plus environment remediation commands and artifact inspection targets. Post-edit diagnostics reported no errors in touched files.
+- affected_components: `07_implementation/README.md`, `00_admin/unresolved_issues.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`, `00_admin/change_log.md`, `00_admin/decision_log.md`
+- impact_assessment: Low-positive. Improves operational troubleshooting clarity and demo reliability without changing runtime behavior.
+- approval_record: User continuation prompt on 2026-04-19.
+
+## C-556
+- date: 2026-04-19
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Implemented MFT-F4 by adding `07_implementation/DEMO_PROFILE_CATALOG.md`, a curated demo-ready profile catalog with explicit usage guidance and command paths. The catalog labels baseline and alternate profiles, including influence-policy variants (`run_config_ui013_tuning_v1g_reserved_slots.json`, `run_config_ui013_tuning_v1h_hybrid_override.json`, `run_config_ui013_tuning_v1e_hard_swing_influence.json`) and non-influence demonstration variants (`run_config_ui013_tuning_v2a_retrieval_tight.json`, `run_config_ui013_tuning_v2b_language_recency_gate.json`). Updated `07_implementation/README.md` documentation index to include the new catalog.
+- reason: User requested autonomous continuation. After C-555 (MFT-F3), MFT-F4 was the next unresolved mentor-remediation item.
+- evidence_basis: Profile curation uses existing run-config files under `07_implementation/config/profiles/` and documents policy-specific controls and intended demonstration outcomes. Post-edit diagnostics reported no errors in touched files.
+- affected_components: `07_implementation/DEMO_PROFILE_CATALOG.md`, `07_implementation/README.md`, `00_admin/unresolved_issues.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`, `00_admin/change_log.md`, `00_admin/decision_log.md`
+- impact_assessment: Low-positive. Improves demo/viva readiness and repeatability of profile-driven demonstrations without changing runtime behavior.
+- approval_record: User continuation prompt on 2026-04-19.
+
+## C-555
+- date: 2026-04-19
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Implemented MFT-F3 by adding a dedicated reproducibility operator guide at `07_implementation/REPRODUCIBILITY_PLAYBOOK.md`, covering preconditions, canonical deterministic replay command path, expected BL-013/BL-009/BL-010/BL-014 artifact surfaces, pass criteria, interpretation boundaries, and troubleshooting steps. Updated `07_implementation/README.md` documentation index to include the playbook.
+- reason: User requested autonomous continuation. After C-554 (MFT-F2), MFT-F3 was the next unresolved mentor-remediation item.
+- evidence_basis: Playbook content aligns to active wrapper contract path (`main.py --validate-only --verify-determinism --verify-determinism-replay-count 3`) and existing interpretation-boundary surfaces (`BL-010 interpretation_boundaries`, `BL-009 validity_boundaries.reproducibility_interpretation`). Post-edit diagnostics reported no errors in touched files.
+- affected_components: `07_implementation/REPRODUCIBILITY_PLAYBOOK.md`, `07_implementation/README.md`, `00_admin/unresolved_issues.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`, `00_admin/change_log.md`, `00_admin/decision_log.md`
+- impact_assessment: Low-positive. Improves reproducibility-operation clarity and thesis-evidence handling without changing runtime behavior.
+- approval_record: User continuation prompt on 2026-04-19.
+
+## C-554
+- date: 2026-04-19
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Implemented MFT-F2 by adding a unified run-config reference document at `07_implementation/RUN_CONFIG_REFERENCE.md` with control descriptions, valid ranges/values, defaults, and stage-effect mapping in one operator-facing table. Updated `07_implementation/README.md` implementation-doc index to include the new reference.
+- reason: User requested autonomous continuation. After C-553 (MFT-F1), MFT-F2 was the next unresolved mentor-remediation item.
+- evidence_basis: The new reference is aligned to canonical control metadata in `src/run_config/control_registry.py` and schema authority in `src/run_config/schemas/run_config-v1.schema.json`. Post-edit diagnostics reported no errors in touched files.
+- affected_components: `07_implementation/RUN_CONFIG_REFERENCE.md`, `07_implementation/README.md`, `00_admin/unresolved_issues.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`, `00_admin/change_log.md`, `00_admin/decision_log.md`
+- impact_assessment: Low-positive. Improves operator guidance and configuration transparency without changing runtime behavior.
+- approval_record: User continuation prompt on 2026-04-19.
+
+## C-553
+- date: 2026-04-19
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Implemented MFT-F1 by resolving README architecture-reference drift and improving implementation-document discoverability. `07_implementation/README.md` no longer points to missing `CLEAN_ARCHITECTURE.md`; it now references active design authorities (`05_design/architecture.md`, `05_design/system_architecture.md`, `05_design/chapter3_information_sheet.md`) and includes a compact implementation documentation index (`TOOLING_QUALITY_POSTURE.md`, `DETERMINISTIC_ITERATION_AUDIT.md`, `DETERMINISM_RANDOMNESS_POLICY.md`, `VIVA_RUN_SCRIPT.md`).
+- reason: User requested autonomous continuation. After C-552 (MFT-E3), MFT-F1 was the next unresolved mentor-remediation item.
+- evidence_basis: Repository file search confirmed `CLEAN_ARCHITECTURE.md` did not exist while the referenced `05_design` architecture authorities do. Post-edit diagnostics reported no errors in touched files.
+- affected_components: `07_implementation/README.md`, `00_admin/unresolved_issues.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`, `00_admin/change_log.md`, `00_admin/decision_log.md`
+- impact_assessment: Low-positive. Improves documentation correctness and operator discoverability without changing runtime behavior.
+- approval_record: User continuation prompt on 2026-04-19.
+
+## C-552
+- date: 2026-04-19
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Implemented MFT-E3 by extending CI to bounded cross-platform execution across Linux and Windows. Updated `.github/workflows/ci.yml` so contract checks now run on `ubuntu-latest` (Python 3.13 and 3.14) and `windows-latest` (Python 3.14), and updated `07_implementation/README.md` to document the cross-platform CI posture.
+- reason: User requested autonomous continuation. After C-551 (MFT-E2), MFT-E3 was the next unresolved mentor-remediation item.
+- evidence_basis: Local validation remained green after workflow/doc updates (`637/637` tests, pyright `0 errors, 0 warnings, 0 informations`). CI workflow now explicitly includes Windows and Linux matrix entries while preserving bounded scope.
+- affected_components: `.github/workflows/ci.yml`, `07_implementation/README.md`, `00_admin/unresolved_issues.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`, `00_admin/change_log.md`, `00_admin/decision_log.md`
+- impact_assessment: Low-positive. Strengthens reproducibility and portability evidence posture with explicit cross-platform CI coverage while keeping matrix growth controlled.
+- approval_record: User continuation prompt on 2026-04-19.
+
+## C-551
+- date: 2026-04-19
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Implemented MFT-E2 by upgrading CI from a single-interpreter contract check to a bounded Python-version matrix policy. Updated `.github/workflows/ci.yml` to run contract checks on Python 3.13 and 3.14, and documented the policy in `07_implementation/README.md` under a dedicated CI matrix section.
+- reason: User requested autonomous continuation. After C-550 (MFT-C6), MFT-E2 was the next unresolved mentor-remediation item.
+- evidence_basis: Local regression remained stable after workflow/doc updates (`637/637` tests, pyright `0 errors, 0 warnings, 0 informations`). CI matrix declaration is explicit in workflow strategy and no other CI gate semantics changed.
+- affected_components: `.github/workflows/ci.yml`, `07_implementation/README.md`, `00_admin/unresolved_issues.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`, `00_admin/change_log.md`, `00_admin/decision_log.md`
+- impact_assessment: Low-positive. Improves reproducibility posture and interpreter-compatibility evidence breadth while keeping bounded CI runtime policy.
+- approval_record: User continuation prompt on 2026-04-19.
+
+## C-550
+- date: 2026-04-19
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Implemented MFT-C6 by adding explicit boundary-case matrix coverage in `tests/test_run_config_utils.py`. New tests validate zero/empty/single-item and threshold-edge behavior across BL-007 assembly controls and BL-005 retrieval controls, including strict positive threshold enforcement (`min_score_threshold`), zero/single target-size and reserved-slot handling, empty/single influence-track handling, and retrieval threshold/list boundary behavior.
+- reason: User requested autonomous continuation. After C-549 (MFT-C5), MFT-C6 was the next unresolved mentor-remediation item.
+- evidence_basis: Focused matrix validation passed (`4/4` selected tests), full suite passed (`637/637`), and pyright remained clean (`0 errors, 0 warnings, 0 informations`).
+- affected_components: `07_implementation/tests/test_run_config_utils.py`, `00_admin/unresolved_issues.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`, `00_admin/change_log.md`, `00_admin/decision_log.md`
+- impact_assessment: Low-positive. Adds explicit boundary regression depth without changing runtime behavior; closes C6 and completes the C-test hardening tranche in UNDO-R.
+- approval_record: User continuation prompt on 2026-04-19.
+
+## C-549
+- date: 2026-04-19
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Implemented MFT-C5 schema-key contract parity coverage for run-config by adding a new top-level parity test in `tests/test_run_config_utils.py` that checks declared schema keys versus effective runtime keys and enforces explicit derived/deprecated-key allowlists. The new contract test surfaced a real schema/runtime drift (`reproducibility_controls` present at runtime but undocumented in schema), which was fixed by updating `src/run_config/schemas/run_config-v1.schema.json` to declare `reproducibility_controls`.
+- reason: User requested autonomous continuation. After C-548 (MFT-C4/D4), MFT-C5 was the next unresolved mentor-remediation item.
+- evidence_basis: Initial full test run exposed one failing parity assertion in the new test (undocumented runtime key `reproducibility_controls`). After schema correction, full suite passed (`633/633`) and pyright remained clean (`0 errors, 0 warnings, 0 informations`).
+- affected_components: `07_implementation/tests/test_run_config_utils.py`, `07_implementation/src/run_config/schemas/run_config-v1.schema.json`, `00_admin/unresolved_issues.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`, `00_admin/change_log.md`, `00_admin/decision_log.md`
+- impact_assessment: Low-positive. No runtime behavior changes; closes a schema-documentation drift and adds a guardrail to prevent future run-config top-level contract divergence.
+- approval_record: User continuation prompt on 2026-04-19.
+
+## C-548
+- date: 2026-04-19
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Implemented bounded property-based invariant coverage for shared coercion/parsing surfaces and activated the conditional Hypothesis tooling follow-through. Added `tests/test_shared_property_invariants.py` with four Hypothesis properties validating clamp interval/idempotence behavior, integer string round-trip coercion, valid-float string parsing, and CSV-label normalization invariants (lowercase, unique, non-empty). Added pinned `hypothesis==6.152.1` to implementation and mentor-submission requirements.
+- reason: User requested autonomous continuation. After C-547 (MFT-C3), the next unresolved mentor-remediation slice was MFT-C4, and MFT-D4 became actionable once scoped property tests were introduced.
+- evidence_basis: Focused property tests passed (`4/4`), full suite passed (`632/632`), and pyright remained clean (`0 errors`). Test runtime now loads Hypothesis plugin (`hypothesis-6.152.1`) and new invariants execute under normal task flow.
+- affected_components: `07_implementation/tests/test_shared_property_invariants.py`, `07_implementation/requirements.txt`, `07_implementation/mentor_feedback_submission/requirements.txt`, `00_admin/unresolved_issues.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`, `00_admin/change_log.md`, `00_admin/decision_log.md`
+- impact_assessment: Low-positive. Adds robust invariant regression depth without changing runtime behavior; closes C4 and conditional D4 backlog items.
+- approval_record: User continuation prompt on 2026-04-19.
 
 ## C-488
 - date: 2026-04-18
@@ -517,6 +715,17 @@ Maintenance snapshot (2026-04-19, updated):
 - affected_components: `07_implementation/src/retrieval/stage.py`, `07_implementation/src/quality/sanity_checks.py`, `07_implementation/tests/test_retrieval_stage.py`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`, `00_admin/unresolved_issues.md`
 - impact_assessment: Medium-positive. Improves BL-005 filtering interpretability and adds explicit governance visibility for UNDO-I contract adoption while preserving backward-compatible BL-014 behavior.
 - approval_record: Requested directly by the user in chat on 2026-04-17.
+
+## C-547
+- date: 2026-04-19
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Completed `MFT-C3` test-blindspot hardening for mentor-remediation A-slice outcomes. Added wrapper-level deterministic argument validation helper enforcing replay-count contract coupling/positivity (`--verify-determinism-replay-count` requires `--verify-determinism` and value > 0), added wrapper regression coverage for valid/invalid combinations, and added BL-006 scoring regression asserting influence bonus preserves additive `raw_final_score` while increasing `final_score` for matching influence tracks.
+- reason: User requested continuation; with MFT-A1 through MFT-A6 implemented, the next deferred C-slice item was to close residual contract-sensitive unit-test blind spots tied to those outcomes.
+- evidence_basis: Focused tests passed (`13/13`) across `tests/test_wrapper_main.py` and `tests/test_scoring_stage.py`; full suite passed (`628/628`); pyright clean (`0 errors, 0 warnings, 0 informations`).
+- affected_components: `07_implementation/main.py`, `07_implementation/tests/test_wrapper_main.py`, `07_implementation/tests/test_scoring_stage.py`, `00_admin/unresolved_issues.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`, `00_admin/change_log.md`, `00_admin/decision_log.md`
+- impact_assessment: Low-positive. Tightens wrapper contract safety and preserves additive score semantics under influence-policy application with no baseline behavior regression.
+- approval_record: Requested directly by the user via continuation prompt on 2026-04-19.
 
 ## C-440
 - date: 2026-04-17
@@ -4459,3 +4668,147 @@ Maintenance snapshot (2026-04-19, updated):
 - affected_components: `07_implementation/mentor_feedback_submission/src/**`, `07_implementation/mentor_feedback_submission/main.py`, `07_implementation/mentor_feedback_submission/requirements.txt`, `07_implementation/mentor_feedback_submission/config/profiles/run_config_ui013_tuning_v1f.json`, `07_implementation/mentor_feedback_submission/README.md`, `00_admin/change_log.md`, `00_admin/decision_log.md`
 - impact_assessment: Medium-positive. Improves mentor-handoff reproducibility and reduces stale artifact/cached-noise risk without changing active runtime behavior in `07_implementation/src`.
 - approval_record: Requested directly by user in chat on 2026-04-19.
+
+## C-534
+- date: 2026-04-19
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Added a comprehensive mentor-feedback remediation TODO backlog under `00_admin/unresolved_issues.md` as active item `UNDO-R`, covering all A-H review categories with explicit task IDs (`MFT-A1` through `MFT-H5`), priority tranche ordering, and execution notes. Synchronized governance posture in `00_admin/timeline.md` and `00_admin/thesis_state.md` to reflect active unresolved status and next bounded work.
+- reason: User explicitly requested: "add each of these as a comprehensive todo." The previous review output existed only in chat and was not yet represented as actionable, tracked governance work.
+- evidence_basis: `UNDO-R` now exists in `00_admin/unresolved_issues.md` with full checklist coverage across defects, determinism, testing, tooling/CI, documentation/demo readiness, methodology evidence, and housekeeping; timeline now references the new execution backlog; thesis-state quickref now reports active unresolved mentor-remediation scope.
+- affected_components: `00_admin/unresolved_issues.md`, `00_admin/timeline.md`, `00_admin/thesis_state.md`, `00_admin/change_log.md`, `00_admin/decision_log.md`
+- impact_assessment: Medium-positive governance hardening. No runtime behavior changes. Converts mentor-review analysis into a traceable, execution-ready backlog with clear priority ordering.
+- approval_record: Requested directly by user in chat on 2026-04-19.
+
+## C-535
+- date: 2026-04-19
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Started mentor-remediation implementation by completing `MFT-A5` (wrapper pass-through parity). The wrapper entrypoint now supports `--no-refresh-seed` and `--stages` controls, validates stage IDs against BL-013-supported stage set (`BL-004..BL-009`), forwards valid overrides to orchestration, and preserves prior default behavior (refresh-seed forced when override is not provided).
+- reason: User requested "Start implementation" after first-tranche planning (`MFT-A5`, `MFT-A6`, `MFT-A2`, `MFT-A1`). `MFT-A5` was sequenced as the first low-risk execution slice.
+- evidence_basis: Added wrapper-stage normalization/validation and command-builder coverage in `07_implementation/main.py`; added focused regression tests in `07_implementation/tests/test_wrapper_main.py`; focused test run passed via repo fallback wrapper (`python -m pytest tests/test_wrapper_main.py -q`) with `5/5` passing.
+- affected_components: `07_implementation/main.py`, `07_implementation/tests/test_wrapper_main.py`, `00_admin/unresolved_issues.md`, `00_admin/timeline.md`, `00_admin/thesis_state.md`, `00_admin/change_log.md`, `00_admin/decision_log.md`
+- impact_assessment: Medium-positive. Improves operator control parity between wrapper and BL-013 CLI while preserving compatibility defaults and adding explicit invalid-stage fail-fast behavior.
+- approval_record: Requested directly by user in chat on 2026-04-19.
+
+## C-536
+- date: 2026-04-19
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Implemented `MFT-A6` by adding explicit BL-006 no-op influence warning diagnostics when influence apply is requested but BL-003 influence contract is inactive. BL-006 now logs a warning, surfaces `influence_apply_requested` vs `influence_apply_active` in summary config, emits `influence_apply_noop_warning` in summary config, and appends the warning to `runtime_control_validation_warnings` for downstream observability.
+- reason: User requested continuation after `MFT-A5`; first-tranche execution sequence required closing silent no-op risk for BL-006 influence-apply controls.
+- evidence_basis: Added no-op warning detector and summary wiring in `07_implementation/src/scoring/stage.py`; added focused stage tests in `07_implementation/tests/test_scoring_stage.py`; focused test run passed (`python -m pytest tests/test_scoring_stage.py -q`, `4/4` passing).
+- affected_components: `07_implementation/src/scoring/stage.py`, `07_implementation/tests/test_scoring_stage.py`, `00_admin/unresolved_issues.md`, `00_admin/timeline.md`, `00_admin/thesis_state.md`, `00_admin/change_log.md`, `00_admin/decision_log.md`
+- impact_assessment: Medium-positive. Removes silent no-op ambiguity for BL-006 influence controls and improves auditability without changing default scoring behavior.
+- approval_record: Requested directly by user in chat on 2026-04-19.
+
+## C-537
+- date: 2026-04-19
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Implemented `MFT-A2` by replacing overloaded BL-003 influence `injected_count` with split counters `new_injected_count` and `relabelled_count` in influence contract outputs. Updated dependent alignment tests and summary-builder fixtures to consume the split contract fields.
+- reason: User requested continuation of mentor-remediation tranche; `MFT-A2` was the next prioritized implementation item after `MFT-A6`.
+- evidence_basis: Updated influence injection accounting in `07_implementation/src/alignment/influence.py`; updated contract assertions in `07_implementation/tests/test_alignment_influence.py` and summary fixture contract in `07_implementation/tests/test_alignment_summary_builder.py`; focused alignment validation passed (`python -m pytest tests/test_alignment_influence.py tests/test_alignment_summary_builder.py -q`, `9/9` passing).
+- affected_components: `07_implementation/src/alignment/influence.py`, `07_implementation/tests/test_alignment_influence.py`, `07_implementation/tests/test_alignment_summary_builder.py`, `00_admin/unresolved_issues.md`, `00_admin/timeline.md`, `00_admin/thesis_state.md`, `00_admin/change_log.md`, `00_admin/decision_log.md`
+- impact_assessment: Medium-positive. Removes ambiguity in influence accounting semantics and improves downstream interpretability by separating insertion vs relabelling behavior.
+- approval_record: Requested directly by user in chat on 2026-04-19.
+
+## C-538
+- date: 2026-04-19
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Implemented `MFT-A1` by adding additive `raw_final_score` alongside `final_score` in BL-006 scored outputs, extending BL-006 summary statistics with final-vs-raw score views, and keeping BL-008/BL-009 explanation and observability surfaces coherent with both fields.
+- reason: User requested continuation of mentor-remediation tranche; `MFT-A1` was the next prioritized defect/contract item after `MFT-A2`.
+- evidence_basis: BL-006 scoring now persists `raw_final_score` before any influence bonus and preserves `final_score` as the post-policy score; BL-008 payload builders now emit `raw_final_score` for included and rejected explanation payloads; BL-009 cross-stage influence attribution now carries `mean_raw_final_score`; focused regressions passed (`28/28`) across scoring, transparency, and observability test suites.
+- affected_components: `07_implementation/src/scoring/models.py`, `07_implementation/src/scoring/stage.py`, `07_implementation/src/transparency/main.py`, `07_implementation/src/transparency/payload_builder.py`, `07_implementation/src/observability/main.py`, `07_implementation/tests/test_scoring_stage.py`, `07_implementation/tests/test_transparency_component_orchestration.py`, `07_implementation/tests/test_transparency_payload_builder.py`, `07_implementation/tests/test_transparency_integration.py`, `07_implementation/tests/test_observability_signal_mode_summary.py`, `00_admin/unresolved_issues.md`, `00_admin/timeline.md`, `00_admin/thesis_state.md`, `00_admin/change_log.md`, `00_admin/decision_log.md`
+- impact_assessment: Medium-positive. Clarifies score semantics and prevents interpretation drift by preserving both pre-influence and post-policy score surfaces without breaking existing `final_score` consumers.
+- approval_record: Requested directly by user in chat on 2026-04-19.
+
+## C-539
+- date: 2026-04-19
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Implemented `MFT-A4` by persisting environment-override provenance in BL-013 run effective-config artifacts. `build_run_effective_payload` now emits additive `env_overrides` entries with explicit source (`environment`), normalization metadata, and parse/path normalization notes for `BL_RUN_CONFIG_PATH` and `BL_STAGE_CONFIG_JSON` when present.
+- reason: User requested continuation of mentor-remediation tranche; `MFT-A4` was the next open A-priority correctness/traceability item after `MFT-A1`.
+- evidence_basis: Added env-provenance collection in `run_config_utils.py` with normalized path and JSON-parse notes, plus focused contract tests in `test_run_config_utils.py`; focused validation passed (`36/36`) and downstream artifact-consumer regression passed (`test_seed_freshness.py`, `6/6`).
+- affected_components: `07_implementation/src/run_config/run_config_utils.py`, `07_implementation/tests/test_run_config_utils.py`, `00_admin/unresolved_issues.md`, `00_admin/timeline.md`, `00_admin/thesis_state.md`, `00_admin/change_log.md`, `00_admin/decision_log.md`
+- impact_assessment: Medium-positive. Improves effective-config auditability and environment override traceability with additive backward-compatible fields.
+- approval_record: Requested directly by user in chat on 2026-04-19.
+
+## C-540
+- date: 2026-04-19
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Implemented `MFT-A3` by enforcing strict coercion of all inter-stage handshake validation policies whenever `control_mode.validation_profile=strict`. The run-config effective resolver now normalizes BL-003 through BL-011 handshake policies to `strict`, and BL-008/BL-011 control resolvers now expose their handshake policy fields for payload parity.
+- reason: User requested continuation of mentor-remediation execution; `MFT-A3` was the remaining open A-priority contract-correctness item.
+- evidence_basis: Added strict-profile handshake coercion helper in `run_config_utils.py`, expanded BL-008 and BL-011 resolver payloads with handshake policy fields, added focused regression in `test_run_config_utils.py` covering BL-003..BL-011 strict coercion, and revalidated with full tests (`620/620` passing).
+- affected_components: `07_implementation/src/run_config/run_config_utils.py`, `07_implementation/tests/test_run_config_utils.py`, `00_admin/unresolved_issues.md`, `00_admin/timeline.md`, `00_admin/thesis_state.md`, `00_admin/change_log.md`, `00_admin/decision_log.md`
+- impact_assessment: Medium-positive. Removes strict-mode semantic drift across stage boundaries and strengthens handshake-contract determinism under strict validation posture.
+- approval_record: Requested directly by user in chat on 2026-04-19.
+
+## C-541
+- date: 2026-04-19
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Implemented the prioritized D-tooling tranche under UNDO-R by wiring explicit static-analysis configuration (D2), a repeatable tests-plus-coverage command surface with threshold policy (D3), dependency vulnerability audit automation (D6), and advisory-first security static-analysis automation with Python 3.14 compatibility fallback (D7). Also synchronized Ruff/task documentation parity (D1) and documented ongoing hygiene/complexity posture with xenon deferred as advisory-only (D8/D9).
+- reason: User requested to continue implementation of the D-tooling section after backlog refinement.
+- evidence_basis: New tooling artifacts and validations are active: pyright task now runs `--project pyrightconfig.json` with `0 errors`; coverage task emits `coverage_src_report_latest.txt` and passes with explicit fail-under policy (`65`, measured baseline `69%`); dependency audit emits `pip_audit_report_latest.txt` (advisory findings recorded); security scan emits `bandit_src_report_latest.txt` with automatic Ruff `S`-rules fallback when Bandit hits Python 3.14 AST compatibility errors; Ruff and hygiene workflows remain green with refreshed reports.
+- affected_components: `07_implementation/requirements.txt`, `07_implementation/pyrightconfig.json`, `07_implementation/scripts/check_all.ps1`, `07_implementation/scripts/test_coverage.ps1`, `07_implementation/scripts/dependency_audit.ps1`, `07_implementation/scripts/bandit_src.ps1`, `07_implementation/TOOLING_QUALITY_POSTURE.md`, `07_implementation/README.md`, `.vscode/tasks.json`, `07_implementation/src/playlist/rules.py`, `coverage_src_report_latest.txt`, `pip_audit_report_latest.txt`, `bandit_src_report_latest.txt`, `hygiene_src_report_latest.txt`, `ruff_src_report_latest.txt`, `00_admin/unresolved_issues.md`, `00_admin/timeline.md`, `00_admin/thesis_state.md`, `00_admin/change_log.md`, `00_admin/decision_log.md`
+- impact_assessment: Medium-positive. Adds repeatable quality/security tooling evidence surfaces with advisory-first posture, keeps current runtime contracts stable, and closes immediate D-tooling remediation items without over-blocking execution flow.
+- approval_record: Requested directly by user in chat on 2026-04-19 ("continue by implementing the d tooling section").
+
+## C-542
+- date: 2026-04-19
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Implemented UNDO-R B-tranche (MFT-B1, MFT-B2, MFT-B6) and E-tranche (MFT-E1) priority items. B1: Generated
+equirements.lock transitive-dependency freeze from active venv for reproducible installs. B2: Added .python-version file pinning Python 3.14, added [project] requires-python>=3.12 to pyproject.toml, and updated preflight guard to warn when interpreter is not 3.14.x and to fail fast below 3.12. B6: Added _build_runtime_environment_snapshot() helper to
+un_config_utils.py capturing sys.version, platform, platform_system, platform_machine, locale_preferred_encoding, and 	imezone_name; result is embedded as
+untime_environment in the effective-run-config artifact. E1: Created .github/workflows/ci.yml GitHub Actions workflow running lint (ruff), typecheck (pyright), tests+coverage (65% threshold), architecture guard (Phase 6), and validate-only pipeline on push/PR targeting  7_implementation/**.
+- reason: User requested continuation; next priority in UNDO-R execution order was B1/B2/B6/E1 tranche.
+- evidence_basis:
+equirements.lock generated (pip freeze from Python 3.14.4 venv); .python-version file at  7_implementation/.python-version; preflight updated in scripts/preflight_windows.ps1;
+untime_environment test added and all 621 tests pass; pyright   errors; .github/workflows/ci.yml created.
+- affected_components:  7_implementation/requirements.lock,  7_implementation/.python-version,  7_implementation/pyproject.toml,  7_implementation/scripts/preflight_windows.ps1,  7_implementation/src/run_config/run_config_utils.py,  7_implementation/tests/test_run_config_utils.py, .github/workflows/ci.yml,  0_admin/unresolved_issues.md,  0_admin/timeline.md,  0_admin/thesis_state.md,  0_admin/change_log.md,  0_admin/decision_log.md
+- impact_assessment: Medium-positive. Closes four high-priority UNDO-R items in one tranche; adds lockfile reproducibility, version-guard infrastructure, runtime-metadata auditability in artifacts, and a repeatable CI execution surface.
+- approval_record: Requested directly by user in chat on 2026-04-19 ("continue").
+
+## C-543
+- date: 2026-04-19
+- proposed_by: Copilot (UNDO-R C/F/G priority tranche execution)
+- status: accepted
+- change_summary: UNDO-R C/F/G priority tranche. (1) MFT-C2: Added 07_implementation/tests/test_golden_artifacts.py with two golden-artifact reproducibility tests: test_playlist_assembly_output_is_hash_stable (SHA-256 of track order and genre mix for a fixed 6-row fixture, hashes computed and locked) and test_clamp_output_is_deterministic (boundary golden values for shared coercion layer). Both tests pass (623 total, up from 621). (2) MFT-F6: Created 07_implementation/VIVA_RUN_SCRIPT.md with 6-step defense/viva demonstration guide (preflight, full pipeline, deterministic verification, controllability demo, transparency inspection, quality posture) plus fallback table. (3) MFT-G2: Expanded chapter6.md section 6.4 item 6 from single-sentence limitation to three-grounds justified non-inclusion rationale (DSR evaluation obligation; absent shared offline evaluation corpus; no natural comparator mapping for RQ-B/RQ-C). (4) MFT-G4: Added influence policy-mode transition evidence row to Table 5.3 in chapter5.md showing competitive vs reserved_slots mode observable difference in influence_effectiveness_diagnostics (policy_mode, reserved_slot_target fields); no-match corpus result surfaced honestly.
+- reason: UNDO-R mentor-feedback remediation backlog; C/F/G second priority group.
+
+## C-544
+- date: 2026-04-19
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Implemented UNDO-R determinism-policy slice for `MFT-B3` and `MFT-B4`. Added `07_implementation/DETERMINISTIC_ITERATION_AUDIT.md` as the deterministic-iteration outcome artifact covering dict/set-sensitive iteration review method, critical-run-path inspection, findings, residual risk, and maintenance rules. Added `07_implementation/DETERMINISM_RANDOMNESS_POLICY.md` as the formal seed/randomness policy note that declares current no-stochastic-runtime posture and defines mandatory seed/PRNG evidence requirements if randomness is introduced later.
+- reason: User requested continuation; next deferred priority after C/F/G tranche was determinism-policy hardening (`B3`, `B4`).
+- evidence_basis: Static iteration-pattern sweep across `07_implementation/src/**/*.py` plus focused manual review of BL-003/BL-007/BL-009/BL-010/BL-013 critical output paths documented in the audit artifact. Existing deterministic replay and golden-artifact test posture remains the active evidence basis for bounded determinism claims.
+- affected_components: `07_implementation/DETERMINISTIC_ITERATION_AUDIT.md`, `07_implementation/DETERMINISM_RANDOMNESS_POLICY.md`, `00_admin/unresolved_issues.md`, `00_admin/timeline.md`, `00_admin/thesis_state.md`, `00_admin/change_log.md`, `00_admin/decision_log.md`
+- impact_assessment: Medium-positive. Closes two explicit mentor-remediation determinism items and makes deterministic-claim boundaries plus future stochastic-change governance explicit.
+- approval_record: Requested directly by user continuation prompt on 2026-04-19.
+
+## C-545
+- date: 2026-04-19
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Implemented UNDO-R `MFT-B5` by adding a centralized BL-013 hash-input-chain summary surface. `orchestration.summary_builder` now emits additive `hash_input_chain` (`bl013-hash-input-chain-v1`) with authority-chain hashes (`requested_run_config`, `run_intent`, `run_effective_config`), stable input artifact hash inventory, missing-input reporting, and consolidated chain digest (`chain_sha256`) over ordered chain components.
+- reason: User requested continuation; next deferred priority item after B3/B4 was B5 hash-input-chain centralization in BL-013.
+- evidence_basis: Added `build_hash_input_chain_summary()` in `07_implementation/src/orchestration/summary_builder.py`, integrated it into BL-013 summary output, and added/updated regression tests in `07_implementation/tests/test_orchestration_summary_builder.py`. Focused tests pass (`3/3`), full suite passes (`624/624`), and pyright is clean (`0 errors`).
+- affected_components: `07_implementation/src/orchestration/summary_builder.py`, `07_implementation/tests/test_orchestration_summary_builder.py`, `00_admin/unresolved_issues.md`, `00_admin/timeline.md`, `00_admin/thesis_state.md`, `00_admin/change_log.md`, `00_admin/decision_log.md`
+- impact_assessment: Medium-positive. Improves run-level reproducibility auditability by consolidating config authority and hash inputs in one stable BL-013 section without breaking existing summary fields.
+- approval_record: Requested directly by user continuation prompt on 2026-04-19.
+
+## C-546
+- date: 2026-04-19
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Implemented UNDO-R `MFT-B7` by formalizing a repeatable deterministic verification replay contract path across wrapper runtime, CI, task flow, and operator docs. The wrapper now passes through `--verify-determinism` and `--verify-determinism-replay-count`; CI validate stage now runs deterministic replay verification (`x3`); a dedicated VS Code task surface was added for replay validation; and README commands/task guidance were updated to the same contract path.
+- reason: User requested continuation; next deferred priority after B5 was B7 formal replay-contract operationalization.
+- evidence_basis: Wrapper wiring and tests updated in `07_implementation/main.py` and `07_implementation/tests/test_wrapper_main.py` (`5/5` passing). Deterministic contract command executed successfully (`python main.py --validate-only --verify-determinism --verify-determinism-replay-count 3`) with BL-013 pass and BL-014 `36/36` pass. Full suite remains green (`624/624`) and pyright remains clean (`0 errors`).
+- affected_components: `07_implementation/main.py`, `07_implementation/tests/test_wrapper_main.py`, `.vscode/tasks.json`, `.github/workflows/ci.yml`, `07_implementation/README.md`, `00_admin/unresolved_issues.md`, `00_admin/timeline.md`, `00_admin/thesis_state.md`, `00_admin/change_log.md`, `00_admin/decision_log.md`
+- impact_assessment: Medium-positive. Converts deterministic replay verification from optional/manual usage into an explicit contract path available in local tasks and CI with preserved backward compatibility.
+- approval_record: Requested directly by user continuation prompt on 2026-04-19.

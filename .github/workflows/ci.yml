@@ -1,0 +1,65 @@
+name: CI
+
+on:
+  push:
+    branches: ["main", "master"]
+    paths:
+      - "07_implementation/**"
+  pull_request:
+    branches: ["main", "master"]
+    paths:
+      - "07_implementation/**"
+  workflow_dispatch:
+
+defaults:
+  run:
+    working-directory: 07_implementation
+
+jobs:
+  contract-checks:
+    name: Contract checks (${{ matrix.os }}, Python ${{ matrix.python-version }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            python-version: "3.13"
+          - os: ubuntu-latest
+            python-version: "3.14"
+          - os: windows-latest
+            python-version: "3.14"
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          allow-prereleases: true
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Ruff lint
+        run: python -m ruff check src
+
+      - name: Type check (pyright)
+        run: python -m pyright --project pyrightconfig.json
+
+      - name: Tests + Coverage
+        run: >
+          python -m pytest tests -v
+          --cov=src
+          --cov-report=term-missing
+          --cov-fail-under=65
+
+      - name: Architecture guard (Phase 6)
+        run: python ci_guard_phase_6_check.py
+
+      - name: Validate-only + deterministic replay verification (BL-013 + BL-010 + BL-014)
+        run: >
+          python main.py --validate-only
+          --verify-determinism
+          --verify-determinism-replay-count 3

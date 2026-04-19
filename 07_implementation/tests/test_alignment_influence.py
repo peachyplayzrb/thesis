@@ -39,7 +39,8 @@ class TestInjectInfluenceTracksNoConfig:
     def test_none_path_returns_disabled_contract(self):
         contract = inject_influence_tracks([], {}, None)
         assert contract["enabled"] is False
-        assert contract["injected_count"] == 0
+        assert contract["new_injected_count"] == 0
+        assert contract["relabelled_count"] == 0
         assert contract["track_ids"] == []
         assert contract["skipped_track_ids"] == []
         assert contract["preference_weight"] == 1.0
@@ -61,7 +62,8 @@ class TestInjectInfluenceTracksNewTrack:
             "dummy_path",
             behavior_controls=behavior_controls,
         )
-        assert contract["injected_count"] == 1
+        assert contract["new_injected_count"] == 1
+        assert contract["relabelled_count"] == 0
         assert len(matched_events) == 1
         assert matched_events[0]["interaction_type"] == "influence"
         assert matched_events[0]["ds001_id"] == "track1"
@@ -93,7 +95,8 @@ class TestInjectInfluenceTracksExistingTrack:
             "dummy_path",
             behavior_controls=behavior_controls,
         )
-        assert contract["injected_count"] == 1
+        assert contract["new_injected_count"] == 0
+        assert contract["relabelled_count"] == 1
         # List not extended — same event updated
         assert len(matched_events) == 1
         assert matched_events[0]["interaction_type"] == "history,influence"
@@ -111,7 +114,8 @@ class TestInjectInfluenceTracksInvalidId:
             behavior_controls=behavior_controls,
         )
         assert "nonexistent" in contract["skipped_track_ids"]
-        assert contract["injected_count"] == 0
+        assert contract["new_injected_count"] == 0
+        assert contract["relabelled_count"] == 0
         assert len(matched_events) == 0
 
 
@@ -127,7 +131,8 @@ class TestInjectInfluenceTracksDedup:
             behavior_controls=behavior_controls,
         )
         assert len(matched_events) == 1
-        assert contract["injected_count"] == 1
+        assert contract["new_injected_count"] == 1
+        assert contract["relabelled_count"] == 0
 
 
 class TestInjectInfluenceTracksDisabled:
@@ -142,5 +147,6 @@ class TestInjectInfluenceTracksDisabled:
             behavior_controls=behavior_controls,
         )
         assert len(matched_events) == 0
-        assert contract["injected_count"] == 0
+        assert contract["new_injected_count"] == 0
+        assert contract["relabelled_count"] == 0
         assert contract["enabled"] is False

@@ -414,6 +414,7 @@ def build_cross_stage_influence_attribution_summary(
             "scored_rows": safe_int(scoring_counts.get("scored_rows"), 0),
             "influence_contract_source": str(bl006_summary.get("influence_contract_source", "")),
             "mean_final_score": safe_float(scoring_statistics.get("mean_final_score"), 0.0),
+            "mean_raw_final_score": safe_float(scoring_statistics.get("mean_raw_final_score"), 0.0),
         },
         "bl007_assembly_effects": {
             "influence_enabled": bool(assembly_config.get("influence_enabled", False)),

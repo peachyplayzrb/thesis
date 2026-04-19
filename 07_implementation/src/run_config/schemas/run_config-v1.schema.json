@@ -47,6 +47,9 @@
         "observability_controls": {
             "type": "object"
         },
+        "reproducibility_controls": {
+            "type": "object"
+        },
         "reporting_controls": {
             "type": "object"
         },

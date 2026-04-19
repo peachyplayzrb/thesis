@@ -610,7 +610,7 @@ def _run_candidate_loop(
     influence_allow_genre_cap_override: bool,
     influence_allow_consecutive_override: bool,
     target_size: int,
-    effective_max_per_genre: dict[str, int],
+    effective_max_per_genre: int,
     effective_max_consecutive: int,
     rule_hits: Counter,
     relaxation_active: bool,

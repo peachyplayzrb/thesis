@@ -13,12 +13,16 @@ from run_config.control_registry import (
     build_control_registry_snapshot,
 )
 from run_config.run_config_utils import (
+    RUN_CONFIG_SCHEMA_FILENAME,
     RunConfigError,
     build_run_effective_payload,
     build_run_intent_payload,
+    resolve_bl004_controls,
     resolve_bl003_influence_controls,
     resolve_bl003_seed_controls,
     resolve_bl003_weighting_policy,
+    resolve_bl010_controls,
+    resolve_bl011_controls,
     resolve_bl013_orchestration_controls,
     resolve_bl005_controls,
     resolve_bl006_controls,
@@ -234,7 +238,7 @@ def test_resolve_bl007_controls_includes_influence_policy_contract(tmp_path: Pat
     assert controls["influence_allow_consecutive_override"] is False
     assert controls["influence_allow_score_threshold_override"] is True
     assert controls["opportunity_cost_top_k_examples"] == 25
-    assert controls["bl006_bl007_handshake_validation_policy"] == "warn"
+    assert controls["bl006_bl007_handshake_validation_policy"] == "strict"
 
 
 def test_resolve_bl007_controls_falls_back_for_non_positive_opportunity_cost_top_k(tmp_path: Path) -> None:
@@ -252,6 +256,132 @@ def test_resolve_bl007_controls_falls_back_for_non_positive_opportunity_cost_top
 
     assert controls["opportunity_cost_top_k_examples"] == 10
     assert controls["utility_decay_factor"] == 0.0
+
+
+@pytest.mark.parametrize(
+    ("payload", "expected_target_size", "expected_min_score_threshold", "expected_reserved_slots", "expected_track_ids"),
+    [
+        (
+            {
+                "influence_tracks": {"enabled": True, "track_ids": []},
+                "assembly_controls": {
+                    "target_size": 0,
+                    "min_score_threshold": 0.0001,
+                    "influence_reserved_slots": 0,
+                    "utility_decay_factor": 0.0,
+                },
+            },
+            10,
+            0.0001,
+            0,
+            [],
+        ),
+        (
+            {
+                "influence_tracks": {"enabled": True, "track_ids": ["seed_1"]},
+                "assembly_controls": {
+                    "target_size": 1,
+                    "min_score_threshold": 0.0001,
+                    "influence_reserved_slots": 1,
+                    "utility_decay_factor": 1.0,
+                },
+            },
+            1,
+            0.0001,
+            1,
+            ["seed_1"],
+        ),
+        (
+            {
+                "influence_tracks": {"enabled": True, "track_ids": ["seed_a", "seed_a", " "]},
+                "assembly_controls": {
+                    "target_size": 3,
+                    "min_score_threshold": 1.0,
+                    "influence_reserved_slots": 9,
+                    "utility_decay_factor": 1.0,
+                },
+            },
+            3,
+            1.0,
+            3,
+            ["seed_a"],
+        ),
+    ],
+)
+def test_bl007_boundary_case_matrix_zero_empty_single_and_threshold_edges(
+    tmp_path: Path,
+    payload: dict[str, object],
+    expected_target_size: int,
+    expected_min_score_threshold: float,
+    expected_reserved_slots: int,
+    expected_track_ids: list[str],
+) -> None:
+    run_config_path = _write_run_config(tmp_path, payload)
+
+    controls = resolve_bl007_controls(run_config_path)
+
+    assert controls["target_size"] == expected_target_size
+    assert controls["min_score_threshold"] == expected_min_score_threshold
+    assert controls["influence_reserved_slots"] == expected_reserved_slots
+    assert controls["influence_track_ids"] == expected_track_ids
+
+
+def test_bl005_boundary_case_matrix_zero_empty_single_and_threshold_edges(tmp_path: Path) -> None:
+    default_effective, _ = resolve_effective_run_config(None)
+    default_retrieval = default_effective["retrieval_controls"]
+
+    matrix_cases: list[tuple[dict[str, object], dict[str, object]]] = [
+        (
+            {
+                "retrieval_controls": {
+                    "numeric_support_min_pass": 0,
+                    "language_filter_codes": [],
+                    "profile_quality_threshold": 0.0,
+                    "profile_entropy_low_threshold": 0.0,
+                    "influence_share_threshold": 0.0,
+                    "numeric_confidence_floor": 0.0,
+                    "profile_numeric_confidence_blend_weight": 0.0,
+                }
+            },
+            {
+                    "numeric_support_min_pass": 0,
+                "language_filter_codes": default_retrieval["language_filter_codes"],
+                "profile_quality_threshold": 0.0,
+                "profile_entropy_low_threshold": 0.0,
+                "influence_share_threshold": 0.0,
+                "numeric_confidence_floor": 0.0,
+                "profile_numeric_confidence_blend_weight": 0.0,
+            },
+        ),
+        (
+            {
+                "retrieval_controls": {
+                    "numeric_support_min_pass": 1,
+                    "language_filter_codes": ["en"],
+                    "profile_quality_threshold": 1.0,
+                    "profile_entropy_low_threshold": 1.0,
+                    "influence_share_threshold": 1.0,
+                    "numeric_confidence_floor": 1.0,
+                    "profile_numeric_confidence_blend_weight": 1.0,
+                }
+            },
+            {
+                "language_filter_codes": ["en"],
+                "profile_quality_threshold": 1.0,
+                "profile_entropy_low_threshold": 1.0,
+                "influence_share_threshold": 1.0,
+                "numeric_confidence_floor": 1.0,
+                "profile_numeric_confidence_blend_weight": 1.0,
+            },
+        ),
+    ]
+
+    for payload, expected in matrix_cases:
+        run_config_path = _write_run_config(tmp_path, payload)
+        controls = resolve_bl005_controls(run_config_path)
+
+        for key, expected_value in expected.items():
+            assert controls[key] == expected_value
 
 
 def test_profile_controls_schema_coercion_and_fallback(tmp_path: Path) -> None:
@@ -286,7 +416,7 @@ def test_profile_controls_schema_coercion_and_fallback(tmp_path: Path) -> None:
     assert profile_controls["confidence_validation_policy"] == "strict"
     assert profile_controls["interaction_type_validation_policy"] == "warn"
     assert profile_controls["synthetic_data_validation_policy"] == "allow"
-    assert profile_controls["bl003_handshake_validation_policy"] == "warn"
+    assert profile_controls["bl003_handshake_validation_policy"] == "strict"
     assert profile_controls["numeric_malformed_row_threshold"] == 3
     assert profile_controls["no_numeric_signal_row_threshold"] is None
 
@@ -326,7 +456,7 @@ def test_retrieval_controls_schema_fallback_and_enum_normalization(tmp_path: Pat
     assert retrieval_controls["profile_top_genre_limit"] == 8
     assert retrieval_controls["profile_numeric_confidence_mode"] == "blended"
     assert retrieval_controls["numeric_support_score_mode"] == "weighted_absolute"
-    assert retrieval_controls["bl004_bl005_handshake_validation_policy"] == "warn"
+    assert retrieval_controls["bl004_bl005_handshake_validation_policy"] == "strict"
 
 
 def test_retrieval_controls_schema_bool_like_validation_error(tmp_path: Path) -> None:
@@ -609,6 +739,35 @@ def test_build_run_intent_payload_includes_schema_reference() -> None:
     assert schema_ref["schema_sha256"] is not None
 
 
+def test_run_config_schema_top_level_key_parity_with_effective_runtime() -> None:
+    schema_path = Path(__file__).resolve().parents[1] / "src" / "run_config" / "schemas" / RUN_CONFIG_SCHEMA_FILENAME
+    schema_payload = json.loads(schema_path.read_text(encoding="utf-8"))
+
+    declared_schema_keys = set(schema_payload.get("properties", {}).keys())
+    effective, _ = resolve_effective_run_config(None)
+    runtime_top_level_keys = set(effective.keys())
+
+    # Non-configurable derived key produced during runtime normalization.
+    derived_runtime_keys = {"signal_mode"}
+    # Hook for future compat aliases; kept explicit to prevent silent drift.
+    deprecated_runtime_keys: set[str] = set()
+    deprecated_schema_keys: set[str] = set()
+
+    missing_runtime_keys = declared_schema_keys - runtime_top_level_keys - deprecated_schema_keys
+    assert not missing_runtime_keys, (
+        "run-config schema declares top-level keys that are not consumed in effective runtime config: "
+        f"{sorted(missing_runtime_keys)}"
+    )
+
+    unexpected_runtime_keys = (
+        runtime_top_level_keys - declared_schema_keys - derived_runtime_keys - deprecated_runtime_keys
+    )
+    assert not unexpected_runtime_keys, (
+        "effective runtime config exposes undocumented top-level keys not marked as derived/deprecated: "
+        f"{sorted(unexpected_runtime_keys)}"
+    )
+
+
 def test_build_run_effective_payload_includes_schema_reference(tmp_path: Path) -> None:
     run_config_path = _write_run_config(tmp_path, {"schema_version": "run-config-v1"})
     payload = build_run_effective_payload(
@@ -622,6 +781,61 @@ def test_build_run_effective_payload_includes_schema_reference(tmp_path: Path) -
     assert schema_ref["schema_version"] == "run-config-v1"
     assert schema_ref["schema_path"] is not None
     assert schema_ref["schema_sha256"] is not None
+    assert payload["env_overrides"] == {}
+
+
+def test_build_run_effective_payload_captures_env_override_provenance(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    run_config_path = _write_run_config(tmp_path, {"schema_version": "run-config-v1"})
+    monkeypatch.setenv("BL_RUN_CONFIG_PATH", f"  {run_config_path}  ")
+    monkeypatch.setenv("BL_STAGE_CONFIG_JSON", " {\"stages\": {\"BL-005\": {}}} ")
+
+    payload = build_run_effective_payload(
+        run_id="BL013-ENTRYPOINT-TEST",
+        run_config_path=run_config_path,
+        run_intent_path=None,
+    )
+
+    env_overrides = payload["env_overrides"]
+    assert set(env_overrides.keys()) == {"BL_RUN_CONFIG_PATH", "BL_STAGE_CONFIG_JSON"}
+
+    run_config_override = env_overrides["BL_RUN_CONFIG_PATH"]
+    assert run_config_override["source"] == "environment"
+    assert run_config_override["applied_to_effective_config"] is True
+    assert run_config_override["raw_value_length"] == len(f"  {run_config_path}  ")
+    assert "trimmed_surrounding_whitespace" in run_config_override["normalization_notes"]
+    assert "normalized_to_absolute_path" in run_config_override["normalization_notes"]
+    assert "matches_resolved_run_config_path" in run_config_override["normalization_notes"]
+
+    stage_json_override = env_overrides["BL_STAGE_CONFIG_JSON"]
+    assert stage_json_override["source"] == "environment"
+    assert stage_json_override["applied_to_effective_config"] is False
+    assert stage_json_override["parse_status"]["ok"] is True
+    assert stage_json_override["parse_status"]["parsed_type"] == "dict"
+    assert "trimmed_surrounding_whitespace" in stage_json_override["normalization_notes"]
+    assert "json_parse_ok_type=dict" in stage_json_override["normalization_notes"]
+
+
+def test_build_run_effective_payload_includes_runtime_environment(tmp_path: Path) -> None:
+    run_config_path = _write_run_config(tmp_path, {"schema_version": "run-config-v1"})
+    payload = build_run_effective_payload(
+        run_id="BL013-ENTRYPOINT-TEST",
+        run_config_path=run_config_path,
+        run_intent_path=None,
+    )
+
+    runtime_env = payload["runtime_environment"]
+    assert isinstance(runtime_env, dict)
+    assert "python_version" in runtime_env
+    assert "python_version_info" in runtime_env
+    assert "platform" in runtime_env
+    assert "platform_system" in runtime_env
+    assert "platform_machine" in runtime_env
+    assert "locale_preferred_encoding" in runtime_env
+    assert "timezone_name" in runtime_env
+    assert runtime_env["python_version_info"].startswith("3.")
 
 
 def test_resolve_bl013_orchestration_controls_exposes_determinism_knobs(tmp_path: Path) -> None:
@@ -639,3 +853,56 @@ def test_resolve_bl013_orchestration_controls_exposes_determinism_knobs(tmp_path
 
     assert controls["determinism_verify_on_success"] is True
     assert controls["determinism_verify_replay_count"] == 5
+
+
+def test_strict_validation_profile_forces_all_stage_handshake_policies(
+    tmp_path: Path,
+) -> None:
+    run_config_path = _write_run_config(
+        tmp_path,
+        {
+            "control_mode": {"validation_profile": "strict"},
+            "profile_controls": {
+                "bl003_handshake_validation_policy": "allow",
+            },
+            "retrieval_controls": {
+                "bl004_bl005_handshake_validation_policy": "allow",
+            },
+            "scoring_controls": {
+                "bl005_bl006_handshake_validation_policy": "allow",
+            },
+            "assembly_controls": {
+                "bl006_bl007_handshake_validation_policy": "allow",
+            },
+            "transparency_controls": {
+                "bl007_bl008_handshake_validation_policy": "allow",
+            },
+            "observability_controls": {
+                "bl008_bl009_handshake_validation_policy": "allow",
+            },
+            "reproducibility_controls": {
+                "bl009_bl010_handshake_validation_policy": "allow",
+            },
+            "controllability_controls": {
+                "bl010_bl011_handshake_validation_policy": "allow",
+            },
+        },
+    )
+
+    bl004 = resolve_bl004_controls(run_config_path)
+    bl005 = resolve_bl005_controls(run_config_path)
+    bl006 = resolve_bl006_controls(run_config_path)
+    bl007 = resolve_bl007_controls(run_config_path)
+    bl008 = resolve_bl008_controls(run_config_path)
+    bl009 = resolve_bl009_controls(run_config_path)
+    bl010 = resolve_bl010_controls(run_config_path)
+    bl011 = resolve_bl011_controls(run_config_path)
+
+    assert bl004["bl003_handshake_validation_policy"] == "strict"
+    assert bl005["bl004_bl005_handshake_validation_policy"] == "strict"
+    assert bl006["bl005_bl006_handshake_validation_policy"] == "strict"
+    assert bl007["bl006_bl007_handshake_validation_policy"] == "strict"
+    assert bl008["bl007_bl008_handshake_validation_policy"] == "strict"
+    assert bl009["bl008_bl009_handshake_validation_policy"] == "strict"
+    assert bl010["bl009_bl010_handshake_validation_policy"] == "strict"
+    assert bl011["bl010_bl011_handshake_validation_policy"] == "strict"

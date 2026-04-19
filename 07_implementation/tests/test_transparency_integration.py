@@ -25,6 +25,7 @@ def test_transparency_main_writes_outputs_and_hash_fields(tmp_path: Path, monkey
         scored_csv,
         [
             "track_id",
+            "raw_final_score",
             "tempo_similarity",
             "tempo_contribution",
             "tag_overlap_similarity",
@@ -33,6 +34,7 @@ def test_transparency_main_writes_outputs_and_hash_fields(tmp_path: Path, monkey
         [
             {
                 "track_id": "t1",
+                "raw_final_score": 0.75,
                 "tempo_similarity": 0.9,
                 "tempo_contribution": 0.40,
                 "tag_overlap_similarity": 0.8,
@@ -99,6 +101,7 @@ def test_transparency_main_writes_outputs_and_hash_fields(tmp_path: Path, monkey
 
     assert payloads["playlist_track_count"] == 1
     assert payloads["explanations"][0]["track_id"] == "t1"
+    assert payloads["explanations"][0]["raw_final_score"] == 0.75
     assert payloads["explanations"][0]["primary_explanation_driver"]["label"] == "Tempo (BPM)"
     assert payloads["explanations"][0]["control_provenance_ref"] == "run_level"
     assert payloads["explanations"][0]["control_causality"]["schema_version"] == "bl008-control-causality-v1"
@@ -383,6 +386,7 @@ def test_transparency_main_emits_rejected_track_control_causality(
             "lead_genre",
             "rank",
             "final_score",
+            "raw_final_score",
             "tempo_similarity",
             "tempo_contribution",
         ],
@@ -392,6 +396,7 @@ def test_transparency_main_emits_rejected_track_control_causality(
                 "lead_genre": "rock",
                 "rank": 1,
                 "final_score": 0.91,
+                "raw_final_score": 0.86,
                 "tempo_similarity": 0.90,
                 "tempo_contribution": 0.40,
             },
@@ -400,6 +405,7 @@ def test_transparency_main_emits_rejected_track_control_causality(
                 "lead_genre": "jazz",
                 "rank": 2,
                 "final_score": 0.40,
+                "raw_final_score": 0.40,
                 "tempo_similarity": 0.35,
                 "tempo_contribution": 0.10,
             },
@@ -453,6 +459,7 @@ def test_transparency_main_emits_rejected_track_control_causality(
     rejected_payload = payloads["rejected_track_control_causality"][0]
     assert rejected_payload["payload_scope"] == "rejected_track_trace"
     assert rejected_payload["track_id"] == "t2"
+    assert rejected_payload["raw_final_score"] == 0.4
     assert rejected_payload["control_causality"]["decision_outcome"]["included_in_playlist"] is False
     assert (
         rejected_payload["control_causality"]["effect_direction"]["expected_direction"]

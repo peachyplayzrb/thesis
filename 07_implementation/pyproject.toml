@@ -1,3 +1,16 @@
+[project]
+name = "recommendation-implementation"
+version = "1.0.0"
+description = "Deterministic playlist generation pipeline implementation (BL-003 to BL-014)."
+readme = "README.md"
+requires-python = ">=3.12"
+license = { text = "Academic Research Use License (see repository LICENSE)" }
+keywords = ["recommender-systems", "deterministic-pipeline", "thesis"]
+
+[project.urls]
+Repository = "../"
+Documentation = "README.md"
+
 [tool.ruff]
 line-length = 100
 target-version = "py314"
@@ -16,3 +29,15 @@ ignore = ["E501"]
 
 [tool.ruff.lint.isort]
 known-first-party = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-v"
+
+[tool.coverage.run]
+source = ["src"]
+branch = true
+
+[tool.coverage.report]
+show_missing = true
+skip_covered = false

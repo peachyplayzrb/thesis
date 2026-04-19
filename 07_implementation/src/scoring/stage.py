@@ -261,6 +261,29 @@ class ScoringStage:
         )
 
     @staticmethod
+    def _build_influence_apply_noop_warning(
+        *,
+        controls: ScoringControls,
+        context: ScoringContext,
+    ) -> str | None:
+        if not bool(controls.apply_bl003_influence_tracks):
+            return None
+        if context.apply_bl003_influence_tracks:
+            return None
+
+        if not context.influence_track_ids:
+            reason = "BL-003 influence track_ids are missing or empty"
+        elif context.influence_preference_weight <= 0.0:
+            reason = "BL-003 influence preference_weight is non-positive"
+        else:
+            reason = "BL-003 influence is disabled"
+
+        return (
+            "BL-006 influence apply was requested but no influence bonus was applied; "
+            f"reason: {reason}."
+        )
+
+    @staticmethod
     def score_candidates(
         *,
         candidates: list[dict[str, str]],
@@ -293,11 +316,12 @@ class ScoringStage:
                 profile_numeric_confidence_mode=context.profile_numeric_confidence_mode,
                 profile_numeric_confidence_blend_weight=context.profile_numeric_confidence_blend_weight,
             )
-            final_score = compute_final_score(
+            raw_final_score = compute_final_score(
                 component_scores,
                 context.active_component_weights,
                 weighted_contributions=weighted_contributions,
             )
+            final_score = raw_final_score
             if (
                 context.apply_bl003_influence_tracks
                 and str(row.get("track_id", "")) in (context.influence_track_ids or set())
@@ -321,6 +345,7 @@ class ScoringStage:
                     "matched_genres": "|".join(matched_genres),
                     "matched_tags": "|".join(matched_tags),
                     "final_score": final_score,
+                    "raw_final_score": raw_final_score,
                     "danceability_similarity": component_scores.get("danceability_similarity", 0.0),
                     "danceability_contribution": weighted_contributions.get("danceability_contribution", 0.0),
                     "energy_similarity": component_scores.get("energy_similarity", 0.0),
@@ -379,6 +404,7 @@ class ScoringStage:
         scoring_sensitivity_diagnostics: dict[str, object] | None = None,
         handshake_validation: dict[str, object] | None = None,
         runtime_controls: ScoringControls | None = None,
+        influence_apply_noop_warning: str | None = None,
     ) -> dict[str, object]:
         context = (
             runtime_context
@@ -392,12 +418,17 @@ class ScoringStage:
                 "track_id": row["track_id"],
                 "lead_genre": row["lead_genre"],
                 "final_score": row["final_score"],
+                "raw_final_score": row.get("raw_final_score", row["final_score"]),
                 "matched_genres": row["matched_genres"],
                 "matched_tags": row["matched_tags"],
             }
             for row in scored_rows[:10]
         ]
         score_values = [to_float(row.get("final_score", 0.0)) for row in scored_rows]
+        raw_score_values = [
+            to_float(row.get("raw_final_score", row.get("final_score", 0.0)))
+            for row in scored_rows
+        ]
         top_100_rows = scored_rows[:100]
         top_500_rows = scored_rows[:500]
 
@@ -488,6 +519,13 @@ class ScoringStage:
                     "bl005_bl006_handshake_validation_policy": validation_policy,
                 },
                 "runtime_control_resolution": runtime_resolution_diagnostics,
+                "influence_apply_requested": (
+                    bool(runtime_controls.apply_bl003_influence_tracks)
+                    if runtime_controls is not None
+                    else False
+                ),
+                "influence_apply_active": bool(context.apply_bl003_influence_tracks),
+                "influence_apply_noop_warning": influence_apply_noop_warning,
             },
             "validation": validation_payload,
             "counts": {
@@ -498,6 +536,14 @@ class ScoringStage:
                 "min_score": round(min(score_values), 6),
                 "mean_score": round(statistics.mean(score_values), 6),
                 "median_score": round(statistics.median(score_values), 6),
+                "max_final_score": round(max(score_values), 6),
+                "min_final_score": round(min(score_values), 6),
+                "mean_final_score": round(statistics.mean(score_values), 6),
+                "median_final_score": round(statistics.median(score_values), 6),
+                "max_raw_final_score": round(max(raw_score_values), 6),
+                "min_raw_final_score": round(min(raw_score_values), 6),
+                "mean_raw_final_score": round(statistics.mean(raw_score_values), 6),
+                "median_raw_final_score": round(statistics.median(raw_score_values), 6),
             },
             "component_balance": {
                 "all_candidates": contribution_breakdown(scored_rows),
@@ -556,6 +602,22 @@ class ScoringStage:
             runtime_controls=runtime_controls,
         )
 
+        influence_apply_noop_warning = self._build_influence_apply_noop_warning(
+            controls=runtime_controls,
+            context=runtime_context,
+        )
+        if influence_apply_noop_warning:
+            logger.warning(influence_apply_noop_warning)
+            runtime_controls = controls_from_mapping(
+                {
+                    **runtime_controls.as_mapping(),
+                    "runtime_control_validation_warnings": [
+                        *runtime_controls.runtime_control_validation_warnings,
+                        influence_apply_noop_warning,
+                    ],
+                }
+            )
+
         start_time = time.time()
         run_id = f"BL006-SCORE-{datetime.now(UTC).strftime('%Y%m%d-%H%M%S-%f')}"
 
@@ -609,6 +671,7 @@ class ScoringStage:
             scoring_sensitivity_diagnostics=scoring_sensitivity_diagnostics,
             handshake_validation=handshake_validation,
             runtime_controls=runtime_controls,
+            influence_apply_noop_warning=influence_apply_noop_warning,
             diagnostics_path=diagnostics_path,
             scored_path=scored_path,
         )

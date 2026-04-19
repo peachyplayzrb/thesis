@@ -1,0 +1,23 @@
+repos:
+  - repo: local
+    hooks:
+      - id: ruff-src
+        name: Ruff Check src
+        entry: pwsh -NoProfile -ExecutionPolicy Bypass -File 07_implementation/scripts/ruff_src.ps1
+        language: system
+        pass_filenames: false
+        always_run: true
+      - id: pyright-src
+        name: Pyright Typecheck src
+        entry: pwsh -NoProfile -ExecutionPolicy Bypass -File 07_implementation/scripts/run_tool_with_venv_fallback.ps1 pyright --project pyrightconfig.json
+        language: system
+        pass_filenames: false
+        always_run: true
+        files: ^07_implementation/(src|tests|pyproject\.toml|pyrightconfig\.json)
+      - id: pytest-light
+        name: Pytest Lightweight Contract
+        entry: pwsh -NoProfile -ExecutionPolicy Bypass -File 07_implementation/scripts/run_tool_with_venv_fallback.ps1 python -m pytest tests/test_wrapper_main.py -q
+        language: system
+        pass_filenames: false
+        always_run: true
+        files: ^07_implementation/(src|tests|main\.py|config/)

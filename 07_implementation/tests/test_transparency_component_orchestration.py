@@ -47,6 +47,7 @@ def test_component_orchestration_builds_expected_track_payload() -> None:
         playlist_position=1,
         score_rank=2,
         final_score=0.91,
+        raw_final_score=0.88,
         score_breakdown=breakdown,
         top_contributors=top,
         primary_driver=primary,
@@ -58,3 +59,4 @@ def test_component_orchestration_builds_expected_track_payload() -> None:
     assert payload["assembly_context"]["admission_rule"] == "Admitted on first evaluation"
     assert payload["primary_explanation_driver"]["component"] == "tempo"
     assert payload["top_score_contributors"][0]["contribution"] == 0.45
+    assert payload["raw_final_score"] == 0.88

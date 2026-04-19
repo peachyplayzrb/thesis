@@ -46,23 +46,29 @@ if ($LASTEXITCODE -ne 0) {
 if ($versionLine -match "Python\s+(\d+)\.(\d+)\.(\d+)") {
     $major = [int]$matches[1]
     $minor = [int]$matches[2]
-    if ($major -lt 3 -or ($major -eq 3 -and $minor -lt 10)) {
-        throw "Python 3.10+ is required. Found: $versionLine"
+    if ($major -lt 3 -or ($major -eq 3 -and $minor -lt 12)) {
+        throw "Python 3.12+ is required. Found: $versionLine"
+    }
+    if (-not ($major -eq 3 -and $minor -eq 14)) {
+        Write-Warning "Validated environment is Python 3.14.x. Found: $versionLine — behaviour may differ."
     }
     Write-Host "PASS: Python version $versionLine" -ForegroundColor Green
-} else {
+}
+else {
     throw "Could not parse Python version output: $versionLine"
 }
 
 if (Test-CommandAvailable -Name "git") {
     Write-Host "PASS: Git available" -ForegroundColor Green
-} else {
+}
+else {
     Write-Warning "Git is not available on PATH."
 }
 
 if (Test-CommandAvailable -Name "rg") {
     Write-Host "PASS: ripgrep available" -ForegroundColor Green
-} else {
+}
+else {
     Write-Warning "ripgrep is not available on PATH. VS Code search fallback is still supported."
 }
 

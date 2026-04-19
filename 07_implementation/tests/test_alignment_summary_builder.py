@@ -122,7 +122,8 @@ def test_context_entrypoint_writes_expected_contract_payload(monkeypatch, tmp_pa
                 "enabled": False,
                 "track_ids": [],
                 "preference_weight": 1.0,
-                "injected_count": 0,
+                "new_injected_count": 0,
+                "relabelled_count": 0,
                 "skipped_track_ids": [],
             },
             expected_sources={

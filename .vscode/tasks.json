@@ -83,7 +83,72 @@
         "-File",
         "${workspaceFolder}/07_implementation/scripts/run_tool_with_venv_fallback.ps1",
         "pyright",
-        "src"
+        "--project",
+        "pyrightconfig.json"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}/07_implementation"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "07: Tests + Coverage src",
+      "type": "shell",
+      "command": "pwsh",
+      "args": [
+        "-NoProfile",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "${workspaceFolder}/07_implementation/scripts/test_coverage.ps1"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}/07_implementation"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "07: Dependency Audit (Advisory)",
+      "type": "shell",
+      "command": "pwsh",
+      "args": [
+        "-NoProfile",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "${workspaceFolder}/07_implementation/scripts/dependency_audit.ps1"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}/07_implementation"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "07: Bandit src (Advisory)",
+      "type": "shell",
+      "command": "pwsh",
+      "args": [
+        "-NoProfile",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "${workspaceFolder}/07_implementation/scripts/bandit_src.ps1"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}/07_implementation"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "07: Docstring Coverage src (Advisory)",
+      "type": "shell",
+      "command": "pwsh",
+      "args": [
+        "-NoProfile",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "${workspaceFolder}/07_implementation/scripts/docstring_coverage_src.ps1"
       ],
       "options": {
         "cwd": "${workspaceFolder}/07_implementation"
@@ -103,6 +168,28 @@
         "python",
         "main.py",
         "--validate-only"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}/07_implementation"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "07: Validate + Determinism Replay x3 (Wrapper)",
+      "type": "shell",
+      "command": "pwsh",
+      "args": [
+        "-NoProfile",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "${workspaceFolder}/07_implementation/scripts/run_tool_with_venv_fallback.ps1",
+        "python",
+        "main.py",
+        "--validate-only",
+        "--verify-determinism",
+        "--verify-determinism-replay-count",
+        "3"
       ],
       "options": {
         "cwd": "${workspaceFolder}/07_implementation"

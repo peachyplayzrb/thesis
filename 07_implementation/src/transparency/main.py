@@ -182,6 +182,7 @@ def main() -> None:
 
         scored_row = scored_index.get(track_id, {})
         trace_row = trace_index.get(track_id, {})
+        raw_final_score = safe_float(scored_row.get("raw_final_score", final_score))
 
         score_breakdown = build_score_breakdown(scored_row, ordered_components, active_weights)
 
@@ -212,6 +213,7 @@ def main() -> None:
                 playlist_position=playlist_pos,
                 score_rank=score_rank,
                 final_score=final_score,
+                raw_final_score=raw_final_score,
                 score_breakdown=score_breakdown,
                 top_contributors=top_contributors,
                 primary_driver=primary_driver,
@@ -240,6 +242,7 @@ def main() -> None:
         scored_row = scored_index.get(track_id, {})
         lead_genre = str(scored_row.get("lead_genre", ""))
         final_score = safe_float(scored_row.get("final_score", 0.0))
+        raw_final_score = safe_float(scored_row.get("raw_final_score", final_score))
         score_rank = safe_int(trace_row.get("score_rank", scored_row.get("rank", 0)))
         score_breakdown = build_score_breakdown(scored_row, ordered_components, active_weights)
         top_contributors = sorted(
@@ -262,6 +265,7 @@ def main() -> None:
                 lead_genre=lead_genre,
                 score_rank=score_rank,
                 final_score=final_score,
+                raw_final_score=raw_final_score,
                 score_breakdown=score_breakdown,
                 top_contributors=top_contributors,
                 primary_driver=primary_driver,

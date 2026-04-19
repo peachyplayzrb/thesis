@@ -16,6 +16,7 @@ SCORED_CANDIDATE_FIELDS = [
     "matched_genres",
     "matched_tags",
     "final_score",
+    "raw_final_score",
     "danceability_similarity",
     "danceability_contribution",
     "energy_similarity",

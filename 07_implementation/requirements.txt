@@ -3,6 +3,12 @@ rapidfuzz==3.14.3
 ruff==0.11.8
 vulture==2.11
 radon==6.0.1
+pyright==1.1.405
+pytest-cov==6.1.1
+hypothesis==6.152.1
+pip-audit==2.9.0
+bandit==1.8.3
+interrogate==1.7.0
 
 # Optional dependency for Spotify export/ingestion utility flows:
 # spotipy==2.23.0

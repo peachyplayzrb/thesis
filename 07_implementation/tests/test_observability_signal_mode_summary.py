@@ -283,7 +283,7 @@ def test_build_cross_stage_influence_attribution_summary_surfaces_undo_q_fields(
         },
         bl006_summary={
             "counts": {"candidate_count": 50, "scored_rows": 50},
-            "score_statistics": {"mean_final_score": 0.73},
+            "score_statistics": {"mean_final_score": 0.73, "mean_raw_final_score": 0.69},
             "influence_contract_source": "present",
         },
         bl007_report={
@@ -312,6 +312,7 @@ def test_build_cross_stage_influence_attribution_summary_surfaces_undo_q_fields(
     assert summary["bl004_profile_influence"]["interaction_attribution_mode"] == "split_selected_types_equal_share"
     assert summary["bl005_retrieval_effects"]["language_filter_disabled_delta_vs_base"] == 4
     assert summary["bl006_scoring_context"]["influence_contract_source"] == "present"
+    assert summary["bl006_scoring_context"]["mean_raw_final_score"] == 0.69
     assert summary["bl007_assembly_effects"]["requested_influence_tracks"] == 2
     assert summary["bl007_assembly_effects"]["included_influence_tracks"] == 1
     assert summary["bl009_explanation_linkage"]["tracks_missing_control_causality"] == 2

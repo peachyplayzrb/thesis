@@ -2,6 +2,10 @@ from __future__ import annotations
 
 import hashlib
 import json
+import locale
+import os
+import platform
+import sys
 from copy import deepcopy
 from datetime import UTC, datetime
 from pathlib import Path
@@ -1241,6 +1245,86 @@ def _build_run_config_schema_reference() -> dict[str, str | None]:
     }
 
 
+def _build_runtime_environment_snapshot() -> dict[str, str | None]:
+    try:
+        locale_encoding = locale.getpreferredencoding(do_setlocale=False)
+    except Exception:
+        locale_encoding = None
+    try:
+        tz_name = datetime.now().astimezone().tzname()
+    except Exception:
+        tz_name = None
+    return {
+        "python_version": sys.version,
+        "python_version_info": f"{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}",
+        "platform": platform.platform(),
+        "platform_system": platform.system(),
+        "platform_machine": platform.machine(),
+        "locale_preferred_encoding": locale_encoding,
+        "timezone_name": tz_name,
+    }
+
+
+def _collect_env_override_provenance(resolved_run_config_path: Path | None) -> dict[str, dict[str, Any]]:
+    provenance: dict[str, dict[str, Any]] = {}
+
+    run_config_env_raw = os.environ.get("BL_RUN_CONFIG_PATH")
+    if run_config_env_raw is not None and run_config_env_raw.strip():
+        normalized = run_config_env_raw.strip()
+        notes: list[str] = []
+        if normalized != run_config_env_raw:
+            notes.append("trimmed_surrounding_whitespace")
+
+        normalized_path = str(Path(normalized).resolve())
+        notes.append("normalized_to_absolute_path")
+
+        applied = False
+        if resolved_run_config_path is not None and normalized_path == str(resolved_run_config_path):
+            applied = True
+            notes.append("matches_resolved_run_config_path")
+
+        provenance["BL_RUN_CONFIG_PATH"] = {
+            "source": "environment",
+            "raw_value_sha256": hashlib.sha256(run_config_env_raw.encode("utf-8")).hexdigest().upper(),
+            "raw_value_length": len(run_config_env_raw),
+            "normalized_value": normalized_path,
+            "applied_to_effective_config": applied,
+            "normalization_notes": notes,
+        }
+
+    stage_payload_raw = os.environ.get("BL_STAGE_CONFIG_JSON")
+    if stage_payload_raw is not None and stage_payload_raw.strip():
+        normalized = stage_payload_raw.strip()
+        notes = []
+        if normalized != stage_payload_raw:
+            notes.append("trimmed_surrounding_whitespace")
+
+        parsed_ok = False
+        parsed_type = "unknown"
+        try:
+            parsed = json.loads(normalized)
+            parsed_ok = True
+            parsed_type = type(parsed).__name__
+            notes.append(f"json_parse_ok_type={parsed_type}")
+        except json.JSONDecodeError:
+            notes.append("json_parse_failed")
+
+        provenance["BL_STAGE_CONFIG_JSON"] = {
+            "source": "environment",
+            "raw_value_sha256": hashlib.sha256(stage_payload_raw.encode("utf-8")).hexdigest().upper(),
+            "raw_value_length": len(stage_payload_raw),
+            "normalized_value": normalized,
+            "applied_to_effective_config": False,
+            "normalization_notes": notes,
+            "parse_status": {
+                "ok": parsed_ok,
+                "parsed_type": parsed_type,
+            },
+        }
+
+    return provenance
+
+
 def canonical_default_run_config() -> dict[str, Any]:
     return deepcopy(DEFAULT_RUN_CONFIG)
 
@@ -1610,6 +1694,46 @@ def _resolve_transparency_controls_section(effective: dict[str, Any]) -> None:
     )
 
 
+def _enforce_strict_validation_profile_handshake_policies(effective: dict[str, Any]) -> None:
+    control_mode = effective.get("control_mode")
+    if not isinstance(control_mode, dict):
+        return
+    if str(control_mode.get("validation_profile", "")).strip().lower() != "strict":
+        return
+
+    profile_controls = effective.setdefault("profile_controls", {})
+    if isinstance(profile_controls, dict):
+        profile_controls["bl003_handshake_validation_policy"] = "strict"
+
+    retrieval_controls = effective.setdefault("retrieval_controls", {})
+    if isinstance(retrieval_controls, dict):
+        retrieval_controls["bl004_bl005_handshake_validation_policy"] = "strict"
+
+    scoring_controls = effective.setdefault("scoring_controls", {})
+    if isinstance(scoring_controls, dict):
+        scoring_controls["bl005_bl006_handshake_validation_policy"] = "strict"
+
+    assembly_controls = effective.setdefault("assembly_controls", {})
+    if isinstance(assembly_controls, dict):
+        assembly_controls["bl006_bl007_handshake_validation_policy"] = "strict"
+
+    transparency_controls = effective.setdefault("transparency_controls", {})
+    if isinstance(transparency_controls, dict):
+        transparency_controls["bl007_bl008_handshake_validation_policy"] = "strict"
+
+    observability_controls = effective.setdefault("observability_controls", {})
+    if isinstance(observability_controls, dict):
+        observability_controls["bl008_bl009_handshake_validation_policy"] = "strict"
+
+    reproducibility_controls = effective.setdefault("reproducibility_controls", {})
+    if isinstance(reproducibility_controls, dict):
+        reproducibility_controls["bl009_bl010_handshake_validation_policy"] = "strict"
+
+    controllability_controls = effective.setdefault("controllability_controls", {})
+    if isinstance(controllability_controls, dict):
+        controllability_controls["bl010_bl011_handshake_validation_policy"] = "strict"
+
+
 def resolve_effective_run_config(run_config_path: str | Path | None) -> tuple[dict[str, Any], Path | None]:
     path = Path(run_config_path).resolve() if run_config_path else None
     payload = load_run_config(path) if path else None
@@ -1635,6 +1759,7 @@ def resolve_effective_run_config(run_config_path: str | Path | None) -> tuple[di
 
     _resolve_observability_controls_section(effective)
     _resolve_transparency_controls_section(effective)
+    _enforce_strict_validation_profile_handshake_policies(effective)
 
     return effective, path
 
@@ -1730,6 +1855,9 @@ def resolve_bl011_controls(run_config_path: str | Path | None) -> dict[str, Any]
     return {
         "config_path": str(resolved_path) if resolved_path else None,
         "schema_version": effective["schema_version"],
+        "bl010_bl011_handshake_validation_policy": str(
+            controls.get("bl010_bl011_handshake_validation_policy", "warn")
+        ),
         "weight_override_value_if_component_present": float(controls["weight_override_value_if_component_present"]),
         "weight_override_increment_fallback": float(controls["weight_override_increment_fallback"]),
         "weight_override_cap_fallback": float(controls["weight_override_cap_fallback"]),
@@ -2093,6 +2221,9 @@ def resolve_bl008_controls(run_config_path: str | Path | None) -> dict[str, Any]
         "top_contributor_limit": int(transparency["top_contributor_limit"]),
         "blend_primary_contributor_on_near_tie": bool(transparency["blend_primary_contributor_on_near_tie"]),
         "primary_contributor_tie_delta": float(transparency["primary_contributor_tie_delta"]),
+        "bl007_bl008_handshake_validation_policy": str(
+            transparency.get("bl007_bl008_handshake_validation_policy", "warn")
+        ),
     }
 
 
@@ -2206,10 +2337,12 @@ def build_run_effective_payload(
         "generated_at_utc": generated_at_utc or _utc_now_iso(),
         "run_id": run_id,
         "run_config_schema": _build_run_config_schema_reference(),
+        "runtime_environment": _build_runtime_environment_snapshot(),
         "resolved_from": {
             "run_config_path": str(resolved_path) if resolved_path else None,
             "run_intent_path": str(Path(run_intent_path).resolve()) if run_intent_path else None,
         },
+        "env_overrides": _collect_env_override_provenance(resolved_path),
         "effective_config": effective,
     }
 

@@ -79,7 +79,8 @@ def inject_influence_tracks(
             "influence_preference_weight": DEFAULT_INFLUENCE_PREFERENCE_WEIGHT,
         }
 
-    influence_injected_count = 0
+    new_injected_count = 0
+    relabelled_count = 0
     influence_skipped_ids: list[str] = []
 
     if infl["influence_enabled"] and infl["influence_track_ids"]:
@@ -107,15 +108,15 @@ def inject_influence_tracks(
                                 ev["interaction_type"] = INTERACTION_TYPE_HISTORY_INFLUENCE
                         else:
                             ev["interaction_type"] = INTERACTION_TYPE_HISTORY_INFLUENCE
+                relabelled_count += 1
             else:
                 matched_events.append(_make_influence_event(
                     candidate,
-                    format_influence_event_id(influence_injected_count + 1),
+                    format_influence_event_id(new_injected_count + 1),
                     infl_weight,
                 ))
                 existing_ds001_ids.add(track_id)
-
-            influence_injected_count += 1
+                new_injected_count += 1
 
     return {
         "enabled": bool(infl.get("influence_enabled", False)),
@@ -123,6 +124,7 @@ def inject_influence_tracks(
         "preference_weight": float(
             infl.get("influence_preference_weight") or DEFAULT_INFLUENCE_PREFERENCE_WEIGHT
         ),
-        "injected_count": influence_injected_count,
+        "new_injected_count": new_injected_count,
+        "relabelled_count": relabelled_count,
         "skipped_track_ids": influence_skipped_ids,
     }
