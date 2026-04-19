@@ -1,75 +1,71 @@
 # Transparency Specifications
 
-## Purpose
-Define what information each stage must produce to explain decisions to users.
-Thesis requirement: Every decision must be transparent and traceable to explicit system rules.
+DOCUMENT STATUS: implementation-synchronized specification
+LAST SYNCHRONIZED: 2026-04-19 UTC
+ROLE: stage-level transparency contract summary for active implementation
 
-## Current Transparency by Stage
+## 1) Purpose
+Define transparency-relevant outputs required at each stage for auditability and chapter-facing evidence continuity.
 
-### BL-004: Profile Building
-**Current Outputs**
-- bl004_preference_profile.json: numeric centers, top tags/genres, lead genres
-- bl004_seed_trace.csv: per-seed weights and characteristics
-- profile_summary.json: dominant features
+## 2) Stage-Level Transparency Contracts
 
-**Current Explanation**
-- Shows WHAT the profile is (danceability=0.65, top genres=[pop, rock])
-- Shows HOW seeds were aggregated (weighted means)
+### BL-004 Profile
+Required outputs:
+1. Profile summary and uncertainty-related diagnostics.
+2. Seed trace carrying confidence-bearing context.
 
-**Gap**: Does NOT explain user control application
-- *Needed*: Show which seeds came from influence_tracks
-- *Needed*: Explain weight applied to influence seeds vs. history
+### BL-005 Retrieval
+Required outputs:
+1. Candidate decision rows (keep/reject reasoning surface).
+2. `candidate_shaping_fidelity` diagnostics.
 
-### BL-005: Retrieval Filtering
-**Current Outputs**
-- bl005_filtered_candidates.csv: which candidates passed
-- decision_fields: lead_genre_match, tag_overlap_count, numeric_pass_count
+### BL-006 Scoring
+Required outputs:
+1. Component-level score diagnostics.
+2. Structured scored candidate fields consumed downstream.
 
-**Current Explanation**
-- Shows which rule admitted/rejected each candidate
+### BL-007 Assembly
+Required outputs:
+1. Assembly trace rows and report diagnostics.
+2. `tradeoff_metrics_summary` in assembly report.
 
-**Gap**: Does NOT explain user control application
-- *Needed*: Show how numeric_threshold values affected filtering
-- *Needed*: Show why language_filter included/excluded candidates
+### BL-008 Transparency
+Required per-track fields:
+1. `why_selected`
+2. `top_score_contributors`
+3. `score_breakdown`
+4. `assembly_context`
+5. `causal_driver`
+6. `narrative_driver`
 
-### BL-007: Playlist Assembly
-**Current Outputs**
-- playlist.json: ordered final tracks
-- bl007_assembly_trace.csv: which rule admitted/rejected each candidate
+### BL-009 Observability
+Required run-level fields:
+1. `control_registry_snapshot`
+2. `playlist_tradeoff_summary`
+3. `cross_stage_influence_attribution_summary`
+4. `validity_boundaries.reproducibility_interpretation`
 
-**Current Explanation**
-- Shows which R1-R4 rule admitted each track
-- Shows genre distribution, consecutive runs
+### BL-010 Reproducibility
+Required bounded-claim field:
+1. `interpretation_boundaries`
 
-**Gap**: Does NOT explain user control application
-- *Clarification*: BL-007 emits effective config snapshots and rule-hit diagnostics, but does not emit per-track control-causality statements
-- *Needed*: Show influence_tracks impact path (currently weak and indirect)
-- *Needed*: Show what would happen with different rule parameters
+### BL-013 Orchestration
+Required execution-trace field:
+1. `stage_execution`
 
-### BL-008: Explanation Payloads (Transparency Output)
-**Current Outputs**
-- bl008_explanation_payloads.json: per-track explanation
+### BL-014 Sanity
+Required integrity checks:
+1. BL-008 to BL-009 handshake checks.
+2. Explanation-fidelity advisories/gates.
+3. Policy-backed transparency/control-causality gate surfaces.
 
-**Current Explanation**
-- top_score_contributors: which components (danceability, genre, etc.) drove selection
-- score_breakdown: full contribution from each component
-- why_selected: concise human summary
+## 3) Policy Convention
+Where implemented, contract severity is policy-normalized:
+1. `allow`
+2. `warn`
+3. `strict`
 
-**Gap**: Does NOT trace back user controls
-- *Needed*: "This track was selected because [your genre preference] drove the score up"
-- *Needed*: "This track would NOT have been selected if you'd used looser numeric thresholds"
-
-## Known Limitations (Current Implementation)
-
-- Control-causality is not emitted as a unified `user_controls_applied` block.
-- Counterfactual reasoning is not emitted in BL-008 or BL-009 outputs.
-- Influence-track impact is visible only indirectly through aggregation behavior and downstream result deltas.
-
-## Future Work (Optional, Out of Current Scope)
-- Add stage-level control-causality blocks linking accepted/rejected outcomes to concrete control values.
-- Add what-if/counterfactual summaries for major control families (thresholds, language filter, assembly limits).
-- Add stronger influence-track traceability once control-effect behavior changes from weak indirect influence.
-
-## Next Steps
-- Keep limitations explicit in thesis claims and evaluation framing.
-- Avoid describing future-work transparency features as implemented behavior.
+## 4) Known Transparency Issues
+1. Counterfactual rerun explanation outputs are not fully active.
+2. Rejected-path causal completeness is partial.
+3. Explanation fidelity does not imply universal user trust outcomes.

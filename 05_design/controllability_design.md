@@ -1,115 +1,43 @@
-﻿# Controllability Design
+# Controllability Design
 
 DOCUMENT STATUS: implementation-synchronized controllability design
-LAST SYNCHRONIZED: 2026-03-29 UTC
-ROLE: base control architecture design aligned to BL-003 to BL-009
+LAST SYNCHRONIZED: 2026-04-19 UTC
+ROLE: controllability architecture aligned to BL-004 through BL-011, BL-013, and BL-014
 
-## Purpose
-Define how users can intentionally influence playlist outcomes through explicit, bounded, and testable controls.
+## 1) Purpose
+Define how intentional control changes are represented, executed, measured, and validated.
 
-## Design Goal
-Operationalize controllability as measurable cause-effect behavior: changing a control should produce interpretable downstream changes in candidate selection, scoring, or playlist assembly.
+## 2) Design Goal
+Changing a declared control should produce interpretable downstream evidence on the expected stage surfaces, with bounded deterministic claims.
 
-## Scope Position
+## 3) Architecture Components
+1. Control declaration and metadata:
+	`run_config/control_registry.py` (`control-registry-v1`).
+2. Stage execution and traceability:
+	BL-013 orchestration summary (`stage_execution`).
+3. Scenario-based controllability evidence:
+	BL-011 scenario matrix/report and `interaction_coverage_summary`.
+4. Contract validation and evidence integrity:
+	BL-014 gate/advisory checks and handshakes.
 
-- MVP control model is limited and explicit, not open-ended personalization.
-- Controls are deterministic under fixed input and configuration.
-- Emphasis is on evaluable influence, not maximizing number of controls.
+## 4) Implemented Scenario Model
+BL-011 executes baseline + bounded scenarios across profile/retrieval/scoring/playlist layers and emits:
+1. Scenario rows (per run/scenario).
+2. Matrix summary rows.
+3. Interaction coverage summary (single-factor vs interaction coverage).
 
-## Control Surfaces (Implemented Architecture)
+## 5) Primary Control Families with Strong Evidence
+1. Retrieval thresholds and candidate keep criteria (BL-005).
+2. Scoring component weights and scoring behavior controls (BL-006).
+3. Assembly size/threshold/utility controls (BL-007).
 
-1. BL-003 scope and matching controls:
-- Source scope selection and matching behavior controls shape seed construction.
+## 6) Evidence Linkage
+1. BL-005/BL-007 diagnostics propagate into BL-009 run summaries.
+2. BL-010 replay context constrains interpretation of controllability claims.
+3. BL-014 checks enforce that stage boundaries and required fields remain valid.
 
-2. BL-004 profile controls:
-- Attribution and weighting controls govern profile aggregation behavior.
-
-3. BL-005 retrieval controls:
-- Semantic and numeric thresholds shape candidate pool composition.
-
-4. BL-006 scoring controls:
-- Component-weight and semantic/numeric strategy controls shape ranking behavior.
-
-5. BL-007 assembly controls:
-- Playlist size/threshold/diversity limits and assembly strategy options shape final playlist structure.
-
-6. BL-008 and BL-009 presentation/diagnostic controls:
-- Explanation and diagnostic depth controls shape transparency/observability granularity.
-
-## Control Surface Status Summary
-1. Working controls:
-- Retrieval/scoring thresholds and weights are tunable and measurably affect outputs.
-- Input scope and profile control surfaces are active and persisted through run-config-driven flow.
-
-2. Partial controls:
-- BL-007 assembly controls are partially configurable.
-- Thresholds/limits and strategy knobs are tunable; rule order and some helper heuristics remain fixed.
-
-3. Known weak control:
-- Influence-track effect is currently weak and indirect in measured downstream behavior.
-
-## Control Design Principles
-
-1. Controls must be semantically clear and documented.
-2. Controls must be bounded to prevent unstable behavior.
-3. Control location in pipeline must be explicit (pre-score, score, post-score).
-4. Control values must be persisted in run configuration.
-5. Each control should map to at least one measurable output effect.
-
-## Runtime Governance
-
-### Baseline Profile
-- Define one default configuration for reproducible baseline runs.
-
-### Variation Strategy
-- Use one-factor-at-a-time sensitivity checks for Chapter 4.
-- Keep non-target parameters fixed during each test.
-
-### Valid Ranges
-- Document allowed range and interpretation for each parameter.
-- Reject or clamp invalid values at execution time.
-
-### Resolution Order
-Controls should be interpreted using deterministic precedence:
-1. CLI controls where orchestration supports explicit overrides.
-2. Run-config controls.
-3. Environment overrides.
-4. Stage defaults.
-5. Stage-specific sanitization/bounds enforcement.
-
-## Control-to-Effect Mapping (Conceptual)
-
-1. `profile_source_scope` -> ingestion/profile input composition change -> runtime and profile-signal differences.
-2. `influence_tracks` -> preference profile shift -> candidate ranking differences.
-3. `feature_weights` -> similarity composition shift -> score/rank differences.
-4. `candidate_thresholds` -> candidate pool size/composition changes.
-5. `assembly_rules` -> playlist structure and sequence differences.
-
-## Current Known Gaps
-1. Influence-track control does not consistently produce strong downstream playlist shifts.
-2. BL-007 policy ordering is fixed despite expanded tunable control surface.
-3. Unified per-track control-causality reporting is not implemented across stage outputs.
-
-## Evaluation Alignment
-
-Controllability evidence in Chapter 4 should verify:
-
-1. Parameter sensitivity: targeted control changes yield non-trivial output changes.
-2. Effect interpretability: observed changes align with expected mechanism path.
-3. Stability: repeated runs with same config return same outputs.
-4. Boundedness: controls do not cause invalid or untraceable states.
-
-## Risks and Mitigations
-
-1. Risk: Too many controls reduce usability.
-	- Mitigation: prioritize small high-impact control set in MVP.
-2. Risk: Controls exist but effects are weak or opaque.
-	- Mitigation: require control-to-effect trace checks per run.
-3. Risk: Parameter interactions mask causal interpretation.
-	- Mitigation: use controlled variation protocol and log full config.
-4. Risk: Overstating control completeness.
-	- Mitigation: explicitly separate implemented, partial, and weak control surfaces.
-
-## Boundary Note
-
-This design demonstrates controllability as an engineering property within single-user deterministic scope. It does not claim universally optimal control UX for all user types.
+## 7) Known Issues and Limits
+1. Some controls are strongly context-dependent and can show weak effect in saturated candidate pools.
+2. BL-007 rule order is fixed, limiting controllability to parameter-level adjustments.
+3. Influence-related controls are present but can be weaker than threshold/weight controls.
+4. Claims remain bounded to deterministic single-user execution conditions.

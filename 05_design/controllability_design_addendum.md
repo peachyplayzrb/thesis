@@ -1,83 +1,33 @@
 # Controllability Design Addendum
 
-## Purpose
-Extend `05_design/controllability_design.md` with current implementation findings and measured effectiveness.
+DOCUMENT STATUS: implementation-synchronized addendum
+LAST SYNCHRONIZED: 2026-04-19 UTC
+ROLE: current findings and practical constraints supplementing `controllability_design.md`
 
-## Current Control Surfaces (Status Update)
+## 1) Purpose
+Capture current controllability behavior and document observed practical limits for interpretation.
 
-### Working Controls
-**Feature Weights** ✅
-- User sets: `scoring_controls.component_weights`
-- Current components: 10 active (7 numeric + 3 semantic)
-- Effect: Measured in BL-006 score distribution
-- Measurability: High—different weights produce different scores
-- Status: Well-designed, functioning as intended
+## 2) Confirmed Implemented Strengths
+1. BL-011 bounded scenario execution is active and emits interaction-coverage evidence.
+2. BL-013 `stage_execution` gives explicit requested vs executed stage traceability.
+3. BL-014 policy-backed checks make control-contract quality visible (advisory/gate surfaces).
 
-**Numeric Thresholds** ✅
-- User sets: `retrieval_controls.numeric_thresholds`
-- Effect: Measurable candidate pool size changes
-- Evidence: BL-005 filters 109k → 46k based on thresholds
-- Status: Working as per design
+## 3) Confirmed Evidence Linkage
+1. BL-005 candidate-shaping diagnostics feed into BL-009 run-level summaries.
+2. BL-007 tradeoff metrics feed into BL-009 `playlist_tradeoff_summary`.
+3. BL-009 carries `control_registry_snapshot` for run-level control authority traceability.
 
-**Input Scope** ✅
-- User sets: Which Spotify sources to include (top tracks, saved, playlists, recently played)
-- Effect: Observable in BL-003 alignment source stats
-- Status: Working
+## 4) Practical Issue Analysis
+1. Influence controls:
+	Observable but commonly weaker than threshold/weight controls in many runs.
+2. Context sensitivity:
+	Control effect magnitude can vary by candidate pool shape and stage preconditions.
+3. Fixed policy order in BL-007:
+	Parameter controls are available, but policy ordering is not dynamic.
+4. Partial causal coverage:
+	Cross-stage rejected-path causality is present but not exhaustive.
 
-### Weak Controls (Known Limitation)
-**Influence Tracks** ❌ WEAK
-- **Current Design**: Pre-profile injection (BL-003 alignment)
-- **Measurement**: BL-011 controllability test shows ZERO playlist effect
-  - Test: Enabled vs. disabled influence tracks
-  - Result: `top10_overlap_ratio=1.0`, `mean_abs_rank_delta=0.0`
-- **Problem**: Indirect effect through profile aggregation is too probabilistic
-- **User Expectation Gap**: "I selected these 5 tracks" → user expects them in playlist or measurable impact
-- **Current Reality**: Seeds merge into profile, profile shift too small to affect filtering/scoring
-- **Design Gap**: No guarantee of inclusion, no measurable effect in current setup
-- **Scope Position**: documented limitation in current implementation scope
-
-**Assembly Rules** ⚠️ PARTIAL
-- **Current Design**: BL-007 applies a fixed R1-R4 rule order with tunable thresholds/limits
-  - R1: Score threshold
-  - R2: Genre cap per playlist
-  - R3: Consecutive-same-genre limit
-  - R4: Target length cap
-- **Configurable Surface**: `target_size`, `min_score_threshold`, `max_per_genre`, `max_consecutive`, utility strategy/weights, adaptive limits, and controlled relaxation
-- **Residual Gap**: Rule order and some helper heuristics remain fixed in code
-
-## Design Principles (from Thesis)
-1. Controls must be semantically clear and documented ✅
-2. Controls must be bounded to prevent unstable behavior ✅
-3. **Control location in pipeline must be explicit** — Gap: influence tracks location is implicit/indirect
-4. Control values must be persisted in run configuration ✅
-5. **Each control should map to at least one measurable output effect** — Gap: influence_tracks has zero measured effect
-
-## Measured Control Effectiveness
-
-| Control | Measurable Effect | Effect Size | Interpretability | Stability |
-|---------|-------------------|-------------|------------------|-----------|
-| feature_weights | Scoring composition | High | Excellent | Good |
-| numeric_thresholds | Candidate pool size | High | Excellent | Good |
-| input_scope | Profile composition | Medium | Good | Good |
-| influence_tracks | (Zero) | None measured | N/A | N/A |
-| assembly_rules | Playlist structure and inclusion/exclusion | Medium | Good | Good |
-
-## Open Design Questions
-
-1. **Influence slots policy**: Should influence tracks override genre caps and diversity rules?
-   - Current: No (they're just seeds that may or may not make it through)
-   - Proposed: Yes (user explicit intent overrides system rules)
-
-2. **Assembly-rule policy depth**: Should future work expose rule order/priority and helper heuristics, or keep those fixed?
-   - Current: thresholds and limits are tunable; policy order remains fixed
-   - Future direction: expose only if reproducibility and interpretability trade-offs are acceptable
-
-3. **Control-effect validation**: Should pipeline FAIL if control has observed zero effect?
-   - Proposed: YES (strong signal that something is broken)
-   - Alternative: Warn only, allow manual investigation
-
-## Next Steps
-- [ ] Keep influence-tracks weakness explicit in limitations and evaluation framing
-- [ ] Preserve consistent language for BL-007 partial tunability across design/governance docs
-- [ ] Create stronger control-effect validation reporting where feasible
-- [ ] Document findings in CONTROL_SURFACE_REGISTRY.md
+## 5) Guidance for Chapter Claims
+1. Use BL-011 + BL-013 + BL-014 together for defensible controllability claims.
+2. Explicitly label weak-effect results as context-limited rather than control failure.
+3. Keep interpretation bounded to deterministic single-user conditions.

@@ -1,65 +1,40 @@
 # Control Surface Registry
 
-## Purpose
-Audit all user-facing controls, their measurability, and implementation quality.
-Thesis requirement: Each control must have measurable downstream effect.
+DOCUMENT STATUS: implementation-synchronized control registry companion
+LAST SYNCHRONIZED: 2026-04-19 UTC
+ROLE: thesis-facing control family map aligned to `src/run_config/control_registry.py`
 
-## Current Control Surfaces
+## 1) Purpose
+Summarize active user-facing controls, stage ownership, expected effect surfaces, and known implementation limits.
 
-| Control | Location | Type | Effect | Status | Priority |
-|---------|----------|------|--------|--------|----------|
-| influence_tracks | BL-003 | Pre-profile | Profile shift (indirect) | ❌ WEAK | HIGH |
-| feature_weights (scoring) | BL-006 config | Score input | Component emphasis in scoring | ✓ WORKS | MEDIUM |
-| numeric_thresholds | BL-005/006 config | Filter/score | Candidate pool size change | ✓ WORKS | MEDIUM |
-| assembly_rules (partially configurable) | BL-007 | Playlist structure | Genre cap, length, diversity, utility selection | ⚠️ PARTIAL | MEDIUM |
-| input_scope (sources) | BL-003 config | Profile input | Which Spotify sources included | ✓ WORKS | LOW |
+## 2) Canonical Authority
+Machine-readable authority is `07_implementation/src/run_config/control_registry.py` (`control-registry-v1`, 24 controls).
 
-## Impact Assessment
+## 3) Control Families and Evidence Surfaces
 
-### WEAK Controls (Known Limitation)
-**Influence Tracks**
-- Current: Added to seed table, merged into profile aggregation
-- Problem: BL-011 testing shows ZERO playlist impact despite being enabled
-- Reason: Profile shift too small to affect downstream filtering/scoring
-- User expectation mismatch: "I selected these tracks" vs. "maybe they'll affect something"
-- Scope position: documented limitation in current implementation scope
+| Family | Primary Stage(s) | Config Surface | Primary Effect Surface | Validation Surface |
+| --- | --- | --- | --- | --- |
+| Profile controls | BL-004 | `profile_controls.*` | BL-004 profile diagnostics and summary | BL-014 handshake/continuity checks |
+| Retrieval controls | BL-005 | `retrieval_controls.*` | Candidate keep/reject distribution and `candidate_shaping_fidelity` | BL-014 advisories/gates |
+| Scoring controls | BL-006 | `scoring_controls.*` | Component contribution shifts, rank shifts | BL-008 explanation payload consistency + BL-014 checks |
+| Assembly controls | BL-007 | `assembly_controls.*` | Playlist composition and `tradeoff_metrics_summary` | BL-014 handshakes and BL-009 summaries |
+| Transparency controls | BL-008 | `transparency_controls.*` | Explanation payload shape/content | BL-014 explanation-fidelity checks |
+| Observability controls | BL-009 | `observability_controls.*` | Run log section inclusion and diagnostics surfaces | BL-014 schema/contract checks |
+| Reproducibility controls | BL-010 | `reproducibility_controls.*` | `deterministic_match` and replay verdict data | BL-014 and replay consistency surfaces |
+| Controllability controls | BL-011 | `controllability_controls.*` | Scenario matrix differences and `interaction_coverage_summary` | BL-014 control-effect checks |
+| Orchestration controls | BL-013 | `orchestration_controls.*`, CLI | Requested vs executed stage sequence (`stage_execution`) | BL-014 end-of-run checks |
+| Sanity policies | BL-014 | env/run policy inputs | Gate/advisory severity behavior | BL-014 self-report (`gate_results`) |
 
-### PARTIAL Controls (Implemented with Fixed Residuals)
-**Assembly Rules**
-- Current: Rule thresholds/limits are configurable via BL-007 runtime controls (`target_size`, `min_score_threshold`, `max_per_genre`, `max_consecutive`)
-- Also configurable: utility strategy/weights, adaptive limits, controlled relaxation, and diagnostics toggles
-- Fixed residuals: rule order (R1 to R4) and some helper heuristics in rules/reporting remain hardcoded
-- Scope position: current implementation is tunable but not fully policy-configurable
+## 4) Policy Convention
+Where implemented, policy normalization follows:
+1. `allow`: compatibility-tolerant, no hard failure.
+2. `warn`: advisory/gate warning, run can remain pass.
+3. `strict`: fail when required contract evidence is missing.
 
-### WORKING Controls (Well-Designed)
-**Feature Weights**
-- User sets: component_weights in scoring_controls
-- Effect: Changes score composition (e.g., prefer danceability over energy)
-- Measurable: Final scores differ, candidate ranks shift
-- Status: Good
+## 5) Known Issues and Limits
+1. BL-007 policy order is fixed in code; not user-reorderable.
+2. Influence-related controls can produce weaker effects than threshold/weight controls depending on candidate pool context.
+3. Full counterfactual rerun explanation traces are not currently an active control family.
 
-**Numeric Thresholds**
-- User sets: distance tolerances in retrieval/scoring
-- Effect: Candidate pool size contracts/expands
-- Measurable: BL-005 reports filtered candidate count
-- Status: Good
-
-## Future Work (Out of Current Scope)
-
-| Control | Type | Purpose |
-|---------|------|---------|
-| playlist_influence_slots | BL-007 | How many slots reserved for influence tracks (0-10) |
-| genre_diversity_strictness | BL-007 | How aggressively to enforce genre balance |
-| consecutive_run_limit | BL-007 | Max consecutive same-genre tracks |
-| score_threshold_override | BL-007 | Per-genre score floor overrides |
-
-## Validation Requirements
-- BL-010/BL-011 must verify each control actually produces observable output changes
-- Fail pipeline if control has zero measurable effect
-- Document effect size and direction
-
-## Next Steps
-- [ ] Keep influence_tracks limitation explicit in evaluation and chapter claims
-- [ ] Preserve BL-007 partial-tunability wording consistently across governance/design docs
-- [ ] Add control-effect validation to orchestration (MEDIUM priority)
-- [ ] Revisit Future Work controls only if scope expands beyond current thesis implementation
+## 6) Practical Use
+Use this registry with BL-011 and BL-013/BL-014 outputs when claiming control-effect evidence in Chapter 4/5.

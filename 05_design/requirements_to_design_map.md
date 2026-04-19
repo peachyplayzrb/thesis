@@ -1,56 +1,50 @@
 # Requirements To Design Map
 
-DOCUMENT STATUS: REB-M2 objective-anchored design traceability map
-LAST SYNCHRONIZED: 2026-04-12 UTC
-CONFIDENCE: medium-high for objective-to-design mapping, medium for implementation readiness boundaries
-ROLE: requirement-to-design and design-to-evidence bridge
+DOCUMENT STATUS: implementation-synchronized requirement/design/evidence map
+LAST SYNCHRONIZED: 2026-04-19 UTC
+CONFIDENCE: high for objective-to-stage ownership and active evidence surfaces
+ROLE: requirement-to-design and design-to-implementation bridge
 
-## 1) Objective to Design Requirement Traceability
+## 1) Objective-to-Design Traceability
 
-| Objective | Design Requirement | Design Mechanism Class | Required Evidence Contract | Status |
+| Objective | Design Requirement | Mechanism Class | Required Evidence Contract | Current Status |
 | --- | --- | --- | --- | --- |
-| O1 Uncertainty-aware profiling | Profile assumptions and source reliability must be inspectable | Profile confidence metadata, source coverage, interaction attribution | Profile uncertainty/coverage outputs and diagnostics are emitted | Design locked |
-| O2 Confidence-aware alignment and candidate generation | Alignment confidence and exclusion logic must be explicit | Confidence-aware matching and retrieval exclusion tracing | Alignment/retrieval artifacts include confidence and exclusion reason fields | Design locked |
-| O3 Controllable trade-offs in scoring and assembly | Coherence/diversity/novelty/ordering trade-offs must be tunable and bounded | Deterministic control surfaces in scoring and playlist assembly | Parameter-change experiments show directional output shifts | Design locked |
-| O4 Mechanism-linked explanations and observability | Explanations must correspond to actual mechanism behavior | Contribution-grounded explanation payloads plus run observability logs | Explanation fields and observability logs map back to mechanism-level inputs | Design locked |
-| O5 Reproducibility and controllability evaluation | Runs must be replayable and control-actuation effects measurable | Explicit config/payload contracts and run provenance | Reproducibility and controllability checks runnable from declared artifacts | Design locked |
-| O6 Bounded design guidance | Claims must state validity limits and uncertainty boundaries | Scope/assumption/limitation-aware reporting contract | Results include bounded claims and explicit failure/limit reporting | Design locked |
+| O1 Uncertainty-aware profiling | Profile assumptions and source reliability must be inspectable | BL-003 confidence + BL-004 profile diagnostics | Confidence/coverage outputs and traces propagated | Implemented |
+| O2 Confidence-aware alignment and candidate generation | Alignment confidence and exclusion logic must be explicit | BL-003 matching + BL-005 candidate decisions | Keep/reject/exclusion evidence visible | Implemented |
+| O3 Controllable scoring/assembly trade-offs | Coherence/diversity/novelty/ordering must be tunable and bounded | BL-006/BL-007 controls + BL-011 scenarios | Directional effect evidence under bounded control changes | Implemented |
+| O4 Mechanism-linked explanations and observability | Explanations must map to real mechanism behavior | BL-008 payload generation + BL-009 aggregation + BL-014 checks | Explanation fields trace to scoring/assembly + contracts | Implemented |
+| O5 Reproducibility and controllability evaluation | Runs must be replayable and control effects measurable | BL-010 replay + BL-011 scenarios + BL-013 execution traceability | Replay/scenario artifacts with validated contracts | Implemented |
+| O6 Bounded design guidance | Claims must include explicit validity/non-claim boundaries | BL-010/BL-009 bounded interpretation surfaces | Interpretation boundaries emitted and auditable | Implemented |
 
-## 2) Requirement to Stage Responsibility Map
+## 2) Requirement-to-Stage Ownership
 
-| Stage Surface | Primary Design Responsibility | Linked Objectives |
+| Stage | Primary Responsibility | Linked Objectives |
 | --- | --- | --- |
-| BL-003 Alignment | Cross-source matching confidence and exclusion traceability | O2, O5 |
-| BL-004 Profile | Uncertainty-aware profile construction and inspectable assumptions | O1, O4 |
-| BL-005 Retrieval | Confidence-aware candidate shaping and rejection diagnostics | O2, O3 |
-| BL-006 Scoring | Deterministic trade-off weighting and contribution traceability | O3, O4 |
-| BL-007 Playlist | Deterministic assembly controls for quality trade-offs | O3, O5 |
-| BL-008 Transparency | Mechanism-linked explanation payload emission | O4, O6 |
-| BL-009 Observability | Run-level provenance, diagnostics, and contract traceability | O4, O5, O6 |
+| BL-003 Alignment | Cross-source confidence and uncertainty traceability | O1, O2, O5 |
+| BL-004 Profile | Uncertainty-aware profile construction and attribution | O1, O4 |
+| BL-005 Retrieval | Candidate shaping and exclusion diagnostics | O2, O3 |
+| BL-006 Scoring | Deterministic component-level scoring | O3, O4 |
+| BL-007 Playlist | Deterministic assembly trade-off behavior | O3, O5 |
+| BL-008 Transparency | Mechanism-linked per-track explanations | O4, O6 |
+| BL-009 Observability | Run-level provenance and cross-stage summaries | O4, O5, O6 |
+| BL-010 Reproducibility | Replay validation and bounded interpretation contracts | O5, O6 |
+| BL-011 Controllability | Scenario-based control-effect evidence | O3, O5 |
+| BL-013 Orchestration | Execution control and stage-flow metadata | O5 |
+| BL-014 Sanity | End-of-run contract integrity validation | O4, O5, O6 |
 
-## 3) Design-to-Evaluation Contract Map
+## 3) Evidence Contract Matrix
+1. Uncertainty visibility:
+	BL-003/BL-004/BL-005 diagnostics.
+2. Transparency fidelity:
+	BL-008 mechanism fields + BL-014 handshake/fidelity checks.
+3. Controllability:
+	BL-011 scenario surfaces + BL-009 control summaries.
+4. Reproducibility:
+	BL-010 replay verdicts + BL-013 `stage_execution` traceability.
+5. Bounded interpretation:
+	BL-010 `interpretation_boundaries` and BL-009 validity-boundary sections.
 
-| Evaluation Theme | Required Design Instrumentation | Pass Condition Type |
-| --- | --- | --- |
-| Reproducibility | Deterministic control resolution, run config capture, artifact lineage | Same input/config yields stable outputs within declared contract |
-| Controllability | Explicit control knobs with directional-effect diagnostics | Planned parameter deltas produce observable and attributable output shifts |
-| Transparency fidelity | Contribution-level and rule-level mechanism traces | Explanation claims can be traced to generated mechanism fields |
-| Uncertainty visibility | Confidence and exclusion diagnostics at alignment/profile/retrieval surfaces | Uncertainty is represented explicitly, not inferred post hoc |
-| Bounded guidance quality | Scope and failure-boundary reporting contract | Claims include where results hold and where evidence is limited |
-
-## 4) Active Assumptions (Rebuild)
-1. Deterministic single-user scope remains the valid boundary for this thesis artefact.
-2. Cross-source uncertainty handling is addressed through explicit confidence and exclusion signaling rather than probabilistic model-family expansion.
-3. Evidence quality depends on explicit control/evidence contracts, not only on output quality metrics.
-
-## 5) Known Open Risks for REB-M3 Transition
-1. Control-causality can drift if control intent/effect/diagnostic linkage is not kept one-to-one.
-2. Explanation fidelity can drift if explanation fields are decoupled from scoring/assembly mechanisms.
-3. Artefact scope can drift if implementation introduces undeclared defaults or out-of-scope adaptation logic.
-
-## 6) Governance Linkage
-1. Design authority: `05_design/chapter3_information_sheet.md`.
-2. Rebuild posture authority: `00_admin/thesis_state.md` and `00_admin/timeline.md`.
-3. Decision and change anchors for this lock: `00_admin/decision_log.md` and `00_admin/change_log.md`.
-
-Update this map whenever objective wording, stage ownership, or evaluation evidence contracts change.
+## 4) Known Residual Risks
+1. Partial causal coverage for some rejected-path narratives.
+2. Fixed BL-007 rule order limits one controllability dimension.
+3. Full counterfactual rerun explanation family remains out of active scope.
