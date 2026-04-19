@@ -5,8 +5,8 @@ from shared_utils.artifact_registry import (
     bl013_bl003_script_relpath,
     bl013_bl003_summary_relpath,
     bl013_default_stage_order,
-    bl013_stage_script_map,
     bl013_stable_artifact_relpaths,
+    bl013_stage_script_map,
 )
 
 STAGE_SCRIPT_MAP: dict[str, str] = bl013_stage_script_map()

@@ -1,7 +1,5 @@
 #!/usr/bin/env python3
 
-"""Active-suite wrapper that runs BL-014 checks in active mode."""
-
 from __future__ import annotations
 
 import sys

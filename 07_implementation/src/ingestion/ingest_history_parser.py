@@ -1,19 +1,17 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
 import argparse
 import csv
 import hashlib
 import json
 import re
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
-
 
 from shared_utils.io_utils import open_text_write, sha256_of_file
 from shared_utils.parsing import normalize_text
 from shared_utils.path_utils import impl_root
-
 
 REQUIRED_LOGICAL_FIELDS = ["track_name", "artist_name", "played_at", "ms_played"]
 RAW_COLUMN_ALIASES = {
@@ -128,9 +126,9 @@ def parse_timestamp_to_utc(value: str | None) -> tuple[str, bool]:
         return "", False
 
     if parsed.tzinfo is None:
-        parsed = parsed.replace(tzinfo=timezone.utc)
+        parsed = parsed.replace(tzinfo=UTC)
     else:
-        parsed = parsed.astimezone(timezone.utc)
+        parsed = parsed.astimezone(UTC)
 
     return parsed.strftime("%Y-%m-%dT%H:%M:%SZ"), True
 

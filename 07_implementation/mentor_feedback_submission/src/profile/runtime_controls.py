@@ -1,8 +1,8 @@
-"""Resolve the BL-004 profile controls from payload, run config, or environment defaults."""
+"""Runtime control resolution for BL-004 profile construction."""
 
 from __future__ import annotations
 
-from typing import Mapping
+from collections.abc import Mapping
 
 from shared_utils.constants import (
     DEFAULT_INCLUDE_INTERACTION_TYPES,
@@ -36,8 +36,6 @@ def _normalize_include_interaction_types(raw_value: object) -> list[str]:
 
     for item in values:
         token = str(item).strip().lower()
-        # I keep this allow-list tight so unexpected config values do not silently
-        # change how profile weighting behaves.
         if token in allowed and token not in seen:
             seen.add(token)
             normalized.append(token)

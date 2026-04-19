@@ -1,8 +1,8 @@
 """
-Handles the influence-tracks feature for BL-003.
+BL-003 influence-track injection.
 
-These are user-selected tracks that should still shape the seed table even if
-they never appeared in the imported Spotify history.
+Reads influence controls from the run config and injects user-curated tracks
+into the matched-events list, returning a complete influence contract dict.
 """
 
 from __future__ import annotations
@@ -64,9 +64,9 @@ def inject_influence_tracks(
     behavior_controls: AlignmentBehaviorControls | None = None,
 ) -> dict[str, Any]:
     """
-    Inject influence tracks into `matched_events` in place.
+    Inject influence tracks from the run config into matched_events (mutates in place).
 
-    It also returns the summary block describing what was requested, added, or skipped.
+    Returns the influence contract dict to embed in the BL-003 summary.
     """
     if context is not None:
         infl = dict(context.behavior_controls.influence_controls)

@@ -8,13 +8,13 @@ from __future__ import annotations
 
 import json
 import os
-from typing import Any, Callable, Dict, List
-
+from collections.abc import Callable
+from typing import Any
 
 PAYLOAD_SCHEMA_VERSION = "1.0"
 
 
-def _parse_stage_payload(raw_payload: str) -> Dict[str, Any] | None:
+def _parse_stage_payload(raw_payload: str) -> dict[str, Any] | None:
     try:
         payload = json.loads(raw_payload)
     except json.JSONDecodeError:
@@ -24,7 +24,7 @@ def _parse_stage_payload(raw_payload: str) -> Dict[str, Any] | None:
     return payload
 
 
-def get_stage_payload() -> Dict[str, Any] | None:
+def get_stage_payload() -> dict[str, Any] | None:
     """Load and parse BL_STAGE_CONFIG_JSON payload envelope from environment."""
     payload_raw = os.environ.get("BL_STAGE_CONFIG_JSON", "").strip()
     if not payload_raw:
@@ -32,7 +32,7 @@ def get_stage_payload() -> Dict[str, Any] | None:
     return _parse_stage_payload(payload_raw)
 
 
-def get_stage_payload_controls(payload: Dict[str, Any]) -> Dict[str, Any]:
+def get_stage_payload_controls(payload: dict[str, Any]) -> dict[str, Any]:
     """Extract stage controls from payload envelope or legacy direct payload dict."""
     payload_controls = payload.get("controls")
     if isinstance(payload_controls, dict):
@@ -41,9 +41,9 @@ def get_stage_payload_controls(payload: Dict[str, Any]) -> Dict[str, Any]:
 
 
 def resolve_stage_selection(
-    config: Dict[str, Any],
-    stage_specs: List[Dict[str, str]],
-) -> List[Dict[str, str]]:
+    config: dict[str, Any],
+    stage_specs: list[dict[str, str]],
+) -> list[dict[str, str]]:
     """Resolve and validate stage selection while preserving canonical order."""
     selected_raw = config.get("stage_ids", []) if isinstance(config, dict) else []
     all_ids = [spec["stage_id"] for spec in stage_specs]
@@ -70,7 +70,7 @@ def resolve_run_config_path(env_var_name: str = "BL_RUN_CONFIG_PATH") -> str | N
     return os.environ.get(env_var_name, "").strip() or None
 
 
-def load_positive_numeric_map_from_env(env_var_name: str) -> Dict[str, float]:
+def load_positive_numeric_map_from_env(env_var_name: str) -> dict[str, float]:
     """
     Parse an environment JSON object and keep positive numeric values only.
 
@@ -96,13 +96,13 @@ def load_positive_numeric_map_from_env(env_var_name: str) -> Dict[str, float]:
     }
 
 
-def defaults_loader(controls_dict: Dict[str, Any]) -> Callable[[], Dict[str, Any]]:
+def defaults_loader(controls_dict: dict[str, Any]) -> Callable[[], dict[str, Any]]:
     """Return a callable that yields clean payload defaults from a constants dict.
 
     Used as the ``load_payload_defaults`` argument to :func:`resolve_stage_controls`
     so that each stage no longer needs its own ``_load_blXXX_controls_defaults`` function.
     """
-    def _load() -> Dict[str, Any]:
+    def _load() -> dict[str, Any]:
         return {
             "config_source": "defaults",
             "run_config_path": None,
@@ -115,18 +115,18 @@ def defaults_loader(controls_dict: Dict[str, Any]) -> Callable[[], Dict[str, Any
 
 def resolve_stage_controls(
     *,
-    load_from_env: Callable[[], Dict[str, Any]],
-    load_payload_defaults: Callable[[], Dict[str, Any]] | None = None,
-    sanitize: Callable[[Dict[str, Any]], Dict[str, Any]] | None = None,
+    load_from_env: Callable[[], dict[str, Any]],
+    load_payload_defaults: Callable[[], dict[str, Any]] | None = None,
+    sanitize: Callable[[dict[str, Any]], dict[str, Any]] | None = None,
     require_payload: bool = False,
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """Resolve stage controls with payload-first precedence.
 
     Precedence:
     1) BL_STAGE_CONFIG_JSON (orchestration-injected payload)
     2) stage-local environment defaults
     """
-    controls: Dict[str, Any]
+    controls: dict[str, Any]
     payload = get_stage_payload()
     if payload is not None:
         payload_controls = get_stage_payload_controls(payload)

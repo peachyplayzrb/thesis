@@ -1,13 +1,11 @@
-﻿"""
+"""
 Candidate data parsing and normalization for BL-005.
 
 Handles transformation of raw candidate CSV rows into normalized, structured data
 suitable for semantic and numeric scoring.
 """
 
-from pathlib import Path
 
-from shared_utils.parsing import normalize_candidate_row
 from shared_utils.parsing import parse_float
 
 

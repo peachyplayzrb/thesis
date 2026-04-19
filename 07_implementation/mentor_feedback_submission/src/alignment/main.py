@@ -1,5 +1,3 @@
-﻿"""BL-003 entry point for aligning Spotify interaction history to DS-001 tracks."""
-
 from __future__ import annotations
 
 import argparse

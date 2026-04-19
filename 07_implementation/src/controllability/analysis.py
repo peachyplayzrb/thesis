@@ -48,6 +48,17 @@ def _record_expects_no_shift(record: dict[str, object]) -> bool:
     return scenario_id in {"fuzzy_enabled_strict"}
 
 
+def _record_variation_mode(record: dict[str, object]) -> str:
+    return str(record.get("variation_mode", "single_factor") or "single_factor").strip().lower()
+
+
+def _record_interaction_axes(record: dict[str, object]) -> list[str]:
+    axes_raw = record.get("interaction_axes")
+    if not isinstance(axes_raw, list):
+        return []
+    return sorted({str(item).strip() for item in axes_raw if str(item).strip()})
+
+
 def _evaluate_acceptance_bounds(
     bounds: list[dict[str, Any]],
     comparison: dict[str, object],
@@ -174,7 +185,6 @@ def _evaluate_expected_direction(
         return None  # scale == 1.0, no direction expected
 
     return None  # unknown control_surface — no assertion possible
-
 
 
 def build_rank_shift_summary(baseline_rank_map: dict[str, int], scenario_rank_map: dict[str, int]) -> dict[str, object]:
@@ -339,23 +349,114 @@ def evaluate_results_status(scenario_records: list[dict[str, object]]) -> dict[s
     non_baseline_records = [
         record for record in scenario_records if record["scenario_id"] != "baseline"
     ]
+    single_factor_records = [
+        record
+        for record in non_baseline_records
+        if _record_variation_mode(record) != "interaction"
+    ]
+    interaction_records = [
+        record
+        for record in non_baseline_records
+        if _record_variation_mode(record) == "interaction"
+    ]
+
     all_repeat = all(record["repeat_consistent"] for record in scenario_records)
     all_shift = all(
-        _mapping(record.get("comparison_to_baseline")).get("observable_shift") for record in non_baseline_records
+        _mapping(record.get("comparison_to_baseline")).get("observable_shift") for record in single_factor_records
         if not _record_expects_no_shift(record)
     )
     all_expected_no_shift = all(
-        not _mapping(record.get("comparison_to_baseline")).get("observable_shift") for record in non_baseline_records
+        not _mapping(record.get("comparison_to_baseline")).get("observable_shift") for record in single_factor_records
         if _record_expects_no_shift(record)
     )
     all_direction = all(
         _mapping(record.get("comparison_to_baseline")).get("expected_direction_met")
-        for record in non_baseline_records
+        for record in single_factor_records
     )
+    all_interaction_shifts = all(
+        _mapping(record.get("comparison_to_baseline")).get("observable_shift")
+        for record in interaction_records
+    )
+    all_interaction_directions = all(
+        _mapping(record.get("comparison_to_baseline")).get("expected_direction_met")
+        for record in interaction_records
+    )
+
     return {
         "all_scenarios_repeat_consistent": all_repeat,
         "all_variant_shifts_observable": all_shift,
         "all_expected_no_shift_variants_stable": all_expected_no_shift,
         "all_variant_directions_met": all_direction,
+        "single_factor_variant_count": len(single_factor_records),
+        "interaction_variant_count": len(interaction_records),
+        "all_interaction_shifts_observable": all_interaction_shifts,
+        "all_interaction_directions_met": all_interaction_directions,
         "status": "pass" if all_repeat and all_shift and all_expected_no_shift and all_direction else "bounded-risk",
+    }
+
+
+def build_interaction_coverage_summary(scenario_records: list[dict[str, object]]) -> dict[str, object]:
+    interaction_records = [
+        record
+        for record in scenario_records
+        if str(record.get("scenario_id")) != "baseline" and _record_variation_mode(record) == "interaction"
+    ]
+    single_factor_records = [
+        record
+        for record in scenario_records
+        if str(record.get("scenario_id")) != "baseline" and _record_variation_mode(record) != "interaction"
+    ]
+
+    expected_pairs = {
+        tuple(sorted(("influence_tracks", "candidate_threshold"))),
+        tuple(sorted(("feature_weight", "candidate_threshold"))),
+    }
+
+    observed_pairs: set[tuple[str, str]] = set()
+    interaction_rows: list[dict[str, object]] = []
+    for record in interaction_records:
+        comparison = _mapping(record.get("comparison_to_baseline"))
+        axes = _record_interaction_axes(record)
+        pair = tuple(axes[:2]) if len(axes) >= 2 else tuple()
+        if len(pair) == 2:
+            observed_pairs.add((pair[0], pair[1]))
+        interaction_rows.append(
+            {
+                "scenario_id": str(record.get("scenario_id", "")),
+                "interaction_axes": axes,
+                "observable_shift": bool(comparison.get("observable_shift", False)),
+                "expected_direction_met": comparison.get("expected_direction_met"),
+                "candidate_pool_size_delta": comparison.get("candidate_pool_size_delta"),
+                "playlist_overlap_ratio": comparison.get("playlist_overlap_ratio"),
+                "mean_abs_rank_delta": _mapping(comparison.get("rank_shift_summary")).get("mean_abs_rank_delta", 0.0),
+            }
+        )
+
+    observed_single_factor_surfaces = sorted(
+        {
+            str(record.get("control_surface", "")).strip()
+            for record in single_factor_records
+            if str(record.get("control_surface", "")).strip()
+        }
+    )
+    observed_interaction_pairs = [list(pair) for pair in sorted(observed_pairs)]
+    missing_interaction_pairs = [list(pair) for pair in sorted(expected_pairs - observed_pairs)]
+
+    interaction_shifts_observable = all(row["observable_shift"] for row in interaction_rows)
+    interaction_directions_met = all(bool(row["expected_direction_met"]) for row in interaction_rows)
+
+    return {
+        "single_factor_control_surfaces": observed_single_factor_surfaces,
+        "interaction_matrix_expected_pairs": [list(pair) for pair in sorted(expected_pairs)],
+        "interaction_matrix_observed_pairs": observed_interaction_pairs,
+        "interaction_matrix_missing_pairs": missing_interaction_pairs,
+        "interaction_variant_count": len(interaction_rows),
+        "interaction_shifts_observable": interaction_shifts_observable,
+        "interaction_directions_met": interaction_directions_met,
+        "interaction_rows": interaction_rows,
+        "interaction_coverage_status": (
+            "covered"
+            if not missing_interaction_pairs and interaction_shifts_observable and interaction_directions_met
+            else "bounded-risk"
+        ),
     }

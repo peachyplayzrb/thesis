@@ -9,7 +9,6 @@ from shared_utils.env_utils import env_path
 from shared_utils.io_utils import open_text_write, write_json
 from shared_utils.path_utils import impl_root
 
-
 DEFAULT_SCORED_CANDIDATES_PATH = Path("scoring/outputs/bl006_scored_candidates.csv")
 DEFAULT_OUTPUT_DIR = Path("playlist/outputs")
 REQUIRED_CANDIDATE_COLUMNS = ("rank", "track_id", "lead_genre", "final_score")

@@ -9,7 +9,7 @@ from __future__ import annotations
 
 import math
 import os
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 from alignment.constants import (
     FLOAT_PRECISION_DECIMALS,
@@ -19,6 +19,7 @@ from alignment.constants import (
     SOURCE_SAVED_TRACKS,
     SOURCE_TOP_TRACKS,
 )
+from alignment.models import AlignmentBehaviorControls, SourceEvent
 from shared_utils.constants import (
     DEFAULT_RECENTLY_PLAYED_DECAY_HALF_LIFE_DAYS,
     DEFAULT_SAVED_TRACKS_DECAY_HALF_LIFE_DAYS,
@@ -26,7 +27,6 @@ from shared_utils.constants import (
     DEFAULT_WEIGHTING_POLICY,
 )
 from shared_utils.parsing import parse_int
-from alignment.models import AlignmentBehaviorControls, SourceEvent
 
 
 def _parse_event_time(raw_value: str) -> datetime | None:
@@ -39,8 +39,8 @@ def _parse_event_time(raw_value: str) -> datetime | None:
     except ValueError:
         return None
     if parsed.tzinfo is None:
-        return parsed.replace(tzinfo=timezone.utc)
-    return parsed.astimezone(timezone.utc)
+        return parsed.replace(tzinfo=UTC)
+    return parsed.astimezone(UTC)
 
 
 def _resolve_reference_now_utc(
@@ -48,7 +48,7 @@ def _resolve_reference_now_utc(
     temporal_controls: dict[str, object] | None = None,
 ) -> datetime:
     if now_utc is not None:
-        return now_utc.astimezone(timezone.utc)
+        return now_utc.astimezone(UTC)
 
     controls = dict(temporal_controls or {})
     reference_mode = str(controls.get("reference_mode") or "system").strip().lower()
@@ -64,7 +64,7 @@ def _resolve_reference_now_utc(
             parsed_env = _parse_event_time(env_reference)
             if parsed_env is not None:
                 return parsed_env
-    return datetime.now(timezone.utc)
+    return datetime.now(UTC)
 
 
 def compute_temporal_decay(

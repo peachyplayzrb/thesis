@@ -1,29 +1,27 @@
-﻿#!/usr/bin/env python3
-"""Resilience helpers for Spotify API access during ingestion.
+#!/usr/bin/env python3
+"""
+Spotify API resilience utilities: rate-limiting, caching, backoff, job tracking.
 
-This module handles the practical side of long-running exports: endpoint caching,
-throttling, exponential backoff, and persisted job-progress checkpoints.
+Provides reusable patterns for safe, cached Spotify API access with exponential backoff,
+throttling, and persistent job progress tracking.
 """
 
 import json
-from importlib import import_module
 import sqlite3
 import time
-from datetime import datetime, timedelta, timezone
-from pathlib import Path
-from typing import Any, Callable, Dict, Optional, Tuple
-
+from collections.abc import Callable
+from datetime import UTC, datetime, timedelta
+from importlib import import_module
+from typing import Any
 
 from shared_utils.constants import (
-    DEFAULT_API_CACHE_TTL_SECONDS,
-    DEFAULT_API_THROTTLE_SLEEP_SEC,
-    DEFAULT_API_MAX_RETRIES,
     DEFAULT_API_BASE_DELAY_SEC,
+    DEFAULT_API_CACHE_TTL_SECONDS,
+    DEFAULT_API_MAX_RETRIES,
+    DEFAULT_API_THROTTLE_SLEEP_SEC,
 )
 
-
-# These defaults control cache and retry behavior, and the run config can override
-# them at runtime without needing to edit the source file.
+# Module-level configuration variables (mutable for testing/run_config override)
 DEFAULT_TTL_SECONDS = DEFAULT_API_CACHE_TTL_SECONDS  # 24-hour cache by default
 SLEEP_BETWEEN_CALLS_SEC = DEFAULT_API_THROTTLE_SLEEP_SEC      # 120ms throttle between API calls
 MAX_RETRIES = DEFAULT_API_MAX_RETRIES
@@ -31,7 +29,15 @@ BASE_DELAY_SEC = DEFAULT_API_BASE_DELAY_SEC
 
 
 def apply_ingestion_controls(ingestion_config: dict) -> None:
-    """Apply `run_config.ingestion_controls` so cache, throttle, and retry behavior can be tuned per run."""
+    """Apply ingestion controls from run_config to module-level defaults.
+
+    This allows users to override resilience behavior via run_config.ingestion_controls
+    without modifying this source file.
+
+    Args:
+        ingestion_config: Dict with keys cache_ttl_seconds, throttle_sleep_seconds,
+                         max_retries, base_backoff_delay_seconds
+    """
     global DEFAULT_TTL_SECONDS, SLEEP_BETWEEN_CALLS_SEC, MAX_RETRIES, BASE_DELAY_SEC
 
     if ingestion_config:
@@ -46,15 +52,15 @@ def apply_ingestion_controls(ingestion_config: dict) -> None:
 # -------------------------
 def now_iso() -> str:
     """Return current UTC time in ISO 8601 format (Z-terminated)."""
-    return datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
+    return datetime.now(UTC).replace(microsecond=0).isoformat().replace("+00:00", "Z")
 
 
-def iso_to_dt(s: Optional[str]) -> Optional[datetime]:
+def iso_to_dt(s: str | None) -> datetime | None:
     """Parse ISO 8601 string (with optional Z suffix) to datetime."""
     if not s:
         return None
     try:
-        return datetime.strptime(s.replace("Z", ""), "%Y-%m-%dT%H:%M:%S").replace(tzinfo=timezone.utc)
+        return datetime.strptime(s.replace("Z", ""), "%Y-%m-%dT%H:%M:%S").replace(tzinfo=UTC)
     except Exception:
         return None
 
@@ -111,7 +117,7 @@ class CacheDB:
         conn.commit()
         conn.close()
 
-    def cache_get(self, cache_key: str) -> Optional[Dict[str, Any]]:
+    def cache_get(self, cache_key: str) -> dict[str, Any] | None:
         """Retrieve cached payload if it exists and TTL is valid."""
         conn = self._conn()
         cur = conn.cursor()
@@ -132,7 +138,7 @@ class CacheDB:
 
         # Check if TTL expired
         if ttl_seconds is not None:
-            if datetime.now(timezone.utc) - fetched_dt > timedelta(seconds=int(ttl_seconds)):
+            if datetime.now(UTC) - fetched_dt > timedelta(seconds=int(ttl_seconds)):
                 return None
 
         try:
@@ -140,7 +146,7 @@ class CacheDB:
         except Exception:
             return None
 
-    def cache_set(self, cache_key: str, payload: Any, ttl_seconds: int, status: int, err: Optional[str]):
+    def cache_set(self, cache_key: str, payload: Any, ttl_seconds: int, status: int, err: str | None):
         """Store cached payload (success or failure)."""
         conn = self._conn()
         conn.execute("""
@@ -191,7 +197,7 @@ class JobProgress:
         conn.close()
 
     def update(self, job_id: str, step: str, *, started: bool = False, finished: bool = False,
-               done: Optional[int] = None, total: Optional[int] = None, err: Optional[str] = None):
+               done: int | None = None, total: int | None = None, err: str | None = None):
         """Update step progress (atomic fields)."""
         conn = self._conn()
         cur = conn.cursor()
@@ -234,7 +240,7 @@ class JobProgress:
         conn.commit()
         conn.close()
 
-    def read(self, job_id: str) -> Dict[str, Any]:
+    def read(self, job_id: str) -> dict[str, Any]:
         """Read current progress for all steps in a job."""
         conn = self._conn()
         cur = conn.cursor()
@@ -260,16 +266,22 @@ class JobProgress:
         return out
 
 
-# Retry and backoff helpers.
+# -------------------------
+# Retry + Backoff
+# -------------------------
 def safe_call(
     fn: Callable,
-    max_retries: Optional[int] = None,
-    base_delay: Optional[float] = None,
-) -> Tuple[bool, Optional[Any], int, Optional[str]]:
-    """Run one Spotify call with exponential backoff and return a compact success tuple."""
+    max_retries: int | None = None,
+    base_delay: float | None = None,
+) -> tuple[bool, Any | None, int, str | None]:
+    """
+    Execute fn with exponential backoff on transient errors.
+
+    Returns: (success, data, status_code, error_message)
+    """
     try:
         spotify_exceptions = import_module("spotipy.exceptions")
-        SpotifyException = getattr(spotify_exceptions, "SpotifyException")
+        SpotifyException = spotify_exceptions.SpotifyException
     except ModuleNotFoundError:
         class SpotifyException(Exception):
             http_status: int | None = None
@@ -284,7 +296,7 @@ def safe_call(
             status = getattr(e, "http_status", None) or 0
             msg = str(e)
 
-            # I only retry errors that are likely to succeed on a later attempt.
+            # Retry only on transient errors
             if status in (429, 500, 502, 503, 504):
                 if attempt < retries - 1:
                     time.sleep(delay)
@@ -301,11 +313,17 @@ def safe_call(
     return False, None, 429, "Max retries exceeded."
 
 
-# Cached fetch wrapper.
+# -------------------------
+# Cached Fetch
+# -------------------------
 def cached_fetch(cache_db: CacheDB, name: str, ttl_seconds: int,
-                 fn: Callable, apply_throttle: bool = True) -> Dict[str, Any]:
-    """Return a cached response when possible, otherwise fetch live data and store the result."""
-    # Cache hits save a lot of repeated API work when I rerun the exporter.
+                 fn: Callable, apply_throttle: bool = True) -> dict[str, Any]:
+    """
+    Fetch from cache if valid, else call Spotify with backoff + cache result.
+
+    Returns: {ok, name, status, cached, data, error}
+    """
+    # Try cache first
     cached = cache_db.cache_get(name)
     if cached is not None:
         return {
@@ -317,7 +335,7 @@ def cached_fetch(cache_db: CacheDB, name: str, ttl_seconds: int,
             "error": None
         }
 
-    # Cache miss: fall back to the live API call with retry/backoff protection.
+    # Call Spotify with backoff
     ok, data, status, err = safe_call(fn)
 
     if ok:
@@ -331,7 +349,7 @@ def cached_fetch(cache_db: CacheDB, name: str, ttl_seconds: int,
             "error": None
         }
     else:
-        # I also cache failures briefly so a dead endpoint does not get hammered on rerun.
+        # Cache the error too so we don't hammer dead endpoints
         cache_db.cache_set(name, {"error": err, "status": status}, ttl_seconds=ttl_seconds, status=status, err=err)
         result = {
             "ok": False,
@@ -352,7 +370,7 @@ def cached_fetch(cache_db: CacheDB, name: str, ttl_seconds: int,
 # Pagination Helpers
 # -------------------------
 def paginate_offset_all(fetch_page_fn: Callable, page_size: int = 50,
-                        max_items: Optional[int] = None) -> list:
+                        max_items: int | None = None) -> list:
     """Paginate offset-based endpoints (limit/offset style)."""
     out = []
     offset = 0
@@ -374,7 +392,7 @@ def paginate_offset_all(fetch_page_fn: Callable, page_size: int = 50,
 
 
 def paginate_cursor_all(fetch_page_fn: Callable, page_size: int = 50,
-                        max_items: Optional[int] = None) -> list:
+                        max_items: int | None = None) -> list:
     """Paginate cursor-based endpoints (after-cursor style)."""
     out = []
     after = None

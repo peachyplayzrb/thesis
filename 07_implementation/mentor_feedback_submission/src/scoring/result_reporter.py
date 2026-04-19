@@ -1,12 +1,24 @@
-"""BL-006 reporting helpers for score summaries, diagnostics, and export formatting."""
+"""
+Result reporting for BL-006 scoring.
 
-from typing import Any, Mapping, cast
-from shared_utils.constants import DEFAULT_PERFECT_SCORE_THRESHOLD, DEFAULT_ABOVE_THRESHOLD_SCORE
+Generates summary statistics, organizes scored results, and produces
+output JSON for downstream consumption.
+"""
+
+from collections.abc import Mapping
+from typing import Any, cast
+
+from shared_utils.constants import DEFAULT_ABOVE_THRESHOLD_SCORE, DEFAULT_PERFECT_SCORE_THRESHOLD
 from shared_utils.parsing import safe_float, safe_int
 
 
 def initialize_scoring_report() -> dict[str, object]:
-    """Create an empty scoring report payload ready to accumulate results."""
+    """
+    Initialize an empty report structure for accumulating results.
+
+    Returns:
+        Dict with report fields ready for population
+    """
     return {
         "total_candidates_scored": 0,
         "candidates_with_perfect_scores": 0,
@@ -30,9 +42,29 @@ def add_result_to_report(
     perfect_score_threshold: float = DEFAULT_PERFECT_SCORE_THRESHOLD,
     above_threshold_score: float = DEFAULT_ABOVE_THRESHOLD_SCORE,
 ) -> None:
-    """Add one scored candidate and update report counters, distribution, and top-match list in place."""
+    """
+    Add a single scored candidate result to the report.
+
+    Updates report statistics inline. Accumulates top matches.
+
+    Args:
+        report: Report dict (mutated in place)
+        scored_candidate: Dict with structure:
+            {
+                "track_id": "...",
+                "final_score": X.XX,
+                "component_scores": {
+                    "tempo_score": ...,
+                    "key_score": ...,
+                    ...
+                }
+            }
+        perfect_score_threshold: Score threshold for "perfect" category (default 0.99)
+        above_threshold_score: Score threshold for "above threshold" category (default 0.50)
+    """
     final_score = safe_float(scored_candidate.get("final_score", 0.0))
 
+    # Update counters
     report["total_candidates_scored"] = safe_int(report.get("total_candidates_scored", 0)) + 1
 
     if final_score >= perfect_score_threshold:
@@ -41,11 +73,12 @@ def add_result_to_report(
     if final_score >= above_threshold_score:
         report["candidates_above_threshold"] = safe_int(report.get("candidates_above_threshold", 0)) + 1
 
+    # Add to distribution
     distribution = report["score_distribution"]
     if isinstance(distribution, list):
         distribution.append(final_score)
 
-    # Keep the top-match list trimmed so summaries stay lightweight.
+    # Maintain top matches (keep top 10)
     top_matches = report["top_matches"]
     if isinstance(top_matches, list):
         top_matches.append(scored_candidate)
@@ -60,7 +93,19 @@ def add_result_to_report(
 
 
 def compute_score_statistics(scores: list[float]) -> dict[str, float]:
-    """Compute min/max/mean/median for a list of scores."""
+    """
+    Compute summary statistics for a list of scores.
+
+    Args:
+        scores: List of numeric scores
+
+    Returns:
+        Dict with statistics:
+        - "min": minimum score
+        - "max": maximum score
+        - "mean": average score
+        - "median": middle value
+    """
     if not scores:
         return {"min": 0.0, "max": 0.0, "mean": 0.0, "median": 0.0}
 
@@ -76,7 +121,16 @@ def compute_score_statistics(scores: list[float]) -> dict[str, float]:
 
 
 def finalize_report(report: dict[str, object]) -> dict[str, object]:
-    """Finalize the report by computing score statistics from the accumulated distribution."""
+    """
+    Compute final statistics and close out the report.
+
+    Args:
+        report: Report dict (mutated in place)
+
+    Returns:
+        The finalized report
+    """
+    # Compute score statistics from distribution
     scores = report.get("score_distribution", [])
     if isinstance(scores, list):
         score_stats = compute_score_statistics(scores)
@@ -88,7 +142,20 @@ def finalize_report(report: dict[str, object]) -> dict[str, object]:
 def candidates_to_json(
     scored_candidates: list[dict[str, Any]],
 ) -> dict[str, object]:
-    """Build a compact JSON-friendly view of scored candidates for downstream use."""
+    """
+    Prepare scored candidates for JSON export.
+
+    Restructures candidates into output format suitable for downstream
+    stages and reporting.
+
+    Args:
+        scored_candidates: List of scored candidate dicts
+
+    Returns:
+        Dict with JSON-exportable structure:
+        - "total": count
+        - "candidates": list of dicts with track_id and final_score
+    """
     return {
         "total": len(scored_candidates),
         "candidates": [
@@ -106,7 +173,17 @@ def generate_summary_report(
     perfect_score_threshold: float = DEFAULT_PERFECT_SCORE_THRESHOLD,
     above_threshold_score: float = DEFAULT_ABOVE_THRESHOLD_SCORE,
 ) -> str:
-    """Render the finalized report as a human-readable text summary."""
+    """
+    Generate a human-readable text summary of the report.
+
+    Args:
+        report: Finalized report dict
+        perfect_score_threshold: Score threshold for "perfect" category (default 0.99)
+        above_threshold_score: Score threshold for "above threshold" category (default 0.50)
+
+    Returns:
+        Formatted text summary
+    """
     total = safe_int(report.get("total_candidates_scored", 0))
     perfect = safe_int(report.get("candidates_with_perfect_scores", 0))
     above_thresh = safe_int(report.get("candidates_above_threshold", 0))

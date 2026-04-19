@@ -1,4 +1,4 @@
-"""Helpers that pull the parts of the BL-004 profile BL-005 actually needs."""
+"""Profile-context builders for BL-005 retrieval."""
 
 from __future__ import annotations
 
@@ -11,8 +11,6 @@ def build_profile_weight_map(
     semantic_key: str,
     limit: int,
 ) -> dict[str, float]:
-    """Build one normalized weight map from the semantic profile, capped to the top requested labels."""
-
     semantic_profile = profile.get("semantic_profile")
     if not isinstance(semantic_profile, dict):
         return {}

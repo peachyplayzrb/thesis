@@ -1,17 +1,13 @@
-"""The BL-003 alignment stage shell.
-
-This stage loads the Spotify export rows, runs the matching pipeline, and writes
-the seed-table artifacts used by the rest of the system.
-"""
-
 from __future__ import annotations
 
-from dataclasses import dataclass
 import json
 import time
+from collections.abc import Mapping
+from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Mapping
+from typing import Any
 
+from alignment.aggregation import aggregate_matched_events
 from alignment.constants import (
     ALIGNMENT_DEFAULT_RELATIVE_PATHS,
     ALIGNMENT_OUTPUT_FILENAMES,
@@ -20,11 +16,8 @@ from alignment.constants import (
     SOURCE_RESILIENCE_REQUIRED,
     SOURCE_SCOPE_SPECS,
     SOURCE_TYPES,
-    SOURCE_USER_CSV,
     SPOTIFY_EXPORT_FILENAMES,
 )
-from alignment.user_csv_schema import normalize_user_csv_rows
-from alignment.aggregation import aggregate_matched_events
 from alignment.influence import inject_influence_tracks
 from alignment.match_pipeline import match_events
 from alignment.models import (
@@ -35,7 +28,11 @@ from alignment.models import (
     AlignmentSummaryContext,
     AlignmentSummaryMetrics,
 )
+from alignment.resolved_context import AlignmentResolvedContext, resolve_alignment_context
+from alignment.runtime_scope import apply_input_scope_filters
+from alignment.user_csv_schema import normalize_user_csv_rows
 from alignment.validation import validate_match_rate
+from alignment.weighting import to_event_rows
 from alignment.writers import (
     build_and_write_summary_from_context,
     build_seed_contract_payload,
@@ -43,11 +40,8 @@ from alignment.writers import (
     write_alignment_outputs,
     write_source_scope_manifest,
 )
-from alignment.resolved_context import AlignmentResolvedContext, resolve_alignment_context
-from alignment.runtime_scope import apply_input_scope_filters
-from alignment.weighting import to_event_rows
-from shared_utils.io_utils import load_csv_rows
 from shared_utils.index_builder import build_ds001_indices, resolve_ds001_id
+from shared_utils.io_utils import load_csv_rows
 from shared_utils.path_utils import impl_root
 
 
@@ -79,7 +73,7 @@ class _MatchAggregationResult:
 
 
 class AlignmentStage:
-    """Object-oriented wrapper around the BL-003 alignment workflow."""
+    """Object-oriented BL-003 alignment workflow shell."""
 
     def __init__(
         self,

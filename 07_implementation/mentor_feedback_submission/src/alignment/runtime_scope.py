@@ -1,19 +1,22 @@
-"""Resolve which Spotify sources and limits are in scope for the current BL-003 run."""
-
 from __future__ import annotations
 
 import json
 import os
-from typing import Any
 
-from alignment.constants import DEFAULT_TOP_TIME_RANGES, SOURCE_PLAYLIST_ITEMS, SOURCE_RECENTLY_PLAYED, SOURCE_SAVED_TRACKS, SOURCE_TOP_TRACKS, SOURCE_USER_CSV
+from alignment.constants import (
+    DEFAULT_TOP_TIME_RANGES,
+    SOURCE_PLAYLIST_ITEMS,
+    SOURCE_RECENTLY_PLAYED,
+    SOURCE_SAVED_TRACKS,
+    SOURCE_TOP_TRACKS,
+    SOURCE_USER_CSV,
+)
 from alignment.models import AlignmentBehaviorControls
 from shared_utils.constants import DEFAULT_INPUT_SCOPE
 from shared_utils.parsing import safe_int
 
 
 def resolve_bl003_runtime_scope() -> dict[str, object]:
-    """Resolve BL-003 input-scope controls from payload first, then env, then defaults."""
     payload_json = os.environ.get("BL_STAGE_CONFIG_JSON", "").strip()
     input_scope_json = os.environ.get("BL003_INPUT_SCOPE_JSON", "").strip()
     default_scope = dict(DEFAULT_INPUT_SCOPE)
@@ -23,7 +26,6 @@ def resolve_bl003_runtime_scope() -> dict[str, object]:
     }
 
     if payload_json:
-        # Orchestration payload wins because it represents the final resolved controls for this run.
         try:
             payload = json.loads(payload_json)
         except (json.JSONDecodeError, TypeError, ValueError):
@@ -48,7 +50,6 @@ def resolve_bl003_runtime_scope() -> dict[str, object]:
                 }
 
     if input_scope_json:
-        # Direct env JSON is the fallback when BL-003 is run outside BL-013.
         try:
             parsed_scope = json.loads(input_scope_json)
             if isinstance(parsed_scope, dict):
@@ -135,7 +136,6 @@ def apply_input_scope_filters(
     *,
     user_csv_rows: list[dict[str, str]] | None = None,
 ) -> tuple[dict[str, list[dict[str, str]]], dict[str, object]]:
-    """Apply the resolved source-scope limits and return both rows and filter stats."""
     scope_mapping = (
         dict(input_scope.input_scope)
         if isinstance(input_scope, AlignmentBehaviorControls)

@@ -2,9 +2,15 @@ from __future__ import annotations
 
 import json
 import os
-from typing import Any
 
-from alignment.constants import DEFAULT_TOP_TIME_RANGES, SOURCE_PLAYLIST_ITEMS, SOURCE_RECENTLY_PLAYED, SOURCE_SAVED_TRACKS, SOURCE_TOP_TRACKS, SOURCE_USER_CSV
+from alignment.constants import (
+    DEFAULT_TOP_TIME_RANGES,
+    SOURCE_PLAYLIST_ITEMS,
+    SOURCE_RECENTLY_PLAYED,
+    SOURCE_SAVED_TRACKS,
+    SOURCE_TOP_TRACKS,
+    SOURCE_USER_CSV,
+)
 from alignment.models import AlignmentBehaviorControls
 from shared_utils.constants import DEFAULT_INPUT_SCOPE
 from shared_utils.parsing import safe_int

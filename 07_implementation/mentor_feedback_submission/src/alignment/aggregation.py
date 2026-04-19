@@ -1,7 +1,8 @@
 """
-Takes the per-event match list and folds it into one row per DS-001 track.
+BL-003 matched-event aggregation.
 
-That aggregated view becomes the seed table BL-004 uses to build the profile.
+Collapses the per-event matched list into a per-DS-001-song summary dict
+that feeds the seed table CSV.
 """
 
 from __future__ import annotations
@@ -84,8 +85,9 @@ def aggregate_matched_events(
     """
     Aggregate matched events by DS-001 ID.
 
-    The result keeps the running interaction totals plus the set-like fields
-    that later get serialized into the seed table output.
+    Returns a dict keyed by ds001_id where each value contains cumulative
+    interaction statistics and set-valued fields (source_types, spotify_track_ids,
+    interaction_types) that are serialised to pipe-separated strings at write time.
     """
     if aggregation_policy is not None:
         effective_policy = dict(aggregation_policy)

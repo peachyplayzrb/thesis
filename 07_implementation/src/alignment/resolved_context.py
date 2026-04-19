@@ -8,6 +8,7 @@ from typing import Any
 
 from alignment.constants import DEFAULT_INFLUENCE_PREFERENCE_WEIGHT
 from alignment.models import AlignmentBehaviorControls, AlignmentStructuralContract
+from alignment.runtime_scope import resolve_bl003_runtime_scope
 from shared_utils.coerce import to_mapping, to_string_list
 from shared_utils.constants import (
     DEFAULT_RECENTLY_PLAYED_DECAY_HALF_LIFE_DAYS,
@@ -17,8 +18,6 @@ from shared_utils.constants import (
     DEFAULT_TOP_RANGE_WEIGHTS,
 )
 from shared_utils.parsing import safe_float
-
-from alignment.runtime_scope import resolve_bl003_runtime_scope
 
 
 @dataclass(frozen=True)

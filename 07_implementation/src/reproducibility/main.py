@@ -1,4 +1,4 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
 import argparse
 import json
@@ -9,21 +9,21 @@ import subprocess
 import sys
 import time
 from pathlib import Path
+from typing import Any
 
 from reproducibility.input_validation import validate_bl009_outputs
 from reproducibility.runtime_controls import resolve_bl010_runtime_controls
-from shared_utils.hashing import canonical_json_hash as shared_canonical_json_hash
-from shared_utils.hashing import sha256_of_file
 from shared_utils.artifact_registry import bl010_required_paths
 from shared_utils.coerce import to_mapping, to_string_list
+from shared_utils.hashing import canonical_json_hash as shared_canonical_json_hash
+from shared_utils.hashing import sha256_of_file
 from shared_utils.io_utils import load_csv_rows, load_json, utc_now
-from shared_utils.path_utils import impl_root
 from shared_utils.parsing import safe_float, safe_int
+from shared_utils.path_utils import impl_root
 from shared_utils.report_utils import write_csv_rows, write_json_ascii
 from shared_utils.stage_utils import relpath
 
 logger = logging.getLogger(__name__)
-
 
 
 DEFAULT_REPLAY_COUNT = 3
@@ -95,6 +95,7 @@ def ensure_positive_replay_count(value: int) -> int:
     if value < 1:
         raise ValueError(f"--replay-count must be >= 1, got {value}")
     return value
+
 
 def copy_file(src: Path, dst: Path) -> None:
     dst.parent.mkdir(parents=True, exist_ok=True)
@@ -600,6 +601,44 @@ def archive_replay_outputs(paths: dict[str, Path], replay_dir: Path) -> None:
         copy_file(source_path, replay_dir / filename)
 
 
+def build_interpretation_boundaries() -> dict[str, object]:
+    """Return explicit framing of what BL-010 reproducibility verdicts cover and do not cover."""
+    return {
+        "schema_version": "reproducibility-interpretation-v1",
+        "verdict_basis": (
+            "Reproducibility verdict reflects artifact-level stable-hash consistency "
+            "across replay runs executed under identical fixed inputs, stage scripts, "
+            "and a pinned configuration snapshot. Stable hashes exclude volatile "
+            "run-metadata fields (run_id, generated_at_utc, elapsed_seconds) that "
+            "vary across identical replays by design."
+        ),
+        "consistency_domain": {
+            "covered": [
+                "content identity of recommendation output across replay runs",
+                "alignment summary counts and fuzzy-matching configuration",
+                "profile semantic content under fixed seed inputs",
+                "candidate filtering and scoring decisions under fixed inputs",
+                "assembly trace and playlist track-id sequence",
+                "explanation content under fixed assembly output",
+                "observability stage diagnostics under fixed pipeline inputs",
+            ],
+            "not_covered": [
+                "cross-environment or cross-OS behavioral invariance",
+                "behavioral invariance under different run-config values",
+                "robustness to upstream data schema changes",
+                "multi-user or population-level generalizability",
+                "temporal stability beyond the pinned configuration window",
+            ],
+        },
+        "non_claims": [
+            "deterministic_match=true does not imply raw file-byte identity; volatile metadata fields differ by design",
+            "pass verdict does not imply output would be identical under a different run configuration",
+            "pass verdict does not imply cross-machine or cross-environment bit-exact execution",
+            "reproducibility is bounded to the fixed-input corpus and seed table used in replay; different input data may produce different outputs",
+        ],
+    }
+
+
 def first_mismatch(stable_hashes_by_run: list[dict[str, str]]) -> str | None:
     if not stable_hashes_by_run:
         return None
@@ -612,9 +651,8 @@ def first_mismatch(stable_hashes_by_run: list[dict[str, str]]) -> str | None:
     return None
 
 
-def main() -> None:
-    args = parse_args()
-    root = impl_root()
+def _validate_and_prepare_inputs(root: Path, args: Any) -> tuple[Path, int, dict[str, Path], dict[str, Any]]:
+    """Validate BL-009 outputs and prepare input paths."""
     replay_count = ensure_positive_replay_count(int(args.replay_count))
     output_dir = (root / args.output_dir).resolve()
     output_dir.mkdir(parents=True, exist_ok=True)
@@ -622,7 +660,6 @@ def main() -> None:
     paths = build_paths(root)
     ensure_required_inputs(paths, root)
 
-    # Validate BL-009 outputs before starting reproducibility replay
     bl009_output_dir = str(root / "observability/outputs")
     bl010_controls = resolve_bl010_runtime_controls()
     validation_policy = str(bl010_controls.get("bl009_bl010_handshake_validation_policy", "warn"))
@@ -635,6 +672,17 @@ def main() -> None:
     elif validation_result["status"] == "warn":
         logger.warning(f"BL-010 validation warnings: {validation_result['violations']}")
 
+    return output_dir, replay_count, paths, validation_result
+
+
+def _prepare_config_and_run_id(
+    paths: dict[str, Path],
+    root: Path,
+    replay_count: int,
+    output_dir: Path,
+    args: Any,
+) -> tuple[dict[str, Any], str, Path, str | None, float]:
+    """Prepare config snapshot, hashes, and run metadata."""
     config_snapshot = build_config_snapshot(
         paths,
         root,
@@ -652,9 +700,21 @@ def main() -> None:
         run_config_path=str(args.run_config) if args.run_config else None,
         reference_now_utc=reference_now_utc,
     )
-    run_id = f"BL010-REPRO-{time.strftime('%Y%m%d-%H%M%S', time.gmtime())}"
     started = time.time()
 
+    return config_snapshot, config_hash, config_path, replay_run_config_path, started
+
+
+def _execute_replays_and_collect(
+    replay_count: int,
+    paths: dict[str, Path],
+    args: Any,
+    root: Path,
+    output_dir: Path,
+    replay_run_config_path: str | None,
+    reference_now_utc: str,
+) -> list[dict[str, Any]]:
+    """Execute all replays and collect results."""
     stage_sequence = build_stage_sequence(paths)
     replay_records = execute_replays(
         replay_count=replay_count,
@@ -666,7 +726,11 @@ def main() -> None:
         run_config_path=replay_run_config_path,
         reference_now_utc=reference_now_utc,
     )
+    return replay_records
 
+
+def _analyze_stable_hashes(replay_records: list[dict[str, Any]]) -> tuple[dict[str, str], bool, str | None]:
+    """Analyze stable hashes for deterministic match."""
     stable_hashes_by_run = [
         {str(key): str(value) for key, value in to_mapping(record.get("stable_hashes")).items()}
         for record in replay_records
@@ -674,11 +738,17 @@ def main() -> None:
     baseline_stable = stable_hashes_by_run[0]
     deterministic_match = all(candidate == baseline_stable for candidate in stable_hashes_by_run[1:])
     first_mismatch_artifact = first_mismatch(stable_hashes_by_run)
+    return baseline_stable, deterministic_match, first_mismatch_artifact
 
+
+def _analyze_raw_hashes_and_retries(
+    replay_records: list[dict[str, Any]],
+) -> tuple[bool, bool, bool, list[dict[str, Any]]]:
+    """Analyze raw hash matches and retry patterns."""
     raw_playlist_hash_match = len({to_mapping(record.get("raw_hashes")).get("playlist") for record in replay_records}) == 1
     raw_explanation_hash_match = len({to_mapping(record.get("raw_hashes")).get("bl008_payloads") for record in replay_records}) == 1
     raw_observability_hash_match = len({to_mapping(record.get("raw_hashes")).get("bl009_log") for record in replay_records}) == 1
-    all_stage_runs = [stage_run for record in replay_records for stage_run in _object_dict_list(record.get("stage_runs"))]
+
     stage_runs_with_retries = [
         {
             "replay_number": record["replay_number"],
@@ -690,6 +760,11 @@ def main() -> None:
         if bool(stage_run.get("had_retry"))
     ]
 
+    return raw_playlist_hash_match, raw_explanation_hash_match, raw_observability_hash_match, stage_runs_with_retries
+
+
+def _build_summary_csv_rows(replay_records: list[dict[str, Any]]) -> list[dict[str, object]]:
+    """Construct summary CSV rows from replay records."""
     summary_rows: list[dict[str, object]] = []
     for record in replay_records:
         stage_runs = _object_dict_list(record.get("stage_runs"))
@@ -700,6 +775,7 @@ def main() -> None:
         alignment_match_counts = to_mapping(semantic_snapshots.get("alignment_match_counts"))
         alignment_fuzzy_matching = to_mapping(semantic_snapshots.get("alignment_fuzzy_matching"))
         retry_count = sum(1 for stage_run in stage_runs if bool(stage_run.get("had_retry")))
+
         row = {
             "replay_number": record["replay_number"],
             "bl003_generated_at_utc": stage_run_ids.get("BL-003"),
@@ -726,10 +802,34 @@ def main() -> None:
         }
         summary_rows.append(row)
 
-    summary_csv_path = output_dir / "reproducibility_run_matrix.csv"
-    write_csv_rows(summary_csv_path, summary_rows)
+    return summary_rows
 
-    report = {
+
+def _build_replay_report(
+    run_id: str,
+    run_started_at: str,
+    started: float,
+    replay_count: int,
+    config_snapshot: dict[str, Any],
+    config_hash: str,
+    config_path: Path,
+    replay_run_config_path: str | None,
+    validation_result: dict[str, Any],
+    deterministic_match: bool,
+    first_mismatch_artifact: str | None,
+    baseline_stable: dict[str, str],
+    raw_playlist_hash_match: bool,
+    raw_explanation_hash_match: bool,
+    raw_observability_hash_match: bool,
+    replay_records: list[dict[str, Any]],
+    stage_runs_with_retries: list[dict[str, Any]],
+    summary_csv_path: Path,
+    root: Path,
+) -> dict[str, Any]:
+    """Assemble the comprehensive replay report."""
+    all_stage_runs = [stage_run for record in replay_records for stage_run in _object_dict_list(record.get("stage_runs"))]
+
+    report: dict[str, Any] = {
         "run_metadata": {
             "run_id": run_id,
             "task": "BL-010",
@@ -772,6 +872,7 @@ def main() -> None:
                 "bl009_run_observability_log.json",
             ],
         },
+        "interpretation_boundaries": build_interpretation_boundaries(),
         "replays": replay_records,
         "results": {
             "deterministic_match": deterministic_match,
@@ -812,7 +913,18 @@ def main() -> None:
         },
     }
 
-    report_path = output_dir / "reproducibility_report.json"
+    return report
+
+
+def _emit_final_output(
+    run_id: str,
+    deterministic_match: bool,
+    config_hash: str,
+    report: dict[str, Any],
+    report_path: Path,
+    summary_csv_path: Path,
+) -> None:
+    """Write report files and emit final output."""
     write_json_ascii(report_path, report)
 
     print("BL-010 reproducibility replay complete.")
@@ -821,6 +933,42 @@ def main() -> None:
     print(f"config_hash={config_hash}")
     print(f"report={report_path}")
     print(f"run_matrix={summary_csv_path}")
+
+
+def main() -> None:
+    args = parse_args()
+    root = impl_root()
+
+    output_dir, replay_count, paths, validation_result = _validate_and_prepare_inputs(root, args)
+
+    config_snapshot, config_hash, config_path, replay_run_config_path, started = _prepare_config_and_run_id(
+        paths, root, replay_count, output_dir, args
+    )
+
+    run_started_at = utc_now()
+    reference_now_utc = run_started_at
+    run_id = f"BL010-REPRO-{time.strftime('%Y%m%d-%H%M%S', time.gmtime())}"
+
+    replay_records = _execute_replays_and_collect(
+        replay_count, paths, args, root, output_dir, replay_run_config_path, reference_now_utc
+    )
+
+    baseline_stable, deterministic_match, first_mismatch_artifact = _analyze_stable_hashes(replay_records)
+    raw_playlist_hash_match, raw_explanation_hash_match, raw_observability_hash_match, stage_runs_with_retries = _analyze_raw_hashes_and_retries(replay_records)
+
+    summary_rows = _build_summary_csv_rows(replay_records)
+    summary_csv_path = output_dir / "reproducibility_run_matrix.csv"
+    write_csv_rows(summary_csv_path, summary_rows)
+
+    report = _build_replay_report(
+        run_id, run_started_at, started, replay_count, config_snapshot, config_hash, config_path,
+        replay_run_config_path, validation_result, deterministic_match, first_mismatch_artifact,
+        baseline_stable, raw_playlist_hash_match, raw_explanation_hash_match, raw_observability_hash_match,
+        replay_records, stage_runs_with_retries, summary_csv_path, root,
+    )
+
+    report_path = output_dir / "reproducibility_report.json"
+    _emit_final_output(run_id, deterministic_match, config_hash, report, report_path, summary_csv_path)
 
 
 if __name__ == "__main__":

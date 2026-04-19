@@ -1,9 +1,6 @@
-"""Field maps and row builders for flattening Spotify API payloads into CSV-ready rows."""
-
 from __future__ import annotations
 
-from typing import Any, Dict, List
-
+from typing import Any
 
 TOP_TRACKS_FIELDS = [
     "time_range",
@@ -119,44 +116,64 @@ RECENTLY_PLAYED_FIELDS = [
 ]
 
 
-def extract_track_fields(track: Dict[str, Any]) -> Dict[str, Any]:
-    artists = track.get("artists", []) if isinstance(track, dict) else []
+def _dict_or_empty(value: Any) -> dict[str, Any]:
+    return value if isinstance(value, dict) else {}
+
+
+def _artist_fields(track: dict[str, Any]) -> tuple[str, str]:
+    artists = track.get("artists", [])
+    if not isinstance(artists, list):
+        return "", ""
     artist_ids = [artist.get("id", "") for artist in artists if isinstance(artist, dict)]
     artist_names = [artist.get("name", "") for artist in artists if isinstance(artist, dict)]
-    album = track.get("album", {}) if isinstance(track, dict) else {}
-    external_ids = track.get("external_ids", {}) if isinstance(track, dict) else {}
-    restrictions = track.get("restrictions", {}) if isinstance(track, dict) else {}
-    linked_from = track.get("linked_from", {}) if isinstance(track, dict) else {}
-    duration_ms = track.get("duration_ms")
+    return (
+        " | ".join([str(artist_id) for artist_id in artist_ids if artist_id]),
+        " | ".join([str(name) for name in artist_names if name]),
+    )
 
+
+def _duration_fields(track: dict[str, Any]) -> tuple[Any, float | None]:
+    duration_ms = track.get("duration_ms")
     duration_seconds = None
     if isinstance(duration_ms, (int, float)):
         duration_seconds = round(float(duration_ms) / 1000.0, 3)
+    return duration_ms, duration_seconds
+
+
+def extract_track_fields(track: dict[str, Any]) -> dict[str, Any]:
+    track_data = _dict_or_empty(track)
+    album = _dict_or_empty(track_data.get("album", {}))
+    external_ids = _dict_or_empty(track_data.get("external_ids", {}))
+    restrictions = _dict_or_empty(track_data.get("restrictions", {}))
+    linked_from = _dict_or_empty(track_data.get("linked_from", {}))
+    external_urls = _dict_or_empty(track_data.get("external_urls", {}))
+    artist_ids, artist_names = _artist_fields(track_data)
+    duration_ms, duration_seconds = _duration_fields(track_data)
 
     return {
-        "track_id": track.get("id"),
-        "track_uri": track.get("uri"),
-        "track_name": track.get("name"),
-        "artist_ids": " | ".join([str(artist_id) for artist_id in artist_ids if artist_id]),
-        "artist_names": " | ".join([str(name) for name in artist_names if name]),
-        "album_id": album.get("id") if isinstance(album, dict) else None,
-        "album_name": album.get("name") if isinstance(album, dict) else None,
-        "release_date": album.get("release_date") if isinstance(album, dict) else None,
-        "release_date_precision": album.get("release_date_precision") if isinstance(album, dict) else None,
+        "track_id": track_data.get("id"),
+        "track_uri": track_data.get("uri"),
+        "track_name": track_data.get("name"),
+        "artist_ids": artist_ids,
+        "artist_names": artist_names,
+        "album_id": album.get("id"),
+        "album_name": album.get("name"),
+        "release_date": album.get("release_date"),
+        "release_date_precision": album.get("release_date_precision"),
         "duration_ms": duration_ms,
         "duration_seconds": duration_seconds,
-        "popularity": track.get("popularity"),
-        "explicit": track.get("explicit"),
-        "is_playable": track.get("is_playable"),
-        "restriction_reason": restrictions.get("reason") if isinstance(restrictions, dict) else None,
-        "linked_from_track_id": linked_from.get("id") if isinstance(linked_from, dict) else None,
-        "isrc": external_ids.get("isrc") if isinstance(external_ids, dict) else None,
-        "track_href": track.get("href"),
-        "track_external_url": (track.get("external_urls", {}) or {}).get("spotify") if isinstance(track, dict) else None,
+        "popularity": track_data.get("popularity"),
+        "explicit": track_data.get("explicit"),
+        "is_playable": track_data.get("is_playable"),
+        "restriction_reason": restrictions.get("reason"),
+        "linked_from_track_id": linked_from.get("id"),
+        "isrc": external_ids.get("isrc"),
+        "track_href": track_data.get("href"),
+        "track_external_url": external_urls.get("spotify"),
     }
 
 
-def _resolve_item_payload(item: Dict[str, Any]) -> Dict[str, Any] | None:
+def _resolve_item_payload(item: dict[str, Any]) -> dict[str, Any] | None:
     payload = item.get("item")
     if isinstance(payload, dict):
         return payload
@@ -166,18 +183,18 @@ def _resolve_item_payload(item: Dict[str, Any]) -> Dict[str, Any] | None:
     return None
 
 
-def build_top_track_rows(top_tracks_by_range: Dict[str, List[Dict[str, Any]]]) -> List[Dict[str, Any]]:
-    rows: List[Dict[str, Any]] = []
+def build_top_track_rows(top_tracks_by_range: dict[str, list[dict[str, Any]]]) -> list[dict[str, Any]]:
+    rows: list[dict[str, Any]] = []
     for time_range, tracks in top_tracks_by_range.items():
         for rank, track in enumerate(tracks, start=1):
             rows.append({"time_range": time_range, "rank": rank, **extract_track_fields(track)})
     return rows
 
 
-def build_saved_track_rows(saved_track_items: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
-    rows: List[Dict[str, Any]] = []
+def build_saved_track_rows(saved_track_items: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    rows: list[dict[str, Any]] = []
     for item in saved_track_items:
-        track_payload: Dict[str, Any] = {}
+        track_payload: dict[str, Any] = {}
         if isinstance(item, dict):
             resolved = _resolve_item_payload(item)
             if isinstance(resolved, dict):
@@ -191,8 +208,8 @@ def build_saved_track_rows(saved_track_items: List[Dict[str, Any]]) -> List[Dict
     return rows
 
 
-def build_playlist_rows(playlists: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
-    rows: List[Dict[str, Any]] = []
+def build_playlist_rows(playlists: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    rows: list[dict[str, Any]] = []
     for playlist in playlists:
         owner = playlist.get("owner", {}) if isinstance(playlist, dict) else {}
         item_collection = playlist.get("items", {}) if isinstance(playlist, dict) else {}
@@ -218,8 +235,8 @@ def build_playlist_rows(playlists: List[Dict[str, Any]]) -> List[Dict[str, Any]]
     return rows
 
 
-def build_playlist_item_rows(playlist_item_batches: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
-    rows: List[Dict[str, Any]] = []
+def build_playlist_item_rows(playlist_item_batches: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    rows: list[dict[str, Any]] = []
     for batch in playlist_item_batches:
         playlist = batch.get("playlist", {}) if isinstance(batch, dict) else {}
         playlist_id = playlist.get("id")
@@ -251,8 +268,8 @@ def build_playlist_item_rows(playlist_item_batches: List[Dict[str, Any]]) -> Lis
     return rows
 
 
-def build_recently_played_rows(recently_played_items: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
-    rows: List[Dict[str, Any]] = []
+def build_recently_played_rows(recently_played_items: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    rows: list[dict[str, Any]] = []
     for item in recently_played_items:
         if not isinstance(item, dict):
             continue

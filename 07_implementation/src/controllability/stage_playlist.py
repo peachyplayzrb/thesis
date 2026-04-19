@@ -1,11 +1,11 @@
 """BL-007 playlist assembly stage executor for BL-011 controllability scenarios."""
 from __future__ import annotations
 
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from typing import Any, cast
 
-from shared_utils.io_utils import canonical_json_hash, sha256_of_text
 from controllability.reporting import csv_text, json_text
+from shared_utils.io_utils import canonical_json_hash, sha256_of_text
 
 
 def execute_playlist_stage(scoring_stage: dict[str, object], scenario: dict[str, object]) -> dict[str, object]:
@@ -73,7 +73,7 @@ def execute_playlist_stage(scoring_stage: dict[str, object], scenario: dict[str,
         )
 
     playlist_obj = {
-        "run_id": f"BL011-{scenario_id.upper()}-BL007-{datetime.now(timezone.utc).strftime('%Y%m%d-%H%M%S-%f')}",
+        "run_id": f"BL011-{scenario_id.upper()}-BL007-{datetime.now(UTC).strftime('%Y%m%d-%H%M%S-%f')}",
         "task": "BL-007",
         "scenario_id": scenario_id,
         "config": dict(assembly_config),

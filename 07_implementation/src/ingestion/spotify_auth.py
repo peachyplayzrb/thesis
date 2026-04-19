@@ -1,4 +1,4 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
 import base64
 import json
@@ -9,16 +9,16 @@ import urllib.parse
 import urllib.request
 import webbrowser
 from http.server import BaseHTTPRequestHandler, HTTPServer
-from typing import Any, Dict, Optional, Tuple
+from typing import Any
 
 ACCOUNTS_BASE_URL = "https://accounts.spotify.com"
 
 
 class OAuthCallbackState:
     def __init__(self) -> None:
-        self.code: Optional[str] = None
-        self.state: Optional[str] = None
-        self.error: Optional[str] = None
+        self.code: str | None = None
+        self.state: str | None = None
+        self.error: str | None = None
         self.event = threading.Event()
 
 
@@ -38,18 +38,18 @@ class OAuthCallbackHandler(BaseHTTPRequestHandler):
         self.send_header("Content-Type", "text/html; charset=utf-8")
         self.end_headers()
         self.wfile.write(
-            (
-                "<html><body><h3>Spotify authorization received.</h3>"
-                "<p>You can close this tab and return to the terminal.</p>"
-                "</body></html>"
-            ).encode("utf-8")
+            
+                b"<html><body><h3>Spotify authorization received.</h3>"
+                b"<p>You can close this tab and return to the terminal.</p>"
+                b"</body></html>"
+            
         )
 
     def log_message(self, format: str, *args: Any) -> None:  # noqa: A003
         return
 
 
-def parse_redirect_bind(redirect_uri: str) -> Tuple[str, int]:
+def parse_redirect_bind(redirect_uri: str) -> tuple[str, int]:
     parsed = urllib.parse.urlparse(redirect_uri)
     host = parsed.hostname or "127.0.0.1"
     port = parsed.port or 80
@@ -73,11 +73,11 @@ def build_authorize_url(client_id: str, redirect_uri: str, scopes: str, state: s
 def request_token(
     client_id: str,
     client_secret: str,
-    body_fields: Dict[str, str],
+    body_fields: dict[str, str],
     timeout_seconds: int,
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     payload = urllib.parse.urlencode(body_fields).encode("utf-8")
-    basic = base64.b64encode(f"{client_id}:{client_secret}".encode("utf-8")).decode("utf-8")
+    basic = base64.b64encode(f"{client_id}:{client_secret}".encode()).decode("utf-8")
     req = urllib.request.Request(
         url=f"{ACCOUNTS_BASE_URL}/api/token",
         data=payload,
@@ -91,7 +91,7 @@ def request_token(
         return json.loads(response.read().decode("utf-8"))
 
 
-def complete_oauth_flow(args: Any) -> Dict[str, Any]:
+def complete_oauth_flow(args: Any) -> dict[str, Any]:
     bind_host, bind_port = parse_redirect_bind(args.redirect_uri)
     state = secrets.token_urlsafe(24)
 

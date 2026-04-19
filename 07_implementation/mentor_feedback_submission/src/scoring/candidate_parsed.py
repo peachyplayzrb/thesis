@@ -1,14 +1,37 @@
-﻿"""Parse raw BL-005 candidate rows into the typed attributes BL-006 scoring uses."""
+"""
+Candidate data parsing and attribute extraction for BL-006 scoring.
+
+Parses raw candidate rows and extracts attributes needed for scoring.
+"""
 
 from shared_utils.parsing import parse_csv_labels, parse_float
 
 
 def parse_candidate_attributes(row: dict[str, str]) -> dict[str, object]:
-    """Extract numeric and semantic candidate attributes from one CSV row."""
-    # Some historical exports use `id` instead of `track_id`, so I support both.
+    """
+    Parse and extract all relevant attributes from a candidate CSV row.
+
+    Args:
+        row: Raw candidate row (all values are strings from CSV)
+
+    Returns:
+        Dict with parsed/extracted attributes:
+        - "track_id": str
+        - "danceability": float | None
+        - "energy": float | None
+        - "valence": float | None
+        - "tempo": float | None
+        - "duration_ms": float | None
+        - "key": float | None (0-11, musical semitones)
+        - "mode": float | None (0=minor, 1=major)
+        - "genres": list[str]
+        - "tags": list[str]
+        - "lead_genre": str
+    """
+    # Track ID (handle both "track_id" and "id" variants)
     track_id = (row.get("track_id") or row.get("id") or "").strip()
 
-    # Parse numeric fields defensively so malformed values stay `None` instead of crashing scoring.
+    # Numeric attributes (with None-safe parsing)
     danceability = parse_float(row.get("danceability", ""))
     energy = parse_float(row.get("energy", ""))
     valence = parse_float(row.get("valence", ""))
@@ -18,11 +41,11 @@ def parse_candidate_attributes(row: dict[str, str]) -> dict[str, object]:
     key = parse_float(row.get("key", ""))
     mode = parse_float(row.get("mode", ""))
 
-    # Semantic labels are stored as CSV-like lists in the source columns.
+    # Categorical attributes (CSV-encoded lists)
     genres = parse_csv_labels(row.get("genres", ""))
     tags = parse_csv_labels(row.get("tags", ""))
 
-    # Keep lead-genre fallback aligned with earlier stages: genres first, tags second.
+    # Derive lead genre (first priority: first genre, second: first tag)
     lead_genre = genres[0] if genres else (tags[0] if tags else "")
 
     return {

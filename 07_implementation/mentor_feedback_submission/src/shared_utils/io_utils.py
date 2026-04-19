@@ -1,28 +1,31 @@
 """
-File and serialization helpers used across the implementation.
+Consolidated file I/O utilities for all implementation stages.
 
-I kept the common JSON, CSV, hashing, and text-writing helpers here so the
-stage files could stay focused on pipeline logic instead of boilerplate.
+Provides functions for:
+- SHA256 hashing (both chunked and direct)
+- JSON/JSONL loading and writing
+- CSV loading and parsing
+- Float parsing with error handling
 """
 
 import csv
 import json
 import os
 import time
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
+from shared_utils.hashing import canonical_json_hash as _canonical_json_hash
 from shared_utils.hashing import sha256_of_file as shared_sha256_of_file
 from shared_utils.hashing import sha256_of_text as _sha256_of_text
-from shared_utils.hashing import canonical_json_hash as _canonical_json_hash
-from shared_utils.parsing import parse_csv_labels
-from shared_utils.parsing import parse_float
+from shared_utils.parsing import parse_csv_labels as parse_csv_labels
+from shared_utils.parsing import parse_float as parse_float
 
 
 def utc_now() -> str:
     """Return the current UTC time as an ISO 8601 string (YYYY-MM-DDTHH:MM:SSZ)."""
-    return datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    return datetime.now(UTC).strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
 def format_utc_iso(dt: datetime) -> str:
@@ -56,7 +59,17 @@ def open_text_write(path: Path, *, newline: str | None = None):
 
 
 def sha256_of_file(path: Path) -> str:
-    """Hash a file as uppercase SHA256 without loading the whole file into memory."""
+    """
+    Compute SHA256 hash of a file by reading it in chunks.
+
+    This is memory-efficient for large files.
+
+    Args:
+        path: Path to the file to hash
+
+    Returns:
+        SHA256 hexdigest as uppercase string
+    """
     return shared_sha256_of_file(path, uppercase=True)
 
 
@@ -71,12 +84,38 @@ def canonical_json_hash(payload: Any) -> str:
 
 
 def load_json(path: Path) -> dict:
-    """Load a JSON file and return the decoded payload."""
+    """
+    Load a JSON file.
+
+    Args:
+        path: Path to the JSON file
+
+    Returns:
+        Parsed JSON as dict
+
+    Raises:
+        json.JSONDecodeError: If file is not valid JSON
+        FileNotFoundError: If file does not exist
+    """
     return json.loads(path.read_text(encoding="utf-8"))
 
 
 def load_jsonl(path: Path) -> list[dict[str, Any]]:
-    """Load a JSONL file, skipping blank lines and decoding one object per line."""
+    """
+    Load a JSONL (JSON Lines) file.
+
+    Each line is parsed as a separate JSON object.
+
+    Args:
+        path: Path to the JSONL file
+
+    Returns:
+        List of dicts, one per line
+
+    Raises:
+        json.JSONDecodeError: If a line is not valid JSON
+        FileNotFoundError: If file does not exist
+    """
     rows: list[dict[str, Any]] = []
     with path.open("r", encoding="utf-8") as handle:
         for line in handle:
@@ -88,13 +127,31 @@ def load_jsonl(path: Path) -> list[dict[str, Any]]:
 
 
 def load_csv_rows(path: Path) -> list[dict[str, str]]:
-    """Load a CSV file into a list of row dictionaries."""
+    """
+    Load a CSV file as list of dicts.
+
+    Uses csv.DictReader to map column headers to values.
+
+    Args:
+        path: Path to the CSV file
+
+    Returns:
+        List of dicts, one per CSV row
+
+    Raises:
+        FileNotFoundError: If file does not exist
+    """
     with path.open("r", encoding="utf-8", newline="") as handle:
         return list(csv.DictReader(handle))
 
 
 def read_csv_index(path: Path, key_field: str) -> dict[str, dict[str, str]]:
-    """Load CSV rows into a key-based index, skipping rows with blank keys."""
+    """
+    Load CSV rows indexed by a key field.
+
+    Rows with missing or empty key_field values are skipped.
+    If a key appears multiple times, the last row wins.
+    """
     index: dict[str, dict[str, str]] = {}
     with path.open("r", encoding="utf-8", newline="") as handle:
         for row in csv.DictReader(handle):
@@ -105,11 +162,17 @@ def read_csv_index(path: Path, key_field: str) -> dict[str, dict[str, str]]:
 
 
 def write_json(path: Path, obj: dict | list) -> None:
-    """Write a dict or list as nicely formatted UTF-8 JSON."""
+    """
+    Write a dict or list to a JSON file with pretty indentation.
+
+    Args:
+        path: Path where JSON should be written
+        obj: Dict or list to write
+
+    Raises:
+        IOError: If file cannot be written
+    """
     path.write_text(
         json.dumps(obj, indent=2, ensure_ascii=False),
         encoding="utf-8"
     )
-
-
-# These are re-exported from shared_utils.parsing so older import sites still work.

@@ -1,61 +1,46 @@
-﻿"""Load, merge, validate, and resolve the run-config JSON for the pipeline.
-
-I keep the defaulting and schema-validation logic here so the stage modules can
-receive clean control dictionaries instead of each re-parsing the config file.
-"""
-
 from __future__ import annotations
 
+import hashlib
 import json
 from copy import deepcopy
-from datetime import datetime, timezone
-import hashlib
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
+from run_config.schema import FieldSpec, RunConfigSchemaError, validate_section
 from shared_utils.constants import (
     CUSTOM_SIGNAL_MODE_NAME,
     DEFAULT_ASSEMBLY_CONTROLS,
-    DEFAULT_CONTROLLABILITY_CONTROLS,
     DEFAULT_CONTROL_MODE,
+    DEFAULT_CONTROLLABILITY_CONTROLS,
     DEFAULT_INCLUDE_INTERACTION_TYPES,
+    DEFAULT_INFLUENCE_TRACKS,
     DEFAULT_INGESTION_CONTROLS,
     DEFAULT_INPUT_SCOPE,
-    DEFAULT_INFLUENCE_TRACKS,
     DEFAULT_INTERACTION_SCOPE,
-    DEFAULT_LANGUAGE_FILTER_CODES,
-    DEFAULT_LANGUAGE_FILTER_ENABLED,
-    DEFAULT_NUMERIC_SUPPORT_MIN_SCORE,
     DEFAULT_OBSERVABILITY_CONTROLS,
     DEFAULT_ORCHESTRATION_CONTROLS,
     DEFAULT_PROFILE_CONTROLS,
     DEFAULT_RECENCY_YEARS_MIN_OFFSET,
     DEFAULT_REPORTING_SCORE_THRESHOLDS,
-    DEFAULT_RETRIEVAL_ENABLE_POPULARITY_NUMERIC,
     DEFAULT_RETRIEVAL_CONTROLS,
-    DEFAULT_RETRIEVAL_NUMERIC_THRESHOLDS,
-    DEFAULT_RETRIEVAL_USE_CONTINUOUS_NUMERIC,
-    DEFAULT_RETRIEVAL_USE_WEIGHTED_SEMANTICS,
-    DEFAULT_SIGNAL_MODE_NAME,
     DEFAULT_SCENARIO_DEFINITIONS,
     DEFAULT_SCENARIO_POLICY,
     DEFAULT_SCORING_CONTROLS,
-    DEFAULT_SCORING_COMPONENT_WEIGHTS,
-    DEFAULT_SCORING_NUMERIC_THRESHOLDS,
     DEFAULT_SEED_CONTROLS,
+    DEFAULT_SIGNAL_MODE_NAME,
     DEFAULT_TOP_CONTRIBUTOR_LIMIT,
     DEFAULT_TRANSPARENCY_CONTROLS,
     DEFAULT_WEIGHTING_POLICY,
     ENHANCED_SIGNAL_MODE_NAME,
 )
-
 from shared_utils.io_utils import open_text_write
 from shared_utils.parsing import safe_float, safe_int
-from run_config.schema import FieldSpec, RunConfigSchemaError, validate_section
 
 RUN_CONFIG_SCHEMA_VERSION = "run-config-v1"
 RUN_INTENT_ARTIFACT_SCHEMA_VERSION = "run-intent-v1"
 RUN_EFFECTIVE_ARTIFACT_SCHEMA_VERSION = "run-effective-config-v1"
+RUN_CONFIG_SCHEMA_FILENAME = "run_config-v1.schema.json"
 
 BL003_MATCH_METHOD_SPOTIFY_ID_EXACT = "spotify_id_exact"
 BL003_MATCH_METHOD_METADATA_FALLBACK = "metadata_fallback"
@@ -199,6 +184,8 @@ def _build_default_run_config() -> dict[str, Any]:
             "required_stable_artifacts": _coerce_str_list(DEFAULT_ORCHESTRATION_CONTROLS["required_stable_artifacts"]),
         },
     }
+
+
 class RunConfigError(RuntimeError):
     pass
 
@@ -556,12 +543,19 @@ def _normalize_string_tokens(raw_values: Any, defaults: list[str]) -> list[str]:
         normalized.append(token)
     return normalized or list(defaults)
 
-def _validate_positive_thresholds(thresholds: dict[str, Any] | None, context: str) -> dict[str, float]:
-    """
-    Validate that every threshold in the mapping is numeric and positive.
 
-    I use this for the threshold blocks where zero or negative values would make
-    the later stage logic meaningless.
+def _validate_positive_thresholds(thresholds: dict[str, Any] | None, context: str) -> dict[str, float]:
+    """Validate that all numeric thresholds in the dict are positive (> 0).
+
+    Args:
+        thresholds: Dictionary of threshold name -> value
+        context: Description of where thresholds come from (for error messages)
+
+    Returns:
+        The validated thresholds as float values
+
+    Raises:
+        RunConfigError if any threshold is <= 0 or non-numeric
     """
     if not thresholds:
         return {}
@@ -570,10 +564,10 @@ def _validate_positive_thresholds(thresholds: dict[str, Any] | None, context: st
     for key, value in thresholds.items():
         try:
             float_val = float(value)
-        except (TypeError, ValueError):
+        except (TypeError, ValueError) as exc:
             raise RunConfigError(
                 f"{context}: threshold '{key}' must be numeric, got {type(value).__name__}: {value!r}"
-            )
+            ) from exc
         if float_val <= 0:
             raise RunConfigError(
                 f"{context}: threshold '{key}' must be positive (> 0), got {float_val}"
@@ -584,13 +578,24 @@ def _validate_positive_thresholds(thresholds: dict[str, Any] | None, context: st
 
 
 def _validate_positive_float(value: Any, param_name: str) -> float:
-    """Validate that one value is numeric and strictly positive."""
+    """Validate that a single threshold value is a positive float (> 0).
+
+    Args:
+        value: The value to validate
+        param_name: Name of the parameter (for error messages)
+
+    Returns:
+        The validated float value
+
+    Raises:
+        RunConfigError if value is <= 0 or non-numeric
+    """
     try:
         float_val = float(value)
-    except (TypeError, ValueError):
+    except (TypeError, ValueError) as exc:
         raise RunConfigError(
             f"{param_name} must be numeric, got {type(value).__name__}: {value!r}"
-        )
+        ) from exc
     if float_val <= 0:
         raise RunConfigError(
             f"{param_name} must be positive (> 0), got {float_val}"
@@ -637,8 +642,8 @@ def _validate_fraction_zero_to_one(value: Any, param_name: str, default: float) 
         return default
     try:
         parsed = float(value)
-    except (TypeError, ValueError):
-        raise RunConfigError(f"{param_name} must be numeric, got {value!r}")
+    except (TypeError, ValueError) as exc:
+        raise RunConfigError(f"{param_name} must be numeric, got {value!r}") from exc
     if parsed < 0.0 or parsed > 1.0:
         raise RunConfigError(f"{param_name} must be within [0, 1], got {parsed}")
     return parsed
@@ -649,8 +654,8 @@ def _validate_non_negative_float(value: Any, param_name: str, default: float) ->
         return default
     try:
         parsed = float(value)
-    except (TypeError, ValueError):
-        raise RunConfigError(f"{param_name} must be numeric, got {value!r}")
+    except (TypeError, ValueError) as exc:
+        raise RunConfigError(f"{param_name} must be numeric, got {value!r}") from exc
     if parsed < 0:
         raise RunConfigError(f"{param_name} must be >= 0, got {parsed}")
     return parsed
@@ -661,8 +666,8 @@ def _validate_non_negative_int(value: Any, param_name: str, default: int) -> int
         return default
     try:
         parsed = int(value)
-    except (TypeError, ValueError):
-        raise RunConfigError(f"{param_name} must be an integer, got {value!r}")
+    except (TypeError, ValueError) as exc:
+        raise RunConfigError(f"{param_name} must be an integer, got {value!r}") from exc
     if parsed < 0:
         raise RunConfigError(f"{param_name} must be >= 0, got {parsed}")
     return parsed
@@ -673,8 +678,8 @@ def _validate_positive_int_or_error(value: Any, param_name: str, default: int) -
         return default
     try:
         parsed = int(value)
-    except (TypeError, ValueError):
-        raise RunConfigError(f"{param_name} must be an integer, got {value!r}")
+    except (TypeError, ValueError) as exc:
+        raise RunConfigError(f"{param_name} must be an integer, got {value!r}") from exc
     if parsed <= 0:
         raise RunConfigError(f"{param_name} must be > 0, got {parsed}")
     return parsed
@@ -754,9 +759,9 @@ def _parse_iso8601_utc(raw_value: str, context: str) -> str:
     except ValueError as exc:
         raise RunConfigError(f"{context} must be a valid ISO-8601 datetime") from exc
     if parsed.tzinfo is None:
-        parsed = parsed.replace(tzinfo=timezone.utc)
+        parsed = parsed.replace(tzinfo=UTC)
     else:
-        parsed = parsed.astimezone(timezone.utc)
+        parsed = parsed.astimezone(UTC)
     return parsed.isoformat().replace("+00:00", "Z")
 
 
@@ -1189,10 +1194,10 @@ def _validate_component_weights(
     for key, value in component_weights.items():
         try:
             weight = float(value)
-        except (TypeError, ValueError):
+        except (TypeError, ValueError) as exc:
             raise RunConfigError(
                 f"{context}: component weight '{key}' must be numeric, got {type(value).__name__}: {value!r}"
-            )
+            ) from exc
         if weight < 0:
             raise RunConfigError(
                 f"{context}: component weight '{key}' must be >= 0, got {weight}"
@@ -1217,16 +1222,30 @@ def _sha256_of_file(path: Path) -> str:
 
 
 def _utc_now_iso() -> str:
-    return datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    return datetime.now(UTC).strftime("%Y-%m-%dT%H:%M:%SZ")
+
+
+def _resolve_run_config_schema_path() -> Path | None:
+    schema_path = Path(__file__).resolve().parent / "schemas" / RUN_CONFIG_SCHEMA_FILENAME
+    if not schema_path.exists():
+        return None
+    return schema_path
+
+
+def _build_run_config_schema_reference() -> dict[str, str | None]:
+    schema_path = _resolve_run_config_schema_path()
+    return {
+        "schema_version": RUN_CONFIG_SCHEMA_VERSION,
+        "schema_path": str(schema_path) if schema_path else None,
+        "schema_sha256": _sha256_of_file(schema_path) if schema_path else None,
+    }
 
 
 def canonical_default_run_config() -> dict[str, Any]:
-    """Return a deep copy of the canonical default run config."""
     return deepcopy(DEFAULT_RUN_CONFIG)
 
 
 def load_run_config(run_config_path: str | Path | None) -> dict[str, Any] | None:
-    """Load a run-config JSON file if a path was provided."""
     if run_config_path is None:
         return None
     path = Path(run_config_path)
@@ -1241,33 +1260,25 @@ def load_run_config(run_config_path: str | Path | None) -> dict[str, Any] | None
     return payload
 
 
-def resolve_effective_run_config(run_config_path: str | Path | None) -> tuple[dict[str, Any], Path | None]:
-    """
-    Resolve the final effective run config by merging the defaults with any file payload.
-
-    This is also where the schema version is checked and each control block gets
-    normalized into the shapes the later stages expect.
-    """
-    path = Path(run_config_path).resolve() if run_config_path else None
-    payload = load_run_config(path) if path else None
-    if payload is None:
-        effective = canonical_default_run_config()
-    else:
-        effective = _deep_merge(canonical_default_run_config(), payload)
-
+def _resolve_schema_version(effective: dict[str, Any]) -> None:
     schema_version = effective.get("schema_version")
     if schema_version is None:
         effective["schema_version"] = RUN_CONFIG_SCHEMA_VERSION
-    elif schema_version != RUN_CONFIG_SCHEMA_VERSION:
+        return
+    if schema_version != RUN_CONFIG_SCHEMA_VERSION:
         raise RunConfigError(
             f"Unsupported run config schema_version '{schema_version}'. Expected '{RUN_CONFIG_SCHEMA_VERSION}'."
         )
 
+
+def _resolve_user_context_section(effective: dict[str, Any]) -> None:
     user_context = effective.setdefault("user_context", {})
     if not isinstance(user_context, dict):
         raise RunConfigError("run_config.user_context must be an object")
     user_context["user_id"] = _coerce_optional_str(user_context.get("user_id"))
 
+
+def _resolve_control_mode_section(effective: dict[str, Any]) -> dict[str, Any]:
     control_mode = effective.setdefault("control_mode", {})
     if not isinstance(control_mode, dict):
         raise RunConfigError("run_config.control_mode must be an object")
@@ -1284,7 +1295,10 @@ def resolve_effective_run_config(run_config_path: str | Path | None) -> tuple[di
         control_mode.get("allow_weight_auto_normalization"),
         bool(control_defaults["allow_weight_auto_normalization"]),
     )
+    return control_mode
 
+
+def _resolve_input_scope_section(effective: dict[str, Any]) -> None:
     input_scope = effective.setdefault("input_scope", {})
     if not isinstance(input_scope, dict):
         raise RunConfigError("run_config.input_scope must be an object")
@@ -1338,12 +1352,14 @@ def resolve_effective_run_config(run_config_path: str | Path | None) -> tuple[di
         input_defaults.get("user_csv_limit", None),
     )
 
+
+def _resolve_profile_controls_section(effective: dict[str, Any]) -> dict[str, Any]:
     profile_controls = effective.setdefault("profile_controls", {})
     if not isinstance(profile_controls, dict):
         raise RunConfigError("run_config.profile_controls must be an object")
     raw_profile_controls = dict(profile_controls)
     try:
-        profile_controls = validate_section(
+        validated = validate_section(
             profile_controls,
             PROFILE_CONTROLS_SCHEMA,
             section="profile_controls",
@@ -1351,7 +1367,7 @@ def resolve_effective_run_config(run_config_path: str | Path | None) -> tuple[di
     except RunConfigSchemaError as exc:
         raise RunConfigError(str(exc)) from exc
 
-    effective["profile_controls"] = profile_controls
+    effective["profile_controls"] = validated
     numeric_malformed_default = _coerce_optional_positive_int(
         DEFAULT_PROFILE_CONTROLS.get("numeric_malformed_row_threshold"),
         None,
@@ -1360,20 +1376,23 @@ def resolve_effective_run_config(run_config_path: str | Path | None) -> tuple[di
         DEFAULT_PROFILE_CONTROLS.get("no_numeric_signal_row_threshold"),
         None,
     )
-    profile_controls["numeric_malformed_row_threshold"] = _coerce_optional_positive_int(
+    validated["numeric_malformed_row_threshold"] = _coerce_optional_positive_int(
         raw_profile_controls.get("numeric_malformed_row_threshold"),
         numeric_malformed_default,
     )
-    profile_controls["no_numeric_signal_row_threshold"] = _coerce_optional_positive_int(
+    validated["no_numeric_signal_row_threshold"] = _coerce_optional_positive_int(
         raw_profile_controls.get("no_numeric_signal_row_threshold"),
         no_numeric_signal_default,
     )
-    if float(profile_controls["confidence_bin_medium_threshold"]) > float(profile_controls["confidence_bin_high_threshold"]):
+    if float(validated["confidence_bin_medium_threshold"]) > float(validated["confidence_bin_high_threshold"]):
         raise RunConfigError(
             "profile_controls.confidence_bin_medium_threshold must be <= "
             "profile_controls.confidence_bin_high_threshold"
         )
+    return validated
 
+
+def _resolve_interaction_scope_section(effective: dict[str, Any]) -> None:
     interaction_scope = effective.setdefault("interaction_scope", {})
     if not isinstance(interaction_scope, dict):
         interaction_scope = {}
@@ -1384,6 +1403,8 @@ def resolve_effective_run_config(run_config_path: str | Path | None) -> tuple[di
         list(DEFAULT_INCLUDE_INTERACTION_TYPES),
     )
 
+
+def _resolve_influence_tracks_section(effective: dict[str, Any]) -> None:
     influence_tracks = effective.setdefault("influence_tracks", {})
     if not isinstance(influence_tracks, dict):
         influence_tracks = {}
@@ -1393,13 +1414,15 @@ def resolve_effective_run_config(run_config_path: str | Path | None) -> tuple[di
         influence_tracks,
         influence_defaults,
     )
-    influence_tracks = effective["influence_tracks"]
 
+
+def _resolve_seed_controls_section(effective: dict[str, Any]) -> None:
     seed_controls = effective.setdefault("seed_controls", {})
     seed_defaults = DEFAULT_RUN_CONFIG["seed_controls"]
     effective["seed_controls"] = _validate_bl003_seed_controls(seed_controls, seed_defaults)
-    seed_controls = effective["seed_controls"]
 
+
+def _resolve_ingestion_controls_section(effective: dict[str, Any]) -> None:
     ingestion_controls = effective.setdefault("ingestion_controls", {})
     if not isinstance(ingestion_controls, dict):
         raise RunConfigError("run_config.ingestion_controls must be an object")
@@ -1421,6 +1444,8 @@ def resolve_effective_run_config(run_config_path: str | Path | None) -> tuple[di
         float(ingestion_defaults["base_backoff_delay_seconds"]),
     )
 
+
+def _resolve_controllability_controls_section(effective: dict[str, Any]) -> None:
     controllability_controls = effective.setdefault("controllability_controls", {})
     if not isinstance(controllability_controls, dict):
         raise RunConfigError("run_config.controllability_controls must be an object")
@@ -1461,6 +1486,8 @@ def resolve_effective_run_config(run_config_path: str | Path | None) -> tuple[di
         "controllability_controls.looser_threshold_scale",
     )
 
+
+def _resolve_retrieval_controls_section(effective: dict[str, Any]) -> dict[str, Any]:
     retrieval_controls = effective.setdefault("retrieval_controls", {})
     if not isinstance(retrieval_controls, dict):
         raise RunConfigError("run_config.retrieval_controls must be an object")
@@ -1488,7 +1515,15 @@ def resolve_effective_run_config(run_config_path: str | Path | None) -> tuple[di
         retrieval_controls.get("recency_years_min_offset"),
         retrieval_defaults["recency_years_min_offset"],
     )
+    return retrieval_controls
 
+
+def _resolve_scoring_controls_section(
+    effective: dict[str, Any],
+    retrieval_controls: dict[str, Any],
+    profile_controls: dict[str, Any],
+    control_mode: dict[str, Any],
+) -> None:
     scoring_controls = effective.setdefault("scoring_controls", {})
     if not isinstance(scoring_controls, dict):
         raise RunConfigError("run_config.scoring_controls must be an object")
@@ -1530,6 +1565,8 @@ def resolve_effective_run_config(run_config_path: str | Path | None) -> tuple[di
     _enforce_profile_retrieval_limit_constraints(profile_controls, retrieval_controls)
     effective["signal_mode"] = _build_signal_mode_summary(retrieval_controls, scoring_controls)
 
+
+def _resolve_observability_controls_section(effective: dict[str, Any]) -> None:
     observability_controls = effective.setdefault("observability_controls", {})
     if not isinstance(observability_controls, dict):
         raise RunConfigError("run_config.observability_controls must be an object")
@@ -1550,6 +1587,8 @@ def resolve_effective_run_config(run_config_path: str | Path | None) -> tuple[di
         bool(observability_defaults["bootstrap_mode"]),
     )
 
+
+def _resolve_transparency_controls_section(effective: dict[str, Any]) -> None:
     transparency_controls = effective.setdefault("transparency_controls", {})
     if not isinstance(transparency_controls, dict):
         raise RunConfigError("run_config.transparency_controls must be an object")
@@ -1569,6 +1608,33 @@ def resolve_effective_run_config(run_config_path: str | Path | None) -> tuple[di
         transparency_controls.get("blend_primary_contributor_on_near_tie"),
         bool(transparency_defaults["blend_primary_contributor_on_near_tie"]),
     )
+
+
+def resolve_effective_run_config(run_config_path: str | Path | None) -> tuple[dict[str, Any], Path | None]:
+    path = Path(run_config_path).resolve() if run_config_path else None
+    payload = load_run_config(path) if path else None
+    if payload is None:
+        effective = canonical_default_run_config()
+    else:
+        effective = _deep_merge(canonical_default_run_config(), payload)
+
+    _resolve_schema_version(effective)
+    _resolve_user_context_section(effective)
+    control_mode = _resolve_control_mode_section(effective)
+    _resolve_input_scope_section(effective)
+
+    profile_controls = _resolve_profile_controls_section(effective)
+    _resolve_interaction_scope_section(effective)
+    _resolve_influence_tracks_section(effective)
+    _resolve_seed_controls_section(effective)
+
+    _resolve_ingestion_controls_section(effective)
+    _resolve_controllability_controls_section(effective)
+    retrieval_controls = _resolve_retrieval_controls_section(effective)
+    _resolve_scoring_controls_section(effective, retrieval_controls, profile_controls, control_mode)
+
+    _resolve_observability_controls_section(effective)
+    _resolve_transparency_controls_section(effective)
 
     return effective, path
 
@@ -1673,11 +1739,13 @@ def resolve_bl011_controls(run_config_path: str | Path | None) -> dict[str, Any]
 
 
 def resolve_bl011_scenario_policy(run_config_path: str | Path | None) -> tuple[dict[str, Any], list[dict[str, Any]]]:
-    """
-    Resolve the BL-011 scenario policy and any explicit scenario definitions.
+    """Resolve BL-011 scenario policy and scenario definitions from run config.
 
-    The definitions list can be empty, which just means BL-011 should fall back
-    to its built-in scenario set.
+    Returns:
+        (scenario_policy_dict, scenario_definitions_list)
+        scenario_policy keys: enabled_scenario_ids, repeat_count, stage_scope, comparison_mode
+        scenario_definitions_list: list of scenario definition dicts (may be empty; Phase 2
+            populates built-in defaults when the list is empty).
     """
     effective, _ = resolve_effective_run_config(run_config_path)
     controls = effective["controllability_controls"]
@@ -1705,11 +1773,14 @@ def resolve_bl011_scenario_policy(run_config_path: str | Path | None) -> tuple[d
 
 
 def resolve_bl003_weighting_policy(run_config_path: str | Path | None) -> dict[str, Any]:
-    """
-    Resolve the BL-003 weighting-policy knobs from the run config.
+    """Resolve BL-003 weighting policy knobs from run config.
 
-    The returned dict is flattened into the exact constants used by
-    `alignment/weighting.py`, with defaults chosen to preserve the old behavior.
+    Returns a flat dict of formula constants used by alignment/weighting.py:
+        top_tracks_min_rank_floor, top_tracks_scale_multiplier,
+        top_tracks_default_time_range_weight,
+        playlist_items_min_position_floor, playlist_items_scale_multiplier.
+    Defaults match the values previously embedded in alignment/weighting.py
+    so there is no behavioral change until the caller switches over.
     """
     effective, _ = resolve_effective_run_config(run_config_path)
     seed = effective["seed_controls"]
@@ -1809,18 +1880,24 @@ def resolve_bl006_controls(run_config_path: str | Path | None) -> dict[str, Any]
     }
 
 
-def resolve_bl007_controls(run_config_path: str | Path | None) -> dict[str, Any]:
-    effective, resolved_path = resolve_effective_run_config(run_config_path)
-    assembly = effective["assembly_controls"]
-    influence = effective["influence_tracks"]
-    defaults = DEFAULT_RUN_CONFIG["assembly_controls"]
-    min_threshold = assembly.get("min_score_threshold")
-    utility_strategy_raw = str(assembly.get("utility_strategy") or defaults["utility_strategy"]).strip().lower()
-    utility_strategy = utility_strategy_raw if utility_strategy_raw in {"rank_round_robin", "utility_greedy"} else str(defaults["utility_strategy"])
+def _resolve_bl007_enum(
+    value: Any,
+    *,
+    default_value: Any,
+    allowed: set[str],
+) -> str:
+    normalized = str(value or default_value).strip().lower()
+    default_normalized = str(default_value)
+    return normalized if normalized in allowed else default_normalized
 
+
+def _resolve_bl007_utility_weights(
+    assembly: dict[str, Any],
+    defaults: dict[str, Any],
+) -> dict[str, float]:
     utility_weights_raw = assembly.get("utility_weights")
     utility_weights_defaults = defaults.get("utility_weights") or {}
-    utility_weights = {
+    return {
         "score_weight": _coerce_non_negative_float(
             (utility_weights_raw or {}).get("score_weight") if isinstance(utility_weights_raw, dict) else None,
             float(utility_weights_defaults.get("score_weight", 1.0)),
@@ -1835,6 +1912,11 @@ def resolve_bl007_controls(run_config_path: str | Path | None) -> dict[str, Any]
         ),
     }
 
+
+def _resolve_bl007_adaptive_limits(
+    assembly: dict[str, Any],
+    defaults: dict[str, Any],
+) -> dict[str, Any]:
     adaptive_limits_raw = assembly.get("adaptive_limits")
     adaptive_defaults = defaults.get("adaptive_limits") or {}
     adaptive_limits = {
@@ -1857,10 +1939,16 @@ def resolve_bl007_controls(run_config_path: str | Path | None) -> dict[str, Any]
     }
     if adaptive_limits["max_per_genre_scale_max"] < adaptive_limits["max_per_genre_scale_min"]:
         adaptive_limits["max_per_genre_scale_max"] = adaptive_limits["max_per_genre_scale_min"]
+    return adaptive_limits
 
+
+def _resolve_bl007_controlled_relaxation(
+    assembly: dict[str, Any],
+    defaults: dict[str, Any],
+) -> dict[str, Any]:
     relaxation_raw = assembly.get("controlled_relaxation")
     relaxation_defaults = defaults.get("controlled_relaxation") or {}
-    controlled_relaxation = {
+    return {
         "enabled": _coerce_bool(
             (relaxation_raw or {}).get("enabled") if isinstance(relaxation_raw, dict) else None,
             bool(relaxation_defaults.get("enabled", False)),
@@ -1883,22 +1971,30 @@ def resolve_bl007_controls(run_config_path: str | Path | None) -> dict[str, Any]
         ),
     }
 
-    lead_genre_fallback_raw = str(
-        assembly.get("lead_genre_fallback_strategy") or defaults.get("lead_genre_fallback_strategy", "none")
-    ).strip().lower()
-    lead_genre_fallback_strategy = (
-        lead_genre_fallback_raw
-        if lead_genre_fallback_raw in {"none", "semantic_component_proxy"}
-        else str(defaults.get("lead_genre_fallback_strategy", "none"))
-    )
 
-    influence_policy_mode_raw = str(
-        assembly.get("influence_policy_mode") or defaults.get("influence_policy_mode", "competitive")
-    ).strip().lower()
-    influence_policy_mode = (
-        influence_policy_mode_raw
-        if influence_policy_mode_raw in {"competitive", "reserved_slots", "hybrid_override"}
-        else str(defaults.get("influence_policy_mode", "competitive"))
+def resolve_bl007_controls(run_config_path: str | Path | None) -> dict[str, Any]:
+    effective, resolved_path = resolve_effective_run_config(run_config_path)
+    assembly = effective["assembly_controls"]
+    influence = effective["influence_tracks"]
+    defaults = DEFAULT_RUN_CONFIG["assembly_controls"]
+    min_threshold = assembly.get("min_score_threshold")
+    utility_strategy = _resolve_bl007_enum(
+        assembly.get("utility_strategy"),
+        default_value=defaults["utility_strategy"],
+        allowed={"rank_round_robin", "utility_greedy"},
+    )
+    utility_weights = _resolve_bl007_utility_weights(assembly, defaults)
+    adaptive_limits = _resolve_bl007_adaptive_limits(assembly, defaults)
+    controlled_relaxation = _resolve_bl007_controlled_relaxation(assembly, defaults)
+    lead_genre_fallback_strategy = _resolve_bl007_enum(
+        assembly.get("lead_genre_fallback_strategy"),
+        default_value=defaults.get("lead_genre_fallback_strategy", "none"),
+        allowed={"none", "semantic_component_proxy"},
+    )
+    influence_policy_mode = _resolve_bl007_enum(
+        assembly.get("influence_policy_mode"),
+        default_value=defaults.get("influence_policy_mode", "competitive"),
+        allowed={"competitive", "reserved_slots", "hybrid_override"},
     )
 
     target_size = _coerce_positive_int(
@@ -2057,12 +2153,18 @@ def resolve_bl013_orchestration_controls(run_config_path: str | Path | None) -> 
     merged: dict[str, Any] = {**DEFAULT_ORCHESTRATION_CONTROLS, **raw}
     raw_stage_order = merged.get("stage_order")
     stage_order: list[str] | None = list(raw_stage_order) if isinstance(raw_stage_order, list) else None
+    replay_count = _coerce_positive_int(
+        merged.get("determinism_verify_replay_count"),
+        int(DEFAULT_ORCHESTRATION_CONTROLS["determinism_verify_replay_count"]),
+    )
     return {
         "config_path": str(resolved_path) if resolved_path else None,
         "stage_order": stage_order,
         "continue_on_error": bool(merged.get("continue_on_error", False)),
         "refresh_seed_policy": str(merged.get("refresh_seed_policy") or "auto_if_stale"),
         "required_stable_artifacts": list(merged.get("required_stable_artifacts") or []),
+        "determinism_verify_on_success": bool(merged.get("determinism_verify_on_success", False)),
+        "determinism_verify_replay_count": replay_count,
     }
 
 
@@ -2082,6 +2184,7 @@ def build_run_intent_payload(
         "artifact_schema_version": RUN_INTENT_ARTIFACT_SCHEMA_VERSION,
         "generated_at_utc": generated_at_utc or _utc_now_iso(),
         "run_id": run_id,
+        "run_config_schema": _build_run_config_schema_reference(),
         "intent_source": {
             "mode": "explicit_run_config" if resolved_path else "implicit_default",
             "run_config_path": str(resolved_path) if resolved_path else None,
@@ -2102,6 +2205,7 @@ def build_run_effective_payload(
         "artifact_schema_version": RUN_EFFECTIVE_ARTIFACT_SCHEMA_VERSION,
         "generated_at_utc": generated_at_utc or _utc_now_iso(),
         "run_id": run_id,
+        "run_config_schema": _build_run_config_schema_reference(),
         "resolved_from": {
             "run_config_path": str(resolved_path) if resolved_path else None,
             "run_intent_path": str(Path(run_intent_path).resolve()) if run_intent_path else None,
@@ -2119,7 +2223,7 @@ def write_run_config_artifact_pair(
     resolved_output_dir = Path(output_dir).resolve()
     resolved_output_dir.mkdir(parents=True, exist_ok=True)
 
-    timestamp = datetime.now(timezone.utc).strftime("%Y%m%d-%H%M%S-%f")
+    timestamp = datetime.now(UTC).strftime("%Y%m%d-%H%M%S-%f")
     intent_path = resolved_output_dir / f"run_intent_{timestamp}.json"
     effective_path = resolved_output_dir / f"run_effective_config_{timestamp}.json"
 

@@ -1,7 +1,5 @@
 #!/usr/bin/env python3
 
-"""Freshness-mode wrapper for BL-014 quality checks."""
-
 from __future__ import annotations
 
 import sys

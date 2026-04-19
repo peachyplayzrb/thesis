@@ -5,8 +5,10 @@ Generates summary statistics, organizes scored results, and produces
 output JSON for downstream consumption.
 """
 
-from typing import Any, Mapping, cast
-from shared_utils.constants import DEFAULT_PERFECT_SCORE_THRESHOLD, DEFAULT_ABOVE_THRESHOLD_SCORE
+from collections.abc import Mapping
+from typing import Any, cast
+
+from shared_utils.constants import DEFAULT_ABOVE_THRESHOLD_SCORE, DEFAULT_PERFECT_SCORE_THRESHOLD
 from shared_utils.parsing import safe_float, safe_int
 
 

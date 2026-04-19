@@ -1,10 +1,8 @@
-"""Shared label/weight helpers used across BL-011 scenario stage runners."""
 from __future__ import annotations
 
 import json
 
-from shared_utils.parsing import parse_csv_labels
-from shared_utils.parsing import safe_float
+from shared_utils.parsing import parse_csv_labels, safe_float
 
 
 def parse_weighted_list(raw_value: str, key_name: str, score_name: str) -> list[tuple[str, float]]:
@@ -121,7 +119,12 @@ def normalized_weights_with_override(base_weights: dict[str, float], component: 
 
 
 def normalize_component_weight_keys(raw_weights: dict[str, float]) -> dict[str, float]:
-    """Normalize component-weight keys to canonical BL-006 names."""
+    """
+    Normalize component weight keys to canonical BL-006 names.
+
+    Handles historical naming variants such as "tempo_score" and
+    canonicalizes to "tempo" so scoring and diagnostics use one schema.
+    """
     normalized: dict[str, float] = {}
     for raw_key, raw_value in raw_weights.items():
         key = str(raw_key).strip()

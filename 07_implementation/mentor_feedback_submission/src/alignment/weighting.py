@@ -1,15 +1,15 @@
 """
-Weighting helpers for BL-003 events.
+BL-003 event weighting helpers.
 
-This is where raw Spotify history rows get turned into weighted events, with
-recent or higher-signal interactions usually carrying more influence.
+Computes per-event preference weights and converts raw Spotify export rows
+into normalised event dicts consumed by the matching loop.
 """
 
 from __future__ import annotations
 
 import math
 import os
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 from alignment.constants import (
     FLOAT_PRECISION_DECIMALS,
@@ -19,6 +19,7 @@ from alignment.constants import (
     SOURCE_SAVED_TRACKS,
     SOURCE_TOP_TRACKS,
 )
+from alignment.models import AlignmentBehaviorControls, SourceEvent
 from shared_utils.constants import (
     DEFAULT_RECENTLY_PLAYED_DECAY_HALF_LIFE_DAYS,
     DEFAULT_SAVED_TRACKS_DECAY_HALF_LIFE_DAYS,
@@ -26,7 +27,6 @@ from shared_utils.constants import (
     DEFAULT_WEIGHTING_POLICY,
 )
 from shared_utils.parsing import parse_int
-from alignment.models import AlignmentBehaviorControls, SourceEvent
 
 
 def _parse_event_time(raw_value: str) -> datetime | None:
@@ -39,8 +39,8 @@ def _parse_event_time(raw_value: str) -> datetime | None:
     except ValueError:
         return None
     if parsed.tzinfo is None:
-        return parsed.replace(tzinfo=timezone.utc)
-    return parsed.astimezone(timezone.utc)
+        return parsed.replace(tzinfo=UTC)
+    return parsed.astimezone(UTC)
 
 
 def _resolve_reference_now_utc(
@@ -48,7 +48,7 @@ def _resolve_reference_now_utc(
     temporal_controls: dict[str, object] | None = None,
 ) -> datetime:
     if now_utc is not None:
-        return now_utc.astimezone(timezone.utc)
+        return now_utc.astimezone(UTC)
 
     controls = dict(temporal_controls or {})
     reference_mode = str(controls.get("reference_mode") or "system").strip().lower()
@@ -64,7 +64,7 @@ def _resolve_reference_now_utc(
             parsed_env = _parse_event_time(env_reference)
             if parsed_env is not None:
                 return parsed_env
-    return datetime.now(timezone.utc)
+    return datetime.now(UTC)
 
 
 def compute_temporal_decay(
@@ -73,7 +73,7 @@ def compute_temporal_decay(
     now_utc: datetime | None = None,
     temporal_controls: dict[str, object] | None = None,
 ) -> float:
-    """Return the exponential decay factor for an event using a half-life in days."""
+    """Return exponential time-decay factor using a half-life in days."""
     if half_life_days <= 0:
         return 1.0
     event_dt = _parse_event_time(event_time)
@@ -94,7 +94,7 @@ def compute_weight(
     weighting_policy: dict | None = None,
     behavior_controls: AlignmentBehaviorControls | None = None,
 ) -> float:
-    """Return the preference weight for one event based on its source type and position."""
+    """Return a preference weight for a single event based on its source type and position."""
     if behavior_controls is not None:
         top_range_weights = dict(behavior_controls.top_range_weights)
         source_base_weights = dict(behavior_controls.source_base_weights)
@@ -115,7 +115,7 @@ def compute_weight(
     base = source_base_weights.get(source_type, DEFAULT_SOURCE_BASE_WEIGHT_FALLBACK)
     effective_decay_half_lives = dict(decay_half_lives or {})
 
-    # Keep the old embedded defaults unless the run config explicitly overrides them.
+    # Resolve weighting policy knobs — defaults match previously embedded constants.
     _policy = dict(weighting_policy or {})
     _top_policy = dict(DEFAULT_WEIGHTING_POLICY["top_tracks"])
     _playlist_policy = dict(DEFAULT_WEIGHTING_POLICY["playlist_items"])
@@ -137,7 +137,6 @@ def compute_weight(
         return raw_weight * decay_factor
 
     if source_type == SOURCE_TOP_TRACKS:
-        # Top-track rank matters because a #1 track should count more than a #50 track.
         rank = parse_int(event.get("rank", ""))
         rank = rank if (rank is not None and rank > 0) else 50
         range_weight = top_range_weights.get(event.get("time_range", ""), _default_time_range_w)
@@ -170,7 +169,7 @@ def compute_weight(
 
 
 def to_event_rows(source_type: str, rows: list[dict[str, str]]) -> list[dict[str, str]]:
-    """Convert raw Spotify export rows into normalized event dicts for matching."""
+    """Convert raw Spotify export rows into normalised event dicts for matching."""
     events: list[dict[str, str]] = []
 
     for idx, row in enumerate(rows, start=1):

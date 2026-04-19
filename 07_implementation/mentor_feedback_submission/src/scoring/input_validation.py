@@ -1,28 +1,7 @@
 from __future__ import annotations
 
-from typing import Any
-
-
-VALIDATION_POLICIES: tuple[str, ...] = ("allow", "warn", "strict")
-
-REQUIRED_BL005_FILTERED_FIELDS: tuple[str, ...] = (
-    "track_id",
-    "artist",
-    "song",
-    "tags",
-    "genres",
-    "tempo",
-    "duration_ms",
-    "key",
-    "mode",
-)
-
-
-def normalize_validation_policy(policy: Any, default: str = "warn") -> str:
-    value = str(policy or default).strip().lower()
-    if value in VALIDATION_POLICIES:
-        return value
-    return default
+from shared_utils.constants import BL005_FILTERED_REQUIRED_FIELDS
+from shared_utils.validation_policy import normalize_validation_policy, resolve_policy_status
 
 
 def validate_bl005_bl006_handshake(
@@ -35,7 +14,7 @@ def validate_bl005_bl006_handshake(
     first_row = candidates[0] if candidates else {}
     fieldnames = [str(key) for key in first_row.keys()]
     missing_required_fields = [
-        field for field in REQUIRED_BL005_FILTERED_FIELDS if field not in fieldnames
+        field for field in BL005_FILTERED_REQUIRED_FIELDS if field not in fieldnames
     ]
 
     has_source_identifier = "id" in fieldnames or "cid" in fieldnames
@@ -53,14 +32,7 @@ def validate_bl005_bl006_handshake(
     if missing_track_id_rows > 0:
         violations.append(f"rows_missing_track_id={missing_track_id_rows}")
 
-    strict_failure = normalized_policy == "strict" and bool(violations)
-    status = "pass"
-    if strict_failure:
-        status = "fail"
-    elif violations and normalized_policy == "warn":
-        status = "warn"
-    elif violations and normalized_policy == "allow":
-        status = "allow"
+    status = resolve_policy_status(normalized_policy, violations)
 
     return {
         "policy": normalized_policy,

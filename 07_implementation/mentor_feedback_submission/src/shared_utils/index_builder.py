@@ -1,4 +1,4 @@
-"""Build the lookup tables BL-003 uses while matching events to DS-001 tracks."""
+"""DS-001 candidate index construction helpers for alignment matching."""
 from __future__ import annotations
 
 from collections import defaultdict
@@ -7,7 +7,7 @@ from shared_utils.text_matching import normalize_text
 
 
 def resolve_ds001_id(row: dict[str, str]) -> str:
-    """Pick the DS-001 identifier field that is present in this row schema."""
+    """Return a stable DS-001 identifier across schema variants."""
     return ((row.get("id") or row.get("ds001_id") or row.get("cid") or "").strip())
 
 
@@ -18,7 +18,7 @@ def build_ds001_indices(
     dict[tuple[str, str], list[dict[str, str]]],
     dict[str, list[dict[str, str]]],
 ]:
-    """Build the main in-memory indices BL-003 uses for exact and fallback matching."""
+    """Build Spotify-ID, (title, artist), and artist-only indices over DS-001 candidates."""
     by_spotify_id: dict[str, dict[str, str]] = {}
     by_title_artist: dict[tuple[str, str], list[dict[str, str]]] = defaultdict(list)
     by_artist: dict[str, list[dict[str, str]]] = defaultdict(list)

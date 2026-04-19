@@ -63,6 +63,22 @@ def parse_args() -> argparse.Namespace:
             "are emitted for this BL-013 run."
         ),
     )
+    parser.add_argument(
+        "--verify-determinism",
+        action="store_true",
+        help=(
+            "Run BL-010 reproducibility replay after BL-013 stage execution succeeds."
+        ),
+    )
+    parser.add_argument(
+        "--verify-determinism-replay-count",
+        type=int,
+        default=None,
+        help=(
+            "Replay count for deterministic verification when enabled. "
+            "Defaults to orchestration_controls.determinism_verify_replay_count (or 3)."
+        ),
+    )
     return parser.parse_args()
 
 

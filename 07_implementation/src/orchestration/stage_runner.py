@@ -19,8 +19,11 @@ def run_stage(
     run_intent_path: Path | None,
     run_effective_config_path: Path | None,
     stage_config_payload: dict[str, object] | None = None,
+    extra_args: list[str] | None = None,
 ) -> dict[str, object]:
     command = [python_executable, str(script_path)]
+    if extra_args:
+        command.extend(extra_args)
     stage_env = os.environ.copy()
     existing_pythonpath = stage_env.get("PYTHONPATH", "").strip()
     stage_root = str(root)

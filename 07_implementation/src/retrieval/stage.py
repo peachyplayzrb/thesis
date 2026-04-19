@@ -4,12 +4,29 @@ import csv
 import json
 import logging
 import time
-from datetime import datetime, timezone
+from collections.abc import Mapping
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
-logger = logging.getLogger(__name__)
-
+from retrieval.candidate_evaluator import RetrievalEvaluator
+from retrieval.filtering_logic import keep_decision
+from retrieval.input_validation import validate_bl004_bl005_handshake
+from retrieval.models import (
+    NumericFeatureSpec,
+    RetrievalArtifacts,
+    RetrievalContext,
+    RetrievalControls,
+    RetrievalInputs,
+    RetrievalPaths,
+)
+from retrieval.profile_builder import (
+    build_active_numeric_specs,
+    build_profile_label_set,
+    build_profile_weight_map,
+)
+from retrieval.runtime_controls import resolve_bl005_runtime_controls
+from shared_utils.coerce import clamp, to_float, to_int, to_mapping, to_string_list
 from shared_utils.constants import (
     DEFAULT_LEAD_GENRE_PARTIAL_MATCH_THRESHOLD,
     DEFAULT_NUMERIC_SUPPORT_MIN_PASS,
@@ -22,21 +39,12 @@ from shared_utils.constants import (
     DEFAULT_SEMANTIC_STRONG_KEEP_SCORE,
     NUMERIC_FEATURE_SPECS,
 )
-from shared_utils.coerce import clamp, to_float, to_int, to_mapping, to_string_list
 from shared_utils.io_utils import load_csv_rows, load_json, open_text_write, sha256_of_file, utc_now
+from shared_utils.parsing import normalize_candidate_row, safe_float, safe_int
 from shared_utils.path_utils import impl_root
-from shared_utils.parsing import safe_float, safe_int
 from shared_utils.stage_utils import ensure_paths_exist
 
-from retrieval.candidate_evaluator import RetrievalEvaluator
-from retrieval.filtering_logic import keep_decision
-from retrieval.input_validation import validate_bl004_bl005_handshake
-from retrieval.candidate_parser import normalize_candidate_row
-from retrieval.models import NumericFeatureSpec, RetrievalContext, RetrievalControls, RetrievalInputs, RetrievalPaths
-from retrieval.models import RetrievalArtifacts
-from retrieval.profile_builder import build_active_numeric_specs, build_profile_label_set, build_profile_weight_map
-from retrieval.runtime_controls import resolve_bl005_runtime_controls
-
+logger = logging.getLogger(__name__)
 
 DECISION_FIELDS = [
     "track_id",
@@ -85,6 +93,236 @@ DECISION_FIELDS = [
     "decision_path",
     "decision_reason",
 ]
+
+
+def _build_effective_numeric_specs(controls: RetrievalControls) -> dict[str, NumericFeatureSpec]:
+    return {
+        key: NumericFeatureSpec(
+            candidate_column=str(spec["candidate_column"]),
+            threshold=safe_float(
+                controls.numeric_thresholds.get(
+                    key,
+                    spec["threshold"],
+                ),
+                0.0,
+            ),
+            circular=bool(spec["circular"]),
+        )
+        for key, spec in NUMERIC_FEATURE_SPECS.items()
+        if controls.enable_popularity_numeric or key != "popularity"
+    }
+
+
+def _build_profile_semantic_context(
+    inputs: RetrievalInputs,
+    controls: RetrievalControls,
+) -> tuple[set[str], dict[str, float], set[str], dict[str, float], set[str], dict[str, float]]:
+    top_lead_genres = build_profile_label_set(
+        inputs.profile,
+        "top_lead_genres",
+        controls.profile_top_lead_genre_limit,
+    )
+    lead_genre_weights = build_profile_weight_map(
+        inputs.profile,
+        "top_lead_genres",
+        controls.profile_top_lead_genre_limit,
+    )
+    top_tags = build_profile_label_set(
+        inputs.profile,
+        "top_tags",
+        controls.profile_top_tag_limit,
+    )
+    tag_weights = build_profile_weight_map(
+        inputs.profile,
+        "top_tags",
+        controls.profile_top_tag_limit,
+    )
+    top_genres = build_profile_label_set(
+        inputs.profile,
+        "top_genres",
+        controls.profile_top_genre_limit,
+    )
+    genre_weights = build_profile_weight_map(
+        inputs.profile,
+        "top_genres",
+        controls.profile_top_genre_limit,
+    )
+    return (
+        top_lead_genres,
+        lead_genre_weights,
+        top_tags,
+        tag_weights,
+        top_genres,
+        genre_weights,
+    )
+
+
+def _build_numeric_profile_context(
+    inputs: RetrievalInputs,
+    controls: RetrievalControls,
+    effective_numeric_specs: dict[str, NumericFeatureSpec],
+    candidate_columns: set[str],
+) -> tuple[dict[str, NumericFeatureSpec], dict[str, float], bool, dict[str, float], float, float]:
+    active_numeric_specs = build_active_numeric_specs(
+        inputs.profile,
+        effective_numeric_specs,
+        candidate_columns,
+    )
+
+    numeric_feature_profile_obj = inputs.profile.get("numeric_feature_profile")
+    numeric_feature_profile: dict[str, Any] = (
+        numeric_feature_profile_obj if isinstance(numeric_feature_profile_obj, dict) else {}
+    )
+    numeric_centers = {
+        profile_column: float(str(numeric_feature_profile[profile_column]))
+        for profile_column in active_numeric_specs
+        if profile_column in numeric_feature_profile
+        and numeric_feature_profile[profile_column] is not None
+    }
+    numeric_features_enabled = bool(numeric_centers)
+
+    numeric_confidence_obj = inputs.profile.get("numeric_confidence")
+    numeric_confidence = (
+        numeric_confidence_obj if isinstance(numeric_confidence_obj, dict) else {}
+    )
+    confidence_by_feature_obj = numeric_confidence.get("confidence_by_feature")
+    confidence_by_feature = (
+        confidence_by_feature_obj if isinstance(confidence_by_feature_obj, dict) else {}
+    )
+    feature_confidence_by_name = {
+        feature: clamp(to_float(confidence_by_feature.get(feature), 1.0))
+        for feature in active_numeric_specs
+    }
+    profile_numeric_confidence_factor_base = 1.0
+    if feature_confidence_by_name:
+        profile_numeric_confidence_factor_base = sum(feature_confidence_by_name.values()) / float(
+            len(feature_confidence_by_name)
+        )
+
+    if controls.enable_numeric_confidence_scaling:
+        numeric_confidence_floor = clamp(controls.numeric_confidence_floor)
+        feature_confidence_by_name = {
+            key: max(numeric_confidence_floor, value)
+            for key, value in feature_confidence_by_name.items()
+        }
+    else:
+        numeric_confidence_floor = 0.0
+        feature_confidence_by_name = {
+            key: 1.0
+            for key in feature_confidence_by_name
+        }
+
+    if controls.profile_numeric_confidence_mode == "blended":
+        blend_weight = clamp(controls.profile_numeric_confidence_blend_weight)
+        profile_numeric_confidence_factor = (
+            blend_weight * profile_numeric_confidence_factor_base
+        ) + ((1.0 - blend_weight) * 1.0)
+    elif controls.enable_numeric_confidence_scaling:
+        profile_numeric_confidence_factor = profile_numeric_confidence_factor_base
+    else:
+        profile_numeric_confidence_factor = 1.0
+
+    return (
+        active_numeric_specs,
+        numeric_centers,
+        numeric_features_enabled,
+        feature_confidence_by_name,
+        profile_numeric_confidence_factor,
+        numeric_confidence_floor,
+    )
+
+
+def _build_profile_signal_metrics(inputs: RetrievalInputs) -> tuple[float, float, float, float, float]:
+    signal_vector_obj = inputs.profile.get("profile_signal_vector")
+    signal_vector = signal_vector_obj if isinstance(signal_vector_obj, dict) else {}
+    bl003_quality_obj = inputs.profile.get("bl003_quality")
+    bl003_quality = bl003_quality_obj if isinstance(bl003_quality_obj, dict) else {}
+
+    profile_match_quality = clamp(
+        to_float(
+            signal_vector.get(
+                "alignment_match_rate",
+                bl003_quality.get("match_rate", 1.0),
+            ),
+            1.0,
+        )
+    )
+    top_genre_entropy = clamp(to_float(signal_vector.get("top_genre_entropy"), 0.0))
+    top_tag_entropy = clamp(to_float(signal_vector.get("top_tag_entropy"), 0.0))
+    history_weight_share = clamp(to_float(signal_vector.get("history_weight_share"), 1.0))
+    influence_weight_share = clamp(to_float(signal_vector.get("influence_weight_share"), 0.0))
+    return (
+        profile_match_quality,
+        top_genre_entropy,
+        top_tag_entropy,
+        history_weight_share,
+        influence_weight_share,
+    )
+
+
+def _build_effective_threshold_context(
+    controls: RetrievalControls,
+    *,
+    profile_match_quality: float,
+    top_genre_entropy: float,
+    top_tag_entropy: float,
+    influence_weight_share: float,
+) -> tuple[float, float, float, int, float, float]:
+    average_entropy = (top_genre_entropy + top_tag_entropy) / 2.0
+    threshold_penalty = 0.0
+    if controls.profile_quality_penalty_enabled:
+        if profile_match_quality < controls.profile_quality_threshold:
+            threshold_penalty += controls.profile_quality_penalty_increment
+        if average_entropy < controls.profile_entropy_low_threshold:
+            threshold_penalty += controls.profile_entropy_penalty_increment
+        if influence_weight_share > controls.influence_share_threshold:
+            threshold_penalty += controls.influence_share_penalty_increment
+
+    effective_semantic_min_keep_score = min(
+        3.0,
+        float(controls.semantic_min_keep_score) + threshold_penalty,
+    )
+    effective_semantic_strong_keep_score = min(
+        3.0,
+        max(
+            effective_semantic_min_keep_score,
+            float(controls.semantic_strong_keep_score) + threshold_penalty,
+        ),
+    )
+    effective_numeric_support_min_pass = max(
+        0,
+        int(round(float(controls.numeric_support_min_pass) * (1.0 + (threshold_penalty * controls.numeric_penalty_scale)))),
+    )
+    effective_numeric_support_min_score = max(
+        0.0,
+        float(controls.numeric_support_min_score) * (1.0 + (threshold_penalty * controls.numeric_penalty_scale)),
+    )
+
+    semantic_overlap_damping = 1.0
+    if average_entropy < controls.profile_entropy_low_threshold:
+        semantic_overlap_damping = controls.semantic_overlap_damping_low_entropy
+    elif average_entropy < controls.semantic_overlap_damping_mid_entropy_threshold:
+        semantic_overlap_damping = controls.semantic_overlap_damping_mid_entropy
+
+    return (
+        threshold_penalty,
+        effective_semantic_min_keep_score,
+        effective_semantic_strong_keep_score,
+        effective_numeric_support_min_pass,
+        effective_numeric_support_min_score,
+        semantic_overlap_damping,
+    )
+
+
+def _build_recency_context(controls: RetrievalControls) -> tuple[list[str], int, int | None]:
+    language_filter_codes = sorted({code for code in controls.language_filter_codes if code})
+    current_year_utc = datetime.now(UTC).year
+    recency_min_release_year = (
+        current_year_utc - controls.recency_years_min_offset
+        if controls.recency_years_min_offset is not None
+        else None
+    )
+    return language_filter_codes, current_year_utc, recency_min_release_year
 
 
 class RetrievalStage:
@@ -287,190 +525,54 @@ class RetrievalStage:
         inputs: RetrievalInputs,
         controls: RetrievalControls,
     ) -> RetrievalContext:
-        effective_numeric_specs = {
-            key: NumericFeatureSpec(
-                candidate_column=str(spec["candidate_column"]),
-                threshold=safe_float(
-                    controls.numeric_thresholds.get(
-                        key,
-                        spec["threshold"],
-                    ),
-                    0.0,
-                ),
-                circular=bool(spec["circular"]),
-            )
-            for key, spec in NUMERIC_FEATURE_SPECS.items()
-            if controls.enable_popularity_numeric or key != "popularity"
-        }
+        effective_numeric_specs = _build_effective_numeric_specs(controls)
 
         seed_track_ids = {str(row["track_id"]) for row in inputs.seed_trace_rows}
         candidate_columns = set(inputs.candidate_rows[0].keys()) if inputs.candidate_rows else set()
 
-        top_lead_genres = build_profile_label_set(
-            inputs.profile,
-            "top_lead_genres",
-            controls.profile_top_lead_genre_limit,
-        )
-        lead_genre_weights = build_profile_weight_map(
-            inputs.profile,
-            "top_lead_genres",
-            controls.profile_top_lead_genre_limit,
-        )
-        top_tags = build_profile_label_set(
-            inputs.profile,
-            "top_tags",
-            controls.profile_top_tag_limit,
-        )
-        tag_weights = build_profile_weight_map(
-            inputs.profile,
-            "top_tags",
-            controls.profile_top_tag_limit,
-        )
-        top_genres = build_profile_label_set(
-            inputs.profile,
-            "top_genres",
-            controls.profile_top_genre_limit,
-        )
-        genre_weights = build_profile_weight_map(
-            inputs.profile,
-            "top_genres",
-            controls.profile_top_genre_limit,
-        )
-        active_numeric_specs = build_active_numeric_specs(
-            inputs.profile,
+        (
+            top_lead_genres,
+            lead_genre_weights,
+            top_tags,
+            tag_weights,
+            top_genres,
+            genre_weights,
+        ) = _build_profile_semantic_context(inputs, controls)
+        (
+            active_numeric_specs,
+            numeric_centers,
+            numeric_features_enabled,
+            feature_confidence_by_name,
+            profile_numeric_confidence_factor,
+            numeric_confidence_floor,
+        ) = _build_numeric_profile_context(
+            inputs,
+            controls,
             effective_numeric_specs,
             candidate_columns,
         )
-
-        numeric_feature_profile_obj = inputs.profile.get("numeric_feature_profile")
-        numeric_feature_profile: dict[str, Any] = (
-            numeric_feature_profile_obj if isinstance(numeric_feature_profile_obj, dict) else {}
+        (
+            profile_match_quality,
+            top_genre_entropy,
+            top_tag_entropy,
+            history_weight_share,
+            influence_weight_share,
+        ) = _build_profile_signal_metrics(inputs)
+        (
+            threshold_penalty,
+            effective_semantic_min_keep_score,
+            effective_semantic_strong_keep_score,
+            effective_numeric_support_min_pass,
+            effective_numeric_support_min_score,
+            semantic_overlap_damping,
+        ) = _build_effective_threshold_context(
+            controls,
+            profile_match_quality=profile_match_quality,
+            top_genre_entropy=top_genre_entropy,
+            top_tag_entropy=top_tag_entropy,
+            influence_weight_share=influence_weight_share,
         )
-        numeric_centers = {
-            profile_column: float(str(numeric_feature_profile[profile_column]))
-            for profile_column in active_numeric_specs
-            if profile_column in numeric_feature_profile
-            and numeric_feature_profile[profile_column] is not None
-        }
-        numeric_features_enabled = bool(numeric_centers)
-
-        numeric_confidence_obj = inputs.profile.get("numeric_confidence")
-        numeric_confidence = (
-            numeric_confidence_obj if isinstance(numeric_confidence_obj, dict) else {}
-        )
-        confidence_by_feature_obj = numeric_confidence.get("confidence_by_feature")
-        confidence_by_feature = (
-            confidence_by_feature_obj if isinstance(confidence_by_feature_obj, dict) else {}
-        )
-        feature_confidence_by_name = {
-            feature: clamp(
-                to_float(confidence_by_feature.get(feature), 1.0)
-            )
-            for feature in active_numeric_specs
-        }
-        profile_numeric_confidence_factor_base = 1.0
-        if feature_confidence_by_name:
-            profile_numeric_confidence_factor_base = sum(feature_confidence_by_name.values()) / float(
-                len(feature_confidence_by_name)
-            )
-
-        if controls.enable_numeric_confidence_scaling:
-            numeric_confidence_floor = clamp(controls.numeric_confidence_floor)
-            feature_confidence_by_name = {
-                key: max(numeric_confidence_floor, value)
-                for key, value in feature_confidence_by_name.items()
-            }
-        else:
-            numeric_confidence_floor = 0.0
-            feature_confidence_by_name = {
-                key: 1.0
-                for key in feature_confidence_by_name
-            }
-
-        if controls.profile_numeric_confidence_mode == "blended":
-            blend_weight = clamp(controls.profile_numeric_confidence_blend_weight)
-            profile_numeric_confidence_factor = (
-                blend_weight * profile_numeric_confidence_factor_base
-            ) + ((1.0 - blend_weight) * 1.0)
-        elif controls.enable_numeric_confidence_scaling:
-            profile_numeric_confidence_factor = profile_numeric_confidence_factor_base
-        else:
-            profile_numeric_confidence_factor = 1.0
-
-        signal_vector_obj = inputs.profile.get("profile_signal_vector")
-        signal_vector = signal_vector_obj if isinstance(signal_vector_obj, dict) else {}
-        bl003_quality_obj = inputs.profile.get("bl003_quality")
-        bl003_quality = bl003_quality_obj if isinstance(bl003_quality_obj, dict) else {}
-
-        profile_match_quality = clamp(
-            to_float(
-                signal_vector.get(
-                    "alignment_match_rate",
-                    bl003_quality.get("match_rate", 1.0),
-                ),
-                1.0,
-            )
-        )
-        top_genre_entropy = clamp(
-            to_float(signal_vector.get("top_genre_entropy"), 0.0)
-        )
-        top_tag_entropy = clamp(
-            to_float(signal_vector.get("top_tag_entropy"), 0.0)
-        )
-        history_weight_share = clamp(
-            to_float(signal_vector.get("history_weight_share"), 1.0)
-        )
-        # When BL-003 injection is disabled (BL003_INJECT_INFLUENCE_TRACKS=false) and influence
-        # ownership moves to BL-006, influence events are excluded from the profile. In that case
-        # influence_weight_share will be 0.0 so the penalty branch below will not fire — this is
-        # intentional graceful behaviour during the migration, not a bug.
-        influence_weight_share = clamp(
-            to_float(signal_vector.get("influence_weight_share"), 0.0)
-        )
-
-        average_entropy = (top_genre_entropy + top_tag_entropy) / 2.0
-        threshold_penalty = 0.0
-        if controls.profile_quality_penalty_enabled:
-            if profile_match_quality < controls.profile_quality_threshold:
-                threshold_penalty += controls.profile_quality_penalty_increment
-            if average_entropy < controls.profile_entropy_low_threshold:
-                threshold_penalty += controls.profile_entropy_penalty_increment
-            if influence_weight_share > controls.influence_share_threshold:
-                threshold_penalty += controls.influence_share_penalty_increment
-
-        effective_semantic_min_keep_score = min(
-            3.0,
-            float(controls.semantic_min_keep_score) + threshold_penalty,
-        )
-        effective_semantic_strong_keep_score = min(
-            3.0,
-            max(
-                effective_semantic_min_keep_score,
-                float(controls.semantic_strong_keep_score) + threshold_penalty,
-            ),
-        )
-        effective_numeric_support_min_pass = max(
-            0,
-            int(round(float(controls.numeric_support_min_pass) * (1.0 + (threshold_penalty * controls.numeric_penalty_scale)))),
-        )
-        effective_numeric_support_min_score = max(
-            0.0,
-            float(controls.numeric_support_min_score) * (1.0 + (threshold_penalty * controls.numeric_penalty_scale)),
-        )
-
-        semantic_overlap_damping = 1.0
-        if average_entropy < controls.profile_entropy_low_threshold:
-            semantic_overlap_damping = controls.semantic_overlap_damping_low_entropy
-        elif average_entropy < controls.semantic_overlap_damping_mid_entropy_threshold:
-            semantic_overlap_damping = controls.semantic_overlap_damping_mid_entropy
-
-        language_filter_codes = sorted({code for code in controls.language_filter_codes if code})
-        current_year_utc = datetime.now(timezone.utc).year
-        recency_min_release_year = (
-            current_year_utc - controls.recency_years_min_offset
-            if controls.recency_years_min_offset is not None
-            else None
-        )
+        language_filter_codes, current_year_utc, recency_min_release_year = _build_recency_context(controls)
 
         return RetrievalContext(
             signal_mode=dict(controls.signal_mode),
@@ -649,8 +751,15 @@ class RetrievalStage:
             and not str(row.get("decision_path", "")).startswith("reject_language_filter")
             and not str(row.get("decision_path", "")).startswith("reject_recency_gate")
         ]
+        language_filtered_rows = [
+            row
+            for row in decisions
+            if not bool(safe_int(row.get("is_seed_track", 0), 0))
+            and str(row.get("decision_path", "")).startswith("reject_language_filter")
+        ]
 
-        def estimate_kept(
+        def estimate_kept_from_rows(
+            rows: list[dict[str, object]],
             *,
             semantic_strong: float,
             semantic_min: float,
@@ -658,7 +767,7 @@ class RetrievalStage:
             numeric_min_score: float,
         ) -> int:
             kept_count = 0
-            for row in candidate_rows:
+            for row in rows:
                 kept, _ = keep_decision(
                     False,
                     safe_float(row.get("semantic_score", 0.0), 0.0),
@@ -676,6 +785,21 @@ class RetrievalStage:
                 if kept:
                     kept_count += 1
             return kept_count
+
+        def estimate_kept(
+            *,
+            semantic_strong: float,
+            semantic_min: float,
+            numeric_min_pass: int,
+            numeric_min_score: float,
+        ) -> int:
+            return estimate_kept_from_rows(
+                candidate_rows,
+                semantic_strong=semantic_strong,
+                semantic_min=semantic_min,
+                numeric_min_pass=numeric_min_pass,
+                numeric_min_score=numeric_min_score,
+            )
 
         base_kept = sum(1 for row in candidate_rows if str(row.get("decision", "")) == "keep")
         perturbation_pct = 0.10
@@ -717,6 +841,21 @@ class RetrievalStage:
             numeric_min_score=tightened_numeric_min_score,
         )
 
+        # Language filter what-if: re-evaluate threshold logic on rows that were
+        # rejected only by the language gate, using base thresholds unchanged.
+        # Rows that were language-filtered have all threshold feature scores
+        # populated (scoring happens before the language gate in keep_decision),
+        # so this is a bounded row-level estimate, not a full re-retrieval.
+        all_non_seed_excl_recency = candidate_rows + language_filtered_rows
+        language_filter_disabled_kept = estimate_kept_from_rows(
+            all_non_seed_excl_recency,
+            semantic_strong=runtime_context.effective_semantic_strong_keep_score,
+            semantic_min=runtime_context.effective_semantic_min_keep_score,
+            numeric_min_pass=runtime_context.effective_numeric_support_min_pass,
+            numeric_min_score=runtime_context.effective_numeric_support_min_score,
+        )
+        language_filter_delta = language_filter_disabled_kept - base_kept
+
         return {
             "considered_candidates": len(candidate_rows),
             "base_kept_candidates": base_kept,
@@ -740,9 +879,172 @@ class RetrievalStage:
                     6,
                 ) if base_kept > 0 else 0.0,
             },
+            "per_control_family_scenarios": {
+                "thresholds": {
+                    "description": (
+                        "Combined ±10% threshold perturbation across semantic and numeric params. "
+                        "Shows sensitivity of kept-candidate count to coordinated threshold shifts."
+                    ),
+                    "relaxed_kept_candidates": relaxed_kept,
+                    "relaxed_delta_vs_base": relaxed_kept - base_kept,
+                    "tightened_kept_candidates": tightened_kept,
+                    "tightened_delta_vs_base": tightened_kept - base_kept,
+                },
+                "language_filter": {
+                    "description": (
+                        "Bounded row-level estimate: if the language gate were disabled, "
+                        "how many previously language-filtered candidates would pass the current "
+                        "threshold rules. Uses existing decision-feature scores; not a full re-retrieval."
+                    ),
+                    "language_filtered_candidates": len(language_filtered_rows),
+                    "disabled_kept_candidates": language_filter_disabled_kept,
+                    "delta_vs_base": language_filter_delta,
+                    "delta_share_vs_base": round(language_filter_delta / base_kept, 6) if base_kept > 0 else 0.0,
+                },
+                "assembly_limits": {
+                    "description": (
+                        "Assembly limit effects are downstream of BL-005 retrieval. "
+                        "Per-control-family assembly what-if analysis is scoped to BL-007/BL-008 "
+                        "observability payloads; see UNDO-Q for cross-stage attribution hardening."
+                    ),
+                    "scope": "out_of_bl005_scope",
+                },
+            },
             "notes": (
                 "This is a bounded, row-level diagnostic estimate using existing decision features; "
                 "it is not a full rerun-level counterfactual simulation."
+            ),
+        }
+
+    @staticmethod
+    def _build_candidate_shaping_fidelity(
+        *,
+        counts: Mapping[str, object],
+        decision_path_counts: Mapping[str, object],
+        threshold_attribution: dict[str, object],
+        bounded_what_if_estimates: dict[str, object],
+    ) -> dict[str, object]:
+        total_candidates = safe_int(counts.get("candidate_rows_total", 0), 0)
+        seed_tracks_excluded = safe_int(counts.get("seed_tracks_excluded", 0), 0)
+        rejected_by_language_filter = safe_int(counts.get("rejected_by_language_filter", 0), 0)
+        rejected_by_recency_gate = safe_int(counts.get("rejected_by_recency_gate", 0), 0)
+        rejected_non_seed_candidates = safe_int(counts.get("rejected_non_seed_candidates", 0), 0)
+        kept_candidates = safe_int(counts.get("kept_candidates", 0), 0)
+
+        post_seed_pool = max(0, total_candidates - seed_tracks_excluded)
+        post_language_pool = max(0, post_seed_pool - rejected_by_language_filter)
+        post_recency_pool = max(0, post_language_pool - rejected_by_recency_gate)
+
+        def _share(value: int, denominator: int) -> float:
+            if denominator <= 0:
+                return 0.0
+            return round(value / denominator, 6)
+
+        exclusion_categories = {
+            "reject_seed_track": seed_tracks_excluded,
+            "reject_language_filter": rejected_by_language_filter,
+            "reject_recency_gate": rejected_by_recency_gate,
+            "reject_semantic_without_numeric_support": safe_int(
+                decision_path_counts.get("reject_semantic_without_numeric_support", 0),
+                0,
+            ),
+            "reject_numeric_without_semantic_support": safe_int(
+                decision_path_counts.get("reject_numeric_without_semantic_support", 0),
+                0,
+            ),
+            "reject_no_signal": safe_int(decision_path_counts.get("reject_no_signal", 0), 0),
+            "reject_insufficient_semantic": safe_int(
+                decision_path_counts.get("reject_insufficient_semantic", 0),
+                0,
+            ),
+        }
+
+        threshold_rejection_count = (
+            exclusion_categories["reject_semantic_without_numeric_support"]
+            + exclusion_categories["reject_numeric_without_semantic_support"]
+            + exclusion_categories["reject_no_signal"]
+            + exclusion_categories["reject_insufficient_semantic"]
+        )
+        total_rejections = max(0, rejected_non_seed_candidates)
+        ranked_rejection_drivers = sorted(
+            [
+                {
+                    "driver": name,
+                    "count": int(value),
+                    "share_of_post_recency_pool": _share(int(value), post_recency_pool),
+                    "share_of_total_rejections": _share(int(value), total_rejections),
+                }
+                for name, value in exclusion_categories.items()
+            ],
+            key=lambda item: (safe_int(item.get("count"), 0), str(item.get("driver", ""))),
+            reverse=True,
+        )
+        dominant_rejection_driver = ranked_rejection_drivers[0] if ranked_rejection_drivers else None
+
+        relaxed_estimate = to_mapping(bounded_what_if_estimates.get("relaxed_estimate"))
+        tightened_estimate = to_mapping(bounded_what_if_estimates.get("tightened_estimate"))
+        relaxed_delta = safe_int(relaxed_estimate.get("delta_vs_base"), 0)
+        tightened_delta = safe_int(tightened_estimate.get("delta_vs_base"), 0)
+        net_directional_span = relaxed_delta - tightened_delta
+        directionality = "symmetric"
+        if net_directional_span > 0:
+            directionality = "relaxation_dominant"
+        elif net_directional_span < 0:
+            directionality = "tightening_dominant"
+
+        return {
+            "pool_progression": {
+                "candidate_rows_total": total_candidates,
+                "post_seed_exclusion_pool": post_seed_pool,
+                "post_language_filter_pool": post_language_pool,
+                "post_recency_gate_pool": post_recency_pool,
+                "kept_candidates": kept_candidates,
+                "rejected_non_seed_candidates": rejected_non_seed_candidates,
+                "trend": [
+                    {"stage": "candidate_rows_total", "count": total_candidates},
+                    {"stage": "post_seed_exclusion_pool", "count": post_seed_pool},
+                    {"stage": "post_language_filter_pool", "count": post_language_pool},
+                    {"stage": "post_recency_gate_pool", "count": post_recency_pool},
+                    {"stage": "kept_candidates", "count": kept_candidates},
+                ],
+            },
+            "exclusion_categories": exclusion_categories,
+            "control_effect_observability": {
+                "seed_exclusion_share": _share(seed_tracks_excluded, total_candidates),
+                "language_filter_rejection_share": _share(rejected_by_language_filter, post_seed_pool),
+                "recency_gate_rejection_share": _share(rejected_by_recency_gate, post_language_pool),
+                "threshold_rejection_share": _share(threshold_rejection_count, post_recency_pool),
+                "retained_share_after_gates": _share(kept_candidates, post_recency_pool),
+            },
+            "rejection_driver_contribution": {
+                "ranked_rejection_drivers": ranked_rejection_drivers,
+                "dominant_rejection_driver": (
+                    str(dominant_rejection_driver.get("driver", ""))
+                    if isinstance(dominant_rejection_driver, dict)
+                    else ""
+                ),
+                "dominant_rejection_driver_share_of_total_rejections": (
+                    safe_float(
+                        dominant_rejection_driver.get("share_of_total_rejections", 0.0),
+                        0.0,
+                    )
+                    if isinstance(dominant_rejection_driver, dict)
+                    else 0.0
+                ),
+            },
+            "threshold_effects": {
+                "threshold_attribution": threshold_attribution,
+                "bounded_what_if_estimates": bounded_what_if_estimates,
+                "directional_impact_summary": {
+                    "relaxed_delta_vs_base": relaxed_delta,
+                    "tightened_delta_vs_base": tightened_delta,
+                    "net_directional_span": net_directional_span,
+                    "dominant_direction": directionality,
+                },
+            },
+            "notes": (
+                "UNDO-C candidate-shaping fidelity block summarizes pool-size progression, "
+                "exclusion categories, and control/threshold effects for BL-005 diagnostics visibility."
             ),
         }
 
@@ -771,6 +1073,28 @@ class RetrievalStage:
         handshake_policy = "warn"
         if controls is not None:
             handshake_policy = controls.bl004_bl005_handshake_validation_policy
+        counts = {
+            "candidate_rows_total": len(candidate_rows),
+            "seed_tracks_excluded": int(decision_counts.get("seed_excluded", 0)),
+            "kept_candidates": len(kept_rows),
+            "rejected_non_seed_candidates": int(decision_counts.get("rejected_threshold", 0)),
+            "rejected_by_language_filter": int(decision_path_counts.get("reject_language_filter", 0)),
+            "rejected_by_recency_gate": int(decision_path_counts.get("reject_recency_gate", 0)),
+        }
+        threshold_attribution = RetrievalStage._build_threshold_attribution(
+            decisions=resolved_decisions,
+            runtime_context=runtime_context,
+        )
+        bounded_what_if_estimates = RetrievalStage._build_bounded_what_if_estimates(
+            decisions=resolved_decisions,
+            runtime_context=runtime_context,
+        )
+        candidate_shaping_fidelity = RetrievalStage._build_candidate_shaping_fidelity(
+            counts=counts,
+            decision_path_counts=decision_path_counts,
+            threshold_attribution=threshold_attribution,
+            bounded_what_if_estimates=bounded_what_if_estimates,
+        )
         profile_numeric_features_available_obj = validation.get("profile_numeric_features_available")
         numeric_threshold_keys_obj = validation.get("numeric_threshold_keys")
 
@@ -875,27 +1199,15 @@ class RetrievalStage:
                     "effective_threshold_penalty": round(runtime_context.effective_threshold_penalty, 6),
                 },
             },
-            "counts": {
-                "candidate_rows_total": len(candidate_rows),
-                "seed_tracks_excluded": int(decision_counts.get("seed_excluded", 0)),
-                "kept_candidates": len(kept_rows),
-                "rejected_non_seed_candidates": int(decision_counts.get("rejected_threshold", 0)),
-                "rejected_by_language_filter": int(decision_path_counts.get("reject_language_filter", 0)),
-                "rejected_by_recency_gate": int(decision_path_counts.get("reject_recency_gate", 0)),
-            },
+            "counts": counts,
             "rule_hits": {
                 "semantic_rule_hits": summary["semantic_rule_hits"],
                 "numeric_rule_hits": summary["numeric_rule_hits"],
             },
             "decision_path_counts": summary["decision_path_counts"],
-            "threshold_attribution": RetrievalStage._build_threshold_attribution(
-                decisions=resolved_decisions,
-                runtime_context=runtime_context,
-            ),
-            "bounded_what_if_estimates": RetrievalStage._build_bounded_what_if_estimates(
-                decisions=resolved_decisions,
-                runtime_context=runtime_context,
-            ),
+            "threshold_attribution": threshold_attribution,
+            "bounded_what_if_estimates": bounded_what_if_estimates,
+            "candidate_shaping_fidelity": candidate_shaping_fidelity,
             "score_distributions": {
                 "semantic_score": summary["semantic_score_distribution"],
                 "numeric_pass_count": summary["numeric_pass_distribution"],
@@ -983,7 +1295,7 @@ class RetrievalStage:
         context = self.build_runtime_context(inputs=inputs, controls=controls)
 
         start_time = time.time()
-        run_id = f"BL005-FILTER-{datetime.now(timezone.utc).strftime('%Y%m%d-%H%M%S-%f')}"
+        run_id = f"BL005-FILTER-{datetime.now(UTC).strftime('%Y%m%d-%H%M%S-%f')}"
         evaluation = RetrievalEvaluator(context).evaluate(inputs.candidate_rows)
 
         output_paths = self.write_output_artifacts(

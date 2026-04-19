@@ -4,12 +4,20 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Any
 
-from alignment.constants import ALIGNMENT_SEED_CONTRACT_SCHEMA_VERSION, ALIGNMENT_STRUCTURAL_CONTRACT_SCHEMA_VERSION, MATCH_STRATEGY_ORDER
+from alignment.constants import (
+    ALIGNMENT_SEED_CONTRACT_SCHEMA_VERSION,
+    ALIGNMENT_STRUCTURAL_CONTRACT_SCHEMA_VERSION,
+    MATCH_STRATEGY_ORDER,
+)
 from alignment.models import AlignmentBehaviorControls, AlignmentStructuralContract
-from alignment.writers import build_seed_contract_payload, build_structural_contract_payload, canonical_json_hash
+from alignment.writers import (
+    build_seed_contract_payload,
+    build_structural_contract_payload,
+    canonical_json_hash,
+)
+from orchestration.stage_registry import BL003_SUMMARY_PATH
 from shared_utils.constants import DEFAULT_SEED_CONTROLS
 from shared_utils.io_utils import load_json
-from orchestration.stage_registry import BL003_SUMMARY_PATH
 
 
 def _normalize_weighting_policy(seed_controls: dict[str, Any]) -> dict[str, float]:
@@ -33,6 +41,51 @@ def _normalize_weighting_policy(seed_controls: dict[str, Any]) -> dict[str, floa
     }
 
 
+def _dict_or_empty(value: object) -> dict[str, Any]:
+    return dict(value) if isinstance(value, dict) else {}
+
+
+def _list_or_empty(value: object) -> list[Any]:
+    return list(value) if isinstance(value, list) else []
+
+
+def _build_fuzzy_matching_controls(seed_controls: dict[str, Any], fuzzy_defaults: dict[str, Any]) -> dict[str, Any]:
+    fuzzy_matching = _dict_or_empty(seed_controls.get("fuzzy_matching"))
+    return {
+        "enabled": bool(fuzzy_matching.get("enabled", False)),
+        "artist_threshold": float(fuzzy_matching.get("artist_threshold", fuzzy_defaults.get("artist_threshold", 0.90))),
+        "title_threshold": float(fuzzy_matching.get("title_threshold", fuzzy_defaults.get("title_threshold", 0.90))),
+        "combined_threshold": float(fuzzy_matching.get("combined_threshold", fuzzy_defaults.get("combined_threshold", 0.90))),
+        "max_duration_delta_ms": int(fuzzy_matching.get("max_duration_delta_ms", fuzzy_defaults.get("max_duration_delta_ms", 5000))),
+        "max_artist_candidates": int(fuzzy_matching.get("max_artist_candidates", fuzzy_defaults.get("max_artist_candidates", 5))),
+    }
+
+
+def _build_match_strategy(seed_controls: dict[str, Any], defaults: dict[str, Any]) -> dict[str, bool]:
+    match_strategy = _dict_or_empty(seed_controls.get("match_strategy"))
+    return {
+        "enable_spotify_id_match": bool(match_strategy.get("enable_spotify_id_match", defaults.get("enable_spotify_id_match", True))),
+        "enable_metadata_match": bool(match_strategy.get("enable_metadata_match", defaults.get("enable_metadata_match", True))),
+        "enable_fuzzy_match": bool(match_strategy.get("enable_fuzzy_match", defaults.get("enable_fuzzy_match", True))),
+    }
+
+
+def _build_temporal_controls(seed_controls: dict[str, Any], defaults: dict[str, Any]) -> dict[str, Any]:
+    temporal_controls = _dict_or_empty(seed_controls.get("temporal_controls"))
+    return {
+        "reference_mode": str(temporal_controls.get("reference_mode", defaults.get("reference_mode", "system"))),
+        "reference_now_utc": temporal_controls.get("reference_now_utc", defaults.get("reference_now_utc")),
+    }
+
+
+def _build_aggregation_policy(seed_controls: dict[str, Any], defaults: dict[str, Any]) -> dict[str, Any]:
+    aggregation_policy = _dict_or_empty(seed_controls.get("aggregation_policy"))
+    return {
+        "preference_weight_mode": str(aggregation_policy.get("preference_weight_mode", defaults.get("preference_weight_mode", "sum"))),
+        "preference_weight_cap_per_event": aggregation_policy.get("preference_weight_cap_per_event", defaults.get("preference_weight_cap_per_event")),
+    }
+
+
 def _build_behavior_controls(
     input_scope: dict[str, Any],
     influence: dict[str, Any],
@@ -42,23 +95,7 @@ def _build_behavior_controls(
     match_strategy_defaults = dict(DEFAULT_SEED_CONTROLS.get("match_strategy") or {})
     temporal_defaults = dict(DEFAULT_SEED_CONTROLS.get("temporal_controls") or {})
     aggregation_defaults = dict(DEFAULT_SEED_CONTROLS.get("aggregation_policy") or {})
-
-    fuzzy_matching = seed_controls.get("fuzzy_matching") or {}
-    match_strategy = seed_controls.get("match_strategy") or {}
-    match_strategy_order = seed_controls.get("match_strategy_order") or []
-    temporal_controls = seed_controls.get("temporal_controls") or {}
-    aggregation_policy = seed_controls.get("aggregation_policy") or {}
-
-    if not isinstance(fuzzy_matching, dict):
-        fuzzy_matching = {}
-    if not isinstance(match_strategy, dict):
-        match_strategy = {}
-    if not isinstance(match_strategy_order, list):
-        match_strategy_order = []
-    if not isinstance(temporal_controls, dict):
-        temporal_controls = {}
-    if not isinstance(aggregation_policy, dict):
-        aggregation_policy = {}
+    match_strategy_order = _list_or_empty(seed_controls.get("match_strategy_order"))
 
     return AlignmentBehaviorControls(
         input_scope=dict(input_scope),
@@ -70,28 +107,11 @@ def _build_behavior_controls(
         },
         decay_half_lives=dict(seed_controls.get("decay_half_lives") or {}),
         match_rate_min_threshold=float(seed_controls.get("match_rate_min_threshold", 0.0)),
-        fuzzy_matching_controls={
-            "enabled": bool(fuzzy_matching.get("enabled", False)),
-            "artist_threshold": float(fuzzy_matching.get("artist_threshold", fuzzy_defaults.get("artist_threshold", 0.90))),
-            "title_threshold": float(fuzzy_matching.get("title_threshold", fuzzy_defaults.get("title_threshold", 0.90))),
-            "combined_threshold": float(fuzzy_matching.get("combined_threshold", fuzzy_defaults.get("combined_threshold", 0.90))),
-            "max_duration_delta_ms": int(fuzzy_matching.get("max_duration_delta_ms", fuzzy_defaults.get("max_duration_delta_ms", 5000))),
-            "max_artist_candidates": int(fuzzy_matching.get("max_artist_candidates", fuzzy_defaults.get("max_artist_candidates", 5))),
-        },
-        match_strategy={
-            "enable_spotify_id_match": bool(match_strategy.get("enable_spotify_id_match", match_strategy_defaults.get("enable_spotify_id_match", True))),
-            "enable_metadata_match": bool(match_strategy.get("enable_metadata_match", match_strategy_defaults.get("enable_metadata_match", True))),
-            "enable_fuzzy_match": bool(match_strategy.get("enable_fuzzy_match", match_strategy_defaults.get("enable_fuzzy_match", True))),
-        },
+        fuzzy_matching_controls=_build_fuzzy_matching_controls(seed_controls, fuzzy_defaults),
+        match_strategy=_build_match_strategy(seed_controls, match_strategy_defaults),
         match_strategy_order=list(match_strategy_order or MATCH_STRATEGY_ORDER),
-        temporal_controls={
-            "reference_mode": str(temporal_controls.get("reference_mode", temporal_defaults.get("reference_mode", "system"))),
-            "reference_now_utc": temporal_controls.get("reference_now_utc", temporal_defaults.get("reference_now_utc")),
-        },
-        aggregation_policy={
-            "preference_weight_mode": str(aggregation_policy.get("preference_weight_mode", aggregation_defaults.get("preference_weight_mode", "sum"))),
-            "preference_weight_cap_per_event": aggregation_policy.get("preference_weight_cap_per_event", aggregation_defaults.get("preference_weight_cap_per_event")),
-        },
+        temporal_controls=_build_temporal_controls(seed_controls, temporal_defaults),
+        aggregation_policy=_build_aggregation_policy(seed_controls, aggregation_defaults),
         weighting_policy=_normalize_weighting_policy(seed_controls),
         influence_controls={
             "influence_enabled": bool(influence.get("enabled", False)),
@@ -113,6 +133,42 @@ def _as_dict(value: object) -> dict[str, Any]:
     if isinstance(value, dict):
         return dict(value)
     return {}
+
+
+def _validate_observed_source(observed: dict[str, object], run_config_path: Path) -> str | None:
+    if str(observed.get("config_source") or "") != "run_config":
+        return "BL-003 seed was not built in run_config mode"
+
+    observed_path = observed.get("run_config_path")
+    if observed_path and str(Path(str(observed_path)).resolve()) != str(run_config_path.resolve()):
+        return "BL-003 seed was built with a different run_config path"
+    return None
+
+
+def _validate_contract_payload(
+    *,
+    expected_contract: dict[str, Any],
+    observed_contract: dict[str, Any],
+    expected_hash: str,
+    observed_hash: str,
+    schema_key: str,
+    expected_schema_version: str,
+    label: str,
+) -> str | None:
+    if not observed_contract:
+        return f"BL-003 {label} missing from summary"
+
+    observed_schema = str(observed_contract.get(schema_key) or "")
+    if observed_schema != expected_schema_version:
+        return f"BL-003 {label} schema version does not match current contract"
+
+    if observed_hash and observed_hash != expected_hash:
+        return f"BL-003 {label} hash does not match current contract"
+
+    if observed_contract != expected_contract:
+        return f"BL-003 {label} does not match current contract"
+
+    return None
 
 
 def _normalized_contract_from_effective(run_effective_config_path: Path) -> dict[str, object]:
@@ -189,43 +245,40 @@ def validate_bl003_seed_freshness(
     except RuntimeError as exc:
         return False, str(exc)
 
-    if str(observed.get("config_source") or "") != "run_config":
-        return False, "BL-003 seed was not built in run_config mode"
-
-    observed_path = observed.get("run_config_path")
-    if observed_path and str(Path(str(observed_path)).resolve()) != str(run_config_path.resolve()):
-        return False, "BL-003 seed was built with a different run_config path"
+    source_reason = _validate_observed_source(observed, run_config_path)
+    if source_reason is not None:
+        return False, source_reason
 
     expected_seed_contract = _as_dict(expected.get("seed_contract"))
     observed_seed_contract = _as_dict(observed.get("seed_contract"))
-    if not observed_seed_contract:
-        return False, "BL-003 seed contract missing from summary"
-
-    if str(observed_seed_contract.get("seed_contract_schema_version") or "") != ALIGNMENT_SEED_CONTRACT_SCHEMA_VERSION:
-        return False, "BL-003 seed contract schema version does not match current contract"
-
     expected_seed_hash = str(expected.get("seed_contract_hash") or "")
     observed_seed_hash = str(observed.get("seed_contract_hash") or "")
-    if observed_seed_hash and observed_seed_hash != expected_seed_hash:
-        return False, "BL-003 seed contract hash does not match current effective run_config"
-
-    if observed_seed_contract != expected_seed_contract:
-        return False, "BL-003 seed contract does not match current effective run_config"
+    seed_reason = _validate_contract_payload(
+        expected_contract=expected_seed_contract,
+        observed_contract=observed_seed_contract,
+        expected_hash=expected_seed_hash,
+        observed_hash=observed_seed_hash,
+        schema_key="seed_contract_schema_version",
+        expected_schema_version=ALIGNMENT_SEED_CONTRACT_SCHEMA_VERSION,
+        label="seed contract",
+    )
+    if seed_reason is not None:
+        return False, seed_reason
 
     expected_structural_contract = _as_dict(expected.get("structural_contract"))
     observed_structural_contract = _as_dict(observed.get("structural_contract"))
-    if not observed_structural_contract:
-        return False, "BL-003 structural contract missing from summary"
-
-    if str(observed_structural_contract.get("structural_contract_schema_version") or "") != ALIGNMENT_STRUCTURAL_CONTRACT_SCHEMA_VERSION:
-        return False, "BL-003 structural contract schema version does not match current contract"
-
     expected_structural_hash = str(expected.get("structural_contract_hash") or "")
     observed_structural_hash = str(observed.get("structural_contract_hash") or "")
-    if observed_structural_hash and observed_structural_hash != expected_structural_hash:
-        return False, "BL-003 structural contract hash does not match current contract"
-
-    if observed_structural_contract != expected_structural_contract:
-        return False, "BL-003 structural contract does not match current contract"
+    structural_reason = _validate_contract_payload(
+        expected_contract=expected_structural_contract,
+        observed_contract=observed_structural_contract,
+        expected_hash=expected_structural_hash,
+        observed_hash=observed_structural_hash,
+        schema_key="structural_contract_schema_version",
+        expected_schema_version=ALIGNMENT_STRUCTURAL_CONTRACT_SCHEMA_VERSION,
+        label="structural contract",
+    )
+    if structural_reason is not None:
+        return False, structural_reason
 
     return True, "ok"

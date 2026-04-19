@@ -1,9 +1,3 @@
-"""The BL-004 stage that turns the aligned seed table into a preference profile.
-
-This is where I aggregate genres, tags, and numeric feature summaries into the
-profile artefacts that the later retrieval and scoring stages consume.
-"""
-
 from __future__ import annotations
 
 import csv
@@ -11,24 +5,34 @@ import json
 import logging
 import math
 import time
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
+from profile.models import (
+    ProfileAggregation,
+    ProfileArtifacts,
+    ProfileControls,
+    ProfileInputs,
+    ProfilePaths,
+)
+from profile.runtime_controls import resolve_bl004_runtime_controls
 from typing import Any
-
-logger = logging.getLogger(__name__)
 
 from alignment.constants import (
     ALIGNMENT_SEED_CONTRACT_SCHEMA_VERSION,
     ALIGNMENT_STRUCTURAL_CONTRACT_SCHEMA_VERSION,
 )
-from profile.models import ProfileAggregation, ProfileArtifacts, ProfileControls, ProfileInputs, ProfilePaths
-from profile.runtime_controls import resolve_bl004_runtime_controls
 from shared_utils.artifact_registry import bl003_required_paths
-from shared_utils.constants import (
-    DEFAULT_INCLUDE_INTERACTION_TYPES,
+from shared_utils.io_utils import (
+    load_csv_rows,
+    open_text_write,
+    parse_csv_labels,
+    parse_float,
+    sha256_of_file,
+    utc_now,
 )
-from shared_utils.io_utils import load_csv_rows, open_text_write, parse_csv_labels, parse_float, sha256_of_file, utc_now
 from shared_utils.path_utils import impl_root
+
+logger = logging.getLogger(__name__)
 
 BL004_HANDSHAKE_REQUIRED_SUMMARY_INPUT_KEYS: list[str] = [
     "runtime_scope_diagnostics",
@@ -76,7 +80,7 @@ BL004_OUTPUT_CONTRACT_VERSION = "bl004-output-contract-v2"
 
 
 class ProfileStage:
-    """Workflow shell for running the BL-004 profile stage end to end."""
+    """Object-oriented BL-004 profile workflow shell."""
 
     def __init__(self, root: Path | None = None) -> None:
         self.root = root if root is not None else impl_root()
@@ -390,6 +394,42 @@ class ProfileStage:
         }
 
     @staticmethod
+    def _build_feature_availability_summary(
+        aggregation: ProfileAggregation,
+    ) -> dict[str, object]:
+        matched_seed_count = max(0, int(aggregation.matched_seed_count))
+        missing_numeric_track_count = int(len(aggregation.missing_numeric_track_ids))
+        observed_by_feature = {
+            feature: int(aggregation.numeric_observations.get(feature, 0))
+            for feature in NUMERIC_FEATURE_COLUMNS
+        }
+        coverage_by_feature = {
+            feature: ProfileStage._safe_rate(float(observed), float(matched_seed_count), precision=6)
+            for feature, observed in observed_by_feature.items()
+        }
+        sparsity_by_feature = {
+            feature: round(max(0.0, 1.0 - coverage), 6)
+            for feature, coverage in coverage_by_feature.items()
+        }
+
+        rows_with_numeric_signal = max(0, matched_seed_count - missing_numeric_track_count)
+        return {
+            "matched_seed_count": matched_seed_count,
+            "rows_with_numeric_signal": rows_with_numeric_signal,
+            "missing_numeric_track_count": missing_numeric_track_count,
+            "missing_numeric_track_ratio": ProfileStage._safe_rate(
+                float(missing_numeric_track_count),
+                float(matched_seed_count),
+                precision=6,
+            ),
+            "numeric_feature_observations_by_feature": observed_by_feature,
+            "numeric_feature_coverage_by_feature": coverage_by_feature,
+            "numeric_feature_sparsity_by_feature": sparsity_by_feature,
+            "no_numeric_signal_row_count": int(aggregation.no_numeric_signal_row_count),
+            "malformed_numeric_row_count": int(aggregation.malformed_numeric_row_count),
+        }
+
+    @staticmethod
     def _build_interaction_attribution_block(
         aggregation: ProfileAggregation,
         controls: ProfileControls,
@@ -418,8 +458,6 @@ class ProfileStage:
             return 1.0
         if mode == "direct_confidence":
             return confidence
-        # The default mode still rewards high-confidence matches, but it avoids
-        # crushing lower-confidence rows all the way down to near-zero weight.
         return 0.5 + 0.5 * confidence
 
     @staticmethod
@@ -493,6 +531,9 @@ class ProfileStage:
                 aggregation.matched_seed_count,
                 len(aggregation.missing_numeric_track_ids),
             ),
+            "feature_availability_summary": ProfileStage._build_feature_availability_summary(
+                aggregation,
+            ),
             "profile_signal_vector": ProfileStage._build_profile_signal_vector(
                 aggregation,
                 inputs.bl003_quality,
@@ -517,16 +558,14 @@ class ProfileStage:
         return "influence" if "influence" in selected_interaction_types else "history"
 
     @staticmethod
-    def _validate_bl003_handshake(
+    @staticmethod
+    def _check_handshake_summary_inputs(
         summary_payload: dict[str, object],
-        structural_contract: dict[str, object],
         policy: str,
-        seed_rows: list[dict[str, object]] | None = None,
     ) -> list[str]:
         warnings: list[str] = []
         inputs_raw = summary_payload.get("inputs")
         summary_inputs = dict(inputs_raw) if isinstance(inputs_raw, dict) else {}
-
         for key in BL004_HANDSHAKE_REQUIRED_SUMMARY_INPUT_KEYS:
             if key not in summary_inputs:
                 message = f"missing BL-003 summary input key: {key}"
@@ -534,13 +573,20 @@ class ProfileStage:
                     raise RuntimeError(f"BL-004 handshake validation failed: {message}")
                 if policy == "warn":
                     warnings.append(message)
+        return warnings
 
+    @staticmethod
+    def _check_handshake_seed_fields(
+        structural_contract: dict[str, object],
+        policy: str,
+    ) -> tuple[list[str], list[str]]:
         fieldnames_raw = structural_contract.get("seed_table_fieldnames")
         expected_fieldnames = (
             [str(value) for value in fieldnames_raw if str(value).strip()]
             if isinstance(fieldnames_raw, list)
             else []
         )
+        warnings: list[str] = []
         for required_field in BL004_HANDSHAKE_REQUIRED_SEED_FIELDS:
             if required_field not in expected_fieldnames:
                 message = f"missing BL-003 structural seed field: {required_field}"
@@ -548,28 +594,49 @@ class ProfileStage:
                     raise RuntimeError(f"BL-004 handshake validation failed: {message}")
                 if policy == "warn":
                     warnings.append(message)
+        return warnings, expected_fieldnames
 
-        # Structural checks alone are insufficient when confidence values are present but malformed.
-        if seed_rows and "match_confidence_score" in expected_fieldnames:
-            malformed_confidence_rows = 0
-            for row in seed_rows:
-                raw_confidence = str(row.get("match_confidence_score", "")).strip()
-                parsed_confidence = parse_float(raw_confidence)
-                if not raw_confidence or parsed_confidence is None:
-                    malformed_confidence_rows += 1
-                    continue
-                if parsed_confidence < 0.0 or parsed_confidence > 1.0:
-                    malformed_confidence_rows += 1
-            if malformed_confidence_rows > 0:
-                message = (
-                    "BL-003 handshake confidence row-quality check failed: "
-                    f"malformed_or_missing_match_confidence_score_rows={malformed_confidence_rows}"
-                )
-                if policy == "strict":
-                    raise RuntimeError(f"BL-004 handshake validation failed: {message}")
-                if policy == "warn":
-                    warnings.append(message)
+    @staticmethod
+    def _check_handshake_confidence_rows(
+        seed_rows: list[dict[str, object]],
+        expected_fieldnames: list[str],
+        policy: str,
+    ) -> list[str]:
+        if not seed_rows or "match_confidence_score" not in expected_fieldnames:
+            return []
+        malformed_confidence_rows = 0
+        for row in seed_rows:
+            raw_confidence = str(row.get("match_confidence_score", "")).strip()
+            parsed_confidence = parse_float(raw_confidence)
+            if not raw_confidence or parsed_confidence is None:
+                malformed_confidence_rows += 1
+                continue
+            if parsed_confidence < 0.0 or parsed_confidence > 1.0:
+                malformed_confidence_rows += 1
+        if malformed_confidence_rows == 0:
+            return []
+        message = (
+            "BL-003 handshake confidence row-quality check failed: "
+            f"malformed_or_missing_match_confidence_score_rows={malformed_confidence_rows}"
+        )
+        if policy == "strict":
+            raise RuntimeError(f"BL-004 handshake validation failed: {message}")
+        if policy == "warn":
+            return [message]
+        return []
 
+    @staticmethod
+    def _validate_bl003_handshake(
+        summary_payload: dict[str, object],
+        structural_contract: dict[str, object],
+        policy: str,
+        seed_rows: list[dict[str, object]] | None = None,
+    ) -> list[str]:
+        warnings: list[str] = []
+        warnings.extend(ProfileStage._check_handshake_summary_inputs(summary_payload, policy))
+        field_warnings, expected_fieldnames = ProfileStage._check_handshake_seed_fields(structural_contract, policy)
+        warnings.extend(field_warnings)
+        warnings.extend(ProfileStage._check_handshake_confidence_rows(seed_rows or [], expected_fieldnames, policy))
         return warnings
 
     @staticmethod
@@ -632,251 +699,328 @@ class ProfileStage:
         )
 
     @staticmethod
-    def aggregate_inputs(inputs: ProfileInputs, controls: ProfileControls) -> ProfileAggregation:
-        include_interaction_types = set(controls.include_interaction_types)
+    def _resolve_row_interaction_count(
+        row: dict[str, object],
+        preference_weight: float,
+        acc: dict[str, Any],
+    ) -> int:
+        raw = str(row.get("interaction_count_sum", "")).strip()
+        parsed = parse_float(raw)
+        if parsed is None:
+            if raw:
+                acc["interaction_count_malformed_row_count"] += 1
+            acc["synthetic_interaction_count_row_count"] += 1
+            return max(1, round(preference_weight * 10))
+        return int(parsed)
 
-        numeric_sums = {column: 0.0 for column in NUMERIC_FEATURE_COLUMNS}
-        numeric_weights = {column: 0.0 for column in NUMERIC_FEATURE_COLUMNS}
-        tag_weights: dict[str, float] = {}
-        genre_weights: dict[str, float] = {}
-        lead_genre_weights: dict[str, float] = {}
-        seed_trace_rows: list[dict[str, object]] = []
+    @staticmethod
+    def _resolve_row_effective_weight(
+        row: dict[str, object],
+        controls: ProfileControls,
+        acc: dict[str, Any],
+        preference_weight: float,
+    ) -> float:
+        raw_confidence = str(row.get("match_confidence_score", "")).strip()
+        parsed_confidence = parse_float(raw_confidence)
+        if not raw_confidence or parsed_confidence is None:
+            acc["confidence_fallback_row_count"] += 1
+            if raw_confidence and parsed_confidence is None:
+                acc["confidence_malformed_row_count"] += 1
+        confidence = ProfileStage._clamp_confidence(raw_confidence)
+        eff_weight = preference_weight * ProfileStage._resolve_confidence_weight_multiplier(
+            confidence, controls.confidence_weighting_mode
+        )
+        acc["confidence_adjusted_weight_sum"] += eff_weight
+        confidence_bins: dict[str, int] = acc["confidence_bins"]
+        if confidence >= controls.confidence_bin_high_threshold:
+            confidence_bins["high_0_9_plus"] += 1
+        elif confidence >= controls.confidence_bin_medium_threshold:
+            confidence_bins["medium_0_5_to_0_9"] += 1
+        else:
+            confidence_bins["low_below_0_5"] += 1
+        return eff_weight
 
-        counts_by_type = {"history": 0, "influence": 0}
-        weight_by_type = {"history": 0.0, "influence": 0.0}
-        interaction_count_sum_by_type = {"history": 0, "influence": 0}
-        numeric_observations = {column: 0 for column in NUMERIC_FEATURE_COLUMNS}
-        missing_numeric_track_ids: list[str] = []
-        blank_track_id_row_count = 0
-        confidence_adjusted_weight_sum = 0.0
-        confidence_bins = {
-            "high_0_9_plus": 0,
-            "medium_0_5_to_0_9": 0,
-            "low_below_0_5": 0,
-        }
-        bl003_event_level_match_method_counts = {
-            "spotify_id_exact": int(inputs.bl003_quality.get("matched_by_spotify_id", 0) or 0),
-            "metadata_fallback": int(inputs.bl003_quality.get("matched_by_metadata", 0) or 0),
-            "fuzzy_title_artist": int(inputs.bl003_quality.get("matched_by_fuzzy", 0) or 0),
-        }
-        match_method_counts = dict(bl003_event_level_match_method_counts)
-        history_preference_weight_sum = 0.0
-        influence_preference_weight_sum = 0.0
-        history_interaction_count_sum_value = 0.0
-        influence_interaction_count_sum_value = 0.0
-        mixed_interaction_row_count = 0
-        primary_type_attribution_row_count = 0
-        confidence_fallback_row_count = 0
-        confidence_malformed_row_count = 0
-        defaulted_interaction_type_row_count = 0
-        synthetic_interaction_count_row_count = 0
-        interaction_count_malformed_row_count = 0
-        synthetic_history_weight_row_count = 0
-        history_weight_malformed_row_count = 0
-        synthetic_influence_weight_row_count = 0
-        influence_weight_malformed_row_count = 0
-        synthetic_weight_reconstruction_row_count = 0
-        synthetic_weight_reconstruction_track_ids: list[str] = []
-        malformed_numeric_row_count = 0
-        malformed_numeric_value_count_by_feature = {column: 0 for column in NUMERIC_FEATURE_COLUMNS}
-        no_numeric_signal_row_count = 0
-        attribution_weight_by_type = {"history": 0.0, "influence": 0.0}
-        attribution_interaction_count_by_type = {"history": 0.0, "influence": 0.0}
-        attribution_row_share_by_type = {"history": 0.0, "influence": 0.0}
-        high_confidence_threshold = controls.confidence_bin_high_threshold
-        medium_confidence_threshold = controls.confidence_bin_medium_threshold
-        key_circular_sum_x = 0.0
-        key_circular_sum_y = 0.0
+    @staticmethod
+    def _resolve_row_confidence_for_trace(row: dict[str, object]) -> float:
+        raw_confidence = str(row.get("match_confidence_score", "")).strip()
+        return ProfileStage._clamp_confidence(raw_confidence)
 
-        for index, row in enumerate(inputs.seed_rows, start=1):
-            track_id = str(row.get("ds001_id", "")).strip()
-            spotify_ids = str(row.get("spotify_track_ids", "")).strip().split("|")
-            spotify_id = next((item for item in spotify_ids if item), "")
-            trace_track_id = track_id or (spotify_id if spotify_id else f"missing_ds001_id_{index:06d}")
-            raw_itypes = str(row.get("interaction_types", "") or row.get("interaction_type", "")).strip()
+    @staticmethod
+    def _resolve_row_weight_components(
+        row: dict[str, object],
+        controls: ProfileControls,
+        selected_interaction_types: list[str],
+        attribution_shares: dict[str, float],
+        preference_weight: float,
+        trace_track_id: str,
+        acc: dict[str, Any],
+        synthetic_weight_reconstruction_track_ids: list[str],
+    ) -> tuple[float | None, float | None]:
+        raw_history = str(row.get("history_preference_weight_sum", "")).strip()
+        raw_influence = str(row.get("influence_preference_weight_sum", "")).strip()
+        hist_comp = parse_float(raw_history)
+        infl_comp = parse_float(raw_influence)
+        if raw_history and hist_comp is None:
+            acc["history_weight_malformed_row_count"] += 1
+        if raw_influence and infl_comp is None:
+            acc["influence_weight_malformed_row_count"] += 1
+        reconstructed = False
+        if hist_comp is None and "history" in selected_interaction_types:
+            acc["synthetic_history_weight_row_count"] += 1
+            hist_comp = preference_weight * attribution_shares.get("history", 0.0)
+            reconstructed = True
+        if infl_comp is None and "influence" in selected_interaction_types:
+            acc["synthetic_influence_weight_row_count"] += 1
+            infl_comp = preference_weight * attribution_shares.get("influence", 0.0)
+            reconstructed = True
+        if reconstructed:
+            acc["synthetic_weight_reconstruction_row_count"] += 1
+            if len(synthetic_weight_reconstruction_track_ids) < 25:
+                synthetic_weight_reconstruction_track_ids.append(trace_track_id)
+            if controls.synthetic_data_validation_policy == "strict":
+                raise RuntimeError(
+                    "BL-004 strict validation failed: "
+                    "synthetic_data_validation_policy triggered: "
+                    f"synthetic_weight_reconstruction_row_track_id={trace_track_id}"
+                )
+        return hist_comp, infl_comp
 
-            selected_interaction_types = ProfileStage._parse_selected_interaction_types(
-                row,
-                include_interaction_types,
-            )
-            if raw_itypes and not selected_interaction_types:
-                defaulted_interaction_type_row_count += 1
-            if not selected_interaction_types:
+    @staticmethod
+    def _resolve_row_interaction_count_components(
+        row: dict[str, object],
+        selected_interaction_types: list[str],
+        attribution_shares: dict[str, float],
+        interaction_count: int,
+        acc: dict[str, Any],
+    ) -> None:
+        hist_comp = parse_float(str(row.get("history_interaction_count_sum", "")))
+        infl_comp = parse_float(str(row.get("influence_interaction_count_sum", "")))
+        if hist_comp is None and "history" in selected_interaction_types:
+            hist_comp = float(interaction_count) * attribution_shares.get("history", 0.0)
+        if infl_comp is None and "influence" in selected_interaction_types:
+            infl_comp = float(interaction_count) * attribution_shares.get("influence", 0.0)
+        acc["history_interaction_count_sum_value"] += max(0.0, hist_comp or 0.0)
+        acc["influence_interaction_count_sum_value"] += max(0.0, infl_comp or 0.0)
+
+    @staticmethod
+    def _accumulate_row_numeric_features(
+        row: dict[str, object],
+        effective_weight: float,
+        numeric_sums: dict[str, float],
+        numeric_weights: dict[str, float],
+        numeric_observations: dict[str, int],
+        malformed_count_by_feature: dict[str, int],
+        acc: dict[str, Any],
+    ) -> tuple[bool, bool]:
+        has_numeric = False
+        has_malformed = False
+        for column in NUMERIC_FEATURE_COLUMNS:
+            raw_value = str(row.get(column, "")).strip()
+            parsed_value = parse_float(raw_value)
+            if parsed_value is None:
+                if raw_value:
+                    has_malformed = True
+                    malformed_count_by_feature[column] += 1
                 continue
-            if len(selected_interaction_types) > 1:
-                mixed_interaction_row_count += 1
+            has_numeric = True
+            numeric_sums[column] += parsed_value * effective_weight
+            numeric_weights[column] += effective_weight
+            numeric_observations[column] += 1
+            if column == "key":
+                angle = (parsed_value / 12.0) * 2.0 * math.pi
+                acc["key_circular_sum_x"] += math.cos(angle) * effective_weight
+                acc["key_circular_sum_y"] += math.sin(angle) * effective_weight
+        return has_numeric, has_malformed
 
-            interaction_type = ProfileStage._resolve_primary_interaction_type(
-                selected_interaction_types
+    @staticmethod
+    def _accumulate_attribution_weights(
+        attribution_shares: dict[str, float],
+        effective_weight: float,
+        interaction_count: int,
+        attribution_weight_by_type: dict[str, float],
+        attribution_interaction_count_by_type: dict[str, float],
+        attribution_row_share_by_type: dict[str, float],
+    ) -> None:
+        for selected_type, share in attribution_shares.items():
+            attribution_weight_by_type[selected_type] = (
+                attribution_weight_by_type.get(selected_type, 0.0) + (effective_weight * share)
             )
-            attribution_shares = ProfileStage._resolve_attribution_shares(
-                selected_interaction_types,
-                interaction_type,
-                controls.interaction_attribution_mode,
+            attribution_interaction_count_by_type[selected_type] = (
+                attribution_interaction_count_by_type.get(selected_type, 0.0)
+                + (float(interaction_count) * share)
             )
-            if len(selected_interaction_types) > 1 and controls.interaction_attribution_mode == "primary_type_only":
-                primary_type_attribution_row_count += 1
-            preference_weight = parse_float(str(row.get("preference_weight_sum", ""))) or 0.0
-            if preference_weight <= 0:
-                continue
-            raw_interaction_count = str(row.get("interaction_count_sum", "")).strip()
-            parsed_interaction_count = parse_float(raw_interaction_count)
-            if parsed_interaction_count is None:
-                if raw_interaction_count:
-                    interaction_count_malformed_row_count += 1
-                synthetic_interaction_count_row_count += 1
-                interaction_count = max(1, round(preference_weight * 10))
+            attribution_row_share_by_type[selected_type] = (
+                attribution_row_share_by_type.get(selected_type, 0.0) + share
+            )
+
+    @staticmethod
+    def _accumulate_type_tag_genre(
+        interaction_type: str,
+        effective_weight: float,
+        interaction_count: int,
+        tags: list[str],
+        genres: list[str],
+        counts_by_type: dict[str, int],
+        weight_by_type: dict[str, float],
+        interaction_count_sum_by_type: dict[str, int],
+        tag_weights: dict[str, float],
+        genre_weights: dict[str, float],
+        lead_genre_weights: dict[str, float],
+    ) -> str:
+        counts_by_type[interaction_type] = counts_by_type.get(interaction_type, 0) + 1
+        weight_by_type[interaction_type] = weight_by_type.get(interaction_type, 0.0) + effective_weight
+        interaction_count_sum_by_type[interaction_type] = (
+            interaction_count_sum_by_type.get(interaction_type, 0) + interaction_count
+        )
+        for tag in tags:
+            tag_weights[tag] = tag_weights.get(tag, 0.0) + effective_weight
+        for genre in genres:
+            genre_weights[genre] = genre_weights.get(genre, 0.0) + effective_weight
+        lead_genre = ProfileStage.resolve_lead_genre(genres, tags)
+        if lead_genre:
+            lead_genre_weights[lead_genre] = lead_genre_weights.get(lead_genre, 0.0) + effective_weight
+        return lead_genre
+
+    @staticmethod
+    def _build_seed_trace_row(
+        index: int,
+        trace_track_id: str,
+        spotify_id: str,
+        row: dict[str, object],
+        interaction_type: str,
+        interaction_count: int,
+        preference_weight: float,
+        effective_weight: float,
+        lead_genre: str,
+        tags: list[str],
+        match_confidence_score: float,
+    ) -> dict[str, object]:
+        return {
+            "event_id": f"ds001_seed_{index:06d}",
+            "track_id": trace_track_id,
+            "spotify_track_id": spotify_id,
+            "spotify_artist": str(row.get("artist", "")),
+            "spotify_title": str(row.get("song", "")),
+            "interaction_type": interaction_type,
+            "signal_source": "ds001_seed_table",
+            "seed_rank": index,
+            "interaction_count": interaction_count,
+            "preference_weight": round(preference_weight, 6),
+            "effective_weight": round(effective_weight, 6),
+            "match_confidence_score": round(match_confidence_score, 6),
+            "lead_genre": lead_genre,
+            "top_tag": tags[0] if tags else "",
+        }
+
+    @staticmethod
+    def _process_seed_row(
+        index: int,
+        row: dict[str, object],
+        controls: ProfileControls,
+        include_interaction_types: set[str],
+        acc: dict[str, Any],
+        numeric_sums: dict[str, float],
+        numeric_weights: dict[str, float],
+        numeric_observations: dict[str, int],
+        malformed_numeric_value_count_by_feature: dict[str, int],
+        tag_weights: dict[str, float],
+        genre_weights: dict[str, float],
+        lead_genre_weights: dict[str, float],
+        counts_by_type: dict[str, int],
+        weight_by_type: dict[str, float],
+        interaction_count_sum_by_type: dict[str, int],
+        attribution_weight_by_type: dict[str, float],
+        attribution_interaction_count_by_type: dict[str, float],
+        attribution_row_share_by_type: dict[str, float],
+        missing_numeric_track_ids: list[str],
+        seed_trace_rows: list[dict[str, object]],
+        synthetic_weight_reconstruction_track_ids: list[str],
+    ) -> None:
+        track_id = str(row.get("ds001_id", "")).strip()
+        spotify_ids = str(row.get("spotify_track_ids", "")).strip().split("|")
+        spotify_id = next((item for item in spotify_ids if item), "")
+        trace_track_id = track_id or (spotify_id if spotify_id else f"missing_ds001_id_{index:06d}")
+        raw_itypes = str(row.get("interaction_types", "") or row.get("interaction_type", "")).strip()
+
+        selected_interaction_types = ProfileStage._parse_selected_interaction_types(
+            row,
+            include_interaction_types,
+        )
+        if raw_itypes and not selected_interaction_types:
+            acc["defaulted_interaction_type_row_count"] += 1
+        if not selected_interaction_types:
+            return
+        if len(selected_interaction_types) > 1:
+            acc["mixed_interaction_row_count"] += 1
+
+        interaction_type = ProfileStage._resolve_primary_interaction_type(selected_interaction_types)
+        attribution_shares = ProfileStage._resolve_attribution_shares(
+            selected_interaction_types,
+            interaction_type,
+            controls.interaction_attribution_mode,
+        )
+        if len(selected_interaction_types) > 1 and controls.interaction_attribution_mode == "primary_type_only":
+            acc["primary_type_attribution_row_count"] += 1
+        preference_weight = parse_float(str(row.get("preference_weight_sum", ""))) or 0.0
+        if preference_weight <= 0:
+            return
+
+        interaction_count = ProfileStage._resolve_row_interaction_count(row, preference_weight, acc)
+        effective_weight = ProfileStage._resolve_row_effective_weight(row, controls, acc, preference_weight)
+
+        history_weight_component, influence_weight_component = ProfileStage._resolve_row_weight_components(
+            row, controls, selected_interaction_types, attribution_shares,
+            preference_weight, trace_track_id, acc, synthetic_weight_reconstruction_track_ids,
+        )
+        acc["history_preference_weight_sum"] += max(0.0, history_weight_component or 0.0)
+        acc["influence_preference_weight_sum"] += max(0.0, influence_weight_component or 0.0)
+
+        ProfileStage._resolve_row_interaction_count_components(
+            row, selected_interaction_types, attribution_shares, interaction_count, acc,
+        )
+
+        ProfileStage._accumulate_attribution_weights(
+            attribution_shares, effective_weight, interaction_count,
+            attribution_weight_by_type, attribution_interaction_count_by_type, attribution_row_share_by_type,
+        )
+
+        tags = parse_csv_labels(str(row.get("tags", "")))
+        genres = parse_csv_labels(str(row.get("genres", "")))
+
+        lead_genre = ProfileStage._accumulate_type_tag_genre(
+            interaction_type, effective_weight, interaction_count, tags, genres,
+            counts_by_type, weight_by_type, interaction_count_sum_by_type,
+            tag_weights, genre_weights, lead_genre_weights,
+        )
+
+        has_numeric_features, has_malformed_numeric_values = ProfileStage._accumulate_row_numeric_features(
+            row, effective_weight, numeric_sums, numeric_weights, numeric_observations,
+            malformed_numeric_value_count_by_feature, acc,
+        )
+
+        if has_malformed_numeric_values:
+            acc["malformed_numeric_row_count"] += 1
+        if not has_numeric_features:
+            if not has_malformed_numeric_values:
+                acc["no_numeric_signal_row_count"] += 1
+            if track_id:
+                missing_numeric_track_ids.append(track_id)
             else:
-                interaction_count = int(parsed_interaction_count)
+                acc["blank_track_id_row_count"] += 1
 
-            raw_confidence = str(row.get("match_confidence_score", "")).strip()
-            parsed_confidence = parse_float(raw_confidence)
-            if not raw_confidence or parsed_confidence is None:
-                confidence_fallback_row_count += 1
-                if raw_confidence and parsed_confidence is None:
-                    confidence_malformed_row_count += 1
-            confidence = ProfileStage._clamp_confidence(raw_confidence)
-            confidence_adjusted_weight = preference_weight * ProfileStage._resolve_confidence_weight_multiplier(
-                confidence,
-                controls.confidence_weighting_mode,
-            )
-            effective_weight = confidence_adjusted_weight
-            confidence_adjusted_weight_sum += confidence_adjusted_weight
-            if confidence >= high_confidence_threshold:
-                confidence_bins["high_0_9_plus"] += 1
-            elif confidence >= medium_confidence_threshold:
-                confidence_bins["medium_0_5_to_0_9"] += 1
-            else:
-                confidence_bins["low_below_0_5"] += 1
+        match_confidence_score = ProfileStage._resolve_row_confidence_for_trace(row)
 
-            raw_history_weight = str(row.get("history_preference_weight_sum", "")).strip()
-            raw_influence_weight = str(row.get("influence_preference_weight_sum", "")).strip()
-            history_weight_component = parse_float(raw_history_weight)
-            influence_weight_component = parse_float(raw_influence_weight)
-            if raw_history_weight and history_weight_component is None:
-                history_weight_malformed_row_count += 1
-            if raw_influence_weight and influence_weight_component is None:
-                influence_weight_malformed_row_count += 1
-            synthetic_weight_reconstructed = False
-            if history_weight_component is None and "history" in selected_interaction_types:
-                synthetic_history_weight_row_count += 1
-                history_weight_component = preference_weight * attribution_shares.get("history", 0.0)
-                synthetic_weight_reconstructed = True
-            if influence_weight_component is None and "influence" in selected_interaction_types:
-                synthetic_influence_weight_row_count += 1
-                influence_weight_component = preference_weight * attribution_shares.get("influence", 0.0)
-                synthetic_weight_reconstructed = True
-            if synthetic_weight_reconstructed:
-                synthetic_weight_reconstruction_row_count += 1
-                if len(synthetic_weight_reconstruction_track_ids) < 25:
-                    synthetic_weight_reconstruction_track_ids.append(trace_track_id)
-                if controls.synthetic_data_validation_policy == "strict":
-                    raise RuntimeError(
-                        "BL-004 strict validation failed: "
-                        "synthetic_data_validation_policy triggered: "
-                        f"synthetic_weight_reconstruction_row_track_id={trace_track_id}"
-                    )
-            history_preference_weight_sum += max(0.0, history_weight_component or 0.0)
-            influence_preference_weight_sum += max(0.0, influence_weight_component or 0.0)
+        seed_trace_rows.append(ProfileStage._build_seed_trace_row(
+            index, trace_track_id, spotify_id, row, interaction_type, interaction_count,
+            preference_weight, effective_weight, lead_genre, tags, match_confidence_score,
+        ))
 
-            history_interaction_component = parse_float(
-                str(row.get("history_interaction_count_sum", ""))
-            )
-            influence_interaction_component = parse_float(
-                str(row.get("influence_interaction_count_sum", ""))
-            )
-            if history_interaction_component is None and "history" in selected_interaction_types:
-                history_interaction_component = float(interaction_count) * attribution_shares.get("history", 0.0)
-            if influence_interaction_component is None and "influence" in selected_interaction_types:
-                influence_interaction_component = float(interaction_count) * attribution_shares.get("influence", 0.0)
-            history_interaction_count_sum_value += max(0.0, history_interaction_component or 0.0)
-            influence_interaction_count_sum_value += max(0.0, influence_interaction_component or 0.0)
-
-            for selected_type, share in attribution_shares.items():
-                attribution_weight_by_type[selected_type] = (
-                    attribution_weight_by_type.get(selected_type, 0.0)
-                    + (effective_weight * share)
-                )
-                attribution_interaction_count_by_type[selected_type] = (
-                    attribution_interaction_count_by_type.get(selected_type, 0.0)
-                    + (float(interaction_count) * share)
-                )
-                attribution_row_share_by_type[selected_type] = (
-                    attribution_row_share_by_type.get(selected_type, 0.0)
-                    + share
-                )
-
-            tags = parse_csv_labels(str(row.get("tags", "")))
-            genres = parse_csv_labels(str(row.get("genres", "")))
-
-            counts_by_type[interaction_type] = counts_by_type.get(interaction_type, 0) + 1
-            weight_by_type[interaction_type] = (
-                weight_by_type.get(interaction_type, 0.0) + effective_weight
-            )
-            interaction_count_sum_by_type[interaction_type] = (
-                interaction_count_sum_by_type.get(interaction_type, 0) + interaction_count
-            )
-
-            for tag in tags:
-                tag_weights[tag] = tag_weights.get(tag, 0.0) + effective_weight
-
-            for genre in genres:
-                genre_weights[genre] = genre_weights.get(genre, 0.0) + effective_weight
-
-            has_numeric_features = False
-            has_malformed_numeric_values = False
-            for column in NUMERIC_FEATURE_COLUMNS:
-                raw_value = str(row.get(column, "")).strip()
-                parsed_value = parse_float(raw_value)
-                if parsed_value is None:
-                    if raw_value:
-                        has_malformed_numeric_values = True
-                        malformed_numeric_value_count_by_feature[column] += 1
-                    continue
-                has_numeric_features = True
-                numeric_sums[column] += parsed_value * effective_weight
-                numeric_weights[column] += effective_weight
-                numeric_observations[column] += 1
-                if column == "key":
-                    angle = (parsed_value / 12.0) * 2.0 * math.pi
-                    key_circular_sum_x += math.cos(angle) * effective_weight
-                    key_circular_sum_y += math.sin(angle) * effective_weight
-
-            if has_malformed_numeric_values:
-                malformed_numeric_row_count += 1
-
-            if not has_numeric_features:
-                if not has_malformed_numeric_values:
-                    no_numeric_signal_row_count += 1
-                if track_id:
-                    missing_numeric_track_ids.append(track_id)
-                else:
-                    blank_track_id_row_count += 1
-
-            lead_genre = ProfileStage.resolve_lead_genre(genres, tags)
-            if lead_genre:
-                lead_genre_weights[lead_genre] = lead_genre_weights.get(lead_genre, 0.0) + effective_weight
-
-            seed_trace_rows.append(
-                {
-                    "event_id": f"ds001_seed_{index:06d}",
-                    "track_id": trace_track_id,
-                    "spotify_track_id": spotify_id,
-                    "spotify_artist": str(row.get("artist", "")),
-                    "spotify_title": str(row.get("song", "")),
-                    "interaction_type": interaction_type,
-                    "signal_source": "ds001_seed_table",
-                    "seed_rank": index,
-                    "interaction_count": interaction_count,
-                    "preference_weight": round(preference_weight, 6),
-                    "effective_weight": round(effective_weight, 6),
-                    "lead_genre": lead_genre,
-                    "top_tag": tags[0] if tags else "",
-                }
-            )
-
-
-        validation_policies = {
+    @staticmethod
+    def _apply_aggregation_validation_policies(
+        controls: ProfileControls,
+        acc: dict[str, Any],
+    ) -> tuple[list[str], dict[str, Any]]:
+        validation_policies: dict[str, Any] = {
             "confidence_validation_policy": controls.confidence_validation_policy,
             "interaction_type_validation_policy": controls.interaction_type_validation_policy,
             "synthetic_data_validation_policy": controls.synthetic_data_validation_policy,
@@ -886,39 +1030,39 @@ class ProfileStage:
         }
         validation_warnings: list[str] = []
 
-        if confidence_fallback_row_count > 0 and controls.confidence_validation_policy != "allow":
+        if acc["confidence_fallback_row_count"] > 0 and controls.confidence_validation_policy != "allow":
             message = (
                 "confidence_validation_policy triggered: "
-                f"confidence_fallback_row_count={confidence_fallback_row_count}"
+                f"confidence_fallback_row_count={acc['confidence_fallback_row_count']}"
             )
             if controls.confidence_validation_policy == "strict":
                 raise RuntimeError(f"BL-004 strict validation failed: {message}")
             validation_warnings.append(message)
 
         if (
-            defaulted_interaction_type_row_count > 0
+            acc["defaulted_interaction_type_row_count"] > 0
             and controls.interaction_type_validation_policy != "allow"
         ):
             message = (
                 "interaction_type_validation_policy triggered: "
                 "defaulted_interaction_type_row_count="
-                f"{defaulted_interaction_type_row_count}"
+                f"{acc['defaulted_interaction_type_row_count']}"
             )
             if controls.interaction_type_validation_policy == "strict":
                 raise RuntimeError(f"BL-004 strict validation failed: {message}")
             validation_warnings.append(message)
 
         synthetic_total = (
-            synthetic_interaction_count_row_count
-            + synthetic_history_weight_row_count
-            + synthetic_influence_weight_row_count
+            acc["synthetic_interaction_count_row_count"]
+            + acc["synthetic_history_weight_row_count"]
+            + acc["synthetic_influence_weight_row_count"]
         )
         if synthetic_total > 0 and controls.synthetic_data_validation_policy != "allow":
             message = (
                 "synthetic_data_validation_policy triggered: "
-                f"synthetic_interaction_count_row_count={synthetic_interaction_count_row_count}; "
-                f"synthetic_history_weight_row_count={synthetic_history_weight_row_count}; "
-                f"synthetic_influence_weight_row_count={synthetic_influence_weight_row_count}"
+                f"synthetic_interaction_count_row_count={acc['synthetic_interaction_count_row_count']}; "
+                f"synthetic_history_weight_row_count={acc['synthetic_history_weight_row_count']}; "
+                f"synthetic_influence_weight_row_count={acc['synthetic_influence_weight_row_count']}"
             )
             if controls.synthetic_data_validation_policy == "strict":
                 raise RuntimeError(f"BL-004 strict validation failed: {message}")
@@ -926,35 +1070,35 @@ class ProfileStage:
 
         if (
             controls.numeric_malformed_row_threshold is not None
-            and malformed_numeric_row_count > controls.numeric_malformed_row_threshold
+            and acc["malformed_numeric_row_count"] > controls.numeric_malformed_row_threshold
         ):
             raise RuntimeError(
                 "BL-004 numeric integrity threshold failed: "
                 "malformed_numeric_row_count="
-                f"{malformed_numeric_row_count} exceeds numeric_malformed_row_threshold="
+                f"{acc['malformed_numeric_row_count']} exceeds numeric_malformed_row_threshold="
                 f"{controls.numeric_malformed_row_threshold}"
             )
 
         if (
             controls.no_numeric_signal_row_threshold is not None
-            and no_numeric_signal_row_count > controls.no_numeric_signal_row_threshold
+            and acc["no_numeric_signal_row_count"] > controls.no_numeric_signal_row_threshold
         ):
             raise RuntimeError(
                 "BL-004 numeric integrity threshold failed: "
                 "no_numeric_signal_row_count="
-                f"{no_numeric_signal_row_count} exceeds no_numeric_signal_row_threshold="
+                f"{acc['no_numeric_signal_row_count']} exceeds no_numeric_signal_row_threshold="
                 f"{controls.no_numeric_signal_row_threshold}"
             )
 
-        total_effective_weight = sum(weight_by_type.values())
-        matched_seed_count = len(seed_trace_rows)
-        if not seed_trace_rows:
-            requested_types = sorted(include_interaction_types)
-            raise RuntimeError(
-                "BL-004 produced no seed events after interaction-type filtering. "
-                f"requested_include_interaction_types={requested_types}"
-            )
+        return validation_warnings, validation_policies
 
+    @staticmethod
+    def _finalize_numeric_profile(
+        numeric_sums: dict[str, float],
+        numeric_weights: dict[str, float],
+        key_circular_sum_x: float,
+        key_circular_sum_y: float,
+    ) -> dict[str, float]:
         numeric_profile: dict[str, float] = {}
         for column in NUMERIC_FEATURE_COLUMNS:
             if numeric_weights[column] == 0:
@@ -972,8 +1116,93 @@ class ProfileStage:
                 numeric_profile[column] = round(circular_key, 6)
                 continue
             numeric_profile[column] = round(numeric_sums[column] / numeric_weights[column], 6)
+        return numeric_profile
 
-        seed_trace_rows.sort(key=lambda row: int(str(row["seed_rank"])))
+    @staticmethod
+    def aggregate_inputs(inputs: ProfileInputs, controls: ProfileControls) -> ProfileAggregation:
+        include_interaction_types = set(controls.include_interaction_types)
+
+        numeric_sums = {column: 0.0 for column in NUMERIC_FEATURE_COLUMNS}
+        numeric_weights = {column: 0.0 for column in NUMERIC_FEATURE_COLUMNS}
+        tag_weights: dict[str, float] = {}
+        genre_weights: dict[str, float] = {}
+        lead_genre_weights: dict[str, float] = {}
+        seed_trace_rows: list[dict[str, object]] = []
+        counts_by_type = {"history": 0, "influence": 0}
+        weight_by_type = {"history": 0.0, "influence": 0.0}
+        interaction_count_sum_by_type = {"history": 0, "influence": 0}
+        numeric_observations = {column: 0 for column in NUMERIC_FEATURE_COLUMNS}
+        missing_numeric_track_ids: list[str] = []
+        attribution_weight_by_type = {"history": 0.0, "influence": 0.0}
+        attribution_interaction_count_by_type = {"history": 0.0, "influence": 0.0}
+        attribution_row_share_by_type = {"history": 0.0, "influence": 0.0}
+        synthetic_weight_reconstruction_track_ids: list[str] = []
+        malformed_numeric_value_count_by_feature = {column: 0 for column in NUMERIC_FEATURE_COLUMNS}
+
+        bl003_event_level_match_method_counts = {
+            "spotify_id_exact": int(inputs.bl003_quality.get("matched_by_spotify_id", 0) or 0),
+            "metadata_fallback": int(inputs.bl003_quality.get("matched_by_metadata", 0) or 0),
+            "fuzzy_title_artist": int(inputs.bl003_quality.get("matched_by_fuzzy", 0) or 0),
+        }
+        match_method_counts = dict(bl003_event_level_match_method_counts)
+
+        acc: dict[str, Any] = {
+            "blank_track_id_row_count": 0,
+            "confidence_adjusted_weight_sum": 0.0,
+            "confidence_bins": {"high_0_9_plus": 0, "medium_0_5_to_0_9": 0, "low_below_0_5": 0},
+            "history_preference_weight_sum": 0.0,
+            "influence_preference_weight_sum": 0.0,
+            "history_interaction_count_sum_value": 0.0,
+            "influence_interaction_count_sum_value": 0.0,
+            "mixed_interaction_row_count": 0,
+            "primary_type_attribution_row_count": 0,
+            "confidence_fallback_row_count": 0,
+            "confidence_malformed_row_count": 0,
+            "defaulted_interaction_type_row_count": 0,
+            "synthetic_interaction_count_row_count": 0,
+            "interaction_count_malformed_row_count": 0,
+            "synthetic_history_weight_row_count": 0,
+            "history_weight_malformed_row_count": 0,
+            "synthetic_influence_weight_row_count": 0,
+            "influence_weight_malformed_row_count": 0,
+            "synthetic_weight_reconstruction_row_count": 0,
+            "malformed_numeric_row_count": 0,
+            "no_numeric_signal_row_count": 0,
+            "key_circular_sum_x": 0.0,
+            "key_circular_sum_y": 0.0,
+        }
+
+        for index, row in enumerate(inputs.seed_rows, start=1):
+            ProfileStage._process_seed_row(
+                index, row, controls, include_interaction_types, acc,
+                numeric_sums, numeric_weights, numeric_observations,
+                malformed_numeric_value_count_by_feature,
+                tag_weights, genre_weights, lead_genre_weights,
+                counts_by_type, weight_by_type, interaction_count_sum_by_type,
+                attribution_weight_by_type, attribution_interaction_count_by_type,
+                attribution_row_share_by_type,
+                missing_numeric_track_ids, seed_trace_rows,
+                synthetic_weight_reconstruction_track_ids,
+            )
+
+        validation_warnings, validation_policies = ProfileStage._apply_aggregation_validation_policies(
+            controls, acc
+        )
+
+        total_effective_weight = sum(weight_by_type.values())
+        matched_seed_count = len(seed_trace_rows)
+        if not seed_trace_rows:
+            requested_types = sorted(include_interaction_types)
+            raise RuntimeError(
+                "BL-004 produced no seed events after interaction-type filtering. "
+                f"requested_include_interaction_types={requested_types}"
+            )
+
+        numeric_profile = ProfileStage._finalize_numeric_profile(
+            numeric_sums, numeric_weights,
+            acc["key_circular_sum_x"], acc["key_circular_sum_y"],
+        )
+        seed_trace_rows.sort(key=lambda r: int(str(r["seed_rank"])))
 
         return ProfileAggregation(
             input_row_count=len(inputs.seed_rows),
@@ -987,34 +1216,34 @@ class ProfileStage:
             interaction_count_sum_by_type=interaction_count_sum_by_type,
             numeric_observations=numeric_observations,
             missing_numeric_track_ids=missing_numeric_track_ids,
-            blank_track_id_row_count=blank_track_id_row_count,
+            blank_track_id_row_count=acc["blank_track_id_row_count"],
             total_effective_weight=total_effective_weight,
-            confidence_adjusted_weight_sum=confidence_adjusted_weight_sum,
-            confidence_bins=confidence_bins,
+            confidence_adjusted_weight_sum=acc["confidence_adjusted_weight_sum"],
+            confidence_bins=acc["confidence_bins"],
             match_method_counts=match_method_counts,
-            history_preference_weight_sum=history_preference_weight_sum,
-            influence_preference_weight_sum=influence_preference_weight_sum,
-            history_interaction_count_sum=int(round(history_interaction_count_sum_value)),
-            influence_interaction_count_sum=int(round(influence_interaction_count_sum_value)),
+            history_preference_weight_sum=acc["history_preference_weight_sum"],
+            influence_preference_weight_sum=acc["influence_preference_weight_sum"],
+            history_interaction_count_sum=int(round(acc["history_interaction_count_sum_value"])),
+            influence_interaction_count_sum=int(round(acc["influence_interaction_count_sum_value"])),
             matched_seed_count=matched_seed_count,
-            confidence_fallback_row_count=confidence_fallback_row_count,
-            confidence_malformed_row_count=confidence_malformed_row_count,
-            defaulted_interaction_type_row_count=defaulted_interaction_type_row_count,
-            synthetic_interaction_count_row_count=synthetic_interaction_count_row_count,
-            interaction_count_malformed_row_count=interaction_count_malformed_row_count,
-            synthetic_history_weight_row_count=synthetic_history_weight_row_count,
-            history_weight_malformed_row_count=history_weight_malformed_row_count,
-            synthetic_influence_weight_row_count=synthetic_influence_weight_row_count,
-            influence_weight_malformed_row_count=influence_weight_malformed_row_count,
-            synthetic_weight_reconstruction_row_count=synthetic_weight_reconstruction_row_count,
+            confidence_fallback_row_count=acc["confidence_fallback_row_count"],
+            confidence_malformed_row_count=acc["confidence_malformed_row_count"],
+            defaulted_interaction_type_row_count=acc["defaulted_interaction_type_row_count"],
+            synthetic_interaction_count_row_count=acc["synthetic_interaction_count_row_count"],
+            interaction_count_malformed_row_count=acc["interaction_count_malformed_row_count"],
+            synthetic_history_weight_row_count=acc["synthetic_history_weight_row_count"],
+            history_weight_malformed_row_count=acc["history_weight_malformed_row_count"],
+            synthetic_influence_weight_row_count=acc["synthetic_influence_weight_row_count"],
+            influence_weight_malformed_row_count=acc["influence_weight_malformed_row_count"],
+            synthetic_weight_reconstruction_row_count=acc["synthetic_weight_reconstruction_row_count"],
             synthetic_weight_reconstruction_track_ids=synthetic_weight_reconstruction_track_ids,
-            no_numeric_signal_row_count=no_numeric_signal_row_count,
-            malformed_numeric_row_count=malformed_numeric_row_count,
+            no_numeric_signal_row_count=acc["no_numeric_signal_row_count"],
+            malformed_numeric_row_count=acc["malformed_numeric_row_count"],
             malformed_numeric_value_count_by_feature=malformed_numeric_value_count_by_feature,
             validation_policies=validation_policies,
             validation_warnings=validation_warnings,
-            mixed_interaction_row_count=mixed_interaction_row_count,
-            primary_type_attribution_row_count=primary_type_attribution_row_count,
+            mixed_interaction_row_count=acc["mixed_interaction_row_count"],
+            primary_type_attribution_row_count=acc["primary_type_attribution_row_count"],
             attribution_weight_by_type=attribution_weight_by_type,
             attribution_interaction_count_by_type=attribution_interaction_count_by_type,
             attribution_row_share_by_type=attribution_row_share_by_type,
@@ -1044,8 +1273,6 @@ class ProfileStage:
             controls,
             inputs,
         )
-        source_coverage = canonical_blocks["source_coverage"] if isinstance(canonical_blocks.get("source_coverage"), dict) else {}
-        bl003_quality = canonical_blocks["bl003_quality"] if isinstance(canonical_blocks.get("bl003_quality"), dict) else {}
         diagnostics: dict[str, object] = {
             "events_total": aggregation.input_row_count,
             "events_total_basis": "bl004_seed_rows",
@@ -1171,6 +1398,7 @@ class ProfileStage:
             "source_coverage": canonical_blocks["source_coverage"],
             "interaction_attribution": canonical_blocks["interaction_attribution"],
             "numeric_confidence": canonical_blocks["numeric_confidence"],
+            "feature_availability_summary": canonical_blocks["feature_availability_summary"],
             "profile_signal_vector": canonical_blocks["profile_signal_vector"],
             "seed_summary": {
                 "counts_by_interaction_type": aggregation.counts_by_type,
@@ -1290,6 +1518,7 @@ class ProfileStage:
             "source_coverage": canonical_blocks["source_coverage"],
             "interaction_attribution": canonical_blocks["interaction_attribution"],
             "numeric_confidence": canonical_blocks["numeric_confidence"],
+            "feature_availability_summary": canonical_blocks["feature_availability_summary"],
             "profile_signal_vector": canonical_blocks["profile_signal_vector"],
             "artifact_paths": {
                 "profile_path": str(paths.profile_path),
@@ -1326,7 +1555,7 @@ class ProfileStage:
         inputs = self.load_inputs(paths, controls)
 
         start_time = time.time()
-        run_id = f"BL004-PROFILE-{datetime.now(timezone.utc).strftime('%Y%m%d-%H%M%S-%f')}"
+        run_id = f"BL004-PROFILE-{datetime.now(UTC).strftime('%Y%m%d-%H%M%S-%f')}"
 
         aggregation = self.aggregate_inputs(inputs, controls)
         self.write_seed_trace(paths.seed_trace_path, aggregation.seed_trace_rows)

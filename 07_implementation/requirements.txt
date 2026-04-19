@@ -1,5 +1,8 @@
 # Minimal active runtime dependencies (BL-003 to BL-014 pipeline path)
 rapidfuzz==3.14.3
+ruff==0.11.8
+vulture==2.11
+radon==6.0.1
 
 # Optional dependency for Spotify export/ingestion utility flows:
 # spotipy==2.23.0

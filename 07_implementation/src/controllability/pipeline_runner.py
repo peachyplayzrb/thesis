@@ -4,13 +4,12 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Any, cast
 
-from shared_utils.io_utils import canonical_json_hash
-
 from controllability.reporting import merge_stage_maps
 from controllability.stage_playlist import execute_playlist_stage
 from controllability.stage_profile import execute_profile_stage
 from controllability.stage_retrieval import execute_retrieval_stage
 from controllability.stage_scoring import execute_scoring_stage
+from shared_utils.io_utils import canonical_json_hash
 
 
 def execute_scenario(
@@ -45,8 +44,11 @@ def execute_scenario(
         "scenario_id": scenario["scenario_id"],
         "test_id": scenario["test_id"],
         "control_surface": scenario["control_surface"],
+        "variation_mode": scenario.get("variation_mode", "single_factor"),
+        "interaction_axes": list(cast(list[str], scenario.get("interaction_axes", []))),
         "description": scenario["description"],
         "expected_effect": scenario["expected_effect"],
+        "acceptance_bounds": list(cast(list[dict[str, object]], scenario.get("acceptance_bounds", []))),
         "alignment_seed_controls": dict(cast(dict[str, Any], scenario.get("alignment_seed_controls") or {})),
         "profile": profile["config"],
         "retrieval": retrieval_diagnostics["config"],
@@ -72,6 +74,8 @@ def execute_scenario(
         "scenario_id": scenario["scenario_id"],
         "test_id": scenario["test_id"],
         "control_surface": scenario["control_surface"],
+        "variation_mode": scenario.get("variation_mode", "single_factor"),
+        "interaction_axes": list(cast(list[str], scenario.get("interaction_axes", []))),
         "description": scenario["description"],
         "expected_effect": scenario["expected_effect"],
         "effective_config": effective_config,

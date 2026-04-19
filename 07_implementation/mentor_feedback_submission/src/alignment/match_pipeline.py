@@ -1,4 +1,4 @@
-"""Per-event matching logic for BL-003."""
+"""Per-event DS-001 matching pipeline for BL-003."""
 from __future__ import annotations
 
 from typing import Any
@@ -10,9 +10,9 @@ from alignment.constants import (
     MATCH_METHOD_FUZZY_TITLE_ARTIST,
     MATCH_METHOD_METADATA_FALLBACK,
     MATCH_METHOD_SPOTIFY_ID_EXACT,
-    MATCH_STRATEGY_ORDER,
     MATCH_STATUS_MATCHED,
     MATCH_STATUS_UNMATCHED,
+    MATCH_STRATEGY_ORDER,
     UNMATCHED_REASON_FUZZY_ARTIST_THRESHOLD_FAILED,
     UNMATCHED_REASON_FUZZY_COMBINED_THRESHOLD_FAILED,
     UNMATCHED_REASON_FUZZY_DURATION_REJECTED,
@@ -21,10 +21,11 @@ from alignment.constants import (
     UNMATCHED_REASON_NO_CANDIDATE,
     format_alignment_event_id,
 )
-from alignment.models import AlignmentBehaviorControls, MatchTrace, MatchedEvent, SourceEvent
+from alignment.models import AlignmentBehaviorControls, MatchedEvent, MatchTrace, SourceEvent
 from alignment.resolved_context import AlignmentResolvedContext
-from shared_utils.parsing import parse_int
+from alignment.weighting import compute_weight
 from shared_utils.index_builder import resolve_ds001_id
+from shared_utils.parsing import parse_int
 from shared_utils.text_matching import (
     choose_best_duration_match,
     first_artist,
@@ -33,7 +34,257 @@ from shared_utils.text_matching import (
     resolve_fuzzy_controls,
     split_artists,
 )
-from alignment.weighting import compute_weight
+
+
+def _build_fuzzy_pass_controls(
+    resolved_fuzzy_controls: dict[str, Any],
+) -> list[tuple[str, dict[str, Any]]]:
+    fuzzy_pass_controls: list[tuple[str, dict[str, Any]]] = [
+        ("pass_1", dict(resolved_fuzzy_controls))
+    ]
+    if not resolved_fuzzy_controls.get("enable_relaxed_second_pass"):
+        return fuzzy_pass_controls
+
+    relaxed_controls = dict(resolved_fuzzy_controls)
+    relaxed_controls["artist_threshold"] = float(
+        str(
+            resolved_fuzzy_controls.get(
+                "relaxed_second_pass_artist_threshold",
+                resolved_fuzzy_controls.get("artist_threshold", 0.0),
+            )
+        )
+    )
+    relaxed_controls["title_threshold"] = float(
+        str(
+            resolved_fuzzy_controls.get(
+                "relaxed_second_pass_title_threshold",
+                resolved_fuzzy_controls.get("title_threshold", 0.0),
+            )
+        )
+    )
+    relaxed_controls["combined_threshold"] = float(
+        str(
+            resolved_fuzzy_controls.get(
+                "relaxed_second_pass_combined_threshold",
+                resolved_fuzzy_controls.get("combined_threshold", 0.0),
+            )
+        )
+    )
+    fuzzy_pass_controls.append(("pass_2_relaxed", relaxed_controls))
+    return fuzzy_pass_controls
+
+
+def _resolve_fuzzy_failure_reason(current_reason: str, previous_reason: str) -> str:
+    failure_rank = {
+        "": -1,
+        "artist_threshold": 1,
+        "title_threshold": 2,
+        "combined_threshold": 3,
+        "duration_rejected": 4,
+    }
+    if failure_rank.get(current_reason, -1) > failure_rank.get(previous_reason, -1):
+        return current_reason
+    return previous_reason
+
+
+def _run_fuzzy_match(
+    *,
+    title_key: str,
+    album_key: str,
+    artist_names: str,
+    artist_primary: str,
+    event_duration: int | None,
+    by_artist: dict[str, list[dict[str, str]]],
+    resolved_fuzzy_controls: dict[str, Any],
+) -> dict[str, Any]:
+    artist_candidates = [artist_primary] if artist_primary else []
+    if resolved_fuzzy_controls.get("enable_secondary_artist_retry"):
+        artist_candidates = split_artists(artist_names)
+    if not artist_candidates and artist_primary:
+        artist_candidates = [artist_primary]
+
+    fuzzy_pass_controls = _build_fuzzy_pass_controls(resolved_fuzzy_controls)
+    fuzzy_candidate_count = 0
+    fuzzy_failure_reason = ""
+
+    for pass_used, pass_controls in fuzzy_pass_controls:
+        for attempt_index, candidate_artist in enumerate(artist_candidates, start=1):
+            (
+                matched_row,
+                duration_delta,
+                fuzzy_title_score,
+                fuzzy_artist_score,
+                fuzzy_combined_score,
+                fuzzy_diagnostics,
+            ) = fuzzy_find_candidate(
+                title_key=title_key,
+                artist_key=normalize_text(candidate_artist),
+                event_duration=event_duration,
+                by_artist=by_artist,
+                fuzzy_controls=pass_controls,
+                album_key=album_key,
+            )
+
+            fuzzy_candidate_count = max(
+                fuzzy_candidate_count,
+                int(fuzzy_diagnostics.get("candidate_count_after_artist_filter", 0) or 0),
+            )
+            current_reason = str(fuzzy_diagnostics.get("failure_reason", "") or "")
+            fuzzy_failure_reason = _resolve_fuzzy_failure_reason(current_reason, fuzzy_failure_reason)
+
+            if matched_row is None:
+                continue
+
+            fuzzy_album_score_raw = fuzzy_diagnostics.get("album_score")
+            fuzzy_album_score = (
+                float(fuzzy_album_score_raw)
+                if fuzzy_album_score_raw is not None
+                else None
+            )
+            return {
+                "matched_row": matched_row,
+                "duration_delta": duration_delta,
+                "fuzzy_title_score": fuzzy_title_score,
+                "fuzzy_artist_score": fuzzy_artist_score,
+                "fuzzy_combined_score": fuzzy_combined_score,
+                "fuzzy_album_score": fuzzy_album_score,
+                "fuzzy_pass_used": pass_used,
+                "fuzzy_artist_attempt_count": attempt_index,
+                "fuzzy_candidate_count": fuzzy_candidate_count,
+                "fuzzy_failure_reason": fuzzy_failure_reason,
+            }
+
+    return {
+        "matched_row": None,
+        "duration_delta": None,
+        "fuzzy_title_score": None,
+        "fuzzy_artist_score": None,
+        "fuzzy_combined_score": None,
+        "fuzzy_album_score": None,
+        "fuzzy_pass_used": "",
+        "fuzzy_artist_attempt_count": 0,
+        "fuzzy_candidate_count": fuzzy_candidate_count,
+        "fuzzy_failure_reason": fuzzy_failure_reason,
+    }
+
+
+def _update_unmatched_reason_counts(
+    *,
+    match_counts: dict[str, int],
+    spotify_track_id: str,
+    track_name: str,
+    artist_primary: str,
+    fuzzy_failure_reason: str,
+) -> str:
+    if not spotify_track_id and not (track_name and artist_primary):
+        match_counts["unmatched_missing_keys"] += 1
+        return UNMATCHED_REASON_MISSING_KEYS
+
+    match_counts["unmatched_no_candidate"] += 1
+    if fuzzy_failure_reason == "artist_threshold":
+        match_counts["fuzzy_artist_threshold_failed"] += 1
+        return UNMATCHED_REASON_FUZZY_ARTIST_THRESHOLD_FAILED
+    if fuzzy_failure_reason == "title_threshold":
+        match_counts["fuzzy_title_threshold_failed"] += 1
+        return UNMATCHED_REASON_FUZZY_TITLE_THRESHOLD_FAILED
+    if fuzzy_failure_reason == "combined_threshold":
+        match_counts["fuzzy_combined_threshold_failed"] += 1
+        return UNMATCHED_REASON_FUZZY_COMBINED_THRESHOLD_FAILED
+    if fuzzy_failure_reason == "duration_rejected":
+        match_counts["fuzzy_duration_rejected"] += 1
+        return UNMATCHED_REASON_FUZZY_DURATION_REJECTED
+    return UNMATCHED_REASON_NO_CANDIDATE
+
+
+def _resolve_match_for_event(
+    *,
+    effective_match_strategy_order: list[str],
+    effective_match_strategy: dict[str, bool],
+    spotify_track_id: str,
+    title_key: str,
+    artist_key: str,
+    album_key: str,
+    artist_names: str,
+    artist_primary: str,
+    event_duration: int | None,
+    by_spotify_id: dict[str, dict[str, str]],
+    by_title_artist: dict[tuple[str, str], list[dict[str, str]]],
+    by_artist: dict[str, list[dict[str, str]]],
+    resolved_fuzzy_controls: dict[str, Any],
+    match_counts: dict[str, int],
+) -> dict[str, Any]:
+    resolved_match: dict[str, Any] = {
+        "matched_row": None,
+        "duration_delta": None,
+        "match_method": "",
+        "fuzzy_title_score": None,
+        "fuzzy_artist_score": None,
+        "fuzzy_combined_score": None,
+        "fuzzy_album_score": None,
+        "fuzzy_pass_used": "",
+        "fuzzy_artist_attempt_count": 0,
+        "fuzzy_candidate_count": 0,
+        "fuzzy_failure_reason": "",
+    }
+
+    for method in effective_match_strategy_order:
+        if method == MATCH_METHOD_SPOTIFY_ID_EXACT:
+            if (
+                effective_match_strategy.get("enable_spotify_id_match", True)
+                and spotify_track_id
+                and spotify_track_id in by_spotify_id
+            ):
+                resolved_match["matched_row"] = by_spotify_id[spotify_track_id]
+                resolved_match["match_method"] = MATCH_METHOD_SPOTIFY_ID_EXACT
+                match_counts["matched_by_spotify_id"] += 1
+                break
+            continue
+
+        if method == MATCH_METHOD_METADATA_FALLBACK:
+            if not effective_match_strategy.get("enable_metadata_match", True):
+                continue
+            if not (title_key and artist_key):
+                continue
+            candidates = by_title_artist.get((title_key, artist_key), [])
+            if candidates:
+                matched_row, duration_delta = choose_best_duration_match(candidates, event_duration)
+                resolved_match["matched_row"] = matched_row
+                resolved_match["duration_delta"] = duration_delta
+                resolved_match["match_method"] = MATCH_METHOD_METADATA_FALLBACK
+                match_counts["matched_by_metadata"] += 1
+                break
+            continue
+
+        if method == MATCH_METHOD_FUZZY_TITLE_ARTIST:
+            if not effective_match_strategy.get("enable_fuzzy_match", True):
+                continue
+            if not resolved_fuzzy_controls["enabled"]:
+                continue
+            if not (title_key and artist_key):
+                continue
+
+            match_counts["fuzzy_attempted_rows"] += 1
+            fuzzy_match = _run_fuzzy_match(
+                title_key=title_key,
+                album_key=album_key,
+                artist_names=artist_names,
+                artist_primary=artist_primary,
+                event_duration=event_duration,
+                by_artist=by_artist,
+                resolved_fuzzy_controls=resolved_fuzzy_controls,
+            )
+            resolved_match.update(fuzzy_match)
+
+            if resolved_match["matched_row"] is not None:
+                resolved_match["match_method"] = MATCH_METHOD_FUZZY_TITLE_ARTIST
+                match_counts["matched_by_fuzzy"] += 1
+                if resolved_match["fuzzy_pass_used"] == "pass_2_relaxed":
+                    match_counts["fuzzy_second_pass_matches"] += 1
+                if resolved_match["fuzzy_album_score"] is not None and album_key:
+                    match_counts["fuzzy_album_boost_matches"] += 1
+                break
+
+    return resolved_match
 
 
 def match_events(
@@ -51,11 +302,10 @@ def match_events(
     context: AlignmentResolvedContext | None = None,
 ) -> tuple[list[dict[str, str]], list[dict[str, Any]], list[dict[str, str]], dict[str, int]]:
     """
-    Match each event against DS-001 using the configured strategy order.
+    Match every event against DS-001 using Spotify-ID first, metadata fallback second.
 
-    In the normal path this means exact Spotify ID first, exact title+artist next,
-    and fuzzy matching last. The return value is `(trace_rows, matched_events,
-    unmatched_rows, match_counts)` where `match_counts` only tracks method totals.
+    Returns (trace_rows, matched_events, unmatched_rows, match_counts).
+    match_counts contains the per-method tallies but NOT input_event_rows.
     """
     trace_rows: list[dict[str, str]] = []
     matched_events: list[dict[str, Any]] = []
@@ -145,148 +395,44 @@ def match_events(
         title_key = normalize_text(track_name)
         artist_key = normalize_text(artist_primary)
         album_key = normalize_text(source_event.album_name)
-
-        # Try the strongest evidence first and only fall back when that fails.
-        for method in effective_match_strategy_order:
-            if method == MATCH_METHOD_SPOTIFY_ID_EXACT:
-                if (
-                    effective_match_strategy.get("enable_spotify_id_match", True)
-                    and spotify_track_id
-                    and spotify_track_id in by_spotify_id
-                ):
-                    matched_row = by_spotify_id[spotify_track_id]
-                    match_method = MATCH_METHOD_SPOTIFY_ID_EXACT
-                    match_counts["matched_by_spotify_id"] += 1
-                    break
-                continue
-
-            if method == MATCH_METHOD_METADATA_FALLBACK:
-                if not effective_match_strategy.get("enable_metadata_match", True):
-                    continue
-                if not (title_key and artist_key):
-                    continue
-                candidates = by_title_artist.get((title_key, artist_key), [])
-                if candidates:
-                    matched_row, duration_delta = choose_best_duration_match(candidates, event_duration)
-                    match_method = MATCH_METHOD_METADATA_FALLBACK
-                    match_counts["matched_by_metadata"] += 1
-                    break
-                continue
-
-            if method == MATCH_METHOD_FUZZY_TITLE_ARTIST:
-                if not effective_match_strategy.get("enable_fuzzy_match", True):
-                    continue
-                if not resolved_fuzzy_controls["enabled"]:
-                    continue
-                if not (title_key and artist_key):
-                    continue
-                # Fuzzy matching is intentionally last because it is the noisiest path.
-                match_counts["fuzzy_attempted_rows"] += 1
-                artist_candidates = [artist_primary] if artist_primary else []
-                if resolved_fuzzy_controls.get("enable_secondary_artist_retry"):
-                    artist_candidates = split_artists(artist_names)
-                if not artist_candidates and artist_primary:
-                    artist_candidates = [artist_primary]
-
-                fuzzy_pass_controls: list[tuple[str, dict[str, Any]]] = [("pass_1", dict(resolved_fuzzy_controls))]
-                if resolved_fuzzy_controls.get("enable_relaxed_second_pass"):
-                    # The second pass exists so borderline rows get one softer retry instead of being dropped immediately.
-                    relaxed_controls = dict(resolved_fuzzy_controls)
-                    relaxed_controls["artist_threshold"] = float(str(
-                        resolved_fuzzy_controls.get(
-                            "relaxed_second_pass_artist_threshold",
-                            resolved_fuzzy_controls.get("artist_threshold", 0.0),
-                        )
-                    ))
-                    relaxed_controls["title_threshold"] = float(str(
-                        resolved_fuzzy_controls.get(
-                            "relaxed_second_pass_title_threshold",
-                            resolved_fuzzy_controls.get("title_threshold", 0.0),
-                        )
-                    ))
-                    relaxed_controls["combined_threshold"] = float(str(
-                        resolved_fuzzy_controls.get(
-                            "relaxed_second_pass_combined_threshold",
-                            resolved_fuzzy_controls.get("combined_threshold", 0.0),
-                        )
-                    ))
-                    fuzzy_pass_controls.append(("pass_2_relaxed", relaxed_controls))
-
-                failure_rank = {
-                    "": -1,
-                    "artist_threshold": 1,
-                    "title_threshold": 2,
-                    "combined_threshold": 3,
-                    "duration_rejected": 4,
-                }
-                for pass_used, pass_controls in fuzzy_pass_controls:
-                    for attempt_index, candidate_artist in enumerate(artist_candidates, start=1):
-                        (
-                            matched_row,
-                            duration_delta,
-                            fuzzy_title_score,
-                            fuzzy_artist_score,
-                            fuzzy_combined_score,
-                            fuzzy_diagnostics,
-                        ) = fuzzy_find_candidate(
-                            title_key=title_key,
-                            artist_key=normalize_text(candidate_artist),
-                            event_duration=event_duration,
-                            by_artist=by_artist,
-                            fuzzy_controls=pass_controls,
-                            album_key=album_key,
-                        )
-                        fuzzy_candidate_count = max(
-                            fuzzy_candidate_count,
-                            int(fuzzy_diagnostics.get("candidate_count_after_artist_filter", 0) or 0),
-                        )
-                        current_reason = str(fuzzy_diagnostics.get("failure_reason", "") or "")
-                        if failure_rank.get(current_reason, -1) > failure_rank.get(fuzzy_failure_reason, -1):
-                            fuzzy_failure_reason = current_reason
-                        if matched_row is None:
-                            continue
-                        fuzzy_album_score_raw = fuzzy_diagnostics.get("album_score")
-                        fuzzy_album_score = (
-                            float(fuzzy_album_score_raw)
-                            if fuzzy_album_score_raw is not None
-                            else None
-                        )
-                        fuzzy_pass_used = pass_used
-                        fuzzy_artist_attempt_count = attempt_index
-                        break
-                    if matched_row is not None:
-                        break
-                if matched_row is not None:
-                    match_method = MATCH_METHOD_FUZZY_TITLE_ARTIST
-                    match_counts["matched_by_fuzzy"] += 1
-                    if fuzzy_pass_used == "pass_2_relaxed":
-                        match_counts["fuzzy_second_pass_matches"] += 1
-                    if fuzzy_album_score is not None and album_key:
-                        match_counts["fuzzy_album_boost_matches"] += 1
-                    break
+        resolved_match = _resolve_match_for_event(
+            effective_match_strategy_order=effective_match_strategy_order,
+            effective_match_strategy=effective_match_strategy,
+            spotify_track_id=spotify_track_id,
+            title_key=title_key,
+            artist_key=artist_key,
+            album_key=album_key,
+            artist_names=artist_names,
+            artist_primary=artist_primary,
+            event_duration=event_duration,
+            by_spotify_id=by_spotify_id,
+            by_title_artist=by_title_artist,
+            by_artist=by_artist,
+            resolved_fuzzy_controls=resolved_fuzzy_controls,
+            match_counts=match_counts,
+        )
+        matched_row = resolved_match["matched_row"]
+        duration_delta = resolved_match["duration_delta"]
+        match_method = str(resolved_match["match_method"])
+        fuzzy_title_score = resolved_match["fuzzy_title_score"]
+        fuzzy_artist_score = resolved_match["fuzzy_artist_score"]
+        fuzzy_combined_score = resolved_match["fuzzy_combined_score"]
+        fuzzy_album_score = resolved_match["fuzzy_album_score"]
+        fuzzy_pass_used = str(resolved_match["fuzzy_pass_used"])
+        fuzzy_artist_attempt_count = int(resolved_match["fuzzy_artist_attempt_count"])
+        fuzzy_candidate_count = int(resolved_match["fuzzy_candidate_count"])
+        fuzzy_failure_reason = str(resolved_match["fuzzy_failure_reason"])
 
         if matched_row is None:
             match_counts["unmatched"] += 1
             trace.match_status = MATCH_STATUS_UNMATCHED
-            if not spotify_track_id and not (track_name and artist_primary):
-                match_counts["unmatched_missing_keys"] += 1
-                trace.reason = UNMATCHED_REASON_MISSING_KEYS
-            else:
-                match_counts["unmatched_no_candidate"] += 1
-                if fuzzy_failure_reason == "artist_threshold":
-                    match_counts["fuzzy_artist_threshold_failed"] += 1
-                    trace.reason = UNMATCHED_REASON_FUZZY_ARTIST_THRESHOLD_FAILED
-                elif fuzzy_failure_reason == "title_threshold":
-                    match_counts["fuzzy_title_threshold_failed"] += 1
-                    trace.reason = UNMATCHED_REASON_FUZZY_TITLE_THRESHOLD_FAILED
-                elif fuzzy_failure_reason == "combined_threshold":
-                    match_counts["fuzzy_combined_threshold_failed"] += 1
-                    trace.reason = UNMATCHED_REASON_FUZZY_COMBINED_THRESHOLD_FAILED
-                elif fuzzy_failure_reason == "duration_rejected":
-                    match_counts["fuzzy_duration_rejected"] += 1
-                    trace.reason = UNMATCHED_REASON_FUZZY_DURATION_REJECTED
-                else:
-                    trace.reason = UNMATCHED_REASON_NO_CANDIDATE
+            trace.reason = _update_unmatched_reason_counts(
+                match_counts=match_counts,
+                spotify_track_id=spotify_track_id,
+                track_name=track_name,
+                artist_primary=artist_primary,
+                fuzzy_failure_reason=fuzzy_failure_reason,
+            )
             trace.fuzzy_pass_used = fuzzy_pass_used
             trace.fuzzy_artist_attempt_count = str(fuzzy_artist_attempt_count) if fuzzy_artist_attempt_count else ""
             trace.fuzzy_candidate_count = str(fuzzy_candidate_count) if fuzzy_candidate_count else ""

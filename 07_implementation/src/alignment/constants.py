@@ -5,7 +5,6 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Final
 
-
 SOURCE_TOP_TRACKS: Final[str] = "top_tracks"
 SOURCE_SAVED_TRACKS: Final[str] = "saved_tracks"
 SOURCE_PLAYLIST_ITEMS: Final[str] = "playlist_items"

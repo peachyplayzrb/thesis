@@ -1,4 +1,4 @@
-"""Subprocess helpers for running BL-013 stages."""
+"""Stage subprocess execution helpers for BL-013."""
 from __future__ import annotations
 
 import json
@@ -19,27 +19,25 @@ def run_stage(
     run_intent_path: Path | None,
     run_effective_config_path: Path | None,
     stage_config_payload: dict[str, object] | None = None,
+    extra_args: list[str] | None = None,
 ) -> dict[str, object]:
-    """Execute one stage script and capture a normalized result payload."""
     command = [python_executable, str(script_path)]
+    if extra_args:
+        command.extend(extra_args)
     stage_env = os.environ.copy()
     existing_pythonpath = stage_env.get("PYTHONPATH", "").strip()
     stage_root = str(root)
-    # Prepend impl root so stage scripts resolve local package imports reliably.
     stage_env["PYTHONPATH"] = (
         stage_root
         if not existing_pythonpath
         else os.pathsep.join([stage_root, existing_pythonpath])
     )
     if run_intent_path is not None:
-        # Expose the per-run intent snapshot so stages can report config provenance.
         stage_env["BL_RUN_INTENT_PATH"] = str(run_intent_path)
     if run_effective_config_path is not None:
-        # Expose resolved controls so each stage reads the same effective configuration.
         stage_env["BL_RUN_EFFECTIVE_CONFIG_PATH"] = str(run_effective_config_path)
     if stage_config_payload is None:
         raise RuntimeError(f"Missing stage config payload for {stage_id}")
-    # Pass stage-scoped controls as one JSON payload to keep subprocess args stable.
     stage_env["BL_STAGE_CONFIG_JSON"] = json.dumps(
         stage_config_payload,
         ensure_ascii=True,
@@ -80,7 +78,6 @@ def build_missing_script_result(
     run_intent_path: Path | None,
     run_effective_config_path: Path | None,
 ) -> dict[str, object]:
-    """Return a failure-shaped stage result when the script is missing."""
     return {
         "stage_id": stage_id,
         "script_path": script_relpath,
@@ -104,7 +101,6 @@ def run_bl003_seed_refresh(
     run_effective_config_path: Path | None,
     stage_config_payload: dict[str, object] | None = None,
 ) -> dict[str, object]:
-    """Run BL-003 as a seed refresh step before downstream stages."""
     script_path = root / BL003_SCRIPT
     if not script_path.exists():
         return {

@@ -1,32 +1,26 @@
-"""Validation helpers for the BL-007 to BL-008 handoff contract."""
+"""Input validation for BL-008 transparency — BL-007↔BL-008 handshake."""
 
 from __future__ import annotations
 
-from typing import Any, Mapping
+from collections.abc import Mapping
 
+from shared_utils.validation_policy import normalize_validation_policy, resolve_policy_status
 
-VALIDATION_POLICIES: tuple[str, ...] = ("allow", "warn", "strict")
-
-# Required BL-007 playlist fields BL-008 needs to build a valid explanation payload.
+# Required fields in each BL-007 playlist track entry that BL-008 depends on
+# to produce a well-formed explanation payload.
 REQUIRED_BL007_PLAYLIST_TRACK_FIELDS: tuple[str, ...] = (
     "track_id",
     "final_score",
     "playlist_position",
 )
 
-# Required BL-007 trace columns BL-008 needs for per-track assembly context.
+# Required columns in the BL-007 assembly trace CSV that BL-008 uses for
+# per-track assembly context.
 REQUIRED_BL007_TRACE_FIELDS: tuple[str, ...] = (
     "track_id",
     "decision",
     "score_rank",
 )
-
-
-def normalize_validation_policy(policy: Any, default: str = "warn") -> str:
-    value = str(policy or default).strip().lower()
-    if value in VALIDATION_POLICIES:
-        return value
-    return default
 
 
 def validate_bl007_bl008_handshake(
@@ -35,7 +29,17 @@ def validate_bl007_bl008_handshake(
     trace_header: list[str],
     policy: str,
 ) -> dict[str, object]:
-    """Validate that BL-007 outputs satisfy the BL-007 to BL-008 handshake contract."""
+    """Validate BL-007 outputs meet the BL-007↔BL-008 handshake contract.
+
+    Checks:
+    - Playlist tracks list is non-empty.
+    - All required BL-007 playlist track fields are present in the first track.
+    - All rows supply a non-empty track_id.
+    - All rows supply a parseable final_score.
+    - Assembly trace CSV header contains the required columns.
+
+    Returns a diagnostics dict with policy, status, and violation details.
+    """
     normalized_policy = normalize_validation_policy(policy)
 
     first_track_keys = list(playlist_tracks[0].keys()) if playlist_tracks else []
@@ -68,15 +72,7 @@ def validate_bl007_bl008_handshake(
     if rows_missing_score > 0:
         violations.append(f"playlist_rows_missing_final_score={rows_missing_score}")
 
-    strict_failure = normalized_policy == "strict" and bool(violations)
-    if strict_failure:
-        status = "fail"
-    elif violations and normalized_policy == "warn":
-        status = "warn"
-    elif violations and normalized_policy == "allow":
-        status = "allow"
-    else:
-        status = "pass"
+    status = resolve_policy_status(normalized_policy, violations)
 
     return {
         "policy": normalized_policy,

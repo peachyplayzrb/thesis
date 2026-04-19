@@ -2,10 +2,9 @@
 
 from __future__ import annotations
 
-from typing import Any, Mapping
+from typing import Any
 
-
-VALIDATION_POLICIES: tuple[str, ...] = ("allow", "warn", "strict")
+from shared_utils.validation_policy import normalize_validation_policy, resolve_policy_status
 
 REQUIRED_BASELINE_SNAPSHOT_TOP_KEYS: tuple[str, ...] = (
     "stage_configs",
@@ -20,14 +19,6 @@ REQUIRED_STAGE_CONFIGS_SUB_KEYS: tuple[str, ...] = (
     "scoring",
     "assembly",
 )
-
-
-def normalize_validation_policy(policy: Any, default: str = "warn") -> str:
-    """Normalize policy string to one of: allow, warn, strict."""
-    value = str(policy or default).strip().lower()
-    if value in VALIDATION_POLICIES:
-        return value
-    return default
 
 
 def validate_bl010_baseline_snapshot(
@@ -51,10 +42,10 @@ def validate_bl010_baseline_snapshot(
     # Check that snapshot is a dict
     if not isinstance(snapshot, dict):
         violations.append("baseline_snapshot_not_dict")
-        status = "fail" if normalized_policy == "strict" else ("warn" if violations else "allow")
+        status = resolve_policy_status(normalized_policy, violations)
         return {
             "policy": normalized_policy,
-            "status": "fail" if normalized_policy == "strict" else status,
+            "status": status,
             "violations": violations,
             "details": {
                 "is_dict": False,
@@ -84,15 +75,7 @@ def validate_bl010_baseline_snapshot(
         violations.append("stage_configs_not_dict")
 
     # Determine status
-    strict_failure = normalized_policy == "strict" and bool(violations)
-    if strict_failure:
-        status = "fail"
-    elif violations and normalized_policy == "warn":
-        status = "warn"
-    elif violations and normalized_policy == "allow":
-        status = "allow"
-    else:
-        status = "pass"
+    status = resolve_policy_status(normalized_policy, violations)
 
     return {
         "policy": normalized_policy,

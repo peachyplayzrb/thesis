@@ -1,10 +1,9 @@
-"""String constants and fixed filenames used by BL-003 alignment."""
+"""Alignment-specific contract constants and literal registries."""
 
 from __future__ import annotations
 
 from pathlib import Path
 from typing import Final
-
 
 SOURCE_TOP_TRACKS: Final[str] = "top_tracks"
 SOURCE_SAVED_TRACKS: Final[str] = "saved_tracks"

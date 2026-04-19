@@ -1,9 +1,9 @@
-"""Validation helpers for the BL-003 outputs."""
+"""Validation helpers for BL-003 alignment outputs."""
 from __future__ import annotations
 
 
 def validate_match_rate(summary_counts: dict[str, int], threshold: float) -> None:
-    """Fail if the matched fraction falls below the configured minimum threshold."""
+    """Raise RuntimeError if the matched fraction falls below the configured threshold."""
     if summary_counts["input_event_rows"] > 0 and threshold > 0.0:
         matched = (
             summary_counts["matched_by_spotify_id"]

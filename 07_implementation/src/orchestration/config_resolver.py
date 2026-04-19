@@ -1,7 +1,8 @@
 from __future__ import annotations
 
+from collections.abc import Mapping
 from pathlib import Path
-from typing import Any, Mapping
+from typing import Any
 
 from shared_utils.config_loader import load_run_config_utils_module
 from shared_utils.stage_runtime_resolver import PAYLOAD_SCHEMA_VERSION

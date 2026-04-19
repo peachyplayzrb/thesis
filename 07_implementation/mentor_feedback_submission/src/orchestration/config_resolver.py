@@ -1,8 +1,8 @@
-"""Resolve orchestration controls and stage payloads from run-config artifacts."""
 from __future__ import annotations
 
+from collections.abc import Mapping
 from pathlib import Path
-from typing import Any, Mapping
+from typing import Any
 
 from shared_utils.config_loader import load_run_config_utils_module
 from shared_utils.stage_runtime_resolver import PAYLOAD_SCHEMA_VERSION
@@ -23,7 +23,7 @@ def _build_stage_payload(
 
 
 def resolve_orchestration_controls(run_config_path: Path | None) -> dict[str, Any]:
-    """Resolve BL-013 orchestration controls from run-config plus defaults."""
+    """Resolve BL-013 orchestration controls from run-config/defaults."""
     run_config_utils = load_run_config_utils_module()
     return run_config_utils.resolve_bl013_orchestration_controls(
         str(run_config_path) if run_config_path else None
@@ -37,7 +37,7 @@ def emit_run_config_artifact_pair(
     artifact_dir: Path,
     generated_at_utc: str,
 ) -> dict[str, object]:
-    """Write run-intent and run-effective-config artifacts for this run."""
+    """Write run-intent and run-effective-config artifacts for BL-013."""
     run_config_utils = load_run_config_utils_module()
     return run_config_utils.write_run_config_artifact_pair(
         run_id=run_id,
@@ -48,9 +48,9 @@ def emit_run_config_artifact_pair(
 
 
 def resolve_stage_control_payload(stage_id: str, run_config_path: Path | None) -> dict[str, object]:
-    """Resolve one stage control payload for BL_STAGE_CONFIG_JSON handoff.
+    """Resolve one stage's control payload for BL_STAGE_CONFIG_JSON handoff.
 
-    This stays additive so existing stages can ignore the payload when needed.
+    This is additive/backward-compatible: stages may ignore this payload today.
     """
     run_config_utils = load_run_config_utils_module()
     rc_path = str(run_config_path) if run_config_path else None
@@ -132,7 +132,7 @@ def resolve_stage_control_payloads(
     *,
     include_stage_ids: list[str] | None = None,
 ) -> dict[str, dict[str, object]]:
-    """Resolve control payloads for all stages in execution order."""
+    """Resolve controls for all stages in run order for orchestration handoff."""
     ordered_stage_ids: list[str] = []
     for stage_id in stage_order:
         if stage_id not in ordered_stage_ids:

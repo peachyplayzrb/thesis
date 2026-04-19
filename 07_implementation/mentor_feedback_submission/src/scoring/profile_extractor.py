@@ -1,4 +1,9 @@
-"""Extract BL-004 profile data into the compact structures BL-006 scoring needs."""
+"""
+Profile data extraction for BL-006 scoring.
+
+Parses the BL-004 profile JSON and extracts data structures
+needed for candidate scoring.
+"""
 
 from typing import Any
 
@@ -39,10 +44,36 @@ def extract_profile_scoring_data(
     profile: dict[str, Any],
     numeric_specs: dict[str, dict[str, Any]],
 ) -> dict[str, object]:
-    """Build reusable numeric centers, thresholds, and semantic weight maps from the BL-004 profile."""
+    """
+    Extract and organize profile data for scoring operations.
+
+    Processes BL-004 profile to create lightweight data structures
+    suitable for repeated candidate scoring.
+
+    Args:
+        profile: Full BL-004 profile JSON
+            Expected structure:
+            {
+                "numeric_feature_profile": {"tempo": X, "duration_ms": Y, ...},
+                "semantic_profile": {
+                    "top_lead_genres": [{"label": "Rock", ...}, ...],
+                    "top_genres": [{"label": "Rock", ...}, ...],
+                    "top_tags": [{"label": "energy", ...}, ...]
+                }
+            }
+        numeric_specs: Numeric feature specifications (for validation)
+
+    Returns:
+        Dict with extracted scoring data:
+        - "numeric_centers": dict of profile numeric values
+        - "numeric_thresholds": dict of thresholds for each dimension
+        - "lead_genre": primary genre from profile
+        - "genre_weights": dict mapping genres to weights
+        - "tag_weights": dict mapping tags to weights
+    """
     scoring_data = {}
 
-    # Numeric centers come from BL-004, while thresholds come from the active scoring specs.
+    # Extract numeric centers and thresholds.
     numeric_profile = profile.get("numeric_feature_profile", {})
     numeric_centers = {}
     numeric_thresholds = {}
@@ -50,6 +81,7 @@ def extract_profile_scoring_data(
     for dimension, spec in numeric_specs.items():
         if dimension in numeric_profile:
             numeric_centers[dimension] = float(numeric_profile[dimension])
+            # Threshold comes from spec (e.g., NUMERIC_FEATURE_SPECS)
             numeric_thresholds[dimension] = float(spec.get("threshold", 1.0))
 
     scoring_data["numeric_centers"] = numeric_centers
@@ -76,20 +108,22 @@ def extract_profile_scoring_data(
     else:
         scoring_data["profile_numeric_confidence_factor"] = 1.0
 
-    # Pull semantic label blocks and convert them into normalized weight maps.
+    # Extract semantic profile data
     semantic_profile = profile.get("semantic_profile", {})
 
-    # Lead-genre similarity can use the full weighted top-lead-genre block.
+    # Lead-genre scoring keeps weights for the full top-lead-genre block.
     top_lead_genres = semantic_profile.get("top_lead_genres", [])
     lead_genre = top_lead_genres[0]["label"] if top_lead_genres else ""
     scoring_data["lead_genre"] = lead_genre
     lead_genre_weights = _build_weight_map(top_lead_genres)
     scoring_data["lead_genre_weights"] = lead_genre_weights
 
+    # Genre weights: prefer BL-004 weights; fallback to uniform weights.
     top_genres = semantic_profile.get("top_genres", [])
     genre_weights = _build_weight_map(top_genres)
     scoring_data["genre_weights"] = genre_weights
 
+    # Tag weights: prefer BL-004 weights; fallback to uniform weights.
     top_tags = semantic_profile.get("top_tags", [])
     tag_weights = _build_weight_map(top_tags)
     scoring_data["tag_weights"] = tag_weights
@@ -109,7 +143,22 @@ def extract_profile_scoring_data(
 
 
 def build_component_weights() -> dict[str, float]:
-    """Return the default BL-006 component-weight mapping using `_score` keys."""
+    """
+    Build the component weight dict for final score aggregation.
+
+    These weights determine how much each component contributes to the
+    final ranking score. Weights should sum to 1.0 (or be normalized).
+
+    Returns:
+        Dict mapping component names to weights
+
+        Component breakdown:
+        - Numeric components (53%): tempo (20%), duration_ms (13%),
+                                    key (13%), mode (9%)
+        - Lead genre (17%): exact match weight
+        - Genre overlap (12%): weighted jaccard similarity
+        - Tag overlap (16%): weighted jaccard similarity
+    """
     return {
         f"{component}_score": weight
         for component, weight in DEFAULT_SCORING_COMPONENT_WEIGHTS.items()
@@ -117,7 +166,18 @@ def build_component_weights() -> dict[str, float]:
 
 
 def build_numeric_specs() -> dict[str, dict[str, object]]:
-    """Return numeric feature specs (threshold + circular flag) for BL-006 scoring."""
+    """
+    Build numeric feature specifications for scoring.
+
+    Defines which numeric dimensions are evaluated, their thresholds,
+    and whether they use circular distance calculation.
+
+    This mirrors NUMERIC_FEATURE_SPECS from constants but is included
+    here for BL-006 clarity. In production, import from shared_utils.
+
+    Returns:
+        Dict of numeric dimension specs
+    """
     return {
         dimension: {
             "threshold": float(spec["threshold"]),

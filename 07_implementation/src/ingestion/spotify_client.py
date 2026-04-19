@@ -6,7 +6,7 @@ import urllib.error
 import urllib.parse
 import urllib.request
 from collections import deque
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 try:
     from .spotify_auth import request_token  # noqa: E402
@@ -33,10 +33,10 @@ class SpotifyApiError(RuntimeError):
 
 
 class SpotifyApiClient:
-    def __init__(self, args: Any, token_payload: Dict[str, Any]) -> None:
+    def __init__(self, args: Any, token_payload: dict[str, Any]) -> None:
         self.args = args
         self.token_payload = token_payload
-        self.request_log: List[Dict[str, Any]] = []
+        self.request_log: list[dict[str, Any]] = []
         self._recent_request_epochs: deque[float] = deque()
         self._last_request_epoch: float = 0.0
 
@@ -110,7 +110,7 @@ class SpotifyApiClient:
                     )
                     time.sleep(backoff_seconds)
                     continue
-                raise RuntimeError(f"Spotify token refresh failed with status {status}: {body}")
+                raise RuntimeError(f"Spotify token refresh failed with status {status}: {body}") from error
             except urllib.error.URLError as error:
                 if attempts <= self.args.max_retries:
                     base_delay_seconds = max(0.01, float(getattr(self.args, "base_backoff_delay_seconds", 1.0)))
@@ -128,9 +128,9 @@ class SpotifyApiClient:
                     )
                     time.sleep(backoff_seconds)
                     continue
-                raise RuntimeError(f"Network error refreshing Spotify token: {error.reason}")
+                raise RuntimeError(f"Network error refreshing Spotify token: {error.reason}") from error
 
-    def api_get(self, path: str, params: Dict[str, Any]) -> Dict[str, Any]:
+    def api_get(self, path: str, params: dict[str, Any]) -> dict[str, Any]:
         query = urllib.parse.urlencode(params)
         url = f"{API_BASE_URL}{path}"
         if query:
@@ -199,7 +199,11 @@ class SpotifyApiClient:
                                 "reason": "retry_after_exceeds_threshold",
                             }
                         )
-                        raise RateLimitCooldownError(message=message, retry_after_seconds=wait_seconds, path=path)
+                        raise RateLimitCooldownError(
+                            message=message,
+                            retry_after_seconds=wait_seconds,
+                            path=path,
+                        ) from error
                     backoff_seconds = max(wait_seconds, attempts * 2)
                     print(
                         f"[rate_limit] path={path} attempt={attempts} status=429 "
@@ -230,7 +234,10 @@ class SpotifyApiClient:
                         "error_body": body,
                     }
                 )
-                raise SpotifyApiError(f"Spotify API error {status} for {path}: {body}", status_code=status)
+                raise SpotifyApiError(
+                    f"Spotify API error {status} for {path}: {body}",
+                    status_code=status,
+                ) from error
 
             except urllib.error.URLError as error:
                 if attempts <= self.args.max_retries:
@@ -248,7 +255,7 @@ class SpotifyApiClient:
                     )
                     time.sleep(backoff_seconds)
                     continue
-                raise RuntimeError(f"Network error calling Spotify API path {path}: {error.reason}")
+                raise RuntimeError(f"Network error calling Spotify API path {path}: {error.reason}") from error
 
     def _apply_rate_limits(self, path: str) -> None:
         now = time.time()
@@ -287,11 +294,11 @@ class SpotifyApiClient:
 def fetch_all_offset_pages(
     client: SpotifyApiClient,
     path: str,
-    base_params: Dict[str, Any],
+    base_params: dict[str, Any],
     limit: int,
-    max_items: Optional[int] = None,
-) -> List[Dict[str, Any]]:
-    items: List[Dict[str, Any]] = []
+    max_items: int | None = None,
+) -> list[dict[str, Any]]:
+    items: list[dict[str, Any]] = []
     offset = 0
     page_index = 0
 

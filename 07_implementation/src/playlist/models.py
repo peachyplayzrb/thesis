@@ -1,8 +1,9 @@
 from __future__ import annotations
 
+from collections.abc import Mapping
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Mapping
+from typing import Any
 
 
 @dataclass(frozen=True)
@@ -39,6 +40,7 @@ class PlaylistControls:
     influence_allow_consecutive_override: bool
     influence_allow_score_threshold_override: bool
     bl006_bl007_handshake_validation_policy: str = "warn"
+    transition_smoothness_weight: float = 0.0
 
     def as_mapping(self) -> dict[str, object]:
         return {
@@ -68,6 +70,7 @@ class PlaylistControls:
             "influence_allow_consecutive_override": self.influence_allow_consecutive_override,
             "influence_allow_score_threshold_override": self.influence_allow_score_threshold_override,
             "bl006_bl007_handshake_validation_policy": self.bl006_bl007_handshake_validation_policy,
+            "transition_smoothness_weight": self.transition_smoothness_weight,
         }
 
 
@@ -100,6 +103,7 @@ class PlaylistContext:
     influence_allow_genre_cap_override: bool
     influence_allow_consecutive_override: bool
     influence_allow_score_threshold_override: bool
+    transition_smoothness_weight: float = 0.0
 
 
 @dataclass(frozen=True)
@@ -157,6 +161,7 @@ def controls_from_mapping(payload: Mapping[str, Any]) -> PlaylistControls:
         influence_allow_consecutive_override=bool(payload.get("influence_allow_consecutive_override", False)),
         influence_allow_score_threshold_override=bool(payload.get("influence_allow_score_threshold_override", False)),
         bl006_bl007_handshake_validation_policy=str(payload.get("bl006_bl007_handshake_validation_policy", "warn")),
+        transition_smoothness_weight=float(payload.get("transition_smoothness_weight", 0.0)),
     )
 
 
@@ -200,6 +205,7 @@ def context_from_mapping(payload: Mapping[str, Any]) -> PlaylistContext:
         influence_allow_genre_cap_override=bool(payload.get("influence_allow_genre_cap_override", False)),
         influence_allow_consecutive_override=bool(payload.get("influence_allow_consecutive_override", False)),
         influence_allow_score_threshold_override=bool(payload.get("influence_allow_score_threshold_override", False)),
+        transition_smoothness_weight=float(payload.get("transition_smoothness_weight", 0.0)),
     )
 
 
@@ -227,4 +233,5 @@ def context_as_mapping(context: PlaylistContext) -> dict[str, object]:
         "influence_allow_genre_cap_override": context.influence_allow_genre_cap_override,
         "influence_allow_consecutive_override": context.influence_allow_consecutive_override,
         "influence_allow_score_threshold_override": context.influence_allow_score_threshold_override,
+        "transition_smoothness_weight": context.transition_smoothness_weight,
     }

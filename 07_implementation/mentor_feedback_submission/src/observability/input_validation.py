@@ -1,11 +1,11 @@
-"""Validation helpers for the BL-008 to BL-009 handoff contract."""
+"""Input validation for BL-009 observability - BL-008↔BL-009 handshake."""
 
 from __future__ import annotations
 
-from typing import Any, Mapping
+from collections.abc import Mapping
+from typing import Any
 
-
-VALIDATION_POLICIES: tuple[str, ...] = ("allow", "warn", "strict")
+from shared_utils.validation_policy import normalize_validation_policy, resolve_policy_status
 
 REQUIRED_BL008_SUMMARY_KEYS: tuple[str, ...] = (
     "run_id",
@@ -17,13 +17,6 @@ REQUIRED_BL008_PAYLOAD_KEYS: tuple[str, ...] = (
     "playlist_track_count",
     "explanations",
 )
-
-
-def normalize_validation_policy(policy: Any, default: str = "warn") -> str:
-    value = str(policy or default).strip().lower()
-    if value in VALIDATION_POLICIES:
-        return value
-    return default
 
 
 def _coerce_int(value: Any) -> int | None:
@@ -39,8 +32,6 @@ def validate_bl008_bl009_handshake(
     bl008_payloads: Mapping[str, object],
     policy: str,
 ) -> dict[str, object]:
-    """Validate that BL-008 summary/payload artefacts satisfy the BL-008 to BL-009 handshake contract."""
-
     normalized_policy = normalize_validation_policy(policy)
 
     missing_summary_keys = [
@@ -91,15 +82,7 @@ def validate_bl008_bl009_handshake(
             f"summary:{summary_track_count};payload:{payload_track_count};explanations:{explanation_count}"
         )
 
-    strict_failure = normalized_policy == "strict" and bool(violations)
-    if strict_failure:
-        status = "fail"
-    elif violations and normalized_policy == "warn":
-        status = "warn"
-    elif violations and normalized_policy == "allow":
-        status = "allow"
-    else:
-        status = "pass"
+    status = resolve_policy_status(normalized_policy, violations)
 
     return {
         "policy": normalized_policy,

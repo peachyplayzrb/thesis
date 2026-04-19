@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""BL-007 entry point for assembling the final playlist from scored candidates."""
+"""BL-007: Rule-based playlist assembly."""
 
 import logging
 
@@ -10,6 +10,7 @@ def _string_list(value: object) -> list[str]:
     if not isinstance(value, list):
         return []
     return [str(item) for item in value]
+
 
 logger = logging.getLogger(__name__)
 

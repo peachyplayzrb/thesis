@@ -1,9 +1,3 @@
-"""BL-002 data layer entry point for the embedded DS-001 candidate dataset.
-
-This stage just checks that the bundled dataset is present and, when a manifest
-is available, that the file hash still matches what the bundle expects.
-"""
-
 from __future__ import annotations
 
 import csv
@@ -31,8 +25,6 @@ def main() -> None:
     dataset_output_path = output_dir / "ds001_working_candidate_dataset.csv"
     manifest_output_path = output_dir / "ds001_working_candidate_dataset_manifest.json"
 
-    # I check the embedded dataset up front so downstream stages fail early with
-    # a clear cause instead of breaking later for harder-to-read reasons.
     if not dataset_output_path.is_file():
         raise FileNotFoundError(f"Embedded candidate dataset not found: {dataset_output_path}")
 
@@ -42,8 +34,6 @@ def main() -> None:
     manifest_payload: dict[str, object] | None = None
     manifest_hash_matches = None
     if manifest_output_path.is_file():
-        # The bundle can still run without the manifest; when it exists, I use it
-        # as a quick integrity check against accidental file drift.
         with manifest_output_path.open("r", encoding="utf-8") as handle:
             manifest_payload = json.load(handle)
         expected_hash = _mapping(_mapping(manifest_payload).get("output")).get("dataset_sha256")

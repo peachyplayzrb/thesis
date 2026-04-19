@@ -1,11 +1,15 @@
-"""Resolve BL-008 transparency controls from payload, run config, and environment defaults."""
+"""Runtime control resolution for BL-008 transparency."""
 
 from __future__ import annotations
 
-from shared_utils.constants import DEFAULT_BL008_HANDSHAKE_VALIDATION_POLICY, DEFAULT_TOP_CONTRIBUTOR_LIMIT, DEFAULT_TRANSPARENCY_CONTROLS
+from shared_utils.constants import (
+    DEFAULT_BL008_HANDSHAKE_VALIDATION_POLICY,
+    DEFAULT_TOP_CONTRIBUTOR_LIMIT,
+    DEFAULT_TRANSPARENCY_CONTROLS,
+)
 from shared_utils.env_utils import coerce_float, coerce_int, env_bool, env_float, env_int, env_str
-from transparency.input_validation import normalize_validation_policy
 from shared_utils.stage_runtime_resolver import defaults_loader, resolve_stage_controls
+from transparency.input_validation import normalize_validation_policy
 
 
 def _sanitize_bl008_controls(controls: dict[str, object]) -> dict[str, object]:

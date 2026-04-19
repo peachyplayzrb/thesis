@@ -1,16 +1,11 @@
-"""The BL-007 playlist stage that applies diversity-aware assembly rules.
-
-This stage consumes scored candidates, runs the assembly policy, and writes the
-playlist plus trace/report artefacts used by the next stages.
-"""
-
 from __future__ import annotations
 
 import time
 from collections import Counter
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
+from playlist.input_validation import validate_bl006_bl007_handshake
 from playlist.io_layer import (
     DEFAULT_OUTPUT_DIR,
     DEFAULT_SCORED_CANDIDATES_PATH,
@@ -20,7 +15,6 @@ from playlist.io_layer import (
     write_playlist,
     write_report,
 )
-from playlist.input_validation import validate_bl006_bl007_handshake
 from playlist.models import (
     PlaylistAggregation,
     PlaylistArtifacts,
@@ -28,6 +22,8 @@ from playlist.models import (
     PlaylistControls,
     PlaylistInputs,
     PlaylistPaths,
+    context_as_mapping,
+    context_from_mapping,
     controls_from_mapping,
 )
 from playlist.reporting import (
@@ -36,19 +32,20 @@ from playlist.reporting import (
     build_influence_effectiveness_diagnostics,
     build_opportunity_cost_diagnostics,
     build_rank_continuity_diagnostics,
+    build_tradeoff_metrics_summary,
     build_undersized_diagnostics,
 )
-from playlist.rules import assemble_bucketed
+from playlist.rules import assemble_bucketed, build_transition_diagnostics
 from playlist.runtime_controls import resolve_bl007_runtime_controls
-from shared_utils.io_utils import sha256_of_file, utc_now
 from shared_utils.env_utils import env_path
-from shared_utils.path_utils import impl_root
+from shared_utils.io_utils import sha256_of_file, utc_now
 from shared_utils.parsing import safe_float, safe_int
+from shared_utils.path_utils import impl_root
 from shared_utils.stage_utils import ensure_paths_exist
 
 
 class PlaylistStage:
-    """Workflow shell for running the BL-007 playlist stage end to end."""
+    """Object-oriented BL-007 workflow shell over the existing playlist helpers."""
 
     def __init__(self, root: Path | None = None) -> None:
         self.root = root if root is not None else impl_root()
@@ -75,30 +72,7 @@ class PlaylistStage:
 
     @staticmethod
     def build_runtime_context(controls: PlaylistControls) -> PlaylistContext:
-        return PlaylistContext(
-            target_size=controls.target_size,
-            min_score_threshold=controls.min_score_threshold,
-            max_per_genre=controls.max_per_genre,
-            max_consecutive=controls.max_consecutive,
-            utility_strategy=controls.utility_strategy,
-            utility_decay_factor=controls.utility_decay_factor,
-            utility_weights=dict(controls.utility_weights),
-            adaptive_limits=dict(controls.adaptive_limits),
-            controlled_relaxation=dict(controls.controlled_relaxation),
-            lead_genre_fallback_strategy=controls.lead_genre_fallback_strategy,
-            use_component_contributions_for_tiebreak=controls.use_component_contributions_for_tiebreak,
-            use_semantic_strength_for_tiebreak=controls.use_semantic_strength_for_tiebreak,
-            emit_opportunity_cost_metrics=controls.emit_opportunity_cost_metrics,
-            opportunity_cost_top_k_examples=controls.opportunity_cost_top_k_examples,
-            detail_log_top_k=controls.detail_log_top_k,
-            influence_enabled=controls.influence_enabled,
-            influence_track_ids=set(controls.influence_track_ids),
-            influence_policy_mode=controls.influence_policy_mode,
-            influence_reserved_slots=controls.influence_reserved_slots,
-            influence_allow_genre_cap_override=controls.influence_allow_genre_cap_override,
-            influence_allow_consecutive_override=controls.influence_allow_consecutive_override,
-            influence_allow_score_threshold_override=controls.influence_allow_score_threshold_override,
-        )
+        return context_from_mapping(controls.as_mapping())
 
     @staticmethod
     def aggregate(*, candidates: list[dict[str, object]], context: PlaylistContext) -> PlaylistAggregation:
@@ -125,6 +99,7 @@ class PlaylistStage:
             influence_allow_genre_cap_override=context.influence_allow_genre_cap_override,
             influence_allow_consecutive_override=context.influence_allow_consecutive_override,
             influence_allow_score_threshold_override=context.influence_allow_score_threshold_override,
+            transition_smoothness_weight=context.transition_smoothness_weight,
         )
         return PlaylistAggregation(
             playlist=playlist,
@@ -141,37 +116,15 @@ class PlaylistStage:
         playlist: list[dict[str, object]],
         validation_policy: str = "warn",
     ) -> dict[str, object]:
+        config = context_as_mapping(context)
+        config["validation_policies"] = {
+            "bl006_bl007_handshake_validation_policy": validation_policy,
+        }
         return {
             "run_id": run_id,
             "generated_at_utc": utc_now(),
             "elapsed_seconds": elapsed_seconds,
-            "config": {
-                "target_size": context.target_size,
-                "min_score_threshold": context.min_score_threshold,
-                "max_per_genre": context.max_per_genre,
-                "max_consecutive": context.max_consecutive,
-                "utility_strategy": context.utility_strategy,
-                "utility_decay_factor": context.utility_decay_factor,
-                "utility_weights": dict(context.utility_weights),
-                "adaptive_limits": dict(context.adaptive_limits),
-                "controlled_relaxation": dict(context.controlled_relaxation),
-                "lead_genre_fallback_strategy": context.lead_genre_fallback_strategy,
-                "use_component_contributions_for_tiebreak": context.use_component_contributions_for_tiebreak,
-                "use_semantic_strength_for_tiebreak": context.use_semantic_strength_for_tiebreak,
-                "emit_opportunity_cost_metrics": context.emit_opportunity_cost_metrics,
-                "opportunity_cost_top_k_examples": context.opportunity_cost_top_k_examples,
-                "detail_log_top_k": context.detail_log_top_k,
-                "influence_enabled": context.influence_enabled,
-                "influence_track_ids": sorted(context.influence_track_ids),
-                "influence_policy_mode": context.influence_policy_mode,
-                "influence_reserved_slots": context.influence_reserved_slots,
-                "influence_allow_genre_cap_override": context.influence_allow_genre_cap_override,
-                "influence_allow_consecutive_override": context.influence_allow_consecutive_override,
-                "influence_allow_score_threshold_override": context.influence_allow_score_threshold_override,
-                "validation_policies": {
-                    "bl006_bl007_handshake_validation_policy": validation_policy,
-                },
-            },
+            "config": config,
             "playlist_length": len(playlist),
             "tracks": playlist,
         }
@@ -209,6 +162,12 @@ class PlaylistStage:
         )
         rank_continuity_diagnostics = build_rank_continuity_diagnostics(aggregation.playlist)
         assembly_pressure_diagnostics = build_assembly_pressure_diagnostics(aggregation.trace_rows)
+        transition_diagnostics = build_transition_diagnostics(aggregation.playlist)
+        tradeoff_metrics_summary = build_tradeoff_metrics_summary(
+            playlist=aggregation.playlist,
+            trace_rows=aggregation.trace_rows,
+            transition_diagnostics=transition_diagnostics,
+        )
         influence_track_ids_obj = config.get("influence_track_ids")
         influence_track_ids_values = (
             influence_track_ids_obj
@@ -261,6 +220,8 @@ class PlaylistStage:
             },
             "rank_continuity_diagnostics": rank_continuity_diagnostics,
             "assembly_pressure_diagnostics": assembly_pressure_diagnostics,
+            "transition_diagnostics": transition_diagnostics,
+            "tradeoff_metrics_summary": tradeoff_metrics_summary,
             "influence_effectiveness_diagnostics": influence_effectiveness_diagnostics,
             "input_artifact_hashes": {
                 "bl006_scored_candidates.csv": sha256_of_file(paths.scored_candidates_path),
@@ -317,7 +278,7 @@ class PlaylistStage:
         )
 
         elapsed_seconds = round(time.time() - start_time, 3)
-        now = datetime.now(timezone.utc).strftime("%Y%m%d-%H%M%S-%f")
+        now = datetime.now(UTC).strftime("%Y%m%d-%H%M%S-%f")
         run_id = f"BL007-ASSEMBLE-{now}"
 
         playlist_payload = self._build_playlist_payload(

@@ -1,42 +1,44 @@
-"""Spotify export entry point for the ingestion step.
-
-This script pulls the main Spotify data sources I use in the pipeline and writes
-them out as the raw artefacts BL-003 builds on later.
-"""
-
 from __future__ import annotations
 
 import argparse
-from collections import Counter
 import os
 import re
 import shutil
 import sys
 import time
-from datetime import datetime, timedelta, timezone
+from collections import Counter
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any
 
-from shared_utils.path_utils import impl_root
 from shared_utils.config_loader import load_run_config_utils_module
-from shared_utils.stage_runtime_resolver import get_stage_payload, get_stage_payload_controls, resolve_run_config_path
+from shared_utils.path_utils import impl_root
+from shared_utils.stage_runtime_resolver import (
+    get_stage_payload,
+    get_stage_payload_controls,
+    resolve_run_config_path,
+)
 
-# This fallback import pattern lets the file run both inside the package and as
-# a standalone script from the bundle root.
 try:
+    from .spotify_artifacts import build_export_artifact_paths, build_support_file_paths
     from .spotify_auth import complete_oauth_flow
-    from .spotify_resilience import apply_ingestion_controls
     from .spotify_client import (
         RateLimitCooldownError,
         SpotifyApiClient,
         SpotifyApiError,
         fetch_all_offset_pages,
     )
-    from .spotify_io import clamp_page_size, now_utc, repo_root, sha256_of_file, write_csv, write_json, write_jsonl
-    from .spotify_artifacts import build_export_artifact_paths, build_support_file_paths
+    from .spotify_io import (
+        clamp_page_size,
+        now_utc,
+        sha256_of_file,
+        write_csv,
+        write_json,
+        write_jsonl,
+    )
     from .spotify_mapping import (
-        PLAYLISTS_FIELDS,
         PLAYLIST_ITEMS_FIELDS,
+        PLAYLISTS_FIELDS,
         RECENTLY_PLAYED_FIELDS,
         SAVED_TRACKS_FIELDS,
         TOP_TRACKS_FIELDS,
@@ -46,20 +48,30 @@ try:
         build_saved_track_rows,
         build_top_track_rows,
     )
+    from .spotify_resilience import apply_ingestion_controls
 except ImportError:
+    from spotify_artifacts import (  # pyright: ignore[reportMissingImports]
+        build_export_artifact_paths,
+        build_support_file_paths,
+    )
     from spotify_auth import complete_oauth_flow  # pyright: ignore[reportMissingImports]
-    from spotify_resilience import apply_ingestion_controls  # pyright: ignore[reportMissingImports]
     from spotify_client import (  # pyright: ignore[reportMissingImports]
         RateLimitCooldownError,
         SpotifyApiClient,
         SpotifyApiError,
         fetch_all_offset_pages,
     )
-    from spotify_io import clamp_page_size, now_utc, repo_root, sha256_of_file, write_csv, write_json, write_jsonl  # pyright: ignore[reportMissingImports]
-    from spotify_artifacts import build_export_artifact_paths, build_support_file_paths  # pyright: ignore[reportMissingImports]
+    from spotify_io import (  # pyright: ignore[reportMissingImports]
+        clamp_page_size,
+        now_utc,
+        sha256_of_file,
+        write_csv,
+        write_json,
+        write_jsonl,
+    )
     from spotify_mapping import (  # pyright: ignore[reportMissingImports]
-        PLAYLISTS_FIELDS,
         PLAYLIST_ITEMS_FIELDS,
+        PLAYLISTS_FIELDS,
         RECENTLY_PLAYED_FIELDS,
         SAVED_TRACKS_FIELDS,
         TOP_TRACKS_FIELDS,
@@ -69,6 +81,7 @@ except ImportError:
         build_saved_track_rows,
         build_top_track_rows,
     )
+    from spotify_resilience import apply_ingestion_controls  # pyright: ignore[reportMissingImports]
 
 DEFAULT_SCOPES = [
     "user-top-read",
@@ -182,17 +195,17 @@ def _normalize_optional_cap(value: int) -> int | None:
     return safe_value or None
 
 
-def _normalize_requested_time_ranges(raw_value: str) -> List[str]:
+def _normalize_requested_time_ranges(raw_value: str) -> list[str]:
     parts = [part.strip() for part in str(raw_value).split(",") if part.strip()]
     requested = [time_range for time_range in TIME_RANGE_ORDER if time_range in parts]
     return requested or list(TIME_RANGE_ORDER)
 
 
-def parse_ps1_env_file(path: Path) -> Dict[str, str]:
+def parse_ps1_env_file(path: Path) -> dict[str, str]:
     pattern = re.compile(
         r"^\s*\$env:(SPOTIFY_CLIENT_ID|SPOTIFY_CLIENT_SECRET|SPOTIFY_REDIRECT_URI)\s*=\s*['\"](.*?)['\"]\s*$"
     )
-    values: Dict[str, str] = {}
+    values: dict[str, str] = {}
     for line in path.read_text(encoding="utf-8").splitlines():
         match = pattern.match(line)
         if match:
@@ -200,35 +213,130 @@ def parse_ps1_env_file(path: Path) -> Dict[str, str]:
     return values
 
 
-def _fetch_all_data(
-    client: SpotifyApiClient,
-    args: argparse.Namespace,
-) -> Dict[str, Any]:
-    profile = client.api_get(path="/me", params={})
-    print(f"[profile] user_id={profile.get('id')}", flush=True)
+def _fetch_top_tracks_by_range(client: SpotifyApiClient, args: argparse.Namespace) -> dict[str, list[dict[str, Any]]]:
+    top_tracks_by_range: dict[str, list[dict[str, Any]]] = {}
+    if not args.include_top_tracks:
+        return top_tracks_by_range
 
-    top_tracks_by_range: Dict[str, List[Dict[str, Any]]] = {}
     requested_time_ranges = _normalize_requested_time_ranges(args.top_time_ranges)
     time_range_caps = {
         "short_term": _normalize_optional_cap(args.top_max_items_short_term),
         "medium_term": _normalize_optional_cap(args.top_max_items_medium_term),
         "long_term": _normalize_optional_cap(args.top_max_items_long_term),
     }
+    for time_range in requested_time_ranges:
+        print(f"[top_tracks] fetching time_range={time_range}", flush=True)
+        tracks = fetch_all_offset_pages(
+            client=client,
+            path="/me/top/tracks",
+            base_params={"time_range": time_range},
+            limit=args.batch_size_top_tracks,
+            max_items=time_range_caps.get(time_range),
+        )
+        top_tracks_by_range[time_range] = tracks
+        print(f"[top_tracks] time_range={time_range} count={len(tracks)}", flush=True)
+    return top_tracks_by_range
 
-    if args.include_top_tracks:
-        for time_range in requested_time_ranges:
-            print(f"[top_tracks] fetching time_range={time_range}", flush=True)
-            tracks = fetch_all_offset_pages(
+
+def _deduplicate_playlists(playlists: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    seen_playlist_ids: set[str] = set()
+    deduped_playlists: list[dict[str, Any]] = []
+    for playlist in playlists:
+        playlist_id = playlist.get("id") if isinstance(playlist, dict) else None
+        if not playlist_id:
+            deduped_playlists.append(playlist)
+            continue
+        playlist_id_key = str(playlist_id)
+        if playlist_id_key in seen_playlist_ids:
+            continue
+        seen_playlist_ids.add(playlist_id_key)
+        deduped_playlists.append(playlist)
+    return deduped_playlists
+
+
+def _fetch_playlists(client: SpotifyApiClient, args: argparse.Namespace) -> list[dict[str, Any]]:
+    if not args.include_playlists:
+        return []
+    fetched_playlists = fetch_all_offset_pages(
+        client=client,
+        path="/me/playlists",
+        base_params={},
+        limit=args.batch_size_playlists,
+        max_items=_normalize_optional_cap(args.playlists_max_items),
+    )
+    playlists = _deduplicate_playlists(fetched_playlists)
+    if len(playlists) != len(fetched_playlists):
+        print(
+            f"[playlists] deduplicated={len(fetched_playlists) - len(playlists)} duplicate playlist ids",
+            flush=True,
+        )
+    print(f"[playlists] count={len(playlists)}", flush=True)
+    return playlists
+
+
+def _fetch_playlist_item_batches(
+    client: SpotifyApiClient,
+    args: argparse.Namespace,
+    playlists: list[dict[str, Any]],
+    market: Any,
+) -> list[dict[str, Any]]:
+    if not args.include_playlists:
+        return []
+
+    playlist_item_batches: list[dict[str, Any]] = []
+    for playlist in playlists:
+        playlist_id = playlist.get("id")
+        if not playlist_id:
+            continue
+        playlist_id = str(playlist_id)
+        playlist_params: dict[str, Any] = {}
+        if isinstance(market, str) and market:
+            playlist_params["market"] = market
+        try:
+            items = fetch_all_offset_pages(
                 client=client,
-                path="/me/top/tracks",
-                base_params={"time_range": time_range},
-                limit=args.batch_size_top_tracks,
-                max_items=time_range_caps.get(time_range),
+                path=f"/playlists/{playlist_id}/items",
+                base_params=playlist_params,
+                limit=args.batch_size_playlist_items,
+                max_items=_normalize_optional_cap(args.playlist_items_max_per_playlist),
             )
-            top_tracks_by_range[time_range] = tracks
-            print(f"[top_tracks] time_range={time_range} count={len(tracks)}", flush=True)
+        except SpotifyApiError as err:
+            if err.status_code == 403:
+                playlist["playlist_items_access_status"] = "forbidden"
+                playlist["playlist_items_skipped_reason"] = "spotify_playlist_items_403_forbidden"
+                print(f"[playlist_items] playlist_id={playlist_id} SKIPPED (403 Forbidden — not accessible)", flush=True)
+                continue
+            raise
+        playlist["playlist_items_access_status"] = "accessible"
+        playlist["playlist_items_skipped_reason"] = None
+        print(f"[playlist_items] playlist_id={playlist_id} items={len(items)}", flush=True)
+        playlist_item_batches.append({"playlist": playlist, "items": items})
+    return playlist_item_batches
 
-    saved_track_items: List[Dict[str, Any]] = []
+
+def _fetch_recently_played_items(client: SpotifyApiClient, args: argparse.Namespace) -> list[dict[str, Any]]:
+    if not args.include_recently_played:
+        return []
+    limit = max(1, min(50, int(args.recently_played_limit)))
+    rp_page = client.api_get(path="/me/player/recently-played", params={"limit": limit})
+    rp_raw = rp_page.get("items", []) if isinstance(rp_page, dict) else []
+    if not isinstance(rp_raw, list):
+        raise RuntimeError("Expected list items for /me/player/recently-played")
+    recently_played_items = rp_raw[:limit]
+    print(f"[recently_played] requested_limit={limit} count={len(recently_played_items)}", flush=True)
+    return recently_played_items
+
+
+def _fetch_all_data(
+    client: SpotifyApiClient,
+    args: argparse.Namespace,
+) -> dict[str, Any]:
+    profile = client.api_get(path="/me", params={})
+    print(f"[profile] user_id={profile.get('id')}", flush=True)
+
+    top_tracks_by_range = _fetch_top_tracks_by_range(client, args)
+
+    saved_track_items: list[dict[str, Any]] = []
     if args.include_saved_tracks:
         saved_track_items = fetch_all_offset_pages(
             client=client,
@@ -239,75 +347,11 @@ def _fetch_all_data(
         )
         print(f"[saved_tracks] count={len(saved_track_items)}", flush=True)
 
-    playlists: List[Dict[str, Any]] = []
-    if args.include_playlists:
-        fetched_playlists = fetch_all_offset_pages(
-            client=client,
-            path="/me/playlists",
-            base_params={},
-            limit=args.batch_size_playlists,
-            max_items=_normalize_optional_cap(args.playlists_max_items),
-        )
-        seen_playlist_ids: set[str] = set()
-        deduped_playlists: List[Dict[str, Any]] = []
-        for playlist in fetched_playlists:
-            playlist_id = playlist.get("id") if isinstance(playlist, dict) else None
-            if not playlist_id:
-                deduped_playlists.append(playlist)
-                continue
-            playlist_id_key = str(playlist_id)
-            if playlist_id_key in seen_playlist_ids:
-                continue
-            seen_playlist_ids.add(playlist_id_key)
-            deduped_playlists.append(playlist)
-        playlists = deduped_playlists
-        if len(playlists) != len(fetched_playlists):
-            print(
-                f"[playlists] deduplicated={len(fetched_playlists) - len(playlists)} duplicate playlist ids",
-                flush=True,
-            )
-        print(f"[playlists] count={len(playlists)}", flush=True)
+    playlists = _fetch_playlists(client, args)
+    market = profile.get("country") if isinstance(profile, dict) else None
+    playlist_item_batches = _fetch_playlist_item_batches(client, args, playlists, market)
 
-    playlist_item_batches: List[Dict[str, Any]] = []
-    if args.include_playlists:
-        market = profile.get("country") if isinstance(profile, dict) else None
-        for playlist in playlists:
-            playlist_id = playlist.get("id")
-            if not playlist_id:
-                continue
-            playlist_id = str(playlist_id)
-            playlist_params: Dict[str, Any] = {}
-            if isinstance(market, str) and market:
-                playlist_params["market"] = market
-            try:
-                items = fetch_all_offset_pages(
-                    client=client,
-                    path=f"/playlists/{playlist_id}/items",
-                    base_params=playlist_params,
-                    limit=args.batch_size_playlist_items,
-                    max_items=_normalize_optional_cap(args.playlist_items_max_per_playlist),
-                )
-            except SpotifyApiError as err:
-                if err.status_code == 403:
-                    playlist["playlist_items_access_status"] = "forbidden"
-                    playlist["playlist_items_skipped_reason"] = "spotify_playlist_items_403_forbidden"
-                    print(f"[playlist_items] playlist_id={playlist_id} SKIPPED (403 Forbidden — not accessible)", flush=True)
-                    continue
-                raise
-            playlist["playlist_items_access_status"] = "accessible"
-            playlist["playlist_items_skipped_reason"] = None
-            print(f"[playlist_items] playlist_id={playlist_id} items={len(items)}", flush=True)
-            playlist_item_batches.append({"playlist": playlist, "items": items})
-
-    recently_played_items: List[Dict[str, Any]] = []
-    if args.include_recently_played:
-        limit = max(1, min(50, int(args.recently_played_limit)))
-        rp_page = client.api_get(path="/me/player/recently-played", params={"limit": limit})
-        rp_raw = rp_page.get("items", []) if isinstance(rp_page, dict) else []
-        if not isinstance(rp_raw, list):
-            raise RuntimeError("Expected list items for /me/player/recently-played")
-        recently_played_items = rp_raw[:limit]
-        print(f"[recently_played] requested_limit={limit} count={len(recently_played_items)}", flush=True)
+    recently_played_items = _fetch_recently_played_items(client, args)
 
     return {
         "profile": profile,
@@ -321,9 +365,9 @@ def _fetch_all_data(
 
 def _write_all_artifacts(
     output_dir: Path,
-    data: Dict[str, Any],
+    data: dict[str, Any],
     generated_at: str,
-) -> tuple[Dict[str, Path], Dict[str, int]]:
+) -> tuple[dict[str, Path], dict[str, int]]:
     top_tracks_by_range = data["top_tracks_by_range"]
     top_track_rows = build_top_track_rows(top_tracks_by_range)
     saved_track_rows = build_saved_track_rows(data["saved_track_items"])
@@ -339,7 +383,7 @@ def _write_all_artifacts(
     recently_played_rows = build_recently_played_rows(data["recently_played_items"])
 
     artifacts = build_export_artifact_paths(output_dir)
-    written_artifacts: Dict[str, Path] = {}
+    written_artifacts: dict[str, Path] = {}
 
     write_json(artifacts["spotify_profile.json"], data["profile"])
     written_artifacts["spotify_profile.json"] = artifacts["spotify_profile.json"]
@@ -381,7 +425,7 @@ def _write_all_artifacts(
     return written_artifacts, build_metrics
 
 
-def _build_summary_artifacts(root: Path, output_dir: Path, staging_dir: Path, artifacts: Dict[str, Path]) -> Dict[str, Dict[str, Any]]:
+def _build_summary_artifacts(root: Path, output_dir: Path, staging_dir: Path, artifacts: dict[str, Path]) -> dict[str, dict[str, Any]]:
     return {
         name: {
             "path": str((output_dir / path.relative_to(staging_dir)).relative_to(root)).replace("\\", "/"),
@@ -541,7 +585,7 @@ def main() -> None:
     print("[resilience] endpoint caching disabled", flush=True)
 
     run_started = time.time()
-    run_id = f"SPOTIFY-EXPORT-{datetime.now(timezone.utc).strftime('%Y%m%d-%H%M%S-%f')}"
+    run_id = f"SPOTIFY-EXPORT-{datetime.now(UTC).strftime('%Y%m%d-%H%M%S-%f')}"
     print(f"[run] run_id={run_id}", flush=True)
     print(
         f"[config] batches top={args.batch_size_top_tracks} saved={args.batch_size_saved_tracks} "
@@ -568,7 +612,7 @@ def main() -> None:
     try:
         data = _fetch_all_data(client=client, args=args)
     except RateLimitCooldownError as error:
-        retry_at = datetime.now(timezone.utc) + timedelta(seconds=error.retry_after_seconds)
+        retry_at = datetime.now(UTC) + timedelta(seconds=error.retry_after_seconds)
         write_json(
             support_paths["rate_limit_block"],
             {

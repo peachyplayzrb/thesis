@@ -48,6 +48,17 @@ DEFAULT_LEAD_GENRE_PARTIAL_MATCH_THRESHOLD = 0.5
 DEFAULT_RETRIEVAL_USE_WEIGHTED_SEMANTICS = False
 DEFAULT_RETRIEVAL_USE_CONTINUOUS_NUMERIC = False
 DEFAULT_RETRIEVAL_ENABLE_POPULARITY_NUMERIC = False
+BL005_FILTERED_REQUIRED_FIELDS: tuple[str, ...] = (
+    "track_id",
+    "artist",
+    "song",
+    "tags",
+    "genres",
+    "tempo",
+    "duration_ms",
+    "key",
+    "mode",
+)
 DEFAULT_BL005_HANDSHAKE_VALIDATION_POLICY = "warn"
 DEFAULT_BL006_HANDSHAKE_VALIDATION_POLICY = "warn"
 DEFAULT_BL007_HANDSHAKE_VALIDATION_POLICY = "warn"
@@ -252,6 +263,10 @@ DEFAULT_SCORING_CONTROLS: dict[str, object] = {
     "profile_numeric_confidence_blend_weight": 1.0,
     "emit_confidence_impact_diagnostics": True,
     "emit_semantic_precision_diagnostics": False,
+    "enable_scoring_sensitivity_diagnostics": False,
+    "scoring_sensitivity_top_k": 10,
+    "scoring_sensitivity_perturbation_pct": 0.10,
+    "scoring_sensitivity_max_components": 5,
     "apply_bl003_influence_tracks": False,
     "influence_track_bonus_scale": 0.0,
     "bl005_bl006_handshake_validation_policy": DEFAULT_BL006_HANDSHAKE_VALIDATION_POLICY,
@@ -294,6 +309,7 @@ DEFAULT_ASSEMBLY_CONTROLS: dict[str, object] = {
     "influence_allow_consecutive_override": False,
     "influence_allow_score_threshold_override": False,
     "bl006_bl007_handshake_validation_policy": DEFAULT_BL007_HANDSHAKE_VALIDATION_POLICY,
+    "transition_smoothness_weight": 0.0,
 }
 
 # BL-008 Transparency Default
@@ -362,6 +378,8 @@ DEFAULT_ORCHESTRATION_CONTROLS: dict[str, Any] = {
     "continue_on_error": False,
     "refresh_seed_policy": "auto_if_stale",
     "required_stable_artifacts": [],
+    "determinism_verify_on_success": False,
+    "determinism_verify_replay_count": 3,
 }
 
 # BL-001/BL-002 Ingestion Resilience Defaults

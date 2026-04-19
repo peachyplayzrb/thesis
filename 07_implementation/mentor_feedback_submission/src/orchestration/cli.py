@@ -1,4 +1,4 @@
-"""CLI helpers for BL-013 orchestration entrypoints."""
+"""CLI argument parsing and stage order validation for BL-013."""
 from __future__ import annotations
 
 import argparse
@@ -10,7 +10,7 @@ from orchestration.stage_registry import DEFAULT_STAGE_ORDER, STAGE_SCRIPT_MAP
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description=(
-            "BL-013 orchestration runner for the bootstrap stages BL-004 to BL-009."
+            "BL-013 lightweight orchestrator for bootstrap pipeline stages BL-004 to BL-009."
         )
     )
     parser.add_argument(
@@ -63,11 +63,26 @@ def parse_args() -> argparse.Namespace:
             "are emitted for this BL-013 run."
         ),
     )
+    parser.add_argument(
+        "--verify-determinism",
+        action="store_true",
+        help=(
+            "Run BL-010 reproducibility replay after BL-013 stage execution succeeds."
+        ),
+    )
+    parser.add_argument(
+        "--verify-determinism-replay-count",
+        type=int,
+        default=None,
+        help=(
+            "Replay count for deterministic verification when enabled. "
+            "Defaults to orchestration_controls.determinism_verify_replay_count (or 3)."
+        ),
+    )
     return parser.parse_args()
 
 
 def validate_stage_order(stage_ids: list[str]) -> list[str]:
-    """Normalize and validate user-provided stage IDs."""
     normalized: list[str] = []
     for stage_id in stage_ids:
         token = stage_id.strip().upper()

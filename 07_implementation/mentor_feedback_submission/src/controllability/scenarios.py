@@ -1,15 +1,17 @@
-"""Scenario construction for BL-011 controllability runs."""
 from __future__ import annotations
 
 from typing import Any, cast
 
-from controllability.pathing import build_paths, ensure_required_inputs
-from controllability.runtime_controls import resolve_bl011_runtime_controls
+from controllability.pathing import build_paths as build_paths
+from controllability.pathing import ensure_required_inputs as ensure_required_inputs
+from controllability.runtime_controls import (
+    resolve_bl011_runtime_controls as resolve_bl011_runtime_controls,
+)
+
 from .weights import normalize_component_weight_keys, normalized_weights_with_override
 
 
 def build_scenarios(baseline_snapshot: dict, runtime_controls: dict[str, object]) -> list[dict[str, object]]:
-    """Build baseline and variant scenarios from the BL-010 snapshot plus controls."""
     stage_configs = cast(dict[str, dict[str, object]], baseline_snapshot["stage_configs"])
     base_profile = cast(dict[str, object], stage_configs["profile"])
     base_retrieval = cast(dict[str, object], stage_configs["retrieval"])
@@ -153,6 +155,8 @@ def build_scenarios(baseline_snapshot: dict, runtime_controls: dict[str, object]
             "scenario_id": "fuzzy_enabled_strict",
             "test_id": "EP-CTRL-004",
             "control_surface": "alignment_fuzzy_mode",
+            "variation_mode": "single_factor",
+            "interaction_axes": [],
             "description": "Record strict fuzzy-enabled upstream alignment controls while keeping BL-004 to BL-007 inputs fixed for isolation evidence.",
             "profile": {
                 **base_profile,
@@ -179,6 +183,87 @@ def build_scenarios(baseline_snapshot: dict, runtime_controls: dict[str, object]
                 }
             },
             "expected_effect": "no BL-004 to BL-007 shift expected because controllability reuses fixed active seed inputs",
+        },
+        {
+            "scenario_id": "no_influence_plus_stricter_thresholds",
+            "test_id": "EP-CTRL-005",
+            "control_surface": "interaction_matrix",
+            "variation_mode": "interaction",
+            "interaction_axes": ["influence_tracks", "candidate_threshold"],
+            "description": "Disable influence interactions while simultaneously tightening retrieval thresholds to observe bounded two-control interaction behavior.",
+            "profile": {
+                **base_profile,
+                "include_interaction_types": ["history"],
+            },
+            "retrieval": {
+                **base_retrieval,
+                "threshold_scale": stricter_threshold_scale,
+            },
+            "scoring": {
+                **base_scoring,
+                "weight_override_component": None,
+                "raw_override_value": None,
+            },
+            "assembly": dict(base_assembly),
+            "expected_effect": "interaction matrix: simultaneous influence removal and stricter thresholds should produce an observable candidate-pool and ranking shift",
+            "acceptance_bounds": [
+                {
+                    "metric": "observable_shift",
+                    "comparator": "equal_to",
+                    "value": True,
+                    "required": True,
+                },
+                {
+                    "metric": "candidate_pool_size_delta",
+                    "comparator": "less_than",
+                    "value": 0,
+                    "required": True,
+                },
+                {
+                    "metric": "playlist_overlap_ratio",
+                    "comparator": "less_than",
+                    "value": 1.0,
+                    "required": True,
+                },
+            ],
+        },
+        {
+            "scenario_id": "valence_up_plus_stricter_thresholds",
+            "test_id": "EP-CTRL-005",
+            "control_surface": "interaction_matrix",
+            "variation_mode": "interaction",
+            "interaction_axes": ["feature_weight", "candidate_threshold"],
+            "description": "Increase one scoring component and tighten retrieval thresholds in one run to capture bounded cross-control interaction effects.",
+            "profile": {
+                **base_profile,
+                "include_interaction_types": ["history", "influence"],
+            },
+            "retrieval": {
+                **base_retrieval,
+                "threshold_scale": stricter_threshold_scale,
+            },
+            "scoring": {
+                **base_scoring,
+                "component_weights": normalized_weights_with_override(scoring_weights, override_component, override_raw_value),
+                "weight_override_component": override_component,
+                "raw_override_value": override_raw_value,
+            },
+            "assembly": dict(base_assembly),
+            "expected_effect": "interaction matrix: combined score-weight and threshold perturbation should produce an observable ranking shift",
+            "acceptance_bounds": [
+                {
+                    "metric": "observable_shift",
+                    "comparator": "equal_to",
+                    "value": True,
+                    "required": True,
+                },
+                {
+                    "metric": "mean_abs_rank_delta",
+                    "comparator": "greater_than",
+                    "value": 0.0,
+                    "required": True,
+                },
+            ],
         },
     ]
     from controllability.scenario_loader import filter_scenarios_by_policy

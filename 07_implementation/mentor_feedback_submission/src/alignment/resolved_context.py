@@ -1,4 +1,4 @@
-"""Resolve the full BL-003 runtime context in one place."""
+"""Unified BL-003 runtime context resolution."""
 from __future__ import annotations
 
 import json
@@ -8,6 +8,7 @@ from typing import Any
 
 from alignment.constants import DEFAULT_INFLUENCE_PREFERENCE_WEIGHT
 from alignment.models import AlignmentBehaviorControls, AlignmentStructuralContract
+from alignment.runtime_scope import resolve_bl003_runtime_scope
 from shared_utils.coerce import to_mapping, to_string_list
 from shared_utils.constants import (
     DEFAULT_RECENTLY_PLAYED_DECAY_HALF_LIFE_DAYS,
@@ -18,12 +19,10 @@ from shared_utils.constants import (
 )
 from shared_utils.parsing import safe_float
 
-from alignment.runtime_scope import resolve_bl003_runtime_scope
-
 
 @dataclass(frozen=True)
 class AlignmentResolvedContext:
-    """The controls and structural contract BL-003 carries through matching and influence handling."""
+    """Resolved control surface used by BL-003 matching and influence stages."""
 
     runtime_scope: dict[str, object]
     behavior_controls: AlignmentBehaviorControls
@@ -38,7 +37,11 @@ DEFAULT_INFLUENCE_CONTROLS: dict[str, Any] = {
 
 
 def _load_stage_config_payload() -> dict[str, Any] | None:
-    """Read the orchestration payload from `BL_STAGE_CONFIG_JSON` if one was injected."""
+    """Try to load orchestration-injected BL_STAGE_CONFIG_JSON payload (Phase 2 handoff).
+
+    Returns:
+        dict with keys like 'seed_controls', 'weighting_policy', 'influence_controls', etc., or None.
+    """
     payload_json = os.environ.get("BL_STAGE_CONFIG_JSON", "").strip()
     if not payload_json:
         return None
@@ -58,13 +61,13 @@ def _load_stage_config_payload() -> dict[str, Any] | None:
 
 
 def resolve_alignment_context() -> AlignmentResolvedContext:
-    """
-    Resolve BL-003 controls from orchestration payload, then env/default fallbacks.
+    """Resolve BL-003 controls from orchestration payload, env, then defaults.
 
-    The payload-first order matters because BL-013 may already have resolved the
-    exact controls for this run and passed them in explicitly.
+    Priority (Phase 3+):
+    1. BL_STAGE_CONFIG_JSON (orchestration-injected, Phase 2 handoff)
+    2. env defaults (BL003_*, etc.)
     """
-    # Prefer the orchestration handoff when it exists so BL-003 uses the exact same controls BL-013 resolved.
+    # Phase 2 payload-first approach: try orchestration handoff first
     stage_payload = _load_stage_config_payload()
     if stage_payload:
         return _resolve_from_orchestration_payload(stage_payload)
@@ -74,19 +77,23 @@ def resolve_alignment_context() -> AlignmentResolvedContext:
 
 
 def _resolve_from_orchestration_payload(payload: dict[str, Any]) -> AlignmentResolvedContext:
-    """
-    Resolve BL-003 context from the orchestration payload.
+    """Resolve alignment context from orchestration-injected payload (Phase 2 handoff).
 
-    At this point BL-013 has already done the config resolution work, so BL-003
-    can just use the controls directly instead of recomputing them.
+    Payload structure from config_resolver.resolve_stage_control_payload(BL-003):
+    {
+        'input_scope_controls': {...},
+        'seed_controls': {...},
+        'weighting_policy': {...},
+        'influence_controls': {...},
+    }
     """
-    # Reuse the already-resolved controls instead of rebuilding them here.
+    # Use the orchestration-resolved controls directly
     input_scope_controls = to_mapping(payload.get("input_scope_controls"))
     seed_controls = to_mapping(payload.get("seed_controls"))
     weighting_policy = payload.get("weighting_policy")
     influence_controls = to_mapping(payload.get("influence_controls") or DEFAULT_INFLUENCE_CONTROLS)
 
-    # Pull the individual seed-control groups into the typed behavior object.
+    # Extract seed control fields
     top_range_weights = {
         str(key): safe_float(
             value,
@@ -109,7 +116,7 @@ def _resolve_from_orchestration_payload(payload: dict[str, Any]) -> AlignmentRes
     source_resilience_policy = to_mapping(seed_controls.get("source_resilience_policy") or DEFAULT_SEED_CONTROLS.get("source_resilience_policy"))
     match_rate_min_threshold = safe_float(seed_controls.get("match_rate_min_threshold", 0.0), 0.0)
 
-    # Keep explicit defaults here so missing decay values do not silently become zero.
+    # Decay half-lives
     seed_decay_half_lives = to_mapping(seed_controls.get("decay_half_lives"))
     decay_half_lives = {
         "recently_played": float(
@@ -132,7 +139,7 @@ def _resolve_from_orchestration_payload(payload: dict[str, Any]) -> AlignmentRes
         ),
     }
 
-    # The run-config path is already resolved upstream, so BL-003 only needs the final input scope here.
+    # Build runtime_scope from payload (no file path needed; orchestration resolved already)
     runtime_scope = {
         "config_source": "orchestration_payload",
         "run_config_path": None,
@@ -165,7 +172,7 @@ def _resolve_from_orchestration_payload(payload: dict[str, Any]) -> AlignmentRes
 
 
 def _resolve_from_legacy_sources() -> AlignmentResolvedContext:
-    """Resolve alignment context from env/defaults when no orchestration payload is available."""
+    """Resolve alignment context from env/defaults when payload is unavailable."""
     runtime_scope = resolve_bl003_runtime_scope()
     input_scope = to_mapping(runtime_scope.get("input_scope"))
 

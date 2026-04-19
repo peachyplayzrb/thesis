@@ -1,8 +1,4 @@
-"""Writers for the BL-003 output artifacts.
-
-This file handles the seed table, trace files, manifest, and summary outputs
-so the stage logic does not also have to manage serialization details.
-"""
+"""Output writers for BL-003 alignment artifacts."""
 from __future__ import annotations
 
 import csv
@@ -135,7 +131,7 @@ def write_alignment_outputs(
     trace_rows: list[dict[str, Any]],
     unmatched_rows: list[dict[str, Any]],
 ) -> dict[str, Path]:
-    """Write the main BL-003 artifacts and return the paths that were written."""
+    """Write matched JSONL, seed table, trace, and unmatched CSVs. Return paths dict."""
     matched_jsonl_path = output_dir / ALIGNMENT_OUTPUT_FILENAMES["matched_jsonl"]
     seed_table_path = output_dir / ALIGNMENT_OUTPUT_FILENAMES["seed_table_csv"]
     trace_path = output_dir / ALIGNMENT_OUTPUT_FILENAMES["trace_csv"]
@@ -233,7 +229,7 @@ def _build_summary_payload(
     summary_path: Path,
     context: AlignmentSummaryContext,
 ) -> dict[str, Any]:
-    """Assemble the BL-003 summary payload from the typed stage context."""
+    """Assemble the BL-003 summary JSON payload from a typed context."""
     summary_counts = context.metrics.summary_counts
     seed_contract = build_seed_contract_payload(context.behavior_controls)
     structural_contract = build_structural_contract_payload(context.structural_contract)
@@ -367,7 +363,7 @@ def build_and_write_summary_from_context(
     summary_path: Path,
     context: AlignmentSummaryContext,
 ) -> dict[str, Any]:
-    """Assemble and write the BL-003 summary JSON from the typed stage context."""
+    """Assemble and write BL-003 summary JSON using a typed context contract."""
     summary = _build_summary_payload(summary_path, context)
 
     with open_text_write(summary_path) as handle:

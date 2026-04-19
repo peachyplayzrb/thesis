@@ -1,13 +1,16 @@
 """
-Small helpers that several stages use for path formatting, JSON loading, and
-required-input checks.
+Shared stage helper utilities.
+
+These helpers centralize small cross-stage behaviors that were previously
+redefined in multiple stage entrypoints.
 """
 
 from __future__ import annotations
 
 import json
+from collections.abc import Mapping
 from pathlib import Path
-from typing import Any, Mapping
+from typing import Any
 
 
 def relpath(path: Path, root: Path) -> str:
@@ -24,7 +27,7 @@ def safe_relpath(path: Path, root: Path) -> str:
 
 
 def load_required_json(path: Path, *, label: str, stage_label: str) -> dict[str, Any] | list[Any]:
-    """Load a required JSON file and raise a stage-specific error if it fails."""
+    """Load a required JSON file and raise a stage-specific RuntimeError on failure."""
     try:
         return json.loads(path.read_text(encoding="utf-8"))
     except OSError as exc:
@@ -34,7 +37,7 @@ def load_required_json(path: Path, *, label: str, stage_label: str) -> dict[str,
 
 
 def load_required_json_object(path: Path, *, label: str, stage_label: str) -> dict[str, Any]:
-    """Load a required JSON file and make sure the decoded value is a dict."""
+    """Load a required JSON object and validate that the decoded payload is a dict."""
     payload = load_required_json(path, label=label, stage_label=stage_label)
     if not isinstance(payload, dict):
         raise RuntimeError(f"{stage_label} expected {label} to be a JSON object: {path}")
@@ -48,7 +51,7 @@ def ensure_required_keys(
     label: str,
     stage_label: str,
 ) -> None:
-    """Fail if a payload is missing any required top-level keys."""
+    """Validate that a payload contains all required top-level keys."""
     missing = [key for key in keys if key not in payload]
     if missing:
         raise RuntimeError(f"{stage_label} {label} missing required keys: {missing}")
@@ -61,7 +64,7 @@ def ensure_paths_exist(
     label: str = "input artifact(s)",
     root: Path | None = None,
 ) -> None:
-    """Fail if any of the required file paths are missing."""
+    """Validate that a list of required file paths exists."""
     missing = [safe_relpath(path, root) if root is not None else str(path) for path in paths if not path.exists()]
     if missing:
         raise FileNotFoundError(f"{stage_label} missing required {label}: {missing}")
@@ -73,7 +76,7 @@ def ensure_named_paths_exist(
     stage_label: str,
     label: str = "input artifacts",
 ) -> None:
-    """Fail if any named required path in the mapping is missing."""
+    """Validate that a mapping of named required paths exists."""
     missing = [name for name, path in paths.items() if not path.exists()]
     if missing:
         details = ", ".join(f"{name}={paths[name]}" for name in missing)

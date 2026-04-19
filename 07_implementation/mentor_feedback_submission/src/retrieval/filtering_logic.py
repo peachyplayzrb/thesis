@@ -1,7 +1,7 @@
-"""Core keep/reject logic for BL-005 candidate filtering.
+"""
+Filtering logic for BL-005: core decision engine and reasoning.
 
-This file keeps the decision rules separate from CSV parsing and file writing so
-the retrieval thresholds can be reasoned about in one place.
+Provides pure decision-making functions independent of I/O or data parsing.
 """
 
 
@@ -20,33 +20,53 @@ def keep_decision(
     language_match: bool | None = None,
     recency_pass: bool | None = None,
 ) -> tuple[bool, str]:
-    """Decide whether a candidate should be kept.
-
-    Seed tracks are always excluded because they are the profile input, not retrieval output. Without numeric
-    features, a candidate only needs enough semantic evidence to pass. When numeric features are enabled, a very
-    strong semantic signal can keep a track on its own, but borderline semantic cases need numeric support as well.
     """
-    # Seed tracks are the training signal for the profile, so they never belong in the retrieval result.
+    Determine whether a candidate should be kept based on scoring rules.
+
+    Decision logic:
+    1. Seed tracks are always excluded (not part of retrieval output)
+    2. If numeric features disabled: keep if semantic score meets minimum
+    3. If numeric features enabled:
+       - Keep if semantic score is STRONG (even without numeric support)
+       - Keep if semantic score meets MINIMUM AND numeric support passes
+       - Otherwise reject
+
+    Args:
+        is_seed_track: True if candidate is a seed track
+        semantic_score: 0-3 score from semantic rules (genre/tag matching)
+        numeric_pass_count: Count of numeric features passing within threshold
+        numeric_features_enabled: True if numeric features are active
+        semantic_strong_keep_score: Threshold for strong semantic signal (typically 2)
+        semantic_min_keep_score: Threshold for minimum semantic signal (typically 1)
+        numeric_support_min_pass: Minimum numeric features needed to support weak semantic (typically 1)
+
+    Returns:
+        Tuple of (bool kept, str decision_path) where decision_path identifies
+        why the decision was made (e.g., "keep_strong_semantic", "reject_seed_track")
+    """
+    # Rule 1: Exclude seed tracks (they're part of the seed dataset)
     if is_seed_track:
         return False, "reject_seed_track"
 
-    # These optional gates are meant to fail early before the scoring rules try to rescue the row.
+    # Rule 2: Optional hard-gates for language and recency.
     if language_match is False:
         return False, "reject_language_filter"
 
     if recency_pass is False:
         return False, "reject_recency_gate"
 
+    # Rule 3: Semantic-only mode (no numeric features)
     if not numeric_features_enabled:
         if semantic_score >= semantic_min_keep_score:
             return True, "keep_semantic_only"
         return False, "reject_insufficient_semantic"
 
-    # A very strong semantic match is enough on its own even if the numeric side is weak.
+    # Rule 4: Numeric features enabled - multi-signal evaluation
+    # Strong semantic signal overrides numeric requirements
     if semantic_score >= semantic_strong_keep_score:
         return True, "keep_strong_semantic"
 
-    # Weaker semantic matches only survive if the numeric evidence also points the same way.
+    # Weak semantic signal needs numeric support
     numeric_support_met = numeric_pass_count >= numeric_support_min_pass
     if use_continuous_numeric and numeric_support_score is not None:
         numeric_support_met = numeric_support_score >= float(
@@ -58,9 +78,11 @@ def keep_decision(
     if semantic_score >= semantic_min_keep_score and numeric_support_met:
         return True, "keep_semantic_numeric_supported"
 
+    # Semantic signal too weak, check if numeric alone could save it
     if semantic_score >= semantic_min_keep_score:
         return False, "reject_semantic_without_numeric_support"
 
+    # Numeric signal without semantic support
     has_numeric_signal = numeric_pass_count > 0
     if use_continuous_numeric and numeric_support_score is not None:
         has_numeric_signal = numeric_support_score > 0.0
@@ -68,6 +90,7 @@ def keep_decision(
     if has_numeric_signal:
         return False, "reject_numeric_without_semantic_support"
 
+    # No signal on any dimension
     return False, "reject_no_signal"
 
 
@@ -79,7 +102,17 @@ def decision_reason(
     numeric_support_score: float | None = None,
     use_continuous_numeric: bool = False,
 ) -> str:
-    """Turn the internal decision path into a short human-readable explanation string."""
+    """
+    Generate human-readable explanation for a keep/reject decision.
+
+    Args:
+        decision_path: Decision path identifier from keep_decision()
+        semantic_score: Semantic score (for context in explanation)
+        numeric_pass_count: Count of numeric features passing (for context)
+
+    Returns:
+        Human-readable string explaining the decision
+    """
     numeric_support_fragment = (
         f"numeric_support_score={numeric_support_score:.2f}"
         if use_continuous_numeric and numeric_support_score is not None

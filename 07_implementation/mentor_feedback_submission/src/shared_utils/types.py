@@ -1,26 +1,40 @@
 """
-Shared TypedDict definitions for structures that get passed between stages.
+Shared type definitions and data contracts for implementation stages.
 
-Keeping them here makes the stage contracts easier to reuse without repeating
-the same shapes in multiple modules.
+Provides TypedDicts and other type hints for data structures that are used
+across multiple stages.
 """
 
 from typing import Any, TypedDict
 
 
 class NumericFeatureSpec(TypedDict):
-    """Describes one numeric feature: which column it uses, its threshold, and whether it wraps."""
+    """Specification for a numeric feature dimension.
+
+    Attributes:
+        candidate_column: Column name in candidate dataset
+        threshold: Maximum allowed distance for matching
+        circular: Whether this is a circular dimension (e.g., key/mode)
+    """
     candidate_column: str
     threshold: float
     circular: bool
 
 
 class RunConfigControls(TypedDict):
-    """
-    The shared runtime controls several stages expect after config resolution.
+    """Run configuration controls resolved at runtime.
 
-    It includes provenance about where the config came from plus the main limits
-    and thresholds used by profile, retrieval, and scoring.
+    Attributes:
+        config_source: Source of configuration ("run_config" or "environment")
+        run_config_path: Path to run config file or None
+        run_config_schema_version: Schema version or None
+        profile_top_lead_genre_limit: Max lead genres in profile
+        profile_top_tag_limit: Max tags in profile
+        profile_top_genre_limit: Max genres in profile
+        semantic_strong_keep_score: Threshold for strong semantic keep
+        semantic_min_keep_score: Threshold for minimum semantic keep
+        numeric_support_min_pass: Minimum numeric feature support count
+        numeric_thresholds: Dict of numeric threshold overrides
     """
     config_source: str
     run_config_path: str | None
@@ -73,11 +87,11 @@ class SeedControlsConfig(TypedDict):
 
 
 class SeedWeightingPolicyConfig(TypedDict, total=False):
-    """
-    Optional knobs for the BL-003 preference-weight formula.
+    """Weighting formula knobs for BL-003 preference weight computation.
 
-    These values control how top-track rank and playlist position are converted
-    into event weights, while preserving the old defaults unless overridden.
+    Controls the numeric constants used when computing per-event preference
+    weights from top-tracks rank and playlist position. Defaults match the
+    values that were previously embedded in alignment/weighting.py.
     """
     top_tracks_min_rank_floor: float          # default 0.05
     top_tracks_scale_multiplier: float        # default 100.0
@@ -87,7 +101,7 @@ class SeedWeightingPolicyConfig(TypedDict, total=False):
 
 
 class AcceptanceBoundConfig(TypedDict, total=False):
-    """One quantitative rule used to judge whether a controllability scenario passed."""
+    """Single quantitative acceptance rule for a controllability scenario."""
     metric: str       # e.g. "candidate_pool_size_delta"
     comparator: str   # "less_than" | "greater_than" | "equal_to" | "not_equal_to"
     value: float      # threshold value
@@ -95,7 +109,7 @@ class AcceptanceBoundConfig(TypedDict, total=False):
 
 
 class ScenarioDefinitionConfig(TypedDict, total=False):
-    """The full declarative definition for one BL-011 controllability scenario."""
+    """Full declarative specification of one BL-011 controllability scenario."""
     scenario_id: str
     test_id: str
     control_surface: str
@@ -109,7 +123,7 @@ class ScenarioDefinitionConfig(TypedDict, total=False):
 
 
 class ScenarioPolicyConfig(TypedDict, total=False):
-    """Controls how BL-011 runs the scenario set and compares the results."""
+    """Policy controls for how BL-011 runs and compares scenarios."""
     enabled_scenario_ids: list[str]  # ["all"] means run all defined scenarios
     repeat_count: int                # number of times each scenario is run (for stability)
     stage_scope: list[str]           # which stages to include; ["all"] = full pipeline
@@ -117,7 +131,7 @@ class ScenarioPolicyConfig(TypedDict, total=False):
 
 
 class OrchestrationControlsConfig(TypedDict, total=False):
-    """Control values for BL-013 stage order and execution policy."""
+    """BL-013 stage graph and execution policy controls."""
     stage_order: list[str] | None    # None = use static default order
     continue_on_error: bool          # default False; if True non-fatal stage failures are skipped
     refresh_seed_policy: str         # "auto_if_stale" | "always" | "never"
@@ -156,5 +170,8 @@ class ControllabilityControlsConfig(TypedDict):
 
 
 class CsvRow(TypedDict):
-    """Base type for a CSV row as parsed by `csv.DictReader`."""
+    """Base type for CSV row data.
+
+    Maps column names to string values as parsed by csv.DictReader.
+    """
     pass  # Dict[str, str] - subclasses will extend this

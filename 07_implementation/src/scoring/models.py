@@ -1,11 +1,11 @@
 from __future__ import annotations
 
+from collections.abc import Mapping
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Mapping
+from typing import Any
 
 from scoring.profile_extractor import build_numeric_specs
-
 
 NUMERIC_FEATURE_SPECS = build_numeric_specs()
 NUMERIC_COMPONENTS = set(NUMERIC_FEATURE_SPECS)
@@ -67,6 +67,10 @@ class ScoringControls:
     profile_numeric_confidence_blend_weight: float = 1.0
     emit_confidence_impact_diagnostics: bool = True
     emit_semantic_precision_diagnostics: bool = False
+    enable_scoring_sensitivity_diagnostics: bool = False
+    scoring_sensitivity_top_k: int = 10
+    scoring_sensitivity_perturbation_pct: float = 0.10
+    scoring_sensitivity_max_components: int = 5
     apply_bl003_influence_tracks: bool = False
     influence_track_bonus_scale: float = 0.0
     bl005_bl006_handshake_validation_policy: str = "warn"
@@ -91,6 +95,10 @@ class ScoringControls:
             "profile_numeric_confidence_blend_weight": self.profile_numeric_confidence_blend_weight,
             "emit_confidence_impact_diagnostics": self.emit_confidence_impact_diagnostics,
             "emit_semantic_precision_diagnostics": self.emit_semantic_precision_diagnostics,
+            "enable_scoring_sensitivity_diagnostics": self.enable_scoring_sensitivity_diagnostics,
+            "scoring_sensitivity_top_k": self.scoring_sensitivity_top_k,
+            "scoring_sensitivity_perturbation_pct": self.scoring_sensitivity_perturbation_pct,
+            "scoring_sensitivity_max_components": self.scoring_sensitivity_max_components,
             "apply_bl003_influence_tracks": self.apply_bl003_influence_tracks,
             "influence_track_bonus_scale": self.influence_track_bonus_scale,
             "bl005_bl006_handshake_validation_policy": self.bl005_bl006_handshake_validation_policy,
@@ -127,6 +135,10 @@ class ScoringContext:
     profile_numeric_confidence_blend_weight: float = 1.0
     emit_confidence_impact_diagnostics: bool = True
     emit_semantic_precision_diagnostics: bool = False
+    enable_scoring_sensitivity_diagnostics: bool = False
+    scoring_sensitivity_top_k: int = 10
+    scoring_sensitivity_perturbation_pct: float = 0.10
+    scoring_sensitivity_max_components: int = 5
     apply_bl003_influence_tracks: bool = False
     influence_track_ids: set[str] | None = None
     influence_preference_weight: float = 0.0
@@ -141,17 +153,14 @@ class ScoringArtifacts:
 
 
 def controls_from_mapping(payload: Mapping[str, Any]) -> ScoringControls:
-    component_weights_raw = payload.get("component_weights")
-    numeric_thresholds_raw = payload.get("numeric_thresholds")
-
-    component_weights = {
-        str(k): float(v)
-        for k, v in dict(component_weights_raw).items()
-    } if isinstance(component_weights_raw, Mapping) else {}
-    numeric_thresholds = {
-        str(k): float(v)
-        for k, v in dict(numeric_thresholds_raw).items()
-    } if isinstance(numeric_thresholds_raw, Mapping) else {}
+    component_weights = _mapping_to_float_dict(payload.get("component_weights"))
+    numeric_thresholds = _mapping_to_float_dict(payload.get("numeric_thresholds"))
+    runtime_control_resolution_diagnostics = _mapping_to_str_object_dict(
+        payload.get("runtime_control_resolution_diagnostics")
+    )
+    runtime_control_validation_warnings = _payload_str_list(
+        payload.get("runtime_control_validation_warnings")
+    )
 
     return ScoringControls(
         config_source=str(payload.get("config_source") or "environment"),
@@ -186,6 +195,14 @@ def controls_from_mapping(payload: Mapping[str, Any]) -> ScoringControls:
         ),
         emit_confidence_impact_diagnostics=bool(payload.get("emit_confidence_impact_diagnostics", True)),
         emit_semantic_precision_diagnostics=bool(payload.get("emit_semantic_precision_diagnostics", False)),
+        enable_scoring_sensitivity_diagnostics=bool(
+            payload.get("enable_scoring_sensitivity_diagnostics", False)
+        ),
+        scoring_sensitivity_top_k=int(payload.get("scoring_sensitivity_top_k", 10)),
+        scoring_sensitivity_perturbation_pct=float(
+            payload.get("scoring_sensitivity_perturbation_pct", 0.10)
+        ),
+        scoring_sensitivity_max_components=int(payload.get("scoring_sensitivity_max_components", 5)),
         apply_bl003_influence_tracks=bool(payload.get("apply_bl003_influence_tracks", False)),
         influence_track_bonus_scale=float(
             payload["influence_track_bonus_scale"]
@@ -195,19 +212,8 @@ def controls_from_mapping(payload: Mapping[str, Any]) -> ScoringControls:
         bl005_bl006_handshake_validation_policy=str(
             payload.get("bl005_bl006_handshake_validation_policy") or "warn"
         ),
-        runtime_control_resolution_diagnostics=(
-            {
-                str(k): v
-                for k, v in dict(payload.get("runtime_control_resolution_diagnostics") or {}).items()
-            }
-            if isinstance(payload.get("runtime_control_resolution_diagnostics"), Mapping)
-            else {}
-        ),
-        runtime_control_validation_warnings=(
-            [str(item) for item in payload.get("runtime_control_validation_warnings") or []]
-            if isinstance(payload.get("runtime_control_validation_warnings"), list)
-            else []
-        ),
+        runtime_control_resolution_diagnostics=runtime_control_resolution_diagnostics,
+        runtime_control_validation_warnings=runtime_control_validation_warnings,
     )
 
 
@@ -232,11 +238,47 @@ def context_as_mapping(context: ScoringContext) -> dict[str, object]:
         "profile_numeric_confidence_blend_weight": context.profile_numeric_confidence_blend_weight,
         "emit_confidence_impact_diagnostics": context.emit_confidence_impact_diagnostics,
         "emit_semantic_precision_diagnostics": context.emit_semantic_precision_diagnostics,
+        "enable_scoring_sensitivity_diagnostics": context.enable_scoring_sensitivity_diagnostics,
+        "scoring_sensitivity_top_k": context.scoring_sensitivity_top_k,
+        "scoring_sensitivity_perturbation_pct": context.scoring_sensitivity_perturbation_pct,
+        "scoring_sensitivity_max_components": context.scoring_sensitivity_max_components,
         "apply_bl003_influence_tracks": context.apply_bl003_influence_tracks,
         "influence_track_ids": sorted(context.influence_track_ids or set()),
         "influence_preference_weight": context.influence_preference_weight,
         "influence_track_bonus_scale": context.influence_track_bonus_scale,
     }
+
+
+def _mapping_to_float_dict(value: object) -> dict[str, float]:
+    if not isinstance(value, Mapping):
+        return {}
+    return {str(k): float(v) for k, v in dict(value).items()}
+
+
+def _mapping_to_str_object_dict(value: object) -> dict[str, object]:
+    if not isinstance(value, Mapping):
+        return {}
+    return {str(k): v for k, v in dict(value).items()}
+
+
+def _nested_mapping_to_str_object_dict(value: object) -> dict[str, dict[str, object]]:
+    normalized: dict[str, dict[str, object]] = {}
+    if not isinstance(value, Mapping):
+        return normalized
+    for key, nested_value in value.items():
+        if isinstance(nested_value, Mapping):
+            normalized[str(key)] = {str(k): v for k, v in nested_value.items()}
+    return normalized
+
+
+def _payload_str_set(payload: Mapping[str, Any], key: str) -> set[str]:
+    return {str(v) for v in list(payload.get(key) or []) if str(v)}
+
+
+def _payload_str_list(value: object) -> list[str]:
+    if not isinstance(value, list):
+        return []
+    return [str(item) for item in value]
 
 
 def context_from_mapping(payload: Mapping[str, Any]) -> ScoringContext:
@@ -250,38 +292,15 @@ def context_from_mapping(payload: Mapping[str, Any]) -> ScoringContext:
     semantic_precision_alpha_raw = payload.get("semantic_precision_alpha")
     signal_mode_raw = payload.get("signal_mode")
 
-    effective_component_weights = {
-        str(k): float(v)
-        for k, v in dict(effective_component_weights_raw).items()
-    } if isinstance(effective_component_weights_raw, Mapping) else {}
-
-    active_numeric_specs: dict[str, dict[str, object]] = {}
-    if isinstance(active_numeric_specs_raw, Mapping):
-        for key, value in active_numeric_specs_raw.items():
-            if isinstance(value, Mapping):
-                active_numeric_specs[str(key)] = {str(k): v for k, v in value.items()}
-
-    profile_scoring_data = (
-        {str(k): v for k, v in dict(profile_scoring_data_raw).items()}
-        if isinstance(profile_scoring_data_raw, Mapping)
-        else {}
-    )
-    active_component_weights = {
-        str(k): float(v)
-        for k, v in dict(active_component_weights_raw).items()
-    } if isinstance(active_component_weights_raw, Mapping) else {}
-    weight_rebalance_diagnostics = (
-        {str(k): v for k, v in dict(weight_rebalance_diagnostics_raw).items()}
-        if isinstance(weight_rebalance_diagnostics_raw, Mapping)
-        else {}
-    )
-    numeric_confidence_by_feature = {
-        str(k): float(v)
-        for k, v in dict(numeric_confidence_by_feature_raw or {}).items()
-    } if isinstance(numeric_confidence_by_feature_raw, Mapping) else {}
+    effective_component_weights = _mapping_to_float_dict(effective_component_weights_raw)
+    active_numeric_specs = _nested_mapping_to_str_object_dict(active_numeric_specs_raw)
+    profile_scoring_data = _mapping_to_str_object_dict(profile_scoring_data_raw)
+    active_component_weights = _mapping_to_float_dict(active_component_weights_raw)
+    weight_rebalance_diagnostics = _mapping_to_str_object_dict(weight_rebalance_diagnostics_raw)
+    numeric_confidence_by_feature = _mapping_to_float_dict(numeric_confidence_by_feature_raw)
 
     return ScoringContext(
-        signal_mode={str(k): v for k, v in dict(signal_mode_raw or {}).items()},
+        signal_mode=_mapping_to_str_object_dict(signal_mode_raw),
         effective_component_weights=effective_component_weights,
         active_numeric_specs=active_numeric_specs,
         profile_scoring_data=profile_scoring_data,
@@ -312,8 +331,16 @@ def context_from_mapping(payload: Mapping[str, Any]) -> ScoringContext:
         ),
         emit_confidence_impact_diagnostics=bool(payload.get("emit_confidence_impact_diagnostics", True)),
         emit_semantic_precision_diagnostics=bool(payload.get("emit_semantic_precision_diagnostics", False)),
+        enable_scoring_sensitivity_diagnostics=bool(
+            payload.get("enable_scoring_sensitivity_diagnostics", False)
+        ),
+        scoring_sensitivity_top_k=int(payload.get("scoring_sensitivity_top_k", 10)),
+        scoring_sensitivity_perturbation_pct=float(
+            payload.get("scoring_sensitivity_perturbation_pct", 0.10)
+        ),
+        scoring_sensitivity_max_components=int(payload.get("scoring_sensitivity_max_components", 5)),
         apply_bl003_influence_tracks=bool(payload.get("apply_bl003_influence_tracks", False)),
-        influence_track_ids={str(v) for v in list(payload.get("influence_track_ids") or []) if str(v)},
+        influence_track_ids=_payload_str_set(payload, "influence_track_ids"),
         influence_preference_weight=float(payload.get("influence_preference_weight", 0.0)),
         influence_track_bonus_scale=float(payload.get("influence_track_bonus_scale", 0.0)),
     )

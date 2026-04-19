@@ -1,4 +1,4 @@
-"""Resolve BL-007 playlist controls from payload, run config defaults, and environment values."""
+"""Runtime control resolution for BL-007 playlist assembly."""
 
 from __future__ import annotations
 
@@ -44,7 +44,6 @@ def _sanitize_bl007_controls(controls: dict[str, object]) -> dict[str, object]:
     )
 
     utility_weights = coerce_dict(controls.get("utility_weights"))
-    # Keep utility weights non-negative so strategy changes stay monotonic and predictable.
     controls["utility_weights"] = {
         "score_weight": max(0.0, coerce_float(utility_weights.get("score_weight"), 1.0)),
         "novelty_weight": max(0.0, coerce_float(utility_weights.get("novelty_weight"), 0.0)),
@@ -120,6 +119,10 @@ def _sanitize_bl007_controls(controls: dict[str, object]) -> dict[str, object]:
     controls["bl006_bl007_handshake_validation_policy"] = (
         raw_policy if raw_policy in {"allow", "warn", "strict"} else "warn"
     )
+    controls["transition_smoothness_weight"] = max(
+        0.0,
+        min(1.0, coerce_float(controls.get("transition_smoothness_weight"), 0.0)),
+    )
     return controls
 
 
@@ -178,6 +181,7 @@ def _load_bl007_controls_from_env() -> dict[str, object]:
         "bl006_bl007_handshake_validation_policy": env_str(
             "BL007_BL006_HANDSHAKE_VALIDATION_POLICY", "warn"
         ),
+        "transition_smoothness_weight": env_float("BL007_TRANSITION_SMOOTHNESS_WEIGHT", 0.0),
     }
 
 

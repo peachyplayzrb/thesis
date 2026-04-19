@@ -1,20 +1,29 @@
-"""Decision and diagnostics tracker for BL-005 filtering.
+"""
+Decision tracking and diagnostics for BL-005 candidate filtering.
 
-I keep the counters and histograms here so the evaluator can stay focused on the
-actual keep/reject logic.
+Accumulates metrics about decisions, semantic/numeric scoring,
+and generates diagnostic reports.
 """
 
 from typing import Any
 
 
 class DecisionTracker:
-    """Collect filtering decisions and summarize the scoring diagnostics they produce."""
+    """Tracks filtering decisions and generates diagnostic reports."""
 
     def __init__(self, numeric_feature_specs: dict[str, Any]) -> None:
-        """Set up the counters and histograms BL-005 needs for its summary output."""
+        """
+        Initialize decision tracker.
+
+        Args:
+            numeric_feature_specs: Dict of numeric feature specifications
+                (used to initialize numeric_rule_hits and distributions)
+        """
+        # Decision records
         self.decisions: list[dict[str, object]] = []
         self.kept_rows: list[dict[str, str]] = []
 
+        # Aggregated counts
         self.decision_counts = {
             "seed_excluded": 0,
             "kept_candidates": 0,
@@ -22,6 +31,7 @@ class DecisionTracker:
         }
         self.decision_path_counts: dict[str, int] = {}
 
+        # Rule hit tracking
         self.semantic_rule_hits = {
             "lead_genre_match": 0,
             "genre_overlap": 0,
@@ -29,6 +39,7 @@ class DecisionTracker:
         }
         self.numeric_rule_hits = {key: 0 for key in numeric_feature_specs}
 
+        # Distribution tracking
         self.semantic_score_distribution: dict[str, int] = {}
         self.numeric_pass_distribution = {
             str(score): 0 for score in range(len(numeric_feature_specs) + 1)
@@ -49,9 +60,20 @@ class DecisionTracker:
         decision_record: dict[str, object],
         candidate_row: dict[str, str] | None = None,
     ) -> None:
-        """Record one candidate decision and update the keep/reject counters."""
+        """
+        Record a filtering decision for a candidate.
+
+        Args:
+            track_id: Candidate track ID
+            is_seed_track: Whether track is a seed track
+            kept: Whether decision was to keep the candidate
+            decision_path: Decision path identifier (e.g., "keep_strong_semantic")
+            decision_record: Full decision record with all details
+            candidate_row: Full candidate row data (included if kept)
+        """
         self.decisions.append(decision_record)
 
+        # Update counts
         if is_seed_track:
             self.decision_counts["seed_excluded"] += 1
         elif kept:
@@ -61,6 +83,7 @@ class DecisionTracker:
         else:
             self.decision_counts["rejected_threshold"] += 1
 
+        # Update decision path histogram
         self.decision_path_counts[decision_path] = (
             self.decision_path_counts.get(decision_path, 0) + 1
         )
@@ -72,12 +95,22 @@ class DecisionTracker:
         genre_overlap: int,
         tag_overlap: int,
     ) -> None:
-        """Record the semantic side of one candidate evaluation."""
+        """
+        Record semantic scoring results for a candidate.
+
+        Args:
+            semantic_score: Total semantic score (0-3)
+            lead_genre_match: Whether lead genre matches
+            genre_overlap: Number of genres matching
+            tag_overlap: Number of tags matching
+        """
+        # Update distribution
         score_str = f"{semantic_score:.2f}"
         self.semantic_score_distribution[score_str] = (
             self.semantic_score_distribution.get(score_str, 0) + 1
         )
 
+        # Update rule hits
         if lead_genre_match:
             self.semantic_rule_hits["lead_genre_match"] += 1
         if genre_overlap > 0:
@@ -97,7 +130,14 @@ class DecisionTracker:
         effective_semantic_min_keep_score: float,
         effective_numeric_support_min_score: float,
     ) -> None:
-        """Record the numeric side of one candidate evaluation."""
+        """
+        Record numeric scoring results for a candidate.
+
+        Args:
+            numeric_pass_count: Number of numeric features passing
+            numeric_rule_hits_this_candidate: Dict of numeric features that passed
+        """
+        # Update distribution
         count_str = str(numeric_pass_count)
         self.numeric_pass_distribution[count_str] = (
             self.numeric_pass_distribution.get(count_str, 0) + 1
@@ -127,6 +167,7 @@ class DecisionTracker:
             self.effective_numeric_support_min_score_distribution.get(effective_numeric_min_str, 0) + 1
         )
 
+        # Update rule hits
         for feature_name, passed in numeric_rule_hits_this_candidate.items():
             if passed:
                 self.numeric_rule_hits[feature_name] = (
@@ -134,7 +175,12 @@ class DecisionTracker:
                 )
 
     def get_summary(self) -> dict[str, object]:
-        """Return the aggregated BL-005 diagnostics summary."""
+        """
+        Get a summary of all tracked metrics.
+
+        Returns:
+            Dict with decision_counts, decision_path_counts, rule_hits, distributions
+        """
         return {
             "decision_counts": self.decision_counts,
             "decision_path_counts": self.decision_path_counts,

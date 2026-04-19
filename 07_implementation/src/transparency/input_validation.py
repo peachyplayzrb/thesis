@@ -2,10 +2,9 @@
 
 from __future__ import annotations
 
-from typing import Any, Mapping
+from collections.abc import Mapping
 
-
-VALIDATION_POLICIES: tuple[str, ...] = ("allow", "warn", "strict")
+from shared_utils.validation_policy import normalize_validation_policy, resolve_policy_status
 
 # Required fields in each BL-007 playlist track entry that BL-008 depends on
 # to produce a well-formed explanation payload.
@@ -22,13 +21,6 @@ REQUIRED_BL007_TRACE_FIELDS: tuple[str, ...] = (
     "decision",
     "score_rank",
 )
-
-
-def normalize_validation_policy(policy: Any, default: str = "warn") -> str:
-    value = str(policy or default).strip().lower()
-    if value in VALIDATION_POLICIES:
-        return value
-    return default
 
 
 def validate_bl007_bl008_handshake(
@@ -80,15 +72,7 @@ def validate_bl007_bl008_handshake(
     if rows_missing_score > 0:
         violations.append(f"playlist_rows_missing_final_score={rows_missing_score}")
 
-    strict_failure = normalized_policy == "strict" and bool(violations)
-    if strict_failure:
-        status = "fail"
-    elif violations and normalized_policy == "warn":
-        status = "warn"
-    elif violations and normalized_policy == "allow":
-        status = "allow"
-    else:
-        status = "pass"
+    status = resolve_policy_status(normalized_policy, violations)
 
     return {
         "policy": normalized_policy,

@@ -39,7 +39,7 @@ Copy, paste, and run this full block (change only the path):
 Set-Location "C:\path\to\mentor_feedback_submission"
 
 if (!(Test-Path ".\.venv\Scripts\python.exe")) {
-	py -3.14 -m venv .venv
+	py -3 -m venv .venv
 }
 
 & ".\.venv\Scripts\python.exe" -m pip install --upgrade pip
@@ -50,7 +50,7 @@ if (!(Test-Path ".\.venv\Scripts\python.exe")) {
 This block does setup and run in one go. If `.venv` already exists, it reuses it.
 
 ```powershell
-if (!(Test-Path ".\.venv\Scripts\python.exe")) { py -3.14 -m venv .venv }
+if (!(Test-Path ".\.venv\Scripts\python.exe")) { py -3 -m venv .venv }
 & ".\.venv\Scripts\python.exe" -m pip install --upgrade pip
 & ".\.venv\Scripts\python.exe" -m pip install -r ".\requirements.txt"
 ```
@@ -65,22 +65,22 @@ Run with Spotify ingestion refresh first (optional):
 
 ```powershell
 if (!(Test-Path ".\.venv\Scripts\python.exe")) {
-    py -3.14 -m venv .venv
+	py -3 -m venv .venv
 }
 
 & ".\.venv\Scripts\python.exe" -m pip install --upgrade pip
 & ".\.venv\Scripts\python.exe" -m pip install -r ".\requirements.txt"
 
 $env:PYTHONPATH = (Resolve-Path ".\src").Path
-$env:SPOTIFY_CLIENT_ID = "49017c64e9c646ccb6f45137cab3e89f"
-$env:SPOTIFY_CLIENT_SECRET = "8f449dbc30cf4f1f91ac96b9a0bf1851"
-$env:SPOTIFY_REDIRECT_URI = "http://127.0.0.1:8001/spotify/auth/callback"
+$env:SPOTIFY_CLIENT_ID = "<your_client_id>"
+$env:SPOTIFY_CLIENT_SECRET = "<your_client_secret>"
+$env:SPOTIFY_REDIRECT_URI = "<your_redirect_uri>"
 
 & ".\.venv\Scripts\python.exe" ".\src\ingestion\export_spotify_max_dataset.py" --include-top-tracks --include-saved-tracks --include-playlists --include-recently-played
 & ".\.venv\Scripts\python.exe" ".\main.py" --validate-only
 ```
 
-Replace `CLIENT_ID` and `CLIENT_SECRET` with your Spotify app credentials.
+Replace the placeholder Spotify environment values with your own app credentials before running the optional refresh step.
 
 ### Optional quick check
 

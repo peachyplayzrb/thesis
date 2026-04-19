@@ -1,37 +1,56 @@
 #!/usr/bin/env python3
-"""BL-008 transparency entry point.
+"""
+BL-008: Transparency outputs — per-track explanation payloads.
 
-This stage combines BL-006 and BL-007 artefacts to build per-track explanation
-payloads plus a summary file for transparency and auditability.
+Reads BL-006 scored candidates, BL-007 playlist, and BL-007 assembly trace
+to produce human-readable and machine-readable explanation artifacts for every
+track in the final playlist.
+
+Each explanation payload contains:
+  - playlist_position and score_rank
+  - final_score
+  - top_score_contributors  (top 3 components by weighted contribution)
+  - score_breakdown         (all component similarities and contributions)
+  - assembly_context        (which rule admitted this track, position in run)
+  - why_selected            (concise human-readable sentence)
+
+Outputs
+-------
+  bl008_explanation_payloads.json   -- one payload per playlist track
+  bl008_explanation_summary.json    -- run metadata, counts, input hashes
 """
 
 import csv
 import time
-from datetime import datetime, timezone
+from collections.abc import Mapping
+from datetime import UTC, datetime
 from pathlib import Path
-from typing import Any, Mapping, cast
-
+from typing import cast
 
 from shared_utils.env_utils import env_path
+from shared_utils.io_utils import sha256_of_file, utc_now, write_json
 from shared_utils.parsing import safe_float, safe_int
-from shared_utils.io_utils import sha256_of_file, write_json, utc_now
 from shared_utils.path_utils import impl_root
 from shared_utils.stage_utils import ensure_named_paths_exist, load_required_json_object
-from transparency.runtime_controls import resolve_bl008_runtime_controls
 from transparency.data_layer import read_csv_index
-from transparency.input_validation import validate_bl007_bl008_handshake
 from transparency.explanation_driver import (
     build_why_selected,
     select_causal_driver,
     select_primary_explanation_driver,
 )
+from transparency.input_validation import validate_bl007_bl008_handshake
 from transparency.payload_builder import (
     build_ordered_components,
+    build_rejected_track_payload,
     build_score_breakdown,
     build_track_payload,
     top_contributor_counts,
 )
+from transparency.runtime_controls import resolve_bl008_runtime_controls
 
+# ---------------------------------------------------------------------------
+# Paths
+# ---------------------------------------------------------------------------
 DEFAULT_SCORED_CSV = Path("scoring/outputs/bl006_scored_candidates.csv")
 DEFAULT_SCORE_SUMMARY_JSON = Path("scoring/outputs/bl006_score_summary.json")
 DEFAULT_PLAYLIST_JSON = Path("playlist/outputs/playlist.json")
@@ -52,6 +71,9 @@ def _playlist_tracks(value: object) -> list[Mapping[str, object]]:
     return [cast(Mapping[str, object], item) for item in value if isinstance(item, dict)]
 
 
+# ---------------------------------------------------------------------------
+# Main
+# ---------------------------------------------------------------------------
 def main() -> None:
     t0 = time.time()
     scored_csv = env_path("BL008_SCORED_CSV_PATH", impl_root() / DEFAULT_SCORED_CSV)
@@ -114,8 +136,10 @@ def main() -> None:
 
     # Load BL-007 assembly trace keyed by track_id
     trace_index = read_csv_index(trace_csv, "track_id")
+    with trace_csv.open("r", encoding="utf-8", newline="") as trace_handle:
+        trace_rows = list(csv.DictReader(trace_handle))
 
-    # Validate the playlist/trace handoff before building explanations so failures are explicit.
+    # BL-007 ↔ BL-008 handshake validation
     with trace_csv.open("r", encoding="utf-8", newline="") as _th:
         trace_header = next(csv.reader(_th))
     handshake_validation = validate_bl007_bl008_handshake(
@@ -147,16 +171,17 @@ def main() -> None:
         )
 
     payloads: list[dict[str, object]] = []
+    rejected_payloads: list[dict[str, object]] = []
 
     for pt in playlist_tracks:
-        track_id         = str(pt.get("track_id", ""))
-        playlist_pos     = safe_int(pt.get("playlist_position", 0))
-        final_score      = safe_float(pt.get("final_score", 0.0))
-        score_rank       = safe_int(pt.get("score_rank", 0))
-        lead_genre       = str(pt.get("lead_genre", ""))
+        track_id = str(pt.get("track_id", ""))
+        playlist_pos = safe_int(pt.get("playlist_position", 0))
+        final_score = safe_float(pt.get("final_score", 0.0))
+        score_rank = safe_int(pt.get("score_rank", 0))
+        lead_genre = str(pt.get("lead_genre", ""))
 
-        scored_row  = scored_index.get(track_id, {})
-        trace_row   = trace_index.get(track_id, {})
+        scored_row = scored_index.get(track_id, {})
+        trace_row = trace_index.get(track_id, {})
 
         score_breakdown = build_score_breakdown(scored_row, ordered_components, active_weights)
 
@@ -200,25 +225,77 @@ def main() -> None:
             )
         )
 
-    elapsed = round(time.time() - t0, 3)
-    now     = datetime.now(timezone.utc).strftime("%Y%m%d-%H%M%S-%f")
-    run_id  = f"BL008-EXPLAIN-{now}"
+    playlist_track_ids = {str(track.get("track_id", "")) for track in playlist_tracks}
+    emitted_rejected_track_ids: set[str] = set()
+    for trace_row in trace_rows:
+        decision = str(trace_row.get("decision", "")).strip().lower()
+        if decision == "included":
+            continue
+        track_id = str(trace_row.get("track_id", "")).strip()
+        if not track_id:
+            continue
+        if track_id in playlist_track_ids or track_id in emitted_rejected_track_ids:
+            continue
 
-    # Write per-track explanation payloads.
+        scored_row = scored_index.get(track_id, {})
+        lead_genre = str(scored_row.get("lead_genre", ""))
+        final_score = safe_float(scored_row.get("final_score", 0.0))
+        score_rank = safe_int(trace_row.get("score_rank", scored_row.get("rank", 0)))
+        score_breakdown = build_score_breakdown(scored_row, ordered_components, active_weights)
+        top_contributors = sorted(
+            score_breakdown,
+            key=lambda contributor: safe_float(contributor.get("contribution", 0.0)),
+            reverse=True,
+        )[:top_contributor_limit]
+        primary_driver = select_primary_explanation_driver(
+            top_contributors,
+            score_rank,
+            enable_near_tie_blend=blend_primary_contributor_on_near_tie,
+            near_tie_delta=primary_contributor_tie_delta,
+        )
+        causal_driver = select_causal_driver(top_contributors)
+        narrative_driver = primary_driver
+
+        rejected_payloads.append(
+            build_rejected_track_payload(
+                track_id=track_id,
+                lead_genre=lead_genre,
+                score_rank=score_rank,
+                final_score=final_score,
+                score_breakdown=score_breakdown,
+                top_contributors=top_contributors,
+                primary_driver=primary_driver,
+                causal_driver=causal_driver,
+                narrative_driver=narrative_driver,
+                trace_row=trace_row,
+                control_provenance_ref=("run_level" if emit_run_level_control_provenance_summary else "inline"),
+                control_provenance=(control_provenance if include_per_track_control_provenance else {}),
+                assembly_report=assembly_report,
+            )
+        )
+        emitted_rejected_track_ids.add(track_id)
+
+    elapsed = round(time.time() - t0, 3)
+    now = datetime.now(UTC).strftime("%Y%m%d-%H%M%S-%f")
+    run_id = f"BL008-EXPLAIN-{now}"
+
+    # ---- explanation payloads JSON ----------------------------------------
     payloads_path = output_dir / "bl008_explanation_payloads.json"
-    payloads_obj  = {
+    payloads_obj = {
         "run_id":           run_id,
         "generated_at_utc": utc_now(),
         "elapsed_seconds":  elapsed,
         "playlist_track_count": len(payloads),
+        "rejected_track_control_causality_count": len(rejected_payloads),
         "control_provenance_summary": (
             control_provenance if emit_run_level_control_provenance_summary else {}
         ),
+        "rejected_track_control_causality": rejected_payloads,
         "explanations":     payloads,
     }
     write_json(payloads_path, payloads_obj)
 
-    # Write run-level summary and hash evidence.
+    # ---- explanation summary JSON -----------------------------------------
     summary_path = output_dir / "bl008_explanation_summary.json"
     generated_at_utc = utc_now()
     summary = {

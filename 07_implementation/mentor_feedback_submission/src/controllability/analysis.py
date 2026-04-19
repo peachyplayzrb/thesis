@@ -1,4 +1,3 @@
-"""Scenario-comparison helpers for BL-011 controllability results."""
 from __future__ import annotations
 
 from typing import Any
@@ -36,7 +35,7 @@ def _dict_list(value: object) -> list[dict[str, Any]]:
 
 
 def _expects_no_shift(expected_effect: str) -> bool:
-    """Return True when scenario text explicitly expects no observable shift."""
+    """Return True if expected_effect text signals that no observable shift is expected."""
     lower = expected_effect.lower()
     return "no shift" in lower or "no bl-004" in lower or "not expected" in lower
 
@@ -49,13 +48,36 @@ def _record_expects_no_shift(record: dict[str, object]) -> bool:
     return scenario_id in {"fuzzy_enabled_strict"}
 
 
+def _record_variation_mode(record: dict[str, object]) -> str:
+    return str(record.get("variation_mode", "single_factor") or "single_factor").strip().lower()
+
+
+def _record_interaction_axes(record: dict[str, object]) -> list[str]:
+    axes_raw = record.get("interaction_axes")
+    if not isinstance(axes_raw, list):
+        return []
+    return sorted({str(item).strip() for item in axes_raw if str(item).strip()})
+
+
 def _evaluate_acceptance_bounds(
     bounds: list[dict[str, Any]],
     comparison: dict[str, object],
     scenario_result: dict[str, object],
     baseline_result: dict[str, object],
 ) -> bool:
-    """Evaluate optional acceptance-bound rules against computed comparison metrics."""
+    """Evaluate declarative acceptance-bound rules against comparison metrics.
+
+    Called when a scenario carries an explicit ``acceptance_bounds`` list (from
+    config-provided scenario definitions).  Each rule has the shape::
+
+        { "metric": str, "comparator": str, "value": <scalar>, "required": bool }
+
+    Supported comparators: less_than, greater_than, equal_to, not_equal_to,
+    less_than_or_equal, greater_than_or_equal.
+
+    Returns True if all required rules pass, False if any required rule fails.
+    Rules that reference an unknown metric are skipped.
+    """
     rank_shift = _mapping(comparison.get("rank_shift_summary"))
     scenario_hashes = _mapping(scenario_result.get("stable_hashes"))
     baseline_hashes = _mapping(baseline_result.get("stable_hashes"))
@@ -101,10 +123,19 @@ def _evaluate_expected_direction(
     baseline_result: dict[str, object],
     partial_comparison: dict[str, object],
 ) -> bool | None:
-    """Check whether a scenario achieved the expected directional effect.
+    """Determine whether a scenario achieved its expected directional effect.
 
-    This prefers config acceptance bounds first, then falls back to built-in
-    control-surface rules.
+    Tries config-provided ``acceptance_bounds`` first (from effective_config),
+    then falls back to control_surface-based built-in logic.
+
+    Built-in dispatch replaces the previous scenario_id if/elif coupling,
+    using ``control_surface`` as the dispatch key so new scenario IDs work
+    automatically when their control_surface matches a known variant type.
+
+    Returns:
+        True  — direction confirmed.
+        False — direction not met.
+        None  — cannot be determined for this control_surface / configuration.
     """
     control_surface = str(scenario_result.get("control_surface", ""))
     scenario_id = str(scenario_result.get("scenario_id", "")).strip().lower()
@@ -116,12 +147,12 @@ def _evaluate_expected_direction(
     component_delta = _mapping(partial_comparison.get("component_mean_delta"))
     rank_shift = _mapping(partial_comparison.get("rank_shift_summary"))
 
-    # If config defines acceptance bounds, they take precedence over fallback heuristics.
+    # Config-driven acceptance bounds (for scenario definitions loaded from config).
     acceptance_bounds = _dict_list(effective_config.get("acceptance_bounds"))
     if acceptance_bounds:
         return _evaluate_acceptance_bounds(acceptance_bounds, partial_comparison, scenario_result, baseline_result)
 
-    # Otherwise use built-in rules keyed by control surface.
+    # Built-in control_surface dispatch.
     if control_surface == "fixed_bl010_baseline":
         return True
 
@@ -154,7 +185,6 @@ def _evaluate_expected_direction(
         return None  # scale == 1.0, no direction expected
 
     return None  # unknown control_surface — no assertion possible
-
 
 
 def build_rank_shift_summary(baseline_rank_map: dict[str, int], scenario_rank_map: dict[str, int]) -> dict[str, object]:
@@ -319,23 +349,114 @@ def evaluate_results_status(scenario_records: list[dict[str, object]]) -> dict[s
     non_baseline_records = [
         record for record in scenario_records if record["scenario_id"] != "baseline"
     ]
+    single_factor_records = [
+        record
+        for record in non_baseline_records
+        if _record_variation_mode(record) != "interaction"
+    ]
+    interaction_records = [
+        record
+        for record in non_baseline_records
+        if _record_variation_mode(record) == "interaction"
+    ]
+
     all_repeat = all(record["repeat_consistent"] for record in scenario_records)
     all_shift = all(
-        _mapping(record.get("comparison_to_baseline")).get("observable_shift") for record in non_baseline_records
+        _mapping(record.get("comparison_to_baseline")).get("observable_shift") for record in single_factor_records
         if not _record_expects_no_shift(record)
     )
     all_expected_no_shift = all(
-        not _mapping(record.get("comparison_to_baseline")).get("observable_shift") for record in non_baseline_records
+        not _mapping(record.get("comparison_to_baseline")).get("observable_shift") for record in single_factor_records
         if _record_expects_no_shift(record)
     )
     all_direction = all(
         _mapping(record.get("comparison_to_baseline")).get("expected_direction_met")
-        for record in non_baseline_records
+        for record in single_factor_records
     )
+    all_interaction_shifts = all(
+        _mapping(record.get("comparison_to_baseline")).get("observable_shift")
+        for record in interaction_records
+    )
+    all_interaction_directions = all(
+        _mapping(record.get("comparison_to_baseline")).get("expected_direction_met")
+        for record in interaction_records
+    )
+
     return {
         "all_scenarios_repeat_consistent": all_repeat,
         "all_variant_shifts_observable": all_shift,
         "all_expected_no_shift_variants_stable": all_expected_no_shift,
         "all_variant_directions_met": all_direction,
+        "single_factor_variant_count": len(single_factor_records),
+        "interaction_variant_count": len(interaction_records),
+        "all_interaction_shifts_observable": all_interaction_shifts,
+        "all_interaction_directions_met": all_interaction_directions,
         "status": "pass" if all_repeat and all_shift and all_expected_no_shift and all_direction else "bounded-risk",
+    }
+
+
+def build_interaction_coverage_summary(scenario_records: list[dict[str, object]]) -> dict[str, object]:
+    interaction_records = [
+        record
+        for record in scenario_records
+        if str(record.get("scenario_id")) != "baseline" and _record_variation_mode(record) == "interaction"
+    ]
+    single_factor_records = [
+        record
+        for record in scenario_records
+        if str(record.get("scenario_id")) != "baseline" and _record_variation_mode(record) != "interaction"
+    ]
+
+    expected_pairs = {
+        tuple(sorted(("influence_tracks", "candidate_threshold"))),
+        tuple(sorted(("feature_weight", "candidate_threshold"))),
+    }
+
+    observed_pairs: set[tuple[str, str]] = set()
+    interaction_rows: list[dict[str, object]] = []
+    for record in interaction_records:
+        comparison = _mapping(record.get("comparison_to_baseline"))
+        axes = _record_interaction_axes(record)
+        pair = tuple(axes[:2]) if len(axes) >= 2 else tuple()
+        if len(pair) == 2:
+            observed_pairs.add((pair[0], pair[1]))
+        interaction_rows.append(
+            {
+                "scenario_id": str(record.get("scenario_id", "")),
+                "interaction_axes": axes,
+                "observable_shift": bool(comparison.get("observable_shift", False)),
+                "expected_direction_met": comparison.get("expected_direction_met"),
+                "candidate_pool_size_delta": comparison.get("candidate_pool_size_delta"),
+                "playlist_overlap_ratio": comparison.get("playlist_overlap_ratio"),
+                "mean_abs_rank_delta": _mapping(comparison.get("rank_shift_summary")).get("mean_abs_rank_delta", 0.0),
+            }
+        )
+
+    observed_single_factor_surfaces = sorted(
+        {
+            str(record.get("control_surface", "")).strip()
+            for record in single_factor_records
+            if str(record.get("control_surface", "")).strip()
+        }
+    )
+    observed_interaction_pairs = [list(pair) for pair in sorted(observed_pairs)]
+    missing_interaction_pairs = [list(pair) for pair in sorted(expected_pairs - observed_pairs)]
+
+    interaction_shifts_observable = all(row["observable_shift"] for row in interaction_rows)
+    interaction_directions_met = all(bool(row["expected_direction_met"]) for row in interaction_rows)
+
+    return {
+        "single_factor_control_surfaces": observed_single_factor_surfaces,
+        "interaction_matrix_expected_pairs": [list(pair) for pair in sorted(expected_pairs)],
+        "interaction_matrix_observed_pairs": observed_interaction_pairs,
+        "interaction_matrix_missing_pairs": missing_interaction_pairs,
+        "interaction_variant_count": len(interaction_rows),
+        "interaction_shifts_observable": interaction_shifts_observable,
+        "interaction_directions_met": interaction_directions_met,
+        "interaction_rows": interaction_rows,
+        "interaction_coverage_status": (
+            "covered"
+            if not missing_interaction_pairs and interaction_shifts_observable and interaction_directions_met
+            else "bounded-risk"
+        ),
     }

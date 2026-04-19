@@ -1,5 +1,3 @@
-"""Data containers passed around inside the BL-004 profile stage."""
-
 from __future__ import annotations
 
 from dataclasses import dataclass, field

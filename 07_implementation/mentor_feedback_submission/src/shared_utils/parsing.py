@@ -1,7 +1,5 @@
 """
-Small parsing and normalization helpers used in multiple stages.
-
-This file mainly covers safe number parsing and text cleanup for matching.
+Shared parsing and normalization helpers.
 """
 
 from __future__ import annotations
@@ -54,7 +52,7 @@ def normalize_text(value: str | None, *, lowercase: bool = True) -> str:
 
 
 def normalize_ascii_text(value: str | None) -> str:
-    """Normalize text into lowercase ASCII tokens separated by spaces."""
+    """Normalize text to lowercase ASCII alphanumeric tokens separated by spaces."""
     text = normalize_text(value, lowercase=False)
     if not text:
         return ""

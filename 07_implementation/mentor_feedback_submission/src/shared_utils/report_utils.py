@@ -1,8 +1,8 @@
 """
-Small helpers for writing the report-style artifacts used in the later stages.
+Shared helpers for writing report and matrix artifacts.
 
-I kept these together so the JSON and CSV output formatting stays consistent
-without making every reporting script reimplement the same write logic.
+These helpers keep JSON/CSV output behavior consistent across BL010-BL014
+without changing stage-specific report schemas.
 """
 
 from __future__ import annotations

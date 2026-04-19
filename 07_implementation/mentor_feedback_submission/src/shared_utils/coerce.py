@@ -1,15 +1,15 @@
-"""Small coercion helpers for values coming from env vars, JSON, or loose dicts."""
+"""Shared coercion helpers for stage/runtime surfaces."""
 
 from __future__ import annotations
 
 
 def clamp(value: float, low: float = 0.0, high: float = 1.0) -> float:
-    """Clamp a float into the inclusive range between low and high."""
+    """Clamp a float value to a bounded inclusive range."""
     return max(low, min(high, value))
 
 
 def to_float(value: object, default: float = 0.0) -> float:
-    """Try to coerce a value to float and fall back to the default if it fails."""
+    """Parse a float using the stage-safe string conversion pattern."""
     try:
         return float(str(value))
     except (TypeError, ValueError):
@@ -17,7 +17,7 @@ def to_float(value: object, default: float = 0.0) -> float:
 
 
 def to_int(value: object, default: int = 0) -> int:
-    """Try to coerce a value to int and fall back to the default if it fails."""
+    """Parse an int using the stage-safe string conversion pattern."""
     try:
         return int(str(value))
     except (TypeError, ValueError):
@@ -25,7 +25,7 @@ def to_int(value: object, default: int = 0) -> int:
 
 
 def to_mapping(value: object) -> dict[str, object]:
-    """Return a string-key dict when the input is mapping-like, otherwise empty."""
+    """Normalize mapping-like values to string-key dictionaries."""
     if isinstance(value, dict):
         return {str(key): item for key, item in value.items()}
     return {}
@@ -37,7 +37,7 @@ def to_string_list(
     allow_tuple: bool = False,
     drop_empty: bool = False,
 ) -> list[str]:
-    """Turn list-like values into `list[str]`, with optional empty-value filtering."""
+    """Normalize list/tuple values to list[str] with optional empty filtering."""
     allowed_types: tuple[type, ...] = (list, tuple) if allow_tuple else (list,)
     if not isinstance(value, allowed_types):
         return []

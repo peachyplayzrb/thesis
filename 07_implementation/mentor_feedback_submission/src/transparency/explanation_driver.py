@@ -1,8 +1,8 @@
-"""Helpers for selecting and wording BL-008 explanation drivers."""
+"""Explanation selection helpers for BL-008 transparency."""
 
 from __future__ import annotations
 
-from typing import Mapping, Sequence
+from collections.abc import Mapping, Sequence
 
 from shared_utils.parsing import safe_float
 
@@ -14,7 +14,7 @@ def build_why_selected(
     playlist_position: int,
     top_contributor_limit: int,
 ) -> str:
-    """Build the final human-readable explanation sentence for one playlist track."""
+    """Build the human-readable explanation sentence."""
     top_labels = [
         str(c.get("label", "Unknown"))
         for c in top_contributors[:top_contributor_limit]
@@ -56,7 +56,7 @@ def select_primary_explanation_driver(
     enable_near_tie_blend: bool,
     near_tie_delta: float,
 ) -> Mapping[str, object]:
-    """Select the primary explanation driver, with optional near-tie rotation for diversity."""
+    """Select the primary explanation driver with optional near-tie rotation."""
     if not top_contributors:
         return {
             "component": "unknown",

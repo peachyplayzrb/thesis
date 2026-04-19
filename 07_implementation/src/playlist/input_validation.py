@@ -2,10 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Any
-
-
-VALIDATION_POLICIES: tuple[str, ...] = ("allow", "warn", "strict")
+from shared_utils.validation_policy import normalize_validation_policy, resolve_policy_status
 
 # Required fields that BL-006 must have written into the scored candidates CSV
 # before BL-007 can assemble from it.
@@ -25,13 +22,6 @@ BL006_SCORING_COMPONENT_INDICATORS: tuple[str, ...] = (
     "genre_overlap_contribution",
     "tag_overlap_contribution",
 )
-
-
-def normalize_validation_policy(policy: Any, default: str = "warn") -> str:
-    value = str(policy or default).strip().lower()
-    if value in VALIDATION_POLICIES:
-        return value
-    return default
 
 
 def validate_bl006_bl007_handshake(
@@ -83,15 +73,7 @@ def validate_bl006_bl007_handshake(
     if missing_score_rows > 0:
         violations.append(f"rows_missing_final_score={missing_score_rows}")
 
-    strict_failure = normalized_policy == "strict" and bool(violations)
-    if strict_failure:
-        status = "fail"
-    elif violations and normalized_policy == "warn":
-        status = "warn"
-    elif violations and normalized_policy == "allow":
-        status = "allow"
-    else:
-        status = "pass"
+    status = resolve_policy_status(normalized_policy, violations)
 
     return {
         "policy": normalized_policy,

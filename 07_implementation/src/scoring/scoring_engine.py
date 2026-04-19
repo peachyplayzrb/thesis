@@ -106,6 +106,61 @@ def weighted_lead_genre_similarity(candidate_label: str, profile_weights: dict[s
     return round(_clamp_0_1(weighted_score), 6)
 
 
+def _dict_or_empty(value: object) -> dict[str, object]:
+    return value if isinstance(value, dict) else {}
+
+
+def _float_dict_or_empty(value: object) -> dict[str, float]:
+    if not isinstance(value, dict):
+        return {}
+    return {str(k): _to_float(v) for k, v in value.items()}
+
+
+def _candidate_str_list(candidate_attrs: dict[str, Any], key: str) -> list[str]:
+    values_raw = candidate_attrs.get(key, [])
+    return [str(value) for value in values_raw] if isinstance(values_raw, list) else []
+
+
+def _overlap_precision_alpha(overlap_strategy: str, effective_alpha: float) -> float:
+    return effective_alpha if str(overlap_strategy).strip().lower() == "precision_aware" else 0.0
+
+
+def _resolve_lead_genre_similarity(
+    candidate_lead_genre: str,
+    profile_lead_genre: str,
+    lead_genre_weights: dict[str, float],
+    *,
+    lead_genre_strategy: str,
+) -> float:
+    if str(lead_genre_strategy).strip().lower() == "single_anchor":
+        return lead_genre_token_similarity(candidate_lead_genre, profile_lead_genre)
+    if lead_genre_weights:
+        return weighted_lead_genre_similarity(candidate_lead_genre, lead_genre_weights)
+    return lead_genre_token_similarity(candidate_lead_genre, profile_lead_genre)
+
+
+def _add_numeric_similarity_scores(
+    scores: dict[str, object],
+    candidate_attrs: dict[str, Any],
+    *,
+    numeric_centers: dict[str, object],
+    numeric_thresholds: dict[str, object],
+    active_numeric_specs: dict[str, dict[str, object]],
+) -> None:
+    for dimension, spec in active_numeric_specs.items():
+        value = candidate_attrs.get(dimension)
+        center = numeric_centers.get(dimension)
+        threshold = numeric_thresholds.get(dimension, 1.0)
+        circular = bool(spec.get("circular", False))
+        similarity = numeric_similarity(
+            _to_float(value) if value is not None else None,
+            _to_float(center, 0.0),
+            _to_float(threshold, 1.0),
+            circular,
+        )
+        scores[f"{dimension}_similarity"] = similarity
+
+
 def compute_component_scores(
     candidate_attrs: dict[str, Any],
     profile_data: dict[str, object],
@@ -135,17 +190,12 @@ def compute_component_scores(
         - "matched_genres", "matched_tags" (for output)
     """
     scores: dict[str, object] = {}
-    numeric_centers_raw = profile_data.get("numeric_centers")
-    numeric_thresholds_raw = profile_data.get("numeric_thresholds")
-    genre_weights_raw = profile_data.get("genre_weights")
-    tag_weights_raw = profile_data.get("tag_weights")
-
-    numeric_centers = numeric_centers_raw if isinstance(numeric_centers_raw, dict) else {}
-    numeric_thresholds = numeric_thresholds_raw if isinstance(numeric_thresholds_raw, dict) else {}
-    genre_weights = genre_weights_raw if isinstance(genre_weights_raw, dict) else {}
-    tag_weights = tag_weights_raw if isinstance(tag_weights_raw, dict) else {}
+    numeric_centers = _dict_or_empty(profile_data.get("numeric_centers"))
+    numeric_thresholds = _dict_or_empty(profile_data.get("numeric_thresholds"))
+    genre_weights = _float_dict_or_empty(profile_data.get("genre_weights"))
+    tag_weights = _float_dict_or_empty(profile_data.get("tag_weights"))
     lead_genre_weights_raw = profile_data.get("lead_genre_weights")
-    lead_genre_weights = lead_genre_weights_raw if isinstance(lead_genre_weights_raw, dict) else {}
+    lead_genre_weights = _float_dict_or_empty(lead_genre_weights_raw)
     semantic_precision_alpha_effective = (
         _to_float(semantic_precision_alpha, 0.35)
         if semantic_precision_alpha is not None
@@ -153,56 +203,40 @@ def compute_component_scores(
     )
 
     # Numeric components are driven by active_numeric_specs so BL-006 stays aligned to shared config.
-    for dimension, spec in active_numeric_specs.items():
-        value = candidate_attrs.get(dimension)
-        center = numeric_centers.get(dimension)
-        threshold = numeric_thresholds.get(dimension, 1.0)
-        circular = bool(spec.get("circular", False))
-
-        similarity = numeric_similarity(
-            float(value) if value is not None else None,
-            float(center) if center is not None else 0.0,
-            float(threshold),
-            circular,
-        )
-        scores[f"{dimension}_similarity"] = similarity
+    _add_numeric_similarity_scores(
+        scores,
+        candidate_attrs,
+        numeric_centers=numeric_centers,
+        numeric_thresholds=numeric_thresholds,
+        active_numeric_specs=active_numeric_specs,
+    )
 
     # Lead genre: weighted token overlap vs profile top lead genres (or fallback to single lead genre).
     candidate_lead_genre = str(candidate_attrs.get("lead_genre", "")).lower()
     profile_lead_genre = str(profile_data.get("lead_genre", "")).lower()
-    if str(lead_genre_strategy).strip().lower() == "single_anchor":
-        lead_genre_similarity = lead_genre_token_similarity(candidate_lead_genre, profile_lead_genre)
-    elif lead_genre_weights:
-        lead_genre_similarity = weighted_lead_genre_similarity(candidate_lead_genre, lead_genre_weights)
-    else:
-        lead_genre_similarity = lead_genre_token_similarity(candidate_lead_genre, profile_lead_genre)
+    lead_genre_similarity = _resolve_lead_genre_similarity(
+        candidate_lead_genre,
+        profile_lead_genre,
+        lead_genre_weights,
+        lead_genre_strategy=lead_genre_strategy,
+    )
     scores["lead_genre_similarity"] = lead_genre_similarity
 
     # Genre overlap: weighted Jaccard similarity
-    candidate_genres_raw = candidate_attrs.get("genres", [])
-    candidate_genres = [str(value) for value in candidate_genres_raw] if isinstance(candidate_genres_raw, list) else []
+    candidate_genres = _candidate_str_list(candidate_attrs, "genres")
     genre_overlap_similarity = weighted_overlap(
         candidate_genres,
         genre_weights,
-        precision_alpha=(
-            semantic_precision_alpha_effective
-            if str(overlap_strategy).strip().lower() == "precision_aware"
-            else 0.0
-        ),
+        precision_alpha=_overlap_precision_alpha(overlap_strategy, semantic_precision_alpha_effective),
     )
     scores["genre_overlap_similarity"] = genre_overlap_similarity
 
     # Tag overlap: weighted Jaccard similarity
-    candidate_tags_raw = candidate_attrs.get("tags", [])
-    candidate_tags = [str(value) for value in candidate_tags_raw] if isinstance(candidate_tags_raw, list) else []
+    candidate_tags = _candidate_str_list(candidate_attrs, "tags")
     tag_overlap_similarity = weighted_overlap(
         candidate_tags,
         tag_weights,
-        precision_alpha=(
-            semantic_precision_alpha_effective
-            if str(overlap_strategy).strip().lower() == "precision_aware"
-            else 0.0
-        ),
+        precision_alpha=_overlap_precision_alpha(overlap_strategy, semantic_precision_alpha_effective),
     )
     scores["tag_overlap_similarity"] = tag_overlap_similarity
 

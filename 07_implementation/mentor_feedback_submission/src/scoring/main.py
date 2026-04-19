@@ -1,4 +1,4 @@
-"""BL-006 entry point for scoring retrieved candidates against the profile."""
+"""BL-006: Score candidates based on profile preference model."""
 
 from __future__ import annotations
 

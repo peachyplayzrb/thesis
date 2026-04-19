@@ -1,10 +1,9 @@
-"""Data structures shared across the BL-005 retrieval stage."""
-
 from __future__ import annotations
 
+from collections.abc import Mapping
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Mapping
+from typing import Any
 
 
 @dataclass(frozen=True)
@@ -150,24 +149,54 @@ class RetrievalArtifacts:
     elapsed_seconds: float
 
 
-def context_from_mapping(payload: Mapping[str, Any]) -> RetrievalContext:
-    """Compatibility bridge for tests/callers still passing dict runtime context."""
+def _active_numeric_specs_from_payload(payload: Mapping[str, Any]) -> dict[str, NumericFeatureSpec]:
     active_raw = payload.get("active_numeric_specs") or {}
     active_specs: dict[str, NumericFeatureSpec] = {}
-    if isinstance(active_raw, Mapping):
-        for key, value in active_raw.items():
-            if isinstance(value, NumericFeatureSpec):
-                active_specs[str(key)] = value
-                continue
-            if isinstance(value, Mapping):
-                active_specs[str(key)] = NumericFeatureSpec(
-                    candidate_column=str(value.get("candidate_column", "")),
-                    threshold=float(value.get("threshold", 0.0)),
-                    circular=bool(value.get("circular", False)),
-                )
+    if not isinstance(active_raw, Mapping):
+        return active_specs
+
+    for key, value in active_raw.items():
+        normalized_key = str(key)
+        if isinstance(value, NumericFeatureSpec):
+            active_specs[normalized_key] = value
+            continue
+        if not isinstance(value, Mapping):
+            continue
+        active_specs[normalized_key] = NumericFeatureSpec(
+            candidate_column=str(value.get("candidate_column", "")),
+            threshold=float(value.get("threshold", 0.0)),
+            circular=bool(value.get("circular", False)),
+        )
+    return active_specs
+
+
+def _mapping_to_float_dict(value: Any) -> dict[str, float]:
+    source = dict(value) if isinstance(value, Mapping) else {}
+    return {str(k): float(v) for k, v in source.items()}
+
+
+def _payload_str_set(payload: Mapping[str, Any], key: str) -> set[str]:
+    raw = payload.get(key) or set()
+    return {str(v) for v in set(raw)}
+
+
+def _payload_optional_int(payload: Mapping[str, Any], key: str) -> int | None:
+    value = payload.get(key)
+    return int(value) if value is not None else None
+
+
+def _payload_signal_mode(payload: Mapping[str, Any]) -> dict[str, object]:
+    raw = payload.get("signal_mode") or {}
+    source = dict(raw) if isinstance(raw, Mapping) else {}
+    return {str(k): v for k, v in source.items()}
+
+
+def context_from_mapping(payload: Mapping[str, Any]) -> RetrievalContext:
+    """Compatibility bridge for tests/callers still passing dict runtime context."""
+    active_specs = _active_numeric_specs_from_payload(payload)
 
     return RetrievalContext(
-        signal_mode={str(k): v for k, v in dict(payload.get("signal_mode") or {}).items()},
+        signal_mode=_payload_signal_mode(payload),
         profile_top_lead_genre_limit=int(payload.get("profile_top_lead_genre_limit", 1)),
         profile_top_tag_limit=int(payload.get("profile_top_tag_limit", 1)),
         profile_top_genre_limit=int(payload.get("profile_top_genre_limit", 1)),
@@ -177,16 +206,14 @@ def context_from_mapping(payload: Mapping[str, Any]) -> RetrievalContext:
         numeric_support_min_score=float(payload.get("numeric_support_min_score", payload.get("numeric_support_min_pass", 0.0))),
         lead_genre_partial_match_threshold=float(payload.get("lead_genre_partial_match_threshold", 0.0)),
         active_numeric_specs=active_specs,
-        seed_track_ids={str(v) for v in set(payload.get("seed_track_ids") or set())},
-        top_lead_genres={str(v) for v in set(payload.get("top_lead_genres") or set())},
-        top_tags={str(v) for v in set(payload.get("top_tags") or set())},
-        top_genres={str(v) for v in set(payload.get("top_genres") or set())},
-        lead_genre_weights={str(k): float(v) for k, v in dict(payload.get("lead_genre_weights") or {}).items()},
-        tag_weights={str(k): float(v) for k, v in dict(payload.get("tag_weights") or {}).items()},
-        genre_weights={str(k): float(v) for k, v in dict(payload.get("genre_weights") or {}).items()},
-        numeric_centers={
-            str(k): float(v) for k, v in dict(payload.get("numeric_centers") or {}).items()
-        },
+        seed_track_ids=_payload_str_set(payload, "seed_track_ids"),
+        top_lead_genres=_payload_str_set(payload, "top_lead_genres"),
+        top_tags=_payload_str_set(payload, "top_tags"),
+        top_genres=_payload_str_set(payload, "top_genres"),
+        lead_genre_weights=_mapping_to_float_dict(payload.get("lead_genre_weights")),
+        tag_weights=_mapping_to_float_dict(payload.get("tag_weights")),
+        genre_weights=_mapping_to_float_dict(payload.get("genre_weights")),
+        numeric_centers=_mapping_to_float_dict(payload.get("numeric_centers")),
         numeric_features_enabled=bool(payload.get("numeric_features_enabled", False)),
         use_weighted_semantics=bool(payload.get("use_weighted_semantics", False)),
         use_continuous_numeric=bool(payload.get("use_continuous_numeric", False)),
@@ -194,21 +221,10 @@ def context_from_mapping(payload: Mapping[str, Any]) -> RetrievalContext:
         language_filter_codes=[
             str(v) for v in list(payload.get("language_filter_codes") or []) if str(v)
         ],
-        recency_years_min_offset=(
-            int(payload["recency_years_min_offset"])
-            if payload.get("recency_years_min_offset") is not None
-            else None
-        ),
+        recency_years_min_offset=_payload_optional_int(payload, "recency_years_min_offset"),
         current_year_utc=int(payload.get("current_year_utc", 0)),
-        recency_min_release_year=(
-            int(payload["recency_min_release_year"])
-            if payload.get("recency_min_release_year") is not None
-            else None
-        ),
-        feature_confidence_by_name={
-            str(k): float(v)
-            for k, v in dict(payload.get("feature_confidence_by_name") or {}).items()
-        },
+        recency_min_release_year=_payload_optional_int(payload, "recency_min_release_year"),
+        feature_confidence_by_name=_mapping_to_float_dict(payload.get("feature_confidence_by_name")),
         profile_numeric_confidence_factor=float(payload.get("profile_numeric_confidence_factor", 1.0)),
         profile_match_quality=float(payload.get("profile_match_quality", 1.0)),
         top_genre_entropy=float(payload.get("top_genre_entropy", 0.0)),

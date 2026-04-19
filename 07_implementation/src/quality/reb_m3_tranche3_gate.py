@@ -17,32 +17,12 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
-from shared_utils.io_utils import format_utc_iso
-from shared_utils.io_utils import load_json as load_json_shared
-from shared_utils.path_utils import impl_root
-from shared_utils.report_utils import write_csv_rows, write_json_ascii
+from reb_gate_common import ensure_exists, finalize_gate_report, load_json, nested_get
 
+from shared_utils.path_utils import impl_root
 
 REPO_ROOT = impl_root()
 OUTPUT_DIR = Path(__file__).resolve().parent / "outputs"
-
-
-def ensure_exists(path: Path) -> None:
-    if not path.exists():
-        raise FileNotFoundError(f"Missing required artifact: {path}")
-
-
-def load_json(path: Path) -> dict[str, Any]:
-    return load_json_shared(path)
-
-
-def _nested_get(data: dict[str, Any], keys: list[str]) -> Any:
-    current: Any = data
-    for key in keys:
-        if not isinstance(current, dict) or key not in current:
-            return None
-        current = current[key]
-    return current
 
 
 def main() -> int:
@@ -77,45 +57,45 @@ def main() -> int:
 
     check(
         "t3_bl008_control_provenance_present",
-        isinstance(_nested_get(first_explanation, ["control_provenance"]), dict),
+        isinstance(nested_get(first_explanation, ["control_provenance"]), dict),
         "BL-008 explanations include control_provenance block",
     )
     check(
         "t3_bl008_scoring_control_snapshot_present",
-        isinstance(_nested_get(first_explanation, ["control_provenance", "scoring", "active_component_weights"]), dict)
-        and isinstance(_nested_get(first_explanation, ["control_provenance", "scoring", "lead_genre_strategy"]), str)
-        and isinstance(_nested_get(first_explanation, ["control_provenance", "scoring", "semantic_overlap_strategy"]), str),
+        isinstance(nested_get(first_explanation, ["control_provenance", "scoring", "active_component_weights"]), dict)
+        and isinstance(nested_get(first_explanation, ["control_provenance", "scoring", "lead_genre_strategy"]), str)
+        and isinstance(nested_get(first_explanation, ["control_provenance", "scoring", "semantic_overlap_strategy"]), str),
         "BL-008 control provenance includes scoring control snapshot",
     )
     check(
         "t3_bl008_transparency_control_snapshot_present",
-        isinstance(_nested_get(first_explanation, ["control_provenance", "transparency", "top_contributor_limit"]), int)
-        and isinstance(_nested_get(first_explanation, ["control_provenance", "transparency", "blend_primary_contributor_on_near_tie"]), bool),
+        isinstance(nested_get(first_explanation, ["control_provenance", "transparency", "top_contributor_limit"]), int)
+        and isinstance(nested_get(first_explanation, ["control_provenance", "transparency", "blend_primary_contributor_on_near_tie"]), bool),
         "BL-008 control provenance includes transparency control snapshot",
     )
 
     check(
         "t3_bl009_validity_boundaries_present",
-        isinstance(_nested_get(bl009_log, ["validity_boundaries"]), dict),
+        isinstance(nested_get(bl009_log, ["validity_boundaries"]), dict),
         "BL-009 run log includes validity_boundaries section",
     )
     check(
         "t3_bl009_validity_boundary_sections_present",
-        isinstance(_nested_get(bl009_log, ["validity_boundaries", "scope"]), dict)
-        and isinstance(_nested_get(bl009_log, ["validity_boundaries", "known_limits"]), dict)
-        and isinstance(_nested_get(bl009_log, ["validity_boundaries", "run_caveats"]), dict),
+        isinstance(nested_get(bl009_log, ["validity_boundaries", "scope"]), dict)
+        and isinstance(nested_get(bl009_log, ["validity_boundaries", "known_limits"]), dict)
+        and isinstance(nested_get(bl009_log, ["validity_boundaries", "run_caveats"]), dict),
         "BL-009 validity boundaries include scope, known_limits, and run_caveats",
     )
     check(
         "t3_bl009_scope_boundary_keys_present",
-        isinstance(_nested_get(bl009_log, ["validity_boundaries", "scope", "single_user_deterministic"]), bool)
-        and isinstance(_nested_get(bl009_log, ["validity_boundaries", "scope", "interaction_types_included"]), list),
+        isinstance(nested_get(bl009_log, ["validity_boundaries", "scope", "single_user_deterministic"]), bool)
+        and isinstance(nested_get(bl009_log, ["validity_boundaries", "scope", "interaction_types_included"]), list),
         "BL-009 scope boundary includes deterministic-scope and interaction-set keys",
     )
 
-    no_op_controls = _nested_get(bl011_report, ["results", "no_op_control_diagnostics"])
-    no_op_count = _nested_get(bl011_report, ["results", "no_op_controls_count"])
-    shifts_observable = _nested_get(bl011_report, ["results", "all_variant_shifts_observable"])
+    no_op_controls = nested_get(bl011_report, ["results", "no_op_control_diagnostics"])
+    no_op_count = nested_get(bl011_report, ["results", "no_op_controls_count"])
+    shifts_observable = nested_get(bl011_report, ["results", "all_variant_shifts_observable"])
 
     check(
         "t3_bl011_no_op_diagnostics_present",
@@ -134,43 +114,16 @@ def main() -> int:
         "BL-011 no-op diagnostics are consistent with shift-observability verdict",
     )
 
-    failed = [c for c in checks if c["status"] == "fail"]
-    overall_status = "pass" if not failed else "fail"
-
-    finished = datetime.now(UTC)
-    report = {
-        "run_id": run_id,
-        "task": "REB-M3 tranche-3 control-causality gate",
-        "generated_at_utc": format_utc_iso(finished),
-        "elapsed_seconds": round((finished - started).total_seconds(), 3),
-        "overall_status": overall_status,
-        "total_checks": len(checks),
-        "passed_checks": len(checks) - len(failed),
-        "failed_checks": len(failed),
-        "checks": checks,
-        "artifacts_checked": {k: str(v) for k, v in artifacts.items()},
-    }
-
-    OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
-    report_path = OUTPUT_DIR / "reb_m3_tranche3_gate_report.json"
-    matrix_path = OUTPUT_DIR / "reb_m3_tranche3_gate_matrix.csv"
-
-    write_json_ascii(report_path, report)
-    write_csv_rows(
-        matrix_path,
-        [
-            {
-                "run_id": run_id,
-                "check_id": item["id"],
-                "status": item["status"],
-                "details": item["details"],
-            }
-            for item in checks
-        ],
+    return finalize_gate_report(
+        run_id=run_id,
+        task="REB-M3 tranche-3 control-causality gate",
+        started=started,
+        checks=checks,
+        artifacts=artifacts,
+        output_dir=OUTPUT_DIR,
+        report_filename="reb_m3_tranche3_gate_report.json",
+        matrix_filename="reb_m3_tranche3_gate_matrix.csv",
     )
-
-    print(f"[reb-m3-gate] status={overall_status} report={report_path}")
-    return 0 if overall_status == "pass" else 1
 
 
 if __name__ == "__main__":

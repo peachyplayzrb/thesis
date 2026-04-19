@@ -26,57 +26,81 @@ class FieldSpec:
     choices: tuple[str, ...] | None = None
 
 
+def _coerce_positive_int(value: Any, *, default: Any) -> int:
+    parsed = to_int(value, to_int(default, 1))
+    if parsed <= 0:
+        return to_int(default, 1)
+    return parsed
+
+
+def _coerce_non_negative_float(value: Any, *, default: Any) -> float:
+    parsed = to_float(value, to_float(default, 0.0))
+    if parsed < 0:
+        return to_float(default, 0.0)
+    return parsed
+
+
+def _coerce_fraction(value: Any, *, context: str) -> float:
+    try:
+        parsed = float(value)
+    except (TypeError, ValueError) as exc:
+        raise RunConfigSchemaError(f"{context} must be numeric") from exc
+    if parsed < 0.0 or parsed > 1.0:
+        raise RunConfigSchemaError(f"{context} must be in [0,1]")
+    return parsed
+
+
+def _coerce_bool_like(value: Any, *, default: Any, context: str) -> bool:
+    if value is None:
+        return bool(default)
+    if isinstance(value, bool):
+        return value
+    token = str(value).strip().lower()
+    if token in {"1", "true", "yes", "on"}:
+        return True
+    if token in {"0", "false", "no", "off"}:
+        return False
+    if isinstance(value, (int, float)) and value in {0, 1}:
+        return bool(value)
+    raise RunConfigSchemaError(f"{context} must be boolean-like")
+
+
+def _coerce_enum(value: Any, *, default: Any, choices: tuple[str, ...] | None) -> Any:
+    normalized_choices = choices or tuple()
+    token = str(value).strip().lower()
+    if token in normalized_choices:
+        return token
+    return default
+
+
+def _coerce_string_list(value: Any, *, default: Any) -> Any:
+    candidate = to_string_list(value, allow_tuple=True, drop_empty=True)
+    if candidate:
+        return candidate
+    return list(default) if isinstance(default, list) else default
+
+
 def coerce_field(value: Any, spec: FieldSpec, *, context: str) -> Any:
     if value is None:
         return spec.default
 
     if spec.type == "positive_int":
-        parsed = to_int(value, to_int(spec.default, 1))
-        if parsed <= 0:
-            return to_int(spec.default, 1)
-        return parsed
+        return _coerce_positive_int(value, default=spec.default)
 
     if spec.type == "non_negative_float":
-        parsed = to_float(value, to_float(spec.default, 0.0))
-        if parsed < 0:
-            return to_float(spec.default, 0.0)
-        return parsed
+        return _coerce_non_negative_float(value, default=spec.default)
 
     if spec.type == "fraction":
-        try:
-            parsed = float(value)
-        except (TypeError, ValueError):
-            raise RunConfigSchemaError(f"{context} must be numeric")
-        if parsed < 0.0 or parsed > 1.0:
-            raise RunConfigSchemaError(f"{context} must be in [0,1]")
-        return parsed
+        return _coerce_fraction(value, context=context)
 
     if spec.type == "bool":
-        if value is None:
-            return bool(spec.default)
-        if isinstance(value, bool):
-            return value
-        token = str(value).strip().lower()
-        if token in {"1", "true", "yes", "on"}:
-            return True
-        if token in {"0", "false", "no", "off"}:
-            return False
-        if isinstance(value, (int, float)) and value in {0, 1}:
-            return bool(value)
-        raise RunConfigSchemaError(f"{context} must be boolean-like")
+        return _coerce_bool_like(value, default=spec.default, context=context)
 
     if spec.type == "enum":
-        choices = spec.choices or tuple()
-        token = str(value).strip().lower()
-        if token in choices:
-            return token
-        return spec.default
+        return _coerce_enum(value, default=spec.default, choices=spec.choices)
 
     if spec.type == "string_list":
-        candidate = to_string_list(value, allow_tuple=True, drop_empty=True)
-        if candidate:
-            return candidate
-        return list(spec.default) if isinstance(spec.default, list) else spec.default
+        return _coerce_string_list(value, default=spec.default)
 
     raise RunConfigSchemaError(f"Unsupported schema type for {context}: {spec.type}")
 

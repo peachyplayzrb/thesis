@@ -69,6 +69,7 @@ def main() -> int:
         print(f"ERROR: orchestration script not found: {bl013_script}", file=sys.stderr)
         return 1
 
+    # Keep PYTHONPATH for robust imports when running entry scripts directly.
     existing_pythonpath = os.environ.get("PYTHONPATH", "")
     pythonpath_parts = [str(impl_root)]
     if existing_pythonpath:

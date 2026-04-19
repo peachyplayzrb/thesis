@@ -1,13 +1,11 @@
-"""Validation helpers for the BL-006 to BL-007 handoff contract."""
+"""Input validation for BL-007 playlist assembly — BL-006↔BL-007 handshake."""
 
 from __future__ import annotations
 
-from typing import Any
+from shared_utils.validation_policy import normalize_validation_policy, resolve_policy_status
 
-
-VALIDATION_POLICIES: tuple[str, ...] = ("allow", "warn", "strict")
-
-# Required fields BL-006 must write before BL-007 can assemble from the scored CSV.
+# Required fields that BL-006 must have written into the scored candidates CSV
+# before BL-007 can assemble from it.
 REQUIRED_BL006_SCORED_FIELDS: tuple[str, ...] = (
     "rank",
     "track_id",
@@ -17,7 +15,8 @@ REQUIRED_BL006_SCORED_FIELDS: tuple[str, ...] = (
     "matched_tags",
 )
 
-# At least one contribution column must exist so BL-007 can confirm BL-006 ran a real scoring pass.
+# At least one of these contribution columns must be present to confirm that
+# BL-006 ran a full scoring pass rather than emitting a stub output.
 BL006_SCORING_COMPONENT_INDICATORS: tuple[str, ...] = (
     "lead_genre_contribution",
     "genre_overlap_contribution",
@@ -25,19 +24,21 @@ BL006_SCORING_COMPONENT_INDICATORS: tuple[str, ...] = (
 )
 
 
-def normalize_validation_policy(policy: Any, default: str = "warn") -> str:
-    value = str(policy or default).strip().lower()
-    if value in VALIDATION_POLICIES:
-        return value
-    return default
-
-
 def validate_bl006_bl007_handshake(
     *,
     candidates: list[dict[str, str]],
     policy: str,
 ) -> dict[str, object]:
-    """Validate that BL-006 scored candidates satisfy the BL-006 to BL-007 handshake contract."""
+    """Validate that BL-006 scored candidates meet the BL-006↔BL-007 handshake contract.
+
+    Checks:
+    - All required BL-006 scored fields are present in the CSV header.
+    - At least one scoring component contribution column is present.
+    - No rows are missing track_id.
+    - No rows are missing a parseable final_score.
+
+    Returns a diagnostics dict with policy, status, and violation details.
+    """
     normalized_policy = normalize_validation_policy(policy)
 
     first_row = candidates[0] if candidates else {}
@@ -72,15 +73,7 @@ def validate_bl006_bl007_handshake(
     if missing_score_rows > 0:
         violations.append(f"rows_missing_final_score={missing_score_rows}")
 
-    strict_failure = normalized_policy == "strict" and bool(violations)
-    if strict_failure:
-        status = "fail"
-    elif violations and normalized_policy == "warn":
-        status = "warn"
-    elif violations and normalized_policy == "allow":
-        status = "allow"
-    else:
-        status = "pass"
+    status = resolve_policy_status(normalized_policy, violations)
 
     return {
         "policy": normalized_policy,

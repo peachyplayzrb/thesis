@@ -1,9 +1,6 @@
-"""Resolve BL-006 scoring controls from payload, run config, and environment defaults."""
+"""Runtime control helpers for BL-006 scoring."""
 
 from __future__ import annotations
-
-import json
-import os
 
 from shared_utils.constants import (
     DEFAULT_BL006_HANDSHAKE_VALIDATION_POLICY,
@@ -21,6 +18,12 @@ from shared_utils.env_utils import (
     env_float,
     env_str,
 )
+from shared_utils.runtime_control_utils import (
+    apply_normalization_diagnostics,
+    apply_payload_resolution_diagnostics,
+    inspect_stage_payload_resolution,
+    record_normalization_event,
+)
 from shared_utils.stage_runtime_resolver import (
     defaults_loader,
     load_positive_numeric_map_from_env,
@@ -28,34 +31,12 @@ from shared_utils.stage_runtime_resolver import (
 )
 
 
-def _record_normalization_event(
-    events: list[dict[str, object]],
-    counts_by_field: dict[str, int],
-    *,
-    field: str,
-    raw_value: object,
-    normalized_value: object,
-    reason: str,
-) -> None:
-    if raw_value == normalized_value:
-        return
-    counts_by_field[field] = counts_by_field.get(field, 0) + 1
-    events.append(
-        {
-            "field": field,
-            "reason": reason,
-            "raw": raw_value,
-            "normalized": normalized_value,
-        }
-    )
-
-
 def build_active_component_weights(
     active_numeric_components: set[str],
     component_weights: dict[str, float],
     numeric_components: set[str],
 ) -> tuple[dict[str, float], dict[str, object]]:
-    """Filter inactive components and normalize the active weights to sum to 1.0."""
+    """Filter and normalize active component weights."""
     active: dict[str, float] = {}
     for component, weight in component_weights.items():
         component_name = component.removesuffix("_score")
@@ -105,6 +86,22 @@ def _load_bl006_controls_from_env() -> dict[str, object]:
         ),
         "emit_confidence_impact_diagnostics": env_bool("BL006_EMIT_CONFIDENCE_IMPACT_DIAGNOSTICS", True),
         "emit_semantic_precision_diagnostics": env_bool("BL006_EMIT_SEMANTIC_PRECISION_DIAGNOSTICS", False),
+        "enable_scoring_sensitivity_diagnostics": env_bool(
+            "BL006_ENABLE_SCORING_SENSITIVITY_DIAGNOSTICS",
+            bool(defaults["enable_scoring_sensitivity_diagnostics"]),
+        ),
+        "scoring_sensitivity_top_k": env_float(
+            "BL006_SCORING_SENSITIVITY_TOP_K",
+            coerce_float(defaults.get("scoring_sensitivity_top_k"), 10.0),
+        ),
+        "scoring_sensitivity_perturbation_pct": env_float(
+            "BL006_SCORING_SENSITIVITY_PERTURBATION_PCT",
+            coerce_float(defaults.get("scoring_sensitivity_perturbation_pct"), 0.10),
+        ),
+        "scoring_sensitivity_max_components": env_float(
+            "BL006_SCORING_SENSITIVITY_MAX_COMPONENTS",
+            coerce_float(defaults.get("scoring_sensitivity_max_components"), 5.0),
+        ),
         "apply_bl003_influence_tracks": env_bool("BL006_APPLY_BL003_INFLUENCE_TRACKS", False),
         "influence_track_bonus_scale": env_float("BL006_INFLUENCE_TRACK_BONUS_SCALE", 0.0),
         "bl005_bl006_handshake_validation_policy": env_str(
@@ -128,7 +125,7 @@ def _sanitize_bl006_controls(controls: dict[str, object]) -> dict[str, object]:
         str(k): float(v) for k, v in cw.items() if isinstance(v, (int, float))
     }
 
-    _record_normalization_event(
+    record_normalization_event(
         normalization_events,
         normalization_event_counts_by_field,
         field="component_weights",
@@ -139,7 +136,7 @@ def _sanitize_bl006_controls(controls: dict[str, object]) -> dict[str, object]:
 
     raw_numeric_thresholds = controls.get("numeric_thresholds")
     controls["numeric_thresholds"] = coerce_dict(controls.get("numeric_thresholds"))
-    _record_normalization_event(
+    record_normalization_event(
         normalization_events,
         normalization_event_counts_by_field,
         field="numeric_thresholds",
@@ -150,7 +147,7 @@ def _sanitize_bl006_controls(controls: dict[str, object]) -> dict[str, object]:
 
     raw_signal_mode = controls.get("signal_mode")
     controls["signal_mode"] = coerce_dict(controls.get("signal_mode"))
-    _record_normalization_event(
+    record_normalization_event(
         normalization_events,
         normalization_event_counts_by_field,
         field="signal_mode",
@@ -163,7 +160,7 @@ def _sanitize_bl006_controls(controls: dict[str, object]) -> dict[str, object]:
     controls["lead_genre_strategy"] = coerce_enum(
         controls.get("lead_genre_strategy"), VALID_LEAD_GENRE_STRATEGIES, "weighted_top_lead_genres"
     )
-    _record_normalization_event(
+    record_normalization_event(
         normalization_events,
         normalization_event_counts_by_field,
         field="lead_genre_strategy",
@@ -176,7 +173,7 @@ def _sanitize_bl006_controls(controls: dict[str, object]) -> dict[str, object]:
     controls["semantic_overlap_strategy"] = coerce_enum(
         controls.get("semantic_overlap_strategy"), VALID_SEMANTIC_OVERLAP_STRATEGIES, "precision_aware"
     )
-    _record_normalization_event(
+    record_normalization_event(
         normalization_events,
         normalization_event_counts_by_field,
         field="semantic_overlap_strategy",
@@ -189,7 +186,7 @@ def _sanitize_bl006_controls(controls: dict[str, object]) -> dict[str, object]:
     controls["semantic_precision_alpha_mode"] = coerce_enum(
         controls.get("semantic_precision_alpha_mode"), VALID_SEMANTIC_ALPHA_MODES, "profile_adaptive"
     )
-    _record_normalization_event(
+    record_normalization_event(
         normalization_events,
         normalization_event_counts_by_field,
         field="semantic_precision_alpha_mode",
@@ -202,7 +199,7 @@ def _sanitize_bl006_controls(controls: dict[str, object]) -> dict[str, object]:
     controls["semantic_precision_alpha_fixed"] = max(
         0.0, min(1.0, coerce_float(controls.get("semantic_precision_alpha_fixed"), 0.35))
     )
-    _record_normalization_event(
+    record_normalization_event(
         normalization_events,
         normalization_event_counts_by_field,
         field="semantic_precision_alpha_fixed",
@@ -219,7 +216,7 @@ def _sanitize_bl006_controls(controls: dict[str, object]) -> dict[str, object]:
     controls["numeric_confidence_floor"] = max(
         0.0, coerce_float(controls.get("numeric_confidence_floor"), 0.0)
     )
-    _record_normalization_event(
+    record_normalization_event(
         normalization_events,
         normalization_event_counts_by_field,
         field="numeric_confidence_floor",
@@ -232,7 +229,7 @@ def _sanitize_bl006_controls(controls: dict[str, object]) -> dict[str, object]:
     controls["profile_numeric_confidence_mode"] = coerce_enum(
         controls.get("profile_numeric_confidence_mode"), VALID_NUMERIC_CONFIDENCE_MODES, "direct"
     )
-    _record_normalization_event(
+    record_normalization_event(
         normalization_events,
         normalization_event_counts_by_field,
         field="profile_numeric_confidence_mode",
@@ -245,7 +242,7 @@ def _sanitize_bl006_controls(controls: dict[str, object]) -> dict[str, object]:
     controls["profile_numeric_confidence_blend_weight"] = max(
         0.0, min(1.0, coerce_float(controls.get("profile_numeric_confidence_blend_weight"), 1.0))
     )
-    _record_normalization_event(
+    record_normalization_event(
         normalization_events,
         normalization_event_counts_by_field,
         field="profile_numeric_confidence_blend_weight",
@@ -260,6 +257,53 @@ def _sanitize_bl006_controls(controls: dict[str, object]) -> dict[str, object]:
     controls["emit_semantic_precision_diagnostics"] = bool(
         controls.get("emit_semantic_precision_diagnostics", False)
     )
+
+    controls["enable_scoring_sensitivity_diagnostics"] = bool(
+        controls.get("enable_scoring_sensitivity_diagnostics", False)
+    )
+
+    raw_sensitivity_top_k = controls.get("scoring_sensitivity_top_k")
+    controls["scoring_sensitivity_top_k"] = max(
+        1,
+        min(100, int(coerce_float(controls.get("scoring_sensitivity_top_k"), 10.0))),
+    )
+    record_normalization_event(
+        normalization_events,
+        normalization_event_counts_by_field,
+        field="scoring_sensitivity_top_k",
+        raw_value=raw_sensitivity_top_k,
+        normalized_value=controls["scoring_sensitivity_top_k"],
+        reason="coerced_to_int_and_clamped_to_range_1_100",
+    )
+
+    raw_sensitivity_perturbation = controls.get("scoring_sensitivity_perturbation_pct")
+    controls["scoring_sensitivity_perturbation_pct"] = max(
+        0.0,
+        min(0.5, coerce_float(controls.get("scoring_sensitivity_perturbation_pct"), 0.10)),
+    )
+    record_normalization_event(
+        normalization_events,
+        normalization_event_counts_by_field,
+        field="scoring_sensitivity_perturbation_pct",
+        raw_value=raw_sensitivity_perturbation,
+        normalized_value=controls["scoring_sensitivity_perturbation_pct"],
+        reason="coerced_and_clamped_to_range_0_0.5",
+    )
+
+    raw_sensitivity_max_components = controls.get("scoring_sensitivity_max_components")
+    controls["scoring_sensitivity_max_components"] = max(
+        1,
+        min(11, int(coerce_float(controls.get("scoring_sensitivity_max_components"), 5.0))),
+    )
+    record_normalization_event(
+        normalization_events,
+        normalization_event_counts_by_field,
+        field="scoring_sensitivity_max_components",
+        raw_value=raw_sensitivity_max_components,
+        normalized_value=controls["scoring_sensitivity_max_components"],
+        reason="coerced_to_int_and_clamped_to_range_1_11",
+    )
+
     controls["apply_bl003_influence_tracks"] = bool(
         controls.get("apply_bl003_influence_tracks", False)
     )
@@ -268,7 +312,7 @@ def _sanitize_bl006_controls(controls: dict[str, object]) -> dict[str, object]:
     controls["influence_track_bonus_scale"] = max(
         0.0, coerce_float(controls.get("influence_track_bonus_scale"), 0.0)
     )
-    _record_normalization_event(
+    record_normalization_event(
         normalization_events,
         normalization_event_counts_by_field,
         field="influence_track_bonus_scale",
@@ -286,7 +330,7 @@ def _sanitize_bl006_controls(controls: dict[str, object]) -> dict[str, object]:
         frozenset({"allow", "warn", "strict"}),
         DEFAULT_BL006_HANDSHAKE_VALIDATION_POLICY,
     )
-    _record_normalization_event(
+    record_normalization_event(
         normalization_events,
         normalization_event_counts_by_field,
         field="bl005_bl006_handshake_validation_policy",
@@ -295,56 +339,24 @@ def _sanitize_bl006_controls(controls: dict[str, object]) -> dict[str, object]:
         reason="normalized_to_supported_enum",
     )
 
-    diagnostics_existing = controls.get("runtime_control_resolution_diagnostics")
-    diagnostics = dict(diagnostics_existing) if isinstance(diagnostics_existing, dict) else {}
-    diagnostics.update(
-        {
-            "normalization_event_count": len(normalization_events),
-            "normalization_event_counts_by_field": normalization_event_counts_by_field,
-            "normalization_events_sampled": normalization_events[:10],
-        }
+    return apply_normalization_diagnostics(
+        controls,
+        normalization_events=normalization_events,
+        normalization_event_counts_by_field=normalization_event_counts_by_field,
     )
-    controls["runtime_control_resolution_diagnostics"] = diagnostics
-    return controls
 
 
 def resolve_bl006_runtime_controls() -> dict[str, object]:
     """Resolve runtime controls with payload-first precedence."""
-    payload_json_raw = os.environ.get("BL_STAGE_CONFIG_JSON", "").strip()
-    payload_present = bool(payload_json_raw)
-    payload_json_parse_error = False
-    if payload_present:
-        try:
-            payload_candidate = json.loads(payload_json_raw)
-            payload_present = isinstance(payload_candidate, dict)
-            payload_json_parse_error = not payload_present
-        except (json.JSONDecodeError, TypeError, ValueError):
-            payload_json_parse_error = True
-            payload_present = False
+    payload_status = inspect_stage_payload_resolution()
 
     controls = resolve_stage_controls(
         load_from_env=_load_bl006_controls_from_env,
         load_payload_defaults=defaults_loader(DEFAULT_SCORING_CONTROLS),
         sanitize=_sanitize_bl006_controls,
     )
-    diagnostics_existing = controls.get("runtime_control_resolution_diagnostics")
-    diagnostics = dict(diagnostics_existing) if isinstance(diagnostics_existing, dict) else {}
-    diagnostics.update(
-        {
-            "payload_json_present": bool(payload_json_raw),
-            "payload_json_parse_error": payload_json_parse_error,
-            "resolution_path": "orchestration_payload" if payload_present else "environment",
-        }
+    return apply_payload_resolution_diagnostics(
+        controls,
+        stage_label="BL-006",
+        payload_status=payload_status,
     )
-    controls["runtime_control_resolution_diagnostics"] = diagnostics
-
-    warnings: list[str] = []
-    warnings_existing = controls.get("runtime_control_validation_warnings")
-    if isinstance(warnings_existing, list):
-        warnings.extend(str(item) for item in warnings_existing)
-    if payload_json_parse_error:
-        warnings.append(
-            "BL_STAGE_CONFIG_JSON parse failed for BL-006 controls; environment/default fallback path was used"
-        )
-    controls["runtime_control_validation_warnings"] = warnings
-    return controls

@@ -12,20 +12,20 @@ import csv
 import json
 import os
 import time
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
+from shared_utils.hashing import canonical_json_hash as _canonical_json_hash
 from shared_utils.hashing import sha256_of_file as shared_sha256_of_file
 from shared_utils.hashing import sha256_of_text as _sha256_of_text
-from shared_utils.hashing import canonical_json_hash as _canonical_json_hash
-from shared_utils.parsing import parse_csv_labels
-from shared_utils.parsing import parse_float
+from shared_utils.parsing import parse_csv_labels as parse_csv_labels
+from shared_utils.parsing import parse_float as parse_float
 
 
 def utc_now() -> str:
     """Return the current UTC time as an ISO 8601 string (YYYY-MM-DDTHH:MM:SSZ)."""
-    return datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    return datetime.now(UTC).strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
 def format_utc_iso(dt: datetime) -> str:
@@ -176,7 +176,3 @@ def write_json(path: Path, obj: dict | list) -> None:
         json.dumps(obj, indent=2, ensure_ascii=False),
         encoding="utf-8"
     )
-
-
-# parse_float and parse_csv_labels are re-exported from shared_utils.parsing
-# for backward compatibility with existing import sites.

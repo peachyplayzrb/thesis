@@ -1,8 +1,17 @@
 """
-Shared helpers that ended up being useful across most of the pipeline.
+Shared utilities package for all implementation stages.
 
-I pulled these into one package so the stage files could stay smaller and avoid
-repeating the same path, config, and file-handling code everywhere.
+Centralizes common functionality that was previously duplicated across
+BL-003 through BL-014, including:
+- File I/O operations (JSON, CSV, hashing)
+- Path resolution and environment variable parsing
+- Configuration loading
+- Shared constants and type definitions
+
+Usage:
+    from shared_utils import io_utils, config_loader, constants
+    from shared_utils.path_utils import impl_root
+    from shared_utils.types import RunConfigControls
 """
 
 from __future__ import annotations

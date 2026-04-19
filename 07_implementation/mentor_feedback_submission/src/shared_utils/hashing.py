@@ -1,8 +1,5 @@
 """
-Hashing helpers I reuse whenever a stage needs a stable artifact fingerprint.
-
-Most stages log SHA256 values so I can check reproducibility without relying on
-file timestamps or other volatile metadata.
+Shared hashing utilities for deterministic artifact verification.
 """
 
 from __future__ import annotations
@@ -38,7 +35,7 @@ def canonical_json_hash(
 
 
 def sha256_of_values(values: list[str], *, uppercase: bool = True) -> str:
-    """Combine multiple digest strings into one SHA256 value in a deterministic order."""
+    """Combine multiple hex-digest strings into one SHA256 by feeding each value sequentially."""
     digest = hashlib.sha256()
     for value in values:
         digest.update(value.encode("utf-8"))

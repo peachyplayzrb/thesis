@@ -1,9 +1,3 @@
-"""The BL-006 scoring stage that ranks retrieval results using profile similarity.
-
-This stage reads BL-005 kept candidates, computes per-component similarities,
-and writes the ranked scored-candidate artefacts for downstream stages.
-"""
-
 from __future__ import annotations
 
 import csv
@@ -11,16 +5,16 @@ import json
 import logging
 import statistics
 import time
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
 from scoring.candidate_parsed import parse_candidate_attributes
-
-logger = logging.getLogger(__name__)
 from scoring.diagnostics import (
     build_confidence_impact_diagnostics,
-    build_semantic_precision_diagnostics,
+    build_feature_availability_summary,
     build_score_distribution_diagnostics,
+    build_scoring_sensitivity_diagnostics,
+    build_semantic_precision_diagnostics,
     contribution_breakdown,
 )
 from scoring.input_validation import validate_bl005_bl006_handshake
@@ -54,9 +48,11 @@ from shared_utils.io_utils import load_csv_rows, load_json, open_text_write, sha
 from shared_utils.path_utils import impl_root
 from shared_utils.stage_utils import ensure_paths_exist
 
+logger = logging.getLogger(__name__)
+
 
 class ScoringStage:
-    """Workflow shell for running the BL-006 scoring stage end to end."""
+    """Object-oriented BL-006 workflow shell over scoring helpers."""
 
     def __init__(self, root: Path | None = None) -> None:
         self.root = root if root is not None else impl_root()
@@ -254,6 +250,10 @@ class ScoringStage:
             profile_numeric_confidence_blend_weight=profile_numeric_confidence_blend_weight,
             emit_confidence_impact_diagnostics=bool(controls.emit_confidence_impact_diagnostics),
             emit_semantic_precision_diagnostics=bool(controls.emit_semantic_precision_diagnostics),
+            enable_scoring_sensitivity_diagnostics=bool(controls.enable_scoring_sensitivity_diagnostics),
+            scoring_sensitivity_top_k=int(controls.scoring_sensitivity_top_k),
+            scoring_sensitivity_perturbation_pct=float(controls.scoring_sensitivity_perturbation_pct),
+            scoring_sensitivity_max_components=int(controls.scoring_sensitivity_max_components),
             apply_bl003_influence_tracks=apply_bl003_influence_tracks,
             influence_track_ids=set(influence_track_ids),
             influence_preference_weight=influence_preference_weight,
@@ -374,7 +374,9 @@ class ScoringStage:
         distribution_diagnostics: dict[str, object],
         diagnostics_path: Path,
         scored_path: Path,
+        feature_availability_summary: dict[str, object] | None = None,
         confidence_impact_diagnostics: dict[str, object] | None = None,
+        scoring_sensitivity_diagnostics: dict[str, object] | None = None,
         handshake_validation: dict[str, object] | None = None,
         runtime_controls: ScoringControls | None = None,
     ) -> dict[str, object]:
@@ -457,6 +459,13 @@ class ScoringStage:
                 "semantic_precision_alpha_mode": context.semantic_precision_alpha_mode,
                 "semantic_precision_alpha_fixed": round(context.semantic_precision_alpha_fixed, 6),
                 "enable_numeric_confidence_scaling": context.enable_numeric_confidence_scaling,
+                "enable_scoring_sensitivity_diagnostics": context.enable_scoring_sensitivity_diagnostics,
+                "scoring_sensitivity_top_k": context.scoring_sensitivity_top_k,
+                "scoring_sensitivity_perturbation_pct": round(
+                    context.scoring_sensitivity_perturbation_pct,
+                    6,
+                ),
+                "scoring_sensitivity_max_components": context.scoring_sensitivity_max_components,
                 "numeric_confidence_floor": round(context.numeric_confidence_floor, 6),
                 "profile_numeric_confidence_mode": context.profile_numeric_confidence_mode,
                 "profile_numeric_confidence_blend_weight": round(
@@ -496,7 +505,9 @@ class ScoringStage:
                 "top_500": contribution_breakdown(top_500_rows),
             },
             "score_distribution_diagnostics": distribution_diagnostics,
+            "feature_availability_summary": feature_availability_summary or {},
             "confidence_impact_diagnostics": confidence_impact_diagnostics or {},
+            "scoring_sensitivity_diagnostics": scoring_sensitivity_diagnostics or {},
             "runtime_control_validation_warnings": runtime_validation_warnings,
             "top_candidates": top_candidates,
             "elapsed_seconds": round(elapsed_seconds, 3),
@@ -546,7 +557,7 @@ class ScoringStage:
         )
 
         start_time = time.time()
-        run_id = f"BL006-SCORE-{datetime.now(timezone.utc).strftime('%Y%m%d-%H%M%S-%f')}"
+        run_id = f"BL006-SCORE-{datetime.now(UTC).strftime('%Y%m%d-%H%M%S-%f')}"
 
         scored_rows = self.score_candidates(
             candidates=inputs.candidates,
@@ -557,6 +568,7 @@ class ScoringStage:
         self.write_scored_csv(scored_rows=scored_rows, scored_path=scored_path)
 
         distribution_diagnostics = build_score_distribution_diagnostics(scored_rows)
+        feature_availability_summary = build_feature_availability_summary(inputs.candidates)
         confidence_impact_diagnostics = build_confidence_impact_diagnostics(
             scored_rows,
             runtime_context.numeric_confidence_by_feature,
@@ -573,6 +585,14 @@ class ScoringStage:
             alpha_effective=runtime_context.semantic_precision_alpha,
             alpha_fixed=runtime_context.semantic_precision_alpha_fixed,
         )
+        scoring_sensitivity_diagnostics = build_scoring_sensitivity_diagnostics(
+            scored_rows,
+            active_component_weights=runtime_context.active_component_weights,
+            enabled=runtime_context.enable_scoring_sensitivity_diagnostics,
+            top_k=runtime_context.scoring_sensitivity_top_k,
+            perturbation_pct=runtime_context.scoring_sensitivity_perturbation_pct,
+            max_components=runtime_context.scoring_sensitivity_max_components,
+        )
         diagnostics_path = paths.output_dir / "bl006_score_distribution_diagnostics.json"
         with open_text_write(diagnostics_path) as handle:
             json.dump(distribution_diagnostics, handle, indent=2, ensure_ascii=True)
@@ -584,7 +604,9 @@ class ScoringStage:
             runtime_context=runtime_context,
             scored_rows=scored_rows,
             distribution_diagnostics=distribution_diagnostics,
+            feature_availability_summary=feature_availability_summary,
             confidence_impact_diagnostics=confidence_impact_diagnostics,
+            scoring_sensitivity_diagnostics=scoring_sensitivity_diagnostics,
             handshake_validation=handshake_validation,
             runtime_controls=runtime_controls,
             diagnostics_path=diagnostics_path,

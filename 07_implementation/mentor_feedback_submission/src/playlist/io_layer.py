@@ -1,4 +1,4 @@
-"""I/O helpers for BL-007 playlist assembly artefacts."""
+"""I/O helpers for BL-007 playlist assembly."""
 
 from __future__ import annotations
 
@@ -9,14 +9,13 @@ from shared_utils.env_utils import env_path
 from shared_utils.io_utils import open_text_write, write_json
 from shared_utils.path_utils import impl_root
 
-
 DEFAULT_SCORED_CANDIDATES_PATH = Path("scoring/outputs/bl006_scored_candidates.csv")
 DEFAULT_OUTPUT_DIR = Path("playlist/outputs")
 REQUIRED_CANDIDATE_COLUMNS = ("rank", "track_id", "lead_genre", "final_score")
 
 
 def resolve_bl007_paths() -> tuple[Path, Path]:
-    """Resolve BL-007 input/output paths from environment overrides or package defaults."""
+    """Resolve BL-007 input and output paths from environment or defaults."""
     scored_candidates_path = env_path(
         "BL007_SCORED_CANDIDATES_PATH",
         impl_root() / DEFAULT_SCORED_CANDIDATES_PATH,
@@ -26,7 +25,7 @@ def resolve_bl007_paths() -> tuple[Path, Path]:
 
 
 def read_scored_candidates(path: Path) -> list[dict[str, str]]:
-    """Read BL-006 scored candidates and enforce the minimum required input columns."""
+    """Read BL-006 scored candidates with required-column validation."""
     with path.open("r", encoding="utf-8", newline="") as handle:
         reader = csv.DictReader(handle)
         if reader.fieldnames is None:

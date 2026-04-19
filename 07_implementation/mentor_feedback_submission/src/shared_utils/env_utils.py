@@ -1,6 +1,7 @@
 """
-Helpers for reading environment variables without having to repeat the same
-fallback logic in every stage.
+Environment variable parsing utilities.
+
+Provides type-safe functions for reading environment variables with defaults.
 """
 
 import os
@@ -8,7 +9,21 @@ from pathlib import Path
 
 
 def env_int(name: str, default: int) -> int:
-    """Read an env var as an int, using the default if it is missing or invalid."""
+    """
+    Get an environment variable as an int, with a default.
+
+    Returns the default if:
+    - Variable is not set
+    - Variable is empty string
+    - Variable cannot be parsed as int
+
+    Args:
+        name: Environment variable name
+        default: Default value if variable not set or invalid
+
+    Returns:
+        Int value from environment or default
+    """
     raw = os.environ.get(name)
     if raw is None or not str(raw).strip():
         return default
@@ -19,7 +34,21 @@ def env_int(name: str, default: int) -> int:
 
 
 def env_float(name: str, default: float) -> float:
-    """Read an env var as a float, using the default if it is missing or invalid."""
+    """
+    Get an environment variable as a float, with a default.
+
+    Returns the default if:
+    - Variable is not set
+    - Variable is empty string
+    - Variable cannot be parsed as float
+
+    Args:
+        name: Environment variable name
+        default: Default value if variable not set or invalid
+
+    Returns:
+        Float value from environment or default
+    """
     raw = os.environ.get(name)
     if raw is None or not str(raw).strip():
         return default
@@ -30,7 +59,20 @@ def env_float(name: str, default: float) -> float:
 
 
 def env_str(name: str, default: str) -> str:
-    """Read an env var as a string, falling back when it is missing or blank."""
+    """
+    Get an environment variable as a string, with a default.
+
+    Returns the default if:
+    - Variable is not set
+    - Variable is empty string (after stripping whitespace)
+
+    Args:
+        name: Environment variable name
+        default: Default value if variable not set or empty
+
+    Returns:
+        String value from environment or default
+    """
     raw = os.environ.get(name)
     if raw is None:
         return default
@@ -39,7 +81,19 @@ def env_str(name: str, default: str) -> str:
 
 
 def env_bool(name: str, default: bool) -> bool:
-    """Read an env var as a bool using the usual true/false string variants."""
+    """
+    Get an environment variable as a boolean, with a default.
+
+    Truthy values: 1, true, yes, on
+    Falsy values:  0, false, no, off
+
+    Args:
+        name: Environment variable name
+        default: Default value if variable not set or invalid
+
+    Returns:
+        Bool value from environment or default
+    """
     raw = os.environ.get(name)
     if raw is None:
         return default
@@ -83,7 +137,11 @@ def coerce_enum(value: object, valid: frozenset[str], default: str) -> str:
 
 
 def env_path(name: str, default: Path) -> Path:
-    """Read an env var as a path, using the default when it is missing or blank."""
+    """
+    Get an environment variable as a Path, with a default.
+
+    Returns the default if the variable is not set or is empty.
+    """
     raw = env_str(name, "")
     if raw:
         return Path(raw)

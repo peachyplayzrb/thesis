@@ -2,8 +2,7 @@ from __future__ import annotations
 
 import json
 
-from shared_utils.parsing import parse_csv_labels
-from shared_utils.parsing import safe_float
+from shared_utils.parsing import parse_csv_labels, safe_float
 
 
 def parse_weighted_list(raw_value: str, key_name: str, score_name: str) -> list[tuple[str, float]]:

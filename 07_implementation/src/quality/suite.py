@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env python3
+#!/usr/bin/env python3
 
 from __future__ import annotations
 
@@ -10,17 +10,17 @@ import time
 from pathlib import Path
 from typing import Any
 
-from shared_utils.io_utils import load_json, utc_now
-from shared_utils.report_utils import write_csv_rows, write_json_ascii
-from shared_utils.path_utils import impl_root
-from shared_utils.stage_utils import ensure_paths_exist, relpath as stage_relpath
 from shared_utils.artifact_registry import (
     bl014_bl013_latest_summary_path,
     bl014_freshness_input_paths,
     bl014_pipeline_script_paths,
     bl014_refinement_diagnostic_paths,
 )
-
+from shared_utils.io_utils import load_json, utc_now
+from shared_utils.path_utils import impl_root
+from shared_utils.report_utils import write_csv_rows, write_json_ascii
+from shared_utils.stage_utils import ensure_paths_exist
+from shared_utils.stage_utils import relpath as stage_relpath
 
 REPO_ROOT = impl_root()
 QUALITY_DIR = Path(__file__).resolve().parent
@@ -64,7 +64,6 @@ def build_current_bl011_snapshot(
     paths_bl011: dict[str, Path],
     current_bl010_snapshot: dict[str, Any],
 ) -> dict[str, Any]:
-    baseline_config_hash = bl011_module.canonical_json_hash(current_bl010_snapshot)
     runtime_controls = bl011_module.resolve_bl011_runtime_controls()
     scenarios = bl011_module.build_scenarios(current_bl010_snapshot, runtime_controls)
 
@@ -77,35 +76,15 @@ def build_current_bl011_snapshot(
         "legacy_manifest": paths_bl011["legacy_manifest"],
         "legacy_coverage": paths_bl011["legacy_coverage"],
     }
-    for path in optional_inputs.values():
-        if path.exists():
-            fixed_inputs[stage_relpath(path, REPO_ROOT)] = bl011_module.sha256_of_file(path)
-
-    return {
-        "task": "BL-011",
-        "generated_from": stage_relpath(paths_bl011["baseline_snapshot"], REPO_ROOT),
-        "baseline_config_hash": baseline_config_hash,
-        "input_source": "active_pipeline_outputs",
-        "fixed_inputs": fixed_inputs,
-        "optional_dependency_availability": {
-            key: {
-                "path": stage_relpath(path, REPO_ROOT),
-                "available": path.exists(),
-            }
-            for key, path in optional_inputs.items()
-        },
-        "scenario_count": len(scenarios),
-        "runtime_controls": {
-            "config_source": runtime_controls["config_source"],
-            "run_config_path": runtime_controls["run_config_path"],
-            "weight_override_value_if_component_present": runtime_controls["weight_override_value_if_component_present"],
-            "weight_override_increment_fallback": runtime_controls["weight_override_increment_fallback"],
-            "weight_override_cap_fallback": runtime_controls["weight_override_cap_fallback"],
-            "stricter_threshold_scale": runtime_controls["stricter_threshold_scale"],
-            "looser_threshold_scale": runtime_controls["looser_threshold_scale"],
-        },
-        "scenarios": scenarios,
-    }
+    return bl011_module.build_bl011_common_config_snapshot(
+        paths=paths_bl011,
+        root=REPO_ROOT,
+        baseline_snapshot=current_bl010_snapshot,
+        runtime_controls=runtime_controls,
+        scenarios=scenarios,
+        fixed_inputs=fixed_inputs,
+        optional_inputs=optional_inputs,
+    )
 
 
 def refresh_bl010_bl011_evidence() -> dict[str, Any]:
@@ -400,17 +379,7 @@ def run_freshness_mode() -> int:
     return 0 if overall_status == "pass" else 1
 
 
-def run_active_mode() -> int:
-    started = time.time()
-    OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
-
-    checks: list[dict[str, str]] = []
-
-    bl013_latest_path = bl014_bl013_latest_summary_path(REPO_ROOT)
-    if not bl013_latest_path.exists():
-        raise FileNotFoundError(f"Missing BL-013 latest summary: {bl013_latest_path}")
-    bl013_latest = load_json(bl013_latest_path)
-
+def _add_bl013_latest_checks(checks: list[dict[str, str]], bl013_latest: dict[str, Any]) -> None:
     add_check(
         checks,
         "bl013_latest_pass",
@@ -424,6 +393,8 @@ def run_active_mode() -> int:
         "BL-013 latest orchestration summary reports failed_stage_count=0",
     )
 
+
+def _run_bl014_and_add_check(checks: list[dict[str, str]]) -> tuple[int, str, Path, dict[str, Any]]:
     bl014_script = QUALITY_DIR / "sanity_checks.py"
     bl014_return, bl014_output = run_python_script(bl014_script)
     add_check(
@@ -443,7 +414,10 @@ def run_active_mode() -> int:
         str(bl014_report.get("overall_status")) == "pass",
         "BL-014 report overall_status is pass",
     )
+    return bl014_return, bl014_output, bl014_report_path, bl014_report
 
+
+def _add_refinement_diagnostic_checks(checks: list[dict[str, str]]) -> None:
     refinement_paths = bl014_refinement_diagnostic_paths(REPO_ROOT)
     bl006_distribution_path = refinement_paths["bl006_distribution"]
     bl007_report_path = refinement_paths["bl007_assembly_report"]
@@ -500,6 +474,8 @@ def run_active_mode() -> int:
             ),
         )
 
+
+def _run_freshness_with_optional_refresh(checks: list[dict[str, str]]) -> dict[str, Any]:
     refresh_outputs: dict[str, str] = {}
     freshness_initial_return = run_freshness_mode()
     freshness_return = freshness_initial_return
@@ -567,6 +543,40 @@ def run_active_mode() -> int:
             freshness_return = run_freshness_mode()
             freshness_post_refresh_return = freshness_return
             freshness_auto_refreshed = freshness_return == 0
+
+    return {
+        "refresh_outputs": refresh_outputs,
+        "freshness_initial_return": freshness_initial_return,
+        "freshness_return": freshness_return,
+        "freshness_post_refresh_return": freshness_post_refresh_return,
+        "freshness_refresh_attempted": freshness_refresh_attempted,
+        "freshness_auto_refreshed": freshness_auto_refreshed,
+        "refresh_result": refresh_result,
+    }
+
+
+def run_active_mode() -> int:
+    started = time.time()
+    OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+
+    checks: list[dict[str, str]] = []
+
+    bl013_latest_path = bl014_bl013_latest_summary_path(REPO_ROOT)
+    if not bl013_latest_path.exists():
+        raise FileNotFoundError(f"Missing BL-013 latest summary: {bl013_latest_path}")
+    bl013_latest = load_json(bl013_latest_path)
+    _add_bl013_latest_checks(checks, bl013_latest)
+    _, bl014_output, bl014_report_path, _ = _run_bl014_and_add_check(checks)
+    _add_refinement_diagnostic_checks(checks)
+
+    freshness_result = _run_freshness_with_optional_refresh(checks)
+    refresh_outputs = dict(freshness_result["refresh_outputs"])
+    freshness_initial_return = int(freshness_result["freshness_initial_return"])
+    freshness_return = int(freshness_result["freshness_return"])
+    freshness_post_refresh_return = freshness_result["freshness_post_refresh_return"]
+    freshness_refresh_attempted = bool(freshness_result["freshness_refresh_attempted"])
+    freshness_auto_refreshed = bool(freshness_result["freshness_auto_refreshed"])
+    refresh_result = freshness_result["refresh_result"]
 
     add_check(
         checks,

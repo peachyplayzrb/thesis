@@ -22,24 +22,23 @@ Outputs
 
 import csv
 import time
-from datetime import datetime, timezone
+from collections.abc import Mapping
+from datetime import UTC, datetime
 from pathlib import Path
-from typing import Any, Mapping, cast
-
+from typing import cast
 
 from shared_utils.env_utils import env_path
+from shared_utils.io_utils import sha256_of_file, utc_now, write_json
 from shared_utils.parsing import safe_float, safe_int
-from shared_utils.io_utils import sha256_of_file, write_json, utc_now
 from shared_utils.path_utils import impl_root
 from shared_utils.stage_utils import ensure_named_paths_exist, load_required_json_object
-from transparency.runtime_controls import resolve_bl008_runtime_controls
 from transparency.data_layer import read_csv_index
-from transparency.input_validation import validate_bl007_bl008_handshake
 from transparency.explanation_driver import (
     build_why_selected,
     select_causal_driver,
     select_primary_explanation_driver,
 )
+from transparency.input_validation import validate_bl007_bl008_handshake
 from transparency.payload_builder import (
     build_ordered_components,
     build_rejected_track_payload,
@@ -47,6 +46,7 @@ from transparency.payload_builder import (
     build_track_payload,
     top_contributor_counts,
 )
+from transparency.runtime_controls import resolve_bl008_runtime_controls
 
 # ---------------------------------------------------------------------------
 # Paths
@@ -174,14 +174,14 @@ def main() -> None:
     rejected_payloads: list[dict[str, object]] = []
 
     for pt in playlist_tracks:
-        track_id         = str(pt.get("track_id", ""))
-        playlist_pos     = safe_int(pt.get("playlist_position", 0))
-        final_score      = safe_float(pt.get("final_score", 0.0))
-        score_rank       = safe_int(pt.get("score_rank", 0))
-        lead_genre       = str(pt.get("lead_genre", ""))
+        track_id = str(pt.get("track_id", ""))
+        playlist_pos = safe_int(pt.get("playlist_position", 0))
+        final_score = safe_float(pt.get("final_score", 0.0))
+        score_rank = safe_int(pt.get("score_rank", 0))
+        lead_genre = str(pt.get("lead_genre", ""))
 
-        scored_row  = scored_index.get(track_id, {})
-        trace_row   = trace_index.get(track_id, {})
+        scored_row = scored_index.get(track_id, {})
+        trace_row = trace_index.get(track_id, {})
 
         score_breakdown = build_score_breakdown(scored_row, ordered_components, active_weights)
 
@@ -276,12 +276,12 @@ def main() -> None:
         emitted_rejected_track_ids.add(track_id)
 
     elapsed = round(time.time() - t0, 3)
-    now     = datetime.now(timezone.utc).strftime("%Y%m%d-%H%M%S-%f")
-    run_id  = f"BL008-EXPLAIN-{now}"
+    now = datetime.now(UTC).strftime("%Y%m%d-%H%M%S-%f")
+    run_id = f"BL008-EXPLAIN-{now}"
 
     # ---- explanation payloads JSON ----------------------------------------
     payloads_path = output_dir / "bl008_explanation_payloads.json"
-    payloads_obj  = {
+    payloads_obj = {
         "run_id":           run_id,
         "generated_at_utc": utc_now(),
         "elapsed_seconds":  elapsed,

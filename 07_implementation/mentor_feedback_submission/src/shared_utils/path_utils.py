@@ -1,8 +1,14 @@
 """
-Path helpers for finding the active `src/` tree and the files underneath it.
+Path utilities for consistent path resolution across implementation stages.
 
-This works both in the full repo and in the standalone mentor bundle, which is
-why the path resolution is a bit more careful than a simple relative join.
+STANDALONE MODE: This module works in both repo and standalone contexts.
+- In standalone: looks for src directory and works relative to it
+- In repo: can still use repo-relative paths if needed
+
+Provides:
+- impl_root(): Get the src directory (works in standalone/repo)
+- get_dataset_root(): Get the packaged data-layer outputs directory
+- Path construction helpers
 """
 
 import os
@@ -11,30 +17,41 @@ from pathlib import Path
 
 def impl_root(impl_root_override: str | None = None) -> Path:
     """
-    Return the active `src/` directory.
+    Get the src directory root.
 
-    I check an explicit override first, then an env var, and finally fall back
-    to walking upward from this file so the same code works in bundle mode.
+    In standalone mode, searches for src directory by walking up from this module.
+    Can be overridden via impl_root_override parameter or IMPL_ROOT env var.
+
+    Returns:
+        Path to src directory
+
+    Raises:
+        RuntimeError: If src directory cannot be found
     """
-    # Explicit override wins if the caller already knows the root.
+    # Check for explicit override
     if impl_root_override:
         return Path(impl_root_override).resolve()
 
-    # Environment override is the next-most explicit option.
+    # Check for env var
     if "IMPL_ROOT" in os.environ:
         return Path(os.environ["IMPL_ROOT"]).resolve()
 
-    # Otherwise infer it from this file location.
+    # Auto-detect: find src directory by walking up from this module
     current = Path(__file__).resolve()
 
+    # This module is at: src/shared_utils/path_utils.py
+    # So we can compute directly:
+    # parents[0] = shared_utils
+    # parents[1] = src
     impl_notes = current.parents[1]
 
+    # Verify it's actually named src
     if impl_notes.name == "src":
         return impl_notes
 
-    # The direct assumption should hold, but keep a short upward search as backup.
+    # Fallback: search upward for src directory
     search_dir = current.parent
-    for _ in range(10):
+    for _ in range(10):  # Search up to 10 levels
         if search_dir.name == "src":
             return search_dir
         search_dir = search_dir.parent
@@ -47,7 +64,19 @@ def impl_root(impl_root_override: str | None = None) -> Path:
 
 
 def get_dataset_root(dataset_root_override: str | None = None) -> Path:
-    """Return the packaged `data_layer/outputs` directory, with optional override."""
+    """
+    Get the packaged data-layer outputs directory.
+
+    Priority:
+    1. dataset_root_override parameter (if provided)
+    2. Default packaged data-layer outputs directory
+
+    Args:
+        dataset_root_override: Explicit path override
+
+    Returns:
+        Path to data_layer/outputs
+    """
     if dataset_root_override:
         return Path(dataset_root_override).resolve()
     return impl_root() / "data_layer" / "outputs"
@@ -55,14 +84,18 @@ def get_dataset_root(dataset_root_override: str | None = None) -> Path:
 
 def repo_root() -> Path:
     """
-    Legacy helper for finding the thesis repo root.
+    Legacy: Get the thesis repository root directory.
 
-    This only works in the full repo layout, so bundle code should use
-    `impl_root()` instead.
+    DEPRECATED for standalone mode. Only works in repo context where
+     exists under thesis-main/.
+
+    Returns:
+        Path to thesis repository root
     """
-    # Keep the old repo-relative lookup for callers that still expect it.
+    # Try the old path (3 parents up from this module)
     candidate = Path(__file__).resolve().parents[3]
 
+    # Verify it exists and has expected repo structure
     if (candidate / "07_implementation" / "implementation_notes").exists():
         return candidate
 
@@ -73,10 +106,20 @@ def repo_root() -> Path:
 
 
 def impl_notes_root() -> Path:
-    """Return the same `src/` root as `impl_root()` for older callers."""
+    """
+    Get the src directory.
+
+    Returns:
+        Path to src/
+    """
     return impl_root()
 
 
 def run_config_path() -> Path:
-    """Return the path to `run_config/run_config_utils.py`."""
+    """
+    Get the path to the run_config module.
+
+    Returns:
+        Path to run_config/run_config_utils.py
+    """
     return impl_root() / "run_config" / "run_config_utils.py"

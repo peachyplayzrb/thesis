@@ -4,6 +4,10 @@ from __future__ import annotations
 
 import statistics
 
+NUMERIC_COMPONENTS = ["danceability", "energy", "valence", "tempo", "duration_ms", "popularity", "key", "mode"]
+SEMANTIC_COMPONENTS = ["lead_genre", "genre_overlap", "tag_overlap"]
+SCORING_COMPONENTS = NUMERIC_COMPONENTS + SEMANTIC_COMPONENTS
+
 
 def _to_float(value: object) -> float:
     return float(str(value))
@@ -74,13 +78,11 @@ def build_score_distribution_diagnostics(scored_rows: list[dict[str, object]]) -
 
 def contribution_breakdown(rows: list[dict[str, object]]) -> dict[str, float]:
     """Compute average component contributions across rows."""
-    numeric_components = ["danceability", "energy", "valence", "tempo", "duration_ms", "popularity", "key", "mode"]
-    semantic_components = ["lead_genre", "genre_overlap", "tag_overlap"]
     if not rows:
         return {
             "numeric_contribution_mean": 0.0,
             "semantic_contribution_mean": 0.0,
-            **{f"{component}_mean": 0.0 for component in numeric_components + semantic_components},
+            **{f"{component}_mean": 0.0 for component in SCORING_COMPONENTS},
         }
 
     def mean_of(key: str) -> float:
@@ -88,16 +90,336 @@ def contribution_breakdown(rows: list[dict[str, object]]) -> dict[str, float]:
 
     component_means = {
         f"{component}_mean": mean_of(f"{component}_contribution")
-        for component in numeric_components + semantic_components
+        for component in SCORING_COMPONENTS
     }
 
-    numeric_mean = round(sum(component_means[f"{component}_mean"] for component in numeric_components), 6)
-    semantic_mean = round(sum(component_means[f"{component}_mean"] for component in semantic_components), 6)
+    numeric_mean = round(sum(component_means[f"{component}_mean"] for component in NUMERIC_COMPONENTS), 6)
+    semantic_mean = round(sum(component_means[f"{component}_mean"] for component in SEMANTIC_COMPONENTS), 6)
 
     return {
         "numeric_contribution_mean": numeric_mean,
         "semantic_contribution_mean": semantic_mean,
         **component_means,
+    }
+
+
+def _contribution_map(row: dict[str, object]) -> dict[str, float]:
+    return {
+        component: _to_float(row.get(f"{component}_contribution", 0.0))
+        for component in SCORING_COMPONENTS
+    }
+
+
+def _adjusted_score(row: dict[str, object], factors: dict[str, float]) -> float:
+    contributions = _contribution_map(row)
+    return sum(contributions[component] * factors.get(component, 1.0) for component in SCORING_COMPONENTS)
+
+
+def _ranked_rows_by_adjusted_score(
+    scored_rows: list[dict[str, object]],
+    factors: dict[str, float],
+) -> list[dict[str, object]]:
+    ranked = [
+        {
+            "track_id": str(row.get("track_id", "")),
+            "adjusted_score": round(_adjusted_score(row, factors), 6),
+        }
+        for row in scored_rows
+    ]
+    ranked.sort(key=lambda item: (-_to_float(item["adjusted_score"]), str(item["track_id"])))
+    return ranked
+
+
+def _top_k_records(ranked_rows: list[dict[str, object]], top_k: int) -> list[dict[str, object]]:
+    records: list[dict[str, object]] = []
+    for index, row in enumerate(ranked_rows[:top_k], start=1):
+        records.append(
+            {
+                "rank": index,
+                "track_id": str(row["track_id"]),
+                "score": round(_to_float(row["adjusted_score"]), 6),
+            }
+        )
+    return records
+
+
+def _dominance_concentration(
+    scored_rows: list[dict[str, object]],
+    track_ids: set[str],
+    factors: dict[str, float],
+) -> dict[str, object]:
+    rows = [row for row in scored_rows if str(row.get("track_id", "")) in track_ids]
+    if not rows:
+        return {
+            "herfindahl_index": 0.0,
+            "top_component_share": 0.0,
+            "top_3_component_share": 0.0,
+            "dominant_component": None,
+            "component_shares": {},
+        }
+
+    adjusted_component_totals: dict[str, float] = {component: 0.0 for component in SCORING_COMPONENTS}
+    for row in rows:
+        contributions = _contribution_map(row)
+        for component in SCORING_COMPONENTS:
+            adjusted_component_totals[component] += (
+                contributions[component] * factors.get(component, 1.0)
+            )
+
+    total = sum(adjusted_component_totals.values())
+    if total <= 0:
+        return {
+            "herfindahl_index": 0.0,
+            "top_component_share": 0.0,
+            "top_3_component_share": 0.0,
+            "dominant_component": None,
+            "component_shares": {},
+        }
+
+    component_shares = {
+        component: round(value / total, 6)
+        for component, value in adjusted_component_totals.items()
+    }
+    sorted_shares = sorted(component_shares.items(), key=lambda item: item[1], reverse=True)
+    herfindahl = round(sum(share * share for share in component_shares.values()), 6)
+    top_component_share = sorted_shares[0][1] if sorted_shares else 0.0
+    top_3_component_share = round(sum(share for _, share in sorted_shares[:3]), 6)
+
+    return {
+        "herfindahl_index": herfindahl,
+        "top_component_share": round(top_component_share, 6),
+        "top_3_component_share": top_3_component_share,
+        "dominant_component": sorted_shares[0][0] if sorted_shares else None,
+        "component_shares": component_shares,
+    }
+
+
+def build_scoring_sensitivity_diagnostics(
+    scored_rows: list[dict[str, object]],
+    *,
+    active_component_weights: dict[str, float],
+    enabled: bool,
+    top_k: int,
+    perturbation_pct: float,
+    max_components: int,
+) -> dict[str, object]:
+    """Build additive rank-sensitivity diagnostics from weighted-contribution perturbations."""
+    resolved_top_k = max(1, int(top_k))
+    resolved_perturbation = max(0.0, min(0.5, float(perturbation_pct)))
+    resolved_max_components = max(1, int(max_components))
+
+    if not enabled:
+        return {
+            "active": False,
+            "reason": "disabled_by_control",
+            "top_k": resolved_top_k,
+            "perturbation_percent": round(resolved_perturbation, 6),
+            "max_components": resolved_max_components,
+        }
+
+    if not scored_rows:
+        return {
+            "active": False,
+            "reason": "no_scored_rows",
+            "top_k": resolved_top_k,
+            "perturbation_percent": round(resolved_perturbation, 6),
+            "max_components": resolved_max_components,
+        }
+
+    baseline_factors = {component: 1.0 for component in SCORING_COMPONENTS}
+    baseline_ranked = _ranked_rows_by_adjusted_score(scored_rows, baseline_factors)
+    baseline_top_k = _top_k_records(baseline_ranked, resolved_top_k)
+    baseline_rank_by_track: dict[str, int] = {
+        str(record["track_id"]): int(_to_float(record["rank"]))
+        for record in baseline_top_k
+    }
+    baseline_ids = list(baseline_rank_by_track.keys())
+
+    ranked_components = sorted(
+        (
+            (
+                component.removesuffix("_score"),
+                float(weight),
+            )
+            for component, weight in active_component_weights.items()
+            if component.removesuffix("_score") in SCORING_COMPONENTS and float(weight) > 0
+        ),
+        key=lambda item: item[1],
+        reverse=True,
+    )
+    selected_components = [name for name, _ in ranked_components[:resolved_max_components]]
+
+    perturbations: list[dict[str, object]] = []
+    component_sensitivity_rows: list[dict[str, object]] = []
+    baseline_dominance = _dominance_concentration(
+        scored_rows,
+        set(baseline_ids),
+        baseline_factors,
+    )
+
+    for component in selected_components:
+        factors = dict(baseline_factors)
+        factors[component] = round(max(0.0, 1.0 - resolved_perturbation), 6)
+        perturbed_ranked = _ranked_rows_by_adjusted_score(scored_rows, factors)
+        perturbed_top_k = _top_k_records(perturbed_ranked, resolved_top_k)
+        perturbed_rank_by_track: dict[str, int] = {
+            str(record["track_id"]): int(_to_float(record["rank"]))
+            for record in perturbed_top_k
+        }
+
+        perturbed_ids: set[str] = set(perturbed_rank_by_track.keys())
+        overlap_count = len(set(baseline_ids) & perturbed_ids)
+        union_count = len(set(baseline_ids) | perturbed_ids)
+        jaccard = (overlap_count / union_count) if union_count > 0 else 1.0
+
+        rank_deltas: list[dict[str, object]] = []
+        abs_shift_values: list[float] = []
+        shifted_count = 0
+        max_rank_shift = 0
+        for track_id in baseline_ids:
+            baseline_rank = baseline_rank_by_track[track_id]
+            perturbed_rank = perturbed_rank_by_track.get(track_id, resolved_top_k + 1)
+            rank_delta = int(perturbed_rank - baseline_rank)
+            if rank_delta != 0:
+                shifted_count += 1
+            abs_shift = abs(rank_delta)
+            max_rank_shift = max(max_rank_shift, abs_shift)
+            abs_shift_values.append(float(abs_shift))
+            rank_deltas.append(
+                {
+                    "track_id": track_id,
+                    "baseline_rank": baseline_rank,
+                    "perturbed_rank": perturbed_rank,
+                    "rank_delta": rank_delta,
+                }
+            )
+
+        mean_abs_rank_shift = (
+            statistics.mean(abs_shift_values) if abs_shift_values else 0.0
+        )
+        dominance = _dominance_concentration(scored_rows, perturbed_ids, factors)
+        perturbations.append(
+            {
+                "type": f"decrease_{component}",
+                "component": component,
+                "factor": round(factors[component], 6),
+                "top_k_after": perturbed_top_k,
+                "rank_shifts_count": shifted_count,
+                "top_k_overlap_count": overlap_count,
+                "top_k_jaccard_similarity": round(jaccard, 6),
+                "mean_absolute_rank_shift": round(mean_abs_rank_shift, 6),
+                "max_rank_shift": int(max_rank_shift),
+                "rank_deltas": rank_deltas,
+                "dominance_concentration": dominance,
+            }
+        )
+        component_sensitivity_rows.append(
+            {
+                "component": component,
+                "weight_in_baseline": round(
+                    float(active_component_weights.get(f"{component}_score", 0.0)),
+                    6,
+                ),
+                "mean_absolute_rank_shift": round(mean_abs_rank_shift, 6),
+                "max_rank_shift": int(max_rank_shift),
+                "top_k_overlap_count": overlap_count,
+                "top_k_jaccard_similarity": round(jaccard, 6),
+            }
+        )
+
+    component_sensitivity_rows.sort(
+        key=lambda item: (
+            -_to_float(item["mean_absolute_rank_shift"]),
+            str(item["component"]),
+        )
+    )
+
+    most_sensitive = component_sensitivity_rows[0]["component"] if component_sensitivity_rows else None
+    least_sensitive = component_sensitivity_rows[-1]["component"] if component_sensitivity_rows else None
+
+    return {
+        "active": True,
+        "method": "contribution_rescaling_approximation",
+        "method_note": (
+            "Perturbations rescale weighted-contribution components directly (bounded approximation) "
+            "without recomputing upstream candidate generation."
+        ),
+        "top_k": resolved_top_k,
+        "perturbation_percent": round(resolved_perturbation, 6),
+        "max_components": resolved_max_components,
+        "baseline_top_k": baseline_top_k,
+        "component_sensitivity_ranking": component_sensitivity_rows,
+        "most_sensitive_component": most_sensitive,
+        "least_sensitive_component": least_sensitive,
+        "dominance_concentration_baseline": baseline_dominance,
+        "perturbations": perturbations,
+    }
+
+
+def build_feature_availability_summary(candidate_rows: list[dict[str, str]]) -> dict[str, object]:
+    """Build candidate-side feature availability/sparsity diagnostics for BL-006."""
+    total_candidates = len(candidate_rows)
+    numeric_presence_counts = {component: 0 for component in NUMERIC_COMPONENTS}
+    lead_genre_sources = {"genres": 0, "tags": 0, "missing": 0}
+    rows_with_all_numeric = 0
+    rows_with_any_numeric = 0
+    rows_with_any_semantic = 0
+
+    for row in candidate_rows:
+        has_all_numeric = True
+        has_any_numeric = False
+        for component in NUMERIC_COMPONENTS:
+            raw_value = str(row.get(component, "")).strip()
+            try:
+                parsed = float(raw_value)
+            except ValueError:
+                parsed = None
+            if parsed is not None:
+                numeric_presence_counts[component] += 1
+                has_any_numeric = True
+            else:
+                has_all_numeric = False
+
+        if has_all_numeric:
+            rows_with_all_numeric += 1
+        if has_any_numeric:
+            rows_with_any_numeric += 1
+
+        genres = [item.strip() for item in str(row.get("genres", "")).split(",") if item.strip()]
+        tags = [item.strip() for item in str(row.get("tags", "")).split(",") if item.strip()]
+        if genres:
+            lead_genre_sources["genres"] += 1
+            rows_with_any_semantic += 1
+        elif tags:
+            lead_genre_sources["tags"] += 1
+            rows_with_any_semantic += 1
+        else:
+            lead_genre_sources["missing"] += 1
+
+    if total_candidates <= 0:
+        numeric_coverage = {component: 0.0 for component in NUMERIC_COMPONENTS}
+    else:
+        numeric_coverage = {
+            component: round(count / float(total_candidates), 6)
+            for component, count in numeric_presence_counts.items()
+        }
+
+    numeric_sparsity = {
+        component: round(max(0.0, 1.0 - ratio), 6)
+        for component, ratio in numeric_coverage.items()
+    }
+
+    return {
+        "candidate_count": total_candidates,
+        "rows_with_any_numeric_feature": rows_with_any_numeric,
+        "rows_with_all_numeric_features": rows_with_all_numeric,
+        "rows_with_no_numeric_features": max(0, total_candidates - rows_with_any_numeric),
+        "numeric_feature_presence_counts": numeric_presence_counts,
+        "numeric_feature_coverage_by_feature": numeric_coverage,
+        "numeric_feature_sparsity_by_feature": numeric_sparsity,
+        "rows_with_any_semantic_signal": rows_with_any_semantic,
+        "rows_with_no_semantic_signal": max(0, total_candidates - rows_with_any_semantic),
+        "lead_genre_source_counts": lead_genre_sources,
     }
 
 

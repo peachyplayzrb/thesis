@@ -1,7 +1,18 @@
-"""Detect and normalize user-supplied CSV schemas for BL-003.
+"""Dynamic schema detection and normalization for user-supplied CSV ingestion.
 
-The point of this file is to let user CSVs come in with slightly different
-headers while still mapping them onto the internal fields the alignment stage expects.
+At load time this module inspects the actual column headers of a user CSV,
+maps them to the internal BL-003 field names via a configurable alias table,
+warns if the minimum match columns are absent, and returns rows renamed to
+standard internal keys so all downstream code sees a consistent schema.
+
+Match key rationale (what DS-001 actually indexes):
+  - track_id    → spotify_id exact match (strongest)
+  - track_name  → song + artist metadata fallback
+  - artist_names→ artist fuzzy candidate pool
+  - album_name  → album fuzzy scoring boost (optional, no DS-001 index needed)
+  - duration_ms → tiebreak only
+  - added_at    → temporal decay only
+  isrc is intentionally excluded: DS-001 has no isrc column and no isrc index.
 """
 
 from __future__ import annotations
@@ -10,9 +21,10 @@ import warnings
 from pathlib import Path
 from typing import Any
 
-
-# Accepted header aliases for each internal BL-003 field.
-# Matching is case-insensitive and ignores leading/trailing whitespace.
+# ---------------------------------------------------------------------------
+# Alias table — maps each internal field name to accepted CSV header variants.
+# Lookup is case-insensitive with leading/trailing whitespace stripped.
+# ---------------------------------------------------------------------------
 _ALIAS_MAP: dict[str, list[str]] = {
     "track_id":     ["track_id", "spotify_id", "spotify_track_id", "id"],
     "track_name":   ["track_name", "title", "song", "name", "track_title"],
@@ -22,13 +34,13 @@ _ALIAS_MAP: dict[str, list[str]] = {
     "added_at":     ["added_at", "date", "timestamp", "listened_at", "played_at", "datetime"],
 }
 
-# Minimum viable matching needs either a track id or a track-name + artist pair.
+# Minimum viable match: need track_id OR (track_name AND artist_names)
 _MATCH_REQUIRED_EITHER: str = "track_id"
 _MATCH_REQUIRED_BOTH: tuple[str, str] = ("track_name", "artist_names")
 
 
 def _build_column_map(headers: list[str]) -> dict[str, str | None]:
-    """Build the mapping from internal field names to whichever CSV headers matched them."""
+    """Return {internal_field: matched_header | None} for every alias group."""
     normalised_headers = {h.strip().lower(): h for h in headers}
     mapping: dict[str, str | None] = {}
     for internal_field, aliases in _ALIAS_MAP.items():
@@ -45,11 +57,23 @@ def normalize_user_csv_rows(
     rows: list[dict[str, str]],
     path: Path | str | None = None,
 ) -> tuple[list[dict[str, str]], dict[str, Any]]:
-    """
-    Detect the user CSV schema, normalize the rows, and return a schema report.
+    """Detect schema, normalise rows to internal field names, and return a schema report.
 
-    The report records which headers were recognized and whether the file has
-    enough matchable fields to be useful for BL-003.
+    Parameters
+    ----------
+    rows:
+        Raw rows from csv.DictReader (or equivalent).  May be empty.
+    path:
+        Optional file path used only in warning messages.
+
+    Returns
+    -------
+    (normalized_rows, schema_report) where schema_report contains:
+      original_headers: list[str]
+      column_map: dict[str, str | None]
+      mapped: list[str]           internal fields that were successfully mapped
+      unmapped: list[str]         CSV headers that did not match any alias
+      viable: bool                True when minimum match columns are present
     """
     path_label = str(path) if path else "<user_csv>"
 
@@ -73,11 +97,11 @@ def normalize_user_csv_rows(
 
     mapped = [f for f, h in column_map.items() if h is not None]
 
-    # Keep track of which original headers were not recognized by any alias group.
+    # Determine which original headers were not matched by any alias group
     all_matched_originals = {h for h in column_map.values() if h is not None}
     unmapped = [h for h in original_headers if h not in all_matched_originals]
 
-    # BL-003 can only use the file if there is enough information to match rows back to DS-001.
+    # Viability check
     has_id = column_map["track_id"] is not None
     has_title_artist = (
         column_map["track_name"] is not None and column_map["artist_names"] is not None
@@ -92,7 +116,7 @@ def normalize_user_csv_rows(
             stacklevel=2,
         )
 
-    # Normalize the rows so the rest of BL-003 can treat them like one stable schema.
+    # Normalise rows: rename matched headers to internal keys; missing fields → ""
     normalized_rows: list[dict[str, str]] = []
     for raw in rows:
         norm: dict[str, str] = {}

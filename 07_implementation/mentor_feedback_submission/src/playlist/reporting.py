@@ -1,7 +1,8 @@
-"""Diagnostics builders for BL-007 playlist assembly outputs."""
+"""Diagnostics builders for BL-007 playlist assembly."""
 
 from __future__ import annotations
 
+import math
 from collections import Counter
 
 from shared_utils.parsing import safe_float, safe_int
@@ -88,6 +89,201 @@ def build_assembly_pressure_diagnostics(
     }
 
 
+def _extract_genre_metrics(
+    playlist: list[dict[str, object]],
+    playlist_size: int,
+) -> tuple[Counter[str], float, float]:
+    """Extract genre diversity metrics from playlist."""
+    genre_counts = Counter(
+        str(track.get("lead_genre", "")).strip().lower()
+        for track in playlist
+        if str(track.get("lead_genre", "")).strip()
+    )
+    adjacent_pairs = list(zip(playlist[:-1], playlist[1:], strict=False))
+    switch_count = sum(
+        1
+        for left, right in adjacent_pairs
+        if str(left.get("lead_genre", "")).strip().lower()
+        != str(right.get("lead_genre", "")).strip().lower()
+    )
+    genre_switch_rate = (
+        round(switch_count / max(1, len(adjacent_pairs)), 6)
+        if adjacent_pairs
+        else 0.0
+    )
+    dominant_genre_count = max(genre_counts.values()) if genre_counts else 0
+    dominant_genre_share = (
+        round(dominant_genre_count / max(1, playlist_size), 6)
+        if playlist_size > 0
+        else 0.0
+    )
+    return genre_counts, dominant_genre_share, genre_switch_rate
+
+
+def _compute_genre_entropy_metrics(
+    genre_counts: Counter[str],
+    playlist_size: int,
+) -> float:
+    """Compute normalized Shannon entropy for genre distribution."""
+    entropy_bits = 0.0
+    for count in genre_counts.values():
+        probability = count / max(1, playlist_size)
+        if probability > 0:
+            entropy_bits += -probability * math.log2(probability)
+    max_entropy_bits = math.log2(len(genre_counts)) if len(genre_counts) > 1 else 0.0
+    normalized_entropy = (
+        round(entropy_bits / max_entropy_bits, 6)
+        if max_entropy_bits > 0
+        else 0.0
+    )
+    return normalized_entropy
+
+
+def _extract_transition_metrics(
+    transition_diagnostics: dict[str, object],
+) -> tuple[float, float, int]:
+    """Extract transition smoothness metrics from diagnostics."""
+    mean_smoothness = safe_float(transition_diagnostics.get("mean_smoothness"), 0.0)
+    min_smoothness = safe_float(transition_diagnostics.get("min_smoothness"), 0.0)
+    max_adjacent_transition_distance = round(1.0 - min_smoothness, 6)
+    mean_adjacent_transition_distance = round(1.0 - mean_smoothness, 6)
+    transition_pair_count = safe_int(transition_diagnostics.get("pair_count"), 0)
+    return mean_adjacent_transition_distance, max_adjacent_transition_distance, transition_pair_count
+
+
+def _extract_ranking_metrics(
+    playlist: list[dict[str, object]],
+) -> tuple[float, int, int]:
+    """Extract ranking and score metrics from playlist."""
+    selected_ranks = [safe_int(track.get("score_rank"), 0) for track in playlist]
+    selected_ranks = [rank for rank in selected_ranks if rank > 0]
+    mean_selected_rank = (
+        round(sum(selected_ranks) / max(1, len(selected_ranks)), 6)
+        if selected_ranks
+        else 0.0
+    )
+    median_selected_rank = (
+        sorted(selected_ranks)[len(selected_ranks) // 2]
+        if selected_ranks
+        else 0
+    )
+    rank_span = (
+        max(selected_ranks) - min(selected_ranks)
+        if selected_ranks
+        else 0
+    )
+    return mean_selected_rank, median_selected_rank, rank_span
+
+
+def _compute_top100_exclusion_stats(
+    trace_rows: list[dict[str, object]],
+) -> tuple[float, str | None]:
+    """Compute exclusion metrics for top-100 ranked candidates."""
+    top_100_rows = [row for row in trace_rows if safe_int(row.get("score_rank"), 0) <= 100]
+    top_100_excluded = [row for row in top_100_rows if str(row.get("decision", "")) == "excluded"]
+    top_100_exclusion_rate = (
+        round(len(top_100_excluded) / max(1, len(top_100_rows)), 6)
+        if top_100_rows
+        else 0.0
+    )
+    top_100_reason_counts = Counter(
+        str(row.get("exclusion_reason") or "")
+        for row in top_100_excluded
+        if str(row.get("exclusion_reason") or "")
+    )
+    dominant_reason = (
+        top_100_reason_counts.most_common(1)[0][0]
+        if top_100_reason_counts
+        else None
+    )
+    return top_100_exclusion_rate, dominant_reason
+
+
+def _build_diversity_summary(
+    genre_counts: Counter[str],
+    dominant_genre_share: float,
+    normalized_entropy: float,
+    genre_switch_rate: float,
+) -> dict[str, object]:
+    """Build diversity_distribution_summary dict."""
+    return {
+        "genre_counts": dict(genre_counts),
+        "unique_genre_count": len(genre_counts),
+        "dominant_genre_share": dominant_genre_share,
+        "normalized_genre_entropy": normalized_entropy,
+        "genre_switch_rate": genre_switch_rate,
+    }
+
+
+def _build_novelty_summary(
+    transition_pair_count: int,
+    mean_adjacent_transition_distance: float,
+    max_adjacent_transition_distance: float,
+) -> dict[str, object]:
+    """Build novelty_distance_summary dict."""
+    return {
+        "transition_pair_count": transition_pair_count,
+        "mean_adjacent_transition_distance": mean_adjacent_transition_distance,
+        "max_adjacent_transition_distance": max_adjacent_transition_distance,
+    }
+
+
+def _build_ordering_summary(
+    mean_selected_rank: float,
+    median_selected_rank: int,
+    rank_span: int,
+    top_100_exclusion_rate: float,
+    dominant_top_100_exclusion_reason: str | None,
+) -> dict[str, object]:
+    """Build ordering_pressure_summary dict."""
+    return {
+        "mean_selected_rank": mean_selected_rank,
+        "median_selected_rank": median_selected_rank,
+        "selected_rank_span": rank_span,
+        "top_100_exclusion_rate": top_100_exclusion_rate,
+        "dominant_top_100_exclusion_reason": dominant_top_100_exclusion_reason,
+    }
+
+
+def build_tradeoff_metrics_summary(
+    *,
+    playlist: list[dict[str, object]],
+    trace_rows: list[dict[str, object]],
+    transition_diagnostics: dict[str, object],
+) -> dict[str, object]:
+    """Build compact cross-objective trade-off metrics for BL-007 evidence surfaces."""
+    playlist_size = len(playlist)
+    genre_counts, dominant_genre_share, genre_switch_rate = _extract_genre_metrics(playlist, playlist_size)
+    normalized_entropy = _compute_genre_entropy_metrics(genre_counts, playlist_size)
+    mean_adjacent_transition_distance, max_adjacent_transition_distance, transition_pair_count = _extract_transition_metrics(
+        transition_diagnostics
+    )
+    mean_selected_rank, median_selected_rank, rank_span = _extract_ranking_metrics(playlist)
+    top_100_exclusion_rate, dominant_top_100_exclusion_reason = _compute_top100_exclusion_stats(trace_rows)
+
+    return {
+        "playlist_size": playlist_size,
+        "diversity_distribution_summary": _build_diversity_summary(
+            genre_counts,
+            dominant_genre_share,
+            normalized_entropy,
+            genre_switch_rate,
+        ),
+        "novelty_distance_summary": _build_novelty_summary(
+            transition_pair_count,
+            mean_adjacent_transition_distance,
+            max_adjacent_transition_distance,
+        ),
+        "ordering_pressure_summary": _build_ordering_summary(
+            mean_selected_rank,
+            median_selected_rank,
+            rank_span,
+            top_100_exclusion_rate,
+            dominant_top_100_exclusion_reason,
+        ),
+    }
+
+
 def build_influence_effectiveness_diagnostics(
     trace_rows: list[dict[str, object]],
     *,
@@ -97,7 +293,7 @@ def build_influence_effectiveness_diagnostics(
     influence_enabled: bool,
     reserved_slot_target: int,
 ) -> dict[str, object]:
-    """Summarize how influence-policy controls affected BL-007 inclusion outcomes."""
+    """Summarize effectiveness of influence-policy controls for BL-007."""
     requested_count = len(influence_track_ids)
     matched_track_ids = {track_id for track_id in influence_track_ids if track_id in candidate_track_ids}
     matched_count = len(matched_track_ids)

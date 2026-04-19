@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Mapping
+from collections.abc import Mapping
 
 from shared_utils.constants import (
     DEFAULT_INCLUDE_INTERACTION_TYPES,

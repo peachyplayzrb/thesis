@@ -1,4 +1,4 @@
-﻿"""
+"""
 Candidate data parsing and attribute extraction for BL-006 scoring.
 
 Parses raw candidate rows and extracts attributes needed for scoring.

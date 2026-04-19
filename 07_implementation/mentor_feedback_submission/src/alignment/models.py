@@ -1,4 +1,4 @@
-"""Dataclasses and typed records passed around inside the BL-003 alignment stage."""
+"""Typed data models used internally by BL-003 alignment stages."""
 
 from __future__ import annotations
 

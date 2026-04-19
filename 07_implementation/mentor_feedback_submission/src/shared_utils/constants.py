@@ -1,13 +1,13 @@
 """
-Shared constants used across the pipeline.
+Shared constants for implementation stages.
 
-This is where I kept the default thresholds, weights, and control values so the
-stage files are not full of repeated literals.
+Centralizes feature specifications, default values, and other constants
+that were previously duplicated across multiple stages.
 """
 
 from typing import Any
 
-# default weights for turning listening history into BL-003 seed preference strength
+# BL-003 Alignment Default Weights (for seed table preference weighting)
 DEFAULT_TOP_RANGE_WEIGHTS = {
     "short_term": 0.50,
     "medium_term": 0.30,
@@ -22,7 +22,7 @@ DEFAULT_SOURCE_BASE_WEIGHTS = {
 }
 DEFAULT_SOURCE_BASE_WEIGHT_FALLBACK = 0.25
 
-# default limits and thresholds used while BL-004 and BL-005 shape the profile and candidate pool
+# BL-005 Candidate Filtering Default Values
 DEFAULT_PROFILE_TOP_LEAD_GENRE_LIMIT = 6
 DEFAULT_PROFILE_TOP_TAG_LIMIT = 10
 DEFAULT_PROFILE_TOP_GENRE_LIMIT = 8
@@ -48,6 +48,17 @@ DEFAULT_LEAD_GENRE_PARTIAL_MATCH_THRESHOLD = 0.5
 DEFAULT_RETRIEVAL_USE_WEIGHTED_SEMANTICS = False
 DEFAULT_RETRIEVAL_USE_CONTINUOUS_NUMERIC = False
 DEFAULT_RETRIEVAL_ENABLE_POPULARITY_NUMERIC = False
+BL005_FILTERED_REQUIRED_FIELDS: tuple[str, ...] = (
+    "track_id",
+    "artist",
+    "song",
+    "tags",
+    "genres",
+    "tempo",
+    "duration_ms",
+    "key",
+    "mode",
+)
 DEFAULT_BL005_HANDSHAKE_VALIDATION_POLICY = "warn"
 DEFAULT_BL006_HANDSHAKE_VALIDATION_POLICY = "warn"
 DEFAULT_BL007_HANDSHAKE_VALIDATION_POLICY = "warn"
@@ -62,11 +73,11 @@ CUSTOM_SIGNAL_MODE_NAME = "custom"
 DEFAULT_RECENTLY_PLAYED_DECAY_HALF_LIFE_DAYS = 90.0
 DEFAULT_SAVED_TRACKS_DECAY_HALF_LIFE_DAYS = 365.0
 
-# score cutoffs used when BL-006 labels the final ranking output
+# BL-006 Score Reporting Thresholds (for categorizing final scores)
 DEFAULT_PERFECT_SCORE_THRESHOLD = 0.99
 DEFAULT_ABOVE_THRESHOLD_SCORE = 0.50
 
-# default weights for each BL-006 scoring component
+# BL-006 Default Scoring Component Weights
 DEFAULT_SCORING_COMPONENT_WEIGHTS = {
     "danceability": 0.10,
     "energy": 0.10,
@@ -81,7 +92,7 @@ DEFAULT_SCORING_COMPONENT_WEIGHTS = {
     "tag_overlap": 0.16,
 }
 
-# default source-scope settings shared across stages
+# BL-003 Input Scope Default (canonical cross-stage default)
 DEFAULT_INPUT_SCOPE: dict[str, object] = {
     "source_family": "spotify_api_export",
     "include_top_tracks": True,
@@ -97,7 +108,7 @@ DEFAULT_INPUT_SCOPE: dict[str, object] = {
     "user_csv_limit": None,
 }
 
-# default interaction types included when building the profile
+# BL-004 Interaction Scope Default
 DEFAULT_INCLUDE_INTERACTION_TYPES: list[str] = ["history", "influence"]
 
 DEFAULT_INTERACTION_SCOPE: dict[str, object] = {
@@ -252,6 +263,10 @@ DEFAULT_SCORING_CONTROLS: dict[str, object] = {
     "profile_numeric_confidence_blend_weight": 1.0,
     "emit_confidence_impact_diagnostics": True,
     "emit_semantic_precision_diagnostics": False,
+    "enable_scoring_sensitivity_diagnostics": False,
+    "scoring_sensitivity_top_k": 10,
+    "scoring_sensitivity_perturbation_pct": 0.10,
+    "scoring_sensitivity_max_components": 5,
     "apply_bl003_influence_tracks": False,
     "influence_track_bonus_scale": 0.0,
     "bl005_bl006_handshake_validation_policy": DEFAULT_BL006_HANDSHAKE_VALIDATION_POLICY,
@@ -294,9 +309,10 @@ DEFAULT_ASSEMBLY_CONTROLS: dict[str, object] = {
     "influence_allow_consecutive_override": False,
     "influence_allow_score_threshold_override": False,
     "bl006_bl007_handshake_validation_policy": DEFAULT_BL007_HANDSHAKE_VALIDATION_POLICY,
+    "transition_smoothness_weight": 0.0,
 }
 
-# default transparency settings for BL-008
+# BL-008 Transparency Default
 DEFAULT_TOP_CONTRIBUTOR_LIMIT = 3
 
 DEFAULT_TRANSPARENCY_CONTROLS: dict[str, Any] = {
@@ -329,8 +345,9 @@ DEFAULT_CONTROLLABILITY_CONTROLS: dict[str, float] = {
     "looser_threshold_scale": 1.25,
 }
 
-# numeric knobs for the BL-003 weighting formula.
-# These match the older hardcoded values so existing runs stay numerically identical.
+# BL-003 Weighting policy — formula knobs extracted from alignment/weighting.py.
+# Values match the previously embedded constants exactly so existing runs are
+# numerically identical when this policy is wired in Phase 4.
 DEFAULT_WEIGHTING_POLICY: dict[str, dict[str, float]] = {
     "top_tracks": {
         "min_rank_floor": 0.05,
@@ -343,7 +360,7 @@ DEFAULT_WEIGHTING_POLICY: dict[str, dict[str, float]] = {
     },
 }
 
-# default policy for which controllability scenarios run and how they are compared
+# BL-011 Scenario policy — controls which scenarios run and how comparisons work.
 DEFAULT_SCENARIO_POLICY: dict[str, Any] = {
     "enabled_scenario_ids": ["all"],
     "repeat_count": 1,
@@ -351,19 +368,21 @@ DEFAULT_SCENARIO_POLICY: dict[str, Any] = {
     "comparison_mode": "baseline_reference",
 }
 
-# scenario definitions usually come from config.
-# An empty list means the Python fallback generates the built-in scenarios.
+# BL-011 Scenario definitions — populated from config; empty list here means
+# the Python-side fallback in Phase 2 will generate the built-in 5 scenarios.
 DEFAULT_SCENARIO_DEFINITIONS: list[dict[str, object]] = []
 
-# default orchestration controls for stage order and execution policy
+# BL-013 Orchestration controls — stage graph and execution policy.
 DEFAULT_ORCHESTRATION_CONTROLS: dict[str, Any] = {
     "stage_order": None,           # None = use the static default order in orchestration/main.py
     "continue_on_error": False,
     "refresh_seed_policy": "auto_if_stale",
     "required_stable_artifacts": [],
+    "determinism_verify_on_success": False,
+    "determinism_verify_replay_count": 3,
 }
 
-# defaults for Spotify API caching, throttling, and backoff during ingestion
+# BL-001/BL-002 Ingestion Resilience Defaults
 DEFAULT_API_CACHE_TTL_SECONDS = 60 * 60 * 24  # 24 hours
 DEFAULT_API_THROTTLE_SLEEP_SEC = 0.12  # 120ms between calls
 DEFAULT_API_MAX_RETRIES = 6
@@ -376,7 +395,7 @@ DEFAULT_INGESTION_CONTROLS: dict[str, object] = {
     "base_backoff_delay_seconds": DEFAULT_API_BASE_DELAY_SEC,
 }
 
-# allowed enum values for the shared control surfaces
+# ── Valid enum values for stage controls ──────────────────────────────────
 VALID_LEAD_GENRE_STRATEGIES: frozenset[str] = frozenset({"single_anchor", "weighted_top_lead_genres"})
 VALID_SEMANTIC_OVERLAP_STRATEGIES: frozenset[str] = frozenset({"overlap_only", "precision_aware"})
 VALID_SEMANTIC_ALPHA_MODES: frozenset[str] = frozenset({"profile_adaptive", "fixed"})
@@ -388,9 +407,9 @@ VALID_NUMERIC_SUPPORT_SCORE_MODES: frozenset[str] = frozenset({"raw", "weighted"
 VALID_LEAD_GENRE_FALLBACK_STRATEGIES: frozenset[str] = frozenset({"none", "semantic_component_proxy"})
 VALID_INFLUENCE_POLICY_MODES: frozenset[str] = frozenset({"competitive", "reserved_slots", "hybrid_override"})
 
-# numeric features that only make sense when both the BL-004 profile and the
-# candidate data provide comparable values.
-# Each entry says which column to read, how far away a match can be, and whether the scale wraps.
+# Numeric features that are valid only when both the BL-004 profile and the
+# candidate dataset provide comparable values.
+# Each spec defines a candidate column, distance threshold, and whether the dimension is circular.
 NUMERIC_FEATURE_SPECS = {
     "danceability": {
         "candidate_column": "danceability",

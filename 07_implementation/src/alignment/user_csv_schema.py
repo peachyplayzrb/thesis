@@ -21,7 +21,6 @@ import warnings
 from pathlib import Path
 from typing import Any
 
-
 # ---------------------------------------------------------------------------
 # Alias table — maps each internal field name to accepted CSV header variants.
 # Lookup is case-insensitive with leading/trailing whitespace stripped.

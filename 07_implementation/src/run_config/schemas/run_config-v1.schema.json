@@ -1,0 +1,64 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "run_config-v1.schema.json",
+    "title": "RunConfigV1",
+    "type": "object",
+    "required": [
+        "schema_version"
+    ],
+    "properties": {
+        "schema_version": {
+            "type": "string",
+            "const": "run-config-v1"
+        },
+        "control_mode": {
+            "type": "object"
+        },
+        "user_context": {
+            "type": "object"
+        },
+        "input_scope": {
+            "type": "object"
+        },
+        "interaction_scope": {
+            "type": "object"
+        },
+        "influence_tracks": {
+            "type": "object"
+        },
+        "ingestion_controls": {
+            "type": "object"
+        },
+        "profile_controls": {
+            "type": "object"
+        },
+        "retrieval_controls": {
+            "type": "object"
+        },
+        "scoring_controls": {
+            "type": "object"
+        },
+        "assembly_controls": {
+            "type": "object"
+        },
+        "transparency_controls": {
+            "type": "object"
+        },
+        "observability_controls": {
+            "type": "object"
+        },
+        "reporting_controls": {
+            "type": "object"
+        },
+        "controllability_controls": {
+            "type": "object"
+        },
+        "seed_controls": {
+            "type": "object"
+        },
+        "orchestration_controls": {
+            "type": "object"
+        }
+    },
+    "additionalProperties": true
+}

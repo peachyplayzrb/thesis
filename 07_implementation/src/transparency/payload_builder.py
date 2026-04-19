@@ -3,11 +3,10 @@
 from __future__ import annotations
 
 from collections import Counter
-from typing import Mapping
+from collections.abc import Mapping
 
 from shared_utils.coerce import to_mapping
 from shared_utils.parsing import safe_float, safe_int
-
 
 COMPONENT_LABELS = {
     "tempo": "Tempo (BPM)",
@@ -164,13 +163,6 @@ def build_track_payload(
     provenance_root = to_mapping(control_provenance)
     scoring_controls = to_mapping(provenance_root.get("scoring"))
     transparency_controls = to_mapping(provenance_root.get("transparency"))
-
-    top_contribution_value = 0.0
-    if top_contributors:
-        top_contribution_value = safe_float(
-            to_mapping(top_contributors[0]).get("contribution", 0.0),
-            0.0,
-        )
 
     control_causality = build_control_causality_block(
         assembly_context=assembly_context,

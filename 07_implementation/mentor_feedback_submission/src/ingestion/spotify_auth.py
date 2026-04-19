@@ -1,9 +1,3 @@
-﻿"""Browser-based Spotify authorization helpers for the ingestion step.
-
-I open the Spotify consent page, listen for the callback on a temporary local
-server, and exchange the returned code for access tokens.
-"""
-
 from __future__ import annotations
 
 import base64
@@ -15,24 +9,20 @@ import urllib.parse
 import urllib.request
 import webbrowser
 from http.server import BaseHTTPRequestHandler, HTTPServer
-from typing import Any, Dict, Optional, Tuple
+from typing import Any
 
 ACCOUNTS_BASE_URL = "https://accounts.spotify.com"
 
 
 class OAuthCallbackState:
-    """Small shared container so the callback handler can pass auth results back to the main flow."""
-
     def __init__(self) -> None:
-        self.code: Optional[str] = None
-        self.state: Optional[str] = None
-        self.error: Optional[str] = None
+        self.code: str | None = None
+        self.state: str | None = None
+        self.error: str | None = None
         self.event = threading.Event()
 
 
 class OAuthCallbackHandler(BaseHTTPRequestHandler):
-    """HTTP callback handler that captures the authorization result from Spotify."""
-
     shared_state: OAuthCallbackState
 
     def do_GET(self) -> None:  # noqa: N802
@@ -48,19 +38,18 @@ class OAuthCallbackHandler(BaseHTTPRequestHandler):
         self.send_header("Content-Type", "text/html; charset=utf-8")
         self.end_headers()
         self.wfile.write(
-            (
-                "<html><body><h3>Spotify authorization received.</h3>"
-                "<p>You can close this tab and return to the terminal.</p>"
-                "</body></html>"
-            ).encode("utf-8")
+            
+                b"<html><body><h3>Spotify authorization received.</h3>"
+                b"<p>You can close this tab and return to the terminal.</p>"
+                b"</body></html>"
+            
         )
 
     def log_message(self, format: str, *args: Any) -> None:  # noqa: A003
-        # The default HTTP server logs are just noise for this one-shot local callback.
         return
 
 
-def parse_redirect_bind(redirect_uri: str) -> Tuple[str, int]:
+def parse_redirect_bind(redirect_uri: str) -> tuple[str, int]:
     parsed = urllib.parse.urlparse(redirect_uri)
     host = parsed.hostname or "127.0.0.1"
     port = parsed.port or 80
@@ -84,11 +73,11 @@ def build_authorize_url(client_id: str, redirect_uri: str, scopes: str, state: s
 def request_token(
     client_id: str,
     client_secret: str,
-    body_fields: Dict[str, str],
+    body_fields: dict[str, str],
     timeout_seconds: int,
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     payload = urllib.parse.urlencode(body_fields).encode("utf-8")
-    basic = base64.b64encode(f"{client_id}:{client_secret}".encode("utf-8")).decode("utf-8")
+    basic = base64.b64encode(f"{client_id}:{client_secret}".encode()).decode("utf-8")
     req = urllib.request.Request(
         url=f"{ACCOUNTS_BASE_URL}/api/token",
         data=payload,
@@ -102,9 +91,7 @@ def request_token(
         return json.loads(response.read().decode("utf-8"))
 
 
-def complete_oauth_flow(args: Any) -> Dict[str, Any]:
-    """Run the full browser-auth flow and wait for the callback before requesting tokens."""
-
+def complete_oauth_flow(args: Any) -> dict[str, Any]:
     bind_host, bind_port = parse_redirect_bind(args.redirect_uri)
     state = secrets.token_urlsafe(24)
 
@@ -132,8 +119,7 @@ def complete_oauth_flow(args: Any) -> Dict[str, Any]:
             if callback_state.error:
                 raise RuntimeError(f"Spotify authorization error: {callback_state.error}")
             if callback_state.state != state:
-                # A browser tab from an earlier attempt can still hit the callback URL, so
-                # I ignore mismatched state values and keep waiting for the active flow.
+                # Ignore stale callbacks from prior auth attempts and keep waiting.
                 print("[auth] ignored stale OAuth callback state", flush=True)
                 callback_state.code = None
                 callback_state.state = None
