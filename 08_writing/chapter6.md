@@ -25,7 +25,7 @@ The rebuild confirms that cross-source preference inference should not be treate
 The rebuild also confirms a Chapter 2 tension that was muted in the legacy framing: candidate shaping is not neutral preprocessing. BL-005 exclusion-path diagnostics and tranche-1 gate checks show that the eventual ranking and playlist outputs are strongly conditioned by which candidates survive filtering. This means explanation and evaluation claims that focus only on final ranking would understate an important part of causal behavior.
 
 ### 6.2.3 Deterministic scoring and assembly remain valuable because they keep trade-offs inspectable
-BL-006 and BL-007 continue to support a strong engineering argument for deterministic methods in this thesis scope: score components, rule pressure, and assembly constraints remain directly inspectable. That does not prove that deterministic methods maximize recommendation quality in every setting, but it does show that they provide a practical substrate for auditable trade-off control under bounded scope [@roy_systematic_2022; @jannach_measuring_2019].
+BL-006 and BL-007 continue to support a strong engineering argument for deterministic methods in this thesis scope: score components, rule pressure, and assembly constraints remain directly inspectable. That does not prove that deterministic methods maximize recommendation quality in every setting, but it does show that they provide a practical substrate for auditable trade-off control under bounded scope, where engineering transparency and auditability are primary design goals rather than performance optimality [@roy_systematic_2022; @jannach_measuring_2019; @bonnin_automated_2015].
 
 ### 6.2.4 Explanation quality depends on mechanism linkage, not on narrative plausibility alone
 The tranche-2 and tranche-3 evidence strengthens the discussion around transparency. BL-008 explanations are now more useful because they preserve both direct mechanism contributors and control-provenance snapshots. This matters because explanation fidelity in the thesis is treated as alignment with actual scoring and assembly behavior, not merely as the production of convincing natural-language rationale [@zhang_explainable_2020; @tintarev_evaluating_2012; @sotirou_musiclime_2025].
@@ -54,7 +54,7 @@ The current evidence still has important limits.
 1. Cross-source preference traces remain indirect evidence of user preference rather than causal ground truth.
 2. Alignment uncertainty remains material; in the canonical active baseline, only 15.95% of imported Spotify history aligns to the offline corpus, so profile-level claims remain bounded to the matched subset rather than the full listening history.
 3. Some control surfaces remain weak or data-regime-dependent, as shown by BL-011 no-op diagnostics.
-4. Reproducibility claims are contract-bounded to declared fixed inputs, replay procedures, and stable-content comparisons.
+4. Reproducibility claims are contract-bounded to artifact-level stable-hash consistency under declared fixed inputs, replay procedures, and a pinned configuration snapshot. They do not extend to cross-environment behavioral invariance, output identity under different run configurations, or environmental runtime invariance beyond the fixed-input and configuration window used in replay.
 5. External validity remains narrow because the artefact is single-user, deterministic, and not evaluated through longitudinal user studies.
 6. Comparator depth remains limited because the thesis does not implement a matched hybrid or learning-based baseline.
 

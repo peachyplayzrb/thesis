@@ -1,0 +1,7 @@
+Duplicate-code workflow report
+generated_at_utc: 2026-04-19T09:58:32Z
+scope: src
+min_similarity_lines: 8
+
+--------------------------------------------------------------------
+Your code has been rated at 10.00/10 (previous run: 10.00/10, +0.00)

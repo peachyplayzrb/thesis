@@ -59,7 +59,7 @@ Scope refresh: `08_writing/chapter4.md` and `08_writing/chapter5.md` were rebuil
 | Claim ID | Chapter location | Claim summary | Verdict | Evidence basis | Action |
 | --- | --- | --- | --- | --- | --- |
 | UI3-RM4-C4-001 | 4.2 / 4.7 | O1 to O6 are evaluated through explicit objective-linked acceptance evidence rather than generic MVP criteria | supported | `08_writing/chapter4.md`, REB-M3 tranche-1/2/3 gate reports | none |
-| UI3-RM4-C4-002 | 4.6 / 4.8 | Chapter 4 evidence paths now resolve through canonical `07_implementation/src` artefacts and current wrapper-validation runs | supported | `08_writing/chapter4.md`, BL-013 `BL013-ENTRYPOINT-20260412-141352-373476`, BL-014 `BL014-SANITY-20260412-141423-183313` | none |
+| UI3-RM4-C4-002 | 4.6 / 4.8 | Chapter 4 evidence paths now resolve through canonical `07_implementation/src` artefacts and current wrapper-validation runs | supported | `08_writing/chapter4.md`, BL-013 `BL013-ENTRYPOINT-20260418-035540-208118`, BL-014 `BL014-SANITY-20260418-035641-651065`, BL-013 stage-flow traceability run `BL013-ENTRYPOINT-20260418-040456-884132` (`stage_execution`) | none |
 | UI3-RM4-C4-003 | 4.9 | Control-causality and validity-boundary hardening are interpreted as explicit contract improvements, not only runtime fixes | supported | BL-008 `control_provenance`, BL-009 top-level `validity_boundaries`, BL-011 no-op diagnostics, tranche-3 pass | none |
 | UI3-RM4-C4-004 | 4.11 | Chapter 4 limitations remain bounded to visible evidence rather than benchmark-comparison claims | supported | `08_writing/chapter4.md` Section 4.11, BL-003/BL-010/BL-011 evidence | none |
 
@@ -70,7 +70,7 @@ Scope refresh: `08_writing/chapter4.md` and `08_writing/chapter5.md` were rebuil
 | UI3-RM4-C5-001 | 5.1 / 5.2 | Findings now answer the rebuilt research question in terms of uncertainty handling, controllable trade-offs, and mechanism-linked evidence quality | supported | `08_writing/chapter5.md`, `00_admin/thesis_state.md` active RQ/objectives | none |
 | UI3-RM4-C5-002 | 5.3 | The contribution is correctly framed as an engineering-evidence contribution rather than a universal model-performance claim | supported | `08_writing/chapter5.md`, D-054, D-064 | none |
 | UI3-RM4-C5-003 | 5.4 | Limitations are explicit about indirect preference evidence, alignment uncertainty, weak controls, and narrow external validity | supported | `08_writing/chapter5.md`, BL-003, BL-010, BL-011, BL-009 evidence surfaces | none |
-| UI3-RM4-C5-004 | 5.5 | Design Science positioning is now tied to executable acceptance checks rather than narrative-only consistency | supported | `08_writing/chapter5.md`, REB-M3 tranche gates, `00_admin/timeline.md` REB-M3/REB-M4 posture | none |
+| UI3-RM4-C5-004 | 5.5 | Design Science positioning is now tied to executable acceptance checks rather than narrative-only consistency | supported | `08_writing/chapter5.md`, REB-M3 tranche gates, BL-013 `BL013-ENTRYPOINT-20260418-035540-208118`, BL-014 `BL014-SANITY-20260418-035641-651065`, BL-013 stage-flow traceability run `BL013-ENTRYPOINT-20260418-040456-884132` (`stage_execution`) | none |
 
 Updated closure interpretation (2026-04-12):
 - Chapter 4 and Chapter 5 verdicts are synchronized to the rebuild posture.

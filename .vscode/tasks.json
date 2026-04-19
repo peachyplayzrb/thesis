@@ -164,6 +164,105 @@
         "cwd": "${workspaceFolder}/07_implementation"
       },
       "problemMatcher": []
+    },
+    {
+      "label": "07: Ruff Check src",
+      "type": "shell",
+      "command": "pwsh",
+      "args": [
+        "-NoProfile",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "${workspaceFolder}/07_implementation/scripts/ruff_src.ps1"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}/07_implementation"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "07: Ruff Fix src",
+      "type": "shell",
+      "command": "pwsh",
+      "args": [
+        "-NoProfile",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "${workspaceFolder}/07_implementation/scripts/ruff_src.ps1",
+        "-Fix"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}/07_implementation"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "07: Hygiene Check src (Advisory)",
+      "type": "shell",
+      "command": "pwsh",
+      "args": [
+        "-NoProfile",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "${workspaceFolder}/07_implementation/scripts/hygiene_src.ps1"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}/07_implementation"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "07: Hygiene Check src (Strict)",
+      "type": "shell",
+      "command": "pwsh",
+      "args": [
+        "-NoProfile",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "${workspaceFolder}/07_implementation/scripts/hygiene_src.ps1",
+        "-Strict"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}/07_implementation"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "07: Duplicate Check src (Advisory)",
+      "type": "shell",
+      "command": "pwsh",
+      "args": [
+        "-NoProfile",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "${workspaceFolder}/07_implementation/scripts/duplicate_src.ps1"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}/07_implementation"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "07: Duplicate Check src (Strict)",
+      "type": "shell",
+      "command": "pwsh",
+      "args": [
+        "-NoProfile",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "${workspaceFolder}/07_implementation/scripts/duplicate_src.ps1",
+        "-Strict"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}/07_implementation"
+      },
+      "problemMatcher": []
     }
   ]
 }

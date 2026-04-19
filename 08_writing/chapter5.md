@@ -56,11 +56,12 @@ Table 5.3 condenses the most important current execution evidence.
 
 | Check | Active evidence | Result | Notes |
 | --- | --- | --- | --- |
-| Validate-only orchestration | `BL013-ENTRYPOINT-20260412-141352-373476` | `pass` | Confirms the current active wrapper path completes without contract failure. |
-| Sanity suite | `BL014-SANITY-20260412-141423-183313` | `pass (28/28)` | Confirms active stage contracts remain internally consistent after the rebuild hardening wave. |
-| Reproducibility report | `07_implementation/src/reproducibility/outputs/reproducibility_report.json` | `pass` | BL-010 records deterministic replay status and retry-boundary reporting under fixed-input replay. |
+| Validate-only orchestration | `BL013-ENTRYPOINT-20260418-035540-208118` | `pass` | Confirms the current active wrapper path completes without contract failure under the latest full-contract authority baseline. |
+| Sanity suite | `BL014-SANITY-20260418-035641-651065` | `pass (36/36)` | Confirms active stage contracts remain internally consistent after the rebuild hardening wave. |
+| Reproducibility report | `07_implementation/src/reproducibility/outputs/reproducibility_report.json` (`run_id=BL010-REPRO-20260418-040530`) | `pass` | BL-010 records deterministic replay status and retry-boundary reporting under fixed-input replay (`deterministic_match=True`). |
 | Controllability report | `07_implementation/src/controllability/outputs/controllability_report.json` (`run_id=BL011-CTRL-20260412-134945`) | `pass` | BL-011 reports repeat-consistent scenario execution and explicit no-op control diagnostics where effect is absent. |
-| Observability schema and scope | `07_implementation/src/observability/outputs/bl009_run_observability_log.json` (`run_id=BL009-OBSERVE-20260412-141422-422054`) | `pass` | BL-009 includes execution scope, upstream lineage, canonical config-pair traceability, and explicit validity-boundary reporting. |
+| Observability schema and scope | `07_implementation/src/observability/outputs/bl009_run_observability_log.json` (`run_id=BL009-OBSERVE-20260418-040529-209714`) | `pass` | BL-009 includes execution scope, upstream lineage, canonical config-pair traceability, and explicit validity-boundary reporting. |
+| Stage-flow traceability | `BL013-ENTRYPOINT-20260418-040456-884132` | `pass` | BL-013 summary emits `stage_execution` with explicit requested-stage order, executed-stage sequence, non-requested stage execution reporting, and duplicate requested-stage execution counts. |
 
 ## 5.6 Control-Causality and Validity-Boundary Hardening
 The most important late REB-M3 result is not only that tranche-3 passed, but that the underlying contract was strengthened after the first pass.
@@ -77,7 +78,7 @@ In that sense, this chapter tests whether the selected option from Section 3.3.1
 ## 5.8 Current Limits Visible in the Evidence
 The current evidence surface still has explicit limits.
 
-1. BL-010 reproducibility evidence is based on fixed-input replay and should be interpreted as contract-bounded repeatability, not as a claim that every raw output file hash is invariant under all runtime metadata.
+1. BL-010 reproducibility evidence is based on fixed-input replay and should be interpreted as artifact-level, contract-bounded replay consistency under fixed inputs and a pinned configuration snapshot. It does not claim cross-environment or cross-OS behavioral invariance, output identity under different run configurations, or broader environmental runtime invariance beyond the pinned configuration window. Raw output file hashes vary across replays by design (due to volatile run-metadata fields such as run_id and generated_at_utc); stable-hash comparison explicitly excludes these fields.
 2. BL-011 includes no-op control diagnostics, which means some exposed controls remain weak or data-regime-dependent even though the measurement surface is now more honest.
 3. BL-003 still reports a substantial unmatched portion of cross-source events. In the canonical active baseline, only 15.95% of imported history aligns to the offline corpus, so the current 15% match-rate gate should be interpreted as a minimum viability threshold rather than evidence of broad corpus coverage.
 4. Bounded-guidance claims depend on visibility of scope and caveat reporting, not on wide external validation or user-study evidence [@beel_towards_2016; @bellogin_improving_2021; @cavenaghi_systematic_2023].

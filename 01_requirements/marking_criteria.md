@@ -12,6 +12,7 @@
 - Ethical aspects.
 - Legal aspects.
 - Security aspects.
+- Professional practice awareness/reflection where assessed by the professionalism marking sheet.
 - Quality of argumentation, relevance to project, and supporting sources.
 - Referencing quality and cross-referencing accuracy.
 
@@ -25,12 +26,14 @@
 - Testing quality: suitable methodology/tools and analysis linked to aims/research.
 - Conclusions and critical evaluation quality.
 - Project management evidence: supervision engagement, milestones, logbook, planning artifacts.
+- Turnitin score may trigger comments/review, but is not itself a grading criterion.
 
 ## Proposal-Stage Gate Criteria (Pass/Fail)
 - Project must be practical and problem-solving.
 - Project should include design, development, and testing plan.
 - Artefact must be suitable complexity and course-related.
 - Proposal report must include coherent intro, initial literature, plan, and justification.
+- Proposal outcome categories are `Pass`, `Pass with minor modifications`, or `Fail`.
 
 ## Risk Notes
 - Some forms mention threshold/pass language; exact progression rules should be confirmed with current module delivery guidance.

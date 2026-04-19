@@ -1,0 +1,162 @@
+Hygiene workflow report
+generated_at_utc: 2026-04-19T10:42:12Z
+scope: src
+dead_code_min_confidence: 70
+complexity_threshold: C
+
+[dead_code_vulture]
+No dead-code findings.
+
+[complexity_radon]
+src\alignment\influence.py
+    F 58:0 inject_influence_tracks - C (18)
+src\alignment\match_pipeline.py
+    F 199:0 _resolve_match_for_event - C (20)
+    F 290:0 match_events - C (20)
+    F 90:0 _run_fuzzy_match - C (11)
+src\alignment\models.py
+    M 87:4 SourceEvent.from_raw_row - C (18)
+src\alignment\resolved_context.py
+    F 79:0 _resolve_from_orchestration_payload - C (15)
+src\alignment\runtime_scope.py
+    F 130:0 apply_input_scope_filters - C (18)
+    F 19:0 resolve_bl003_runtime_scope - C (13)
+src\alignment\user_csv_schema.py
+    F 56:0 normalize_user_csv_rows - C (17)
+src\alignment\weighting.py
+    F 88:0 compute_weight - C (15)
+    F 46:0 _resolve_reference_now_utc - C (11)
+src\controllability\analysis.py
+    F 398:0 build_interaction_coverage_summary - C (20)
+    F 348:0 evaluate_results_status - C (19)
+    F 121:0 _evaluate_expected_direction - C (14)
+src\controllability\input_validation.py
+    F 24:0 validate_bl010_baseline_snapshot - C (11)
+src\controllability\pipeline_runner.py
+    F 102:0 build_active_seed_events - C (12)
+src\controllability\stage_playlist.py
+    F 11:0 execute_playlist_stage - C (19)
+src\ingestion\export_spotify_max_dataset.py
+    F 534:0 main - C (15)
+src\ingestion\ingest_history_parser.py
+    F 171:0 main - C (12)
+src\ingestion\spotify_client.py
+    M 133:4 SpotifyApiClient.api_get - C (16)
+    F 294:0 fetch_all_offset_pages - C (13)
+    M 50:4 SpotifyApiClient.refresh_access_token - C (12)
+src\ingestion\spotify_mapping.py
+    F 211:0 build_playlist_rows - C (11)
+src\observability\input_validation.py
+    F 29:0 validate_bl008_bl009_handshake - C (18)
+src\observability\main.py
+    F 1159:0 _prepare_retrieval_and_assembly_samples - C (18)
+    F 86:0 build_source_resilience_diagnostics - C (11)
+    F 546:0 _validate_and_prepare_bl008_handshake - C (11)
+src\orchestration\config_resolver.py
+    F 50:0 resolve_stage_control_payload - C (11)
+src\orchestration\main.py
+    F 50:0 _resolve_effective_orchestration_state - C (11)
+src\orchestration\seed_freshness.py
+    F 89:0 _build_behavior_controls - C (12)
+    F 203:0 _normalized_contract_from_bl003_summary - C (12)
+src\orchestration\summary_builder.py
+    F 14:0 _build_stage_execution_metadata - C (11)
+src\playlist\input_validation.py
+    F 27:0 validate_bl006_bl007_handshake - C (16)
+src\playlist\models.py
+    F 129:0 controls_from_mapping - C (13)
+    F 168:0 context_from_mapping - C (13)
+src\playlist\reporting.py
+    F 178:0 _compute_top100_exclusion_stats - C (11)
+    F 372:0 build_opportunity_cost_diagnostics - C (11)
+src\playlist\rules.py
+    F 683:0 assemble_bucketed - C (17)
+    F 852:0 build_transition_diagnostics - C (11)
+src\playlist\stage.py
+    M 133:4 PlaylistStage._build_report_payload - C (20)
+src\profile\stage.py
+    M 208:4 ProfileStage._extract_contract_payload - C (20)
+    M 916:4 ProfileStage._process_seed_row - C (20)
+    M 1019:4 ProfileStage._apply_aggregation_validation_policies - C (14)
+    M 271:4 ProfileStage._validate_seed_table_schema - C (12)
+    M 749:4 ProfileStage._resolve_row_weight_components - C (12)
+    M 600:4 ProfileStage._check_handshake_confidence_rows - C (11)
+    M 1122:4 ProfileStage.aggregate_inputs - C (11)
+src\quality\reb_m3_tranche2_gate.py
+    F 33:0 _o4_checks - C (13)
+src\quality\reb_m3_tranche3_gate.py
+    F 28:0 main - C (16)
+src\quality\sanity_checks.py
+    F 303:0 _bl008_bl009_check_logic - C (20)
+    F 1338:0 _run_continuity_and_count_checks - C (20)
+    F 124:0 bl003_bl004_handshake_contract_ok - C (17)
+    F 246:0 bl007_bl008_handshake_contract_ok - C (17)
+    F 1516:0 main - C (17)
+    F 199:0 bl006_bl007_handshake_contract_ok - C (16)
+    F 439:0 bl005_bl006_handshake_contract_ok - C (15)
+    F 167:0 bl004_bl005_handshake_contract_ok - C (13)
+    F 676:0 resolve_bl011_control_effect_gate_policy - C (13)
+    F 365:0 bl009_bl010_handshake_contract_ok - C (12)
+    F 402:0 bl010_bl011_handshake_contract_ok - C (12)
+    F 715:0 bl011_control_effect_gate_result - C (12)
+    F 834:0 _check_driver_and_narrative_warnings - C (11)
+    F 940:0 bl008_control_causality_contract_gate_result - C (11)
+    F 1255:0 _run_hash_integrity_checks - C (11)
+src\quality\suite.py
+    F 558:0 run_active_mode - C (14)
+src\reproducibility\input_validation.py
+    F 68:0 validate_bl009_outputs - C (11)
+src\reproducibility\main.py
+    F 452:0 run_stage - C (16)
+    F 100:0 copy_file - C (13)
+    F 251:0 stable_observability_fingerprint - C (13)
+    F 808:0 _build_replay_report - C (13)
+    F 304:0 fingerprint_outputs - C (12)
+src\retrieval\filtering_logic.py
+    F 8:0 keep_decision - C (16)
+    F 97:0 decision_reason - C (11)
+src\retrieval\input_validation.py
+    F 23:0 _seed_trace_schema_details - C (11)
+src\retrieval\profile_builder.py
+    F 9:0 build_profile_weight_map - C (15)
+src\retrieval\runtime_controls.py
+    F 33:0 _sanitize_bl005_controls - C (14)
+src\retrieval\stage.py
+    M 662:4 RetrievalStage._build_threshold_attribution - C (17)
+    M 1052:4 RetrievalStage.build_diagnostics_payload - C (16)
+    M 742:4 RetrievalStage._build_bounded_what_if_estimates - C (15)
+    F 160:0 _build_numeric_profile_context - C (14)
+    M 342:4 RetrievalStage.resolve_runtime_controls - C (11)
+    M 478:4 RetrievalStage.load_inputs - C (11)
+src\run_config\run_config_utils.py
+    F 846:0 _validate_bl003_seed_controls - C (19)
+    F 1074:0 _build_signal_mode_summary - C (12)
+    F 1945:0 _resolve_bl007_controlled_relaxation - C (12)
+    F 801:0 _validate_bl003_aggregation_policy - C (11)
+    F 1916:0 _resolve_bl007_adaptive_limits - C (11)
+src\scoring\diagnostics.py
+    F 359:0 build_feature_availability_summary - C (18)
+    F 197:0 build_scoring_sensitivity_diagnostics - C (17)
+    F 146:0 _dominance_concentration - C (13)
+src\scoring\input_validation.py
+    F 7:0 validate_bl005_bl006_handshake - C (11)
+src\scoring\models.py
+    F 155:0 controls_from_mapping - C (15)
+src\scoring\profile_extractor.py
+    F 17:0 _build_weight_map - C (12)
+    F 43:0 extract_profile_scoring_data - C (11)
+src\scoring\stage.py
+    M 113:4 ScoringStage.build_runtime_context - C (18)
+    M 367:4 ScoringStage.build_summary - C (17)
+    M 264:4 ScoringStage.score_candidates - C (11)
+src\shared_utils\io_utils.py
+    F 36:0 open_text_write - C (12)
+src\shared_utils\stage_runtime_resolver.py
+    F 43:0 resolve_stage_selection - C (12)
+src\shared_utils\text_matching.py
+    F 222:0 fuzzy_find_candidate - C (15)
+    F 176:0 _score_candidate_match - C (11)
+src\transparency\input_validation.py
+    F 26:0 validate_bl007_bl008_handshake - C (16)
+src\transparency\main.py
+    F 77:0 main - C (17)

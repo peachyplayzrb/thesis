@@ -47,3 +47,15 @@
 - Issue: Current thesis architecture is ambitious (cross-source ingestion + full observability + controllability + transparency pipeline).
 - Risk: Medium.
 - Action: Confirm minimum viable artefact expectations for assessment success.
+
+## A-009
+- Topic: Current-year AI use boundary.
+- Issue: Teaching slides distinguish acceptable AI use (idea generation, writing improvement, concept clarification) from prohibited use (submitting generated text as own work, outsourcing critical analysis, fabricating data), but the exact current-year enforceable boundary is likely Canvas/module-announcement controlled.
+- Risk: High.
+- Action: Confirm the live module AI-use policy and whether declaration/disclosure is required for limited AI assistance.
+
+## A-010
+- Topic: Project-management penalty semantics for formative milestones.
+- Issue: Handbook and briefs state that missed formative milestones are not directly marked but may still affect project-management grading; exact weighting impact is not fully quantified in the ingested documents.
+- Risk: Medium.
+- Action: Confirm how missed milestones are evidenced and penalized in the final project-management assessment.

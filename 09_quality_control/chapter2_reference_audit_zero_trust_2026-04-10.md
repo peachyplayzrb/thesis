@@ -1,5 +1,7 @@
 # Chapter 2 Zero-Trust PDF Reference Audit (Report-Only)
 
+Canonical status: This is the authoritative Chapter 2 citation-verification audit for the 2026-04-10 zero-trust cycle. It supersedes lexical-only verbatim variants as an evidence authority surface.
+
 Date: 2026-04-10
 Scope: `08_writing/chapter2.md` only
 Mode: report-only (no chapter wording edits)

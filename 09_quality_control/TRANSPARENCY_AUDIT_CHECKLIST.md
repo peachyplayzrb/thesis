@@ -1,3 +1,7 @@
+# HISTORICAL REFERENCE NOTICE
+
+This checklist is retained as a historical phase artifact and is not an active submission-closeout control surface. For active readiness authority, use `00_admin/thesis_state.md`, `00_admin/timeline.md`, and current quality-control submission surfaces.
+
 # Transparency Audit Checklist
 
 ## Purpose

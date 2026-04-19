@@ -53,8 +53,9 @@ All active implementation evidence resolves through the canonical `07_implementa
 	- `07_implementation/src/reproducibility/outputs/reproducibility_report.json`
 	- `07_implementation/src/controllability/outputs/controllability_report.json`
 - Wrapper execution evidence (used in Chapter 5):
-	- `BL013-ENTRYPOINT-20260412-141352-373476`
-	- `BL014-SANITY-20260412-141423-183313`
+	- `BL013-ENTRYPOINT-20260418-035540-208118`
+	- `BL014-SANITY-20260418-035641-651065`
+	- Deterministic verification + stage-flow traceability run (post-C-486): `BL013-ENTRYPOINT-20260418-040456-884132` (`stage_execution` block emitted with requested vs executed sequence and non-requested-stage reporting for BL-010)
 
 This packaging structure is important because it makes the Chapter 3 design commitments inspectable as an evidence bundle rather than as dispersed implementation fragments. Alignment, profiling, candidate shaping, scoring, assembly, explanation, and observability each emit their own outputs, while the tranche gates and wrapper checks show that these local surfaces also participate in one coherent execution contract.
 

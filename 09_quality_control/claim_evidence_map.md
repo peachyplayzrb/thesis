@@ -15,7 +15,7 @@
 ## REB-M4 Chapter-Facing Evidence Note (2026-04-12)
 - Active Chapter 4 and Chapter 5 implementation/discussion claims now resolve through the rebuilt objective-to-evidence contract rather than the pre-rebuild MVP matrix.
 - Literature-backed framing claims remain mapped in this file; rebuild-era chapter verdict status for implementation-facing claims is tracked in `09_quality_control/ui003_claim_verdicts_ch3_ch5.md`.
-- Canonical non-literature execution evidence for rebuilt Chapter 4/5 includes REB-M3 tranche-gate outputs under `07_implementation/src/quality/outputs/`, BL-013 `BL013-ENTRYPOINT-20260412-141352-373476`, BL-014 `BL014-SANITY-20260412-141423-183313`, BL-009 observability output, BL-010 reproducibility output, and BL-011 controllability output.
+- Canonical non-literature execution evidence for rebuilt Chapter 4/5 includes REB-M3 tranche-gate outputs under `07_implementation/src/quality/outputs/`, BL-013 `BL013-ENTRYPOINT-20260418-035540-208118`, BL-014 `BL014-SANITY-20260418-035641-651065`, BL-009 observability output, BL-010 reproducibility output, and BL-011 controllability output. Post-C-486 BL-013 stage-flow traceability evidence is additionally available at `BL013-ENTRYPOINT-20260418-040456-884132` via summary `stage_execution`.
 
 ## C-CLM-001
 - Claim: Accuracy-only evaluation is insufficient for recommender systems when transparency and user understanding matter.

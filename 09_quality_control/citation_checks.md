@@ -3,7 +3,8 @@
 ## Zero-Trust Audit Kickoff (2026-04-10)
 - Audit mode: report-only, zero-trust PDF-first audit for current `08_writing/chapter2.md`.
 - Authoritative evidence policy: manual PDF page-level verification; automation is secondary cross-check only.
-- Current kickoff artifact: `09_quality_control/chapter2_reference_audit_zero_trust_2026-04-10.md`.
+- Canonical Chapter 2 audit artifact: `09_quality_control/chapter2_reference_audit_zero_trust_2026-04-10.md`.
+- Historical lexical audit variants under `09_quality_control/verbatim_audits/` are non-authoritative helper surfaces and do not supersede the canonical manual-PDF audit.
 - Baseline freeze for this run:
 	- `08_writing/chapter2.md` SHA256: `17BCD164CE6ED708F0D496D57CEA14FAEC093AA81A1A550C8CD90E0426552ADA`
 	- `08_writing/references.bib` SHA256: `A26EBB2924D78C82A49DF9761B0B09F9C1F5B019BD0A180EDD8D8D48EBE8BBCE`

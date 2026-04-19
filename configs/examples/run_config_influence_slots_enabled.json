@@ -1,0 +1,206 @@
+{
+    "schema_version": "run-config-v1",
+    "control_mode": {
+        "deterministic_match": true,
+        "deterministic_scoring": true
+    },
+    "user_context": {
+        "user_id": null
+    },
+    "input_scope": {
+        "spotify_sources": [
+            "top_tracks",
+            "saved_tracks",
+            "playlists",
+            "recently_played"
+        ],
+        "fallback_to_all_if_empty": false
+    },
+    "interaction_scope": {
+        "include_interaction_types": [
+            "stream",
+            "save",
+            "skip_after_30s"
+        ]
+    },
+    "influence_tracks": {
+        "enabled": true,
+        "track_ids": [
+            "spotify:track:example_1",
+            "spotify:track:example_2",
+            "spotify:track:example_3",
+            "spotify:track:example_4",
+            "spotify:track:example_5"
+        ],
+        "preference_weight": 1.0,
+        "policy_mode": "reserved_slots"
+    },
+    "ingestion_controls": {
+        "include_audio_features": true,
+        "include_track_metadata": true,
+        "include_artist_metadata": true
+    },
+    "profile_controls": {
+        "top_tag_limit": 10,
+        "top_genre_limit": 10,
+        "top_lead_genre_limit": 3,
+        "confidence_weighting_mode": "exponential_scale",
+        "confidence_bin_high_threshold": 0.7,
+        "confidence_bin_medium_threshold": 0.4,
+        "interaction_attribution_mode": "weighted_by_confidence",
+        "emit_profile_policy_diagnostics": true,
+        "confidence_validation_policy": "warn",
+        "interaction_type_validation_policy": "warn",
+        "synthetic_data_validation_policy": "warn",
+        "bl003_handshake_validation_policy": "warn"
+    },
+    "retrieval_controls": {
+        "profile_top_tag_limit": 10,
+        "profile_top_genre_limit": 10,
+        "profile_top_lead_genre_limit": 3,
+        "semantic_strong_keep_score": 80,
+        "semantic_min_keep_score": 40,
+        "numeric_support_min_pass": 3,
+        "numeric_support_min_score": 0.3,
+        "use_weighted_semantics": true,
+        "use_continuous_numeric": true,
+        "enable_popularity_numeric": true,
+        "language_filter_enabled": false,
+        "language_filter_codes": [],
+        "recency_years_min_offset": null,
+        "numeric_thresholds": {
+            "energy": 0.2,
+            "valence": 0.2,
+            "acousticness": 0.0,
+            "danceability": 0.3,
+            "instrumentalness": 0.0,
+            "liveness": 0.0,
+            "loudness": -60.0,
+            "speechiness": 0.0,
+            "tempo": 60.0
+        },
+        "profile_quality_penalty_enabled": true,
+        "profile_quality_threshold": 0.5,
+        "bl004_bl005_handshake_validation_policy": "warn"
+    },
+    "scoring_controls": {
+        "component_weights": {
+            "artist_similarity": 0.15,
+            "genre_similarity": 0.15,
+            "energy": 0.08,
+            "valence": 0.08,
+            "acousticness": 0.05,
+            "danceability": 0.1,
+            "instrumentalness": 0.03,
+            "liveness": 0.03,
+            "loudness": 0.05,
+            "speechiness": 0.02,
+            "popularity": 0.1
+        },
+        "score_exponent": 1.0,
+        "semantic_strategy_mode": "banded",
+        "numeric_strategy_mode": "scaled",
+        "enable_scoring_sensitivity_diagnostics": true,
+        "bl005_bl006_handshake_validation_policy": "warn"
+    },
+    "assembly_controls": {
+        "target_size": 10,
+        "min_score_threshold": 0.5,
+        "max_per_genre": 3,
+        "max_consecutive": 2,
+        "utility_strategy": "utility_greedy",
+        "utility_decay_factor": 0.0,
+        "utility_weights": {
+            "score": 1.0,
+            "diversity": 0.0,
+            "novelty": 0.0
+        },
+        "adaptive_limits": {
+            "adaptive_genre_cap_policy": "disabled",
+            "adaptive_consecutive_policy": "disabled"
+        },
+        "controlled_relaxation": {
+            "enable_controlled_relaxation": false,
+            "relaxation_strategy": "score_threshold",
+            "max_relaxation_rounds": 2
+        },
+        "lead_genre_fallback_strategy": "none",
+        "use_component_contributions_for_tiebreak": false,
+        "use_semantic_strength_for_tiebreak": false,
+        "emit_opportunity_cost_metrics": false,
+        "opportunity_cost_top_k_examples": 10,
+        "detail_log_top_k": 100,
+        "influence_enabled": true,
+        "influence_reserved_slots": 3,
+        "influence_policy_mode": "reserved_slots",
+        "influence_allow_genre_cap_override": true,
+        "influence_allow_consecutive_override": false,
+        "influence_allow_score_threshold_override": false,
+        "transition_smoothness_weight": 0.0,
+        "bl006_bl007_handshake_validation_policy": "warn"
+    },
+    "transparency_controls": {
+        "top_contributor_limit": 10,
+        "blend_primary_contributor_on_near_tie": false,
+        "primary_contributor_tie_delta": 0.02,
+        "include_per_track_control_provenance": true,
+        "emit_run_level_control_provenance_summary": true,
+        "bl007_bl008_handshake_validation_policy": "warn"
+    },
+    "observability_controls": {
+        "signal_mode": "control_causality",
+        "emit_bl008_rejection_summary": true,
+        "emit_rank_continuity_diagnostics": true,
+        "emit_assembly_pressure_diagnostics": true,
+        "emit_influence_effectiveness_diagnostics": true,
+        "bl008_bl009_handshake_validation_policy": "warn",
+        "emit_run_level_control_provenance_summary": true,
+        "emit_validity_boundaries": true
+    },
+    "controllability_controls": {
+        "deterministic_match": true,
+        "deterministic_scoring": true,
+        "all_variant_shifts_observable": true,
+        "bl009_bl010_handshake_validation_policy": "warn",
+        "bl010_bl011_handshake_validation_policy": "warn"
+    },
+    "scenario_definitions": [
+        {
+            "scenario_id": "baseline",
+            "label": "Baseline run with influence slots enabled",
+            "description": "Uses default configuration with influence slots reserved for user-selected tracks",
+            "override_controls": {
+                "influence_reserved_slots": 3,
+                "influence_allow_genre_cap_override": true
+            }
+        },
+        {
+            "scenario_id": "no_influence",
+            "label": "No influence slots",
+            "description": "Disables influence slot reservation to see baseline effect without reserved tracks",
+            "override_controls": {
+                "influence_reserved_slots": 0,
+                "influence_allow_genre_cap_override": false
+            }
+        },
+        {
+            "scenario_id": "more_influence_slots",
+            "label": "More influence slots (5)",
+            "description": "Increases reserved slots to 5 to evaluate stronger influence effect",
+            "override_controls": {
+                "influence_reserved_slots": 5,
+                "influence_allow_genre_cap_override": true,
+                "influence_allow_consecutive_override": true
+            }
+        }
+    ],
+    "orchestration_controls": {
+        "skip_bl003": false,
+        "skip_bl004": false,
+        "skip_bl005": false,
+        "skip_bl006": false,
+        "skip_bl007": false,
+        "skip_bl008": false,
+        "skip_bl009": false
+    }
+}

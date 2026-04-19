@@ -1,3 +1,7 @@
+# HISTORICAL REFERENCE NOTICE
+
+This document is retained for design-history continuity and is not an active submission-readiness gate. Current authority is the rebuild/post-UNDO validation posture recorded in `00_admin/thesis_state.md`, `00_admin/timeline.md`, and the current BL-013/BL-014 run-ID surfaces.
+
 # Phase 4: Full Verification & Inventory
 
 ## Purpose
@@ -453,4 +457,3 @@ All deferred items are documented, gated, and have clear implementation paths.
 ## Phase 4 Status: ✓ COMPLETE
 
 All verification checks passed. Governance and signal layers are ready. Next: Proceed with Phase 3-4 code implementations using documented procedures.
-
