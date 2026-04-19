@@ -5,11 +5,903 @@ Ordering convention (standardized 2026-03-24):
 - Entry IDs remain unique identifiers, but physical entry order reflects historical insertion timing (not strict numeric sorting).
 - New entries must be appended at the end and may include `superseded_by` when a prior decision is replaced.
 
-Maintenance snapshot (2026-04-17):
-- Highest decision ID currently present: `D-161`
-- Total decision entries: 140
-- Status distribution: accepted=129, superseded=3, rejected=1
+Maintenance snapshot (2026-04-19, updated):
+- Highest decision ID currently present: `D-242`
+- Total decision entries: 187
+- Status distribution: accepted=173, superseded=3, rejected=1
 - ID integrity check: no duplicate decision IDs detected
+
+id: D-197
+date: 2026-04-18
+status: accepted
+
+context:
+After C-487 synchronized Chapter 4 and QC ledgers, Chapter 5 still referenced superseded wrapper/observability run IDs in its primary evaluation evidence table, creating cross-chapter authority drift.
+
+decision:
+Synchronize Chapter 5 run-linked evidence to the same two-tier authority pattern adopted for Chapter 4: latest full-contract wrapper authority for canonical validation plus latest deterministic BL-013 run for stage-flow traceability.
+
+alternatives_considered:
+- Keep Chapter 5 IDs unchanged to preserve historical wording (rejected: introduces avoidable evidence drift)
+- Use only deterministic run IDs across all Chapter 5 evidence rows (rejected: weakens full-contract BL-014 authority visibility)
+- Move run IDs out of Chapter 5 entirely into QC-only files (rejected: reduces chapter-level audit clarity)
+
+rationale:
+Chapter 5 is the evaluation chapter; its run-linked evidence table must remain current and aligned with chapter/QC authority files to preserve cross-surface traceability.
+
+id: D-237
+date: 2026-04-19
+status: accepted
+
+context:
+BL-014 `_bl008_explanation_payload_warnings` reported D-grade complexity (30) in hygiene analysis, the highest-ranked D-grade hotspot. The function validates explanation payload structure via inline logic for score breakdown extraction, contribution share bounds, negative margin detection, primary/causal driver consistency, score-band phrase validation, and assembly context key validation. Monolithic structure increases cognitive load and complicates testing/maintenance of individual validation concerns.
+
+decision:
+Decompose `_bl008_explanation_payload_warnings` into 7 focused helper functions with single responsibilities: score breakdown/contributor extraction, contribution share bounds checking, negative margin detection, primary driver label consistency, causal driver value consistency, score-band phrase validation, and assembly context key presence validation. Preserve all output contracts and payload structure; use pure-helper pattern with no schema changes or cross-module refactoring.
+
+alternatives_considered:
+- Move validation checks to a validation schema library (rejected: introduces cross-module coupling; checks are BL-014-specific)
+- Split into separate validator classes (rejected: adds unnecessary abstraction; simple helpers sufficient)
+- Leave monolithic and accept D-grade complexity (rejected: complexity-reduction campaign is active; test coverage exists for safe decomposition)
+
+rationale:
+Local helper extraction provides safe complexity reduction when output contracts are stable and test coverage exists. Each helper has a focused responsibility (single validation concern) and can be tested independently. Decomposition improves code clarity and maintainability without affecting BL-014 behavior or warning-list output structure. Score breakdown analysis, margin detection, driver consistency checks, and context key validation are distinct concerns that benefit from isolation.
+
+evidence_basis:
+Full test suite passed (`622/622` tests including `test_quality_sanity_checks.py` which covers the function via 69 tests). Pyright type checking clean (`0 errors`). Ruff linting clean (`All checks passed!`). Duplicate-code advisory stable (`10.00/10` maintained, no duplication introduced). Hygiene report post-refactor confirms `_bl008_explanation_payload_warnings` removed from D-grade listing; new helpers all report C-grade or lower.
+
+impacted_files:
+- `07_implementation/src/quality/sanity_checks.py`: added 7 helper functions, refactored main function
+
+review_date: 2026-04-19
+
+id: D-236
+date: 2026-04-19
+status: accepted
+
+context:
+BL-007 `build_tradeoff_metrics_summary` reported D-grade complexity (28) in hygiene analysis. The function assembles cross-objective trade-off metrics (diversity, novelty, ordering) via inline logic for genre analysis, entropy computation, transition metrics, ranking extraction, exclusion statistics, and summary dict construction. Monolithic structure increases cognitive load and complicates testing/maintenance of individual metric families.
+
+decision:
+Decompose `build_tradeoff_metrics_summary` into 8 focused helper functions with single responsibilities: genre extraction and analysis, entropy metrics computation, transition metrics extraction, ranking metrics extraction, top-100 exclusion statistics computation, and three summary-dict builders. Preserve all output contracts and payload structure; use pure-helper pattern with no schema changes or cross-module refactoring.
+
+alternatives_considered:
+- Move genre/entropy logic to shared_utils (rejected: introduces cross-module coupling; metrics assembly is BL-007-specific)
+- Split into separate builder classes (rejected: adds unnecessary abstraction; simple helpers sufficient)
+- Leave monolithic and accept D-grade complexity (rejected: complexity-reduction campaign is active; test coverage exists for safe decomposition)
+
+rationale:
+Local helper extraction provides safe complexity reduction when output contracts are stable and test coverage exists. Each helper has a focused responsibility and can be tested independently. Decomposition improves code clarity and maintainability without affecting BL-007 behavior or payload structure. Entropy computation, genre analysis, transition metrics, and ranking metrics are distinct concerns that benefit from isolation.
+
+evidence_basis:
+Full test suite passed (`622/622` tests including `test_playlist_reporting.py` which covers the function via multiple test cases). Pyright type checking clean (`0 errors`). Ruff linting clean (`All checks passed!`). Duplicate-code advisory stable (`10.00/10` maintained, no duplication introduced). Hygiene report post-refactor confirms `build_tradeoff_metrics_summary` removed from D-grade listing; new helpers all report C-grade or lower.
+
+impacted_files:
+- `07_implementation/src/playlist/reporting.py`: added 8 helper functions, refactored main function
+
+review_date: 2026-04-19
+
+evidence_basis:
+- Deterministic repeatability run remains green: BL-013 `BL013-ENTRYPOINT-20260418-040456-884132`, BL-009 `BL009-OBSERVE-20260418-040529-209714`, BL-010 `BL010-REPRO-20260418-040530`, `deterministic_match=True`.
+- Chapter 5 Table 5.3 now references current full-contract wrapper authority (`BL013-ENTRYPOINT-20260418-035540-208118`, `BL014-SANITY-20260418-035641-651065`) and explicit stage-flow traceability evidence (`stage_execution`).
+
+impacted_files:
+- `08_writing/chapter5.md`
+- `09_quality_control/ui003_claim_verdicts_ch3_ch5.md`
+- `00_admin/decision_log.md`
+- `00_admin/change_log.md`
+- `00_admin/thesis_state.md`
+- `00_admin/timeline.md`
+
+review_date:
+none
+
+id: D-200
+date: 2026-04-18
+proposed_by: Copilot
+status: accepted
+decision_summary: Implement UNDO-Q via a bounded additive BL-009 run-log contract (`cross_stage_influence_attribution_summary`) instead of introducing new cross-stage execution paths. The summary must link influence evidence across BL-004, BL-005/BL-006, BL-007, and BL-009 with stable keys and minimal integration risk.
+rationale: Existing stages already emit the required influence-effect evidence, but chapter-facing interpretation required one concise cross-stage surface. A run-log-level additive contract improves interpretability and traceability without altering retrieval/scoring/assembly behavior.
+alternatives_considered:
+- Add a new orchestration stage for cross-stage narrative synthesis (rejected: unnecessary execution complexity for a non-blocking interpretability enhancement).
+- Push the linkage only into chapter documentation (rejected: no machine-readable audit surface).
+- Encode this only in transparency payload builders (rejected: BL-009 is the canonical run-level observability contract).
+evidence_basis: `build_cross_stage_influence_attribution_summary()` now emits schema `cross-stage-influence-attribution-v1` into BL-009 run logs; unit tests added in `test_observability_signal_mode_summary.py`; full suite remains green (`622/622`).
+impacted_files:
+- `07_implementation/src/observability/main.py`
+- `07_implementation/tests/test_observability_signal_mode_summary.py`
+- `00_admin/unresolved_issues.md`
+- `00_admin/change_log.md`
+- `00_admin/decision_log.md`
+- `00_admin/thesis_state.md`
+- `00_admin/timeline.md`
+
+review_date:
+none
+
+id: D-198
+date: 2026-04-18
+status: accepted
+
+context:
+Transparency/control design documents still contained pre-hardening limitation wording that no longer matched implemented BL-005, BL-007, BL-008, and BL-009 behavior. The user requested implementation start and explicitly required remaining improvements to be captured in unresolved issues.
+
+decision:
+Execute a bounded documentation-authority synchronization wave across transparency/control design files, then register remaining transparency-depth enhancements as deferred non-blocking unresolved items rather than reopening active implementation blockers.
+
+alternatives_considered:
+- Keep existing design wording unchanged until final packaging freeze (rejected: preserves avoidable stale claims)
+- Open new active unresolved implementation blockers for all remaining transparency-depth items (rejected: misclassifies quality-depth enhancements as blocking defects)
+- Update only `TRANSPARENCY_SPEC.md` and leave related design files unsynchronized (rejected: creates cross-design inconsistency)
+
+rationale:
+The bounded doc-sync approach keeps design authority truthful to current implementation while preserving scope discipline. Classifying remaining items as deferred non-blocking keeps future work visible without overstating current defects.
+
+evidence_basis:
+- `05_design/TRANSPARENCY_SPEC.md`, `05_design/transparency_design.md`, `05_design/transparency_design_addendum.md`, `05_design/CONTROL_SURFACE_REGISTRY.md`, and `05_design/controllability_design.md` now align to implemented transparency/control surfaces.
+- `00_admin/unresolved_issues.md` now includes deferred non-blocking items `UNDO-P` and `UNDO-Q` for counterfactual-depth and cross-stage influence-attribution enhancements.
+
+impacted_files:
+- `05_design/TRANSPARENCY_SPEC.md`
+- `05_design/transparency_design.md`
+- `05_design/transparency_design_addendum.md`
+- `05_design/CONTROL_SURFACE_REGISTRY.md`
+- `05_design/controllability_design.md`
+- `00_admin/unresolved_issues.md`
+- `00_admin/decision_log.md`
+- `00_admin/change_log.md`
+- `00_admin/thesis_state.md`
+- `00_admin/timeline.md`
+
+review_date:
+none
+
+id: D-199
+date: 2026-04-18
+proposed_by: Copilot
+status: accepted
+decision_summary: Implement UNDO-P as a bounded additive extension to `bounded_what_if_estimates` rather than a separate scenario-run pipeline. The per-control-family structure reuses existing decision-row feature scores (including language-filtered rows whose threshold scores are available at decision time) and makes the language-filter counterfactual directly computable without a re-retrieval run. Assembly limits are explicitly marked out-of-BL-005-scope, with cross-stage attribution deferred to UNDO-Q.
+rationale: A full rerun-level counterfactual would require infrastructure changes (separate re-retrieval context, output routing) that exceed the bounded scope of UNDO-P. The row-level re-evaluation approach preserves the existing deterministic contract and is fully compatible with BL-010 replay verification. The `per_control_family_scenarios` key is additive and does not break any existing output consumer.
+alternatives_considered:
+- Full re-retrieval pipeline for each control-family scenario (rejected: too invasive, out of scope for a deferred non-blocking improvement).
+- Adding a separate CLI mode for what-if runs (deferred: would be appropriate for a future UNDO-P extension if deeper analysis is needed).
+evidence_basis: 621/621 tests pass; `per_control_family_scenarios.language_filter.disabled_kept_candidates` is computed from language-filtered row scores which are populated at evaluation time in `keep_decision`.
+impacted_files:
+- `07_implementation/src/retrieval/stage.py`
+- `07_implementation/tests/test_retrieval_stage.py`
+
+review_date:
+none
+
+id: D-196
+date: 2026-04-18
+status: accepted
+
+context:
+Chapter/QC evidence surfaces still referenced older wrapper authorities and did not explicitly connect the new BL-013 `stage_execution` reporting to chapter-facing implementation evidence framing.
+
+decision:
+Adopt a two-tier run-evidence authority pattern for chapter-facing references: (1) latest full-contract BL-013/BL-014 pair for canonical wrapper validation authority, and (2) latest deterministic BL-013 verification run for stage-flow traceability (`stage_execution`) evidence.
+
+alternatives_considered:
+- Keep chapter/QC references pinned to older run IDs (rejected: stale evidence pointers)
+- Replace all chapter-facing wrapper references with deterministic-only runs (rejected: loses paired BL-014 authority)
+- Track stage-flow metadata only in admin logs, not chapter/QC surfaces (rejected: weakens chapter evidence continuity)
+
+rationale:
+The two-tier pattern preserves canonical full-contract authority while making the new stage-flow traceability surface explicit and inspectable where chapter implementation evidence is summarized.
+
+evidence_basis:
+- Second deterministic repeatability run passed: BL-013 `BL013-ENTRYPOINT-20260418-040456-884132`, BL-009 `BL009-OBSERVE-20260418-040529-209714`, BL-010 `BL010-REPRO-20260418-040530`, `deterministic_match=True`.
+- `stage_execution` block remains coherent (`executed_stage_count=8`, `executed_non_requested_stages=["BL-010"]`, no duplicate requested-stage executions).
+- Chapter/QC references updated in `08_writing/chapter4.md` and key `09_quality_control` ledgers.
+
+impacted_files:
+- `08_writing/chapter4.md`
+- `09_quality_control/claim_evidence_map.md`
+- `09_quality_control/ui003_claim_verdicts_ch3_ch5.md`
+- `09_quality_control/chapter_readiness_checks.md`
+- `09_quality_control/consistency_audit.md`
+- `00_admin/decision_log.md`
+- `00_admin/change_log.md`
+- `00_admin/thesis_state.md`
+- `00_admin/timeline.md`
+
+review_date:
+none
+
+id: D-195
+date: 2026-04-18
+status: accepted
+
+context:
+After fixing refresh-seed duplication, BL-013 summaries still required manual inspection of `stage_results` to understand execution flow differences between requested stage order and actual run sequence. This reduced audit clarity for optional-stage and pre-loop execution paths.
+
+decision:
+Add an explicit `stage_execution` metadata block to BL-013 summary artifacts that reports requested order, executed sequence, requested-stage execution sequence, requested stages not executed, executed non-requested stages, and duplicate requested-stage executions.
+
+alternatives_considered:
+- Keep only legacy fields (`requested_stage_order`, `executed_stage_count`) and rely on raw `stage_results` parsing (rejected: higher audit friction)
+- Replace existing fields entirely with the new block (rejected: unnecessary compatibility risk)
+- Infer this only in downstream QC scripts (rejected: should be first-class orchestration output)
+
+rationale:
+The additive summary block preserves backward compatibility while making stage-flow interpretation explicit and machine-readable for both runtime triage and chapter-facing evidence extraction.
+
+evidence_basis:
+- `orchestration/summary_builder.py` now emits `stage_execution` in BL-013 summaries.
+- New/updated tests pass: focused orchestration suite (`5/5`) covering summary metadata and stage-order behavior.
+- Live BL-013 run confirms expected metadata shape: BL-013 `BL013-ENTRYPOINT-20260418-040101-368238`, BL-009 `BL009-OBSERVE-20260418-040140-005675`, BL-010 `BL010-REPRO-20260418-040141`, with `stage_execution.executed_non_requested_stages=["BL-010"]` and `duplicate_requested_stage_executions={}`.
+
+impacted_files:
+- `07_implementation/src/orchestration/summary_builder.py`
+- `07_implementation/tests/test_orchestration_summary_builder.py`
+- `00_admin/decision_log.md`
+- `00_admin/change_log.md`
+- `00_admin/thesis_state.md`
+- `00_admin/timeline.md`
+
+review_date:
+none
+
+id: D-194
+date: 2026-04-18
+status: accepted
+
+context:
+Live BL-013 runs with `--refresh-seed` still executed BL-003 twice: once in explicit refresh mode and once again in the main stage loop because `BL-003` remained in `stage_order`. This inflated `executed_stage_count` and added unnecessary runtime without improving outputs.
+
+decision:
+When refresh-seed mode is active, execute BL-003 exactly once by excluding `BL-003` from the subsequent main stage loop while preserving `requested_stage_order` in the summary for intent traceability.
+
+alternatives_considered:
+- Keep duplicate execution as a harmless implementation detail (rejected: unnecessary runtime and noisier run evidence)
+- Remove explicit refresh pre-run and rely only on stage-order BL-003 (rejected: weakens explicit refresh behavior and guard intent)
+- Mutate requested stage_order in summary output (rejected: obscures requested intent versus executed flow)
+
+rationale:
+Separating requested order from executed order preserves auditability while preventing duplicate BL-003 work. This keeps refresh semantics explicit and efficient.
+
+evidence_basis:
+- `orchestration/main.py` now builds an execution-stage order that omits `BL-003` only when refresh-seed mode is active.
+- New tests pass in `tests/test_orchestration_main.py`, and focused orchestration regression suite passes (`8/8`).
+- Live BL-013 rerun confirms deduplication: `BL013-ENTRYPOINT-20260418-035004-533622` reports `requested_stage_order` including BL-003, `executed_stage_count=8`, and only one BL-003 stage in `stage_results`; BL-009 `BL009-OBSERVE-20260418-035108-227347`, BL-010 `BL010-REPRO-20260418-035110`, `deterministic_match=True`.
+
+impacted_files:
+- `07_implementation/src/orchestration/main.py`
+- `07_implementation/tests/test_orchestration_main.py`
+- `00_admin/decision_log.md`
+- `00_admin/change_log.md`
+- `00_admin/thesis_state.md`
+- `00_admin/timeline.md`
+
+review_date:
+none
+
+id: D-193
+date: 2026-04-18
+status: accepted
+
+context:
+After BL-013 deterministic verification and BL-010 validation cleanup were in place, the next live run still exposed a BL-005 handshake warning: retrieval expected `match_confidence_score` in the BL-004 seed-trace artifact, but BL-004 only consumed that field transiently during aggregation and dropped it from `bl004_seed_trace.csv`.
+
+decision:
+Treat `match_confidence_score` as part of the downstream BL-004 seed-trace contract, not just an internal aggregation input. Preserve the normalized confidence value in each emitted seed-trace row so BL-005 can validate and reuse the same confidence continuity that BL-004 already applies when computing effective weights.
+
+alternatives_considered:
+- Relax BL-005 to stop checking seed-trace confidence continuity (rejected: weakens the BL-004 to BL-005 contract)
+- Derive the confidence only from BL-004 profile diagnostics downstream (rejected: indirect and less traceable than carrying it in the seed-trace artifact)
+- Re-validate against BL-003 seed rows inside BL-005 instead of BL-004 outputs (rejected: bypasses the actual downstream artifact contract)
+
+rationale:
+BL-005 should validate the artifact it actually consumes. Emitting `match_confidence_score` in `bl004_seed_trace.csv` preserves contract continuity, removes the false warning from supported live runs, and keeps downstream behavior aligned with BL-004's own weighting semantics.
+
+evidence_basis:
+- `profile/stage.py` now writes `match_confidence_score` into BL-004 seed-trace rows.
+- New regression coverage in `tests/test_profile_stage.py` passes and targeted BL-004/BL-005 tests pass (`33/33`).
+- Live BL-013 rerun confirmed BL-005 passes with empty stderr while BL-010 remains deterministic: BL-013 `BL013-ENTRYPOINT-20260418-034219-348229`, BL-009 `BL009-OBSERVE-20260418-034310-993053`, BL-010 `BL010-REPRO-20260418-034312` (`deterministic_match=True`).
+
+impacted_files:
+- `07_implementation/src/profile/stage.py`
+- `07_implementation/tests/test_profile_stage.py`
+- `00_admin/decision_log.md`
+- `00_admin/change_log.md`
+- `00_admin/thesis_state.md`
+- `00_admin/timeline.md`
+
+review_date:
+none
+
+id: D-173
+date: 2026-04-17
+status: accepted
+
+context:
+UNDO-C remained open after UNDO-I because BL-005 threshold diagnostics existed but run-level candidate-shaping visibility was still fragmented: pool-size progression, exclusion-category attribution, and control-effect observability were not exposed as one explicit contract, and BL-014 had no policy-backed completeness gate for this design requirement.
+
+decision:
+Implement UNDO-C in a single additive hardening wave: (1) add BL-005 `candidate_shaping_fidelity` diagnostics block (`pool_progression`, `exclusion_categories`, `control_effect_observability`, `threshold_effects`), (2) propagate these surfaces in BL-009 (`stage_diagnostics.retrieval` plus `retrieval_fidelity_summary`), and (3) enforce BL-014 policy-backed completeness via `gate_bl005_candidate_shaping_diagnostics_contract` and `advisory_bl005_candidate_shaping_diagnostics_contract` with config-first policy resolution (`bl005_candidate_shaping_diagnostics_contract_policy`) and warn/strict semantics.
+
+alternatives_considered:
+- Keep advisory-only posture for UNDO-C contract completeness (insufficient hardening for strict evaluation runs)
+- Implement BL-005-only diagnostics without BL-009 run-summary surfacing (insufficient chapter-facing visibility)
+- Split into two tranches (diagnostics first, gate later) despite mature gate pattern in current BL-014 surface
+
+rationale:
+The repository now has a stable contract-hardening pattern (UNDO-G/H/I/D): additive diagnostics, config-first policy resolution, warn-safe defaults, and strict fail-fast option. Applying the same pattern to UNDO-C closes the candidate-generation visibility gap while preserving baseline behavior and compatibility.
+
+evidence_basis:
+- focused pytest passed: 78/78 (retrieval + observability + sanity checks)
+- full pytest passed: 588/588
+- pyright passed: 0 errors
+- full contract pass: BL-013 `BL013-ENTRYPOINT-20260417-180608-473274`, BL-014 `BL014-SANITY-20260417-180636-403769` (`36/36`)
+
+impacted_files:
+- `07_implementation/src/retrieval/stage.py`
+- `07_implementation/src/observability/main.py`
+- `07_implementation/src/quality/sanity_checks.py`
+- `07_implementation/tests/test_retrieval_stage.py`
+- `07_implementation/tests/test_observability_signal_mode_summary.py`
+- `07_implementation/tests/test_quality_sanity_checks.py`
+
+review_date:
+none
+
+id: D-192
+date: 2026-04-18
+status: accepted
+
+context:
+After the BL-013 deterministic verification mode was working, live replay runs still emitted BL-010 validation warnings for missing files that no longer exist under the active artifact naming scheme. The validator was enforcing legacy BL-003 to BL-008 filenames rather than the current canonical outputs already used elsewhere in the implementation.
+
+decision:
+Align BL-010 input validation to current canonical artifact names while retaining legacy aliases as compatibility fallbacks. Validate against the active sibling-stage outputs (`bl003_ds001_spotify_summary.json`, `profile_summary.json`, `bl005_candidate_diagnostics.json`, `bl006_score_summary.json`, `bl007_assembly_report.json`, `bl008_explanation_payloads.json`) and keep legacy observability-local names as acceptable alternates.
+
+alternatives_considered:
+- Keep warn-only legacy filenames indefinitely (rejected: produces misleading live-run diagnostics)
+- Remove validation entirely (rejected: weakens BL-010 input contract)
+- Recreate deprecated files just to satisfy validation (rejected: unnecessary output duplication and backward drift)
+
+rationale:
+The validator should reflect the active artifact contract. Accepting both canonical and legacy paths removes false warnings without losing compatibility for older layouts.
+
+evidence_basis:
+- `reproducibility/input_validation.py` now validates current canonical upstream artifacts and legacy aliases.
+- New tests pass in `tests/test_reproducibility_input_validation.py`.
+- Live BL-013 rerun confirmed BL-010 passes without stale missing-file warnings: BL-013 `BL013-ENTRYPOINT-20260418-032935-354168`, BL-009 `BL009-OBSERVE-20260418-033101-123504`, BL-010 `BL010-REPRO-20260418-033103` with empty stderr and `deterministic_match=True`.
+
+impacted_files:
+- `07_implementation/src/reproducibility/input_validation.py`
+- `07_implementation/tests/test_reproducibility_input_validation.py`
+- `00_admin/decision_log.md`
+- `00_admin/change_log.md`
+- `00_admin/thesis_state.md`
+- `00_admin/timeline.md`
+
+review_date:
+none
+
+id: D-191
+date: 2026-04-18
+status: accepted
+
+context:
+First live execution of BL-013 deterministic verification mode exposed a status-accounting defect: when BL-010 was appended as a verification stage and all stages passed, summary `overall_status` could still resolve to `fail` because `finalize_run()` compared `len(stage_results)` against an expected count that did not include deterministic verification.
+
+decision:
+Treat BL-013 run success as fail-free stage semantics, not fixed stage-count equality. Update orchestration summary status logic so `overall_status` is `pass` when no stage has `status=fail`, and add a targeted regression test that covers successful deterministic-verification runs including BL-010.
+
+alternatives_considered:
+- Extend expected-stage-count arithmetic for each optional branch (rejected: brittle and likely to regress with future optional stages)
+- Remove deterministic verification from BL-013 path (rejected: contradicts the intended operability upgrade)
+
+rationale:
+Pass/fail semantics should be bound to explicit stage outcomes. This preserves accurate status reporting across optional orchestration branches while remaining additive and backward-compatible.
+
+evidence_basis:
+- Code fix in `orchestration/summary_builder.py` sets pass/fail from stage failure presence only.
+- New regression coverage in `tests/test_orchestration_summary_builder.py` passes.
+- Live execution with deterministic verification and seed refresh now reports pass: BL-013 `BL013-ENTRYPOINT-20260418-032001-486177`, BL-009 `BL009-OBSERVE-20260418-032047-067252`, BL-010 `BL010-REPRO-20260418-032048` with `deterministic_match=True`.
+
+impacted_files:
+- `07_implementation/src/orchestration/summary_builder.py`
+- `07_implementation/tests/test_orchestration_summary_builder.py`
+- `00_admin/decision_log.md`
+- `00_admin/change_log.md`
+- `00_admin/thesis_state.md`
+- `00_admin/timeline.md`
+
+review_date:
+none
+
+id: D-190
+date: 2026-04-18
+status: accepted
+
+context:
+Post-cleanup implementation triage highlighted two high-utility operability upgrades that remained additive and low-risk: (1) make run-config schema authority explicit in generated run-intent/effective artifacts, and (2) provide a one-command deterministic verification mode from BL-013 instead of requiring manual BL-010 invocation.
+
+decision:
+Implement both upgrades in a bounded additive slice. Add a canonical JSON schema artifact reference for `run-config-v1` into run-intent/run-effective payloads and expose optional BL-013 deterministic verification controls (`determinism_verify_on_success`, `determinism_verify_replay_count`) with CLI overrides (`--verify-determinism`, `--verify-determinism-replay-count`) that trigger a post-success BL-010 replay run.
+
+alternatives_considered:
+- Keep schema authority implicit in Python-only validators (rejected: weaker external auditability)
+- Add deterministic verification as a separate script only (rejected: less operable than orchestration-level switch)
+- Insert BL-010 directly into default BL-013 stage order (rejected: would change baseline runtime semantics unexpectedly)
+
+rationale:
+This keeps default behavior unchanged while adding explicit contract traceability and an opt-in reproducibility verification path suitable for closeout and reviewer-facing runs.
+
+evidence_basis:
+- `run_config_utils` now embeds `run_config_schema` metadata (version/path/hash) in run-intent and run-effective artifacts.
+- BL-013 now supports config/CLI-driven deterministic verification and can execute BL-010 replay with controlled replay count after successful stage execution.
+- Validation passed: `pytest 613/613`; `pyright 0`.
+
+impacted_files:
+- `07_implementation/src/shared_utils/constants.py`
+- `07_implementation/src/run_config/run_config_utils.py`
+- `07_implementation/src/run_config/schemas/run_config-v1.schema.json`
+- `07_implementation/src/orchestration/cli.py`
+- `07_implementation/src/orchestration/main.py`
+- `07_implementation/src/orchestration/stage_runner.py`
+- `07_implementation/src/orchestration/summary_builder.py`
+- `07_implementation/tests/test_orchestration_stage_runner.py`
+- `07_implementation/tests/test_run_config_utils.py`
+
+review_date:
+none
+
+id: D-174
+date: 2026-04-17
+status: accepted
+
+context:
+Controllability evaluation (BL-011) revealed that influence-track control produces zero measured effect (overlap_ratio=1.0, rank_delta=0.0) under current indirect seed-injection + profile-merge design. However, infrastructure for direct influence-slot reservation already exists in the codebase (`influence_reserved_slots` control, genre/consecutive/score override flags) but is disabled by default and underdocumented. Decision: activate this capability to provide users with measurable, guaranteed control over influence-track inclusion.
+
+decision:
+Enable and document influence-slot reservation as the primary mechanism for user control over influence-track inclusion. (1) Document the existing control surface (`influence_reserved_slots` from 0 to target_size, genre_cap_override, consecutive_override, score_threshold_override), (2) update controllability design docs to position influence slots as the solution to the weak indirect-effect problem, (3) create example run-configs showing how to enable slots (typical: 3-5 slots for 10-track playlist), (4) add comprehensive test coverage demonstrating effect measurability (target: overlap_ratio 0.6-0.8 when slots enabled vs 1.0 when disabled), and (5) document in BL-009 observability output the slot-reservation success metrics.
+
+alternatives_considered:
+- Re-engineer influence-track injection to produce stronger profile shifts (high complexity, ungrounded design)
+- Remove influence-track control entirely (loses user intent expression)
+- Keep current indirect mechanism but add opt-in advisory warnings when effect is zero (insufficient solution)
+
+rationale:
+The slot-reservation infrastructure is mature, tested, and ready for activation. Documenting and enabling it restores the control-to-effect principle without new implementation risk. Users who need guaranteed inclusion of user-selected tracks can now enable slots; baseline users (slots=0) see no change.
+
+evidence_basis:
+- Existing tests: `test_assemble_bucketed_reserves_influence_slots` passes, infrastructure is integrated
+- Current behavior: slots=0 (default) produces zero effect, consistent with BL-011 findings
+- Design gap: controllability_design.md states influence tracks are weak but doesn't document the slot-reservation solution
+- Code path: influence slots flow through BL-007 assembly rules with override flags when enabled
+
+impacted_files:
+- `05_design/controllability_design.md` (documentation update)
+- `05_design/controllability_design_addendum.md` (documentation update)
+- `05_design/CONTROL_SURFACE_REGISTRY.md` (add influence-slot entry)
+- `configs/examples/run_config_influence_slots_enabled.json` (new example)
+- `07_implementation/tests/test_playlist_assembly.py` (enhanced test coverage)
+- `07_implementation/src/observability/main.py` (expose slot metrics)
+
+review_date:
+none
+
+id: D-175
+date: 2026-04-17
+status: accepted
+
+context:
+A Chapter 3 vs implementation weak-spot review identified concrete fidelity-depth gaps and interpretation-boundary risks that were not represented in active unresolved governance. The unresolved registry still reported no active items, which made follow-up execution non-actionable and created posture drift against chapter-facing analysis.
+
+decision:
+Formalize the review findings as a new active non-blocking unresolved set (`UNDO-J` through `UNDO-O`) in `00_admin/unresolved_issues.md`, each with explicit trigger, description, implementation contact, and blocking posture. Synchronize `00_admin/thesis_state.md` and `00_admin/timeline.md` so implementation-next-step guidance reflects this new active follow-up set.
+
+alternatives_considered:
+- Keep findings only in chat response without governance updates (rejected: non-persistent and not execution-trackable)
+- Reuse old `UNDO-E`/`UNDO-F` IDs for new findings (rejected: semantic drift and historical ambiguity)
+- Add one generic unresolved bucket entry (rejected: weak traceability and poor stage mapping)
+
+rationale:
+Explicit unresolved items are required to convert analysis into execution-ready governance. Using a new ID family (`UNDO-J` to `UNDO-O`) preserves historical integrity of the prior UNDO set while making the follow-up slices concrete and auditable.
+
+evidence_basis:
+- `00_admin/unresolved_issues.md` now contains six active entries (`UNDO-J` through `UNDO-O`) that fully capture the identified weak spots.
+- `00_admin/thesis_state.md` implementation-status and next-work posture now references the new active set.
+- `00_admin/timeline.md` includes a synced REB-M3 status update for the new unresolved follow-up wave.
+
+impacted_files:
+- `00_admin/unresolved_issues.md`
+- `00_admin/thesis_state.md`
+- `00_admin/timeline.md`
+- `00_admin/decision_log.md`
+- `00_admin/change_log.md`
+
+review_date:
+none
+
+id: D-172
+date: 2026-04-17
+status: accepted
+
+context:
+UNDO-D tranche 1 delivered sensitivity diagnostics and advisory visibility, but BL-014 did not yet enforce policy-backed contract posture for enabled scoring sensitivity diagnostics. The remaining design-verification risk was that missing diagnostics could remain advisory-only under configurations intended to be strict.
+
+decision:
+Implement UNDO-D tranche 2 as a policy-backed BL-014 gate for BL-006 scoring sensitivity contract completeness. Add `resolve_bl006_scoring_sensitivity_gate_policy` (config-first from BL-009 run-config observability validation policies, then environment/default fallback), `bl006_scoring_sensitivity_contract_gate_result` (warn/strict semantics), and run-surface reporting in BL-014 config snapshot and run matrix.
+
+alternatives_considered:
+- Keep advisory-only posture for BL-006 sensitivity contract (insufficient hardening for strict runs)
+- Hard-fail by default when enabled diagnostics are incomplete (too disruptive for historical warn-safe compatibility)
+- Resolve policy only from environment variables (weaker config-first governance consistency)
+
+rationale:
+This closes UNDO-D hardening by aligning BL-006 sensitivity evidence with the same policy-backed gate model used for UNDO-I/UNDO-G/UNDO-H: warn-safe compatibility by default, strict fail-fast when explicitly configured, and config-first policy provenance.
+
+evidence_basis:
+- full pytest passed: 583/583
+- pyright passed: 0 errors
+- BL-014 now emits `gate_bl006_scoring_sensitivity_contract` with warn/strict behavior when BL-006 sensitivity diagnostics are enabled
+- BL-014 config snapshot and run matrix now include BL-006 sensitivity gate policy/status fields
+
+impacted_files:
+- `07_implementation/src/quality/sanity_checks.py`
+- `07_implementation/tests/test_quality_sanity_checks.py`
+
+review_date:
+none
+
+id: D-171
+date: 2026-04-17
+status: accepted
+
+context:
+UNDO-D required making BL-006 scoring approximation sensitivity explicit at runtime, not only through static component-contribution reporting. The design decision was whether to add a second recompute path or a bounded additive approximation diagnostic that preserves baseline behavior and runtime cost.
+
+decision:
+Implement UNDO-D tranche 1 as additive scoring sensitivity diagnostics in BL-006 using contribution-rescaling approximation (bounded perturbation on weighted contributions, no upstream recompute). Add four runtime controls (`enable_scoring_sensitivity_diagnostics`, `scoring_sensitivity_top_k`, `scoring_sensitivity_perturbation_pct`, `scoring_sensitivity_max_components`) with conservative defaults. Emit diagnostics in BL-006 summary, surface in BL-009 observability, and add a warn-safe BL-014 advisory contract check when enabled diagnostics are missing/incomplete.
+
+alternatives_considered:
+- Full recomputation sensitivity runs through candidate generation and scoring per perturbation (higher fidelity but high runtime and larger regression surface)
+- No sensitivity diagnostics and rely only on contribution means/top-candidate outputs (insufficient for UNDO-D evidence contract)
+- Gate-fail behavior by default for missing sensitivity diagnostics (too disruptive for historical runs)
+
+rationale:
+Contribution-rescaling diagnostics provide deterministic, low-risk approximation visibility for rank movement and component dominance under bounded perturbations while preserving existing recommendation behavior. Warn-safe advisory posture keeps compatibility while surfacing missing-evidence risk when controls enable sensitivity diagnostics.
+
+evidence_basis:
+- full pytest passed: 578/578
+- pyright passed: 0 errors
+- BL-006 summary now includes `scoring_sensitivity_diagnostics`
+- BL-014 advisory `advisory_bl006_scoring_sensitivity_contract` fires when sensitivity is enabled but contract evidence is incomplete
+
+impacted_files:
+- `07_implementation/src/scoring/diagnostics.py`
+- `07_implementation/src/scoring/models.py`
+- `07_implementation/src/scoring/runtime_controls.py`
+- `07_implementation/src/scoring/stage.py`
+- `07_implementation/src/shared_utils/constants.py`
+- `07_implementation/src/quality/sanity_checks.py`
+- `07_implementation/src/observability/main.py`
+- `07_implementation/tests/test_scoring_diagnostics.py`
+- `07_implementation/tests/test_scoring_stage.py`
+- `07_implementation/tests/test_quality_sanity_checks.py`
+
+review_date:
+none
+
+id: D-170
+date: 2026-04-17
+status: accepted
+
+context:
+UNDO-B required implementing sequential/transition coherence in BL-007. The design question was scope: full sequence optimisation (e.g. TSP-style), lookahead, or greedy next-track bias plus always-on diagnostics.
+
+decision:
+Implement as two bounded additions: (1) always-on `build_transition_diagnostics` that measures mean-normalised acoustic distance over [energy, valence, tempo/200] for every adjacent pair post-assembly, emitting `transition_diagnostics` into the BL-007 report regardless of weight setting; (2) opt-in `transition_smoothness_weight` (default 0.0) that adds `weight × smoothness_score(last_track, candidate)` to the utility function when `utility_strategy=utility_greedy`. Feature set: energy, valence, tempo/200 only — continuous, well-populated fields with musical interpretation. Key/mode excluded (discrete, cause artefact distance inflation). Advisory threshold: mean_smoothness < 0.5.
+
+alternatives_considered:
+- Full lookahead or TSP-style global sequence optimisation (out of scope for a greedy assembler; adds combinatorial complexity with no grounded benefit for a 10-track playlist)
+- Include key/mode in distance computation (discrete values inflate distance compared to continuous features; excluded per plan)
+- Make diagnostics conditional on weight being active (reduces observability — diagnostics should always be present for Chapter 5 evidence)
+
+rationale:
+Diagnostic-first, control-optional design satisfies the UNDO-B evidence contract: always-on diagnostics provide measurable sequential-coherence evidence for Chapter 5 regardless of whether the control is tuned. Default weight=0.0 guarantees zero behavioral change on existing runs and baselines. Scope is bounded to what a greedy assembler can implement without introducing sequential optimisation dependencies.
+
+evidence_basis:
+- pytest 574/574; pyright 0 errors
+- `transition_diagnostics` key present in bl007_assembly_report schema
+- BL-009 observability log surfaces transition_diagnostics.assembly
+
+impacted_files:
+- `07_implementation/src/playlist/rules.py`
+- `07_implementation/src/playlist/models.py`
+- `07_implementation/src/playlist/stage.py`
+- `07_implementation/src/playlist/runtime_controls.py`
+- `07_implementation/src/shared_utils/constants.py`
+- `07_implementation/src/quality/sanity_checks.py`
+- `07_implementation/src/observability/main.py`
+- `07_implementation/tests/test_playlist_rules.py`
+
+review_date:
+none
+
+id: D-169
+date: 2026-04-17
+status: accepted
+
+context:
+`ProfileStage.aggregate_inputs` in `profile/stage.py` was the sole remaining F-grade hotspot (F(82)) after all prior hygiene slices. Extracting only the post-loop validation and numeric-profile finalization would not suffice — the 170-line per-row accumulator loop contained ~45 branches.
+
+decision:
+Use a two-stage extraction: (1) move the entire loop body into `_process_seed_row` with a mutable `acc: dict[str, Any]` scalar-accumulator bundle and pass-by-reference dict/list containers; (2) further extract five sub-helpers from `_process_seed_row` targeting the interaction-count, confidence/effective-weight, weight-component reconstruction, interaction-count-components, and numeric-feature accumulation sub-blocks.
+
+alternatives_considered:
+- Extract only post-loop validation and numeric-profile helpers (insufficient — leaves loop body F-grade intact)
+- Use a dedicated `_AggState` dataclass for accumulator state (cleaner types but adds new public type to module)
+- Rewrite as a single-pass generator/pipeline (large behavioral risk)
+
+rationale:
+The `acc` dict pattern keeps all scalar counters mutable without introducing new public types, while the helper extractions produce measurable complexity reduction at each step. Two-stage approach allows verifying each step independently.
+
+evidence_basis:
+- `07_implementation/src/profile/stage.py`
+- validation: radon `aggregate_inputs - C (11)`, `_process_seed_row - D (25)`; hygiene report shows zero F-grades
+
+impacted_files:
+- `07_implementation/src/profile/stage.py`
+- `hygiene_src_report_latest.txt`
+- `00_admin/decision_log.md`
+- `00_admin/change_log.md`
+- `00_admin/thesis_state.md`
+- `00_admin/timeline.md`
+
+review_date:
+none
+
+id: D-168
+date: 2026-04-17
+status: accepted
+
+context:
+BL-014 `main` in `quality/sanity_checks.py` remained an F-grade hotspot after the first decomposition pass, and the user requested continued execution on the same target.
+
+decision:
+Apply a second extraction-first refactor in BL-014 by moving schema/gate checks, hash-link integrity checks, and continuity/advisory checks into dedicated helper functions invoked by `main`.
+
+alternatives_considered:
+- Stop after the first BL-014 refactor despite unchanged complexity score
+- Rewrite BL-014 checks end-to-end with structural behavior changes
+- Shift immediately to another module without completing BL-014 reduction
+
+rationale:
+A second bounded extraction pass preserves existing validation behavior while producing a measurable complexity reduction in `main` and cleaner phase separation.
+
+evidence_basis:
+- `07_implementation/src/quality/sanity_checks.py`
+- validation artifact: `hygiene_src_report_latest.txt` (post-refactor `main` now `D (22)`)
+
+impacted_files:
+- `07_implementation/src/quality/sanity_checks.py`
+- `hygiene_src_report_latest.txt`
+- `00_admin/decision_log.md`
+- `00_admin/change_log.md`
+- `00_admin/thesis_state.md`
+- `00_admin/timeline.md`
+
+review_date:
+none
+
+id: D-167
+date: 2026-04-17
+status: accepted
+
+context:
+BL-009 `main` remained an F-grade hotspot after earlier hygiene slices, and the user requested continued execution on highest-risk complexity areas.
+
+decision:
+Apply an extraction-first refactor in BL-009 observability: move high-branch preparation and payload assembly work out of `main` into explicit helper functions while preserving existing output schema and validation behavior.
+
+alternatives_considered:
+- Leave BL-009 unchanged and move directly to another module
+- Rewrite BL-009 logic with broad semantic changes
+- Split only small sections without centralizing context preparation
+
+rationale:
+Consolidating preparation and payload construction into helpers yields a measurable complexity reduction with low regression risk and clearer separation of concerns.
+
+evidence_basis:
+- `07_implementation/src/observability/main.py`
+- validation artifact: `hygiene_src_report_latest.txt` (post-refactor `main` now `D (26)`)
+
+impacted_files:
+- `07_implementation/src/observability/main.py`
+- `hygiene_src_report_latest.txt`
+- `00_admin/decision_log.md`
+- `00_admin/change_log.md`
+- `00_admin/thesis_state.md`
+- `00_admin/timeline.md`
+
+review_date:
+none
+
+id: D-166
+date: 2026-04-17
+status: accepted
+
+context:
+After reducing BL-003 matcher complexity, `assemble_bucketed` remained a high-severity maintainability hotspot in BL-007 (`F (53)`).
+
+decision:
+Use helper-extraction refactoring for BL-007 assembly control flow, specifically isolating threshold filtering, reserved-slot handling, candidate-order strategy, deferred exclusion finalization, and post-fill trace completion.
+
+alternatives_considered:
+- Keep BL-007 as-is and only record triage status
+- Rewrite assembly policy logic in one large semantic change
+- Move directly to a different hotspot before closing BL-007 risk
+
+rationale:
+Extraction-first decomposition lowers complexity with minimal behavioral risk and preserves the existing assembly contract, trace semantics, and policy controls.
+
+evidence_basis:
+- `07_implementation/src/playlist/rules.py`
+- validation artifact: `hygiene_src_report_latest.txt` (post-refactor `assemble_bucketed` now `E (33)`)
+
+impacted_files:
+- `07_implementation/src/playlist/rules.py`
+- `hygiene_src_report_latest.txt`
+- `00_admin/decision_log.md`
+- `00_admin/change_log.md`
+- `00_admin/thesis_state.md`
+- `00_admin/timeline.md`
+
+review_date:
+none
+
+id: D-165
+date: 2026-04-17
+status: accepted
+
+context:
+The hygiene workflow exposed `match_events` as a top complexity hotspot (`F (59)`), and the user requested continuation into actionable triage work.
+
+decision:
+Apply an extraction-first, behavior-preserving refactor for the BL-003 matcher: move strategy-loop branching and fuzzy-pass resolution into dedicated helpers, then re-run hygiene to confirm measurable reduction before selecting the next hotspot.
+
+alternatives_considered:
+- Postpone refactoring and keep triage report-only
+- Attempt broad multi-file complexity cleanup in one pass
+- Rewrite matching logic with semantic changes to reduce branch count faster
+
+rationale:
+Helper extraction provides immediate complexity reduction with lower regression risk, keeps matching behavior stable, and yields clear report deltas for incremental triage governance.
+
+evidence_basis:
+- `07_implementation/src/alignment/match_pipeline.py`
+- validation artifact: `hygiene_src_report_latest.txt` (post-refactor `match_events` now `C (20)`)
+
+impacted_files:
+- `07_implementation/src/alignment/match_pipeline.py`
+- `hygiene_src_report_latest.txt`
+- `00_admin/decision_log.md`
+- `00_admin/change_log.md`
+- `00_admin/thesis_state.md`
+- `00_admin/timeline.md`
+
+review_date:
+none
+
+id: D-164
+date: 2026-04-17
+status: accepted
+
+context:
+The active quality path covered formatting/lint/type/tests, but maintainability diagnostics for dead code and high complexity were not standardized in the implementation workflow.
+
+decision:
+Adopt an advisory-first hygiene workflow for `src` using Vulture (dead-code candidates) and Radon (complexity hotspots), with a canonical report script and optional strict-mode task for escalation.
+
+alternatives_considered:
+- Keep maintainability checks manual and ad hoc
+- Add only dead-code checks without complexity diagnostics
+- Make hygiene checks hard-fail by default
+
+rationale:
+Advisory-first rollout provides immediate visibility into maintainability risk while avoiding abrupt failures in an already validated pipeline baseline; strict mode remains available when tightening is desired.
+
+evidence_basis:
+- `07_implementation/scripts/hygiene_src.ps1`
+- `.vscode/tasks.json`
+- `07_implementation/requirements.txt`
+- `07_implementation/mentor_feedback_submission/requirements.txt`
+- validation artifact: `hygiene_src_report_latest.txt`
+
+impacted_files:
+- `07_implementation/scripts/hygiene_src.ps1`
+- `.vscode/tasks.json`
+- `07_implementation/requirements.txt`
+- `07_implementation/mentor_feedback_submission/requirements.txt`
+- `hygiene_src_report_latest.txt`
+- `00_admin/decision_log.md`
+- `00_admin/change_log.md`
+- `00_admin/thesis_state.md`
+- `00_admin/timeline.md`
+
+review_date:
+none
+
+id: D-163
+date: 2026-04-17
+status: accepted
+
+context:
+Ruff adoption (D-162) and cleanup had completed, but recurring VS Code instability and command-entry friction still made routine linting fragile for day-to-day use.
+
+decision:
+Standardize a terminal-first Ruff workflow for the active implementation surface by adding a dedicated `src` lint wrapper script, VS Code tasks for check/fix execution, and Ruff support in the venv-fallback tool runner.
+
+alternatives_considered:
+- Keep Ruff usage as ad-hoc manual commands only
+- Re-enable editor-native Ruff linting as the primary path
+- Add CI-only Ruff checks without local execution automation
+
+rationale:
+Terminal-first automation preserves editor stability while giving a repeatable, low-error execution path that is easier to run and verify during implementation sessions.
+
+evidence_basis:
+- `07_implementation/scripts/ruff_src.ps1`
+- `07_implementation/scripts/run_tool_with_venv_fallback.ps1`
+- `.vscode/tasks.json`
+- validation artifact: `ruff_src_report_latest.txt` (`All checks passed!`)
+
+impacted_files:
+- `07_implementation/scripts/ruff_src.ps1`
+- `07_implementation/scripts/run_tool_with_venv_fallback.ps1`
+- `.vscode/tasks.json`
+- `ruff_src_report_latest.txt`
+- `00_admin/decision_log.md`
+- `00_admin/change_log.md`
+- `00_admin/thesis_state.md`
+- `00_admin/timeline.md`
+
+review_date:
+none
+
+id: D-162
+date: 2026-04-17
+status: accepted
+
+context:
+The implementation workspace had typechecking and test checks but no dedicated linting contract, and the user requested a linter setup that can be used directly during coding sessions to improve code quality.
+
+decision:
+Adopt Ruff as the canonical linter for the active implementation surface, pin its version in requirements, and configure baseline lint behavior through `07_implementation/pyproject.toml` with editor-level Ruff lint integration.
+
+alternatives_considered:
+- Flake8 + isort + pycodestyle split toolchain
+- Pylint as the sole linter
+- Keep quality checks limited to tests and pyright only
+
+rationale:
+Ruff provides broad lint-rule coverage with strong performance and low operational overhead, making it suitable for frequent local and CI-adjacent quality checks while preserving deterministic project tooling.
+
+evidence_basis:
+- `07_implementation/requirements.txt`
+- `07_implementation/mentor_feedback_submission/requirements.txt`
+- `07_implementation/pyproject.toml`
+- `.vscode/settings.json`
+- environment installation evidence: `ruff==0.11.8`
+
+impacted_files:
+- `07_implementation/requirements.txt`
+- `07_implementation/mentor_feedback_submission/requirements.txt`
+- `07_implementation/pyproject.toml`
+- `.vscode/settings.json`
+- `00_admin/decision_log.md`
+- `00_admin/change_log.md`
+- `00_admin/thesis_state.md`
+
+review_date:
+none
 
 id: D-161
 date: 2026-04-17
@@ -1568,7 +2460,844 @@ review_date: none
 - rationale: Adding the requirement to BL-009 section validation plus direct tests creates an immediate contract boundary that prevents recurrence of the nesting omission.
 - evidence_basis: `07_implementation/src/observability/main.py` (`ensure_required_sections` now requires `validity_boundaries`), new test file `07_implementation/tests/test_observability_required_sections.py`, validation passes: pytest `338/338`, BL-013 pass (`BL013-ENTRYPOINT-20260412-141352-373476`), BL-014 pass (`BL014-SANITY-20260412-141423-183313`, `28/28`), tranche-3 gate pass (`REB-M3-TRANCHE3-GATE-20260412-141431-157169`, `9/9`).
 - impacted_files: `07_implementation/src/observability/main.py`, `07_implementation/tests/test_observability_required_sections.py`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/timeline.md`
+
+## D-213
+- date: 2026-04-18
+- status: accepted
+
+context:
+After C-503 reduced BL-011 retrieval/scoring stage complexity, the next maintainability hotspot was orchestration entrypoint flow concentration in `orchestration/main.py`. The objective was to reduce complexity without altering BL-013 runtime behavior or output contracts.
+
+decision:
+Apply behavior-preserving helper extraction in `orchestration/main.py`, splitting orchestration control flow into internal helpers for run-config resolution, effective-control derivation, freshness guard handling, seed-refresh execution, stage-loop execution, and optional BL-010 deterministic verification replay.
+
+alternatives_considered:
+- Keep a single large `main()` function and only add comments (rejected: does not reduce measured complexity pressure).
+- Move helper logic across multiple modules in one slice (rejected: broader surface area and higher regression risk for this bounded update).
+- Defer orchestration complexity work and target unrelated hotspots first (rejected: orchestration remained one of the highest immediate maintainability risks).
+
+rationale:
+Internal helper extraction within the same module yields measurable maintainability gains while keeping call boundaries local and minimizing behavioral risk.
+
+evidence_basis:
+- `07_implementation/src/orchestration/main.py` now contains dedicated helpers for each orchestration phase and a slimmer top-level flow.
+- Validation passed after refactor: Ruff clean, pyright `0 errors`, pytest `622/622`.
+- Hygiene report no longer lists an elevated complexity hotspot for orchestration `main`; complexity visibility is shifted to helper-level `C (11)` entry (`_resolve_effective_orchestration_state`).
+
+impacted_files:
+- `07_implementation/src/orchestration/main.py`
+- `hygiene_src_report_latest.txt`
+- `ruff_src_report_latest.txt`
+- `duplicate_src_report_latest.txt`
+- `00_admin/decision_log.md`
+- `00_admin/change_log.md`
+- `00_admin/thesis_state.md`
+- `00_admin/timeline.md`
+
+review_date:
+none
+
+## D-214
+- date: 2026-04-18
+- status: accepted
+
+context:
+After C-504, the highest remaining implementation hotspot in the active maintainability wave was `assemble_bucketed` in BL-007 playlist assembly (`playlist/rules.py`), still carrying elevated branching complexity.
+
+decision:
+Refactor `assemble_bucketed` by extracting candidate-level policy/decision logic into internal helpers (`_resolve_candidate_override_flags`, `_resolve_inclusion_path`, `_apply_candidate_decision`) while preserving candidate ordering, override semantics, trace-row shape, and final playlist behavior.
+
+alternatives_considered:
+- Keep `assemble_bucketed` monolithic and only add comments (rejected: does not address measured complexity).
+- Rewrite assembly strategy boundaries in this slice (rejected: behavior-risk too high for bounded maintainability work).
+- Move helper logic into separate modules immediately (rejected: larger surface and avoidable integration risk in this step).
+
+rationale:
+Focused in-module extraction lowers cognitive and measured complexity with minimal behavioral risk, keeping this slice strictly maintainability-oriented.
+
+evidence_basis:
+- `07_implementation/src/playlist/rules.py` now delegates candidate override, inclusion-path, and apply/trace responsibilities to helper functions.
+- Validation stayed green: focused playlist rules (`24/24`), full pytest (`622/622`), pyright (`0 errors`), Ruff clean.
+- Hygiene report shows `assemble_bucketed` reduced from `E (33)` to `D (24)`.
+
+impacted_files:
+- `07_implementation/src/playlist/rules.py`
+- `07_implementation/tests/test_playlist_rules.py`
+- `hygiene_src_report_latest.txt`
+- `ruff_src_report_latest.txt`
+- `duplicate_src_report_latest.txt`
+- `00_admin/decision_log.md`
+- `00_admin/change_log.md`
+- `00_admin/thesis_state.md`
+- `00_admin/timeline.md`
+
+review_date:
+none
+
+## D-215
+- date: 2026-04-18
+- status: accepted
+
+context:
+After C-505 reduced BL-007 assembly complexity in `playlist.rules`, the next maintainability hotspot in active implementation code was the broad control-parsing branch inside `resolve_bl007_controls` in `run_config/run_config_utils.py`.
+
+decision:
+Refactor `resolve_bl007_controls` via in-module helper extraction for enum normalization and nested control-block construction (`utility_weights`, `adaptive_limits`, `controlled_relaxation`) without altering resolved control values, key names, or fallback semantics.
+
+alternatives_considered:
+- Keep the monolithic resolver and postpone run-config complexity work (rejected: leaves a prominent complexity hotspot untouched).
+- Move BL-007 resolver logic into a separate module in one step (rejected: larger integration surface and higher risk for a bounded slice).
+- Simplify by changing coercion semantics to reduce branches (rejected: would risk behavioral regression).
+
+rationale:
+Local helper extraction reduces cognitive/measured complexity while preserving the strict config-first behavior and compatibility expectations relied on by BL-007 and tests.
+
+evidence_basis:
+- `07_implementation/src/run_config/run_config_utils.py` now includes `_resolve_bl007_enum`, `_resolve_bl007_utility_weights`, `_resolve_bl007_adaptive_limits`, `_resolve_bl007_controlled_relaxation` used by `resolve_bl007_controls`.
+- Validation remained green: focused `test_run_config_utils.py` (`35/35`), full pytest (`622/622`), pyright (`0 errors`), Ruff clean, duplicate advisory clear.
+- Hygiene report no longer lists `resolve_bl007_controls`; complexity is represented at helper-level `C` entries.
+
+impacted_files:
+- `07_implementation/src/run_config/run_config_utils.py`
+- `07_implementation/tests/test_run_config_utils.py`
+- `hygiene_src_report_latest.txt`
+- `ruff_src_report_latest.txt`
+- `duplicate_src_report_latest.txt`
+- `00_admin/decision_log.md`
+- `00_admin/change_log.md`
+- `00_admin/thesis_state.md`
+- `00_admin/timeline.md`
+
+review_date:
+none
+
+## D-216
+- date: 2026-04-18
+- status: accepted
+
+context:
+After C-506, BL-014 still contained an E-grade hotspot around explanation-fidelity checks in `bl008_explanation_fidelity_warnings`, with dense per-payload validation logic concentrated in one function.
+
+decision:
+Extract payload-level warning logic into `_bl008_explanation_payload_warnings` and keep `bl008_explanation_fidelity_warnings` as a minimal iterator/aggregator, preserving warning IDs, thresholds, and message formats.
+
+alternatives_considered:
+- Keep the monolithic function and defer BL-014 hotspot reduction (rejected: leaves prominent complexity risk unchanged).
+- Split checks into multiple modules in one slice (rejected: unnecessary breadth for bounded refactor).
+- Alter warning criteria to simplify flow (rejected: would risk behavior drift).
+
+rationale:
+Single-function helper extraction reduces complexity concentration while preserving existing diagnostic contract behavior and test expectations.
+
+evidence_basis:
+- `07_implementation/src/quality/sanity_checks.py` now includes `_bl008_explanation_payload_warnings` and simplified aggregation in `bl008_explanation_fidelity_warnings`.
+- Focused sanity tests passed (`69/69`), full suite passed (`622/622`), pyright (`0 errors`), Ruff clean, duplicate advisory clear.
+- Hygiene report no longer lists `bl008_explanation_fidelity_warnings` as the E-grade hotspot; new helper is reported at D-grade (`D (30)`).
+
+impacted_files:
+- `07_implementation/src/quality/sanity_checks.py`
+- `07_implementation/tests/test_quality_sanity_checks.py`
+- `hygiene_src_report_latest.txt`
+- `ruff_src_report_latest.txt`
+- `duplicate_src_report_latest.txt`
+- `00_admin/decision_log.md`
+- `00_admin/change_log.md`
+- `00_admin/thesis_state.md`
+- `00_admin/timeline.md`
+
+review_date:
+none
+
+## D-217
+- date: 2026-04-18
+- status: accepted
+
+context:
+After C-507, the remaining E-grade complexity hotspot was `context_from_mapping` in `retrieval/models.py`, which combined multiple parsing concerns (spec normalization, set coercion, mapping coercion, optional-int handling) in a single compatibility bridge.
+
+decision:
+Refactor retrieval context parsing by extracting focused helper functions for each conversion concern and keep `context_from_mapping` as a thin composition layer that preserves defaults and field semantics.
+
+alternatives_considered:
+- Keep the monolithic compatibility bridge and defer retrieval parsing cleanup (rejected: leaves the last retrieval E-grade hotspot unresolved).
+- Replace compatibility bridge with strict typed parsing rules (rejected: behavior-risk and backward-compatibility impact).
+- Move parsing helpers into a separate module in this slice (rejected: broader change scope than needed).
+
+rationale:
+In-module helper extraction lowers complexity concentration while preserving existing compatibility behavior and minimizing refactor risk.
+
+evidence_basis:
+- `07_implementation/src/retrieval/models.py` now uses `_active_numeric_specs_from_payload`, `_mapping_to_float_dict`, `_payload_str_set`, `_payload_optional_int`, and `_payload_signal_mode` inside `context_from_mapping`.
+- Focused retrieval tests passed (`17/17`), full pytest passed (`622/622`), pyright (`0 errors`), Ruff clean.
+- Hygiene report no longer lists `retrieval.models.context_from_mapping` as a hotspot.
+
+impacted_files:
+- `07_implementation/src/retrieval/models.py`
+- `07_implementation/tests/test_retrieval_stage.py`
+- `07_implementation/tests/test_retrieval_profile_builder.py`
+- `07_implementation/tests/test_retrieval_input_validation.py`
+- `07_implementation/tests/test_retrieval_runtime_controls.py`
+- `hygiene_src_report_latest.txt`
+- `ruff_src_report_latest.txt`
+- `duplicate_src_report_latest.txt`
+- `00_admin/decision_log.md`
+- `00_admin/change_log.md`
+- `00_admin/thesis_state.md`
+- `00_admin/timeline.md`
+
+review_date:
+none
+
+## D-218
+- date: 2026-04-18
+- status: accepted
+
+context:
+After C-508, `context_from_mapping` in `scoring/models.py` remained a high-complexity parsing hotspot, combining multiple coercion concerns in one compatibility function.
+
+decision:
+Refactor scoring context parsing by extracting focused helper functions for mapping-to-float coercion, mapping normalization, nested-spec normalization, and string-set extraction while preserving existing defaults and compatibility semantics.
+
+alternatives_considered:
+- Keep the monolithic parsing function and defer this hotspot (rejected: leaves a top complexity concentration unchanged).
+- Introduce strict typed parsing changes in the same slice (rejected: unnecessary behavior-risk for a maintainability-only objective).
+- Move helpers into a separate module immediately (rejected: broader scope than needed for the current bounded refactor).
+
+rationale:
+In-module helper extraction reduces complexity concentration with minimal refactor risk and keeps parser behavior unchanged.
+
+evidence_basis:
+- `07_implementation/src/scoring/models.py` now uses `_mapping_to_float_dict`, `_mapping_to_str_object_dict`, `_nested_mapping_to_str_object_dict`, and `_payload_str_set` inside `context_from_mapping`.
+- Full pytest passed (`622/622`), pyright (`0 errors`), Ruff clean.
+- Hygiene report no longer lists `scoring.models.context_from_mapping` as a hotspot.
+
+impacted_files:
+- `07_implementation/src/scoring/models.py`
+- `hygiene_src_report_latest.txt`
+- `ruff_src_report_latest.txt`
+- `duplicate_src_report_latest.txt`
+- `00_admin/decision_log.md`
+- `00_admin/change_log.md`
+- `00_admin/thesis_state.md`
+- `00_admin/timeline.md`
+
+review_date:
+none
+
+## D-219
+- date: 2026-04-18
+- status: accepted
+
+context:
+After C-509, `controls_from_mapping` in `scoring/models.py` still carried elevated complexity due to repeated coercion and fallback parsing logic.
+
+decision:
+Refactor scoring controls parsing to reuse existing mapping coercion helpers and add a narrow list-normalization helper for runtime-control warnings, keeping defaults and control-surface semantics unchanged.
+
+alternatives_considered:
+- Keep current implementation and move to another hotspot (rejected: leaves avoidable local complexity concentration in the active module).
+- Perform a broader scoring-model parser redesign (rejected: unnecessary scope expansion for this bounded maintainability slice).
+- Change coercion semantics to stricter validation in the same slice (rejected: behavior-risk outside this refactor objective).
+
+rationale:
+Targeted helper reuse lowers complexity with minimal risk and keeps contracts stable.
+
+evidence_basis:
+- `07_implementation/src/scoring/models.py` now uses `_mapping_to_float_dict` and `_mapping_to_str_object_dict` in `controls_from_mapping`, plus `_payload_str_list` for runtime warning normalization.
+- Full pytest passed (`622/622`), pyright (`0 errors`), Ruff clean.
+- Hygiene reduced `scoring.models.controls_from_mapping` from `D (25)` to `C (15)`.
+
+impacted_files:
+- `07_implementation/src/scoring/models.py`
+- `hygiene_src_report_latest.txt`
+- `ruff_src_report_latest.txt`
+- `duplicate_src_report_latest.txt`
+- `00_admin/decision_log.md`
+- `00_admin/change_log.md`
+- `00_admin/thesis_state.md`
+- `00_admin/timeline.md`
+
+review_date:
+none
+
+## D-220
+- date: 2026-04-18
+- status: accepted
+
+context:
+After C-510, the next elevated maintainability target was `compute_component_scores` in `scoring/scoring_engine.py`, which combined numeric-loop logic, lead-genre strategy branching, semantic-overlap setup, and candidate list normalization in one function.
+
+decision:
+Refactor `compute_component_scores` by extracting focused internal helpers for numeric aggregation, lead-genre resolution, overlap alpha policy, and candidate-list normalization while preserving score fields, formulas, and defaults.
+
+alternatives_considered:
+- Keep the monolithic scorer helper and move to another module (rejected: leaves a known complexity concentration in an active scoring contract surface).
+- Perform a broader scoring-engine redesign in one slice (rejected: unnecessary scope expansion and regression risk).
+- Change scoring behavior to simplify branches (rejected: out of scope for this maintainability-only refactor).
+
+rationale:
+Helper extraction in-place reduces complexity concentration and retains stable scoring semantics.
+
+evidence_basis:
+- `07_implementation/src/scoring/scoring_engine.py` now uses `_dict_or_empty`, `_float_dict_or_empty`, `_candidate_str_list`, `_overlap_precision_alpha`, `_resolve_lead_genre_similarity`, and `_add_numeric_similarity_scores` from `compute_component_scores`.
+- Full pytest passed (`622/622`), pyright (`0 errors`), Ruff clean.
+- Hygiene report no longer lists `compute_component_scores` as a hotspot.
+
+impacted_files:
+- `07_implementation/src/scoring/scoring_engine.py`
+- `hygiene_src_report_latest.txt`
+- `ruff_src_report_latest.txt`
+- `duplicate_src_report_latest.txt`
+- `00_admin/decision_log.md`
+- `00_admin/change_log.md`
+- `00_admin/thesis_state.md`
+- `00_admin/timeline.md`
+
+review_date:
+none
+
+## D-221
+- date: 2026-04-18
+- status: accepted
+
+context:
+After C-511, `fuzzy_find_candidate` in `shared_utils/text_matching.py` remained one of the highest complexity concentrations and mixed multiple concerns: artist filtering, candidate dedupe, candidate scoring, duration rejection handling, and diagnostics packaging.
+
+decision:
+Refactor `fuzzy_find_candidate` into focused in-module helpers while preserving matching thresholds, tie-break behavior, diagnostics keys, and failure-reason precedence.
+
+alternatives_considered:
+- Keep the monolithic implementation and move to another hotspot (rejected: leaves one of the largest remaining complexity concentrations unchanged).
+- Rework fuzzy matching policy while refactoring (rejected: behavior-risk outside the bounded maintainability objective).
+- Split helpers across multiple modules in this slice (rejected: broader scope than needed).
+
+rationale:
+In-place helper extraction lowers complexity and keeps runtime behavior stable for BL-003 matching contracts.
+
+evidence_basis:
+- `07_implementation/src/shared_utils/text_matching.py` now uses `_fuzzy_diagnostics_payload`, `_artist_matches_above_threshold`, `_dedupe_candidates_by_best_artist_score`, and `_score_candidate_match` inside `fuzzy_find_candidate`.
+- Focused regression passed (`tests/test_alignment_matching.py` and `tests/test_text_matching_album.py`, `41/41`), full pytest passed (`622/622`), pyright (`0 errors`), Ruff clean.
+- Hygiene reduced `fuzzy_find_candidate` from `D (28)` to `C (15)`.
+
+impacted_files:
+- `07_implementation/src/shared_utils/text_matching.py`
+- `07_implementation/tests/test_alignment_matching.py`
+- `07_implementation/tests/test_text_matching_album.py`
+- `hygiene_src_report_latest.txt`
+- `ruff_src_report_latest.txt`
+- `duplicate_src_report_latest.txt`
+- `00_admin/decision_log.md`
+- `00_admin/change_log.md`
+- `00_admin/thesis_state.md`
+- `00_admin/timeline.md`
+
+review_date:
+none
+
+## D-222
+- date: 2026-04-18
+- status: accepted
+
+context:
+After recent scoring and matching hotspot reductions, `run_active_mode` in `quality/suite.py` remained a D-grade complexity concentration and mixed orchestration concerns (summary checks, BL-014 invocation, diagnostics advisories, and freshness refresh/retry flow).
+
+decision:
+Refactor `run_active_mode` by extracting focused internal helpers for each concern while keeping check IDs, status semantics, refresh logic, and report output structure unchanged.
+
+alternatives_considered:
+- Keep the monolithic `run_active_mode` and target another module (rejected: leaves a local D-grade orchestration hotspot in the active file context).
+- Rework active-suite gate semantics during refactor (rejected: behavior risk outside bounded maintainability objective).
+- Split helper logic into multiple modules in this slice (rejected: broader scope than needed).
+
+rationale:
+In-file helper extraction reduces complexity and improves traceability with minimal risk and no contract drift.
+
+evidence_basis:
+- `07_implementation/src/quality/suite.py` now delegates to `_add_bl013_latest_checks`, `_run_bl014_and_add_check`, `_add_refinement_diagnostic_checks`, and `_run_freshness_with_optional_refresh`.
+- Full pytest passed (`622/622`), pyright (`0 errors`), Ruff clean.
+- Hygiene reduced `run_active_mode` from `D (25)` to `C (14)`.
+
+impacted_files:
+- `07_implementation/src/quality/suite.py`
+- `hygiene_src_report_latest.txt`
+- `ruff_src_report_latest.txt`
+- `duplicate_src_report_latest.txt`
+- `00_admin/decision_log.md`
+- `00_admin/change_log.md`
+- `00_admin/thesis_state.md`
+- `00_admin/timeline.md`
+
+review_date:
+none
 - next_steps: Continue REB-M3 closure hardening by transitioning status surfaces toward REB-M4 chapter evidence synthesis once no further contract regressions are observed.
+
+## D-223
+- date: 2026-04-18
+- status: accepted
+
+context:
+`run_config.schema.coerce_field` remained a D-grade complexity hotspot and mixed multiple coercion concerns (numeric bounds handling, fraction validation, boolean token parsing, enum normalization, and string-list fallback) in one function.
+
+decision:
+Refactor `coerce_field` into focused internal helper functions per schema type while preserving default fallbacks, exception wording, and supported field-type behavior.
+
+alternatives_considered:
+- Keep `coerce_field` monolithic and target another hotspot first (rejected: leaves an avoidable D-grade concentration in active run-config parsing code).
+- Rework schema contracts or accepted coercion tokens as part of this refactor (rejected: behavior risk beyond bounded maintainability objective).
+- Move helpers into a separate module in this slice (rejected: broader scope than needed).
+
+rationale:
+In-module helper extraction reduces complexity and improves maintainability with minimal risk, while keeping existing coercion contracts stable.
+
+evidence_basis:
+- `07_implementation/src/run_config/schema.py` now delegates through `_coerce_positive_int`, `_coerce_non_negative_float`, `_coerce_fraction`, `_coerce_bool_like`, `_coerce_enum`, and `_coerce_string_list`.
+- Full pytest passed (`622/622`), pyright (`0 errors`), Ruff clean (`All checks passed!`), duplicate advisory remained `10.00/10`.
+- Hygiene no longer lists `coerce_field` as a C-or-higher hotspot entry.
+
+impacted_files:
+- `07_implementation/src/run_config/schema.py`
+- `hygiene_src_report_latest.txt`
+- `ruff_src_report_latest.txt`
+- `duplicate_src_report_latest.txt`
+- `00_admin/decision_log.md`
+- `00_admin/change_log.md`
+- `00_admin/thesis_state.md`
+- `00_admin/timeline.md`
+
+review_date:
+none
+
+## D-224
+- date: 2026-04-18
+- status: accepted
+
+context:
+`run_config.run_config_utils.resolve_effective_run_config` remained a D-grade complexity hotspot and mixed numerous section-specific responsibilities (schema/user/control/input setup, profile and BL-003 controls normalization, retrieval/scoring coupling checks, and observability/transparency normalization) in one monolithic flow.
+
+decision:
+Refactor `resolve_effective_run_config` into focused internal section-level resolver helpers while preserving existing defaults, validation errors, threshold-coupling behavior, and effective run-config contract semantics.
+
+alternatives_considered:
+- Keep `resolve_effective_run_config` monolithic and target a different hotspot first (rejected: leaves a high-complexity control-plane entrypoint in active run-config flow).
+- Change validation/coercion policy semantics during decomposition (rejected: behavior risk beyond bounded maintainability objective).
+- Move section resolvers into a separate module in this slice (rejected: broader scope than required).
+
+rationale:
+Section-level helper extraction reduces complexity concentration and improves maintainability while keeping behavior stable and auditable.
+
+evidence_basis:
+- `07_implementation/src/run_config/run_config_utils.py` now delegates through section resolvers including `_resolve_schema_version`, `_resolve_user_context_section`, `_resolve_control_mode_section`, `_resolve_input_scope_section`, `_resolve_profile_controls_section`, `_resolve_interaction_scope_section`, `_resolve_influence_tracks_section`, `_resolve_seed_controls_section`, `_resolve_ingestion_controls_section`, `_resolve_controllability_controls_section`, `_resolve_retrieval_controls_section`, `_resolve_scoring_controls_section`, `_resolve_observability_controls_section`, and `_resolve_transparency_controls_section`.
+- Full pytest passed (`622/622`), pyright (`0 errors`), Ruff clean (`All checks passed!`), duplicate advisory remained `10.00/10`.
+- Hygiene no longer lists `resolve_effective_run_config` in C-or-higher hotspot entries.
+
+impacted_files:
+- `07_implementation/src/run_config/run_config_utils.py`
+- `hygiene_src_report_latest.txt`
+- `ruff_src_report_latest.txt`
+- `duplicate_src_report_latest.txt`
+- `00_admin/decision_log.md`
+- `00_admin/change_log.md`
+- `00_admin/thesis_state.md`
+- `00_admin/timeline.md`
+
+review_date:
+none
+
+## D-225
+- date: 2026-04-18
+- status: accepted
+
+context:
+`RetrievalStage.build_runtime_context` remained a D-grade complexity hotspot and mixed multiple BL-005 runtime-context responsibilities in one method, including numeric-spec activation, semantic-profile extraction, numeric confidence handling, profile-signal quality metrics, threshold adjustments, and recency/language derivation.
+
+decision:
+Refactor `RetrievalStage.build_runtime_context` into focused internal helper functions while preserving runtime-context fields, threshold semantics, numeric-confidence behavior, and retrieval policy contracts.
+
+alternatives_considered:
+- Keep `build_runtime_context` monolithic and target a different hotspot first (rejected: leaves an avoidable D-grade concentration in active retrieval-stage control flow).
+- Change threshold-penalty or confidence behavior during decomposition (rejected: behavior risk beyond bounded maintainability objective).
+- Move helpers into separate modules in this slice (rejected: broader scope than needed).
+
+rationale:
+Local helper extraction reduces complexity concentration and improves maintainability while preserving the existing BL-005 runtime-context contract.
+
+evidence_basis:
+- `07_implementation/src/retrieval/stage.py` now delegates through `_build_effective_numeric_specs`, `_build_profile_semantic_context`, `_build_numeric_profile_context`, `_build_profile_signal_metrics`, `_build_effective_threshold_context`, and `_build_recency_context`.
+- Full pytest passed (`622/622`), pyright (`0 errors`), Ruff clean (`All checks passed!`), duplicate advisory remained `10.00/10`.
+- Hygiene no longer lists `RetrievalStage.build_runtime_context` in C-or-higher hotspot entries; helper `_build_numeric_profile_context` now reports `C (14)`.
+
+impacted_files:
+- `07_implementation/src/retrieval/stage.py`
+- `hygiene_src_report_latest.txt`
+- `ruff_src_report_latest.txt`
+- `duplicate_src_report_latest.txt`
+- `00_admin/decision_log.md`
+- `00_admin/change_log.md`
+- `00_admin/thesis_state.md`
+- `00_admin/timeline.md`
+
+review_date:
+none
+
+## D-226
+- date: 2026-04-18
+- status: accepted
+
+context:
+`validate_bl004_bl005_handshake` remained a D-grade complexity hotspot and mixed multiple validation responsibilities in one function, including profile-schema checks, seed-trace confidence inspection, numeric-threshold compatibility checks, and violation-summary assembly.
+
+decision:
+Refactor `validate_bl004_bl005_handshake` into focused internal helper functions while preserving violation wording, policy-status resolution, summary booleans, and sampled-violation output semantics.
+
+alternatives_considered:
+- Keep `validate_bl004_bl005_handshake` monolithic and target another retrieval hotspot first (rejected: leaves avoidable complexity in an active inter-stage contract surface).
+- Change validation message wording or policy behavior during decomposition (rejected: behavior risk beyond bounded maintainability objective).
+- Move helpers into a separate shared validation module in this slice (rejected: broader scope than needed).
+
+rationale:
+Local helper extraction reduces complexity concentration and improves maintainability while preserving the existing BL-004 to BL-005 handshake contract and diagnostics semantics.
+
+evidence_basis:
+- `07_implementation/src/retrieval/input_validation.py` now delegates through `_missing_profile_keys`, `_seed_trace_schema_details`, `_numeric_threshold_constraint_details`, and `_handshake_violations`.
+- Full pytest passed (`622/622`), pyright (`0 errors`), Ruff clean (`All checks passed!`), duplicate advisory remained `10.00/10`.
+- Hygiene no longer lists `validate_bl004_bl005_handshake` in C-or-higher hotspot entries; helper `_seed_trace_schema_details` now reports `C (11)`.
+
+impacted_files:
+- `07_implementation/src/retrieval/input_validation.py`
+- `hygiene_src_report_latest.txt`
+- `ruff_src_report_latest.txt`
+- `duplicate_src_report_latest.txt`
+- `00_admin/decision_log.md`
+- `00_admin/change_log.md`
+- `00_admin/thesis_state.md`
+- `00_admin/timeline.md`
+
+review_date:
+none
+
+## D-227
+- date: 2026-04-18
+- status: accepted
+
+context:
+`evaluate_bl005_candidates` remained a D-grade complexity hotspot and mixed multiple BL-005 candidate-evaluation responsibilities in one loop body, including runtime-context normalization, semantic parsing/scoring, language and recency gating, numeric support computation, and decision-row assembly.
+
+decision:
+Refactor `evaluate_bl005_candidates` into focused internal helper functions while preserving decision paths, summary/tracker semantics, numeric-support modes, and emitted decision-row fields.
+
+alternatives_considered:
+- Keep `evaluate_bl005_candidates` monolithic and target another hotspot first (rejected: leaves avoidable complexity in the active BL-005 evaluation path).
+- Change BL-005 decision-policy or row-field semantics during decomposition (rejected: behavior risk beyond bounded maintainability objective).
+- Move helpers into multiple modules in this slice (rejected: broader scope than needed).
+
+rationale:
+Local helper extraction reduces complexity concentration and improves maintainability while keeping the existing BL-005 candidate-evaluation contract stable.
+
+evidence_basis:
+- `07_implementation/src/retrieval/candidate_evaluator.py` now delegates through `_resolve_runtime_context`, `_candidate_semantic_inputs`, `_language_and_recency_flags`, `_semantic_scores`, `_numeric_scores`, and `_build_decision_row`.
+- Full pytest passed (`622/622`), pyright (`0 errors`), Ruff clean (`All checks passed!`), duplicate advisory remained `10.00/10`.
+- Hygiene no longer lists `evaluate_bl005_candidates` in C-or-higher hotspot entries.
+
+impacted_files:
+- `07_implementation/src/retrieval/candidate_evaluator.py`
+- `hygiene_src_report_latest.txt`
+- `ruff_src_report_latest.txt`
+- `duplicate_src_report_latest.txt`
+- `00_admin/decision_log.md`
+- `00_admin/change_log.md`
+- `00_admin/thesis_state.md`
+- `00_admin/timeline.md`
+
+review_date:
+none
+
+## D-228
+- date: 2026-04-18
+- status: accepted
+
+context:
+`_prepare_observability_context` remained a D-grade complexity hotspot and concentrated multiple BL-009 responsibilities in one function, including input-path resolution, artifact loading/validation, BL-003 context extraction, BL-008 handshake preparation, version/hash assembly, and retrieval/assembly diagnostic sampling.
+
+decision:
+Refactor `_prepare_observability_context` into focused internal helper functions while preserving BL-009 run-log structure, BL-008 handshake behavior, artifact-hash/version semantics, and diagnostic sample payloads.
+
+alternatives_considered:
+- Keep `_prepare_observability_context` monolithic and target another hotspot first (rejected: leaves avoidable complexity in the active BL-009 observability path).
+- Change BL-009 payload structure or validation policy during decomposition (rejected: behavior risk beyond bounded maintainability objective).
+- Split helpers into additional modules in this slice (rejected: broader scope than needed).
+
+rationale:
+Local helper extraction reduces complexity concentration and improves maintainability while keeping the existing BL-009 observability contract stable.
+
+evidence_basis:
+- `07_implementation/src/observability/main.py` now delegates through `_load_observability_inputs`, `_validate_observability_inputs`, `_extract_bl003_context`, `_load_bl008_bl009_runtime_artifacts`, `_prepare_bl008_bl009_handshake_context`, `_prepare_pipeline_versions`, and `_prepare_retrieval_and_assembly_samples`.
+- Full pytest passed (`622/622`), pyright (`0 errors`), Ruff clean (`All checks passed!`), duplicate advisory remained `10.00/10`.
+- Hygiene no longer lists `_prepare_observability_context` as a hotspot entry; helper `_prepare_retrieval_and_assembly_samples` now reports `C (18)`.
+
+impacted_files:
+- `07_implementation/src/observability/main.py`
+- `hygiene_src_report_latest.txt`
+- `ruff_src_report_latest.txt`
+- `duplicate_src_report_latest.txt`
+- `00_admin/decision_log.md`
+- `00_admin/change_log.md`
+- `00_admin/thesis_state.md`
+- `00_admin/timeline.md`
+
+review_date:
+none
+
+## D-229
+- date: 2026-04-18
+- status: accepted
+
+context:
+`validate_bl003_seed_freshness` and `_build_behavior_controls` remained D-grade complexity hotspots and concentrated multiple BL-013 seed-freshness responsibilities in one module area, including config-source checks, run-config path checks, seed/structural contract validation, and nested control-shape normalization.
+
+decision:
+Refactor `orchestration.seed_freshness` into focused internal helper functions while preserving BL-003 freshness verdict semantics, contract/schema checks, and emitted failure messages.
+
+alternatives_considered:
+- Keep seed freshness logic monolithic and target another hotspot first (rejected: leaves avoidable complexity in active BL-013 freshness guard path).
+- Change freshness-policy behavior during decomposition (rejected: behavior risk beyond bounded maintainability objective).
+- Move helpers to additional modules in this slice (rejected: broader scope than needed).
+
+rationale:
+Local helper extraction reduces complexity concentration and improves maintainability while keeping the existing freshness-validation contract stable.
+
+evidence_basis:
+- `07_implementation/src/orchestration/seed_freshness.py` now delegates through `_validate_observed_source` and `_validate_contract_payload`, and `_build_behavior_controls` now uses focused helpers for fuzzy/match/temporal/aggregation control construction.
+- Full pytest passed (`622/622`), pyright (`0 errors`), Ruff clean (`All checks passed!`), duplicate advisory remained `10.00/10`.
+- Hygiene now reports `src/orchestration/seed_freshness.py` with `_build_behavior_controls - C (12)` and no remaining D-grade entries for the prior target functions.
+
+impacted_files:
+- `07_implementation/src/orchestration/seed_freshness.py`
+- `hygiene_src_report_latest.txt`
+- `ruff_src_report_latest.txt`
+- `duplicate_src_report_latest.txt`
+- `00_admin/decision_log.md`
+- `00_admin/change_log.md`
+- `00_admin/thesis_state.md`
+- `00_admin/timeline.md`
+
+review_date:
+none
+
+## D-230
+- date: 2026-04-18
+- status: accepted
+
+context:
+`execute_profile_stage` remained a D-grade complexity hotspot and concentrated multiple BL-011 profile-stage responsibilities in one function, including event filtering, user-id consistency checks, numeric/semantic aggregation, seed-trace row shaping, profile and summary payload construction, and stable-hash payload assembly.
+
+decision:
+Refactor `controllability.stage_profile.execute_profile_stage` into focused internal helper functions while preserving BL-011 stage outputs, diagnostics semantics, and stable-hash payload content.
+
+alternatives_considered:
+- Keep `execute_profile_stage` monolithic and target another hotspot first (rejected: leaves avoidable complexity in active BL-011 scenario execution path).
+- Change BL-011 metrics or payload schema during decomposition (rejected: behavior risk beyond bounded maintainability objective).
+- Split helpers across multiple modules in this slice (rejected: broader scope than needed).
+
+rationale:
+Local helper extraction reduces complexity concentration and improves maintainability while keeping existing controllability profile-stage contracts stable.
+
+evidence_basis:
+- `07_implementation/src/controllability/stage_profile.py` now delegates through helper functions for selection/validation, accumulation, row construction, and payload/hash assembly.
+- Full pytest passed (`622/622`), pyright (`0 errors`), Ruff clean (`All checks passed!`), duplicate advisory remained `10.00/10`.
+- Hygiene no longer lists `execute_profile_stage` in D-grade entries.
+
+impacted_files:
+- `07_implementation/src/controllability/stage_profile.py`
+- `hygiene_src_report_latest.txt`
+- `ruff_src_report_latest.txt`
+- `duplicate_src_report_latest.txt`
+- `00_admin/decision_log.md`
+- `00_admin/change_log.md`
+- `00_admin/thesis_state.md`
+- `00_admin/timeline.md`
+
+review_date:
+none
+
+## D-231
+- date: 2026-04-19
+- status: accepted
+
+context:
+`execute_scoring_stage` remained a D-grade complexity hotspot and concentrated multiple BL-011 scoring-stage responsibilities in one function, including numeric similarity computation, semantic overlap scoring, contribution aggregation, row payload shaping, and summary/CSV projection assembly.
+
+decision:
+Refactor `controllability.stage_scoring.execute_scoring_stage` into focused internal helper functions while preserving BL-011 scoring-stage outputs, ranking semantics, and stable-hash behavior.
+
+alternatives_considered:
+- Keep `execute_scoring_stage` monolithic and target another hotspot first (rejected: leaves avoidable complexity in active BL-011 scenario execution path).
+- Change BL-011 scoring semantics while decomposing logic (rejected: behavior risk beyond bounded maintainability objective).
+- Split helpers into additional modules in this slice (rejected: broader scope than needed).
+
+rationale:
+Local helper extraction reduces complexity concentration and improves maintainability while keeping existing controllability scoring-stage contracts stable.
+
+evidence_basis:
+- `07_implementation/src/controllability/stage_scoring.py` now delegates through helper functions for numeric/semantic component handling, row payload shaping, summary construction, and scored-field projection.
+- Full pytest passed (`622/622`), pyright (`0 errors`), Ruff clean (`All checks passed!`), duplicate advisory remained `10.00/10`.
+- Hygiene no longer lists `execute_scoring_stage` in D-grade entries.
+
+impacted_files:
+- `07_implementation/src/controllability/stage_scoring.py`
+- `hygiene_src_report_latest.txt`
+- `ruff_src_report_latest.txt`
+- `duplicate_src_report_latest.txt`
+- `00_admin/decision_log.md`
+- `00_admin/change_log.md`
+- `00_admin/thesis_state.md`
+- `00_admin/timeline.md`
+
+review_date:
+none
+
+## D-232
+- date: 2026-04-19
+- status: accepted
+
+context:
+`execute_retrieval_stage` remained a D-grade complexity hotspot and concentrated multiple BL-011 retrieval-stage responsibilities in one function, including semantic-input extraction, semantic overlap computation, numeric-distance pass checks, decision/count bookkeeping, decision-row shaping, and diagnostics assembly.
+
+decision:
+Refactor `controllability.stage_retrieval.execute_retrieval_stage` into focused internal helper functions while preserving BL-011 retrieval-stage outputs, keep/reject semantics, and stable-hash behavior.
+
+alternatives_considered:
+- Keep `execute_retrieval_stage` monolithic and target another hotspot first (rejected: leaves avoidable complexity in active BL-011 scenario execution path).
+- Change BL-011 retrieval decision semantics while decomposing logic (rejected: behavior risk beyond bounded maintainability objective).
+- Split helpers into additional modules in this slice (rejected: broader scope than needed).
+
+rationale:
+Local helper extraction reduces complexity concentration and improves maintainability while keeping existing controllability retrieval-stage contracts stable.
+
+evidence_basis:
+- `07_implementation/src/controllability/stage_retrieval.py` now delegates through helper functions for semantic derivation, rule-hit/count bookkeeping, decision-row shaping, and diagnostics projection.
+- Full pytest passed (`622/622`), pyright (`0 errors`), Ruff clean (`All checks passed!`), duplicate advisory remained `10.00/10`.
+- Hygiene no longer lists `execute_retrieval_stage` in D-grade entries.
+
+impacted_files:
+- `07_implementation/src/controllability/stage_retrieval.py`
+- `hygiene_src_report_latest.txt`
+- `ruff_src_report_latest.txt`
+- `duplicate_src_report_latest.txt`
+- `00_admin/decision_log.md`
+- `00_admin/change_log.md`
+- `00_admin/thesis_state.md`
+- `00_admin/timeline.md`
+
+review_date:
+none
+
+## D-233
+- date: 2026-04-19
+- status: accepted
+
+context:
+`main` in `controllability.main` remained a D-grade complexity hotspot and concentrated multiple BL-011 orchestration responsibilities in one function, including input staging, scenario execution/replay consistency checks, baseline comparison attachment, run-matrix and report assembly, and no-op control diagnostics extraction.
+
+decision:
+Refactor `controllability.main.main` into focused internal helper functions while preserving BL-011 report outputs, run-matrix schema, and scenario evaluation semantics.
+
+alternatives_considered:
+- Keep `main` monolithic and target non-controllability hotspots first (rejected: leaves avoidable complexity in active BL-011 orchestration path).
+- Change BL-011 report or matrix semantics while decomposing logic (rejected: behavior risk beyond bounded maintainability objective).
+- Split orchestration helpers into additional modules in this slice (rejected: broader scope than needed).
+
+rationale:
+Local helper extraction reduces complexity concentration and improves maintainability while keeping existing controllability orchestration contracts stable.
+
+evidence_basis:
+- `07_implementation/src/controllability/main.py` now delegates through helper functions for setup, scenario execution, comparison attachment, matrix/report record shaping, and no-op diagnostics extraction.
+- Full pytest passed (`622/622`), pyright (`0 errors`), Ruff clean (`All checks passed!`), duplicate advisory remained `10.00/10`.
+- Hygiene no longer lists `controllability/main.py` as D-grade.
+
+impacted_files:
+- `07_implementation/src/controllability/main.py`
+- `hygiene_src_report_latest.txt`
+- `ruff_src_report_latest.txt`
+- `duplicate_src_report_latest.txt`
+- `00_admin/decision_log.md`
+- `00_admin/change_log.md`
+- `00_admin/thesis_state.md`
+- `00_admin/timeline.md`
+
+review_date:
+none
+
+## D-234
+- date: 2026-04-19
+- status: accepted
+
+context:
+`extract_track_fields` in `ingestion.spotify_mapping` remained a D-grade complexity hotspot and concentrated multiple ingestion mapping responsibilities in one function, including nested payload shape coercion, artist projection, duration projection, and track/album/external metadata extraction.
+
+decision:
+Refactor `ingestion.spotify_mapping.extract_track_fields` into focused internal helper functions while preserving mapped row-field outputs across top tracks, saved tracks, playlist items, and recently played surfaces.
+
+alternatives_considered:
+- Keep `extract_track_fields` monolithic and target other D-grade files first (rejected: leaves avoidable complexity in shared ingestion mapping path).
+- Alter mapped output field semantics while decomposing logic (rejected: behavior risk beyond bounded maintainability objective).
+- Move helpers to a new module in this slice (rejected: broader scope than needed).
+
+rationale:
+Local helper extraction reduces complexity concentration and improves maintainability while keeping existing ingestion mapping contracts stable.
+
+evidence_basis:
+- `07_implementation/src/ingestion/spotify_mapping.py` now delegates through `_dict_or_empty`, `_artist_fields`, and `_duration_fields` for core extraction subtasks.
+- Full pytest passed (`622/622`), pyright (`0 errors`), Ruff clean (`All checks passed!`), duplicate advisory remained `10.00/10`.
+- Hygiene no longer lists `extract_track_fields` as D-grade.
+
+impacted_files:
+- `07_implementation/src/ingestion/spotify_mapping.py`
+- `hygiene_src_report_latest.txt`
+- `ruff_src_report_latest.txt`
+- `duplicate_src_report_latest.txt`
+- `00_admin/decision_log.md`
+- `00_admin/change_log.md`
+- `00_admin/thesis_state.md`
+- `00_admin/timeline.md`
+
+review_date:
+none
+
+## D-235
+- date: 2026-04-19
+- status: accepted
+
+context:
+`_fetch_all_data` in `ingestion.export_spotify_max_dataset` remained a D-grade complexity hotspot and concentrated multiple ingestion export responsibilities in one function, including top-track paging by range, playlist retrieval and deduplication, playlist-item batch retrieval with 403 handling, and recently-played retrieval.
+
+decision:
+Refactor `ingestion.export_spotify_max_dataset._fetch_all_data` into focused internal helper functions while preserving ingestion export outputs and source-selection semantics.
+
+alternatives_considered:
+- Keep `_fetch_all_data` monolithic and target other D-grade files first (rejected: leaves avoidable complexity in active ingestion export path).
+- Change paging and source-selection semantics during decomposition (rejected: behavior risk beyond bounded maintainability objective).
+- Move fetch helpers to a new module in this slice (rejected: broader scope than needed).
+
+rationale:
+Local helper extraction reduces complexity concentration and improves maintainability while keeping existing ingestion export contracts stable.
+
+evidence_basis:
+- `07_implementation/src/ingestion/export_spotify_max_dataset.py` now delegates through `_fetch_top_tracks_by_range`, `_deduplicate_playlists`, `_fetch_playlists`, `_fetch_playlist_item_batches`, and `_fetch_recently_played_items`.
+- Full pytest passed (`622/622`), pyright (`0 errors`), Ruff clean (`All checks passed!`), duplicate advisory remained `10.00/10`.
+- Hygiene no longer lists `_fetch_all_data` as D-grade.
+
+impacted_files:
+- `07_implementation/src/ingestion/export_spotify_max_dataset.py`
+- `hygiene_src_report_latest.txt`
+- `ruff_src_report_latest.txt`
+- `duplicate_src_report_latest.txt`
+- `00_admin/decision_log.md`
+- `00_admin/change_log.md`
+- `00_admin/thesis_state.md`
+- `00_admin/timeline.md`
+
+review_date:
+none
 
 ## D-064
 - date: 2026-04-12
@@ -1686,6 +3415,58 @@ review_date: none
 - evidence_basis: `07_implementation/src/run_config/run_config_utils.py`, `07_implementation/tests/test_run_config_utils.py`, targeted pytest (`26/26`), full pytest (`362/362`), pyright (`0 errors, 0 warnings`).
 - impacted_files: `07_implementation/src/run_config/run_config_utils.py`, `07_implementation/tests/test_run_config_utils.py`, `00_admin/decision_log.md`, `00_admin/change_log.md`
 - next_steps: Continue trimming duplicated resolver coercion where effective-config contracts already guarantee shape/type/defaults, while retaining explicit guardrails for cross-section coupling and policy constraints.
+
+## D-185
+- date: 2026-04-18
+- entity_id: submission-closeout draft-first professionalism and package-manifest approach
+- proposed_by: user + Copilot
+- status: accepted
+- decision: Close the largest submission-readiness gap with a draft-first artifact strategy: add a substantive professionalism companion report draft under `08_writing/` and track final deliverable assembly through a dedicated submission package manifest under `09_quality_control/`. Keep `submission_readiness_status.md` as the status surface and move relevant items from open to partially satisfied only when concrete artifacts exist.
+- context: The prior readiness ledger identified the missing Component 1 companion report and unclear packaging mapping as top blockers. A continuation step was needed that produced concrete artifacts, not just additional checklists.
+- alternatives_considered: Leave the readiness ledger unchanged until final submission-time formatting (rejected: blocker stays unresolved too long); add only outline placeholders without substantive content (rejected: weak evidence for partial closure); merge package mapping directly into the checklist file (rejected: mixes normative and operational state).
+- rationale: Producing an actual draft companion report immediately reduces risk and gives a concrete base for supervisor/polish iteration. A separate package manifest provides one operational mapping surface for component packaging without overloading the normative checklist.
+- evidence_basis: `08_writing/professionalism_companion_report.md` now exists with project-specific sections aligned to the marking-sheet dimensions; `09_quality_control/submission_package_manifest.md` now maps component files and open external confirmations; `09_quality_control/submission_readiness_status.md` reflects partial closure for companion-report presence and topic coverage.
+- impacted_files: `08_writing/professionalism_companion_report.md`, `09_quality_control/submission_package_manifest.md`, `09_quality_control/submission_readiness_status.md`, `00_admin/change_log.md`, `00_admin/decision_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`
+- next_steps: Finalize references and word-count lock in the companion report, then close project-management evidence and external submission confirmations in the readiness ledger.
+
+## D-186
+- date: 2026-04-18
+- entity_id: submission-closeout project-management evidence bundle mapping
+- proposed_by: user + Copilot
+- status: accepted
+- decision: Package project-management submission evidence through one dedicated quality-control map (`09_quality_control/project_management_evidence_bundle.md`) rather than scattering references only across timeline/readiness prose. Treat milestone/deliverable traceability as satisfied when explicit path mapping exists, while keeping logbook/Gantt artifacts as explicit remaining gaps.
+- context: After adding the professionalism draft and package manifest, the next unresolved submission blocker was weakly packaged project-management evidence despite strong underlying governance logs.
+- alternatives_considered: keep only generic references in readiness status (rejected: still ambiguous at submission time); mark project-management requirements closed without a dedicated mapping artifact (rejected: low audit clarity); defer until external packaging (rejected: avoidable blocker persistence).
+- rationale: A single project-management evidence bundle makes assessor-facing packaging clearer and reduces risk of missing governance artifacts during final submission assembly.
+- evidence_basis: `09_quality_control/project_management_evidence_bundle.md` now lists milestone, change/decision trace, mentor-feedback, and readiness evidence paths; readiness status now reflects this explicit mapping.
+- impacted_files: `09_quality_control/project_management_evidence_bundle.md`, `09_quality_control/submission_readiness_status.md`, `09_quality_control/submission_package_manifest.md`, `00_admin/change_log.md`, `00_admin/decision_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`
+- next_steps: add completed logbook and Gantt/equivalent artifact paths, then close remaining external confirmations.
+
+## D-187
+- date: 2026-04-18
+- entity_id: submission-closeout logbook-equivalent and gantt-equivalent artifact strategy
+- proposed_by: user + Copilot
+- status: accepted
+- decision: Satisfy the immediate project-management evidence gap by introducing two explicit in-repo equivalents: a submission-facing execution logbook (`09_quality_control/project_execution_logbook.md`) and a schedule-plan equivalent (`09_quality_control/project_plan_equivalent.md`). Treat these as valid readiness evidence while keeping a caveat that assessor-specific template/visual Gantt formats may still require final transposition.
+- context: Project-management evidence mapping existed, but readiness still showed logbook and plan artifacts as open because no direct artifact files existed for those two checklist lines.
+- alternatives_considered: keep blockers open until institutional template files are manually completed (rejected: delays closeout without adding evidence value); claim full closure without explicit artifacts (rejected: weak auditability); embed details only inside readiness prose (rejected: lower reusability and packaging clarity).
+- rationale: Dedicated artifact files improve submission packaging clarity and allow incremental closeout while remaining honest about any final format-specific requirements.
+- evidence_basis: `09_quality_control/project_execution_logbook.md` and `09_quality_control/project_plan_equivalent.md` now exist; readiness and package-manifest references are updated accordingly.
+- impacted_files: `09_quality_control/project_execution_logbook.md`, `09_quality_control/project_plan_equivalent.md`, `09_quality_control/submission_readiness_status.md`, `09_quality_control/submission_package_manifest.md`, `00_admin/change_log.md`, `00_admin/decision_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`
+- next_steps: finalize professionalism report and close external submission confirmations; transpose equivalents into institutional template/visual format only if explicitly required.
+
+## D-188
+- date: 2026-04-18
+- entity_id: submission-closeout word-count snapshot as readiness evidence
+- proposed_by: user + Copilot
+- status: accepted
+- decision: Treat word-count compliance as an evidence-driven readiness item by introducing a reproducible repository snapshot artifact (`09_quality_control/word_count_snapshot_2026-04-18.md`) and updating readiness status from "not verified" to "partially satisfied (risk flagged)" with explicit measured values and follow-on actions.
+- context: Submission readiness still contained an unverified word-count blocker, and final closeout required quantified evidence rather than assumptions.
+- alternatives_considered: leave word-count status as unknown until final export assembly (rejected: weak risk visibility); mark as satisfied without measured evidence (rejected: non-auditable); hard-close as non-compliant immediately (rejected: markdown count may differ from final compiled artifact).
+- rationale: A measured snapshot provides immediate risk visibility while preserving methodological caution about final format-specific counts.
+- evidence_basis: `09_quality_control/word_count_snapshot_2026-04-18.md` now records per-file and aggregate counts using a documented counting method, and readiness/manifest files now link to this evidence.
+- impacted_files: `09_quality_control/word_count_snapshot_2026-04-18.md`, `09_quality_control/submission_readiness_status.md`, `09_quality_control/submission_package_manifest.md`, `00_admin/change_log.md`, `00_admin/decision_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`
+- next_steps: finalize professionalism draft length/polish and confirm authoritative counts on the final compiled submission artifacts.
 
 ## D-073
 - date: 2026-04-12
@@ -2347,6 +4128,72 @@ review_date: none
 - alternatives_considered: leave the optional items unchanged (rejected: avoidable polish debt remains visible); rewrite broader passages for stylistic smoothing (rejected: unnecessary scope expansion); change substantive claims or references (rejected: not needed for final polish).
 - rationale: This closes the last visible submission polish gaps while preserving the established argument, evidence scope, and chapter structure.
 - evidence_basis: Updated `08_writing/chapter2.md` limitations sentence with anchor citations and normalized remaining `behavior` instances in the table, prose, and Mermaid figure text.
+
+## D-176
+- date: 2026-04-18
+- entity_id: undo-j candidate-shaping causal-strength quantification depth hardening tranche
+- proposed_by: user + Copilot
+- status: accepted
+- decision: Implement UNDO-J depth hardening by requiring BL-005 candidate-shaping fidelity to emit ranked rejection-driver contribution shares and bounded threshold directional-impact summaries, then project these fields through BL-009 and enforce their presence in BL-014 candidate-shaping contract checks.
+- context: The active unresolved set (`UNDO-J` to `UNDO-O`) identified candidate-shaping causal-strength quantification as under-specified for chapter-facing traceability. Existing diagnostics exposed threshold and profile effects, but lacked explicit normalized contribution ranking and directional summary surfaces.
+- alternatives_considered: keep current diagnostics and defer UNDO-J (rejected: user requested immediate continuation on active unresolved slices); add only BL-009 summary fields without BL-005 payload changes (rejected: summary-only wiring cannot improve source-level fidelity); hard-fail all historical artifacts immediately for missing depth fields (rejected: avoidable compatibility disruption without staged contract hardening).
+- rationale: Additive source-first depth fields plus downstream contract enforcement is the narrowest reliable path that improves causal-strength observability and keeps behavior backward-compatible while making omissions detectable.
+- evidence_basis: `07_implementation/src/retrieval/stage.py` now emits `candidate_shaping_fidelity.rejection_driver_contribution` and `candidate_shaping_fidelity.threshold_effects.directional_impact_summary`; `07_implementation/src/observability/main.py` now includes both in `retrieval_fidelity_summary`; `07_implementation/src/quality/sanity_checks.py` now checks for the new fields in candidate-shaping diagnostics contracts; targeted tests pass (`78/78`) and pyright reports `0` errors.
+- impacted_files: `07_implementation/src/retrieval/stage.py`, `07_implementation/src/observability/main.py`, `07_implementation/src/quality/sanity_checks.py`, `07_implementation/tests/test_retrieval_stage.py`, `07_implementation/tests/test_observability_signal_mode_summary.py`, `07_implementation/tests/test_quality_sanity_checks.py`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`, `00_admin/unresolved_issues.md`
+- next_steps: Continue with `UNDO-K` playlist-trade-off metric explicitness hardening and then decide whether UNDO-J can be fully closed after chapter-facing evidence write-through.
+
+## D-177
+- date: 2026-04-18
+- entity_id: undo-k playlist trade-off metric explicitness hardening tranche
+- proposed_by: user + Copilot
+- status: accepted
+- decision: Implement UNDO-K as an additive BL-007/BL-009 evidence hardening slice by emitting one explicit trade-off summary block that quantifies diversity distribution, novelty-distance, and ordering pressure (`tradeoff_metrics_summary` in BL-007 and `playlist_tradeoff_summary` in BL-009), without changing assembly decision policy defaults.
+- context: The active unresolved set (`UNDO-J` to `UNDO-O`) identified Chapter 3 Section 3.10 claim-risk around multi-objective assembly visibility. Existing BL-007 artifacts had strong trace/rule diagnostics, but no compact cross-objective metric block usable for chapter-facing evidence.
+- alternatives_considered: keep existing trace-only visibility and defer UNDO-K (rejected: user requested bounded continuation on active unresolved slices); add BL-007 metrics without BL-009 propagation (rejected: weak run-level observability continuity); introduce strict BL-014 gate requirements immediately for the new metrics (rejected: unnecessary compatibility tightening for an additive evidence surface).
+- rationale: A compact additive summary block is the narrowest high-value change that makes multi-objective trade-offs measurable and reportable while preserving baseline assembly behavior.
+- evidence_basis: `07_implementation/src/playlist/reporting.py` now builds `build_tradeoff_metrics_summary`; `07_implementation/src/playlist/stage.py` now emits `tradeoff_metrics_summary` in BL-007 report outputs; `07_implementation/src/observability/main.py` now emits run-level `playlist_tradeoff_summary` and assembly-stage pass-through; focused tests pass (`15/15`) across reporting, integration, and observability helper suites.
+- impacted_files: `07_implementation/src/playlist/reporting.py`, `07_implementation/src/playlist/stage.py`, `07_implementation/src/observability/main.py`, `07_implementation/tests/test_playlist_reporting.py`, `07_implementation/tests/test_playlist_integration.py`, `07_implementation/tests/test_observability_signal_mode_summary.py`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`, `00_admin/unresolved_issues.md`
+- next_steps: Continue with `UNDO-L` bounded interaction-coverage hardening and keep UNDO-K active until chapter-facing evidence write-through is synchronized.
+
+## D-178
+- date: 2026-04-18
+- entity_id: undo-l multi-parameter interaction coverage bounded matrix tranche
+- proposed_by: user + Copilot
+- status: accepted
+- decision: Implement UNDO-L as a bounded BL-011 interaction-coverage hardening slice by adding a fixed two-pair interaction matrix (`EP-CTRL-005`) for high-impact controls and emitting explicit interaction coverage summaries that distinguish single-factor from interaction-driven behavior, without altering existing single-factor scenario semantics or BL-014 gate defaults.
+- context: The active unresolved set (`UNDO-J` to `UNDO-O`) identified Chapter 3 Section 3.12 claim-risk where controllability evidence was mostly one-factor-at-a-time. Existing BL-011 outputs were strong for single-factor shift directionality but did not provide explicit bounded interaction-matrix evidence.
+- alternatives_considered: keep one-factor-only controllability and defer UNDO-L (rejected: user requested bounded continuation on active unresolved slices); add interaction-only status fields without running interaction scenarios (rejected: insufficient evidence depth); fold interaction scenarios into the same single-factor pass/fail contract without separation (rejected: could destabilize existing controllability interpretation semantics).
+- rationale: A small fixed interaction matrix plus additive reporting is the narrowest reliable way to improve controlled-variation evidence depth while preserving established baseline contracts.
+- evidence_basis: `07_implementation/src/controllability/scenarios.py` now defines two interaction scenarios (`no_influence_plus_stricter_thresholds`, `valence_up_plus_stricter_thresholds`) with explicit acceptance bounds; `07_implementation/src/controllability/pipeline_runner.py` now propagates interaction metadata into effective configs; `07_implementation/src/controllability/analysis.py` now emits `interaction_coverage_summary` and separates single-factor vs interaction status fields; `07_implementation/src/controllability/main.py` now surfaces these in run outputs; focused tests pass (`19/19`) and pyright reports `0` errors.
+- impacted_files: `07_implementation/src/controllability/scenarios.py`, `07_implementation/src/controllability/pipeline_runner.py`, `07_implementation/src/controllability/analysis.py`, `07_implementation/src/controllability/main.py`, `07_implementation/tests/test_controllability_scenarios.py`, `07_implementation/tests/test_controllability_analysis.py`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`, `00_admin/unresolved_issues.md`
+- next_steps: Continue with `UNDO-M` feature-availability and sparsity diagnostics visibility hardening while retaining UNDO-L as active until chapter-facing evidence write-through is synchronized.
+
+## D-179
+- date: 2026-04-18
+- entity_id: undo-m feature-availability and sparsity diagnostics visibility hardening tranche
+- proposed_by: user + Copilot
+- status: accepted
+- decision: Implement UNDO-M as an additive BL-004/BL-006/BL-009 evidence hardening slice by introducing explicit feature-availability and sparsity summaries at profile, scoring, and run levels, without changing profiling/scoring decision policies or BL-014 gate defaults.
+- context: The active unresolved set (`UNDO-J` to `UNDO-O`) identified Chapter 3 Section 3.7 claim-risk where interpretable-feature boundary conditions were discussed but not consistently foregrounded in chapter-facing run evidence.
+- alternatives_considered: keep existing raw diagnostics and defer UNDO-M (rejected: user requested bounded continuation on active unresolved slices); add BL-009-only summarization without source-stage summaries (rejected: weaker provenance and source-to-summary traceability); enforce immediate strict BL-014 gating on new fields (rejected: unnecessary compatibility tightening for additive observability surfaces).
+- rationale: A compact additive summary layer across BL-004/BL-006/BL-009 is the narrowest reliable path to expose feature-space availability boundaries while preserving baseline behavior.
+- evidence_basis: `07_implementation/src/profile/stage.py` now emits `feature_availability_summary` in profile and summary payloads; `07_implementation/src/scoring/diagnostics.py` and `07_implementation/src/scoring/stage.py` now emit candidate-side `feature_availability_summary`; `07_implementation/src/observability/main.py` now emits fused run-level `feature_availability_summary`; focused tests pass (`40/40`) and pyright reports `0` errors.
+- impacted_files: `07_implementation/src/profile/stage.py`, `07_implementation/src/scoring/diagnostics.py`, `07_implementation/src/scoring/stage.py`, `07_implementation/src/observability/main.py`, `07_implementation/tests/test_profile_stage.py`, `07_implementation/tests/test_scoring_diagnostics.py`, `07_implementation/tests/test_scoring_stage.py`, `07_implementation/tests/test_observability_signal_mode_summary.py`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`, `00_admin/unresolved_issues.md`
+- next_steps: Continue with `UNDO-N` control-surface discoverability and range transparency hardening while retaining UNDO-M as active until chapter-facing evidence write-through is synchronized.
+
+## D-180
+- date: 2026-04-18
+- entity_id: undo-n control-surface discoverability and range transparency hardening tranche
+- proposed_by: user + Copilot
+- status: accepted
+- decision: Implement UNDO-N as an additive control-registry module (`run_config/control_registry.py`) providing an authoritative machine-readable control surface listing for the active pipeline, and wire it into BL-009 observability as an additive `control_registry_snapshot` run-level field. The registry covers 24 controls across BL-004, BL-005, BL-006, BL-007, BL-008, and BL-011, with per-entry name/section/stage/type/valid_range/default/effect_surface metadata. Schema version: `control-registry-v1`.
+- context: The active unresolved set (`UNDO-J` to `UNDO-O`) identified Chapter 3 Section 3.12 claim-risk where controls are implemented but discoverability of available controls, valid ranges, and policy structures remains fragmented across run-config schema, defaults, and stage docs.
+- alternatives_considered: inline registry definition inside run_config_utils (rejected: increases module size and couples schema to parsing logic); add registry only to a design doc without runtime emission (rejected: does not satisfy active-runtime-path requirement for UNDO-N); emit partial registry covering only a subset of stages (rejected: incomplete surface and weaker audit ergonomics).
+- rationale: A standalone declarative module with a single public snapshot function is the narrowest reliable path to expose control-surface metadata at runtime without changing any existing parsing, validation, or decision policies. Additive BL-009 emission preserves backward compatibility.
+- evidence_basis: `07_implementation/src/run_config/control_registry.py` now provides `CONTROL_REGISTRY` (24 entries, `control-registry-v1` schema) and `build_control_registry_snapshot()`; `07_implementation/src/observability/main.py` now emits `control_registry_snapshot` as an additive top-level run-log key; focused tests pass (41/41) across run_config_utils and observability suites; pyright reports 0 errors.
+- impacted_files: `07_implementation/src/run_config/control_registry.py` (new), `07_implementation/src/observability/main.py`, `07_implementation/tests/test_run_config_utils.py`, `07_implementation/tests/test_observability_signal_mode_summary.py`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`, `00_admin/unresolved_issues.md`
+- next_steps: Continue with `UNDO-O` reproducibility interpretation boundary clarity while retaining UNDO-N as active until chapter-facing evidence write-through is synchronized.
+
 - impacted_files: `08_writing/chapter2.md`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/timeline.md`.
 - next_steps: Chapter 2 should now remain frozen except for external formatting/layout requirements or new mentor-directed changes.
 
@@ -2441,9 +4288,61 @@ review_date: none
 - impacted_files: `08_writing/chapter2.md`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/timeline.md`.
 - next_steps: Keep Chapter 2 citations and analytical density unchanged; no further structural adjustment required unless supervisor feedback requests it.
 
-## D-130
-- date: 2026-04-16
-- entity_id: chapter1-chapter2 canonical wording sync
+## D-184
+- date: 2026-04-18
+- entity_id: repo-backed submission readiness status artifact
+- proposed_by: user + Copilot
+- status: accepted
+- decision: Track current submission readiness in a dedicated quality-control artifact (`09_quality_control/submission_readiness_status.md`) rather than mutating the generic `01_requirements/submission_checklist.md` into a live status ledger. Keep the checklist as the reusable normative checklist and store satisfaction/open-blocker assessment separately with explicit evidence and gap notes.
+- context: After creating the normalized submission checklist, the next step was to determine what the repository can actually prove is ready versus what still depends on missing packaging artifacts or external actions like Canvas, Turnitin, and viva scheduling.
+- alternatives_considered: Convert the checklist itself into a live status file (rejected: mixes normative guidance with volatile project state); rely only on prose notes in `chapter_readiness_checks.md` (rejected: too broad and less directly tied to the new submission checklist); do no explicit status pass (rejected: leaves the checklist non-operational).
+- rationale: Separating the normative checklist from the current readiness ledger preserves reusability of the checklist while making the current submission state auditable and concrete.
+- evidence_basis: `09_quality_control/submission_readiness_status.md` now exists and ties each readiness judgment either to existing repo evidence or to specific missing/external blockers.
+- impacted_files: `09_quality_control/submission_readiness_status.md`, `01_requirements/marking_criteria.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`, `00_admin/unresolved_issues.md`, `00_admin/change_log.md`, `00_admin/decision_log.md`
+- next_steps: Close the open blockers by adding the professionalism companion artifact, packaging project-management evidence, and resolving the external submission/policy confirmations.
+
+## D-183
+- date: 2026-04-18
+- entity_id: normalized submission-checklist and requirements-summary sync
+- proposed_by: user + Copilot
+- status: accepted
+- decision: Use `01_requirements/submission_checklist.md` as the practical consolidated checklist surface derived from the converted university documents, while keeping `submission_requirements.md`, `marking_criteria.md`, and `ambiguity_flags.md` as the normalized thematic summaries. Update those summaries only where the converted source artefacts revealed missing binding or ambiguity-critical rules.
+- context: After converting the university documents folder to markdown and removing duplicates, the repo had detailed source companions but the top-level normalized requirement files still omitted some high-value rules and did not provide a single actionable submission-prep checklist.
+- alternatives_considered: Leave the converted files as the only detailed source (rejected: too fragmented for quick submission prep); merge everything into one oversized requirements file (rejected: reduces separation of concerns and makes later maintenance harder); update every summary file indiscriminately (rejected: higher noise with less signal).
+- rationale: A dedicated checklist plus narrowly improved normalized summaries gives the user a fast operational surface for submission prep while preserving the cleaner thematic summaries already used elsewhere in the repo.
+- evidence_basis: `01_requirements/submission_checklist.md` now exists, and the normalized summary files now reflect component-pass structure, cover/declaration requirement, proposal outcome states, AI-policy ambiguity, and milestone-penalty ambiguity.
+- impacted_files: `01_requirements/submission_checklist.md`, `01_requirements/submission_requirements.md`, `01_requirements/marking_criteria.md`, `01_requirements/ambiguity_flags.md`, `00_admin/change_log.md`, `00_admin/decision_log.md`
+- next_steps: Use the checklist for final submission-surface proofing and update it only if current-year Canvas guidance introduces authoritative changes.
+
+## D-182
+- date: 2026-04-18
+- entity_id: university-documents markdown canonicalization and duplicate cleanup
+- proposed_by: user + Copilot
+- status: accepted
+- decision: Keep the populated requirement summaries in `01_requirements/` as the canonical copies for `ambiguity_flags`, `formatting_rules`, `marking_criteria`, `submission_requirements`, and `university_rules`; use `01_requirements/university_documents/` for Markdown companions of the original source artefacts stored in that subfolder; remove only verified duplicate files from the subfolder.
+- context: The attached `university_documents` folder contained a mix of source `.pptx`, `.docx`, and `.pdf` files, plus duplicate stub `.md` files whose populated counterparts already existed one level up in `01_requirements/`.
+- alternatives_considered: Keep both copies of the stub Markdown files (rejected: redundant and confusing); move all requirement summaries down into the subfolder (rejected: top-level `01_requirements/` already functions as the canonical normalized surface); delete original source documents after conversion (rejected: user asked for conversion and deduplication, not source removal).
+- rationale: This preserves the curated top-level requirement summaries as the authoritative normalized surface while still making the underlying university artefacts readable in Markdown next to their original files.
+- evidence_basis: The subfolder now contains Markdown companions for the original source artefacts and no longer contains the duplicate stub summary files or the redundant LS015 PDF copy.
+- impacted_files: `01_requirements/university_documents/`, `00_admin/change_log.md`, `00_admin/decision_log.md`
+- next_steps: None required for this cleanup beyond any future formatting refinement of the generated Markdown if desired.
+
+## D-181
+- date: 2026-04-18
+- entity_id: undo-o reproducibility interpretation boundary clarity tranche
+- proposed_by: user + Copilot
+- status: accepted
+- decision: Implement UNDO-O as additive interpretation-boundary metadata in the active BL-010 and BL-009 runtime artifacts, paired with hardened chapter wording. BL-010 emits a new `interpretation_boundaries` report field (`build_interpretation_boundaries()`, schema version `reproducibility-interpretation-v1`) covering `verdict_basis`, `consistency_domain`, and `non_claims`. BL-009 emits a new `reproducibility_interpretation` field inside `validity_boundaries` (`build_reproducibility_interpretation()`). Chapters 5 and 6 reproducibility limit statements explicitly name artifact-level framing and environmental invariance non-claims.
+- context: UNDO-O identified that BL-010 and BL-009 provide strong deterministic replay evidence but chapter-facing interpretation can over-compress artifact-level reproducibility into broader behavioral invariance. The fix is interpretation-hardening without any policy or pipeline behavior changes.
+- alternatives_considered: Add interpretation language only to chapters without runtime changes (rejected: no machine-readable contract in active artifact path, weaker evidence discipline); embed boundary framing inside the existing `observed_reason_for_raw_hash_variation` string (rejected: not structured or testable); modify existing `reproducibility_contract_boundary` string field to a dict (rejected: type change risks downstream compatibility; additive new field is safer).
+- rationale: Additive structured fields in both BL-010 and BL-009 with `schema_version` tagging is the narrowest change that makes interpretation boundaries machine-readable, testable, and chapter-linkable without altering any existing contract fields or pipeline decisions.
+- evidence_basis: `07_implementation/src/reproducibility/main.py` now emits `interpretation_boundaries` in the BL-010 report; `07_implementation/src/observability/main.py` now emits `reproducibility_interpretation` inside `validity_boundaries`; 609/609 tests pass; pyright reports 0 errors; `08_writing/chapter5.md` and `08_writing/chapter6.md` updated.
+- impacted_files: `07_implementation/src/reproducibility/main.py`, `07_implementation/src/observability/main.py`, `07_implementation/tests/test_reproducibility_signal_mode_snapshot.py`, `07_implementation/tests/test_observability_signal_mode_summary.py`, `08_writing/chapter5.md`, `08_writing/chapter6.md`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`, `00_admin/unresolved_issues.md`
+- next_steps: UNDO-O is the last item in the active UNDO hardening set (UNDO-J through UNDO-O). Governance sync and session close.
+
+## D-180
+- date: 2026-04-18
+- entity_id: undo-n control-surface discoverability and range transparency hardening tranche
 - proposed_by: user + Copilot
 - status: accepted
 - decision: Treat the user-provided Chapter 1 and Chapter 2 wording as the current canonical chapter baseline and align governance wording to that baseline while preserving existing in-repo figure assets where no replacement image file was supplied.
@@ -2817,3 +4716,455 @@ review_date: none
 - evidence_basis: `07_implementation/src/quality/sanity_checks.py` now resolves `bl011_control_effect_gate_policy` from `bl009_log.run_config.observability.validation_policies` before snapshot/report/env/default fallback; `07_implementation/tests/test_quality_sanity_checks.py` adds precedence and env-fallback tests; full validation passed (`pytest 559/559`, wrapper validate-only pass, full contract pass).
 - impacted_files: `07_implementation/src/quality/sanity_checks.py`, `07_implementation/tests/test_quality_sanity_checks.py`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`, `00_admin/unresolved_issues.md`.
 - next_steps: Treat UNDO-G as implemented (closure candidate) and focus remaining implementation-hardening decisions on UNDO-I contract posture.
+
+id: D-189
+date: 2026-04-18
+status: accepted
+
+context:
+A planned quality-control cleanup pass was approved for immediate implementation. Active QC surfaces had drift risks: stale locked Title/RQ wording, legacy baseline-path references, mixed active-vs-historical posture in phase artifacts, and ambiguity between canonical manual-PDF Chapter 2 audit authority and lexical verbatim audit variants.
+
+decision:
+Execute a bounded documentation-only cleanup wave on 09_quality_control with three guardrails: (1) active readiness/alignment files must match current governance authority (thesis_state and current run IDs), (2) historical artifacts must be explicitly labeled or archived to avoid active-surface ambiguity, and (3) canonical Chapter 2 citation authority must be explicit, with lexical verbatim variants retained only as historical auxiliaries.
+
+alternatives_considered:
+- Leave legacy artifacts in-place without historical labeling (rejected: high drift and authority ambiguity risk)
+- Archive all historical QC artifacts aggressively (rejected: loses local context and reviewer traceability for major records)
+- Defer all cleanup until final packaging (rejected: allows stale authority references to propagate into closeout edits)
+
+rationale:
+A focused authority-and-hygiene pass reduces submission-readiness risk without changing any implementation runtime behavior. This preserves audit continuity while making active surfaces reliable for final closeout.
+
+evidence_basis:
+- rq_alignment_checks.md now matches locked Title/RQ authority.
+- Active chapter-readiness wording no longer references removed baseline paths.
+- Readiness risk framing now explicitly marks professionalism and word-count items as at risk where appropriate.
+- Historical phase artifacts include explicit historical-reference notices.
+- Superseded Chapter 2 verbatim-audit markdown variants are archived under _archive_legacy and canonical authority is anchored to chapter2_reference_audit_zero_trust_2026-04-10.md.
+
+impacted_files:
+- 09_quality_control/rq_alignment_checks.md
+- 09_quality_control/chapter_readiness_checks.md
+- 09_quality_control/submission_readiness_status.md
+- 09_quality_control/word_count_snapshot_2026-04-18.md
+- 09_quality_control/PHASE_4_VERIFICATION_COMPLETE.md
+- 09_quality_control/TRANSPARENCY_AUDIT_CHECKLIST.md
+- 09_quality_control/pipeline_audit_comprehensive_2026-03-25.md
+- 09_quality_control/citation_checks.md
+- 09_quality_control/chapter2_reference_audit_zero_trust_2026-04-10.md
+- 09_quality_control/verbatim_audits/_archive_legacy/README.md
+- 00_admin/thesis_state.md
+- 00_admin/timeline.md
+- 00_admin/recurring_issues.md
+
+review_date:
+none
+
+id: D-201
+date: 2026-04-18
+proposed_by: Copilot
+status: accepted
+decision_summary: Execute the next submission-closeout slice by hardening the professionalism companion report to a citation-anchored, assessor-ready state and synchronizing QC ledgers to reflect measured risk reduction, while preserving unchanged implementation/runtime scope.
+rationale: After UNDO-P and UNDO-Q closure, the highest active risk moved to submission packaging and companion readiness. Raising professionalism evidence quality and closing the body-length shortfall gives immediate assessment benefit without destabilizing the validated pipeline.
+alternatives_considered:
+- Prioritize chapter 1 to 6 trimming before companion hardening (rejected: companion had a clear, fast-closing deficit and lower implementation risk).
+- Defer companion updates until final packaging day (rejected: keeps avoidable at-risk status open and compresses final submission timeline).
+- Make only word-count edits without citation/professional-controls strengthening (rejected: would reduce quantity risk but not quality/readiness clarity).
+evidence_basis: `professionalism_companion_report.md` expanded and reference-anchored; measured word count now 2,066 in `word_count_snapshot_2026-04-18.md`; readiness ledger updated to `partially satisfied` for professionalism topic coverage with residual formatting/package caveat.
+impacted_files:
+- `08_writing/professionalism_companion_report.md`
+- `09_quality_control/word_count_snapshot_2026-04-18.md`
+- `09_quality_control/submission_readiness_status.md`
+- `00_admin/change_log.md`
+- `00_admin/decision_log.md`
+- `00_admin/thesis_state.md`
+- `00_admin/timeline.md`
+
+review_date:
+none
+
+id: D-202
+date: 2026-04-18
+proposed_by: Copilot
+status: accepted
+decision_summary: Adopt `pylint` duplicate-code detection (`R0801`) as the active duplicate-check quality tool and integrate it into the existing script/task workflow via `07_implementation/scripts/duplicate_src.ps1` with advisory and strict task modes.
+rationale: The workspace already uses PowerShell quality wrappers (`ruff_src.ps1`, `hygiene_src.ps1`) and task-driven execution. `pylint` duplicate-code mode provides immediate, source-level duplicate-block visibility without adding a separate Node toolchain and fits the existing terminal-first governance pattern.
+alternatives_considered:
+- Use `jscpd` as the primary detector (rejected: not installed and introduces separate tooling stack for this Python-first quality lane).
+- Keep duplicate detection as an ad hoc manual command only (rejected: weak repeatability/governance).
+- Implement strict-only gating immediately (rejected: advisory-first rollout is safer while triaging baseline duplicate findings).
+evidence_basis: New script/task surfaces are operational and produced `duplicate_src_report_latest.txt` with actionable duplicate-code findings after advisory execution.
+impacted_files:
+- `07_implementation/scripts/duplicate_src.ps1`
+- `.vscode/tasks.json`
+- `duplicate_src_report_latest.txt`
+- `00_admin/change_log.md`
+- `00_admin/decision_log.md`
+- `00_admin/thesis_state.md`
+- `00_admin/timeline.md`
+
+review_date:
+none
+
+id: D-203
+date: 2026-04-18
+proposed_by: Copilot
+status: accepted
+decision_summary: Consolidate duplicated REB-M3 gate helper/reporting logic into one shared module (`reb_gate_common.py`) and keep tranche scripts as thin objective-check declarations that call common finalization and utility helpers.
+rationale: Duplicate-code tooling showed recurring helper/report scaffolding across tranche gate scripts. Centralizing this logic reduces maintenance overhead and future drift risk while keeping gate behavior unchanged.
+alternatives_considered:
+- Leave duplicate helper blocks in each tranche script (rejected: preserves avoidable duplication and raises update-drift risk).
+- Merge both tranche gates into one monolithic gate file (rejected: reduces objective-tranche clarity and increases coupling).
+- Refactor only nested-key helper while leaving report finalization duplicated (rejected: partial improvement with remaining duplicate burden).
+evidence_basis: `reb_m3_tranche1_gate.py` and `reb_m3_tranche2_gate.py` now import shared helpers from `reb_gate_common.py`; Ruff remains clean, `pytest 622/622` passes, and duplicate advisory findings reduced from 13 to 12.
+impacted_files:
+- `07_implementation/src/quality/reb_gate_common.py`
+- `07_implementation/src/quality/reb_m3_tranche1_gate.py`
+- `07_implementation/src/quality/reb_m3_tranche2_gate.py`
+- `duplicate_src_report_latest.txt`
+- `00_admin/change_log.md`
+- `00_admin/decision_log.md`
+- `00_admin/thesis_state.md`
+- `00_admin/timeline.md`
+
+review_date:
+none
+
+id: D-204
+date: 2026-04-18
+proposed_by: Copilot
+status: accepted
+decision_summary: Extend the shared REB gate-helper pattern to tranche-3 as well, so all REB-M3 gate scripts use one common helper surface for artifact existence checks, nested value reads, and report/matrix emission.
+rationale: Leaving tranche-3 on local helper implementations would keep the same maintenance drift risk that duplicate tooling already exposed in tranche-1 and tranche-2. Aligning all tranche gates to the same helper surface is the smallest consistent design.
+alternatives_considered:
+- Stop after refactoring tranche-1 and tranche-2 only (rejected: leaves the same duplication pattern active in tranche-3).
+- Merge tranche-3 logic into one combined multi-tranche gate runner (rejected: reduces gate-level audit clarity and changes execution shape unnecessarily).
+- Duplicate the shared helper back into tranche-3 with minor local variations (rejected: no maintainability benefit).
+evidence_basis: `reb_m3_tranche3_gate.py` now imports and uses `reb_gate_common.py`; Ruff remains clean, `pytest 622/622` passes, and duplicate advisory findings reduced from 12 to 10.
+impacted_files:
+- `07_implementation/src/quality/reb_m3_tranche3_gate.py`
+- `07_implementation/src/quality/reb_gate_common.py`
+- `duplicate_src_report_latest.txt`
+- `00_admin/change_log.md`
+- `00_admin/decision_log.md`
+- `00_admin/thesis_state.md`
+- `00_admin/timeline.md`
+
+review_date:
+none
+
+id: D-205
+date: 2026-04-18
+proposed_by: Copilot
+status: accepted
+decision_summary: Treat the BL-005 filtered candidate field list as a shared cross-stage handshake contract and define it once in `shared_utils.constants`, with BL-006 validation and BL-014 sanity checks both consuming the same constant.
+rationale: The duplicated field tuple represented one cross-stage contract but was maintained in two places. Centralizing it removes drift risk and keeps BL-006 and BL-014 aligned on the same handshake expectation.
+alternatives_considered:
+- Leave the tuple duplicated in scoring and quality modules (rejected: preserves avoidable contract drift risk).
+- Import the tuple from `scoring.input_validation` into `sanity_checks` (rejected: inverts dependency direction and couples quality checks to scoring internals).
+- Create a new one-off helper module just for one tuple (rejected: heavier structure than needed for a shared constant already appropriate to shared utils).
+evidence_basis: `BL005_FILTERED_REQUIRED_FIELDS` now lives in `shared_utils.constants`; Ruff remains clean, `pytest 622/622` passes, and duplicate advisory findings reduced from 10 to 9.
+impacted_files:
+- `07_implementation/src/shared_utils/constants.py`
+- `07_implementation/src/scoring/input_validation.py`
+- `07_implementation/src/quality/sanity_checks.py`
+- `duplicate_src_report_latest.txt`
+- `00_admin/change_log.md`
+- `00_admin/decision_log.md`
+- `00_admin/thesis_state.md`
+- `00_admin/timeline.md`
+
+review_date:
+none
+
+id: D-206
+date: 2026-04-18
+proposed_by: Copilot
+status: accepted
+decision_summary: Centralize runtime-control normalization and payload-resolution bookkeeping in one shared helper module so BL-005 and BL-006 reuse the same diagnostic and fallback-reporting behavior instead of carrying parallel local implementations.
+rationale: Retrieval and scoring had converged on the same bookkeeping pattern for normalization-event tracking and BL_STAGE_CONFIG_JSON parse/fallback diagnostics. Maintaining those blocks separately creates drift risk without adding stage-specific value.
+alternatives_considered:
+- Leave the bookkeeping duplicated in each stage module (rejected: preserves avoidable duplication and drift risk).
+- Move the helpers into `stage_runtime_resolver.py` directly (rejected: that module should stay focused on payload/default resolution rather than stage-facing diagnostics bookkeeping).
+- Refactor only the payload parse block and leave normalization bookkeeping duplicated (rejected: partial improvement with remaining repeated logic).
+evidence_basis: `shared_utils/runtime_control_utils.py` now provides shared normalization and payload-resolution helpers; Ruff remains clean, `pytest 622/622` passes, and duplicate advisory findings reduced from 9 to 6.
+impacted_files:
+- `07_implementation/src/shared_utils/runtime_control_utils.py`
+- `07_implementation/src/retrieval/runtime_controls.py`
+- `07_implementation/src/scoring/runtime_controls.py`
+- `duplicate_src_report_latest.txt`
+- `00_admin/change_log.md`
+- `00_admin/decision_log.md`
+- `00_admin/thesis_state.md`
+- `00_admin/timeline.md`
+
+review_date:
+none
+
+id: D-207
+date: 2026-04-18
+proposed_by: Copilot
+status: accepted
+decision_summary: Use the same shared helper module to normalize control-context keys and attach run-config paths for BL-009 and BL-010 runtime controls, instead of maintaining parallel local implementations in observability and reproducibility.
+rationale: Observability and reproducibility had converged on the same context-normalization shape for `config_source`, run-config path metadata, `control_mode`, `input_scope`, and attached run-intent/effective-config paths. Keeping those blocks local adds drift risk without stage-specific value.
+alternatives_considered:
+- Leave the BL-009 and BL-010 context blocks duplicated (rejected: preserves avoidable duplication and contract drift risk).
+- Move this logic into each stage's sanitize function via copy/paste from one canonical file (rejected: still duplicates the implementation).
+- Put the helper into `stage_runtime_resolver.py` directly (rejected: keep resolver responsibilities focused on payload/default precedence rather than stage-facing context shaping).
+evidence_basis: `shared_utils/runtime_control_utils.py` now exposes shared control-context helpers; Ruff remains clean, `pytest 622/622` passes, and duplicate advisory findings reduced from 6 to 5.
+impacted_files:
+- `07_implementation/src/shared_utils/runtime_control_utils.py`
+- `07_implementation/src/observability/runtime_controls.py`
+- `07_implementation/src/reproducibility/runtime_controls.py`
+- `duplicate_src_report_latest.txt`
+- `00_admin/change_log.md`
+- `00_admin/decision_log.md`
+- `00_admin/thesis_state.md`
+- `00_admin/timeline.md`
+
+review_date:
+none
+
+id: D-208
+date: 2026-04-18
+proposed_by: Copilot
+status: accepted
+decision_summary: Treat `playlist.models` as the canonical BL-007 config/context serialization surface and have `playlist.stage` reuse those mapping helpers instead of duplicating the same snapshot logic locally.
+rationale: BL-007 already had stable model-layer helpers for converting runtime controls and playlist context into serializable mappings. Rebuilding the same config structure inside `playlist.stage` added drift risk without any stage-specific value.
+alternatives_considered:
+- Leave the stage-level config snapshot duplicated (rejected: preserves avoidable duplication and serializer drift risk).
+- Extract a new third helper module just for this mapping (rejected: unnecessary when the model helpers already exist and are the natural authority).
+- Collapse model helpers into stage-only code (rejected: moves serialization authority away from the data model surface).
+evidence_basis: `playlist.stage` now reuses `context_from_mapping()` and `context_as_mapping()` from `playlist.models`; Ruff remains clean, `pytest 622/622` passes, and duplicate advisory findings reduced from 5 to 4.
+impacted_files:
+- `07_implementation/src/playlist/stage.py`
+- `duplicate_src_report_latest.txt`
+- `00_admin/change_log.md`
+- `00_admin/decision_log.md`
+- `00_admin/thesis_state.md`
+- `00_admin/timeline.md`
+
+review_date:
+none
+
+id: D-209
+date: 2026-04-18
+proposed_by: Copilot
+status: accepted
+decision_summary: Treat `orchestration.summary_builder` as the canonical BL-013 completion-reporting surface and have `orchestration.main` reuse a shared completion emitter instead of duplicating finalization, footer printing, and failed-stage reporting.
+rationale: The summary builder already owns run finalization and footer printing. Keeping the same completion sequence duplicated in `main` created drift risk and obscured that there is one authoritative way to emit BL-013 completion artifacts.
+alternatives_considered:
+- Leave the main completion path duplicated (rejected: preserves avoidable duplication and reporting drift risk).
+- Move the shared logic into `main` and call back from `summary_builder` (rejected: inverts ownership away from the module that already owns summary finalization).
+- Extract a new third helper module for one completion sequence (rejected: unnecessary additional surface area).
+evidence_basis: `orchestration.summary_builder` now exposes shared completion emission reused by `orchestration.main`; Ruff remains clean, `pytest 622/622` passes, and duplicate advisory findings reduced from 4 to 3.
+impacted_files:
+- `07_implementation/src/orchestration/main.py`
+- `07_implementation/src/orchestration/summary_builder.py`
+- `duplicate_src_report_latest.txt`
+- `00_admin/change_log.md`
+- `00_admin/decision_log.md`
+- `00_admin/thesis_state.md`
+- `00_admin/timeline.md`
+
+review_date:
+none
+
+id: D-210
+date: 2026-04-18
+proposed_by: Copilot
+status: accepted
+decision_summary: Use shared constants and a shared BL-011 snapshot-construction helper as single authorities for remaining duplicated contract literals and snapshot fields, rather than keeping parallel inline copies in quality and run-config modules.
+rationale: The remaining R0801 findings were all contract-value and snapshot-shape duplication. Keeping those literals and assembly fields duplicated creates drift risk without adding stage-specific behavior.
+alternatives_considered:
+- Keep the remaining literals and snapshot fields duplicated (rejected: preserves avoidable drift risk and keeps duplicate findings open).
+- Create separate tiny helper modules for each duplicate pair (rejected: unnecessary surface sprawl when existing shared modules already own those authorities).
+- Silence duplicate checks without refactoring (rejected: hides maintainability risk instead of resolving it).
+evidence_basis: `quality.sanity_checks` now reuses `BL005_FILTERED_REQUIRED_FIELDS`; `run_config.control_registry` now reuses `DEFAULT_SCORING_COMPONENT_WEIGHTS`; `quality.suite` now reuses `controllability.main.build_bl011_common_config_snapshot`; Ruff remains clean, `pytest 622/622` passes, and duplicate advisory findings reduced from 3 to 0.
+impacted_files:
+- `07_implementation/src/quality/sanity_checks.py`
+- `07_implementation/src/run_config/control_registry.py`
+- `07_implementation/src/controllability/main.py`
+- `07_implementation/src/quality/suite.py`
+- `duplicate_src_report_latest.txt`
+- `00_admin/change_log.md`
+- `00_admin/decision_log.md`
+- `00_admin/thesis_state.md`
+- `00_admin/timeline.md`
+
+review_date:
+none
+
+id: D-211
+date: 2026-04-18
+proposed_by: Copilot
+status: accepted
+decision_summary: Prefer `Mapping[...]`-typed helper interfaces for shared cross-module snapshot builders so callers with `dict[str, Path]` inputs can satisfy contracts without violating dict invariance in static type checking.
+rationale: The shared BL-011 snapshot helper is reused by both controllability and quality modules, and Pyright surfaced invariant-dict argument errors when signatures expected `dict[str, object]`. `Mapping` preserves read-only intent and avoids unnecessary casts while keeping the helper broadly reusable.
+alternatives_considered:
+- Keep `dict[str, object]` helper signatures and add caller-side casts (rejected: noisy, weaker type signal, easy to drift).
+- Relax type checking for the helper call sites (rejected: hides genuine interface mismatch).
+- Revert the shared helper and re-duplicate logic (rejected: undermines C-501 maintainability gains).
+evidence_basis: Updated helper signature in `controllability.main` passes `pyright src` with `0 errors`; Ruff remains clean.
+impacted_files:
+- `07_implementation/src/controllability/main.py`
+- `00_admin/change_log.md`
+- `00_admin/decision_log.md`
+- `00_admin/thesis_state.md`
+- `00_admin/timeline.md`
+
+review_date:
+none
+
+id: D-212
+date: 2026-04-18
+proposed_by: Copilot
+status: accepted
+decision_summary: Use behavior-preserving helper extraction as the default strategy for the first complexity-reduction wave in BL-011 stage executors, prioritizing reduction of E-grade hotspots without changing scenario semantics or report contracts.
+rationale: `execute_retrieval_stage` and `execute_scoring_stage` were high-complexity hotspots. Extracting cohesive helper boundaries lowers cognitive load and maintenance risk while preserving existing scenario output shape and deterministic behavior.
+alternatives_considered:
+- Leave the E-grade functions unchanged and target only new features (rejected: accumulates maintainability risk).
+- Perform a broad architectural rewrite across all controllability stages in one slice (rejected: too risky for a first update batch).
+- Silence complexity telemetry thresholds instead of refactoring (rejected: hides rather than fixes maintainability debt).
+evidence_basis: After helper extraction in BL-011 retrieval/scoring stage executors, Ruff and Pyright are clean, pytest remains `622/622`, and hygiene report shows both functions improved from E-grade to D-grade.
+impacted_files:
+- `07_implementation/src/controllability/stage_retrieval.py`
+- `07_implementation/src/controllability/stage_scoring.py`
+- `hygiene_src_report_latest.txt`
+- `00_admin/change_log.md`
+- `00_admin/decision_log.md`
+- `00_admin/thesis_state.md`
+- `00_admin/timeline.md`
+
+review_date:
+none
+
+id: D-238
+date: 2026-04-19
+proposed_by: Copilot
+status: accepted
+decision_summary: Apply two complementary helper-extraction patterns to close the final D-grade hotspots: (1) data-bundle pattern with `dict[str, Any]` keyed by artifact name for `sanity_checks.main` decomposition; (2) pre-computed boolean `relaxation_active` to eliminate a 4-term `and` expression from the inner candidate loop in `assemble_bucketed`, enabling clean extraction into `_run_candidate_loop`.
+rationale: The `data` bundle pattern prevents excessively long parameter lists when 8+ focus helpers all require access to the same loaded JSON artifacts. Pre-computing `relaxation_active = relaxation_enabled and relaxation_round < max_relaxation_rounds` before the inner loop reduces the condition from 4 `and` terms to 2, removing 2 CC points and enabling the loop body to be extracted at C-grade rather than remaining D-grade.
+alternatives_considered:
+- Pass all artifacts as keyword arguments to each helper (rejected: 10+ parameter lists degrade readability; bundle is clearer).
+- Keep relaxation_enabled and relaxation_round as separate parameters to _run_candidate_loop (rejected: adds 2 parameters for 0 semantic gain; pre-computation is explicit and locally documented).
+- Extract only the outer while loop body rather than the inner for loop (rejected: outer while body contains the deferred/relaxation handling that reduces CC more if left in the parent).
+evidence_basis: ruff clean (`All checks passed!`), pytest `611/611`, hygiene report has zero D/E/F entries after both extractions. `assemble_bucketed` CC reduced from D(24) to below C. `sanity_checks.main` CC reduced from F(67) to C-grade (removed from D+ listings entirely).
+impacted_files:
+- `07_implementation/src/quality/sanity_checks.py`
+- `07_implementation/src/playlist/rules.py`
+- `hygiene_src_report_latest.txt`
+- `00_admin/change_log.md`
+- `00_admin/decision_log.md`
+- `00_admin/thesis_state.md`
+- `00_admin/timeline.md`
+
+review_date:
+none
+
+id: D-239
+date: 2026-04-19
+proposed_by: user + Copilot
+status: accepted
+decision_summary: Treat `05_design/architecture.md` as a code-grounded architecture authority that must include all currently active implementation surfaces (BL-003 through BL-011, BL-013, BL-014), not only the original BL-003 through BL-009 tranche.
+rationale: The prior architecture file remained partially stale after implementation expanded with reproducibility, controllability, orchestration, and sanity-gate surfaces. Keeping architecture docs scoped to only earlier stages creates avoidable Chapter 3-to-implementation drift and weakens traceability claims.
+alternatives_considered:
+- Keep the previous BL-003 through BL-009 scope and rely on `thesis_state.md` for newer stages (rejected: splits architecture authority across documents).
+- Create a second architecture document for BL-010+ surfaces (rejected: increases maintenance burden and divergence risk).
+- Update architecture only with a brief note without stage-level sections (rejected: insufficient for design-to-implementation auditability).
+evidence_basis: Active source surfaces confirm implemented BL-010/BL-011/BL-013/BL-014 behavior and artifacts (`reproducibility/main.py`, `controllability/main.py`, `orchestration/main.py`, `quality/sanity_checks.py`). Updated architecture now captures these surfaces and their cross-stage contracts.
+impacted_files:
+- `05_design/architecture.md`
+- `00_admin/change_log.md`
+- `00_admin/decision_log.md`
+
+review_date:
+none
+
+id: D-240
+date: 2026-04-19
+proposed_by: user + Copilot
+status: accepted
+decision_summary: Use a full-file synchronization strategy for `05_design/` documents, replacing stale BL-003 to BL-009-only wording with implementation-grounded coverage through BL-014 and explicit cross-stage evidence contracts.
+rationale: Most `05_design` documents were structurally stale and referenced pre-expansion architecture assumptions. Partial edits would leave mixed-era wording and increase drift risk. Full synchronized rewrites provide clearer authority and keep all design surfaces aligned to one active stage map.
+alternatives_considered:
+- Update only `architecture.md` and leave companion files as historical references (rejected: user requested every file in `05_design` be updated).
+- Apply minimal line edits across each file (rejected: high risk of leaving contradictory stale statements).
+- Move stale files to archive and keep only a subset active (rejected: would remove expected design-control surfaces used in chapter traceability).
+evidence_basis: Rewritten docs now reference active implemented fields and contracts validated against source modules (`observability/main.py`, `transparency/main.py`, `reproducibility/main.py`, `orchestration/summary_builder.py`, `quality/sanity_checks.py`) and align with the current architecture baseline.
+impacted_files:
+- `05_design/architecture.md`
+- `05_design/chapter3_information_sheet.md`
+- `05_design/CONTROL_SURFACE_REGISTRY.md`
+- `05_design/CONTROL_TESTING_PROTOCOL.md`
+- `05_design/controllability_design.md`
+- `05_design/controllability_design_addendum.md`
+- `05_design/data_pipeline.md`
+- `05_design/explanation_design.md`
+- `05_design/literature_architecture_mapping.md`
+- `05_design/observability_design.md`
+- `05_design/requirements_to_design_map.md`
+- `05_design/system_architecture.md`
+- `05_design/transparency_design.md`
+- `05_design/transparency_design_addendum.md`
+- `05_design/TRANSPARENCY_SPEC.md`
+- `00_admin/change_log.md`
+- `00_admin/decision_log.md`
+
+review_date:
+none
+
+id: D-241
+date: 2026-04-19
+proposed_by: user + Copilot
+status: accepted
+decision_summary: Prefer comprehensive, code-documenting design docs in `05_design` over concise status summaries, with explicit issue sections in each file.
+rationale: The concise versions captured stage names but were too shallow for chapter traceability and reviewer scrutiny. Comprehensive documents with module-level contract references and issue statements better support Chapter 3 to implementation alignment and bounded interpretation claims.
+alternatives_considered:
+- Keep concise summaries and rely on `architecture.md` only (rejected: leaves important control/transparency/evidence details under-documented).
+- Expand only selected files (rejected: user requested updating all relevant design files comprehensively).
+- Exclude known issues from docs to keep tone positive (rejected: hides constraints and weakens scientific defensibility).
+evidence_basis: Updated files now include concrete contract surfaces, stage-level behavior, integration boundaries, and explicit issue/risk sections tied to active source modules.
+impacted_files:
+- `05_design/chapter3_information_sheet.md`
+- `05_design/CONTROL_SURFACE_REGISTRY.md`
+- `05_design/CONTROL_TESTING_PROTOCOL.md`
+- `05_design/controllability_design.md`
+- `05_design/controllability_design_addendum.md`
+- `05_design/data_pipeline.md`
+- `05_design/explanation_design.md`
+- `05_design/literature_architecture_mapping.md`
+- `05_design/observability_design.md`
+- `05_design/requirements_to_design_map.md`
+- `05_design/system_architecture.md`
+- `05_design/transparency_design.md`
+- `05_design/transparency_design_addendum.md`
+- `05_design/TRANSPARENCY_SPEC.md`
+- `00_admin/change_log.md`
+- `00_admin/decision_log.md`
+
+review_date:
+none
+
+id: D-242
+date: 2026-04-19
+proposed_by: user + Copilot
+status: accepted
+decision_summary: Keep `07_implementation/mentor_feedback_submission` as a synchronized, clean handoff bundle by mirroring active `07_implementation/src` code while preserving only required embedded input assets and stripping generated/runtime noise.
+rationale: The mentor bundle should stay runnable and up to date without carrying stale outputs, caches, or drift from the active implementation. A mirror-plus-preserved-inputs policy balances reproducibility with portability.
+alternatives_considered:
+- Leave the bundle unchanged and only clean caches (rejected: source drift remains).
+- Keep all generated outputs for proof artifacts (rejected: inflates package size and creates stale-result ambiguity).
+- Delete the mentor bundle entirely (rejected: still needed as a standalone submission/handoff surface).
+evidence_basis: Mentor bundle `src` file count now matches active `src` for non-output files; active smoke test passed via mentor entrypoint (`BL013-ENTRYPOINT-20260419-135109-095705`, `BL014-SANITY-20260419-135143-751579`, `36/36`), then outputs were re-cleaned to preserved-input baseline.
+impacted_files:
+- `07_implementation/mentor_feedback_submission/src/**`
+- `07_implementation/mentor_feedback_submission/main.py`
+- `07_implementation/mentor_feedback_submission/requirements.txt`
+- `07_implementation/mentor_feedback_submission/config/profiles/run_config_ui013_tuning_v1f.json`
+- `07_implementation/mentor_feedback_submission/README.md`
+- `00_admin/change_log.md`
+- `00_admin/decision_log.md`
+
+review_date:
+none

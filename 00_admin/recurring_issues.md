@@ -60,6 +60,6 @@ None.
 
 ### RI-006 — Stale active-baseline path points to removed location
 - first_seen: 2026-04-09
-- last_seen: 2026-04-09
+- last_seen: 2026-04-18
 - pattern: Multiple docs still referenced `07_implementation/ACTIVE_BASELINE.md` after runtime-root consolidation, while the only remaining baseline markdown was under `_scratch/final_artefact_bundle/`, causing workflow confusion about active authority.
-- fix_applied: Enforced active-root rule in instruction surfaces and admin docs (`07_implementation/` active, `_scratch/` reference-only), added explicit status note in `_scratch/final_artefact_bundle/ACTIVE_BASELINE.md`, and logged decision/change sync (D-048/C-229).
+- fix_applied: Enforced active-root rule in instruction surfaces and admin docs (`07_implementation/` active, `_scratch/` reference-only), added explicit status note in `_scratch/final_artefact_bundle/ACTIVE_BASELINE.md`, and logged decision/change sync (D-048/C-229). Follow-up QC cleanup wave (D-189/C-478) removed lingering stale-path wording from active `09_quality_control` surfaces and re-anchored active authority to thesis_state/timeline plus current run-ID references.
