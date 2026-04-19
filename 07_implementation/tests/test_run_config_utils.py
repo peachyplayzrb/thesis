@@ -7,11 +7,19 @@ from pathlib import Path
 
 import pytest
 
+from run_config.control_registry import (
+    CONTROL_REGISTRY,
+    CONTROL_REGISTRY_SCHEMA_VERSION,
+    build_control_registry_snapshot,
+)
 from run_config.run_config_utils import (
     RunConfigError,
+    build_run_effective_payload,
+    build_run_intent_payload,
     resolve_bl003_influence_controls,
     resolve_bl003_seed_controls,
     resolve_bl003_weighting_policy,
+    resolve_bl013_orchestration_controls,
     resolve_bl005_controls,
     resolve_bl006_controls,
     resolve_bl007_controls,
@@ -528,3 +536,106 @@ def test_bl003_weighting_policy_resolver_follows_effective_validated_controls(tm
         == weighting_policy["playlist_items"]["min_position_floor"]
     )
     assert resolved["playlist_items_scale_multiplier"] == weighting_policy["playlist_items"]["scale_multiplier"]
+
+
+def test_build_control_registry_snapshot_has_required_structure() -> None:
+    snapshot = build_control_registry_snapshot()
+
+    assert snapshot["schema_version"] == CONTROL_REGISTRY_SCHEMA_VERSION
+    assert isinstance(snapshot["entry_count"], int)
+    assert snapshot["entry_count"] == len(CONTROL_REGISTRY)
+    assert isinstance(snapshot["sections"], list)
+    assert isinstance(snapshot["stages"], list)
+    assert isinstance(snapshot["controls"], list)
+    assert len(snapshot["controls"]) == snapshot["entry_count"]
+
+
+def test_build_control_registry_snapshot_covers_all_pipeline_stages() -> None:
+    snapshot = build_control_registry_snapshot()
+
+    stages = set(snapshot["stages"])
+    assert "BL-004" in stages
+    assert "BL-005" in stages
+    assert "BL-006" in stages
+    assert "BL-007" in stages
+    assert "BL-008" in stages
+    assert "BL-011" in stages
+
+
+def test_build_control_registry_snapshot_entries_have_required_keys() -> None:
+    snapshot = build_control_registry_snapshot()
+    required_keys = {"name", "section", "stage", "type", "default", "effect_surface"}
+
+    for entry in snapshot["controls"]:
+        missing = required_keys - set(entry.keys())
+        assert not missing, f"Entry '{entry.get('name')}' missing keys: {missing}"
+
+
+def test_build_control_registry_snapshot_includes_key_controls() -> None:
+    snapshot = build_control_registry_snapshot()
+    names = {entry["name"] for entry in snapshot["controls"]}
+
+    assert "confidence_weighting_mode" in names
+    assert "component_weights" in names
+    assert "target_size" in names
+    assert "min_score_threshold" in names
+    assert "top_contributor_limit" in names
+    assert "stricter_threshold_scale" in names
+
+
+def test_build_control_registry_snapshot_enum_entries_have_valid_values() -> None:
+    snapshot = build_control_registry_snapshot()
+
+    for entry in snapshot["controls"]:
+        if entry["type"] == "enum":
+            assert isinstance(entry.get("valid_values"), list), (
+                f"Enum entry '{entry['name']}' must have a valid_values list"
+            )
+            assert len(entry["valid_values"]) >= 2, (
+                f"Enum entry '{entry['name']}' must have at least 2 valid_values"
+            )
+            assert entry["default"] in entry["valid_values"], (
+                f"Entry '{entry['name']}' default not in valid_values"
+            )
+
+
+def test_build_run_intent_payload_includes_schema_reference() -> None:
+    payload = build_run_intent_payload(run_id="BL013-ENTRYPOINT-TEST", run_config_path=None)
+
+    schema_ref = payload["run_config_schema"]
+    assert isinstance(schema_ref, dict)
+    assert schema_ref["schema_version"] == "run-config-v1"
+    assert schema_ref["schema_path"] is not None
+    assert schema_ref["schema_sha256"] is not None
+
+
+def test_build_run_effective_payload_includes_schema_reference(tmp_path: Path) -> None:
+    run_config_path = _write_run_config(tmp_path, {"schema_version": "run-config-v1"})
+    payload = build_run_effective_payload(
+        run_id="BL013-ENTRYPOINT-TEST",
+        run_config_path=run_config_path,
+        run_intent_path=None,
+    )
+
+    schema_ref = payload["run_config_schema"]
+    assert isinstance(schema_ref, dict)
+    assert schema_ref["schema_version"] == "run-config-v1"
+    assert schema_ref["schema_path"] is not None
+    assert schema_ref["schema_sha256"] is not None
+
+
+def test_resolve_bl013_orchestration_controls_exposes_determinism_knobs(tmp_path: Path) -> None:
+    run_config_path = _write_run_config(
+        tmp_path,
+        {
+            "orchestration_controls": {
+                "determinism_verify_on_success": True,
+                "determinism_verify_replay_count": 5,
+            }
+        },
+    )
+
+    controls = resolve_bl013_orchestration_controls(run_config_path)
+
+    assert controls["determinism_verify_on_success"] is True
+    assert controls["determinism_verify_replay_count"] == 5

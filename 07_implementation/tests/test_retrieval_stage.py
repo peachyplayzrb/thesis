@@ -141,6 +141,16 @@ def test_build_diagnostics_payload_includes_expected_counts(tmp_path: Path) -> N
     runtime_control_resolution = cast(dict[str, Any], config["runtime_control_resolution"])
     threshold_attribution = cast(dict[str, Any], payload_obj["threshold_attribution"])
     bounded_what_if = cast(dict[str, Any], payload_obj["bounded_what_if_estimates"])
+    candidate_shaping_fidelity = cast(dict[str, Any], payload_obj["candidate_shaping_fidelity"])
+    pool_progression = cast(dict[str, Any], candidate_shaping_fidelity["pool_progression"])
+    exclusion_categories = cast(dict[str, Any], candidate_shaping_fidelity["exclusion_categories"])
+    control_effect_observability = cast(
+        dict[str, Any], candidate_shaping_fidelity["control_effect_observability"]
+    )
+    rejection_driver_contribution = cast(
+        dict[str, Any], candidate_shaping_fidelity["rejection_driver_contribution"]
+    )
+    threshold_effects = cast(dict[str, Any], candidate_shaping_fidelity["threshold_effects"])
 
     assert payload_obj["task"] == "BL-005"
     assert counts["seed_tracks_excluded"] == 1
@@ -154,6 +164,20 @@ def test_build_diagnostics_payload_includes_expected_counts(tmp_path: Path) -> N
     assert "tempo" in cast(dict[str, Any], threshold_attribution["numeric_feature_fail_counts"])
     assert "relaxed_estimate" in bounded_what_if
     assert "tightened_estimate" in bounded_what_if
+    # UNDO-P: per-control-family scenario surface
+    per_family = cast(dict[str, Any], bounded_what_if["per_control_family_scenarios"])
+    assert "thresholds" in per_family
+    assert "language_filter" in per_family
+    assert "assembly_limits" in per_family
+    language_family = cast(dict[str, Any], per_family["language_filter"])
+    assert "language_filtered_candidates" in language_family
+    assert "disabled_kept_candidates" in language_family
+    assert "delta_vs_base" in language_family
+    assert pool_progression["candidate_rows_total"] == 1
+    assert exclusion_categories["reject_semantic_without_numeric_support"] == 0
+    assert "retained_share_after_gates" in control_effect_observability
+    assert "ranked_rejection_drivers" in rejection_driver_contribution
+    assert "directional_impact_summary" in threshold_effects
 
 
 def test_run_returns_typed_artifacts(monkeypatch, tmp_path: Path) -> None:

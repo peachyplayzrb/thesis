@@ -5,6 +5,7 @@ from playlist.reporting import (
     build_assembly_pressure_diagnostics,
     build_influence_effectiveness_diagnostics,
     build_rank_continuity_diagnostics,
+    build_tradeoff_metrics_summary,
     build_undersized_diagnostics,
 )
 
@@ -106,3 +107,42 @@ def test_build_influence_effectiveness_diagnostics_counts_paths() -> None:
     assert diagnostics["reserved_slot_utilization_rate"] == 0.5
     assert diagnostics["inclusion_path_counts"]["reserved_slot"] == 1
     assert diagnostics["inclusion_path_counts"]["competitive"] == 1
+
+
+def test_build_tradeoff_metrics_summary_emits_expected_sections() -> None:
+    playlist = [
+        {"track_id": "t1", "lead_genre": "rock", "score_rank": 1},
+        {"track_id": "t2", "lead_genre": "rock", "score_rank": 4},
+        {"track_id": "t3", "lead_genre": "pop", "score_rank": 10},
+    ]
+    trace_rows = [
+        {"score_rank": 2, "decision": "excluded", "exclusion_reason": "genre_cap_exceeded"},
+        {"score_rank": 3, "decision": "excluded", "exclusion_reason": "genre_cap_exceeded"},
+        {"score_rank": 1, "decision": "included", "exclusion_reason": ""},
+    ]
+    transition_diagnostics = {
+        "pair_count": 2,
+        "mean_smoothness": 0.7,
+        "min_smoothness": 0.4,
+    }
+
+    summary = build_tradeoff_metrics_summary(
+        playlist=playlist,
+        trace_rows=trace_rows,
+        transition_diagnostics=transition_diagnostics,
+    )
+
+    assert summary["playlist_size"] == 3
+    diversity = summary["diversity_distribution_summary"]
+    assert diversity["unique_genre_count"] == 2
+    assert diversity["genre_counts"] == {"rock": 2, "pop": 1}
+
+    novelty = summary["novelty_distance_summary"]
+    assert novelty["transition_pair_count"] == 2
+    assert novelty["mean_adjacent_transition_distance"] == 0.3
+    assert novelty["max_adjacent_transition_distance"] == 0.6
+
+    ordering = summary["ordering_pressure_summary"]
+    assert ordering["median_selected_rank"] == 4
+    assert ordering["selected_rank_span"] == 9
+    assert ordering["dominant_top_100_exclusion_reason"] == "genre_cap_exceeded"

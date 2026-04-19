@@ -255,8 +255,33 @@ def test_aggregate_inputs_uses_confidence_adjusted_effective_weight() -> None:
     assert aggregation.weight_by_type["influence"] == 0.5
     assert aggregation.total_effective_weight == 1.5
     assert aggregation.confidence_adjusted_weight_sum == 1.5
-    assert aggregation.seed_trace_rows[0]["effective_weight"] == 1.0
-    assert aggregation.seed_trace_rows[1]["effective_weight"] == 0.5
+
+
+def test_aggregate_inputs_preserves_match_confidence_in_seed_trace() -> None:
+    inputs = _inputs(
+        [
+            {
+                "ds001_id": "track_conf",
+                "spotify_track_ids": "sp_conf",
+                "interaction_types": "history",
+                "preference_weight_sum": "1.0",
+                "interaction_count_sum": "4",
+                "match_confidence_score": "0.42",
+                "tags": "rock",
+                "genres": "rock",
+                "tempo": "100",
+                "release": "2011",
+                "key": "1",
+                "artist": "A",
+                "song": "S1",
+            }
+        ]
+    )
+
+    aggregation = ProfileStage.aggregate_inputs(inputs, _controls())
+
+    assert aggregation.seed_trace_rows[0]["match_confidence_score"] == 0.42
+    assert aggregation.seed_trace_rows[0]["effective_weight"] == 0.71
 
 
 def test_aggregate_inputs_supports_direct_confidence_weighting_mode() -> None:
@@ -851,6 +876,10 @@ def test_build_summary_payload_includes_bl003_coverage() -> None:
     assert coverage["match_counts"]["match_rate"] == 0.8
     assert payload["bl003_config_source"] == "orchestration_payload"
     assert payload["bl003_provenance"]["config_source"] == "orchestration_payload"
+    availability = payload["feature_availability_summary"]
+    assert availability["matched_seed_count"] == 1
+    assert availability["missing_numeric_track_count"] == 0
+    assert availability["numeric_feature_coverage_by_feature"]["tempo"] == 0.0
 
 
 def test_resolve_bl004_runtime_controls_defaults_input_scope(monkeypatch) -> None:

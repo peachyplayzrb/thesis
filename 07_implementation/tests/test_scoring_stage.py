@@ -116,6 +116,7 @@ def test_build_summary_includes_expected_output_paths(tmp_path: Path) -> None:
         runtime_context=runtime_context,
         scored_rows=scored_rows,
         distribution_diagnostics={"rank_cliff": None},
+        feature_availability_summary={"candidate_count": 1},
         diagnostics_path=diagnostics_path,
         scored_path=scored_path,
     )
@@ -123,5 +124,7 @@ def test_build_summary_includes_expected_output_paths(tmp_path: Path) -> None:
     assert summary["task"] == "BL-006"
     assert summary["counts"]["candidates_scored"] == 1
     assert summary["config"]["signal_mode"]["name"] == "custom"
+    assert summary["feature_availability_summary"]["candidate_count"] == 1
+    assert "scoring_sensitivity_diagnostics" in summary
     assert summary["output_files"]["scored_candidates_path"] == str(scored_path)
     assert summary["output_files"]["score_distribution_diagnostics_path"] == str(diagnostics_path)

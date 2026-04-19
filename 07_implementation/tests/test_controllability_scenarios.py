@@ -76,6 +76,8 @@ class TestBuildScenarios:
             "stricter_thresholds",
             "looser_thresholds",
             "fuzzy_enabled_strict",
+            "no_influence_plus_stricter_thresholds",
+            "valence_up_plus_stricter_thresholds",
         ]
 
     def test_fuzzy_enabled_strict_scenario_declares_alignment_controls(self):
@@ -102,3 +104,15 @@ class TestBuildScenarios:
         snapshot = _baseline_snapshot({})
         with pytest.raises(RuntimeError):
             build_scenarios(snapshot, _runtime_controls())
+
+    def test_interaction_scenarios_include_axes_and_acceptance_bounds(self):
+        snapshot = _baseline_snapshot({"valence": 0.5, "tempo": 0.5})
+        scenarios = build_scenarios(snapshot, _runtime_controls())
+        interaction = next(
+            s for s in scenarios if s["scenario_id"] == "no_influence_plus_stricter_thresholds"
+        )
+        assert interaction["variation_mode"] == "interaction"
+        assert interaction["interaction_axes"] == ["influence_tracks", "candidate_threshold"]
+        bounds = interaction["acceptance_bounds"]
+        assert isinstance(bounds, list)
+        assert any(bound["metric"] == "observable_shift" for bound in bounds)

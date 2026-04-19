@@ -1,6 +1,7 @@
 """Tests for controllability.analysis."""
 
 from controllability.analysis import (
+    build_interaction_coverage_summary,
     build_baseline_comparison,
     build_rank_shift_summary,
     compare_to_baseline,
@@ -174,3 +175,75 @@ class TestEvaluateResultsStatus:
         ]
         status = evaluate_results_status(records)
         assert status["status"] == "bounded-risk"
+
+    def test_status_keeps_single_factor_contract_when_interaction_present(self):
+        records = [
+            {
+                "scenario_id": "baseline",
+                "repeat_consistent": True,
+                "comparison_to_baseline": {"observable_shift": False, "expected_direction_met": True},
+            },
+            {
+                "scenario_id": "valence_weight_up",
+                "variation_mode": "single_factor",
+                "repeat_consistent": True,
+                "comparison_to_baseline": {"observable_shift": True, "expected_direction_met": True},
+            },
+            {
+                "scenario_id": "no_influence_plus_stricter_thresholds",
+                "variation_mode": "interaction",
+                "repeat_consistent": True,
+                "comparison_to_baseline": {"observable_shift": True, "expected_direction_met": True},
+            },
+        ]
+        status = evaluate_results_status(records)
+        assert status["status"] == "pass"
+        assert status["interaction_variant_count"] == 1
+        assert status["all_interaction_shifts_observable"] is True
+
+
+class TestBuildInteractionCoverageSummary:
+    def test_interaction_coverage_summary_reports_expected_pairs(self):
+        records = [
+            {
+                "scenario_id": "baseline",
+                "variation_mode": "single_factor",
+                "control_surface": "fixed_bl010_baseline",
+                "comparison_to_baseline": {"observable_shift": False, "expected_direction_met": True},
+            },
+            {
+                "scenario_id": "valence_weight_up",
+                "variation_mode": "single_factor",
+                "control_surface": "feature_weight",
+                "comparison_to_baseline": {"observable_shift": True, "expected_direction_met": True},
+            },
+            {
+                "scenario_id": "no_influence_plus_stricter_thresholds",
+                "variation_mode": "interaction",
+                "interaction_axes": ["influence_tracks", "candidate_threshold"],
+                "comparison_to_baseline": {
+                    "observable_shift": True,
+                    "expected_direction_met": True,
+                    "candidate_pool_size_delta": -4,
+                    "playlist_overlap_ratio": 0.6,
+                    "rank_shift_summary": {"mean_abs_rank_delta": 2.0},
+                },
+            },
+            {
+                "scenario_id": "valence_up_plus_stricter_thresholds",
+                "variation_mode": "interaction",
+                "interaction_axes": ["feature_weight", "candidate_threshold"],
+                "comparison_to_baseline": {
+                    "observable_shift": True,
+                    "expected_direction_met": True,
+                    "candidate_pool_size_delta": -2,
+                    "playlist_overlap_ratio": 0.7,
+                    "rank_shift_summary": {"mean_abs_rank_delta": 1.4},
+                },
+            },
+        ]
+
+        summary = build_interaction_coverage_summary(records)
+        assert summary["interaction_coverage_status"] == "covered"
+        assert summary["interaction_variant_count"] == 2
+        assert summary["interaction_matrix_missing_pairs"] == []

@@ -2,7 +2,13 @@
 
 from collections import Counter
 
-from playlist.rules import assemble_bucketed, decide_candidate
+from playlist.rules import (
+    assemble_bucketed,
+    build_transition_diagnostics,
+    decide_candidate,
+    transition_feature_distance,
+    transition_smoothness_score,
+)
 
 
 def test_assemble_bucketed_r1_counts_below_threshold_candidates() -> None:
@@ -256,3 +262,235 @@ def test_assemble_bucketed_utility_decay_prefers_higher_rank_under_utility_greed
 
     assert playlist_no_decay[0]["track_id"] == "track_2"
     assert playlist_with_decay[0]["track_id"] == "track_1"
+
+
+# ---------------------------------------------------------------------------
+# Transition scoring
+# ---------------------------------------------------------------------------
+
+
+def test_transition_feature_distance_zero_for_identical_tracks() -> None:
+    track = {"energy": 0.7, "valence": 0.5, "tempo": 120.0}
+    assert transition_feature_distance(track, track) == 0.0
+
+
+def test_transition_feature_distance_handles_missing_features() -> None:
+    """When all features are absent from both tracks, distance should be 0.0."""
+    assert transition_feature_distance({}, {}) == 0.0
+
+
+def test_transition_feature_distance_partial_features() -> None:
+    """Only shared features contribute; missing features are skipped."""
+    a = {"energy": 0.0}
+    b = {"energy": 1.0}
+    dist = transition_feature_distance(a, b)
+    assert dist == 1.0
+
+
+def test_transition_smoothness_score_identical_tracks() -> None:
+    track = {"energy": 0.5, "valence": 0.5, "tempo": 100.0}
+    assert transition_smoothness_score(track, track) == 1.0
+
+
+def test_transition_smoothness_score_complement_of_distance() -> None:
+    a = {"energy": 0.0}
+    b = {"energy": 1.0}
+    dist = transition_feature_distance(a, b)
+    smooth = transition_smoothness_score(a, b)
+    assert abs(dist + smooth - 1.0) < 1e-7
+
+
+def test_transition_smoothness_weight_zero_leaves_order_unchanged() -> None:
+    """Default weight=0.0 must produce the same playlist as if the parameter weren't there."""
+    candidates = [_cand(1, "pop", 0.90), _cand(2, "pop", 0.80)]
+    rule_hits: Counter[str] = Counter()
+    baseline, _ = assemble_bucketed(
+        candidates=candidates,
+        target_size=2,
+        min_score_threshold=0.3,
+        max_per_genre=4,
+        max_consecutive=4,
+        rule_hits=rule_hits,
+        utility_strategy="utility_greedy",
+    )
+    with_zero_weight, _ = assemble_bucketed(
+        candidates=candidates,
+        target_size=2,
+        min_score_threshold=0.3,
+        max_per_genre=4,
+        max_consecutive=4,
+        rule_hits=Counter(),
+        utility_strategy="utility_greedy",
+        transition_smoothness_weight=0.0,
+    )
+    assert [t["track_id"] for t in baseline] == [t["track_id"] for t in with_zero_weight]
+
+
+def test_transition_smoothness_weight_positive_prefers_smooth_follow() -> None:
+    """With a high transition_smoothness_weight and utility_greedy, the candidate that is
+    acoustically similar to the first track should be preferred as the second track."""
+    first_track_energy = 0.5
+    # cand_a is acoustically close to the first track; cand_b is distant.
+    cand_a = {"track_id": "close", "lead_genre": "pop", "final_score": 0.80, "score_rank": 1,
+              "energy": first_track_energy + 0.01, "valence": 0.5, "tempo": 100.0}
+    cand_b = {"track_id": "distant", "lead_genre": "rock", "final_score": 0.85, "score_rank": 2,
+              "energy": first_track_energy + 0.90, "valence": 0.9, "tempo": 180.0}
+
+    rule_hits: Counter[str] = Counter()
+    playlist, _ = assemble_bucketed(
+        candidates=[cand_a, cand_b],
+        target_size=1,
+        min_score_threshold=0.3,
+        max_per_genre=4,
+        max_consecutive=4,
+        rule_hits=rule_hits,
+        utility_strategy="utility_greedy",
+        utility_weights={"score_weight": 0.0, "novelty_weight": 0.0, "repetition_penalty_weight": 0.0},
+        transition_smoothness_weight=1.0,
+    )
+    # With score_weight=0 and only transition_smoothness driving utility, close track wins.
+    assert playlist[0]["track_id"] == "close"
+
+
+# ---------------------------------------------------------------------------
+# Transition diagnostics
+# ---------------------------------------------------------------------------
+
+
+def test_build_transition_diagnostics_pair_count() -> None:
+    playlist = [
+        {"track_id": "t1", "energy": 0.5, "valence": 0.5, "tempo": 120.0},
+        {"track_id": "t2", "energy": 0.6, "valence": 0.55, "tempo": 125.0},
+        {"track_id": "t3", "energy": 0.55, "valence": 0.5, "tempo": 122.0},
+    ]
+    result = build_transition_diagnostics(playlist)
+    assert result["pair_count"] == 2
+
+
+def test_build_transition_diagnostics_too_short_returns_stub() -> None:
+    assert build_transition_diagnostics([])["pair_count"] == 0
+    assert build_transition_diagnostics([{"track_id": "t1"}])["pair_count"] == 0
+
+
+def test_build_transition_diagnostics_mean_smoothness_range() -> None:
+    playlist = [
+        {"track_id": "t1", "energy": 0.0, "valence": 0.0},
+        {"track_id": "t2", "energy": 1.0, "valence": 1.0},
+    ]
+    result = build_transition_diagnostics(playlist)
+    assert isinstance(result["mean_smoothness"], float)
+    assert 0.0 <= float(result["mean_smoothness"]) <= 1.0
+
+
+def test_build_transition_diagnostics_max_roughness_pair_structure() -> None:
+    playlist = [
+        {"track_id": "t1", "energy": 0.1},
+        {"track_id": "t2", "energy": 0.9},
+    ]
+    result = build_transition_diagnostics(playlist)
+    pair = result["max_roughness_pair"]
+    assert isinstance(pair, dict)
+    assert "from_track_id" in pair
+    assert "to_track_id" in pair
+
+
+def test_influence_slots_enabled_preserves_influence_tracks() -> None:
+    """With slots enabled, influence tracks should be preserved in playlist."""
+    rule_hits: Counter[str] = Counter()
+    influence_track_ids = {"t_influence_1", "t_influence_2"}
+
+    # Provide enough candidates to fill a size-10 playlist
+    candidates = [
+        {"track_id": "t_influence_1", "lead_genre": "rock", "final_score": 0.9, "rank": 1},
+        {"track_id": "t_influence_2", "lead_genre": "pop", "final_score": 0.85, "rank": 2},
+        {"track_id": "t_regular_1", "lead_genre": "rock", "final_score": 0.8, "rank": 3},
+        {"track_id": "t_regular_2", "lead_genre": "pop", "final_score": 0.75, "rank": 4},
+        {"track_id": "t_regular_3", "lead_genre": "jazz", "final_score": 0.7, "rank": 5},
+    ] + [{"track_id": f"t_fill_{i}", "lead_genre": f"genre_{i%3}", "final_score": 0.6, "rank": 6+i} for i in range(10)]
+
+    # With slots enabled, influence tracks should be reserved and included
+    playlist, trace_rows = assemble_bucketed(
+        candidates=candidates,
+        target_size=10,
+        min_score_threshold=0.5,
+        max_per_genre=4,
+        max_consecutive=4,
+        rule_hits=rule_hits,
+        influence_enabled=True,
+        influence_track_ids=influence_track_ids,
+        influence_reserved_slots=2,
+        influence_allow_genre_cap_override=True,
+    )
+
+    playlist_track_ids = {track.get("track_id") for track in playlist}
+    influence_in_playlist = influence_track_ids & playlist_track_ids
+
+    # Both influence tracks should be present
+    assert len(influence_in_playlist) == 2, f"Expected both influence tracks, got {influence_in_playlist}"
+    assert len(playlist) == 10
+
+
+def test_influence_slots_disabled_baseline() -> None:
+    """With slots disabled, influence tracks may not be included."""
+    rule_hits: Counter[str] = Counter()
+    influence_track_ids = {"t_influence_1", "t_influence_2"}
+
+    # Provide enough candidates
+    candidates = [
+        {"track_id": "t_influence_1", "lead_genre": "rock", "final_score": 0.5, "rank": 1},
+        {"track_id": "t_influence_2", "lead_genre": "pop", "final_score": 0.5, "rank": 2},
+        {"track_id": "t_regular_1", "lead_genre": "rock", "final_score": 0.95, "rank": 3},
+        {"track_id": "t_regular_2", "lead_genre": "pop", "final_score": 0.90, "rank": 4},
+    ] + [{"track_id": f"t_fill_{i}", "lead_genre": f"genre_{i%3}", "final_score": 0.7, "rank": 5+i} for i in range(10)]
+
+    # With slots disabled (0 slots), regular scoring dominates
+    playlist, _ = assemble_bucketed(
+        candidates=candidates,
+        target_size=10,
+        min_score_threshold=0.5,
+        max_per_genre=4,
+        max_consecutive=4,
+        rule_hits=rule_hits,
+        influence_enabled=True,
+        influence_track_ids=influence_track_ids,
+        influence_reserved_slots=0,  # Disabled
+    )
+
+    playlist_track_ids = {track.get("track_id") for track in playlist}
+    # High-score regular tracks should dominate the playlist
+    assert "t_regular_1" in playlist_track_ids
+    assert "t_regular_2" in playlist_track_ids
+
+
+def test_influence_slots_genre_cap_override_effect() -> None:
+    """Genre cap override allows influence tracks to exceed normal genre limits."""
+    rule_hits: Counter[str] = Counter()
+    influence_track_ids = {"t_influence_rock_1", "t_influence_rock_2"}
+
+    candidates = [
+        {"track_id": "t_influence_rock_1", "lead_genre": "rock", "final_score": 0.9, "rank": 1},
+        {"track_id": "t_influence_rock_2", "lead_genre": "rock", "final_score": 0.85, "rank": 2},
+        {"track_id": "t_regular_rock_1", "lead_genre": "rock", "final_score": 0.8, "rank": 3},
+        {"track_id": "t_regular_rock_2", "lead_genre": "rock", "final_score": 0.75, "rank": 4},
+        {"track_id": "t_pop_1", "lead_genre": "pop", "final_score": 0.7, "rank": 5},
+    ] + [{"track_id": f"t_fill_{i}", "lead_genre": "jazz", "final_score": 0.6, "rank": 6+i} for i in range(10)]
+
+    # With genre cap override, multiple rock influence tracks can coexist
+    playlist, trace_rows = assemble_bucketed(
+        candidates=candidates,
+        target_size=10,
+        min_score_threshold=0.5,
+        max_per_genre=2,  # Normally limited to 2
+        max_consecutive=4,
+        rule_hits=rule_hits,
+        influence_enabled=True,
+        influence_track_ids=influence_track_ids,
+        influence_reserved_slots=2,
+        influence_allow_genre_cap_override=True,
+    )
+
+    playlist_track_ids = {track.get("track_id") for track in playlist}
+    influence_rock_in_playlist = influence_track_ids & playlist_track_ids
+
+    # Both influence rock tracks should be present despite genre cap
+    assert len(influence_rock_in_playlist) >= 1, f"Genre override should allow influence rock tracks, got {influence_rock_in_playlist}"

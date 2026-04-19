@@ -117,3 +117,35 @@ def test_run_stage_prefixes_existing_pythonpath(monkeypatch, tmp_path: Path) -> 
     pythonpath = str(env["PYTHONPATH"])
     assert str(tmp_path) in pythonpath
     assert "existing_path" in pythonpath
+
+
+def test_run_stage_appends_extra_args(monkeypatch, tmp_path: Path) -> None:
+    captured: dict[str, object] = {}
+
+    def _fake_subprocess_run(command, *, cwd, env, capture_output, text, check):
+        captured["command"] = command
+        return _FakeProcess()
+
+    monkeypatch.setattr(stage_runner.subprocess, "run", _fake_subprocess_run)
+
+    script_path = tmp_path / "dummy_stage.py"
+    script_path.write_text("print('ok')\n", encoding="utf-8")
+    payload = {
+        "schema_version": "stage-config-v1",
+        "stage_id": "BL-010",
+        "controls": {"replay_count": 2},
+    }
+
+    stage_runner.run_stage(
+        python_executable="python",
+        stage_id="BL-010",
+        script_path=script_path,
+        root=tmp_path,
+        run_config_path=None,
+        run_intent_path=None,
+        run_effective_config_path=None,
+        stage_config_payload=payload,
+        extra_args=["--replay-count", "2"],
+    )
+
+    assert captured["command"] == ["python", str(script_path), "--replay-count", "2"]

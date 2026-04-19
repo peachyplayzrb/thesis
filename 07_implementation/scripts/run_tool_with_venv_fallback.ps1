@@ -1,5 +1,5 @@
 param(
-    [ValidateSet("python", "pyright")]
+    [ValidateSet("python", "pyright", "ruff")]
     [string]$Tool = "python",
     [Parameter(ValueFromRemainingArguments = $true)]
     [string[]]$ToolArgs
@@ -46,6 +46,17 @@ function Resolve-ToolExecutable {
             return $candidate
         }
         return "pyright"
+    }
+
+    if ($Name -eq "ruff") {
+        $candidate = Resolve-FirstExistingPath -Candidates @(
+            (Join-Path $workspaceRoot ".venv\Scripts\ruff.exe"),
+            (Join-Path $implRoot ".venv\Scripts\ruff.exe")
+        )
+        if ($candidate) {
+            return $candidate
+        }
+        return "ruff"
     }
 
     throw "Unsupported tool: $Name"

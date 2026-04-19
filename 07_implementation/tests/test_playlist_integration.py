@@ -54,6 +54,11 @@ def test_playlist_main_generates_consistent_outputs(tmp_path: Path, monkeypatch)
     assert len(excluded_rows) >= 1, "Expected at least one excluded track in assembly trace"
 
     assert report["playlist_genre_mix"] == {"pop": 1, "rock": 2}
+    assert "tradeoff_metrics_summary" in report
+    tradeoff = report["tradeoff_metrics_summary"]
+    assert "diversity_distribution_summary" in tradeoff
+    assert "novelty_distance_summary" in tradeoff
+    assert "ordering_pressure_summary" in tradeoff
 
 
 def test_playlist_main_with_payload_fixture(tmp_path: Path, monkeypatch) -> None:
