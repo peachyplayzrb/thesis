@@ -28,6 +28,7 @@ from shared_utils.path_utils import impl_root
 class EffectiveOrchestrationState(TypedDict):
     oc_refresh_policy: str
     stage_order: list[str]
+    required_stable_artifacts: list[str]
     effective_continue_on_error: bool
     effective_verify_determinism: bool
     effective_verify_replay_count: int
@@ -57,6 +58,9 @@ def _resolve_effective_orchestration_state(
     oc_refresh_policy: str = str(oc.get("refresh_seed_policy") or "auto_if_stale")
     oc_verify_determinism: bool = bool(oc.get("determinism_verify_on_success", False))
     oc_verify_replay_count: int = int(oc.get("determinism_verify_replay_count") or 3)
+    required_stable_artifacts = [
+        str(item) for item in (oc.get("required_stable_artifacts") or [])
+    ]
 
     if args.stages is not None:
         stage_order = validate_stage_order(args.stages)
@@ -85,6 +89,7 @@ def _resolve_effective_orchestration_state(
     return {
         "oc_refresh_policy": oc_refresh_policy,
         "stage_order": stage_order,
+        "required_stable_artifacts": required_stable_artifacts,
         "effective_continue_on_error": effective_continue_on_error,
         "effective_verify_determinism": effective_verify_determinism,
         "effective_verify_replay_count": effective_verify_replay_count,
@@ -111,6 +116,7 @@ def _maybe_emit_freshness_guard_failure(
     stage_order: list[str],
     pipeline_started: float,
     run_config_artifacts: dict[str, object],
+    required_stable_artifacts: list[str] | None = None,
 ) -> None:
     if oc_refresh_policy == "never" or run_config_path is None or effective_refresh_seed:
         return
@@ -140,6 +146,8 @@ def _maybe_emit_freshness_guard_failure(
         ),
     }
     stage_results.append(guard_result)
+    if effective_continue_on_error:
+        return
     emit_and_exit_failure(
         output_dir=output_dir,
         summary_prefix=args.summary_prefix,
@@ -156,6 +164,7 @@ def _maybe_emit_freshness_guard_failure(
         stage_results=stage_results,
         pipeline_started=pipeline_started,
         root=root,
+        required_stable_artifacts=required_stable_artifacts,
     )
 
 
@@ -178,6 +187,7 @@ def _maybe_run_seed_refresh(
     stage_order: list[str],
     pipeline_started: float,
     run_config_artifacts: dict[str, object],
+    required_stable_artifacts: list[str] | None = None,
 ) -> None:
     if not effective_refresh_seed:
         return
@@ -213,6 +223,7 @@ def _maybe_run_seed_refresh(
             stage_results=stage_results,
             pipeline_started=pipeline_started,
             root=root,
+            required_stable_artifacts=required_stable_artifacts,
         )
 
 
@@ -325,6 +336,7 @@ def main() -> None:
     effective_state = _resolve_effective_orchestration_state(args, run_config_path)
     oc_refresh_policy = str(effective_state["oc_refresh_policy"])
     stage_order = list(effective_state["stage_order"])
+    required_stable_artifacts = list(effective_state["required_stable_artifacts"])
     effective_continue_on_error = bool(effective_state["effective_continue_on_error"])
     effective_verify_determinism = bool(effective_state["effective_verify_determinism"])
     effective_verify_replay_count = int(effective_state["effective_verify_replay_count"])
@@ -372,6 +384,7 @@ def main() -> None:
         stage_order=stage_order,
         pipeline_started=pipeline_started,
         run_config_artifacts=run_config_artifacts,
+        required_stable_artifacts=required_stable_artifacts,
     )
 
     _maybe_run_seed_refresh(
@@ -392,6 +405,7 @@ def main() -> None:
         stage_order=stage_order,
         pipeline_started=pipeline_started,
         run_config_artifacts=run_config_artifacts,
+        required_stable_artifacts=required_stable_artifacts,
     )
 
     execution_stage_order = _build_execution_stage_order(stage_order, refresh_seed=effective_refresh_seed)
@@ -435,6 +449,7 @@ def main() -> None:
         stage_results=stage_results,
         pipeline_started=pipeline_started,
         root=root,
+        required_stable_artifacts=required_stable_artifacts,
     )
     if failed:
         raise SystemExit(1)

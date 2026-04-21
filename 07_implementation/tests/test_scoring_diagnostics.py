@@ -2,6 +2,7 @@
 
 from scoring.diagnostics import (
     build_feature_availability_summary,
+    build_confidence_impact_diagnostics,
     build_score_distribution_diagnostics,
     build_scoring_sensitivity_diagnostics,
     contribution_breakdown,
@@ -157,3 +158,15 @@ def test_build_feature_availability_summary_reports_numeric_and_semantic_sparsit
     assert summary["lead_genre_source_counts"]["genres"] == 1
     assert summary["lead_genre_source_counts"]["tags"] == 1
     assert summary["numeric_feature_coverage_by_feature"]["tempo"] == 0.5
+
+
+def test_confidence_impact_diagnostics_applies_numeric_confidence_floor() -> None:
+    diagnostics = build_confidence_impact_diagnostics(
+        [{"tempo_contribution": 0.5}],
+        {"tempo": 0.1},
+        1.0,
+        numeric_confidence_floor=0.5,
+    )
+
+    assert diagnostics["component_multiplier"]["tempo"] == 0.5
+    assert diagnostics["mean_estimated_unadjusted_contribution"]["tempo"] == 1.0

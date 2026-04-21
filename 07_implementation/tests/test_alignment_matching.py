@@ -247,6 +247,23 @@ class TestFuzzyControls:
         assert controls["enable_album_scoring"] is True
         assert controls["enable_secondary_artist_retry"] is False
 
+    def test_bool_like_strings_are_normalized(self):
+        controls = resolve_fuzzy_controls(
+            {
+                "enabled": "false",
+                "enable_album_scoring": "false",
+                "enable_secondary_artist_retry": "0",
+                "enable_relaxed_second_pass": "no",
+                "emit_fuzzy_diagnostics": "off",
+            }
+        )
+
+        assert controls["enabled"] is False
+        assert controls["enable_album_scoring"] is False
+        assert controls["enable_secondary_artist_retry"] is False
+        assert controls["enable_relaxed_second_pass"] is False
+        assert controls["emit_fuzzy_diagnostics"] is False
+
 
 class TestFuzzyFindCandidate:
     def test_threshold_boundary_at_point_nine_is_inclusive(self, monkeypatch):

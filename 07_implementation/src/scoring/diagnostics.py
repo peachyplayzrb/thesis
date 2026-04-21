@@ -459,8 +459,12 @@ def build_confidence_impact_diagnostics(
         }
 
     profile_factor = max(0.0, min(1.0, float(profile_numeric_confidence_factor)))
+    confidence_floor = max(0.0, min(1.0, float(numeric_confidence_floor)))
     component_multiplier = {
-        component: round(max(0.0, min(1.0, float(confidence))) * profile_factor, 6)
+        component: round(
+            max(confidence_floor, max(0.0, min(1.0, float(confidence)))) * profile_factor,
+            6,
+        )
         for component, confidence in numeric_confidence_by_feature.items()
     }
 

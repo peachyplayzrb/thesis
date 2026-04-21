@@ -2284,6 +2284,9 @@ def resolve_bl013_orchestration_controls(run_config_path: str | Path | None) -> 
     merged: dict[str, Any] = {**DEFAULT_ORCHESTRATION_CONTROLS, **raw}
     raw_stage_order = merged.get("stage_order")
     stage_order: list[str] | None = list(raw_stage_order) if isinstance(raw_stage_order, list) else None
+    refresh_seed_policy = str(merged.get("refresh_seed_policy") or "auto_if_stale").strip().lower()
+    if refresh_seed_policy not in {"auto_if_stale", "always", "never"}:
+        refresh_seed_policy = str(DEFAULT_ORCHESTRATION_CONTROLS["refresh_seed_policy"])
     replay_count = _coerce_positive_int(
         merged.get("determinism_verify_replay_count"),
         int(DEFAULT_ORCHESTRATION_CONTROLS["determinism_verify_replay_count"]),
@@ -2291,10 +2294,20 @@ def resolve_bl013_orchestration_controls(run_config_path: str | Path | None) -> 
     return {
         "config_path": str(resolved_path) if resolved_path else None,
         "stage_order": stage_order,
-        "continue_on_error": bool(merged.get("continue_on_error", False)),
-        "refresh_seed_policy": str(merged.get("refresh_seed_policy") or "auto_if_stale"),
-        "required_stable_artifacts": list(merged.get("required_stable_artifacts") or []),
-        "determinism_verify_on_success": bool(merged.get("determinism_verify_on_success", False)),
+        "continue_on_error": _coerce_bool(
+            merged.get("continue_on_error"),
+            bool(DEFAULT_ORCHESTRATION_CONTROLS["continue_on_error"]),
+        ),
+        "refresh_seed_policy": refresh_seed_policy,
+        "required_stable_artifacts": _validate_string_list(
+            merged.get("required_stable_artifacts"),
+            "orchestration_controls.required_stable_artifacts",
+            list(DEFAULT_ORCHESTRATION_CONTROLS["required_stable_artifacts"]),
+        ),
+        "determinism_verify_on_success": _coerce_bool(
+            merged.get("determinism_verify_on_success"),
+            bool(DEFAULT_ORCHESTRATION_CONTROLS["determinism_verify_on_success"]),
+        ),
         "determinism_verify_replay_count": replay_count,
     }
 

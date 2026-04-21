@@ -155,3 +155,38 @@ def test_finalize_run_hash_input_chain_includes_authority_artifacts(monkeypatch,
     assert authority_chain["run_effective_config"]["sha256"] == "EFFECTIVE_SHA"
     assert hash_input_chain["chain_component_count"] >= 3
     assert isinstance(hash_input_chain["chain_sha256"], str)
+
+
+def test_finalize_run_fails_when_required_stable_artifact_missing(monkeypatch, tmp_path) -> None:
+    monkeypatch.setattr(
+        summary_builder,
+        "compute_stable_artifact_hashes",
+        lambda root: ({}, ["scoring/outputs/bl006_scored_candidates.csv"]),
+    )
+    monkeypatch.setattr(
+        summary_builder,
+        "collect_refinement_diagnostics",
+        lambda root: {},
+    )
+
+    summary, _, _ = summary_builder.finalize_run(
+        output_dir=tmp_path,
+        summary_prefix="bl013_orchestration_run",
+        run_id="BL013-ENTRYPOINT-TEST",
+        generated_at_utc="2026-04-18T03:00:00Z",
+        continue_on_error=False,
+        python_executable="python",
+        run_config_path=None,
+        run_config_artifacts={},
+        refresh_seed=False,
+        verify_determinism=False,
+        verify_determinism_replay_count=1,
+        stage_order=["BL-006"],
+        stage_results=[{"stage_id": "BL-006", "status": "pass", "return_code": 0}],
+        pipeline_started=0.0,
+        root=tmp_path,
+        required_stable_artifacts=["bl006_scored_candidates"],
+    )
+
+    assert summary["overall_status"] == "fail"
+    assert summary["missing_required_stable_artifacts"] == ["bl006_scored_candidates"]

@@ -104,12 +104,29 @@ def choose_best_duration_match(
     return best_row, best_delta
 
 
+def _coerce_bool(value: Any, default: bool) -> bool:
+    if value is None:
+        return default
+    if isinstance(value, bool):
+        return value
+    if isinstance(value, int | float):
+        return bool(value)
+    if isinstance(value, str):
+        token = value.strip().lower()
+        if token in {"1", "true", "yes", "on"}:
+            return True
+        if token in {"0", "false", "no", "off"}:
+            return False
+        return default
+    return bool(value)
+
+
 def resolve_fuzzy_controls(raw_controls: dict[str, Any] | None) -> dict[str, Any]:
     defaults: dict[str, Any] = dict(DEFAULT_SEED_CONTROLS.get("fuzzy_matching") or {})
     if not isinstance(raw_controls, dict):
         return defaults
     controls = dict(defaults)
-    controls["enabled"] = bool(raw_controls.get("enabled", defaults["enabled"]))
+    controls["enabled"] = _coerce_bool(raw_controls.get("enabled"), bool(defaults["enabled"]))
     for key in ("artist_threshold", "title_threshold", "combined_threshold"):
         try:
             value = float(raw_controls.get(key, defaults[key]))
@@ -128,7 +145,7 @@ def resolve_fuzzy_controls(raw_controls: dict[str, Any] | None) -> dict[str, Any
         "enable_relaxed_second_pass",
         "emit_fuzzy_diagnostics",
     ):
-        controls[key] = bool(raw_controls.get(key, defaults.get(key, False)))
+        controls[key] = _coerce_bool(raw_controls.get(key), bool(defaults.get(key, False)))
     for key in (
         "relaxed_second_pass_artist_threshold",
         "relaxed_second_pass_title_threshold",

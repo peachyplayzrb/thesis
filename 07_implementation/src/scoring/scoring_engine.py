@@ -261,12 +261,7 @@ def compute_weighted_contributions(
     """Convert raw component similarities into weighted score contributions."""
     contributions: dict[str, float] = {}
     confidence_map = numeric_confidence_by_feature or {}
-    profile_factor_direct = _clamp_0_1(profile_numeric_confidence_factor)
-    blend_weight = _clamp_0_1(profile_numeric_confidence_blend_weight)
-    if str(profile_numeric_confidence_mode).strip().lower() == "blended":
-        profile_factor = (blend_weight * profile_factor_direct) + ((1.0 - blend_weight) * 1.0)
-    else:
-        profile_factor = profile_factor_direct
+    profile_factor = _clamp_0_1(profile_numeric_confidence_factor)
     confidence_floor = _clamp_0_1(numeric_confidence_floor)
     for component, weight in component_weights.items():
         component_name = component.removesuffix("_score")

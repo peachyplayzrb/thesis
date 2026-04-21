@@ -72,6 +72,30 @@ def compute_stable_artifact_hashes(root: Path) -> tuple[dict[str, str], list[str
     return hashes, missing
 
 
+def resolve_missing_required_stable_artifacts(
+    required_stable_artifacts: list[str] | None,
+    stable_hashes: dict[str, str],
+) -> list[str]:
+    """Return required stable artifact aliases/paths that did not produce hashes."""
+    if not required_stable_artifacts:
+        return []
+
+    available_aliases = set(stable_hashes)
+    available_paths = {
+        relative_path
+        for alias, relative_path in STABLE_ARTIFACTS.items()
+        if alias in stable_hashes
+    }
+    missing_required: list[str] = []
+    for item in required_stable_artifacts:
+        token = str(item).strip()
+        if not token:
+            continue
+        if token not in available_aliases and token not in available_paths:
+            missing_required.append(token)
+    return missing_required
+
+
 def collect_refinement_diagnostics(root: Path) -> dict[str, object]:
     diagnostics: dict[str, object] = {
         "bl006_distribution": {"available": False},
@@ -199,6 +223,8 @@ def build_summary(
     failed_stage_count: int,
     stable_hashes: dict[str, str],
     missing_stable: list[str],
+    required_stable_artifacts: list[str] | None,
+    missing_required_stable: list[str],
     stage_diagnostics: dict[str, object],
     root: Path,
 ) -> dict[str, object]:
@@ -235,6 +261,8 @@ def build_summary(
         ),
         "stable_artifact_hashes": stable_hashes,
         "missing_stable_artifacts": missing_stable,
+        "required_stable_artifacts": list(required_stable_artifacts or []),
+        "missing_required_stable_artifacts": missing_required_stable,
         "notes": SUMMARY_NOTES,
     }
 
@@ -285,12 +313,17 @@ def finalize_run(
     stage_results: list[dict[str, object]],
     pipeline_started: float,
     root: Path,
+    required_stable_artifacts: list[str] | None = None,
 ) -> tuple[dict[str, Any], Path, Path]:
     elapsed_pipeline = round(time.time() - pipeline_started, 3)
     failed = [item for item in stage_results if item["status"] == "fail"]
-    overall_status = "pass" if not failed else "fail"
 
     stable_hashes, missing_stable = compute_stable_artifact_hashes(root)
+    missing_required_stable = resolve_missing_required_stable_artifacts(
+        required_stable_artifacts,
+        stable_hashes,
+    )
+    overall_status = "pass" if not failed and not missing_required_stable else "fail"
     stage_diagnostics = collect_refinement_diagnostics(root)
     summary = build_summary(
         run_id=run_id,
@@ -309,6 +342,8 @@ def finalize_run(
         failed_stage_count=len(failed),
         stable_hashes=stable_hashes,
         missing_stable=missing_stable,
+        required_stable_artifacts=required_stable_artifacts,
+        missing_required_stable=missing_required_stable,
         stage_diagnostics=stage_diagnostics,
         root=root,
     )
@@ -339,6 +374,7 @@ def emit_and_exit_failure(
     stage_results: list[dict[str, object]],
     pipeline_started: float,
     root: Path,
+    required_stable_artifacts: list[str] | None = None,
 ) -> None:
     _, failed = emit_run_completion(
         output_dir=output_dir,
@@ -356,9 +392,8 @@ def emit_and_exit_failure(
         stage_results=stage_results,
         pipeline_started=pipeline_started,
         root=root,
+        required_stable_artifacts=required_stable_artifacts,
     )
-    if not failed:
-        raise SystemExit(1)
     raise SystemExit(1)
 
 
@@ -379,6 +414,7 @@ def emit_run_completion(
     stage_results: list[dict[str, object]],
     pipeline_started: float,
     root: Path,
+    required_stable_artifacts: list[str] | None = None,
 ) -> tuple[dict[str, Any], list[dict[str, object]]]:
     summary, summary_path, latest_path = finalize_run(
         output_dir=output_dir,
@@ -396,6 +432,7 @@ def emit_run_completion(
         stage_results=stage_results,
         pipeline_started=pipeline_started,
         root=root,
+        required_stable_artifacts=required_stable_artifacts,
     )
     print_run_footer(
         overall_status=str(summary["overall_status"]),

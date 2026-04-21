@@ -855,6 +855,29 @@ def test_resolve_bl013_orchestration_controls_exposes_determinism_knobs(tmp_path
     assert controls["determinism_verify_replay_count"] == 5
 
 
+def test_resolve_bl013_orchestration_controls_normalizes_bool_like_values(tmp_path: Path) -> None:
+    run_config_path = _write_run_config(
+        tmp_path,
+        {
+            "orchestration_controls": {
+                "continue_on_error": "false",
+                "determinism_verify_on_success": "false",
+                "determinism_verify_replay_count": "0",
+                "refresh_seed_policy": "unsupported",
+                "required_stable_artifacts": ["bl006_scored_candidates"],
+            }
+        },
+    )
+
+    controls = resolve_bl013_orchestration_controls(run_config_path)
+
+    assert controls["continue_on_error"] is False
+    assert controls["determinism_verify_on_success"] is False
+    assert controls["determinism_verify_replay_count"] == 3
+    assert controls["refresh_seed_policy"] == "auto_if_stale"
+    assert controls["required_stable_artifacts"] == ["bl006_scored_candidates"]
+
+
 def test_strict_validation_profile_forces_all_stage_handshake_policies(
     tmp_path: Path,
 ) -> None:
