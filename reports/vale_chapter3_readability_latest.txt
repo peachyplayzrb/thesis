@@ -1,0 +1,19 @@
+
+ [4m08_writing\chapter3.md[0m
+ 1:1  [33mwarning[0m  Try to keep the Automated       Readability.AutomatedReadability 
+               Readability Index (17.72)                                        
+               below 8.                                                         
+ 1:1  [33mwarning[0m  Try to keep the ColemanÔÇôLiau    Readability.ColemanLiau          
+               Index grade (18.24) below 9.                                     
+ 1:1  [33mwarning[0m  Try to keep the FleschÔÇôKincaid  Readability.FleschKincaid        
+               grade level (16.85) below 8.                                     
+ 1:1  [33mwarning[0m  Try to keep the Flesch reading  Readability.FleschReadingEase    
+               ease score (12.66) above 70.                                     
+ 1:1  [33mwarning[0m  Try to keep the Gunning-Fog     Readability.GunningFog           
+               index (18.65) below 10.                                          
+ 1:1  [33mwarning[0m  Try to keep the LIX score       Readability.LIX                  
+               (64.99) below 35.                                                
+ 1:1  [33mwarning[0m  Try to keep the SMOG grade      Readability.SMOG                 
+               (17.31) below 10.                                                
+
+Ô£û [31m0 errors[0m, [33m7 warnings[0m and [34m0 suggestions[0m in 1 file.

@@ -1,0 +1,605 @@
+
+ [4m08_writing\chapter2.md[0m
+ 3:74     [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 3:100    [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 3:168    [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 3:185    [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 3:211    [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 3:264    [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 3:277    [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 7:93     [33mwarning[0m     'substantial' is too wordy.     write-good.TooWordy 
+ 7:169    [33mwarning[0m     'are intended' may be passive   write-good.Passive  
+                      voice. Use active voice if you                      
+                      can.                                                
+ 7:169    [34msuggestion[0m  Try to avoid using 'are'.       write-good.E-Prime  
+ 7:296    [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 7:345    [34msuggestion[0m  Try to avoid using 'is'.        write-good.E-Prime  
+ 7:554    [34msuggestion[0m  Try to avoid using 'are'.       write-good.E-Prime  
+ 7:554    [33mwarning[0m     'are treated' may be passive    write-good.Passive  
+                      voice. Use active voice if you                      
+                      can.                                                
+ 7:705    [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 9:57     [34msuggestion[0m  Try to avoid using 'are'.       write-good.E-Prime  
+ 9:113    [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 9:298    [34msuggestion[0m  Try to avoid using 'are'.       write-good.E-Prime  
+ 9:365    [34msuggestion[0m  Try to avoid using 'is'.        write-good.E-Prime  
+ 9:577    [33mwarning[0m     'is shaped' may be passive      write-good.Passive  
+                      voice. Use active voice if you                      
+                      can.                                                
+ 9:645    [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 9:811    [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 11:46    [34msuggestion[0m  Try to avoid using 'is'.        write-good.E-Prime  
+ 11:121   [33mwarning[0m     'However' is too wordy.         write-good.TooWordy 
+ 11:213   [34msuggestion[0m  Try to avoid using 'are'.       write-good.E-Prime  
+ 11:633   [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 11:766   [33mwarning[0m     'therefore' is too wordy.       write-good.TooWordy 
+ 11:832   [34msuggestion[0m  Try to avoid using 'is'.        write-good.E-Prime  
+ 11:852   [33mwarning[0m     'evidenced' is too wordy.       write-good.TooWordy 
+ 11:882   [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 11:930   [34msuggestion[0m  Try to avoid using 'are'.       write-good.E-Prime  
+ 13:68    [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 13:114   [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 13:139   [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 13:212   [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 13:225   [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 13:239   [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 13:364   [34msuggestion[0m  Try to avoid using 'is'.        write-good.E-Prime  
+ 17:191   [33mwarning[0m     'regarding' is too wordy.       write-good.TooWordy 
+ 17:485   [33mwarning[0m     'constitutes' is too wordy.     write-good.TooWordy 
+ 17:596   [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 23:45    [34msuggestion[0m  Try to avoid using 'are'.       write-good.E-Prime  
+ 23:55    [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 23:145   [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 23:191   [34msuggestion[0m  Try to avoid using 'are'.       write-good.E-Prime  
+ 23:258   [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 24:191   [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 25:68    [33mwarning[0m     'aggregate' is too wordy.       write-good.TooWordy 
+ 25:210   [33mwarning[0m     'were ranked' may be passive    write-good.Passive  
+                      voice. Use active voice if you                      
+                      can.                                                
+ 25:210   [34msuggestion[0m  Try to avoid using 'were'.      write-good.E-Prime  
+ 29:150   [33mwarning[0m     'multiple' is too wordy.        write-good.TooWordy 
+ 29:269   [33mwarning[0m     'However' is too wordy.         write-good.TooWordy 
+ 29:366   [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 29:659   [33mwarning[0m     'sufficient' is too wordy.      write-good.TooWordy 
+ 29:724   [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 29:879   [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 31:145   [34msuggestion[0m  Try to avoid using 'are'.       write-good.E-Prime  
+ 31:281   [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 31:581   [33mwarning[0m     'apparent' is too wordy.        write-good.TooWordy 
+ 31:631   [34msuggestion[0m  Try to avoid using 'are'.       write-good.E-Prime  
+ 31:690   [33mwarning[0m     'is contested' may be passive   write-good.Passive  
+                      voice. Use active voice if you                      
+                      can.                                                
+ 31:690   [34msuggestion[0m  Try to avoid using 'is'.        write-good.E-Prime  
+ 31:951   [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 33:16    [34msuggestion[0m  Try to avoid using 'are'.       write-good.E-Prime  
+ 33:158   [33mwarning[0m     'However' is too wordy.         write-good.TooWordy 
+ 33:181   [33mwarning[0m     'is challenged' may be passive  write-good.Passive  
+                      voice. Use active voice if you                      
+                      can.                                                
+ 33:181   [34msuggestion[0m  Try to avoid using 'is'.        write-good.E-Prime  
+ 33:367   [33mwarning[0m     'aggregate' is too wordy.       write-good.TooWordy 
+ 35:116   [34msuggestion[0m  Try to avoid using 'are'.       write-good.E-Prime  
+ 35:339   [33mwarning[0m     'significantly' is a weasel     write-good.Weasel   
+                      word!                                               
+ 35:406   [33mwarning[0m     'objective' is too wordy.       write-good.TooWordy 
+ 35:444   [34msuggestion[0m  Try to avoid using 'is'.        write-good.E-Prime  
+ 35:618   [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 35:651   [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 35:659   [33mwarning[0m     'is applied' may be passive     write-good.Passive  
+                      voice. Use active voice if you                      
+                      can.                                                
+ 37:255   [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 37:313   [33mwarning[0m     'additional' is too wordy.      write-good.TooWordy 
+ 41:66    [34msuggestion[0m  Try to avoid using 'is'.        write-good.E-Prime  
+ 41:134   [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 41:224   [33mwarning[0m     'However' is too wordy.         write-good.TooWordy 
+ 41:248   [33mwarning[0m     'indicate' is too wordy.        write-good.TooWordy 
+ 41:445   [33mwarning[0m     'subsequent' is too wordy.      write-good.TooWordy 
+ 41:524   [34msuggestion[0m  Try to avoid using 'is'.        write-good.E-Prime  
+ 41:527   [33mwarning[0m     'equivalent' is too wordy.      write-good.TooWordy 
+ 43:25    [34msuggestion[0m  Try to avoid using 'are'.       write-good.E-Prime  
+ 43:141   [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 43:202   [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 43:281   [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 43:304   [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 43:360   [34msuggestion[0m  Try to avoid using 'are'.       write-good.E-Prime  
+ 43:488   [34msuggestion[0m  Try to avoid using 'is'.        write-good.E-Prime  
+ 43:488   [33mwarning[0m     'is challenged' may be passive  write-good.Passive  
+                      voice. Use active voice if you                      
+                      can.                                                
+ 45:60    [34msuggestion[0m  Try to avoid using 'are'.       write-good.E-Prime  
+ 45:150   [34msuggestion[0m  Try to avoid using 'are'.       write-good.E-Prime  
+ 45:150   [33mwarning[0m     'are associated' may be         write-good.Passive  
+                      passive voice. Use active                           
+                      voice if you can.                                   
+ 47:189   [33mwarning[0m     'However' is too wordy.         write-good.TooWordy 
+ 47:367   [34msuggestion[0m  Try to avoid using 'are'.       write-good.E-Prime  
+ 47:388   [33mwarning[0m     'sufficient' is too wordy.      write-good.TooWordy 
+ 47:419   [33mwarning[0m     'subsequent' is too wordy.      write-good.TooWordy 
+ 49:21    [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 49:84    [33mwarning[0m     'indicate' is too wordy.        write-good.TooWordy 
+ 49:312   [34msuggestion[0m  Try to avoid using 'is'.        write-good.E-Prime  
+ 49:429   [34msuggestion[0m  Try to avoid using 'are'.       write-good.E-Prime  
+ 49:540   [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 53:22    [34msuggestion[0m  Try to avoid using 'is'.        write-good.E-Prime  
+ 53:438   [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 53:459   [34msuggestion[0m  Try to avoid using 'is'.        write-good.E-Prime  
+ 53:530   [34msuggestion[0m  Try to avoid using 'are'.       write-good.E-Prime  
+ 53:530   [33mwarning[0m     'are privileged' may be         write-good.Passive  
+                      passive voice. Use active                           
+                      voice if you can.                                   
+ 53:548   [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 55:46    [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 55:187   [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 55:244   [33mwarning[0m     'However' is too wordy.         write-good.TooWordy 
+ 55:361   [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 55:394   [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 55:403   [34msuggestion[0m  Try to avoid using 'are'.       write-good.E-Prime  
+ 55:770   [34msuggestion[0m  Try to avoid using 'be'.        write-good.E-Prime  
+ 55:799   [34msuggestion[0m  Try to avoid using 'is'.        write-good.E-Prime  
+ 55:831   [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 57:14    [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 57:57    [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 57:84    [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 57:151   [34msuggestion[0m  Try to avoid using 'is'.        write-good.E-Prime  
+ 57:356   [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 57:434   [34msuggestion[0m  Try to avoid using 'are'.       write-good.E-Prime  
+ 57:434   [33mwarning[0m     'are assessed' may be passive   write-good.Passive  
+                      voice. Use active voice if you                      
+                      can.                                                
+ 57:505   [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 59:160   [34msuggestion[0m  Try to avoid using 'are'.       write-good.E-Prime  
+ 59:160   [33mwarning[0m     'are proposed' may be passive   write-good.Passive  
+                      voice. Use active voice if you                      
+                      can.                                                
+ 59:213   [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 59:221   [33mwarning[0m     'adjustment' is too wordy.      write-good.TooWordy 
+ 59:281   [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 59:298   [33mwarning[0m     'subsequent' is too wordy.      write-good.TooWordy 
+ 59:430   [34msuggestion[0m  Try to avoid using 'are'.       write-good.E-Prime  
+ 59:502   [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 59:659   [34msuggestion[0m  Try to avoid using 'are'.       write-good.E-Prime  
+ 61:22    [34msuggestion[0m  Try to avoid using 'is'.        write-good.E-Prime  
+ 61:93    [34msuggestion[0m  Try to avoid using 'is'.        write-good.E-Prime  
+ 61:124   [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 61:154   [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 61:209   [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 61:280   [34msuggestion[0m  Try to avoid using 'is'.        write-good.E-Prime  
+ 61:355   [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 61:366   [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 61:421   [34msuggestion[0m  Try to avoid using 'are'.       write-good.E-Prime  
+ 61:454   [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 63:55    [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 63:145   [31merror[0m       Inconsistent spelling of        proselint.Spelling  
+                      'emphasize'.                                        
+ 63:195   [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 63:261   [34msuggestion[0m  Try to avoid using 'is'.        write-good.E-Prime  
+ 63:306   [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 63:352   [33mwarning[0m     'be scored' may be passive      write-good.Passive  
+                      voice. Use active voice if you                      
+                      can.                                                
+ 63:352   [34msuggestion[0m  Try to avoid using 'be'.        write-good.E-Prime  
+ 63:395   [33mwarning[0m     'be interpreted' may be         write-good.Passive  
+                      passive voice. Use active                           
+                      voice if you can.                                   
+ 63:395   [34msuggestion[0m  Try to avoid using 'be'.        write-good.E-Prime  
+ 63:572   [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 63:634   [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 67:98    [34msuggestion[0m  Try to avoid using 'is'.        write-good.E-Prime  
+ 67:377   [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 67:473   [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 67:490   [34msuggestion[0m  Try to avoid using 'are'.       write-good.E-Prime  
+ 69:28    [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 69:39    [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 69:50    [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 69:300   [33mwarning[0m     'demonstrate' is too wordy.     write-good.TooWordy 
+ 69:312   [33mwarning[0m     'objective' is too wordy.       write-good.TooWordy 
+ 69:394   [34msuggestion[0m  Try to avoid using 'is'.        write-good.E-Prime  
+ 69:430   [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 69:457   [33mwarning[0m     'minimize' is too wordy.        write-good.TooWordy 
+ 69:522   [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 69:603   [33mwarning[0m     'objective' is too wordy.       write-good.TooWordy 
+ 69:828   [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 69:889   [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 69:1004  [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 71:28    [34msuggestion[0m  Try to avoid using 'is'.        write-good.E-Prime  
+ 71:171   [34msuggestion[0m  Try to avoid using 'are'.       write-good.E-Prime  
+ 71:300   [33mwarning[0m     'is challenged' may be passive  write-good.Passive  
+                      voice. Use active voice if you                      
+                      can.                                                
+ 71:300   [34msuggestion[0m  Try to avoid using 'is'.        write-good.E-Prime  
+ 71:390   [33mwarning[0m     'is unresolved' may be passive  write-good.Passive  
+                      voice. Use active voice if you                      
+                      can.                                                
+ 71:427   [34msuggestion[0m  Try to avoid using 'be'.        write-good.E-Prime  
+ 73:35    [33mwarning[0m     'additional' is too wordy.      write-good.TooWordy 
+ 73:58    [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 73:215   [33mwarning[0m     'subsequent' is too wordy.      write-good.TooWordy 
+ 73:259   [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 73:298   [33mwarning[0m     'However' is too wordy.         write-good.TooWordy 
+ 73:369   [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 73:389   [34msuggestion[0m  Try to avoid using 'is'.        write-good.E-Prime  
+ 77:22    [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 77:175   [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 77:183   [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 77:361   [33mwarning[0m     'However' is too wordy.         write-good.TooWordy 
+ 77:554   [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 77:564   [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 79:237   [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 79:341   [34msuggestion[0m  Try to avoid using 'is'.        write-good.E-Prime  
+ 81:78    [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 81:176   [33mwarning[0m     'therefore' is too wordy.       write-good.TooWordy 
+ 81:366   [33mwarning[0m     'aggregate' is too wordy.       write-good.TooWordy 
+ 83:78    [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 83:113   [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 83:209   [31merror[0m       Inconsistent spelling of        proselint.Spelling  
+                      'emphasize'.                                        
+ 83:334   [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 83:406   [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 87:47    [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 87:151   [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 87:478   [33mwarning[0m     'therefore' is too wordy.       write-good.TooWordy 
+ 89:50    [34msuggestion[0m  Try to avoid using 'are'.       write-good.E-Prime  
+ 89:535   [34msuggestion[0m  Try to avoid using 'are'.       write-good.E-Prime  
+ 89:535   [33mwarning[0m     'are underreported' may be      write-good.Passive  
+                      passive voice. Use active                           
+                      voice if you can.                                   
+ 89:608   [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 89:816   [33mwarning[0m     'aggregate' is too wordy.       write-good.TooWordy 
+ 89:960   [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 89:971   [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 89:991   [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 108:33   [33mwarning[0m     'several' is a weasel word!     write-good.Weasel   
+ 108:88   [34msuggestion[0m  Try to avoid using 'is'.        write-good.E-Prime  
+ 108:91   [33mwarning[0m     'objective' is too wordy.       write-good.TooWordy 
+ 108:139  [34msuggestion[0m  Try to avoid using 'is'.        write-good.E-Prime  
+ 108:146  [33mwarning[0m     'equivalent' is too wordy.      write-good.TooWordy 
+ 108:182  [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 108:207  [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 108:228  [34msuggestion[0m  Try to avoid using 'are'.       write-good.E-Prime  
+ 108:269  [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 108:335  [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 108:425  [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 108:458  [34msuggestion[0m  Try to avoid using 'are'.       write-good.E-Prime  
+ 108:485  [33mwarning[0m     'multiple' is too wordy.        write-good.TooWordy 
+ 108:517  [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 108:653  [33mwarning[0m     'therefore' is too wordy.       write-good.TooWordy 
+ 108:747  [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 108:761  [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 108:782  [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 108:810  [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 108:827  [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 108:854  [33mwarning[0m     'objective' is too wordy.       write-good.TooWordy 
+ 108:864  [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 110:13   [34msuggestion[0m  Try to avoid using 'is'.        write-good.E-Prime  
+ 110:13   [33mwarning[0m     'is positioned' may be passive  write-good.Passive  
+                      voice. Use active voice if you                      
+                      can.                                                
+ 110:126  [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 110:202  [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 110:228  [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 110:299  [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 110:450  [33mwarning[0m     'therefore' is too wordy.       write-good.TooWordy 
+ 110:497  [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 110:508  [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 110:519  [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 110:756  [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 110:776  [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 110:791  [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 110:846  [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 114:79   [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 114:105  [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 114:306  [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 114:331  [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 114:409  [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 114:431  [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 114:444  [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 114:458  [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 114:523  [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 114:574  [34msuggestion[0m  Try to avoid using 'are'.       write-good.E-Prime  
+ 114:715  [33mwarning[0m     'methodology' is too wordy.     write-good.TooWordy 
+ 130:83   [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 132:100  [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 134:166  [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 136:66   [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 140:90   [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 146:96   [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 148:78   [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 168:152  [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 172:77   [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 172:139  [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 176:74   [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 176:102  [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 176:134  [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 184:157  [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+ 186:145  [34msuggestion[0m  Thesis domain terms are         thesis-vocab.Vocab  
+                      accepted (not flagged as                            
+                      unusual)                                            
+
+Ô£û [31m2 errors[0m, [33m65 warnings[0m and [34m209 suggestions[0m in 1 file.

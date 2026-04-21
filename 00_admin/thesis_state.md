@@ -1,6 +1,6 @@
 # Thesis State
 
-Last updated: 2026-04-20 UTC (C-584 / D-289. Chapter 3 candidate-shaping rationale now replaces the unsupported `Steck et al., 2021` inline citation with the curated explanation-evaluation authority `Tintarev and Masthoff, 2012`, yielding bibliography-supported citation form `Tintarev and Masthoff, 2007, 2012` without changing design substance, locked scope, or implementation/runtime behavior. Chapter 1 scope wording remains refreshed with explicit Music4All citation authority (`Pegoraro Santana et al., 2020`). Governance ID-integrity normalization remains complete across both ledgers (`C-580`, `C-581`, `D-289`). Quality posture remains green from the prior cleanup tranche: Ruff pass, duplicate advisory clean, dependency advisory clean with one explicit ignore, and full tests 638/638 with one expected warning. Next: external submission/package confirmations.)
+Last updated: 2026-04-21 UTC (C-598 / D-301. Chapter 1 final E-Prime polish pass completed; full chapter-1 lint now reports `0 errors, 0 warnings, 0 suggestions` in `reports/vale_chapter1_full_latest.txt`. Vale posture remains hardened with silent thesis vocabulary (`Vocab = Thesis`), strict/readability profiles, and report workflows for chapter and folder targets. Governance checkpoints synchronized. Next: external submission/package confirmations; optional diagram source creation (`.dot`/`.mmd` files); optional sqlite3 workflow only when concrete artifact exists.)
 
 > Full historical audit trail (priority checkpoints, post-closure enhancement logs) is in `00_admin/thesis_state_ARCHIVE_20260416.md` and `00_admin/change_log.md`.
 
@@ -99,8 +99,8 @@ Active dataset: DS-001 (Music4All). Active config profile: `run_config_ui013_tun
 
 | Item | Current value |
 |------|--------------|
-| Highest change ID | C-584 |
-| Highest decision ID | D-289 |
+| Highest change ID | C-598 |
+| Highest decision ID | D-301 |
 | Active unresolved issues | Active mentor-feedback remediation backlog now tracked as `UNDO-R` in `00_admin/unresolved_issues.md` (A-H implementation checklist complete). Submission blockers remain tracked in `09_quality_control/submission_readiness_status.md` and `01_requirements/ambiguity_flags.md` |
 | Admin log files | `change_log.md`, `decision_log.md`, `unresolved_issues.md`, `timeline.md` |
 | Foundation files | `02_foundation/current_title_and_rq.md`, `objectives.md`, `contribution_statement.md`, `problem_statement.md` |

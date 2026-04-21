@@ -5,11 +5,310 @@ Ordering convention (standardized 2026-03-24):
 - Entry IDs remain unique identifiers, but physical entry order reflects historical insertion timing (not strict numeric sorting).
 - New entries must be appended at the end and may include `superseded_by` when a prior decision is replaced.
 
-Maintenance snapshot (2026-04-20, updated):
-- Highest decision ID currently present: `D-290`
-- Total decision entries: 229
-- Status distribution: accepted=206, superseded=3, rejected=1
+Maintenance snapshot (2026-04-21, updated):
+- Highest decision ID currently present: `D-301`
+- Total decision entries: 299
+- Status distribution: accepted=294, superseded=3, rejected=1
 - ID integrity check: no duplicate decision IDs detected
+
+## D-301
+- date: 2026-04-21
+- status: accepted
+
+context:
+After enabling Vale on writing chapters, report output was dominated by positive thesis-vocabulary suggestions from a custom rule style, reducing actionable signal and obscuring actual writing issues.
+
+decision:
+Adopt silent vocabulary acceptance via Vale's native vocab mechanism (`Vocab = Thesis` + `styles/config/vocabularies/Thesis/accept.txt`) and stop relying on suggestion-emitting vocabulary rules for accepted terms. Add two additional lint profiles: strict (warning/error only) and readability (metric-oriented), and retain report-first execution through `vale_report.ps1`.
+
+alternatives_considered:
+- Keep suggestion-emitting vocabulary style and manually filter report files (rejected: persistent noise and poor UX).
+- Remove vocabulary handling entirely (rejected: higher false-positive risk for thesis domain terms).
+
+rationale:
+Native vocab acceptance suppresses noise while preserving domain-term allowances. Separate strict/readability profiles support context-specific workflows without overloading the default full pass.
+
+evidence_basis:
+Post-change chapter 3 reports showed strong signal improvement (academic mode reduced to zero findings; strict mode removed suggestions entirely; readability mode isolated metric warnings).
+
+impacted_files:
+- `.vale.ini`
+- `.vale-clarity.ini`
+- `.vale-academic.ini`
+- `.vale-strict.ini`
+- `.vale-readability.ini`
+- `styles/config/vocabularies/Thesis/accept.txt`
+- `07_implementation/scripts/vale_report.ps1`
+- `.vscode/tasks.json`
+- `07_implementation/README.md`
+
+review_date:
+none
+
+## D-300
+- date: 2026-04-21
+- status: accepted
+
+context:
+User requested saved-file output for Vale lint runs after reviewing chapter 2 in full mode.
+
+decision:
+Implement a dedicated script-first reporting path (`07_implementation/scripts/vale_report.ps1`) that routes Vale through the existing wrapper, writes complete output to a stable `reports/` file, and normalizes Vale exit code `1` (lint findings present) to task success so report generation remains deterministic in task workflows.
+
+alternatives_considered:
+- Use shell redirection ad hoc in each terminal invocation (rejected: repetitive and error-prone).
+- Encode complex inline redirection directly in task definitions (rejected: quoting brittleness and lower maintainability).
+
+rationale:
+A script-based approach centralizes report naming, keeps output behavior consistent across modes, preserves wrapper PATH self-healing, and avoids failing tasks on expected lint findings.
+
+evidence_basis:
+`vale_report.ps1` produced `reports/vale_chapter2_full_latest.txt` from `08_writing/chapter2.md` in full mode during this session.
+
+impacted_files:
+- `07_implementation/scripts/vale_report.ps1`
+- `.vscode/tasks.json`
+- `07_implementation/README.md`
+
+review_date:
+none
+
+## D-298
+- date: 2026-04-21
+- status: accepted
+
+context:
+Graphviz winget install (`Graphviz.Graphviz`) does not add the `bin` directory to Machine PATH. The `Sync-SessionPathFromRegistry` mechanism only reads Machine/User PATH registry entries, so `dot` was never resolvable from within the no-profile task shell even after a fresh wrapper invocation.
+
+decision:
+Hard-code a fallback path for `dot` in `Resolve-ToolExecutable` that checks `C:\Program Files\Graphviz\bin\dot.exe` before falling through to name-only resolution. All other Phase 3 tools (`wargs`, `pandoc`, `mmdc`, `vale`) resolve normally via PATH and are routed with the same pattern used for Phase 2 system tools.
+
+alternatives_considered:
+- Manually add `C:\Program Files\Graphviz\bin` to Machine PATH via registry (rejected: requires elevated shell, side-effects other tools, and is a system-wide mutation for one tool).
+- Install a different Graphviz package that sets PATH correctly (no alternative confirmed available).
+- Skip Graphviz and rely only on mermaid-cli for diagrams (rejected: `dot` and Mermaid serve different diagram needs; both are valid).
+
+rationale:
+The hard-coded fallback is the lowest-friction fix. It is isolated to the wrapper, documented in the code and in upgrades.md, and is safe because it checks with `Test-Path` before using the literal path. If Graphviz moves or is reinstalled to a different location, the fallback degrades gracefully to name-only resolution.
+
+evidence_basis:
+- `C:\Program Files\Graphviz\bin\dot.exe` confirmed present via `Get-ChildItem` search.
+- `[Environment]::GetEnvironmentVariable('Path','Machine')` confirmed the Graphviz bin dir is absent from Machine PATH.
+
+impacted_files:
+- `07_implementation/scripts/run_tool_with_venv_fallback.ps1`
+- `00_admin/upgrades.md`
+
+review_date:
+none
+
+## D-297
+- date: 2026-04-21
+- status: accepted
+
+context:
+User requested continuation immediately after creating the tooling roadmap. The next bounded tranche was to make the already installed Phase 2 analysis tools usable inside the repo workflow.
+
+decision:
+1) Treat `07_implementation/scripts/run_tool_with_venv_fallback.ps1` as the central entrypoint for the first non-Python analysis tools as well, extending it to cover `duckdb`, `mlr`, `sqlite3`, and `vd` rather than introducing a second near-duplicate wrapper.
+2) Operationalize only three concrete workflows now: latest BL-013 plus BL-014 JSON inspection via `duckdb`, BL-006 score summarization via `mlr`, and interactive BL-014 matrix inspection via `vd`.
+3) Defer any `sqlite3` task until the repo has an actual SQLite-backed inspection need.
+
+alternatives_considered:
+- Add README-only examples without task surfaces (rejected: weaker repeatability and discoverability).
+- Create a separate second CLI wrapper just for non-Python tools (rejected: unnecessary duplication now that the existing wrapper already owns PATH self-healing).
+- Add every installed Phase 2 tool immediately, including a placeholder `sqlite3` task (rejected: tool sprawl without a concrete workflow).
+
+rationale:
+This keeps the command surface small, reuses the existing no-profile PATH fix, and turns the installed tools into defendable, repeatable repo workflows instead of one-off terminal knowledge.
+
+evidence_basis:
+- The `duckdb` query against latest BL-013 and BL-014 JSON outputs executed successfully in the current environment.
+- The `mlr` summary over `src/scoring/outputs/bl006_scored_candidates.csv` executed successfully in the current environment.
+- Stable latest artifact paths already exist for BL-013 and BL-014, making them suitable task targets.
+
+impacted_files:
+- `07_implementation/scripts/run_tool_with_venv_fallback.ps1`
+- `.vscode/tasks.json`
+- `07_implementation/README.md`
+- `00_admin/upgrades.md`
+- `00_admin/decision_log.md`
+- `00_admin/change_log.md`
+- `00_admin/thesis_state.md`
+- `00_admin/timeline.md`
+- `00_admin/unresolved_issues.md`
+
+review_date:
+none
+
+## D-296
+- date: 2026-04-21
+- status: accepted
+
+context:
+User requested a new admin document that captures the next upgrade steps after completing the first two tooling-expansion phases.
+
+decision:
+Create `00_admin/upgrades.md` as the canonical short roadmap for tooling expansion status and next bounded upgrade steps, rather than scattering this plan across chat history only.
+
+alternatives_considered:
+- Leave the plan only in chat (rejected: poor handoff and discoverability).
+- Put the roadmap into `thesis_state.md` or `timeline.md` directly (rejected: those files should remain higher-level governance/status surfaces).
+
+rationale:
+A dedicated admin roadmap keeps the tooling-expansion plan discoverable without diluting core governance files.
+
+evidence_basis:
+- Phase 1 environment/workflow tooling is installed and verified.
+- Phase 2 analysis tooling core is installed and verified except for deferred `parallel`.
+
+impacted_files:
+- `00_admin/upgrades.md`
+- `00_admin/decision_log.md`
+- `00_admin/change_log.md`
+- `00_admin/thesis_state.md`
+- `00_admin/timeline.md`
+- `00_admin/unresolved_issues.md`
+
+review_date:
+none
+
+## D-295
+- date: 2026-04-21
+- status: accepted
+
+context:
+User approved implementing a durable fix so CLI tools remain available when PowerShell tasks run with `-NoProfile` and inherit a truncated session PATH.
+
+decision:
+Add a bounded PATH self-healing step to the central implementation task wrappers so each wrapper rehydrates session PATH from Machine+User registry PATH before resolving downstream tools.
+
+alternatives_considered:
+- Rely only on interactive shell profile startup logic (rejected: `-NoProfile` task shells bypass profile scripts).
+- Patch every script/task surface individually (rejected: unnecessary duplication and higher maintenance risk).
+
+rationale:
+Hydrating PATH in wrapper entrypoints is the smallest reliable fix for no-profile task invocations and preserves existing workflow contracts.
+
+evidence_basis:
+- Before hydration, `Get-Command` could not resolve tools (`rg`, `fd`, `gh`) in this terminal context.
+- After wrapper hydration, no-profile invocation resolved all sampled tools via installed locations.
+
+impacted_files:
+- `07_implementation/scripts/run_tool_with_venv_fallback.ps1`
+- `07_implementation/scripts/check_all.ps1`
+- `07_implementation/scripts/autopilot_launch.ps1`
+- `00_admin/decision_log.md`
+- `00_admin/change_log.md`
+- `00_admin/thesis_state.md`
+- `00_admin/timeline.md`
+- `00_admin/unresolved_issues.md`
+
+review_date:
+none
+
+## D-294
+- date: 2026-04-21
+- status: accepted
+
+context:
+User requested a practical improvement pass for `.github/copilot-instructions.md` grounded in actual referenced files. Cross-check found one stale continuation line and a posture conflict between repo-level instructions and agent-level files.
+
+decision:
+1) Keep a single canonical continuation reference line based on active governance files (`thesis_state`, `timeline`, `unresolved_issues`, recent decisions/changes, editor context).
+2) Align both agent files to the active runtime posture (`07_implementation` active, `_scratch` reference-only) to remove behavior divergence.
+3) Add lightweight efficiency guardrails in repo instructions: one full-startup pass per substantial session unless restart/drift is requested, ledger snapshot-first reading allowance, explicit no-op logging rule, and instruction-precedence note.
+
+alternatives_considered:
+- Leave agent/repo posture mismatch and only remove stale line (rejected: continued routing inconsistency risk).
+- Perform a broad workflow rewrite across all guidance files (rejected: unnecessary scope expansion).
+
+rationale:
+Bounded instruction-surface alignment reduces repeated friction and improves deterministic agent behavior without changing thesis scope or implementation runtime contracts.
+
+evidence_basis:
+- `07_implementation/backlog.md` and `07_implementation/experiment_log.md` do not exist.
+- Agent files previously declared frozen/legacy implementation posture while repo instruction file declared `07_implementation` active.
+
+impacted_files:
+- `.github/copilot-instructions.md`
+- `.github/agents/thesis-ask.agent.md`
+- `.github/agents/thesis-autopilot.agent.md`
+- `00_admin/decision_log.md`
+- `00_admin/change_log.md`
+- `00_admin/thesis_state.md`
+- `00_admin/timeline.md`
+- `00_admin/unresolved_issues.md`
+- `00_admin/recurring_issues.md`
+
+review_date:
+none
+
+## D-293
+- date: 2026-04-21
+- status: accepted
+
+context:
+User approved a documentation-hygiene-only cleanup pass. Post-sync review found stale maintenance statistics in `decision_log.md` caused by mixed legacy and modern entry formats not reflected in header counts.
+
+decision:
+1) Keep this pass documentation-only and avoid implementation/runtime changes.
+2) Recompute decision-log snapshot metrics from actual file content across both legacy `id: D-###` and modern `## D-###` formats.
+3) Update governance surfaces with a bounded logging tranche to preserve checkpoint continuity.
+
+alternatives_considered:
+- Leave stale metrics as historical noise (rejected: degrades handoff trust).
+- Rewrite legacy decision-log formats to one schema (rejected: unnecessary high-blast-radius archival rewrite).
+
+rationale:
+Bounded hygiene correction preserves append-only history while improving ledger reliability and startup clarity.
+
+evidence_basis:
+- Mixed-format recount confirms totals/status distribution were underreported in snapshot fields.
+- Updated snapshot now reflects computed metrics and current head ID.
+
+impacted_files:
+- `00_admin/decision_log.md`
+- `00_admin/change_log.md`
+- `00_admin/thesis_state.md`
+- `00_admin/timeline.md`
+- `00_admin/unresolved_issues.md`
+
+review_date:
+none
+
+## D-292
+- date: 2026-04-21
+- status: accepted
+
+context:
+Post-mentor repository cleanup continuation resumed after user rollback of transient local edits. Governance surfaces showed cross-file snapshot drift where decision/change checkpoints in state files lagged the active log heads.
+
+decision:
+1) Perform a bounded governance-sync cleanup that updates stale checkpoint references without changing thesis scope, implementation behavior, or unresolved-item substance.
+2) Treat `00_admin/decision_log.md` and `00_admin/change_log.md` as source-of-truth heads for ID snapshots, then propagate synchronized pointers into `thesis_state.md`, `timeline.md`, and `unresolved_issues.md`.
+3) Record this as a dedicated administrative cleanup tranche for traceable handoff continuity.
+
+alternatives_considered:
+- Leave drift in place until a later packaging pass (rejected: preserves avoidable handoff ambiguity).
+- Perform broad historical rewriting of older entries (rejected: unnecessary blast radius for a snapshot-sync issue).
+
+rationale:
+Bounded synchronization restores operator confidence and reduces future startup friction while preserving append-only governance history.
+
+evidence_basis:
+- Prior to sync, `thesis_state.md` and `unresolved_issues.md` referenced `D-289` while `decision_log.md` contained `D-291`.
+- After sync, active governance surfaces reference the same top-of-log checkpoints.
+
+impacted_files:
+- `00_admin/decision_log.md`
+- `00_admin/change_log.md`
+- `00_admin/thesis_state.md`
+- `00_admin/timeline.md`
+- `00_admin/unresolved_issues.md`
+
+review_date:
+none
 
 ## D-290
 - date: 2026-04-21

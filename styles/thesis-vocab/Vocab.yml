@@ -1,0 +1,82 @@
+extends: existence
+message: "Thesis domain terms are accepted (not flagged as unusual)"
+level: suggestion
+scope: text
+vocab: false
+
+# Technical terms related to the thesis
+tokens:
+  # Pipeline stages and artifacts
+  - '\bBL-003\b'
+  - '\bBL-004\b'
+  - '\bBL-005\b'
+  - '\bBL-006\b'
+  - '\bBL-007\b'
+  - '\bBL-008\b'
+  - '\bBL-009\b'
+  - '\bBL-010\b'
+  - '\bBL-011\b'
+  - '\bBL-013\b'
+  - '\bBL-014\b'
+
+  # Key concepts
+  - '\bplaylist\b'
+  - '\bplaylists\b'
+  - '\bpipeline\b'
+  - '\bpipelines\b'
+  - '\bpreference\b'
+  - '\bpreferences\b'
+  - '\balignment\b'
+  - '\bcontrollability\b'
+  - '\bobservability\b'
+  - '\breproducibility\b'
+  - '\btransparency\b'
+  - '\bdeterministic\b'
+  - '\bcandidate\b'
+  - '\bcandidates\b'
+  - '\bscoring\b'
+  - '\bprofile\b'
+  - '\bprofiles\b'
+  - '\bcross-source\b'
+  - '\bfeature-based\b'
+
+  # Data sources and tools
+  - '\bMusic4All\b'
+  - '\bSpotify\b'
+  - '\blistening history\b'
+  - '\bexplainability\b'
+  - '\binterpretability\b'
+  - '\bimplicit signals\b'
+
+  # Methodology-related
+  - '\bDesign Science Research\b'
+  - '\binfluence inputs\b'
+  - '\bseed refresh\b'
+  - '\brun-level\b'
+  - '\brun-config\b'
+  - '\bhandshake\b'
+  - '\bfuzzy matching\b'
+  - '\brecency filter\b'
+  - '\baffective\b'
+  - '\brhythmic\b'
+  - '\bharmonic\b'
+  - '\bvalence\b'
+  - '\bdanceability\b'
+  - '\benergy\b'
+  - '\btempo\b'
+  - '\bgenre\b'
+  - '\btag\b'
+  - '\bsemantic\b'
+  - '\bcoherence\b'
+  - '\bdiversity\b'
+  - '\bnovelty\b'
+  - '\btradeoff\b'
+  - '\btradeoffs\b'
+
+  # Report/evaluation terms
+  - '\bsanity checks\b'
+  - '\bsanity-check\b'
+  - '\bquality gates\b'
+  - '\brevised\b'
+  - '\baugmented\b'
+  - '\brationalized\b'

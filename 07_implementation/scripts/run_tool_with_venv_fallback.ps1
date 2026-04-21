@@ -1,11 +1,27 @@
 param(
-    [ValidateSet("python", "pyright", "ruff")]
+    [ValidateSet("python", "pyright", "ruff", "duckdb", "mlr", "sqlite3", "vd", "wargs", "pandoc", "dot", "mmdc", "vale")]
     [string]$Tool = "python",
     [Parameter(ValueFromRemainingArguments = $true)]
     [string[]]$ToolArgs
 )
 
 $ErrorActionPreference = "Stop"
+
+function Sync-SessionPathFromRegistry {
+    $machinePath = [Environment]::GetEnvironmentVariable("Path", "Machine")
+    $userPath = [Environment]::GetEnvironmentVariable("Path", "User")
+
+    $pathParts = @()
+    if ($machinePath) { $pathParts += $machinePath }
+    if ($userPath) { $pathParts += $userPath }
+
+    if ($pathParts.Count -gt 0) {
+        # Ensure no-profile task shells inherit full installed CLI visibility.
+        $env:Path = ($pathParts -join ";")
+    }
+}
+
+Sync-SessionPathFromRegistry
 
 $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $implRoot = Resolve-Path (Join-Path $scriptDir "..")
@@ -57,6 +73,24 @@ function Resolve-ToolExecutable {
             return $candidate
         }
         return "ruff"
+    }
+
+    if ($Name -in @("duckdb", "mlr", "sqlite3", "vd")) {
+        return $Name
+    }
+
+    if ($Name -eq "dot") {
+        # Graphviz winget install does not add to Machine PATH on this machine.
+        # Fall back to the known install location before trying PATH resolution.
+        $dotCandidate = "C:\Program Files\Graphviz\bin\dot.exe"
+        if (Test-Path $dotCandidate) {
+            return $dotCandidate
+        }
+        return "dot"
+    }
+
+    if ($Name -in @("wargs", "pandoc", "mmdc", "vale")) {
+        return $Name
     }
 
     throw "Unsupported tool: $Name"

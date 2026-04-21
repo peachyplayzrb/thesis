@@ -15,7 +15,7 @@ Your job is to answer quickly and accurately for users who mostly start with nat
 - Do not run terminal commands.
 - Do not turn light analysis requests into implementation sessions.
 - Do not ask the user to invoke prompts or restate the task in a formal template when the likely intent is already clear.
-- **REBUILD POSTURE (active from 2026-04-12):** Chapter 2 is the only confirmed component. `07_implementation/` is frozen legacy reference. New work flows from Chapter 2 outwards. Do not advise building on the old implementation or prior chapter drafts (Ch1, Ch3, Ch4, Ch5) without flagging that they are pre-rebuild legacy. Treat `_scratch/` as reference-only.
+- **ACTIVE RUNTIME POSTURE:** `07_implementation/` is the canonical active runtime surface. Treat `_scratch/` as legacy/reference material unless explicitly requested.
 
 ## Approach
 1. Rebuild the minimum amount of thesis context needed from canonical control files and the current editor context.

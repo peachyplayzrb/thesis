@@ -26,6 +26,10 @@ The checklist also applies whenever the user says anything like "make sure every
 
 For quick lightweight questions that only need a brief explanation and no repo changes, do the minimum context rebuild needed to answer accurately instead of forcing a full heavy startup ritual.
 
+For substantial edit/run sessions, run the full checklist once per chat unless the user explicitly requests a fresh restart audit or a new drift signal appears.
+
+For substantial edit/run sessions, you may read large ledgers using maintenance snapshots plus latest relevant entries first, then expand deeper only when integrity drift or ambiguity is detected.
+
 For Plan/Autopilot or any edit/run request, always run the full checklist first:
 
 1. Read `00_admin/thesis_state.md` — confirm current title, RQ, and scope are unchanged.
@@ -63,7 +67,6 @@ When the user says things like:
 - "fix this"
 - "finish the current work"
 
-use thesis state, backlog, unresolved issues, experiment log, and the current file/editor context to determine the most likely continuation path.
 use thesis state, timeline, unresolved issues, recent decisions/changes, and the current file/editor context to determine the most likely continuation path.
 
 ## Collaborator Handoff Mode
@@ -75,7 +78,7 @@ If a collaborator is taking over this repo, enforce the same workflow used by th
 - Before ending chat, run a full logging-completeness pass and report any gaps fixed.
 
 ## Session Close Rule
-At the end of every chat session where any file updates, run activity, or governance changes occurred:
+At the end of every chat session where tracked file updates or governance changes occurred:
 1. Verify thesis state, timeline, change, decision, unresolved-issues, and recurring-issues synchronization.
 2. Apply any missing updates directly.
 3. Report the closure status and remaining blockers.
@@ -92,6 +95,7 @@ Do not redirect the user into prompts when the same work can be inferred from no
 During any implementation session:
 - If a design choice is made during implementation (e.g. which algorithm, which schema field, which threshold), log a `D-###` entry in `00_admin/decision_log.md`.
 - After any meaningful set of changes to tracked files, add a `C-###` entry in `00_admin/change_log.md`.
+- If no tracked files changed, do not add new `C-###` or `D-###` entries; report a no-change outcome instead.
 - Synchronize `00_admin/thesis_state.md`, `00_admin/timeline.md`, and `00_admin/unresolved_issues.md` whenever implementation posture or blockers change.
 
 For repo-tooling or workflow customizations that are not tied to a specific BL item, still keep change and decision logs synchronized and include concrete artifact or validation evidence in the change entry.
@@ -113,6 +117,7 @@ Examples of friction that should trigger improvement:
 - Plan/Autopilot sessions repeatedly miss a needed context file or closeout step
 
 ## General Rules
+- Instruction precedence: system and safety rules first, then explicit mode routing in this file, then agent-level behavior files, then user-style preferences.
 - Always consult `00_admin/thesis_state.md` before major guidance.
 - Do not silently rewrite title, research question, scope, or methodology.
 - If protected changes are needed, create a change proposal in `00_admin/change_log.md`.

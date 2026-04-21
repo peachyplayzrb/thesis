@@ -192,6 +192,9 @@ Use Command Palette -> `Tasks: Run Task` and pick one of:
 - `07: Hygiene Check src (Strict)`
 - `07: Duplicate Check src (Advisory)`
 - `07: Duplicate Check src (Strict)`
+- `07: DuckDB Inspect Latest BL-013 + BL-014`
+- `07: MLR Summary BL-006 Scores`
+- `07: VisiData Inspect BL-014 Matrix`
 
 Tooling posture authority:
 
@@ -213,6 +216,165 @@ pre-commit run --all-files
 ```
 
 Configuration authority is repository root `.pre-commit-config.yaml`.
+
+## Artifact Inspection Workflows
+
+Phase 2 inspection tooling is now wired to stable latest artifacts so the commands stay repeatable across runs.
+
+DuckDB summary for the latest BL-013 and BL-014 JSON outputs:
+
+```bash
+duckdb -c "SELECT b.run_id AS bl013_run_id, b.overall_status AS bl013_status, b.executed_stage_count, b.failed_stage_count, q.run_id AS bl014_run_id, q.overall_status AS bl014_status, q.checks_passed, q.checks_total, q.advisories_total FROM read_json_auto('src/orchestration/outputs/bl013_orchestration_run_latest.json') AS b CROSS JOIN read_json_auto('src/quality/outputs/bl014_sanity_report.json') AS q;"
+```
+
+This gives a one-row contract snapshot for the latest orchestration and sanity outputs.
+
+Miller score summary for BL-006:
+
+```bash
+mlr --icsv --opprint stats1 -a count,min,max,mean -f final_score,raw_final_score src/scoring/outputs/bl006_scored_candidates.csv
+```
+
+This is the fastest terminal-first way to check score spread before opening larger artifacts.
+
+VisiData interactive inspection:
+
+```bash
+vd src/quality/outputs/bl014_sanity_run_matrix.csv
+```
+
+Use this when you want sortable/filterable inspection of sanity outputs. A second useful target is `src/playlist/outputs/bl007_assembly_trace.csv`.
+
+The same workflows are available as VS Code tasks:
+
+- `07: DuckDB Inspect Latest BL-013 + BL-014`
+- `07: MLR Summary BL-006 Scores`
+- `07: VisiData Inspect BL-014 Matrix`
+
+## Writing and Diagram Tools
+
+These tools are installed system-wide and accessible via the wrapper.
+
+### pandoc — markdown/DOCX conversion
+
+Convert a markdown chapter draft to DOCX:
+
+```bash
+pandoc 08_writing/chapter2.md -o chapter2.docx
+```
+
+Convert to PDF (requires a LaTeX install):
+
+```bash
+pandoc 08_writing/chapter2.md -o chapter2.pdf
+```
+
+### graphviz (dot) — static diagram rendering
+
+Render a `.dot` diagram file to PNG:
+
+```bash
+dot -Tpng diagrams/pipeline.dot -o diagrams/pipeline.png
+```
+
+### mermaid-cli (mmdc) — Mermaid diagram rendering
+
+Render a `.mmd` Mermaid file to PNG:
+
+```bash
+mmdc -i diagrams/architecture.mmd -o diagrams/architecture.png
+```
+
+### vale — prose lint
+
+Vale provides three separate linting profiles tuned for different writing stages:
+
+**Clarity Only** (quick drafting feedback):
+
+```bash
+vale --config .vale-clarity.ini 08_writing/
+```
+
+Catches passive constructions, weak verbs, weasel words, long sentences.
+
+**Academic Tone** (argumentation refinement):
+
+```bash
+vale --config .vale-academic.ini 08_writing/
+```
+
+Catches redundancy, clichés, vague hedging, inconsistent terminology.
+
+**Full** (comprehensive final pass):
+
+```bash
+vale 08_writing/
+```
+
+Runs both clarity and academic tone checks together. Default configuration loads `write-good` and `proselint` styles, scoped to thesis domain vocabulary.
+
+**Strict** (actionable warnings/errors only):
+
+```bash
+vale --config .vale-strict.ini 08_writing/
+```
+
+Use this when you want to suppress suggestion-level noise and focus on edits that matter most.
+
+**Readability** (metric-oriented diagnostics):
+
+```bash
+vale --config .vale-readability.ini 08_writing/
+```
+
+Use this as a secondary pass when refining paragraph complexity and flow.
+
+Write chapter 2 full lint output to a report file:
+
+```bash
+pwsh -NoProfile -ExecutionPolicy Bypass -File 07_implementation/scripts/vale_report.ps1 -Mode full -Target 08_writing/chapter2.md
+```
+
+Default report path for that command: `reports/vale_chapter2_full_latest.txt`.
+
+Write all writing-folder full lint output to a single report file:
+
+```bash
+pwsh -NoProfile -ExecutionPolicy Bypass -File 07_implementation/scripts/vale_report.ps1 -Mode full -Target 08_writing/
+```
+
+Default report path for that command: `reports/vale_all_writing_full_latest.txt`.
+
+Configuration files:
+
+- `.vale.ini` — default (both write-good + proselint)
+- `.vale-clarity.ini` — write-good only
+- `.vale-academic.ini` — proselint only
+- `.vale-strict.ini` — write-good + proselint at warning/error level
+- `.vale-readability.ini` — readability-focused checks
+- `styles/config/vocabularies/Thesis/accept.txt` — silent accepted thesis domain terms
+
+### wargs — parallel command runner
+
+Run a command in parallel across a list of inputs piped from stdin:
+
+```bash
+cat inputs.txt | wargs -P 4 python scripts/process.py {}
+```
+
+VS Code tasks:
+
+- `07: Wargs Parallel Run`
+- `07: Pandoc Convert Chapter (MD to DOCX)`
+- `07: Graphviz Render Diagram`
+- `07: Mermaid Render Diagram`
+- `07: Vale Lint Writing (Clarity Only)`
+- `07: Vale Lint Writing (Academic Tone)`
+- `07: Vale Lint Writing (Full)`
+- `07: Vale Lint Writing (Strict)`
+- `07: Vale Lint Writing (Readability)`
+- `07: Vale Lint Chapter 2 (Full -> Report)`
+- `07: Vale Lint All Writing (Full -> Report)`
 
 ## Pipeline Stages
 

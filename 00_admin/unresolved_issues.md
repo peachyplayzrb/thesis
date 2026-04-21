@@ -1,6 +1,6 @@
 # Unresolved Issues
 
-Last updated: 2026-04-20 UTC (Governance integrity normalization is complete across both logs: duplicate `C` IDs were normalized in bounded scope (`C-580`) and duplicate `D` IDs were normalized in bounded scope (`C-581` / `D-289`) with no runtime behavior changes. UNDO-S and UNDO-R implementation checklists remain complete, and remaining blockers are external submission/package confirmations tracked in `09_quality_control/submission_readiness_status.md`.)
+Last updated: 2026-04-21 UTC (Governance checkpoint synchronization is current across active admin surfaces (`C-598`, `D-301`) with no runtime behavior changes. UNDO-S and UNDO-R implementation checklists remain complete, and remaining blockers are external submission/package confirmations tracked in `09_quality_control/submission_readiness_status.md`.)
 
 ## Active
 

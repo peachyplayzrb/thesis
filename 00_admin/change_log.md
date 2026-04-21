@@ -7,10 +7,164 @@ Ordering convention (standardized 2026-03-24):
 - Entry order reflects historical insertion timing and may not be numerically contiguous in older sections.
 - New entries must be appended at the end; historical entries remain unchanged except for explicit correction records.
 
-Maintenance snapshot (2026-04-20, updated):
-- Highest change ID currently present: `C-584`
+Maintenance snapshot (2026-04-21, updated):
+- Highest change ID currently present: `C-598`
 - Maintenance snapshot (2026-03-28): prior snapshot stated `C-205`; superseded by the 2026-03-29 architecture migration + documentation sync wave (C-204 through C-219).
 - Known legacy correction applied in this file: prior duplicate `C-079` entry has been normalized to `C-135` for unique-ID compliance.
+
+## C-598
+- date: 2026-04-21
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Performed final governance synchronization before publication push. Updated stale governance quickref IDs in `00_admin/thesis_state.md` and advanced checkpoint headers in admin state/timeline/unresolved surfaces to the current change head.
+- reason: User requested pushing all current changes and asked to update any docs that needed synchronization.
+- evidence_basis: `thesis_state.md`, `timeline.md`, and `unresolved_issues.md` now reference `C-598` with current decision head `D-301`.
+- affected_components: `00_admin/change_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`, `00_admin/unresolved_issues.md`
+- impact_assessment: Low-positive. Improves governance consistency and handoff reliability without changing thesis scope or runtime behavior.
+- approval_record: User request in chat on 2026-04-21.
+
+## C-597
+- date: 2026-04-21
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Completed final chapter-1 E-Prime polish pass in `08_writing/chapter1.md` by rewriting the remaining suggestion-flagged lines while preserving meaning and scope. Re-ran full chapter-1 Vale report and reached zero findings.
+- reason: User confirmed proceeding with the suggestion-only cleanup pass after warning elimination.
+- evidence_basis: `reports/vale_chapter1_full_latest.txt` now reports `0 errors, 0 warnings, 0 suggestions in 1 file`.
+- affected_components: `08_writing/chapter1.md`, `reports/vale_chapter1_full_latest.txt`, `00_admin/change_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`, `00_admin/unresolved_issues.md`
+- impact_assessment: Low-positive. Maximizes prose-lint cleanliness for Chapter 1 without changing thesis claims or implementation behavior.
+- approval_record: User request in chat on 2026-04-21 ("yes").
+
+## C-596
+- date: 2026-04-21
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Completed a chapter-1 micro-polish pass in `08_writing/chapter1.md` targeting the remaining Vale warning classes (`TooWordy` and `Passive`) after C-595. Rephrased objective/action verbs and a small set of sentence structures while preserving meaning and scope.
+- reason: User approved a final micro-pass after the initial chapter-1 rewrite to reduce residual warning-level lint noise.
+- evidence_basis: `reports/vale_chapter1_full_latest.txt` now reports `0 errors, 0 warnings, 11 suggestions` (all suggestions are E-Prime style nudges).
+- affected_components: `08_writing/chapter1.md`, `reports/vale_chapter1_full_latest.txt`, `00_admin/change_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`, `00_admin/unresolved_issues.md`
+- impact_assessment: Low-positive. Improves prose quality and lint cleanliness without changing thesis claims or implementation behavior.
+- approval_record: User request in chat on 2026-04-21 ("yes").
+
+## C-595
+- date: 2026-04-21
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Applied a targeted chapter-1 prose clarity pass in `08_writing/chapter1.md` using the top high-impact Vale findings (remove "very", reduce passive constructions, reduce wordy phrasing, and tighten research-question/aim/contribution wording while preserving thesis meaning and scope). Re-ran full chapter-1 lint report.
+- reason: User approved applying the top rewrite shortlist for chapter 1 and requested re-validation.
+- evidence_basis: Updated chapter 1 full report improved from `1 error, 24 warnings, 26 suggestions` to `0 errors, 11 warnings, 14 suggestions` in `reports/vale_chapter1_full_latest.txt`.
+- affected_components: `08_writing/chapter1.md`, `reports/vale_chapter1_full_latest.txt`, `00_admin/change_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`, `00_admin/unresolved_issues.md`
+- impact_assessment: Low-positive. Improves chapter readability and writing quality without changing thesis claims or implementation behavior.
+- approval_record: User request in chat on 2026-04-21 ("yes").
+
+## C-594
+- date: 2026-04-21
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Implemented Vale workflow hardening and noise reduction: migrated thesis term handling to a silent vocabulary list (`styles/config/vocabularies/Thesis/accept.txt`) and updated core Vale configs to use `Vocab = Thesis`; added strict and readability configs (`.vale-strict.ini`, `.vale-readability.ini`); extended `vale_report.ps1` with `strict` and `readability` modes plus folder-target naming (`all_writing`); added new VS Code tasks for strict/readability linting and all-writing full report generation; updated README documentation; verified report generation for chapter 3 across clarity/academic/full/strict/readability and for all writing.
+- reason: User asked to continue with the recommended additions before further tuning.
+- evidence_basis: Chapter 3 post-change reports show suggestion noise removed from vocab terms: clarity/full now `0 errors, 105 warnings, 104 suggestions`; academic now `0 errors, 0 warnings, 0 suggestions`; strict now `0 errors, 105 warnings, 0 suggestions`; readability now `0 errors, 7 warnings, 0 suggestions`. Consolidated report `reports/vale_all_writing_full_latest.txt` generated successfully.
+- affected_components: `.vale.ini`, `.vale-clarity.ini`, `.vale-academic.ini`, `.vale-strict.ini`, `.vale-readability.ini`, `styles/config/vocabularies/Thesis/accept.txt`, `07_implementation/scripts/vale_report.ps1`, `.vscode/tasks.json`, `07_implementation/README.md`, `reports/vale_chapter3_*.txt`, `reports/vale_all_writing_full_latest.txt`, `00_admin/change_log.md`, `00_admin/decision_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`, `00_admin/unresolved_issues.md`
+- impact_assessment: Low-positive. Improves prose-lint signal quality and adds stronger task/report ergonomics without touching runtime pipeline behavior.
+- approval_record: User continuation request in chat on 2026-04-21 ("continue").
+
+## C-593
+- date: 2026-04-21
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Added deterministic file-output support for Vale linting by introducing `07_implementation/scripts/vale_report.ps1`, which runs Vale through the existing wrapper and writes output to `reports/vale_<target>_<mode>_latest.txt` via `Tee-Object`. Added a new VS Code task `07: Vale Lint Chapter 2 (Full -> Report)` and updated `07_implementation/README.md` with the report-producing command and output path.
+- reason: User requested that Vale runs produce a saved file result for chapter lint output.
+- evidence_basis: Executed the new report script in full mode for chapter 2; report file `reports/vale_chapter2_full_latest.txt` was created and populated with lint findings.
+- affected_components: `07_implementation/scripts/vale_report.ps1`, `.vscode/tasks.json`, `07_implementation/README.md`, `reports/vale_chapter2_full_latest.txt`, `00_admin/change_log.md`, `00_admin/decision_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`, `00_admin/unresolved_issues.md`
+- impact_assessment: Low-positive. Improves writing QA workflow by making lint output archivable and shareable; no runtime pipeline behavior changes.
+- approval_record: User request in chat on 2026-04-21 ("lets make it so that it produces a file with the result").
+
+## C-592
+- date: 2026-04-21
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Completed Vale prose-linting configuration with three separate task profiles: clarity-only (write-good, for drafting), academic-tone (proselint, for argumentation refinement), and full (both, for final review). Created `.vale.ini` (full), `.vale-clarity.ini`, and `.vale-academic.ini` config files; generated `styles/thesis-vocab/Vocab.yml` whitelisting 60+ thesis domain terms (BL-013, playlist, controllability, etc.); synced Vale packages (`vale sync` downloaded write-good and proselint); updated `07_implementation/README.md` with three-profile workflow documentation; and replaced the placeholder `07: Vale Lint Writing` task in `.vscode/tasks.json` with three separate task entries.
+- reason: User requested Vale setup with separate task profiles for different writing stages, using write-good (clarity) + proselint (academic tone) as primary linters, with domain vocabulary auto-whitelisted.
+- evidence_basis: `vale --version` confirmed version 3.14.1; `vale sync` successfully downloaded write-good and proselint packages; test run `vale --config .vale-clarity.ini 08_writing/chapter1.md` produced expected clarity flags (weasel words, passive voice, E-Prime); domain vocab whitelisted 60+ terms from chapters 1 and 3.
+- affected_components: `.vale.ini`, `.vale-clarity.ini`, `.vale-academic.ini`, `styles/thesis-vocab/Vocab.yml`, `.vscode/tasks.json` (replaced placeholder task with three new tasks), `07_implementation/README.md` (updated Vale section with three-profile workflow)
+- impact_assessment: Low-positive. Adds prose-quality linting with flexibility to tune strictness per writing stage. No impact on pipeline or evaluation contracts. Improves chapter-draft review workflow.
+- approval_record: User request in chat on 2026-04-21 to implement Vale setup as "Option A" with separate tasks.
+
+## C-591
+- date: 2026-04-21
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Completed Phase 3 writing-and-diagram tooling operationalization: installed `pandoc`, `graphviz`/`dot`, `mermaid-cli`/`mmdc`, `vale`, and `wargs`; extended the implementation CLI wrapper ValidateSet to include all five tools (with a hard-coded `dot.exe` fallback for the non-PATH Graphviz install); added five VS Code tasks; documented canonical commands for each tool in `07_implementation/README.md` under a new "Writing and Diagram Tools" section; and marked Phase 3 complete in `00_admin/upgrades.md`.
+- reason: User requested Phase 3 tool implementation plus a parallel runner as a continuation of the upgrades roadmap.
+- evidence_basis: All five tools resolved in the current environment after PATH refresh (`wargs --version`, `pandoc --version`, `vale --version`, `mmdc --version` confirmed; `dot` resolved via hard-coded fallback at `C:\Program Files\Graphviz\bin\dot.exe`).
+- affected_components: `07_implementation/scripts/run_tool_with_venv_fallback.ps1`, `.vscode/tasks.json`, `07_implementation/README.md`, `00_admin/upgrades.md`, `00_admin/decision_log.md`, `00_admin/change_log.md`
+- impact_assessment: Low-positive. Adds writing-output and diagram-rendering capability to the repo workflow without affecting the pipeline or evaluation contracts.
+- approval_record: User request in chat on 2026-04-21 to continue from previous session state.
+
+## C-590
+- date: 2026-04-21
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Operationalized the Phase 2 analysis-tooling tranche by extending the implementation CLI wrapper for `duckdb`/`mlr`/`sqlite3`/`vd`, adding three repeatable VS Code tasks, documenting canonical artifact-inspection workflows in `07_implementation/README.md`, and updating `00_admin/upgrades.md` to reflect the completed baseline.
+- reason: User asked to continue from the new upgrades roadmap; the highest-value next slice was to turn the newly installed tools into repeatable repo-facing workflows rather than leave them as ad hoc shell utilities.
+- evidence_basis: Verified the documented `duckdb` query against `bl013_orchestration_run_latest.json` plus `bl014_sanity_report.json` and the documented `mlr` score summary against `bl006_scored_candidates.csv`; both executed successfully in the current environment.
+- affected_components: `07_implementation/scripts/run_tool_with_venv_fallback.ps1`, `.vscode/tasks.json`, `07_implementation/README.md`, `00_admin/upgrades.md`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`, `00_admin/unresolved_issues.md`
+- impact_assessment: Low-positive. Improves day-to-day artefact inspection and demo readiness without changing pipeline behavior, locked thesis scope, or evaluation contracts.
+- approval_record: User request in chat on 2026-04-21 to continue the upgrades tranche.
+
+## C-589
+- date: 2026-04-21
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Added `00_admin/upgrades.md` as a dedicated roadmap for completed tooling-expansion phases and next bounded upgrade steps, including deferred handling for `parallel` and recommended follow-up operationalization work.
+- reason: User requested a new admin document capturing the next upgrade steps after starting implementation of the environment/tooling expansion plan.
+- evidence_basis: The new document records completed Phase 1 and Phase 2 tool installs, identifies the current deferred gap (`parallel`), and defines the next practical execution tranche.
+- affected_components: `00_admin/upgrades.md`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`, `00_admin/unresolved_issues.md`
+- impact_assessment: Low-positive. Improves tooling-roadmap discoverability and handoff clarity without changing implementation behavior or thesis scope.
+- approval_record: User request in chat on 2026-04-21.
+
+## C-588
+- date: 2026-04-21
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Added no-profile PATH self-healing to core implementation wrappers so task invocations rehydrate session PATH from Machine+User registry PATH before tool resolution.
+- reason: User approved making CLI tooling reliably available in shell/task launches after repeated missing-command behavior despite installed binaries.
+- evidence_basis: No-profile wrapper validation now resolves `rg`, `fd`, and `gh` from installed locations in the same terminal context where commands were previously unresolved.
+- affected_components: `07_implementation/scripts/run_tool_with_venv_fallback.ps1`, `07_implementation/scripts/check_all.ps1`, `07_implementation/scripts/autopilot_launch.ps1`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`, `00_admin/unresolved_issues.md`
+- impact_assessment: Low-positive. Improves operator reliability for no-profile task shells without changing pipeline logic, thesis scope, or evaluation contracts.
+- approval_record: User approval in chat on 2026-04-21 ("yes").
+
+## C-587
+- date: 2026-04-21
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Improved instruction-surface efficiency and consistency by updating `.github/copilot-instructions.md` and both agent files. Removed stale continuation reference to non-existent backlog/experiment logs, added lightweight startup/ledger/no-op logging/precedence guardrails, and aligned agent runtime posture to active `07_implementation` authority.
+- reason: User requested a better and more efficient instruction set and asked for reference-grounded validation against real files.
+- evidence_basis: File checks confirmed missing `07_implementation/backlog.md` and `07_implementation/experiment_log.md`, while agent files conflicted with active-runtime guidance. Updated instruction/agent files now share one posture and one continuation source set.
+- affected_components: `.github/copilot-instructions.md`, `.github/agents/thesis-ask.agent.md`, `.github/agents/thesis-autopilot.agent.md`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`, `00_admin/unresolved_issues.md`, `00_admin/recurring_issues.md`
+- impact_assessment: Low-positive. Reduces workflow ambiguity and startup overhead without changing thesis scope, implementation behavior, or evaluation contracts.
+- approval_record: User request in chat on 2026-04-21.
+
+## C-586
+- date: 2026-04-21
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Completed a documentation-hygiene-only cleanup pass by correcting stale maintenance snapshot metrics in `decision_log.md` (head ID and status-distribution totals) and synchronizing admin checkpoint pointers to the new governance head IDs.
+- reason: User approved a second repository cleanup pass focused on documentation hygiene; review found stale decision-log snapshot statistics after recent entries.
+- evidence_basis: `decision_log.md` snapshot now reflects the current mixed-format ledger counts and new head `D-293`; synchronized pointers updated in state/timeline/unresolved headers.
+- affected_components: `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`, `00_admin/unresolved_issues.md`
+- impact_assessment: Low-positive. Improves governance readability/handoff reliability without changing implementation or runtime behavior.
+- approval_record: User confirmation in chat on 2026-04-21 ("yes").
+
+## C-585
+- date: 2026-04-21
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Completed a bounded repository-cleanup governance synchronization after user-approved rollback of transient local edits. Updated stale checkpoint references across admin surfaces so active state now aligns with current log heads (decision head includes `D-292`; change head includes `C-585`) without altering thesis scope, implementation code, or unresolved checklist substance.
+- reason: User requested repository cleanup continuation; the highest-value safe cleanup item was cross-file governance drift removal.
+- evidence_basis: `decision_log.md` now records `D-292`; `thesis_state.md`, `timeline.md`, and `unresolved_issues.md` now reference synchronized current checkpoints and updated timestamps.
+- affected_components: `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`, `00_admin/unresolved_issues.md`
+- impact_assessment: Low-positive. Improves handoff reliability and startup context fidelity; no runtime/code-path behavior changes.
+- approval_record: User request in chat on 2026-04-21 to continue cleanup after undo.
 
 ## C-584
 - date: 2026-04-20
@@ -4381,4 +4535,4 @@ Maintenance snapshot (2026-04-20, updated):
 - change_summary: Refined the Chapter 2 ending structure by replacing the early transition sentence with a softer formulation and merging the two overlapping pre-gap synthesis/limitations paragraphs into one tighter paragraph, while preserving the `Research Gap and Thesis Positioning` and thesis-positioning paragraphs unchanged.
 - reason: User requested one final structural cleanup limited to the ending so the closing sequence reads as Figure 2.2, one merged synthesis/limitations paragraph, the gap paragraph, and the thesis-positioning paragraph.
 - evidence_basis: Updated `08_writing/chapter2.md` by replacing the earlier `The literature progresses...` sentence with the user-approved softer sentence and substituting the two overlapping pre-gap paragraphs with the exact merged paragraph supplied by the user; post-edit diagnostics reported no errors.
-- affected_components: `0
+- affected_components: `08_writing/chapter2.md`, `00_admin/decision_log.md`, `00_admin/timeline.md`, `00_admin/change_log.md`.

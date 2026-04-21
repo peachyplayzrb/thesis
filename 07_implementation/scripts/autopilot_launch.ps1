@@ -9,6 +9,22 @@ param(
 
 $ErrorActionPreference = "Stop"
 
+function Sync-SessionPathFromRegistry {
+    $machinePath = [Environment]::GetEnvironmentVariable("Path", "Machine")
+    $userPath = [Environment]::GetEnvironmentVariable("Path", "User")
+
+    $pathParts = @()
+    if ($machinePath) { $pathParts += $machinePath }
+    if ($userPath) { $pathParts += $userPath }
+
+    if ($pathParts.Count -gt 0) {
+        # Ensure no-profile task shells inherit full installed CLI visibility.
+        $env:Path = ($pathParts -join ";")
+    }
+}
+
+Sync-SessionPathFromRegistry
+
 $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $implRoot = Resolve-Path (Join-Path $scriptDir "..")
 $workspaceRoot = Split-Path $implRoot -Parent

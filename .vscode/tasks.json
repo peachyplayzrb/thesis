@@ -253,6 +253,248 @@
       "problemMatcher": []
     },
     {
+      "label": "07: DuckDB Inspect Latest BL-013 + BL-014",
+      "type": "shell",
+      "command": "pwsh",
+      "args": [
+        "-NoProfile",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "${workspaceFolder}/07_implementation/scripts/run_tool_with_venv_fallback.ps1",
+        "duckdb",
+        "-c",
+        "SELECT b.run_id AS bl013_run_id, b.overall_status AS bl013_status, b.executed_stage_count, b.failed_stage_count, q.run_id AS bl014_run_id, q.overall_status AS bl014_status, q.checks_passed, q.checks_total, q.advisories_total FROM read_json_auto(''src/orchestration/outputs/bl013_orchestration_run_latest.json'') AS b CROSS JOIN read_json_auto(''src/quality/outputs/bl014_sanity_report.json'') AS q;"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}/07_implementation"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "07: MLR Summary BL-006 Scores",
+      "type": "shell",
+      "command": "pwsh",
+      "args": [
+        "-NoProfile",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "${workspaceFolder}/07_implementation/scripts/run_tool_with_venv_fallback.ps1",
+        "mlr",
+        "--icsv",
+        "--opprint",
+        "stats1",
+        "-a",
+        "count,min,max,mean",
+        "-f",
+        "final_score,raw_final_score",
+        "src/scoring/outputs/bl006_scored_candidates.csv"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}/07_implementation"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "07: VisiData Inspect BL-014 Matrix",
+      "type": "shell",
+      "command": "pwsh",
+      "args": [
+        "-NoProfile",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "${workspaceFolder}/07_implementation/scripts/run_tool_with_venv_fallback.ps1",
+        "vd",
+        "src/quality/outputs/bl014_sanity_run_matrix.csv"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}/07_implementation"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "07: Wargs Parallel Run",
+      "type": "shell",
+      "command": "pwsh",
+      "args": [
+        "-NoProfile",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "${workspaceFolder}/07_implementation/scripts/run_tool_with_venv_fallback.ps1",
+        "wargs",
+        "--help"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}/07_implementation"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "07: Pandoc Convert Chapter (MD to DOCX)",
+      "type": "shell",
+      "command": "pwsh",
+      "args": [
+        "-NoProfile",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "${workspaceFolder}/07_implementation/scripts/run_tool_with_venv_fallback.ps1",
+        "pandoc",
+        "--version"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}/07_implementation"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "07: Graphviz Render Diagram",
+      "type": "shell",
+      "command": "pwsh",
+      "args": [
+        "-NoProfile",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "${workspaceFolder}/07_implementation/scripts/run_tool_with_venv_fallback.ps1",
+        "dot",
+        "-V"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}/07_implementation"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "07: Mermaid Render Diagram",
+      "type": "shell",
+      "command": "pwsh",
+      "args": [
+        "-NoProfile",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "${workspaceFolder}/07_implementation/scripts/run_tool_with_venv_fallback.ps1",
+        "mmdc",
+        "--version"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}/07_implementation"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "07: Vale Lint Writing (Clarity Only)",
+      "type": "shell",
+      "command": "vale",
+      "args": [
+        "--config",
+        ".vale-clarity.ini",
+        "08_writing/"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "07: Vale Lint Writing (Academic Tone)",
+      "type": "shell",
+      "command": "vale",
+      "args": [
+        "--config",
+        ".vale-academic.ini",
+        "08_writing/"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "07: Vale Lint Writing (Full)",
+      "type": "shell",
+      "command": "vale",
+      "args": [
+        "08_writing/"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "07: Vale Lint Writing (Strict)",
+      "type": "shell",
+      "command": "vale",
+      "args": [
+        "--config",
+        ".vale-strict.ini",
+        "08_writing/"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "07: Vale Lint Writing (Readability)",
+      "type": "shell",
+      "command": "vale",
+      "args": [
+        "--config",
+        ".vale-readability.ini",
+        "08_writing/"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "07: Vale Lint Chapter 2 (Full -> Report)",
+      "type": "shell",
+      "command": "pwsh",
+      "args": [
+        "-NoProfile",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "${workspaceFolder}/07_implementation/scripts/vale_report.ps1",
+        "-Mode",
+        "full",
+        "-Target",
+        "08_writing/chapter2.md"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "07: Vale Lint All Writing (Full -> Report)",
+      "type": "shell",
+      "command": "pwsh",
+      "args": [
+        "-NoProfile",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "${workspaceFolder}/07_implementation/scripts/vale_report.ps1",
+        "-Mode",
+        "full",
+        "-Target",
+        "08_writing/"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": []
+    },
+    {
       "label": "07: Ruff Check src",
       "type": "shell",
       "command": "pwsh",

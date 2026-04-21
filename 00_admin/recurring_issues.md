@@ -1,6 +1,6 @@
 # Recurring Issues Log
 
-Last updated: 2026-04-09
+Last updated: 2026-04-21
 
 ## Purpose
 Track friction patterns that appear more than once so future sessions can avoid them automatically.
@@ -54,9 +54,9 @@ None.
 
 ### RI-005 — Startup checklist references missing workflow files
 - first_seen: 2026-04-08
-- last_seen: 2026-04-09
+- last_seen: 2026-04-21
 - pattern: Active instructions expected `07_implementation/backlog.md` and `07_implementation/experiment_log.md`, but those files do not exist in the current repository posture, causing avoidable startup friction.
-- fix_applied: Rebased startup/closeout rules on core governance files (`thesis_state`, `timeline`, `change_log`, `decision_log`, `unresolved_issues`, `recurring_issues`) and removed prompt-file dependency from active workflow surfaces.
+- fix_applied: Rebased startup/closeout rules on core governance files (`thesis_state`, `timeline`, `change_log`, `decision_log`, `unresolved_issues`, `recurring_issues`) and removed prompt-file dependency from active workflow surfaces. Follow-up hardening (2026-04-21, C-587 / D-294) removed stale continuation references from `.github/copilot-instructions.md` and aligned both agent files to the same active-runtime posture.
 
 ### RI-006 — Stale active-baseline path points to removed location
 - first_seen: 2026-04-09
