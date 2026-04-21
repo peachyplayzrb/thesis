@@ -6,10 +6,354 @@ Ordering convention (standardized 2026-03-24):
 - New entries must be appended at the end and may include `superseded_by` when a prior decision is replaced.
 
 Maintenance snapshot (2026-04-21, updated):
-- Highest decision ID currently present: `D-301`
-- Total decision entries: 299
-- Status distribution: accepted=294, superseded=3, rejected=1
+- Highest decision ID currently present: `D-312`
+- Total decision entries: 310
+- Status distribution: accepted=305, superseded=3, rejected=1
 - ID integrity check: no duplicate decision IDs detected
+
+## D-312
+- date: 2026-04-21
+- status: accepted
+
+context:
+After script-surface consolidation and reports-only output routing, the remaining tooling risk is silent regression in compatibility shims or output-path contracts during future refactors.
+
+decision:
+Add a dedicated tooling contract check script (`07_implementation/scripts/tooling_contract_check.ps1`) and task surface (`07: Tooling Contract Check (Shims + Reports Policy)`) that validates delegation contracts (`check_all`/`autopilot_launch` -> `workflow_orchestrator`, QA shims -> `qa_suite`), runs one representative shim runtime smoke, and enforces reports-only output policy checks.
+
+alternatives_considered:
+- Rely only on manual review before refactors (rejected: too easy to miss drift across many shims).
+- Fold contract checks into `check_all.ps1` full-contract workflow (rejected: would mix implementation runtime validation with tooling-surface governance checks and increase run cost).
+
+rationale:
+A small dedicated contract gate catches the most likely maintenance regressions early while keeping execution fast and decoupled from heavyweight full-contract runs.
+
+evidence_basis:
+- New script emits `reports/tooling_contract_check_latest.md` with pass/fail details.
+- VS Code task and README guidance now expose a single repeatable command path.
+
+impacted_files:
+- `07_implementation/scripts/tooling_contract_check.ps1`
+- `.vscode/tasks.json`
+- `07_implementation/README.md`
+- `00_admin/upgrades.md`
+
+review_date:
+none
+
+## D-311
+- date: 2026-04-21
+- status: accepted
+
+context:
+Post-consolidation QA scripts still defaulted to root-level output filenames, while writing/package flows already used `reports/`. User requested strict output locality: all generated outputs should go to `reports/`, overwrite existing files, and legacy outputs outside `reports/` should be removed.
+
+decision:
+Enforce a reports-only output policy in shared QA authority `qa_suite.ps1` by normalizing all report destinations to `reports/<leafname>` regardless of caller-provided path shape. Keep overwrite semantics via `Set-Content`/equivalent write paths, move coverage XML/HTML artifacts to `reports/`, update shim defaults to `reports/...`, and remove legacy output artifacts outside `reports/`.
+
+alternatives_considered:
+- Keep caller-controlled arbitrary output paths (rejected: violates requested centralization and creates drift).
+- Update only shim defaults without enforcement in shared QA engine (rejected: bypass risk when explicit paths are passed).
+
+rationale:
+Engine-level normalization guarantees consistent output locality across all entrypoints, while compatibility shims preserve current task/operator surfaces.
+
+evidence_basis:
+- Representative shim runs now write to `reports/` (`ruff_src.ps1`, `dependency_audit.ps1`, `duplicate_src.ps1`).
+- Legacy root-level QA output files and old coverage artifacts outside `reports/` were removed.
+
+impacted_files:
+- `07_implementation/scripts/qa_suite.ps1`
+- `07_implementation/scripts/ruff_src.ps1`
+- `07_implementation/scripts/test_coverage.ps1`
+- `07_implementation/scripts/docstring_coverage_src.ps1`
+- `07_implementation/scripts/dependency_audit.ps1`
+- `07_implementation/scripts/bandit_src.ps1`
+- `07_implementation/scripts/duplicate_src.ps1`
+- `07_implementation/scripts/hygiene_src.ps1`
+- `07_implementation/README.md`
+
+review_date:
+none
+
+## D-310
+- date: 2026-04-21
+- status: accepted
+
+context:
+Phase-1 consolidation removed overlap across orchestration scripts. Remaining overlap persisted across seven QA scripts with repeated executable resolution, report writing, advisory/strict mode handling, and near-identical wrapper structure.
+
+decision:
+Introduce `07_implementation/scripts/qa_suite.ps1` as shared authority for QA checks (`ruff`, `coverage`, `docstring`, `dependency-audit`, `bandit`, `duplicate`, `hygiene`) and convert each existing QA entrypoint script into a compatibility shim that forwards mode-specific parameters to the shared engine.
+
+alternatives_considered:
+- Keep duplicated QA script bodies as-is (rejected: high drift and repetitive maintenance).
+- Remove old script entrypoints and repoint all tasks immediately (rejected: avoid compatibility break risk).
+
+rationale:
+Centralizing QA logic reduces maintenance cost while preserving existing operator/task interfaces and report artifact contracts.
+
+evidence_basis:
+- Parse checks for `qa_suite.ps1` and representative shims passed.
+- Smoke runs through legacy entrypoints `ruff_src.ps1`, `dependency_audit.ps1`, and `hygiene_src.ps1` succeeded and wrote expected report files.
+
+impacted_files:
+- `07_implementation/scripts/qa_suite.ps1`
+- `07_implementation/scripts/ruff_src.ps1`
+- `07_implementation/scripts/test_coverage.ps1`
+- `07_implementation/scripts/docstring_coverage_src.ps1`
+- `07_implementation/scripts/dependency_audit.ps1`
+- `07_implementation/scripts/bandit_src.ps1`
+- `07_implementation/scripts/duplicate_src.ps1`
+- `07_implementation/scripts/hygiene_src.ps1`
+
+review_date:
+none
+
+## D-309
+- date: 2026-04-21
+- status: accepted
+
+context:
+The scripts surface had orchestration overlap across `check_all.ps1`, `autopilot_launch.ps1`, and `daily_quality_pass.ps1`, with duplicated step wiring and drift risk when full-contract behavior changed.
+
+decision:
+Introduce `07_implementation/scripts/workflow_orchestrator.ps1` as shared execution authority for orchestration modes (`preflight`, `ci-guard`, `typecheck`, `tests`, `validate-only`, `full-contract`), and convert `check_all.ps1` and `autopilot_launch.ps1` into compatibility shims that delegate to the shared script.
+
+alternatives_considered:
+- Keep separate duplicated orchestration logic in each script (rejected: higher maintenance and behavior-drift risk).
+- Remove legacy entrypoint scripts outright (rejected: would break task and operator compatibility surfaces).
+
+rationale:
+Shared orchestration logic reduces duplication while preserving existing task labels and operator command habits through stable shim entrypoints.
+
+evidence_basis:
+- Parse checks for `workflow_orchestrator.ps1`, `autopilot_launch.ps1`, and `check_all.ps1` passed.
+- Smoke run `autopilot_launch.ps1 -Mode preflight -NoReport` completed successfully via the delegated shared orchestrator.
+
+impacted_files:
+- `07_implementation/scripts/workflow_orchestrator.ps1`
+- `07_implementation/scripts/autopilot_launch.ps1`
+- `07_implementation/scripts/check_all.ps1`
+
+review_date:
+none
+
+## D-308
+- date: 2026-04-21
+- status: accepted
+
+context:
+After adding automated chapter packaging and chapter Vale bundling, the remaining workflow gap was routine execution drift between writing outputs and implementation validation state.
+
+decision:
+Introduce `07_implementation/scripts/daily_quality_pass.ps1` as the canonical one-click daily routine that runs packaging bundle refresh, Vale chapter bundle refresh, and implementation validation, then writes a consolidated snapshot at `reports/daily_quality_pass_latest.md`. Expose this via a dedicated VS Code task and README operator guidance.
+
+alternatives_considered:
+- Keep separate manual task execution only (rejected: encourages inconsistent run order and stale status context).
+- Fold behavior into `check_all.ps1` directly (rejected: mixes writing operations with implementation contract script responsibilities).
+
+rationale:
+A dedicated orchestration wrapper keeps sequence deterministic, reduces operator overhead, and gives one stable report artifact for session-level readiness checks.
+
+evidence_basis:
+- `daily_quality_pass.ps1` smoke run succeeded (validation intentionally skipped for speed) and wrote `reports/daily_quality_pass_latest.md` with BL-013/BL-014 status plus report freshness timestamps.
+
+impacted_files:
+- `07_implementation/scripts/daily_quality_pass.ps1`
+- `.vscode/tasks.json`
+- `07_implementation/README.md`
+- `reports/daily_quality_pass_latest.md`
+
+review_date:
+none
+
+## D-307
+- date: 2026-04-21
+- status: accepted
+
+context:
+Wrapper review identified a reliability risk: PATH sync replaced the process PATH entirely, which could drop caller-injected entries. Additional low-severity concerns included implicit PATH-first tool selection without explicit resolution feedback.
+
+decision:
+Harden `run_tool_with_venv_fallback.ps1` by (1) merging Machine PATH + User PATH + existing process PATH with de-duplication instead of overwrite, and (2) resolving non-venv tools explicitly through `Get-Command` with clear fail-fast errors when missing.
+
+alternatives_considered:
+- Keep overwrite behavior and rely on existing fallback logic (rejected: unnecessary fragility for caller-provided PATH entries).
+- Hard-code absolute paths for all system tools (rejected: brittle and machine-specific).
+
+rationale:
+Merged PATH preserves no-profile reliability while avoiding loss of transient process-local entries. Explicit resolution improves diagnosability and predictability.
+
+evidence_basis:
+- Wrapper smoke checks passed for `pandoc --version`, `vale --version`, and `duckdb -version` after changes.
+
+impacted_files:
+- `07_implementation/scripts/run_tool_with_venv_fallback.ps1`
+
+review_date:
+none
+
+## D-306
+- date: 2026-04-21
+- status: accepted
+
+context:
+User requested the same auto-update pattern used for chapter packaging outputs to be applied to Vale chapter lint outputs and a consolidated writing report.
+
+decision:
+Add `07_implementation/scripts/vale_package_chapters.ps1` as the canonical chapter-lint bundling script. On each run, it executes `vale_report.ps1` for chapter1 through chapter6, refreshes per-chapter report files, and rewrites `reports/vale_chapter_bundle_latest.md`. Add a dedicated VS Code task for the full-bundle run and document usage in README.
+
+alternatives_considered:
+- Keep per-chapter manual Vale runs only (rejected: repetitive and drift-prone).
+- Keep one all-writing report only (rejected: less chapter-granular tracking for submission hardening).
+
+rationale:
+Scripted chapter-level bundling creates deterministic report refresh behavior and keeps writing QA outputs synchronized in a single file.
+
+evidence_basis:
+- `vale_package_chapters.ps1` run refreshed `reports/vale_chapter1_full_latest.txt` through `reports/vale_chapter6_full_latest.txt`.
+- `reports/vale_chapter_bundle_latest.md` now updates automatically and records stable summary lines and timestamps.
+
+impacted_files:
+- `07_implementation/scripts/vale_package_chapters.ps1`
+- `.vscode/tasks.json`
+- `07_implementation/README.md`
+- `reports/vale_chapter_bundle_latest.md`
+
+review_date:
+none
+
+## D-305
+- date: 2026-04-21
+- status: accepted
+
+context:
+User requested that packaging outputs be written into a stable report file and updated automatically whenever the packaging run is executed.
+
+decision:
+Introduce `07_implementation/scripts/pandoc_package_chapters.ps1` as the canonical chapter packaging script that: (1) runs Pandoc packaging for target chapters, (2) refreshes per-chapter DOCX outputs, and (3) auto-regenerates `reports/chapter_packaging_bundle_latest.md` each run. Rewire VS Code Pandoc tasks to call this script.
+
+alternatives_considered:
+- Keep manual ad hoc Pandoc commands and hand-edited report files (rejected: high drift risk).
+- Keep task-level version checks only (rejected: no operational packaging output).
+
+rationale:
+One script-backed workflow keeps output and report state synchronized and removes repeated manual bookkeeping.
+
+evidence_basis:
+- Running `pandoc_package_chapters.ps1` regenerates chapter DOCX files and rewrites `reports/chapter_packaging_bundle_latest.md` with current sizes/timestamps.
+- VS Code task `07: Pandoc Convert Chapter (MD to DOCX)` now runs script mode with `-Target`, and `07: Pandoc Package All Chapters -> Bundle Report` runs full sweep.
+
+impacted_files:
+- `07_implementation/scripts/pandoc_package_chapters.ps1`
+- `.vscode/tasks.json`
+- `07_implementation/README.md`
+- `reports/chapter_packaging_bundle_latest.md`
+
+review_date:
+none
+
+## D-304
+- date: 2026-04-21
+- status: accepted
+
+context:
+After stabilizing chapter diagram sources and PNG embeds, chapter-3 packaging was validated. The remaining step was a full chapter 1/2/4/5/6 DOCX sweep to confirm bundle-wide packaging reliability.
+
+decision:
+Run a full chapter packaging sweep via Pandoc with `--resource-path=08_writing`, produce DOCX check artifacts for chapters 1 through 6, and publish one bundle summary report under `reports/`.
+
+alternatives_considered:
+- Validate only chapter 3 as a spot check (rejected: insufficient submission-facing confidence across all chapters).
+- Defer packaging checks until final submission day (rejected: delays discovery of conversion issues).
+
+rationale:
+Bundle-level validation closes packaging uncertainty now and creates a reusable evidence artifact for final submission readiness checks.
+
+evidence_basis:
+- DOCX artifacts exist for chapters 1 through 6 in `reports/`.
+- `reports/chapter_packaging_bundle_latest.md` captures file presence, sizes, and timestamps.
+
+impacted_files:
+- `reports/chapter1_diagram_packaging_check.docx`
+- `reports/chapter2_diagram_packaging_check.docx`
+- `reports/chapter3_diagram_packaging_check.docx`
+- `reports/chapter4_diagram_packaging_check.docx`
+- `reports/chapter5_diagram_packaging_check.docx`
+- `reports/chapter6_diagram_packaging_check.docx`
+- `reports/chapter_packaging_bundle_latest.md`
+
+review_date:
+none
+
+## D-303
+- date: 2026-04-21
+- status: accepted
+
+context:
+After standardizing chapter figures to source-backed Mermaid and SVG assets, Pandoc DOCX export raised SVG conversion dependency warnings (`rsvg-convert` missing), which risks non-embedded diagrams in packaging outputs.
+
+decision:
+Keep canonical Mermaid sources as authority and adopt PNG as the chapter-embedded figure format for active writing files. Add Graphviz `.dot` companion sources for the same figures and validate both DOT rendering and Pandoc DOCX packaging.
+
+alternatives_considered:
+- Keep chapter embeds as SVG and require `rsvg-convert` installation (rejected for now: adds extra machine dependency in packaging path).
+- Replace Mermaid authority with DOT-only sources (rejected: unnecessary migration churn from current mmd workflow).
+
+rationale:
+PNG embeds are robust for DOCX conversion on the current toolchain, while keeping Mermaid + DOT source companions preserves regeneration flexibility.
+
+evidence_basis:
+- DOT companion files created for figures 1.1, 2.2, 3.1, 3.2, and 3.3 and rendered successfully.
+- `reports/chapter3_diagram_packaging_check.docx` generated successfully after chapter references switched to PNG.
+
+impacted_files:
+- `08_writing/chapter1.md`
+- `08_writing/chapter2.md`
+- `08_writing/chapter3.md`
+- `08_writing/figures/sources/figure_1_1_pipeline.dot`
+- `08_writing/figures/sources/figure_2_2_uncertainty_stages.dot`
+- `08_writing/figures/sources/figure_3_1_architecture.dot`
+- `08_writing/figures/sources/figure_3_2_alignment_logic.dot`
+- `08_writing/figures/sources/figure_3_3_scoring_assembly.dot`
+
+review_date:
+none
+
+## D-302
+- date: 2026-04-21
+- status: accepted
+
+context:
+Chapter-facing diagrams were split across inline Mermaid blocks and standalone image assets, with no canonical source file set for regeneration. This made rendering workflow usage inconsistent after Phase 3 tooling operationalization.
+
+decision:
+Standardize existing chapter diagram surfaces to source-backed assets by introducing canonical Mermaid source files under `08_writing/figures/sources/`, rendering them to SVG outputs in `08_writing/figures/`, and replacing inline Mermaid blocks in chapter files with static SVG references.
+
+alternatives_considered:
+- Keep inline Mermaid blocks in chapters (rejected: weaker portability to DOCX/PDF packaging and inconsistent render paths).
+- Create Graphviz `.dot` sources for every figure immediately (rejected for now: unnecessary conversion churn while Mermaid already expresses the current figure semantics).
+
+rationale:
+Source-backed SVG figures improve deterministic chapter packaging and keep diagram regeneration explicit and repeatable through the active tooling path.
+
+evidence_basis:
+- New source files created for figures 1.1, 2.2, 3.1, 3.2, and 3.3 under `08_writing/figures/sources/`.
+- Rendered SVG outputs now exist under `08_writing/figures/`.
+- Chapters no longer contain inline Mermaid blocks.
+
+impacted_files:
+- `08_writing/figures/sources/figure_1_1_pipeline.mmd`
+- `08_writing/figures/sources/figure_2_2_uncertainty_stages.mmd`
+- `08_writing/figures/sources/figure_3_1_architecture.mmd`
+- `08_writing/figures/sources/figure_3_2_alignment_logic.mmd`
+- `08_writing/figures/sources/figure_3_3_scoring_assembly.mmd`
+- `08_writing/chapter2.md`
+- `08_writing/chapter3.md`
+
+review_date:
+none
 
 ## D-301
 - date: 2026-04-21

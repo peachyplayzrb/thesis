@@ -122,7 +122,7 @@ def test_build_diagnostics_payload_includes_expected_counts(tmp_path: Path) -> N
                 "track_id": "cand_1",
                 "is_seed_track": 0,
                 "decision": "reject",
-                "decision_path": "reject_threshold",
+                "decision_path": "reject_semantic_without_numeric_support",
                 "semantic_score": 0.4,
                 "numeric_pass_count": 0,
                 "numeric_support_score_selected": 0.2,
@@ -213,7 +213,11 @@ def test_run_returns_typed_artifacts(monkeypatch, tmp_path: Path) -> None:
     monkeypatch.setattr("retrieval.stage.ensure_paths_exist", lambda *_args, **_kwargs: None)
     monkeypatch.setattr(RetrievalStage, "resolve_paths", lambda self: paths)
     monkeypatch.setattr(RetrievalStage, "resolve_runtime_controls", lambda self: controls)
-    monkeypatch.setattr(RetrievalStage, "load_inputs", staticmethod(lambda *_args, **_kwargs: inputs))
+    monkeypatch.setattr(
+        RetrievalStage,
+        "load_inputs",
+        staticmethod(lambda *_args, **_kwargs: (inputs, {"status": "pass", "sampled_violations": []})),
+    )
     monkeypatch.setattr(RetrievalStage, "build_runtime_context", staticmethod(lambda **_kwargs: context))
     monkeypatch.setattr("retrieval.stage.RetrievalEvaluator", _FakeRetrievalEvaluator)
 

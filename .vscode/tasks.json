@@ -213,6 +213,38 @@
       "problemMatcher": []
     },
     {
+      "label": "07: Daily Quality Pass (Packaging + Vale + Validation -> Snapshot)",
+      "type": "shell",
+      "command": "pwsh",
+      "args": [
+        "-NoProfile",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "${workspaceFolder}/07_implementation/scripts/daily_quality_pass.ps1"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "07: Tooling Contract Check (Shims + Reports Policy)",
+      "type": "shell",
+      "command": "pwsh",
+      "args": [
+        "-NoProfile",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "${workspaceFolder}/07_implementation/scripts/tooling_contract_check.ps1"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": []
+    },
+    {
       "label": "07: Autopilot Launch (Full Contract + Report)",
       "type": "shell",
       "command": "pwsh",
@@ -341,12 +373,28 @@
         "-ExecutionPolicy",
         "Bypass",
         "-File",
-        "${workspaceFolder}/07_implementation/scripts/run_tool_with_venv_fallback.ps1",
-        "pandoc",
-        "--version"
+        "${workspaceFolder}/07_implementation/scripts/pandoc_package_chapters.ps1",
+        "-Target",
+        "08_writing/chapter2.md"
       ],
       "options": {
-        "cwd": "${workspaceFolder}/07_implementation"
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "07: Pandoc Package All Chapters -> Bundle Report",
+      "type": "shell",
+      "command": "pwsh",
+      "args": [
+        "-NoProfile",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "${workspaceFolder}/07_implementation/scripts/pandoc_package_chapters.ps1"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
       },
       "problemMatcher": []
     },
@@ -488,6 +536,24 @@
         "full",
         "-Target",
         "08_writing/"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "07: Vale Lint Chapters 1-6 (Full -> Bundle Report)",
+      "type": "shell",
+      "command": "pwsh",
+      "args": [
+        "-NoProfile",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "${workspaceFolder}/07_implementation/scripts/vale_package_chapters.ps1",
+        "-Mode",
+        "full"
       ],
       "options": {
         "cwd": "${workspaceFolder}"

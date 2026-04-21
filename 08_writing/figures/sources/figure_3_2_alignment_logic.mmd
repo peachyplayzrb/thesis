@@ -1,0 +1,16 @@
+flowchart TD
+  A["Imported listening record"]
+  B{"Required fields valid?"}
+  C["Invalid record<br/>Log exclusion reason"]
+  D{"Reliable match established?"}
+  E["Matched evidence<br/>Confidence summary"]
+  F["Ambiguous evidence<br/>Uncertainty marker"]
+  G["Unmatched evidence<br/>Reason category"]
+  H["Alignment and uncertainty diagnostics summary"]
+
+  A --> B
+  B -- No --> C --> H
+  B -- Yes --> D
+  D -- Yes --> E --> H
+  D -- Ambiguous --> F --> H
+  D -- No --> G --> H

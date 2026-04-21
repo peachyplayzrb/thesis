@@ -57,25 +57,7 @@
 
   Figure 3.1 shows how these stages connect and where the main evidence artefacts are produced.
 
-  ```mermaid
-  flowchart LR
-    A["User interaction<br/>Listening-history export + optional influence inputs"]
-    B["Cross-source alignment<br/>Matched, ambiguous, and unmatched evidence"]
-    C["Preference profiling<br/>Profile summary + seed trace"]
-    D["Candidate shaping<br/>Filtered candidate set + exclusion diagnostics"]
-    E["Deterministic scoring<br/>Score traces + ranked candidates"]
-    F["Playlist assembly<br/>Playlist output + assembly trace"]
-    G["Explanation layer<br/>Mechanism-linked explanation payloads"]
-    H["Run-level observability<br/>Config snapshot + evidence log"]
-
-    A --> B --> C --> D --> E --> F --> G
-    B --> H
-    C --> H
-    D --> H
-    E --> H
-    F --> H
-    G --> H
-  ```
+  ![Figure 3.1. Deterministic pipeline architecture with stage outputs and run-level observability linkage.](figures/figure_3_1_architecture.png)
 
   This layout is chosen to preserve causal traceability from user input to playlist output. Each stage has a clearly defined role and produces intermediate artefacts that can be inspected independently. That separation matters because it allows later evaluation to distinguish profile effects, candidate-space effects, scoring effects, and assembly effects rather than collapsing everything into a single black-box outcome.
 
@@ -116,24 +98,7 @@
 
   Figure 3.2 shows the intended evidence-handling logic.
 
-  ```mermaid
-  flowchart TD
-      A["Imported listening record"]
-      B{"Required fields valid?"}
-      C["Invalid record<br/>Log exclusion reason"]
-      D{"Reliable match established?"}
-      E["Matched evidence<br/>Confidence summary"]
-      F["Ambiguous evidence<br/>Uncertainty marker"]
-      G["Unmatched evidence<br/>Reason category"]
-      H["Alignment and uncertainty diagnostics summary"]
-
-      A --> B
-      B -- No --> C --> H
-      B -- Yes --> D
-      D -- Yes --> E --> H
-      D -- Ambiguous --> F --> H
-      D -- No --> G --> H
-  ```
+  ![Figure 3.2. Alignment evidence-handling flow with matched, ambiguous, unmatched, and invalid pathways.](figures/figure_3_2_alignment_logic.png)
 
   ## 3.7 Preference Profiling
   The preference model is built from aligned listening evidence and explicit influence signals using interpretable feature representations. This stage defines what counts as meaningful preference evidence before any candidate is admitted for ranking.
@@ -173,26 +138,7 @@
 
   Figure 3.3 shows the intended relationship between scoring and assembly.
 
-  ```mermaid
-  flowchart TD
-      A["Preference profile"]
-      B["Candidate shaping"]
-      C["Feature preparation"]
-      D["Base similarity scoring"]
-      E["Score component breakdown"]
-      F["Trade-off and rule adjustments"]
-      G["Ranked list"]
-      H["Playlist assembly rules"]
-      I{"Assembly constraints satisfied?"}
-      J["Final playlist output"]
-      K["Constraint-pressure record + fallback reason"]
-      L["Explanation payload"]
-      M["Run-level observability artefacts"]
-
-      A --> B --> C --> D --> E --> F --> G --> H --> I
-      I -- Yes --> J --> L --> M
-      I -- No --> K --> L --> M
-  ```
+  ![Figure 3.3. Scoring-to-assembly relationship with constraint checks, fallback recording, and observability output.](figures/figure_3_3_scoring_assembly.png)
 
   ## 3.11 Explanation and Run-Level Observability
   Explanation outputs are generated directly from scoring contributors, candidate-shaping logic, and assembly-rule effects so that explanation statements remain mechanism-linked. In parallel, observability captures run-level artefacts spanning input intake, alignment diagnostics, profile construction, candidate shaping, scoring, assembly, and configuration state. Together, these surfaces make the full execution footprint inspectable rather than only the final output.

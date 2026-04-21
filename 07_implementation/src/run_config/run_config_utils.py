@@ -484,7 +484,7 @@ def _coerce_bool(value: Any, default: bool) -> bool:
             return True
         if text in {"0", "false", "no", "off"}:
             return False
-    if isinstance(value, (int, float)):
+    if isinstance(value, int | float):
         return bool(value)
     return default
 
@@ -636,7 +636,7 @@ def _validate_bool_like(value: Any, param_name: str, default: bool) -> bool:
             return True
         if token in {"0", "false", "no", "off"}:
             return False
-    if isinstance(value, (int, float)) and value in {0, 1}:
+    if isinstance(value, int | float) and value in {0, 1}:
         return bool(value)
     raise RunConfigError(f"{param_name} must be boolean-like, got {value!r}")
 

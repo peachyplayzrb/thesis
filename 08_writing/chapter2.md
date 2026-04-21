@@ -90,18 +90,7 @@ Reproducibility failures in recommender research are repeatedly linked to incomp
 
 Figure 2.2. Uncertainty across recommendation stages in the reviewed literature.
 
-```mermaid
-flowchart TD
-    A["Interaction Evidence<br/>Implicit behaviour may reflect convenience, exposure, or preference"]
-    B["Profile Construction<br/>Recency, weighting, and alignment assumptions shape preference evidence"]
-    C["Candidate Generation<br/>Thresholds and filtering alter which items can be ranked"]
-    D["Scoring and Ranking<br/>Metric choice and normalization reshape neighborhood geometry"]
-    E["Playlist Assembly<br/>Coherence, diversity, novelty, and ordering objectives can interfere"]
-    F["Explanation Layer<br/>Persuasive narratives may diverge from mechanism-level fidelity"]
-    G["Observability and Reproducibility<br/>Process-level traceability is needed across all prior stages"]
-
-    A --> B --> C --> D --> E --> F --> G
-```
+![Figure 2.2. Uncertainty across recommendation stages in the reviewed literature.](figures/figure_2_2_uncertainty_stages.png)
 
 ## 2.8 Research Gap and Thesis Positioning
 

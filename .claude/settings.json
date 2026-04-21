@@ -2,7 +2,22 @@
   "permissions": {
     "allow": [
       "Bash(find \"c:/Users/peach/Desktop/thesis-main \\(3\\)/thesis-main/thesis-main/07_implementation/src\" -name \"*.py\" -exec wc -l {} +)",
-      "Bash(ls \"c:/Users/peach/Desktop/thesis-main \\(3\\)/thesis-main/thesis-main/07_implementation/src/\"*/)"
+      "Bash(ls \"c:/Users/peach/Desktop/thesis-main \\(3\\)/thesis-main/thesis-main/07_implementation/src/\"*/)",
+      "Bash(.venv/Scripts/python.exe -m ruff check src)",
+      "Bash(.venv/Scripts/python.exe -m ruff check src --statistics)",
+      "Bash(.venv/Scripts/python.exe -m pip install pip-audit)",
+      "Bash(.venv/Scripts/python.exe -m pip_audit --version)",
+      "Bash(pwsh -NoProfile -File \"07_implementation/scripts/dependency_audit.ps1\")",
+      "Bash(\"c:/Users/peach/Desktop/thesis-main \\(3\\)/thesis-main/thesis-main/.venv/Scripts/python.exe\" -m pip install pip-audit)",
+      "Bash(.venv/Scripts/python.exe -m pyright --version)",
+      "Bash(.venv/Scripts/python.exe -m pyright src)",
+      "Bash(.venv/Scripts/python.exe -m pytest tests -x --tb=short -q)",
+      "Bash(.venv/Scripts/python.exe -m bandit -r src -q -f txt)",
+      "Bash(.venv/Scripts/python.exe -m bandit --debug src/shared_utils/types.py)",
+      "Bash(.venv/Scripts/python.exe -m coverage run -m pytest tests -q)",
+      "Bash(.venv/Scripts/python.exe -m coverage report --skip-covered --sort=cover)",
+      "Bash(./.venv/Scripts/python.exe -m ruff check 07_implementation/src)",
+      "Bash(../.venv/Scripts/python.exe -m pytest -q)"
     ]
   }
 }

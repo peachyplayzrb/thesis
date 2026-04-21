@@ -40,14 +40,11 @@ def impl_root(impl_root_override: str | None = None) -> Path:
     current = Path(__file__).resolve()
 
     # This module is at: src/shared_utils/path_utils.py
-    # So we can compute directly:
-    # parents[0] = shared_utils
-    # parents[1] = src
-    impl_notes = current.parents[1]
+    # parents[0] = shared_utils, parents[1] = src
+    src_dir = current.parents[1]
 
-    # Verify it's actually named src
-    if impl_notes.name == "src":
-        return impl_notes
+    if src_dir.name == "src":
+        return src_dir
 
     # Fallback: search upward for src directory
     search_dir = current.parent

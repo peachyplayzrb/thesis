@@ -29,7 +29,7 @@ def build_profile_weight_map(
         normalized_label = label.strip().lower()
         labels.append(normalized_label)
         raw_weight = item.get("weight")
-        if isinstance(raw_weight, (int, float)) and float(raw_weight) > 0:
+        if isinstance(raw_weight, int | float) and float(raw_weight) > 0:
             weighted_entries.append((normalized_label, float(raw_weight)))
 
     if weighted_entries:

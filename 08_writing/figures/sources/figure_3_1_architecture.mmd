@@ -1,0 +1,17 @@
+flowchart LR
+  A["User interaction<br/>Listening-history export + optional influence inputs"]
+  B["Cross-source alignment<br/>Matched, ambiguous, and unmatched evidence"]
+  C["Preference profiling<br/>Profile summary + seed trace"]
+  D["Candidate shaping<br/>Filtered candidate set + exclusion diagnostics"]
+  E["Deterministic scoring<br/>Score traces + ranked candidates"]
+  F["Playlist assembly<br/>Playlist output + assembly trace"]
+  G["Explanation layer<br/>Mechanism-linked explanation payloads"]
+  H["Run-level observability<br/>Config snapshot + evidence log"]
+
+  A --> B --> C --> D --> E --> F --> G
+  B --> H
+  C --> H
+  D --> H
+  E --> H
+  F --> H
+  G --> H

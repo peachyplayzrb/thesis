@@ -1,7 +1,0 @@
-Docstring coverage report
-generated_at_utc: 2026-04-19T18:34:25Z
-scope: src
-mode: advisory
-fail_under: 0
-
-RESULT: PASSED (minimum: 0.0%, actual: 26.2%)

@@ -15,7 +15,8 @@ def resolve_bl005_paths(root: Path) -> RetrievalPaths:
 
 
 def load_bl005_inputs(paths: RetrievalPaths) -> RetrievalInputs:
-    return RetrievalStage.load_inputs(paths)
+    inputs, _handshake = RetrievalStage.load_inputs(paths)
+    return inputs
 
 
 def build_bl005_runtime_context(

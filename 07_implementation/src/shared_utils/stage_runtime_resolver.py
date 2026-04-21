@@ -92,7 +92,7 @@ def load_positive_numeric_map_from_env(env_var_name: str) -> dict[str, float]:
     return {
         str(k): float(v)
         for k, v in payload.items()
-        if isinstance(v, (int, float)) and float(v) > 0
+        if isinstance(v, int | float) and float(v) > 0
     }
 
 

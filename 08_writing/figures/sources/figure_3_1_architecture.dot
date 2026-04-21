@@ -1,0 +1,22 @@
+digraph Figure_3_1_Architecture {
+  rankdir=LR;
+  graph [fontsize=10, fontname="Arial"];
+  node [shape=box, style="rounded", fontsize=10, fontname="Arial"];
+
+  A [label="User interaction\nListening-history export + optional influence inputs"];
+  B [label="Cross-source alignment\nMatched, ambiguous, and unmatched evidence"];
+  C [label="Preference profiling\nProfile summary + seed trace"];
+  D [label="Candidate shaping\nFiltered candidate set + exclusion diagnostics"];
+  E [label="Deterministic scoring\nScore traces + ranked candidates"];
+  F [label="Playlist assembly\nPlaylist output + assembly trace"];
+  G [label="Explanation layer\nMechanism-linked explanation payloads"];
+  H [label="Run-level observability\nConfig snapshot + evidence log"];
+
+  A -> B -> C -> D -> E -> F -> G;
+  B -> H;
+  C -> H;
+  D -> H;
+  E -> H;
+  F -> H;
+  G -> H;
+}

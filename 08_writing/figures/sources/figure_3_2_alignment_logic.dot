@@ -1,0 +1,25 @@
+digraph Figure_3_2_Alignment_Logic {
+  rankdir=TB;
+  graph [fontsize=10, fontname="Arial"];
+  node [shape=box, style="rounded", fontsize=10, fontname="Arial"];
+
+  A [label="Imported listening record"];
+  B [shape=diamond, label="Required fields valid?"];
+  C [label="Invalid record\nLog exclusion reason"];
+  D [shape=diamond, label="Reliable match established?"];
+  E [label="Matched evidence\nConfidence summary"];
+  F [label="Ambiguous evidence\nUncertainty marker"];
+  G [label="Unmatched evidence\nReason category"];
+  H [label="Alignment and uncertainty diagnostics summary"];
+
+  A -> B;
+  B -> C [label="No"];
+  C -> H;
+  B -> D [label="Yes"];
+  D -> E [label="Yes"];
+  E -> H;
+  D -> F [label="Ambiguous"];
+  F -> H;
+  D -> G [label="No"];
+  G -> H;
+}

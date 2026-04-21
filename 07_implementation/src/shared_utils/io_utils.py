@@ -172,6 +172,7 @@ def write_json(path: Path, obj: dict | list) -> None:
     Raises:
         IOError: If file cannot be written
     """
+    path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(
         json.dumps(obj, indent=2, ensure_ascii=False),
         encoding="utf-8"

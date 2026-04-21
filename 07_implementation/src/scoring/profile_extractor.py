@@ -23,7 +23,7 @@ def _build_weight_map(items: list[dict[str, Any]]) -> dict[str, float]:
             continue
         labels.append(label)
         raw_weight = item.get("weight")
-        if isinstance(raw_weight, (int, float)) and float(raw_weight) > 0:
+        if isinstance(raw_weight, int | float) and float(raw_weight) > 0:
             weighted_entries.append((label, float(raw_weight)))
 
     if weighted_entries:

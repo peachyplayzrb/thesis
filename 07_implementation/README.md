@@ -186,6 +186,8 @@ Use Command Palette -> `Tasks: Run Task` and pick one of:
 - `07: Validate Only (Wrapper)`
 - `07: Validate + Determinism Replay x3 (Wrapper)`
 - `07: Full Contract (Preflight + Check-All)`
+- `07: Daily Quality Pass (Packaging + Vale + Validation -> Snapshot)`
+- `07: Tooling Contract Check (Shims + Reports Policy)`
 - `07: Ruff Check src`
 - `07: Ruff Fix src`
 - `07: Hygiene Check src (Advisory)`
@@ -206,7 +208,7 @@ Optional docstring evidence command:
 pwsh -NoProfile -ExecutionPolicy Bypass -File scripts/docstring_coverage_src.ps1
 ```
 
-Latest report artifact: `interrogate_src_report_latest.txt`.
+Latest report artifact: `reports/interrogate_src_report_latest.txt`.
 
 Pre-commit (optional local developer gate):
 
@@ -251,6 +253,50 @@ The same workflows are available as VS Code tasks:
 - `07: MLR Summary BL-006 Scores`
 - `07: VisiData Inspect BL-014 Matrix`
 
+## Daily Quality Pass (One-Click)
+
+Use this when you want one deterministic routine to refresh writing outputs and runtime validation status together.
+
+Command:
+
+```bash
+pwsh -NoProfile -ExecutionPolicy Bypass -File 07_implementation/scripts/daily_quality_pass.ps1
+```
+
+Default behavior:
+
+- Runs chapter packaging bundle refresh (`pandoc_package_chapters.ps1`)
+- Runs chapter Vale bundle refresh (`vale_package_chapters.ps1 -Mode full`)
+- Runs implementation validation (`check_all.ps1 -SkipSetup`)
+- Writes a consolidated status snapshot to `reports/daily_quality_pass_latest.md`
+
+VS Code task:
+
+- `07: Daily Quality Pass (Packaging + Vale + Validation -> Snapshot)`
+
+## Tooling Contract Check
+
+Use this to assert that compatibility shims still delegate to shared engines and reports stay under `reports/`.
+
+Command:
+
+```bash
+pwsh -NoProfile -ExecutionPolicy Bypass -File 07_implementation/scripts/tooling_contract_check.ps1
+```
+
+Default behavior:
+
+- Verifies delegation contracts for `check_all.ps1` and `autopilot_launch.ps1` -> `workflow_orchestrator.ps1`
+- Verifies delegation contracts for all QA shims -> `qa_suite.ps1`
+- Runs a representative QA shim runtime smoke (`ruff_src.ps1`)
+- Asserts representative output is present in `reports/`
+- Asserts legacy output paths outside `reports/` remain absent
+- Writes a check report to `reports/tooling_contract_check_latest.md`
+
+VS Code task:
+
+- `07: Tooling Contract Check (Shims + Reports Policy)`
+
 ## Writing and Diagram Tools
 
 These tools are installed system-wide and accessible via the wrapper.
@@ -261,6 +307,24 @@ Convert a markdown chapter draft to DOCX:
 
 ```bash
 pandoc 08_writing/chapter2.md -o chapter2.docx
+```
+
+Preferred workflow (auto-updates chapter packaging outputs and bundle report):
+
+```bash
+pwsh -NoProfile -ExecutionPolicy Bypass -File 07_implementation/scripts/pandoc_package_chapters.ps1 -Target 08_writing/chapter2.md
+```
+
+Run full chapter sweep and refresh the bundle report in one command:
+
+```bash
+pwsh -NoProfile -ExecutionPolicy Bypass -File 07_implementation/scripts/pandoc_package_chapters.ps1
+```
+
+Auto-updated bundle report path:
+
+```bash
+reports/chapter_packaging_bundle_latest.md
 ```
 
 Convert to PDF (requires a LaTeX install):
@@ -336,6 +400,18 @@ pwsh -NoProfile -ExecutionPolicy Bypass -File 07_implementation/scripts/vale_rep
 ```
 
 Default report path for that command: `reports/vale_chapter2_full_latest.txt`.
+
+Auto-update chapter bundle workflow (chapters 1-6 plus consolidated report):
+
+```bash
+pwsh -NoProfile -ExecutionPolicy Bypass -File 07_implementation/scripts/vale_package_chapters.ps1 -Mode full
+```
+
+Consolidated bundle report path:
+
+```bash
+reports/vale_chapter_bundle_latest.md
+```
 
 Write all writing-folder full lint output to a single report file:
 

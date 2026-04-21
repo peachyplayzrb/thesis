@@ -1,0 +1,15 @@
+digraph Figure_1_1_Pipeline {
+  rankdir=LR;
+  graph [fontsize=10, fontname="Arial"];
+  node [shape=box, style="rounded", fontsize=10, fontname="Arial"];
+
+  A [label="Cross-source listening evidence"];
+  B [label="Alignment and uncertainty handling"];
+  C [label="Preference profiling"];
+  D [label="Candidate shaping"];
+  E [label="Deterministic scoring"];
+  F [label="Playlist assembly"];
+  G [label="Explanation and observability outputs"];
+
+  A -> B -> C -> D -> E -> F -> G;
+}

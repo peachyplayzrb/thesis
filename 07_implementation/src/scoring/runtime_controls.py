@@ -122,7 +122,7 @@ def _sanitize_bl006_controls(controls: dict[str, object]) -> dict[str, object]:
             "or BL006_COMPONENT_WEIGHTS_JSON environment variable"
         )
     controls["component_weights"] = {
-        str(k): float(v) for k, v in cw.items() if isinstance(v, (int, float))
+        str(k): float(v) for k, v in cw.items() if isinstance(v, int | float)
     }
 
     record_normalization_event(

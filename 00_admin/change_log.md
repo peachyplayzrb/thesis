@@ -8,9 +8,130 @@ Ordering convention (standardized 2026-03-24):
 - New entries must be appended at the end; historical entries remain unchanged except for explicit correction records.
 
 Maintenance snapshot (2026-04-21, updated):
-- Highest change ID currently present: `C-598`
+- Highest change ID currently present: `C-609`
 - Maintenance snapshot (2026-03-28): prior snapshot stated `C-205`; superseded by the 2026-03-29 architecture migration + documentation sync wave (C-204 through C-219).
 - Known legacy correction applied in this file: prior duplicate `C-079` entry has been normalized to `C-135` for unique-ID compliance.
+
+## C-609
+- date: 2026-04-21
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Added tooling contract automation via new script `07_implementation/scripts/tooling_contract_check.ps1`, added task surface `07: Tooling Contract Check (Shims + Reports Policy)`, documented command/report usage in `07_implementation/README.md`, and updated roadmap guidance in `00_admin/upgrades.md`.
+- reason: User approved implementing the next bounded tooling step by creating a concrete contract-check script and task.
+- evidence_basis: `tooling_contract_check.ps1` now validates shim delegation contracts and reports-only output policy, emits `reports/tooling_contract_check_latest.md`, and the new VS Code task executes this workflow directly.
+- affected_components: `07_implementation/scripts/tooling_contract_check.ps1`, `.vscode/tasks.json`, `07_implementation/README.md`, `00_admin/upgrades.md`, `00_admin/change_log.md`, `00_admin/decision_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`, `00_admin/unresolved_issues.md`
+- impact_assessment: Low-positive. Improves regression detection for script-surface compatibility and output-path policy without changing pipeline semantics.
+- approval_record: User request in chat on 2026-04-21 ("yes").
+
+## C-608
+- date: 2026-04-21
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Enforced reports-only output routing for QA workflows by hard-normalizing output targets in `qa_suite.ps1` to `reports/<leafname>`, updating QA shim defaults to `reports/...`, routing coverage XML/HTML artifacts into `reports/`, and removing pre-existing root-level QA output files plus stale coverage artifacts outside `reports/`.
+- reason: User requested all outputs be written to `reports/`, replaced on rerun, and old outputs outside that folder removed.
+- evidence_basis: Runs through existing entrypoints (`ruff_src.ps1`, `dependency_audit.ps1`, `duplicate_src.ps1`) now emit reports under `reports/`; legacy root-level QA report files and `07_implementation/coverage.xml` / `07_implementation/coverage_html` were deleted.
+- affected_components: `07_implementation/scripts/qa_suite.ps1`, `07_implementation/scripts/ruff_src.ps1`, `07_implementation/scripts/test_coverage.ps1`, `07_implementation/scripts/docstring_coverage_src.ps1`, `07_implementation/scripts/dependency_audit.ps1`, `07_implementation/scripts/bandit_src.ps1`, `07_implementation/scripts/duplicate_src.ps1`, `07_implementation/scripts/hygiene_src.ps1`, `07_implementation/README.md`, `reports/ruff_src_report_latest.txt`, `reports/pip_audit_report_latest.txt`, `reports/duplicate_src_report_latest.txt`, `00_admin/change_log.md`, `00_admin/decision_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`, `00_admin/unresolved_issues.md`, `00_admin/upgrades.md`
+- impact_assessment: Low-positive. Improves output hygiene and operator predictability without changing pipeline semantics.
+- approval_record: User request in chat on 2026-04-21.
+
+## C-607
+- date: 2026-04-21
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Implemented Phase-2 script consolidation by adding shared QA authority `07_implementation/scripts/qa_suite.ps1` and converting seven QA scripts (`ruff_src.ps1`, `test_coverage.ps1`, `docstring_coverage_src.ps1`, `dependency_audit.ps1`, `bandit_src.ps1`, `duplicate_src.ps1`, `hygiene_src.ps1`) into compatibility shims that delegate to shared mode logic.
+- reason: User approved continuing script merge work after Phase-1 orchestration consolidation.
+- evidence_basis: Parse checks passed for shared engine and shims; smoke runs via `ruff_src.ps1`, `dependency_audit.ps1`, and `hygiene_src.ps1` completed and produced expected report outputs.
+- affected_components: `07_implementation/scripts/qa_suite.ps1`, `07_implementation/scripts/ruff_src.ps1`, `07_implementation/scripts/test_coverage.ps1`, `07_implementation/scripts/docstring_coverage_src.ps1`, `07_implementation/scripts/dependency_audit.ps1`, `07_implementation/scripts/bandit_src.ps1`, `07_implementation/scripts/duplicate_src.ps1`, `07_implementation/scripts/hygiene_src.ps1`, `00_admin/change_log.md`, `00_admin/decision_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`, `00_admin/unresolved_issues.md`, `00_admin/upgrades.md`
+- impact_assessment: Low-positive. Reduces QA script duplication and maintenance risk while preserving tasks and report contracts.
+- approval_record: User confirmation in chat on 2026-04-21 ("yes").
+
+## C-606
+- date: 2026-04-21
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Implemented Phase-1 script consolidation by adding shared orchestration authority `07_implementation/scripts/workflow_orchestrator.ps1` and converting `07_implementation/scripts/autopilot_launch.ps1` plus `07_implementation/scripts/check_all.ps1` into compatibility shims that delegate to shared mode logic.
+- reason: User approved merge/consolidation of overlapping scripts while keeping existing entrypoint compatibility.
+- evidence_basis: All three scripts parse successfully, and delegated smoke run via `autopilot_launch.ps1 -Mode preflight -NoReport` passed with preflight checks green.
+- affected_components: `07_implementation/scripts/workflow_orchestrator.ps1`, `07_implementation/scripts/autopilot_launch.ps1`, `07_implementation/scripts/check_all.ps1`, `00_admin/change_log.md`, `00_admin/decision_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`, `00_admin/unresolved_issues.md`, `00_admin/upgrades.md`
+- impact_assessment: Low-positive. Reduces orchestration duplication and maintenance risk without changing task labels, thesis scope, or pipeline semantics.
+- approval_record: User confirmation in chat on 2026-04-21 ("yes").
+
+## C-605
+- date: 2026-04-21
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Added one-click daily tooling routine by introducing `07_implementation/scripts/daily_quality_pass.ps1`, adding VS Code task `07: Daily Quality Pass (Packaging + Vale + Validation -> Snapshot)`, and documenting command usage in implementation README. The script runs packaging refresh, Vale chapter bundle refresh, implementation validation (default `check_all.ps1 -SkipSetup`), and writes `reports/daily_quality_pass_latest.md`.
+- reason: User approved setting an exact daily command/task sequence for consistent tool use.
+- evidence_basis: Smoke execution of `daily_quality_pass.ps1` (with `-SkipValidation` for quick verification) completed and produced `reports/daily_quality_pass_latest.md` with current BL-013/BL-014 status and report freshness timestamps.
+- affected_components: `07_implementation/scripts/daily_quality_pass.ps1`, `.vscode/tasks.json`, `07_implementation/README.md`, `reports/daily_quality_pass_latest.md`, `00_admin/change_log.md`, `00_admin/decision_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`, `00_admin/unresolved_issues.md`, `00_admin/upgrades.md`
+- impact_assessment: Low-positive. Improves day-to-day workflow consistency and state visibility without changing thesis scope or pipeline semantics.
+- approval_record: User confirmation in chat on 2026-04-21 ("yes").
+
+## C-604
+- date: 2026-04-21
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Hardened `run_tool_with_venv_fallback.ps1` to fix wrapper reliability issues identified in review: PATH sync now merges Machine/User/current process PATH with de-duplication (instead of overwriting), and system-tool resolution now uses explicit `Get-Command` lookup with clear fail-fast errors when tools are unavailable.
+- reason: User asked to fix the issues identified in the wrapper review.
+- evidence_basis: Post-change wrapper smoke tests succeeded for `pandoc --version`, `vale --version`, and `duckdb -version` in no-profile invocation flow.
+- affected_components: `07_implementation/scripts/run_tool_with_venv_fallback.ps1`, `00_admin/change_log.md`, `00_admin/decision_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`, `00_admin/unresolved_issues.md`, `00_admin/upgrades.md`
+- impact_assessment: Low-positive. Improves task-shell robustness and tool-resolution clarity without changing thesis scope or pipeline behavior.
+- approval_record: User request in chat on 2026-04-21 ("fix them").
+
+## C-603
+- date: 2026-04-21
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Implemented automated Vale chapter bundle reporting. Added `07_implementation/scripts/vale_package_chapters.ps1` to regenerate chapter-level Vale outputs (chapter1-6) and auto-update consolidated `reports/vale_chapter_bundle_latest.md`; added task surface `07: Vale Lint Chapters 1-6 (Full -> Bundle Report)`; documented workflow in implementation README.
+- reason: User requested that the outputs be written to a file and auto-updated whenever the script runs.
+- evidence_basis: Running the new script refreshed chapter-level Vale report artifacts and rewrote `reports/vale_chapter_bundle_latest.md` with per-chapter status and normalized summary lines.
+- affected_components: `07_implementation/scripts/vale_package_chapters.ps1`, `.vscode/tasks.json`, `07_implementation/README.md`, `reports/vale_chapter_bundle_latest.md`, `reports/vale_chapter1_full_latest.txt`, `reports/vale_chapter2_full_latest.txt`, `reports/vale_chapter3_full_latest.txt`, `reports/vale_chapter4_full_latest.txt`, `reports/vale_chapter5_full_latest.txt`, `reports/vale_chapter6_full_latest.txt`, `00_admin/change_log.md`, `00_admin/decision_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`, `00_admin/unresolved_issues.md`, `00_admin/upgrades.md`
+- impact_assessment: Low-positive. Improves writing QA repeatability and report synchronization without changing thesis scope or runtime pipeline behavior.
+- approval_record: User request in chat on 2026-04-21 ("yes").
+
+## C-602
+- date: 2026-04-21
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Added automated chapter packaging script `07_implementation/scripts/pandoc_package_chapters.ps1` that regenerates chapter DOCX outputs and auto-updates `reports/chapter_packaging_bundle_latest.md` on each run; updated Pandoc VS Code tasks to use this script; documented workflow in implementation README; validated end-to-end with full chapter sweep.
+- reason: User requested packaging outputs be written into a report file automatically whenever scripts are run.
+- evidence_basis: Script execution prints `Updated report: reports/chapter_packaging_bundle_latest.md`, refreshes chapter outputs for 1-6, and writes current source/output/status/size/timestamp rows in the bundle report.
+- affected_components: `07_implementation/scripts/pandoc_package_chapters.ps1`, `.vscode/tasks.json`, `07_implementation/README.md`, `reports/chapter_packaging_bundle_latest.md`, `reports/chapter1_diagram_packaging_check.docx`, `reports/chapter2_diagram_packaging_check.docx`, `reports/chapter3_diagram_packaging_check.docx`, `reports/chapter4_diagram_packaging_check.docx`, `reports/chapter5_diagram_packaging_check.docx`, `reports/chapter6_diagram_packaging_check.docx`, `00_admin/change_log.md`, `00_admin/decision_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`, `00_admin/unresolved_issues.md`, `00_admin/upgrades.md`
+- impact_assessment: Low-positive. Improves packaging workflow repeatability and report consistency without changing thesis scope or runtime pipeline behavior.
+- approval_record: User request in chat on 2026-04-21.
+
+## C-601
+- date: 2026-04-21
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Executed full chapter packaging sweep for chapters 1, 2, 4, 5, and 6 (with chapter 3 already validated), generating six DOCX packaging-check artifacts and a consolidated bundle report at `reports/chapter_packaging_bundle_latest.md`.
+- reason: User approved continuation to run the remaining chapter packaging checks and produce one bundle-level output summary.
+- evidence_basis: All six chapter packaging outputs are present in `reports/` and documented in `reports/chapter_packaging_bundle_latest.md` with file sizes and timestamps.
+- affected_components: `reports/chapter1_diagram_packaging_check.docx`, `reports/chapter2_diagram_packaging_check.docx`, `reports/chapter3_diagram_packaging_check.docx`, `reports/chapter4_diagram_packaging_check.docx`, `reports/chapter5_diagram_packaging_check.docx`, `reports/chapter6_diagram_packaging_check.docx`, `reports/chapter_packaging_bundle_latest.md`, `00_admin/change_log.md`, `00_admin/decision_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`, `00_admin/unresolved_issues.md`
+- impact_assessment: Low-positive. Improves packaging-readiness confidence with no change to thesis scope or runtime pipeline behavior.
+- approval_record: User confirmation in chat on 2026-04-21 ("yes").
+
+## C-600
+- date: 2026-04-21
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Continued chapter-diagram operationalization by adding Graphviz DOT companion sources for figures 1.1/2.2/3.1/3.2/3.3, rendering DOT preview SVGs, switching chapter figure embeds from SVG to PNG for packaging compatibility, and validating DOCX conversion with a successful chapter-3 Pandoc export.
+- reason: User requested continuation after initial diagram replacement so the workflow is fully usable in packaging paths.
+- evidence_basis: `reports/chapter3_diagram_packaging_check.docx` now generates without SVG-conversion warnings after PNG reference migration; DOT companion sources are present under `08_writing/figures/sources/`.
+- affected_components: `08_writing/chapter1.md`, `08_writing/chapter2.md`, `08_writing/chapter3.md`, `08_writing/figures/figure_1_1_pipeline.png`, `08_writing/figures/figure_2_2_uncertainty_stages.png`, `08_writing/figures/figure_3_1_architecture.png`, `08_writing/figures/figure_3_2_alignment_logic.png`, `08_writing/figures/figure_3_3_scoring_assembly.png`, `08_writing/figures/sources/figure_1_1_pipeline.dot`, `08_writing/figures/sources/figure_2_2_uncertainty_stages.dot`, `08_writing/figures/sources/figure_3_1_architecture.dot`, `08_writing/figures/sources/figure_3_2_alignment_logic.dot`, `08_writing/figures/sources/figure_3_3_scoring_assembly.dot`, `reports/chapter3_diagram_packaging_check.docx`, `00_admin/change_log.md`, `00_admin/decision_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`, `00_admin/unresolved_issues.md`, `00_admin/upgrades.md`
+- impact_assessment: Low-positive. Increases diagram workflow portability and packaging reliability without changing thesis scope or pipeline runtime behavior.
+- approval_record: User continuation request in chat on 2026-04-21.
+
+## C-599
+- date: 2026-04-21
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Replaced inline chapter diagram blocks with source-backed SVG figure assets by introducing canonical Mermaid sources under `08_writing/figures/sources/`, rendering figures 1.1, 2.2, 3.1, 3.2, and 3.3 to `08_writing/figures/`, and updating chapter markdown to reference rendered SVG outputs.
+- reason: User requested replacing chapter 1-6 diagrams so the project starts using the new diagram tooling workflow in practice.
+- evidence_basis: `08_writing/chapter1.md`, `08_writing/chapter2.md`, and `08_writing/chapter3.md` now reference SVG figure assets only; no inline Mermaid blocks remain in chapter 1-6 files.
+- affected_components: `08_writing/chapter2.md`, `08_writing/chapter3.md`, `08_writing/figures/figure_1_1_pipeline.svg`, `08_writing/figures/figure_2_2_uncertainty_stages.svg`, `08_writing/figures/figure_3_1_architecture.svg`, `08_writing/figures/figure_3_2_alignment_logic.svg`, `08_writing/figures/figure_3_3_scoring_assembly.svg`, `08_writing/figures/sources/figure_1_1_pipeline.mmd`, `08_writing/figures/sources/figure_2_2_uncertainty_stages.mmd`, `08_writing/figures/sources/figure_3_1_architecture.mmd`, `08_writing/figures/sources/figure_3_2_alignment_logic.mmd`, `08_writing/figures/sources/figure_3_3_scoring_assembly.mmd`, `00_admin/change_log.md`, `00_admin/decision_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`, `00_admin/unresolved_issues.md`, `00_admin/upgrades.md`
+- impact_assessment: Low-positive. Improves chapter packaging consistency and diagram reproducibility without changing thesis scope or implementation runtime behavior.
+- approval_record: User request in chat on 2026-04-21.
 
 ## C-598
 - date: 2026-04-21

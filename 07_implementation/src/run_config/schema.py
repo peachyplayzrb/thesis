@@ -60,7 +60,7 @@ def _coerce_bool_like(value: Any, *, default: Any, context: str) -> bool:
         return True
     if token in {"0", "false", "no", "off"}:
         return False
-    if isinstance(value, (int, float)) and value in {0, 1}:
+    if isinstance(value, int | float) and value in {0, 1}:
         return bool(value)
     raise RunConfigSchemaError(f"{context} must be boolean-like")
 

@@ -26,8 +26,11 @@ def filter_scenarios_by_policy(
     - ``["all"]`` or missing → return all scenarios unchanged.
     - Explicit list → keep only scenarios whose ``scenario_id`` is in the
       list; ``"baseline"`` is always retained because comparisons require it.
-    - Safety guard: if filtering produces only baseline (no variants), the
-      full list is returned to avoid an unrunnable scenario set.
+
+    Raises:
+        RuntimeError: if the user-supplied ``enabled_scenario_ids`` reference
+            scenario ids that do not exist. This surfaces typos instead of
+            silently widening or narrowing the run matrix.
 
     Args:
         scenarios: Full built scenario list including baseline.
@@ -40,14 +43,24 @@ def filter_scenarios_by_policy(
     if "all" in enabled_ids:
         return scenarios
 
+    available_ids = {s["scenario_id"] for s in scenarios}
+    requested_non_baseline = {sid for sid in enabled_ids if sid != "baseline"}
+    unknown = sorted(requested_non_baseline - available_ids)
+    if unknown:
+        raise RuntimeError(
+            "scenario_policy.enabled_scenario_ids references unknown scenarios: "
+            f"{unknown}. Known scenario_ids: {sorted(available_ids)}."
+        )
+
     enabled_set = set(enabled_ids)
     filtered = [
         s for s in scenarios
         if s["scenario_id"] == "baseline" or s["scenario_id"] in enabled_set
     ]
-    # Guard: never return a list with only baseline — that produces an empty
-    # comparison matrix and a trivially passing evaluation.
     if len(filtered) <= 1:
-        return scenarios
+        raise RuntimeError(
+            "scenario_policy.enabled_scenario_ids selected only baseline (or nothing); "
+            "at least one non-baseline scenario is required for a comparison run."
+        )
 
     return filtered

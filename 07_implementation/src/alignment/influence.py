@@ -104,7 +104,8 @@ def inject_influence_tracks(
                     if str(ev["ds001_id"]) == track_id:
                         existing_type = str(ev.get("interaction_type", "")).strip().lower()
                         if existing_type and existing_type != INTERACTION_TYPE_INFLUENCE:
-                            if "influence" not in existing_type.split(","):
+                            existing_parts = {p.strip() for p in existing_type.split(",")}
+                            if "influence" not in existing_parts:
                                 ev["interaction_type"] = INTERACTION_TYPE_HISTORY_INFLUENCE
                         else:
                             ev["interaction_type"] = INTERACTION_TYPE_HISTORY_INFLUENCE

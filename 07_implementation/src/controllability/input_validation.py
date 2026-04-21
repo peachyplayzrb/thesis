@@ -82,10 +82,10 @@ def validate_bl010_baseline_snapshot(
         "status": status,
         "violations": violations,
         "details": {
-            "is_dict": isinstance(snapshot, dict),
+            "is_dict": True,
             "has_stage_configs": "stage_configs" in snapshot,
             "missing_top_keys": missing_top_keys,
             "missing_stage_config_sub_keys": missing_stage_config_keys,
-            "snapshot_top_keys": list(snapshot.keys()) if isinstance(snapshot, dict) else [],
+            "snapshot_top_keys": list(snapshot.keys()),
         },
     }

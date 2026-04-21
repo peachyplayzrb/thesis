@@ -1,6 +1,6 @@
 # Thesis State
 
-Last updated: 2026-04-21 UTC (C-598 / D-301. Chapter 1 final E-Prime polish pass completed; full chapter-1 lint now reports `0 errors, 0 warnings, 0 suggestions` in `reports/vale_chapter1_full_latest.txt`. Vale posture remains hardened with silent thesis vocabulary (`Vocab = Thesis`), strict/readability profiles, and report workflows for chapter and folder targets. Governance checkpoints synchronized. Next: external submission/package confirmations; optional diagram source creation (`.dot`/`.mmd` files); optional sqlite3 workflow only when concrete artifact exists.)
+Last updated: 2026-04-21 UTC (C-609 / D-312. Tooling contract automation is now active via `07_implementation/scripts/tooling_contract_check.ps1` and task `07: Tooling Contract Check (Shims + Reports Policy)`, with report output at `reports/tooling_contract_check_latest.md`. Reports-only output policy remains enforced for consolidated QA workflows: shared `qa_suite.ps1` normalizes all QA report outputs to `reports/`, coverage XML/HTML outputs now land in `reports/`, and legacy output artifacts outside `reports/` were removed. Phase-1 and Phase-2 script consolidations remain active with compatibility shims preserving current task/operator surfaces. Daily one-click workflow orchestration remains active via `daily_quality_pass.ps1` and task `07: Daily Quality Pass (Packaging + Vale + Validation -> Snapshot)`. Wrapper reliability hardening and writing/packaging automation remain active and synchronized. Chapter diagram workflow remains package-validated across all chapters with PNG embeds from canonical Mermaid sources and DOT companions present. Chapter 1 final E-Prime polish remains clean at `0 errors, 0 warnings, 0 suggestions` in `reports/vale_chapter1_full_latest.txt`. Governance checkpoints synchronized. Next: external submission/package confirmations and final institutional template/cover/declaration integration.)
 
 > Full historical audit trail (priority checkpoints, post-closure enhancement logs) is in `00_admin/thesis_state_ARCHIVE_20260416.md` and `00_admin/change_log.md`.
 
@@ -99,8 +99,8 @@ Active dataset: DS-001 (Music4All). Active config profile: `run_config_ui013_tun
 
 | Item | Current value |
 |------|--------------|
-| Highest change ID | C-598 |
-| Highest decision ID | D-301 |
+| Highest change ID | C-609 |
+| Highest decision ID | D-312 |
 | Active unresolved issues | Active mentor-feedback remediation backlog now tracked as `UNDO-R` in `00_admin/unresolved_issues.md` (A-H implementation checklist complete). Submission blockers remain tracked in `09_quality_control/submission_readiness_status.md` and `01_requirements/ambiguity_flags.md` |
 | Admin log files | `change_log.md`, `decision_log.md`, `unresolved_issues.md`, `timeline.md` |
 | Foundation files | `02_foundation/current_title_and_rq.md`, `objectives.md`, `contribution_statement.md`, `problem_statement.md` |

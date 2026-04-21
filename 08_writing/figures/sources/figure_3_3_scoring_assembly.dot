@@ -1,0 +1,26 @@
+digraph Figure_3_3_Scoring_Assembly {
+  rankdir=TB;
+  graph [fontsize=10, fontname="Arial"];
+  node [shape=box, style="rounded", fontsize=10, fontname="Arial"];
+
+  A [label="Preference profile"];
+  B [label="Candidate shaping"];
+  C [label="Feature preparation"];
+  D [label="Base similarity scoring"];
+  E [label="Score component breakdown"];
+  F [label="Trade-off and rule adjustments"];
+  G [label="Ranked list"];
+  H [label="Playlist assembly rules"];
+  I [shape=diamond, label="Assembly constraints satisfied?"];
+  J [label="Final playlist output"];
+  K [label="Constraint-pressure record + fallback reason"];
+  L [label="Explanation payload"];
+  M [label="Run-level observability artefacts"];
+
+  A -> B -> C -> D -> E -> F -> G -> H -> I;
+  I -> J [label="Yes"];
+  I -> K [label="No"];
+  J -> L;
+  K -> L;
+  L -> M;
+}

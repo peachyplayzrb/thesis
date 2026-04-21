@@ -135,7 +135,7 @@ def _artist_fields(track: dict[str, Any]) -> tuple[str, str]:
 def _duration_fields(track: dict[str, Any]) -> tuple[Any, float | None]:
     duration_ms = track.get("duration_ms")
     duration_seconds = None
-    if isinstance(duration_ms, (int, float)):
+    if isinstance(duration_ms, int | float):
         duration_seconds = round(float(duration_ms) / 1000.0, 3)
     return duration_ms, duration_seconds
 

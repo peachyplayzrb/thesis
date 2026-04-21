@@ -23,6 +23,9 @@ from shared_utils.constants import (
 
 # Module-level configuration variables (mutable for testing/run_config override)
 DEFAULT_TTL_SECONDS = DEFAULT_API_CACHE_TTL_SECONDS  # 24-hour cache by default
+# Error responses are cached only briefly so a transient failure does not
+# poison the cache for the full success-TTL window.
+ERROR_CACHE_TTL_SECONDS = 300
 SLEEP_BETWEEN_CALLS_SEC = DEFAULT_API_THROTTLE_SLEEP_SEC      # 120ms throttle between API calls
 MAX_RETRIES = DEFAULT_API_MAX_RETRIES
 BASE_DELAY_SEC = DEFAULT_API_BASE_DELAY_SEC
@@ -288,6 +291,8 @@ def safe_call(
 
     retries = int(max_retries) if max_retries is not None else int(MAX_RETRIES)
     delay = float(base_delay) if base_delay is not None else float(BASE_DELAY_SEC)
+    last_status = 0
+    last_msg: str | None = None
     for attempt in range(retries):
         try:
             data = fn()
@@ -295,6 +300,8 @@ def safe_call(
         except SpotifyException as e:
             status = getattr(e, "http_status", None) or 0
             msg = str(e)
+            last_status = status
+            last_msg = msg
 
             # Retry only on transient errors
             if status in (429, 500, 502, 503, 504):
@@ -310,7 +317,7 @@ def safe_call(
         except Exception as e:
             return False, None, 0, f"{type(e).__name__}: {e}"
 
-    return False, None, 429, "Max retries exceeded."
+    return False, None, last_status or 429, last_msg or "Max retries exceeded."
 
 
 # -------------------------
@@ -349,8 +356,10 @@ def cached_fetch(cache_db: CacheDB, name: str, ttl_seconds: int,
             "error": None
         }
     else:
-        # Cache the error too so we don't hammer dead endpoints
-        cache_db.cache_set(name, {"error": err, "status": status}, ttl_seconds=ttl_seconds, status=status, err=err)
+        # Cache the error briefly so we don't hammer dead endpoints, but do
+        # not retain a transient failure for the full success-TTL window.
+        error_ttl = min(int(ttl_seconds), int(ERROR_CACHE_TTL_SECONDS))
+        cache_db.cache_set(name, {"error": err, "status": status}, ttl_seconds=error_ttl, status=status, err=err)
         result = {
             "ok": False,
             "name": name,
@@ -403,11 +412,11 @@ def paginate_cursor_all(fetch_page_fn: Callable, page_size: int = 50,
         limit = page_size if max_items is None else min(page_size, max_items - len(out))
         page = fetch_page_fn(limit=limit, after=after)
 
-        items = page.get("items", [])
+        items = page.get("items", []) if isinstance(page, dict) else []
         out.extend(items)
 
-        cursors = page.get("cursors", {})
-        after = cursors.get("after")
+        cursors = page.get("cursors", {}) if isinstance(page, dict) else {}
+        after = cursors.get("after") if isinstance(cursors, dict) else None
         if not after or len(items) == 0:
             break
 

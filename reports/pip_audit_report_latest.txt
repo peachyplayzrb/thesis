@@ -1,5 +1,5 @@
 Dependency audit report
-generated_at_utc: 2026-04-20T11:07:44Z
+generated_at_utc: 2026-04-21T18:16:00Z
 scope: src runtime requirements (07_implementation/requirements.txt)
 mode: advisory
 ignored_vulnerability_ids: PYSEC-2022-42969

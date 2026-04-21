@@ -1,6 +1,6 @@
 # Unresolved Issues
 
-Last updated: 2026-04-21 UTC (Governance checkpoint synchronization is current across active admin surfaces (`C-598`, `D-301`) with no runtime behavior changes. UNDO-S and UNDO-R implementation checklists remain complete, and remaining blockers are external submission/package confirmations tracked in `09_quality_control/submission_readiness_status.md`.)
+Last updated: 2026-04-21 UTC (Governance checkpoint synchronization is current across active admin surfaces (`C-609`, `D-312`) with no runtime behavior changes. UNDO-S and UNDO-R implementation checklists remain complete, and remaining blockers are external submission/package confirmations tracked in `09_quality_control/submission_readiness_status.md`.)
 
 ## Active
 

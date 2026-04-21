@@ -475,7 +475,10 @@ class RetrievalStage:
         )
 
     @staticmethod
-    def load_inputs(paths: RetrievalPaths, controls: RetrievalControls | None = None) -> RetrievalInputs:
+    def load_inputs(
+        paths: RetrievalPaths,
+        controls: RetrievalControls | None = None,
+    ) -> tuple[RetrievalInputs, dict[str, object]]:
         profile = load_json(paths.profile_path)
         if not isinstance(profile, dict):
             raise RuntimeError("BL-005 profile artifact is malformed; expected JSON object")
@@ -513,10 +516,13 @@ class RetrievalStage:
                 handshake_validation.get("sampled_violations"),
             )
 
-        return RetrievalInputs(
-            profile=profile,
-            candidate_rows=candidate_rows,
-            seed_trace_rows=seed_trace_rows,
+        return (
+            RetrievalInputs(
+                profile=profile,
+                candidate_rows=candidate_rows,
+                seed_trace_rows=seed_trace_rows,
+            ),
+            handshake_validation,
         )
 
     @staticmethod
@@ -664,10 +670,17 @@ class RetrievalStage:
         decisions: list[dict[str, object]],
         runtime_context: RetrievalContext,
     ) -> dict[str, object]:
+        non_threshold_reject_paths = {
+            "reject_seed_track",
+            "reject_language_filter",
+            "reject_recency_gate",
+        }
         rejected_threshold_rows = [
             row
             for row in decisions
-            if str(row.get("decision_path", "")).startswith("reject_threshold")
+            if str(row.get("decision", "")) == "reject"
+            and str(row.get("decision_path", "")) not in non_threshold_reject_paths
+            and not bool(safe_int(row.get("is_seed_track", 0), 0))
         ]
         numeric_fail_counts = {
             feature: 0 for feature in runtime_context.active_numeric_specs
@@ -985,7 +998,7 @@ class RetrievalStage:
         tightened_estimate = to_mapping(bounded_what_if_estimates.get("tightened_estimate"))
         relaxed_delta = safe_int(relaxed_estimate.get("delta_vs_base"), 0)
         tightened_delta = safe_int(tightened_estimate.get("delta_vs_base"), 0)
-        net_directional_span = relaxed_delta - tightened_delta
+        net_directional_span = abs(relaxed_delta) - abs(tightened_delta)
         directionality = "symmetric"
         if net_directional_span > 0:
             directionality = "relaxation_dominant"
@@ -1258,9 +1271,6 @@ class RetrievalStage:
         diagnostics_path: Path,
         output_paths: dict[str, Path],
     ) -> None:
-        with open_text_write(diagnostics_path) as handle:
-            json.dump(diagnostics, handle, indent=2, ensure_ascii=True)
-
         diagnostics["output_hashes_sha256"] = {
             "bl005_filtered_candidates.csv": sha256_of_file(output_paths["filtered_path"]),
             "bl005_candidate_decisions.csv": sha256_of_file(output_paths["decisions_path"]),
@@ -1285,13 +1295,7 @@ class RetrievalStage:
                 "BL-005 runtime control validation warnings=%s",
                 controls.runtime_control_validation_warnings,
             )
-        inputs = self.load_inputs(paths, controls)
-        handshake_validation = validate_bl004_bl005_handshake(
-            profile=inputs.profile,
-            seed_trace_rows=inputs.seed_trace_rows,
-            numeric_thresholds=controls.numeric_thresholds,
-            policy=controls.bl004_bl005_handshake_validation_policy,
-        )
+        inputs, handshake_validation = self.load_inputs(paths, controls)
         context = self.build_runtime_context(inputs=inputs, controls=controls)
 
         start_time = time.time()
