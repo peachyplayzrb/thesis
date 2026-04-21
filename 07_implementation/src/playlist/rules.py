@@ -15,6 +15,15 @@ def last_n_genres(playlist: list[dict[str, object]], n: int) -> list[str]:
 _TRANSITION_TEMPO_NORM: float = 200.0
 
 
+def _track_metric(track: dict[str, object], key: str) -> float | None:
+    raw = track.get(key)
+    if raw is None:
+        raw = track.get(f"_{key}")
+    if raw is None:
+        return None
+    return safe_float(raw)
+
+
 def transition_feature_distance(
     track_a: dict[str, object],
     track_b: dict[str, object],
@@ -26,14 +35,14 @@ def transition_feature_distance(
     """
     deltas: list[float] = []
     for key in ("energy", "valence"):
-        a_raw = track_a.get(key)
-        b_raw = track_b.get(key)
-        if a_raw is not None and b_raw is not None:
-            deltas.append(safe_float(a_raw) - safe_float(b_raw))
-    a_tempo = track_a.get("tempo")
-    b_tempo = track_b.get("tempo")
+        a_value = _track_metric(track_a, key)
+        b_value = _track_metric(track_b, key)
+        if a_value is not None and b_value is not None:
+            deltas.append(a_value - b_value)
+    a_tempo = _track_metric(track_a, "tempo")
+    b_tempo = _track_metric(track_b, "tempo")
     if a_tempo is not None and b_tempo is not None:
-        deltas.append((safe_float(a_tempo) - safe_float(b_tempo)) / _TRANSITION_TEMPO_NORM)
+        deltas.append((a_tempo - b_tempo) / _TRANSITION_TEMPO_NORM)
     if not deltas:
         return 0.0
     distance = (sum(d * d for d in deltas) / len(deltas)) ** 0.5
@@ -56,6 +65,7 @@ def decide_candidate(
     max_per_genre: int,
     max_consecutive: int,
     rule_hits: Counter,
+    genre_counts: Counter[str] | None = None,
     ignore_genre_cap: bool = False,
     ignore_consecutive: bool = False,
 ) -> tuple[str, str]:
@@ -69,11 +79,12 @@ def decide_candidate(
         return "excluded", "length_cap_reached"
 
     if not ignore_genre_cap:
-        if sum(
+        genre_count = genre_counts.get(assembly_genre, 0) if genre_counts is not None else sum(
             1
             for track in playlist
             if str(track.get("_assembly_genre", track.get("lead_genre", ""))) == assembly_genre
-        ) >= max_per_genre:
+        )
+        if genre_count >= max_per_genre:
             rule_hits["R2_genre_cap"] += 1
             return "excluded", "genre_cap_exceeded"
 
@@ -100,6 +111,8 @@ def _derive_assembly_genre(candidate: dict[str, object], strategy: str) -> str:
     strongest = max(lead_score, genre_score, tag_score)
     if strongest <= 0:
         return "__unknown__"
+    # Tie-breaking priority (intentional): genre > tag > lead.
+    # If two components share the max score, the earlier check wins.
     if strongest == genre_score:
         return "__semantic_genre__"
     if strongest == tag_score:
@@ -140,6 +153,9 @@ def _normalize_candidates(
                 "score_rank": safe_int(cand.get("rank"), 0),
                 "semantic_strength": round(semantic_strength, 6),
                 "component_strength": round(semantic_strength + numeric_strength, 6),
+                "_energy": _track_metric(cand, "energy"),
+                "_valence": _track_metric(cand, "valence"),
+                "_tempo": _track_metric(cand, "tempo"),
             }
         )
     normalized_candidates.sort(key=lambda row: (safe_int(row["score_rank"], 0), str(row["track_id"])))
@@ -373,6 +389,9 @@ def _apply_reserved_slot_inclusions(
                 "_assembly_genre": cand["assembly_genre"],
                 "final_score": cand["final_score"],
                 "score_rank": cand["score_rank"],
+                "_energy": cand.get("_energy"),
+                "_valence": cand.get("_valence"),
+                "_tempo": cand.get("_tempo"),
             }
         )
         finalized_ids.add(str(cand["track_id"]))
@@ -502,6 +521,9 @@ def _apply_candidate_decision(
                 "_assembly_genre": cand["assembly_genre"],
                 "final_score": cand["final_score"],
                 "score_rank": cand["score_rank"],
+                "_energy": cand.get("_energy"),
+                "_valence": cand.get("_valence"),
+                "_tempo": cand.get("_tempo"),
             }
         )
 
@@ -712,7 +734,10 @@ def assemble_bucketed(
     influence_track_ids = influence_track_ids or set()
 
     if influence_policy_mode not in {"competitive", "reserved_slots", "hybrid_override"}:
-        influence_policy_mode = "competitive"
+        raise ValueError(
+            f"Invalid influence_policy_mode: {influence_policy_mode!r}. "
+            "Must be one of: 'competitive', 'reserved_slots', 'hybrid_override'."
+        )
 
     policy_active = bool(influence_enabled) and bool(influence_track_ids)
     reserved_slot_target = 0
@@ -860,16 +885,14 @@ def build_transition_diagnostics(playlist: list[dict[str, object]]) -> dict[str,
     feature_deltas: dict[str, list[float]] = {"energy": [], "valence": [], "tempo": []}
     for a, b in pairs:
         for key in ("energy", "valence"):
-            a_raw = a.get(key)
-            b_raw = b.get(key)
-            if a_raw is not None and b_raw is not None:
-                feature_deltas[key].append(abs(safe_float(a_raw) - safe_float(b_raw)))
-        a_tempo = a.get("tempo")
-        b_tempo = b.get("tempo")
+            a_value = _track_metric(a, key)
+            b_value = _track_metric(b, key)
+            if a_value is not None and b_value is not None:
+                feature_deltas[key].append(abs(a_value - b_value))
+        a_tempo = _track_metric(a, "tempo")
+        b_tempo = _track_metric(b, "tempo")
         if a_tempo is not None and b_tempo is not None:
-            feature_deltas["tempo"].append(
-                abs(safe_float(a_tempo) - safe_float(b_tempo)) / _TRANSITION_TEMPO_NORM
-            )
+            feature_deltas["tempo"].append(abs(a_tempo - b_tempo) / _TRANSITION_TEMPO_NORM)
     mean_deltas: dict[str, object] = {
         k: round(sum(v) / len(v), 6) if v else None
         for k, v in feature_deltas.items()

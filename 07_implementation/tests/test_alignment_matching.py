@@ -485,4 +485,4 @@ def test_match_events_can_use_relaxed_second_pass(monkeypatch):
     assert counts["matched_by_fuzzy"] == 1
     assert counts["fuzzy_second_pass_matches"] == 1
     assert attempts == [0.9, 0.8]
-    assert trace[0]["fuzzy_pass_used"] == "pass_2_relaxed"
+    assert trace[0]["fuzzy_pass_used"] == "phase_2_relaxed"

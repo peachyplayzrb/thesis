@@ -1,5 +1,5 @@
 Bandit security scan report
-generated_at_utc: 2026-04-19T18:33:52Z
+generated_at_utc: 2026-04-19T23:33:01Z
 scope: src
 mode: advisory
 active_scanner: ruff-security-fallback
@@ -8,91 +8,4 @@ active_scanner: ruff-security-fallback
 Bandit reported Python 3.14 AST compatibility errors; security scan fell back to Ruff S-rules.
 
 warning: Support for Python 3.14 is under development and may be unstable. Enable `preview` to remove this warning.
-src\alignment\match_pipeline.py:281:57: S105 Possible hardcoded password assigned to: "fuzzy_pass_used"
-    |
-279 |                 resolved_match["match_method"] = MATCH_METHOD_FUZZY_TITLE_ARTIST
-280 |                 match_counts["matched_by_fuzzy"] += 1
-281 |                 if resolved_match["fuzzy_pass_used"] == "pass_2_relaxed":
-    |                                                         ^^^^^^^^^^^^^^^^ S105
-282 |                     match_counts["fuzzy_second_pass_matches"] += 1
-283 |                 if resolved_match["fuzzy_album_score"] is not None and album_key:
-    |
-src\ingestion\spotify_auth.py:81:11: S310 Audit URL open for permitted schemes. Allowing use of `file:` or custom schemes is often unexpected.
-   |
-79 |       payload = urllib.parse.urlencode(body_fields).encode("utf-8")
-80 |       basic = base64.b64encode(f"{client_id}:{client_secret}".encode()).decode("utf-8")
-81 |       req = urllib.request.Request(
-   |  ___________^
-82 | |         url=f"{ACCOUNTS_BASE_URL}/api/token",
-83 | |         data=payload,
-84 | |         method="POST",
-85 | |         headers={
-86 | |             "Authorization": f"Basic {basic}",
-87 | |             "Content-Type": "application/x-www-form-urlencoded",
-88 | |         },
-89 | |     )
-   | |_____^ S310
-90 |       with urllib.request.urlopen(req, timeout=timeout_seconds) as response:
-91 |           return json.loads(response.read().decode("utf-8"))
-   |
-src\ingestion\spotify_auth.py:90:10: S310 Audit URL open for permitted schemes. Allowing use of `file:` or custom schemes is often unexpected.
-   |
-88 |         },
-89 |     )
-90 |     with urllib.request.urlopen(req, timeout=timeout_seconds) as response:
-   |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ S310
-91 |         return json.loads(response.read().decode("utf-8"))
-   |
-src\ingestion\spotify_client.py:146:19: S310 Audit URL open for permitted schemes. Allowing use of `file:` or custom schemes is often unexpected.
-    |
-144 |                   self.refresh_access_token()
-145 |               self._apply_rate_limits(path=path)
-146 |               req = urllib.request.Request(
-    |  ___________________^
-147 | |                 url=url,
-148 | |                 method="GET",
-149 | |                 headers={
-150 | |                     "Authorization": f"Bearer {self.access_token}",
-151 | |                     "Accept": "application/json",
-152 | |                 },
-153 | |             )
-    | |_____________^ S310
-154 |
-155 |               try:
-    |
-src\ingestion\spotify_client.py:156:22: S310 Audit URL open for permitted schemes. Allowing use of `file:` or custom schemes is often unexpected.
-    |
-155 |             try:
-156 |                 with urllib.request.urlopen(req, timeout=self.args.request_timeout_seconds) as response:
-    |                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ S310
-157 |                     payload = json.loads(response.read().decode("utf-8"))
-158 |                     self.request_log.append(
-    |
-src\orchestration\stage_runner.py:47:15: S603 `subprocess` call: check for execution of untrusted input
-   |
-45 |     )
-46 |     started = time.time()
-47 |     process = subprocess.run(
-   |               ^^^^^^^^^^^^^^ S603
-48 |         command,
-49 |         cwd=str(root),
-   |
-src\quality\suite.py:44:15: S603 `subprocess` call: check for execution of untrusted input
-   |
-42 |     if args:
-43 |         command.extend(args)
-44 |     process = subprocess.run(
-   |               ^^^^^^^^^^^^^^ S603
-45 |         command,
-46 |         cwd=str(REPO_ROOT),
-   |
-src\reproducibility\main.py:478:21: S603 `subprocess` call: check for execution of untrusted input
-    |
-476 |     for attempt in range(1, 4):
-477 |         attempt_started = time.time()
-478 |         completed = subprocess.run(
-    |                     ^^^^^^^^^^^^^^ S603
-479 |             command,
-480 |             cwd=root,
-    |
-Found 8 errors.
+All checks passed!

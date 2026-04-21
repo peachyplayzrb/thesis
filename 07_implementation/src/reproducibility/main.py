@@ -21,6 +21,10 @@ from shared_utils.io_utils import load_csv_rows, load_json, utc_now
 from shared_utils.parsing import safe_float, safe_int
 from shared_utils.path_utils import impl_root
 from shared_utils.report_utils import write_csv_rows, write_json_ascii
+from shared_utils.security import (
+    ensure_subprocess_command_tokens,
+    ensure_subprocess_script_under_root,
+)
 from shared_utils.stage_utils import relpath
 
 logger = logging.getLogger(__name__)
@@ -461,6 +465,8 @@ def run_stage(
     command = [python_executable, str(script_path)]
     if stage_id == "BL-003":
         command.append("--allow-missing-selected-sources")
+    ensure_subprocess_script_under_root(script_path, root=root)
+    ensure_subprocess_command_tokens(command)
     completed: subprocess.CompletedProcess[str] | None = None
     attempts: list[dict[str, object]] = []
     stage_env = os.environ.copy()
@@ -475,7 +481,7 @@ def run_stage(
         stage_env["BL_REFERENCE_NOW_UTC"] = reference_now_utc
     for attempt in range(1, 4):
         attempt_started = time.time()
-        completed = subprocess.run(
+        completed = subprocess.run(  # noqa: S603 - command tokens and script path are validated before execution.
             command,
             cwd=root,
             env=stage_env,

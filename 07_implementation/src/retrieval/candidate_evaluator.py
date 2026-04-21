@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
+from typing import NamedTuple
 
 from retrieval.candidate_parser import (
     candidate_language_code,
@@ -18,9 +19,52 @@ from retrieval.models import (
     RetrievalEvaluationResult,
     context_from_mapping,
 )
-from scoring.scoring_engine import numeric_similarity, weighted_overlap
+from scoring.scoring_engine import (
+    numeric_similarity,
+    weighted_lead_genre_similarity,
+    weighted_overlap,
+)
 from shared_utils.genre_utils import lead_genre_token_similarity
 from shared_utils.parsing import parse_csv_labels
+
+
+class _CandidateSemanticInputs(NamedTuple):
+    """Named return from _candidate_semantic_inputs."""
+
+    candidate_tags: list[str]
+    candidate_genres: list[str]
+    lead_genre: str
+    language_code: str | None
+    release_year: int | None
+
+
+class NumericScores(NamedTuple):
+    """Named tuple for candidate numeric scoring results.
+
+    Replaces fragile 9-element positional tuple to prevent order-sensitive unpacking errors.
+    """
+
+    numeric_pass_count: int
+    numeric_support_score: float
+    numeric_support_score_weighted: float
+    numeric_support_score_weighted_absolute: float
+    numeric_support_score_selected: float
+    numeric_distances: dict[str, float | None]
+    numeric_similarities: dict[str, float]
+    numeric_rule_hits_this_candidate: dict[str, bool]
+    weighted_support_denominator: float
+
+
+class _SemanticScores(NamedTuple):
+    """Named return from _semantic_scores."""
+
+    genre_overlap: int
+    tag_overlap: int
+    lead_genre_match_score: float
+    genre_overlap_fraction: float
+    tag_overlap_fraction: float
+    lead_genre_match: bool
+    semantic_score: float
 
 
 def circular_distance_12(a: float, b: float) -> float:
@@ -31,16 +75,6 @@ def circular_distance_12(a: float, b: float) -> float:
     return min(raw_diff, 12.0 - raw_diff)
 
 
-def weighted_lead_genre_similarity(candidate_label: str, profile_weights: dict[str, float]) -> float:
-    if not candidate_label or not profile_weights:
-        return 0.0
-    score = sum(
-        lead_genre_token_similarity(candidate_label, profile_label) * weight
-        for profile_label, weight in profile_weights.items()
-    )
-    return round(max(0.0, min(score, 1.0)), 6)
-
-
 def _resolve_runtime_context(runtime_context: RetrievalContext | dict[str, object]) -> RetrievalContext:
     return (
         runtime_context
@@ -49,13 +83,19 @@ def _resolve_runtime_context(runtime_context: RetrievalContext | dict[str, objec
     )
 
 
-def _candidate_semantic_inputs(row: dict[str, str]) -> tuple[list[str], list[str], str, str | None, int | None]:
+def _candidate_semantic_inputs(row: dict[str, str]) -> _CandidateSemanticInputs:
     candidate_tags = parse_csv_labels(str(row.get("tags", "")))
     candidate_genres = parse_csv_labels(str(row.get("genres", "")))
     lead_genre = resolve_lead_genre(candidate_genres, candidate_tags)
     language_code = candidate_language_code(row)  # type: ignore[arg-type]
     release_year = candidate_release_year(row)  # type: ignore[arg-type]
-    return candidate_tags, candidate_genres, lead_genre, language_code, release_year
+    return _CandidateSemanticInputs(
+        candidate_tags=candidate_tags,
+        candidate_genres=candidate_genres,
+        lead_genre=lead_genre,
+        language_code=language_code,
+        release_year=release_year,
+    )
 
 
 def _language_and_recency_flags(
@@ -91,7 +131,7 @@ def _semantic_scores(
     use_weighted_semantics: bool,
     semantic_overlap_damping: float,
     lead_genre_partial_match_threshold: float,
-) -> tuple[int, int, float, float, float, bool, float]:
+) -> _SemanticScores:
     genre_overlap = len(top_genres.intersection(candidate_genres))
     tag_overlap = len(top_tags.intersection(candidate_tags))
 
@@ -113,14 +153,14 @@ def _semantic_scores(
     tag_overlap_fraction = round(tag_overlap_fraction * semantic_overlap_damping, 6)
     lead_genre_match = lead_genre_match_score >= lead_genre_partial_match_threshold
     semantic_score = lead_genre_match_score + genre_overlap_fraction + tag_overlap_fraction
-    return (
-        genre_overlap,
-        tag_overlap,
-        lead_genre_match_score,
-        genre_overlap_fraction,
-        tag_overlap_fraction,
-        lead_genre_match,
-        semantic_score,
+    return _SemanticScores(
+        genre_overlap=genre_overlap,
+        tag_overlap=tag_overlap,
+        lead_genre_match_score=lead_genre_match_score,
+        genre_overlap_fraction=genre_overlap_fraction,
+        tag_overlap_fraction=tag_overlap_fraction,
+        lead_genre_match=lead_genre_match,
+        semantic_score=semantic_score,
     )
 
 
@@ -132,17 +172,7 @@ def _numeric_scores(
     feature_confidence_by_name: dict[str, float],
     profile_numeric_confidence_factor: float,
     numeric_support_score_mode: str,
-) -> tuple[
-    int,
-    float,
-    float,
-    float,
-    float,
-    dict[str, float | None],
-    dict[str, float],
-    dict[str, bool],
-    float,
-]:
+) -> NumericScores:
     numeric_pass_count = 0
     numeric_support_score = 0.0
     weighted_support_numerator = 0.0
@@ -207,16 +237,16 @@ def _numeric_scores(
     else:
         numeric_support_score_selected = numeric_support_score_weighted_absolute
 
-    return (
-        numeric_pass_count,
-        numeric_support_score,
-        numeric_support_score_weighted,
-        numeric_support_score_weighted_absolute,
-        numeric_support_score_selected,
-        numeric_distances,
-        numeric_similarities,
-        numeric_rule_hits_this_candidate,
-        round(weighted_support_denominator, 6),
+    return NumericScores(
+        numeric_pass_count=numeric_pass_count,
+        numeric_support_score=numeric_support_score,
+        numeric_support_score_weighted=numeric_support_score_weighted,
+        numeric_support_score_weighted_absolute=numeric_support_score_weighted_absolute,
+        numeric_support_score_selected=numeric_support_score_selected,
+        numeric_distances=numeric_distances,
+        numeric_similarities=numeric_similarities,
+        numeric_rule_hits_this_candidate=numeric_rule_hits_this_candidate,
+        weighted_support_denominator=round(weighted_support_denominator, 6),
     )
 
 

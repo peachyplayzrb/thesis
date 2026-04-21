@@ -2,6 +2,8 @@
 
 from collections import Counter
 
+import pytest
+
 from playlist.rules import (
     assemble_bucketed,
     build_transition_diagnostics,
@@ -329,17 +331,39 @@ def test_transition_smoothness_weight_zero_leaves_order_unchanged() -> None:
 def test_transition_smoothness_weight_positive_prefers_smooth_follow() -> None:
     """With a high transition_smoothness_weight and utility_greedy, the candidate that is
     acoustically similar to the first track should be preferred as the second track."""
-    first_track_energy = 0.5
-    # cand_a is acoustically close to the first track; cand_b is distant.
-    cand_a = {"track_id": "close", "lead_genre": "pop", "final_score": 0.80, "score_rank": 1,
-              "energy": first_track_energy + 0.01, "valence": 0.5, "tempo": 100.0}
-    cand_b = {"track_id": "distant", "lead_genre": "rock", "final_score": 0.85, "score_rank": 2,
-              "energy": first_track_energy + 0.90, "valence": 0.9, "tempo": 180.0}
+    # Anchor is selected first by rank; transition smoothness should then choose close over distant.
+    anchor = {
+        "track_id": "anchor",
+        "lead_genre": "pop",
+        "final_score": 0.95,
+        "rank": 1,
+        "energy": 0.50,
+        "valence": 0.50,
+        "tempo": 100.0,
+    }
+    cand_a = {
+        "track_id": "close",
+        "lead_genre": "rock",
+        "final_score": 0.80,
+        "rank": 2,
+        "energy": 0.51,
+        "valence": 0.50,
+        "tempo": 101.0,
+    }
+    cand_b = {
+        "track_id": "distant",
+        "lead_genre": "jazz",
+        "final_score": 0.85,
+        "rank": 3,
+        "energy": 0.95,
+        "valence": 0.90,
+        "tempo": 180.0,
+    }
 
     rule_hits: Counter[str] = Counter()
     playlist, _ = assemble_bucketed(
-        candidates=[cand_a, cand_b],
-        target_size=1,
+        candidates=[anchor, cand_a, cand_b],
+        target_size=2,
         min_score_threshold=0.3,
         max_per_genre=4,
         max_consecutive=4,
@@ -348,8 +372,22 @@ def test_transition_smoothness_weight_positive_prefers_smooth_follow() -> None:
         utility_weights={"score_weight": 0.0, "novelty_weight": 0.0, "repetition_penalty_weight": 0.0},
         transition_smoothness_weight=1.0,
     )
-    # With score_weight=0 and only transition_smoothness driving utility, close track wins.
-    assert playlist[0]["track_id"] == "close"
+    # With score_weight=0 and transition smoothness active, the second slot should pick "close".
+    assert playlist[0]["track_id"] == "anchor"
+    assert playlist[1]["track_id"] == "close"
+
+
+def test_assemble_bucketed_rejects_invalid_influence_policy_mode() -> None:
+    with pytest.raises(ValueError, match="Invalid influence_policy_mode"):
+        assemble_bucketed(
+            candidates=[_cand(1, "pop", 0.9)],
+            target_size=1,
+            min_score_threshold=0.3,
+            max_per_genre=2,
+            max_consecutive=2,
+            rule_hits=Counter(),
+            influence_policy_mode="invalid_mode",
+        )
 
 
 # ---------------------------------------------------------------------------

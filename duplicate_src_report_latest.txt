@@ -1,33 +1,7 @@
 Duplicate-code workflow report
-generated_at_utc: 2026-04-19T18:34:18Z
+generated_at_utc: 2026-04-20T11:05:41Z
 scope: src
 min_similarity_lines: 8
 
-************* Module src.transparency.__init__
-src\transparency\__init__.py:1:0: R0801: Similar lines in 2 files
-==src.quality.sanity_checks:[45:55]
-==src.shared_utils.constants:[51:61]
-    "track_id",
-    "artist",
-    "song",
-    "tags",
-    "genres",
-    "tempo",
-    "duration_ms",
-    "key",
-    "mode",
-) (duplicate-code)
-src\transparency\__init__.py:1:0: R0801: Similar lines in 2 files
-==src.quality.sanity_checks:[109:118]
-==src.shared_utils.constants:[51:60]
-    "track_id",
-    "artist",
-    "song",
-    "tags",
-    "genres",
-    "tempo",
-    "duration_ms",
-    "key",
-    "mode", (duplicate-code)
 --------------------------------------------------------------------
-Your code has been rated at 10.00/10 (previous run: 10.00/10, -0.00)
+Your code has been rated at 10.00/10 (previous run: 10.00/10, +0.00)

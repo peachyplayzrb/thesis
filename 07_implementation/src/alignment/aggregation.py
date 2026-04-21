@@ -35,7 +35,13 @@ def _apply_preference_weight_policy(
         if cap is None:
             return sum(weights)
         return sum(min(weight, cap) for weight in weights)
-    return sum(weights)
+    if mode == "sum":
+        return sum(weights)
+
+    raise ValueError(
+        f"Invalid preference_weight_mode: {mode!r}. "
+        f"Must be one of: 'sum', 'max', 'mean', 'capped'."
+    )
 
 
 def _clamp_confidence(raw_value: Any) -> float:
@@ -117,8 +123,8 @@ def aggregate_matched_events(
 
         agg.apply_event(event)
         preference_weight = float(event.preference_weight)
-        preference_weights_by_id.setdefault(ds001_id, []).append(preference_weight)
-        confidence_weights_by_id.setdefault(ds001_id, []).append(
+        preference_weights_by_id[ds001_id].append(preference_weight)
+        confidence_weights_by_id[ds001_id].append(
             (preference_weight, _event_match_confidence(event))
         )
 

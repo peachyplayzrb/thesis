@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 from datetime import UTC, datetime
-from typing import Any, cast
+from typing import Any, NamedTuple, cast
 
 from controllability.reporting import csv_text, json_text
 from controllability.weights import (
@@ -14,6 +14,16 @@ from controllability.weights import (
 )
 from shared_utils.io_utils import sha256_of_text
 from shared_utils.parsing import parse_float
+
+
+class _SemanticComponents(NamedTuple):
+    """Named return from _semantic_components_for_candidate."""
+
+    lead_genre: str
+    matched_genres: list[str]
+    matched_tags: list[str]
+    component_similarity: dict[str, float]
+    component_contribution: dict[str, float]
 
 
 def _resolve_component_weights(
@@ -111,7 +121,7 @@ def _semantic_components_for_candidate(
     profile_tag_map: dict[str, float],
     profile_tag_total: float,
     component_weights: dict[str, float],
-) -> tuple[str, list[str], list[str], dict[str, float], dict[str, float]]:
+) -> _SemanticComponents:
     lead_genre = lead_genres[0] if lead_genres else (candidate_tags[0] if candidate_tags else "")
 
     lead_genre_similarity = 0.0
@@ -144,7 +154,13 @@ def _semantic_components_for_candidate(
             6,
         ),
     }
-    return lead_genre, matched_genres, matched_tags, component_similarity, component_contribution
+    return _SemanticComponents(
+        lead_genre=lead_genre,
+        matched_genres=matched_genres,
+        matched_tags=matched_tags,
+        component_similarity=component_similarity,
+        component_contribution=component_contribution,
+    )
 
 
 def _scored_row_payload(

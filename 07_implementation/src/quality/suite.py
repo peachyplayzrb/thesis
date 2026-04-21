@@ -19,6 +19,10 @@ from shared_utils.artifact_registry import (
 from shared_utils.io_utils import load_json, utc_now
 from shared_utils.path_utils import impl_root
 from shared_utils.report_utils import write_csv_rows, write_json_ascii
+from shared_utils.security import (
+    ensure_subprocess_command_tokens,
+    ensure_subprocess_script_under_root,
+)
 from shared_utils.stage_utils import ensure_paths_exist
 from shared_utils.stage_utils import relpath as stage_relpath
 
@@ -41,7 +45,9 @@ def run_python_script(script_path: Path, args: list[str] | None = None) -> tuple
     command = [sys.executable, str(script_path)]
     if args:
         command.extend(args)
-    process = subprocess.run(
+    ensure_subprocess_script_under_root(script_path, root=REPO_ROOT)
+    ensure_subprocess_command_tokens(command)
+    process = subprocess.run(  # noqa: S603 - command tokens and script path are validated before execution.
         command,
         cwd=str(REPO_ROOT),
         capture_output=True,

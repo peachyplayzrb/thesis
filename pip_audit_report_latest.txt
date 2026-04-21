@@ -1,9 +1,7 @@
 Dependency audit report
-generated_at_utc: 2026-04-19T18:44:40Z
+generated_at_utc: 2026-04-20T11:07:44Z
 scope: src runtime requirements (07_implementation/requirements.txt)
 mode: advisory
+ignored_vulnerability_ids: PYSEC-2022-42969
 
-Name Version ID               Fix Versions
----- ------- ---------------- ------------
-py   1.11.0  PYSEC-2022-42969
-Found 1 known vulnerability in 1 package
+No known vulnerabilities found, 1 ignored

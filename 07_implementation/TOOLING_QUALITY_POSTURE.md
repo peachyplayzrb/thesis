@@ -34,6 +34,7 @@ Rationale: keep a deterministic, zero-error baseline while preserving bounded ro
 - Scope: implementation runtime requirements from `07_implementation/requirements.txt` (not whole-environment package inventory)
 - Default mode: advisory (does not fail on findings)
 - Optional mode: strict (`-Strict`) to fail when vulnerabilities are reported
+- Default ignore list: `PYSEC-2022-42969` (package `py` via optional `interrogate` docstring tooling dependency; no upstream fix published at this time)
 - Output: `pip_audit_report_latest.txt`
 - Task surface: `07: Dependency Audit (Advisory)`
 

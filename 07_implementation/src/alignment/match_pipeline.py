@@ -35,6 +35,8 @@ from shared_utils.text_matching import (
     split_artists,
 )
 
+_FUZZY_RELAXED_SECOND_PHASE = "phase_2_relaxed"
+
 
 def _build_fuzzy_pass_controls(
     resolved_fuzzy_controls: dict[str, Any],
@@ -70,7 +72,7 @@ def _build_fuzzy_pass_controls(
             )
         )
     )
-    fuzzy_pass_controls.append(("pass_2_relaxed", relaxed_controls))
+    fuzzy_pass_controls.append((_FUZZY_RELAXED_SECOND_PHASE, relaxed_controls))
     return fuzzy_pass_controls
 
 
@@ -278,7 +280,7 @@ def _resolve_match_for_event(
             if resolved_match["matched_row"] is not None:
                 resolved_match["match_method"] = MATCH_METHOD_FUZZY_TITLE_ARTIST
                 match_counts["matched_by_fuzzy"] += 1
-                if resolved_match["fuzzy_pass_used"] == "pass_2_relaxed":
+                if resolved_match["fuzzy_pass_used"] == _FUZZY_RELAXED_SECOND_PHASE:
                     match_counts["fuzzy_second_pass_matches"] += 1
                 if resolved_match["fuzzy_album_score"] is not None and album_key:
                     match_counts["fuzzy_album_boost_matches"] += 1

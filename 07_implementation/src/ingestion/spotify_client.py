@@ -15,7 +15,10 @@ except ImportError:
     from spotify_auth import request_token  # type: ignore[no-redef]
     from spotify_io import now_utc  # type: ignore[no-redef]
 
+from shared_utils.security import ensure_trusted_https_url
+
 API_BASE_URL = "https://api.spotify.com/v1"
+_TRUSTED_SPOTIFY_HOSTS = {"api.spotify.com"}
 
 
 class RateLimitCooldownError(RuntimeError):
@@ -135,6 +138,7 @@ class SpotifyApiClient:
         url = f"{API_BASE_URL}{path}"
         if query:
             url = f"{url}?{query}"
+        ensure_trusted_https_url(url, allowed_hosts=_TRUSTED_SPOTIFY_HOSTS)
 
         attempts = 0
         while True:
@@ -143,7 +147,7 @@ class SpotifyApiClient:
             if expires_at_epoch is not None and time.time() >= (float(expires_at_epoch) - 60.0):
                 self.refresh_access_token()
             self._apply_rate_limits(path=path)
-            req = urllib.request.Request(
+            req = urllib.request.Request(  # noqa: S310 - URL is pre-validated to trusted Spotify HTTPS host.
                 url=url,
                 method="GET",
                 headers={
@@ -153,7 +157,7 @@ class SpotifyApiClient:
             )
 
             try:
-                with urllib.request.urlopen(req, timeout=self.args.request_timeout_seconds) as response:
+                with urllib.request.urlopen(req, timeout=self.args.request_timeout_seconds) as response:  # noqa: S310 - URL is pre-validated to trusted Spotify HTTPS host.
                     payload = json.loads(response.read().decode("utf-8"))
                     self.request_log.append(
                         {

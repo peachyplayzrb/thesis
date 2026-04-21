@@ -1,6 +1,7 @@
 param(
     [switch]$Strict,
-    [string]$OutputFile = "pip_audit_report_latest.txt"
+    [string]$OutputFile = "pip_audit_report_latest.txt",
+    [string[]]$IgnoredVulnerabilityIds = @("PYSEC-2022-42969")
 )
 
 $ErrorActionPreference = "Stop"
@@ -37,7 +38,14 @@ try {
         throw "requirements.txt not found at $requirementsPath"
     }
 
-    $cmdOutput = & $pythonExe -m pip_audit --progress-spinner off -r $requirementsPath 2>&1
+    $auditArgs = @("-m", "pip_audit", "--progress-spinner", "off", "-r", $requirementsPath)
+    foreach ($vulnId in $IgnoredVulnerabilityIds) {
+        if ($vulnId -and $vulnId.Trim().Length -gt 0) {
+            $auditArgs += @("--ignore-vuln", $vulnId.Trim())
+        }
+    }
+
+    $cmdOutput = & $pythonExe @auditArgs 2>&1
     $exitCode = $LASTEXITCODE
 }
 finally {
@@ -55,6 +63,9 @@ $reportLines += "Dependency audit report"
 $reportLines += "generated_at_utc: $([DateTime]::UtcNow.ToString('yyyy-MM-ddTHH:mm:ssZ'))"
 $reportLines += "scope: src runtime requirements (07_implementation/requirements.txt)"
 $reportLines += "mode: $(if ($Strict) { 'strict' } else { 'advisory' })"
+if ($IgnoredVulnerabilityIds -and $IgnoredVulnerabilityIds.Count -gt 0) {
+    $reportLines += "ignored_vulnerability_ids: $($IgnoredVulnerabilityIds -join ', ')"
+}
 $reportLines += ""
 
 if ($lines.Count -eq 0) {

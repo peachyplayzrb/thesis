@@ -7,13 +7,23 @@ import json
 import re
 from datetime import UTC, datetime
 from pathlib import Path
-from typing import Any
+from typing import Any, NamedTuple
 
 from shared_utils.io_utils import open_text_write, sha256_of_file
 from shared_utils.parsing import normalize_text
 from shared_utils.path_utils import impl_root
 
 REQUIRED_LOGICAL_FIELDS = ["track_name", "artist_name", "played_at", "ms_played"]
+
+
+class _RowClassification(NamedTuple):
+    """Named return from classify_row."""
+
+    quality_flag: str
+    played_at: str
+    ms_played: int | None
+
+
 RAW_COLUMN_ALIASES = {
     "track_name": ["track_name", "master_metadata_track_name"],
     "artist_name": ["artist_name", "master_metadata_album_artist_name"],
@@ -123,6 +133,8 @@ def parse_timestamp_to_utc(value: str | None) -> tuple[str, bool]:
                 continue
 
     if parsed is None:
+        # All format attempts exhausted; return empty string with False flag so
+        # callers can distinguish a missing timestamp from a failed parse.
         return "", False
 
     if parsed.tzinfo is None:
@@ -152,20 +164,20 @@ def build_event_id(row_number: int, track_name: str, artist_name: str, played_at
     return f"EVT-{row_number:06d}-{digest[:12]}"
 
 
-def classify_row(track_name: str, artist_name: str, played_at_raw: str | None, ms_played_raw: str | None, isrc: str) -> tuple[str, str, int | None]:
+def classify_row(track_name: str, artist_name: str, played_at_raw: str | None, ms_played_raw: str | None, isrc: str) -> _RowClassification:
     normalized_played_at, ts_ok = parse_timestamp_to_utc(played_at_raw)
     normalized_ms_played, ms_ok = parse_ms_played(ms_played_raw)
 
     missing_core = not track_name or not artist_name or not normalize_text(played_at_raw, lowercase=False) or not normalize_text(ms_played_raw, lowercase=False)
     if missing_core:
-        return "missing_core_field", normalized_played_at, normalized_ms_played
+        return _RowClassification(quality_flag="missing_core_field", played_at=normalized_played_at, ms_played=normalized_ms_played)
     if not ts_ok:
-        return "invalid_timestamp", "", normalized_ms_played
+        return _RowClassification(quality_flag="invalid_timestamp", played_at="", ms_played=normalized_ms_played)
     if not ms_ok:
-        return "invalid_ms_played", normalized_played_at, None
+        return _RowClassification(quality_flag="invalid_ms_played", played_at=normalized_played_at, ms_played=None)
     if not isrc:
-        return "missing_isrc", normalized_played_at, normalized_ms_played
-    return "ok", normalized_played_at, normalized_ms_played
+        return _RowClassification(quality_flag="missing_isrc", played_at=normalized_played_at, ms_played=normalized_ms_played)
+    return _RowClassification(quality_flag="ok", played_at=normalized_played_at, ms_played=normalized_ms_played)
 
 
 def main() -> None:

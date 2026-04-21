@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import math
 import os
+import warnings
 from datetime import UTC, datetime
 
 from alignment.constants import (
@@ -47,24 +48,43 @@ def _resolve_reference_now_utc(
     now_utc: datetime | None = None,
     temporal_controls: dict[str, object] | None = None,
 ) -> datetime:
+    """Resolve reference timestamp with explicit env-var detection and warning.
+
+    If BL_REFERENCE_NOW_UTC env-var is used, a warning is emitted to stderr
+    for reproducibility/auditability.
+    """
     if now_utc is not None:
         return now_utc.astimezone(UTC)
 
     controls = dict(temporal_controls or {})
     reference_mode = str(controls.get("reference_mode") or "system").strip().lower()
+
     if reference_mode == "fixed":
         configured_reference = str(controls.get("reference_now_utc") or "").strip()
         if configured_reference:
             parsed = _parse_event_time(configured_reference)
             if parsed is not None:
                 return parsed
+
     if reference_mode == "system":
         env_reference = os.environ.get("BL_REFERENCE_NOW_UTC", "").strip()
         if env_reference:
             parsed_env = _parse_event_time(env_reference)
             if parsed_env is not None:
+                warnings.warn(
+                    f"BL_REFERENCE_NOW_UTC environment variable is set and applied: {env_reference}. "
+                    "This overrides system time for temporal decay calculations. Ensure this is intentional "
+                    "and will be tracked in run artifacts for reproducibility auditing.",
+                    UserWarning,
+                    stacklevel=3,
+                )
                 return parsed_env
-    return datetime.now(UTC)
+        return datetime.now(UTC)
+
+    raise ValueError(
+        f"Invalid reference_mode: {reference_mode!r}. "
+        f"Must be one of: 'fixed', 'system'."
+    )
 
 
 def compute_temporal_decay(
@@ -141,6 +161,10 @@ def compute_weight(
         rank = rank if (rank is not None and rank > 0) else 50
         range_weight = top_range_weights.get(event.get("time_range", ""), _default_time_range_w)
         rank_score = max(_min_rank_floor, 1.0 / rank)
+        # Temporal decay is intentionally not applied to top-tracks: the source
+        # already represents a rolling long-term affinity window (short/medium/long
+        # term) via time_range, so per-event timestamp decay would double-count
+        # recency and distort the stable preference signal.
         return round(base * range_weight * rank_score * _scale_top, FLOAT_PRECISION_DECIMALS)
 
     if source_type == SOURCE_SAVED_TRACKS:

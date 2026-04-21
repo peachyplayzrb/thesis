@@ -83,7 +83,7 @@ def check_phase_6_invariants() -> bool:
     """Validate Phase 6 invariants across codebase."""
     impl_root = Path("src")
     if not impl_root.exists():
-        print("❌ CI Guard: src/ directory not found")
+        print("FAIL: CI Guard: src/ directory not found")
         return False
 
     violations: dict[str, list[str]] = {
@@ -122,26 +122,26 @@ def check_phase_6_invariants() -> bool:
     print("=" * 70)
 
     if violations["prohibited_imports"]:
-        print("\n❌ VIOLATION: Stages must not import run_config directly")
+        print("\nFAIL: VIOLATION: Stages must not import run_config directly")
         for v in violations["prohibited_imports"]:
             print(v)
 
     if violations["direct_env_reads"]:
-        print("\n❌ VIOLATION: Stages must not read BL_RUN_CONFIG_PATH directly")
+        print("\nFAIL: VIOLATION: Stages must not read BL_RUN_CONFIG_PATH directly")
         for v in violations["direct_env_reads"]:
             print(v)
 
     all_violations = violations["prohibited_imports"] + violations["direct_env_reads"]
     if not all_violations:
-        print("\n✅ PASS: No Phase 6 violations detected")
+        print("\nPASS: No Phase 6 violations detected")
         print("\nArchitectural Rules:")
-        print("  ✓ Only orchestration imports run_config_utils")
-        print("  ✓ Stages do not read BL_RUN_CONFIG_PATH directly")
-        print("  ✓ Stages consume explicit BL_STAGE_CONFIG_JSON payload")
-        print("  ✓ All stages have payload-first fallback logic")
+        print("  - Only orchestration imports run_config_utils")
+        print("  - Stages do not read BL_RUN_CONFIG_PATH directly")
+        print("  - Stages consume explicit BL_STAGE_CONFIG_JSON payload")
+        print("  - All stages have payload-first fallback logic")
         return True
 
-    print("\n❌ FAIL: Phase 6 invariants violated")
+    print("\nFAIL: Phase 6 invariants violated")
     return False
 
 

@@ -3,28 +3,47 @@ from __future__ import annotations
 
 from difflib import SequenceMatcher
 from importlib import import_module
-from typing import Any
+from typing import Any, NamedTuple
 
 from alignment.constants import ARTIST_NAME_DELIMITERS
 from shared_utils.constants import DEFAULT_SEED_CONTROLS
 from shared_utils.parsing import normalize_ascii_text, parse_int, safe_float
 
+# Module-level fuzz provider initialization (supports fallback to SequenceMatcher if rapidfuzz unavailable)
+try:
+    _FUZZ_MODULE = import_module("rapidfuzz.fuzz")
+    _FUZZ_RATIO_FN = getattr(_FUZZ_MODULE, "ratio", None)
+except ModuleNotFoundError:
+    _FUZZ_MODULE = None
+    _FUZZ_RATIO_FN = None
+
 
 def _compute_ratio(left: str, right: str) -> float:
-    try:
-        fuzz_module = import_module("rapidfuzz.fuzz")
-    except ModuleNotFoundError:
-        return SequenceMatcher(None, left, right).ratio() * 100.0
-    ratio_fn = getattr(fuzz_module, "ratio", None)
-    if callable(ratio_fn):
-        return safe_float(ratio_fn(left, right))
+    if _FUZZ_RATIO_FN is not None:
+        return safe_float(_FUZZ_RATIO_FN(left, right))
     return SequenceMatcher(None, left, right).ratio() * 100.0
 
 
-class fuzz:
+class _FuzzCompat:
+    """Compatibility wrapper for fuzzy string matching."""
+
     @staticmethod
     def ratio(left: str, right: str) -> float:
         return _compute_ratio(left, right)
+
+
+# Export with original name for backward compatibility
+fuzz = _FuzzCompat
+
+
+class _CandidateMatchResult(NamedTuple):
+    """Named result from a single candidate score evaluation."""
+
+    candidate: dict[str, str]
+    duration_delta: int | None
+    title_score: float
+    artist_score: float
+    combined_score: float
 
 
 def normalize_text(value: str) -> str:
@@ -183,7 +202,7 @@ def _score_candidate_match(
     event_duration: int | None,
     fuzzy_controls: dict[str, Any],
 ) -> tuple[
-    tuple[dict[str, str], int | None, float, float, float] | None,
+    _CandidateMatchResult | None,
     tuple[float, float, float, float, int, str] | None,
     float,
     str | None,
@@ -216,7 +235,7 @@ def _score_candidate_match(
 
     duration_sort = duration_delta if duration_delta is not None else 10**12
     sort_key = (-combined_score, -title_score, -artist_score, -album_score, duration_sort, ds001_id)
-    return (candidate, duration_delta, title_score, artist_score, combined_score), sort_key, album_score, None
+    return _CandidateMatchResult(candidate=candidate, duration_delta=duration_delta, title_score=title_score, artist_score=artist_score, combined_score=combined_score), sort_key, album_score, None
 
 
 def fuzzy_find_candidate(
@@ -228,7 +247,7 @@ def fuzzy_find_candidate(
     fuzzy_controls: dict[str, Any],
     album_key: str = "",
 ) -> tuple[dict[str, str] | None, int | None, float | None, float | None, float | None, dict[str, Any]]:
-    artist_keys = sorted(by_artist.keys())
+    artist_keys: list[str] = sorted(by_artist.keys())
     if not artist_keys:
         return None, None, None, None, None, _fuzzy_diagnostics_payload(
             failure_reason="artist_threshold",
@@ -256,7 +275,7 @@ def fuzzy_find_candidate(
         artist_matches=artist_matches,
     )
 
-    best_choice: tuple[dict[str, str], int | None, float, float, float] | None = None
+    best_choice: _CandidateMatchResult | None = None
     best_sort_key: tuple[float, float, float, float, int, str] | None = None
     best_album_score: float | None = None
     saw_title_threshold_failure = False
@@ -303,7 +322,7 @@ def fuzzy_find_candidate(
             artist_match_count=len(artist_matches),
             candidate_count_after_artist_filter=len(deduped_candidates),
         )
-    return best_choice[0], best_choice[1], best_choice[2], best_choice[3], best_choice[4], _fuzzy_diagnostics_payload(
+    return best_choice.candidate, best_choice.duration_delta, best_choice.title_score, best_choice.artist_score, best_choice.combined_score, _fuzzy_diagnostics_payload(
         failure_reason="matched",
         album_score=best_album_score,
         artist_match_count=len(artist_matches),

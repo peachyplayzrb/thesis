@@ -458,7 +458,12 @@ class ProfileStage:
             return 1.0
         if mode == "direct_confidence":
             return confidence
-        return 0.5 + 0.5 * confidence
+        if mode == "linear_half_bias":
+            return 0.5 + 0.5 * confidence
+        raise ValueError(
+            f"Invalid confidence_weighting_mode: {mode!r}. "
+            f"Must be one of: 'none', 'direct_confidence', 'linear_half_bias'."
+        )
 
     @staticmethod
     def _resolve_attribution_shares(

@@ -1,5 +1,5 @@
 Hygiene workflow report
-generated_at_utc: 2026-04-19T18:34:00Z
+generated_at_utc: 2026-04-19T23:31:57Z
 scope: src
 dead_code_min_confidence: 70
 complexity_threshold: C
@@ -11,9 +11,9 @@ No dead-code findings.
 src\alignment\influence.py
     F 58:0 inject_influence_tracks - C (18)
 src\alignment\match_pipeline.py
-    F 199:0 _resolve_match_for_event - C (20)
-    F 290:0 match_events - C (20)
-    F 90:0 _run_fuzzy_match - C (11)
+    F 202:0 _resolve_match_for_event - C (20)
+    F 293:0 match_events - C (20)
+    F 93:0 _run_fuzzy_match - C (11)
 src\alignment\models.py
     M 87:4 SourceEvent.from_raw_row - C (18)
 src\alignment\resolved_context.py
@@ -24,8 +24,8 @@ src\alignment\runtime_scope.py
 src\alignment\user_csv_schema.py
     F 56:0 normalize_user_csv_rows - C (17)
 src\alignment\weighting.py
-    F 88:0 compute_weight - C (15)
-    F 46:0 _resolve_reference_now_utc - C (11)
+    F 108:0 compute_weight - C (15)
+    F 47:0 _resolve_reference_now_utc - C (11)
 src\controllability\analysis.py
     F 398:0 build_interaction_coverage_summary - C (20)
     F 348:0 evaluate_results_status - C (19)
@@ -37,13 +37,13 @@ src\controllability\pipeline_runner.py
 src\controllability\stage_playlist.py
     F 11:0 execute_playlist_stage - C (19)
 src\ingestion\export_spotify_max_dataset.py
-    F 534:0 main - C (15)
+    F 550:0 main - C (15)
 src\ingestion\ingest_history_parser.py
-    F 171:0 main - C (12)
+    F 183:0 main - C (12)
 src\ingestion\spotify_client.py
-    M 133:4 SpotifyApiClient.api_get - C (16)
-    F 294:0 fetch_all_offset_pages - C (13)
-    M 50:4 SpotifyApiClient.refresh_access_token - C (12)
+    M 136:4 SpotifyApiClient.api_get - C (16)
+    F 298:0 fetch_all_offset_pages - C (13)
+    M 53:4 SpotifyApiClient.refresh_access_token - C (12)
 src\ingestion\spotify_mapping.py
     F 211:0 build_playlist_rows - C (11)
 src\observability\input_validation.py
@@ -68,21 +68,22 @@ src\playlist\models.py
     F 129:0 controls_from_mapping - C (13)
     F 168:0 context_from_mapping - C (13)
 src\playlist\reporting.py
-    F 178:0 _compute_top100_exclusion_stats - C (11)
-    F 372:0 build_opportunity_cost_diagnostics - C (11)
+    F 222:0 _compute_top100_exclusion_stats - C (11)
+    F 419:0 build_opportunity_cost_diagnostics - C (11)
 src\playlist\rules.py
-    F 683:0 assemble_bucketed - C (17)
-    F 852:0 build_transition_diagnostics - C (11)
+    F 705:0 assemble_bucketed - C (17)
+    F 60:0 decide_candidate - C (11)
+    F 877:0 build_transition_diagnostics - C (11)
 src\playlist\stage.py
-    M 133:4 PlaylistStage._build_report_payload - C (20)
+    M 141:4 PlaylistStage._build_report_payload - C (20)
 src\profile\stage.py
     M 208:4 ProfileStage._extract_contract_payload - C (20)
-    M 916:4 ProfileStage._process_seed_row - C (20)
-    M 1019:4 ProfileStage._apply_aggregation_validation_policies - C (14)
+    M 921:4 ProfileStage._process_seed_row - C (20)
+    M 1024:4 ProfileStage._apply_aggregation_validation_policies - C (14)
     M 271:4 ProfileStage._validate_seed_table_schema - C (12)
-    M 749:4 ProfileStage._resolve_row_weight_components - C (12)
-    M 600:4 ProfileStage._check_handshake_confidence_rows - C (11)
-    M 1122:4 ProfileStage.aggregate_inputs - C (11)
+    M 754:4 ProfileStage._resolve_row_weight_components - C (12)
+    M 605:4 ProfileStage._check_handshake_confidence_rows - C (11)
+    M 1127:4 ProfileStage.aggregate_inputs - C (11)
 src\quality\reb_m3_tranche2_gate.py
     F 33:0 _o4_checks - C (13)
 src\quality\reb_m3_tranche3_gate.py
@@ -104,15 +105,15 @@ src\quality\sanity_checks.py
     F 940:0 bl008_control_causality_contract_gate_result - C (11)
     F 1255:0 _run_hash_integrity_checks - C (11)
 src\quality\suite.py
-    F 558:0 run_active_mode - C (14)
+    F 561:0 run_active_mode - C (14)
 src\reproducibility\input_validation.py
     F 68:0 validate_bl009_outputs - C (11)
 src\reproducibility\main.py
-    F 452:0 run_stage - C (16)
-    F 100:0 copy_file - C (13)
-    F 251:0 stable_observability_fingerprint - C (13)
-    F 808:0 _build_replay_report - C (13)
-    F 304:0 fingerprint_outputs - C (12)
+    F 453:0 run_stage - C (16)
+    F 101:0 copy_file - C (13)
+    F 252:0 stable_observability_fingerprint - C (13)
+    F 811:0 _build_replay_report - C (13)
+    F 305:0 fingerprint_outputs - C (12)
 src\retrieval\filtering_logic.py
     F 8:0 keep_decision - C (16)
     F 97:0 decision_reason - C (11)
@@ -146,7 +147,7 @@ src\scoring\models.py
     F 156:0 controls_from_mapping - C (15)
 src\scoring\profile_extractor.py
     F 17:0 _build_weight_map - C (12)
-    F 43:0 extract_profile_scoring_data - C (11)
+    F 47:0 extract_profile_scoring_data - C (11)
 src\scoring\stage.py
     M 392:4 ScoringStage.build_summary - C (19)
     M 113:4 ScoringStage.build_runtime_context - C (18)
@@ -156,8 +157,8 @@ src\shared_utils\io_utils.py
 src\shared_utils\stage_runtime_resolver.py
     F 43:0 resolve_stage_selection - C (12)
 src\shared_utils\text_matching.py
-    F 222:0 fuzzy_find_candidate - C (15)
-    F 176:0 _score_candidate_match - C (11)
+    F 241:0 fuzzy_find_candidate - C (15)
+    F 195:0 _score_candidate_match - C (11)
 src\transparency\input_validation.py
     F 26:0 validate_bl007_bl008_handshake - C (16)
 src\transparency\main.py

@@ -363,11 +363,27 @@ def _fetch_all_data(
     }
 
 
+_REQUIRED_DATA_KEYS: frozenset[str] = frozenset({
+    "top_tracks_by_range",
+    "saved_track_items",
+    "playlists",
+    "playlist_item_batches",
+    "recently_played_items",
+    "profile",
+})
+
+
 def _write_all_artifacts(
     output_dir: Path,
     data: dict[str, Any],
     generated_at: str,
 ) -> tuple[dict[str, Path], dict[str, int]]:
+    missing_keys = _REQUIRED_DATA_KEYS - set(data)
+    if missing_keys:
+        raise ValueError(
+            f"data dict is missing required keys: {sorted(missing_keys)!r}. "
+            f"Expected keys: {sorted(_REQUIRED_DATA_KEYS)!r}"
+        )
     top_tracks_by_range = data["top_tracks_by_range"]
     top_track_rows = build_top_track_rows(top_tracks_by_range)
     saved_track_rows = build_saved_track_rows(data["saved_track_items"])

@@ -4,8 +4,40 @@ from __future__ import annotations
 
 import math
 from collections import Counter
+from typing import NamedTuple
 
 from shared_utils.parsing import safe_float, safe_int
+
+
+class _GenreMetrics(NamedTuple):
+    """Named return from _extract_genre_metrics."""
+
+    genre_counts: Counter[str]
+    dominant_genre_share: float
+    genre_switch_rate: float
+
+
+class _TransitionMetrics(NamedTuple):
+    """Named return from _extract_transition_metrics."""
+
+    mean_adjacent_transition_distance: float
+    max_adjacent_transition_distance: float
+    transition_pair_count: int
+
+
+class _RankingMetrics(NamedTuple):
+    """Named return from _extract_ranking_metrics."""
+
+    mean_selected_rank: float
+    median_selected_rank: int
+    rank_span: int
+
+
+class _ExclusionStats(NamedTuple):
+    """Named return from _compute_top100_exclusion_stats."""
+
+    top_100_exclusion_rate: float
+    dominant_reason: str | None
 
 
 def build_undersized_diagnostics(
@@ -92,7 +124,7 @@ def build_assembly_pressure_diagnostics(
 def _extract_genre_metrics(
     playlist: list[dict[str, object]],
     playlist_size: int,
-) -> tuple[Counter[str], float, float]:
+) -> _GenreMetrics:
     """Extract genre diversity metrics from playlist."""
     genre_counts = Counter(
         str(track.get("lead_genre", "")).strip().lower()
@@ -117,7 +149,11 @@ def _extract_genre_metrics(
         if playlist_size > 0
         else 0.0
     )
-    return genre_counts, dominant_genre_share, genre_switch_rate
+    return _GenreMetrics(
+        genre_counts=genre_counts,
+        dominant_genre_share=dominant_genre_share,
+        genre_switch_rate=genre_switch_rate,
+    )
 
 
 def _compute_genre_entropy_metrics(
@@ -141,19 +177,23 @@ def _compute_genre_entropy_metrics(
 
 def _extract_transition_metrics(
     transition_diagnostics: dict[str, object],
-) -> tuple[float, float, int]:
+) -> _TransitionMetrics:
     """Extract transition smoothness metrics from diagnostics."""
     mean_smoothness = safe_float(transition_diagnostics.get("mean_smoothness"), 0.0)
     min_smoothness = safe_float(transition_diagnostics.get("min_smoothness"), 0.0)
     max_adjacent_transition_distance = round(1.0 - min_smoothness, 6)
     mean_adjacent_transition_distance = round(1.0 - mean_smoothness, 6)
     transition_pair_count = safe_int(transition_diagnostics.get("pair_count"), 0)
-    return mean_adjacent_transition_distance, max_adjacent_transition_distance, transition_pair_count
+    return _TransitionMetrics(
+        mean_adjacent_transition_distance=mean_adjacent_transition_distance,
+        max_adjacent_transition_distance=max_adjacent_transition_distance,
+        transition_pair_count=transition_pair_count,
+    )
 
 
 def _extract_ranking_metrics(
     playlist: list[dict[str, object]],
-) -> tuple[float, int, int]:
+) -> _RankingMetrics:
     """Extract ranking and score metrics from playlist."""
     selected_ranks = [safe_int(track.get("score_rank"), 0) for track in playlist]
     selected_ranks = [rank for rank in selected_ranks if rank > 0]
@@ -172,12 +212,16 @@ def _extract_ranking_metrics(
         if selected_ranks
         else 0
     )
-    return mean_selected_rank, median_selected_rank, rank_span
+    return _RankingMetrics(
+        mean_selected_rank=mean_selected_rank,
+        median_selected_rank=median_selected_rank,
+        rank_span=rank_span,
+    )
 
 
 def _compute_top100_exclusion_stats(
     trace_rows: list[dict[str, object]],
-) -> tuple[float, str | None]:
+) -> _ExclusionStats:
     """Compute exclusion metrics for top-100 ranked candidates."""
     top_100_rows = [row for row in trace_rows if safe_int(row.get("score_rank"), 0) <= 100]
     top_100_excluded = [row for row in top_100_rows if str(row.get("decision", "")) == "excluded"]
@@ -196,7 +240,10 @@ def _compute_top100_exclusion_stats(
         if top_100_reason_counts
         else None
     )
-    return top_100_exclusion_rate, dominant_reason
+    return _ExclusionStats(
+        top_100_exclusion_rate=top_100_exclusion_rate,
+        dominant_reason=dominant_reason,
+    )
 
 
 def _build_diversity_summary(

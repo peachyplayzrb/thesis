@@ -5,11 +5,238 @@ Ordering convention (standardized 2026-03-24):
 - Entry IDs remain unique identifiers, but physical entry order reflects historical insertion timing (not strict numeric sorting).
 - New entries must be appended at the end and may include `superseded_by` when a prior decision is replaced.
 
-Maintenance snapshot (2026-04-19, updated):
-- Highest decision ID currently present: `D-273`
-- Total decision entries: 217
-- Status distribution: accepted=199, superseded=3, rejected=1
+Maintenance snapshot (2026-04-20, updated):
+- Highest decision ID currently present: `D-290`
+- Total decision entries: 229
+- Status distribution: accepted=206, superseded=3, rejected=1
 - ID integrity check: no duplicate decision IDs detected
+
+## D-290
+- date: 2026-04-21
+- status: accepted
+
+context:
+User requested selective integration of prose from the humanized Chapter 3 draft into the canonical Chapter 3 file, but only where meaning and methodological precision remain intact.
+
+decision:
+1) Apply a bounded prose-only merge from `08_writing/chapter3 copy.md` into `08_writing/chapter3.md`.
+2) Preserve all structural authority surfaces in the canonical chapter: headings, objective-mapping table, numbered stage list, citations, and Mermaid syntax.
+3) Exclude malformed/over-changed humanized content (broken tables/diagrams, accidental tool-error sentence, and section-number drift) from integration.
+
+alternatives_considered:
+- Replace `chapter3.md` wholesale with `chapter3 copy.md` (rejected: introduces structural corruption and meaning drift).
+- Keep canonical chapter unchanged (rejected: does not satisfy user request to merge safe humanized prose).
+
+rationale:
+The contribution requires preserving methodological traceability and executable chapter structure while allowing readability improvements where semantics are unchanged.
+
+evidence_basis:
+- Safe prose merges were applied in `08_writing/chapter3.md` only in narrative sentences.
+- Canonical tables, lists, citations, and Mermaid blocks remain valid and unchanged in structure.
+
+impacted_files:
+- `08_writing/chapter3.md`
+- `00_admin/decision_log.md`
+- `00_admin/change_log.md`
+- `00_admin/thesis_state.md`
+- `00_admin/timeline.md`
+
+review_date:
+none
+
+## D-291
+- date: 2026-04-21
+- status: accepted
+
+context:
+The active code audit playbook (`00_admin/code_audit_and_remediation_plan.md`) still contained mostly completed historical execution guidance, while unresolved code-audit work was now narrow and optional-tooling focused.
+
+decision:
+Maintain this file as an open-items-only surface and remove completed baseline phases from the active body. Keep only unfinished actions with explicit closure evidence requirements.
+
+alternatives_considered:
+- Keep the full historical playbook unchanged (rejected: high restart friction and low signal for current pending work).
+- Delete the file entirely and rely on logs only (rejected: loses a convenient pending-work execution surface).
+
+rationale:
+An open-items-only plan reduces operator overhead and prevents re-triaging already-closed items while preserving full historical evidence in governance logs.
+
+evidence_basis:
+- `00_admin/code_audit_and_remediation_plan.md` now contains only pending items (mutation lane, semgrep lane, optional hypothesis expansion).
+- Historical completion evidence remains in `unresolved_issues.md`, `change_log.md`, and `timeline.md`.
+
+impacted_files:
+- `00_admin/code_audit_and_remediation_plan.md`
+- `00_admin/decision_log.md`
+- `00_admin/change_log.md`
+
+review_date:
+none
+
+## D-289
+- date: 2026-04-20
+- status: accepted
+
+context:
+Post-change-log normalization integrity sweep revealed three remaining duplicate decision IDs in `00_admin/decision_log.md` (`D-098`, `D-180`, `D-236`) due legacy duplicate heading reuse across historical append waves.
+
+decision:
+1) Perform bounded decision-log ID normalization at heading/ID-label level only, preserving all original decision body text and chronology context.
+2) Reassign duplicate occurrences to the next available unique IDs: second `D-098` -> `D-286`, second `D-180` -> `D-287`, second `D-236` -> `D-288`.
+3) Synchronize governance snapshots (`change_log`, `thesis_state`, `timeline`) to the new integrity checkpoint.
+
+alternatives_considered:
+- Leave duplicate decision IDs unresolved (rejected: conflicts with declared unique-ID governance contract).
+- Perform broad historical renumbering for strict chronological compaction (rejected: unnecessary blast radius beyond integrity fix scope).
+
+rationale:
+Heading-level ID reassignment restores decision-ID uniqueness with minimal historical impact and avoids altering the substance of legacy decisions.
+
+evidence_basis:
+- Pre-normalization duplicate scan identified: `D-098`, `D-180`, `D-236` duplicates.
+- Post-normalization duplicate scan reports no duplicate D-IDs.
+
+impacted_files:
+- `00_admin/decision_log.md`
+- `00_admin/change_log.md`
+- `00_admin/thesis_state.md`
+- `00_admin/timeline.md`
+
+review_date:
+none
+
+## D-285
+- date: 2026-04-20
+- status: accepted
+
+context:
+User approved running the optional legacy change-log normalization pass after the cleanup tranche, specifically to resolve the remaining historical duplicate change IDs while minimizing historical content churn.
+
+decision:
+1) Normalize duplicate change-log heading IDs only, without rewriting associated entry bodies or chronology content.
+2) Assign new unique IDs to duplicate occurrences using the next available ID range (`C-577`, `C-578`, `C-579`) and record the normalization operation as a dedicated ledger entry (`C-580`).
+3) Keep normalization bounded to `00_admin/change_log.md` heading-level integrity and synchronize governance pointers (`thesis_state`, `timeline`, and decision/change snapshots).
+
+alternatives_considered:
+- Leave remaining duplicates unresolved (rejected: known integrity debt would persist).
+- Renumber broader historical ranges for strict chronology alignment (rejected: unnecessary blast radius and audit churn beyond the approved bounded scope).
+
+rationale:
+Heading-only normalization restores unique-ID integrity with the smallest possible historical footprint and preserves existing historical narrative text unchanged.
+
+evidence_basis:
+- Pre-normalization duplicate scan identified exactly three duplicate heading IDs (`C-147`, `C-331`, `C-401`).
+- Post-normalization duplicate scan shows no duplicate `## C-###` headings.
+
+impacted_files:
+- `00_admin/change_log.md`
+- `00_admin/decision_log.md`
+- `00_admin/thesis_state.md`
+- `00_admin/timeline.md`
+
+review_date:
+none
+
+## D-284
+- date: 2026-04-20
+- status: accepted
+
+context:
+User requested implementation cleanup continuation after current-state assessment. Active findings included advisory duplicate-code fragments (shared BL-005 filtered-field literal), dependency-audit noise from `PYSEC-2022-42969` (`py` package, transitive from optional `interrogate`), and recent change-log integrity drift from malformed/duplicated recent entries.
+
+decision:
+1) Treat `BL005_FILTERED_REQUIRED_FIELDS` in `shared_utils.constants` as canonical and remove remaining duplicated literal in `quality.sanity_checks`.
+2) Keep optional docstring tooling (`interrogate`) but suppress known no-fix vulnerability `PYSEC-2022-42969` in dependency-audit reporting via explicit `--ignore-vuln` policy in `scripts/dependency_audit.ps1`, and surface ignored IDs in the report for audit transparency.
+3) Apply minimal recent-entry change-log integrity correction only: fix clearly misnumbered duplicate `C-527` heading to `C-487` and remove malformed trailing duplicate `C-566`; leave older legacy duplicates unchanged to avoid historical renumbering risk.
+
+alternatives_considered:
+- Remove `interrogate` entirely from requirements (rejected: optional tooling capability would be lost).
+- Keep vulnerability finding as-is (rejected: sustained advisory noise obscures actionable security signal).
+- Renumber all historical duplicate change IDs in one pass (rejected: high audit-risk bulk rewrite outside bounded cleanup intent).
+
+rationale:
+These actions reduce current operational noise while preserving behavior and minimizing historical-log rewrite risk. The dependency-audit decision is explicit, bounded, and report-visible rather than hidden.
+
+evidence_basis:
+- Duplicate advisory rerun shows zero findings (`duplicate_src_report_latest.txt`).
+- Dependency advisory rerun shows `No known vulnerabilities found, 1 ignored` with explicit ignore metadata in `pip_audit_report_latest.txt`.
+- Ruff check passes and full tests remain green (`638 passed, 1 warning`).
+
+impacted_files:
+- `07_implementation/src/quality/sanity_checks.py`
+- `07_implementation/scripts/dependency_audit.ps1`
+- `07_implementation/TOOLING_QUALITY_POSTURE.md`
+- `00_admin/change_log.md`
+- `00_admin/decision_log.md`
+
+review_date:
+none
+
+## D-283
+- date: 2026-04-20
+- status: accepted
+
+context:
+Focused logic review identified that BL-007 transition smoothness weighting was effectively non-operative in assembly utility and diagnostics because normalized/assembled rows did not preserve transition features (`energy`, `valence`, `tempo`). The same review also identified silent fallback behavior for invalid `influence_policy_mode` values.
+
+decision:
+1) Preserve transition features in BL-007 internal candidate/playlist rows via underscore-prefixed internal fields (`_energy`, `_valence`, `_tempo`) and make transition distance/diagnostics resolve both public and internal feature keys.
+2) Fail fast on invalid `influence_policy_mode` values in `assemble_bucketed` with explicit `ValueError` instead of silent fallback.
+3) Keep public playlist artifact compatibility by stripping underscore-prefixed internal fields when building `playlist.json` payloads.
+
+alternatives_considered:
+- Keep current behavior and rely on existing smoothness tests (rejected: control would remain effectively no-op under real stage flow).
+- Add public `energy`/`valence`/`tempo` columns to final playlist outputs (rejected: unnecessary outward contract expansion for an internal utility/diagnostics fix).
+- Keep silent fallback for invalid policy mode (rejected: weakens configuration auditability and typo detection).
+
+rationale:
+The fix restores intended BL-007 control semantics while preserving outward artifact shape and improves configuration correctness by making invalid policy modes explicit.
+
+evidence_basis:
+- Focused validation passed: `tests/test_playlist_rules.py` + `tests/test_playlist_integration.py` => `27/27`.
+- New/updated tests now cover second-step smoothness choice and invalid policy-mode rejection.
+
+impacted_files:
+- `07_implementation/src/playlist/rules.py`
+- `07_implementation/src/playlist/stage.py`
+- `07_implementation/tests/test_playlist_rules.py`
+- `00_admin/change_log.md`
+- `00_admin/decision_log.md`
+- `00_admin/thesis_state.md`
+- `00_admin/timeline.md`
+
+review_date:
+none
+
+id: D-274
+date: 2026-04-19
+status: accepted
+
+context:
+User requested a comprehensive, reusable plan document to audit and fix code quality later without re-deriving process each session.
+
+decision:
+Create and store a single admin-level playbook (`00_admin/code_audit_and_remediation_plan.md`) that defines:
+1) start-to-end audit sequencing,
+2) prioritized issue classes including current CR-1 to CR-8,
+3) required end-of-run gates,
+4) recommended toolchain and outside references.
+
+alternatives_considered:
+- Keep ad-hoc chat guidance only (rejected: low repeatability and higher restart friction).
+- Split guidance across multiple docs (rejected: slower retrieval and higher maintenance overhead).
+
+rationale:
+A centralized playbook reduces workflow friction, preserves consistency across sessions, and improves closure quality for unresolved code issues.
+
+evidence_basis:
+- New artifact: `00_admin/code_audit_and_remediation_plan.md`.
+- Plan content includes phased checks, task mappings, deterministic validation finish sequence, and definition-of-done controls.
+
+impacted_files:
+- `00_admin/code_audit_and_remediation_plan.md`
+- `00_admin/change_log.md`
+- `00_admin/decision_log.md`
 
 id: D-273
 date: 2026-04-19
@@ -43,6 +270,105 @@ impacted_files:
 - `00_admin/decision_log.md`
 - `00_admin/thesis_state.md`
 - `00_admin/timeline.md`
+
+review_date:
+none
+
+## D-282
+- date: 2026-04-20
+- status: accepted
+
+context:
+Phase A whole-src follow-up audit identified one remaining medium-severity tuple-fragility surface in retrieval semantic scoring: `_semantic_scores()` returned a 7-element positional tuple that is unpacked at call sites.
+
+decision:
+Convert `_semantic_scores()` in `retrieval/candidate_evaluator.py` from positional tuple return to NamedTuple return (`_SemanticScores`) with explicit named fields while preserving existing call-site unpacking compatibility.
+
+alternatives_considered:
+- Keep positional tuple and rely on comments/type annotation order (rejected: still order-fragile during future refactors).
+- Convert to dataclass object return (rejected: would require broader call-site churn for no additional value over NamedTuple here).
+
+rationale:
+NamedTuple is the lowest-risk, additive safety improvement consistent with prior Phase A fixes. It preserves runtime behavior and unpacking compatibility while making semantic field intent explicit.
+
+evidence_basis:
+- `pyright src/retrieval/candidate_evaluator.py` returns 0 errors.
+- Focused retrieval regression tests pass: `tests/test_retrieval_candidate_evaluator.py` + `tests/test_retrieval_stage.py` -> 15/15.
+
+impacted_files:
+- `07_implementation/src/retrieval/candidate_evaluator.py`
+- `00_admin/change_log.md` (C-574)
+- `00_admin/decision_log.md` (D-282)
+- `00_admin/unresolved_issues.md`
+- `00_admin/thesis_state.md`
+- `00_admin/timeline.md`
+
+review_date:
+none
+
+## D-281
+- date: 2026-04-19
+- status: accepted
+
+context:
+During Phase F closeout, the Full Contract wrapper (`scripts/check_all.ps1`) failed at the Phase 6 architecture guard on Windows due to Unicode terminal encoding (`cp1252`) when printing emoji/checkmark status text from `ci_guard_phase_6_check.py`.
+
+decision:
+Use ASCII-only output in `ci_guard_phase_6_check.py` status/violation lines (`PASS`/`FAIL` and hyphen bullets) to make the architecture guard terminal-safe across Windows code pages while preserving guard semantics.
+
+alternatives_considered:
+- Keep Unicode output and require UTF-8 terminal setup (rejected: brittle for default Windows environments and CI shells).
+- Wrap prints in try/except with fallback rendering (rejected: extra complexity for no functional gain).
+- Modify PowerShell encoding globally in wrapper scripts (rejected: broader blast radius and less local than fixing script output text).
+
+rationale:
+The guard is a mandatory contract gate; terminal encoding should never be a failure source. ASCII output is the simplest robust cross-platform solution with zero impact on architectural validation logic.
+
+evidence_basis:
+- Pre-fix: Full Contract failed with `UnicodeEncodeError` in `ci_guard_phase_6_check.py`.
+- Post-fix: Full Contract completed successfully, including architecture guard, tests (`637 passed, 1 warning`), pyright (`0 errors`), and wrapper validate-only BL-013/BL-014 pass.
+
+impacted_files:
+- `07_implementation/ci_guard_phase_6_check.py`
+- `00_admin/change_log.md` (C-573)
+- `00_admin/decision_log.md` (D-281)
+- `00_admin/thesis_state.md`
+- `00_admin/timeline.md`
+
+review_date:
+none
+
+id: D-275
+date: 2026-04-19
+status: accepted
+
+context:
+User initiated comprehensive code audit session to address high-severity correctness and reproducibility risks identified in the prior review findings (UNDO-S). Batch 1 focused on the two highest-severity issues: CR-1 (fragile positional tuple return) and CR-2 (silent env-var bypass in temporal controls).
+
+decision:
+1) Fix CR-1: Replace the fragile 9-element positional tuple return from `_numeric_scores()` with a typed `NumericScores` NamedTuple. All 9 fields are explicitly named and typed.
+2) Fix CR-2: Add explicit warning when `BL_REFERENCE_NOW_UTC` environment variable is detected and applied in `_resolve_reference_now_utc()`, ensuring env-var usage is visible in stderr for reproducibility auditability.
+
+alternatives_considered:
+- CR-1: Keep positional tuple (rejected: remains fragile to silent reordering).
+- CR-1: Use @dataclass instead of NamedTuple (rejected: NamedTuple is simpler and backward-compatible with tuple unpacking).
+- CR-2: Reject env-var entirely (rejected: would break deterministic replay in BL-010 which explicitly sets the variable).
+- CR-2: Only log env-var without warning (rejected: warning ensures stderr visibility for CI/logs).
+
+rationale:
+Type-safe returns eliminate silent errors from position-sensitive unpacking. Explicit warning on env-var usage preserves reproducibility auditability without breaking legitimate deterministic replay workflows. Both changes improve code resilience without altering runtime contracts.
+
+evidence_basis:
+- CR-1: `NumericScores` NamedTuple implemented with all 9 fields properly typed in `retrieval/candidate_evaluator.py`. Field names verified via code execution.
+- CR-2: Warning mechanism added to `_resolve_reference_now_utc()` in `alignment/weighting.py` with clear audit message referencing run-artifact tracking.
+- Both changes: Syntax validation clean (pyright reports no errors), module imports successful.
+
+impacted_files:
+- `07_implementation/src/retrieval/candidate_evaluator.py` (NamedTuple definition, return type update)
+- `07_implementation/src/alignment/weighting.py` (warnings import, detection and warning logic)
+- `00_admin/unresolved_issues.md` (CR-1 and CR-2 marked complete)
+- `00_admin/change_log.md` (C-567)
+- `00_admin/decision_log.md` (D-275)
 
 review_date:
 none
@@ -4253,7 +4579,7 @@ none
 - impacted_files: `07_implementation/src/ingestion/export_spotify_max_dataset.py`, `07_implementation/tests/test_ingestion_spotify_export.py`, `00_admin/decision_log.md`, `00_admin/change_log.md`.
 - next_steps: Add orchestration-level BL-002 payload injection assertions once BL-002 is part of staged execution order, and broaden fallback matrix tests for malformed payload envelopes and partial-control merges.
 
-## D-098
+## D-286
 - date: 2026-04-13
 - entity_id: BL-007 utility-decay control-surface activation
 - proposed_by: user + Copilot
@@ -4914,7 +5240,7 @@ none
 - impacted_files: `07_implementation/src/profile/stage.py`, `07_implementation/src/scoring/diagnostics.py`, `07_implementation/src/scoring/stage.py`, `07_implementation/src/observability/main.py`, `07_implementation/tests/test_profile_stage.py`, `07_implementation/tests/test_scoring_diagnostics.py`, `07_implementation/tests/test_scoring_stage.py`, `07_implementation/tests/test_observability_signal_mode_summary.py`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`, `00_admin/unresolved_issues.md`
 - next_steps: Continue with `UNDO-N` control-surface discoverability and range transparency hardening while retaining UNDO-M as active until chapter-facing evidence write-through is synchronized.
 
-## D-180
+## D-287
 - date: 2026-04-18
 - entity_id: undo-n control-surface discoverability and range transparency hardening tranche
 - proposed_by: user + Copilot
@@ -5137,6 +5463,187 @@ none
 - evidence_basis: `08_writing/chapter3_v3.md` now cites Peffers et al. (2007) in `3.2`, cites feature-space grounding at the point of feature definition in `3.7`, and expands `3.10` to specify three baseline replays plus one-factor variation evidence across alignment, candidate, scoring, assembly, and output surfaces; `03_literature/source_index.csv` now tracks the Peffers methodology source as `P-066`.
 - impacted_files: `08_writing/chapter3_v3.md`, `03_literature/source_index.csv`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`.
 - next_steps: Keep Chapter 5 aligned to this declared protocol when writing the evaluation-method and results framing.
+
+## D-276
+- date: 2026-04-19
+- status: accepted
+
+context:
+User continued comprehensive code audit session from Batch 1 (CR-1, CR-2) to Batch 2 (CR-3, CR-4 from UNDO-S). Batch 2 focused on medium-severity code quality issues: duplicate function consolidation (CR-3) and silent error-fallback prevention (CR-4).
+
+decision:
+1) Fix CR-3: Consolidate duplicate `weighted_lead_genre_similarity()` function by removing implementation from `retrieval/candidate_evaluator.py` and importing from `scoring/scoring_engine.py` (canonical location with cleaner `_clamp_0_1()` helper usage).
+2) Fix CR-4: Enhance `_apply_preference_weight_policy()` in `alignment/aggregation.py` to explicitly raise `ValueError` for unknown preference_weight_mode values instead of silently defaulting to sum fallback.
+
+alternatives_considered:
+- CR-3: Keep both implementations (rejected: duplication increases maintenance burden and inconsistency risk).
+- CR-3: Consolidate into retrieval instead of scoring (rejected: scoring is more specialized/central for weighting logic).
+- CR-4: Keep silent sum fallback (rejected: masks configuration errors and reduces debugging clarity).
+- CR-4: Make error non-fatal (only warn) (rejected: explicit failure is clearer for CI/tests).
+
+rationale:
+CR-3 eliminates unnecessary duplication and improves code maintainability by treating scoring as the authoritative source for weighting utilities. CR-4 improves error visibility and configuration accountability by converting silent fallback to explicit exception; this catches mode misspellings and invalid config early without breaking any valid use case.
+
+evidence_basis:
+- CR-3: Both implementations compared side-by-side; scoring version uses idiomatic `_clamp_0_1()` helper. Import test verified consolidation works (weighted_lead_genre_similarity callable from scoring_engine). Call site at candidate_evaluator.py:391 remains functional via import substitution (no behavior change).
+- CR-4: Invalid mode "invalid_mode" now raises ValueError with clear message: "Invalid preference_weight_mode: 'invalid_mode'. Must be one of: 'sum', 'max', 'mean', 'capped'." Valid modes (sum, max, mean, capped) continue to work unchanged.
+- Both changes: Syntax validation clean (pyright reports no errors), code execution validation successful (import test + error handling test both passed).
+
+impacted_files:
+- `07_implementation/src/retrieval/candidate_evaluator.py` (import added, duplicate function removed)
+- `07_implementation/src/scoring/scoring_engine.py` (canonical location, no changes to function)
+- `07_implementation/src/alignment/aggregation.py` (`_apply_preference_weight_policy()` enhanced with explicit ValueError)
+- `00_admin/unresolved_issues.md` (CR-3 and CR-4 marked complete)
+- `00_admin/change_log.md` (C-568)
+- `00_admin/decision_log.md` (D-276)
+
+review_date:
+none
+
+## D-280
+- date: 2026-04-19
+- status: accepted
+
+context:
+Phase A tier-2 audit identified four MEDIUM/LOW severity findings (CR-NEW8 through CR-NEW11). Two were confirmed non-issues after code review: CR-NEW8 (empty dict iteration in _numeric_scores produces correct zero-score result, no guard needed) and CR-NEW9 (_apply_preference_weight_policy `if not weights: return 0.0` already handles both None and empty list because Python `not None` is True). Two required real fixes: CR-NEW10 and CR-NEW11.
+
+decision:
+1) CR-NEW10: Add explicit `ValueError` in `_resolve_reference_now_utc()` in `alignment/weighting.py` for unknown `reference_mode` values. Restructure `system` branch to return inside the block (adding `return datetime.now(UTC)` as its own explicit path) before the ValueError at the end.
+2) CR-NEW11: Make `'linear_half_bias'` an explicit named `if` branch in `_resolve_confidence_weight_multiplier()` in `profile/stage.py`. Add `raise ValueError(...)` as the final else path for unknown modes.
+3) CR-NEW8 and CR-NEW9: No code changes required. Confirmed safe: CR-NEW8 empty dict iteration is semantically correct and documented behavior; CR-NEW9 `if not weights` guard covers both empty list and None.
+
+alternatives_considered:
+- CR-NEW10: Keep implicit fallback to system time for unknown modes (rejected: silent fallback means misconfigured reference_mode goes undetected and uses a different time source than intended).
+- CR-NEW10: Use an assertion instead of ValueError (rejected: assertions are suppressed in optimized mode; ValueError is the correct boundary validation mechanism).
+- CR-NEW11: Keep implicit `return 0.5 + 0.5 * confidence` as the default (rejected: implicit fallback means any future mode addition would silently use this formula until explicitly handled).
+- CR-NEW11: Replace all if-chains with a dict dispatch (rejected: overkill for 3 modes; named if-chains are more readable for this cardinality).
+
+rationale:
+Both fixes convert silent fallback behavior into fail-fast configuration errors. The existing config uses 'system' and 'linear_half_bias' throughout, so zero runtime behavior change for valid inputs. The ValueError messages include the invalid value (repr) and the accepted values list, making misconfiguration immediately diagnosable.
+
+evidence_basis:
+- CR-NEW10: ValueError raised with "Invalid reference_mode: 'relative'. Must be one of: 'fixed', 'system'." for unknown mode. System mode still returns datetime.now(UTC) as before.
+- CR-NEW11: ValueError raised for unknown mode. All three known modes return correct values: none=1.0, direct_confidence=0.8 (confidence=0.8), linear_half_bias=0.9 (confidence=0.8).
+- pyright 0 errors on both modified files.
+- 63 targeted tests pass (24 weighting, 25 profile_stage, 14 aggregation), 1 expected warning from CR-2.
+
+impacted_files:
+- `07_implementation/src/alignment/weighting.py`
+- `07_implementation/src/profile/stage.py`
+- `00_admin/change_log.md` (C-572)
+- `00_admin/decision_log.md` (D-280)
+
+review_date:
+none
+
+## D-279
+- date: 2026-04-19
+- status: accepted
+
+context:
+Phase A tier-2 audit identified MEDIUM-severity positional multi-value tuple returns across 5 modules. All were private (`_`-prefixed) functions except `classify_row` in ingest_history_parser.py. All call sites use named variable unpacking already. The risk is silent field-swap during refactoring: e.g., the `_build_semantic_targets` return of three `set[str]` values (top_lead_genres, top_tags, top_genres) could be reordered without a type error, silently using genres where tags are expected.
+
+decision:
+Convert all 5 modules' positional tuple returns to NamedTuples: `_GenreMetrics`, `_TransitionMetrics`, `_RankingMetrics`, `_ExclusionStats` (reporting.py); `_CandidateSemanticInputs` (candidate_evaluator.py); `_SemanticTargets`, `_SemanticMatchDetails`, `_RetrievalSemanticInputs` (stage_retrieval.py); `_SemanticComponents` (stage_scoring.py); `_RowClassification` (ingest_history_parser.py). All return statements updated to instantiate NamedTuples with named parameters. Return type annotations updated throughout.
+
+alternatives_considered:
+- Leave as positional tuples with comment documentation (rejected: comments do not prevent silent-swap bugs; NamedTuple is the correct Python mechanism).
+- Convert only the highest-risk cases (three-`set[str]` return in stage_retrieval.py) and leave others (rejected: inconsistent pattern; converting all targets is no more risky and establishes a uniform standard).
+- Use `@dataclass` instead of NamedTuple (rejected: NamedTuple preserves tuple-unpacking compatibility at all call sites without modification; dataclass would require call site changes).
+
+rationale:
+NamedTuple is the idiomatic Python solution for named multi-value returns. It is backward-compatible with positional unpacking at all call sites, adds field-name documentation, and prevents silent-swap bugs at function boundaries. The highest-risk case was `_build_semantic_targets` with three `set[str]` returns where genres/tags/lead-genres could be swapped without a type error. All other cases have at least one same-typed field pair that could be confused.
+
+evidence_basis:
+- pyright 0 errors on all 5 modified files after conversion.
+- 147 targeted tests pass covering all affected modules.
+- All call sites verified to use named variable unpacking — no index-based access patterns found.
+
+impacted_files:
+- `07_implementation/src/playlist/reporting.py`
+- `07_implementation/src/retrieval/candidate_evaluator.py`
+- `07_implementation/src/controllability/stage_retrieval.py`
+- `07_implementation/src/controllability/stage_scoring.py`
+- `07_implementation/src/ingestion/ingest_history_parser.py`
+- `00_admin/change_log.md` (C-571)
+- `00_admin/decision_log.md` (D-279)
+
+review_date:
+none
+
+## D-278
+- date: 2026-04-19
+- status: accepted
+
+context:
+Phase A tier-2 comprehensive audit of `07_implementation/src` identified two HIGH-severity correctness risks beyond the original UNDO-S CR-1 through CR-8 scope. CR-NEW1: `_score_candidate_match()` in `shared_utils/text_matching.py` returned a 5-tuple accessed by integer index (`best_choice[0..4]`) inside `fuzzy_find_candidate()`, creating silent reorder risk if tuple element order changes. CR-NEW7: `_write_all_artifacts()` in `ingestion/export_spotify_max_dataset.py` accessed six dict keys directly without checking existence, meaning a missing key would produce a cryptic `KeyError` with no clear diagnostic message.
+
+decision:
+1) Fix CR-NEW1: Add `_CandidateMatchResult` NamedTuple with fields (candidate, duration_delta, title_score, artist_score, combined_score) to `shared_utils/text_matching.py`. Update `_score_candidate_match()` return type annotation and all return statements to instantiate NamedTuple with named parameters. Update `fuzzy_find_candidate()` type annotation for `best_choice` and all field accesses to use named attributes instead of integer indices.
+2) Fix CR-NEW7: Add `_REQUIRED_DATA_KEYS` module-level frozenset constant and validation guard at the top of `_write_all_artifacts()` that raises `ValueError` with sorted missing-key list and sorted expected-key list when required keys are absent from the data dict.
+
+alternatives_considered:
+- CR-NEW1: Keep positional tuple but add inline comments (rejected: comments do not prevent silent reorder bugs; NamedTuple is the idiomatic Python fix).
+- CR-NEW1: Convert to `@dataclass` instead of NamedTuple (rejected: NamedTuple preserves tuple unpacking compatibility at external call sites without change; dataclass would require call site changes).
+- CR-NEW7: Use `data.get(key)` with None defaults (rejected: silently producing None values would propagate errors deeper than a clear ValueError at the entry point).
+- CR-NEW7: Add assertion checks (rejected: assertions are suppressed in optimized mode; ValueError is the correct boundary check).
+
+rationale:
+CR-NEW1 addresses a genuine silent-failure risk: if tuple element order were ever changed during refactoring, scores would be swapped without any type error. NamedTuple is the idiomatic fix with zero external compatibility risk. CR-NEW7 converts an implicit KeyError into an explicit, documented ValueError with a message that names both the missing and the expected keys, making misconfiguration immediately diagnosable.
+
+evidence_basis:
+- CR-NEW1: pyright reports 0 errors on modified `text_matching.py`. 51 targeted tests pass (34 in test_alignment_matching.py, 7 in test_text_matching_album.py, 10 in test_alignment_resolved_context.py). External call sites in match_pipeline.py unpack via named variables — unaffected.
+- CR-NEW7: `ValueError` correctly raised with clear diagnostic message when incomplete data dict passed; message includes sorted lists of missing keys and expected keys.
+
+impacted_files:
+- `07_implementation/src/shared_utils/text_matching.py` (_CandidateMatchResult NamedTuple added, _score_candidate_match return updated, fuzzy_find_candidate type and access updated)
+- `07_implementation/src/ingestion/export_spotify_max_dataset.py` (_REQUIRED_DATA_KEYS frozenset added, validation guard added to _write_all_artifacts)
+- `00_admin/change_log.md` (C-570)
+- `00_admin/decision_log.md` (D-278)
+
+review_date:
+none
+
+## D-277
+- date: 2026-04-19
+- status: accepted
+
+context:
+User continued comprehensive code audit session from Batch 2 (CR-3, CR-4) to Batch 3 (CR-5, CR-6, CR-7, CR-8 from UNDO-S). Batch 3 focused on low-severity legibility and performance gaps: genre-count lookup optimization (CR-5), module import hoisting (CR-6), PEP 8 class naming (CR-7), and magic number constant promotion (CR-8).
+
+decision:
+1) Fix CR-5: Enhance `decide_candidate()` in `playlist/rules.py` to accept optional `genre_counts: Counter[str] | None` parameter for O(1) genre lookup instead of O(n) playlist scan per candidate.
+2) Fix CR-6: Hoist module-level import of `rapidfuzz.fuzz` in `shared_utils/text_matching.py` to avoid repeated per-call `import_module()` overhead.
+3) Fix CR-7: Rename `fuzz` class to `_FuzzCompat` to follow PEP 8 convention while exporting as `fuzz = _FuzzCompat` for backward compatibility.
+4) Fix CR-8: Promote magic number thresholds (`0.75`, `0.5`) in `transparency/explanation_driver.py` to named constants `_STRONG_MATCH_THRESHOLD`, `_MODERATE_MATCH_THRESHOLD`.
+
+alternatives_considered:
+- CR-5: Keep O(n) scan and optimize elsewhere (rejected: per-candidate genre lookup is the clear bottleneck for large playlists).
+- CR-5: Require genre_counts parameter (rejected: backward compatibility risk; Optional parameter safer).
+- CR-6: Keep per-call import overhead (rejected: avoidable cost).
+- CR-7: Keep class as `fuzz` (rejected: violates PEP 8 class naming convention).
+- CR-8: Keep magic numbers (rejected: hard-coded thresholds are error-prone during refactoring).
+
+rationale:
+CR-5 improves asymptotic complexity without breaking existing code. CR-6 eliminates per-call module-lookup overhead. CR-7 improves code style compliance while preserving usability. CR-8 improves maintainability by making threshold values discoverable and self-documenting. All changes are backward-compatible and low-risk.
+
+evidence_basis:
+- CR-5: `genre_counts` parameter tested with Counter provided (returns excluded on cap exceed) and None (fallback scan returns included). Type annotation `Counter[str] | None` correct.
+- CR-6: Module-level globals `_FUZZ_MODULE` and `_FUZZ_RATIO_FN` initialized once at import time; `_compute_ratio()` uses cached result. Per-call overhead eliminated.
+- CR-7: Renamed class `_FuzzCompat` follows PEP 8; backward-compatibility export `fuzz = _FuzzCompat` verified (fuzz.ratio() works).
+- CR-8: Named constants verified importable and have correct values (0.75, 0.5); build_why_selected() uses constants instead of literals.
+- All changes: Syntax validation clean (pyright reports no errors), code execution validation successful (all 4 validations passed).
+
+impacted_files:
+- `07_implementation/src/playlist/rules.py` (genre_counts parameter added, genre cap check optimized to use Counter when provided)
+- `07_implementation/src/shared_utils/text_matching.py` (module-level import initialization, _FuzzCompat class, backward-compatible export)
+- `07_implementation/src/transparency/explanation_driver.py` (named constants defined, magic numbers replaced in build_why_selected())
+- `00_admin/unresolved_issues.md` (CR-5, CR-6, CR-7, CR-8 marked complete)
+- `00_admin/change_log.md` (C-569)
+- `00_admin/decision_log.md` (D-277)
+
+review_date:
+none
 
 ## D-136
 - date: 2026-04-17
@@ -6052,7 +6559,7 @@ impacted_files:
 review_date:
 none
 
-## D-236
+## D-288
 - date: 2026-04-19
 - proposed_by: Copilot (UNDO-R C/F/G tranche)
 - status: accepted
@@ -6141,6 +6648,40 @@ impacted_files:
 - `00_admin/thesis_state.md`
 - `00_admin/change_log.md`
 - `00_admin/decision_log.md`
+
+review_date:
+none
+
+## D-290
+- date: 2026-04-20
+- status: accepted
+
+context:
+User requested clearing `07_implementation/mentor_feedback_submission` and replacing it with exactly what needs to be sent to mentor.
+
+decision:
+1) Replace the previous full-source clone style contents with a lightweight mentor-send package.
+2) Curate a bounded attachment set spanning chapter drafts, submission-readiness evidence, governance traceability, and reproducibility/demo guidance.
+3) Include send-ready communication artifacts (`EMAIL_TO_MENTOR.txt`, `MENTOR_UPDATE_SUMMARY.md`) so the package can be sent immediately without re-authoring.
+
+alternatives_considered:
+- Keep shipping a full implementation clone (rejected: larger than needed for mentor review and harder to navigate).
+- Send only one summary file without attachments (rejected: weak review context and back-and-forth likely).
+
+rationale:
+A curated package is faster for mentor review, reduces noise, and directly answers the user's request for a send-ready folder.
+
+evidence_basis:
+`07_implementation/mentor_feedback_submission` now contains an attachments tree plus send-ready cover files; prior folder contents were removed first.
+
+impacted_files:
+- `07_implementation/mentor_feedback_submission/README.md`
+- `07_implementation/mentor_feedback_submission/EMAIL_TO_MENTOR.txt`
+- `07_implementation/mentor_feedback_submission/MENTOR_UPDATE_SUMMARY.md`
+- `07_implementation/mentor_feedback_submission/attachments/**`
+- `00_admin/decision_log.md`
+- `00_admin/change_log.md`
+- `00_admin/thesis_state.md`
 
 review_date:
 none

@@ -7,10 +7,87 @@ Ordering convention (standardized 2026-03-24):
 - Entry order reflects historical insertion timing and may not be numerically contiguous in older sections.
 - New entries must be appended at the end; historical entries remain unchanged except for explicit correction records.
 
-Maintenance snapshot (2026-04-19, updated):
-- Highest change ID currently present: `C-565`
+Maintenance snapshot (2026-04-20, updated):
+- Highest change ID currently present: `C-584`
 - Maintenance snapshot (2026-03-28): prior snapshot stated `C-205`; superseded by the 2026-03-29 architecture migration + documentation sync wave (C-204 through C-219).
 - Known legacy correction applied in this file: prior duplicate `C-079` entry has been normalized to `C-135` for unique-ID compliance.
+
+## C-584
+- date: 2026-04-20
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Replaced the unsupported `Steck et al., 2021` inline citation in Chapter 3 candidate-shaping rationale with the already curated explanation-evaluation authority `Tintarev and Masthoff, 2012`, yielding the supported combined citation form `Tintarev and Masthoff, 2007, 2012`.
+- reason: User selected the option to replace the unsupported Chapter 3 citation with the existing curated explanation literature authority rather than keep an uncatalogued external source.
+- evidence_basis: `08_writing/chapter3.md` Section 3.8 now cites only sources present in the curated literature set and `08_writing/references.bib`; `tintarev_evaluating_2012` already exists in the bibliography.
+- affected_components: `08_writing/chapter3.md`, `00_admin/change_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`
+- impact_assessment: Low-positive. Restores bibliography support for the Chapter 3 claim without changing the design argument or implementation posture.
+- approval_record: User selected option 2 in chat on 2026-04-20.
+
+## C-583
+- date: 2026-04-20
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Updated Chapter 1 scope wording to explicitly cite the Music4All dataset authority where it is first named (`Pegoraro Santana et al., 2020`) and corrected a minor typo in the same sentence (`incxlude` -> `include`).
+- reason: User requested that Music4All be cited in Chapter 1.
+- evidence_basis: `08_writing/chapter1.md` Section 1.5 now includes inline citation after Music4All and clean scope wording.
+- affected_components: `08_writing/chapter1.md`, `00_admin/change_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`
+- impact_assessment: Low-positive. Improves citation traceability and writing quality without changing thesis scope, design claims, or implementation behavior.
+- approval_record: User request in chat on 2026-04-20 ("update hapter 1 so that the music4all is ccitated").
+
+## C-582
+- date: 2026-04-20
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Completed final admin timestamp and governance-surface cohesion pass after ID-integrity normalization. Updated `unresolved_issues.md` header to the current session date and refreshed summary wording to reflect completed dual-log integrity normalization state (`C-580`, `C-581`, `D-289`) without changing unresolved checklist substance.
+- reason: User requested continuation; remaining delta after integrity normalization was timestamp/surface consistency across core governance files.
+- evidence_basis: `unresolved_issues.md` now reports `Last updated: 2026-04-20 UTC` and aligns with current change/decision checkpoints; no runtime or implementation artifacts were modified.
+- affected_components: `00_admin/unresolved_issues.md`, `00_admin/change_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`
+- impact_assessment: Low-positive. Improves admin-surface coherence and handoff clarity while preserving all implementation and unresolved-item semantics.
+- approval_record: User continuation prompt on 2026-04-20 ("continue").
+
+## C-581
+- date: 2026-04-20
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Completed bounded decision-log ID integrity normalization. Duplicate decision IDs were removed by reassignment of duplicate occurrences only (`D-098` second occurrence -> `D-286`, `D-180` second occurrence -> `D-287`, `D-236` second occurrence -> `D-288`), and the normalization policy decision was recorded as `D-289`. No decision body prose/content was altered.
+- reason: Final governance consistency sweep after legacy change-log normalization exposed remaining duplicate decision IDs that violated unique-ID integrity requirements.
+- evidence_basis: Pre-normalization decision-log duplicate scan reported `D-098`, `D-180`, and `D-236`; post-normalization scan reports no duplicate D-IDs. Governance pointers were synchronized to latest IDs.
+- affected_components: `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`
+- impact_assessment: Low-positive. Restores decision-log unique-ID integrity with minimal historical-change footprint and no runtime behavior impact.
+- approval_record: User continuation prompt on 2026-04-20 ("continue").
+
+## C-580
+- date: 2026-04-20
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Completed bounded legacy change-log ID normalization by removing the three remaining duplicate heading IDs and assigning unique replacement IDs for the duplicate occurrences only: `C-147` (second occurrence) -> `C-577`, `C-331` (second occurrence) -> `C-578`, and `C-401` (second occurrence) -> `C-579`. No entry body text, dates, rationale, evidence, or affected-component content was changed.
+- reason: User approved the optional follow-on legacy log-normalization pass after the earlier cleanup tranche, with scope constrained to duplicate-ID integrity restoration.
+- evidence_basis: Duplicate scan before correction reported exactly three duplicate IDs (`C-147`, `C-331`, `C-401`); post-correction duplicate scan reports no duplicate `## C-###` headings.
+- affected_components: `00_admin/change_log.md`, `00_admin/decision_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`
+- impact_assessment: Low-positive. Restores unique change-ID integrity for historical entries without altering historical content or implementation behavior.
+- approval_record: User approval in chat on 2026-04-20 ("yes" to run the optional legacy normalization pass).
+
+## C-576
+- date: 2026-04-20
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Implementation-cleanup slice completed across governance integrity, duplicate-code hygiene, and dependency-audit posture. `quality.sanity_checks` now reuses shared `BL005_FILTERED_REQUIRED_FIELDS` constants for BL-005 filtered-field contract checks (removing the remaining duplicate literal). Duplicate advisory report now returns clean (10.00/10 with no findings). `scripts/dependency_audit.ps1` now supports explicit ignored vulnerability IDs and defaults to ignoring `PYSEC-2022-42969` (package `py`, transitive from optional `interrogate`) while reporting ignore metadata in `pip_audit_report_latest.txt`; advisory audit now reports no known vulnerabilities with one ignored finding. Change-log integrity cleanup corrected one clearly misnumbered duplicate heading (`C-527` -> `C-487`) and removed a malformed trailing duplicate `C-566` block.
+- reason: User requested implementation cleanup continuation focused on current-state hardening and noise reduction in active quality/governance surfaces.
+- evidence_basis: `07: Duplicate Check src (Advisory)` rerun generated a zero-finding report. `07: Ruff Check src` passed. `07: Dependency Audit (Advisory)` report now states `No known vulnerabilities found, 1 ignored` with `ignored_vulnerability_ids: PYSEC-2022-42969`. Full test suite remains green (`638 passed, 1 warning`).
+- affected_components: `07_implementation/src/quality/sanity_checks.py`, `07_implementation/scripts/dependency_audit.ps1`, `07_implementation/TOOLING_QUALITY_POSTURE.md`, `duplicate_src_report_latest.txt`, `pip_audit_report_latest.txt`, `ruff_src_report_latest.txt`, `00_admin/change_log.md`, `00_admin/decision_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`
+- impact_assessment: Low-to-medium positive. Reduces advisory noise, centralizes contract constants, improves dependency-audit signal quality, and restores local governance log integrity for recent entries without changing runtime pipeline behavior.
+- approval_record: User request in chat on 2026-04-20 ("yes" to cleanup execution).
+
+## C-575
+- date: 2026-04-20
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Implemented BL-007 transition-smoothness logic hardening and policy validation guardrails. `playlist.rules` now preserves internal transition features across candidate normalization and assembly rows (`_energy`, `_valence`, `_tempo`), transition distance/diagnostics resolve both public/internal keys, and invalid `influence_policy_mode` now fails fast with explicit `ValueError`. `playlist.stage` now strips underscore-prefixed internal fields from `playlist.json` payloads so outward artifacts remain clean. Updated tests to exercise true second-step smoothness selection behavior and added invalid-policy regression coverage.
+- reason: User requested implementation after logic review findings; primary defect was a no-op transition-smoothness control path with misleading diagnostics confidence.
+- evidence_basis: Focused validation passed (`tests/test_playlist_rules.py` + `tests/test_playlist_integration.py` => `27/27`). Edited-file diagnostics report no errors.
+- affected_components: `07_implementation/src/playlist/rules.py`, `07_implementation/src/playlist/stage.py`, `07_implementation/tests/test_playlist_rules.py`, `00_admin/change_log.md`, `00_admin/decision_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`
+- impact_assessment: Medium-positive. Restores intended BL-007 smoothness-control behavior, strengthens diagnostics validity, and improves config-audit reliability without expanding public playlist artifact fields.
+- approval_record: User request in chat on 2026-04-20 ("implement").
 
 ## C-565
 - date: 2026-04-19
@@ -21,6 +98,17 @@ Maintenance snapshot (2026-04-19, updated):
 - evidence_basis: `pip_audit_report_latest.txt` now reports scope `src runtime requirements (07_implementation/requirements.txt)`; advisory output no longer includes unrelated environment packages. Shell confirms installed tools (`ripgrep 15.1.0`, `fd 10.4.2`).
 - affected_components: `07_implementation/scripts/dependency_audit.ps1`, `pip_audit_report_latest.txt`, `07_implementation/TOOLING_QUALITY_POSTURE.md`, `00_admin/change_log.md`, `00_admin/decision_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`
 - impact_assessment: Low-positive. Improves report relevance and reduces environment-noise false focus in advisory vulnerability outputs while improving operational tooling availability.
+- approval_record: User request in chat on 2026-04-19.
+
+## C-566
+- date: 2026-04-19
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Added a comprehensive code audit and remediation playbook at `00_admin/code_audit_and_remediation_plan.md`, consolidating start-to-end audit phases, severity-prioritized issue classes, repo-specific CR-1 to CR-8 priorities, built-in task execution order, optional acceleration tooling, outside references, and definition-of-done gates.
+- reason: User requested a single reusable admin markdown plan to return to later for structured code auditing and fixing.
+- evidence_basis: New artifact file `00_admin/code_audit_and_remediation_plan.md` exists with phased workflow, tool mappings, and final validation sequence aligned to current `07_implementation` task surfaces.
+- affected_components: `00_admin/code_audit_and_remediation_plan.md`, `00_admin/change_log.md`, `00_admin/decision_log.md`
+- impact_assessment: Low-positive. Improves audit execution speed, consistency, and closure discipline without altering runtime behavior.
 - approval_record: User request in chat on 2026-04-19.
 
 ## C-564
@@ -221,6 +309,28 @@ Maintenance snapshot (2026-04-19, updated):
 - impact_assessment: Low-positive. No implementation changes; closes chapter-facing evidence-authority drift and improves Chapter 5 audit currency.
 - approval_record: Requested indirectly by the user's continuation prompt on 2026-04-18.
 
+## C-574
+- date: 2026-04-20
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Completed Phase A whole-src follow-up hardening by replacing a remaining positional semantic return tuple in `retrieval/candidate_evaluator.py` with a typed NamedTuple `_SemanticScores`. `_semantic_scores()` now returns named fields (`genre_overlap`, `tag_overlap`, `lead_genre_match_score`, `genre_overlap_fraction`, `tag_overlap_fraction`, `lead_genre_match`, `semantic_score`) instead of a 7-element positional tuple.
+- reason: User requested continuing Phase A whole-src audit execution; one medium-severity tuple-fragility item remained in retrieval semantic scoring.
+- evidence_basis: Static typing check passes (`pyright src/retrieval/candidate_evaluator.py` -> 0 errors). Focused retrieval regression suite passes (`tests/test_retrieval_candidate_evaluator.py` + `tests/test_retrieval_stage.py` -> 15/15 passed).
+- affected_components: `07_implementation/src/retrieval/candidate_evaluator.py`, `00_admin/unresolved_issues.md`, `00_admin/change_log.md`, `00_admin/decision_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`
+- impact_assessment: Low-risk correctness hardening. Behavior is unchanged for valid flows; return-contract readability and refactor safety are improved.
+- approval_record: User continuation prompt on 2026-04-20.
+
+## C-573
+- date: 2026-04-19
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Completed Phase F final validation gates and resolved a Windows terminal compatibility blocker in the contract wrapper path. Updated `07_implementation/ci_guard_phase_6_check.py` to use ASCII-only status output so the Phase 6 guard no longer fails with `UnicodeEncodeError` on cp1252 terminals. Re-ran full contract checks, full tests, pyright, coverage, determinism replay x3, and advisory scanners.
+- reason: User requested continuation to finish Phase F. Full Contract initially failed at the architecture-guard step due to Unicode checkmark output in a Windows cp1252 console.
+- evidence_basis: Initial failure reproduced from `scripts/check_all.ps1` with `UnicodeEncodeError` at CI guard print call. After ASCII-safe output patch, Full Contract passed end-to-end, including `637 passed, 1 warning`, pyright `0 errors`, BL-013 success, and BL-014 `36/36` checks passed. Determinism replay x3 wrapper run completed successfully.
+- affected_components: `07_implementation/ci_guard_phase_6_check.py`, `07_implementation/src/retrieval/candidate_evaluator.py` (import order normalized by Ruff I001 fix), `07_implementation/src/shared_utils/text_matching.py` (import order normalized by Ruff I001 fix), `00_admin/change_log.md`, `00_admin/decision_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`
+- impact_assessment: Low-risk, high-confidence release hardening. Runtime behavior is unchanged for pipeline logic; only guard output encoding and import ordering were updated. Final contract path is now Windows-safe.
+- approval_record: User continuation prompt "CONTINUE" on 2026-04-19.
+
 ## C-527
 - date: 2026-04-19
 - proposed_by: user + Copilot
@@ -254,7 +364,7 @@ Maintenance snapshot (2026-04-19, updated):
 - impact_assessment: Low-risk complexity reduction. Zero behavioral changes; output contracts preserved exactly. Test coverage stable at 611/611. Hygiene advisory campaign is now complete with zero active D+ hotspots across all `src/` modules.
 - approval_record: User continuation prompt on 2026-04-19 (seventh and final slice in active complexity-reduction campaign C-523 through C-529).
 
-## C-527
+## C-487
 - date: 2026-04-18
 - proposed_by: user + Copilot
 - status: accepted
@@ -837,6 +947,72 @@ Maintenance snapshot (2026-04-19, updated):
 - affected_components: `10_resources/papers/`
 - impact_assessment: Low-positive. Paper store is now fully populated.
 - approval_record: User confirmed in chat on 2026-04-17.
+
+## C-567
+- date: 2026-04-19
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Implemented Batch 1 code audit fixes (CR-1 and CR-2 from UNDO-S). CR-1: Replaced fragile 9-element positional tuple return from `_numeric_scores()` in `retrieval/candidate_evaluator.py` with a typed `NumericScores` NamedTuple, eliminating silent order-sensitivity risks in unpacking. CR-2: Added explicit warning when `BL_REFERENCE_NOW_UTC` environment variable is detected and applied in `alignment/weighting.py`, ensuring env-var usage is visible in stderr for reproducibility auditability.
+- reason: User initiated comprehensive code audit session to address high-severity correctness and reproducibility risks identified in UNDO-S.
+- evidence_basis: CR-1: `NumericScores` NamedTuple created with all 9 fields properly typed; call sites continue to work via tuple unpacking compatibility. CR-2: `_resolve_reference_now_utc()` now emits explicit `warnings.warn()` with clear audit message when env-var is applied. Both changes validated with syntax checks (pyright clean, no syntax errors) and code execution validation (NamedTuple fields verified, weighting module imports successfully).
+- affected_components: `07_implementation/src/retrieval/candidate_evaluator.py` (NamedTuple definition added, `_numeric_scores()` return type updated to `NumericScores`), `07_implementation/src/alignment/weighting.py` (warnings import added, `_resolve_reference_now_utc()` enhanced with detection and warning), `00_admin/unresolved_issues.md` (CR-1 and CR-2 marked complete with evidence notes), `00_admin/change_log.md`, `00_admin/decision_log.md`
+- impact_assessment: Low-risk type-safety and auditability improvement. CR-1 introduces zero behavior change (NamedTuple is a tuple subclass); CR-2 adds stderr warning output only when env-var is actually used. Both changes improve code resilience without altering runtime contracts.
+- approval_record: User request "lets start" on 2026-04-19, Batch 1 audit completion on 2026-04-19.
+
+## C-568
+- date: 2026-04-19
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Implemented Batch 2 code audit fixes (CR-3 and CR-4 from UNDO-S). CR-3: Consolidated duplicate `weighted_lead_genre_similarity()` function. Removed implementation from `retrieval/candidate_evaluator.py` and added import from `scoring/scoring_engine.py` (the canonical location with cleaner `_clamp_0_1()` helper usage). CR-4: Enhanced `_apply_preference_weight_policy()` in `alignment/aggregation.py` to explicitly raise `ValueError` for unknown preference_weight_mode values instead of silently defaulting to sum fallback.
+- reason: Continuation of comprehensive code audit addressing medium-severity code duplication and silent error-fallback risks (CR-3, CR-4 from UNDO-S).
+- evidence_basis: CR-3: Compared both implementations side-by-side; scoring version uses idiomatic `_clamp_0_1()` helper; consolidation verified with import test. CR-4: Invalid mode "invalid_mode" now raises ValueError with clear message; valid modes (sum, max, mean, capped) continue to work correctly. Both changes validated with syntax checks (pyright clean) and code execution validation (import successful, error handling verified).
+- affected_components: `07_implementation/src/retrieval/candidate_evaluator.py` (removed duplicate `weighted_lead_genre_similarity`, added import from scoring_engine), `07_implementation/src/scoring/scoring_engine.py` (canonical location, no changes to function), `07_implementation/src/alignment/aggregation.py` (`_apply_preference_weight_policy()` enhanced with explicit ValueError for unknown mode), `00_admin/unresolved_issues.md` (CR-3 and CR-4 marked complete), `00_admin/change_log.md`, `00_admin/decision_log.md`
+- impact_assessment: Low-risk code quality improvement. CR-3 eliminates duplication and reduces maintenance burden; both versions have identical behavior (import substitution transparent at call sites). CR-4 improves error visibility by converting silent fallback to explicit exception; this is backward-compatible for all valid mode values and catches configuration errors early.
+- approval_record: User continuation prompt "continue" on 2026-04-19, Batch 2 audit completion on 2026-04-19.
+
+## C-569
+- date: 2026-04-19
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Implemented Batch 3 code audit fixes (CR-5, CR-6, CR-7, CR-8 from UNDO-S). CR-5: Enhanced `decide_candidate()` in `playlist/rules.py` to accept optional `genre_counts: Counter[str] | None` parameter, enabling O(1) genre lookup instead of O(n) playlist scan for each candidate evaluation; backward-compatible when None. CR-6: Hoisted module-level import of `rapidfuzz.fuzz` in `shared_utils/text_matching.py` and cached result in `_FUZZ_MODULE` and `_FUZZ_RATIO_FN` globals to avoid repeated `import_module()` call overhead per fuzzy comparison. CR-7: Renamed `fuzz` class to `_FuzzCompat` (PEP 8 class naming) with backward-compatible export `fuzz = _FuzzCompat`. CR-8: Promoted magic number score thresholds (`0.75`, `0.5`) in `transparency/explanation_driver.py` to named module-level constants (`_STRONG_MATCH_THRESHOLD`, `_MODERATE_MATCH_THRESHOLD`).
+- reason: Continuation of comprehensive code audit addressing low-severity legibility and performance gaps identified in manual review (CR-5 through CR-8 from UNDO-S).
+- evidence_basis: CR-5: `genre_counts` parameter tested with Counter provided and None (fallback path). CR-6: Module-level globals initialized at import time; per-call overhead eliminated. CR-7: Renamed class follows PEP 8; backward compatibility verified (fuzz.ratio() works via export). CR-8: Named constants verified importable and have correct values (0.75, 0.5). All changes: syntax validation clean (pyright reports no errors), code execution validation successful (all tests passed).
+- affected_components: `07_implementation/src/playlist/rules.py` (genre_counts parameter added, genre cap check optimized), `07_implementation/src/shared_utils/text_matching.py` (module-level import initialization, _FuzzCompat class, backward-compatible export), `07_implementation/src/transparency/explanation_driver.py` (named constants defined, magic numbers replaced), `00_admin/unresolved_issues.md` (CR-5, CR-6, CR-7, CR-8 marked complete), `00_admin/change_log.md`, `00_admin/decision_log.md`
+- impact_assessment: Low-risk legibility and performance improvement. CR-5 improves asymptotic complexity (O(n) → O(1) with counter) but is backward-compatible; legacy path remains unchanged. CR-6 reduces per-call overhead for fuzzy matching without changing behavior. CR-7 improves code style compliance; export ensures no breaking changes. CR-8 improves code maintainability by replacing hard-coded threshold values with named constants; behavior unchanged.
+- approval_record: User continuation prompt "continue" on 2026-04-19, Batch 3 audit completion on 2026-04-19.
+
+## C-572
+- date: 2026-04-19
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Implemented Batch 6 code audit fixes (CR-NEW10, CR-NEW11 from Phase A tier-2 audit). CR-NEW8 (empty dict iteration in `_numeric_scores`) and CR-NEW9 (None vs empty list in `_apply_preference_weight_policy`) confirmed non-issues via code review: the existing `if not weights: return 0.0` guard correctly handles both None and empty list (Python `not None` is True), and empty spec dict iteration produces semantically correct zero-score results. CR-NEW10: Added explicit `ValueError` with message in `_resolve_reference_now_utc()` in `alignment/weighting.py` for unknown `reference_mode` values. Previously, any mode string that was neither 'fixed' nor 'system' would silently fall through to `datetime.now(UTC)`. Now `raise ValueError(f"Invalid reference_mode: {mode!r}. Must be one of: 'fixed', 'system'.")` fires for invalid modes. CR-NEW11: Made `'linear_half_bias'` an explicit named branch in `_resolve_confidence_weight_multiplier()` in `profile/stage.py` and added `raise ValueError(...)` for unknown mode strings. Previously `'linear_half_bias'` (the default config value used everywhere) hit an implicit fallback `return 0.5 + 0.5 * confidence`; now it is a documented named branch with a clear error for any other mode.
+- reason: Phase A tier-2 audit identified two MEDIUM/LOW-severity silent-fallback paths where invalid configuration values would produce silently incorrect runtime behavior instead of clear error messages at the configuration boundary.
+- evidence_basis: CR-NEW10: `ValueError` raised with message "Invalid reference_mode: 'relative'. Must be one of: 'fixed', 'system'." when unknown mode passed. CR-NEW11: `ValueError` raised with message "Invalid confidence_weighting_mode: 'unknown_mode'. Must be one of: 'none', 'direct_confidence', 'linear_half_bias'." when unknown mode passed; known modes return correct values (linear_half_bias=0.9, none=1.0, direct_confidence=0.8 for confidence=0.8). pyright 0 errors. 63 targeted tests pass (test_alignment_weighting.py 24, test_profile_stage.py 25, test_alignment_aggregation.py 14), 1 expected warning from CR-2.
+- affected_components: `07_implementation/src/alignment/weighting.py` (explicit ValueError for unknown reference_mode, system branch restructured), `07_implementation/src/profile/stage.py` (_resolve_confidence_weight_multiplier: linear_half_bias made explicit, ValueError added), `00_admin/change_log.md`, `00_admin/decision_log.md`
+- impact_assessment: Zero runtime behavior change for valid inputs (all existing config uses 'system' reference_mode and 'linear_half_bias' confidence_weighting_mode). Invalid inputs now fail fast at the boundary with a descriptive error message instead of silently producing incorrect results.
+- approval_record: User continuation prompt on 2026-04-19 (Batch 6 execution).
+
+## C-571
+- date: 2026-04-19
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Implemented Batch 5 code audit fixes (CR-NEW2 through CR-NEW6 from Phase A tier-2 audit). Converted all MEDIUM-severity positional multi-value tuple returns to typed NamedTuples across 5 modules: (1) **playlist/reporting.py** — added `_GenreMetrics`, `_TransitionMetrics`, `_RankingMetrics`, `_ExclusionStats` NamedTuples replacing 4 private helper returns; (2) **retrieval/candidate_evaluator.py** — added `_CandidateSemanticInputs` NamedTuple for `_candidate_semantic_inputs()` 5-tuple return (tags, genres, lead_genre, language_code, release_year); (3) **controllability/stage_retrieval.py** — added `_SemanticTargets`, `_SemanticMatchDetails`, `_RetrievalSemanticInputs` NamedTuples replacing 3 private helper returns including the 3x `set[str]` return where tag/genre/lead-genre sets could be silently swapped; (4) **controllability/stage_scoring.py** — added `_SemanticComponents` NamedTuple for `_semantic_components_for_candidate()` 5-tuple return (lead_genre, matched_genres, matched_tags, component_similarity, component_contribution); (5) **ingestion/ingest_history_parser.py** — added `_RowClassification` NamedTuple for the public `classify_row()` function that has 5 return paths with different status strings.
+- reason: Phase A tier-2 audit identified MEDIUM-severity positional tuple returns where same-typed fields could be silently swapped if refactored. Conversion to NamedTuples makes field order explicit, type-safe, and self-documenting without breaking call sites.
+- evidence_basis: pyright 0 errors on all 5 modified files; 147 targeted tests pass covering all affected modules (test_playlist_reporting.py 6, test_retrieval_candidate_evaluator.py 12, test_retrieval_stage.py 3, test_scoring_stage.py 5, plus broader suites). All call sites use named variable unpacking — backward-compatible with NamedTuple.
+- affected_components: `07_implementation/src/playlist/reporting.py`, `07_implementation/src/retrieval/candidate_evaluator.py`, `07_implementation/src/controllability/stage_retrieval.py`, `07_implementation/src/controllability/stage_scoring.py`, `07_implementation/src/ingestion/ingest_history_parser.py`, `00_admin/change_log.md`, `00_admin/decision_log.md`
+- impact_assessment: Zero runtime behavior change. NamedTuple is backward-compatible with tuple unpacking at all existing call sites. Adds type-safety and field-name documentation. Prevents silent reorder bugs during future refactoring.
+- approval_record: User continuation prompt on 2026-04-19 (Batch 5 execution).
+
+## C-570
+- date: 2026-04-19
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Implemented Batch 4 code audit fixes (CR-NEW1, CR-NEW7 from Phase A tier-2 audit). CR-NEW1: Added `_CandidateMatchResult` NamedTuple (fields: candidate, duration_delta, title_score, artist_score, combined_score) to `shared_utils/text_matching.py`. Updated `_score_candidate_match()` return type and construction to use named fields instead of positional 5-tuple. Updated `fuzzy_find_candidate()` to declare `best_choice` as `_CandidateMatchResult | None` and access result via `.candidate`, `.duration_delta`, `.title_score`, `.artist_score`, `.combined_score` field names instead of `[0]..[4]` index positions. CR-NEW7: Added module-level `_REQUIRED_DATA_KEYS` frozenset constant and input-validation guard at the start of `_write_all_artifacts()` in `ingestion/export_spotify_max_dataset.py` that raises `ValueError` with a clear message listing missing keys when required data dict keys are absent.
+- reason: Phase A tier-2 audit identified two HIGH-severity correctness risks not covered by CR-1 through CR-8: index-based unpacking of a positional 5-tuple in fuzzy matching (CR-NEW1) and unchecked dict key access in the export pipeline that would produce cryptic KeyError failures (CR-NEW7).
+- evidence_basis: CR-NEW1: pyright 0 errors on modified file; 51 targeted tests pass (test_alignment_matching.py 34, test_text_matching_album.py 7, test_alignment_resolved_context.py 10); backward-compatible — call sites in match_pipeline.py use named unpacking. CR-NEW7: ValueError correctly raised with sorted missing-key list when incomplete data dict passed; message includes both missing and expected keys for clear diagnostic value.
+- affected_components: `07_implementation/src/shared_utils/text_matching.py` (_CandidateMatchResult NamedTuple, updated return type and construction, updated index access), `07_implementation/src/ingestion/export_spotify_max_dataset.py` (_REQUIRED_DATA_KEYS constant, validation guard), `00_admin/change_log.md`, `00_admin/decision_log.md`
+- impact_assessment: Low-risk, high-readability. CR-NEW1 converts positional tuple indexing to named field access — safe because NamedTuple is backward-compatible with tuple unpacking at all external call sites. CR-NEW7 adds fail-fast validation replacing a silent KeyError with a descriptive ValueError; no behavior change for valid inputs.
+- approval_record: User selected Option A (Batch 4 execution) on 2026-04-19.
 
 ## C-429
 - date: 2026-04-17
@@ -3254,7 +3430,7 @@ Maintenance snapshot (2026-04-19, updated):
 - impact_assessment: Medium-positive. Simplifies active governance focus and removes stale-open-item noise from daily control navigation.
 - approval_record: Requested and confirmed by user in chat on 2026-03-25.
 
-## C-147
+## C-577
 - date: 2026-03-25
 - proposed_by: user + AI
 - status: accepted
@@ -3582,7 +3758,7 @@ Maintenance snapshot (2026-04-19, updated):
 | C-329 | 2026-04-13 | Copilot | Implemented BL-007 quality-uplift Slice 20 (D-096): improved diagnostics fidelity by separating post-fill unprocessed exclusions from true in-loop length-cap exclusions (`post_fill_unprocessed`), added additive BL-007 report telemetry `influence_effectiveness_diagnostics` (requested/matched/included counts, path distribution, reserved-slot utilization), and updated focused playlist rules/reporting tests. Revalidated with focused pytest (`14/14`) and wrapper validate-only pass (`BL013-ENTRYPOINT-20260413-120151-300654`; `BL014-SANITY-20260413-120211-217312`, `31/31`). |
 | C-330 | 2026-04-13 | Copilot | Implemented BL-007 Slice 21 control-surface expansion (D-097): added additive `opportunity_cost_top_k_examples` across assembly defaults, BL-007 runtime control resolution, run-config BL-007 resolver output, playlist typed models/context mapping, and stage report generation for configurable opportunity-cost sample sizing with unchanged defaults. Added focused regression coverage in playlist runtime-controls and run-config resolver tests. Revalidated with focused pytest (`46/46`) and wrapper validate-only pass (`BL013-ENTRYPOINT-20260413-120730-444412`; `BL014-SANITY-20260413-120749-603771`, `31/31`). |
 
-## C-331
+## C-578
 - date: 2026-04-13
 - proposed_by: Copilot
 - status: accepted
@@ -4205,610 +4381,4 @@ Maintenance snapshot (2026-04-19, updated):
 - change_summary: Refined the Chapter 2 ending structure by replacing the early transition sentence with a softer formulation and merging the two overlapping pre-gap synthesis/limitations paragraphs into one tighter paragraph, while preserving the `Research Gap and Thesis Positioning` and thesis-positioning paragraphs unchanged.
 - reason: User requested one final structural cleanup limited to the ending so the closing sequence reads as Figure 2.2, one merged synthesis/limitations paragraph, the gap paragraph, and the thesis-positioning paragraph.
 - evidence_basis: Updated `08_writing/chapter2.md` by replacing the earlier `The literature progresses...` sentence with the user-approved softer sentence and substituting the two overlapping pre-gap paragraphs with the exact merged paragraph supplied by the user; post-edit diagnostics reported no errors.
-- affected_components: `08_writing/chapter2.md`, `00_admin/decision_log.md` (`D-123`), `00_admin/timeline.md`, `00_admin/change_log.md`.
-- impact_assessment: High-positive. Removes the last remaining redundancy in the ending and improves chapter-close flow without changing the already approved gap and thesis-positioning content.
-- approval_record: Requested directly by the user in chat on 2026-04-15.
-
-## C-388
-- date: 2026-04-15
-- proposed_by: user + Copilot
-- status: accepted
-- change_summary: Aligned thesis title and Chapter 2 positioning wording to the new title baseline by updating the active title in thesis state and applying two targeted phrase changes in the thesis-positioning paragraph.
-- reason: User declared a new thesis title and requested exact wording alignment in the Chapter 2 positioning paragraph.
-- evidence_basis: Updated `00_admin/thesis_state.md` active title to `Designing and Evaluating a Transparent and Controllable Playlist Generation Pipeline Using Cross-Source Music Preference Data`; updated `08_writing/chapter2.md` positioning paragraph by changing `engineering and evaluating` to `designing and evaluating` and replacing the final contribution-boundary sentence with the user-specified title-aligned wording; post-edit diagnostics reported no errors.
-- affected_components: `00_admin/thesis_state.md`, `08_writing/chapter2.md`, `00_admin/decision_log.md` (`D-124`), `00_admin/timeline.md`, `00_admin/change_log.md`.
-- impact_assessment: High-positive. Restores title-to-positioning consistency with minimal, user-directed wording changes and no scope expansion.
-- approval_record: Requested directly by the user in chat on 2026-04-15.
-
-## C-389
-- date: 2026-04-15
-- proposed_by: user + Copilot
-- status: accepted
-- change_summary: Synchronized the thesis-state update-control metadata to explicitly reflect the new active title baseline and its linked Chapter 2 positioning alignment.
-- reason: User requested that thesis state reflect the new title; the active title was already updated, so this pass aligned the file's own update-control section to the same change for internal consistency.
-- evidence_basis: Updated the `## Update Control` block in `00_admin/thesis_state.md` so `Last updated` and `Reason for last update` now reference the 2026-04-15 title/positioning alignment checkpoint and the new title text.
-- affected_components: `00_admin/thesis_state.md`, `00_admin/change_log.md`.
-- impact_assessment: Medium-positive. Removes metadata drift inside the thesis-state control file and keeps governance traceability consistent with the active title baseline.
-- approval_record: Requested directly by the user in chat on 2026-04-15.
-
-## C-390
-- date: 2026-04-15
-- proposed_by: user + Copilot
-- status: accepted
-- change_summary: Implemented the chapter-structure split by separating implementation, evaluation, and discussion into distinct writing surfaces (`chapter4.md`, `chapter5.md`, `chapter6.md`) and synchronized Chapter 3/governance references.
-- reason: User requested implementation of the chapter split plan rather than a planning-only response.
-- evidence_basis: Rewrote `08_writing/chapter4.md` to implementation/evidence-surface scope; rewrote `08_writing/chapter5.md` to evaluation/results scope; added `08_writing/chapter6.md` for interpretation and bounded contribution discussion; updated Chapter 3 cross-references and synchronized timeline/thesis-state metadata.
-- affected_components: `08_writing/chapter3.md`, `08_writing/chapter4.md`, `08_writing/chapter5.md`, `08_writing/chapter6.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`, `00_admin/decision_log.md`, `00_admin/change_log.md`.
-- impact_assessment: High-positive. Reduces mixed-purpose chapter overlap, improves traceability from design to implementation to evaluation to discussion, and lowers final proofing risk.
-- approval_record: Requested directly by the user in chat on 2026-04-15.
-
-## C-391
-- date: 2026-04-16
-- proposed_by: user + Copilot
-- status: accepted
-- change_summary: Added a new alternative Chapter 3 draft (`chapter3_v3.md`) derived from the current Chapter 2 research-gap and thesis-positioning logic while intentionally avoiding implementation-reflective wording.
-- reason: User requested a second Chapter 3 variant based on the new Chapter 2 rather than on the current implementation surface.
-- evidence_basis: Created `08_writing/chapter3_v3.md` with design-only sections on uncertainty-aware preference evidence, candidate-shaping visibility, playlist trade-off control, mechanism-linked explanation, observability, reproducibility, and Chapter 2-to-Chapter 3 handoff mapping; synchronized decision/timeline logging.
-- affected_components: `08_writing/chapter3_v3.md`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/timeline.md`.
-- impact_assessment: Medium-positive. Produces a cleaner comparison draft for Chapter 3 development while preserving the active governed chapter set unchanged.
-- approval_record: Requested directly by the user in chat on 2026-04-16.
-
-## C-392
-- date: 2026-04-16
-- proposed_by: user + Copilot
-- status: accepted
-- change_summary: Applied a thesis-readability compression pass to `chapter3_v3.md` by shortening dense sections, removing internal mapping scaffolds, embedding the figures into the relevant sections, renaming the configuration section, and simplifying abstract wording.
-- reason: User provided detailed feedback that the draft was academically strong but overengineered, repetitive, and too framework-heavy for a thesis chapter.
-- evidence_basis: Reworked the chapter objective and methodology phrasing; converted design requirements into a compact table; reduced the architecture overview from eleven layers to seven stages; embedded the two figures inside Sections 3.4 and 3.6; replaced the run-record list with prose; removed the handoff and requirement-mapping sections; added a concise chapter summary.
-- affected_components: `08_writing/chapter3_v3.md`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/timeline.md`.
-- impact_assessment: High-positive. Preserves the chapter's design logic while making it more readable, less repetitive, and more suitable for a final thesis draft.
-- approval_record: Requested directly by the user in chat on 2026-04-16.
-
-## C-393
-- date: 2026-04-16
-- proposed_by: user + Copilot
-- status: accepted
-- change_summary: Applied a focused line-edit pass to `chapter3_v3.md` for concision and concreteness, including lighter phrasing in alignment/scoring sections, a more specific profile description in Section 3.5, improved diagram labels, and removal of the repeated design-only reminder in Section 3.8.
-- reason: User review indicated that the chapter was now structurally strong but still needed small wording cleanups, reduced meta framing, and slightly more tangible design description.
-- evidence_basis: Revised the chapter objective; renamed the requirements table column to `Design rationale`; replaced abstract phrases such as `first-order design surface` and `homogeneous profile basis`; clarified the profile as weighted feature summaries from aligned events plus influence-track inputs; simplified the run-record sentence; and made the summary forward reference more direct.
-- affected_components: `08_writing/chapter3_v3.md`, `00_admin/change_log.md`, `00_admin/timeline.md`.
-- impact_assessment: Medium-positive. Improves readability and specificity without changing the chapter's structure or contribution boundary.
-- approval_record: Requested directly by the user in chat on 2026-04-16.
-
-## C-394
-- date: 2026-04-16
-- proposed_by: user + Copilot
-- status: accepted
-- change_summary: Rewrote `chapter1.md` into a thesis-facing academic introduction format by removing internal project-management language and adding missing examiner-expected sections for background context and report structure.
-- reason: User requested Chapter 1 to match the structural and stylistic standard of the university sample introduction chapter.
-- evidence_basis: Added contextual motivation and technical background (recommender systems, cross-source uncertainty, transparency/controllability rationale), reformatted the research question as a standalone block quote, separated aim/objectives as bullet lists, added report framework section, added a chapter summary bridge to Chapter 2, and removed phrasing such as `locked`, `current thesis state`, and `locked MVP boundary`.
-- affected_components: `08_writing/chapter1.md`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/timeline.md`.
-- impact_assessment: High-positive. Improves academic readability, chapter completeness, and examiner-facing structure while preserving the thesis contribution boundary.
-- approval_record: Requested directly by the user in chat on 2026-04-16.
-
-## C-395
-- date: 2026-04-16
-- proposed_by: user + Copilot
-- status: accepted
-- change_summary: Applied final sample-alignment refinements in Chapter 1 by adding 1.4 sub-numbering, expanding the plain-language recommender-system definition in Section 1.2, and replacing figure-instruction text with an embedded Figure 1.1 image asset.
-- reason: User requested three targeted edits to match sample-report presentation standards before Chapter 1 submission.
-- evidence_basis: Added `1.4.1 Research Question`, `1.4.2 Aim`, and `1.4.3 Objectives` sub-headings; added novice-reader context sentences in Section 1.2; created `08_writing/figures/figure_1_1_pipeline.svg` and embedded it into `08_writing/chapter1.md` as Figure 1.1.
-- affected_components: `08_writing/chapter1.md`, `08_writing/figures/figure_1_1_pipeline.svg`, `00_admin/change_log.md`, `00_admin/timeline.md`.
-- impact_assessment: Medium-positive. Improves examiner-facing readability and presentation completeness without changing thesis scope or contribution claims.
-- approval_record: Requested directly by the user in chat on 2026-04-16.
-
-## C-396
-- date: 2026-04-16
-- proposed_by: user + Copilot
-- status: accepted
-- change_summary: Applied final Chapter 1 prose-polish edits to simplify dense wording, convert the aim into a normal sentence, replace objective bullets with plainer language, and lightly trim repeated phrasing in Sections 1.2 and 1.3.
-- reason: User requested a final readability pass to match sample-report clarity while preserving structure.
-- evidence_basis: Replaced targeted phrases (`mechanism-level links`, `engineering quality boundary`, `multi-objective playlist trade-offs`, and related objective wording), updated the aim sentence exactly as requested, replaced objectives with the provided plain-language list, and shortened repeated statements in Sections 1.2 and 1.3.
-- affected_components: `08_writing/chapter1.md`, `00_admin/change_log.md`, `00_admin/timeline.md`.
-- impact_assessment: Medium-positive. Improves accessibility and readability for non-specialist readers without altering chapter structure or thesis scope.
-- approval_record: Requested directly by the user in chat on 2026-04-16.
-
-## C-397
-- date: 2026-04-16
-- proposed_by: user + Copilot
-- status: accepted
-- change_summary: Applied final Chapter 1 micro-edits for terminology precision and punctuation consistency across the research-question wording, scope wording, report-framework wording, and objective bullets.
-- reason: User requested five final edits before declaring Chapter 1 complete.
-- evidence_basis: Updated phrase variants (`catalogues`, `competing playlist-quality objectives`, fixed Music4All scope sentence, `evidence produced by the artefact`) and added terminal full stops to all objective bullets in Section 1.4.3.
-- affected_components: `08_writing/chapter1.md`, `00_admin/change_log.md`, `00_admin/timeline.md`.
-- impact_assessment: Low-positive. Final consistency and readability polish with no structural or scope impact.
-- approval_record: Requested directly by the user in chat on 2026-04-16.
-
-## C-398
-- date: 2026-04-16
-- proposed_by: user + Copilot
-- status: accepted
-- change_summary: Applied final Chapter 1 QA residual fixes by normalizing spelling consistency and removing one remaining Chapter 1 vs thesis-state wording drift in the active research question.
-- reason: Final QA pass identified two residual consistency issues that could create reviewer-facing ambiguity.
-- evidence_basis: Updated `chapter1.md` to use `playlist trade-off behaviour` for spelling consistency and aligned the active research-question wording in `thesis_state.md` from `multi-objective playlist trade-offs` to `competing playlist-quality objectives` to match Chapter 1.
-- affected_components: `08_writing/chapter1.md`, `00_admin/thesis_state.md`, `00_admin/change_log.md`, `00_admin/timeline.md`.
-- impact_assessment: Low-positive. Consistency hardening only; no scope or contribution change.
-- approval_record: Requested directly by the user in chat on 2026-04-16.
-
-## C-399
-- date: 2026-04-16
-- proposed_by: user + Copilot
-- status: accepted
-- change_summary: Added a brief signposting paragraph at the start of `chapter2.md` to explicitly introduce the chapter's review scope and progression before detailed literature analysis.
-- reason: User requested implementation of the one remaining sample-alignment gap identified for Chapter 2.
-- evidence_basis: Inserted a two-sentence opening paragraph under `Chapter 2 — Literature Review` that states what the chapter reviews and how it is structured, without changing core sections or citations.
-- affected_components: `08_writing/chapter2.md`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/timeline.md`.
-- impact_assessment: Low-positive. Improves chapter orientation and examiner readability while preserving existing analytical content.
-- approval_record: Requested directly by the user in chat on 2026-04-16.
-
-## C-400
-- date: 2026-04-16
-- proposed_by: user + Copilot
-- status: accepted
-- change_summary: Synchronized Chapter 1 and Chapter 2 to the user-provided current wording baseline, aligned thesis-state objectives to the Chapter 1 objective set, restored the fuller Chapter 2 transition paragraph, and added the missing Chapter 2 summary.
-
-## C-401
-- date: 2026-04-16
-- proposed_by: user
-- status: accepted
-- change_summary: Chapter 1 locked as final (first pass). Rewrote Chapter 1 for sample-aligned style: simpler opening, conventional headings, plain RQ/Aim/Objectives block, prose scope section, de-densified section 1.3 and objectives 4–6, simplified contribution section, standard report framework list, tightened chapter summary. Final wording in `08_writing/chapter1.md`.
-- artifacts_affected: 08_writing/chapter1.md
-- impact_assessment: Low-positive. Chapter 1 is submission-ready; no content changes to RQ, objectives, or scope boundaries.
-
-## C-402
-- date: 2026-04-16
-- proposed_by: user
-- status: accepted
-- change_summary: Chapter 1 re-locked as final after user edits. User applied minor wording refinements to 1.1 (motivation paragraph phrasing). Final version confirmed in `08_writing/chapter1.md`.
-- artifacts_affected: 08_writing/chapter1.md
-- impact_assessment: Low. Wording refinements only; no structural or content changes.
-
-## C-403
-- date: 2026-04-16
-- proposed_by: user + Copilot
-- status: accepted
-- change_summary: Chapter 2 formatting locked as final. Added `#`/`##` heading markers, numbered sections 2.1–2.9, and removed 4-space paragraph indentation throughout to match Chapter 1 style. Content unchanged. Final version confirmed in `08_writing/chapter2.md`.
-- artifacts_affected: 08_writing/chapter2.md
-- impact_assessment: Low-positive. Formatting now consistent with Chapter 1; no content changes.
-
-## C-401
-- date: 2026-04-16
-- proposed_by: user
-- status: accepted
-- change_summary: Chapter 1 locked as final. Rewrote Chapter 1 for sample-aligned style: simpler opening, conventional headings, plain RQ/Aim/Objectives block, prose scope section, de-densified section 1.3 and objectives 4–6, simplified contribution section, standard report framework list, tightened chapter summary. Final wording in `08_writing/chapter1.md`.
-- artifacts_affected: 08_writing/chapter1.md
-- impact_assessment: Low-positive. Chapter 1 is now submission-ready; no content changes to RQ, objectives, or scope boundaries.
-- reason: User requested that everything be synced to the current Chapter 1 and Chapter 2 versions provided in chat.
-- evidence_basis: `08_writing/chapter1.md` now uses the supplied `behavior` spellings in the objective/report-framework lines; `08_writing/chapter2.md` now includes the supplied progression paragraph and chapter summary; `00_admin/thesis_state.md` objectives now match the Chapter 1 wording baseline.
-- affected_components: `08_writing/chapter1.md`, `08_writing/chapter2.md`, `00_admin/thesis_state.md`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/timeline.md`.
-- impact_assessment: Medium-positive. Removes chapter-to-governance wording drift and restores the current chapter baseline without disturbing validated figure assets.
-- approval_record: Requested directly by the user in chat on 2026-04-16.
-
-## C-421
-- date: 2026-04-17
-- proposed_by: user + Copilot
-- status: accepted
-- change_summary: Applied Chapter 3 literature-depth integration pass: added four targeted prose caveats (Flexer & Grill 2016 on feature adequacy, Herlocker et al. 2004 on metric sensitivity, Knijnenburg et al. 2012 on explanation utility limits, Afroogh et al. 2024 on local-execution trust framing) to deepen design reasoning without restructuring. Flagged three design-verification items (UNDO-A/B/C) for later investigation per Roy & Dutta, Schedl et al., and Zamani/Ferraro findings on input validation, sequential coherence, and candidate diagnostics.
-- reason: Chapter 3 literature gap analysis identified specific research findings underexplored in the design chapter. This pass deepens reasoning to ground design choices explicitly in literature while deferring implementation verification to post-Chapter-3-finalization investigation phase.
-- evidence_basis: Section 3.7 now includes Flexer & Grill caveat on feature adequacy; Section 3.9 now credits Herlocker et al. as foundational metric-sensitivity work; Section 3.11 now includes Knijnenburg caveat on explanation utility dependency on context; Section 3.5 now frames lightweight local execution via Afroogh trust model. Sections remain unnumbered; no restructuring occurred. Three unresolved issues (UNDO-A, UNDO-B, UNDO-C) added to `00_admin/unresolved_issues.md` with investigation scopes and contact paths.
-- affected_components: `08_writing/chapter3.md` (4 prose additions), `00_admin/unresolved_issues.md` (3 new investigation entries), `00_admin/thesis_state.md`, `00_admin/change_log.md`
-- impact_assessment: Low-positive. Enhances design reasoning transparency and establishes a record of deferred implementation verifications without changing chapter structure or thesis contribution scope.
-- approval_record: Requested and implemented directly by user/Copilot in chat on 2026-04-17 after literature gap analysis planning phase.
-## C-404
-- date: 2026-04-16
-- proposed_by: user + Copilot
-- status: accepted
-- change_summary: Replaced  0_admin/thesis_state.md with a clean, legible current-state document. Removed embedded historical priority-status checkpoints and post-closure enhancement checkpoint blocks (which belong only in change_log.md). Active locked definitions, chapter status table, rebuild milestone summary, implementation status table, and governance quickref are now the top-level content. Old content archived verbatim to  0_admin/thesis_state_ARCHIVE_20260416.md.
-- reason: User requested a thesis state cleanup to make the document up to date and legible. The prior 371-line file was dominated by non-current historical logs that obscured the actual active state.
-- evidence_basis: New 	hesis_state.md is ~130 lines; archive file preserves prior content; no locked definitions, governance IDs, or chapter statuses were changed.
-- affected_components:  0_admin/thesis_state.md,  0_admin/thesis_state_ARCHIVE_20260416.md,  0_admin/change_log.md
-- impact_assessment: Medium-positive. Substantially improves readability and session-start clarity without changing any active thesis content or governance pointers.
-- approval_record: Requested and confirmed by user in chat on 2026-04-16.
-
-## C-478
-- date: 2026-04-18
-- proposed_by: user + Copilot
-- status: accepted
-- change_summary: Implemented a quality-control cleanup-and-currency wave across active 09_quality_control surfaces. Updated locked Title/RQ references to match canonical thesis-state wording, removed stale authority/path wording from chapter-readiness notes, tightened submission-risk wording (at risk) for professionalism and final-report word-count compliance, added explicit overage signal in the word-count snapshot, marked legacy phase artifacts as historical-reference-only, added canonical Chapter 2 audit authority markers, and archived superseded Chapter 2 verbatim-audit markdown variants under 09_quality_control/verbatim_audits/_archive_legacy/ with a provenance README.
-- reason: User requested implementation start after planning; the highest-value bounded next step was to execute the QC cleanup plan to reduce stale-reference drift and strengthen submission-readiness traceability.
-- evidence_basis: Active QC files now align to 00_admin/thesis_state.md locked definitions and current BL-013/BL-014 run-ID authority; stale 07_implementation/ACTIVE_BASELINE.md wording was removed from active chapter-readiness notes; archived verbatim-audit variants are separated from active scripts and canonical authority is explicitly pointed to chapter2_reference_audit_zero_trust_2026-04-10.md.
-- affected_components: 09_quality_control/rq_alignment_checks.md, 09_quality_control/chapter_readiness_checks.md, 09_quality_control/submission_readiness_status.md, 09_quality_control/word_count_snapshot_2026-04-18.md, 09_quality_control/PHASE_4_VERIFICATION_COMPLETE.md, 09_quality_control/TRANSPARENCY_AUDIT_CHECKLIST.md, 09_quality_control/pipeline_audit_comprehensive_2026-03-25.md, 09_quality_control/citation_checks.md, 09_quality_control/chapter2_reference_audit_zero_trust_2026-04-10.md, 09_quality_control/verbatim_audits/_archive_legacy/README.md, 00_admin/thesis_state.md, 00_admin/timeline.md, 00_admin/recurring_issues.md, 00_admin/change_log.md, 00_admin/decision_log.md.
-- impact_assessment: Low-positive. No implementation runtime behavior changed; improves documentation authority integrity, active-vs-historical clarity, and submission-risk readability.
-- approval_record: Requested directly by the user in chat on 2026-04-18 (Start implementation).
-
-## C-479
-- date: 2026-04-18
-- proposed_by: user + Copilot
-- status: accepted
-- change_summary: Added `09_quality_control/consistency_audit.md` as a post-cleanup verification record summarizing authority baseline, executed consistency checks, pass outcomes, and one residual readability note for historical log encoding artifacts.
-- reason: User requested continuation; after implementing the QC cleanup wave, a durable verification artifact was needed to capture completion evidence in one place.
-- evidence_basis: The new audit file records check outcomes for stale title/RQ removal, removed baseline-path absence, stale run-ID absence, historical labeling presence, and governance-entry presence.
-- affected_components: `09_quality_control/consistency_audit.md`, `00_admin/change_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`
-- impact_assessment: Low-positive. No implementation runtime behavior changed; improves closeout traceability and reviewer-facing verification clarity.
-- approval_record: Requested via continuation prompt in chat on 2026-04-18.
-
-## C-480
-- date: 2026-04-18
-- proposed_by: user + Copilot
-- status: accepted
-- change_summary: Implemented two additive implementation upgrades: (1) formal run-config schema authority is now materialized via `07_implementation/src/run_config/schemas/run_config-v1.schema.json` and embedded schema metadata in run-intent/run-effective artifacts, and (2) BL-013 now supports deterministic verification mode that can launch BL-010 replay post-success through run-config and CLI controls.
-- reason: User requested continuation after upgrade triage; highest-ROI next slice was operability hardening without changing default baseline behavior.
-- evidence_basis: `run_config_utils` now emits `run_config_schema` metadata in both artifact payloads; orchestration controls now include determinism verification knobs and BL-013 CLI exposes matching overrides; BL-013 can execute BL-010 with configurable replay count when verification mode is enabled; validation passed (`pytest 613/613`, `pyright 0`).
-- affected_components: `07_implementation/src/shared_utils/constants.py`, `07_implementation/src/run_config/run_config_utils.py`, `07_implementation/src/run_config/schemas/run_config-v1.schema.json`, `07_implementation/src/orchestration/cli.py`, `07_implementation/src/orchestration/main.py`, `07_implementation/src/orchestration/stage_runner.py`, `07_implementation/src/orchestration/summary_builder.py`, `07_implementation/tests/test_orchestration_stage_runner.py`, `07_implementation/tests/test_run_config_utils.py`, `00_admin/change_log.md`, `00_admin/decision_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`.
-- impact_assessment: Low-positive. Preserves default execution semantics while improving run-config contract traceability and enabling one-command determinism verification when explicitly requested.
-- approval_record: Requested via continuation prompt in chat on 2026-04-18.
-
-## C-481
-- date: 2026-04-18
-- proposed_by: user + Copilot
-- status: accepted
-- change_summary: Fixed a BL-013 orchestration status-accounting bug where `overall_status` could report fail despite all stage results passing when deterministic verification (BL-010) was enabled. Added dedicated regression coverage for deterministic-verification pass-path status behavior and re-ran live verification to confirm corrected status output.
-- reason: Continued implementation execution surfaced a concrete behavioral defect during live use of the new deterministic verification mode.
-- evidence_basis: `orchestration/summary_builder.py` now sets pass/fail from stage failure presence; new test `test_finalize_run_passes_with_determinism_stage` passes; live rerun with deterministic verification succeeded and reported pass (`BL013-ENTRYPOINT-20260418-032001-486177`) with BL-010 run `BL010-REPRO-20260418-032048` (`deterministic_match=True`).
-- affected_components: `07_implementation/src/orchestration/summary_builder.py`, `07_implementation/tests/test_orchestration_summary_builder.py`, `00_admin/change_log.md`, `00_admin/decision_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`.
-- impact_assessment: Medium-positive. Corrects user-facing orchestration status semantics for optional-stage execution paths and strengthens regression protection.
-- approval_record: Triggered by direct continuation request and validated in-session on 2026-04-18.
-
-## C-482
-- date: 2026-04-18
-- proposed_by: user + Copilot
-- status: accepted
-- change_summary: Corrected BL-010 replay input validation so it recognizes the active canonical BL-003 to BL-008 artifact names instead of warning about deprecated legacy filenames. Added targeted validation tests and confirmed in a live BL-013 deterministic run that BL-010 now completes with empty stderr while preserving `deterministic_match=True`.
-- reason: Continued execution exposed false-positive BL-010 validation warnings after the deterministic verification mode was already functional.
-- evidence_basis: `reproducibility/input_validation.py` now accepts canonical current artifacts with legacy aliases as fallbacks; `tests/test_reproducibility_input_validation.py` passes; live rerun succeeded on BL-013 `BL013-ENTRYPOINT-20260418-032935-354168`, BL-009 `BL009-OBSERVE-20260418-033101-123504`, and BL-010 `BL010-REPRO-20260418-033103` with no BL-010 warning stderr.
-- affected_components: `07_implementation/src/reproducibility/input_validation.py`, `07_implementation/tests/test_reproducibility_input_validation.py`, `00_admin/change_log.md`, `00_admin/decision_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`.
-- impact_assessment: Medium-positive. Removes misleading runtime warnings from the supported deterministic verification path and aligns BL-010 validation with the active artifact contract.
-- approval_record: Triggered by direct continuation request and validated in-session on 2026-04-18.
-
-## C-489
-- date: 2026-04-18
-- proposed_by: user + Copilot
-- status: accepted
-- change_summary: Executed a transparency/control design-document synchronization wave so design claims match the current implemented behavior. Updated transparency and control design files to remove stale "not implemented" wording where behavior is now present, clarified remaining bounded limitations, and added deferred non-blocking unresolved items (`UNDO-P`, `UNDO-Q`) for deeper future transparency enhancements.
-- reason: User requested implementation start and required that any remaining improvements be captured in unresolved issues.
-- evidence_basis: Updated files now align with active implementation surfaces for BL-005 candidate-shaping fidelity, BL-007 influence/assembly diagnostics, BL-008 control provenance/causality payloads, and BL-009 run-level observability validity boundaries. `unresolved_issues.md` now contains explicit deferred non-blocking improvement entries.
-- affected_components: `05_design/TRANSPARENCY_SPEC.md`, `05_design/transparency_design.md`, `05_design/transparency_design_addendum.md`, `05_design/CONTROL_SURFACE_REGISTRY.md`, `05_design/controllability_design.md`, `00_admin/unresolved_issues.md`, `00_admin/change_log.md`, `00_admin/decision_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`.
-- impact_assessment: Low-positive. No runtime behavior changed; design/governance surfaces are now current, internally consistent, and future improvements are tracked explicitly.
-- approval_record: Requested directly by the user in chat on 2026-04-18 ("Start implementation").
-
-## C-490
-- date: 2026-04-18
-- proposed_by: user + Copilot
-- status: accepted
-- change_summary: Implemented UNDO-P (counterfactual transparency depth) by extending `_build_bounded_what_if_estimates` in `retrieval/stage.py` to emit a `per_control_family_scenarios` section. Added three per-family entries: (1) `thresholds` repackages the existing ±10% combined perturbation with explicit per-family labeling; (2) `language_filter` adds a bounded row-level what-if estimate of how many currently language-rejected candidates would have passed current threshold rules if the language gate were disabled; (3) `assembly_limits` notes cross-stage scope with explicit pointer to UNDO-Q. All existing output keys preserved for backward compatibility. 621/621 tests pass.
-- reason: User requested implementation of the first deferred improvement (UNDO-P); this is the bounded in-scope slice that does not require a full re-retrieval or downstream stage changes.
-- evidence_basis: `07_implementation/src/retrieval/stage.py` now emits `bounded_what_if_estimates.per_control_family_scenarios`; `07_implementation/tests/test_retrieval_stage.py` updated with coverage for `per_control_family_scenarios`, `language_filter`, `disabled_kept_candidates`, and `delta_vs_base` keys; `pytest` reports 621 passed.
-- affected_components: `07_implementation/src/retrieval/stage.py`, `07_implementation/tests/test_retrieval_stage.py`, `00_admin/change_log.md`, `00_admin/decision_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`, `00_admin/unresolved_issues.md`.
-- impact_assessment: Low-positive. No default execution semantics changed; the new section is additive to the BL-005 diagnostics payload and provides richer per-family counterfactual evidence without a full re-run requirement.
-- approval_record: Requested by the user in chat on 2026-04-18 ("implement the first improvement").
-
-## C-491
-- date: 2026-04-18
-- proposed_by: user + Copilot
-- status: accepted
-- change_summary: Implemented UNDO-Q (cross-stage influence-effect attribution narrative hardening) by adding a new additive BL-009 run-log surface `cross_stage_influence_attribution_summary` (`cross-stage-influence-attribution-v1`). This bounded summary links influence-related evidence across BL-004 interaction attribution, BL-005 retrieval effects, BL-006 scoring context, BL-007 assembly influence outcomes, and BL-009 control-causality coverage in one concise contract.
-- reason: User requested continuation after UNDO-P completion; the next deferred improvement was UNDO-Q.
-- evidence_basis: `07_implementation/src/observability/main.py` now defines `build_cross_stage_influence_attribution_summary()` and emits the contract in `_build_run_log`; `07_implementation/tests/test_observability_signal_mode_summary.py` adds coverage for the new surface; full suite passes (`pytest 622/622`).
-- affected_components: `07_implementation/src/observability/main.py`, `07_implementation/tests/test_observability_signal_mode_summary.py`, `00_admin/unresolved_issues.md`, `00_admin/change_log.md`, `00_admin/decision_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`.
-- impact_assessment: Low-positive. No runtime control semantics changed; observability evidence linkage is clearer and more chapter-facing while staying additive/backward-compatible.
-- approval_record: Requested by the user in chat on 2026-04-18 ("continue").
-
-## C-492
-- date: 2026-04-18
-- proposed_by: user + Copilot
-- status: accepted
-- change_summary: Hardened submission-preparation documentation by expanding and citation-locking the professionalism companion report, raising its measured in-repo word count from 1,567 to 2,066 words, and synchronizing quality-control readiness/word-count ledgers to reflect reduced companion-length risk.
-- reason: User requested continuation; after UNDO-Q closure the next active bounded priority was submission closeout risk reduction (professionalism component and word-count posture).
-- evidence_basis: `08_writing/professionalism_companion_report.md` now includes strengthened professional-practice analysis, implementation-linked professionalism controls, and concrete references; regex-based snapshot in `09_quality_control/word_count_snapshot_2026-04-18.md` now records 2,066 words for the companion; `09_quality_control/submission_readiness_status.md` moved companion topic coverage from `at risk` to `partially satisfied` with residual formatting/package caveat.
-- affected_components: `08_writing/professionalism_companion_report.md`, `09_quality_control/word_count_snapshot_2026-04-18.md`, `09_quality_control/submission_readiness_status.md`, `00_admin/change_log.md`, `00_admin/decision_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`.
-- impact_assessment: Low-positive. No implementation runtime behavior changed; reduces submission-readiness risk on Component 1 and improves companion-report evidence quality.
-- approval_record: Requested by the user in chat on 2026-04-18 ("continue").
-
-## C-493
-- date: 2026-04-18
-- proposed_by: user + Copilot
-- status: accepted
-- change_summary: Added a duplicate-code quality-check workflow for `07_implementation/src` using a new script (`duplicate_src.ps1`) and two task surfaces (`07: Duplicate Check src (Advisory)`, `07: Duplicate Check src (Strict)`) in `.vscode/tasks.json`. Installed `pylint` in the configured workspace environment and validated the advisory task end-to-end, producing `duplicate_src_report_latest.txt` with actionable R0801 duplicate-code findings.
-- reason: User explicitly approved integrating duplicate-code detection into the existing quality workflow after confirming interest in a practical duplicate-check tool.
-- evidence_basis: `07_implementation/scripts/duplicate_src.ps1` now writes a standardized report with generation timestamp/scope/threshold and supports advisory vs strict exit behavior; `.vscode/tasks.json` now exposes both task entrypoints; advisory execution completed successfully and generated `duplicate_src_report_latest.txt`.
-- affected_components: `07_implementation/scripts/duplicate_src.ps1`, `.vscode/tasks.json`, `duplicate_src_report_latest.txt`, `00_admin/change_log.md`, `00_admin/decision_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`
-- impact_assessment: Low-positive. No runtime pipeline behavior changed; quality-governance tooling now includes explicit duplicate-code visibility aligned with existing Ruff/Hygiene task patterns.
-- approval_record: Requested by the user in chat on 2026-04-18 ("yes do that").
-
-## C-494
-- date: 2026-04-18
-- proposed_by: user + Copilot
-- status: accepted
-- change_summary: Reduced duplicate-code hotspots in REB-M3 gate scripts by extracting shared gate utilities to `src/quality/reb_gate_common.py` and wiring both tranche gates (`reb_m3_tranche1_gate.py`, `reb_m3_tranche2_gate.py`) to the shared helpers for artifact checks, nested-key reads, and report/matrix finalization.
-- reason: User requested continuation after duplicate-check workflow setup, with the next goal to actively lower R0801 duplicate findings in implementation code.
-- evidence_basis: Post-refactor validation is green (`ruff check src` clean, `pytest 622/622` pass), duplicate advisory report regenerated successfully, and duplicate finding count reduced from 13 to 12 (`Select-String "R0801"` against `duplicate_src_report_latest.txt`).
-- affected_components: `07_implementation/src/quality/reb_gate_common.py`, `07_implementation/src/quality/reb_m3_tranche1_gate.py`, `07_implementation/src/quality/reb_m3_tranche2_gate.py`, `duplicate_src_report_latest.txt`, `00_admin/change_log.md`, `00_admin/decision_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`
-- impact_assessment: Low-positive. No gate semantics changed; maintenance risk decreases through shared utility reuse and duplicate-code burden is reduced.
-- approval_record: Requested by the user in chat on 2026-04-18 ("yes").
-
-## C-495
-- date: 2026-04-18
-- proposed_by: user + Copilot
-- status: accepted
-- change_summary: Continued REB-M3 gate duplicate reduction by rewiring `reb_m3_tranche3_gate.py` to the shared gate helper module (`src/quality/reb_gate_common.py`), removing its local duplicate implementations of artifact checks, nested reads, and gate-report finalization.
-- reason: User requested continuation, and the duplicate-code report showed tranche-3 still carrying the same helper/reporting duplication already removed from tranche-1 and tranche-2.
-- evidence_basis: Post-refactor validation remains green (`ruff check src` clean, `pytest 622/622` pass), duplicate advisory report regenerated successfully, and duplicate finding count reduced from 12 to 10 (`Select-String "R0801"` against `duplicate_src_report_latest.txt`).
-- affected_components: `07_implementation/src/quality/reb_m3_tranche3_gate.py`, `07_implementation/src/quality/reb_gate_common.py`, `duplicate_src_report_latest.txt`, `00_admin/change_log.md`, `00_admin/decision_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`
-- impact_assessment: Low-positive. No gate semantics changed; tranche-gate maintenance is more consistent and duplicate-code burden is reduced further.
-- approval_record: Requested by the user in chat on 2026-04-18 ("continue").
-
-## C-496
-- date: 2026-04-18
-- proposed_by: user + Copilot
-- status: accepted
-- change_summary: Reduced another duplicate hotspot by centralizing the BL-005 filtered-field handshake contract in `shared_utils.constants` and reusing it from both BL-014 sanity checks and BL-006 scoring input validation.
-- reason: User requested continuation, and the refreshed duplicate-code report still showed the same BL-005 filtered-field contract duplicated between quality and scoring validation surfaces.
-- evidence_basis: Post-refactor validation remains green (`ruff check src` clean, `pytest 622/622` pass), duplicate advisory report regenerated successfully, and duplicate finding count reduced from 10 to 9 (`Select-String "R0801"` against `duplicate_src_report_latest.txt`).
-- affected_components: `07_implementation/src/shared_utils/constants.py`, `07_implementation/src/scoring/input_validation.py`, `07_implementation/src/quality/sanity_checks.py`, `duplicate_src_report_latest.txt`, `00_admin/change_log.md`, `00_admin/decision_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`
-- impact_assessment: Low-positive. No behavior changes; handshake-field authority is now centralized and duplicate-code burden is reduced further.
-- approval_record: Requested by the user in chat on 2026-04-18 ("continue").
-
-## C-497
-- date: 2026-04-18
-- proposed_by: user + Copilot
-- status: accepted
-- change_summary: Extracted shared runtime-control bookkeeping helpers into `shared_utils/runtime_control_utils.py` and rewired BL-005 and BL-006 runtime-control modules to reuse the shared normalization-event logging, normalization-diagnostics attachment, and BL_STAGE_CONFIG_JSON parse/fallback diagnostics flow.
-- reason: User requested continuation, and the duplicate-code report still highlighted repeated runtime-control bookkeeping blocks across retrieval and scoring.
-- evidence_basis: Post-refactor validation remains green (`ruff check src` clean, `pytest 622/622` pass), duplicate advisory report regenerated successfully, and duplicate finding count reduced from 9 to 6 (`Select-String "R0801"` against `duplicate_src_report_latest.txt`).
-- affected_components: `07_implementation/src/shared_utils/runtime_control_utils.py`, `07_implementation/src/retrieval/runtime_controls.py`, `07_implementation/src/scoring/runtime_controls.py`, `duplicate_src_report_latest.txt`, `00_admin/change_log.md`, `00_admin/decision_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`
-- impact_assessment: Low-positive. No runtime-control semantics changed; shared bookkeeping reduces maintenance drift and duplicate-code burden materially.
-- approval_record: Requested by the user in chat on 2026-04-18 ("continue").
-
-## C-498
-- date: 2026-04-18
-- proposed_by: user + Copilot
-- status: accepted
-- change_summary: Continued duplicate reduction by extracting shared control-context sanitation and run-config path attachment for BL-009 and BL-010 runtime controls into `shared_utils/runtime_control_utils.py`, then rewiring observability and reproducibility runtime-control modules to use the shared helpers.
-- reason: User requested continuation, and the duplicate-code report still showed the same runtime-control context block duplicated between BL-009 and BL-010.
-- evidence_basis: Post-refactor validation remains green (`ruff check src` clean, `pytest 622/622` pass), duplicate advisory report regenerated successfully, and duplicate finding count reduced from 6 to 5 (`Select-String "R0801"` against `duplicate_src_report_latest.txt`).
-- affected_components: `07_implementation/src/shared_utils/runtime_control_utils.py`, `07_implementation/src/observability/runtime_controls.py`, `07_implementation/src/reproducibility/runtime_controls.py`, `duplicate_src_report_latest.txt`, `00_admin/change_log.md`, `00_admin/decision_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`
-- impact_assessment: Low-positive. No runtime-control semantics changed; BL-009 and BL-010 now share the same control-context normalization path and duplicate-code burden is reduced further.
-- approval_record: Requested by the user in chat on 2026-04-18 ("continue").
-
-## C-499
-- date: 2026-04-18
-- proposed_by: user + Copilot
-- status: accepted
-- change_summary: Reduced the playlist duplicate hotspot by rewiring BL-007 stage config serialization to reuse `playlist.models` mapping helpers instead of rebuilding the same context snapshot inline.
-- reason: User requested continuation, and the refreshed duplicate-code report still showed the same playlist configuration block duplicated between `playlist.models` and `playlist.stage`.
-- evidence_basis: Post-refactor validation remains green (`ruff check src` clean, `pytest 622/622` pass), duplicate advisory report regenerated successfully, and duplicate finding count reduced from 5 to 4 (`Select-String "R0801"` against `duplicate_src_report_latest.txt`).
-- affected_components: `07_implementation/src/playlist/stage.py`, `duplicate_src_report_latest.txt`, `00_admin/change_log.md`, `00_admin/decision_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`
-- impact_assessment: Low-positive. No playlist behavior changed; BL-007 now relies on one canonical model serialization path and duplicate-code burden is reduced again.
-- approval_record: Requested by the user in chat on 2026-04-18 ("continue").
-
-## C-500
-- date: 2026-04-18
-- proposed_by: user + Copilot
-- status: accepted
-- change_summary: Reduced the orchestration duplicate hotspot by centralizing BL-013 completion emission in `orchestration.summary_builder` and reusing that shared path from the main entrypoint and failure exit path.
-- reason: User requested continuation, and the refreshed duplicate-code report still showed the same finalize-footer-failure sequence duplicated between `orchestration.main` and `orchestration.summary_builder`.
-- evidence_basis: Post-refactor validation remains green (`ruff check src` clean, `pytest 622/622` pass), duplicate advisory report regenerated successfully, and duplicate finding count reduced from 4 to 3 (`Select-String "R0801"` against `duplicate_src_report_latest.txt`).
-- affected_components: `07_implementation/src/orchestration/main.py`, `07_implementation/src/orchestration/summary_builder.py`, `duplicate_src_report_latest.txt`, `00_admin/change_log.md`, `00_admin/decision_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`
-- impact_assessment: Low-positive. No orchestration behavior changed; BL-013 completion/failure reporting now has one authoritative implementation and duplicate-code burden is reduced again.
-- approval_record: Requested by the user in chat on 2026-04-18 ("contiinue").
-
-## C-501
-- date: 2026-04-18
-- proposed_by: user + Copilot
-- status: accepted
-- change_summary: Closed the remaining duplicate hotspots by centralizing constants and BL-011 snapshot assembly. `quality.sanity_checks` now derives required BL-005 filtered fields from shared constants, `run_config.control_registry` now uses shared BL-006 default component weights, and `quality.suite` now reuses a shared BL-011 config-snapshot builder from `controllability.main`.
-- reason: User requested continuation, and three duplicate hotspots remained after C-500.
-- evidence_basis: Post-refactor validation remains green (`ruff check src` clean, `pytest 622/622` pass), duplicate advisory report regenerated successfully, and duplicate finding count reduced from 3 to 0 (`Select-String "R0801"` against `duplicate_src_report_latest.txt` returns no matches).
-- affected_components: `07_implementation/src/quality/sanity_checks.py`, `07_implementation/src/run_config/control_registry.py`, `07_implementation/src/controllability/main.py`, `07_implementation/src/quality/suite.py`, `duplicate_src_report_latest.txt`, `00_admin/change_log.md`, `00_admin/decision_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`
-- impact_assessment: Low-positive. Behavior is preserved while constant authority and snapshot-construction authority are unified; duplicate-code advisory findings are now cleared.
-- approval_record: Requested by the user in chat on 2026-04-18 ("continue").
-
-## C-502
-- date: 2026-04-18
-- proposed_by: user + Copilot
-- status: accepted
-- change_summary: Applied post-dedup type-safety hardening for the new shared BL-011 snapshot helper by switching helper arguments from invariant `dict[...]` signatures to `Mapping[...]` + `Path` typed inputs.
-- reason: Fresh implementation review telemetry showed a Pyright regression (`reportArgumentType`) after C-501 when `dict[str, Path]` values were passed into helper parameters typed as `dict[str, object]`.
-- evidence_basis: Pyright now reports `0 errors, 0 warnings, 0 informations` for `pyright src` after the signature fix; Ruff remains clean.
-- affected_components: `07_implementation/src/controllability/main.py`, `00_admin/change_log.md`, `00_admin/decision_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`
-- impact_assessment: Low-positive. No runtime behavior changes; restores static type-check health and keeps shared snapshot helper reuse intact.
-- approval_record: Triggered during user-requested implementation review on 2026-04-18.
-
-## C-503
-- date: 2026-04-18
-- proposed_by: user + Copilot
-- status: accepted
-- change_summary: Started the maintainability update wave by reducing complexity in BL-011 controllability stage executors. Extracted helper functions in `stage_retrieval.py` and `stage_scoring.py` for semantic target assembly, numeric distance/pass evaluation, keep-decision resolution, component-weight resolution, profile-map preparation, and ordered component field construction.
-- reason: User requested to start implementation updates and current hygiene telemetry still highlighted E-grade complexity in these two stage executors.
-- evidence_basis: Post-refactor validation remains green (`ruff check src` clean, `pyright src` 0 errors, `pytest 622/622` pass). Hygiene report confirms targeted reductions: `execute_retrieval_stage` improved from `E (38)` to `D (22)` and `execute_scoring_stage` improved from `E (35)` to `D (25)` in `hygiene_src_report_latest.txt`.
-- affected_components: `07_implementation/src/controllability/stage_retrieval.py`, `07_implementation/src/controllability/stage_scoring.py`, `hygiene_src_report_latest.txt`, `00_admin/change_log.md`, `00_admin/decision_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`
-- impact_assessment: Low-positive. Behavior-preserving helper extraction reduced hotspot complexity and improved maintainability while keeping all quality gates green.
-- approval_record: Requested by the user in chat on 2026-04-18 ("start the updates").
-
-## C-530
-- date: 2026-04-19
-- proposed_by: user + Copilot
-- status: accepted
-- change_summary: Updated `05_design/architecture.md` to reflect the current implementation surface and contracts through BL-014. The architecture map now includes BL-010 reproducibility, BL-011 controllability, BL-013 orchestration, and BL-014 sanity-gate surfaces; extends cross-stage dependency flow; and documents implemented evaluation artifacts (`stage_execution`, `control_registry_snapshot`, `interpretation_boundaries`) plus validation-policy behavior (`allow|warn|strict`).
-- reason: User requested architecture synchronization to match the implementation now that the active complexity-reduction campaign is complete.
-- evidence_basis: Source alignment verified against active modules in `07_implementation/src` and current governance posture (`C-529` / `D-238`). Updated architecture document now matches implemented stage ownership and evidence contracts in code.
-- affected_components: `05_design/architecture.md`, `00_admin/change_log.md`, `00_admin/decision_log.md`
-- impact_assessment: Low-positive documentation hardening. No runtime behavior changes; improves Chapter 3 to implementation traceability and reduces design-document drift risk.
-- approval_record: Requested directly by user in chat on 2026-04-19.
-
-## C-531
-- date: 2026-04-19
-- proposed_by: user + Copilot
-- status: accepted
-- change_summary: Completed full implementation-synchronization pass across every file in `05_design/`. Rewrote design/control/transparency/system maps to align with active runtime surfaces and contracts through BL-014, including BL-010 reproducibility, BL-011 controllability, BL-013 orchestration `stage_execution`, BL-014 gate/advisory patterns, and BL-009 additive summaries (`control_registry_snapshot`, `playlist_tradeoff_summary`, `cross_stage_influence_attribution_summary`, `reproducibility_interpretation`).
-- reason: User requested updating each file in `05_design` to reflect what the implementation actually does.
-- evidence_basis: All 15 files under `05_design/` now carry 2026-04-19 synchronization content and reference active stage surfaces. Field names and contract surfaces were validated against current code in `src/observability/main.py`, `src/transparency/main.py`, `src/reproducibility/main.py`, `src/orchestration/summary_builder.py`, and `src/quality/sanity_checks.py`.
-- affected_components: `05_design/architecture.md`, `05_design/chapter3_information_sheet.md`, `05_design/CONTROL_SURFACE_REGISTRY.md`, `05_design/CONTROL_TESTING_PROTOCOL.md`, `05_design/controllability_design.md`, `05_design/controllability_design_addendum.md`, `05_design/data_pipeline.md`, `05_design/explanation_design.md`, `05_design/literature_architecture_mapping.md`, `05_design/observability_design.md`, `05_design/requirements_to_design_map.md`, `05_design/system_architecture.md`, `05_design/transparency_design.md`, `05_design/transparency_design_addendum.md`, `05_design/TRANSPARENCY_SPEC.md`, `00_admin/change_log.md`, `00_admin/decision_log.md`
-- impact_assessment: Low-positive documentation hardening. No runtime behavior change; reduces design-document drift and strengthens Chapter 3-to-implementation traceability across the full design folder.
-- approval_record: Requested directly by user in chat on 2026-04-19.
-
-## C-532
-- date: 2026-04-19
-- proposed_by: user + Copilot
-- status: accepted
-- change_summary: Expanded 05_design documentation from concise status summaries into comprehensive, code-grounded design references. Updated documents now include stage-level implementation behavior, explicit module/field contract mapping, integration boundaries, and documented residual issues/risks (for example fixed BL-007 rule order, bounded influence effects, partial rejected-path causality, and no full rerun-level counterfactual explanation family).
-- reason: User requested making the design documents comprehensive and to document code behavior even when issues are identified.
-- evidence_basis: Updated files explicitly reference active stage contracts and fields in current code surfaces (`src/transparency/main.py`, `src/observability/main.py`, `src/reproducibility/main.py`, `src/orchestration/summary_builder.py`, `src/quality/sanity_checks.py`) and include issue sections in each domain-specific design document.
-- affected_components: `05_design/chapter3_information_sheet.md`, `05_design/CONTROL_SURFACE_REGISTRY.md`, `05_design/CONTROL_TESTING_PROTOCOL.md`, `05_design/controllability_design.md`, `05_design/controllability_design_addendum.md`, `05_design/data_pipeline.md`, `05_design/explanation_design.md`, `05_design/literature_architecture_mapping.md`, `05_design/observability_design.md`, `05_design/requirements_to_design_map.md`, `05_design/system_architecture.md`, `05_design/transparency_design.md`, `05_design/transparency_design_addendum.md`, `05_design/TRANSPARENCY_SPEC.md`, `00_admin/change_log.md`, `00_admin/decision_log.md`
-- impact_assessment: Low-positive documentation hardening. No runtime behavior changes; substantially improves design-to-code traceability and makes known implementation constraints explicit for chapter/evaluation interpretation.
-- approval_record: Requested directly by user in chat on 2026-04-19.
-
-## C-533
-- date: 2026-04-19
-- proposed_by: user + Copilot
-- status: accepted
-- change_summary: Refreshed `07_implementation/mentor_feedback_submission` to match current active implementation while restoring clean-bundle posture. Synced active `src/**` code into mentor bundle (excluding generated outputs/caches), synced root `main.py`, `requirements.txt`, and canonical config `run_config_ui013_tuning_v1f.json`, sanitized mentor README setup instructions (removed embedded credential values; switched PowerShell venv launcher to `py -3`), and re-cleaned mentor `outputs/` to preserved-input baseline (keep only DS-001 dataset + manifest and Spotify export bundle).
-- reason: User requested the mentor feedback submission bundle be clean and up to date.
-- evidence_basis: Mentor bundle source parity check shows identical non-output file count to active `src` (`148/148`), smoke test passed with mentor entrypoint (`BL013-ENTRYPOINT-20260419-135109-095705`; BL-014 `BL014-SANITY-20260419-135143-751579`, `36/36`), and post-validation cleanup removed all mentor `__pycache__` directories (`0` remaining).
-- affected_components: `07_implementation/mentor_feedback_submission/src/**`, `07_implementation/mentor_feedback_submission/main.py`, `07_implementation/mentor_feedback_submission/requirements.txt`, `07_implementation/mentor_feedback_submission/config/profiles/run_config_ui013_tuning_v1f.json`, `07_implementation/mentor_feedback_submission/README.md`, `00_admin/change_log.md`, `00_admin/decision_log.md`
-- impact_assessment: Medium-positive. Improves mentor-handoff reproducibility and reduces stale artifact/cached-noise risk without changing active runtime behavior in `07_implementation/src`.
-- approval_record: Requested directly by user in chat on 2026-04-19.
-
-## C-534
-- date: 2026-04-19
-- proposed_by: user + Copilot
-- status: accepted
-- change_summary: Added a comprehensive mentor-feedback remediation TODO backlog under `00_admin/unresolved_issues.md` as active item `UNDO-R`, covering all A-H review categories with explicit task IDs (`MFT-A1` through `MFT-H5`), priority tranche ordering, and execution notes. Synchronized governance posture in `00_admin/timeline.md` and `00_admin/thesis_state.md` to reflect active unresolved status and next bounded work.
-- reason: User explicitly requested: "add each of these as a comprehensive todo." The previous review output existed only in chat and was not yet represented as actionable, tracked governance work.
-- evidence_basis: `UNDO-R` now exists in `00_admin/unresolved_issues.md` with full checklist coverage across defects, determinism, testing, tooling/CI, documentation/demo readiness, methodology evidence, and housekeeping; timeline now references the new execution backlog; thesis-state quickref now reports active unresolved mentor-remediation scope.
-- affected_components: `00_admin/unresolved_issues.md`, `00_admin/timeline.md`, `00_admin/thesis_state.md`, `00_admin/change_log.md`, `00_admin/decision_log.md`
-- impact_assessment: Medium-positive governance hardening. No runtime behavior changes. Converts mentor-review analysis into a traceable, execution-ready backlog with clear priority ordering.
-- approval_record: Requested directly by user in chat on 2026-04-19.
-
-## C-535
-- date: 2026-04-19
-- proposed_by: user + Copilot
-- status: accepted
-- change_summary: Started mentor-remediation implementation by completing `MFT-A5` (wrapper pass-through parity). The wrapper entrypoint now supports `--no-refresh-seed` and `--stages` controls, validates stage IDs against BL-013-supported stage set (`BL-004..BL-009`), forwards valid overrides to orchestration, and preserves prior default behavior (refresh-seed forced when override is not provided).
-- reason: User requested "Start implementation" after first-tranche planning (`MFT-A5`, `MFT-A6`, `MFT-A2`, `MFT-A1`). `MFT-A5` was sequenced as the first low-risk execution slice.
-- evidence_basis: Added wrapper-stage normalization/validation and command-builder coverage in `07_implementation/main.py`; added focused regression tests in `07_implementation/tests/test_wrapper_main.py`; focused test run passed via repo fallback wrapper (`python -m pytest tests/test_wrapper_main.py -q`) with `5/5` passing.
-- affected_components: `07_implementation/main.py`, `07_implementation/tests/test_wrapper_main.py`, `00_admin/unresolved_issues.md`, `00_admin/timeline.md`, `00_admin/thesis_state.md`, `00_admin/change_log.md`, `00_admin/decision_log.md`
-- impact_assessment: Medium-positive. Improves operator control parity between wrapper and BL-013 CLI while preserving compatibility defaults and adding explicit invalid-stage fail-fast behavior.
-- approval_record: Requested directly by user in chat on 2026-04-19.
-
-## C-536
-- date: 2026-04-19
-- proposed_by: user + Copilot
-- status: accepted
-- change_summary: Implemented `MFT-A6` by adding explicit BL-006 no-op influence warning diagnostics when influence apply is requested but BL-003 influence contract is inactive. BL-006 now logs a warning, surfaces `influence_apply_requested` vs `influence_apply_active` in summary config, emits `influence_apply_noop_warning` in summary config, and appends the warning to `runtime_control_validation_warnings` for downstream observability.
-- reason: User requested continuation after `MFT-A5`; first-tranche execution sequence required closing silent no-op risk for BL-006 influence-apply controls.
-- evidence_basis: Added no-op warning detector and summary wiring in `07_implementation/src/scoring/stage.py`; added focused stage tests in `07_implementation/tests/test_scoring_stage.py`; focused test run passed (`python -m pytest tests/test_scoring_stage.py -q`, `4/4` passing).
-- affected_components: `07_implementation/src/scoring/stage.py`, `07_implementation/tests/test_scoring_stage.py`, `00_admin/unresolved_issues.md`, `00_admin/timeline.md`, `00_admin/thesis_state.md`, `00_admin/change_log.md`, `00_admin/decision_log.md`
-- impact_assessment: Medium-positive. Removes silent no-op ambiguity for BL-006 influence controls and improves auditability without changing default scoring behavior.
-- approval_record: Requested directly by user in chat on 2026-04-19.
-
-## C-537
-- date: 2026-04-19
-- proposed_by: user + Copilot
-- status: accepted
-- change_summary: Implemented `MFT-A2` by replacing overloaded BL-003 influence `injected_count` with split counters `new_injected_count` and `relabelled_count` in influence contract outputs. Updated dependent alignment tests and summary-builder fixtures to consume the split contract fields.
-- reason: User requested continuation of mentor-remediation tranche; `MFT-A2` was the next prioritized implementation item after `MFT-A6`.
-- evidence_basis: Updated influence injection accounting in `07_implementation/src/alignment/influence.py`; updated contract assertions in `07_implementation/tests/test_alignment_influence.py` and summary fixture contract in `07_implementation/tests/test_alignment_summary_builder.py`; focused alignment validation passed (`python -m pytest tests/test_alignment_influence.py tests/test_alignment_summary_builder.py -q`, `9/9` passing).
-- affected_components: `07_implementation/src/alignment/influence.py`, `07_implementation/tests/test_alignment_influence.py`, `07_implementation/tests/test_alignment_summary_builder.py`, `00_admin/unresolved_issues.md`, `00_admin/timeline.md`, `00_admin/thesis_state.md`, `00_admin/change_log.md`, `00_admin/decision_log.md`
-- impact_assessment: Medium-positive. Removes ambiguity in influence accounting semantics and improves downstream interpretability by separating insertion vs relabelling behavior.
-- approval_record: Requested directly by user in chat on 2026-04-19.
-
-## C-538
-- date: 2026-04-19
-- proposed_by: user + Copilot
-- status: accepted
-- change_summary: Implemented `MFT-A1` by adding additive `raw_final_score` alongside `final_score` in BL-006 scored outputs, extending BL-006 summary statistics with final-vs-raw score views, and keeping BL-008/BL-009 explanation and observability surfaces coherent with both fields.
-- reason: User requested continuation of mentor-remediation tranche; `MFT-A1` was the next prioritized defect/contract item after `MFT-A2`.
-- evidence_basis: BL-006 scoring now persists `raw_final_score` before any influence bonus and preserves `final_score` as the post-policy score; BL-008 payload builders now emit `raw_final_score` for included and rejected explanation payloads; BL-009 cross-stage influence attribution now carries `mean_raw_final_score`; focused regressions passed (`28/28`) across scoring, transparency, and observability test suites.
-- affected_components: `07_implementation/src/scoring/models.py`, `07_implementation/src/scoring/stage.py`, `07_implementation/src/transparency/main.py`, `07_implementation/src/transparency/payload_builder.py`, `07_implementation/src/observability/main.py`, `07_implementation/tests/test_scoring_stage.py`, `07_implementation/tests/test_transparency_component_orchestration.py`, `07_implementation/tests/test_transparency_payload_builder.py`, `07_implementation/tests/test_transparency_integration.py`, `07_implementation/tests/test_observability_signal_mode_summary.py`, `00_admin/unresolved_issues.md`, `00_admin/timeline.md`, `00_admin/thesis_state.md`, `00_admin/change_log.md`, `00_admin/decision_log.md`
-- impact_assessment: Medium-positive. Clarifies score semantics and prevents interpretation drift by preserving both pre-influence and post-policy score surfaces without breaking existing `final_score` consumers.
-- approval_record: Requested directly by user in chat on 2026-04-19.
-
-## C-539
-- date: 2026-04-19
-- proposed_by: user + Copilot
-- status: accepted
-- change_summary: Implemented `MFT-A4` by persisting environment-override provenance in BL-013 run effective-config artifacts. `build_run_effective_payload` now emits additive `env_overrides` entries with explicit source (`environment`), normalization metadata, and parse/path normalization notes for `BL_RUN_CONFIG_PATH` and `BL_STAGE_CONFIG_JSON` when present.
-- reason: User requested continuation of mentor-remediation tranche; `MFT-A4` was the next open A-priority correctness/traceability item after `MFT-A1`.
-- evidence_basis: Added env-provenance collection in `run_config_utils.py` with normalized path and JSON-parse notes, plus focused contract tests in `test_run_config_utils.py`; focused validation passed (`36/36`) and downstream artifact-consumer regression passed (`test_seed_freshness.py`, `6/6`).
-- affected_components: `07_implementation/src/run_config/run_config_utils.py`, `07_implementation/tests/test_run_config_utils.py`, `00_admin/unresolved_issues.md`, `00_admin/timeline.md`, `00_admin/thesis_state.md`, `00_admin/change_log.md`, `00_admin/decision_log.md`
-- impact_assessment: Medium-positive. Improves effective-config auditability and environment override traceability with additive backward-compatible fields.
-- approval_record: Requested directly by user in chat on 2026-04-19.
-
-## C-540
-- date: 2026-04-19
-- proposed_by: user + Copilot
-- status: accepted
-- change_summary: Implemented `MFT-A3` by enforcing strict coercion of all inter-stage handshake validation policies whenever `control_mode.validation_profile=strict`. The run-config effective resolver now normalizes BL-003 through BL-011 handshake policies to `strict`, and BL-008/BL-011 control resolvers now expose their handshake policy fields for payload parity.
-- reason: User requested continuation of mentor-remediation execution; `MFT-A3` was the remaining open A-priority contract-correctness item.
-- evidence_basis: Added strict-profile handshake coercion helper in `run_config_utils.py`, expanded BL-008 and BL-011 resolver payloads with handshake policy fields, added focused regression in `test_run_config_utils.py` covering BL-003..BL-011 strict coercion, and revalidated with full tests (`620/620` passing).
-- affected_components: `07_implementation/src/run_config/run_config_utils.py`, `07_implementation/tests/test_run_config_utils.py`, `00_admin/unresolved_issues.md`, `00_admin/timeline.md`, `00_admin/thesis_state.md`, `00_admin/change_log.md`, `00_admin/decision_log.md`
-- impact_assessment: Medium-positive. Removes strict-mode semantic drift across stage boundaries and strengthens handshake-contract determinism under strict validation posture.
-- approval_record: Requested directly by user in chat on 2026-04-19.
-
-## C-541
-- date: 2026-04-19
-- proposed_by: user + Copilot
-- status: accepted
-- change_summary: Implemented the prioritized D-tooling tranche under UNDO-R by wiring explicit static-analysis configuration (D2), a repeatable tests-plus-coverage command surface with threshold policy (D3), dependency vulnerability audit automation (D6), and advisory-first security static-analysis automation with Python 3.14 compatibility fallback (D7). Also synchronized Ruff/task documentation parity (D1) and documented ongoing hygiene/complexity posture with xenon deferred as advisory-only (D8/D9).
-- reason: User requested to continue implementation of the D-tooling section after backlog refinement.
-- evidence_basis: New tooling artifacts and validations are active: pyright task now runs `--project pyrightconfig.json` with `0 errors`; coverage task emits `coverage_src_report_latest.txt` and passes with explicit fail-under policy (`65`, measured baseline `69%`); dependency audit emits `pip_audit_report_latest.txt` (advisory findings recorded); security scan emits `bandit_src_report_latest.txt` with automatic Ruff `S`-rules fallback when Bandit hits Python 3.14 AST compatibility errors; Ruff and hygiene workflows remain green with refreshed reports.
-- affected_components: `07_implementation/requirements.txt`, `07_implementation/pyrightconfig.json`, `07_implementation/scripts/check_all.ps1`, `07_implementation/scripts/test_coverage.ps1`, `07_implementation/scripts/dependency_audit.ps1`, `07_implementation/scripts/bandit_src.ps1`, `07_implementation/TOOLING_QUALITY_POSTURE.md`, `07_implementation/README.md`, `.vscode/tasks.json`, `07_implementation/src/playlist/rules.py`, `coverage_src_report_latest.txt`, `pip_audit_report_latest.txt`, `bandit_src_report_latest.txt`, `hygiene_src_report_latest.txt`, `ruff_src_report_latest.txt`, `00_admin/unresolved_issues.md`, `00_admin/timeline.md`, `00_admin/thesis_state.md`, `00_admin/change_log.md`, `00_admin/decision_log.md`
-- impact_assessment: Medium-positive. Adds repeatable quality/security tooling evidence surfaces with advisory-first posture, keeps current runtime contracts stable, and closes immediate D-tooling remediation items without over-blocking execution flow.
-- approval_record: Requested directly by user in chat on 2026-04-19 ("continue by implementing the d tooling section").
-
-## C-542
-- date: 2026-04-19
-- proposed_by: user + Copilot
-- status: accepted
-- change_summary: Implemented UNDO-R B-tranche (MFT-B1, MFT-B2, MFT-B6) and E-tranche (MFT-E1) priority items. B1: Generated
-equirements.lock transitive-dependency freeze from active venv for reproducible installs. B2: Added .python-version file pinning Python 3.14, added [project] requires-python>=3.12 to pyproject.toml, and updated preflight guard to warn when interpreter is not 3.14.x and to fail fast below 3.12. B6: Added _build_runtime_environment_snapshot() helper to
-un_config_utils.py capturing sys.version, platform, platform_system, platform_machine, locale_preferred_encoding, and 	imezone_name; result is embedded as
-untime_environment in the effective-run-config artifact. E1: Created .github/workflows/ci.yml GitHub Actions workflow running lint (ruff), typecheck (pyright), tests+coverage (65% threshold), architecture guard (Phase 6), and validate-only pipeline on push/PR targeting  7_implementation/**.
-- reason: User requested continuation; next priority in UNDO-R execution order was B1/B2/B6/E1 tranche.
-- evidence_basis:
-equirements.lock generated (pip freeze from Python 3.14.4 venv); .python-version file at  7_implementation/.python-version; preflight updated in scripts/preflight_windows.ps1;
-untime_environment test added and all 621 tests pass; pyright   errors; .github/workflows/ci.yml created.
-- affected_components:  7_implementation/requirements.lock,  7_implementation/.python-version,  7_implementation/pyproject.toml,  7_implementation/scripts/preflight_windows.ps1,  7_implementation/src/run_config/run_config_utils.py,  7_implementation/tests/test_run_config_utils.py, .github/workflows/ci.yml,  0_admin/unresolved_issues.md,  0_admin/timeline.md,  0_admin/thesis_state.md,  0_admin/change_log.md,  0_admin/decision_log.md
-- impact_assessment: Medium-positive. Closes four high-priority UNDO-R items in one tranche; adds lockfile reproducibility, version-guard infrastructure, runtime-metadata auditability in artifacts, and a repeatable CI execution surface.
-- approval_record: Requested directly by user in chat on 2026-04-19 ("continue").
-
-## C-543
-- date: 2026-04-19
-- proposed_by: Copilot (UNDO-R C/F/G priority tranche execution)
-- status: accepted
-- change_summary: UNDO-R C/F/G priority tranche. (1) MFT-C2: Added 07_implementation/tests/test_golden_artifacts.py with two golden-artifact reproducibility tests: test_playlist_assembly_output_is_hash_stable (SHA-256 of track order and genre mix for a fixed 6-row fixture, hashes computed and locked) and test_clamp_output_is_deterministic (boundary golden values for shared coercion layer). Both tests pass (623 total, up from 621). (2) MFT-F6: Created 07_implementation/VIVA_RUN_SCRIPT.md with 6-step defense/viva demonstration guide (preflight, full pipeline, deterministic verification, controllability demo, transparency inspection, quality posture) plus fallback table. (3) MFT-G2: Expanded chapter6.md section 6.4 item 6 from single-sentence limitation to three-grounds justified non-inclusion rationale (DSR evaluation obligation; absent shared offline evaluation corpus; no natural comparator mapping for RQ-B/RQ-C). (4) MFT-G4: Added influence policy-mode transition evidence row to Table 5.3 in chapter5.md showing competitive vs reserved_slots mode observable difference in influence_effectiveness_diagnostics (policy_mode, reserved_slot_target fields); no-match corpus result surfaced honestly.
-- reason: UNDO-R mentor-feedback remediation backlog; C/F/G second priority group.
-
-## C-544
-- date: 2026-04-19
-- proposed_by: user + Copilot
-- status: accepted
-- change_summary: Implemented UNDO-R determinism-policy slice for `MFT-B3` and `MFT-B4`. Added `07_implementation/DETERMINISTIC_ITERATION_AUDIT.md` as the deterministic-iteration outcome artifact covering dict/set-sensitive iteration review method, critical-run-path inspection, findings, residual risk, and maintenance rules. Added `07_implementation/DETERMINISM_RANDOMNESS_POLICY.md` as the formal seed/randomness policy note that declares current no-stochastic-runtime posture and defines mandatory seed/PRNG evidence requirements if randomness is introduced later.
-- reason: User requested continuation; next deferred priority after C/F/G tranche was determinism-policy hardening (`B3`, `B4`).
-- evidence_basis: Static iteration-pattern sweep across `07_implementation/src/**/*.py` plus focused manual review of BL-003/BL-007/BL-009/BL-010/BL-013 critical output paths documented in the audit artifact. Existing deterministic replay and golden-artifact test posture remains the active evidence basis for bounded determinism claims.
-- affected_components: `07_implementation/DETERMINISTIC_ITERATION_AUDIT.md`, `07_implementation/DETERMINISM_RANDOMNESS_POLICY.md`, `00_admin/unresolved_issues.md`, `00_admin/timeline.md`, `00_admin/thesis_state.md`, `00_admin/change_log.md`, `00_admin/decision_log.md`
-- impact_assessment: Medium-positive. Closes two explicit mentor-remediation determinism items and makes deterministic-claim boundaries plus future stochastic-change governance explicit.
-- approval_record: Requested directly by user continuation prompt on 2026-04-19.
-
-## C-545
-- date: 2026-04-19
-- proposed_by: user + Copilot
-- status: accepted
-- change_summary: Implemented UNDO-R `MFT-B5` by adding a centralized BL-013 hash-input-chain summary surface. `orchestration.summary_builder` now emits additive `hash_input_chain` (`bl013-hash-input-chain-v1`) with authority-chain hashes (`requested_run_config`, `run_intent`, `run_effective_config`), stable input artifact hash inventory, missing-input reporting, and consolidated chain digest (`chain_sha256`) over ordered chain components.
-- reason: User requested continuation; next deferred priority item after B3/B4 was B5 hash-input-chain centralization in BL-013.
-- evidence_basis: Added `build_hash_input_chain_summary()` in `07_implementation/src/orchestration/summary_builder.py`, integrated it into BL-013 summary output, and added/updated regression tests in `07_implementation/tests/test_orchestration_summary_builder.py`. Focused tests pass (`3/3`), full suite passes (`624/624`), and pyright is clean (`0 errors`).
-- affected_components: `07_implementation/src/orchestration/summary_builder.py`, `07_implementation/tests/test_orchestration_summary_builder.py`, `00_admin/unresolved_issues.md`, `00_admin/timeline.md`, `00_admin/thesis_state.md`, `00_admin/change_log.md`, `00_admin/decision_log.md`
-- impact_assessment: Medium-positive. Improves run-level reproducibility auditability by consolidating config authority and hash inputs in one stable BL-013 section without breaking existing summary fields.
-- approval_record: Requested directly by user continuation prompt on 2026-04-19.
-
-## C-546
-- date: 2026-04-19
-- proposed_by: user + Copilot
-- status: accepted
-- change_summary: Implemented UNDO-R `MFT-B7` by formalizing a repeatable deterministic verification replay contract path across wrapper runtime, CI, task flow, and operator docs. The wrapper now passes through `--verify-determinism` and `--verify-determinism-replay-count`; CI validate stage now runs deterministic replay verification (`x3`); a dedicated VS Code task surface was added for replay validation; and README commands/task guidance were updated to the same contract path.
-- reason: User requested continuation; next deferred priority after B5 was B7 formal replay-contract operationalization.
-- evidence_basis: Wrapper wiring and tests updated in `07_implementation/main.py` and `07_implementation/tests/test_wrapper_main.py` (`5/5` passing). Deterministic contract command executed successfully (`python main.py --validate-only --verify-determinism --verify-determinism-replay-count 3`) with BL-013 pass and BL-014 `36/36` pass. Full suite remains green (`624/624`) and pyright remains clean (`0 errors`).
-- affected_components: `07_implementation/main.py`, `07_implementation/tests/test_wrapper_main.py`, `.vscode/tasks.json`, `.github/workflows/ci.yml`, `07_implementation/README.md`, `00_admin/unresolved_issues.md`, `00_admin/timeline.md`, `00_admin/thesis_state.md`, `00_admin/change_log.md`, `00_admin/decision_log.md`
-- impact_assessment: Medium-positive. Converts deterministic replay verification from optional/manual usage into an explicit contract path available in local tasks and CI with preserved backward compatibility.
-- approval_record: Requested directly by user continuation prompt on 2026-04-19.
+- affected_components: `0

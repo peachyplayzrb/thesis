@@ -120,13 +120,21 @@ class PlaylistStage:
         config["validation_policies"] = {
             "bl006_bl007_handshake_validation_policy": validation_policy,
         }
+        playlist_public = [
+            {
+                key: value
+                for key, value in track.items()
+                if not str(key).startswith("_")
+            }
+            for track in playlist
+        ]
         return {
             "run_id": run_id,
             "generated_at_utc": utc_now(),
             "elapsed_seconds": elapsed_seconds,
             "config": config,
-            "playlist_length": len(playlist),
-            "tracks": playlist,
+            "playlist_length": len(playlist_public),
+            "tracks": playlist_public,
         }
 
     @staticmethod

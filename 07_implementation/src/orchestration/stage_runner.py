@@ -8,6 +8,10 @@ import time
 from pathlib import Path
 
 from orchestration.stage_registry import BL003_SCRIPT
+from shared_utils.security import (
+    ensure_subprocess_command_tokens,
+    ensure_subprocess_script_under_root,
+)
 
 
 def run_stage(
@@ -24,6 +28,8 @@ def run_stage(
     command = [python_executable, str(script_path)]
     if extra_args:
         command.extend(extra_args)
+    ensure_subprocess_script_under_root(script_path, root=root)
+    ensure_subprocess_command_tokens(command)
     stage_env = os.environ.copy()
     existing_pythonpath = stage_env.get("PYTHONPATH", "").strip()
     stage_root = str(root)
@@ -44,7 +50,7 @@ def run_stage(
         sort_keys=True,
     )
     started = time.time()
-    process = subprocess.run(
+    process = subprocess.run(  # noqa: S603 - command tokens and script path are validated before execution.
         command,
         cwd=str(root),
         env=stage_env,

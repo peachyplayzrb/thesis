@@ -27,6 +27,8 @@ def _build_weight_map(items: list[dict[str, Any]]) -> dict[str, float]:
             weighted_entries.append((label, float(raw_weight)))
 
     if weighted_entries:
+        # Only positively-weighted items contribute; zero/missing-weight items are
+        # intentionally excluded so they do not dilute the profile.
         total = sum(weight for _, weight in weighted_entries)
         if total > 0:
             return {
@@ -34,6 +36,8 @@ def _build_weight_map(items: list[dict[str, Any]]) -> dict[str, float]:
                 for label, weight in weighted_entries
             }
 
+    # Fallback: no items carried a positive weight (weights absent or all zero).
+    # Give every labeled item equal weight so the profile is still usable.
     if not labels:
         return {}
     uniform_weight = round(1.0 / len(labels), 6)

@@ -11,7 +11,10 @@ import webbrowser
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from typing import Any
 
+from shared_utils.security import ensure_trusted_https_url
+
 ACCOUNTS_BASE_URL = "https://accounts.spotify.com"
+_TRUSTED_SPOTIFY_HOSTS = {"accounts.spotify.com"}
 
 
 class OAuthCallbackState:
@@ -38,11 +41,11 @@ class OAuthCallbackHandler(BaseHTTPRequestHandler):
         self.send_header("Content-Type", "text/html; charset=utf-8")
         self.end_headers()
         self.wfile.write(
-            
+
                 b"<html><body><h3>Spotify authorization received.</h3>"
                 b"<p>You can close this tab and return to the terminal.</p>"
                 b"</body></html>"
-            
+
         )
 
     def log_message(self, format: str, *args: Any) -> None:  # noqa: A003
@@ -78,8 +81,10 @@ def request_token(
 ) -> dict[str, Any]:
     payload = urllib.parse.urlencode(body_fields).encode("utf-8")
     basic = base64.b64encode(f"{client_id}:{client_secret}".encode()).decode("utf-8")
-    req = urllib.request.Request(
-        url=f"{ACCOUNTS_BASE_URL}/api/token",
+    token_url = f"{ACCOUNTS_BASE_URL}/api/token"
+    ensure_trusted_https_url(token_url, allowed_hosts=_TRUSTED_SPOTIFY_HOSTS)
+    req = urllib.request.Request(  # noqa: S310 - URL is pre-validated to trusted Spotify HTTPS host.
+        url=token_url,
         data=payload,
         method="POST",
         headers={
@@ -87,7 +92,7 @@ def request_token(
             "Content-Type": "application/x-www-form-urlencoded",
         },
     )
-    with urllib.request.urlopen(req, timeout=timeout_seconds) as response:
+    with urllib.request.urlopen(req, timeout=timeout_seconds) as response:  # noqa: S310 - URL is pre-validated to trusted Spotify HTTPS host.
         return json.loads(response.read().decode("utf-8"))
 
 

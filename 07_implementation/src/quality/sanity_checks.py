@@ -22,6 +22,7 @@ from typing import Any
 
 from controllability.input_validation import normalize_validation_policy
 from shared_utils.artifact_registry import bl003_required_paths
+from shared_utils.constants import BL005_FILTERED_REQUIRED_FIELDS
 from shared_utils.io_utils import format_utc_iso, sha256_of_file
 from shared_utils.io_utils import load_json as load_json_shared
 from shared_utils.parsing import safe_float
@@ -42,17 +43,7 @@ BL005_HANDSHAKE_REQUIRED_PROFILE_KEYS: tuple[str, ...] = (
 BL005_HANDSHAKE_REQUIRED_SEED_TRACE_FIELDS: tuple[str, ...] = (
     "track_id",
 )
-BL006_HANDSHAKE_REQUIRED_BL005_FILTERED_FIELDS: tuple[str, ...] = (
-    "track_id",
-    "artist",
-    "song",
-    "tags",
-    "genres",
-    "tempo",
-    "duration_ms",
-    "key",
-    "mode",
-)
+BL006_HANDSHAKE_REQUIRED_BL005_FILTERED_FIELDS: tuple[str, ...] = BL005_FILTERED_REQUIRED_FIELDS
 BL005_HANDSHAKE_WARN_MAX_VIOLATIONS_ADVISORY_THRESHOLD = 3
 BL005_RUNTIME_CONTROL_FALLBACK_ADVISORY_THRESHOLD = 3
 BL005_THRESHOLD_DIAGNOSTICS_GATE_POLICY_DEFAULT = "warn"
@@ -106,17 +97,7 @@ def csv_row_count(path: Path) -> int:
 
 
 def bl005_filtered_has_required_columns(header: list[str]) -> bool:
-    required = {
-        "track_id",
-        "artist",
-        "song",
-        "tags",
-        "genres",
-        "tempo",
-        "duration_ms",
-        "key",
-        "mode",
-    }
+    required = set(BL005_FILTERED_REQUIRED_FIELDS)
     header_set = set(header)
     return required.issubset(header_set) and ({"id", "cid"} & header_set) != set()
 

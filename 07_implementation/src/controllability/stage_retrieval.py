@@ -2,12 +2,37 @@
 from __future__ import annotations
 
 from datetime import UTC, datetime
-from typing import Any, cast
+from typing import Any, NamedTuple, cast
 
 from controllability.reporting import csv_text, json_text
 from controllability.weights import candidate_labels
 from shared_utils.io_utils import sha256_of_text
 from shared_utils.parsing import parse_float
+
+
+class _SemanticTargets(NamedTuple):
+    """Named return from _build_semantic_targets."""
+
+    top_lead_genres: set[str]
+    top_tags: set[str]
+    top_genres: set[str]
+
+
+class _SemanticMatchDetails(NamedTuple):
+    """Named return from _semantic_match_details."""
+
+    lead_genre_match: bool
+    genre_overlap: int
+    tag_overlap: int
+    semantic_score: int
+
+
+class _RetrievalSemanticInputs(NamedTuple):
+    """Named return from _candidate_semantic_inputs."""
+
+    candidate_genres: list[str]
+    candidate_tags: list[str]
+    lead_genre: str
 
 
 def _decision_reason(is_seed_track: bool, semantic_score: int, numeric_pass_count: int, kept: bool) -> str:
@@ -23,7 +48,7 @@ def _decision_reason(is_seed_track: bool, semantic_score: int, numeric_pass_coun
 
 def _build_semantic_targets(
     semantic_profile: dict[str, Any], retrieval_config: dict[str, Any]
-) -> tuple[set[str], set[str], set[str]]:
+) -> _SemanticTargets:
     top_lead_genres = {
         item["label"]
         for item in cast(list[dict[str, Any]], semantic_profile["top_lead_genres"])[
@@ -42,7 +67,11 @@ def _build_semantic_targets(
             : int(retrieval_config["top_genre_limit"])
         ]
     }
-    return top_lead_genres, top_tags, top_genres
+    return _SemanticTargets(
+        top_lead_genres=top_lead_genres,
+        top_tags=top_tags,
+        top_genres=top_genres,
+    )
 
 
 def _scaled_numeric_thresholds(retrieval_config: dict[str, Any]) -> dict[str, float]:
@@ -101,11 +130,15 @@ def _resolve_keep_decision(
     )
 
 
-def _candidate_semantic_inputs(row: dict[str, str]) -> tuple[list[str], list[str], str]:
+def _candidate_semantic_inputs(row: dict[str, str]) -> _RetrievalSemanticInputs:
     candidate_genres = candidate_labels(row, "genres")
     candidate_tags = candidate_labels(row, "tags")
     lead_genre = candidate_genres[0] if candidate_genres else (candidate_tags[0] if candidate_tags else "")
-    return candidate_genres, candidate_tags, lead_genre
+    return _RetrievalSemanticInputs(
+        candidate_genres=candidate_genres,
+        candidate_tags=candidate_tags,
+        lead_genre=lead_genre,
+    )
 
 
 def _semantic_match_details(
@@ -115,12 +148,17 @@ def _semantic_match_details(
     top_lead_genres: set[str],
     top_genres: set[str],
     top_tags: set[str],
-) -> tuple[bool, int, int, int]:
+) -> _SemanticMatchDetails:
     lead_genre_match = lead_genre in top_lead_genres if lead_genre else False
     genre_overlap = len(top_genres.intersection(candidate_genres))
     tag_overlap = len(top_tags.intersection(candidate_tags))
     semantic_score = (1 if lead_genre_match else 0) + (1 if genre_overlap > 0 else 0) + (1 if tag_overlap > 0 else 0)
-    return lead_genre_match, genre_overlap, tag_overlap, semantic_score
+    return _SemanticMatchDetails(
+        lead_genre_match=lead_genre_match,
+        genre_overlap=genre_overlap,
+        tag_overlap=tag_overlap,
+        semantic_score=semantic_score,
+    )
 
 
 def _update_semantic_rule_hits(

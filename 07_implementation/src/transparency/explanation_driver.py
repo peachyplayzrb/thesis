@@ -6,6 +6,10 @@ from collections.abc import Mapping, Sequence
 
 from shared_utils.parsing import safe_float
 
+# Score-band thresholds for explanation framing
+_STRONG_MATCH_THRESHOLD: float = 0.75
+_MODERATE_MATCH_THRESHOLD: float = 0.5
+
 
 def build_why_selected(
     lead_genre: str,
@@ -20,9 +24,9 @@ def build_why_selected(
         for c in top_contributors[:top_contributor_limit]
     ]
     contributors_str = ", ".join(top_labels)
-    if final_score >= 0.75:
+    if final_score >= _STRONG_MATCH_THRESHOLD:
         strength_phrase = "shows a strong profile match"
-    elif final_score >= 0.5:
+    elif final_score >= _MODERATE_MATCH_THRESHOLD:
         strength_phrase = "shows a moderate profile match"
     else:
         strength_phrase = "shows a weaker but acceptable profile match"

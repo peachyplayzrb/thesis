@@ -1,0 +1,190 @@
+# Chapter 2: Literature Review
+
+This chapter reviews literature relevant to transparent and controllable playlist generation under cross-source data conditions. It examines recommendation paradigms, transparency and controllability evidence, profile construction, music-specific challenges, and cross-source alignment, before identifying the research gap addressed by this thesis.
+
+## 2.1 Foundations and Scope of Recommender Systems
+
+Music streaming environments expose listeners to catalogues of millions of tracks, creating substantial choice complexity and decision fatigue that recommender systems are intended to mitigate. Foundational surveys frame recommendation as utility estimation under uncertainty rather than direct preference detection, because available evidence is partial, noisy, and context-dependent (Adomavicius and Tuzhilin, 2005; Lu et al., 2015). While this framing provides a coherent formal basis, it relies on a strong assumption: historical interaction traces are treated as reliable value proxies, even though media consumption behaviour may reflect convenience, habit, or interface nudging rather than stable preference.
+
+Interaction logs such as play counts and session traces are frequently interpreted as behavioural indicators of preference, yet they remain indirect and interpretation-dependent (Roy and Dutta, 2022). This dependence introduces a structural inconsistency between scale and validity: implicit data are abundant and operationally efficient, but their causal meaning is often uncertain. Adomavicius and Tuzhilin (2005) treat observed interaction behaviour as a practical utility signal, whereas Roy and Dutta (2022) challenge that assumption by showing that interaction evidence is shaped by data-source and context effects that can weaken direct preference interpretation. This contradiction remains unresolved because high-volume implicit traces improve model learnability while simultaneously weakening causal interpretability.
+
+A recurring position in recommender research is that higher predictive accuracy reflects higher recommendation quality. However, methodological analyses challenge this claim by showing that reported improvements are highly sensitive to preprocessing, split design, and metric framing (Herlocker et al., 2004; Ferrari Dacrema et al., 2021; Bauer et al., 2024). While benchmark protocols support comparability, they may understate external validity and explanation fidelity. Studies that prioritise fixed evaluation settings often report strong gains, but these gains do not consistently establish transferability, inspectability, or reproducibility across deployment contexts. The extent to which accuracy gains translate into meaningful recommendation improvements therefore remains uncertain. The accountability-oriented critique is currently better evidenced, because documented reproducibility failures and protocol fragility are repeatedly observed across recommender evaluations (Ferrari Dacrema et al., 2021; Bauer et al., 2024), whereas many accuracy-centered claims still depend on tightly controlled benchmark assumptions.
+
+The literature progresses from paradigm-level modelling debates to transparency and evaluation concerns, then to profile construction and candidate generation, before narrowing to music-specific constraints and cross-source alignment and reproducibility challenges. Across this progression, each stage inherits assumptions from earlier stages, and accountability is often examined as isolated components rather than as a unified evidential chain.
+
+## 2.2 Core Recommendation Paradigms and Their Trade-offs
+
+Content-based, collaborative, and hybrid systems remain the dominant paradigm families (Adomavicius and Tuzhilin, 2005; Lu et al., 2015), yet this taxonomy conceals substantive disagreement regarding evidential reliability. Content-based methods prioritise explicit descriptors, collaborative methods prioritise interaction structure, and hybrid methods attempt to combine both. While each can perform strongly under specific conditions, they rely on different assumptions about what constitutes trustworthy evidence, and these assumptions lead to distinct failure modes under sparse, noisy, or cross-source data.
+
+Figure 2.1. Trade-offs among content-based, collaborative, and hybrid paradigms in the reviewed literature.
+
+| Paradigm | Primary evidence assumption | Strength under stated conditions | Typical failure mode | Accountability risk |
+| --- | --- | --- | --- | --- |
+| Content-based | Descriptor-level features are valid preference proxies | High inspectability of feature contribution logic | Weak coverage of affective/situational intent when descriptors are incomplete | Transparent but potentially misaligned with lived preference |
+| Collaborative | Dense interaction structure captures relevance reliably | Strong statistical learnability with rich behaviour matrices | Exposure/popularity artifacts can distort inferred preference | Predictive lift may hide causal ambiguity |
+| Hybrid | Combining evidence sources improves robustness | Better aggregate fit across mixed signals | Attribution clarity decreases as integration complexity increases | Harder to isolate why specific items were ranked |
+
+Across all three paradigms, metric design and sparsity conditions can reshape ranking outcomes, so method suitability remains context-dependent rather than universally ordered.
+
+Content-based recommendation in music relies on metadata, tags, lyrics, and audio descriptors, enabling interpretable feature-level modelling across multiple content layers (Deldjoo et al., 2024). This can support clearer inspection than latent collaborative factors. However, the same studies expose a key limitation: engineered descriptors only partially capture affective and situational aspects of listening. Deldjoo et al. (2024) frame explicit content layers as useful for structured content representation and analysis, whereas Flexer and Grill (2016) challenge the assumption that feature-space similarity captures listener-perceived similarity with sufficient stability. The disagreement occurs because descriptor pipelines optimize computable proximity, while perceptual judgments vary with framing and listener context, so representation precision does not guarantee preference fidelity.
+
+Collaborative filtering estimates relevance from user-item interaction patterns and often achieves strong performance when behavioural matrices are dense (Adomavicius and Tuzhilin, 2005). In contrast, Zhang and Chen (2020) highlight that latent representations can obscure direct interpretability of ranking drivers. Adomavicius and Tuzhilin (2005) treat dense interaction structure as a strong relevance signal, whereas Ferrari Dacrema et al. (2021) and Bauer et al. (2024) challenge the reliability of that conclusion by showing that protocol and evaluation choices can inflate apparent progress. While collaborative approaches are frequently framed as behaviour-faithful, this position is contested by evidence of popularity amplification and exposure bias, which introduce systematic distortions in observed interactions. This unresolved conflict persists because interaction density improves statistical learnability but does not isolate causal preference from exposure artifacts.
+
+Hybrid systems are often presented as resolving the weaknesses of individual paradigms by combining complementary evidence sources (Cano and Morisio, 2017). However, this position is challenged by findings that increased integration reduces attribution clarity, making it difficult to isolate which component drives ranking outcomes. While hybridisation may improve aggregate performance, it also introduces a methodological constraint: gains in predictive metrics may coincide with reduced explanatory precision and weaker causal traceability.
+
+Metric design further intensifies these disagreements. Similarity functions, normalisation schemes, and thresholds are model-defining choices that reshape neighbourhood geometry and rank outcomes (Fkih, 2022). Although some studies treat metric selection as a routine tuning step, emerging evidence indicates that metric behaviour varies significantly across scaling choices, descriptor combinations, and objective formulations. The mechanism is direct: metric family and scaling policy determine which items become near neighbours, so Euclidean, cosine, or weighted-distance formulations can produce different local candidate sets before downstream scoring is applied. This raises the possibility that observed improvements may reflect metric artefacts rather than genuine advances in recommendation logic, and consensus on robust metric selection remains limited.
+
+Data sparsity further differentiates paradigm suitability. Collaborative and many hybrid variants typically depend on dense interaction histories, whereas feature-oriented systems remain functional under sparse or partially unmatched evidence. In sparse cross-source environments, studies report mixed outcomes: additional modelling layers can amplify upstream uncertainty in some settings while improving fit in others. This indicates context-dependent trade-offs rather than a stable complexity hierarchy, although the extent of this effect remains underexplored.
+
+## 2.3 Transparency, Explainability, and User Control in Recommender Literature
+
+Explanation research has long argued that recommendation quality is multidimensional, extending beyond predictive utility to include transparency, trust, effectiveness, and scrutability (Tintarev and Masthoff, 2007, 2012). However, later findings indicate that these goals do not consistently move together: persuasive explanations can increase confidence without improving understanding. While early frameworks emphasise explanation benefits, subsequent evaluation work challenges the assumption that explanation presence is equivalent to explanation quality.
+
+Conceptual distinctions are frequently stated but unevenly enforced in empirical studies. Transparency concerns visibility of system logic, explainability concerns intelligibility of specific outputs, controllability concerns user influence over behaviour (Jin et al., 2020), and observability concerns run-level diagnostic visibility. While these categories are analytically separable, many implementations collapse them by presenting post-hoc narratives as transparent reasoning. This is challenged by Zhang and Chen (2020), who argue that plausible explanations may remain weakly coupled to ranking mechanisms.
+
+Empirical evidence also indicates that explanation effects are strongly context-dependent. Jin et al. (2020) report that control-oriented interfaces are associated with higher recommendation acceptance and perceived usefulness under some user-characteristic conditions, whereas usability-oriented studies suggest that explanation utility depends on user and situational characteristics (Knijnenburg et al., 2012). Broader AI trust literature similarly reinforces that user and application context shape trust outcomes (Afroogh et al., 2024). At the same time, Zhang and Chen (2020) challenge any direct quality inference from perceived usefulness alone by showing that plausible explanations can remain weakly coupled to ranking mechanisms. While one line of work emphasises user-perceived value, the other highlights comprehension fragility. This inconsistency reveals a methodological gap: most studies privilege either perceived usefulness or explanation fidelity, while joint assessment remains less common.
+
+Controllability evidence varies in methodological rigor. Jin et al. (2020) and Nauta et al. (2023) frame stronger control evidence around predictable and interpretable downstream effects. However, many studies report available controls without systematic causal checks linking control changes to stage-level behavioural shifts. While interface-level control options are often treated as sufficient evidence of agency, subsequent findings challenge this assumption by showing that nominal controls may have weak, unstable, or opaque effects.
+
+Reproducibility and observability face related constraints. Methodological reviews indicate that under-specified preprocessing, split logic, and software or implementation detail can undermine independent reconstruction (Beel et al., 2016; Anelli et al., 2021; Cavenaghi et al., 2023). While richer run logging is often proposed as a remedy, evidence suggests that logging quality depends on whether stage-level transformations are replayable, not merely recorded. Current publication practice remains predominantly outcome-centric, while reproducibility-focused studies advocate fuller process-level evidence that remains inconsistently implemented.
+
+## 2.4 Preference Evidence, Profile Construction, and Candidate Generation
+
+Profile construction is frequently described as preprocessing, yet it operates as a high-impact modelling stage that defines the evidence distribution entering ranking. Aggregating interaction history can stabilise noise, but it also encodes assumptions about recency, repetition, and signal reliability (Adomavicius and Tuzhilin, 2005; Roy and Dutta, 2022). While preprocessing language implies neutrality, existing work indicates that profile construction is inherently normative because it determines which behavioural traces are privileged as preference evidence.
+
+Content-based music studies support explicit profile representations built from interpretable descriptors (Bogdanov et al., 2013; Deldjoo et al., 2024). Compared with embedding-dominant pipelines, this can improve inspection and auditability. However, the same approach introduces a representational limitation: omitted descriptors can systematically compress preference space. While explicit profiles are often presented as transparent alternatives to opaque embeddings, this does not resolve the underlying assumption that selected features adequately represent listener intent. Roy and Dutta (2022) sharpen this critique by indicating that behavioural traces can reflect contextual and exposure-related effects, which means transparent feature aggregation can still be wrong when input evidence is not a clean proxy for stable preference.
+
+Cross-source pipelines intensify these concerns because profile quality depends on alignment completeness and source consistency. If imported history is sparse, temporally skewed, or partially unmatched, downstream ranking inherits those distortions. In contrast to score-level explanations that emphasise final ranking logic, this literature foregrounds profile-side uncertainty as a key interpretive factor before ranking outcomes are assessed. A persistent inconsistency in current literature is that profile uncertainty is often underreported relative to confidence in final ranked outputs.
+
+Explicit user-correction mechanisms — including influence track injection (Jin et al., 2020) and mood-based interactive filtering (Andjelkovic et al., 2019) — are proposed as pathways to introduce user-steerable profile adjustment signals. While these approaches suggest improved controllability, subsequent evidence indicates that effect size depends heavily on integration constraints and weighting rules. If influence signals are weakly weighted, actuation becomes negligible; if heavily weighted, profile stability deteriorates. This contradiction reflects a calibration challenge in which reported control utility depends on whether behavioural effects are detectable and stable across settings.
+
+Candidate generation is another critical but under-analysed stage. Recommendation behaviour is strongly conditioned by pre-scoring pool composition, and playlist-continuation studies show high sensitivity to candidate handling decisions (Zamani et al., 2019). While thresholding is often justified as computational efficiency, it simultaneously reshapes diversity, novelty, and coverage. Technically, downstream metrics are conditional on the surviving candidate support set, so threshold changes alter the measurement space itself rather than merely tuning performance within a fixed space. This challenges score-centric evaluation assumptions and positions exclusion rules as substantive recommendation logic rather than operational side effects.
+
+Zamani et al. (2019) show that method composition and candidate handling materially change continuation outcomes, whereas Ferraro et al. (2018) emphasize hybrid ranking performance in automatic playlist continuation under challenge settings. The contradiction is methodological rather than rhetorical: if candidate generation changes which tracks can be scored, downstream score quality cannot be interpreted independently of upstream exclusion logic. The mechanism is straightforward: threshold and filtering policies alter the support of the ranked distribution before scoring, so later gains in ranking metrics may partly reflect candidate-space pruning rather than stronger relevance modeling.
+
+## 2.5 Music Recommendation and Playlist-Specific Challenges
+
+Music recommendation does not map cleanly to generic top-N retrieval because listener evaluation is sequential and relational rather than purely itemwise. Schedl et al. (2018) show that short-track consumption, contextual variability, and session dynamics weaken static relevance assumptions. While top-N metrics can capture item-level fit, they can underrepresent transition coherence and temporal flow. This mismatch suggests that conventional ranking metrics and lived playlist quality are not consistently aligned.
+
+Playlist studies show that coherence, diversity, novelty, and order operate as competing objectives rather than jointly maximisable targets (Ferraro et al., 2018; Vall et al., 2019; Bonnin and Jannach, 2015; Schweiger et al., 2025). While some optimisation studies imply tractable balancing, others demonstrate objective interference where gains in one criterion degrade another. The conflict is technical as well as conceptual: coherence objectives often minimize local feature distance between adjacent tracks, whereas diversity objectives maximize spread across feature space, so improvement in one objective can mathematically reduce the other. Ferraro et al. (2018) claim hybrid signal integration improves continuation quality, whereas Schweiger et al. (2025) challenge one-dimensional improvement claims by showing that coherence values shift with distance-feature definitions and playlist characteristics. This challenges the assumption that a single objective function can adequately represent playlist quality and reveals a continuing multi-objective evaluation gap.
+
+Perceived music similarity is itself unstable. Flexer and Grill (2016) report low inter-rater agreement and strong framing effects, indicating that similarity judgements are partly subjective and context-conditioned. While many systems operationalise relevance through feature-space proximity, this is challenged by listener-level variability in meaning and context. The resulting tension is unresolved: similarity scores may be computationally precise yet behaviourally ambiguous.
+
+Dataset suitability introduces an additional constraint. Music4All supports reproducible multimodal experimentation through metadata, tags, lyrics, and audio-related attributes (Pegoraro Santana et al., 2020), and subsequent work shows utility in multimodal genre-related tasks (Ru et al., 2023). However, transfer from representation or classification performance to preference fidelity is not guaranteed. This contradicts assumptions that richer descriptor coverage automatically implies recommendation validity and highlights an external-validity gap between dataset affordances and listening intent.
+
+## 2.6 Feature-Based and Latent Approaches: Comparative Strengths and Limits
+
+Literature comparing feature-based and latent recommender families converges on a persistent trade-off between inspectability and representational flexibility. Feature-based scoring pipelines support descriptor-level attribution of rank variation, and this can improve post-hoc inspectability of observed outputs (Bogdanov et al., 2013; Deldjoo et al., 2024). However, inspectability alone does not establish behavioural adequacy, because transparent feature computations can still encode weak assumptions when available descriptors omit contextual and affective preference factors.
+
+Cano and Morisio (2017) and He et al. (2017) report that hybrid and neural models can outperform simpler approaches in data-rich settings, whereas Zhang and Chen (2020) challenge the practical sufficiency of those gains by highlighting interpretability and explanation-fidelity deficits in opaque model families. The technical disagreement is about evidence quality, not only model capacity: higher-capacity architectures may capture more interaction structure, but the contribution of specific signals becomes harder to attribute, making causal inspection and explanation validation more difficult.
+
+Similarity metric sensitivity remains a central technical caveat across both feature-based and hybrid families. Distance functions define local structure in feature space and therefore shape neighbour selection and final rank behaviour (Fkih, 2022). Fkih (2022) treats metric choice as a first-order determinant of recommender behaviour, whereas papers that report aggregate gains without metric-ablation detail implicitly treat metric choice as secondary tuning. The contradiction arises because scaling, normalization, and descriptor weighting jointly transform neighbourhood geometry, so identical feature sets can yield materially different rankings under different metric configurations.
+
+Taken together, this literature does not support a universal hierarchy among feature-based, latent, hybrid, and deterministic approaches. Instead, it points to an unresolved comparative problem: studies that emphasize predictive lift often under-specify explanation fidelity and auditability conditions, while studies that emphasize transparency often under-specify representational adequacy under richer preference contexts.
+
+## 2.7 Cross-Source Alignment and Reproducibility
+
+Cross-source recommendation depends on entity alignment across heterogeneous identifiers and metadata. Entity-resolution literature supports matching pipelines that manage combinatorial search and uncertainty, with blocking and filtering explicitly formalized in later survey work (Elmagarmid et al., 2007; Papadakis et al., 2021). While identifier-first matching can provide high precision, fallback metadata pathways introduce unresolved ambiguity. Entity-resolution studies therefore discuss confidence-sensitive matching representations, while binary matched/unmatched reporting remains common in recommender practice.
+
+Reproducibility failures in recommender research are repeatedly linked to incomplete protocol specification, hidden preprocessing steps, and dependency drift (Ferrari Dacrema et al., 2021; Bellogin and Said, 2021; Zhu et al., 2022; Anelli et al., 2021). Zhu et al. (2022) claim standardized benchmark infrastructure improves comparability, whereas Bellogin and Said (2021) challenge the sufficiency of infrastructure alone by showing that accountability still degrades when assumptions, preprocessing choices, and evaluation contexts are underreported. While result-focused reporting remains common, recent explainability work in music contexts demonstrates that feature-level mechanism explanations, showing which specific modalities and attributes drive individual outputs, provide more informative auditing than aggregate prediction scores alone (Sotirou et al., 2025). Reproducibility-focused studies advocate fuller process tracing across configuration, alignment, candidate handling, scoring, and assembly stages, but such evidence remains unevenly standardized in published work.
+
+Figure 2.2. Uncertainty across recommendation stages in the reviewed literature.
+
+```mermaid
+flowchart TD
+    A["Interaction Evidence<br/>Implicit behaviour may reflect convenience, exposure, or preference"]
+    B["Profile Construction<br/>Recency, weighting, and alignment assumptions shape preference evidence"]
+    C["Candidate Generation<br/>Thresholds and filtering alter which items can be ranked"]
+    D["Scoring and Ranking<br/>Metric choice and normalization reshape neighborhood geometry"]
+    E["Playlist Assembly<br/>Coherence, diversity, novelty, and ordering objectives can interfere"]
+    F["Explanation Layer<br/>Persuasive narratives may diverge from mechanism-level fidelity"]
+    G["Observability and Reproducibility<br/>Process-level traceability is needed across all prior stages"]
+
+    A --> B --> C --> D --> E --> F --> G
+```
+
+## 2.8 Research Gap and Thesis Positioning
+
+Across the reviewed literature, several consistent findings emerge: method suitability is objective-dependent, explanation persuasiveness is not equivalent to explanation fidelity, profile construction and candidate generation are first-order modelling decisions, and reproducibility depends on process-level evidence. Music-specific alignment benchmarks remain less developed than broader entity-resolution benchmarks, and deterministic similarity effects are rarely isolated across multiple datasets and competing playlist objectives (Elmagarmid et al., 2007; Papadakis et al., 2021; Ferraro et al., 2018; Schweiger et al., 2025). The central gap is therefore not a lack of recommendation methods, but a lack of integrated evidence showing how transparency, profile assumptions, candidate-generation logic, controllability, reproducibility, and multi-objective playlist quality interact within one inspectable recommendation process. Existing work frequently evaluates these concerns in partial slices rather than as one linked evidential chain, so accountability claims remain difficult to compare against optimisation-focused results (Ferrari Dacrema et al., 2021; Bellogin and Said, 2021; Bauer et al., 2024; Roy and Dutta, 2022; Jin et al., 2020; Zamani et al., 2019; Schweiger et al., 2025).
+
+This thesis is positioned to address that integrated gap by designing and evaluating recommendation behaviour as a connected pipeline rather than as disconnected components, with explicit attention to profile-side assumptions, candidate-space shaping, observable control effects, and process-level reproducibility across stages (Roy and Dutta, 2022; Jin et al., 2020; Nauta et al., 2023; Beel et al., 2016; Anelli et al., 2021). Playlist quality is therefore treated as a visible trade-off among coherence, diversity, novelty, and ordering rather than a single-axis optimisation target (Ferraro et al., 2018; Vall et al., 2019; Schweiger et al., 2025). The contribution is explicitly bounded to the design and evaluation of a transparent and controllable playlist generation pipeline under cross-source data conditions, rather than model-family novelty.
+
+## 2.9 Chapter Summary
+
+This chapter has reviewed literature relevant to transparent and controllable playlist generation under cross-source data conditions. It has examined the evidential reliability of recommendation paradigms, the gap between explanation persuasiveness and explanation fidelity, the modelling significance of profile construction and candidate generation, and the challenges specific to music recommendation and playlist quality. The cross-source alignment and reproducibility sections further established that uncertainty in preference evidence and process-level traceability are first-order design concerns rather than secondary implementation details. Chapter 3 now translates these findings into a concrete design methodology and architecture for the artefact developed in this thesis.
+
+
+
+# References
+
+Adomavicius, G. and Tuzhilin, A. (2005) 'Toward the next generation of recommender systems: a survey of the state-of-the-art and possible extensions', IEEE Transactions on Knowledge and Data Engineering, 17(6), pp. 734-749. doi: 10.1109/TKDE.2005.99.
+
+Afroogh, S., Akbari, A., Malone, E., Kargar, M. and Alambeigi, H. (2024) 'Trust in AI: progress, challenges, and future directions', Humanities and Social Sciences Communications, 11(1), p. 1568. doi: 10.1057/s41599-024-04044-8.
+
+Andjelkovic, I., Parra, D. and O'Donovan, J. (2019) 'Moodplay: Interactive music recommendation based on artists' mood similarity', International Journal of Human-Computer Studies, 121, pp. 142-159. doi: 10.1016/j.ijhcs.2018.04.004.
+
+Anelli, V.W., Bellogin, A., Ferrara, A., Malitesta, D., Merra, F.A., Pomo, C., Donini, F.M. and Di Noia, T. (2021) 'Elliot: A comprehensive and rigorous framework for reproducible recommender systems evaluation', in Proceedings of the 44th International ACM SIGIR Conference on Research and Development in Information Retrieval. doi: 10.1145/3404835.3463245.
+
+Bauer, C., Zangerle, E. and Said, A. (2024) 'Exploring the landscape of recommender systems evaluation: practices and perspectives', ACM Transactions on Recommender Systems, 2(1), Article 11, pp. 1-31. doi: 10.1145/3629170.
+
+Beel, J., Breitinger, C., Langer, S., Lommatzsch, A. and Gipp, B. (2016) 'Towards reproducibility in recommender-systems research', User Modeling and User-Adapted Interaction, 26(1), pp. 69-101. doi: 10.1007/s11257-016-9174-x.
+
+Bellogin, A. and Said, A. (2021) 'Improving accountability in recommender systems research through reproducibility', User Modeling and User-Adapted Interaction, 31(5), pp. 941-977. doi: 10.1007/s11257-021-09302-x.
+
+Bogdanov, D., Haro, M., Fuhrmann, F., Xambo, A., Gomez, E. and Herrera, P. (2013) 'Semantic audio content-based music recommendation and visualization based on user preference examples', Information Processing and Management, 49(1), pp. 13-33. doi: 10.1016/j.ipm.2012.06.004.
+
+Bonnin, G. and Jannach, D. (2015) 'Automated generation of music playlists: survey and experiments', ACM Computing Surveys, 47(2), pp. 1-35. doi: 10.1145/2652481.
+
+Cano, E. and Morisio, M. (2017) 'Hybrid recommender systems: a systematic literature review', Intelligent Data Analysis, 21(6), pp. 1487-1524. doi: 10.3233/IDA-163209.
+
+Cavenaghi, E., Sottocornola, S., Stella, F. and Zanker, M. (2023) 'A systematic study on reproducibility of reinforcement learning in recommendation systems', ACM Transactions on Recommender Systems, 1(3), pp. 1-23. doi: 10.1145/3596519.
+
+Deldjoo, Y., Schedl, M. and Knees, P. (2024) 'Content-driven music recommendation: evolution, state of the art, and challenges', Computer Science Review, 51, p. 100618. doi: 10.1016/j.cosrev.2024.100618.
+
+Elmagarmid, A.K., Ipeirotis, P.G. and Verykios, V.S. (2007) 'Duplicate record detection: a survey', IEEE Transactions on Knowledge and Data Engineering, 19(1), pp. 1-16. doi: 10.1109/TKDE.2007.250581.
+
+Ferrari Dacrema, M., Boglio, S., Cremonesi, P. and Jannach, D. (2021) 'A troubling analysis of reproducibility and progress in recommender systems research', ACM Transactions on Information Systems, 39(2), pp. 1-49. doi: 10.1145/3434185.
+
+Ferraro, A., Bogdanov, D., Yoon, J., Kim, K. and Serra, X. (2018) 'Automatic playlist continuation using a hybrid recommender system combining features from text and audio', in Proceedings of the ACM Recommender Systems Challenge 2018. doi: 10.1145/3267471.3267473.
+
+Fkih, F. (2022) 'Similarity measures for collaborative filtering-based recommender systems: review and experimental comparison', Journal of King Saud University - Computer and Information Sciences, 34(9), pp. 7645-7669. doi: 10.1016/j.jksuci.2021.09.014.
+
+Flexer, A. and Grill, T. (2016) 'The problem of limited inter-rater agreement in modelling music similarity', Journal of New Music Research, 45(3), pp. 239-251. doi: 10.1080/09298215.2016.1200631.
+
+He, X., Liao, L., Zhang, H., Nie, L., Hu, X. and Chua, T.-S. (2017) 'Neural collaborative filtering', in Proceedings of the 26th International Conference on World Wide Web, pp. 173-182. doi: 10.1145/3038912.3052569.
+
+Herlocker, J.L., Konstan, J.A., Terveen, L.G. and Riedl, J.T. (2004) 'Evaluating collaborative filtering recommender systems', ACM Transactions on Information Systems, 22(1), pp. 5-53. doi: 10.1145/963770.963772.
+
+Jin, Y., Tintarev, N., Htun, N.N. and Verbert, K. (2020) 'Effects of personal characteristics in control-oriented user interfaces for music recommender systems', User Modeling and User-Adapted Interaction, 30(2), pp. 199-249. doi: 10.1007/s11257-019-09247-2.
+
+Knijnenburg, B.P., Willemsen, M.C., Gantner, Z., Soncu, H. and Newell, C. (2012) 'Explaining the user experience of recommender systems', User Modeling and User-Adapted Interaction, 22(4), pp. 441-504. doi: 10.1007/s11257-011-9118-4.
+
+Lu, J., Wu, D., Mao, M., Wang, W. and Zhang, G. (2015) 'Recommender system application developments: a survey', Decision Support Systems, 74, pp. 12-32. doi: 10.1016/j.dss.2015.03.008.
+
+Nauta, M., Trienes, J., Pathak, S., Nguyen, E., Peters, M., Schmitt, Y., Schlotterer, J., Van Keulen, M. and Seifert, C. (2023) 'From anecdotal evidence to quantitative evaluation methods: a systematic review on evaluating explainable AI', ACM Computing Surveys, 55(13), pp. 1-42. doi: 10.1145/3583558.
+
+Papadakis, G., Skoutas, D., Thanos, E. and Palpanas, T. (2021) 'Blocking and filtering techniques for entity resolution: a survey', ACM Computing Surveys, 53(2), pp. 1-42. doi: 10.1145/3377455.
+
+Pegoraro Santana, I.A., Pinhelli, F., Donini, J., Catharin, L., Mangolin, R.B., Da Costa, Y.M.E.G., Delisandra Feltrim, V. and Domingues, M.A. (2020) 'Music4All: a new music database and its applications', in 2020 International Conference on Systems, Signals and Image Processing (IWSSIP). doi: 10.1109/IWSSIP48289.2020.9145170.
+
+Roy, D. and Dutta, M. (2022) 'A systematic review and research perspective on recommender systems', Journal of Big Data, 9(1), p. 59. doi: 10.1186/s40537-022-00592-5.
+
+Ru, G., Zhang, X., Wang, J., Cheng, N. and Xiao, J. (2023) 'Improving music genre classification from multi-modal properties of music and genre correlations perspective', in ICASSP 2023 - 2023 IEEE International Conference on Acoustics, Speech and Signal Processing. doi: 10.1109/ICASSP49357.2023.10097241.
+
+Schedl, M., Zamani, H., Chen, C.-W., Deldjoo, Y. and Elahi, M. (2018) 'Current challenges and visions in music recommender systems research', International Journal of Multimedia Information Retrieval, 7(2), pp. 95-116. doi: 10.1007/s13735-018-0154-2.
+
+Schweiger, H., Parada-Cabaleiro, E. and Schedl, M. (2025) 'The impact of playlist characteristics on coherence in user-curated music playlists', EPJ Data Science, 14(1), p. 24. doi: 10.1140/epjds/s13688-025-00531-3.
+
+Sotirou, T., Lyberatos, V., Mastromichalakis, O.M. and Stamou, G. (2025) 'MusicLIME: explainable multimodal music understanding', in ICASSP 2025 - 2025 IEEE International Conference on Acoustics, Speech and Signal Processing. doi: 10.1109/ICASSP49660.2025.10889771.
+
+Tintarev, N. and Masthoff, J. (2007) 'A survey of explanations in recommender systems', in 2007 IEEE 23rd International Conference on Data Engineering Workshop, pp. 801-810. doi: 10.1109/ICDEW.2007.4401070.
+
+Tintarev, N. and Masthoff, J. (2012) 'Evaluating the effectiveness of explanations for recommender systems: methodological issues and empirical studies on the impact of personalization', User Modeling and User-Adapted Interaction, 22(4), pp. 399-439. doi: 10.1007/s11257-011-9117-5.
+
+Vall, A., Dorfer, M., Eghbal-zadeh, H., Schedl, M., Burjorjee, K. and Widmer, G. (2019) 'Feature-combination hybrid recommender systems for automated music playlist continuation', User Modeling and User-Adapted Interaction, 29(2), pp. 527-572. doi: 10.1007/s11257-018-9215-8.
+
+Zamani, H., Schedl, M., Lamere, P. and Chen, C.-W. (2019) 'An analysis of approaches taken in the ACM RecSys Challenge 2018 for automatic music playlist continuation', ACM Transactions on Intelligent Systems and Technology, 10(5), pp. 1-21. doi: 10.1145/3344257.
+
+Zhang, Y. and Chen, X. (2020) 'Explainable recommendation: a survey and new perspectives', Foundations and Trends in Information Retrieval, 14(1), pp. 1-101. doi: 10.1561/1500000066.
+
+Zhu, J., Dai, Q., Su, L., Ma, R., Liu, J., Cai, G., Xiao, X. and Zhang, R. (2022) 'BARS: Towards Open Benchmarking for Recommender Systems', in Proceedings of the 45th International ACM SIGIR Conference on Research and Development in Information Retrieval. doi: 10.1145/3477495.3531723.
