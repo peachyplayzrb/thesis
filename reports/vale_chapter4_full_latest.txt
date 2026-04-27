@@ -1,51 +1,91 @@
 
  [4m08_writing\chapter4.md[0m
- 4:213   [33mwarning[0m     'was implemented' may be        write-good.Passive  
-                     passive voice. Use active                           
-                     voice if you can.                                   
- 4:213   [34msuggestion[0m  Try to avoid using 'was'.       write-good.E-Prime  
- 4:234   [33mwarning[0m     'objective' is too wordy.       write-good.TooWordy 
- 4:260   [33mwarning[0m     'is emitted' may be passive     write-good.Passive  
-                     voice. Use active voice if you                      
-                     can.                                                
- 4:260   [34msuggestion[0m  Try to avoid using 'is'.        write-good.E-Prime  
- 9:64    [34msuggestion[0m  Try to avoid using 'is'.        write-good.E-Prime  
- 9:64    [33mwarning[0m     'is mapped' may be passive      write-good.Passive  
-                     voice. Use active voice if you                      
-                     can.                                                
- 17:97   [34msuggestion[0m  Try to avoid using 'are'.       write-good.E-Prime  
- 20:40   [34msuggestion[0m  Try to avoid using 'is'.        write-good.E-Prime  
- 20:84   [33mwarning[0m     'It is' is too wordy.           write-good.TooWordy 
- 20:140  [34msuggestion[0m  Try to avoid using 'be'.        write-good.E-Prime  
- 20:140  [33mwarning[0m     'be inspected' may be passive   write-good.Passive  
-                     voice. Use active voice if you                      
-                     can.                                                
- 23:84   [34msuggestion[0m  Try to avoid using 'are'.       write-good.E-Prime  
- 23:84   [33mwarning[0m     'are treated' may be passive    write-good.Passive  
-                     voice. Use active voice if you                      
-                     can.                                                
- 30:126  [33mwarning[0m     'requirement' is too wordy.     write-good.TooWordy 
- 33:33   [33mwarning[0m     'objective' is too wordy.       write-good.TooWordy 
- 35:65   [34msuggestion[0m  Try to avoid using 'is'.        write-good.E-Prime  
- 35:98   [33mwarning[0m     'It is' is too wordy.           write-good.TooWordy 
- 35:101  [34msuggestion[0m  Try to avoid using 'is'.        write-good.E-Prime  
- 35:101  [33mwarning[0m     'is instrumented' may be        write-good.Passive  
-                     passive voice. Use active                           
-                     voice if you can.                                   
- 40:3    [33mwarning[0m     'Objective' is too wordy.       write-good.TooWordy 
- 60:26   [34msuggestion[0m  Try to avoid using 'is'.        write-good.E-Prime  
- 60:373  [33mwarning[0m     'participate' is too wordy.     write-good.TooWordy 
- 63:132  [33mwarning[0m     'objective' is too wordy.       write-good.TooWordy 
- 63:158  [33mwarning[0m     'is generated' may be passive   write-good.Passive  
-                     voice. Use active voice if you                      
-                     can.                                                
- 63:158  [34msuggestion[0m  Try to avoid using 'is'.        write-good.E-Prime  
- 63:289  [33mwarning[0m     'are packaged' may be passive   write-good.Passive  
-                     voice. Use active voice if you                      
-                     can.                                                
- 63:289  [34msuggestion[0m  Try to avoid using 'are'.       write-good.E-Prime  
- 63:435  [33mwarning[0m     'is presented' may be passive   write-good.Passive  
-                     voice. Use active voice if you                      
-                     can.                                                
+ 5:162    [33mwarning[0m     'evaluate' is too wordy.        write-good.TooWordy 
+ 7:325    [34msuggestion[0m  Try to avoid using 'is'.        write-good.E-Prime  
+ 13:597   [34msuggestion[0m  Try to avoid using 'is'.        write-good.E-Prime  
+ 17:626   [34msuggestion[0m  Try to avoid using 'is'.        write-good.E-Prime  
+ 17:626   [33mwarning[0m     'is described' may be passive   write-good.Passive  
+                      voice. Use active voice if you                      
+                      can.                                                
+ 19:99    [33mwarning[0m     'it is' is too wordy.           write-good.TooWordy 
+ 19:102   [34msuggestion[0m  Try to avoid using 'is'.        write-good.E-Prime  
+ 19:199   [34msuggestion[0m  Try to avoid using 'is'.        write-good.E-Prime  
+ 19:199   [33mwarning[0m     'is classified' may be passive  write-good.Passive  
+                      voice. Use active voice if you                      
+                      can.                                                
+ 19:237   [34msuggestion[0m  Try to avoid using 'is'.        write-good.E-Prime  
+ 27:63    [34msuggestion[0m  Try to avoid using 'is'.        write-good.E-Prime  
+ 27:63    [33mwarning[0m     'is found' may be passive       write-good.Passive  
+                      voice. Use active voice if you                      
+                      can.                                                
+ 27:163   [33mwarning[0m     'multiple' is too wordy.        write-good.TooWordy 
+ 29:150   [34msuggestion[0m  Try to avoid using 'was'.       write-good.E-Prime  
+ 31:213   [33mwarning[0m     'minimum' is too wordy.         write-good.TooWordy 
+ 31:555   [34msuggestion[0m  Try to avoid using 'was'.       write-good.E-Prime  
+ 31:555   [33mwarning[0m     'was recorded' may be passive   write-good.Passive  
+                      voice. Use active voice if you                      
+                      can.                                                
+ 31:587   [33mwarning[0m     'minimum' is too wordy.         write-good.TooWordy 
+ 35:66    [34msuggestion[0m  Try to avoid using 'be'.        write-good.E-Prime  
+ 41:148   [33mwarning[0m     'clearly' is a weasel word!     write-good.Weasel   
+ 45:66    [34msuggestion[0m  Try to avoid using 'be'.        write-good.E-Prime  
+ 52:61    [33mwarning[0m     'additional' is too wordy.      write-good.TooWordy 
+ 54:116   [34msuggestion[0m  Try to avoid using 'was'.       write-good.E-Prime  
+ 54:116   [33mwarning[0m     'was excluded' may be passive   write-good.Passive  
+                      voice. Use active voice if you                      
+                      can.                                                
+ 54:168   [34msuggestion[0m  Try to avoid using 'was'.       write-good.E-Prime  
+ 56:458   [33mwarning[0m     'were ranked' may be passive    write-good.Passive  
+                      voice. Use active voice if you                      
+                      can.                                                
+ 56:458   [34msuggestion[0m  Try to avoid using 'were'.      write-good.E-Prime  
+ 62:120   [33mwarning[0m     'are built' may be passive      write-good.Passive  
+                      voice. Use active voice if you                      
+                      can.                                                
+ 62:120   [34msuggestion[0m  Try to avoid using 'are'.       write-good.E-Prime  
+ 62:213   [33mwarning[0m     'be decomposed' may be passive  write-good.Passive  
+                      voice. Use active voice if you                      
+                      can.                                                
+ 62:213   [34msuggestion[0m  Try to avoid using 'be'.        write-good.E-Prime  
+ 74:314   [33mwarning[0m     'minimum' is too wordy.         write-good.TooWordy 
+ 74:366   [34msuggestion[0m  Try to avoid using 'be'.        write-good.E-Prime  
+ 74:366   [33mwarning[0m     'be satisfied' may be passive   write-good.Passive  
+                      voice. Use active voice if you                      
+                      can.                                                
+ 74:495   [34msuggestion[0m  Try to avoid using 'were'.      write-good.E-Prime  
+ 74:495   [33mwarning[0m     'were relaxed' may be passive   write-good.Passive  
+                      voice. Use active voice if you                      
+                      can.                                                
+ 76:189   [33mwarning[0m     'was selected' may be passive   write-good.Passive  
+                      voice. Use active voice if you                      
+                      can.                                                
+ 76:189   [34msuggestion[0m  Try to avoid using 'was'.       write-good.E-Prime  
+ 76:410   [34msuggestion[0m  Try to avoid using 'were'.      write-good.E-Prime  
+ 76:410   [33mwarning[0m     'were loosened' may be passive  write-good.Passive  
+                      voice. Use active voice if you                      
+                      can.                                                
+ 82:439   [34msuggestion[0m  Try to avoid using 'was'.       write-good.E-Prime  
+ 84:72    [34msuggestion[0m  Try to avoid using 'be'.        write-good.E-Prime  
+ 84:72    [33mwarning[0m     'be presented' may be passive   write-good.Passive  
+                      voice. Use active voice if you                      
+                      can.                                                
+ 86:393   [34msuggestion[0m  Try to avoid using 'was'.       write-good.E-Prime  
+ 86:393   [33mwarning[0m     'was included' may be passive   write-good.Passive  
+                      voice. Use active voice if you                      
+                      can.                                                
+ 94:63    [34msuggestion[0m  Try to avoid using 'was'.       write-good.E-Prime  
+ 94:63    [33mwarning[0m     'was imported' may be passive   write-good.Passive  
+                      voice. Use active voice if you                      
+                      can.                                                
+ 96:498   [34msuggestion[0m  Try to avoid using 'were'.      write-good.E-Prime  
+ 112:3    [33mwarning[0m     'Objective' is too wordy.       write-good.TooWordy 
+ 123:66   [33mwarning[0m     'was implemented' may be        write-good.Passive  
+                      passive voice. Use active                           
+                      voice if you can.                                   
+ 123:66   [34msuggestion[0m  Try to avoid using 'was'.       write-good.E-Prime  
+ 123:580  [33mwarning[0m     'is presented' may be passive   write-good.Passive  
+                      voice. Use active voice if you                      
+                      can.                                                
+ 123:580  [34msuggestion[0m  Try to avoid using 'is'.        write-good.E-Prime  
 
-Ô£û [31m0 errors[0m, [33m17 warnings[0m and [34m12 suggestions[0m in 1 file.
+Ô£û [31m0 errors[0m, [33m26 warnings[0m and [34m27 suggestions[0m in 1 file.

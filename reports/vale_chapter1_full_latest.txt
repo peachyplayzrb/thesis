@@ -1,1 +1,8 @@
-Ô£ö [31m0 errors[0m, [33m0 warnings[0m and [34m0 suggestions[0m in 1 file.
+
+ [4m08_writing\chapter1.md[0m
+ 32:54  [33mwarning[0m     'be designed' may be passive    write-good.Passive 
+                    voice. Use active voice if you                     
+                    can.                                               
+ 32:54  [34msuggestion[0m  Try to avoid using 'be'.        write-good.E-Prime 
+
+Ô£û [31m0 errors[0m, [33m1 warning[0m and [34m1 suggestion[0m in 1 file.

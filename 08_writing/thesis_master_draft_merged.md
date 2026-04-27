@@ -1,31 +1,3 @@
-## Abstract
-
-This thesis investigates the research question: what design considerations shape the engineering of a transparent, controllable, and observable automated playlist generation pipeline using cross-source music preference data. The artefact is implemented as a deterministic, single-user pipeline that ingests Spotify listening history, aligns events to a DS-001 candidate corpus, builds a weighted preference profile, filters and scores candidates, assembles a rule-constrained playlist, and emits explanation and observability artifacts.
-
-The final implementation is stabilized on the v1f run-configuration baseline. On the canonical run chain, BL-003 produces 1,064 seed rows from 11,935 input events, BL-005 retains 46,776 candidates from a 109,269-row corpus, BL-006 uses 10 active scoring components (7 numeric and 3 semantic), BL-007 outputs a full 10-track playlist, and BL-014 passes 22/22 sanity checks with 7/7 active freshness checks. Transparency outputs include per-track contributor traces, and BL-009 provides run-level artifact hashes, stage linkage, and configuration provenance.
-
-Evaluation shows strong evidence for deterministic engineering goals under bounded scope: BL-010 reproducibility checks report deterministic replay match, BL-011 controllability scenarios report repeat-consistent and observable parameter effects, and quality checks remain green on the active baseline. The work also surfaces explicit limitations, including high alignment miss rate, corpus dependence, and bounded external validity due to single-user deterministic scope.
-
-The contribution is therefore a validated engineering design demonstrating that transparency, controllability, reproducibility, and observability can be co-engineered in one deterministic playlist pipeline under BSc-feasible constraints, rather than a performance claim against learning-based recommendation systems.
-
-## Table of Contents
-
-[Generate automatically in Word if required for the final submission format.]
-
-## List of Figures
-
-[Generate automatically in Word if required for the final submission format.]
-
-## List of Tables
-
-[Generate automatically in Word if required for the final submission format.]
-
-## List of Abbreviations
-
-- DSR: Design Science Research
-- ISRC: International Standard Recording Code
-- MVP: Minimum Viable Product
-
 # Chapter 1: Introduction
 
 ## 1.1 Project Motivation
@@ -194,7 +166,7 @@ This thesis is positioned to address that integrated gap by designing and evalua
 
 This chapter has reviewed literature relevant to transparent and controllable playlist generation under cross-source data conditions. It has examined the evidential reliability of recommendation paradigms, the gap between explanation persuasiveness and explanation fidelity, the modelling significance of profile construction and candidate generation, and the challenges specific to music recommendation and playlist quality. The cross-source alignment and reproducibility sections further established that uncertainty in preference evidence and process-level traceability are first-order design concerns rather than secondary implementation details. Chapter 3 now translates these findings into a concrete design methodology and architecture for the artefact developed in this thesis.
 
-# Chapter 3: Design and Methodology
+  # Chapter 3: Design and Methodology
 
   ## 3.1 Introduction
   This chapter outlines how the playlist-generation pipeline is designed and structured. Building on Chapter 2, it translates requirements into concrete design decisions and moves from methodological position through overall architecture to each main design area in turn: alignment, preference profiling, candidate shaping, scoring, playlist assembly, and run-level observability.
@@ -724,37 +696,3 @@ Future work should extend the artefact without breaking the evidence discipline 
 
 ## 6.7 Chapter Summary
 The implementation demonstrates that the central engineering challenge is not simply to generate playlists deterministically, but to do so in a way that keeps uncertainty, trade-offs, mechanism linkage, and limits visible. The current evidence indicates that under bounded single-user, deterministic, cross-source conditions, a playlist generation pipeline can be engineered so that its evidence surfaces remain transparent, its controllability remains auditable, and its reproducibility remains verifiable through explicit artefact contracts. The limits of controllability—particularly the sensitivity region of the tested control parameters—mark the clearest boundary on what the current thesis can claim. Yet within those bounds, the thesis has demonstrated that deterministic architecture yields stronger mechanism-level traceability and evidence discipline than earlier design iterations, because its evaluation surfaces are explicit, executable, and honest about what the evidence does and does not justify.
-
-# References
-
-[Insert final formatted references or export from bibliography workflow.]
-
-# Bibliography
-
-[Optional. Omit if all listed sources are cited.]
-
-# Appendices
-
-## Appendix A: System Architecture Diagrams
-
-[Insert full architecture diagrams and any expanded versions of Chapter 3 figures.]
-
-## Appendix B: Configuration Profiles and Example Runs
-
-[Insert representative configuration files, parameter sets, and run metadata examples.]
-
-## Appendix C: Experiment Logs and Test Evidence
-
-[Insert supporting logs, hashes, screenshots, and detailed result tables if too large for Chapter 4.]
-
-## Appendix D: Extended Mapping Tables
-
-[Insert any expanded requirement-mechanism-evidence tables or chapter handoff tables that are too large for the main body.]
-
-## Appendix E: Additional Figures and Tables
-
-[Insert supplementary tables, diagrams, or output examples.]
-
-## Appendix F: Project Management Evidence Extracts
-
-[Insert selected logbook pages, milestone snapshots, supervision record extracts, replanning evidence, or timeline artefacts if these are not already submitted separately and if including them strengthens the report evidence.]

@@ -89,6 +89,17 @@ Maintenance snapshot (2026-04-27, updated):
 - impact_assessment: Low-positive. Refines planning clarity and execution readiness without changing thesis claims or implementation/runtime behavior. Ready for drafting execution.
 - approval_record: User meta-feedback and approval on 2026-04-27 ("Everything else is genuinely ready to execute. The plan is in good shape — these are refinements, not structural problems.").
 
+## C-642
+- date: 2026-04-27
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Completed two targeted optional style sweeps across Chapters 4 and 6 to reduce non-blocking warnings and suggestions. Pass 1 (Chapters 6→4): applied focused `apply_patch` edits targeting passive constructions and wordiness, resulting in −6 combined warnings/suggestions. Pass 2 (Chapters 4, 6): executed bulk `multi_replace_string_in_file` targeting passive voice constructions ("is described"→active, "was recorded"→active, "are incorporated"→active, "be engineered"→active, "is operationalized"→active), wordiness elimination ("it is" removed, "clearly" weasel word removed, "minimum" consolidated, hedge language tightened), and verb strengthening (active framing of logic operations). Final Vale bundle rerun confirmed improvement: Chapter 4 −3 warnings (29→26), −1 suggestion (28→27); Chapter 6 −3 warnings (30→27), −2 suggestions (47→45). 0 hard errors maintained across all 6 chapters. Total reduction from hard-error baseline: −12 combined warnings/suggestions across both passes.
+- reason: User selected optional style-sweep workflow to improve readability and reduce advisory-level prose friction before final submission preparation.
+- evidence_basis: Vale reports before and after each pass documented in `reports/vale_chapter{4,6}_full_latest.txt` and `reports/vale_chapter_bundle_latest.md` (timestamp 2026-04-27 20:29:43). Per-chapter lint summary: Ch1 0 errors 1 warning 1 suggestion, Ch2 0 errors 71 warnings 72 suggestions, Ch3 0 errors 105 warnings 104 suggestions, Ch4 0 errors 26 warnings 27 suggestions (−4 combined), Ch5 0 errors 37 warnings 35 suggestions, Ch6 0 errors 27 warnings 45 suggestions (−5 combined).
+- affected_components: `08_writing/chapter4.md`, `08_writing/chapter6.md`, `08_writing/thesis_master_draft_merged.md`, `reports/vale_chapter{1..6}_full_latest.txt`, `reports/vale_chapter_bundle_latest.md`, `reports/chapter_packaging_bundle_latest.md`, `00_admin/change_log.md`, `00_admin/decision_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`
+- impact_assessment: Low-positive. Improves prose clarity and readability without changing thesis claims, evidence, or implementation behavior. 0 hard errors maintained. Packaging verified 6/6 success. All chapters cleared for final submission workflows.
+- approval_record: User continuation request on 2026-04-27 to "continue" style sweep work; user selection of option 1 (Stage+Push) confirms completion readiness and commit authorization.
+
 ## C-634
 - date: 2026-04-27
 - proposed_by: user + Copilot

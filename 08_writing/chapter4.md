@@ -2,19 +2,19 @@
 
 ## 4.1 Chapter Aim and Scope
 
-This chapter reports how the design committed in Chapter 3 was realised as an executable pipeline and identifies the evidence outputs produced by each stage. It does not evaluate whether outputs meet quality criteria. Instead, it specifies what was implemented, how design properties (transparency, controllability, reproducibility) become visible in concrete evidence surfaces, and how information flows from alignment through playlist assembly.
+This chapter reports how the design committed in Chapter 3 became an executable pipeline and identifies the evidence outputs produced by each stage. It does not evaluate whether outputs meet quality criteria. Instead, it specifies what the implementation delivers, how design properties (transparency, controllability, reproducibility) become visible in concrete evidence surfaces, and how information flows from alignment through playlist assembly.
 
-The chapter follows the pipeline architecture in sequence: alignment, profiling, candidate shaping, scoring, assembly, explanation, and observability. For each stage, it describes the design intent, the implementation realisation, and the evidence artefacts produced. Together, these stages show that the implemented system is not only functionally staged; it is instrumented so that transparency and controllability objectives remain visible in the execution record itself.
+The chapter follows the pipeline architecture in sequence: alignment, profiling, candidate shaping, scoring, assembly, explanation, and observability. For each stage, it describes the design intent, the implementation realisation, and the evidence artefacts produced. Together, these stages show that the implemented system is not only functionally staged; it also instruments transparency and controllability objectives directly in the execution record.
 
 ## 4.2 Design-to-Implementation Bridge
 
 Chapter 3 committed to a deterministic 7-stage pipeline where each stage produces intermediate outputs. This section maps that commitment to the implemented stages and explains the technology positioning that supports auditable behaviour.
 
-The implementation adopts a deliberately lightweight, locally executable architecture chosen to support traceability and reproducibility over platform scale. This aligns with Chapter 3's position that "the contribution lies in auditable recommendation behaviour, not deployment infrastructure" (Section 3.5). All intermediate results and diagnostics are stored as directly inspectable JSON or CSV artefacts in the local filesystem rather than in opaque database layers or remote services. This choice supports a human-centred trust model in which deterministic, locally reviewable logic is often easier to justify than remote or hybrid execution paths.
+The implementation adopts a deliberately lightweight, locally executable architecture chosen to support traceability and reproducibility over platform scale. This aligns with Chapter 3's position that "the contribution lies in auditable recommendation behaviour, not deployment infrastructure" (Section 3.5). The pipeline stores all intermediate results and diagnostics as directly inspectable JSON or CSV artefacts in the local filesystem rather than in opaque database layers or remote services. This choice supports a human-centred trust model in which deterministic, locally reviewable logic is often easier to justify than remote or hybrid execution paths.
 
 By keeping the pipeline locally executable and artefact-based, intermediate decisions remain portable and reviewable across runs. A researcher or evaluator can inspect alignment diagnostics at the point where evidence enters, follow preference profile construction, observe candidate-space decisions before ranking begins, and trace final outputs back to active mechanisms.
 
-**Implementation scope:** The implementation is organised into seven core pipeline layers plus two evaluation-support layers (identified collectively as BL-003 through BL-011): alignment, profiling, candidate shaping, scoring, assembly, explanation, observability (the core stages), plus reproducibility and controllability instrumentation (the evaluation-support layers). The implementation follows the design blueprint of Figure 3.1 without structural deviation; this chapter introduces each layer and the evidence it produces. Supporting verification infrastructure (BL-013 pipeline orchestration and BL-014 automated sanity checking) is described in Section 4.10.
+**Implementation scope:** The implementation uses seven core pipeline layers plus two evaluation-support layers (identified collectively as BL-003 through BL-011): alignment, profiling, candidate shaping, scoring, assembly, explanation, observability (the core stages), plus reproducibility and controllability instrumentation (the evaluation-support layers). The implementation follows the design blueprint of Figure 3.1 without structural deviation; this chapter introduces each layer and the evidence it produces. Supporting verification infrastructure (BL-013 pipeline orchestration and BL-014 automated sanity checking) is described in Section 4.10.
 
 **Section weighting note:** Alignment receives the most detailed treatment in Section 4.3 because it is the first point where evidence uncertainty enters the pipeline; understanding how uncertainty is classified and preserved at intake is foundational to all downstream stages.
 
@@ -22,9 +22,9 @@ By keeping the pipeline locally executable and artefact-based, intermediate deci
 
 **Why does alignment matter? Because uncertainty enters here.**
 
-Chapter 3 treated alignment as an explicit design stage rather than hidden preprocessing (Section 3.6). The alignment stage receives imported listening-history records and systematically matches them against a fixed offline track corpus. Rather than forcing all records into certainty, it follows a fixed evidence order: (1) check minimum field validity, (2) attempt structured identifier matching (track ID, recording ID), (3) fall back to bounded metadata comparison (title, artist), and (4) classify outcomes as confident match, ambiguous match, unmatched, or invalid.
+Chapter 3 treated alignment as an explicit design stage rather than hidden preprocessing (Section 3.6). The alignment stage receives imported listening-history records and systematically matches them against a fixed offline track corpus. Rather than forcing all records into certainty, it follows a fixed evidence order: (1) check core field validity, (2) attempt structured identifier matching (track ID, recording ID), (3) fall back to bounded metadata comparison (title, artist), and (4) classify outcomes as confident match, ambiguous match, unmatched, or invalid.
 
-A confident match occurs when a strong identifier-based match is found or when metadata comparison yields one clearly strongest candidate. An ambiguous match occurs when multiple candidates score close enough to remain plausible — these are retained with uncertainty flags rather than silently forced into certainty. Unmatched records are retained with explicit reason categories (no title provided, fuzzy comparison failed, etc.) rather than discarded. Invalid records are surfaced separately.
+A confident match occurs when a strong identifier-based match is found or when metadata comparison yields one strongest candidate. An ambiguous match occurs when multiple candidates score close enough to remain plausible — the stage retains these records with uncertainty flags rather than silently forcing certainty. The stage also retains unmatched records with explicit reason categories (no title provided, fuzzy comparison failed, etc.) rather than discarding them, and it surfaces invalid records separately.
 
 This stage also preserves absence causality in the final playlist: a track either never entered the candidate set (alignment failure) or entered and was later excluded during filtering or ranking. This prevents explanation output from attributing candidate-space decisions to scoring logic.
 
@@ -34,9 +34,9 @@ This stage also preserves absence causality in the final playlist: a track eithe
 
 **Why expose the profile? Because influence and attribution must be reviewable.**
 
-The profiling stage takes confident and ambiguous alignment outcomes and builds a weighted feature summary in a defined interpretable space (Section 3.7). Features are organized in three groups: Rhythmic/Harmonic (tempo, key, mode), Affective/Intensity (danceability, energy, valence), and Semantic/Contextual (lead genre, genre overlap, tag overlap).
+The profiling stage takes confident and ambiguous alignment outcomes and builds a weighted feature summary in a defined interpretable space (Section 3.7). The stage organises features in three groups: Rhythmic/Harmonic (tempo, key, mode), Affective/Intensity (danceability, energy, valence), and Semantic/Contextual (lead genre, genre overlap, tag overlap).
 
-For each feature, the implementation computes weighted statistics (mean, standard deviation, attribution tracking) from aligned listening events. Optional influence-track inputs (explicit user-provided preference corrections) are incorporated into the same feature space so that influence and historical evidence remain commensurable. Feature preparation standardises values, handles missingness explicitly, and prepares weighted attributes for downstream similarity computation.
+For each feature, the implementation computes weighted statistics (mean, standard deviation, attribution tracking) from aligned listening events. Optional influence-track inputs (explicit user-provided preference corrections) contribute to the same feature space so that influence and historical evidence remain commensurable. Feature preparation standardises values, handles missingness explicitly, and prepares weighted attributes for downstream similarity computation.
 
 **Evidence artefact:** `bl004_preference_profile.json` contains per-feature statistics for all three feature groups, influence-track contributions clearly marked, uncertainty markers for features with high missingness, and attribution breakdowns. This profile exposes preference structure for later inspection. An evaluator can directly inspect what feature weights define the profile, identify which genres dominate, and see how much influence-driven edits shifted the baseline evidence profile.
 
@@ -47,9 +47,9 @@ For each feature, the implementation computes weighted statistics (mean, standar
 The candidate-shaping stage restricts the searchable set before scoring so that ranking operates over an explicit, inspectable candidate space (Section 3.8). The stage combines profile-similarity thresholds with metadata-based exclusions and bounded influence-track expansion to define the searchable candidate set.
 
 The implementation enforces three mechanisms in sequence:
-1. Profile-similarity thresholds: candidates retained only if their feature distance to the profile falls within defined tolerance
-2. Metadata-based exclusions: candidates explicitly marked as ineligible (e.g., bonus tracks, live versions, user-excluded artists)
-3. Influence-track expansion: influence inputs can nominate additional candidates to be retained even if they fall below the similarity threshold
+1. Profile-similarity thresholds: the stage retains candidates only if their feature distance to the profile falls within defined tolerance
+2. Metadata-based exclusions: the stage explicitly marks ineligible candidates (e.g., bonus tracks, live versions, user-excluded artists)
+3. Influence-track expansion: influence inputs can nominate additional candidates that remain in scope even if they fall below the similarity threshold
 
 The stage records all three pathways separately so that downstream diagnostics can distinguish whether a candidate was excluded due to similarity, metadata policy, or was explicitly marked ineligible.
 
@@ -81,7 +81,7 @@ The implementation enforces configurable constraints covering repetition control
 
 The explanation stage generates structured rationale payloads for each track in the final playlist (Section 3.11). For each track, the payload records score breakdown (which feature-group similarities drove the ranking decision), component attribution (how much each of the three feature groups contributed), rule effects (how assembly constraints modified the simple score-based ordering if at all), and confidence marker (how confident was the alignment stage in the source evidence for this track).
 
-These elements are compiled into a structured rationale that can be presented to a user in natural language form but remains grounded in active mechanisms. The payload includes the track's `score_percentile` within the shaped candidate set (its rank expressed as a percentile across the full scored population before assembly) and a `score_band` classification (strong, moderate, or weak) derived from percentile thresholds.
+The stage compiles these elements into a structured rationale that can be presented to a user in natural language form but remains grounded in active mechanisms. The payload includes the track's `score_percentile` within the shaped candidate set (its rank expressed as a percentile across the full scored population before assembly) and a `score_band` classification (strong, moderate, or weak) derived from percentile thresholds.
 
 **Evidence artefact:** `bl008_explanation_payloads.json` contains per-candidate record for all scored tracks. `bl008_explanation_summary.json` records the distribution of primary explanation drivers across the playlist. The per-candidate payloads record score breakdowns and component contributions for every scored candidate, providing the basis for post-hoc inspection of why any candidate was included or excluded. These records separate score-driven selection effects from assembly-rule effects.
 
