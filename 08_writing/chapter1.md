@@ -1,4 +1,4 @@
-﻿# Chapter 1: Introduction
+# Chapter 1: Introduction
 
 ## 1.1 Project Motivation
 Music streaming platforms give users access to large music catalogues. While this increases choice, it also makes it harder to find tracks that match user preferences. Recommender systems support music discovery and playlist generation.
@@ -10,9 +10,9 @@ These requirements become especially important when preference evidence comes fr
 Further complications arise when user-side listening data and the candidate track corpus come from different sources, use different identifiers, and have varying metadata quality. This cross-source condition introduces alignment gaps and coverage uncertainty that can affect every stage of the pipeline, from profiling through to final playlist assembly. This project directly responds to that challenge.
 
 ## 1.2 Recommender Systems and Music Recommendation
-A recommender system functions as a computational tool that filters and ranks items according to estimated user relevance (Adomavicius and Tuzhilin, 2005; Lu et al., 2015). It predicts which items users will likely find useful based on available evidence such as prior interactions, metadata, and context. In music settings, this typically means selecting tracks from a large corpus based on inferred listening preferences.
+A recommender system functions as a computational tool that filters and ranks items according to estimated user relevance [@adomavicius_toward_2005; @lu_recommender_2015]. It predicts which items users will likely find useful based on available evidence such as prior interactions, metadata, and context. In music settings, this typically means selecting tracks from a large corpus based on inferred listening preferences.
 
-Music recommendation remains a well-established application of recommender systems. Unlike simple item retrieval, playlist generation involves collection-level properties including coherence, diversity, novelty, and ordering (Bonnin and Jannach, 2015; Schedl et al., 2018). A good playlist includes more than a set of individually relevant tracks; it needs to work as a sequence.
+Music recommendation remains a well-established application of recommender systems. Unlike simple item retrieval, playlist generation involves collection-level properties including coherence, diversity, novelty, and ordering [@bonnin_automated_2015; @schedl_current_2018]. A good playlist includes more than a set of individually relevant tracks; it needs to work as a sequence.
 
 Users and evaluators also need to understand why the system selected specific tracks and how control changes affect the output. This interpretability need sits at the center of this system design.
 
@@ -45,7 +45,7 @@ This project aims to build and assess a playlist generation pipeline whose stage
 6. Identify the limits of the results and the conditions under which the conclusions apply.
 
 ## 1.5 Scope and Boundaries
-This project focuses on a single-user content-based pipeline using a fixed candidate corpus based on Music4All (Pegoraro Santana et al., 2020). It does not include collaborative filtering, deep learning models, multi-user personalisation, or large-scale user studies. These boundaries keep the project tractable and allow the evaluation to focus on transparency and controllability.
+This project focuses on a single-user content-based pipeline using a fixed candidate corpus based on Music4All [@pegoraro_santana_music4all_2020]. It does not include collaborative filtering, deep learning models, multi-user personalisation, or large-scale user studies. These boundaries keep the project tractable and allow the evaluation to focus on transparency and controllability.
 
 ## 1.6 Contribution of the Project
 This project contributes a transparent, controllable, and reproducible playlist generation pipeline. It shows how users and evaluators can inspect, adjust, and assess recommendation behaviour when user listening data and candidate tracks come from different sources. Each stage produces outputs that support verification, and setting changes produce measurable effects.

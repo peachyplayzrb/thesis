@@ -1,116 +1,158 @@
 ﻿# Chapter 5: Evaluation and Results
 
 ## 5.1 Chapter Aim and Scope
-This chapter evaluates the implementation surfaces defined in Chapter 4 against the objective-to-control-to-evidence contract formalized in Chapter 3. It is not a benchmark-comparison chapter. Instead, it tests whether the rebuilt deterministic pipeline satisfies objective-linked success conditions under bounded scope [@jannach_measuring_2019; @bauer_exploring_2024; @anelli_elliot_2021].
+This chapter evaluates the implementation evidence surfaces defined in Chapter 4 against the objective-to-control-to-evidence contract formalized in Chapter 3. It is not a benchmark-comparison chapter. Instead, it assesses whether the deterministic pipeline satisfies pre-specified objective-linked criteria under bounded scope [@jannach_measuring_2019; @bauer_exploring_2024; @anelli_elliot_2021].
 
-It also operationalizes the design-selection claim stated in Section 3.3.1: the deterministic staged architecture is assessed here as a scope-aligned option for transparency, controllability, and reproducibility evidence quality, rather than as a universal replacement for hybrid, collaborative, or neural alternatives.
+The chapter remains bounded to the single-user, offline-corpus, deterministic execution posture. Claims are therefore restricted to auditable engineering behavior under this scope, not broad recommender-family superiority.
 
-The evaluation scope is bounded to six questions:
+The evaluation questions remain:
 
-1. Does the pipeline make cross-source preference uncertainty explicit rather than hiding it in aggregate outputs?
-2. Does alignment and candidate shaping expose confidence and exclusion logic?
-3. Are scoring and playlist-assembly trade-offs explicitly controllable?
-4. Do explanation and observability surfaces remain mechanism-linked?
-5. Is reproducibility and controllability evidence executable and repeatable?
-6. Are validity boundaries and failure conditions visible enough to support bounded design guidance?
+1. Does the pipeline make cross-source uncertainty explicit and inspectable?
+2. Do alignment and candidate shaping expose confidence and exclusion pathways?
+3. Are scoring and assembly trade-offs explicitly controllable?
+4. Do explanation payloads remain structurally mechanism-linked?
+5. Is reproducibility and controllability evidence executable and auditable?
+6. Are validity boundaries and non-claims explicit enough for bounded guidance?
 
-## 5.2 Evaluation Criteria and Success Conditions
-Evaluation in the rebuild posture is objective-linked rather than metric-first.
+## 5.2 Evaluation Method and Locked Criteria
+Evaluation follows an objective-linked method rather than metric-first ranking. Criteria are pre-specified before extraction to reduce post-hoc interpretation drift.
 
-Table 5.1 defines the active Chapter 5 success conditions.
+Locked constants:
 
-| Objective | Evaluation focus | Minimum success condition |
+- O1 missingness threshold $X = 0.20$.
+- O5 reproducibility replay count $N = 3$ fixed-config replays.
+- O4 structural-fidelity sample: 30 tracks (10 selected, 10 rejected, 10 boundary-ranked).
+- O4 percentile tolerance: absolute difference <= 1.0 percentile point versus BL-006 source value.
+- O5 measurable-delta rule: at least one downstream shift threshold met per tested variation (candidate-set >= 1.0% of baseline or >= 3 tracks, score-summary shift >= 0.01, or playlist composition change >= 1 track).
+
+Table 5.1 defines active acceptance conditions.
+
+| Objective | Acceptance condition |
+| --- | --- |
+| O1 | BL-004 includes uncertainty markers for features above missingness threshold, with attribution tracking and confidence-stratified visibility. |
+| O2 | BL-003 exceeds minimum match-rate threshold and exposes unmatched reasons; BL-005 exposes separated exclusion pathways. |
+| O3 | BL-006 exposes decomposed component scoring and active weights; BL-007 exposes rule activations/relaxations with reasoned diagnostics. |
+| O4 | BL-008 required fields (`score_percentile`, `score_band`, attribution, rule effects, confidence marker) are structurally present and consistent against BL-006/BL-007 in the fixed sample. |
+| O5 | BL-010 reports deterministic replay consistency for $N=3$ replays; BL-011 reports measurable controllability deltas under the locked threshold rule. |
+| O6 | BL-009 includes explicit non-claims and validity boundaries; BL-007 auditable case holds: relaxation evidence when triggered, or explicit no-relaxation confirmation when not triggered. |
+
+## 5.3 O5 Evidence First: Reproducibility and Controllability
+Following the credibility-first ordering, O5 is assessed before interpretation-sensitive objectives.
+
+BL-010 reproducibility evidence confirms deterministic replay consistency under fixed inputs/configuration. The current authority report (`run_id=BL010-REPRO-20260419-214941`) records `replay_count=3`, `results.deterministic_match=true`, and `results.status=pass`, with stable-hash reference values present across all tracked stage artifacts.
+
+BL-011 controllability evidence is evaluated through an explicit decision gate:
+
+1. PASS: all tested scenarios meet at least one locked measurable-delta threshold.
+2. PARTIAL: after one mandatory rerun attempt, only a subset of scenarios meets thresholds.
+3. FAIL: no tested scenarios meet thresholds.
+
+Using the refreshed BL-011 authority (`run_id=BL011-CTRL-20260427-174210`), the controllability gate resolves to FAIL: `0/7` non-baseline scenarios met the locked minimum-delta condition (candidate-pool shift, score-summary shift, or playlist composition change). This is consistent with the report-level summary (`results.status="bounded-risk"`, `all_variant_shifts_observable=false`, `no_op_controls_count=4`).
+
+Table 5.2 summarizes O5 execution authorities.
+
+| Check | Active evidence | Current reading |
 | --- | --- | --- |
-| O1 | Uncertainty-aware profiling | BL-004 emits inspectable uncertainty, coverage, and attribution blocks; tranche-1 gate passes |
-| O2 | Confidence-aware alignment and candidate generation | BL-003 and BL-005 expose confidence, exclusion, and candidate-decision evidence; tranche-1 gate passes |
-| O3 | Controllable scoring and assembly trade-offs | BL-006 and BL-007 expose explicit control surfaces and measurable effect diagnostics; tranche-1 and BL-011 evidence remain green |
-| O4 | Mechanism-linked explanations and observability | BL-008 explanations map to scoring/assembly mechanisms and BL-009 preserves run lineage; tranche-2 gate passes |
-| O5 | Reproducibility and controllability evaluation readiness | BL-010 and BL-011 remain executable with pass verdicts and canonical config-pair traceability; tranche-2 gate passes |
-| O6 | Bounded design guidance | BL-007 and BL-009 expose failure-boundary and validity-boundary evidence; tranche-2 and tranche-3 gates pass |
+| Validate-only orchestration | `BL013-ENTRYPOINT-20260418-035540-208118` | Pass, pipeline contract completes end-to-end. |
+| Sanity suite | `BL014-SANITY-20260418-035641-651065` | Pass (36/36), stage contracts internally coherent. |
+| Reproducibility report | `07_implementation/src/reproducibility/outputs/reproducibility_report.json` (`BL010-REPRO-20260419-214941`) | Pass (`deterministic_match=true`, `replay_count=3`). |
+| Controllability report | `07_implementation/src/controllability/outputs/controllability_report.json` (`BL011-CTRL-20260427-174210`) | Not satisfied under locked gate (`0/7` scenarios reached minimum-delta criteria; report status `bounded-risk`). |
 
-## 5.3 Evaluation Procedure
-The rebuild evaluation procedure uses a layered acceptance structure.
+### 5.3.1 Control-Surface Ablation and Sensitivity Write-Through
 
-1. Validate entry-surface completeness for O1 to O3 with the REB-M3 tranche-1 gate.
-2. Validate explanation, observability, reproducibility, controllability, and bounded-guidance surfaces for O4 to O6 with the tranche-2 gate.
-3. Validate control-causality and validity-boundary hardening with the tranche-3 gate.
-4. Confirm end-to-end wrapper execution remains green through validate-only (`BL-013`) and sanity (`BL-014`) checks.
-5. Use BL-010 and BL-011 reports as supporting evidence for repeatability and measured control effects.
+Table 5.3 restores the explicit ablation/sensitivity view so controllability evidence remains concrete and traceable to named variant scenarios.
 
-This layered procedure is stricter than the pre-rebuild framing because it treats evidence completeness itself as part of implementation success rather than post-hoc packaging around runtime outputs [@beel_towards_2016; @ferrari_dacrema_troubling_2021; @zhu_bars_2022].
-
-## 5.4 Objective-To-Evidence Results Matrix
-Table 5.2 summarizes the current rebuild-era evidence posture.
-
-| Objective | Primary acceptance evidence | Current result | Interpretation |
-| --- | --- | --- | --- |
-| O1 | REB-M3 tranche-1 gate `REB-M3-TRANCHE1-GATE-20260412-133635-735086` | `pass (9/9)` | BL-004 now emits uncertainty, coverage, attribution, and policy-effect blocks required for inspectable profiling. |
-| O2 | REB-M3 tranche-1 gate `REB-M3-TRANCHE1-GATE-20260412-133635-735086` | `pass (9/9)` | BL-003 and BL-005 expose seed-contract, match-count, and exclusion-path evidence rather than collapsing candidate shaping into hidden preprocessing. |
-| O3 | REB-M3 tranche-1 gate plus BL-011 report `BL011-CTRL-20260412-134945` | `pass` | Scoring and assembly controls are explicit, and BL-011 still reports repeat consistency with observable shifts at supported surfaces. |
-| O4 | REB-M3 tranche-2 gate `REB-M3-TRANCHE2-GATE-20260412-134111-435035` | `pass (9/9)` | BL-008 primary drivers now map back to breakdown components and BL-009 preserves upstream stage lineage. |
-| O5 | REB-M3 tranche-2 gate plus BL-010/BL-011 reports | `pass` | Reproducibility and controllability remain executable and tied to canonical config-pair and run-lineage evidence. |
-| O6 | REB-M3 tranche-2 and tranche-3 gates | `pass` | BL-007 failure-boundary reporting and BL-009 validity-boundary reporting are now explicit enough to support bounded conclusions. |
-
-## 5.5 Reproducibility, Controllability, and Observability Evidence
-Table 5.3 condenses the most important current execution evidence.
-
-| Check | Active evidence | Result | Notes |
-| --- | --- | --- | --- |
-| Validate-only orchestration | `BL013-ENTRYPOINT-20260418-035540-208118` | `pass` | Confirms the current active wrapper path completes without contract failure under the latest full-contract authority baseline. |
-| Sanity suite | `BL014-SANITY-20260418-035641-651065` | `pass (36/36)` | Confirms active stage contracts remain internally consistent after the rebuild hardening wave. |
-| Reproducibility report | `07_implementation/src/reproducibility/outputs/reproducibility_report.json` (`run_id=BL010-REPRO-20260418-040530`) | `pass` | BL-010 records deterministic replay status and retry-boundary reporting under fixed-input replay (`deterministic_match=True`). |
-| Controllability report | `07_implementation/src/controllability/outputs/controllability_report.json` (`run_id=BL011-CTRL-20260412-134945`) | `pass` | BL-011 reports repeat-consistent scenario execution and explicit no-op control diagnostics where effect is absent. |
-| Observability schema and scope | `07_implementation/src/observability/outputs/bl009_run_observability_log.json` (`run_id=BL009-OBSERVE-20260418-040529-209714`) | `pass` | BL-009 includes execution scope, upstream lineage, canonical config-pair traceability, and explicit validity-boundary reporting. |
-| Stage-flow traceability | `BL013-ENTRYPOINT-20260418-040456-884132` | `pass` | BL-013 summary emits `stage_execution` with explicit requested-stage order, executed-stage sequence, non-requested stage execution reporting, and duplicate requested-stage execution counts. |
-
-### 5.5.1 Control-Surface Ablation Evidence Table
-
-Table 5.4 makes the ablation posture explicit by listing bounded control-surface perturbations and their expected evidence surfaces. In this thesis context, "ablation" means controlled profile or scenario variation against a fixed deterministic baseline, with interpretation focused on directionality and observability rather than leaderboard optimization [@jannach_measuring_2019; @bauer_exploring_2024].
-
-| Ablation axis | Baseline setting | Variant setting | Evidence surface | Observed directionality |
-| --- | --- | --- | --- | --- |
-| Influence policy mode | `competitive` (`run_config_ui013_tuning_v1f.json`) | `reserved_slots` (`run_config_ui013_tuning_v1g_reserved_slots.json`) | BL-007 assembly diagnostics and BL-013 summary (`influence_assembly_summary`) | Influence inclusion behavior shifts from pure competition to reserved-slot injection behavior while remaining contract-valid. |
-| Influence policy override posture | `reserved_slots` (no overrides) | `hybrid_override` (`run_config_ui013_tuning_v1h_hybrid_override.json`) | BL-007 diagnostics plus BL-014 contract pass under variant | Constraint-handling flexibility increases (genre/consecutive/threshold overrides allowed), producing an observable assembly-policy shift. |
-| Influence signal strength | Mixed `history + influence` with moderate influence weight (`v1f`) | Influence-heavy swing profile (`run_config_ui013_tuning_v1e_hard_swing_influence.json`) | BL-004/BL-006/BL-007 influence-linked diagnostics | Upstream influence attribution and downstream ranking/assembly behavior shift measurably toward influence-led outcomes. |
-| Retrieval strictness | Baseline retrieval thresholds (`v1f`) | Tight retrieval profile (`run_config_ui013_tuning_v2a_retrieval_tight.json`) | BL-005 candidate decisions and BL-009 retrieval summary | Candidate pool contracts under stricter retrieval gates, with exclusion pathways remaining explicit in diagnostics. |
-| Language and recency gating | No explicit language gate, baseline recency behavior (`v1f`) | Language+recency gate profile (`run_config_ui013_tuning_v2b_language_recency_gate.json`) | BL-005 retrieval diagnostics and BL-009 observability log | Eligibility shifts by language/recency policy become visible and auditable without changing pipeline structure. |
-| Multi-parameter interaction check (BL-011) | Single-factor scenarios only | Interaction scenarios (`no_influence_plus_stricter_thresholds`, `valence_up_plus_stricter_thresholds`) | BL-011 interaction matrix and `interaction_coverage_summary` | Interaction effects are explicitly separated from single-factor effects, strengthening controllability interpretation discipline. |
-
-This table closes the remaining "implicit ablation" gap by making profile/scenario perturbations explicit and traceable to concrete evidence surfaces already executed in the active implementation.
-
-### 5.5.2 Sensitivity-Analysis Write-Through (Diagnostics To Chapter Evidence)
-
-Table 5.5 turns existing sensitivity diagnostics into explicit chapter-facing interpretation anchors. This avoids treating sensitivity as an implicit side effect of control runs and instead reports where directional change evidence is expected to appear.
-
-| Sensitivity focus | Primary diagnostic surface | Evidence interpretation in this chapter |
+| Scenario or axis | Expected direction | Observed in refreshed BL-011 |
 | --- | --- | --- |
-| BL-006 score-component perturbation sensitivity | BL-006 `scoring_sensitivity_diagnostics` (exposed through BL-009) | Confirms that bounded component perturbations produce auditable rank-overlap and dominance-shift diagnostics rather than opaque score changes. |
-| BL-005 threshold sensitivity | BL-005 threshold-attribution and bounded what-if diagnostics (propagated to BL-009 retrieval summaries) | Shows threshold tightening/loosening effects as directional candidate-pool pressure, supporting bounded retrieval-control claims. |
-| BL-007 assembly-policy sensitivity | BL-007 tradeoff and influence assembly diagnostics under policy variants (`competitive`, `reserved_slots`, `hybrid_override`) | Links policy toggles to observable assembly behavior changes while preserving deterministic execution posture. |
-| BL-011 interaction sensitivity | BL-011 interaction matrix and `interaction_coverage_summary` | Distinguishes single-factor effects from interaction effects so controllability claims are not over-attributed to one-factor runs only. |
-| BL-009 cross-stage sensitivity traceability | BL-009 control-causality, cross-stage influence attribution, and validity-boundary summaries | Ensures sensitivity interpretation remains cross-stage traceable and bounded by explicit non-claim/validity framing. |
+| `no_influence_tracks` | Shift away from influence-steered profile effects | Observable-shift flag present, but measurable-delta thresholds not met under locked gate. |
+| `valence_weight_up` | Rank and contribution shift toward boosted component | No locked measurable delta observed; flagged as no-op in diagnostics. |
+| `stricter_thresholds` | Candidate pool contraction and downstream reordering | No locked measurable delta observed; flagged as no-op in diagnostics. |
+| `looser_thresholds` | Candidate pool expansion and downstream reordering | No locked measurable delta observed; flagged as no-op in diagnostics. |
+| `fuzzy_enabled_strict` | Retrieval-side behavior shift under fuzzy controls | No locked measurable delta observed. |
+| `no_influence_plus_stricter_thresholds` | Interaction effect beyond single-factor changes | Interaction row present; locked measurable-delta criteria not met. |
+| `valence_up_plus_stricter_thresholds` | Interaction effect from combined score and threshold pressure | Interaction row present; locked measurable-delta criteria not met. |
 
-Together, Tables 5.4 and 5.5 provide a two-layer evidence posture: ablation coverage (what was varied) and sensitivity write-through (how observed directional shifts are interpreted).
+This write-through keeps the controllability section auditable: scenario coverage exists, but current measurable-delta evidence is insufficient for O5 satisfaction under the locked threshold rule.
 
-## 5.6 Control-Causality and Validity-Boundary Hardening
-The most important late REB-M3 result is not only that tranche-3 passed, but that the underlying contract was strengthened after the first pass.
+## 5.4 O1 Evidence: Uncertainty-Aware Profiling
+O1 is evaluated using BL-003 alignment diagnostics and BL-004 profile structure. BL-003 exposes input uncertainty at intake (matched, ambiguous, unmatched, invalid pathways where available), and BL-004 carries uncertainty-aware profile representations with attribution surfaces.
 
-First, BL-008 explanations now carry `control_provenance`, which exposes the specific scoring and transparency settings that shaped explanation output. Second, BL-009 emits `validity_boundaries` at the top level rather than burying bounded-guidance evidence inside nested diagnostics. Third, BL-011 records explicit no-op control diagnostics so weak or ineffective controls are visible rather than silently ignored.
+Concrete observations from active artifacts: BL-003 reports `input_event_rows=9902`, `ambiguous_matches=19`, `invalid_records=0`, and explicit unmatched counts (`unmatched=7457`). BL-004 reports `events_total=1369`, `missing_numeric_track_count=0`, and confidence-bin diagnostics (`high_0_9_plus=1369`, medium/low bins `0`), with attribution continuity via `history_weight_share=0.99849` and `influence_weight_share=0.00151`.
 
-The follow-up hardening step added a direct section-validator requirement for top-level `validity_boundaries`, guarded by unit tests. This moves failure detection closer to the source of schema drift, rather than relying only on late-stage quality gates.
+Under the locked criterion, O1 is therefore satisfied: uncertainty and confidence structure are explicitly surfaced rather than latent.
 
-## 5.7 Interpretation Discipline
-Results in this chapter are interpreted as engineering-evidence results, not as proof that the recommender is globally optimal or universally preferable. A pass verdict means that the intended control/evidence contract is currently implemented and auditable under bounded scope. It does not mean that the pipeline eliminates ambiguity, perfectly reflects human preference, or dominates alternative recommender families [@tintarev_evaluating_2012; @jannach_measuring_2019; @bauer_exploring_2024].
+## 5.5 O2 Evidence: Confidence-Aware Alignment and Candidate Shaping
+O2 is evaluated through BL-003 and BL-005. BL-003 provides match-rate and unmatched-reason visibility; BL-005 records candidate shaping decisions and separated exclusion pathways.
 
-In that sense, this chapter tests whether the selected option from Section 3.3.1 is internally coherent and evidentially defensible under the declared thesis constraints. It does not claim that non-selected options are invalid in other data regimes or contribution settings.
+The refreshed BL-003 authority reports `actual_match_rate=0.245` against `min_threshold=0.15` (`status=pass`), with explicit pathway counts (`matched_by_spotify_id=1489`, `matched_by_metadata=937`, `ambiguous_matches=19`, `unmatched=7457`). BL-005 reports `candidate_rows_total=109269`, `kept_candidates=23257` (about 21.3%), and separated pathway diagnostics including `influence_admitted=0`.
 
-## 5.8 Current Limits Visible in the Evidence
-The current evidence surface still has explicit limits.
+Match-rate interpretation remains bounded: even when current run authority is above threshold, the threshold itself is a minimum viability gate, not evidence of broad cross-source coverage.
 
-1. BL-010 reproducibility evidence is based on fixed-input replay and should be interpreted as artifact-level, contract-bounded replay consistency under fixed inputs and a pinned configuration snapshot. It does not claim cross-environment or cross-OS behavioral invariance, output identity under different run configurations, or broader environmental runtime invariance beyond the pinned configuration window. Raw output file hashes vary across replays by design (due to volatile run-metadata fields such as run_id and generated_at_utc); stable-hash comparison explicitly excludes these fields.
-2. BL-011 includes no-op control diagnostics, which means some exposed controls remain weak or data-regime-dependent even though the measurement surface is now more honest.
-3. BL-003 still reports a substantial unmatched portion of cross-source events. In the canonical active baseline, only 15.95% of imported history aligns to the offline corpus, so the current 15% match-rate gate should be interpreted as a minimum viability threshold rather than evidence of broad corpus coverage.
-4. Bounded-guidance claims depend on visibility of scope and caveat reporting, not on wide external validation or user-study evidence [@beel_towards_2016; @bellogin_improving_2021; @cavenaghi_systematic_2023].
+For continuity with earlier validated chapter evidence, the previously cited canonical baseline aligned share (15.95%) remains an important boundary reference: passing a 15% gate should be interpreted as viability under constraints, not as broad corpus coverage.
 
-## 5.9 Chapter Summary
-Chapter 5 evaluates the rebuilt artefact through objective-linked evidence contracts rather than legacy MVP reporting. The current result is that O1 to O6 have executable acceptance evidence, wrapper validation remains green, and late hardening work has moved bounded-guidance and control-causality reporting from implied behavior to explicit, testable contract surfaces.
+Within this framing, O2 is satisfied because confidence and exclusion pathways are explicit and auditable.
+
+## 5.6 O3 Evidence: Controllable Trade-Offs
+O3 uses BL-006 and BL-007. BL-006 exposes component-wise scoring structure and active weight vectors. BL-007 records assembly-level rule effects, trade-off pressure, and relaxation behavior where applicable.
+
+BL-006 reports `candidates_scored=23257` with explicit score-distribution metrics (`max_final_score=0.499521`, `mean_final_score=0.221453`, `median_final_score=0.226483`) and active component weights emitted in the report payload. BL-007 reports `tracks_included=10`, `R1_score_threshold` hits `22714`, `novelty_allowance_used=0`, `relaxation_records=[]`, and `undersized_playlist_warning.is_undersized=false`.
+
+O3 is satisfied at the chapter criterion level because control surfaces and trade-off diagnostics are explicit and inspectable, even though BL-011 measurable-effect evidence for O5 remains insufficient.
+
+## 5.7 O4 Evidence: Mechanism-Linked Explanation Fidelity
+O4 evaluates structural fidelity, not perceived usefulness. BL-008 must remain traceable to scoring/assembly mechanisms through required payload fields and contributor mapping consistency.
+
+Under the fixed 30-track structural check, mismatches are interpreted with the locked taxonomy:
+
+- Critical mismatch: missing required field, contradictory rule-effect linkage, or wrong primary attribution.
+- Minor mismatch: percentile tolerance breach with intact attribution/rule linkage.
+
+Current evidence shows required-field presence for the available selected-track sample: BL-008 (`run_id=BL008-EXPLAIN-20260427-145551-660092`) emits `playlist_track_count=10`, and a structural check over the available selected payloads found `required_field_missing_count=0` for `score_percentile`, `score_band`, `primary_explanation_driver`, and `top_score_contributors`.
+
+Because the locked sample contract is 30 tracks and current selected-track payload coverage is 10, O4 is assessed as Partially Satisfied pending completion of the full fixed-sample extraction cross-check. Perceived-usefulness claims remain routed to Chapter 6.
+
+## 5.8 O6 Evidence: Bounded-Guidance Surfaces
+O6 is evaluated through BL-007 and BL-009 boundary reporting. BL-009 must include explicit non-claims and validity boundaries. BL-007 must satisfy one auditable case:
+
+1. Relaxation occurred: recorded with reason codes and diagnostics context.
+2. No relaxation occurred: explicit no-relaxation confirmation and corroborating run-level boundary state.
+
+Current artifacts satisfy the no-relaxation case: BL-007 explicitly emits `relaxation_records=[]`, `undersized_playlist_warning.is_undersized=false`, and `shortfall=0`. BL-009 emits top-level `validity_boundaries` and nested reproducibility non-claims (`non_claims` count `4`) under `reproducibility_interpretation`.
+
+This criterion is satisfied because bounded guidance is evidence-backed and auditable rather than implied.
+
+## 5.9 Control-Causality and Boundary Hardening Context
+The current evaluation posture reflects hardening steps that were implemented before final chapter synthesis: BL-008 now carries explicit control-provenance structures, BL-009 boundary framing is emitted at top level, and BL-011 records no-op control diagnostics directly rather than masking weak-effect controls. These changes matter because they show that evidence contracts were engineered into the implementation and not added as post-hoc narrative wrappers.
+
+## 5.10 Objective Synthesis and Acceptance Status
+Interpretation discipline: the synthesis below reports criterion alignment under bounded artifact authority. It does not imply global recommender superiority or cross-regime generalization.
+
+Table 5.4 consolidates objective outcomes under normalized verdict labels.
+
+| Objective | Primary evidence surface | Verdict |
+| --- | --- | --- |
+| O1 | BL-003 + BL-004 | Satisfied |
+| O2 | BL-003 + BL-005 | Satisfied |
+| O3 | BL-006 + BL-007 | Satisfied |
+| O4 | BL-008 (+ BL-006/BL-007 cross-check) | Partially Satisfied |
+| O5 | BL-010 + BL-011 | Not Satisfied |
+| O6 | BL-007 + BL-009 | Satisfied |
+
+## 5.11 Evaluation Boundaries, Non-Claims, and Chapter 6 Handoff
+This chapter does not claim:
+
+1. broad cross-user personalization validity,
+2. real-time or large-scale deployment performance,
+3. superiority over hybrid/neural recommender families,
+4. user-perceived explanation usefulness or trust effects.
+
+Chapter 6 handoff logic:
+
+- O5 fully satisfied: discuss reproducibility guarantees and controllability confidence within deterministic bounds.
+- O5 partially satisfied: discuss reproducibility guarantees with explicit controllability coverage limits and unconfirmed interaction regions.
+- O5 not satisfied (current authority): discuss reproducibility pass evidence alongside controllability shortfall, no-op control diagnostics, and bounded next-step remediation scope.
+
+All claims are therefore bounded to the evidence surfaces and criteria defined here.
+
+## 5.12 Chapter Summary
+Chapter 5 evaluates the implemented pipeline through pre-specified objective-linked criteria with evidence-first reporting. O5 is resolved first and currently not satisfied under the locked measurable-delta gate, while O1, O2, O3, and O6 are satisfied and O4 is partially satisfied pending completion of the full fixed-sample structural extraction. The chapter therefore provides a bounded, auditable synthesis that distinguishes verified criterion alignment from unresolved controllability evidence.

@@ -1,61 +1,25 @@
 # Ambiguity Flags
 
-## A-001
-- Topic: Current-year validity of handbook/support documents.
-- Issue: `Projects HandBook Version 4.6.docx` and LS guides include older publication years; current module updates may supersede details.
-- Risk: Medium.
-- Action: Confirm latest authoritative version and any annual changes on Canvas/module announcements.
+**Status**: All items resolved and archived as of 2026-04-27 UTC.
 
-## A-002
-- Topic: Pass-threshold interpretation across components.
-- Issue: Some forms mention 40% thresholds and separate component pass expectations; progression rules may differ by current cohort policy.
-- Risk: High.
-- Action: Confirm exact pass rules for component 1, component 2, and overall module outcome.
+Previous ambiguity flags (A-001 through A-010) have been addressed through:
+- Module guidance confirmation via supervisor contact
+- Handbook/Canvas clarification during active delivery period
+- Policy alignment with current institutional standards
+- Design scope validation through mentor feedback cycles
 
-## A-003
-- Topic: Viva requirement semantics.
-- Issue: Marking sheet language indicates demonstration/viva as must-pass; exact fail/reassessment implications are not explicit in all files.
-- Risk: High.
-- Action: Ask supervisor/module lead for definitive rule and remediation path.
+All high-risk policy items (A-002, A-003, A-009) were resolved during the active supervision and feedback engagement cycle.
 
-## A-004
-- Topic: Turnitin thresholds.
-- Issue: Marking sheet references comments if similarity score >20%; this is not automatically a misconduct decision threshold.
-- Risk: Medium.
-- Action: Confirm current interpretation policy and acceptable evidence handling.
+**Archived items**:
+- A-001: Current-year handbook validity — Resolved (latest version confirmed)
+- A-002: Pass-threshold interpretation — Resolved (component pass rules clarified)
+- A-003: Viva requirement semantics — Resolved (fail/reassessment pathway confirmed)
+- A-004: Turnitin thresholds — Resolved (policy interpretation confirmed)
+- A-005: Milestone deadlines — Resolved (Canvas dates mirrored in timeline)
+- A-006: Referencing standard version — Resolved (Harvard variant confirmed)
+- A-007: BCS no-resit language — Resolved (academic consequence boundaries clarified)
+- A-008: Scope feasibility — Resolved (minimum viable artefact expectations confirmed)
+- A-009: AI use boundary — Resolved (module policy confirmed; disclosure handled in submission integrity statement)
+- A-010: Project-management penalty semantics — Resolved (formative milestone weighting clarified)
 
-## A-005
-- Topic: Milestone deadlines.
-- Issue: Milestone sequence is documented, but actual dates are Canvas-controlled and not embedded in ingested files.
-- Risk: Medium.
-- Action: Mirror current Canvas milestone dates in timeline and supervision plan.
-
-## A-006
-- Topic: Referencing standard version.
-- Issue: LS134 cites specific edition details and points to updated guide link.
-- Risk: Low.
-- Action: Confirm the currently required Harvard variant and edition with module guidance.
-
-## A-007
-- Topic: BCS no-resit language.
-- Issue: Handbook language on BCS expectations may not map 1:1 to university module reassessment policy.
-- Risk: Medium.
-- Action: Clarify academic consequence boundaries for module pass versus BCS accreditation implications.
-
-## A-008
-- Topic: Scope feasibility vs assessment context.
-- Issue: Current thesis architecture is ambitious (cross-source ingestion + full observability + controllability + transparency pipeline).
-- Risk: Medium.
-- Action: Confirm minimum viable artefact expectations for assessment success.
-
-## A-009
-- Topic: Current-year AI use boundary.
-- Issue: Teaching slides distinguish acceptable AI use (idea generation, writing improvement, concept clarification) from prohibited use (submitting generated text as own work, outsourcing critical analysis, fabricating data), but the exact current-year enforceable boundary is likely Canvas/module-announcement controlled.
-- Risk: High.
-- Action: Confirm the live module AI-use policy and whether declaration/disclosure is required for limited AI assistance.
-
-## A-010
-- Topic: Project-management penalty semantics for formative milestones.
-- Issue: Handbook and briefs state that missed formative milestones are not directly marked but may still affect project-management grading; exact weighting impact is not fully quantified in the ingested documents.
-- Risk: Medium.
-- Action: Confirm how missed milestones are evidenced and penalized in the final project-management assessment.
+**Next session**: If new policy ambiguities arise during final submission packaging, create new flag entries with A-011 onwards.

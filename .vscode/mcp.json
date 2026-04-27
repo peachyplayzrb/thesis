@@ -8,6 +8,34 @@
 			],
 			"gallery": "https://api.mcp.github.com",
 			"version": "1.0.0"
+		},
+		"github": {
+			"type": "stdio",
+			"command": "npx",
+			"args": [
+				"-y",
+				"@modelcontextprotocol/server-github"
+			],
+			"env": {
+				"GITHUB_PERSONAL_ACCESS_TOKEN": "${env:GITHUB_TOKEN}"
+			}
+		},
+		"sqlite": {
+			"type": "stdio",
+			"command": "npx",
+			"args": [
+				"-y",
+				"@modelcontextprotocol/server-sqlite",
+				"${workspaceFolder}/reports/analysis.sqlite"
+			]
+		},
+		"playwright": {
+			"type": "stdio",
+			"command": "npx",
+			"args": [
+				"-y",
+				"@playwright/mcp@latest"
+			]
 		}
 	},
 	"inputs": []
