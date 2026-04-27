@@ -29,7 +29,7 @@ Figure 1.1 illustrates the high-level structure of the pipeline developed in thi
 
 ### Research Question
 
-How can we design and assess a deterministic playlist generation pipeline that remains transparent, controllable, and reproducible when user preference data and candidate tracks come from different sources?
+How can a deterministic playlist generation pipeline be designed and evaluated so that it remains transparent, controllable, and reproducible when user preference data and candidate tracks come from different sources?
 
 ### Aim
 
