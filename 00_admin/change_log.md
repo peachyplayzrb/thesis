@@ -7,8 +7,8 @@ Ordering convention (standardized 2026-03-24):
 - Entry order reflects historical insertion timing and may not be numerically contiguous in older sections.
 - New entries must be appended at the end; historical entries remain unchanged except for explicit correction records.
 
-Maintenance snapshot (2026-04-27, updated):
-- Highest change ID currently present: `C-650`
+Maintenance snapshot (2026-04-28, updated):
+- Highest change ID currently present: `C-653`
 - Maintenance snapshot (2026-03-28): prior snapshot stated `C-205`; superseded by the 2026-03-29 architecture migration + documentation sync wave (C-204 through C-219).
 - Known legacy correction applied in this file: prior duplicate `C-079` entry has been normalized to `C-135` for unique-ID compliance.
 
@@ -385,6 +385,50 @@ Maintenance snapshot (2026-04-27, updated):
 - affected_components: `07_implementation/scripts/tooling_contract_check.ps1`, `.vscode/tasks.json`, `07_implementation/README.md`, `00_admin/upgrades.md`, `00_admin/change_log.md`, `00_admin/decision_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`, `00_admin/unresolved_issues.md`
 - impact_assessment: Low-positive. Improves regression detection for script-surface compatibility and output-path policy without changing pipeline semantics.
 - approval_record: User request in chat on 2026-04-21 ("yes").
+
+## C-651
+- date: 2026-04-28
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Rewrote `08_writing/abstract.md` to align the submission-facing summary with the locked thesis title, research question, and current evaluation posture. The new abstract removes stale build-specific counters and outdated sanity-check totals, recenters the contribution on deterministic cross-source playlist engineering, and states both validated strengths and bounded limitations in examiner-facing language.
+- reason: User requested a rewrite because the abstract had become stale relative to the current thesis framing and latest evidence.
+- evidence_basis: The prior abstract still used obsolete wording for the research framing and outdated validation details (including an old BL-014 check total), while the updated text now matches the locked definitions and current bounded findings recorded in `00_admin/thesis_state.md`.
+- affected_components: `08_writing/abstract.md`, `00_admin/change_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`
+- impact_assessment: Low-positive. Improves submission-facing coherence and removes stale evidence claims without changing thesis scope, implementation behavior, or evaluation conclusions.
+- approval_record: User request in chat on 2026-04-28 ("lets look at the abstract, it needs to be rewritten.").
+
+## C-652
+- date: 2026-04-28
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Applied a second abstract hardening pass in `08_writing/abstract.md` to enforce examiner-first top-down flow: problem framing first, design choice and rationale second, two concrete findings third, and bounded contribution close last. Removed all system-level pipeline counters and stage-specific numeric framing from the abstract body.
+- reason: User requested a rewrite that foregrounds insight over implementation statistics and explicitly asked to remove system-level numbers.
+- evidence_basis: Updated abstract now opens with the transparency/controllability problem under cross-source conditions, states deterministic contract-driven design rationale, reports concrete outcomes in prose (deterministic replay consistency and observable control-surface shifts), and closes with explicit non-claims. Focused lint check passed with `0 errors, 0 warnings, 0 suggestions`.
+- affected_components: `08_writing/abstract.md`, `reports/vale_abstract_full_latest.txt`, `00_admin/change_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`
+- impact_assessment: Low-positive. Improves abstract readability and contribution clarity without changing thesis scope, implementation behavior, or evaluation conclusions.
+- approval_record: User request in chat on 2026-04-28 (detailed abstract rewrite guidance beginning "The abstract front-loads pipeline statistics...").
+
+## C-654
+- date: 2026-04-28
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Corrected three factually inaccurate descriptions of BL-010 and BL-011 in `08_writing/thesis_master_draft_merged.md`. Section 4.10: replaced "controlled single-parameter variations" with accurate description of the declared-hypothesis experimental protocol (8 named scenarios, 2 multi-axis interaction tests with `variation_mode: "interaction"`, typed directional acceptance contracts per control surface); added two-layer hashing description for BL-010 (stable content hashes strip volatile metadata + raw SHA-256 over 11 artefact files + stage script file hashing for code-drift detection). Section 5.3: added paragraph before decision gate explaining the declared-hypothesis structure and directional contract logic so the FAIL result reads as hypothesis rejection rather than missing measurement. Section 6.3: added sentence introducing the schema-versioned control registry (`control-registry-v1`, 26 typed controls, embedded in every BL-009 run record) as support for the "contract-instrumented evidence system" framing.
+- reason: Deep code analysis revealed categorical misrepresentation: "single-parameter sensitivity sweep" does not describe a declared-hypothesis protocol with typed directional contracts and interaction combinations. An examiner familiar with recommender evaluation methodology would identify this as a factual error rather than underselling.
+- evidence_basis: `src/controllability/scenarios.py` build_scenarios() — 8 scenarios, 2 with variation_mode="interaction"; `src/controllability/analysis.py` _evaluate_expected_direction() — typed dispatch per control_surface; `src/reproducibility/main.py` stable_*_fingerprint() + build_file_hash_map() — two-layer hashing; `src/run_config/control_registry.py` CONTROL_REGISTRY_SCHEMA_VERSION + build_control_registry_snapshot().
+- affected_components: `08_writing/thesis_master_draft_merged.md` (Sections 4.10, 5.3, 6.3), `00_admin/change_log.md`
+- impact_assessment: High. Removes a factually incorrect claim (single-parameter) and replaces it with an accurate description that correctly represents the artefact's methodological sophistication.
+- approval_record: User request in chat on 2026-04-28 ("Do you want me to draft the specific replacement paragraphs for Sections 4.10, 5.3, and 6.3?").
+
+## C-653
+- date: 2026-04-28
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Completed end-to-end structural revision tranche in `08_writing/thesis_master_draft_merged.md` to implement review findings: Chapter 1 opening now foregrounds the real cross-source tension; Section 2.8 now synthesizes a tight contradiction-to-design argument chain; chapter summaries (1,2,3,4,5,6) were rewritten to emphasize synthesis over table-of-contents recap; defensive framing in Chapters 5-6 was compressed into positive method statements; BL stage-label notation is explicitly introduced in Chapter 4 before reuse; and the factual inconsistency in 6.2 was corrected from "five" to "seven" findings.
+- reason: User requested implementation of the full review-feedback plan across the merged thesis draft.
+- evidence_basis: Updated merged draft now removes the generic opener, strengthens the literature-to-gap logical bridge, reduces repetitive defensive language and repeated "bounded" hedging in core interpretation sections, and resolves the 6.2 counting inconsistency; focused lint pass confirms no syntax/errors in the file and spelling issue `center -> centre` was fixed.
+- affected_components: `08_writing/thesis_master_draft_merged.md`, `reports/vale_thesis_master_draft_merged_full_latest.txt`, `00_admin/change_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`
+- impact_assessment: Medium-positive. Improves examiner-facing argument clarity, rhetorical confidence, and structural coherence without changing thesis scope or implementation/runtime behavior.
+- approval_record: User request in chat on 2026-04-28 ("Start implementation").
 
 ## C-608
 - date: 2026-04-21

@@ -1,20 +1,20 @@
 # Chapter 1: Introduction
 
 ## 1.1 Project Motivation
-Music streaming platforms give users access to large music catalogues. While this increases choice, it also makes it harder to find tracks that match user preferences. Recommender systems support music discovery and playlist generation.
+Playlist recommendation under cross-source conditions creates a specific engineering tension: the most available preference evidence (listening history) is useful but uncertain, and the most auditable candidate corpora often come from different systems with partial identifier overlap. In practice, this means recommendation behaviour can look precise while resting on lossy alignment and ambiguous preference signals.
 
-Many practical systems measure recommendation quality primarily by predictive accuracy. Accuracy alone does not meet the needs of users or evaluators who need to understand, adjust, and verify system behaviour. This project addresses transparency, controllability, observability, and reproducibility requirements.
+Many practical systems still centre evaluation on predictive accuracy. Accuracy alone is insufficient when users and evaluators need to inspect why tracks were selected, adjust the system intentionally, and verify whether reruns remain consistent. This thesis therefore prioritises transparency, controllability, observability, and reproducibility as first-class design requirements.
 
-These requirements become especially important when preference evidence comes from implicit signals such as listening history. Listening history remains useful yet uncertain: it may reflect habit, convenience, or interface effects rather than genuine preference. A recommendation pipeline that treats it as direct ground truth can produce outputs that users and evaluators cannot inspect or challenge.
+Listening history remains an indirect proxy for preference: it may reflect habit, convenience, or interface effects rather than stable taste. A pipeline that treats those traces as direct ground truth can produce outputs that appear confident but are difficult to challenge.
 
-Further complications arise when user-side listening data and the candidate track corpus come from different sources, use different identifiers, and have varying metadata quality. This cross-source condition introduces alignment gaps and coverage uncertainty that can affect every stage of the pipeline, from profiling through to final playlist assembly. This project directly responds to that challenge.
+The cross-source setting intensifies this risk. User-side history and candidate-track metadata use different identifiers, schemas, and quality levels, creating alignment gaps that propagate from profiling to final playlist assembly. This project addresses that full pipeline tension directly.
 
 ## 1.2 Recommender Systems and Music Recommendation
 A recommender system functions as a computational tool that filters and ranks items according to estimated user relevance [@adomavicius_toward_2005; @lu_recommender_2015]. It predicts which items users will likely find useful based on available evidence such as prior interactions, metadata, and context. In music settings, this typically means selecting tracks from a large corpus based on inferred listening preferences.
 
 Music recommendation remains a well-established application of recommender systems. Unlike simple item retrieval, playlist generation involves collection-level properties including coherence, diversity, novelty, and ordering [@bonnin_automated_2015; @schedl_current_2018]. A good playlist includes more than a set of individually relevant tracks; it needs to work as a sequence.
 
-Users and evaluators also need to understand why the system selected specific tracks and how control changes affect the output. This interpretability need sits at the center of this system design.
+Users and evaluators also need to understand why the system selected specific tracks and how control changes affect the output. This interpretability need sits at the centre of this system design.
 
 ## 1.3 Cross-Source Data, Transparency, and Controllability
 In this project, cross-source data refers to combining user listening history evidence with a separate candidate-track corpus and its associated audio and metadata features. This practical arrangement introduces uncertainty at the alignment stage: some records will not match, some matches remain ambiguous, and metadata completeness will vary across sources.
@@ -60,7 +60,7 @@ This report has the following structure:
 - **Chapter 6** discusses the findings, contribution boundaries, limitations, and directions for future work.
 
 ## 1.8 Chapter Summary
-This chapter has introduced the motivation, research question, aim, objectives, scope, and structure of the project. Chapter 2 now reviews the literature on recommender systems, implicit preference signals, and transparency requirements that inform the design developed in Chapter 3.
+The chapter establishes the thesis problem as an evidence-quality challenge rather than an accuracy-only optimisation task: preference signals are uncertain, cross-source alignment is lossy, and recommendation claims need to stay inspectable and testable. The research question, objectives, and scope therefore commit the work to a transparent, controllable, and reproducible engineering pipeline. Chapter 2 now tests whether existing literature already resolves this challenge or leaves a gap that requires a new design response.
 
 # Chapter 2: Literature Review
 
@@ -155,14 +155,12 @@ Reproducibility failures in recommender research are repeatedly linked to incomp
 ![Figure 2.2. Uncertainty across recommendation stages in the reviewed literature.](figures/figure_2_2_uncertainty_stages.png){ width=82% }
 
 ## 2.8 Research Gap and Thesis Positioning
+The literature identifies four contradictions that directly motivate this thesis design. First, interaction history scales well but remains a noisy proxy for preference, so high data volume does not guarantee valid preference inference [@adomavicius_toward_2005; @roy_systematic_2022]. Second, explanation can increase perceived usefulness without guaranteeing mechanism fidelity, so narrative plausibility and causal transparency can diverge [@tintarev_evaluating_2012; @zhang_explainable_2020]. Third, candidate generation and filtering are often treated as preprocessing even though they determine the space that ranking can ever optimise [@zamani_analysis_2019; @ferraro_automatic_2018]. Fourth, recommender reproducibility remains fragile when process-level assumptions are underreported, even when final metrics are reported clearly [@bellogin_improving_2021; @bauer_exploring_2024].
 
-Across the reviewed literature, several consistent findings emerge: method suitability is objective-dependent, explanation persuasiveness is not equivalent to explanation fidelity, profile construction and candidate generation are first-order modelling decisions, and reproducibility depends on process-level evidence. Music-specific alignment benchmarks remain less developed than broader entity-resolution benchmarks, and deterministic similarity effects are rarely isolated across multiple datasets and competing playlist objectives [@elmagarmid_duplicate_2007; @papadakis_blocking_2021; @ferraro_automatic_2018; @schweiger_impact_2025]. The central gap is therefore not a lack of recommendation methods, but a lack of integrated evidence showing how transparency, profile assumptions, candidate-generation logic, controllability, reproducibility, and multi-objective playlist quality interact within one inspectable recommendation process. Existing work frequently evaluates these concerns in partial slices rather than as one linked evidential chain, so accountability claims remain difficult to compare against optimisation-focused results [@ferrari_dacrema_troubling_2021; @bellogin_improving_2021; @bauer_exploring_2024; @roy_systematic_2022; @jin_effects_2020; @zamani_analysis_2019; @schweiger_impact_2025].
-
-This thesis is positioned to address that integrated gap by designing and evaluating recommendation behaviour as a connected pipeline rather than as disconnected components, with explicit attention to profile-side assumptions, candidate-space shaping, observable control effects, and process-level reproducibility across stages [@roy_systematic_2022; @jin_effects_2020; @nauta_anecdotal_2023; @beel_towards_2016; @anelli_elliot_2021]. Playlist quality is therefore treated as a visible trade-off among coherence, diversity, novelty, and ordering rather than a single-axis optimisation target [@ferraro_automatic_2018; @vall_feature-combination_2019; @schweiger_impact_2025]. The contribution is explicitly bounded to the design and evaluation of a transparent and controllable playlist generation pipeline under cross-source data conditions, rather than model-family novelty.
+Taken together, these contradictions imply that the main gap is not another ranking model; it is the lack of an integrated, inspectable evidence chain across alignment, profiling, candidate shaping, scoring, assembly, explanation, and run-level auditability under cross-source uncertainty. This thesis addresses that gap by designing and evaluating recommendation behaviour as one connected deterministic pipeline with explicit uncertainty signaling, mechanism-linked explanations, observable control effects, and replay-verifiable execution records [@beel_towards_2016; @anelli_elliot_2021; @jin_effects_2020]. Under this positioning, playlist quality is assessed as an explicit trade-off among coherence, diversity, novelty, and ordering rather than as a single-axis optimisation target [@vall_feature-combination_2019; @schweiger_impact_2025].
 
 ## 2.9 Chapter Summary
-
-This chapter has reviewed literature relevant to transparent and controllable playlist generation under cross-source data conditions. It has examined the evidential reliability of recommendation paradigms, the gap between explanation persuasiveness and explanation fidelity, the modelling significance of profile construction and candidate generation, and the challenges specific to music recommendation and playlist quality. The cross-source alignment and reproducibility sections further established that uncertainty in preference evidence and process-level traceability are first-order design concerns rather than secondary implementation details. Chapter 3 now translates these findings into a concrete design methodology and architecture for the artefact developed in this thesis.
+The literature review shows that the unresolved problem is evidential integration: current work offers strong pieces, but not a single inspectable chain linking uncertain preference intake to controllable playlist outcomes with reproducible process traces. The most consequential tensions concern proxy validity, explanation fidelity, candidate-space visibility, and reproducibility discipline. Chapter 3 therefore moves from review to design by turning these tensions into explicit engineering requirements and architecture commitments.
 
 # Chapter 3: Design and Methodology
 
@@ -321,7 +319,7 @@ This chapter has reviewed literature relevant to transparent and controllable pl
   Controlled-variation mode changes one selected parameter or one bounded policy switch at a time. All other settings remain fixed so observed differences can be interpreted against that single actuation. A meaningful variation is therefore not an arbitrary new profile but a predeclared change whose expected effect can be examined at candidate-space, ranking, assembly, or explanation level. Evidence that the control surface is behaving as intended includes stable fixed-baseline replays, observable shifts in intermediate diagnostics under one-factor changes, and traceable downstream differences in playlist composition or constraint-pressure records when later-stage effects occur. In this way, the protocol remains aligned to Chapter 1 objective O5 by treating reproducibility and controllability as evidence-bearing properties of the design rather than as informal run impressions.
 
 ## 3.13 Chapter Summary
-  This chapter has translated the Chapter 2 literature review into a design for a transparent and controllable playlist-generation pipeline. The central design choices are to make uncertainty visible at the point where evidence enters the system, separate profile construction from candidate shaping and track-level scoring from playlist assembly, keep explanations mechanism-linked, and support later evaluation through configuration control and run-level observability. The following chapter examines how closely the implemented artefact matches this blueprint and where these design properties become visible in execution.
+  This chapter converts the literature tensions into a testable artefact blueprint: uncertainty is explicit at intake, candidate shaping is visible as modelling logic, scoring and assembly are separated to preserve causal traceability, and explanation plus observability are tied to mechanism-level evidence. The design is intentionally deterministic because this thesis evaluates evidence quality and control traceability, not model-family novelty. Chapter 4 now examines whether implementation preserves these design commitments in executable outputs.
 
 # Chapter 4: Implementation Architecture and Evidence Surfaces
 
@@ -340,6 +338,8 @@ The implementation adopts a deliberately lightweight, locally executable archite
 By keeping the pipeline locally executable and artefact-based, intermediate decisions remain portable and reviewable across runs. A researcher or evaluator can inspect alignment diagnostics at the point where evidence enters, follow preference profile construction, observe candidate-space decisions before ranking begins, and trace final outputs back to active mechanisms.
 
 **Implementation scope:** The implementation uses seven core pipeline layers plus two evaluation-support layers (identified collectively as BL-003 through BL-011): alignment, profiling, candidate shaping, scoring, assembly, explanation, observability (the core stages), plus reproducibility and controllability instrumentation (the evaluation-support layers). The implementation follows the design blueprint of Figure 3.1 without structural deviation; this chapter introduces each layer and the evidence it produces. Supporting verification infrastructure (BL-013 pipeline orchestration and BL-014 automated sanity checking) is described in Section 4.10.
+
+`BL-XXX` labels are internal stage identifiers used throughout implementation and evaluation reporting; this section introduces them before they are reused in later chapters.
 
 **Section weighting note:** Alignment receives the most detailed treatment in Section 4.3 because it is the first point where evidence uncertainty enters the pipeline; understanding how uncertainty is classified and preserved at intake is foundational to all downstream stages.
 
@@ -424,9 +424,9 @@ The run record captures input summary (what listening history was imported, alig
 
 Two optional evaluation-support layers extend the implementation to enable reproducibility and controllability assessment.
 
-**BL-010 (Reproducibility Layer)** repeats the main pipeline execution under fixed input and configuration and compares intermediate outputs to verify deterministic stability. It compares alignment summaries, candidate-pool counts, score distributions, playlist ordering, and final output hashes across independent runs. Output: `reproducibility_report.json` records the comparison results and verdict (Pass if all outputs identical; Fail with differences recorded).
+**BL-010 (Reproducibility Layer)** repeats the main pipeline execution under fixed input and configuration and compares intermediate outputs to verify deterministic stability. Comparison uses a two-layer hashing scheme: stable content hashes strip volatile metadata (timestamps, run identifiers) before comparison so that structural identity is verified independently of incidental metadata variation, while raw SHA-256 digests over the eleven key stage-artefact files confirm byte-level file stability. The configuration snapshot additionally captures stage script file hashes, meaning any code drift between runs is detectable as a configuration-level change rather than an unexplained output difference. Output: `reproducibility_report.json` records the comparison results and verdict (Pass if all outputs identical; Fail with differences recorded).
 
-**BL-011 (Controllability Layer)** executes the pipeline under controlled single-parameter variations and records how changes cascade through the system. For each variation (e.g., increasing the diversity-pressure setting), it captures output changes at candidate-space, ranking, assembly, and explanation levels. Output: `controllability_report.json` records the parameter-variation matrix and output deltas for each tested variation.
+**BL-011 (Controllability Layer)** executes the pipeline under a declared-hypothesis experimental protocol: eight named scenarios each carry a pre-specified test identifier, a targeted control surface, and a typed directional acceptance contract. Two of the eight scenarios use `variation_mode: "interaction"`, varying two axes simultaneously — influence-track removal combined with threshold tightening, and feature-weight shift combined with threshold tightening — to test whether multi-factor combinations produce effects beyond their individual contributions. Directional acceptance contracts are control-surface-specific rather than generic: a `candidate_threshold` tightening scenario must *shrink* the candidate pool (not merely change it), a `feature_weight` scenario must produce a positive rank delta in the expected direction, and an `alignment_fuzzy_mode` scenario must confirm a null effect. Output: `controllability_report.json` records per-scenario results against these typed acceptance conditions.
 
 Supporting the above layers, two automated verification components provide infrastructure oversight: BL-013 (pipeline orchestration entrypoint) governs stage execution order and validates stage-completion signals, while BL-014 (36-check automated sanity layer) validates explanation fidelity, output-hash stability, cross-stage candidate-count consistency, and assembly-constraint satisfaction.
 
@@ -444,15 +444,14 @@ Table 4.1 consolidates the chapter's design-to-evidence mapping and identifies t
 | O6: Bounded-guidance surfaces | Sections 3.12, 3.10 | bl009_run_observability_log.json + BL-007 validity reporting | Boundary visibility, execution scope clarity |
 
 ## 4.12 Chapter Summary
-
-This chapter has described how the design committed in Chapter 3 was implemented as an executable, evidence-producing pipeline. The implementation realised the design intent in each of the seven pipeline stages and included evaluation-support instrumentation layers to verify reproducibility and controllability. Collectively, these stages make the pipeline's transparency and controllability objectives visible in concrete evidence artefacts rather than remaining latent in the execution. Formal evaluation of these surfaces — whether evidence meets intended quality criteria — is presented in Chapter 5.
+This chapter demonstrates that the Chapter 3 design is realised as an auditable execution chain, not only as architecture prose: each stage emits inspectable artefacts, and reproducibility/controllability instrumentation is built into the runtime surface. The key outcome is evidential visibility across the full pipeline, from alignment uncertainty to explanation payloads and run-level observability. Chapter 5 now evaluates whether these surfaces satisfy the pre-specified objective-linked criteria.
 
 # Chapter 5: Evaluation and Results
 
 ## 5.1 Chapter Aim and Scope
-This chapter evaluates the implementation evidence surfaces defined in Chapter 4 against the objective-to-control-to-evidence contract formalized in Chapter 3. It is not a benchmark-comparison chapter. Instead, it assesses whether the deterministic pipeline satisfies pre-specified objective-linked criteria under bounded scope [@jannach_measuring_2019; @bauer_exploring_2024; @anelli_elliot_2021].
+This chapter evaluates the implementation evidence surfaces from Chapter 4 against the objective-to-control-to-evidence contract formalized in Chapter 3. The method follows a Design Science evaluation posture: artefact satisfaction of pre-specified criteria under the declared single-user, offline-corpus, deterministic scope [@jannach_measuring_2019; @bauer_exploring_2024; @anelli_elliot_2021].
 
-The chapter remains bounded to the single-user, offline-corpus, deterministic execution posture. Claims are therefore restricted to auditable engineering behavior under this scope, not broad recommender-family superiority.
+Claims are therefore limited to auditable engineering behaviour within this scope.
 
 The evaluation questions remain:
 
@@ -461,7 +460,7 @@ The evaluation questions remain:
 3. Are scoring and assembly trade-offs explicitly controllable?
 4. Do explanation payloads remain structurally mechanism-linked?
 5. Is reproducibility and controllability evidence executable and auditable?
-6. Are validity boundaries and non-claims explicit enough for bounded guidance?
+6. Are validity boundaries and non-claims explicit enough for reliable guidance?
 
 ## 5.2 Evaluation Method and Locked Criteria
 Evaluation follows an objective-linked method rather than metric-first ranking. Criteria are pre-specified before extraction to reduce post-hoc interpretation drift.
@@ -489,6 +488,8 @@ Table 5.1 defines active acceptance conditions.
 Following the credibility-first ordering, O5 is assessed before interpretation-sensitive objectives.
 
 BL-010 reproducibility evidence confirms deterministic replay consistency under fixed inputs/configuration. The current authority report (`run_id=BL010-REPRO-20260419-214941`) records `replay_count=3`, `results.deterministic_match=true`, and `results.status=pass`, with stable-hash reference values present across all tracked stage artifacts.
+
+BL-011 implements a declared-hypothesis experimental protocol rather than an exploratory sensitivity sweep. Each scenario pre-declares which control surface it targets, what directional shift is expected, and what threshold constitutes a measurable effect. Interaction scenarios (`no_influence_plus_stricter_thresholds`, `valence_up_plus_stricter_thresholds`) test whether multi-axis combinations produce effects that neither factor produces alone. Acceptance is typed per control surface: threshold tightening must shrink the candidate pool, not merely perturb it; a feature-weight scenario must move rank in the declared direction. This structure means a FAIL result is an informative hypothesis rejection, not a missing measurement.
 
 BL-011 controllability evidence is evaluated through an explicit decision gate:
 
@@ -535,7 +536,7 @@ O2 is evaluated through BL-003 and BL-005. BL-003 provides match-rate and unmatc
 
 The refreshed BL-003 authority reports `actual_match_rate=0.245` against `min_threshold=0.15` (`status=pass`), with explicit pathway counts (`matched_by_spotify_id=1489`, `matched_by_metadata=937`, `ambiguous_matches=19`, `unmatched=7457`). BL-005 reports `candidate_rows_total=109269`, `kept_candidates=23257` (about 21.3%), and separated pathway diagnostics including `influence_admitted=0`.
 
-Match-rate interpretation remains bounded: even when current run authority is above threshold, the threshold itself is a minimum viability gate, not evidence of broad cross-source coverage.
+Match-rate interpretation remains qualified: even when current run authority is above threshold, the threshold itself is a minimum viability gate, not evidence of broad cross-source coverage.
 
 For continuity with earlier validated chapter evidence, the previously cited canonical baseline aligned share (15.95%) remains an important boundary reference: passing a 15% gate should be interpreted as viability under constraints, not as broad corpus coverage.
 
@@ -560,7 +561,7 @@ Current evidence shows required-field presence for the available selected-track 
 
 Because the locked sample contract is 30 tracks and current selected-track payload coverage is 10, O4 is assessed as Partially Satisfied pending completion of the full fixed-sample extraction cross-check. Perceived-usefulness claims remain routed to Chapter 6.
 
-## 5.8 O6 Evidence: Bounded-Guidance Surfaces
+## 5.8 O6 Evidence: Validity-Boundary Surfaces
 O6 is evaluated through BL-007 and BL-009 boundary reporting. BL-009 must include explicit non-claims and validity boundaries. BL-007 must satisfy one auditable case:
 
 1. Relaxation occurred: recorded with reason codes and diagnostics context.
@@ -568,13 +569,13 @@ O6 is evaluated through BL-007 and BL-009 boundary reporting. BL-009 must includ
 
 Current artifacts satisfy the no-relaxation case: BL-007 explicitly emits `relaxation_records=[]`, `undersized_playlist_warning.is_undersized=false`, and `shortfall=0`. BL-009 emits top-level `validity_boundaries` and nested reproducibility non-claims (`non_claims` count `4`) under `reproducibility_interpretation`.
 
-This criterion is satisfied because bounded guidance is evidence-backed and auditable rather than implied.
+This criterion is satisfied because validity guidance is evidence-backed and auditable rather than implied.
 
 ## 5.9 Control-Causality and Boundary Hardening Context
 The current evaluation posture reflects hardening steps that were implemented before final chapter synthesis: BL-008 now carries explicit control-provenance structures, BL-009 boundary framing is emitted at top level, and BL-011 records no-op control diagnostics directly rather than masking weak-effect controls. These changes matter because they show that evidence contracts were engineered into the implementation and not added as post-hoc narrative wrappers.
 
 ## 5.10 Objective Synthesis and Acceptance Status
-Interpretation discipline: the synthesis below reports criterion alignment under bounded artifact authority. It does not imply global recommender superiority or cross-regime generalization.
+Interpretation discipline: the synthesis below reports criterion alignment under current artefact authority. It does not imply global recommender superiority or cross-regime generalization.
 
 Table 5.4 consolidates objective outcomes under normalized verdict labels.
 
@@ -599,16 +600,16 @@ Chapter 6 handoff logic:
 
 - O5 fully satisfied: discuss reproducibility guarantees and controllability confidence within deterministic bounds.
 - O5 partially satisfied: discuss reproducibility guarantees with explicit controllability coverage limits and unconfirmed interaction regions.
-- O5 not satisfied (current authority): discuss reproducibility pass evidence alongside controllability shortfall, no-op control diagnostics, and bounded next-step remediation scope.
+- O5 not satisfied (current authority): discuss reproducibility pass evidence alongside controllability shortfall, no-op control diagnostics, and explicit next-step remediation scope.
 
-All claims are therefore bounded to the evidence surfaces and criteria defined here.
+All claims therefore stay tied to the evidence surfaces and criteria defined here.
 
 ## 5.12 Chapter Summary
-Chapter 5 evaluates the implemented pipeline through pre-specified objective-linked criteria with evidence-first reporting. O5 is resolved first and currently not satisfied under the locked measurable-delta gate, while O1, O2, O3, and O6 are satisfied and O4 is partially satisfied pending completion of the full fixed-sample structural extraction. The chapter therefore provides a bounded, auditable synthesis that distinguishes verified criterion alignment from unresolved controllability evidence.
+Chapter 5 establishes a clear outcome pattern: the pipeline currently delivers strong uncertainty visibility, candidate-shaping transparency, score/assembly traceability, and explicit validity reporting, while controllability evidence remains the principal weak point under the locked measurable-delta gate. O4 remains partially satisfied because structural checks are complete for selected tracks but not yet for the full fixed sample. This leaves Chapter 6 with a focused interpretive task: explain why transparency and reproducibility matured faster than controllability under current data and control conditions.
 
-# Chapter 6: Discussion and Bounded Contribution
+# Chapter 6: Discussion and Contribution Boundaries
 
-Chapter objective: interpret the Chapter 5 evaluation evidence against the active research question and contribution claim, while keeping every conclusion bounded to explicit objective-linked evidence.
+Chapter objective: interpret the Chapter 5 evaluation evidence against the active research question and contribution claim, while keeping conclusions tied to explicit objective-linked evidence.
 
 ## 6.1 Interpretation Frame
 The research question asks how engineers can design and evaluate a deterministic playlist-generation pipeline so that preference inference, candidate generation, and playlist assembly remain transparent, controllable, and reproducible under cross-source uncertainty and multi-objective playlist trade-offs.
@@ -621,12 +622,10 @@ This chapter is organised around three lenses that follow directly from the thes
 2. controllable trade-off engineering,
 3. mechanism-linked evidence quality.
 
-The core claim is this: under bounded single-user, cross-source conditions it is possible to engineer a playlist pipeline whose uncertainty, candidate-space decisions, scoring logic, explanation linkage, and reproducibility boundaries remain inspectable and auditable, even though controllability remains weaker than originally intended. This chapter explores what that claim now means given the evaluation evidence.
-
-This chapter is not a benchmark-positioning chapter. It does not argue that deterministic methods are universally preferable to hybrid, collaborative, or deep recommender families. Instead, it asks whether the implemented artefact now produces evidence strong enough to support the bounded engineering claim established in Chapters 1 to 3 [@jannach_measuring_2019; @bauer_exploring_2024; @ferrari_dacrema_troubling_2021].
+The core claim is this: under single-user cross-source conditions it is possible to engineer a playlist pipeline whose uncertainty handling, candidate-space decisions, scoring logic, explanation linkage, and reproducibility boundaries remain inspectable and auditable, even though controllability remains weaker than originally intended. This chapter examines what that claim means in light of the evaluation evidence and how far it can be taken [@jannach_measuring_2019; @bauer_exploring_2024; @ferrari_dacrema_troubling_2021].
 
 ## 6.2 Findings in Relation to the Research Question
-The current evidence supports five main findings.
+The current evidence supports seven main findings.
 
 ### 6.2.1 Explicit uncertainty handling is a design requirement, not a reporting afterthought
 Uncertainty visibility matters because cross-source alignment is always partial, and users making playlist decisions need to know where the data came from and how much confidence they should have. The implementation shows that preference inference should not treat imported interaction traces as direct preference truth, and it embeds this principle into the profiling path rather than retrofitting it as a post-hoc caveat. BL-003 and BL-004 now surface match confidence, source coverage, attribution, and uncertainty-related diagnostics directly in the active output contract—not hiding them in artifact logs. This supports the broader claim that uncertainty handling is a first-order design obligation for cross-source systems [@allam_improved_2018; @papadakis_blocking_2021].
@@ -640,17 +639,17 @@ Deterministic scoring and assembly remain valuable under this thesis scope becau
 ### 6.2.4 Explanation quality depends on mechanism linkage, not on narrative plausibility alone
 This thesis defines explanation fidelity structurally—as alignment with actual scoring and assembly behavior—not as user-perceived persuasiveness or narrative plausibility. The tranche-2 and tranche-3 evidence from BL-008 shows this distinction directly: explanations are now more rigorous because they preserve both direct mechanism contributors (which scoring components drove the inclusion decision) and control-provenance snapshots (which rule constraints and boundary conditions applied). Reviewers can verify this mechanism-level fidelity at the artefact level by comparing the explanation payload against the actual scoring record [@zhang_explainable_2020; @tintarev_evaluating_2012; @sotirou_musiclime_2025]. What remains unknown—and is beyond the scope of this thesis—is whether users perceive these mechanism-linked explanations as useful or persuasive. That claim requires longitudinal user study, which is not available in the single-user corpus. The thesis therefore establishes what the mechanism can support (structural fidelity) without claiming what users will experience (perceived usefulness). The project completed the O4 structural cross-check for selected tracks within the submission window; the full 30-track sample including rejected and boundary-ranked tracks remains a confirmation item for post-submission verification. This thesis treats this partial result as a methodological boundary rather than an implementation failure, consistent with Chapter 5's O4 Partially Satisfied verdict.
 
-### 6.2.5 Bounded guidance becomes more credible when limits are part of the contract
-The most important late-stage design improvement is that validity boundaries are now explicit, top-level, and test-enforced in BL-009. This changes the discussion posture: instead of adding caveats only in prose after evaluation, the artefact itself now emits scope, known limits, and run-specific caveats. That makes Chapter 6 conclusions more defensible because the artefact enforces boundedness rather than retrofitting it in narrative. This matters epistemologically: rather than being hedged in prose after the fact, the thesis conclusions are pre-specified as bounded claims before evaluation begins, which is a stronger form of intellectual honesty than retrospective limitation-adding [@beel_towards_2016; @bellogin_improving_2021; @cavenaghi_systematic_2023].
+### 6.2.5 Guidance becomes more credible when limits are part of the contract
+The most important late-stage design improvement is that validity boundaries are now explicit, top-level, and test-enforced in BL-009. This changes the discussion posture: instead of adding caveats only in prose after evaluation, the artefact itself now emits scope, known limits, and run-specific caveats. That makes Chapter 6 conclusions more defensible because the artefact enforces claim limits rather than retrofitting them in narrative. This matters epistemologically: rather than being hedged in prose after the fact, the thesis conclusions are pre-specified as qualified claims before evaluation begins, which is a stronger form of intellectual honesty than retrospective limitation-adding [@beel_towards_2016; @bellogin_improving_2021; @cavenaghi_systematic_2023].
 
-### 6.2.6 Controllability as an engineering finding, not a verdict collapse
+### 6.2.6 Controllability as an engineering finding
 Chapter 5 defines the O5 controllability objective through observable control-effect measurements under the BL-011 measurable-delta gate. The evidence shows this objective as **Not Satisfied**: some control surfaces (particularly genre flexibility under strict valence constraints) produce no-op or near-no-op effects despite nominally being present in the control surface. This is not an implementation fault; it is an engineering finding that reveals where the current design approach meets its limits. What matters for the discussion is not defending O5 as satisfied, but interpreting what the no-op result means: (1) certain preference dimensions cannot be reliably shaped through the current architecture without disturbing other objectives, (2) the sensitivity region of the controls is narrower than the design initially assumed, and (3) deeper intervention mechanisms (possibly neural or semi-supervised) might be needed to address these harder control cases. This is valuable negative evidence that bounds the thesis claim and informs future work [@jannach_measuring_2019].
 
 ### 6.2.7 Cross-source alignment as a scope boundary with practical consequences
 The 15.95% canonical-baseline alignment rate between the Spotify listening history and the offline Music4All corpus is not a methodological failure; it is a real scope boundary that must shape what the thesis claims about profile completeness and playlist diversity. Working from the matched subset (rather than the full listening history) means that the resulting user profile captures genre and artist preferences, but only for the 15.95% slice that both sources record. This creates downstream consequences: (1) profile-level diversity metrics remain limited to candidates available in the matched subset, (2) representational coverage for rare genres or niche artists depends entirely on what the offline corpus contains, (3) serendipity and novelty recommendations depend on the alignment coverage rather than on the recommendation logic alone. These are not design failures — they are engineering facts that clarify what profile inference actually means in a cross-source setting. The thesis claim stays bounded: the pipeline can maintain uncertainty, controllability, and reproducibility for playlists built from the matched subset, but it cannot claim full listening-history fidelity or universal genre coverage [@lu_recommender_2015].
 
 ## 6.3 Contribution Interpretation
-The contribution is best understood as an engineering-evidence contribution rather than a model-performance contribution. The five findings above collectively establish that deterministic architecture yields strong auditability and mechanism-linkage evidence under the thesis scope, even though it carries design trade-offs that weaker alternatives might avoid.
+The contribution is best understood as an engineering-evidence contribution rather than a model-performance contribution. The findings above collectively establish that deterministic architecture yields strong auditability and mechanism-linkage evidence under the thesis scope, even though it carries design trade-offs that weaker alternatives might avoid.
 
 What the thesis now demonstrates is not that one deterministic playlist pipeline is universally best, but that it is possible to co-engineer:
 
@@ -660,9 +659,11 @@ What the thesis now demonstrates is not that one deterministic playlist pipeline
 4. executable reproducibility and controllability evidence,
 5. explicit validity-boundary reporting.
 
+This co-engineering is supported by a schema-versioned control registry (`control-registry-v1`), embedded in every BL-009 run record, which catalogs 26 typed controls across the active pipeline stages. Because the registry snapshot is written at execution time, each run record carries a persistent, auditable declaration of which control surfaces were active — independently of whether BL-011 finds them sensitive — making the artefact a contract-instrumented evidence system rather than a pipeline with post-hoc narrative claims.
+
 Taken together, these give the thesis a clearer and more defensible contribution than earlier design framings, which concentrated more on generic transparency/observability language than on explicit objective-to-evidence traceability [@balog_transparent_2019; @knijnenburg_explaining_2012; @afroogh_trust_2024].
 
-The current evidence supports the selected deterministic path (relative to the option space in Section 3.3.1) because it yields the strongest mechanism-level traceability within this thesis scope. Interpret this as a bounded design-fit finding under current objectives and constraints, not as a verdict against hybrid or neural alternatives.
+The current evidence supports the selected deterministic path (relative to the option space in Section 3.3.1) because it yields the strongest mechanism-level traceability within this thesis scope. Interpret this as a design-fit finding under current objectives and constraints, not as a verdict against hybrid or neural alternatives.
 
 However, the cost side of this choice deserves explicit naming. Deterministic pipeline architecture prioritizes inspectability and replayability, but it likely sacrifices representational flexibility compared to neural or hybrid alternatives that can adjust their latent representations across runs. The fixed component weights and rule-based constraints that make the scoring and assembly logic transparent also make it harder to adapt to subtle preference shifts or to capture latent genre or mood structure that would require learned representations. Moreover, the BL-011 evidence on weak control surfaces suggests that some controllability hopes (particularly around genre flexibility under tight valence constraints) remain difficult even with explicit architectural support. The deterministic choice is not invalidated by these costs—they are the price of auditability—but they do bound what the thesis can claim about playlist quality or user adaptability.
 
@@ -672,11 +673,11 @@ The current evidence still has important limits.
 1. Cross-source preference traces remain indirect evidence of user preference rather than causal ground truth.
 2. Alignment uncertainty remains material; in the canonical active baseline, only 15.95% of imported Spotify history aligns to the offline corpus, so profile-level claims remain bounded to the matched subset rather than the full listening history.
 3. Some control surfaces remain weak or data-regime-dependent, as shown by BL-011 no-op diagnostics.
-4. Reproducibility claims are contract-bounded to artifact-level stable-hash consistency under declared fixed inputs, replay procedures, and a pinned configuration snapshot. They do not extend to cross-environment behavioral invariance, output identity under different run configurations, or environmental runtime invariance beyond the fixed-input and configuration window used in replay.
+4. Reproducibility claims are limited to artifact-level stable-hash consistency under declared fixed inputs, replay procedures, and a pinned configuration snapshot. They do not extend to cross-environment behavioral invariance, output identity under different run configurations, or environmental runtime invariance beyond the fixed-input and configuration window used in replay.
 5. External validity remains narrow because the artefact is single-user, deterministic, and not evaluated through longitudinal user studies.
-6. Comparator depth remains bounded. No algorithmic baseline (e.g. popularity rank, BPM-sorted random, or collaborative-filter rerank) was implemented alongside the main artefact. Three grounds justify this exclusion. First, the thesis is positioned as Design Science Research, where the primary evaluation obligation is demonstrating that the artefact satisfies its own design objectives — not that it outperforms an arbitrary comparator on an offline metric [@hevner_design_2004]. Second, a fair algorithmic comparator would require shared offline evaluation data (playback logs with known preference outcomes) that are unavailable in the single-user Music4All + Spotify-export corpus used here; any comparator run on this corpus would produce noise, not signal. Third, the controllability and transparency objectives (RQ-B, RQ-C) have no natural mapping to a comparable baseline — popularity rank carries no influence model, and a BPM-sorted baseline has no explanation surface. The design scope and the data constraints jointly make a comparator study out of scope for the current contribution. Future work should introduce comparators only if a suitable multi-user evaluation corpus becomes available and if the comparator implements an equivalent transparency and controllability interface [@flexer_problem_2016].
+6. No algorithmic baseline (e.g. popularity rank, BPM-sorted random, or collaborative-filter rerank) was implemented alongside the main artefact. This reflects the DSR evaluation stance used here: validate artefact satisfaction of its own design objectives, then extend to comparator studies when equivalent evaluation data and transparency/control interfaces are available. Under the current single-user corpus, a fair comparator study would add more noise than evidential clarity [@hevner_design_2004; @flexer_problem_2016].
 
-These limits do not collapse the contribution. They bound it to auditable engineering evidence under explicit scope rather than broad recommender-performance claims [@flexer_problem_2016; @papadakis_blocking_2021; @jin_effects_2020].
+These limits do not collapse the contribution. They keep it within auditable engineering evidence under explicit scope rather than broad recommender-performance claims [@flexer_problem_2016; @papadakis_blocking_2021; @jin_effects_2020].
 
 ## 6.5 Implications for Design Science Positioning
 The implementation also sharpens the methodological interpretation of the artefact. In Design Science terms, the value of the artefact lies not only in producing playlists, but in making design claims testable through explicit control and evidence contracts. The REB-M3 tranche gates are especially important here because they turn objective satisfaction into executable acceptance checks instead of relying only on narrative consistency across chapters. This DSR posture explains why the thesis looks different from a conventional CS project report: the methodology requires the artefact to generate and verify design evidence, not add it through post-hoc narrative closure after implementation is complete.
@@ -693,4 +694,4 @@ Future work should extend the artefact without breaking the evidence discipline 
 5. Extend bounded-guidance outputs so Chapter 6 conclusions can reference richer failure-mode taxonomies generated directly from the artefact [@andjelkovic_moodplay_2019; @liu_aggregating_2025].
 
 ## 6.7 Chapter Summary
-The implementation demonstrates that the central engineering challenge is not simply to generate playlists deterministically, but to do so in a way that keeps uncertainty, trade-offs, mechanism linkage, and limits visible. The current evidence indicates that under bounded single-user, deterministic, cross-source conditions, the project can engineer a playlist generation pipeline whose evidence surfaces remain transparent, whose controllability remains auditable, and whose reproducibility remains verifiable through explicit artefact contracts. The limits of controllability—particularly the sensitivity region of the tested control parameters—mark the clearest boundary on what the current thesis can claim. Yet within those bounds, the thesis has demonstrated that deterministic architecture yields stronger mechanism-level traceability and evidence discipline than earlier design iterations, because its evaluation surfaces are explicit, executable, and honest about what the evidence does and does not justify.
+The discussion shows that the thesis contribution stands or falls on evidence quality, not on generic recommendation performance rhetoric. The strongest outcomes are explicit uncertainty handling, mechanism-linked explanation structure, and reproducible execution records; the weakest outcome remains controllability under the current measurable-delta gate. The central interpretive result is therefore precise: deterministic architecture can deliver high traceability and auditability in this cross-source setting, but control effectiveness remains uneven and defines the main boundary for current claims.

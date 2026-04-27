@@ -1,6 +1,6 @@
 # Thesis State
 
-Last updated: 2026-04-27 UTC (C-650 / D-338. Final DOCX packaging now preserves cover-image fidelity through Word COM merge plus no-compression/high-DPI settings, and Word UI render inspection validates image-quality flags alongside figure page-fit diagnostics.)
+Last updated: 2026-04-28 UTC (C-653 / D-338. The merged thesis draft now includes an examiner-first motivation opening, stronger Chapter 2 gap synthesis, reduced defensive phrasing in Chapters 5-6, explicit BL-stage label introduction in Chapter 4, corrected Section 6.2 finding count, and synthesis-led chapter summaries.)
 
 > Full historical audit trail (priority checkpoints, post-closure enhancement logs) is in `00_admin/thesis_state_ARCHIVE_20260416.md` and `00_admin/change_log.md`.
 
@@ -99,7 +99,7 @@ Active dataset: DS-001 (Music4All). Active config profile: `run_config_ui013_tun
 
 | Item | Current value |
 |------|--------------|
-| Highest change ID | C-650 |
+| Highest change ID | C-653 |
 | Highest decision ID | D-338 |
 | Active unresolved issues | Active mentor-feedback remediation backlog now tracked as `UNDO-R` in `00_admin/unresolved_issues.md` (A-H implementation checklist complete). Submission blockers remain tracked in `09_quality_control/submission_readiness_status.md` and `01_requirements/ambiguity_flags.md` |
 | Admin log files | `change_log.md`, `decision_log.md`, `unresolved_issues.md`, `timeline.md` |
