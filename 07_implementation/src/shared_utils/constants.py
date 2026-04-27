@@ -297,6 +297,7 @@ DEFAULT_ASSEMBLY_CONTROLS: dict[str, object] = {
         "max_relaxation_rounds": 2,
         "never_relax_score_threshold": True,
     },
+    "novelty_allowance": 0,
     "lead_genre_fallback_strategy": "none",
     "use_component_contributions_for_tiebreak": False,
     "use_semantic_strength_for_tiebreak": False,
@@ -321,6 +322,7 @@ DEFAULT_TRANSPARENCY_CONTROLS: dict[str, Any] = {
     "primary_contributor_tie_delta": 0.02,
     "include_per_track_control_provenance": True,
     "emit_run_level_control_provenance_summary": True,
+    "max_rejected_track_control_causality": 500,
     "bl007_bl008_handshake_validation_policy": DEFAULT_BL008_HANDSHAKE_VALIDATION_POLICY,
 }
 

@@ -2153,6 +2153,11 @@ def resolve_bl007_controls(run_config_path: str | Path | None) -> dict[str, Any]
             assembly.get("max_consecutive"),
             defaults["max_consecutive"],
         ),
+        "novelty_allowance": _validate_non_negative_int(
+            assembly.get("novelty_allowance"),
+            "assembly_controls.novelty_allowance",
+            int(defaults.get("novelty_allowance", 0)),
+        ),
         "utility_strategy": utility_strategy,
         "utility_decay_factor": _coerce_fraction_zero_to_one(
             assembly.get("utility_decay_factor"),
