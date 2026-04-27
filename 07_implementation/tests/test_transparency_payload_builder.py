@@ -81,6 +81,8 @@ def test_build_track_payload_maps_assembly_rule_label() -> None:
         lead_genre="rock",
         playlist_position=1,
         score_rank=2,
+        score_percentile=99.5,
+        score_band="moderate",
         final_score=0.72,
         raw_final_score=0.69,
         score_breakdown=[],
@@ -94,6 +96,8 @@ def test_build_track_payload_maps_assembly_rule_label() -> None:
     )
     assert payload["assembly_context"]["admission_rule"] == "R2 - genre cap exceeded"
     assert payload["primary_explanation_driver"]["label"] == "Tempo"
+    assert payload["score_percentile"] == 99.5
+    assert payload["score_band"] == "moderate"
     assert payload["causal_driver"]["label"] == "Tempo"
     assert payload["narrative_driver"]["label"] == "Tag overlap"
     assert payload["control_provenance_ref"] == "run_level"

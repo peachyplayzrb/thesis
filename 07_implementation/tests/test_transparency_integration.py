@@ -465,3 +465,110 @@ def test_transparency_main_emits_rejected_track_control_causality(
         rejected_payload["control_causality"]["effect_direction"]["expected_direction"]
         == "deprioritize_or_exclude"
     )
+
+
+def test_transparency_main_caps_rejected_track_control_causality(
+    tmp_path: Path,
+    monkeypatch,
+) -> None:
+    scored_csv = tmp_path / "scored.csv"
+    score_summary_json = tmp_path / "score_summary.json"
+    playlist_json = tmp_path / "playlist.json"
+    trace_csv = tmp_path / "trace.csv"
+    output_dir = tmp_path / "out"
+
+    _write_csv(
+        scored_csv,
+        [
+            "track_id",
+            "lead_genre",
+            "rank",
+            "final_score",
+            "raw_final_score",
+            "tempo_similarity",
+            "tempo_contribution",
+        ],
+        [
+            {
+                "track_id": "t1",
+                "lead_genre": "rock",
+                "rank": 1,
+                "final_score": 0.91,
+                "raw_final_score": 0.86,
+                "tempo_similarity": 0.90,
+                "tempo_contribution": 0.40,
+            },
+            {
+                "track_id": "t2",
+                "lead_genre": "jazz",
+                "rank": 2,
+                "final_score": 0.40,
+                "raw_final_score": 0.40,
+                "tempo_similarity": 0.35,
+                "tempo_contribution": 0.10,
+            },
+            {
+                "track_id": "t3",
+                "lead_genre": "pop",
+                "rank": 3,
+                "final_score": 0.39,
+                "raw_final_score": 0.39,
+                "tempo_similarity": 0.33,
+                "tempo_contribution": 0.09,
+            },
+        ],
+    )
+    score_summary_json.write_text(
+        json.dumps({"config": {"active_component_weights": {"tempo_score": 1.0}}}),
+        encoding="utf-8",
+    )
+    playlist_json.write_text(
+        json.dumps(
+            {
+                "tracks": [
+                    {
+                        "playlist_position": 1,
+                        "track_id": "t1",
+                        "lead_genre": "rock",
+                        "final_score": 0.91,
+                        "score_rank": 1,
+                    }
+                ]
+            }
+        ),
+        encoding="utf-8",
+    )
+    _write_csv(
+        trace_csv,
+        ["track_id", "decision", "score_rank", "exclusion_reason"],
+        [
+            {"track_id": "t1", "decision": "included", "score_rank": 1, "exclusion_reason": ""},
+            {
+                "track_id": "t2",
+                "decision": "excluded",
+                "score_rank": 2,
+                "exclusion_reason": "below_score_threshold",
+            },
+            {
+                "track_id": "t3",
+                "decision": "excluded",
+                "score_rank": 3,
+                "exclusion_reason": "below_score_threshold",
+            },
+        ],
+    )
+
+    monkeypatch.setenv("BL008_SCORED_CSV_PATH", str(scored_csv))
+    monkeypatch.setenv("BL008_SCORE_SUMMARY_PATH", str(score_summary_json))
+    monkeypatch.setenv("BL008_PLAYLIST_PATH", str(playlist_json))
+    monkeypatch.setenv("BL008_TRACE_CSV_PATH", str(trace_csv))
+    monkeypatch.setenv("BL008_OUTPUT_DIR", str(output_dir))
+    monkeypatch.setenv("BL008_MAX_REJECTED_TRACK_CONTROL_CAUSALITY", "1")
+
+    main()
+
+    payloads = json.loads((output_dir / "bl008_explanation_payloads.json").read_text(encoding="utf-8"))
+    assert payloads["rejected_track_control_causality_count"] == 1
+    assert payloads["rejected_track_control_causality_total_count"] == 2
+    assert payloads["rejected_track_control_causality_max_emitted"] == 1
+    assert payloads["rejected_track_control_causality_truncated"] is True

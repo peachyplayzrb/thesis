@@ -46,6 +46,8 @@ def test_component_orchestration_builds_expected_track_payload() -> None:
         lead_genre="rock",
         playlist_position=1,
         score_rank=2,
+        score_percentile=99.0,
+        score_band="strong",
         final_score=0.91,
         raw_final_score=0.88,
         score_breakdown=breakdown,
@@ -60,3 +62,5 @@ def test_component_orchestration_builds_expected_track_payload() -> None:
     assert payload["primary_explanation_driver"]["component"] == "tempo"
     assert payload["top_score_contributors"][0]["contribution"] == 0.45
     assert payload["raw_final_score"] == 0.88
+    assert payload["score_percentile"] == 99.0
+    assert payload["score_band"] == "strong"

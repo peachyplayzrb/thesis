@@ -2,9 +2,22 @@
 
 from transparency.explanation_driver import (
     build_why_selected,
+    classify_score_band,
     select_causal_driver,
     select_primary_explanation_driver,
 )
+
+
+def test_classify_score_band_returns_expected_bands() -> None:
+    assert classify_score_band(0.80) == "strong"
+    assert classify_score_band(0.60) == "moderate"
+    assert classify_score_band(0.40) == "weak"
+
+
+def test_classify_score_band_prefers_percentile_when_present() -> None:
+    assert classify_score_band(0.40, 95.0) == "strong"
+    assert classify_score_band(0.40, 75.0) == "moderate"
+    assert classify_score_band(0.99, 45.0) == "weak"
 
 
 def test_build_why_selected_includes_position_score_and_lead_genre() -> None:
@@ -42,6 +55,18 @@ def test_build_why_selected_uses_weaker_wording_band() -> None:
         top_contributor_limit=1,
     )
     assert "weaker but acceptable profile match" in text
+
+
+def test_build_why_selected_uses_explicit_score_band_override() -> None:
+    text = build_why_selected(
+        lead_genre="pop",
+        final_score=0.41,
+        top_contributors=[{"label": "Tempo (BPM)"}],
+        playlist_position=2,
+        top_contributor_limit=1,
+        score_band="strong",
+    )
+    assert "strong profile match" in text
 
 
 def test_select_primary_explanation_driver_returns_unknown_when_empty() -> None:
