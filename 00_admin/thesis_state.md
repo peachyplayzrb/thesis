@@ -1,6 +1,6 @@
 # Thesis State
 
-Last updated: 2026-04-27 UTC (C-649 / D-337. Word UI render inspection now includes an automatic inline-shape page-fit gate, and final DOCX figure rendering remains hardened with explicit width controls plus page-fit-safe Figure 2.2 and Figure 3.3 layouts.)
+Last updated: 2026-04-27 UTC (C-650 / D-338. Final DOCX packaging now preserves cover-image fidelity through Word COM merge plus no-compression/high-DPI settings, and Word UI render inspection validates image-quality flags alongside figure page-fit diagnostics.)
 
 > Full historical audit trail (priority checkpoints, post-closure enhancement logs) is in `00_admin/thesis_state_ARCHIVE_20260416.md` and `00_admin/change_log.md`.
 
@@ -99,8 +99,8 @@ Active dataset: DS-001 (Music4All). Active config profile: `run_config_ui013_tun
 
 | Item | Current value |
 |------|--------------|
-| Highest change ID | C-649 |
-| Highest decision ID | D-337 |
+| Highest change ID | C-650 |
+| Highest decision ID | D-338 |
 | Active unresolved issues | Active mentor-feedback remediation backlog now tracked as `UNDO-R` in `00_admin/unresolved_issues.md` (A-H implementation checklist complete). Submission blockers remain tracked in `09_quality_control/submission_readiness_status.md` and `01_requirements/ambiguity_flags.md` |
 | Admin log files | `change_log.md`, `decision_log.md`, `unresolved_issues.md`, `timeline.md` |
 | Foundation files | `02_foundation/current_title_and_rq.md`, `objectives.md`, `contribution_statement.md`, `problem_statement.md` |

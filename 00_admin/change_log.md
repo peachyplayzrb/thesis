@@ -8,7 +8,7 @@ Ordering convention (standardized 2026-03-24):
 - New entries must be appended at the end; historical entries remain unchanged except for explicit correction records.
 
 Maintenance snapshot (2026-04-27, updated):
-- Highest change ID currently present: `C-649`
+- Highest change ID currently present: `C-650`
 - Maintenance snapshot (2026-03-28): prior snapshot stated `C-205`; superseded by the 2026-03-29 architecture migration + documentation sync wave (C-204 through C-219).
 - Known legacy correction applied in this file: prior duplicate `C-079` entry has been normalized to `C-135` for unique-ID compliance.
 
@@ -5097,3 +5097,14 @@ Maintenance snapshot (2026-04-27, updated):
 - affected_components: `07_implementation/scripts/word_ui_render_check.ps1`, `reports/word_ui_render_check_latest.md`, `00_admin/change_log.md`, `00_admin/decision_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`
 - impact_assessment: Medium-positive. Converts figure page-fit from a manual inspection concern into an enforceable Word-render QA gate and preserves submission packaging confidence.
 - approval_record: User confirmation in chat on 2026-04-27 to implement option 2 first (automatic oversize-figure failure guard) before committing the tranche.
+
+## C-650
+- date: 2026-04-27
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Hardened final DOCX packaging to preserve cover-page image fidelity and prevent quality loss from image compression/resampling. The packaging workflow now merges cover+body with Word COM (instead of Pandoc-only concatenation) and applies DOCX-level image-quality flags (`w:doNotCompressPictures`, `w:defaultImageDpi=300`). The Word render audit was extended to validate these flags and report them in the QA output.
+- reason: User requested that project cover images not get rescaled and that figure quality not degrade in final packaging, with preference for higher-fidelity handling.
+- evidence_basis: Rebuilt package run completed successfully at `2026-04-27 22:05:09 UTC` with Word COM merge active and image-quality flags applied; follow-up render audit (`2026-04-27 22:06:08 UTC`) reports PASS with `doNotCompressPictures: True`, `defaultImageDpi: 300`, and zero oversized thesis-figure failures.
+- affected_components: `07_implementation/scripts/build_final_thesis_package.ps1`, `07_implementation/scripts/word_ui_render_check.ps1`, `reports/final_project_report_with_cover.docx`, `reports/word_ui_render_check_latest.md`, `reports/word_ui_render_paragraph_audit_latest.csv`, `00_admin/change_log.md`, `00_admin/decision_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`
+- impact_assessment: Medium-positive. Preserves cover-page image integrity in final package assembly and adds explicit quality-compression controls plus audit visibility, reducing submission-time image degradation risk.
+- approval_record: User request in chat on 2026-04-28 to ensure project-cover images are not rescaled/degraded and to consider SVG-quality implications.

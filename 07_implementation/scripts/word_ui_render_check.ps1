@@ -11,6 +11,7 @@ param(
 
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
+Add-Type -AssemblyName System.IO.Compression.FileSystem
 
 function Resolve-RepoPath {
     param(
@@ -49,6 +50,72 @@ function Clean-ParagraphText {
     return $clean.Trim()
 }
 
+function Get-DocxImageQualitySettings {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$DocxPath
+    )
+
+    $result = [pscustomobject]@{
+        DoNotCompressPictures = $false
+        DefaultImageDpi       = ''
+        SettingsReadable      = $false
+    }
+
+    $zip = $null
+    try {
+        $zip = [System.IO.Compression.ZipFile]::OpenRead($DocxPath)
+        $entry = $zip.GetEntry('word/settings.xml')
+        if ($null -eq $entry) {
+            return $result
+        }
+
+        $settingsXml = ''
+        $stream = $null
+        $reader = $null
+        try {
+            $stream = $entry.Open()
+            $reader = New-Object System.IO.StreamReader($stream)
+            $settingsXml = $reader.ReadToEnd()
+        }
+        finally {
+            if ($reader -ne $null) {
+                $reader.Dispose()
+            }
+            elseif ($stream -ne $null) {
+                $stream.Dispose()
+            }
+        }
+
+        $xml = New-Object System.Xml.XmlDocument
+        $xml.LoadXml($settingsXml)
+        $ns = New-Object System.Xml.XmlNamespaceManager($xml.NameTable)
+        $wNamespace = 'http://schemas.openxmlformats.org/wordprocessingml/2006/main'
+        $ns.AddNamespace('w', $wNamespace)
+
+        $doNotCompress = $xml.SelectSingleNode('/w:settings/w:doNotCompressPictures', $ns)
+        if ($null -ne $doNotCompress) {
+            $result.DoNotCompressPictures = $true
+        }
+
+        $dpiNode = $xml.SelectSingleNode('/w:settings/w:defaultImageDpi', $ns)
+        if ($null -ne $dpiNode) {
+            $val = $dpiNode.Attributes.GetNamedItem('w:val')
+            if ($null -ne $val) {
+                $result.DefaultImageDpi = [string]$val.Value
+            }
+        }
+
+        $result.SettingsReadable = $true
+        return $result
+    }
+    finally {
+        if ($zip -ne $null) {
+            $zip.Dispose()
+        }
+    }
+}
+
 $repo = (Resolve-Path $RepoRoot).Path
 $docxPath = Resolve-RepoPath -Base $repo -PathValue $InputDocx
 $pdfPath = Resolve-RepoPath -Base $repo -PathValue $OutputPdf
@@ -81,6 +148,7 @@ $oversizedInlineShapes = @()
 $notes = @()
 $usableWidthPoints = 0.0
 $usableHeightPoints = 0.0
+$imageQuality = Get-DocxImageQualitySettings -DocxPath $docxPath
 
 try {
     $word = New-Object -ComObject Word.Application
@@ -135,10 +203,17 @@ try {
         }
         $inlineShapeRows += $row
 
+        $isCaptionedFigure = $altText -match '^Figure\s+\d+\.\d+\.'
         $isTooWide = $usableWidthPoints -gt 0 -and $shapeWidth -gt ($usableWidthPoints * $MaxInlineShapeWidthRatio)
         $isTooTall = $usableHeightPoints -gt 0 -and $shapeHeight -gt ($usableHeightPoints * $MaxInlineShapeHeightRatio)
         if ($isTooWide -or $isTooTall) {
-            $oversizedInlineShapes += $row
+            if ($isCaptionedFigure) {
+                $oversizedInlineShapes += $row
+            }
+            elseif ($shapeWidth -gt $usableWidthPoints -or $shapeHeight -gt $usableHeightPoints) {
+                # Non-captioned (for example cover) images may be full-width, but should never exceed the page box.
+                $oversizedInlineShapes += $row
+            }
         }
     }
 
@@ -237,6 +312,12 @@ try {
     if ($oversizedInlineShapes.Count -gt 0) {
         $criticalIssues += "Oversized inline shapes detected against page-fit thresholds: $($oversizedInlineShapes.Count)"
     }
+    if (-not $imageQuality.SettingsReadable) {
+        $criticalIssues += 'Could not read DOCX settings.xml to verify image-quality flags.'
+    }
+    if (-not $imageQuality.DoNotCompressPictures) {
+        $criticalIssues += 'DOCX image-quality flag missing: w:doNotCompressPictures.'
+    }
 
     $rows | Export-Csv -LiteralPath $auditCsvPath -NoTypeInformation -Encoding UTF8
 
@@ -295,6 +376,12 @@ try {
     else {
         $report += '- FAIL: One or more inline shapes exceed the configured page-fit thresholds.'
     }
+
+    $report += ''
+    $report += '## Image Quality Settings'
+    $report += "- settings.xml readable: $($imageQuality.SettingsReadable)"
+    $report += "- doNotCompressPictures: $($imageQuality.DoNotCompressPictures)"
+    $report += "- defaultImageDpi: $(if ([string]::IsNullOrWhiteSpace($imageQuality.DefaultImageDpi)) { 'not set' } else { $imageQuality.DefaultImageDpi })"
 
     $shapeSample = @($inlineShapeRows | Select-Object -First 12)
     if ($shapeSample.Count -gt 0) {

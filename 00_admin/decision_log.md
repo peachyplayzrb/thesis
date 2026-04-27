@@ -6,9 +6,9 @@ Ordering convention (standardized 2026-03-24):
 - New entries must be appended at the end and may include `superseded_by` when a prior decision is replaced.
 
 Maintenance snapshot (2026-04-27, updated):
-- Highest decision ID currently present: `D-337`
-- Total decision entries: 333
-- Status distribution: accepted=327, superseded=3, rejected=1
+- Highest decision ID currently present: `D-338`
+- Total decision entries: 334
+- Status distribution: accepted=328, superseded=3, rejected=1
 - ID integrity check: no duplicate decision IDs detected
 
 ## D-329
@@ -37,6 +37,43 @@ evidence_basis:
 impacted_files:
 - `08_writing/chapter2.md`
 - `08_writing/references_working.md`
+- `00_admin/decision_log.md`
+- `00_admin/change_log.md`
+- `00_admin/thesis_state.md`
+- `00_admin/timeline.md`
+
+review_date:
+none
+
+## D-338
+- date: 2026-04-27
+- status: accepted
+
+context:
+User requested hard guarantees that project-cover images are not rescaled with quality loss in final DOCX output, and asked whether SVG-first handling should be preferred for figure quality.
+
+decision:
+1) Preserve cover-page image fidelity by switching final package assembly to Word COM merge (cover + body) as the primary path, with Pandoc-only combine retained as fallback.
+2) Enforce DOCX-level image quality controls after assembly by writing `w:doNotCompressPictures` and `w:defaultImageDpi=300` to `word/settings.xml`.
+3) Keep current chapter figure source policy (high-resolution generated PNG embeds with companion SVG source assets) and make image-compression posture explicit in audit output, rather than switching default packaging to SVG-only DOCX embedding.
+
+alternatives_considered:
+- Keep Pandoc-only DOCX concatenation for cover/body (rejected: higher risk of cover-image scaling/quality drift).
+- Switch all chapter embeds to SVG-only in final DOCX immediately (rejected: variable DOCX toolchain compatibility; current PNG+SVG source approach is already stable and quality-safe under no-compression settings).
+- Rely on manual visual checks only (rejected: not enforceable or repeatable).
+
+rationale:
+Word-native merge plus explicit DOCX quality flags gives deterministic control over compression behavior and better preserves cover assets in the final submission artifact. Retaining PNG embeds for DOCX while keeping SVG sources balances quality and packaging reliability.
+
+evidence_basis:
+- Packaging run reports Word COM merge path and applied image-quality flags.
+- Word render audit now reports `doNotCompressPictures: True` and `defaultImageDpi: 300` with PASS status and zero oversized thesis-figure failures.
+
+impacted_files:
+- `07_implementation/scripts/build_final_thesis_package.ps1`
+- `07_implementation/scripts/word_ui_render_check.ps1`
+- `reports/final_project_report_with_cover.docx`
+- `reports/word_ui_render_check_latest.md`
 - `00_admin/decision_log.md`
 - `00_admin/change_log.md`
 - `00_admin/thesis_state.md`
