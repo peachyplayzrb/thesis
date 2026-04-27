@@ -1,5 +1,12 @@
 from __future__ import annotations
 
+"""BL-005 retrieval stage orchestration and diagnostics assembly.
+
+This module wires together runtime control resolution, BL-004 to BL-005
+contract validation, candidate evaluation, artifact writing, and diagnostic
+payload construction for the retrieval stage.
+"""
+
 import csv
 import json
 import logging
@@ -96,6 +103,7 @@ DECISION_FIELDS = [
 
 
 def _build_effective_numeric_specs(controls: RetrievalControls) -> dict[str, NumericFeatureSpec]:
+    """Resolve runtime numeric thresholds into active feature specifications."""
     return {
         key: NumericFeatureSpec(
             candidate_column=str(spec["candidate_column"]),
@@ -117,6 +125,7 @@ def _build_profile_semantic_context(
     inputs: RetrievalInputs,
     controls: RetrievalControls,
 ) -> tuple[set[str], dict[str, float], set[str], dict[str, float], set[str], dict[str, float]]:
+    """Extract weighted semantic profile labels used by retrieval matching."""
     top_lead_genres = build_profile_label_set(
         inputs.profile,
         "top_lead_genres",
@@ -163,6 +172,7 @@ def _build_numeric_profile_context(
     effective_numeric_specs: dict[str, NumericFeatureSpec],
     candidate_columns: set[str],
 ) -> tuple[dict[str, NumericFeatureSpec], dict[str, float], bool, dict[str, float], float, float]:
+    """Build numeric profile context and confidence scaling parameters."""
     active_numeric_specs = build_active_numeric_specs(
         inputs.profile,
         effective_numeric_specs,
@@ -233,6 +243,7 @@ def _build_numeric_profile_context(
 
 
 def _build_profile_signal_metrics(inputs: RetrievalInputs) -> tuple[float, float, float, float, float]:
+    """Read profile quality/entropy/influence indicators from BL-004 payload."""
     signal_vector_obj = inputs.profile.get("profile_signal_vector")
     signal_vector = signal_vector_obj if isinstance(signal_vector_obj, dict) else {}
     bl003_quality_obj = inputs.profile.get("bl003_quality")
@@ -268,6 +279,7 @@ def _build_effective_threshold_context(
     top_tag_entropy: float,
     influence_weight_share: float,
 ) -> tuple[float, float, float, int, float, float]:
+    """Derive effective semantic/numeric thresholds after profile-quality penalties."""
     average_entropy = (top_genre_entropy + top_tag_entropy) / 2.0
     threshold_penalty = 0.0
     if controls.profile_quality_penalty_enabled:
@@ -315,6 +327,7 @@ def _build_effective_threshold_context(
 
 
 def _build_recency_context(controls: RetrievalControls) -> tuple[list[str], int, int | None]:
+    """Resolve language and recency gate runtime values."""
     language_filter_codes = sorted({code for code in controls.language_filter_codes if code})
     current_year_utc = datetime.now(UTC).year
     recency_min_release_year = (
@@ -332,6 +345,7 @@ class RetrievalStage:
         self.root = root if root is not None else impl_root()
 
     def resolve_paths(self) -> RetrievalPaths:
+        """Resolve canonical BL-005 input/output paths under the implementation root."""
         return RetrievalPaths(
             profile_path=self.root / "profile" / "outputs" / "bl004_preference_profile.json",
             seed_trace_path=self.root / "profile" / "outputs" / "bl004_seed_trace.csv",
@@ -340,6 +354,7 @@ class RetrievalStage:
         )
 
     def resolve_runtime_controls(self) -> RetrievalControls:
+        """Load and normalize BL-005 controls from env/config runtime surface."""
         payload = resolve_bl005_runtime_controls()
         defaults = DEFAULT_RETRIEVAL_CONTROLS
         return RetrievalControls(
@@ -479,6 +494,7 @@ class RetrievalStage:
         paths: RetrievalPaths,
         controls: RetrievalControls | None = None,
     ) -> tuple[RetrievalInputs, dict[str, object]]:
+        """Load BL-004 profile + corpus inputs and enforce handshake policy."""
         profile = load_json(paths.profile_path)
         if not isinstance(profile, dict):
             raise RuntimeError("BL-005 profile artifact is malformed; expected JSON object")
@@ -531,6 +547,7 @@ class RetrievalStage:
         inputs: RetrievalInputs,
         controls: RetrievalControls,
     ) -> RetrievalContext:
+        """Assemble the full retrieval context consumed by candidate evaluation."""
         effective_numeric_specs = _build_effective_numeric_specs(controls)
 
         seed_track_ids = {str(row["track_id"]) for row in inputs.seed_trace_rows}
@@ -647,6 +664,7 @@ class RetrievalStage:
         decisions: list[dict[str, object]],
         kept_rows: list[dict[str, str]],
     ) -> dict[str, Path]:
+        """Write filtered candidate and per-candidate decision CSV artifacts."""
         filtered_path = output_dir / "bl005_filtered_candidates.csv"
         with open_text_write(filtered_path, newline="") as handle:
             writer = csv.DictWriter(handle, fieldnames=list(candidate_rows[0].keys()), lineterminator="\n")
@@ -670,6 +688,7 @@ class RetrievalStage:
         decisions: list[dict[str, object]],
         runtime_context: RetrievalContext,
     ) -> dict[str, object]:
+        """Summarize threshold-driven rejection signals for diagnostics reporting."""
         non_threshold_reject_paths = {
             "reject_seed_track",
             "reject_language_filter",
@@ -757,6 +776,7 @@ class RetrievalStage:
         decisions: list[dict[str, object]],
         runtime_context: RetrievalContext,
     ) -> dict[str, object]:
+        """Compute bounded row-level what-if estimates for threshold sensitivity."""
         candidate_rows = [
             row
             for row in decisions
@@ -779,6 +799,7 @@ class RetrievalStage:
             numeric_min_pass: int,
             numeric_min_score: float,
         ) -> int:
+            """Re-evaluate keep rule against an existing decision row set."""
             kept_count = 0
             for row in rows:
                 kept, _ = keep_decision(
@@ -854,11 +875,8 @@ class RetrievalStage:
             numeric_min_score=tightened_numeric_min_score,
         )
 
-        # Language filter what-if: re-evaluate threshold logic on rows that were
-        # rejected only by the language gate, using base thresholds unchanged.
-        # Rows that were language-filtered have all threshold feature scores
-        # populated (scoring happens before the language gate in keep_decision),
-        # so this is a bounded row-level estimate, not a full re-retrieval.
+        # Language-gate what-if uses already scored rows and does not trigger
+        # corpus re-expansion or a full stage replay.
         all_non_seed_excl_recency = candidate_rows + language_filtered_rows
         language_filter_disabled_kept = estimate_kept_from_rows(
             all_non_seed_excl_recency,
@@ -937,6 +955,7 @@ class RetrievalStage:
         threshold_attribution: dict[str, object],
         bounded_what_if_estimates: dict[str, object],
     ) -> dict[str, object]:
+        """Compose UNDO-C fidelity diagnostics for candidate pool shaping behavior."""
         total_candidates = safe_int(counts.get("candidate_rows_total", 0), 0)
         seed_tracks_excluded = safe_int(counts.get("seed_tracks_excluded", 0), 0)
         rejected_by_language_filter = safe_int(counts.get("rejected_by_language_filter", 0), 0)
@@ -949,6 +968,7 @@ class RetrievalStage:
         post_recency_pool = max(0, post_language_pool - rejected_by_recency_gate)
 
         def _share(value: int, denominator: int) -> float:
+            """Return safe ratio with fixed precision for reporting payloads."""
             if denominator <= 0:
                 return 0.0
             return round(value / denominator, 6)
@@ -1076,6 +1096,32 @@ class RetrievalStage:
         output_paths: dict[str, Path],
         handshake_validation: dict[str, object] | None = None,
     ) -> dict[str, object]:
+        """Build the BL-005 diagnostics JSON payload consumed by BL-009/BL-014."""
+        influence_track_ids: set[str] = set()
+        if controls is not None:
+            run_config_path = controls.run_config_path
+            if run_config_path:
+                try:
+                    config_payload = load_json(Path(run_config_path))
+                except (OSError, ValueError, TypeError, json.JSONDecodeError):
+                    config_payload = {}
+                if isinstance(config_payload, dict):
+                    influence_block_obj = config_payload.get("influence_tracks")
+                    influence_block = influence_block_obj if isinstance(influence_block_obj, dict) else {}
+                    track_ids_obj = influence_block.get("track_ids")
+                    track_ids = track_ids_obj if isinstance(track_ids_obj, list) else []
+                    influence_track_ids = {
+                        str(track_id).strip()
+                        for track_id in track_ids
+                        if str(track_id).strip()
+                    }
+
+        influence_admitted = sum(
+            1
+            for row in kept_rows
+            if str(row.get("track_id", "")).strip() in influence_track_ids
+        )
+
         decision_counts_obj = summary.get("decision_counts")
         decision_counts = decision_counts_obj if isinstance(decision_counts_obj, dict) else {}
         decision_path_counts_obj = summary.get("decision_path_counts")
@@ -1090,6 +1136,7 @@ class RetrievalStage:
             "candidate_rows_total": len(candidate_rows),
             "seed_tracks_excluded": int(decision_counts.get("seed_excluded", 0)),
             "kept_candidates": len(kept_rows),
+            "influence_admitted": int(influence_admitted),
             "rejected_non_seed_candidates": int(decision_counts.get("rejected_threshold", 0)),
             "rejected_by_language_filter": int(decision_path_counts.get("reject_language_filter", 0)),
             "rejected_by_recency_gate": int(decision_path_counts.get("reject_recency_gate", 0)),
@@ -1271,6 +1318,7 @@ class RetrievalStage:
         diagnostics_path: Path,
         output_paths: dict[str, Path],
     ) -> None:
+        """Attach output hashes and persist diagnostics without self-hash recursion."""
         diagnostics["output_hashes_sha256"] = {
             "bl005_filtered_candidates.csv": sha256_of_file(output_paths["filtered_path"]),
             "bl005_candidate_decisions.csv": sha256_of_file(output_paths["decisions_path"]),
@@ -1282,6 +1330,7 @@ class RetrievalStage:
             json.dump(diagnostics, handle, indent=2, ensure_ascii=True)
 
     def run(self) -> RetrievalArtifacts:
+        """Execute the complete BL-005 stage and return artifact metadata."""
         paths = self.resolve_paths()
         paths.output_dir.mkdir(parents=True, exist_ok=True)
         ensure_paths_exist(
