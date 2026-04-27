@@ -23,7 +23,7 @@ Transparency and controllability provide the main responses to that uncertainty.
 
 Figure 1.1 illustrates the high-level structure of the pipeline developed in this thesis.
 
-![Figure 1.1. High-level pipeline logic: Cross-source listening evidence -> Alignment and uncertainty handling -> Preference profiling -> Candidate shaping -> Deterministic scoring -> Playlist assembly -> Explanation and observability outputs.](figures/figure_1_1_pipeline.png)
+![Figure 1.1. High-level pipeline logic: Cross-source listening evidence -> Alignment and uncertainty handling -> Preference profiling -> Candidate shaping -> Deterministic scoring -> Playlist assembly -> Explanation and observability outputs.](figures/figure_1_1_pipeline.png){ width=85% }
 
 ## 1.4 Research Question, Aim, and Objectives
 

@@ -6,9 +6,9 @@ Ordering convention (standardized 2026-03-24):
 - New entries must be appended at the end and may include `superseded_by` when a prior decision is replaced.
 
 Maintenance snapshot (2026-04-27, updated):
-- Highest decision ID currently present: `D-335`
-- Total decision entries: 331
-- Status distribution: accepted=325, superseded=3, rejected=1
+- Highest decision ID currently present: `D-337`
+- Total decision entries: 333
+- Status distribution: accepted=327, superseded=3, rejected=1
 - ID integrity check: no duplicate decision IDs detected
 
 ## D-329
@@ -37,6 +37,81 @@ evidence_basis:
 impacted_files:
 - `08_writing/chapter2.md`
 - `08_writing/references_working.md`
+- `00_admin/decision_log.md`
+- `00_admin/change_log.md`
+- `00_admin/thesis_state.md`
+- `00_admin/timeline.md`
+
+review_date:
+none
+
+## D-336
+- date: 2026-04-27
+- status: accepted
+
+context:
+Word-render inspection identified that Figure 2.2 and Figure 3.3 were caption-correct but physically unsuitable for the submission DOCX because their Mermaid layouts produced extremely tall inline images in Word.
+
+decision:
+1) Treat Word-rendered page fit, not source-image pixel size alone, as the acceptance criterion for thesis figure layout.
+2) Fix oversized figures at the diagram-source level by simplifying node text and converting the affected Mermaid diagrams to left-to-right layouts, rather than relying on additional shrink-scaling.
+3) Add explicit width attributes to chapter figure embeds so final DOCX sizing stays bounded and repeatable across the active packaging workflow.
+
+alternatives_considered:
+- Keep the original tall diagrams and shrink them further in DOCX output (rejected: unreadable and still page-hostile).
+- Modify only Graphviz companion sources (rejected: the active embedded assets were Mermaid-rendered PNG/SVG outputs).
+- Leave figure sizing to Pandoc/Word defaults (rejected: already produced visible overflow in the final output).
+
+rationale:
+Page-fit defects were caused by diagram structure, not just image scaling. Simplifying the two affected diagrams at the Mermaid source and binding figure width in markdown preserves readability while making the generated DOCX stable under Word rendering.
+
+evidence_basis:
+- Initial Word inline-shape audit showed two oversized figures at `1222 pt` and `1232.3 pt` height against `648 pt` usable page height.
+- Updated Mermaid assets reduced those figures to `19.6 pt` and `37.7 pt` height in the rebuilt DOCX while caption frequency remained exactly one per figure in the Word HTML/render audit.
+
+impacted_files:
+- `08_writing/figures/sources/figure_2_2_uncertainty_stages.mmd`
+- `08_writing/figures/sources/figure_3_3_scoring_assembly.mmd`
+- `08_writing/chapter1.md`
+- `08_writing/chapter2.md`
+- `08_writing/chapter3.md`
+- `reports/final_project_report_with_cover.docx`
+- `reports/word_ui_render_check_latest.md`
+- `00_admin/decision_log.md`
+- `00_admin/change_log.md`
+- `00_admin/thesis_state.md`
+- `00_admin/timeline.md`
+
+review_date:
+none
+
+## D-337
+- date: 2026-04-27
+- status: accepted
+
+context:
+The Word COM audit already checked headings, list rendering, and caption duplication, but it still depended on manual inspection to catch oversized figures after the current Figure 2.2 and Figure 3.3 fixes.
+
+decision:
+1) Use Word inline-shape dimensions, measured against the document's usable page area, as the automated page-fit gate for rendered thesis figures.
+2) Fail the audit when any inline shape exceeds `98%` of usable page width or `95%` of usable page height.
+3) Persist per-shape width/height ratios in the markdown report so figure-fit regressions are diagnosable without reopening Word interactively.
+
+alternatives_considered:
+- Continue relying on manual Word inspection after each build (rejected: too easy to miss regressions).
+- Gate on exported HTML pixel dimensions alone (rejected: less authoritative than Word COM dimensions for the actual DOCX renderer).
+- Use a stricter 100%/100% threshold with no buffer (rejected: permits visually cramped near-overflow figures).
+
+rationale:
+The current acceptance criterion is Word-rendered page fit. Measuring inline shapes directly in Word keeps the audit aligned with that criterion and turns a one-off figure repair into a reusable safety check for future packaging runs.
+
+evidence_basis:
+- Updated audit reports usable page area `468 pt x 648 pt` and zero oversize hits across `8` inline shapes.
+- The rebuilt thesis figures remain well inside the new limits, with the previously problematic figures now at width/height ratios `0.736/0.03` and `0.736/0.058`.
+
+impacted_files:
+- `07_implementation/scripts/word_ui_render_check.ps1`
+- `reports/word_ui_render_check_latest.md`
 - `00_admin/decision_log.md`
 - `00_admin/change_log.md`
 - `00_admin/thesis_state.md`

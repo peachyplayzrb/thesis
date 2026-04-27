@@ -1,6 +1,6 @@
 # Word UI Render Check Report
 
-Date (UTC): 2026-04-27 21:29:35
+Date (UTC): 2026-04-27 21:53:48
 
 ## Inputs
 - DOCX: C:\Users\peach\Desktop\thesis-main (3)\thesis-main\thesis-main\reports\final_project_report_with_cover.docx
@@ -17,6 +17,26 @@ Date (UTC): 2026-04-27 21:29:35
 - Blank O5 replay lines: 0
 - Blank O5 acceptance lines: 0
 - Duplicate figure-caption entries: 0
+- Inline shapes audited: 8
+- Oversized inline shapes: 0
+
+## Figure Fit Audit
+- Usable page width (pt): 468
+- Usable page height (pt): 648
+- Max width ratio: 0.98
+- Max height ratio: 0.95
+- PASS: All inline shapes fit within the configured page-fit thresholds.
+
+| InlineShapeIndex | Type | WidthPoints | HeightPoints | WidthRatio | HeightRatio | AltText |
+|---|---:|---:|---:|---:|---:|---|
+| 1 | 3 | 420 | 90.8 | 0.897 | 0.14 |  |
+| 2 | 3 | 420 | 22.9 | 0.897 | 0.035 |  |
+| 3 | 3 | 123.7 | 33.5 | 0.264 | 0.052 |  |
+| 4 | 3 | 357 | 18.2 | 0.763 | 0.028 | Figure 1.1. High-level pipeline logic: Cross-source listening evidence -> Alignment and uncertainty handling -> Preference profiling -> Candidate shaping -> Deterministic scoring -> Playlist assembly -> Explanation and observability outputs. |
+| 5 | 3 | 344.4 | 19.6 | 0.736 | 0.03 | Figure 2.2. Uncertainty across recommendation stages in the reviewed literature. |
+| 6 | 3 | 357 | 53.2 | 0.763 | 0.082 | Figure 3.1. Deterministic pipeline architecture with stage outputs and run-level observability linkage. |
+| 7 | 3 | 344.4 | 321.5 | 0.736 | 0.496 | Figure 3.2. Alignment evidence-handling flow with matched, ambiguous, unmatched, and invalid pathways. |
+| 8 | 3 | 344.4 | 37.7 | 0.736 | 0.058 | Figure 3.3. Scoring-to-assembly relationship with constraint checks, fallback recording, and observability output. |
 
 ## Numbered List Sample (Word Paragraph/List Metadata)
 

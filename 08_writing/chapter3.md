@@ -57,7 +57,7 @@
 
   Figure 3.1 shows how these stages connect and where the main evidence artefacts are produced.
 
-  ![Figure 3.1. Deterministic pipeline architecture with stage outputs and run-level observability linkage.](figures/figure_3_1_architecture.png)
+  ![Figure 3.1. Deterministic pipeline architecture with stage outputs and run-level observability linkage.](figures/figure_3_1_architecture.png){ width=85% }
 
   This layout is chosen to preserve causal traceability from user input to playlist output. Each stage has a clearly defined role and produces intermediate artefacts that can be inspected independently. That separation matters because it allows later evaluation to distinguish profile effects, candidate-space effects, scoring effects, and assembly effects rather than collapsing everything into a single black-box outcome.
 
@@ -98,7 +98,7 @@
 
   Figure 3.2 shows the intended evidence-handling logic.
 
-  ![Figure 3.2. Alignment evidence-handling flow with matched, ambiguous, unmatched, and invalid pathways.](figures/figure_3_2_alignment_logic.png)
+  ![Figure 3.2. Alignment evidence-handling flow with matched, ambiguous, unmatched, and invalid pathways.](figures/figure_3_2_alignment_logic.png){ width=82% }
 
 ## 3.7 Preference Profiling
   The preference model is built from aligned listening evidence and explicit influence signals using interpretable feature representations. This stage defines what counts as meaningful preference evidence before any candidate is admitted for ranking.
@@ -138,7 +138,7 @@
 
   Figure 3.3 shows the intended relationship between scoring and assembly.
 
-  ![Figure 3.3. Scoring-to-assembly relationship with constraint checks, fallback recording, and observability output.](figures/figure_3_3_scoring_assembly.png)
+  ![Figure 3.3. Scoring-to-assembly relationship with constraint checks, fallback recording, and observability output.](figures/figure_3_3_scoring_assembly.png){ width=82% }
 
 ## 3.11 Explanation and Run-Level Observability
   Explanation outputs are generated directly from scoring contributors, candidate-shaping logic, and assembly-rule effects so that explanation statements remain mechanism-linked. In parallel, observability captures run-level artefacts spanning input intake, alignment diagnostics, profile construction, candidate shaping, scoring, assembly, and configuration state. Together, these surfaces make the full execution footprint inspectable rather than only the final output.

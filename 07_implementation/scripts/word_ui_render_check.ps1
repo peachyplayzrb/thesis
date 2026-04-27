@@ -4,7 +4,9 @@ param(
     [string]$OutputPdf = 'reports/final_project_report_with_cover_word_ui.pdf',
     [string]$OutputHtml = 'reports/final_project_report_with_cover_word_ui_filtered.html',
     [string]$ParagraphAuditCsv = 'reports/word_ui_render_paragraph_audit_latest.csv',
-    [string]$ReportPath = 'reports/word_ui_render_check_latest.md'
+    [string]$ReportPath = 'reports/word_ui_render_check_latest.md',
+    [double]$MaxInlineShapeWidthRatio = 0.98,
+    [double]$MaxInlineShapeHeightRatio = 0.95
 )
 
 Set-StrictMode -Version Latest
@@ -74,7 +76,11 @@ $blankO5ReplayLineCount = 0
 $blankO5AcceptanceLineCount = 0
 $figureCaptionCounts = @{}
 $criticalIssues = @()
+$inlineShapeRows = @()
+$oversizedInlineShapes = @()
 $notes = @()
+$usableWidthPoints = 0.0
+$usableHeightPoints = 0.0
 
 try {
     $word = New-Object -ComObject Word.Application
@@ -90,6 +96,51 @@ try {
 
     $document.ExportAsFixedFormat($pdfPath, $wdExportFormatPDF)
     $document.SaveAs([ref]$htmlPath, [ref]$wdFormatFilteredHTML)
+
+    $usableWidthPoints = [double]$document.PageSetup.PageWidth - [double]$document.PageSetup.LeftMargin - [double]$document.PageSetup.RightMargin
+    $usableHeightPoints = [double]$document.PageSetup.PageHeight - [double]$document.PageSetup.TopMargin - [double]$document.PageSetup.BottomMargin
+
+    $inlineShapeIndex = 0
+    foreach ($inlineShape in $document.InlineShapes) {
+        $inlineShapeIndex += 1
+
+        $shapeWidth = [double]$inlineShape.Width
+        $shapeHeight = [double]$inlineShape.Height
+        $shapeType = [string]$inlineShape.Type
+        $altText = ''
+        try {
+            $altText = Clean-ParagraphText -Value ([string]$inlineShape.AlternativeText)
+        }
+        catch {
+            $altText = ''
+        }
+
+        $widthRatio = 0.0
+        $heightRatio = 0.0
+        if ($usableWidthPoints -gt 0) {
+            $widthRatio = [math]::Round(($shapeWidth / $usableWidthPoints), 3)
+        }
+        if ($usableHeightPoints -gt 0) {
+            $heightRatio = [math]::Round(($shapeHeight / $usableHeightPoints), 3)
+        }
+
+        $row = [pscustomobject]@{
+            InlineShapeIndex = $inlineShapeIndex
+            Type             = $shapeType
+            WidthPoints      = [math]::Round($shapeWidth, 1)
+            HeightPoints     = [math]::Round($shapeHeight, 1)
+            WidthRatio       = $widthRatio
+            HeightRatio      = $heightRatio
+            AltText          = $altText
+        }
+        $inlineShapeRows += $row
+
+        $isTooWide = $usableWidthPoints -gt 0 -and $shapeWidth -gt ($usableWidthPoints * $MaxInlineShapeWidthRatio)
+        $isTooTall = $usableHeightPoints -gt 0 -and $shapeHeight -gt ($usableHeightPoints * $MaxInlineShapeHeightRatio)
+        if ($isTooWide -or $isTooTall) {
+            $oversizedInlineShapes += $row
+        }
+    }
 
     $paragraphIndex = 0
     foreach ($paragraph in $document.Paragraphs) {
@@ -180,6 +231,12 @@ try {
     if ($duplicateCaptions.Count -gt 0) {
         $criticalIssues += "Duplicate figure captions detected: $($duplicateCaptions.Count)"
     }
+    if ($inlineShapeRows.Count -gt 0 -and ($usableWidthPoints -le 0 -or $usableHeightPoints -le 0)) {
+        $criticalIssues += 'Usable page area could not be resolved for the inline-shape fit audit.'
+    }
+    if ($oversizedInlineShapes.Count -gt 0) {
+        $criticalIssues += "Oversized inline shapes detected against page-fit thresholds: $($oversizedInlineShapes.Count)"
+    }
 
     $rows | Export-Csv -LiteralPath $auditCsvPath -NoTypeInformation -Encoding UTF8
 
@@ -220,6 +277,44 @@ try {
     $report += "- Blank O5 replay lines: $blankO5ReplayLineCount"
     $report += "- Blank O5 acceptance lines: $blankO5AcceptanceLineCount"
     $report += "- Duplicate figure-caption entries: $(@($figureCaptionCounts.GetEnumerator() | Where-Object { $_.Value -gt 1 }).Count)"
+    $report += "- Inline shapes audited: $($inlineShapeRows.Count)"
+    $report += "- Oversized inline shapes: $($oversizedInlineShapes.Count)"
+
+    $report += ''
+    $report += '## Figure Fit Audit'
+    $report += "- Usable page width (pt): $([math]::Round($usableWidthPoints, 1))"
+    $report += "- Usable page height (pt): $([math]::Round($usableHeightPoints, 1))"
+    $report += "- Max width ratio: $MaxInlineShapeWidthRatio"
+    $report += "- Max height ratio: $MaxInlineShapeHeightRatio"
+    if ($inlineShapeRows.Count -eq 0) {
+        $report += '- No inline shapes found in the rendered DOCX.'
+    }
+    elseif ($oversizedInlineShapes.Count -eq 0) {
+        $report += '- PASS: All inline shapes fit within the configured page-fit thresholds.'
+    }
+    else {
+        $report += '- FAIL: One or more inline shapes exceed the configured page-fit thresholds.'
+    }
+
+    $shapeSample = @($inlineShapeRows | Select-Object -First 12)
+    if ($shapeSample.Count -gt 0) {
+        $report += ''
+        $report += '| InlineShapeIndex | Type | WidthPoints | HeightPoints | WidthRatio | HeightRatio | AltText |'
+        $report += '|---|---:|---:|---:|---:|---:|---|'
+        foreach ($row in $shapeSample) {
+            $safeAltText = ([string]$row.AltText).Replace('|', '\|')
+            $report += "| $($row.InlineShapeIndex) | $($row.Type) | $($row.WidthPoints) | $($row.HeightPoints) | $($row.WidthRatio) | $($row.HeightRatio) | $safeAltText |"
+        }
+    }
+
+    if ($oversizedInlineShapes.Count -gt 0) {
+        $report += ''
+        $report += '### Oversized Inline Shapes'
+        foreach ($row in $oversizedInlineShapes) {
+            $label = if ([string]::IsNullOrWhiteSpace($row.AltText)) { 'Inline shape without alt text' } else { $row.AltText }
+            $report += "- #$($row.InlineShapeIndex): $label (width ratio $($row.WidthRatio), height ratio $($row.HeightRatio))"
+        }
+    }
 
     $report += ''
     $report += '## Numbered List Sample (Word Paragraph/List Metadata)'

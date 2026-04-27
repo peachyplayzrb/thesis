@@ -1,18 +1,15 @@
-flowchart TD
+flowchart LR
   A["Preference profile"]
   B["Candidate shaping"]
-  C["Feature preparation"]
-  D["Base similarity scoring"]
-  E["Score component breakdown"]
-  F["Trade-off and rule adjustments"]
-  G["Ranked list"]
-  H["Playlist assembly rules"]
-  I{"Assembly constraints satisfied?"}
-  J["Final playlist output"]
-  K["Constraint-pressure record + fallback reason"]
-  L["Explanation payload"]
-  M["Run-level observability artefacts"]
+  C["Feature prep +<br/>base scoring"]
+  D["Score breakdown +<br/>rule adjustments"]
+  E["Ranked list"]
+  F{"Assembly constraints<br/>satisfied?"}
+  G["Final playlist output"]
+  H["Constraint-pressure record<br/>and fallback reason"]
+  I["Explanation payload"]
+  J["Run-level observability<br/>artefacts"]
 
-  A --> B --> C --> D --> E --> F --> G --> H --> I
-  I -- Yes --> J --> L --> M
-  I -- No --> K --> L --> M
+  A --> B --> C --> D --> E --> F
+  F -- Yes --> G --> I --> J
+  F -- No --> H --> I

@@ -1,6 +1,6 @@
 digraph Figure_2_2_Uncertainty_Stages {
-  rankdir=TB;
-  graph [fontsize=10, fontname="Arial"];
+  rankdir=LR;
+  graph [fontsize=10, fontname="Arial", nodesep=0.45, ranksep=0.7];
   node [shape=box, style="rounded", fontsize=10, fontname="Arial"];
 
   A [label="Interaction Evidence\nImplicit behaviour may reflect convenience, exposure, or preference"];

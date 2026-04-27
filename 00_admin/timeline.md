@@ -1,6 +1,6 @@
 # Thesis Timeline
 
-Last updated: 2026-04-27 (C-647/D-335)
+Last updated: 2026-04-27 (C-649/D-337)
 
 ## IMPLEMENTATION PHASE (2026-04-12 to present)
 
@@ -28,6 +28,8 @@ Full architecture implementation completed and hardened through REB-M1 to REB-M4
 	- Status update (2026-04-27): Final-output formatting QA pass corrected Chapter 2 and Chapter 3 rendering defects in generated DOCX artifacts: duplicate Figure 2.2 caption removed, Chapter 3 headings now render as heading structures (no literal markdown markers), and Chapter 5 constants/list rendering validated in output.
 	- Status update (2026-04-27): Chapter 5 wording hardening replaced equation-style O1/O5 criterion phrases with explicit plain-text rendering (`O1 missingness criterion...`, `O5 reproducibility replay count: 3 fixed-config replays`, and O5 acceptance row "for 3 replays") to eliminate blank extraction risk; Chapter 6 opening phrase updated to formal impersonal register.
 	- Status update (2026-04-27): Word UI render inspection workflow is now operational via `word_ui_render_check.ps1` and task `08: Word UI Render Check (COM)`, producing PDF/HTML exports, paragraph-style/list audit CSV, and pass/fail render QA report in `reports/`.
+	- Status update (2026-04-27): Final figure-render hardening is complete. Figure 2.2 and Figure 3.3 were simplified and re-laid out at Mermaid source level, chapter figure embeds now use explicit width controls, and rebuilt Word output confirms caption frequency remains correct while all active figures fit within the usable page area.
+	- Status update (2026-04-27): Word render QA now enforces an automatic inline-shape page-fit gate. The current audit pass measured 8 inline shapes against a usable page area of `468 pt x 648 pt` and reported zero oversize failures, so future figure overflow regressions will fail the audit instead of depending on manual review.
 	- Status update (2026-04-27): Literature-ingestion completion slice added methodology source `P-067` (`hevner_design_2004`) with full bibliography/source-index/paper-note/coverage-tracker synchronization, closing the remaining unresolved bibliography key used in Chapter 6.
 	- Status update (2026-04-27): Implementation readability hardening wave initiated via a staged comment strategy. First tranche added high-signal BL-008 transparency docstrings/comments in `src/transparency/main.py` and `src/transparency/payload_builder.py` with focused regressions green (`16/16`).
 	- Status update (2026-04-27): Comment-hardening second tranche completed in `src/retrieval/stage.py`, replacing existing inline comments with structured module/function/class documentation and keeping BL-005 behavior unchanged; focused retrieval tests passed (`4/4`).

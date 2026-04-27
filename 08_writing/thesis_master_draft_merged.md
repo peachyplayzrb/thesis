@@ -23,7 +23,7 @@ Transparency and controllability provide the main responses to that uncertainty.
 
 Figure 1.1 illustrates the high-level structure of the pipeline developed in this thesis.
 
-![Figure 1.1. High-level pipeline logic: Cross-source listening evidence -> Alignment and uncertainty handling -> Preference profiling -> Candidate shaping -> Deterministic scoring -> Playlist assembly -> Explanation and observability outputs.](figures/figure_1_1_pipeline.png)
+![Figure 1.1. High-level pipeline logic: Cross-source listening evidence -> Alignment and uncertainty handling -> Preference profiling -> Candidate shaping -> Deterministic scoring -> Playlist assembly -> Explanation and observability outputs.](figures/figure_1_1_pipeline.png){ width=85% }
 
 ## 1.4 Research Question, Aim, and Objectives
 
@@ -152,7 +152,7 @@ Cross-source recommendation depends on entity alignment across heterogeneous ide
 
 Reproducibility failures in recommender research are repeatedly linked to incomplete protocol specification, hidden preprocessing steps, and dependency drift [@ferrari_dacrema_troubling_2021; @bellogin_improving_2021; @zhu_bars_2022; @anelli_elliot_2021]. Standardized benchmark infrastructure has been claimed to improve comparability [@zhu_bars_2022], whereas evidence challenges the sufficiency of infrastructure alone by showing that accountability still degrades when assumptions, preprocessing choices, and evaluation contexts are underreported [@bellogin_improving_2021]. While result-focused reporting remains common, recent explainability work in music contexts demonstrates that feature-level mechanism explanations, showing which specific modalities and attributes drive individual outputs, provide more informative auditing than aggregate prediction scores alone [@sotirou_musiclime_2025]. Reproducibility-focused studies advocate fuller process tracing across configuration, alignment, candidate handling, scoring, and assembly stages, but such evidence remains unevenly standardized in published work.
 
-![Figure 2.2. Uncertainty across recommendation stages in the reviewed literature.](figures/figure_2_2_uncertainty_stages.png)
+![Figure 2.2. Uncertainty across recommendation stages in the reviewed literature.](figures/figure_2_2_uncertainty_stages.png){ width=82% }
 
 ## 2.8 Research Gap and Thesis Positioning
 
@@ -223,7 +223,7 @@ This chapter has reviewed literature relevant to transparent and controllable pl
 
   Figure 3.1 shows how these stages connect and where the main evidence artefacts are produced.
 
-  ![Figure 3.1. Deterministic pipeline architecture with stage outputs and run-level observability linkage.](figures/figure_3_1_architecture.png)
+  ![Figure 3.1. Deterministic pipeline architecture with stage outputs and run-level observability linkage.](figures/figure_3_1_architecture.png){ width=85% }
 
   This layout is chosen to preserve causal traceability from user input to playlist output. Each stage has a clearly defined role and produces intermediate artefacts that can be inspected independently. That separation matters because it allows later evaluation to distinguish profile effects, candidate-space effects, scoring effects, and assembly effects rather than collapsing everything into a single black-box outcome.
 
@@ -264,7 +264,7 @@ This chapter has reviewed literature relevant to transparent and controllable pl
 
   Figure 3.2 shows the intended evidence-handling logic.
 
-  ![Figure 3.2. Alignment evidence-handling flow with matched, ambiguous, unmatched, and invalid pathways.](figures/figure_3_2_alignment_logic.png)
+  ![Figure 3.2. Alignment evidence-handling flow with matched, ambiguous, unmatched, and invalid pathways.](figures/figure_3_2_alignment_logic.png){ width=82% }
 
 ## 3.7 Preference Profiling
   The preference model is built from aligned listening evidence and explicit influence signals using interpretable feature representations. This stage defines what counts as meaningful preference evidence before any candidate is admitted for ranking.
@@ -304,7 +304,7 @@ This chapter has reviewed literature relevant to transparent and controllable pl
 
   Figure 3.3 shows the intended relationship between scoring and assembly.
 
-  ![Figure 3.3. Scoring-to-assembly relationship with constraint checks, fallback recording, and observability output.](figures/figure_3_3_scoring_assembly.png)
+  ![Figure 3.3. Scoring-to-assembly relationship with constraint checks, fallback recording, and observability output.](figures/figure_3_3_scoring_assembly.png){ width=82% }
 
 ## 3.11 Explanation and Run-Level Observability
   Explanation outputs are generated directly from scoring contributors, candidate-shaping logic, and assembly-rule effects so that explanation statements remain mechanism-linked. In parallel, observability captures run-level artefacts spanning input intake, alignment diagnostics, profile construction, candidate shaping, scoring, assembly, and configuration state. Together, these surfaces make the full execution footprint inspectable rather than only the final output.

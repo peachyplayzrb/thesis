@@ -8,7 +8,7 @@ Ordering convention (standardized 2026-03-24):
 - New entries must be appended at the end; historical entries remain unchanged except for explicit correction records.
 
 Maintenance snapshot (2026-04-27, updated):
-- Highest change ID currently present: `C-647`
+- Highest change ID currently present: `C-649`
 - Maintenance snapshot (2026-03-28): prior snapshot stated `C-205`; superseded by the 2026-03-29 architecture migration + documentation sync wave (C-204 through C-219).
 - Known legacy correction applied in this file: prior duplicate `C-079` entry has been normalized to `C-135` for unique-ID compliance.
 
@@ -5075,3 +5075,25 @@ Maintenance snapshot (2026-04-27, updated):
 - affected_components: `07_implementation/scripts/word_ui_render_check.ps1`, `.vscode/tasks.json`, `reports/word_ui_render_check_latest.md`, `reports/word_ui_render_paragraph_audit_latest.csv`, `reports/final_project_report_with_cover_word_ui.pdf`, `reports/final_project_report_with_cover_word_ui_filtered.html`, `00_admin/change_log.md`, `00_admin/decision_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`
 - impact_assessment: Medium-positive. Establishes a repeatable Word-render QA gate and reduces uncertainty around list numbering/headings/caption rendering before submission packaging.
 - approval_record: User confirmation in chat on 2026-04-27 ("yes") to implement the proposed Word UI render inspection workflow.
+
+## C-648
+- date: 2026-04-27
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Hardened final-figure rendering for submission packaging by converting the two problem Mermaid figures (Figure 2.2 and Figure 3.3) from tall vertical layouts into simplified left-to-right diagrams, regenerating the embedded PNG/SVG assets, and adding explicit figure width controls across chapter figure embeds. Rebuilt the merged thesis package and revalidated Word-rendered caption frequency and inline shape sizes.
+- reason: User requested that figure captions be correct and that figures fit the page after Word-output review showed some figures overflowing vertically.
+- evidence_basis: Regenerated Mermaid assets now measure `3968x226` (Figure 2.2) and `3968x434` (Figure 3.3) instead of the prior tall aspect ratios. Rebuilt DOCX `reports/final_project_report_with_cover.docx` (2026-04-27 21:44:51 UTC) shows Word inline-shape dimensions within the usable page area: previous tall shapes (`1222 pt` and `1232.3 pt`) were reduced to `19.6 pt` and `37.7 pt`; `reports/word_ui_render_check_latest.md` remains PASS and caption frequency remains exactly 1 for Figures 1.1, 2.2, 3.1, 3.2, and 3.3.
+- affected_components: `08_writing/figures/sources/figure_2_2_uncertainty_stages.mmd`, `08_writing/figures/sources/figure_3_3_scoring_assembly.mmd`, `08_writing/figures/sources/figure_2_2_uncertainty_stages.dot`, `08_writing/figures/sources/figure_3_3_scoring_assembly.dot`, `08_writing/figures/figure_2_2_uncertainty_stages.png`, `08_writing/figures/figure_2_2_uncertainty_stages.svg`, `08_writing/figures/figure_3_3_scoring_assembly.png`, `08_writing/figures/figure_3_3_scoring_assembly.svg`, `08_writing/chapter1.md`, `08_writing/chapter2.md`, `08_writing/chapter3.md`, `08_writing/thesis_master_draft_merged.md`, `reports/final_project_report_with_cover.docx`, `reports/word_ui_render_check_latest.md`, `reports/word_ui_render_paragraph_audit_latest.csv`, `00_admin/change_log.md`, `00_admin/decision_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`
+- impact_assessment: Medium-positive. Removes a visible submission-packaging defect, preserves single-caption rendering for all active figures, and makes figure sizing deterministic under the current DOCX packaging workflow.
+- approval_record: User request in chat on 2026-04-27 to "make sure figure captions are done properly... and make it so the figures are sized well (some dont fit in the page.)".
+
+## C-649
+- date: 2026-04-27
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Hardened the Word UI render audit by adding inline-shape page-fit thresholds, usable-page-area reporting, and per-shape diagnostics so the audit now fails automatically when rendered figures exceed configured width or height limits.
+- reason: After fixing the current oversized figures, the user approved a stronger guard so future DOCX builds fail automatically if Word renders any figure beyond the page-fit threshold.
+- evidence_basis: Local rerun of `07_implementation/scripts/word_ui_render_check.ps1` completed successfully at `2026-04-27 21:53:48 UTC`; `reports/word_ui_render_check_latest.md` now reports `Inline shapes audited: 8`, `Oversized inline shapes: 0`, usable page area `468 pt x 648 pt`, and per-shape ratios showing all active thesis figures remain within thresholds.
+- affected_components: `07_implementation/scripts/word_ui_render_check.ps1`, `reports/word_ui_render_check_latest.md`, `00_admin/change_log.md`, `00_admin/decision_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`
+- impact_assessment: Medium-positive. Converts figure page-fit from a manual inspection concern into an enforceable Word-render QA gate and preserves submission packaging confidence.
+- approval_record: User confirmation in chat on 2026-04-27 to implement option 2 first (automatic oversize-figure failure guard) before committing the tranche.
