@@ -8,7 +8,7 @@ Ordering convention (standardized 2026-03-24):
 - New entries must be appended at the end; historical entries remain unchanged except for explicit correction records.
 
 Maintenance snapshot (2026-04-27, updated):
-- Highest change ID currently present: `C-611`
+- Highest change ID currently present: `C-612`
 - Maintenance snapshot (2026-03-28): prior snapshot stated `C-205`; superseded by the 2026-03-29 architecture migration + documentation sync wave (C-204 through C-219).
 - Known legacy correction applied in this file: prior duplicate `C-079` entry has been normalized to `C-135` for unique-ID compliance.
 
@@ -22,6 +22,17 @@ Maintenance snapshot (2026-04-27, updated):
 - affected_components: `07_implementation/finalized/web/index.html`, `07_implementation/finalized/web_server.py`, `07_implementation/src/profile/runtime_controls.py`, `07_implementation/src/playlist/runtime_controls.py`, `07_implementation/src/transparency/runtime_controls.py`, `07_implementation/src/observability/runtime_controls.py`, `07_implementation/src/reproducibility/runtime_controls.py`, `07_implementation/tests/test_finalized_web_server.py`, `07_implementation/tests/test_runtime_controls_defaults_completeness.py`, `00_admin/change_log.md`, `00_admin/decision_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`, `00_admin/unresolved_issues.md`
 - impact_assessment: Medium-positive. Improves operator safety and traceability for UI-driven config editing while preserving pipeline contracts and stage semantics.
 - approval_record: User request in chat on 2026-04-27 ("lets look at what changed and do the necessary steps").
+
+## C-612
+- date: 2026-04-27
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Executed systematic cleanup and reorganization of legacy material: archived historical tuning evidence (4 JSON files from UI-013 tuning campaign) to `reports/legacy_tuning_evidence_2026_ui013/`, archived legacy submission-bundle templates to `reports/legacy_submission_bundle_structure_2026/`, created modernized tuning-sweep orchestration script at `07_implementation/scripts/tuning_sweep_orchestration.ps1`, removed nested legacy `.claude/worktrees/` directory (confirmed Pyright noise source), and deleted stale files from `_scratch/` (old sweep script, one-off writing audit, bundle artifacts).
+- reason: User requested implementing the cleanup plan to consolidate legacy material, preserve reusable patterns in active scripts, and eliminate Pyright typecheck surface noise.
+- evidence_basis: Tuning evidence JSON files (ui013_tuning_sweep_results.json, ui013_v1b_bl008_focus_result.json, ab_profile_comparison_v1f_vs_v2b.json) preserved in `reports/legacy_tuning_evidence_2026_ui013/` with metadata context; final_artefact_bundle directory structure archived in `reports/legacy_submission_bundle_structure_2026/` as reference; `07_implementation/scripts/tuning_sweep_orchestration.ps1` now provides modern, well-documented multi-profile comparison workflow with current entrypoint paths and safe output routing; Pyright now reports `0 errors, 0 warnings, 0 informations` (previously failed due to nested worktree artifacts); `_scratch/` directory is now empty (cleaned of stale scripts, audits, and artifacts).
+- affected_components: `reports/legacy_tuning_evidence_2026_ui013/`, `reports/legacy_submission_bundle_structure_2026/`, `07_implementation/scripts/tuning_sweep_orchestration.ps1`, removed `07_implementation/src/.claude/worktrees/`, removed `_scratch/run_ui013_sweep.ps1`, removed `_scratch/chapter2finalv1_verbatim_audit_2026-04-11.md`, removed `_scratch/final_artefact_bundle/`, removed `_scratch/*.json` (tuning evidence files)
+- impact_assessment: Medium-positive. Eliminates Pyright static-analysis noise, consolidates legacy evidence in intentional archive locations, makes reusable tuning orchestration pattern available in active scripts, and leaves `_scratch/` ready for future session-specific exploratory work without legacy clutter.
+- approval_record: User request in chat on 2026-04-27 ("Start implementation") after approving systematic cleanup plan.
 
 ## C-610
 - date: 2026-04-22

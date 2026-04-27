@@ -6,8 +6,8 @@ Ordering convention (standardized 2026-03-24):
 - New entries must be appended at the end and may include `superseded_by` when a prior decision is replaced.
 
 Maintenance snapshot (2026-04-27, updated):
-- Highest decision ID currently present: `D-314`
-- Total decision entries: 312
+- Highest decision ID currently present: `D-315`
+- Total decision entries: 313
 - Status distribution: accepted=307, superseded=3, rejected=1
 - ID integrity check: no duplicate decision IDs detected
 
@@ -50,6 +50,46 @@ impacted_files:
 - `00_admin/thesis_state.md`
 - `00_admin/timeline.md`
 - `00_admin/unresolved_issues.md`
+
+review_date:
+none
+
+## D-315
+- date: 2026-04-27
+- status: accepted
+
+context:
+Preceding cleanup revealed that the legacy `.claude/worktrees/` directory nested under `07_implementation/src/` contained copied worktree artifacts with stale governance copies, which were the root cause of Pyright typecheck failures post-commit. Additionally, `_scratch/` contained archived tuning evidence, legacy submission-bundle templates, and old orchestration scripts that should either be moved to intentional archive locations or ported to active code surfaces.
+
+decision:
+Execute systematic legacy cleanup and reorganization: (1) Archive historical tuning evidence (4 JSON files) to `reports/legacy_tuning_evidence_2026_ui013/` with metadata context; (2) Archive legacy submission-bundle templates to `reports/legacy_submission_bundle_structure_2026/` as reference material; (3) Create modernized tuning-sweep orchestration script at `07_implementation/scripts/tuning_sweep_orchestration.ps1` with current entrypoint paths and improved documentation; (4) Delete the nested `.claude/worktrees/` directory entirely (confirmed non-functional, confirmed Pyright noise source); (5) Delete stale files from `_scratch/` (old sweep script, one-off writing audit, archived bundle artifacts); (6) Leave `_scratch/` empty and ready for future session-specific exploratory work.
+
+alternatives_considered:
+- Add `.claude/**` to Pyright exclusion rules instead of deleting (rejected: better hygiene to remove the legacy artifact entirely rather than maintain exclusion rules).
+- Keep `_scratch` contents and add exclusion rules (rejected: `_scratch` should remain clean for future work; intentional archival in `reports/` is clearer governance).
+- Keep old sweep script in `_scratch` as reference (rejected: modernized version in active `scripts/` is more useful and current).
+
+rationale:
+This eliminates Pyright static-analysis noise, consolidates legacy evidence in intentional archive locations with clear governance, makes reusable tuning orchestration pattern available in active scripts, and leaves the repo surfaces cleaner for continuation work. Archival in `reports/` with metadata context preserves important evidence while removing surface clutter.
+
+evidence_basis:
+- Tuning evidence files (4 JSON artifacts from UI-013 campaign) successfully archived to `reports/legacy_tuning_evidence_2026_ui013/`.
+- Legacy bundle structure successfully archived to `reports/legacy_submission_bundle_structure_2026/`.
+- `07_implementation/scripts/tuning_sweep_orchestration.ps1` created with modern architecture, current entrypoint paths, well-documented workflow, and safe output routing.
+- `07_implementation/src/.claude/worktrees/` successfully deleted; Pyright now reports `0 errors, 0 warnings, 0 informations` (was failing before).
+- `_scratch/` confirmed empty after cleanup of stale scripts, audits, and artifacts.
+
+impacted_files:
+- Created: `reports/legacy_tuning_evidence_2026_ui013/` (3 JSON files)
+- Created: `reports/legacy_submission_bundle_structure_2026/final_artefact_bundle_archive/` (legacy structure)
+- Created: `07_implementation/scripts/tuning_sweep_orchestration.ps1` (modernized workflow)
+- Deleted: `07_implementation/src/.claude/worktrees/`
+- Deleted: `_scratch/run_ui013_sweep.ps1`
+- Deleted: `_scratch/chapter2finalv1_verbatim_audit_2026-04-11.md`
+- Deleted: `_scratch/final_artefact_bundle/`
+- Deleted: `_scratch/*.json` (tuning evidence)
+- Updated: `00_admin/change_log.md` (added C-612)
+- Updated: `00_admin/decision_log.md` (added D-315)
 
 review_date:
 none
