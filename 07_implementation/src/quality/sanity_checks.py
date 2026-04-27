@@ -756,7 +756,14 @@ def bl011_control_effect_gate_result(
     }
 
 
-def _score_band_phrase(final_score: float) -> str:
+def _score_band_phrase(final_score: float, score_band: str | None = None) -> str:
+    if score_band == "strong":
+        return "strong profile match"
+    if score_band == "moderate":
+        return "moderate profile match"
+    if score_band == "weak":
+        return "weaker but acceptable profile match"
+
     if final_score >= 0.75:
         return "strong profile match"
     if final_score >= 0.5:
@@ -833,7 +840,8 @@ def _check_driver_and_narrative_warnings(
 
     why_selected = str(payload.get("why_selected", ""))
     final_score = safe_float(payload.get("final_score", 0.0))
-    required_phrase = _score_band_phrase(final_score)
+    score_band = str(payload.get("score_band", "")).strip().lower()
+    required_phrase = _score_band_phrase(final_score, score_band if score_band else None)
     if required_phrase not in why_selected:
         warnings.append(f"{prefix}: why_selected_score_band_mismatch")
 
