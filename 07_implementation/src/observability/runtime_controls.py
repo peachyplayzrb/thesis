@@ -11,7 +11,9 @@ from shared_utils.constants import (
 )
 from shared_utils.env_utils import coerce_int, env_bool, env_int, env_str
 from shared_utils.runtime_control_utils import (
+    apply_payload_resolution_diagnostics,
     apply_run_config_paths,
+    inspect_stage_payload_resolution,
     sanitize_runtime_control_context,
 )
 from shared_utils.stage_runtime_resolver import (
@@ -71,9 +73,16 @@ def _sanitize_bl009_controls(controls: dict[str, object]) -> dict[str, object]:
 
 
 def resolve_bl009_runtime_controls() -> dict[str, object]:
+    payload_status = inspect_stage_payload_resolution()
+
     controls = resolve_stage_controls(
         load_from_env=_load_bl009_controls_from_env,
         load_payload_defaults=defaults_loader(DEFAULT_OBSERVABILITY_CONTROLS),
         sanitize=_sanitize_bl009_controls,
+    )
+    controls = apply_payload_resolution_diagnostics(
+        controls,
+        stage_label="BL-009",
+        payload_status=payload_status,
     )
     return apply_run_config_paths(controls)

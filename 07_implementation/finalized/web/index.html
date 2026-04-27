@@ -4,290 +4,854 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Thesis Runner</title>
+    <title>Thesis Config Studio</title>
     <style>
+        :root {
+            --bg: #f6f7f4;
+            --surface: #ffffff;
+            --surface-2: #eef3f1;
+            --ink: #15201f;
+            --muted: #64706d;
+            --line: #d7dedb;
+            --accent: #176b64;
+            --accent-2: #9a5a16;
+            --danger: #a33a3a;
+            --ok: #20724e;
+            --shadow: 0 16px 42px rgba(21, 32, 31, 0.10);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
         body {
-            margin: 20px;
-            font-family: Consolas, "Courier New", monospace;
-            background: #111;
-            color: #ddd;
+            margin: 0;
+            min-height: 100vh;
+            font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            background: var(--bg);
+            color: var(--ink);
+        }
+
+        button,
+        input,
+        select,
+        textarea {
+            font: inherit;
+        }
+
+        button {
+            min-height: 38px;
+            border: 1px solid var(--line);
+            border-radius: 6px;
+            background: var(--surface);
+            color: var(--ink);
+            cursor: pointer;
+            padding: 8px 12px;
+        }
+
+        button:hover:not(:disabled) {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        button.primary {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: #ffffff;
+        }
+
+        button.primary:hover:not(:disabled) {
+            background: #0f514c;
+            color: #ffffff;
+        }
+
+        button:disabled {
+            cursor: not-allowed;
+            opacity: 0.55;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            border: 1px solid var(--line);
+            border-radius: 6px;
+            background: #ffffff;
+            color: var(--ink);
+            min-height: 38px;
+            padding: 8px 10px;
+        }
+
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+            font-family: "Cascadia Mono", Consolas, monospace;
+            font-size: 12px;
+            line-height: 1.45;
+        }
+
+        label {
+            color: var(--muted);
+            font-size: 12px;
+            font-weight: 650;
+        }
+
+        .app-shell {
+            display: grid;
+            grid-template-columns: 280px minmax(0, 1fr) 430px;
+            gap: 18px;
+            min-height: 100vh;
+            padding: 18px;
+        }
+
+        .sidebar,
+        .inspector,
+        .workspace {
+            min-width: 0;
+        }
+
+        .sidebar,
+        .inspector {
+            position: sticky;
+            top: 18px;
+            align-self: start;
+            max-height: calc(100vh - 36px);
+            overflow: auto;
+        }
+
+        .brand {
+            margin-bottom: 18px;
+        }
+
+        .brand h1 {
+            margin: 0;
+            font-size: 24px;
+            line-height: 1.05;
+            letter-spacing: 0;
+        }
+
+        .brand p {
+            margin: 8px 0 0;
+            color: var(--muted);
+            font-size: 13px;
+            line-height: 1.45;
+        }
+
+        .panel {
+            background: var(--surface);
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            margin-bottom: 14px;
+            overflow: hidden;
+        }
+
+        .panel-header {
+            padding: 14px 14px 10px;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .panel-header h2,
+        .section-heading h2 {
+            margin: 0;
+            font-size: 15px;
+            line-height: 1.25;
+            letter-spacing: 0;
+        }
+
+        .panel-header p,
+        .section-heading p {
+            margin: 5px 0 0;
+            color: var(--muted);
+            font-size: 12px;
+            line-height: 1.45;
+        }
+
+        .panel-body {
+            padding: 14px;
+        }
+
+        .stack {
+            display: grid;
+            gap: 10px;
         }
 
         .row {
             display: flex;
             gap: 8px;
-            margin-bottom: 10px;
-        }
-
-        .row.wrap {
-            flex-wrap: wrap;
-        }
-
-        .grow {
-            flex: 1;
-        }
-
-        input,
-        select {
-            flex: 1;
-            padding: 8px;
-            background: #1a1a1a;
-            color: #eee;
-            border: 1px solid #444;
-        }
-
-        textarea {
-            width: 100%;
-            min-height: 70px;
-            padding: 8px;
-            background: #1a1a1a;
-            color: #eee;
-            border: 1px solid #444;
-            font-family: Consolas, "Courier New", monospace;
-            font-size: 12px;
-        }
-
-        button {
-            padding: 8px 12px;
-            border: 1px solid #555;
-            background: #222;
-            color: #eee;
-            cursor: pointer;
-        }
-
-        button.small {
-            padding: 4px 8px;
-            font-size: 12px;
-        }
-
-        label {
-            display: inline-flex;
             align-items: center;
-            gap: 6px;
-            font-size: 13px;
         }
 
-        .panel {
-            border: 1px solid #333;
-            background: #0a0a0a;
-            margin-bottom: 10px;
-            padding: 10px;
+        .row > * {
+            min-width: 0;
         }
 
-        .title {
-            margin: 0 0 8px;
-            font-size: 14px;
-            color: #a0a0a0;
-        }
-
-        .kv {
+        .toggles {
             display: grid;
-            grid-template-columns: 220px 1fr;
-            gap: 6px 10px;
-            font-size: 13px;
-            margin-bottom: 8px;
+            gap: 8px;
         }
 
-        .artifact-item {
+        .toggle {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            border: 1px solid var(--line);
+            border-radius: 6px;
+            padding: 8px 10px;
+            color: var(--ink);
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .toggle input {
+            width: 18px;
+            height: 18px;
+            min-height: 18px;
+            accent-color: var(--accent);
+        }
+
+        .section-tabs {
+            display: grid;
+            gap: 7px;
+        }
+
+        .tab-button {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            gap: 8px;
-            border-top: 1px solid #222;
-            padding: 6px 0;
+            min-height: 36px;
+            width: 100%;
+            text-align: left;
+            border-color: transparent;
+            background: transparent;
+            color: var(--ink);
+        }
+
+        .tab-button.active {
+            background: var(--surface-2);
+            border-color: var(--line);
+            color: var(--accent);
+        }
+
+        .tab-count {
+            color: var(--muted);
             font-size: 12px;
         }
 
-        .artifact-item:first-child {
-            border-top: none;
+        .toolbar {
+            display: grid;
+            grid-template-columns: minmax(220px, 1fr) 160px 120px;
+            gap: 10px;
+            align-items: end;
+            margin-bottom: 14px;
         }
 
-        .builder-item {
-            border-top: 1px solid #222;
-            padding: 8px 0;
-            font-size: 12px;
+        .section-heading {
+            margin-bottom: 12px;
         }
 
-        .builder-item:first-child {
-            border-top: none;
+        .control-list {
+            display: grid;
+            gap: 10px;
         }
 
-        .builder-path {
-            color: #8fc6ff;
-            margin-bottom: 4px;
+        .control-row {
+            display: grid;
+            grid-template-columns: minmax(210px, 0.9fr) minmax(260px, 1.1fr);
+            gap: 16px;
+            padding: 14px;
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            background: var(--surface);
         }
 
-        .muted {
-            color: #a0a0a0;
+        .control-row.changed {
+            border-color: rgba(154, 90, 22, 0.45);
+            background: #fffaf1;
         }
 
-        pre {
+        .control-name {
             margin: 0;
-            padding: 10px;
-            min-height: 260px;
-            background: #000;
-            color: #8ff58f;
-            border: 1px solid #333;
+            font-family: "Cascadia Mono", Consolas, monospace;
+            font-size: 12px;
+            line-height: 1.45;
+            overflow-wrap: anywhere;
+        }
+
+        .control-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 8px;
+        }
+
+        .pill {
+            display: inline-flex;
+            align-items: center;
+            min-height: 22px;
+            padding: 3px 7px;
+            border-radius: 999px;
+            background: var(--surface-2);
+            color: var(--muted);
+            font-size: 11px;
+            font-weight: 650;
+        }
+
+        .pill.changed {
+            background: #f4dfbe;
+            color: var(--accent-2);
+        }
+
+        .help-text {
+            margin: 8px 0 0;
+            color: var(--muted);
+            font-size: 12px;
+            line-height: 1.45;
+        }
+
+        .status-line {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            padding: 7px 0;
+            border-bottom: 1px solid var(--line);
+            font-size: 13px;
+        }
+
+        .status-line:last-child {
+            border-bottom: none;
+        }
+
+        .status-value {
+            color: var(--muted);
+            text-align: right;
+            overflow-wrap: anywhere;
+        }
+
+        .check-list {
+            display: grid;
+            gap: 8px;
+        }
+
+        .check {
+            border: 1px solid var(--line);
+            border-radius: 6px;
+            padding: 9px 10px;
+            font-size: 12px;
+            line-height: 1.4;
+            background: #ffffff;
+        }
+
+        .check.ok {
+            border-color: rgba(32, 114, 78, 0.35);
+            color: var(--ok);
+        }
+
+        .check.warn {
+            border-color: rgba(154, 90, 22, 0.42);
+            color: var(--accent-2);
+        }
+
+        .check.error {
+            border-color: rgba(163, 58, 58, 0.42);
+            color: var(--danger);
+        }
+
+        .json-preview {
+            min-height: 420px;
+            max-height: 56vh;
+            overflow: auto;
+            margin: 0;
+            padding: 14px;
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            background: #121615;
+            color: #d9eee7;
+            font-family: "Cascadia Mono", Consolas, monospace;
+            font-size: 12px;
+            line-height: 1.5;
             white-space: pre-wrap;
-            word-break: break-word;
+            overflow-wrap: anywhere;
+        }
+
+        .terminal {
+            max-height: 260px;
+            min-height: 140px;
+        }
+
+        .empty-state {
+            padding: 24px;
+            border: 1px dashed var(--line);
+            border-radius: 8px;
+            color: var(--muted);
+            text-align: center;
+        }
+
+        @media (max-width: 1180px) {
+            .app-shell {
+                grid-template-columns: 240px minmax(0, 1fr);
+            }
+
+            .inspector {
+                position: static;
+                grid-column: 1 / -1;
+                max-height: none;
+            }
+        }
+
+        @media (max-width: 820px) {
+            .app-shell {
+                display: block;
+                padding: 12px;
+            }
+
+            .sidebar {
+                position: static;
+                max-height: none;
+            }
+
+            .toolbar,
+            .control-row {
+                grid-template-columns: 1fr;
+            }
+
+            .row {
+                flex-wrap: wrap;
+            }
         }
     </style>
 </head>
 
 <body>
-    <div class="row">
-        <select id="configPath" class="grow"></select>
-        <button id="runBtn" type="button">Run</button>
-        <button id="refreshBtn" type="button">Refresh</button>
-    </div>
+    <main class="app-shell">
+        <aside class="sidebar">
+            <div class="brand">
+                <h1>Thesis Config Studio</h1>
+                <p>Build a valid run config for the recommendation pipeline with guardrails for the controls we mapped out.</p>
+            </div>
 
-    <div class="row wrap">
-        <label><input id="validateOnly" type="checkbox" checked />Validate Only</label>
-        <label><input id="continueOnError" type="checkbox" />Continue On Error</label>
-        <label><input id="streamMode" type="checkbox" checked />Live Stream</label>
-    </div>
+            <section class="panel">
+                <div class="panel-header">
+                    <h2>Preset</h2>
+                    <p>Start from defaults or a profile that already exists in the repo.</p>
+                </div>
+                <div class="panel-body stack">
+                    <label for="profileSelect">Profile</label>
+                    <select id="profileSelect"></select>
+                    <div class="row">
+                        <button id="loadProfileBtn" type="button">Load</button>
+                        <button id="resetBtn" type="button">Defaults</button>
+                    </div>
+                </div>
+            </section>
 
-    <div class="panel">
-        <h3 class="title">Latest Status</h3>
-        <div class="kv" id="statusPanel">
-            <div>BL-013 run id</div>
-            <div>-</div>
-            <div>BL-013 status</div>
-            <div>-</div>
-            <div>BL-014 run id</div>
-            <div>-</div>
-            <div>BL-014 status</div>
-            <div>-</div>
-        </div>
-    </div>
+            <section class="panel">
+                <div class="panel-header">
+                    <h2>Sections</h2>
+                    <p>Basic controls are shown first. Advanced exposes the full surface.</p>
+                </div>
+                <div class="panel-body">
+                    <div class="section-tabs" id="sectionTabs"></div>
+                </div>
+            </section>
 
-    <div class="panel">
-        <h3 class="title">Artifacts</h3>
-        <div id="artifactList"></div>
-    </div>
+            <section class="panel">
+                <div class="panel-header">
+                    <h2>View</h2>
+                </div>
+                <div class="panel-body toggles">
+                    <label class="toggle">Show advanced<input id="advancedToggle" type="checkbox" /></label>
+                    <label class="toggle">Only changed<input id="changedToggle" type="checkbox" /></label>
+                    <label class="toggle">Live validate<input id="liveValidateToggle" type="checkbox" checked /></label>
+                </div>
+            </section>
+        </aside>
 
-    <div class="panel">
-        <h3 class="title">Pipeline Explainer</h3>
-        <div class="row">
-            <select id="stageSelect" class="grow"></select>
-            <button id="stageExplainBtn" type="button">Explain Stage</button>
-        </div>
-        <div id="pipelineFlow"></div>
-        <pre id="stageExplainer">Select a stage to view details.</pre>
-    </div>
+        <section class="workspace">
+            <div class="toolbar">
+                <div>
+                    <label for="searchInput">Find a control</label>
+                    <input id="searchInput" type="search" placeholder="Example: influence, threshold, top_tag_limit" />
+                </div>
+                <div>
+                    <label for="quickMode">Quick mode</label>
+                    <select id="quickMode">
+                        <option value="balanced">Balanced</option>
+                        <option value="strict">Strict</option>
+                        <option value="explore">Exploration</option>
+                        <option value="influence">Influence focused</option>
+                    </select>
+                </div>
+                <button id="applyQuickModeBtn" class="primary" type="button">Apply</button>
+            </div>
 
-    <div class="panel">
-        <h3 class="title">BL-008 Explanation Viewer</h3>
-        <pre id="explanationView">Loading explanations...</pre>
-    </div>
+            <section class="panel">
+                <div class="panel-header section-heading">
+                    <h2 id="activeSectionTitle">Loading controls</h2>
+                    <p id="activeSectionDescription">Reading the run-config defaults from the pipeline.</p>
+                </div>
+                <div class="panel-body">
+                    <div id="controlList" class="control-list"></div>
+                </div>
+            </section>
 
-    <div class="panel">
-        <h3 class="title">Run Evidence Dashboard</h3>
-        <pre id="evidenceView">Loading run evidence...</pre>
-    </div>
+            <section class="panel">
+                <div class="panel-header">
+                    <h2>Run With This Config</h2>
+                    <p>Save the config, select it below, then run the normal pipeline wrapper.</p>
+                </div>
+                <div class="panel-body stack">
+                    <div class="row">
+                        <select id="runConfigSelect"></select>
+                        <button id="runBtn" class="primary" type="button">Validate Run</button>
+                    </div>
+                    <div class="toggles">
+                        <label class="toggle">Validate only<input id="validateOnly" type="checkbox" checked /></label>
+                        <label class="toggle">Continue on error<input id="continueOnError" type="checkbox" /></label>
+                    </div>
+                    <pre id="terminal" class="json-preview terminal">Waiting for a run.</pre>
+                </div>
+            </section>
+        </section>
 
-    <div class="panel">
-        <h3 class="title">Guided Flow</h3>
-        <pre id="guideView">Loading guided flow...</pre>
-    </div>
+        <aside class="inspector">
+            <section class="panel">
+                <div class="panel-header">
+                    <h2>Guardrails</h2>
+                    <p>These checks prevent the bad config shapes we discussed.</p>
+                </div>
+                <div class="panel-body">
+                    <div id="guardrailList" class="check-list"></div>
+                </div>
+            </section>
 
-    <div class="panel">
-        <h3 class="title">Profile Config Builder</h3>
-        <p class="muted">Edit any run-config setting with inline descriptions, then export JSON.</p>
-        <div class="row">
-            <select id="builderProfileSelect" class="grow"></select>
-            <button id="builderLoadProfileBtn" type="button">Load Profile</button>
-            <button id="builderResetBtn" type="button">Reset Defaults</button>
-            <button id="builderExportBtn" type="button">Export JSON</button>
-        </div>
-        <div class="row">
-            <input id="builderSearch" type="text" placeholder="Filter settings by path or description" />
-        </div>
-        <div id="builderSettings"></div>
-        <pre id="builderOutput">Loading config builder schema...</pre>
-    </div>
+            <section class="panel">
+                <div class="panel-header">
+                    <h2>Create Config</h2>
+                    <p>Validate with the real loader, save under `config/profiles`, or export JSON.</p>
+                </div>
+                <div class="panel-body stack">
+                    <label for="saveName">File name</label>
+                    <input id="saveName" type="text" value="run_config_custom_ui.json" />
+                    <div class="row">
+                        <button id="validateBtn" type="button">Validate</button>
+                        <button id="saveBtn" class="primary" type="button">Save</button>
+                        <button id="downloadBtn" type="button">Download</button>
+                    </div>
+                    <div id="saveStatus" class="check">No config saved yet.</div>
+                </div>
+            </section>
 
-    <div class="panel">
-        <h3 class="title">Artifact Preview</h3>
-        <pre id="artifactPreview">Select an artifact preview.</pre>
-    </div>
+            <section class="panel">
+                <div class="panel-header">
+                    <h2>Current Shape</h2>
+                </div>
+                <div class="panel-body">
+                    <div id="summaryPanel"></div>
+                </div>
+            </section>
 
-    <pre id="terminal">Waiting for command...</pre>
+            <section class="panel">
+                <div class="panel-header">
+                    <h2>JSON Preview</h2>
+                </div>
+                <div class="panel-body">
+                    <pre id="jsonPreview" class="json-preview">Loading...</pre>
+                </div>
+            </section>
+        </aside>
+    </main>
 
     <script>
-        const configPathInput = document.getElementById("configPath");
-        const runBtn = document.getElementById("runBtn");
-        const refreshBtn = document.getElementById("refreshBtn");
-        const validateOnlyInput = document.getElementById("validateOnly");
-        const continueOnErrorInput = document.getElementById("continueOnError");
-        const streamModeInput = document.getElementById("streamMode");
-        const statusPanel = document.getElementById("statusPanel");
-        const artifactList = document.getElementById("artifactList");
-        const artifactPreview = document.getElementById("artifactPreview");
-        const stageSelect = document.getElementById("stageSelect");
-        const stageExplainBtn = document.getElementById("stageExplainBtn");
-        const pipelineFlow = document.getElementById("pipelineFlow");
-        const stageExplainer = document.getElementById("stageExplainer");
-        const explanationView = document.getElementById("explanationView");
-        const evidenceView = document.getElementById("evidenceView");
-        const guideView = document.getElementById("guideView");
-        const builderProfileSelect = document.getElementById("builderProfileSelect");
-        const builderLoadProfileBtn = document.getElementById("builderLoadProfileBtn");
-        const builderResetBtn = document.getElementById("builderResetBtn");
-        const builderExportBtn = document.getElementById("builderExportBtn");
-        const builderSearch = document.getElementById("builderSearch");
-        const builderSettings = document.getElementById("builderSettings");
-        const builderOutput = document.getElementById("builderOutput");
-        const terminal = document.getElementById("terminal");
-        let activeEventSource = null;
-        let builderSchema = [];
-        let builderState = {};
-        let builderDefaults = {};
+        const sectionDescriptions = {
+            schema_version: "The version contract expected by the run-config loader.",
+            control_mode: "Global strictness: validation profile, threshold coupling, and weight normalization policy.",
+            user_context: "Optional user identity metadata for traceability.",
+            input_scope: "Which Spotify-derived sources are allowed to feed the profile.",
+            interaction_scope: "Which interaction types become preference evidence.",
+            influence_tracks: "Explicit track IDs that should influence scoring and/or assembly.",
+            seed_controls: "Matching, weighting, recency, and fuzzy matching controls for BL-003.",
+            ingestion_controls: "API cache, retry, throttle, and resilience behavior.",
+            profile_controls: "How the preference profile is aggregated and bounded.",
+            retrieval_controls: "Candidate filtering thresholds and profile-driven retrieval settings.",
+            scoring_controls: "Composite ranking weights, numeric thresholds, semantic strategy, and influence bonus.",
+            assembly_controls: "Final playlist length, diversity, relaxation, and influence placement.",
+            transparency_controls: "How much explanation evidence is exposed per track.",
+            observability_controls: "Run log diagnostic depth and bootstrap metadata.",
+            reporting_controls: "Score labels and reporting thresholds.",
+            controllability_controls: "Experimental scenario settings for repeatability and comparison.",
+            orchestration_controls: "Stage order, refresh policy, error policy, and stable artifact requirements."
+        };
 
-        function deepClone(value) {
+        const sectionOrder = [
+            "control_mode",
+            "input_scope",
+            "interaction_scope",
+            "influence_tracks",
+            "seed_controls",
+            "profile_controls",
+            "retrieval_controls",
+            "scoring_controls",
+            "assembly_controls",
+            "transparency_controls",
+            "observability_controls",
+            "reporting_controls",
+            "controllability_controls",
+            "orchestration_controls",
+            "user_context",
+            "schema_version",
+            "ingestion_controls"
+        ];
+
+        const profileSelect = document.getElementById("profileSelect");
+        const runConfigSelect = document.getElementById("runConfigSelect");
+        const loadProfileBtn = document.getElementById("loadProfileBtn");
+        const resetBtn = document.getElementById("resetBtn");
+        const sectionTabs = document.getElementById("sectionTabs");
+        const advancedToggle = document.getElementById("advancedToggle");
+        const changedToggle = document.getElementById("changedToggle");
+        const liveValidateToggle = document.getElementById("liveValidateToggle");
+        const searchInput = document.getElementById("searchInput");
+        const quickMode = document.getElementById("quickMode");
+        const applyQuickModeBtn = document.getElementById("applyQuickModeBtn");
+        const activeSectionTitle = document.getElementById("activeSectionTitle");
+        const activeSectionDescription = document.getElementById("activeSectionDescription");
+        const controlList = document.getElementById("controlList");
+        const guardrailList = document.getElementById("guardrailList");
+        const saveName = document.getElementById("saveName");
+        const validateBtn = document.getElementById("validateBtn");
+        const saveBtn = document.getElementById("saveBtn");
+        const downloadBtn = document.getElementById("downloadBtn");
+        const saveStatus = document.getElementById("saveStatus");
+        const summaryPanel = document.getElementById("summaryPanel");
+        const jsonPreview = document.getElementById("jsonPreview");
+        const runBtn = document.getElementById("runBtn");
+        const validateOnly = document.getElementById("validateOnly");
+        const continueOnError = document.getElementById("continueOnError");
+        const terminal = document.getElementById("terminal");
+
+        let settings = [];
+        let defaults = {};
+        let state = {};
+        let activeSection = "control_mode";
+        let validationTimer = null;
+
+        function clone(value) {
             return JSON.parse(JSON.stringify(value));
         }
 
-        function setPathValue(root, path, value) {
+        function getPath(root, path) {
             const parts = String(path).split(".");
             let current = root;
-            for (let index = 0; index < parts.length - 1; index += 1) {
-                const key = parts[index];
-                if (!current[key] || typeof current[key] !== "object" || Array.isArray(current[key])) {
-                    current[key] = {};
-                }
-                current = current[key];
-            }
-            current[parts[parts.length - 1]] = value;
-        }
-
-        function getPathValue(root, path) {
-            const parts = String(path).split(".");
-            let current = root;
-            for (const key of parts) {
-                if (!current || typeof current !== "object") {
+            for (const part of parts) {
+                if (current == null || typeof current !== "object") {
                     return undefined;
                 }
-                current = current[key];
+                current = current[part];
             }
             return current;
         }
 
-        function refreshBuilderOutput() {
-            builderOutput.textContent = JSON.stringify(builderState, null, 2);
-        }
-
-        function parseStructuredInput(rawValue) {
-            const trimmed = String(rawValue || "").trim();
-            if (!trimmed) {
-                return null;
+        function setPath(root, path, value) {
+            const parts = String(path).split(".");
+            let current = root;
+            for (let index = 0; index < parts.length - 1; index += 1) {
+                const part = parts[index];
+                if (current[part] == null || typeof current[part] !== "object" || Array.isArray(current[part])) {
+                    current[part] = {};
+                }
+                current = current[part];
             }
-            return JSON.parse(trimmed);
+            current[parts[parts.length - 1]] = value;
         }
 
-        function buildInputControl(setting) {
-            const currentValue = getPathValue(builderState, setting.path);
-            const controlWrapper = document.createElement("div");
+        function valuesEqual(left, right) {
+            return JSON.stringify(left) === JSON.stringify(right);
+        }
+
+        function formatSectionName(section) {
+            return String(section || "global").replaceAll("_", " ");
+        }
+
+        function sectionFor(setting) {
+            return setting.section || String(setting.path).split(".")[0] || "global";
+        }
+
+        function changedCount() {
+            return settings.filter((setting) => !valuesEqual(getPath(state, setting.path), getPath(defaults, setting.path))).length;
+        }
+
+        function buildSummaryRows() {
+            const inputScope = state.input_scope || {};
+            const assembly = state.assembly_controls || {};
+            const influence = state.influence_tracks || {};
+            const scoring = state.scoring_controls || {};
+            const retrieval = state.retrieval_controls || {};
+            const fuzzy = ((state.seed_controls || {}).fuzzy_matching || {});
+            const rows = [
+                ["Changed controls", changedCount()],
+                ["Validation profile", getPath(state, "control_mode.validation_profile") || "-"],
+                ["Input sources", ["top", "saved", "playlists", "recent"].filter((label) => {
+                    const key = {
+                        top: "include_top_tracks",
+                        saved: "include_saved_tracks",
+                        playlists: "include_playlists",
+                        recent: "include_recently_played"
+                    }[label];
+                    return !!inputScope[key];
+                }).join(", ") || "none"],
+                ["Target playlist", assembly.target_size ?? "-"],
+                ["Influence tracks", influence.enabled ? `${(influence.track_ids || []).length} enabled` : "disabled"],
+                ["Fuzzy matching", fuzzy.enabled ? "enabled" : "disabled"],
+                ["Thresholds coupled", valuesEqual(retrieval.numeric_thresholds, scoring.numeric_thresholds) ? "yes" : "no"]
+            ];
+            return rows;
+        }
+
+        function renderSummary() {
+            summaryPanel.innerHTML = "";
+            for (const [label, value] of buildSummaryRows()) {
+                const row = document.createElement("div");
+                row.className = "status-line";
+                const key = document.createElement("div");
+                key.textContent = label;
+                const val = document.createElement("div");
+                val.className = "status-value";
+                val.textContent = String(value);
+                row.appendChild(key);
+                row.appendChild(val);
+                summaryPanel.appendChild(row);
+            }
+        }
+
+        function clientGuardrails() {
+            const checks = [];
+            const control = state.control_mode || {};
+            const input = state.input_scope || {};
+            const profile = state.profile_controls || {};
+            const retrieval = state.retrieval_controls || {};
+            const scoring = state.scoring_controls || {};
+            const assembly = state.assembly_controls || {};
+            const influence = state.influence_tracks || {};
+            const seed = state.seed_controls || {};
+            const fuzzy = seed.fuzzy_matching || {};
+            const matchStrategy = seed.match_strategy || {};
+            const matchOrder = seed.match_strategy_order || [];
+            const weights = scoring.component_weights || {};
+            const retrievalThresholds = retrieval.numeric_thresholds || {};
+            const scoringThresholds = scoring.numeric_thresholds || {};
+
+            const hasInput = !!(input.include_top_tracks || input.include_saved_tracks || input.include_playlists || input.include_recently_played);
+            checks.push([hasInput ? "ok" : "error", hasInput ? "At least one input source is enabled." : "Enable at least one input source."]);
+
+            const interactionTypes = state.interaction_scope?.include_interaction_types || [];
+            checks.push([interactionTypes.length > 0 ? "ok" : "error", interactionTypes.length > 0 ? "Interaction scope has at least one type." : "Choose at least one interaction type."]);
+
+            const high = Number(profile.confidence_bin_high_threshold);
+            const medium = Number(profile.confidence_bin_medium_threshold);
+            checks.push([Number.isFinite(high) && Number.isFinite(medium) && medium <= high ? "ok" : "error", "Profile confidence medium threshold must be less than or equal to the high threshold."]);
+
+            const profileLimitRules = [
+                ["profile_top_tag_limit", "top_tag_limit"],
+                ["profile_top_genre_limit", "top_genre_limit"],
+                ["profile_top_lead_genre_limit", "top_lead_genre_limit"]
+            ];
+            for (const [retrievalKey, profileKey] of profileLimitRules) {
+                const ok = Number(retrieval[retrievalKey] || 0) <= Number(profile[profileKey] || 0);
+                checks.push([ok ? "ok" : "error", `${retrievalKey} must not exceed ${profileKey}.`]);
+            }
+
+            const weightsSum = Object.values(weights).reduce((total, value) => total + Number(value || 0), 0);
+            const weightOk = Math.abs(weightsSum - 1) <= 0.01 || !!control.allow_weight_auto_normalization;
+            checks.push([weightOk ? "ok" : "error", `Component weights sum is ${weightsSum.toFixed(3)}. Keep near 1.0 or enable weight auto-normalization.`]);
+
+            const thresholdsMatch = valuesEqual(retrievalThresholds, scoringThresholds);
+            checks.push([thresholdsMatch || control.allow_threshold_decoupling ? "ok" : "error", "Retrieval and scoring numeric thresholds should match unless threshold decoupling is enabled."]);
+
+            const minThreshold = Number(assembly.min_score_threshold);
+            checks.push([minThreshold >= 0 && minThreshold <= 1 ? "ok" : "error", "Assembly min_score_threshold must be within [0, 1]."]);
+
+            const maxPerGenre = Number(assembly.max_per_genre);
+            const targetSize = Number(assembly.target_size);
+            checks.push([maxPerGenre <= targetSize ? "ok" : "warn", "max_per_genre should be less than or equal to target_size to affect diversity."]);
+
+            const influenceIds = Array.isArray(influence.track_ids) ? influence.track_ids.filter(Boolean) : [];
+            checks.push([!influence.enabled || influenceIds.length > 0 ? "ok" : "warn", "Influence is enabled but no influence track IDs are listed."]);
+
+            const fuzzyEnabled = !!fuzzy.enabled || !!matchStrategy.enable_fuzzy_match;
+            const orderHasFuzzy = Array.isArray(matchOrder) && matchOrder.includes("fuzzy_title_artist");
+            checks.push([!fuzzyEnabled || orderHasFuzzy ? "ok" : "warn", "Fuzzy controls only matter when fuzzy_title_artist is present in the match order."]);
+
+            const strictPolicyPaths = [
+                "profile_controls.bl003_handshake_validation_policy",
+                "retrieval_controls.bl004_bl005_handshake_validation_policy",
+                "scoring_controls.bl005_bl006_handshake_validation_policy"
+            ];
+            for (const path of strictPolicyPaths) {
+                const value = getPath(state, path);
+                if (value != null) {
+                    checks.push([value === "strict" ? "ok" : "warn", `${path} is ${value}; strict is safest for submission runs.`]);
+                }
+            }
+
+            return checks;
+        }
+
+        function renderGuardrails(serverPayload) {
+            guardrailList.innerHTML = "";
+            const checks = clientGuardrails();
+            if (serverPayload) {
+                const errors = Array.isArray(serverPayload.errors) ? serverPayload.errors : [];
+                const warnings = Array.isArray(serverPayload.warnings) ? serverPayload.warnings : [];
+                for (const error of errors) {
+                    checks.unshift(["error", error]);
+                }
+                for (const warning of warnings) {
+                    checks.push(["warn", warning]);
+                }
+                if (serverPayload.ok) {
+                    checks.unshift(["ok", "The Python run-config loader accepts this config."]);
+                }
+            }
+
+            for (const [level, message] of checks) {
+                const item = document.createElement("div");
+                item.className = `check ${level}`;
+                item.textContent = message;
+                guardrailList.appendChild(item);
+            }
+        }
+
+        function updatePreview() {
+            jsonPreview.textContent = JSON.stringify(state, null, 2);
+            renderSummary();
+            renderGuardrails();
+            if (liveValidateToggle.checked) {
+                window.clearTimeout(validationTimer);
+                validationTimer = window.setTimeout(validateConfig, 650);
+            }
+        }
+
+        function parseInputValue(setting, control) {
+            if (setting.type === "bool") {
+                return !!control.checked;
+            }
+            if (setting.type === "int") {
+                return control.value.trim() === "" ? null : parseInt(control.value, 10);
+            }
+            if (setting.type === "float") {
+                return control.value.trim() === "" ? null : parseFloat(control.value);
+            }
+            if (setting.type === "list" || setting.type === "object" || setting.type === "null") {
+                return JSON.parse(control.value || "null");
+            }
+            return control.value;
+        }
+
+        function makeControl(setting) {
+            const currentValue = getPath(state, setting.path);
+            const wrapper = document.createElement("div");
 
             if (Array.isArray(setting.choices) && setting.choices.length > 0) {
                 const select = document.createElement("select");
@@ -299,527 +863,348 @@
                 }
                 select.value = String(currentValue ?? "");
                 select.addEventListener("change", () => {
-                    setPathValue(builderState, setting.path, select.value);
-                    refreshBuilderOutput();
+                    setPath(state, setting.path, select.value);
+                    renderAll();
                 });
-                controlWrapper.appendChild(select);
-                return controlWrapper;
+                wrapper.appendChild(select);
+                return wrapper;
             }
 
             if (setting.type === "bool") {
-                const checkbox = document.createElement("input");
-                checkbox.type = "checkbox";
-                checkbox.checked = !!currentValue;
-                checkbox.addEventListener("change", () => {
-                    setPathValue(builderState, setting.path, !!checkbox.checked);
-                    refreshBuilderOutput();
+                const toggleLabel = document.createElement("label");
+                toggleLabel.className = "toggle";
+                toggleLabel.textContent = currentValue ? "Enabled" : "Disabled";
+                const input = document.createElement("input");
+                input.type = "checkbox";
+                input.checked = !!currentValue;
+                input.addEventListener("change", () => {
+                    setPath(state, setting.path, !!input.checked);
+                    renderAll();
                 });
-                controlWrapper.appendChild(checkbox);
-                return controlWrapper;
+                toggleLabel.appendChild(input);
+                wrapper.appendChild(toggleLabel);
+                return wrapper;
             }
 
             if (setting.type === "int" || setting.type === "float") {
-                const numberInput = document.createElement("input");
-                numberInput.type = "number";
+                const input = document.createElement("input");
+                input.type = "number";
                 if (setting.type === "float") {
-                    numberInput.step = "any";
+                    input.step = "any";
                 }
-                numberInput.value = currentValue == null ? "" : String(currentValue);
-                numberInput.addEventListener("change", () => {
-                    const parsed = numberInput.value.trim();
-                    if (!parsed) {
-                        setPathValue(builderState, setting.path, null);
-                    } else if (setting.type === "int") {
-                        setPathValue(builderState, setting.path, parseInt(parsed, 10));
-                    } else {
-                        setPathValue(builderState, setting.path, parseFloat(parsed));
-                    }
-                    refreshBuilderOutput();
+                if (String(setting.valid_range || "").includes("[0.0, 1.0]") || String(setting.valid_range || "").includes("[0,1]")) {
+                    input.min = "0";
+                    input.max = "1";
+                    input.step = setting.type === "int" ? "1" : "0.01";
+                }
+                input.value = currentValue == null ? "" : String(currentValue);
+                input.addEventListener("change", () => {
+                    setPath(state, setting.path, parseInputValue(setting, input));
+                    renderAll();
                 });
-                controlWrapper.appendChild(numberInput);
-                return controlWrapper;
+                wrapper.appendChild(input);
+                return wrapper;
             }
 
             if (setting.type === "list" || setting.type === "object" || setting.type === "null") {
-                const textArea = document.createElement("textarea");
-                textArea.value = JSON.stringify(currentValue, null, 2);
-                textArea.addEventListener("change", () => {
+                const textarea = document.createElement("textarea");
+                textarea.value = JSON.stringify(currentValue, null, 2);
+                textarea.addEventListener("change", () => {
                     try {
-                        const parsed = parseStructuredInput(textArea.value);
-                        setPathValue(builderState, setting.path, parsed);
-                        textArea.style.borderColor = "#444";
-                        refreshBuilderOutput();
+                        setPath(state, setting.path, parseInputValue(setting, textarea));
+                        textarea.style.borderColor = "";
+                        renderAll();
                     } catch (_) {
-                        textArea.style.borderColor = "#aa3333";
+                        textarea.style.borderColor = "var(--danger)";
                     }
                 });
-                controlWrapper.appendChild(textArea);
-                return controlWrapper;
+                wrapper.appendChild(textarea);
+                return wrapper;
             }
 
-            const textInput = document.createElement("input");
-            textInput.type = "text";
-            textInput.value = currentValue == null ? "" : String(currentValue);
-            textInput.addEventListener("change", () => {
-                setPathValue(builderState, setting.path, textInput.value);
-                refreshBuilderOutput();
+            const input = document.createElement("input");
+            input.type = "text";
+            input.value = currentValue == null ? "" : String(currentValue);
+            input.addEventListener("change", () => {
+                setPath(state, setting.path, input.value);
+                renderAll();
             });
-            controlWrapper.appendChild(textInput);
-            return controlWrapper;
+            wrapper.appendChild(input);
+            return wrapper;
         }
 
-        function renderConfigBuilder() {
-            builderSettings.innerHTML = "";
-            const filterText = String(builderSearch.value || "").trim().toLowerCase();
-            const visibleSettings = builderSchema.filter((setting) => {
-                if (!filterText) {
+        function visibleSettings() {
+            const filter = searchInput.value.trim().toLowerCase();
+            return settings.filter((setting) => {
+                const section = sectionFor(setting);
+                if (section !== activeSection) {
+                    return false;
+                }
+                if (!advancedToggle.checked && setting.advanced) {
+                    return false;
+                }
+                if (changedToggle.checked && valuesEqual(getPath(state, setting.path), getPath(defaults, setting.path))) {
+                    return false;
+                }
+                if (!filter) {
                     return true;
                 }
-                const haystack = `${setting.path} ${setting.description || ""}`.toLowerCase();
-                return haystack.includes(filterText);
+                const text = `${setting.path} ${setting.description || ""} ${setting.stage || ""}`.toLowerCase();
+                return text.includes(filter);
             });
+        }
 
-            if (visibleSettings.length === 0) {
-                builderSettings.textContent = "No settings matched the current filter.";
+        function renderControls() {
+            activeSectionTitle.textContent = formatSectionName(activeSection);
+            activeSectionDescription.textContent = sectionDescriptions[activeSection] || "Config controls.";
+            controlList.innerHTML = "";
+
+            const rows = visibleSettings();
+            if (rows.length === 0) {
+                const empty = document.createElement("div");
+                empty.className = "empty-state";
+                empty.textContent = "No controls match this section and filter.";
+                controlList.appendChild(empty);
                 return;
             }
 
-            for (const setting of visibleSettings) {
+            for (const setting of rows) {
                 const row = document.createElement("div");
-                row.className = "builder-item";
+                const currentValue = getPath(state, setting.path);
+                const defaultValue = getPath(defaults, setting.path);
+                const changed = !valuesEqual(currentValue, defaultValue);
+                row.className = `control-row${changed ? " changed" : ""}`;
 
-                const pathNode = document.createElement("div");
-                pathNode.className = "builder-path";
-                pathNode.textContent = setting.path;
+                const info = document.createElement("div");
+                const name = document.createElement("p");
+                name.className = "control-name";
+                name.textContent = setting.path;
+                info.appendChild(name);
 
-                const descNode = document.createElement("div");
-                descNode.className = "muted";
-                descNode.textContent = setting.description || "";
-
-                const inputNode = buildInputControl(setting);
-
-                row.appendChild(pathNode);
-                row.appendChild(descNode);
-                row.appendChild(inputNode);
-                builderSettings.appendChild(row);
-            }
-        }
-
-        async function refreshConfigBuilderSchema() {
-            builderOutput.textContent = "Loading config builder schema...";
-            try {
-                const response = await fetch("/api/config-builder/schema");
-                const data = await response.json();
-                if (!response.ok) {
-                    builderOutput.textContent = data.error || "Failed to load config builder schema.";
-                    return;
+                const meta = document.createElement("div");
+                meta.className = "control-meta";
+                for (const label of [setting.stage, setting.type, setting.valid_range, setting.advanced ? "advanced" : "basic"]) {
+                    if (!label) {
+                        continue;
+                    }
+                    const pill = document.createElement("span");
+                    pill.className = `pill${changed && label === setting.type ? " changed" : ""}`;
+                    pill.textContent = String(label);
+                    meta.appendChild(pill);
                 }
-                builderSchema = Array.isArray(data.settings) ? data.settings : [];
-                builderDefaults = data.defaults && typeof data.defaults === "object" ? deepClone(data.defaults) : {};
-                builderState = deepClone(builderDefaults);
-                renderConfigBuilder();
-                refreshBuilderOutput();
-            } catch (error) {
-                builderOutput.textContent = `Config builder schema request failed: ${error}`;
+                info.appendChild(meta);
+
+                const help = document.createElement("p");
+                help.className = "help-text";
+                help.textContent = setting.description || "";
+                info.appendChild(help);
+
+                const control = makeControl(setting);
+                row.appendChild(info);
+                row.appendChild(control);
+                controlList.appendChild(row);
             }
         }
 
-        async function loadBuilderProfile() {
-            const selected = String(builderProfileSelect.value || "").trim();
-            if (!selected) {
+        function renderTabs() {
+            sectionTabs.innerHTML = "";
+            const sections = [...new Set(settings.map(sectionFor))].sort((left, right) => {
+                const leftIndex = sectionOrder.indexOf(left);
+                const rightIndex = sectionOrder.indexOf(right);
+                return (leftIndex === -1 ? 999 : leftIndex) - (rightIndex === -1 ? 999 : rightIndex);
+            });
+            if (!sections.includes(activeSection) && sections.length > 0) {
+                activeSection = sections[0];
+            }
+
+            for (const section of sections) {
+                const button = document.createElement("button");
+                button.type = "button";
+                button.className = `tab-button${section === activeSection ? " active" : ""}`;
+                const visibleCount = settings.filter((setting) => sectionFor(setting) === section && (advancedToggle.checked || !setting.advanced)).length;
+                button.innerHTML = `<span>${formatSectionName(section)}</span><span class="tab-count">${visibleCount}</span>`;
+                button.addEventListener("click", () => {
+                    activeSection = section;
+                    renderAll();
+                });
+                sectionTabs.appendChild(button);
+            }
+        }
+
+        function renderAll() {
+            renderTabs();
+            renderControls();
+            updatePreview();
+        }
+
+        async function loadSchema() {
+            const response = await fetch("/api/config-builder/schema");
+            const data = await response.json();
+            settings = Array.isArray(data.settings) ? data.settings : [];
+            defaults = data.defaults && typeof data.defaults === "object" ? clone(data.defaults) : {};
+            state = clone(defaults);
+            renderAll();
+        }
+
+        async function loadConfigOptions() {
+            const response = await fetch("/api/configs");
+            const data = await response.json();
+            const configs = Array.isArray(data.configs) ? data.configs : [];
+            profileSelect.innerHTML = "";
+            runConfigSelect.innerHTML = "";
+            for (const config of configs) {
+                const option = document.createElement("option");
+                option.value = config;
+                option.textContent = config.replace("config/profiles/", "");
+                profileSelect.appendChild(option);
+                runConfigSelect.appendChild(option.cloneNode(true));
+            }
+        }
+
+        async function loadSelectedProfile() {
+            if (!profileSelect.value) {
                 return;
             }
+            saveStatus.className = "check";
+            saveStatus.textContent = "Loading profile...";
+            const response = await fetch(`/api/config-builder/profile?name=${encodeURIComponent(profileSelect.value)}`);
+            const data = await response.json();
+            if (!response.ok) {
+                saveStatus.className = "check error";
+                saveStatus.textContent = data.error || "Could not load profile.";
+                return;
+            }
+            state = clone(data.profile);
+            saveStatus.className = "check ok";
+            saveStatus.textContent = `Loaded ${data.config_path}.`;
+            renderAll();
+        }
 
-            builderOutput.textContent = "Loading selected profile...";
+        function applyQuickMode() {
+            const mode = quickMode.value;
+            if (mode === "balanced") {
+                setPath(state, "control_mode.validation_profile", "strict");
+                setPath(state, "control_mode.allow_threshold_decoupling", false);
+                setPath(state, "control_mode.allow_weight_auto_normalization", false);
+                setPath(state, "assembly_controls.target_size", 10);
+                setPath(state, "assembly_controls.min_score_threshold", 0.35);
+            }
+            if (mode === "strict") {
+                setPath(state, "control_mode.validation_profile", "strict");
+                setPath(state, "retrieval_controls.semantic_strong_keep_score", 3);
+                setPath(state, "retrieval_controls.numeric_support_min_pass", 4);
+                setPath(state, "assembly_controls.min_score_threshold", 0.45);
+                setPath(state, "seed_controls.match_rate_min_threshold", 0.3);
+            }
+            if (mode === "explore") {
+                setPath(state, "control_mode.validation_profile", "explore");
+                setPath(state, "control_mode.allow_threshold_decoupling", true);
+                setPath(state, "control_mode.allow_weight_auto_normalization", true);
+                setPath(state, "assembly_controls.controlled_relaxation.enabled", true);
+                setPath(state, "assembly_controls.min_score_threshold", 0.25);
+            }
+            if (mode === "influence") {
+                setPath(state, "influence_tracks.enabled", true);
+                setPath(state, "scoring_controls.apply_bl003_influence_tracks", true);
+                setPath(state, "scoring_controls.influence_track_bonus_scale", 0.5);
+                setPath(state, "assembly_controls.influence_policy_mode", "reserved_slots");
+                setPath(state, "assembly_controls.influence_reserved_slots", 2);
+            }
+            renderAll();
+        }
+
+        async function validateConfig() {
             try {
-                const response = await fetch(`/api/config-builder/profile?name=${encodeURIComponent(selected)}`);
-                const data = await response.json();
-                if (!response.ok) {
-                    builderOutput.textContent = data.error || "Failed to load selected profile.";
-                    return;
-                }
-                if (data.profile && typeof data.profile === "object") {
-                    builderState = deepClone(data.profile);
-                    renderConfigBuilder();
-                    refreshBuilderOutput();
-                }
+                const response = await fetch("/api/config-builder/validate", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ config: state })
+                });
+                const payload = await response.json();
+                renderGuardrails(payload);
+                saveStatus.className = response.ok ? "check ok" : "check error";
+                saveStatus.textContent = response.ok ? "Config validates with the pipeline loader." : (payload.errors || ["Config did not validate."]).join(" ");
+                return response.ok;
             } catch (error) {
-                builderOutput.textContent = `Profile load failed: ${error}`;
+                saveStatus.className = "check error";
+                saveStatus.textContent = `Validation request failed: ${error}`;
+                return false;
             }
         }
 
-        function exportBuilderConfig() {
-            const content = JSON.stringify(builderState, null, 2);
-            const blob = new Blob([content], { type: "application/json;charset=utf-8" });
+        async function saveConfig() {
+            const response = await fetch("/api/config-builder/save", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ file_name: saveName.value, config: state })
+            });
+            const payload = await response.json();
+            renderGuardrails(payload);
+            if (!response.ok) {
+                saveStatus.className = "check error";
+                saveStatus.textContent = (payload.errors || ["Could not save config."]).join(" ");
+                return;
+            }
+            saveStatus.className = "check ok";
+            saveStatus.textContent = `Saved ${payload.path}.`;
+            await loadConfigOptions();
+            runConfigSelect.value = payload.path;
+            profileSelect.value = payload.path;
+        }
+
+        function downloadConfig() {
+            const blob = new Blob([JSON.stringify(state, null, 2) + "\n"], { type: "application/json;charset=utf-8" });
             const link = document.createElement("a");
             link.href = URL.createObjectURL(blob);
-            link.download = "run_config_custom.json";
+            link.download = saveName.value.trim() || "run_config_custom_ui.json";
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
             URL.revokeObjectURL(link.href);
         }
 
-        async function loadConfigOptions() {
-            try {
-                const response = await fetch("/api/configs");
-                const data = await response.json();
-                const configs = Array.isArray(data.configs) ? data.configs : [];
-
-                configPathInput.innerHTML = "";
-                builderProfileSelect.innerHTML = "";
-                if (configs.length === 0) {
-                    const option = document.createElement("option");
-                    option.value = "";
-                    option.textContent = "No config files found";
-                    configPathInput.appendChild(option);
-                    const builderOption = document.createElement("option");
-                    builderOption.value = "";
-                    builderOption.textContent = "No config files found";
-                    builderProfileSelect.appendChild(builderOption);
-                    runBtn.disabled = true;
-                    return;
-                }
-
-                for (const path of configs) {
-                    const option = document.createElement("option");
-                    option.value = path;
-                    option.textContent = path.replace("config/", "");
-                    configPathInput.appendChild(option);
-
-                    const builderOption = document.createElement("option");
-                    builderOption.value = path;
-                    builderOption.textContent = path.replace("config/", "");
-                    builderProfileSelect.appendChild(builderOption);
-                }
-                runBtn.disabled = false;
-            } catch (_) {
-                runBtn.disabled = true;
-            }
-        }
-
-        function renderStatus(status) {
-            const bl013 = status && status.bl013 ? status.bl013 : {};
-            const bl014 = status && status.bl014 ? status.bl014 : {};
-            statusPanel.innerHTML = "";
-
-            const rows = [
-                ["BL-013 run id", bl013.run_id || "-"],
-                ["BL-013 status", bl013.overall_status || "-"],
-                ["BL-014 run id", bl014.run_id || "-"],
-                ["BL-014 status", bl014.overall_status || "-"],
-                ["BL-014 checks", (bl014.checks_passed != null && bl014.checks_total != null) ? `${bl014.checks_passed}/${bl014.checks_total}` : "-"],
-            ];
-
-            for (const [k, v] of rows) {
-                const key = document.createElement("div");
-                key.textContent = k;
-                const val = document.createElement("div");
-                val.textContent = String(v);
-                statusPanel.appendChild(key);
-                statusPanel.appendChild(val);
-            }
-        }
-
-        async function refreshStatus() {
-            try {
-                const response = await fetch("/api/status");
-                const data = await response.json();
-                renderStatus(data);
-            } catch (_) {
-                renderStatus(null);
-            }
-        }
-
-        function renderArtifacts(items) {
-            artifactList.innerHTML = "";
-            const artifacts = Array.isArray(items) ? items : [];
-            if (artifacts.length === 0) {
-                artifactList.textContent = "No artifact metadata available.";
-                return;
-            }
-
-            for (const item of artifacts) {
-                const row = document.createElement("div");
-                row.className = "artifact-item";
-
-                const meta = document.createElement("div");
-                const existsTag = item.exists ? "exists" : "missing";
-                meta.textContent = `${item.name} | ${existsTag} | ${item.path}`;
-
-                const action = document.createElement("button");
-                action.className = "small";
-                action.type = "button";
-                action.textContent = "Preview";
-                action.disabled = !item.exists;
-                action.addEventListener("click", () => loadArtifactPreview(item.name));
-
-                row.appendChild(meta);
-                row.appendChild(action);
-                artifactList.appendChild(row);
-            }
-        }
-
-        async function refreshArtifacts() {
-            try {
-                const response = await fetch("/api/artifacts");
-                const data = await response.json();
-                renderArtifacts(data.artifacts);
-            } catch (_) {
-                renderArtifacts([]);
-            }
-        }
-
-        async function loadArtifactPreview(name) {
-            artifactPreview.textContent = "Loading preview...";
-            try {
-                const response = await fetch(`/api/artifact?name=${encodeURIComponent(name)}`);
-                const data = await response.json();
-                if (!response.ok) {
-                    artifactPreview.textContent = data.error || "Preview failed.";
-                    return;
-                }
-                artifactPreview.textContent = data.preview || "(empty)";
-            } catch (error) {
-                artifactPreview.textContent = `Preview failed: ${error}`;
-            }
-        }
-
-        function renderPipelineFlow(items) {
-            pipelineFlow.innerHTML = "";
-            const stages = Array.isArray(items) ? items : [];
-            if (stages.length === 0) {
-                pipelineFlow.textContent = "No stage data available.";
-                return;
-            }
-
-            for (const stage of stages) {
-                const row = document.createElement("div");
-                row.className = "artifact-item";
-
-                const meta = document.createElement("div");
-                const readyText = stage.ready ? "ready" : "pending";
-                meta.textContent = `${stage.stage_id.toUpperCase()} | ${readyText} | ${stage.description}`;
-
-                const action = document.createElement("button");
-                action.className = "small";
-                action.type = "button";
-                action.textContent = "Explain";
-                action.addEventListener("click", () => {
-                    stageSelect.value = stage.stage_id;
-                    explainStage(stage.stage_id);
-                });
-
-                row.appendChild(meta);
-                row.appendChild(action);
-                pipelineFlow.appendChild(row);
-            }
-        }
-
-        async function refreshPipelineFlow() {
-            try {
-                const response = await fetch("/api/explainer/flow");
-                const data = await response.json();
-                const stages = Array.isArray(data.stages) ? data.stages : [];
-                renderPipelineFlow(stages);
-
-                stageSelect.innerHTML = "";
-                for (const stage of stages) {
-                    const option = document.createElement("option");
-                    option.value = stage.stage_id;
-                    option.textContent = `${stage.stage_id.toUpperCase()} - ${stage.label}`;
-                    stageSelect.appendChild(option);
-                }
-                stageExplainBtn.disabled = stages.length === 0;
-            } catch (_) {
-                renderPipelineFlow([]);
-                stageSelect.innerHTML = "";
-                stageExplainBtn.disabled = true;
-            }
-        }
-
-        async function explainStage(stageId) {
-            const selected = String(stageId || "").trim();
-            if (!selected) {
-                stageExplainer.textContent = "No stage selected.";
-                return;
-            }
-
-            stageExplainer.textContent = "Loading stage details...";
-            try {
-                const response = await fetch(`/api/explainer/stage?stage=${encodeURIComponent(selected)}`);
-                const data = await response.json();
-                if (!response.ok) {
-                    stageExplainer.textContent = data.error || "Failed to load stage details.";
-                    return;
-                }
-                stageExplainer.textContent = JSON.stringify(data, null, 2);
-            } catch (error) {
-                stageExplainer.textContent = `Stage detail request failed: ${error}`;
-            }
-        }
-
-        async function refreshExplanationView() {
-            explanationView.textContent = "Loading explanations...";
-            try {
-                const response = await fetch("/api/explainer/explanations?limit=10");
-                const data = await response.json();
-                if (!response.ok) {
-                    explanationView.textContent = data.error || "Explanation data unavailable.";
-                    return;
-                }
-                explanationView.textContent = JSON.stringify(data, null, 2);
-            } catch (error) {
-                explanationView.textContent = `Explanation request failed: ${error}`;
-            }
-        }
-
-        async function refreshEvidenceView() {
-            evidenceView.textContent = "Loading run evidence...";
-            try {
-                const response = await fetch("/api/explainer/evidence");
-                const data = await response.json();
-                evidenceView.textContent = JSON.stringify(data, null, 2);
-            } catch (error) {
-                evidenceView.textContent = `Evidence request failed: ${error}`;
-            }
-        }
-
-        async function refreshGuideView() {
-            guideView.textContent = "Loading guided flow...";
-            try {
-                const response = await fetch("/api/explainer/guide");
-                const data = await response.json();
-                guideView.textContent = JSON.stringify(data, null, 2);
-            } catch (error) {
-                guideView.textContent = `Guide request failed: ${error}`;
-            }
-        }
-
-        function stopActiveStream() {
-            if (activeEventSource) {
-                activeEventSource.close();
-                activeEventSource = null;
-            }
-        }
-
-        async function runThesisSync(configPath, validateOnly, continueOnError) {
-            const response = await fetch("/api/run", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    config_path: configPath,
-                    validate_only: validateOnly,
-                    continue_on_error: continueOnError,
-                }),
-            });
-            const data = await response.json();
-            terminal.textContent = data.terminal_output || "";
-            if (data.status) {
-                renderStatus(data.status);
-            }
-        }
-
-        function runThesisStream(configPath, validateOnly, continueOnError) {
-            const params = new URLSearchParams({
-                config_path: configPath,
-                validate_only: String(validateOnly),
-                continue_on_error: String(continueOnError),
-            });
-
-            terminal.textContent = "";
-            stopActiveStream();
-            activeEventSource = new EventSource(`/api/run-stream?${params.toString()}`);
-
-            activeEventSource.addEventListener("line", (event) => {
-                terminal.textContent += `${event.data}\n`;
-                terminal.scrollTop = terminal.scrollHeight;
-            });
-
-            activeEventSource.addEventListener("done", (event) => {
-                try {
-                    const payload = JSON.parse(event.data);
-                    if (payload.status) {
-                        renderStatus(payload.status);
-                    }
-                } catch (_) {
-                }
-                stopActiveStream();
-                runBtn.disabled = false;
-                refreshArtifacts();
-                refreshPipelineFlow();
-                refreshExplanationView();
-                refreshEvidenceView();
-                refreshGuideView();
-            });
-
-            activeEventSource.onerror = () => {
-                stopActiveStream();
-                runBtn.disabled = false;
-            };
-        }
-
-        async function runThesis() {
-            const configPath = configPathInput.value.trim();
-            const validateOnly = !!validateOnlyInput.checked;
-            const continueOnError = !!continueOnErrorInput.checked;
-            const streamMode = !!streamModeInput.checked;
-
-            runBtn.disabled = true;
+        async function runPipeline() {
             terminal.textContent = "Running...";
-
+            runBtn.disabled = true;
             try {
-                if (streamMode) {
-                    runThesisStream(configPath, validateOnly, continueOnError);
-                    return;
-                }
-                await runThesisSync(configPath, validateOnly, continueOnError);
+                const response = await fetch("/api/run", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        config_path: runConfigSelect.value,
+                        validate_only: !!validateOnly.checked,
+                        continue_on_error: !!continueOnError.checked
+                    })
+                });
+                const payload = await response.json();
+                terminal.textContent = payload.terminal_output || JSON.stringify(payload, null, 2);
             } catch (error) {
-                terminal.textContent = `Request failed: ${error}`;
+                terminal.textContent = `Run request failed: ${error}`;
             } finally {
-                if (!streamMode) {
-                    runBtn.disabled = false;
-                    refreshStatus();
-                    refreshArtifacts();
-                    refreshPipelineFlow();
-                    refreshExplanationView();
-                    refreshEvidenceView();
-                    refreshGuideView();
-                }
+                runBtn.disabled = false;
             }
         }
 
-        runBtn.addEventListener("click", runThesis);
-        refreshBtn.addEventListener("click", () => {
-            refreshStatus();
-            refreshArtifacts();
-            refreshPipelineFlow();
-            refreshExplanationView();
-            refreshEvidenceView();
-            refreshGuideView();
+        loadProfileBtn.addEventListener("click", loadSelectedProfile);
+        resetBtn.addEventListener("click", () => {
+            state = clone(defaults);
+            saveStatus.className = "check";
+            saveStatus.textContent = "Reset to pipeline defaults.";
+            renderAll();
         });
+        advancedToggle.addEventListener("change", renderAll);
+        changedToggle.addEventListener("change", renderAll);
+        liveValidateToggle.addEventListener("change", updatePreview);
+        searchInput.addEventListener("input", renderControls);
+        applyQuickModeBtn.addEventListener("click", applyQuickMode);
+        validateBtn.addEventListener("click", validateConfig);
+        saveBtn.addEventListener("click", saveConfig);
+        downloadBtn.addEventListener("click", downloadConfig);
+        runBtn.addEventListener("click", runPipeline);
 
-        stageExplainBtn.addEventListener("click", () => {
-            explainStage(stageSelect.value);
+        Promise.all([loadConfigOptions(), loadSchema()]).catch((error) => {
+            jsonPreview.textContent = `Could not initialize config studio: ${error}`;
         });
-
-        builderSearch.addEventListener("input", renderConfigBuilder);
-        builderLoadProfileBtn.addEventListener("click", loadBuilderProfile);
-        builderResetBtn.addEventListener("click", () => {
-            builderState = deepClone(builderDefaults);
-            renderConfigBuilder();
-            refreshBuilderOutput();
-        });
-        builderExportBtn.addEventListener("click", exportBuilderConfig);
-
-        loadConfigOptions();
-        refreshConfigBuilderSchema();
-        refreshStatus();
-        refreshArtifacts();
-        refreshPipelineFlow();
-        refreshExplanationView();
-        refreshEvidenceView();
-        refreshGuideView();
     </script>
 </body>
 

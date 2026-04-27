@@ -5,11 +5,88 @@ Ordering convention (standardized 2026-03-24):
 - Entry IDs remain unique identifiers, but physical entry order reflects historical insertion timing (not strict numeric sorting).
 - New entries must be appended at the end and may include `superseded_by` when a prior decision is replaced.
 
-Maintenance snapshot (2026-04-21, updated):
-- Highest decision ID currently present: `D-312`
-- Total decision entries: 310
-- Status distribution: accepted=305, superseded=3, rejected=1
+Maintenance snapshot (2026-04-27, updated):
+- Highest decision ID currently present: `D-314`
+- Total decision entries: 312
+- Status distribution: accepted=307, superseded=3, rejected=1
 - ID integrity check: no duplicate decision IDs detected
+
+## D-314
+- date: 2026-04-27
+- status: accepted
+
+context:
+The finalized web surface currently includes a large config-studio refresh and related runtime-control updates in the working tree. Without explicit governance synchronization, this UI/runtime behavior shift would remain under-documented relative to the repo logging protocol.
+
+decision:
+Treat config-studio validation/save behavior and stage-payload diagnostic continuity as additive hardening rather than a scope change: keep pipeline stage semantics unchanged, but enforce safer UI-side config handling through loader-backed validation, constrained file naming, and explicit runtime-control resolution diagnostics when stage payload JSON is malformed.
+
+alternatives_considered:
+- Keep client-side checks only and skip server-side validation/save endpoints (rejected: weaker safety and easier contract drift).
+- Introduce breaking schema changes for config fields to simplify UI grouping (rejected: unnecessary compatibility risk).
+- Limit diagnostics continuity updates to a subset of runtime stages (rejected: inconsistent operator experience and traceability).
+
+rationale:
+This preserves existing deterministic pipeline contracts while making UI-driven config workflows safer, auditable, and aligned to stage-level runtime diagnostics across affected modules.
+
+evidence_basis:
+- `07_implementation/finalized/web_server.py` adds config payload validation and save endpoints plus guardrail checks.
+- `07_implementation/finalized/web/index.html` adds sectioned/advanced config UX with live validation and save actions.
+- Runtime-control resolvers for BL-004/BL-007/BL-008/BL-009/BL-010 now apply payload-resolution diagnostics consistently.
+- Focused regression validation passed: `tests/test_finalized_web_server.py` and `tests/test_runtime_controls_defaults_completeness.py` (`38/38`).
+
+impacted_files:
+- `07_implementation/finalized/web/index.html`
+- `07_implementation/finalized/web_server.py`
+- `07_implementation/src/profile/runtime_controls.py`
+- `07_implementation/src/playlist/runtime_controls.py`
+- `07_implementation/src/transparency/runtime_controls.py`
+- `07_implementation/src/observability/runtime_controls.py`
+- `07_implementation/src/reproducibility/runtime_controls.py`
+- `07_implementation/tests/test_finalized_web_server.py`
+- `07_implementation/tests/test_runtime_controls_defaults_completeness.py`
+- `00_admin/change_log.md`
+- `00_admin/decision_log.md`
+- `00_admin/thesis_state.md`
+- `00_admin/timeline.md`
+- `00_admin/unresolved_issues.md`
+
+review_date:
+none
+
+## D-313
+- date: 2026-04-22
+- status: accepted
+
+context:
+The repository was intentionally optimized for GitHub Copilot through `.github/copilot-instructions.md`, custom Ask/Autopilot agent files, VS Code settings/tasks, and Copilot memory/preferences. The user now also wants Codex to operate with the same practical workflow and repo expectations.
+
+decision:
+Add a root `AGENTS.md` as a Codex compatibility bridge that points to the existing Copilot instruction surfaces as canonical authority, summarizes the active runtime/governance/verification rules Codex must follow, and records user workflow defaults discovered from Copilot memory and settings. Align the bridge to task-first verification, CI-parity raw commands, strict startup/closeout enforcement, and the workspace/runtime Python interpreter split identified by Copilot review.
+
+alternatives_considered:
+- Keep relying only on `.github/copilot-instructions.md` (rejected: Codex benefits from a root `AGENTS.md` convention and may not consistently infer Copilot-only setup details).
+- Copy all Copilot instructions verbatim into `AGENTS.md` (rejected: would create duplicate authorities that can drift).
+- Replace the Copilot instruction surface with Codex-specific files (rejected: user wants to keep the current Copilot setup working).
+
+rationale:
+A small bridge preserves the existing Copilot-centered workflow while making Codex behavior explicit and auditable. The bridge avoids changing runtime code or pipeline contracts.
+
+evidence_basis:
+- `AGENTS.md` references `.github/copilot-instructions.md`, `.github/agents/`, `.vscode/tasks.json`, `.vscode/settings.json`, `.github/workflows/ci.yml`, user-profile natural-language workflow instructions, and governance startup files.
+- `file_map.md` now records `AGENTS.md` as a compatibility layer rather than a competing canonical instruction source.
+
+impacted_files:
+- `AGENTS.md`
+- `file_map.md`
+- `00_admin/change_log.md`
+- `00_admin/decision_log.md`
+- `00_admin/thesis_state.md`
+- `00_admin/timeline.md`
+- `00_admin/unresolved_issues.md`
+
+review_date:
+none
 
 ## D-312
 - date: 2026-04-21

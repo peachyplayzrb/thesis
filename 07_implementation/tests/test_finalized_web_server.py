@@ -344,3 +344,48 @@ def test_config_builder_profile_payload_unknown() -> None:
 
     assert status_code == 404
     assert "error" in payload
+
+
+def test_config_builder_validate_accepts_default_payload() -> None:
+    module = _load_module()
+    ok, payload = module._validate_run_config_payload(module._load_default_run_config_payload())
+
+    assert ok is True
+    assert payload["ok"] is True
+    assert payload["errors"] == []
+
+
+def test_config_builder_validate_rejects_non_object_payload() -> None:
+    module = _load_module()
+    ok, payload = module._validate_run_config_payload(["not", "an", "object"])
+
+    assert ok is False
+    assert payload["ok"] is False
+    assert "Config must be a JSON object" in payload["errors"]
+
+
+def test_normalize_config_save_name_rejects_unsafe_names() -> None:
+    module = _load_module()
+    safe_name, error = module._normalize_config_save_name("bad name.json")
+
+    assert safe_name is None
+    assert error is not None
+
+
+def test_save_config_builder_profile_writes_under_profiles(tmp_path, monkeypatch) -> None:
+    module = _load_module()
+    config_dir = tmp_path / "config" / "profiles"
+    config_dir.mkdir(parents=True)
+    monkeypatch.setattr(module, "IMPL_ROOT", tmp_path)
+    monkeypatch.setattr(module, "CONFIG_DIR", config_dir)
+    monkeypatch.setattr(
+        module,
+        "_validate_run_config_payload",
+        lambda _payload: (True, {"ok": True, "errors": [], "warnings": []}),
+    )
+
+    status_code, payload = module._save_config_builder_profile("custom_profile", {"schema_version": "run-config-v1"})
+
+    assert status_code == 200
+    assert payload["path"] == "config/profiles/custom_profile.json"
+    assert (config_dir / "custom_profile.json").is_file()

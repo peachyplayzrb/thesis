@@ -6,17 +6,17 @@ This wrapper does not modify core pipeline logic under src.
 
 from __future__ import annotations
 
-from copy import deepcopy
+import csv
 import json
 import subprocess
 import sys
-from datetime import datetime, timezone
+from copy import deepcopy
+from datetime import UTC, datetime
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from pathlib import Path
+from tempfile import NamedTemporaryFile
 from typing import Any
 from urllib.parse import parse_qs, urlparse
-import csv
-
 
 BASE_DIR = Path(__file__).resolve().parent
 IMPL_ROOT = BASE_DIR.parent
@@ -91,7 +91,7 @@ EXPLAINER_TRACK_LIMIT_MAX = 50
 
 
 def _iso_utc_mtime(path: Path) -> str:
-    return datetime.fromtimestamp(path.stat().st_mtime, tz=timezone.utc).isoformat()
+    return datetime.fromtimestamp(path.stat().st_mtime, tz=UTC).isoformat()
 
 
 def _config_choices() -> list[str]:
@@ -302,12 +302,18 @@ def _config_builder_schema_payload() -> dict[str, Any]:
     defaults = _load_default_run_config_payload()
     template_with_comments = _load_json_or_none(RUN_CONFIG_TEMPLATE_PATH) or {}
     comments = _extract_comment_fields(template_with_comments)
+    registry_metadata = _control_registry_metadata_by_path()
 
     settings = _flatten_config_settings(defaults)
     for row in settings:
         path = str(row.get("path", ""))
-        row["description"] = _setting_description(path, comments)
-        choices = _setting_choices(path)
+        metadata = registry_metadata.get(path, {})
+        row["description"] = metadata.get("effect_surface") or _setting_description(path, comments)
+        row["section"] = path.split(".")[0] if path else ""
+        row["stage"] = metadata.get("stage") or _stage_for_setting_path(path)
+        row["valid_range"] = metadata.get("valid_range")
+        row["advanced"] = _is_advanced_setting_path(path)
+        choices = metadata.get("valid_values") or _setting_choices(path)
         if choices is not None:
             row["choices"] = choices
 
@@ -316,6 +322,216 @@ def _config_builder_schema_payload() -> dict[str, Any]:
         "setting_count": len(settings),
         "settings": settings,
         "defaults": defaults,
+    }
+
+
+def _stage_for_setting_path(path: str) -> str:
+    section = path.split(".")[0] if path else ""
+    mapping = {
+        "input_scope": "BL-001/BL-002",
+        "interaction_scope": "BL-003",
+        "influence_tracks": "BL-003",
+        "seed_controls": "BL-003",
+        "ingestion_controls": "BL-001/BL-002",
+        "profile_controls": "BL-004",
+        "retrieval_controls": "BL-005",
+        "scoring_controls": "BL-006",
+        "assembly_controls": "BL-007",
+        "transparency_controls": "BL-008",
+        "observability_controls": "BL-009",
+        "reporting_controls": "BL-008",
+        "controllability_controls": "BL-011",
+        "orchestration_controls": "BL-013",
+    }
+    return mapping.get(section, "Global")
+
+
+def _is_advanced_setting_path(path: str) -> bool:
+    basic_paths = {
+        "control_mode.validation_profile",
+        "input_scope.include_top_tracks",
+        "input_scope.include_saved_tracks",
+        "input_scope.include_playlists",
+        "input_scope.include_recently_played",
+        "interaction_scope.include_interaction_types",
+        "influence_tracks.enabled",
+        "influence_tracks.track_ids",
+        "influence_tracks.preference_weight",
+        "seed_controls.match_rate_min_threshold",
+        "seed_controls.fuzzy_matching.enabled",
+        "seed_controls.fuzzy_matching.artist_threshold",
+        "seed_controls.fuzzy_matching.title_threshold",
+        "seed_controls.fuzzy_matching.combined_threshold",
+        "profile_controls.top_tag_limit",
+        "profile_controls.top_genre_limit",
+        "profile_controls.top_lead_genre_limit",
+        "retrieval_controls.semantic_strong_keep_score",
+        "retrieval_controls.semantic_min_keep_score",
+        "retrieval_controls.numeric_support_min_pass",
+        "retrieval_controls.numeric_thresholds",
+        "scoring_controls.component_weights",
+        "scoring_controls.numeric_thresholds",
+        "scoring_controls.apply_bl003_influence_tracks",
+        "assembly_controls.target_size",
+        "assembly_controls.min_score_threshold",
+        "assembly_controls.max_per_genre",
+        "assembly_controls.max_consecutive",
+        "assembly_controls.influence_policy_mode",
+        "transparency_controls.top_contributor_limit",
+        "observability_controls.diagnostic_sample_limit",
+        "orchestration_controls.continue_on_error",
+        "orchestration_controls.refresh_seed_policy",
+    }
+    return path not in basic_paths
+
+
+def _control_registry_metadata_by_path() -> dict[str, dict[str, Any]]:
+    src_root = IMPL_ROOT / "src"
+    inserted = False
+    src_root_text = str(src_root)
+    if src_root_text not in sys.path:
+        sys.path.insert(0, src_root_text)
+        inserted = True
+
+    try:
+        from run_config.control_registry import CONTROL_REGISTRY  # type: ignore
+
+        metadata: dict[str, dict[str, Any]] = {}
+        for entry in CONTROL_REGISTRY:
+            section = str(entry.get("section", "")).strip()
+            name = str(entry.get("name", "")).strip()
+            if not section or not name:
+                continue
+            metadata[f"{section}.{name}"] = dict(entry)
+        return metadata
+    except Exception:
+        return {}
+    finally:
+        if inserted:
+            try:
+                sys.path.remove(src_root_text)
+            except ValueError:
+                pass
+
+
+def _validate_run_config_payload(payload: Any) -> tuple[bool, dict[str, Any]]:
+    if not isinstance(payload, dict):
+        return False, {"ok": False, "errors": ["Config must be a JSON object"], "warnings": []}
+
+    temp_path: Path | None = None
+    try:
+        with NamedTemporaryFile("w", encoding="utf-8", suffix=".json", delete=False) as handle:
+            json.dump(payload, handle, ensure_ascii=True, indent=2)
+            temp_path = Path(handle.name)
+
+        src_root = IMPL_ROOT / "src"
+        inserted = False
+        src_root_text = str(src_root)
+        if src_root_text not in sys.path:
+            sys.path.insert(0, src_root_text)
+            inserted = True
+        try:
+            from run_config.run_config_utils import RunConfigError, load_run_config  # type: ignore
+
+            effective = load_run_config(temp_path)
+        except RunConfigError as exc:
+            return False, {"ok": False, "errors": [str(exc)], "warnings": []}
+        finally:
+            if inserted:
+                try:
+                    sys.path.remove(src_root_text)
+                except ValueError:
+                    pass
+
+        warnings = _config_guardrail_warnings(effective or payload)
+        return True, {
+            "ok": True,
+            "errors": [],
+            "warnings": warnings,
+            "effective_config": effective,
+        }
+    except Exception as exc:
+        return False, {"ok": False, "errors": [f"Validation failed: {exc}"], "warnings": []}
+    finally:
+        if temp_path is not None:
+            try:
+                temp_path.unlink(missing_ok=True)
+            except OSError:
+                pass
+
+
+def _config_guardrail_warnings(config: dict[str, Any]) -> list[str]:
+    warnings: list[str] = []
+    input_scope = config.get("input_scope") if isinstance(config.get("input_scope"), dict) else {}
+    if not any(
+        bool(input_scope.get(key))
+        for key in ("include_top_tracks", "include_saved_tracks", "include_playlists", "include_recently_played")
+    ):
+        warnings.append("At least one input source should be enabled.")
+
+    profile_controls = config.get("profile_controls") if isinstance(config.get("profile_controls"), dict) else {}
+    retrieval_controls = config.get("retrieval_controls") if isinstance(config.get("retrieval_controls"), dict) else {}
+    for suffix in ("tag", "genre", "lead_genre"):
+        profile_key = f"top_{suffix}_limit"
+        retrieval_key = f"profile_top_{suffix}_limit"
+        if retrieval_controls.get(retrieval_key, 0) > profile_controls.get(profile_key, 0):
+            warnings.append(f"{retrieval_key} should not exceed {profile_key}.")
+
+    control_mode = config.get("control_mode") if isinstance(config.get("control_mode"), dict) else {}
+    scoring_controls = config.get("scoring_controls") if isinstance(config.get("scoring_controls"), dict) else {}
+    retrieval_thresholds = retrieval_controls.get("numeric_thresholds")
+    scoring_thresholds = scoring_controls.get("numeric_thresholds")
+    if (
+        control_mode.get("allow_threshold_decoupling") is False
+        and isinstance(retrieval_thresholds, dict)
+        and isinstance(scoring_thresholds, dict)
+        and retrieval_thresholds != scoring_thresholds
+    ):
+        warnings.append("Retrieval and scoring numeric thresholds should match unless threshold decoupling is enabled.")
+
+    assembly_controls = config.get("assembly_controls") if isinstance(config.get("assembly_controls"), dict) else {}
+    target_size = assembly_controls.get("target_size")
+    max_per_genre = assembly_controls.get("max_per_genre")
+    if isinstance(target_size, int | float) and isinstance(max_per_genre, int | float) and max_per_genre > target_size:
+        warnings.append("max_per_genre is larger than target_size, so the diversity limit will not constrain the playlist.")
+
+    return warnings
+
+
+def _normalize_config_save_name(raw_name: str) -> tuple[str | None, str | None]:
+    name = raw_name.strip()
+    if not name:
+        return None, "A file name is required."
+    name = name.replace("\\", "/").split("/")[-1]
+    if not name.lower().endswith(".json"):
+        name = f"{name}.json"
+    safe_chars = set("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789._-")
+    if any(char not in safe_chars for char in name):
+        return None, "Use only letters, numbers, dots, underscores, and hyphens in the file name."
+    if name in {".json", "..json"} or name.startswith("."):
+        return None, "Use a normal JSON file name."
+    return name, None
+
+
+def _save_config_builder_profile(file_name: str, payload: Any) -> tuple[int, dict[str, Any]]:
+    ok, validation = _validate_run_config_payload(payload)
+    if not ok:
+        return 400, validation
+
+    safe_name, error = _normalize_config_save_name(file_name)
+    if error is not None or safe_name is None:
+        return 400, {"ok": False, "errors": [error or "Invalid file name"], "warnings": []}
+
+    target = CONFIG_DIR / safe_name
+    try:
+        target.write_text(json.dumps(payload, indent=2, ensure_ascii=True) + "\n", encoding="utf-8")
+    except OSError as exc:
+        return 500, {"ok": False, "errors": [f"Could not save config: {exc}"], "warnings": []}
+
+    return 200, {
+        "ok": True,
+        "path": str(target.relative_to(IMPL_ROOT)).replace("\\", "/"),
+        "warnings": validation.get("warnings", []),
     }
 
 
@@ -795,7 +1011,25 @@ class ThesisWebHandler(BaseHTTPRequestHandler):
 
     def do_POST(self) -> None:
         """Handle run requests from the browser UI."""
-        if self.path != "/api/run":
+        parsed = urlparse(self.path)
+        route = parsed.path.rstrip("/") or "/"
+
+        if route == "/api/config-builder/validate":
+            request_json = self._read_json_body()
+            ok, payload = _validate_run_config_payload(request_json.get("config"))
+            self._send_json(200 if ok else 400, payload)
+            return
+
+        if route == "/api/config-builder/save":
+            request_json = self._read_json_body()
+            status_code, payload = _save_config_builder_profile(
+                str(request_json.get("file_name", "")),
+                request_json.get("config"),
+            )
+            self._send_json(status_code, payload)
+            return
+
+        if route != "/api/run":
             self._send_json(404, {"error": "Not found"})
             return
 

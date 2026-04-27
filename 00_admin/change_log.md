@@ -7,10 +7,32 @@ Ordering convention (standardized 2026-03-24):
 - Entry order reflects historical insertion timing and may not be numerically contiguous in older sections.
 - New entries must be appended at the end; historical entries remain unchanged except for explicit correction records.
 
-Maintenance snapshot (2026-04-21, updated):
-- Highest change ID currently present: `C-609`
+Maintenance snapshot (2026-04-27, updated):
+- Highest change ID currently present: `C-611`
 - Maintenance snapshot (2026-03-28): prior snapshot stated `C-205`; superseded by the 2026-03-29 architecture migration + documentation sync wave (C-204 through C-219).
 - Known legacy correction applied in this file: prior duplicate `C-079` entry has been normalized to `C-135` for unique-ID compliance.
+
+## C-611
+- date: 2026-04-27
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Implemented config-studio hardening in the finalized web surface and synchronized runtime-control diagnostics continuity across BL-004/BL-007/BL-008/BL-009/BL-010. Added server-side config validation/save endpoints, enriched schema metadata for UI rendering (stage/section/advanced/range), and expanded regression tests for config validation/save and malformed stage-payload fallback reporting.
+- reason: User requested reviewing the active changes and completing the necessary follow-through steps for readiness.
+- evidence_basis: `07_implementation/finalized/web_server.py` now exposes `/api/config-builder/validate` and `/api/config-builder/save`, validates payloads via the real run-config loader, and enforces safe profile file names; `07_implementation/finalized/web/index.html` now supports sectioned controls, advanced toggle, live validation, and save/validate actions; runtime-control modules now include payload-resolution diagnostics wiring; focused regression tests passed (`38/38`) on modified test surfaces.
+- affected_components: `07_implementation/finalized/web/index.html`, `07_implementation/finalized/web_server.py`, `07_implementation/src/profile/runtime_controls.py`, `07_implementation/src/playlist/runtime_controls.py`, `07_implementation/src/transparency/runtime_controls.py`, `07_implementation/src/observability/runtime_controls.py`, `07_implementation/src/reproducibility/runtime_controls.py`, `07_implementation/tests/test_finalized_web_server.py`, `07_implementation/tests/test_runtime_controls_defaults_completeness.py`, `00_admin/change_log.md`, `00_admin/decision_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`, `00_admin/unresolved_issues.md`
+- impact_assessment: Medium-positive. Improves operator safety and traceability for UI-driven config editing while preserving pipeline contracts and stage semantics.
+- approval_record: User request in chat on 2026-04-27 ("lets look at what changed and do the necessary steps").
+
+## C-610
+- date: 2026-04-22
+- proposed_by: user + Codex
+- status: accepted
+- change_summary: Added and refined root `AGENTS.md` as a Codex compatibility bridge for the existing Copilot workspace setup, including active runtime posture, natural-language routing, user workflow defaults, strict startup/closeout rules, local Copilot runtime posture, and task-first CI-parity verification commands.
+- reason: User requested making the current Copilot-oriented configuration work well for Codex while preserving the same setup and behavior as much as possible.
+- evidence_basis: `AGENTS.md` points Codex to `.github/copilot-instructions.md`, thesis Ask/Autopilot agent files, VS Code tasks/settings, CI workflow, user-profile natural-language workflow instructions, and current governance ledgers instead of duplicating Copilot as a competing authority. Post-audit refinements aligned interpreter guidance with workspace/runtime split and verification with task/CI command posture.
+- affected_components: `AGENTS.md`, `file_map.md`, `00_admin/change_log.md`, `00_admin/decision_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`, `00_admin/unresolved_issues.md`
+- impact_assessment: Low-positive. Improves Codex collaboration consistency without changing runtime code, pipeline semantics, task surfaces, or thesis scope.
+- approval_record: User request in chat on 2026-04-22 ("make it, and incorporate it well").
 
 ## C-609
 - date: 2026-04-21

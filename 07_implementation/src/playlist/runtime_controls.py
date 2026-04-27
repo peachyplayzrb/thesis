@@ -18,6 +18,10 @@ from shared_utils.env_utils import (
     env_int,
     env_str,
 )
+from shared_utils.runtime_control_utils import (
+    apply_payload_resolution_diagnostics,
+    inspect_stage_payload_resolution,
+)
 from shared_utils.stage_runtime_resolver import defaults_loader, resolve_stage_controls
 
 
@@ -187,8 +191,15 @@ def _load_bl007_controls_from_env() -> dict[str, object]:
 
 def resolve_bl007_runtime_controls() -> dict[str, object]:
     """Resolve BL-007 controls with payload-first precedence."""
-    return resolve_stage_controls(
+    payload_status = inspect_stage_payload_resolution()
+
+    controls = resolve_stage_controls(
         load_from_env=_load_bl007_controls_from_env,
         load_payload_defaults=defaults_loader(DEFAULT_ASSEMBLY_CONTROLS),
         sanitize=_sanitize_bl007_controls,
+    )
+    return apply_payload_resolution_diagnostics(
+        controls,
+        stage_label="BL-007",
+        payload_status=payload_status,
     )

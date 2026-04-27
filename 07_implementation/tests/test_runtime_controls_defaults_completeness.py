@@ -47,3 +47,32 @@ def test_payload_empty_controls_use_canonical_defaults_not_env(
 
     assert controls["config_source"] == "defaults"
     assert controls[expected_key] == expected_value
+
+
+@pytest.mark.parametrize(
+    ("module_name", "function_name", "stage_label"),
+    [
+        ("profile.runtime_controls", "resolve_bl004_runtime_controls", "BL-004"),
+        ("retrieval.runtime_controls", "resolve_bl005_runtime_controls", "BL-005"),
+        ("playlist.runtime_controls", "resolve_bl007_runtime_controls", "BL-007"),
+        ("transparency.runtime_controls", "resolve_bl008_runtime_controls", "BL-008"),
+        ("observability.runtime_controls", "resolve_bl009_runtime_controls", "BL-009"),
+        ("reproducibility.runtime_controls", "resolve_bl010_runtime_controls", "BL-010"),
+    ],
+)
+def test_malformed_stage_payload_fallback_is_reported(
+    monkeypatch,
+    module_name: str,
+    function_name: str,
+    stage_label: str,
+) -> None:
+    monkeypatch.setenv("BL_STAGE_CONFIG_JSON", "{not-json")
+
+    controls = _resolver(module_name, function_name)()
+
+    diagnostics = controls["runtime_control_resolution_diagnostics"]
+    warnings = controls["runtime_control_validation_warnings"]
+    assert diagnostics["payload_json_present"] is True
+    assert diagnostics["payload_json_parse_error"] is True
+    assert diagnostics["resolution_path"] == "environment"
+    assert any(stage_label in str(item) for item in warnings)

@@ -20,6 +20,10 @@ from shared_utils.env_utils import (
     env_int,
     env_str,
 )
+from shared_utils.runtime_control_utils import (
+    apply_payload_resolution_diagnostics,
+    inspect_stage_payload_resolution,
+)
 from shared_utils.stage_runtime_resolver import defaults_loader, resolve_stage_controls
 
 
@@ -177,6 +181,8 @@ def _load_bl004_controls_from_env() -> dict[str, object]:
 
 
 def resolve_bl004_runtime_controls(*, inferred_user_id: str | None = None) -> dict[str, object]:
+    payload_status = inspect_stage_payload_resolution()
+
     controls = resolve_stage_controls(
         load_from_env=_load_bl004_controls_from_env,
         load_payload_defaults=defaults_loader(DEFAULT_PROFILE_CONTROLS),
@@ -184,4 +190,8 @@ def resolve_bl004_runtime_controls(*, inferred_user_id: str | None = None) -> di
     )
     if controls.get("user_id") in {None, "", "unknown_user"} and inferred_user_id:
         controls["user_id"] = inferred_user_id
-    return controls
+    return apply_payload_resolution_diagnostics(
+        controls,
+        stage_label="BL-004",
+        payload_status=payload_status,
+    )

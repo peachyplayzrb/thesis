@@ -22,7 +22,8 @@ For every tracked file, record four things:
 
 | File | Status | Current Location | What It Does | Notes |
 | --- | --- | --- | --- | --- |
-| `.github/copilot-instructions.md` | active | `.github/` | Defines the repo-wide thesis workflow rules, including session-start checks, Ask versus Autopilot routing, logging strictness, and automatic workflow-improvement behavior. | Canonical workspace instruction surface; replaced stale `AGENTS.md` inventory reference because the repo intentionally uses workspace instructions instead of a root `AGENTS.md`. |
+| `AGENTS.md` | active | repo root | Bridges the existing Copilot workspace setup into Codex-readable repo instructions. | Added as a compatibility layer only; `.github/copilot-instructions.md` remains the canonical instruction source. |
+| `.github/copilot-instructions.md` | active | `.github/` | Defines the repo-wide thesis workflow rules, including session-start checks, Ask versus Autopilot routing, logging strictness, and automatic workflow-improvement behavior. | Canonical workspace instruction surface; root `AGENTS.md` now exists only as a Codex compatibility bridge. |
 | `.github/agents/thesis-ask.agent.md` | active | `.github/agents/` | Defines the read-first Ask-mode agent for review, explanation, triage, and navigation work in the thesis repo. | Added to support natural-language Ask sessions without requiring prompt commands. |
 | `.github/agents/thesis-autopilot.agent.md` | active | `.github/agents/` | Defines the execution-first Autopilot agent for end-to-end implementation, verification, and governance synchronization. | Added to support natural-language Plan or Autopilot sessions without requiring prompt commands. |
 | `.gitignore` | active | repo root | Tells git which local caches, generated outputs, probe files, credentials, and temporary artifacts should stay untracked. | Updated comment text and added ignore rules for cleanup-operation artifacts and archive staging. |
