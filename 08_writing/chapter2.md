@@ -8,7 +8,7 @@ Music streaming environments expose listeners to catalogues of millions of track
 
 Interaction logs such as play counts and session traces are frequently interpreted as behavioural indicators of preference, yet they remain indirect and interpretation-dependent (Roy and Dutta, 2022). This dependence introduces a structural inconsistency between scale and validity: implicit data are abundant and operationally efficient, but their causal meaning is often uncertain. Adomavicius and Tuzhilin (2005) treat observed interaction behaviour as a practical utility signal, whereas Roy and Dutta (2022) challenge that assumption by showing that interaction evidence is shaped by data-source and context effects that can weaken direct preference interpretation. This contradiction remains unresolved because high-volume implicit traces improve model learnability while simultaneously weakening causal interpretability.
 
-A recurring position in recommender research is that higher predictive accuracy reflects higher recommendation quality. However, methodological analyses challenge this claim by showing that reported improvements are highly sensitive to preprocessing, split design, and metric framing (Herlocker et al., 2004; Ferrari Dacrema et al., 2021; Bauer et al., 2024). While benchmark protocols support comparability, they may understate external validity and explanation fidelity. Studies that prioritise fixed evaluation settings often report strong gains, but these gains do not consistently establish transferability, inspectability, or reproducibility across deployment contexts. The extent to which accuracy gains translate into meaningful recommendation improvements therefore remains uncertain. The accountability-oriented critique is currently better evidenced, because documented reproducibility failures and protocol fragility are repeatedly observed across recommender evaluations (Ferrari Dacrema et al., 2021; Bauer et al., 2024), whereas many accuracy-centered claims still depend on tightly controlled benchmark assumptions.
+A recurring position in recommender research is that higher predictive accuracy reflects higher recommendation quality. However, methodological analyses challenge this claim by showing that reported improvements are highly sensitive to preprocessing, split design, and metric framing (Herlocker et al., 2004; Ferrari Dacrema et al., 2021; Bauer et al., 2024). While benchmark protocols support comparability, they may understate external validity and explanation fidelity. Studies that prioritise fixed evaluation settings often report strong gains, but these gains do not consistently establish transferability, inspectability, or reproducibility across deployment contexts. The extent to which accuracy gains translate into meaningful recommendation improvements therefore remains uncertain. In the reviewed evidence, reproducibility failures and protocol fragility are repeatedly documented across recommender evaluations (Ferrari Dacrema et al., 2021; Bauer et al., 2024), whereas many accuracy-centred claims remain dependent on tightly controlled benchmark assumptions.
 
 The literature progresses from paradigm-level modelling debates to transparency and evaluation concerns, then to profile construction and candidate generation, before narrowing to music-specific constraints and cross-source alignment and reproducibility challenges. Across this progression, each stage inherits assumptions from earlier stages, and accountability is often examined as isolated components rather than as a unified evidential chain.
 
@@ -101,79 +101,3 @@ This thesis is positioned to address that integrated gap by designing and evalua
 ## 2.9 Chapter Summary
 
 This chapter has reviewed literature relevant to transparent and controllable playlist generation under cross-source data conditions. It has examined the evidential reliability of recommendation paradigms, the gap between explanation persuasiveness and explanation fidelity, the modelling significance of profile construction and candidate generation, and the challenges specific to music recommendation and playlist quality. The cross-source alignment and reproducibility sections further established that uncertainty in preference evidence and process-level traceability are first-order design concerns rather than secondary implementation details. Chapter 3 now translates these findings into a concrete design methodology and architecture for the artefact developed in this thesis.
-
-
-
-# References
-
-Adomavicius, G. and Tuzhilin, A. (2005) 'Toward the next generation of recommender systems: a survey of the state-of-the-art and possible extensions', IEEE Transactions on Knowledge and Data Engineering, 17(6), pp. 734-749. doi: 10.1109/TKDE.2005.99.
-
-Afroogh, S., Akbari, A., Malone, E., Kargar, M. and Alambeigi, H. (2024) 'Trust in AI: progress, challenges, and future directions', Humanities and Social Sciences Communications, 11(1), p. 1568. doi: 10.1057/s41599-024-04044-8.
-
-Andjelkovic, I., Parra, D. and O'Donovan, J. (2019) 'Moodplay: Interactive music recommendation based on artists' mood similarity', International Journal of Human-Computer Studies, 121, pp. 142-159. doi: 10.1016/j.ijhcs.2018.04.004.
-
-Anelli, V.W., Bellogin, A., Ferrara, A., Malitesta, D., Merra, F.A., Pomo, C., Donini, F.M. and Di Noia, T. (2021) 'Elliot: A comprehensive and rigorous framework for reproducible recommender systems evaluation', in Proceedings of the 44th International ACM SIGIR Conference on Research and Development in Information Retrieval. doi: 10.1145/3404835.3463245.
-
-Bauer, C., Zangerle, E. and Said, A. (2024) 'Exploring the landscape of recommender systems evaluation: practices and perspectives', ACM Transactions on Recommender Systems, 2(1), Article 11, pp. 1-31. doi: 10.1145/3629170.
-
-Beel, J., Breitinger, C., Langer, S., Lommatzsch, A. and Gipp, B. (2016) 'Towards reproducibility in recommender-systems research', User Modeling and User-Adapted Interaction, 26(1), pp. 69-101. doi: 10.1007/s11257-016-9174-x.
-
-Bellogin, A. and Said, A. (2021) 'Improving accountability in recommender systems research through reproducibility', User Modeling and User-Adapted Interaction, 31(5), pp. 941-977. doi: 10.1007/s11257-021-09302-x.
-
-Bogdanov, D., Haro, M., Fuhrmann, F., Xambo, A., Gomez, E. and Herrera, P. (2013) 'Semantic audio content-based music recommendation and visualization based on user preference examples', Information Processing and Management, 49(1), pp. 13-33. doi: 10.1016/j.ipm.2012.06.004.
-
-Bonnin, G. and Jannach, D. (2015) 'Automated generation of music playlists: survey and experiments', ACM Computing Surveys, 47(2), pp. 1-35. doi: 10.1145/2652481.
-
-Cano, E. and Morisio, M. (2017) 'Hybrid recommender systems: a systematic literature review', Intelligent Data Analysis, 21(6), pp. 1487-1524. doi: 10.3233/IDA-163209.
-
-Cavenaghi, E., Sottocornola, S., Stella, F. and Zanker, M. (2023) 'A systematic study on reproducibility of reinforcement learning in recommendation systems', ACM Transactions on Recommender Systems, 1(3), pp. 1-23. doi: 10.1145/3596519.
-
-Deldjoo, Y., Schedl, M. and Knees, P. (2024) 'Content-driven music recommendation: evolution, state of the art, and challenges', Computer Science Review, 51, p. 100618. doi: 10.1016/j.cosrev.2024.100618.
-
-Elmagarmid, A.K., Ipeirotis, P.G. and Verykios, V.S. (2007) 'Duplicate record detection: a survey', IEEE Transactions on Knowledge and Data Engineering, 19(1), pp. 1-16. doi: 10.1109/TKDE.2007.250581.
-
-Ferrari Dacrema, M., Boglio, S., Cremonesi, P. and Jannach, D. (2021) 'A troubling analysis of reproducibility and progress in recommender systems research', ACM Transactions on Information Systems, 39(2), pp. 1-49. doi: 10.1145/3434185.
-
-Ferraro, A., Bogdanov, D., Yoon, J., Kim, K. and Serra, X. (2018) 'Automatic playlist continuation using a hybrid recommender system combining features from text and audio', in Proceedings of the ACM Recommender Systems Challenge 2018. doi: 10.1145/3267471.3267473.
-
-Fkih, F. (2022) 'Similarity measures for collaborative filtering-based recommender systems: review and experimental comparison', Journal of King Saud University - Computer and Information Sciences, 34(9), pp. 7645-7669. doi: 10.1016/j.jksuci.2021.09.014.
-
-Flexer, A. and Grill, T. (2016) 'The problem of limited inter-rater agreement in modelling music similarity', Journal of New Music Research, 45(3), pp. 239-251. doi: 10.1080/09298215.2016.1200631.
-
-He, X., Liao, L., Zhang, H., Nie, L., Hu, X. and Chua, T.-S. (2017) 'Neural collaborative filtering', in Proceedings of the 26th International Conference on World Wide Web, pp. 173-182. doi: 10.1145/3038912.3052569.
-
-Herlocker, J.L., Konstan, J.A., Terveen, L.G. and Riedl, J.T. (2004) 'Evaluating collaborative filtering recommender systems', ACM Transactions on Information Systems, 22(1), pp. 5-53. doi: 10.1145/963770.963772.
-
-Jin, Y., Tintarev, N., Htun, N.N. and Verbert, K. (2020) 'Effects of personal characteristics in control-oriented user interfaces for music recommender systems', User Modeling and User-Adapted Interaction, 30(2), pp. 199-249. doi: 10.1007/s11257-019-09247-2.
-
-Knijnenburg, B.P., Willemsen, M.C., Gantner, Z., Soncu, H. and Newell, C. (2012) 'Explaining the user experience of recommender systems', User Modeling and User-Adapted Interaction, 22(4), pp. 441-504. doi: 10.1007/s11257-011-9118-4.
-
-Lu, J., Wu, D., Mao, M., Wang, W. and Zhang, G. (2015) 'Recommender system application developments: a survey', Decision Support Systems, 74, pp. 12-32. doi: 10.1016/j.dss.2015.03.008.
-
-Nauta, M., Trienes, J., Pathak, S., Nguyen, E., Peters, M., Schmitt, Y., Schlotterer, J., Van Keulen, M. and Seifert, C. (2023) 'From anecdotal evidence to quantitative evaluation methods: a systematic review on evaluating explainable AI', ACM Computing Surveys, 55(13), pp. 1-42. doi: 10.1145/3583558.
-
-Papadakis, G., Skoutas, D., Thanos, E. and Palpanas, T. (2021) 'Blocking and filtering techniques for entity resolution: a survey', ACM Computing Surveys, 53(2), pp. 1-42. doi: 10.1145/3377455.
-
-Pegoraro Santana, I.A., Pinhelli, F., Donini, J., Catharin, L., Mangolin, R.B., Da Costa, Y.M.E.G., Delisandra Feltrim, V. and Domingues, M.A. (2020) 'Music4All: a new music database and its applications', in 2020 International Conference on Systems, Signals and Image Processing (IWSSIP). doi: 10.1109/IWSSIP48289.2020.9145170.
-
-Roy, D. and Dutta, M. (2022) 'A systematic review and research perspective on recommender systems', Journal of Big Data, 9(1), p. 59. doi: 10.1186/s40537-022-00592-5.
-
-Ru, G., Zhang, X., Wang, J., Cheng, N. and Xiao, J. (2023) 'Improving music genre classification from multi-modal properties of music and genre correlations perspective', in ICASSP 2023 - 2023 IEEE International Conference on Acoustics, Speech and Signal Processing. doi: 10.1109/ICASSP49357.2023.10097241.
-
-Schedl, M., Zamani, H., Chen, C.-W., Deldjoo, Y. and Elahi, M. (2018) 'Current challenges and visions in music recommender systems research', International Journal of Multimedia Information Retrieval, 7(2), pp. 95-116. doi: 10.1007/s13735-018-0154-2.
-
-Schweiger, H., Parada-Cabaleiro, E. and Schedl, M. (2025) 'The impact of playlist characteristics on coherence in user-curated music playlists', EPJ Data Science, 14(1), p. 24. doi: 10.1140/epjds/s13688-025-00531-3.
-
-Sotirou, T., Lyberatos, V., Mastromichalakis, O.M. and Stamou, G. (2025) 'MusicLIME: explainable multimodal music understanding', in ICASSP 2025 - 2025 IEEE International Conference on Acoustics, Speech and Signal Processing. doi: 10.1109/ICASSP49660.2025.10889771.
-
-Tintarev, N. and Masthoff, J. (2007) 'A survey of explanations in recommender systems', in 2007 IEEE 23rd International Conference on Data Engineering Workshop, pp. 801-810. doi: 10.1109/ICDEW.2007.4401070.
-
-Tintarev, N. and Masthoff, J. (2012) 'Evaluating the effectiveness of explanations for recommender systems: methodological issues and empirical studies on the impact of personalization', User Modeling and User-Adapted Interaction, 22(4), pp. 399-439. doi: 10.1007/s11257-011-9117-5.
-
-Vall, A., Dorfer, M., Eghbal-zadeh, H., Schedl, M., Burjorjee, K. and Widmer, G. (2019) 'Feature-combination hybrid recommender systems for automated music playlist continuation', User Modeling and User-Adapted Interaction, 29(2), pp. 527-572. doi: 10.1007/s11257-018-9215-8.
-
-Zamani, H., Schedl, M., Lamere, P. and Chen, C.-W. (2019) 'An analysis of approaches taken in the ACM RecSys Challenge 2018 for automatic music playlist continuation', ACM Transactions on Intelligent Systems and Technology, 10(5), pp. 1-21. doi: 10.1145/3344257.
-
-Zhang, Y. and Chen, X. (2020) 'Explainable recommendation: a survey and new perspectives', Foundations and Trends in Information Retrieval, 14(1), pp. 1-101. doi: 10.1561/1500000066.
-
-Zhu, J., Dai, Q., Su, L., Ma, R., Liu, J., Cai, G., Xiao, X. and Zhang, R. (2022) 'BARS: Towards Open Benchmarking for Recommender Systems', in Proceedings of the 45th International ACM SIGIR Conference on Research and Development in Information Retrieval. doi: 10.1145/3477495.3531723.
