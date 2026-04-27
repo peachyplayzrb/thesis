@@ -158,6 +158,8 @@ ALIGNMENT_DEFAULT_RELATIVE_PATHS: Final[dict[str, Path]] = {
 
 MATCH_STATUS_MATCHED: Final[str] = "matched"
 MATCH_STATUS_UNMATCHED: Final[str] = "unmatched"
+MATCH_STATUS_AMBIGUOUS: Final[str] = "ambiguous"
+MATCH_STATUS_INVALID: Final[str] = "invalid"
 
 MATCH_METHOD_SPOTIFY_ID_EXACT: Final[str] = "spotify_id_exact"
 MATCH_METHOD_METADATA_FALLBACK: Final[str] = "metadata_fallback"
@@ -170,6 +172,7 @@ UNMATCHED_REASON_FUZZY_ARTIST_THRESHOLD_FAILED: Final[str] = "fuzzy_artist_thres
 UNMATCHED_REASON_FUZZY_TITLE_THRESHOLD_FAILED: Final[str] = "fuzzy_title_threshold_failed"
 UNMATCHED_REASON_FUZZY_COMBINED_THRESHOLD_FAILED: Final[str] = "fuzzy_combined_threshold_failed"
 UNMATCHED_REASON_FUZZY_DURATION_REJECTED: Final[str] = "fuzzy_duration_rejected"
+UNMATCHED_REASON_METADATA_AMBIGUOUS: Final[str] = "metadata_ambiguous_multiple_candidates"
 
 INTERACTION_TYPE_HISTORY: Final[str] = "history"
 INTERACTION_TYPE_INFLUENCE: Final[str] = "influence"

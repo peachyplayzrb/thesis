@@ -51,6 +51,8 @@ def main() -> None:
     print(f"matched_by_spotify_id={artifacts.summary_counts['matched_by_spotify_id']}")
     print(f"matched_by_metadata={artifacts.summary_counts['matched_by_metadata']}")
     print(f"matched_by_fuzzy={artifacts.summary_counts.get('matched_by_fuzzy', 0)}")
+    print(f"ambiguous_matches={artifacts.summary_counts.get('ambiguous_matches', 0)}")
+    print(f"invalid_records={artifacts.summary_counts.get('invalid_records', 0)}")
     print(f"unmatched={artifacts.summary_counts['unmatched']}")
     print(f"matched_events_rows={artifacts.matched_events_rows}")
     print(f"seed_table_rows={artifacts.seed_table_rows}")

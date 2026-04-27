@@ -10,8 +10,11 @@ from alignment.constants import (
     MATCH_METHOD_FUZZY_TITLE_ARTIST,
     MATCH_METHOD_METADATA_FALLBACK,
     MATCH_METHOD_SPOTIFY_ID_EXACT,
+    MATCH_STATUS_AMBIGUOUS,
+    MATCH_STATUS_INVALID,
     MATCH_STATUS_MATCHED,
     MATCH_STATUS_UNMATCHED,
+    UNMATCHED_REASON_METADATA_AMBIGUOUS,
     MATCH_STRATEGY_ORDER,
     UNMATCHED_REASON_FUZZY_ARTIST_THRESHOLD_FAILED,
     UNMATCHED_REASON_FUZZY_COMBINED_THRESHOLD_FAILED,
@@ -177,25 +180,48 @@ def _update_unmatched_reason_counts(
     track_name: str,
     artist_primary: str,
     fuzzy_failure_reason: str,
-) -> str:
+) -> tuple[str, bool]:
     if not spotify_track_id and not (track_name and artist_primary):
         match_counts["unmatched_missing_keys"] += 1
-        return UNMATCHED_REASON_MISSING_KEYS
+        return UNMATCHED_REASON_MISSING_KEYS, True
 
     match_counts["unmatched_no_candidate"] += 1
     if fuzzy_failure_reason == "artist_threshold":
         match_counts["fuzzy_artist_threshold_failed"] += 1
-        return UNMATCHED_REASON_FUZZY_ARTIST_THRESHOLD_FAILED
+        return UNMATCHED_REASON_FUZZY_ARTIST_THRESHOLD_FAILED, False
     if fuzzy_failure_reason == "title_threshold":
         match_counts["fuzzy_title_threshold_failed"] += 1
-        return UNMATCHED_REASON_FUZZY_TITLE_THRESHOLD_FAILED
+        return UNMATCHED_REASON_FUZZY_TITLE_THRESHOLD_FAILED, False
     if fuzzy_failure_reason == "combined_threshold":
         match_counts["fuzzy_combined_threshold_failed"] += 1
-        return UNMATCHED_REASON_FUZZY_COMBINED_THRESHOLD_FAILED
+        return UNMATCHED_REASON_FUZZY_COMBINED_THRESHOLD_FAILED, False
     if fuzzy_failure_reason == "duration_rejected":
         match_counts["fuzzy_duration_rejected"] += 1
-        return UNMATCHED_REASON_FUZZY_DURATION_REJECTED
-    return UNMATCHED_REASON_NO_CANDIDATE
+        return UNMATCHED_REASON_FUZZY_DURATION_REJECTED, False
+    return UNMATCHED_REASON_NO_CANDIDATE, False
+
+
+def _metadata_match_is_ambiguous(
+    candidates: list[dict[str, str]],
+    target_duration_ms: int | None,
+) -> bool:
+    if len(candidates) <= 1:
+        return False
+    if target_duration_ms is None:
+        return True
+
+    deltas: list[int] = []
+    for row in candidates:
+        candidate_duration = parse_int(row.get("duration_ms", ""))
+        if candidate_duration is None:
+            continue
+        deltas.append(abs(candidate_duration - target_duration_ms))
+
+    if not deltas:
+        return True
+
+    best_delta = min(deltas)
+    return sum(1 for delta in deltas if delta == best_delta) > 1
 
 
 def _resolve_match_for_event(
@@ -219,6 +245,8 @@ def _resolve_match_for_event(
         "matched_row": None,
         "duration_delta": None,
         "match_method": "",
+        "reason": "",
+        "is_ambiguous": False,
         "fuzzy_title_score": None,
         "fuzzy_artist_score": None,
         "fuzzy_combined_score": None,
@@ -249,6 +277,10 @@ def _resolve_match_for_event(
                 continue
             candidates = by_title_artist.get((title_key, artist_key), [])
             if candidates:
+                if _metadata_match_is_ambiguous(candidates, event_duration):
+                    resolved_match["reason"] = UNMATCHED_REASON_METADATA_AMBIGUOUS
+                    resolved_match["is_ambiguous"] = True
+                    continue
                 matched_row, duration_delta = choose_best_duration_match(candidates, event_duration)
                 resolved_match["matched_row"] = matched_row
                 resolved_match["duration_delta"] = duration_delta
@@ -317,6 +349,8 @@ def match_events(
         "matched_by_metadata": 0,
         "matched_by_fuzzy": 0,
         "unmatched": 0,
+        "ambiguous_matches": 0,
+        "invalid_records": 0,
         "unmatched_missing_keys": 0,
         "unmatched_no_candidate": 0,
         "fuzzy_attempted_rows": 0,
@@ -393,6 +427,7 @@ def match_events(
         fuzzy_artist_attempt_count = 0
         fuzzy_candidate_count = 0
         fuzzy_failure_reason = ""
+        is_ambiguous = False
 
         title_key = normalize_text(track_name)
         artist_key = normalize_text(artist_primary)
@@ -424,17 +459,28 @@ def match_events(
         fuzzy_artist_attempt_count = int(resolved_match["fuzzy_artist_attempt_count"])
         fuzzy_candidate_count = int(resolved_match["fuzzy_candidate_count"])
         fuzzy_failure_reason = str(resolved_match["fuzzy_failure_reason"])
+        is_ambiguous = bool(resolved_match.get("is_ambiguous", False))
 
         if matched_row is None:
-            match_counts["unmatched"] += 1
-            trace.match_status = MATCH_STATUS_UNMATCHED
-            trace.reason = _update_unmatched_reason_counts(
-                match_counts=match_counts,
-                spotify_track_id=spotify_track_id,
-                track_name=track_name,
-                artist_primary=artist_primary,
-                fuzzy_failure_reason=fuzzy_failure_reason,
-            )
+            if is_ambiguous:
+                trace.match_status = MATCH_STATUS_AMBIGUOUS
+                trace.reason = str(resolved_match.get("reason") or UNMATCHED_REASON_METADATA_AMBIGUOUS)
+                match_counts["ambiguous_matches"] += 1
+            else:
+                reason, is_invalid = _update_unmatched_reason_counts(
+                    match_counts=match_counts,
+                    spotify_track_id=spotify_track_id,
+                    track_name=track_name,
+                    artist_primary=artist_primary,
+                    fuzzy_failure_reason=fuzzy_failure_reason,
+                )
+                trace.reason = reason
+                if is_invalid:
+                    trace.match_status = MATCH_STATUS_INVALID
+                    match_counts["invalid_records"] += 1
+                else:
+                    trace.match_status = MATCH_STATUS_UNMATCHED
+                    match_counts["unmatched"] += 1
             trace.fuzzy_pass_used = fuzzy_pass_used
             trace.fuzzy_artist_attempt_count = str(fuzzy_artist_attempt_count) if fuzzy_artist_attempt_count else ""
             trace.fuzzy_candidate_count = str(fuzzy_candidate_count) if fuzzy_candidate_count else ""
