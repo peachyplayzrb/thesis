@@ -121,15 +121,15 @@
   Exposing candidate shaping as its own evidence surface is therefore a central design goal. It should show how many items were retained, why other items were filtered out, and how strongly the current profile settings determined the reachable search space. This makes candidate-generation visibility concrete rather than rhetorical and keeps the Chapter 2 observation that candidate-generation stages are often the most consequential but least visible part of a recommendation pipeline directly reflected in the architecture (Zamani et al., 2019; Ferraro et al., 2018).
 
   ## 3.9 Deterministic Scoring
-  Candidate scoring uses explicit deterministic similarity functions plus documented rule adjustments. This stage is responsible for ranking the already-shaped candidate set, not for silently redefining that set.
+  Candidate scoring uses explicit deterministic similarity functions with documented component-level weighting. This stage is responsible for ranking the already-shaped candidate set, not for silently redefining that set.
 
   The rationale is goal-aligned rather than absolutist: deterministic scoring is selected to maximize inspectability, replayability, and clear control effects under thesis scope, not to claim universal superiority over collaborative, hybrid, or neural alternatives (Cano and Morisio, 2017; He et al., 2017; Liu et al., 2025).
 
-  At design level, scoring combines weighted feature-similarity contributions with bounded rule adjustments so that final rankings can be decomposed into named components.
+  At design level, scoring combines weighted feature-similarity contributions so that final rankings can be decomposed into named components.
 
   Metric and feature-weight selections are treated as explicit design parameters rather than hidden implementation defaults. Metric family, normalization, and thresholding are first-order determinants of ranking geometry (Herlocker et al., 2004); this follows Chapter 2's specific warning that these choices materially reshape recommendation behaviour (Fkih, 2022). In methodological terms, this makes scoring behaviour testable rather than assumed.
 
-  The intended scoring output is therefore not just a ranked list but an inspectable score decomposition showing how feature relationships and rule adjustments contributed to candidate ordering. That makes the stage interpretable at track level and gives later explanation and evaluation logic a concrete mechanism surface to reference.
+  The intended scoring output is therefore not just a ranked list but an inspectable score decomposition showing how feature relationships contributed to candidate ordering. That makes the stage interpretable at track level and gives later explanation and evaluation logic a concrete mechanism surface to reference.
 
   ## 3.10 Playlist Assembly
   Playlist assembly remains a distinct stage rather than a thin post-processing layer. Coherence, diversity, novelty, and ordering are competing objectives at playlist level, and how they are weighted against one another materially affects perceived quality and user experience (Bonnin and Jannach, 2015; Vall et al., 2019; Schweiger et al., 2025). Collection-level quality is therefore represented as an explicit trade-off rather than a single optimization target.
