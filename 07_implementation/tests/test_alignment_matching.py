@@ -199,10 +199,33 @@ class TestMatchEvents:
     def test_unmatched_missing_keys(self):
         """Event with no spotify_id and no track_name → missing_keys bucket."""
         events = [_event()]  # all fields empty
-        _, _, unmatched, counts = match_events(
+        trace, _, unmatched, counts = match_events(
             events, {}, {}, {}, TOP_RANGE_WEIGHTS, SOURCE_BASE_WEIGHTS
         )
         assert counts["unmatched_missing_keys"] == 1
+        assert counts["invalid_records"] == 1
+        assert counts["unmatched"] == 0
+        assert trace[0]["match_status"] == "invalid"
+
+    def test_metadata_ambiguity_is_counted_separately(self):
+        from collections import defaultdict
+
+        ds_row_1 = _make_ds001_row(song="A Song", artist="An Artist", duration_ms="100000")
+        ds_row_2 = _make_ds001_row(song="A Song", artist="An Artist", duration_ms="120000")
+        by_ta = defaultdict(list)
+        by_ta[("a song", "an artist")].extend([ds_row_1, ds_row_2])
+
+        events = [_event(track_name="A Song", artist_names="An Artist")]
+        trace, matched, unmatched, counts = match_events(
+            events, {}, by_ta, {}, TOP_RANGE_WEIGHTS, SOURCE_BASE_WEIGHTS
+        )
+
+        assert len(matched) == 0
+        assert len(unmatched) == 1
+        assert counts["ambiguous_matches"] == 1
+        assert counts["matched_by_metadata"] == 0
+        assert trace[0]["match_status"] == "ambiguous"
+        assert trace[0]["reason"] == "metadata_ambiguous_multiple_candidates"
 
     def test_unmatched_no_candidate(self):
         """Event has metadata keys but nothing in the index."""

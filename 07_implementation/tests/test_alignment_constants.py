@@ -14,6 +14,8 @@ from alignment import (
     MATCH_METHOD_INFLUENCE_DIRECT,
     MATCH_METHOD_METADATA_FALLBACK,
     MATCH_METHOD_SPOTIFY_ID_EXACT,
+    MATCH_STATUS_AMBIGUOUS,
+    MATCH_STATUS_INVALID,
     MATCH_STATUS_MATCHED,
     MATCH_STATUS_UNMATCHED,
     SEED_TABLE_FIELDNAMES,
@@ -60,6 +62,8 @@ def test_output_filename_contract_is_stable() -> None:
 def test_label_contracts_are_stable() -> None:
     assert MATCH_STATUS_MATCHED == "matched"
     assert MATCH_STATUS_UNMATCHED == "unmatched"
+    assert MATCH_STATUS_AMBIGUOUS == "ambiguous"
+    assert MATCH_STATUS_INVALID == "invalid"
     assert MATCH_METHOD_SPOTIFY_ID_EXACT == "spotify_id_exact"
     assert MATCH_METHOD_METADATA_FALLBACK == "metadata_fallback"
     assert MATCH_METHOD_FUZZY_TITLE_ARTIST == "fuzzy_title_artist"
