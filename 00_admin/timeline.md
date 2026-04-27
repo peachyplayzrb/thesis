@@ -1,10 +1,10 @@
 # Thesis Timeline
 
-Last updated: 2026-04-27 (C-628/D-323)
+Last updated: 2026-04-27 (C-641/D-329)
 
-## REBUILD PHASE (active from 2026-04-12)
+## IMPLEMENTATION PHASE (2026-04-12 to present)
 
-Full architecture rebuild initiated (D-052). Chapter 2 is the only confirmed component. All milestones and work packages below are now pre-rebuild legacy reference unless explicitly re-opened in this rebuild phase.
+Full architecture implementation completed and hardened through REB-M1 to REB-M4 milestones (D-052). All design, implementation, and evaluation surfaces are now finalized and synchronized. Current work focus is submission preparation, professionalism packaging, and word-count optimization.
 
 - REB-M1 (2026-04-12 onwards): Re-derive RQ and objectives from Chapter 2 gaps and themes [completed]
 	- Identify unresolved contradictions in Chapter 2 (transparency/accuracy, explanation fidelity, candidate-generation primacy, cross-source alignment, multi-objective quality)
@@ -22,6 +22,8 @@ Full architecture rebuild initiated (D-052). Chapter 2 is the only confirmed com
 	- Rebuild implementation surfaces only where O1 to O6 traceability and evidence contracts can be preserved.
 	- Gate each implementation tranche on reproducibility, controllability, transparency-fidelity, and uncertainty-visibility checks.
 	- Status update (2026-04-12): kickoff accepted via D-056 and synchronized in C-285.
+	- Status update (2026-04-27): Citation-format uniformity tranche completed for Chapters 1-4. Remaining mixed narrative citation fragments in Chapter 2 were normalized to key-citation form, and `08_writing/references_working.md` was refreshed to the current 43-key in-manuscript inventory with zero missing bibliography keys.
+	- Status update (2026-04-27): Literature-ingestion completion slice added methodology source `P-067` (`hevner_design_2004`) with full bibliography/source-index/paper-note/coverage-tracker synchronization, closing the remaining unresolved bibliography key used in Chapter 6.
 	- Status update (2026-04-27): Implementation readability hardening wave initiated via a staged comment strategy. First tranche added high-signal BL-008 transparency docstrings/comments in `src/transparency/main.py` and `src/transparency/payload_builder.py` with focused regressions green (`16/16`).
 	- Status update (2026-04-27): Comment-hardening second tranche completed in `src/retrieval/stage.py`, replacing existing inline comments with structured module/function/class documentation and keeping BL-005 behavior unchanged; focused retrieval tests passed (`4/4`).
 	- Status update (2026-04-17): Chapter 3 vs implementation weak-spot review was formalized into a new active unresolved follow-up set (`UNDO-J` through `UNDO-O`) covering candidate-shaping causal-strength quantification depth, assembly trade-off metric explicitness, interaction coverage, feature sparsity visibility, control-surface discoverability, and reproducibility-boundary framing. This set is non-blocking and intended for bounded hardening slices after chapter proofing.

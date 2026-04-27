@@ -8,9 +8,152 @@ Ordering convention (standardized 2026-03-24):
 - New entries must be appended at the end; historical entries remain unchanged except for explicit correction records.
 
 Maintenance snapshot (2026-04-27, updated):
-- Highest change ID currently present: `C-628`
+- Highest change ID currently present: `C-641`
 - Maintenance snapshot (2026-03-28): prior snapshot stated `C-205`; superseded by the 2026-03-29 architecture migration + documentation sync wave (C-204 through C-219).
 - Known legacy correction applied in this file: prior duplicate `C-079` entry has been normalized to `C-135` for unique-ID compliance.
+
+## C-641
+- date: 2026-04-27
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Completed citation-format uniformity pass for Chapters 1-4 by normalizing remaining mixed author-year/bare-key narrative forms in `08_writing/chapter2.md` to consistent Pandoc key-citation usage. Refreshed `08_writing/references_working.md` to the current post-normalization state, including a 43-key used-in-manuscript inventory with zero missing bibliography keys and no remaining prose-style citation entries for Chapters 1-4.
+- reason: User requested uniform citation formatting across chapters and a refresh of the working references inventory to match actual usage.
+- evidence_basis: Pattern scans over Chapters 1-4 show no remaining `Author et al. (YYYY)` forms, no bare-key narrative fragments, and no unicode escape citation-rendering artifacts; all extracted chapter citation keys resolve in `08_writing/references.bib`.
+- affected_components: `08_writing/chapter2.md`, `08_writing/references_working.md`, `00_admin/change_log.md`, `00_admin/decision_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`
+- impact_assessment: Low-positive. Improves chapter citation consistency and reduces final packaging/reference risk without changing thesis claims or implementation/runtime behavior.
+- approval_record: User continuation request in chat on 2026-04-27 to complete uniformity conversion and references working reconciliation.
+
+## C-640
+- date: 2026-04-27
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Completed full literature-ingestion workflow for the newly added DSR methodology PDF (`10_resources/papers/DESIGN_SCIENCE_IN_INFORMATION_.pdf`). Added bibliography entry `@article{hevner_design_2004,...}` to resolve active manuscript citation usage, appended `P-067` to `03_literature/source_index.csv`, created processed paper note `03_literature/paper_notes/P-067_hevner_design_2004.md`, updated `03_literature/coverage_tracker.md`, and reconciled `08_writing/references_working.md` so `hevner_design_2004` is no longer listed as missing.
+- reason: User requested standard end-to-end paper processing for the newly added PDF using the repo's usual literature pipeline.
+- evidence_basis: Source metadata confirmed from MIS Quarterly/AIS pages (`Design Science in Information Systems Research`, MISQ 28(1), 75-106, DOI 10.2307/25148625). PDF extraction tool output was rights-watermarked only, so metadata was validated from canonical publication pages before ingestion.
+- affected_components: `08_writing/references.bib`, `03_literature/source_index.csv`, `03_literature/paper_notes/P-067_hevner_design_2004.md`, `03_literature/coverage_tracker.md`, `08_writing/references_working.md`, `00_admin/change_log.md`, `00_admin/decision_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`
+- impact_assessment: Low-positive. Closes the active bibliography-key gap for Chapter 6 and strengthens DSR methodology traceability without changing implementation/runtime behavior.
+- approval_record: User request in chat on 2026-04-27 ("i added the file an you proess it and do everything we usually do ... DESIGN_SCIENCE_IN_INFORMATION_.pdf").
+
+## C-639
+- date: 2026-04-27
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Citation and unicode verification sweep for Chapter 5. Verified all three citations (jannach_measuring_2019, bauer_exploring_2024, anelli_elliot_2021) exist in bibliography. No unicode escapes or rendering issues detected.
+- reason: Final quality gate across all chapters before submission packaging.
+- evidence_basis: Bibliography grep search confirmed all three keys present at bibliography line positions 823, 841, 780 respectively. No unicode escapes found.
+- affected_components: `08_writing/chapter5.md` (verification only, no changes needed), `00_admin/change_log.md`, `00_admin/thesis_state.md`
+- impact_assessment: No-change. Chapter 5 citation integrity confirmed; ready for submission.
+- approval_record: User request "do the same check for chapter 5" + successful verification with zero issues.
+
+## C-638
+- date: 2026-04-27
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Final citation verification and unicode correction for Chapter 6. (1) Verified and replaced `[@jannach_recommender_2015]` in 6.2.7 with `[@lu_recommender_2015]` (confirmed in bibliography), (2) converted unicode escape `\u2014` em dash to standard em dash character in 6.2.7 for robust PDF rendering, (3) confirmed cassidy_why_2023 and jannach_evaluating_2013 were already replaced with jannach_measuring_2019 in 6.2.6 during earlier precision edits. All remaining citations verified against bibliography.
+- reason: User final check before submission identified three residual citation risks and unicode rendering issue.
+- evidence_basis: Bibliography searches confirmed lu_recommender_2015 exists (@article{lu_recommender_2015,...}); jannach_measuring_2019 verified as available and used consistently; cassidy and evaluating keys confirmed as not present in bibliography and already replaced. Unicode em dash converted to standard character.
+- affected_components: `08_writing/chapter6.md` (6.2.7 citation key + em dash rendering), `00_admin/change_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`
+- impact_assessment: Low-positive. Final editorial fix removes residual broken-reference risk. Chapter 6 now ready for PDF generation and submission.
+- approval_record: User final assessment on 2026-04-27 ("Check those three citation keys, verify the em dash renders, and this chapter is done.") + successful verification and correction.
+
+## C-637
+- date: 2026-04-27
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Applied six precision edits to Chapter 6 in response to user meta-feedback: (1) reframed Section 6.2.3 opening to lead with meaning ("Deterministic scoring and assembly remain valuable under this thesis scope because they keep trade-off pressure visible...") instead of artefact IDs, (2) added interpretive sentence to 6.2.5 connecting engineering fact to discussion meaning ("This matters epistemologically: rather than being hedged in prose after the fact, the thesis conclusions are pre-specified as bounded claims..."), (3) changed phrase in 6.2.6 from "This is not a secret or a system failure" to "This is not an implementation fault", (4) added O4 Partially Satisfied note to 6.2.4 clarifying the 30-track cross-check boundary and its interpretation as methodological boundary rather than failure, (5) added contextualizing sentence to 6.5 on DSR posture versus conventional format ("This DSR posture explains why the thesis looks different from a conventional CS project report..."), (6) rewrote 6.7 chapter summary to close with direct RQ answer rather than generic statement. Fixed citation key ferrari_dacrema_2019 → ferrari_dacrema_troubling_2021 in 6.2.2.
+- reason: User provided detailed meta-feedback identifying six precision refinements needed before submission (not structural problems, but reading/register/clarity adjustments).
+- evidence_basis: All six edits applied to `08_writing/chapter6.md` per user guidance; file validated clean via linting. Citation key correction verified against bibliography.
+- affected_components: `08_writing/chapter6.md` (Sections 6.2.3, 6.2.4, 6.2.5, 6.2.6, 6.5, 6.7), `00_admin/change_log.md`, `00_admin/decision_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`
+- impact_assessment: Low-positive. Final precision edits improve examiner-facing readability, register, and chapter closure. O4 partial satisfaction verdict now explicitly addressed. No changes to thesis claims, scope, or intellectual substance.
+- approval_record: User feedback and approval on 2026-04-27 ("Here is my honest assessment" + priority action list); edits implemented per specification.
+
+## C-636
+- date: 2026-04-27
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Executed Chapter 6 strengthening pass (Steps 2–5 of chapter6_plan.md). Implemented targeted additions to address D6-A through D6-E discussion targets: (1) added core contribution sentence to Section 6.1 (now anchors interpretation frame), (2) reframed 6.2.1 opening to lead with meaning (why uncertainty visibility matters), (3) reframed 6.2.2 opening to lead with meaning (why candidate shaping is first-order), (4) added new Section 6.2.6 interpreting O5 controllability as an engineering finding with three consequences (design-architecture limits, sensitivity region narrower than expected, deeper intervention mechanisms needed), (5) added new Section 6.2.7 interpreting 15.95% alignment as a scope boundary with downstream consequences (profile completeness, representational coverage, serendipity constraints), (6) expanded 6.2.4 to explicitly separate O4 structural fidelity (what mechanism can establish at artefact level) from perceived usefulness (requires user study), (7) added synthesis sentence to 6.3 ("The five findings above collectively establish..."), and (8) added balanced cost-side paragraph in 6.3 naming what deterministic architecture sacrificed (representational flexibility, control responsiveness). All subsections now follow evidence→meaning pattern per user guidance.
+- reason: User requested execution of the Chapter 6 plan to strengthen challenge narration, engineering-judgement visibility, and discussion depth before final validation.
+- evidence_basis: Targeted additions to `08_writing/chapter6.md` directly implementing D6-A through D6-E targets from chapter6_plan.md Sections 7–8. Prose strategy rules from Section 8 of plan applied to all subsection openings (6.2.1, 6.2.2) and new subsections (6.2.6, 6.2.7). File validated clean via linting.
+- affected_components: `08_writing/chapter6.md` (Sections 6.1, 6.2.1–6.2.7, 6.3 expanded), `00_admin/change_log.md`, `00_admin/decision_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`
+- impact_assessment: Medium-positive. Chapter 6 now carries explicit engineering-judgement narration, interprets (not just restates) evidence against research question, and bounds contribution claims against three concrete hardships (O5 no-op, 15.95% alignment, O4 timing). Examiner-facing readability improved by reframing subsection openings to emphasize meaning. No changes to Chapter 5 verdicts or thesis scope.
+- approval_record: User request in chat on 2026-04-27 ("start the plan for chapter 6").
+
+## C-635
+- date: 2026-04-27
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Refined `08_writing/chapter6_plan.md` with user-provided meta-feedback on the planning scaffold. Applied five targeted refinements: (1) added three concrete engineering difficulties to D6-E (O5 BL-011 no-op results, 15.95% alignment coverage, O4 timing constraint), (2) added O4 Partially Satisfied framing guidance to D6-D (timing constraint vs methodological boundary vs ambient ambiguity), (3) clarified Section 6.5 scope with note that current draft is adequate and time should focus on 6.2 and 6.4, (4) added 6.2→6.3 transition requirement (synthesis sentence needed before contribution restatement), and (5) updated Step 6 consistency check to explicitly name O4 and O5 as highest-risk divergence points. Also elevated the core contribution sentence to top-level 6.1 requirement and added critical rule for Section 6.2 subsection openings (must follow evidence→meaning pattern, not evidence→restatement).
+- reason: User provided detailed meta-feedback on C-634 planning artifact before execution phase begins, identifying missing specifics and one structural risk that require clarification for drafting to succeed.
+- evidence_basis: User feedback from 2026-04-27 identified exact refinement locations and concrete material to add; five edits applied directly to plan; validation confirms no syntax errors.
+- affected_components: `08_writing/chapter6_plan.md` (refined sections 3, 6, 7, 8, 11), `00_admin/change_log.md`
+- impact_assessment: Low-positive. Refines planning clarity and execution readiness without changing thesis claims or implementation/runtime behavior. Ready for drafting execution.
+- approval_record: User meta-feedback and approval on 2026-04-27 ("Everything else is genuinely ready to execute. The plan is in good shape — these are refinements, not structural problems.").
+
+## C-634
+- date: 2026-04-27
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Added `08_writing/chapter6_plan.md` as a dedicated planning note in the same active-note style used for earlier chapter plans. The new plan defines Chapter 6 as the main site for challenge narration, contribution calibration, limitation interpretation, and bounded discussion hardening, with explicit must-hit discussion targets for O5 controllability failure, partial alignment coverage, deterministic-design trade-offs, and O4 explanation limits.
+- reason: User requested a Chapter 6 plan matching the planning approach previously used for Chapters 2 and 4.
+- evidence_basis: New planning artefact `08_writing/chapter6_plan.md` aligned to the current `chapter6.md` structure and the latest examiner-readiness comparison.
+- affected_components: `08_writing/chapter6_plan.md`, `00_admin/change_log.md`, `00_admin/decision_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`
+- impact_assessment: Low-positive. Adds a focused execution scaffold for Chapter 6 strengthening without changing thesis claims or implementation/runtime behavior.
+- approval_record: User request in chat on 2026-04-27 ("make a plan like we did for chapter 2 and 4 for chapter 6.").
+
+## C-633
+- date: 2026-04-27
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Upgraded `08_writing/chapter5.md` from framework-heavy draft posture to evidence-grounded reporting. Resolved the O5 placeholder by refreshing BL-011 authority and applying the locked measurable-delta gate (result: not satisfied), restored explicit ablation/sensitivity write-through coverage, added concrete artifact observations to O1/O2/O3/O4/O6 sections, normalized synthesis verdict labels to `Satisfied`/`Partially Satisfied`/`Not Satisfied`, reintroduced control-causality hardening context, and added explicit O5-not-satisfied Chapter 6 handoff language.
+- reason: User requested direct implementation of review feedback identifying unresolved placeholders, inconsistent verdict language, thin objective sections, missing match-rate disclosure framing, missing ablation coverage, and missing interpretation-discipline framing.
+- evidence_basis: Refreshed BL-011 report `BL011-CTRL-20260427-174210` (`results.status=bounded-risk`, `all_variant_shifts_observable=false`, `no_op_controls_count=4`) plus current BL-003/BL-004/BL-005/BL-006/BL-007/BL-008/BL-009/BL-010 artifact values now written into chapter sections and tables.
+- affected_components: `08_writing/chapter5.md`, `00_admin/change_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`
+- impact_assessment: Medium-positive. Improves examiner-readiness by converting placeholders into concrete evidence statements and by aligning synthesis semantics with explicit gate outcomes under locked criteria.
+- approval_record: User request in chat on 2026-04-27 (detailed chapter-comparison feedback with priority action list).
+
+## C-632
+- date: 2026-04-27
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Restored `08_writing/chapter5.md` to the rebuilt O5-first, criteria-locked chapter structure after the file reverted to an older pre-rebuild-style evaluation layout. Reinstated locked-criteria methodology framing, O5-first decision-gate ordering, objective-by-objective evidence sections, bounded non-claims, and Chapter 6 handoff wording.
+- reason: User requested reapplying the Chapter 5 rebuild because the updated draft had been deleted/replaced.
+- evidence_basis: Current chapter now matches the previously implemented rebuild pattern and restores the intended section flow (`5.1` to `5.11`) with explicit locked constants and O5-first evaluation posture.
+- affected_components: `08_writing/chapter5.md`, `00_admin/change_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`
+- impact_assessment: Low-positive. Restores chapter-structure integrity and evaluation-method discipline without changing runtime/implementation behavior.
+- approval_record: User request in chat on 2026-04-27 ("do it again it got deleted.").
+
+## C-631
+- date: 2026-04-27
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Implemented final pre-drafting hardening for `08_writing/chapter5_plan.md` from reviewer feedback. Added quantitative O5 controllability minimum-delta thresholds, rewrote O6 as an auditable two-case criterion (relaxation occurred vs no-relaxation confirmation), reframed Section 5.8 synthesis wording to criteria-outcome interpretation, and synchronized Sections 11-12 with locked/frozen-criteria posture.
+- reason: User requested end-state feedback implementation before drafting and identified four remaining issues that could still be examiner-probed.
+- evidence_basis: Updated plan now explicitly defines O5 minimum delta magnitudes and O6 pass/fallback logic, removes claim-assertive synthesis phrasing, and records criteria-lock completion in progress tracking.
+- affected_components: `08_writing/chapter5_plan.md`, `00_admin/change_log.md`, `00_admin/decision_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`
+- impact_assessment: Low-positive. Improves auditability and interpretation discipline in Chapter 5 planning without runtime/implementation behavior changes.
+- approval_record: User request in chat on 2026-04-27 (final feedback integration before drafting).
+
+## C-630
+- date: 2026-04-27
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Completed end-to-end operationalization pass for `08_writing/chapter5_plan.md` to support autopilot drafting handoff. Added explicit constants/thresholds/sample rules, O4 mismatch taxonomy and pass logic, O5-first execution-order alignment, merged closing boundary+handoff section, fixed Figure 5.2 criterion-family columns, tightened interim wording policy, and strengthened freeze-before-extraction controls in execution and definition-of-done sections.
+- reason: User requested full implementation of integrated reviewer feedback with an autopilot-ready execution scaffold.
+- evidence_basis: Updated plan now includes: numeric lock constants (`X=0.20`, `N=3`), explicit O4 sample definition (`10 selected + 10 rejected + 10 boundary-ranked`), mismatch tolerances, fixed matrix columns, and sequence-consistent execution steps.
+- affected_components: `08_writing/chapter5_plan.md`, `00_admin/change_log.md`, `00_admin/decision_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`
+- impact_assessment: Low-positive. Improves methodological defensibility and reduces drafting-time ambiguity without runtime/implementation behavior changes.
+- approval_record: User request in chat on 2026-04-27 ("Start implementation").
+
+## C-629
+- date: 2026-04-27
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Hardened `08_writing/chapter5_plan.md` using reviewer feedback before drafting. Changes include pre-specified O1-O6 acceptance criteria, rephrased core evaluation argument to assessment-first framing, expanded methodology guidance for Section 5.1, credibility-first section ordering that brings O5 earlier, explicit O4 structural-fidelity boundary notes, and concrete Figure 5.2 specification as a three-state criterion-status matrix.
+- reason: User requested integration of detailed plan-review feedback to eliminate drafting risks before Chapter 5 writing begins.
+- evidence_basis: Updated plan now explicitly locks draft criteria and states criterion-change control, distinguishes O4 structural fidelity from perceived usefulness claims, and clarifies figure/table interpretation contracts.
+- affected_components: `08_writing/chapter5_plan.md`, `00_admin/change_log.md`, `00_admin/decision_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`
+- impact_assessment: Low-positive. Improves evaluation-method rigor and reduces overclaiming/post-hoc-criteria risk without changing implementation/runtime behavior.
+- approval_record: User request in chat on 2026-04-27 (plan-review feedback integration request).
 
 ## C-628
 - date: 2026-04-27

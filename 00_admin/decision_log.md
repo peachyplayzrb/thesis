@@ -6,10 +6,217 @@ Ordering convention (standardized 2026-03-24):
 - New entries must be appended at the end and may include `superseded_by` when a prior decision is replaced.
 
 Maintenance snapshot (2026-04-27, updated):
-- Highest decision ID currently present: `D-323`
-- Total decision entries: 320
-- Status distribution: accepted=314, superseded=3, rejected=1
+- Highest decision ID currently present: `D-329`
+- Total decision entries: 326
+- Status distribution: accepted=320, superseded=3, rejected=1
 - ID integrity check: no duplicate decision IDs detected
+
+## D-329
+- date: 2026-04-27
+- status: accepted
+
+context:
+User requested full citation-format uniformity across Chapters 1-4 after earlier automated conversion attempts left mixed styles in Chapter 2 and an outdated references working ledger.
+
+decision:
+1) Normalize remaining mixed narrative citation fragments in Chapter 2 to explicit author-name plus bracketed Pandoc key form (for example, `Author et al. [@key] ...`) to preserve readability while enforcing one citation syntax.
+2) Treat bracketed key-citation format as the canonical manuscript citation contract for this tranche and remove residual `Author et al. (YYYY)` forms from Chapters 1-4.
+3) Refresh `references_working.md` directly from current chapter usage so the inventory reflects actual in-text keys and post-normalization residual status.
+
+alternatives_considered:
+- Keep mixed narrative and bracketed forms across chapters (rejected: inconsistent submission-facing style and avoidable citation QA risk).
+- Convert all narrative mentions to citation-only bracket syntax without names (rejected: readability loss in comparative sentences).
+
+rationale:
+This keeps prose readable while enforcing one machine-resolvable citation syntax and preventing drift between manuscript usage and references working notes.
+
+evidence_basis:
+- Updated Chapter 2 citation lines now use keyed bracket citations consistently.
+- Post-edit scans report no remaining author-year parenthetical forms or bare-key narrative fragments in Chapters 1-4.
+
+impacted_files:
+- `08_writing/chapter2.md`
+- `08_writing/references_working.md`
+- `00_admin/decision_log.md`
+- `00_admin/change_log.md`
+- `00_admin/thesis_state.md`
+- `00_admin/timeline.md`
+
+review_date:
+none
+
+## D-328
+- date: 2026-04-27
+- status: accepted
+
+context:
+User requested standard end-to-end processing of a newly added methodology PDF (`DESIGN_SCIENCE_IN_INFORMATION_.pdf`). Current manuscript text (Chapter 6) already cites `[@hevner_design_2004]`, but `references.bib` did not yet contain that key.
+
+decision:
+1) Treat this paper as a formal literature-ingestion tranche and process it through the canonical pipeline: bibliography entry, source-index row, processed paper note, and coverage-tracker update.
+2) Use `citation_key=hevner_design_2004` to align with already deployed manuscript citations.
+3) Classify the source as `screened_keep` due direct methodological relevance to DSR framing and bounded contribution/evaluation posture.
+
+alternatives_considered:
+- Add only a bibliography entry and skip literature-note/index updates (rejected: breaks repo's established ingestion consistency and traceability).
+- Rename manuscript citations away from `hevner_design_2004` (rejected: unnecessary churn when key can be resolved cleanly).
+
+rationale:
+The thesis already relies on DSR methodological framing in Chapters 3/5/6. Processing this source through the full pipeline closes an active citation-integrity gap and preserves one-to-one literature governance traceability.
+
+evidence_basis:
+- MIS Quarterly and AISeL metadata for "Design Science in Information Systems Research" (Hevner et al., 2004), MISQ 28(1), 75-106, DOI 10.2307/25148625.
+- Current Chapter 6 usage of `[@hevner_design_2004]`.
+
+impacted_files:
+- `08_writing/references.bib`
+- `03_literature/source_index.csv`
+- `03_literature/paper_notes/P-067_hevner_design_2004.md`
+- `03_literature/coverage_tracker.md`
+- `08_writing/references_working.md`
+- `00_admin/decision_log.md`
+- `00_admin/change_log.md`
+- `00_admin/thesis_state.md`
+- `00_admin/timeline.md`
+
+review_date:
+none
+
+## D-327
+- date: 2026-04-27
+- status: accepted
+
+context:
+The user requested a Chapter 6 planning note in the same style previously used for Chapter 2 and Chapter 4. Recent chapter-comparison review concluded that the main remaining submission-readiness need is not structural rewrites to Chapters 3 to 5, but a focused strengthening pass in Chapter 6 so it can carry challenge narration, contribution calibration, and limitation interpretation explicitly.
+
+decision:
+1) Create a dedicated `08_writing/chapter6_plan.md` rather than overloading the current chapter draft.
+2) Treat Chapter 6 as the primary site for engineering-judgement narration, especially for O5 controllability shortfall, partial alignment coverage, deterministic-design trade-offs, and explanation-limit interpretation.
+3) Prefer a targeted-strengthening plan over a full chapter rebuild.
+
+alternatives_considered:
+- Rewrite Chapters 3 to 5 to sound more like the university sample (rejected: high disruption risk and unnecessary loss of existing rigor).
+- Use only ad hoc chat guidance with no persistent plan file (rejected: weaker handoff and less consistency with the existing chapter-planning workflow).
+
+rationale:
+A dedicated planning note preserves the style and usefulness of the earlier chapter plans while keeping the actual Chapter 6 draft stable. The plan clarifies that the right response to the sample-comparison feedback is interpretive strengthening in Chapter 6, not late structural rewrites elsewhere.
+
+evidence_basis:
+- user request on 2026-04-27 for a Chapter 6 plan matching earlier chapter-plan style
+- current `08_writing/chapter6.md`
+- existing `08_writing/chapter2_plan.md` and `08_writing/chapter4_plan.md`
+
+impacted_files:
+- `08_writing/chapter6_plan.md`
+- `00_admin/decision_log.md`
+- `00_admin/change_log.md`
+- `00_admin/thesis_state.md`
+- `00_admin/timeline.md`
+
+review_date:
+none
+
+## D-326
+- date: 2026-04-27
+- status: accepted
+
+context:
+Final reviewer pass on `chapter5_plan.md` identified four remaining pre-drafting gaps: O5 controllability used a directional but weak non-zero delta threshold, O6 criterion was insufficiently auditable, synthesis wording still implied claim assertion, and immediate-work/progress sections lagged behind the criteria-lock posture.
+
+decision:
+1) Quantify O5 controllability deltas with minimum magnitude thresholds rather than non-zero-only wording.
+2) Recast O6 acceptance criterion into auditable dual-case logic (relaxation occurred vs no relaxation occurred).
+3) Update synthesis blueprint wording to criterion-outcome framing and bounded-contribution interpretation.
+4) Synchronize immediate next-work and progress sections with the locked/frozen-criteria state.
+
+alternatives_considered:
+- Keep non-zero O5 rule and clarify in prose during drafting (rejected: allows trivial deltas to pass and weakens examiner defensibility).
+- Keep O6 broad suppression-language wording (rejected: not directly auditable from artefacts).
+
+rationale:
+These updates close the last examiner-probeable ambiguities and preserve a precommitted, auditable evaluation frame before drafting begins.
+
+evidence_basis:
+User feedback integration request on 2026-04-27 and updated planning artifact in `08_writing/chapter5_plan.md`.
+
+impacted_files:
+- `08_writing/chapter5_plan.md`
+- `00_admin/decision_log.md`
+- `00_admin/change_log.md`
+- `00_admin/thesis_state.md`
+- `00_admin/timeline.md`
+
+review_date:
+none
+
+## D-325
+- date: 2026-04-27
+- status: accepted
+
+context:
+After integrated external feedback synthesis, the Chapter 5 planning scaffold still needed full operationalization before autopilot drafting could proceed without post-hoc criteria drift.
+
+decision:
+1) Lock explicit thresholds/sample/tolerance constants inside `chapter5_plan.md` (O1 missingness threshold, O5 replay count, O4 sample and mismatch tolerance).
+2) Add O4 mismatch taxonomy (critical vs minor) with pass thresholds.
+3) Align execution sequence to blueprint order (O5-first) and freeze criteria before evidence extraction.
+4) Merge closing blueprint sections into one boundary/non-claim/handoff section.
+5) Fix Figure 5.2 contract by predefining criterion-family columns.
+6) Tighten wording policy to interim criterion language in objective sections and reserve full-satisfaction phrasing for synthesis.
+
+alternatives_considered:
+- Keep current plan and resolve thresholds during drafting (rejected: high risk of examiner-visible post-hoc criteria shaping).
+- Keep section split and undefined figure columns (rejected: produces ad hoc synthesis drift and weak matrix defensibility).
+
+rationale:
+This converts the plan from structurally good to examiner-defensible by making all evaluative judgments auditable and precommitted.
+
+evidence_basis:
+User-provided integrated feedback package (2026-04-27) and updated planning artifact in `08_writing/chapter5_plan.md`.
+
+impacted_files:
+- `08_writing/chapter5_plan.md`
+- `00_admin/decision_log.md`
+- `00_admin/change_log.md`
+- `00_admin/thesis_state.md`
+- `00_admin/timeline.md`
+
+review_date:
+none
+
+## D-324
+- date: 2026-04-27
+- status: accepted
+
+context:
+Reviewer feedback on `chapter5_plan.md` identified a drafting-risk gap: acceptance criteria were deferred but not pre-specified, and O4 fidelity evaluation boundaries were under-defined.
+
+decision:
+1) Lock draft acceptance criteria for O1 to O6 directly in the plan before Chapter 5 drafting.
+2) Reframe the core evaluation argument to assessment-first wording rather than pre-asserted objective satisfaction.
+3) Reorder section blueprint to present O5 reproducibility/controllability evidence earlier (credibility-first sequence).
+4) Add explicit O4 methodological boundary: structural fidelity only, excluding perceived usefulness/trust claims.
+5) Specify Figure 5.2 as a categorical criterion-status matrix (`Satisfied`/`Partially satisfied`/`Not satisfied`) tied to criterion evidence rows.
+
+alternatives_considered:
+- Keep criteria undefined until drafting (rejected: high risk of post-hoc criteria shaping).
+- Retain objective order unchanged (rejected: weaker credibility progression for examiner-facing evaluation flow).
+
+rationale:
+Pre-locked criteria and explicit methodological boundaries reduce overclaiming risk and improve evaluator traceability from criteria to evidence to bounded interpretation.
+
+evidence_basis:
+Reviewer feedback package provided by user on 2026-04-27, plus current Chapter 4 evidence-contract posture in `08_writing/chapter4.md`.
+
+impacted_files:
+- `08_writing/chapter5_plan.md`
+- `00_admin/decision_log.md`
+- `00_admin/change_log.md`
+- `00_admin/thesis_state.md`
+- `00_admin/timeline.md`
+
+review_date:
+none
 
 ## D-323
 - date: 2026-04-27

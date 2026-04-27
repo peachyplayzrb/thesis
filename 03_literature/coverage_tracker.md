@@ -1,5 +1,16 @@
 ﻿# Coverage Tracker
 
+## 2026-04-27 Design-Science Methodology Source Completion
+
+- Processed the newly added methodology source and created a full paper note:
+	- `03_literature/paper_notes/P-067_hevner_design_2004.md`
+- Added index and citation wiring so manuscript key usage is resolvable end-to-end:
+	- `03_literature/source_index.csv` (`P-067`, `hevner_design_2004`, `screened_keep`)
+	- `08_writing/references.bib` (`@article{hevner_design_2004, ...}`)
+- Purpose of this batch:
+	- close the outstanding `hevner_design_2004` bibliography gap referenced in Chapter 6
+	- keep DSR methodology authority explicit alongside the existing Peffers source
+
 ## 2026-04-17 Paper-Note Baseline Alignment
 
 - Closed the only confirmed note-coverage gap by adding:
