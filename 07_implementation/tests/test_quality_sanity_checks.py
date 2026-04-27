@@ -993,6 +993,37 @@ def test_bl008_explanation_fidelity_warnings_detect_mismatch() -> None:
     assert any("assembly_context_incomplete" in warning for warning in warnings)
 
 
+def test_bl008_explanation_fidelity_uses_explicit_score_band_phrase() -> None:
+    warnings = bl008_explanation_fidelity_warnings(
+        {
+            "explanations": [
+                {
+                    "final_score": 0.42,
+                    "score_band": "strong",
+                    "why_selected": "Selected because it shows a strong profile match on Tempo (BPM).",
+                    "primary_explanation_driver": {"label": "Tempo (BPM)"},
+                    "causal_driver": {"label": "Tempo (BPM)"},
+                    "top_score_contributors": [{"label": "Tempo (BPM)"}],
+                    "score_breakdown": [
+                        {
+                            "label": "Tempo (BPM)",
+                            "contribution": 0.4,
+                            "contribution_share_pct": 100.0,
+                            "margin_vs_next_contributor": 0.0,
+                        }
+                    ],
+                    "assembly_context": {
+                        "decision": "included",
+                        "admission_rule": "Admitted on first evaluation",
+                        "genre_at_position": "rock",
+                    },
+                }
+            ]
+        }
+    )
+    assert warnings == []
+
+
 def test_bl014_main_fails_on_missing_handshake_contract(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
     repo_root = _build_bl014_fixture(tmp_path, include_runtime_scope_diagnostics=False)
     output_dir = tmp_path / "quality_outputs"
