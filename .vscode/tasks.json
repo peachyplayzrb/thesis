@@ -658,6 +658,24 @@
         "cwd": "${workspaceFolder}/07_implementation"
       },
       "problemMatcher": []
+    },
+    {
+      "label": "08: Build Final Thesis Package (Merged + Cover DOCX)",
+      "type": "shell",
+      "command": "pwsh",
+      "args": [
+        "-NoProfile",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "${workspaceFolder}/07_implementation/scripts/build_final_thesis_package.ps1",
+        "-RepoRoot",
+        "${workspaceFolder}"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": []
     }
   ]
 }
