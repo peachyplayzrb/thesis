@@ -37,6 +37,12 @@ def _object_mapping(value: object) -> dict[str, object]:
     return to_mapping(value)
 
 
+def _optional_str(value: object) -> str | None:
+    if isinstance(value, str):
+        return value
+    return None
+
+
 def build_signal_mode_calibration_summary(
     bl005_diagnostics: dict[str, object],
     bl006_summary: dict[str, object],
@@ -667,7 +673,33 @@ def _build_run_log(
     artifact_hashes: dict[str, str],
     artifact_sizes: dict[str, int],
 ) -> dict[str, Any]:
+    playlist_relpath = relpath(paths["bl007_playlist"], root)
+    run_effective_sha = _optional_str(to_mapping(canonical_config_artifacts.get("run_effective_config")).get("sha256"))
+    run_intent_sha = _optional_str(to_mapping(canonical_config_artifacts.get("run_intent")).get("sha256"))
+    run_config_payload_sha256 = run_effective_sha or run_intent_sha
+    scored_candidates_sha256 = dataset_component_hashes.get("scoring/outputs/bl006_scored_candidates.csv")
+    seed_trace_sha256 = dataset_component_hashes.get("profile/outputs/bl004_seed_trace.csv")
+    playlist_artifact_sha256 = artifact_hashes.get(playlist_relpath)
+    output_hash_aliases = _build_output_hash_aliases(
+        playlist_artifact_sha256=playlist_artifact_sha256,
+        run_config_payload_sha256=run_config_payload_sha256,
+        scored_candidates_sha256=scored_candidates_sha256,
+        seed_trace_sha256=seed_trace_sha256,
+    )
+
     return {
+        # Additive top-level compatibility aliases for existing tooling snippets.
+        "run_id": run_id,
+        "generated_at_utc": generated_at_utc,
+        "pipeline_version": pipeline_version,
+        "dataset_component_hashes": dataset_component_hashes,
+        "output_hashes": {
+            "semantics_note": (
+                "Compatibility aliases; playlist_track_ids_sha256 is retained for legacy snippets "
+                "and equals the playlist artifact SHA-256."
+            ),
+            **output_hash_aliases,
+        },
         "run_metadata": {
             "run_id": run_id,
             "task": "BL-009",
@@ -937,6 +969,11 @@ def _build_run_log(
             },
         },
         "output_artifacts": {
+            "playlist_track_ids_sha256": output_hash_aliases["playlist_track_ids_sha256"],
+            "playlist_artifact_sha256": output_hash_aliases["playlist_artifact_sha256"],
+            "run_config_payload_sha256": output_hash_aliases["run_config_payload_sha256"],
+            "scoring_records_sha256": output_hash_aliases["scoring_records_sha256"],
+            "profile_seed_trace_sha256": output_hash_aliases["profile_seed_trace_sha256"],
             "primary_outputs": {
                 "playlist": {
                     "path": relpath(paths["bl007_playlist"], root),
@@ -998,6 +1035,25 @@ def _build_run_log(
                 },
             },
         },
+    }
+
+
+def _build_output_hash_aliases(
+    *,
+    playlist_artifact_sha256: str | None,
+    run_config_payload_sha256: str | None,
+    scored_candidates_sha256: str | None,
+    seed_trace_sha256: str | None,
+) -> dict[str, str | None]:
+    """Build backward-compatible and semantically explicit output hash aliases."""
+    return {
+        "playlist_track_ids_sha256": playlist_artifact_sha256,
+        "playlist_artifact_sha256": playlist_artifact_sha256,
+        "run_config_payload_sha256": run_config_payload_sha256,
+        "bl006_scored_candidates_sha256": scored_candidates_sha256,
+        "scoring_records_sha256": scored_candidates_sha256,
+        "bl004_seed_trace_sha256": seed_trace_sha256,
+        "profile_seed_trace_sha256": seed_trace_sha256,
     }
 
 
