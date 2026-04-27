@@ -19,8 +19,8 @@ Evaluation follows an objective-linked method rather than metric-first ranking. 
 
 Locked constants:
 
-- O1 missingness threshold $X = 0.20$.
-- O5 reproducibility replay count $N = 3$ fixed-config replays.
+- O1 missingness criterion: BL-004 must expose missingness and uncertainty markers where feature evidence is incomplete.
+- O5 reproducibility replay count: 3 fixed-config replays.
 - O4 structural-fidelity sample: 30 tracks (10 selected, 10 rejected, 10 boundary-ranked).
 - O4 percentile tolerance: absolute difference <= 1.0 percentile point versus BL-006 source value.
 - O5 measurable-delta rule: at least one downstream shift threshold met per tested variation (candidate-set >= 1.0% of baseline or >= 3 tracks, score-summary shift >= 0.01, or playlist composition change >= 1 track).
@@ -33,7 +33,7 @@ Table 5.1 defines active acceptance conditions.
 | O2 | BL-003 exceeds minimum match-rate threshold and exposes unmatched reasons; BL-005 exposes separated exclusion pathways. |
 | O3 | BL-006 exposes decomposed component scoring and active weights; BL-007 exposes rule activations/relaxations with reasoned diagnostics. |
 | O4 | BL-008 required fields (`score_percentile`, `score_band`, attribution, rule effects, confidence marker) are structurally present and consistent against BL-006/BL-007 in the fixed sample. |
-| O5 | BL-010 reports deterministic replay consistency for $N=3$ replays; BL-011 reports measurable controllability deltas under the locked threshold rule. |
+| O5 | BL-010 reports deterministic replay consistency for 3 replays; BL-011 reports measurable controllability deltas under the locked threshold rule. |
 | O6 | BL-009 includes explicit non-claims and validity boundaries; BL-007 auditable case holds: relaxation evidence when triggered, or explicit no-relaxation confirmation when not triggered. |
 
 ## 5.3 O5 Evidence First: Reproducibility and Controllability

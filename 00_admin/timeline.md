@@ -1,6 +1,6 @@
 # Thesis Timeline
 
-Last updated: 2026-04-27 (C-641/D-329)
+Last updated: 2026-04-27 (C-647/D-335)
 
 ## IMPLEMENTATION PHASE (2026-04-12 to present)
 
@@ -23,6 +23,11 @@ Full architecture implementation completed and hardened through REB-M1 to REB-M4
 	- Gate each implementation tranche on reproducibility, controllability, transparency-fidelity, and uncertainty-visibility checks.
 	- Status update (2026-04-12): kickoff accepted via D-056 and synchronized in C-285.
 	- Status update (2026-04-27): Citation-format uniformity tranche completed for Chapters 1-4. Remaining mixed narrative citation fragments in Chapter 2 were normalized to key-citation form, and `08_writing/references_working.md` was refreshed to the current 43-key in-manuscript inventory with zero missing bibliography keys.
+	- Status update (2026-04-27): Final thesis packaging workflow now enforces citation-aware Pandoc parsing and pre-assembly citation resolution checks. `build_final_thesis_package.ps1` uses `markdown+yaml_metadata_block+citations`, supports optional CSL style input, and fails fast if unresolved `[@key]` tokens remain after citeproc.
+	- Status update (2026-04-27): Final packaging now uses explicit `harvard-cite-them-right.csl` wiring (task-level plus script-default preference), making Wolverhampton-compatible Harvard citation formatting deterministic for generated DOCX outputs.
+	- Status update (2026-04-27): Final-output formatting QA pass corrected Chapter 2 and Chapter 3 rendering defects in generated DOCX artifacts: duplicate Figure 2.2 caption removed, Chapter 3 headings now render as heading structures (no literal markdown markers), and Chapter 5 constants/list rendering validated in output.
+	- Status update (2026-04-27): Chapter 5 wording hardening replaced equation-style O1/O5 criterion phrases with explicit plain-text rendering (`O1 missingness criterion...`, `O5 reproducibility replay count: 3 fixed-config replays`, and O5 acceptance row "for 3 replays") to eliminate blank extraction risk; Chapter 6 opening phrase updated to formal impersonal register.
+	- Status update (2026-04-27): Word UI render inspection workflow is now operational via `word_ui_render_check.ps1` and task `08: Word UI Render Check (COM)`, producing PDF/HTML exports, paragraph-style/list audit CSV, and pass/fail render QA report in `reports/`.
 	- Status update (2026-04-27): Literature-ingestion completion slice added methodology source `P-067` (`hevner_design_2004`) with full bibliography/source-index/paper-note/coverage-tracker synchronization, closing the remaining unresolved bibliography key used in Chapter 6.
 	- Status update (2026-04-27): Implementation readability hardening wave initiated via a staged comment strategy. First tranche added high-signal BL-008 transparency docstrings/comments in `src/transparency/main.py` and `src/transparency/payload_builder.py` with focused regressions green (`16/16`).
 	- Status update (2026-04-27): Comment-hardening second tranche completed in `src/retrieval/stage.py`, replacing existing inline comments with structured module/function/class documentation and keeping BL-005 behavior unchanged; focused retrieval tests passed (`4/4`).

@@ -7,7 +7,8 @@
 
 param(
     [string]$RepoRoot = ($PSScriptRoot -replace '\\07_implementation\\scripts$', ''),
-    [string]$OutputName = 'final_project_report_with_cover.docx'
+    [string]$OutputName = 'final_project_report_with_cover.docx',
+    [string]$CitationStylePath = ''
 )
 
 $ErrorActionPreference = 'Stop'
@@ -20,12 +21,41 @@ $mergedFile = Join-Path $writingDir 'thesis_master_draft_merged.md'
 $coverPage = Join-Path $writingDir 'Project Cover Page.docx'
 $bibliography = Join-Path $writingDir 'references.bib'
 $tempBody = Join-Path $reportsDir '_thesis_body_temp.docx'
+$tempRenderedMd = Join-Path $reportsDir '_thesis_body_rendered_temp.md'
 $finalOutput = Join-Path $reportsDir $OutputName
 
 # Verify input files exist
 @($coverPage, $bibliography) | ForEach-Object {
     if (!(Test-Path $_)) {
         throw "Required file not found: $_"
+    }
+}
+
+# Resolve an optional CSL file for explicit citation style control.
+$resolvedCitationStyle = $null
+if (-not [string]::IsNullOrWhiteSpace($CitationStylePath)) {
+    $candidate = Join-Path $repo $CitationStylePath
+    if (Test-Path $candidate) {
+        $resolvedCitationStyle = (Resolve-Path $candidate).Path
+    }
+    elseif (Test-Path $CitationStylePath) {
+        $resolvedCitationStyle = (Resolve-Path $CitationStylePath).Path
+    }
+    else {
+        throw "Citation style file not found: $CitationStylePath"
+    }
+}
+else {
+    $defaultCslCandidates = @(
+        (Join-Path $writingDir 'harvard-cite-them-right.csl'),
+        (Join-Path $writingDir 'citation_style.csl'),
+        (Join-Path $writingDir 'references.csl')
+    )
+    foreach ($candidate in $defaultCslCandidates) {
+        if (Test-Path $candidate) {
+            $resolvedCitationStyle = (Resolve-Path $candidate).Path
+            break
+        }
     }
 }
 
@@ -76,14 +106,23 @@ Write-Host "  ✓ Contains $chapterCount chapters" -ForegroundColor Green
 
 # Step 2: Convert merged markdown to DOCX with Pandoc
 Write-Host "`n[2/4] Converting merged markdown to DOCX..." -ForegroundColor Yellow
+$pandocInputFormat = 'markdown+yaml_metadata_block+citations'
 $pandocCmd = @(
     $mergedFile,
-    '--from', 'gfm',
+    '--from', $pandocInputFormat,
     '--resource-path', $writingDir,
     '--bibliography', $bibliography,
     '--citeproc',
     '-o', $tempBody
 )
+
+if ($resolvedCitationStyle) {
+    Write-Host "  ✓ Citation style: $resolvedCitationStyle" -ForegroundColor Green
+    $pandocCmd += @('--csl', $resolvedCitationStyle)
+}
+else {
+    Write-Host "  ! No CSL style file found, using Pandoc default citation style" -ForegroundColor Yellow
+}
 
 & pandoc @pandocCmd 2>&1 | ForEach-Object {
     Write-Host "  $($_.ToString())" -ForegroundColor Gray
@@ -95,6 +134,34 @@ if (!(Test-Path $tempBody)) {
 
 $bodySize = (Get-Item $tempBody).Length
 Write-Host "  ✓ Body DOCX created: $('{0:N0}' -f $bodySize) bytes" -ForegroundColor Green
+
+# Verify citations were rendered and no raw [@key] tokens remain.
+Write-Host "`n[2b/4] Verifying citation rendering..." -ForegroundColor Yellow
+$citationCheckCmd = @(
+    $mergedFile,
+    '--from', $pandocInputFormat,
+    '--to', 'markdown',
+    '--resource-path', $writingDir,
+    '--bibliography', $bibliography,
+    '--citeproc',
+    '-o', $tempRenderedMd
+)
+if ($resolvedCitationStyle) {
+    $citationCheckCmd += @('--csl', $resolvedCitationStyle)
+}
+
+& pandoc @citationCheckCmd
+if (!(Test-Path $tempRenderedMd)) {
+    throw "Citation check failed: rendered markdown was not created"
+}
+
+$renderedMd = Get-Content $tempRenderedMd -Raw
+$unresolvedMatches = [regex]::Matches($renderedMd, '\[@[^\]]+\]')
+if ($unresolvedMatches.Count -gt 0) {
+    $sample = $unresolvedMatches | Select-Object -First 5 | ForEach-Object { $_.Value }
+    throw "Unresolved citation keys detected after citeproc: $($sample -join ', ')"
+}
+Write-Host "  ✓ Citation rendering verified (no unresolved citation keys)" -ForegroundColor Green
 
 # Step 3: Combine cover + body into final DOCX
 Write-Host "`n[3/4] Combining cover page with body..." -ForegroundColor Yellow
@@ -129,6 +196,10 @@ Write-Host "`n[4/4] Cleanup and final report..." -ForegroundColor Yellow
 if (Test-Path $tempBody) {
     Remove-Item $tempBody -Force
     Write-Host "  ✓ Temporary body file removed" -ForegroundColor Green
+}
+if (Test-Path $tempRenderedMd) {
+    Remove-Item $tempRenderedMd -Force
+    Write-Host "  ✓ Temporary citation-check file removed" -ForegroundColor Green
 }
 
 Write-Host "`n" -ForegroundColor Yellow

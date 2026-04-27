@@ -6,9 +6,9 @@ Ordering convention (standardized 2026-03-24):
 - New entries must be appended at the end and may include `superseded_by` when a prior decision is replaced.
 
 Maintenance snapshot (2026-04-27, updated):
-- Highest decision ID currently present: `D-329`
-- Total decision entries: 326
-- Status distribution: accepted=320, superseded=3, rejected=1
+- Highest decision ID currently present: `D-335`
+- Total decision entries: 331
+- Status distribution: accepted=325, superseded=3, rejected=1
 - ID integrity check: no duplicate decision IDs detected
 
 ## D-329
@@ -37,6 +37,191 @@ evidence_basis:
 impacted_files:
 - `08_writing/chapter2.md`
 - `08_writing/references_working.md`
+- `00_admin/decision_log.md`
+- `00_admin/change_log.md`
+- `00_admin/thesis_state.md`
+- `00_admin/timeline.md`
+
+review_date:
+none
+
+## D-335
+- date: 2026-04-27
+- status: accepted
+
+context:
+User asked how to let the agent inspect Word UI rendering directly and approved implementation of a practical workflow.
+
+decision:
+1) Adopt Word COM automation as the canonical local proxy for Word UI rendering inspection.
+2) Persist rendering checks as reproducible artifacts (PDF export, filtered HTML export, paragraph-style/list audit CSV, and markdown report) under `reports/`.
+3) Expose the workflow via a dedicated task (`08: Word UI Render Check (COM)`) so render audits are one-command repeatable.
+
+alternatives_considered:
+- Rely only on pandoc extraction checks (rejected: insufficient for Word-specific style/list behavior).
+- Manual visual inspection only (rejected: non-repeatable and hard to track in evidence logs).
+- Direct live UI automation via unavailable desktop-control channels (rejected: out of tool scope).
+
+rationale:
+Word COM export plus structured paragraph metadata gives a stable and auditable approximation of real Word rendering behavior without requiring live GUI control.
+
+evidence_basis:
+- `word_ui_render_check.ps1` execution completed successfully and produced PASS report.
+- Report includes list metadata samples with Word list strings and confirms no critical heading/caption/blank-line defects.
+
+impacted_files:
+- `07_implementation/scripts/word_ui_render_check.ps1`
+- `.vscode/tasks.json`
+- `reports/word_ui_render_check_latest.md`
+- `reports/word_ui_render_paragraph_audit_latest.csv`
+- `reports/final_project_report_with_cover_word_ui.pdf`
+- `reports/final_project_report_with_cover_word_ui_filtered.html`
+- `00_admin/decision_log.md`
+- `00_admin/change_log.md`
+- `00_admin/thesis_state.md`
+- `00_admin/timeline.md`
+
+review_date:
+none
+
+## D-334
+- date: 2026-04-27
+- status: accepted
+
+context:
+User reported that Chapter 5 constant lines still appeared blank in extracted output despite earlier fixes, and requested explicit wording replacements before submission.
+
+decision:
+1) Replace equation-style inline constant notation in Chapter 5 locked-criteria bullets and O5 acceptance row with explicit plain-text numeric wording.
+2) Keep the O1 criterion as a non-numeric evidence rule sentence, aligned to BL-004 marker visibility, to avoid implying an unverified threshold dependency in prose.
+3) Update Chapter 6 first-person organization sentence to formal impersonal style.
+
+alternatives_considered:
+- Keep equation-style `$...$` constants and rely on renderer behavior (rejected: user-observed blank extraction risk near submission).
+- Remove O1 criterion line entirely (rejected: would reduce explicit objective contract clarity).
+- Retain first-person Chapter 6 phrasing (rejected: weaker formal register for final submission tone).
+
+rationale:
+Plain-text numeric wording improves robustness across DOCX conversion and extraction tools while preserving the same evaluation contract and evidence interpretation.
+
+evidence_basis:
+- Regenerated final package shows O1 and O5 lines with explicit rendered text and numeric replay count in extracted output.
+- Chapter 6 opening line now reads "This chapter is organised around...".
+
+impacted_files:
+- `08_writing/chapter5.md`
+- `08_writing/chapter6.md`
+- `08_writing/thesis_master_draft_merged.md`
+- `reports/final_project_report_with_cover.docx`
+- `00_admin/decision_log.md`
+- `00_admin/change_log.md`
+- `00_admin/thesis_state.md`
+- `00_admin/timeline.md`
+
+review_date:
+none
+
+## D-333
+- date: 2026-04-27
+- status: accepted
+
+context:
+User raised final-output quality concerns and requested direct verification against generated Word output: potential repeated `1.` list markers, blank constants in Chapter 5, duplicate Figure 2.2 caption, and literal markdown heading markers in Chapter 3.
+
+decision:
+1) Treat generated DOCX output as authority for this QA pass (not only source markdown inspection).
+2) Apply source-level corrections where verified defects exist (duplicate caption and heading-marker parsing issue).
+3) Keep existing Chapter 5 constant expressions (`X=0.20`, `N=3`) because output verification confirms they render correctly.
+
+alternatives_considered:
+- Edit Chapter 5 constants preemptively despite rendered correctness (rejected: unnecessary churn).
+- Assume extraction artifacts only and skip source changes (rejected: one verified literal heading leak and duplicate caption required correction).
+- Manually edit DOCX directly instead of source markdown (rejected: breaks reproducible packaging workflow).
+
+rationale:
+A source-first fix with output-level verification preserves reproducibility while ensuring final submission artifacts are visually and structurally professional.
+
+evidence_basis:
+- Post-fix package verification showed no literal `# Chapter 3` token in DOCX XML (`HASH_CH3=0`).
+- Figure 2.2 appears once in extracted output (`FIGURE_2_2_COUNT=1`).
+- Chapter 5 constants render with values (`X=0.20`, `N=3`).
+- Numbered lists in extracted output render as sequential numbering, indicating no broken list serialization.
+
+impacted_files:
+- `08_writing/chapter2.md`
+- `08_writing/chapter3.md`
+- `08_writing/thesis_master_draft_merged.md`
+- `reports/final_project_report_with_cover.docx`
+- `00_admin/decision_log.md`
+- `00_admin/change_log.md`
+- `00_admin/thesis_state.md`
+- `00_admin/timeline.md`
+
+review_date:
+none
+
+## D-332
+- date: 2026-04-27
+- status: accepted
+
+context:
+User confirmed that final citation output should follow Wolverhampton expectations, and requested automatic handling in the packaging workflow rather than manual per-run style selection.
+
+decision:
+1) Adopt `harvard-cite-them-right.csl` as the repository CSL authority for final thesis packaging.
+2) Store the CSL in `08_writing/` and pass it explicitly from the VS Code packaging task.
+3) Keep script-level fallback detection so the same CSL is preferred even when the task argument is omitted.
+
+alternatives_considered:
+- Rely on Pandoc default citation style (rejected: not deterministic for institutional requirements).
+- Keep manual `-CitationStylePath` invocation only (rejected: higher operator error risk).
+- Delay automation until late submission stage (rejected: avoidable formatting drift risk now).
+
+rationale:
+Explicit CSL binding ensures final DOCX output consistently reflects the required Harvard/Cite Them Right variant and removes dependence on local defaults.
+
+evidence_basis:
+- `08_writing/harvard-cite-them-right.csl` added and wired into `.vscode/tasks.json` final packaging task.
+- Packaging run confirmed active CSL path and successful citation-resolution verification before final assembly.
+
+impacted_files:
+- `08_writing/harvard-cite-them-right.csl`
+- `.vscode/tasks.json`
+- `07_implementation/scripts/build_final_thesis_package.ps1`
+- `00_admin/decision_log.md`
+- `00_admin/change_log.md`
+- `00_admin/thesis_state.md`
+- `00_admin/timeline.md`
+
+review_date:
+none
+
+## D-331
+- date: 2026-04-27
+- status: accepted
+
+context:
+Final packaging workflow already included Pandoc `--citeproc`, but the input parser used `gfm`, which can leave citation syntax handling ambiguous across markdown variants. User requested explicit guarantee that citations render in proper final format.
+
+decision:
+1) Enforce citation-aware Pandoc parsing in packaging workflow using `--from markdown+yaml_metadata_block+citations`.
+2) Add optional CSL style-path support so citation output can be explicitly style-controlled when a `.csl` file is available.
+3) Add a pre-finalization citation verification pass that renders to temporary markdown with citeproc and fails if raw citation tokens (`[@key]`) remain.
+
+alternatives_considered:
+- Keep `gfm` parser and rely on current behavior (rejected: weaker citation-processing guarantee).
+- Add only CSL support without verification pass (rejected: unresolved-key failures could still slip into outputs).
+- Validate citations manually after every build (rejected: non-repeatable and error-prone).
+
+rationale:
+This keeps the existing packaging flow but adds deterministic, machine-checkable assurance that citation syntax is fully resolved before producing the submission DOCX.
+
+evidence_basis:
+- Updated script logic in `07_implementation/scripts/build_final_thesis_package.ps1` with citation-aware parser, optional CSL handling, and unresolved-key check.
+- Live execution succeeded and reported "Citation rendering verified (no unresolved citation keys)" before generating final DOCX.
+
+impacted_files:
+- `07_implementation/scripts/build_final_thesis_package.ps1`
 - `00_admin/decision_log.md`
 - `00_admin/change_log.md`
 - `00_admin/thesis_state.md`
@@ -8022,9 +8207,12 @@ impacted_files:
 -  8_writing/chapter4.md
 -  8_writing/chapter6.md
 -  8_writing/thesis_master_draft_merged.md
-- eports/vale_chapter{1..6}_full_latest.txt
-- eports/vale_chapter_bundle_latest.md
-- eports/chapter_packaging_bundle_latest.md
+-
+eports/vale_chapter{1..6}_full_latest.txt
+-
+eports/vale_chapter_bundle_latest.md
+-
+eports/chapter_packaging_bundle_latest.md
 -  0_admin/change_log.md
 -  0_admin/decision_log.md
 -  0_admin/thesis_state.md

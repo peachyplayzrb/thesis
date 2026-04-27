@@ -7,7 +7,7 @@ The research question asks how engineers can design and evaluate a deterministic
 
 This discussion anchors to the explicit design-option comparison in Chapter 3.3.1. The question here is whether the selected deterministic staged option delivered the promised evidence quality under scope, not whether all other architecture families are inferior in general.
 
-I organize this chapter around three lenses that follow directly from the thesis design posture:
+This chapter is organised around three lenses that follow directly from the thesis design posture:
 
 1. uncertainty handling,
 2. controllable trade-off engineering,

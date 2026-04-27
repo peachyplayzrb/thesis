@@ -1,6 +1,6 @@
 # Thesis State
 
-Last updated: 2026-04-27 UTC (C-641 / D-329. Citation-format uniformity pass for Chapters 1-4 is complete; Chapter 2 mixed citation fragments were normalized and references working inventory was refreshed to current 43-key usage with zero missing bibliography keys.)
+Last updated: 2026-04-27 UTC (C-647 / D-335. Word UI render inspection workflow is now active via Word COM export and paragraph-style/list audit reporting, enabling repeatable DOCX rendering checks.)
 
 > Full historical audit trail (priority checkpoints, post-closure enhancement logs) is in `00_admin/thesis_state_ARCHIVE_20260416.md` and `00_admin/change_log.md`.
 
@@ -99,8 +99,8 @@ Active dataset: DS-001 (Music4All). Active config profile: `run_config_ui013_tun
 
 | Item | Current value |
 |------|--------------|
-| Highest change ID | C-641 |
-| Highest decision ID | D-329 |
+| Highest change ID | C-647 |
+| Highest decision ID | D-335 |
 | Active unresolved issues | Active mentor-feedback remediation backlog now tracked as `UNDO-R` in `00_admin/unresolved_issues.md` (A-H implementation checklist complete). Submission blockers remain tracked in `09_quality_control/submission_readiness_status.md` and `01_requirements/ambiguity_flags.md` |
 | Admin log files | `change_log.md`, `decision_log.md`, `unresolved_issues.md`, `timeline.md` |
 | Foundation files | `02_foundation/current_title_and_rq.md`, `objectives.md`, `contribution_statement.md`, `problem_statement.md` |

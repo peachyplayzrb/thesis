@@ -670,6 +670,26 @@
         "-File",
         "${workspaceFolder}/07_implementation/scripts/build_final_thesis_package.ps1",
         "-RepoRoot",
+        "${workspaceFolder}",
+        "-CitationStylePath",
+        "${workspaceFolder}/08_writing/harvard-cite-them-right.csl"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "08: Word UI Render Check (COM)",
+      "type": "shell",
+      "command": "pwsh",
+      "args": [
+        "-NoProfile",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "${workspaceFolder}/07_implementation/scripts/word_ui_render_check.ps1",
+        "-RepoRoot",
         "${workspaceFolder}"
       ],
       "options": {

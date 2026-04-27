@@ -88,8 +88,6 @@ Cross-source recommendation depends on entity alignment across heterogeneous ide
 
 Reproducibility failures in recommender research are repeatedly linked to incomplete protocol specification, hidden preprocessing steps, and dependency drift [@ferrari_dacrema_troubling_2021; @bellogin_improving_2021; @zhu_bars_2022; @anelli_elliot_2021]. Standardized benchmark infrastructure has been claimed to improve comparability [@zhu_bars_2022], whereas evidence challenges the sufficiency of infrastructure alone by showing that accountability still degrades when assumptions, preprocessing choices, and evaluation contexts are underreported [@bellogin_improving_2021]. While result-focused reporting remains common, recent explainability work in music contexts demonstrates that feature-level mechanism explanations, showing which specific modalities and attributes drive individual outputs, provide more informative auditing than aggregate prediction scores alone [@sotirou_musiclime_2025]. Reproducibility-focused studies advocate fuller process tracing across configuration, alignment, candidate handling, scoring, and assembly stages, but such evidence remains unevenly standardized in published work.
 
-Figure 2.2. Uncertainty across recommendation stages in the reviewed literature.
-
 ![Figure 2.2. Uncertainty across recommendation stages in the reviewed literature.](figures/figure_2_2_uncertainty_stages.png)
 
 ## 2.8 Research Gap and Thesis Positioning

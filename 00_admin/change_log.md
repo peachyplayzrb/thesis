@@ -8,7 +8,7 @@ Ordering convention (standardized 2026-03-24):
 - New entries must be appended at the end; historical entries remain unchanged except for explicit correction records.
 
 Maintenance snapshot (2026-04-27, updated):
-- Highest change ID currently present: `C-641`
+- Highest change ID currently present: `C-647`
 - Maintenance snapshot (2026-03-28): prior snapshot stated `C-205`; superseded by the 2026-03-29 architecture migration + documentation sync wave (C-204 through C-219).
 - Known legacy correction applied in this file: prior duplicate `C-079` entry has been normalized to `C-135` for unique-ID compliance.
 
@@ -5020,3 +5020,58 @@ Maintenance snapshot (2026-04-27, updated):
 - reason: User requested one final structural cleanup limited to the ending so the closing sequence reads as Figure 2.2, one merged synthesis/limitations paragraph, the gap paragraph, and the thesis-positioning paragraph.
 - evidence_basis: Updated `08_writing/chapter2.md` by replacing the earlier `The literature progresses...` sentence with the user-approved softer sentence and substituting the two overlapping pre-gap paragraphs with the exact merged paragraph supplied by the user; post-edit diagnostics reported no errors.
 - affected_components: `08_writing/chapter2.md`, `00_admin/decision_log.md`, `00_admin/timeline.md`, `00_admin/change_log.md`.
+
+## C-643
+- date: 2026-04-27
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Hardened final-thesis packaging workflow citation rendering in `07_implementation/scripts/build_final_thesis_package.ps1`. The script now forces citation-aware markdown parsing (`markdown+yaml_metadata_block+citations`), supports optional explicit CSL style resolution, and runs an additional citeproc verification pass that fails if unresolved raw citation keys (`[@key]`) remain before final DOCX assembly.
+- reason: User requested that final packaging "renders all the citations in the proper format" for submission-ready output reliability.
+- evidence_basis: Live workflow execution completed successfully on 2026-04-27 with citation verification pass reporting no unresolved keys; final artifact generated at `reports/final_project_report_with_cover.docx`.
+- affected_components: `07_implementation/scripts/build_final_thesis_package.ps1`, `08_writing/thesis_master_draft_merged.md`, `reports/final_project_report_with_cover.docx`, `00_admin/change_log.md`, `00_admin/decision_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`
+- impact_assessment: Low-positive. Reduces citation-formatting risk in final packaging without altering thesis claims or implementation-scoring behavior.
+- approval_record: User request in chat on 2026-04-27 ("make it also so that it renders all the citations in the proper format").
+
+## C-644
+- date: 2026-04-27
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Enabled deterministic Wolverhampton-Harvard style rendering in the final thesis packaging workflow by adding `08_writing/harvard-cite-them-right.csl`, wiring it into the build task, and preferring it in packaging-script default CSL resolution.
+- reason: User approved automatic conversion to Wolverhampton-compatible reference formatting for final package outputs.
+- evidence_basis: CSL-backed workflow run succeeded and reported active citation style path plus successful unresolved-key check; final output regenerated at `reports/final_project_report_with_cover.docx`.
+- affected_components: `08_writing/harvard-cite-them-right.csl`, `.vscode/tasks.json`, `07_implementation/scripts/build_final_thesis_package.ps1`, `08_writing/thesis_master_draft_merged.md`, `reports/final_project_report_with_cover.docx`, `00_admin/change_log.md`, `00_admin/decision_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`
+- impact_assessment: Low-positive. Makes final-package citation style deterministic and aligned to institutional Harvard expectations without changing thesis content.
+- approval_record: User confirmation in chat on 2026-04-27 ("yes") following explicit proposal to wire Wolverhampton-style output automatically.
+
+## C-645
+- date: 2026-04-27
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Resolved final-output formatting defects identified in generated DOCX checks. Removed duplicate Figure 2.2 caption line in Chapter 2, normalized Chapter 3 heading markers by removing leading indentation so headings render as Word heading structures (not literal markdown text), and revalidated final package output.
+- reason: User reported potential final-report professionalism issues (repeated list numbering, missing constants, duplicated figure caption, and literal markdown heading markers) and requested direct output verification.
+- evidence_basis: Fresh final-package run confirms: `HASH_CH3=0` (no literal `# Chapter 3` in DOCX XML), `FIGURE_2_2_COUNT=1`, O1/O5 constant lines rendered (`X=0.20`, `N=3`), and numbered lists render as sequential values (1..n) in extracted plain output.
+- affected_components: `08_writing/chapter2.md`, `08_writing/chapter3.md`, `08_writing/thesis_master_draft_merged.md`, `reports/final_project_report_with_cover.docx`, `00_admin/change_log.md`, `00_admin/decision_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`
+- impact_assessment: Medium-positive. Removes visible formatting defects in submission output and improves final-report presentation quality without changing thesis claims.
+- approval_record: User request in chat on 2026-04-27 to verify/fix broken list numbering, Chapter 5 constants, duplicate Figure 2.2 caption, and markdown-style headings in final Word output.
+
+## C-646
+- date: 2026-04-27
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Completed the final Chapter 5 wording hardening requested from output review. Replaced equation-style constant mentions with explicit plain-text criteria wording to prevent blank rendering in downstream extraction paths (`O1 missingness criterion` sentence and `O5 reproducibility replay count: 3 fixed-config replays`), updated O5 acceptance-row phrasing to plain text (`deterministic replay consistency for 3 replays`), and formalized Chapter 6 opening register (`This chapter is organised around...`).
+- reason: User reported that Chapter 5 constant phrases still appeared blank in extracted output and requested immediate wording correction before submission.
+- evidence_basis: Fresh package regeneration (`reports/final_project_report_with_cover.docx`, 2026-04-27 21:21:53 UTC) confirms corrected lines appear in extracted output: O1 criterion sentence present, O5 replay count fixed at 3, O5 acceptance-row text includes "for 3 replays," and Chapter 6 phrasing shows "This chapter is organised around".
+- affected_components: `08_writing/chapter5.md`, `08_writing/chapter6.md`, `08_writing/thesis_master_draft_merged.md`, `reports/final_project_report_with_cover.docx`, `00_admin/change_log.md`, `00_admin/decision_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`
+- impact_assessment: Medium-positive. Removes remaining submission-blocking ambiguity in Chapter 5 wording and improves formal register consistency without changing empirical claims.
+- approval_record: User request in chat on 2026-04-27 detailing Chapter 5 blank-line concerns and specific replacement wording.
+
+## C-647
+- date: 2026-04-27
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Added a Word UI rendering inspection workflow that uses Word COM automation to export the final DOCX to PDF and filtered HTML, audit paragraph styles/list metadata, and generate a pass/fail rendering report. Added script `word_ui_render_check.ps1`, task surface `08: Word UI Render Check (COM)`, and report artifacts in `reports/`.
+- reason: User requested a concrete way for the agent to inspect Word UI rendering behavior rather than relying only on markdown/DOCX extraction heuristics.
+- evidence_basis: Local execution succeeded and generated `reports/word_ui_render_check_latest.md` plus `reports/word_ui_render_paragraph_audit_latest.csv`; report shows no critical defects and includes numbered-list metadata proving Word-level numbering strings (`1., 2., 3...`) are present.
+- affected_components: `07_implementation/scripts/word_ui_render_check.ps1`, `.vscode/tasks.json`, `reports/word_ui_render_check_latest.md`, `reports/word_ui_render_paragraph_audit_latest.csv`, `reports/final_project_report_with_cover_word_ui.pdf`, `reports/final_project_report_with_cover_word_ui_filtered.html`, `00_admin/change_log.md`, `00_admin/decision_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`
+- impact_assessment: Medium-positive. Establishes a repeatable Word-render QA gate and reduces uncertainty around list numbering/headings/caption rendering before submission packaging.
+- approval_record: User confirmation in chat on 2026-04-27 ("yes") to implement the proposed Word UI render inspection workflow.
