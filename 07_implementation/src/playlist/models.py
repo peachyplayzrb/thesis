@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
@@ -21,6 +21,7 @@ class PlaylistControls:
     min_score_threshold: float
     max_per_genre: int
     max_consecutive: int
+    novelty_allowance: int
     utility_strategy: str
     utility_decay_factor: float
     utility_weights: dict[str, float]
@@ -51,6 +52,7 @@ class PlaylistControls:
             "min_score_threshold": self.min_score_threshold,
             "max_per_genre": self.max_per_genre,
             "max_consecutive": self.max_consecutive,
+            "novelty_allowance": self.novelty_allowance,
             "utility_strategy": self.utility_strategy,
             "utility_decay_factor": self.utility_decay_factor,
             "utility_weights": dict(self.utility_weights),
@@ -85,6 +87,7 @@ class PlaylistContext:
     min_score_threshold: float
     max_per_genre: int
     max_consecutive: int
+    novelty_allowance: int
     utility_strategy: str
     utility_decay_factor: float
     utility_weights: dict[str, float]
@@ -111,6 +114,8 @@ class PlaylistAggregation:
     playlist: list[dict[str, object]]
     trace_rows: list[dict[str, object]]
     rule_hits: dict[str, int]
+    novelty_allowance_used: int = 0
+    relaxation_records: list[dict[str, object]] = field(default_factory=list)
 
 
 @dataclass(frozen=True)
@@ -139,6 +144,7 @@ def controls_from_mapping(payload: Mapping[str, Any]) -> PlaylistControls:
         min_score_threshold=float(payload.get("min_score_threshold", 0.35)),
         max_per_genre=int(payload.get("max_per_genre", 4)),
         max_consecutive=int(payload.get("max_consecutive", 2)),
+        novelty_allowance=int(payload.get("novelty_allowance", 0)),
         utility_strategy=str(payload.get("utility_strategy", "rank_round_robin")),
         utility_decay_factor=float(payload.get("utility_decay_factor", 0.0)),
         utility_weights={
@@ -174,6 +180,7 @@ def context_from_mapping(payload: Mapping[str, Any]) -> PlaylistContext:
         min_score_threshold=float(payload.get("min_score_threshold", 0.35)),
         max_per_genre=int(payload.get("max_per_genre", 4)),
         max_consecutive=int(payload.get("max_consecutive", 2)),
+        novelty_allowance=int(payload.get("novelty_allowance", 0)),
         utility_strategy=str(payload.get("utility_strategy", "rank_round_robin")),
         utility_decay_factor=float(payload.get("utility_decay_factor", 0.0)),
         utility_weights={
@@ -215,6 +222,7 @@ def context_as_mapping(context: PlaylistContext) -> dict[str, object]:
         "min_score_threshold": context.min_score_threshold,
         "max_per_genre": context.max_per_genre,
         "max_consecutive": context.max_consecutive,
+        "novelty_allowance": context.novelty_allowance,
         "utility_strategy": context.utility_strategy,
         "utility_decay_factor": context.utility_decay_factor,
         "utility_weights": dict(context.utility_weights),

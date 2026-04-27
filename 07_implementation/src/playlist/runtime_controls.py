@@ -32,6 +32,7 @@ def _sanitize_bl007_controls(controls: dict[str, object]) -> dict[str, object]:
     )
     controls["max_per_genre"] = max(1, coerce_int(controls.get("max_per_genre"), 4))
     controls["max_consecutive"] = max(1, coerce_int(controls.get("max_consecutive"), 2))
+    controls["novelty_allowance"] = max(0, coerce_int(controls.get("novelty_allowance"), 0))
 
     controls["utility_strategy"] = coerce_enum(
         controls.get("utility_strategy"), VALID_UTILITY_STRATEGIES, "rank_round_robin"
@@ -139,6 +140,7 @@ def _load_bl007_controls_from_env() -> dict[str, object]:
         "min_score_threshold": env_float("BL007_MIN_SCORE_THRESHOLD", 0.35),
         "max_per_genre": env_int("BL007_MAX_PER_GENRE", 4),
         "max_consecutive": env_int("BL007_MAX_CONSECUTIVE", 2),
+        "novelty_allowance": env_int("BL007_NOVELTY_ALLOWANCE", 0),
         "utility_strategy": env_str("BL007_UTILITY_STRATEGY", "rank_round_robin"),
         "utility_decay_factor": env_float("BL007_UTILITY_DECAY_FACTOR", 0.0),
         "utility_weights": {

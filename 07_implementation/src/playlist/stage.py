@@ -77,6 +77,7 @@ class PlaylistStage:
     @staticmethod
     def aggregate(*, candidates: list[dict[str, object]], context: PlaylistContext) -> PlaylistAggregation:
         rule_hits: Counter[str] = Counter()
+        assembly_metadata: dict[str, object] = {}
         playlist, trace_rows = assemble_bucketed(
             candidates=candidates,
             target_size=context.target_size,
@@ -84,6 +85,7 @@ class PlaylistStage:
             max_per_genre=context.max_per_genre,
             max_consecutive=context.max_consecutive,
             rule_hits=rule_hits,
+            novelty_allowance=context.novelty_allowance,
             utility_strategy=context.utility_strategy,
             utility_decay_factor=context.utility_decay_factor,
             utility_weights=dict(context.utility_weights),
@@ -100,11 +102,20 @@ class PlaylistStage:
             influence_allow_consecutive_override=context.influence_allow_consecutive_override,
             influence_allow_score_threshold_override=context.influence_allow_score_threshold_override,
             transition_smoothness_weight=context.transition_smoothness_weight,
+            metadata_out=assembly_metadata,
+        )
+        relaxation_records_obj = assembly_metadata.get("relaxation_records")
+        relaxation_records = (
+            list(relaxation_records_obj)
+            if isinstance(relaxation_records_obj, list)
+            else []
         )
         return PlaylistAggregation(
             playlist=playlist,
             trace_rows=trace_rows,
             rule_hits=dict(rule_hits),
+            novelty_allowance_used=safe_int(assembly_metadata.get("novelty_allowance_used"), 0),
+            relaxation_records=relaxation_records,
         )
 
     @staticmethod
@@ -152,8 +163,8 @@ class PlaylistStage:
         detail_log_path: Path,
         handshake_validation: dict[str, object] | None = None,
     ) -> tuple[dict[str, object], dict[str, object], dict[str, int], dict[str, object]]:
-        included = [row for row in aggregation.trace_rows if row["decision"] == "included"]
-        excluded = [row for row in aggregation.trace_rows if row["decision"] != "included"]
+        included = [row for row in aggregation.trace_rows if row.get("decision") == "included"]
+        excluded = [row for row in aggregation.trace_rows if row.get("decision") == "excluded"]
         config_obj = playlist_payload.get("config")
         config: dict[str, object] = config_obj if isinstance(config_obj, dict) else {}
         genre_mix = Counter(
@@ -214,8 +225,10 @@ class PlaylistStage:
                 "candidates_evaluated": candidates_evaluated,
                 "tracks_included": len(included),
                 "tracks_excluded": len(excluded),
+                "novelty_allowance_used": aggregation.novelty_allowance_used,
             },
             "rule_hits": dict(aggregation.rule_hits),
+            "relaxation_records": list(aggregation.relaxation_records),
             "undersized_playlist_warning": undersized_diagnostics,
             "playlist_genre_mix": dict(genre_mix),
             "playlist_score_range": {

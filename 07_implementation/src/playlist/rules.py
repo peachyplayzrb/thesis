@@ -446,6 +446,60 @@ def _select_ordered_candidates_for_iteration(
     )
 
 
+def _try_novelty_allowance_inclusion(
+    *,
+    ordered_candidates: list[dict[str, object]],
+    remaining: list[dict[str, object]],
+    playlist: list[dict[str, object]],
+    finalized_ids: set[str],
+    trace_rows: list[dict[str, object]],
+    influence_track_ids: set[str],
+    target_size: int,
+    effective_max_per_genre: int,
+    effective_max_consecutive: int,
+    rule_hits: Counter,
+) -> bool:
+    represented_genres = {
+        str(track.get("_assembly_genre", track.get("lead_genre", "")))
+        for track in playlist
+        if str(track.get("_assembly_genre", track.get("lead_genre", "")))
+    }
+    if not represented_genres:
+        return False
+
+    for cand in ordered_candidates:
+        if cand not in remaining:
+            continue
+        assembly_genre = str(cand.get("assembly_genre", ""))
+        if not assembly_genre or assembly_genre in represented_genres:
+            continue
+
+        decision, exclusion_reason = decide_candidate(
+            playlist=playlist,
+            assembly_genre=assembly_genre,
+            target_size=target_size,
+            max_per_genre=effective_max_per_genre,
+            max_consecutive=effective_max_consecutive,
+            rule_hits=rule_hits,
+        )
+        if decision != "included":
+            continue
+
+        return _apply_candidate_decision(
+            cand=cand,
+            decision=decision,
+            exclusion_reason=exclusion_reason,
+            is_influence_requested=str(cand.get("track_id", "")) in influence_track_ids,
+            inclusion_path="novelty_allowance",
+            playlist=playlist,
+            remaining=remaining,
+            finalized_ids=finalized_ids,
+            trace_rows=trace_rows,
+        )
+
+    return False
+
+
 def _resolve_candidate_override_flags(
     *,
     track_id: str,
@@ -636,9 +690,36 @@ def _run_candidate_loop(
     effective_max_consecutive: int,
     rule_hits: Counter,
     relaxation_active: bool,
-) -> bool:
-    """Iterate ordered candidates for one assembly pass. Returns True if any candidate was added."""
+    novelty_allowance: int,
+    novelty_allowance_used: int,
+) -> tuple[bool, int]:
+    """Iterate ordered candidates for one assembly pass.
+
+    Returns:
+        tuple[bool, int]: (progressed, novelty_allowance_used_in_pass)
+    """
     progressed = False
+    novelty_allowance = max(0, safe_int(novelty_allowance, 0))
+    novelty_allowance_used = max(0, safe_int(novelty_allowance_used, 0))
+
+    if novelty_allowance_used < novelty_allowance:
+        if _try_novelty_allowance_inclusion(
+            ordered_candidates=ordered_candidates,
+            remaining=remaining,
+            playlist=playlist,
+            finalized_ids=finalized_ids,
+            trace_rows=trace_rows,
+            influence_track_ids=influence_track_ids,
+            target_size=target_size,
+            effective_max_per_genre=effective_max_per_genre,
+            effective_max_consecutive=effective_max_consecutive,
+            rule_hits=rule_hits,
+        ):
+            progressed = True
+            novelty_allowance_used += 1
+            if len(playlist) >= target_size:
+                return progressed, novelty_allowance_used
+
     for cand in ordered_candidates:
         if cand not in remaining:
             continue
@@ -695,11 +776,25 @@ def _run_candidate_loop(
             trace_rows=trace_rows,
         ):
             progressed = True
+            if novelty_allowance_used < novelty_allowance and len(playlist) < target_size:
+                if _try_novelty_allowance_inclusion(
+                    ordered_candidates=ordered_candidates,
+                    remaining=remaining,
+                    playlist=playlist,
+                    finalized_ids=finalized_ids,
+                    trace_rows=trace_rows,
+                    influence_track_ids=influence_track_ids,
+                    target_size=target_size,
+                    effective_max_per_genre=effective_max_per_genre,
+                    effective_max_consecutive=effective_max_consecutive,
+                    rule_hits=rule_hits,
+                ):
+                    novelty_allowance_used += 1
 
         if len(playlist) >= target_size:
             break
 
-    return progressed
+    return progressed, novelty_allowance_used
 
 
 def assemble_bucketed(
@@ -710,6 +805,7 @@ def assemble_bucketed(
     max_per_genre: int,
     max_consecutive: int,
     rule_hits: Counter,
+    novelty_allowance: int = 0,
     utility_strategy: str = "rank_round_robin",
     utility_decay_factor: float = 0.0,
     utility_weights: dict[str, float] | None = None,
@@ -726,6 +822,7 @@ def assemble_bucketed(
     influence_allow_consecutive_override: bool = False,
     influence_allow_score_threshold_override: bool = False,
     transition_smoothness_weight: float = 0.0,
+    metadata_out: dict[str, object] | None = None,
 ) -> tuple[list[dict[str, object]], list[dict[str, object]]]:
     """Assemble playlist by round-robin across genre buckets to avoid deep-rank cliffs."""
     utility_weights = utility_weights or {}
@@ -777,6 +874,11 @@ def assemble_bucketed(
     relaxation_enabled = bool(controlled_relaxation.get("enabled", False))
     max_relaxation_rounds = max(1, safe_int(controlled_relaxation.get("max_relaxation_rounds"), 2))
     relaxation_round = 0
+    novelty_allowance = max(0, safe_int(novelty_allowance, 0))
+    novelty_allowance_used = 0
+    relaxation_records: list[dict[str, object]] = []
+    pending_relaxation_index: int | None = None
+    pending_relaxation_playlist_size = 0
 
     _apply_reserved_slot_inclusions(
         reserved_slot_target=reserved_slot_target,
@@ -808,7 +910,7 @@ def assemble_bucketed(
             transition_smoothness_weight=transition_smoothness_weight,
         )
 
-        progressed = _run_candidate_loop(
+        progressed, novelty_allowance_used = _run_candidate_loop(
             ordered_candidates=ordered_candidates,
             remaining=remaining,
             deferred=deferred,
@@ -825,10 +927,26 @@ def assemble_bucketed(
             effective_max_consecutive=effective_max_consecutive,
             rule_hits=rule_hits,
             relaxation_active=relaxation_active,
+            novelty_allowance=novelty_allowance,
+            novelty_allowance_used=novelty_allowance_used,
         )
+
+        if pending_relaxation_index is not None and progressed:
+            relaxation_records[pending_relaxation_index]["tracks_admitted"] = max(
+                0, len(playlist) - pending_relaxation_playlist_size
+            )
+            pending_relaxation_index = None
 
         if not progressed:
             if deferred and relaxation_enabled and relaxation_round < max_relaxation_rounds:
+                if pending_relaxation_index is not None:
+                    relaxation_records[pending_relaxation_index]["tracks_admitted"] = max(
+                        0, len(playlist) - pending_relaxation_playlist_size
+                    )
+                    pending_relaxation_index = None
+
+                previous_max_per_genre = effective_max_per_genre
+                previous_max_consecutive = effective_max_consecutive
                 relaxation_round += 1
                 effective_max_per_genre, effective_max_consecutive = _apply_relaxation_round(
                     current_max_per_genre=effective_max_per_genre,
@@ -837,6 +955,31 @@ def assemble_bucketed(
                     round_index=relaxation_round,
                     controlled_relaxation=controlled_relaxation,
                 )
+
+                if effective_max_consecutive != previous_max_consecutive:
+                    relaxation_records.append(
+                        {
+                            "round": relaxation_round,
+                            "constraint": "max_consecutive",
+                            "original_value": previous_max_consecutive,
+                            "relaxed_to": effective_max_consecutive,
+                            "tracks_admitted": 0,
+                        }
+                    )
+                    pending_relaxation_index = len(relaxation_records) - 1
+                    pending_relaxation_playlist_size = len(playlist)
+                elif effective_max_per_genre != previous_max_per_genre:
+                    relaxation_records.append(
+                        {
+                            "round": relaxation_round,
+                            "constraint": "max_per_genre",
+                            "original_value": previous_max_per_genre,
+                            "relaxed_to": effective_max_per_genre,
+                            "tracks_admitted": 0,
+                        }
+                    )
+                    pending_relaxation_index = len(relaxation_records) - 1
+                    pending_relaxation_playlist_size = len(playlist)
                 continue
 
             # Finalize deferred rows when no further relaxation rounds are available.
@@ -856,6 +999,11 @@ def assemble_bucketed(
             # No further candidates can pass active diversity constraints.
             break
 
+    if pending_relaxation_index is not None:
+        relaxation_records[pending_relaxation_index]["tracks_admitted"] = max(
+            0, len(playlist) - pending_relaxation_playlist_size
+        )
+
     # Preserve full-trace semantics by marking unprocessed eligible candidates
     # once target size is reached.
     _append_post_fill_unprocessed_rows(
@@ -869,6 +1017,15 @@ def assemble_bucketed(
 
     for track in playlist:
         track.pop("_assembly_genre", None)
+
+    if metadata_out is not None:
+        metadata_out.clear()
+        metadata_out.update(
+            {
+                "novelty_allowance_used": novelty_allowance_used,
+                "relaxation_records": list(relaxation_records),
+            }
+        )
 
     trace_rows.sort(key=lambda row: (safe_int(row["score_rank"], 0), str(row["track_id"])))
     return playlist, trace_rows
