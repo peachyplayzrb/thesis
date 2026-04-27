@@ -1,6 +1,6 @@
 # Thesis State
 
-Last updated: 2026-04-27 UTC (C-611 / D-314. Config-studio hardening is active in the finalized web surface with server-backed validate/save endpoints and stronger schema metadata for section/stage/range/advanced presentation. Runtime-control payload-resolution diagnostics are now consistently surfaced across BL-004/BL-007/BL-008/BL-009/BL-010 when stage payload JSON is malformed. Focused regression tests are green (`38/38`) and implementation scope remains unchanged. Next: external submission/package confirmations and final institutional template/cover/declaration integration.)
+Last updated: 2026-04-27 UTC (C-628 / D-323. Retrieval-stage comment hardening completed in BL-005 with existing comments replaced by clearer module/function-level documentation and focused regression validation.)
 
 > Full historical audit trail (priority checkpoints, post-closure enhancement logs) is in `00_admin/thesis_state_ARCHIVE_20260416.md` and `00_admin/change_log.md`.
 
@@ -99,8 +99,8 @@ Active dataset: DS-001 (Music4All). Active config profile: `run_config_ui013_tun
 
 | Item | Current value |
 |------|--------------|
-| Highest change ID | C-611 |
-| Highest decision ID | D-314 |
+| Highest change ID | C-628 |
+| Highest decision ID | D-323 |
 | Active unresolved issues | Active mentor-feedback remediation backlog now tracked as `UNDO-R` in `00_admin/unresolved_issues.md` (A-H implementation checklist complete). Submission blockers remain tracked in `09_quality_control/submission_readiness_status.md` and `01_requirements/ambiguity_flags.md` |
 | Admin log files | `change_log.md`, `decision_log.md`, `unresolved_issues.md`, `timeline.md` |
 | Foundation files | `02_foundation/current_title_and_rq.md`, `objectives.md`, `contribution_statement.md`, `problem_statement.md` |

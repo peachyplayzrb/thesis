@@ -8,9 +8,152 @@ Ordering convention (standardized 2026-03-24):
 - New entries must be appended at the end; historical entries remain unchanged except for explicit correction records.
 
 Maintenance snapshot (2026-04-27, updated):
-- Highest change ID currently present: `C-612`
+- Highest change ID currently present: `C-628`
 - Maintenance snapshot (2026-03-28): prior snapshot stated `C-205`; superseded by the 2026-03-29 architecture migration + documentation sync wave (C-204 through C-219).
 - Known legacy correction applied in this file: prior duplicate `C-079` entry has been normalized to `C-135` for unique-ID compliance.
+
+## C-628
+- date: 2026-04-27
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Completed retrieval-stage comment hardening in `07_implementation/src/retrieval/stage.py` by replacing the existing inline comment style with structured, high-signal module/function/class docstrings and concise explanatory notes for non-obvious logic paths.
+- reason: User requested to remove the current comments and re-comment the file well.
+- evidence_basis: Existing comments were replaced with clearer documentation while keeping behavior unchanged; focused retrieval regression tests passed (`4/4`) in `07_implementation/tests/test_retrieval_stage.py`, and diagnostics reported no file errors.
+- affected_components: `07_implementation/src/retrieval/stage.py`, `07_implementation/tests/test_retrieval_stage.py`, `00_admin/change_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`
+- impact_assessment: Low-positive. Improves readability and maintainability for BL-005 orchestration without runtime or contract changes.
+- approval_record: User request in chat on 2026-04-27 ("remove any comment this has currently, and comment it wel.").
+
+## C-627
+- date: 2026-04-27
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Started the implementation comment-hardening wave with a first focused transparency tranche. Added concise intent-level comments and docstrings to BL-008 orchestration and payload helper surfaces without changing runtime behavior.
+- reason: User requested a practical path to add comments across files and confirmed execution start.
+- evidence_basis: Updated `07_implementation/src/transparency/main.py` and `07_implementation/src/transparency/payload_builder.py`; focused transparency regression tests passed (`16/16`) across payload-builder, explanation-driver, and component-orchestration test files.
+- affected_components: `07_implementation/src/transparency/main.py`, `07_implementation/src/transparency/payload_builder.py`, `07_implementation/tests/test_transparency_payload_builder.py`, `07_implementation/tests/test_transparency_explanation_driver.py`, `07_implementation/tests/test_transparency_component_orchestration.py`, `00_admin/change_log.md`, `00_admin/decision_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`
+- impact_assessment: Low-positive. Improves readability and onboarding signal while preserving behavior and contracts.
+- approval_record: User confirmation in chat on 2026-04-27 ("yes").
+
+## C-626
+- date: 2026-04-27
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Applied a full Chapter 4 tightening pass in `08_writing/chapter4_v2.md` across four approved categories in one tranche: (1) British spelling normalization (for example realised/realisation, behaviour, artefacts), (2) repetition compression for overused phrasing, (3) de-rhetorified implementation-realisation prose to prioritize concrete stage behavior and artefact content, and (4) removal of Chapter-5-forward drift language in favor of inspectable in-chapter evidence framing.
+- reason: User requested immediate full-pass editorial hardening of Chapter 4 to improve examiner-facing clarity and consistency before progressing to Chapter 5.
+- evidence_basis: Updated chapter prose now uses consistent British spelling, retains design-intent sections while grounding realisation sections in concrete implementation outputs, and removes forward-dependent phrasing such as "in later analysis" and direct Chapter 5 dependency claims where not required.
+- affected_components: `08_writing/chapter4_v2.md`, `00_admin/change_log.md`, `00_admin/decision_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`
+- impact_assessment: Low-positive. Writing-only clarity and consistency improvement; no implementation/runtime or validation-contract behavior changes.
+- approval_record: User confirmation in chat on 2026-04-27 ("Full pass now — implement all four fixes in one go").
+
+## C-625
+- date: 2026-04-27
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Synchronized Chapter 4 (`08_writing/chapter4_v2.md`) with three implementation-accuracy gaps identified during evaluator-readiness review. §4.8 implementation realization now documents `score_percentile` and percentile-aware `score_band` classification (strong ≥90th percentile, moderate ≥50th, else weak) as explicit payload fields, and adds a per-candidate payload example using fresh run artifacts (BL-008, 2026-04-27). §4.9 evidence artifacts now includes the `output_hashes` block example showing `playlist_artifact_sha256`, legacy `playlist_track_ids_sha256`, and `run_config_payload_sha256`. §4.10 now documents BL-013 (orchestration entrypoint and stage-completion guard) and BL-014 (36-check automated sanity layer) as verification infrastructure components.
+- reason: Post-implementation chapter review identified three sync gaps: missing score_band/score_percentile documentation in §4.8, missing output_hashes block in §4.9, and no mention of BL-013/BL-014 anywhere in Chapter 4.
+- evidence_basis: Artifact data drawn from fresh pipeline run (BL-013 `BL013-ENTRYPOINT-20260427-124156-310340`, BL-008 `BL008-EXPLAIN-20260427-124223-866689`, BL-009 `BL009-OBSERVE-20260427-124233-915292`). All payload values in chapter examples verified against actual artifact files.
+- affected_components: `08_writing/chapter4_v2.md`, `00_admin/change_log.md`, `00_admin/decision_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`
+- impact_assessment: Medium-positive. Removes three accuracy gaps between implemented system and chapter description; strengthens evidence-grounding and makes BL-013/BL-014 verification infrastructure visible to evaluators.
+- approval_record: User confirmation in chat on 2026-04-27 ("yes").
+
+## C-624
+- date: 2026-04-27
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Applied a post-hardening type-safety correction for BL-009 alias mapping and re-validated the full contract. The new alias helper path in observability now normalizes config-artifact hash values to `str | None` before alias construction, removing a pyright argument-type violation while preserving runtime behavior and alias payload semantics.
+- reason: Immediate follow-up after user-approved hardening run; full-contract rerun surfaced one pyright mismatch in the new alias helper call.
+- evidence_basis: Focused regression suite remained green (`69/69`), and full contract rerun passed (`663` tests, pyright `0`, BL-013 `BL013-ENTRYPOINT-20260427-123311-525034`, BL-014 `BL014-SANITY-20260427-123344-642645`, `36/36`).
+- affected_components: `07_implementation/src/observability/main.py`, `00_admin/change_log.md`, `00_admin/decision_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`
+- impact_assessment: Low-positive. Removes static-type drift introduced in C-623 follow-through and restores full-contract green without changing pipeline semantics.
+- approval_record: User confirmation in chat on 2026-04-27 ("yes").
+
+## C-623
+- date: 2026-04-27
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Hardened the additive reporting-contract tranche with semantic and validation follow-through. BL-008 score-band classification is now percentile-aware (with absolute-score fallback) so payload labels remain discriminative under bounded score ranges, BL-014 explanation-fidelity checks now respect explicit payload `score_band` when validating `why_selected` phrasing, and BL-009 compatibility hash aliases now include a semantics note plus explicit artifact alias keys while preserving existing legacy alias names.
+- reason: User approved immediate hardening after review confirmed logic existed but surfaced two quality risks: non-discriminative score-band labels and ambiguous alias semantics.
+- evidence_basis: Focused regression suite passed (`69/69`) across transparency, BL-014 sanity warning logic, and new BL-009 alias helper coverage (`test_transparency_explanation_driver.py`, `test_quality_sanity_checks.py`, `test_observability_hash_aliases.py`).
+- affected_components: `07_implementation/src/transparency/explanation_driver.py`, `07_implementation/src/transparency/main.py`, `07_implementation/src/quality/sanity_checks.py`, `07_implementation/src/observability/main.py`, `07_implementation/tests/test_transparency_explanation_driver.py`, `07_implementation/tests/test_quality_sanity_checks.py`, `07_implementation/tests/test_observability_hash_aliases.py`, `00_admin/change_log.md`, `00_admin/decision_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`
+- impact_assessment: Low-positive. Improves explanatory signal quality and alias clarity without changing candidate ranking, selection, or deterministic contract behavior.
+- approval_record: User confirmation in chat on 2026-04-27 ("yes").
+
+## C-622
+- date: 2026-04-27
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Implemented the remaining additive reporting-contract gaps after UNDO closure. BL-008 now emits explicit per-track `score_band` and `score_percentile` fields for selected/rejected explanation payloads, and BL-009 now emits backward-compatible flat hash aliases at top-level (`output_hashes`) plus flattened convenience keys under `output_artifacts` (`playlist_track_ids_sha256`, `run_config_payload_sha256`, `scoring_records_sha256`, `profile_seed_trace_sha256`).
+- reason: User confirmed implementation continuation for the remaining items after reconciling implemented-vs-missing claims.
+- evidence_basis: Focused tests passed (`25/25`) across transparency and observability surfaces; full contract rerun passed end-to-end (`659` tests, pyright `0`, BL-013 `BL013-ENTRYPOINT-20260427-121643-039900`, BL-014 `BL014-SANITY-20260427-121715-573627`, `36/36`). New fields are present in fresh artefacts (`bl008_explanation_payloads.json`, `bl009_run_observability_log.json`).
+- affected_components: `07_implementation/src/transparency/explanation_driver.py`, `07_implementation/src/transparency/payload_builder.py`, `07_implementation/src/transparency/main.py`, `07_implementation/src/observability/main.py`, `07_implementation/tests/test_transparency_explanation_driver.py`, `07_implementation/tests/test_transparency_payload_builder.py`, `07_implementation/tests/test_transparency_component_orchestration.py`, `00_admin/change_log.md`, `00_admin/decision_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`
+- impact_assessment: Low-positive. Improves machine-readable evidence extraction and compatibility for existing hash-inspection tooling without changing ranking/selection behavior.
+- approval_record: User confirmation in chat on 2026-04-27 ("yes").
+
+## C-621
+- date: 2026-04-27
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Completed the remaining UNDO-LIT closure gates after UNDO-T implementation sync. Fixed a full-contract blocker in setup/bootstrap and playlist stage typing, reran the full contract successfully, and closed UNDO-LIT checklist items in unresolved tracking. This finalizes the T-series follow-through (implementation + evidence sync + quality gate + literature-grounding spot check) for the current tranche.
+- reason: User approved continuation to finish the pending "full contract + literature-grounding closeout" step after the implementation tranche was synchronized.
+- evidence_basis: `07: Full Contract (Preflight + Check-All)` now passes end-to-end with pytest `658 passed`, pyright `0 errors`, BL-013 `BL013-ENTRYPOINT-20260427-120502-140165`, and BL-014 `BL014-SANITY-20260427-120530-520025` (`36/36`). `00_admin/unresolved_issues.md` now marks UNDO-LIT resolved with all checklist items checked.
+- affected_components: `07_implementation/setup.ps1`, `07_implementation/src/playlist/stage.py`, `00_admin/unresolved_issues.md`, `00_admin/change_log.md`, `00_admin/timeline.md`, `00_admin/thesis_state.md`
+- impact_assessment: Low-positive. Removes an environment/bootstrap failure mode from full-contract runs and closes remaining governance blockers for the current UNDO-T/LIT wave.
+- approval_record: User request in chat on 2026-04-27 ("yes").
+
+## C-620
+- date: 2026-04-27
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Closed the remaining UNDO-T implementation-sync tranche by executing a fresh wrapper validate-only run and synchronizing Chapter 4 evidence snippets plus unresolved-item statuses to the new artefacts. Chapter 4 examples now reflect current BL-003/BL-005/BL-007 outputs (including `ambiguous_matches`, `invalid_records`, `influence_admitted`, `novelty_allowance`, `novelty_allowance_used`, and `relaxation_records`). UNDO-T1, UNDO-T2, UNDO-T4, and UNDO-T5 were advanced from in-progress to resolved in the unresolved ledger.
+- reason: User requested updating implementation so the next feature tranche is actually implemented end-to-end rather than remaining partially synchronized.
+- evidence_basis: Wrapper validation pass produced BL-013 `BL013-ENTRYPOINT-20260427-115646-217267` and BL-014 `BL014-SANITY-20260427-115720-226558` (`36/36`); fresh artefacts show BL-003 counts with `ambiguous_matches`/`invalid_records`, BL-005 `counts.influence_admitted`, and BL-007 `config.novelty_allowance`, `counts.novelty_allowance_used`, and top-level `relaxation_records`.
+- affected_components: `08_writing/chapter4_v2.md`, `00_admin/unresolved_issues.md`, `00_admin/change_log.md`, `00_admin/timeline.md`, `00_admin/thesis_state.md`
+- impact_assessment: Low-positive. No runtime contract changes were required; closes evidence drift so implemented features are explicitly visible in chapter and governance surfaces.
+- approval_record: User request in chat on 2026-04-27 ("update the implementation so that the next feature is actually implemented").
+
+## C-619
+- date: 2026-04-27
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Completed UNDO-T3 writing-only remediation by removing unsupported rule-adjustment framing from Chapter 3 scoring design text. Section 3.9 now describes deterministic component-weighted similarity scoring without post-scoring rule-adjustment claims. Governance status records were synchronized to mark UNDO-T3 resolved and to keep UNDO-T4/T5 in-progress wording aligned with current implementation state.
+- reason: User requested to "implement the next thing" after UNDO-T4/T5 implementation; next queued item was UNDO-T3 literature-grounding correction.
+- evidence_basis: `08_writing/chapter3.md` no longer states "bounded rule adjustments" in §3.9 and now aligns with BL-006 implemented contract surfaces; `00_admin/unresolved_issues.md` marks UNDO-T3 resolved and checks the UNDO-LIT T3 checklist item.
+- affected_components: `08_writing/chapter3.md`, `00_admin/unresolved_issues.md`, `00_admin/change_log.md`, `00_admin/timeline.md`, `00_admin/thesis_state.md`
+- impact_assessment: Low-positive. Removes a literature-unsupported design claim and improves Chapter 3 to implementation consistency without runtime behavior changes.
+- approval_record: User request in chat on 2026-04-27 ("implement thenext thing").
+
+## C-618
+- date: 2026-04-27
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Implemented UNDO-T4 and UNDO-T5 on BL-007 assembly surfaces. Added `novelty_allowance` as a first-class runtime/run-config control and threaded it through playlist models/context/rules so bounded novel-genre admissions are tracked. Added structured relaxation-event capture during controlled-relaxation rounds and exposed report-level contract fields `counts.novelty_allowance_used` and top-level `relaxation_records` (empty list when no relaxation). Added focused regression coverage across playlist rules/runtime/integration and run-config control resolution.
+- reason: User requested continuation to the next planned implementation tranche (UNDO-T4/T5) after UNDO-T1/T2 and writing-fix tranche completion.
+- evidence_basis: BL-007 rules now support novelty allowance and emit metadata via assembly metadata channel; stage report now includes `novelty_allowance_used` and explicit `relaxation_records`; runtime/run-config/default constants include `novelty_allowance`; focused validation passed (`81/81`) across `test_playlist_rules.py`, `test_playlist_runtime_controls.py`, `test_playlist_integration.py`, and `test_run_config_utils.py`.
+- affected_components: `07_implementation/src/shared_utils/constants.py`, `07_implementation/src/playlist/runtime_controls.py`, `07_implementation/src/playlist/models.py`, `07_implementation/src/playlist/rules.py`, `07_implementation/src/playlist/stage.py`, `07_implementation/src/run_config/run_config_utils.py`, `07_implementation/tests/test_playlist_rules.py`, `07_implementation/tests/test_playlist_runtime_controls.py`, `07_implementation/tests/test_playlist_integration.py`, `07_implementation/tests/test_run_config_utils.py`, `00_admin/change_log.md`, `00_admin/decision_log.md`, `00_admin/thesis_state.md`, `00_admin/timeline.md`, `00_admin/unresolved_issues.md`
+- impact_assessment: Medium-positive. Closes documented BL-007 design-to-implementation drift for novelty control and relaxation-event observability with additive, backward-compatible report/config fields.
+- approval_record: User request in chat on 2026-04-27 ("continue the next planned tranche").
+
+## C-617
+- date: 2026-04-27
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Applied targeted Chapter 4 writing corrections in `chapter4_v2.md` to align implementation evidence wording with current artifacts and reduce over-evaluative phrasing. Fixes include BL-003 example/category alignment (`ambiguous_matches`, `invalid_records`), BL-005 retention-rate sentence normalization, BL-006 removal of stale rule-adjustment framing from diagram/prose, BL-008 payload-label alignment (per scored candidate), BL-009 example expansion with concrete full-length hash values, and lighter analysis-oriented wording in several section summaries.
+- reason: User requested continuation on the in-file writing TODO set for section-level factual/prose corrections.
+- evidence_basis: `08_writing/chapter4_v2.md` now contains updated BL-003/BL-005/BL-006/BL-008/BL-009 text and examples; stale phrases (`Rule adjustments`, `one payload per playlist track`, prior TODO wording patterns) are removed; hash example fields now include full values from the referenced BL-009 run.
+- affected_components: `08_writing/chapter4_v2.md`, `00_admin/change_log.md`, `00_admin/timeline.md`, `00_admin/thesis_state.md`
+- impact_assessment: Low-positive. Improves chapter factual consistency and examiner-facing tone without changing implementation/runtime behavior.
+- approval_record: User request in chat on 2026-04-27 ("continue" with explicit Chapter 4 TODO items).
+
+## C-616
+- date: 2026-04-27
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Implemented first UNDO tranche from the 2026-04-27 writing-vs-implementation gap audit. BL-003 alignment now emits explicit `ambiguous_matches` and `invalid_records` pathways/counters with corresponding trace statuses (`ambiguous`, `invalid`) and metadata-ambiguity reasoning, while BL-005 diagnostics now emit `influence_admitted` count. Added targeted regression coverage for BL-003 category behavior and BL-005 diagnostics-count contract.
+- reason: User requested immediate implementation start from the prioritized gap sequence (T1 -> T2 -> T4+T5 -> T3 -> LIT).
+- evidence_basis: Updated BL-003 constants/export surface and match pipeline classification logic; BL-003 CLI output now includes new counters; BL-005 diagnostics payload now computes `influence_admitted` from configured influence-track IDs when available; focused tests passed (`47/47`) across alignment matching/constants and retrieval stage diagnostics.
+- affected_components: `07_implementation/src/alignment/constants.py`, `07_implementation/src/alignment/__init__.py`, `07_implementation/src/alignment/match_pipeline.py`, `07_implementation/src/alignment/main.py`, `07_implementation/src/retrieval/stage.py`, `07_implementation/tests/test_alignment_constants.py`, `07_implementation/tests/test_alignment_matching.py`, `07_implementation/tests/test_retrieval_stage.py`, `00_admin/change_log.md`, `00_admin/decision_log.md`, `00_admin/unresolved_issues.md`, `00_admin/timeline.md`, `00_admin/thesis_state.md`
+- impact_assessment: Medium-positive. Reduces documented Ch3/Ch4 contract drift for BL-003 and BL-005 with additive, backward-compatible counters and explicit diagnostics while preserving existing match-method totals and deterministic behavior.
+- approval_record: User request in chat on 2026-04-27 ("Start implementation").
 
 ## C-611
 - date: 2026-04-27
@@ -33,6 +176,39 @@ Maintenance snapshot (2026-04-27, updated):
 - affected_components: `reports/legacy_tuning_evidence_2026_ui013/`, `reports/legacy_submission_bundle_structure_2026/`, `07_implementation/scripts/tuning_sweep_orchestration.ps1`, removed `07_implementation/src/.claude/worktrees/`, removed `_scratch/run_ui013_sweep.ps1`, removed `_scratch/chapter2finalv1_verbatim_audit_2026-04-11.md`, removed `_scratch/final_artefact_bundle/`, removed `_scratch/*.json` (tuning evidence files)
 - impact_assessment: Medium-positive. Eliminates Pyright static-analysis noise, consolidates legacy evidence in intentional archive locations, makes reusable tuning orchestration pattern available in active scripts, and leaves `_scratch/` ready for future session-specific exploratory work without legacy clutter.
 - approval_record: User request in chat on 2026-04-27 ("Start implementation") after approving systematic cleanup plan.
+
+## C-614
+- date: 2026-04-27
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Replaced all 7 illustrative JSON example blocks in `08_writing/chapter4_v2.md` with compact real-data examples drawn from actual pipeline output files (BL-003 through BL-009). Each example now shows real values from the 2026-04-22 run, labelled `(from run BL-00x, 2026-04-22)` instead of `(illustrative)`. Examples kept to ~10–15 lines to remain readable inline.
+- reason: User instruction: "no need [for real file links]. instead, show an example which is small." — compact real-value examples improve credibility without padding.
+- evidence_basis: Values drawn from: `bl003_ds001_spotify_summary.json` (input_rows=9902, match_rate=0.2469), `bl004_preference_profile.json` (danceability=0.603, top tags: pop/rock/indie), `bl005_candidate_diagnostics.json` (109269 corpus, 23249 retained, top failure: key threshold=1.5), `bl006_score_summary.json` (max=0.4999, mean=0.2217, weights: lead_genre=0.29, tag_overlap=0.29), `bl007_assembly_report.json` (10 selected, entropy=0.970, 22701 excluded by score floor), `bl008_explanation_summary.json` (tag_overlap primary for 36.9% share), `bl009_run_observability_log.json` (run_id=BL009-OBSERVE-20260422-121845-873914, upstream stage IDs, run_caveats).
+- affected_components: `08_writing/chapter4_v2.md`
+- impact_assessment: Low-positive. Makes chapter evidence examples concrete without increasing file length significantly. Improves examiner trust in reported values.
+- approval_record: User request in chat on 2026-04-27 ("no need. instead, show an example which is small").
+
+## C-613
+- date: 2026-04-27
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Implemented Chapter 4 restructuring as hybrid DSR/empirical format to improve alignment with university sample-report structure while maintaining continuity to Chapter 1 objectives and Chapter 3 design. Created `08_writing/chapter4_v2.md` (3,749 words) with 12 sections: chapter aim (4.1), design-to-implementation bridge (4.2), stage-by-stage investigation sections for BL-003 through BL-011 (4.3–4.10), overall execution coherence (4.11), and summary (4.12). Each investigation section follows Design Intent → Implementation Realization → Evidence Artifacts pattern aligned to Chapter 3 sections and Chapter 1 objectives (O1–O6).
+- reason: User analyzed Chapter 4 against university sample-report structure and identified that abstract DSR framing was diverging from empirical-study expectations. User selected hybrid option balancing DSR continuity with investigation-per-stage empirical evidence reporting.
+- evidence_basis: `08_writing/chapter4_v2.md` now provides: (1) explicit traceability to Ch1 O1–O6 objectives embedded in Design Intent subsections; (2) stage-by-stage investigation structure matching BL-003 (Alignment), BL-004 (Profiling), BL-005 (Candidate Shaping), BL-006 (Scoring), BL-007 (Assembly), BL-008 (Explanation), BL-009 (Observability), BL-010/BL-011 (Evaluation Layers); (3) illustrative JSON structures for evidence artefacts (not raw data, but realistic patterns); (4) cross-stage handshake documentation showing evidence flow; (5) deterministic execution contract framing and configuration authority; (6) bridges to Chapter 5 evaluation throughout.
+- affected_components: `08_writing/chapter4_v2.md` (new), `08_writing/chapter4.md` (preserved for comparison), `00_admin/decision_log.md`, `00_admin/change_log.md`
+- impact_assessment: High-positive for thesis coherence and examiner-facing structure. Chapter 4 now follows empirical-study investigation pattern expected by sample report while preserving DSR design continuity. Explicit objective mapping strengthens internal consistency. Evidence surfaces made concrete through artifact descriptions and structural examples.
+- approval_record: User request in chat on 2026-04-27 ("Start implementation") after approving hybrid DSR/empirical chapter plan.
+- next_steps: Review chapter4_v2.md draft for refinement; compare word count to Chapter 1–6 corpus for trimming assessment; decide integration path (replace original Ch4, parallel comparison, or hybrid); adjust Chapter 5 structure to match new Ch4 stage organization.
+## C-615
+- date: 2026-04-27
+- proposed_by: user + Copilot
+- status: accepted
+- change_summary: Added UNDO-T1 through UNDO-T5 and UNDO-LIT to `00_admin/unresolved_issues.md` following a systematic 2026-04-27 audit cross-referencing `chapter4_v2.md` real artefact data against `chapter3.md` design commitments and all 66 cited sources in `03_literature/source_index.csv`. Issues cover: BL-003 ambiguous/invalid match categories (T1), BL-005 influence-admitted count (T2), BL-006 rule-adjustment pathway removal from writing (T3 — no literature grounding found), BL-007 novelty_allowance config parameter (T4), BL-007 constraint relaxation recording (T5), and a post-implementation literature-grounding check requirement (LIT).
+- reason: Writing-vs-implementation audit revealed that five Ch3 design commitments are not yet delivered by the implementation; one (rule adjustments) has no literature grounding and should be stripped from writing rather than implemented. Issues logged before any implementation begins so they are tracked and do not block current writing work.
+- evidence_basis: Audit cross-referenced: `bl003_ds001_spotify_summary.json` (no ambiguous_matches/invalid_records), `bl005_candidate_diagnostics.json` (no influence_admitted), `bl006_score_summary.json` (no rule adjustment fields), `bl007_assembly_report.json` (no novelty_allowance, no relaxation_records); checked all 66 sources in source_index.csv including paper notes P-028, P-061, P-017, P-043, P-015, P-019, P-020, reading_queue.md, candidate_papers.md, literature_gap_tracker.md — no citation found for rule adjustments, recency boost, alignment-confidence penalty, novelty allowance budget mechanism, or constraint relaxation.
+- affected_components: `00_admin/unresolved_issues.md`
+- impact_assessment: Low-risk governance change. No code or writing changed. Tracks known gaps for future implementation and writing correction sessions.
+- approval_record: User request in chat on 2026-04-27 ("add all this information as an unresolved issues, and that we have to update the writing for it as well").
 
 ## C-610
 - date: 2026-04-22

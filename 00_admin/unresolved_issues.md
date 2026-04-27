@@ -1,8 +1,156 @@
 # Unresolved Issues
 
-Last updated: 2026-04-27 UTC (Governance checkpoint synchronization is current across active admin surfaces (`C-611`, `D-314`). Config-studio hardening and runtime diagnostics continuity updates are now logged; UNDO-S and UNDO-R implementation checklists remain complete, and remaining blockers are external submission/package confirmations tracked in `09_quality_control/submission_readiness_status.md`.)
+Last updated: 2026-04-27 UTC (UNDO-T1/T2/T3/T4/T5 and UNDO-LIT are now closed after full-contract rerun and post-implementation literature-grounding spot check.)
 
 ## Active
+
+### UNDO-T1: BL-003 — Ambiguous and invalid match categories not produced by alignment stage
+
+**Status**: Resolved (2026-04-27; fresh validate-only rerun confirms BL-003 output emits `ambiguous_matches` and `invalid_records`, and Chapter 4 §4.3 example is synchronized)
+
+**Trigger**: 2026-04-27 audit of `bl003_ds001_spotify_summary.json` against `chapter4_v2.md` and `chapter3.md`. Chapter 3 §3.6 explicitly names four outcome categories (confident match, ambiguous, unmatched, invalid) and states ambiguous records are "retained as ambiguous rather than being forced into certainty" and invalid records are "surfaced separately as invalid rather than silently discarded." Figure 3.2 in the written thesis and Figure 4.2 in `chapter4_v2.md` both show four-pathway alignment diagrams. The real artefact currently only has `matched_by_spotify_id`, `matched_by_metadata`, and `unmatched`.
+
+**Literature grounding**: Strong. Elmagarmid et al. (2007) P-036 directly covers confidence-sensitive multi-level match classification. Papadakis et al. (2021) P-030 covers blocking and filtering under uncertainty. Both are already cited in Ch3 §3.6.
+
+**Implementation changes required**:
+- Add pre-check branch in alignment stage: records missing minimum required fields → flagged `invalid` before match attempt
+- Add close-competitor detection in metadata fallback: when multiple candidates score similarly → outcome is `ambiguous` not forced to `matched_by_metadata`
+- `bl003_ds001_spotify_summary.json` output schema gains two new integer fields: `ambiguous_matches` and `invalid_records`
+
+**Writing changes required**:
+- `chapter4_v2.md` §4.3 Example block: update to show real `ambiguous_matches` and `invalid_records` values once implemented
+- Verify Figure 4.2 diagram nodes match the real output — currently they already promise four pathways, implementation must deliver them
+
+**Estimated effort**: 3–5 hours. Risk: alignment module touches BL-004 input; `matched_by_spotify_id` and `matched_by_metadata` counts must remain stable.
+
+**Blocking**: Resolved.
+
+---
+
+### UNDO-T2: BL-005 — Influence-admitted candidate count not reported in diagnostics
+
+**Status**: Resolved (2026-04-27; fresh validate-only rerun confirms BL-005 diagnostics emit `influence_admitted`, and Chapter 4 §4.5 example is synchronized)
+
+**Trigger**: 2026-04-27 audit of `bl005_candidate_diagnostics.json`. Chapter 3 §3.8 states the shaping step combines "profile-similarity thresholds with metadata-based exclusions and bounded influence-track expansion." The real artefact has no `influence_admitted` count. `chapter4_v2.md` §4.5 bullet list describes influence-track contribution as a visible diagnostic.
+
+**Literature grounding**: Solid. Jin et al. (2020) P-004 explicitly names "influence track injection" as a user-steerable profile adjustment mechanism. Cited in Ch2 §2.4. Already resolved as MFT-A2 which split `injected_count` into `new_injected_count` vs `relabelled_count` — but a candidate-admission count at the BL-005 shaping stage was not separately tracked.
+
+**Implementation changes required**:
+- BL-005 candidate shaping loop: count how many tracks admitted to the candidate set entered via the influence-track nomination path
+- `bl005_candidate_diagnostics.json` gains one new field: `influence_admitted: int`
+- If the influence path is not currently distinguishable from main similarity scoring in the shaping loop, add a flag or counter
+
+**Writing changes required**:
+- `chapter4_v2.md` §4.5: once implemented, confirm the influence-admitted value in the evidence table and update the example if it was previously listed as absent
+
+**Estimated effort**: 1–4 hours depending on whether the influence nomination path is already separated from the main scoring loop in `retrieval/stage.py`.
+
+**Blocking**: Resolved.
+
+---
+
+### UNDO-T3: BL-006 — Rule-adjustment pathway in Ch3 §3.9 and diagrams has no literature grounding; remove from design and writing
+
+**Status**: Resolved (2026-04-27; Chapter 3 scoring wording aligned to implemented BL-006 behavior)
+
+**Trigger**: 2026-04-27 literature audit confirmed zero of the 66 cited sources support post-scoring rule adjustments, recency boosting, or alignment-confidence penalties. Chapter 3 §3.9 describes "scoring combines weighted feature-similarity contributions with bounded rule adjustments" and lists "Rule adjustments: Apply bounded policy adjustments (e.g., boost scores for recently released tracks, penalize scores for low-confidence alignments)." Figure 4.5 in `chapter4_v2.md` shows a `D{Rule Adjustments active?}` diamond and `ADJ[Apply Bounded Policy Adjustment]` node. The real `bl006_score_summary.json` has none of these fields.
+
+**Literature grounding**: None. Herlocker et al. (2004) and Fkih (2022) cited in §3.9 support deterministic feature-weighted scoring as a design choice — they do not support rule adjustments on top of that scoring.
+
+**Recommended action**: Option B — strip from writing and diagrams. Do not implement without finding a supporting citation first.
+
+**Writing changes required**:
+- `chapter3.md` §3.9: remove the "bounded rule adjustments" sentence and the "Rule adjustments" numbered list item; keep the rest of the deterministic-scoring rationale, which is well-grounded
+- `chapter4_v2.md` §4.6 Implementation Realization: remove "Rule adjustments" bullet
+- `chapter4_v2.md` Figure 4.5 Mermaid diagram: remove `D{Rule Adjustments active?}` branch and `ADJ` node; simplify to straight weighted-sum → final score path
+
+**Implementation changes required**: None. Do not implement.
+
+**Blocking**: Resolved.
+
+---
+
+### UNDO-T4: BL-007 — `novelty_allowance` config parameter not in assembly; Ch3 §3.10 names it explicitly
+
+**Status**: Resolved (2026-04-27; fresh validate-only rerun confirms BL-007 config/report include `novelty_allowance` and `counts.novelty_allowance_used`, and Chapter 4 §4.7 example is synchronized)
+
+**Trigger**: 2026-04-27 audit of `bl007_assembly_report.json` and config schema. Chapter 3 §3.10 lists "configurable assembly constraints covering repetition, diversity pressure, **novelty allowance**, score admissibility, and ordering behaviour." Chapter 1 Objective O3 names "controls for coherence, diversity, novelty, and ordering." The real assembly config has only `target_size`, `min_score_threshold`, `max_per_genre`, `max_consecutive`. No `novelty_allowance` field exists.
+
+**Literature grounding**: Partial. Novelty as a competing playlist objective is supported by Bonnin and Jannach (2015) P-061, Vall et al. (2019) P-008, and Schweiger et al. (2025) P-065 — all cited in Ch3 §3.10. The budget-slot mechanism is a design response, not directly prescribed by these papers. Frame in writing as: "To implement novelty as a first-class assembly objective, the design introduces a configurable allowance parameter…"
+
+**Implementation changes required**:
+- Add `novelty_allowance: int` to assembly config schema (suggested default: 2)
+- Assembly loop: if fewer than `novelty_allowance` novel tracks have been included, eligible lower-ranked tracks introducing a new genre/tag cluster not yet in the playlist may be admitted
+- Define "novel" operationally: track whose lead genre is not already represented in the current playlist
+- `bl007_assembly_report.json` gains `novelty_allowance_used: int` field
+
+**Writing changes required**:
+- `chapter4_v2.md` §4.7 Implementation Realization: add novelty_allowance to the constraint list once implemented; update example to show `novelty_allowance` in config and `novelty_allowance_used` in output
+- `chapter3.md` §3.10: no change needed — it already promises this; implementation must catch up
+
+**Estimated effort**: 4–7 hours. Novelty predicate + assembly loop ordering are the main complexity.
+
+**Blocking**: Resolved.
+
+---
+
+### UNDO-T5: BL-007 — Constraint relaxation recording not implemented; Figure 3.3 promises "fallback recording"
+
+**Status**: Resolved (2026-04-27; fresh validate-only rerun confirms BL-007 report emits top-level `relaxation_records` and Chapter 4 §4.7 example is synchronized)
+
+**Trigger**: 2026-04-27 audit of `bl007_assembly_report.json`. Chapter 3 §3.10 describes "a relaxation pathway for when constraints would otherwise prevent the target playlist size from being met." Figure 3.3 caption says "with constraint checks, fallback recording, and observability output." The real artefact has `rule_hits: {R1_score_threshold: 22701}` with no relaxation records — `relaxation_records` key absent entirely.
+
+**Literature grounding**: None from cited papers. Pure engineering design decision. Frame as such — do not cite literature for the relaxation mechanism itself.
+
+**Implementation changes required**:
+- Assembly loop: add a fallback pass — if after main constrained selection `len(playlist) < target_size`, relax score floor first, then relax diversity constraint
+- Each relaxation event logged as `{constraint: "score_floor", original_value: 0.35, relaxed_to: 0.28, tracks_admitted: N}`
+- `bl007_assembly_report.json` gains `relaxation_records: []` field (empty list when no relaxation needed)
+
+**Writing changes required**:
+- `chapter4_v2.md` §4.7 Example: once implemented, confirm `relaxation_records` key is present in the output block (even if empty for the 2026-04-22 run); update prose to describe what it would contain when triggered
+- `chapter4_v2.md` Figure 4.6 Mermaid diagram: add `REL[Constraint Relaxation\nrecord constraint + relaxation amount]` back if it was removed; confirm it exists and connects correctly once the pathway is live
+
+**Estimated effort**: 2–3 hours. The current run never triggers relaxation (22,701 candidates above the floor for a 10-track playlist). Chapter 5 controllability scenarios can deliberately trigger it with a tight score threshold.
+
+**Blocking**: Resolved.
+
+**Dependency**: Implement alongside UNDO-T4 (both are assembly-loop changes).
+
+---
+
+### UNDO-LIT: Post-implementation literature-grounding check required after all UNDO-T items
+
+**Status**: Resolved (2026-04-27)
+
+**Trigger**: 2026-04-27 audit revealed that multiple Ch3 design commitments (UNDO-T3 rule adjustments) had no literature grounding. To prevent this from recurring, a systematic literature-grounding check is required after any substantial implementation work that changes or adds design mechanisms.
+
+**Description**: After completing UNDO-T1 through UNDO-T5, run the same audit that was performed on 2026-04-27:
+1. For each new mechanism added, verify it is claimed in Ch3 design text or Ch1 objectives
+2. For each Ch3 claim, verify at least one cited paper (from `03_literature/source_index.csv`) supports the mechanism — not just the concept category
+3. For any mechanism with no citation, either: (a) find a paper in the active source index that supports it and add the citation, or (b) reframe in Ch3/Ch4 as an explicit design decision rather than a literature-derived prescription
+4. Update `chapter4_v2.md` examples with real run data after pipeline is re-run
+5. Update `chapter3.md` §3.6, §3.8, §3.9, §3.10 if any framing needs to change
+6. Log a C-### in `change_log.md` and a D-### in `decision_log.md` for any design-framing changes made
+
+**Checklist**:
+- [x] UNDO-T1 implemented → re-run pipeline → update §4.3 example with real `ambiguous_matches`/`invalid_records` values → verify Ch3 §3.6 framing still accurate
+- [x] UNDO-T2 implemented → re-run pipeline → update §4.5 example with real `influence_admitted` value
+- [x] UNDO-T3 writing-only fix → verify Ch3 §3.9 no longer makes unsupported rule-adjustment claim → verify Figure 4.5 updated
+- [x] UNDO-T4 implemented → re-run pipeline → update §4.7 example with real `novelty_allowance`/`novelty_allowance_used` values → verify Ch3 §3.10 framing matches implementation
+- [x] UNDO-T5 implemented → re-run pipeline → update §4.7 example with real `relaxation_records` key present → verify Figure 3.3 description matches
+- [x] Run full CI contract (`07: Full Contract`) after all five T-items complete
+- [x] Run literature-grounding spot check: for each new mechanism, confirm a cited source supports it or note it as a design decision
+
+**Spot-check result (2026-04-27)**:
+- BL-003 ambiguity/invalid classification remains literature-grounded by existing Ch3 §3.6 sources (Elmagarmid et al., 2007; Papadakis et al., 2021).
+- BL-005 `influence_admitted` is an additive diagnostics visibility field consistent with influence-track steering framing (Jin et al., 2020).
+- BL-007 `novelty_allowance` remains framed as an engineering mechanism implementing novelty objective coverage from existing Ch3 §3.10 sources (Bonnin and Jannach, 2015; Vall et al., 2019; Schweiger et al., 2025).
+- BL-007 `relaxation_records` remains explicitly framed as a design/engineering decision rather than a literature-prescribed mechanism.
+
+**Blocking**: Resolved.
+
+---
 
 ### UNDO-R: Mentor feedback remediation backlog (A-H comprehensive TODO set)
 

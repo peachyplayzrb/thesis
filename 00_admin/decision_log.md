@@ -6,10 +6,310 @@ Ordering convention (standardized 2026-03-24):
 - New entries must be appended at the end and may include `superseded_by` when a prior decision is replaced.
 
 Maintenance snapshot (2026-04-27, updated):
-- Highest decision ID currently present: `D-315`
-- Total decision entries: 313
-- Status distribution: accepted=307, superseded=3, rejected=1
+- Highest decision ID currently present: `D-323`
+- Total decision entries: 320
+- Status distribution: accepted=314, superseded=3, rejected=1
 - ID integrity check: no duplicate decision IDs detected
+
+## D-323
+- date: 2026-04-27
+- status: accepted
+
+context:
+User requested an execution path to add comments across files. A naive full-repo blanket comment pass would likely add low-value narration and create maintenance noise.
+
+decision:
+1) Use staged, module-by-module comment hardening with focused batches rather than a single whole-repo sweep.
+2) Restrict additions to high-signal comments/docstrings that explain intent, assumptions, and audit boundaries (why/how), not line-by-line behavior restatement (what).
+3) Validate each batch with focused tests before moving to the next module.
+
+alternatives_considered:
+- Single-pass repo-wide comment insertion (rejected: high risk of low-value, stale, and noisy comments).
+- No code changes and guidance-only response (rejected: user confirmed execution start).
+
+rationale:
+This preserves readability gains while controlling maintenance overhead and regression risk.
+
+evidence_basis:
+First tranche updated BL-008 transparency orchestration/helper surfaces and passed focused transparency tests (`16/16`).
+
+impacted_files:
+- `07_implementation/src/transparency/main.py`
+- `07_implementation/src/transparency/payload_builder.py`
+- `07_implementation/tests/test_transparency_payload_builder.py`
+- `07_implementation/tests/test_transparency_explanation_driver.py`
+- `07_implementation/tests/test_transparency_component_orchestration.py`
+- `00_admin/change_log.md`
+- `00_admin/decision_log.md`
+- `00_admin/thesis_state.md`
+- `00_admin/timeline.md`
+
+review_date:
+none
+
+## D-322
+- date: 2026-04-27
+- status: accepted
+
+context:
+After implementation-accuracy synchronization (C-625/D-321), reviewer-style chapter feedback identified a remaining quality gap in Chapter 4: mixed spelling conventions, repeated stock phrasing, rhetorical wording in implementation-realisation blocks, and forward-looking Chapter 5 drift in places where section-local evidence statements were sufficient.
+
+decision:
+1) Execute a single writing-only hardening pass over `08_writing/chapter4_v2.md` covering British spelling normalization, repetition compression, implementation-realisation grounding, and removal of unnecessary Chapter-5-forward phrasing.
+2) Keep technical substance, section structure, and artefact evidence examples intact; adjust wording only.
+
+alternatives_considered:
+- Apply only minimal spelling fixes (rejected: would leave repetition and rhetorical drift unresolved).
+- Defer style tightening until after Chapter 5 drafting (rejected: carries avoidable clarity debt into the next chapter-writing tranche).
+
+rationale:
+Chapter 4 functions as an examiner-facing implementation evidence chapter. Consistent language and concrete implementation phrasing improve readability and defensibility without changing technical claims.
+
+evidence_basis: User-approved instruction to implement the full four-part pass in one tranche; resulting chapter text confirms wording-only edits with no runtime-surface changes.
+
+impacted_files:
+- `08_writing/chapter4_v2.md`
+- `00_admin/change_log.md`
+- `00_admin/decision_log.md`
+- `00_admin/thesis_state.md`
+- `00_admin/timeline.md`
+
+review_date:
+none
+
+## D-321
+- date: 2026-04-27
+- status: accepted
+
+context:
+Chapter 4 §4.8 described explanation payloads but did not document the `score_band` and `score_percentile` fields added in C-622/C-623, the `output_hashes` block added in C-622 was absent from the §4.9 example, and BL-013/BL-014 verification infrastructure was not mentioned anywhere in Chapter 4.
+
+decision:
+1) Document `score_percentile` and percentile-aware `score_band` in §4.8 implementation realization, with a concrete per-candidate payload example from fresh 2026-04-27 artifacts.
+2) Add the `output_hashes` block to the §4.9 evidence example, with a prose explanation of the `semantics_note` and alias equality pattern.
+3) Add a BL-013/BL-014 paragraph to §4.10 as “Automated Verification Infrastructure”.
+
+alternatives_considered:
+- Defer chapter sync until after Chapter 5 first draft (rejected: leaves a growing accuracy gap between implemented system and chapter description; evaluator risk).
+- Add score_band only as a footnote (rejected: insufficient — the percentile-aware classification is a substantive design choice that belongs in the implementation realization prose).
+
+rationale:
+Chapter 4 is the primary evidence surface for the implementation contribution claim. Fields present in artifacts but absent from the chapter text reduce evaluator confidence in the evidence chain. Keeping the chapter synchronized with each tranche closes this gap incrementally.
+
+evidence_basis: Fresh pipeline run `BL013-ENTRYPOINT-20260427-124156-310340`; per-candidate payload data from `BL008-EXPLAIN-20260427-124223-866689`; `output_hashes` from `BL009-OBSERVE-20260427-124233-915292`.
+
+impacted_files:
+- `08_writing/chapter4_v2.md`
+- `00_admin/change_log.md`
+- `00_admin/decision_log.md`
+- `00_admin/thesis_state.md`
+- `00_admin/timeline.md`
+
+review_date:
+none
+
+## D-320
+- date: 2026-04-27
+- status: accepted
+
+context:
+C-623 introduced a new BL-009 output-hash alias helper that tightened semantics and compatibility. The immediate full-contract rerun surfaced a pyright mismatch because raw config-artifact hash extraction produced `object | None` values passed into helper parameters typed as `str | None`.
+
+decision:
+1) Normalize extracted run-config hash fields to an explicit `str | None` boundary before calling the alias helper.
+2) Keep helper signature strict (`str | None`) to preserve type clarity and prevent silent widening of alias payload types.
+
+alternatives_considered:
+- Relax helper parameter types to `object | None` (rejected: weakens type contract and allows silent drift in alias payload construction).
+- Inline cast at callsite without normalization helper (rejected: less explicit and more error-prone for future callsites).
+
+rationale:
+Preserving strict helper typing while normalizing upstream values keeps static analysis aligned with runtime intent and prevents recurrence of this mismatch.
+
+evidence_basis:
+- Focused regression tests remained green (`69/69`).
+- Full contract rerun passed with pyright `0` and BL-013/BL-014 success (`BL013-ENTRYPOINT-20260427-123311-525034`, `BL014-SANITY-20260427-123344-642645`, `36/36`).
+
+impacted_files:
+- `07_implementation/src/observability/main.py`
+- `00_admin/decision_log.md`
+- `00_admin/change_log.md`
+- `00_admin/thesis_state.md`
+- `00_admin/timeline.md`
+
+review_date:
+none
+
+## D-319
+- date: 2026-04-27
+- status: accepted
+
+context:
+Post-implementation review of D-318 surfaced two practical quality gaps: (a) score-band labels were technically present but non-discriminative under the current bounded BL-006 score range, and (b) BL-009 compatibility alias naming could be misread as ID-list hashing semantics.
+
+decision:
+1) Make BL-008 score-band classification percentile-aware when percentile is available, with absolute-score thresholds retained as a backward-compatible fallback path.
+2) Thread explicit score-band into `why_selected` wording generation and align BL-014 phrase checks to prefer explicit payload `score_band` when present.
+3) Preserve existing BL-009 alias keys for compatibility, but add semantically explicit alias key(s) and a concise semantics note clarifying that `playlist_track_ids_sha256` equals the playlist artifact digest.
+4) Add focused tests for percentile-aware classification and BL-009 hash-alias mapping behavior.
+
+alternatives_considered:
+- Keep absolute-score-only banding (rejected: remains non-discriminative for bounded current score scale).
+- Remove legacy BL-009 aliases in favor of renamed keys (rejected: breaks existing inspection snippets).
+- Keep semantics undocumented and rely on operator interpretation (rejected: avoidable ambiguity).
+
+rationale:
+This preserves backward compatibility while making the reporting contract materially more informative and less ambiguous for audit usage.
+
+evidence_basis:
+- Focused tests passed (`69/69`) across transparency, BL-014 sanity-check warning logic, and new BL-009 alias-helper coverage.
+- File diagnostics on modified code and tests reported no errors.
+
+impacted_files:
+- `07_implementation/src/transparency/explanation_driver.py`
+- `07_implementation/src/transparency/main.py`
+- `07_implementation/src/quality/sanity_checks.py`
+- `07_implementation/src/observability/main.py`
+- `07_implementation/tests/test_transparency_explanation_driver.py`
+- `07_implementation/tests/test_quality_sanity_checks.py`
+- `07_implementation/tests/test_observability_hash_aliases.py`
+- `00_admin/decision_log.md`
+- `00_admin/change_log.md`
+- `00_admin/thesis_state.md`
+- `00_admin/timeline.md`
+
+review_date:
+none
+
+## D-318
+- date: 2026-04-27
+- status: accepted
+
+context:
+Post-UNDO closure review found two remaining operator-facing reporting gaps that were additive rather than behavioral: BL-008 lacked explicit machine-readable score-band/percentile fields per payload, and BL-009 lacked flat compatibility hash aliases expected by existing audit snippets that read top-level `output_hashes` and flattened `output_artifacts` keys.
+
+decision:
+1) Extend BL-008 payload contract with additive per-track fields `score_band` (`strong|moderate|weak`) and `score_percentile` (0-100, rank-derived).
+2) Keep existing human-readable `why_selected` phrasing unchanged in intent while deriving score-band wording from a single classifier helper to avoid drift between text and machine fields.
+3) Add BL-009 backward-compatible hash aliases at top-level (`output_hashes`) and under `output_artifacts` (`playlist_track_ids_sha256`, `run_config_payload_sha256`, `scoring_records_sha256`, `profile_seed_trace_sha256`) without removing nested canonical structures.
+
+alternatives_considered:
+- Leave percentile/band implicit in prose-only fields (rejected: weak machine-readability for chapter evidence extraction).
+- Replace BL-009 nested artifact structure with flat-only structure (rejected: unnecessary breaking change).
+- Add no compatibility aliases and require all downstream scripts to update immediately (rejected: avoidable operator friction).
+
+rationale:
+These additive fields close the remaining reporting-contract deltas without altering deterministic ranking, selection, or validation semantics. They improve auditability and preserve backward compatibility for both current and legacy inspection snippets.
+
+evidence_basis:
+- Focused tests passed (`25/25`) across transparency + observability test surfaces.
+- Full contract rerun passed (`659` tests, pyright `0`, BL-013 `BL013-ENTRYPOINT-20260427-121643-039900`, BL-014 `BL014-SANITY-20260427-121715-573627`, `36/36`).
+
+impacted_files:
+- `07_implementation/src/transparency/explanation_driver.py`
+- `07_implementation/src/transparency/payload_builder.py`
+- `07_implementation/src/transparency/main.py`
+- `07_implementation/src/observability/main.py`
+- `07_implementation/tests/test_transparency_explanation_driver.py`
+- `07_implementation/tests/test_transparency_payload_builder.py`
+- `07_implementation/tests/test_transparency_component_orchestration.py`
+- `00_admin/decision_log.md`
+- `00_admin/change_log.md`
+- `00_admin/thesis_state.md`
+- `00_admin/timeline.md`
+
+review_date:
+none
+
+## D-317
+- date: 2026-04-27
+- status: accepted
+
+context:
+UNDO-T4 and UNDO-T5 required BL-007 contract decisions before implementation: how novelty allowance should operate relative to competitive ordering, and how controlled-relaxation events should be exposed without breaking existing trace/report consumers.
+
+decision:
+1) Introduce `novelty_allowance` as a non-negative BL-007 control (default `0`) that permits bounded admission of candidates introducing a not-yet-represented assembly genre.
+2) Apply novelty admission as an additive path (`inclusion_path="novelty_allowance"`) that can run before or immediately after competitive inclusion within an assembly pass when allowance remains.
+3) Emit novelty usage as report contract field `counts.novelty_allowance_used`.
+4) Record controlled-relaxation rounds as structured report-level `relaxation_records` entries with `{round, constraint, original_value, relaxed_to, tracks_admitted}` and emit an empty list when no relaxation occurred.
+
+alternatives_considered:
+- Encode novelty usage only via implicit trace-row analysis (rejected: weak contract clarity for Chapter 4 evidence surfaces).
+- Add relaxation rows directly into BL-007 trace CSV decision stream (rejected: risk of breaking count semantics in existing consumers/tests).
+- Return additional positional values from `assemble_bucketed` (rejected: avoid broad API churn across call sites).
+
+rationale:
+This preserves backward compatibility while making novelty and relaxation behavior explicit and auditable in BL-007 report contracts promised by Chapter 3/4 wording.
+
+evidence_basis:
+- Runtime/run-config/default constants and model/context mapping now include `novelty_allowance`.
+- BL-007 rules emit metadata (`novelty_allowance_used`, `relaxation_records`) via optional metadata channel.
+- BL-007 stage report now includes `counts.novelty_allowance_used` and top-level `relaxation_records`.
+- Focused tests across playlist and run-config surfaces passed (`81/81`).
+
+impacted_files:
+- `07_implementation/src/shared_utils/constants.py`
+- `07_implementation/src/playlist/runtime_controls.py`
+- `07_implementation/src/playlist/models.py`
+- `07_implementation/src/playlist/rules.py`
+- `07_implementation/src/playlist/stage.py`
+- `07_implementation/src/run_config/run_config_utils.py`
+- `07_implementation/tests/test_playlist_rules.py`
+- `07_implementation/tests/test_playlist_runtime_controls.py`
+- `07_implementation/tests/test_playlist_integration.py`
+- `07_implementation/tests/test_run_config_utils.py`
+- `00_admin/change_log.md`
+- `00_admin/decision_log.md`
+- `00_admin/thesis_state.md`
+- `00_admin/timeline.md`
+- `00_admin/unresolved_issues.md`
+
+review_date:
+none
+
+## D-316
+- date: 2026-04-27
+- status: accepted
+
+context:
+UNDO-T1 and UNDO-T2 were prioritized for immediate implementation, but both required explicit contract choices to avoid silent behavioral drift: (a) how BL-003 should classify unmatched outcomes into `unmatched` vs `invalid` vs `ambiguous`, and (b) how BL-005 should compute `influence_admitted` when influence nomination provenance is not currently emitted as a first-class per-candidate admission flag.
+
+decision:
+1) BL-003 classification contract: treat missing minimum match keys as `invalid` (counted under `invalid_records`), metadata fallback ambiguity as `ambiguous` (counted under `ambiguous_matches`), and keep residual non-invalid/non-ambiguous failures under `unmatched`.
+2) BL-003 ambiguity detection: classify metadata fallback as ambiguous when multiple candidates exist with no usable duration discriminator, or when multiple candidates tie on best duration delta.
+3) BL-005 interim influence-admitted derivation: compute `influence_admitted` by intersecting kept candidate `track_id`s with configured `influence_tracks.track_ids` from the resolved run-config payload path when available; default to `0` when no influence-track list is configured.
+
+alternatives_considered:
+- Keep all unmatched outcomes in legacy `unmatched` bucket only (rejected: preserves known Ch3/Ch4 contract drift).
+- Force metadata fallback to pick first/best candidate without ambiguity category (rejected: contradicts confidence-sensitive classification requirement).
+- Block T2 until a deeper retrieval-loop provenance refactor introduces explicit influence-admission labels (rejected: delays required diagnostics visibility; not needed for initial bounded implementation).
+
+rationale:
+The chosen path is additive and low-risk: it exposes the missing audit categories and diagnostics now, preserves deterministic behavior, and avoids changing core matching/scoring semantics beyond explicit classification outcomes already promised by design text.
+
+evidence_basis:
+- BL-003 code updates in `alignment/constants.py`, `alignment/__init__.py`, and `alignment/match_pipeline.py`.
+- BL-005 diagnostics update in `retrieval/stage.py`.
+- Focused regression validation passed (`47/47`) for alignment/retrieval surfaces.
+
+impacted_files:
+- `07_implementation/src/alignment/constants.py`
+- `07_implementation/src/alignment/__init__.py`
+- `07_implementation/src/alignment/match_pipeline.py`
+- `07_implementation/src/alignment/main.py`
+- `07_implementation/src/retrieval/stage.py`
+- `07_implementation/tests/test_alignment_constants.py`
+- `07_implementation/tests/test_alignment_matching.py`
+- `07_implementation/tests/test_retrieval_stage.py`
+- `00_admin/decision_log.md`
+- `00_admin/change_log.md`
+- `00_admin/unresolved_issues.md`
+- `00_admin/timeline.md`
+- `00_admin/thesis_state.md`
+
+review_date:
+none
 
 ## D-314
 - date: 2026-04-27
@@ -6099,13 +6399,52 @@ none
 - entity_id: chapter2 opening-signpost alignment
 - proposed_by: user + Copilot
 - status: accepted
-- decision: Add a short chapter-level signposting paragraph at the start of `chapter2.md` to mirror expected dissertation literature-review framing and make section coverage explicit before detailed analysis begins.
-- context: User comparison against the sample report identified one minor gap: Chapter 2 lacked a brief introductory signpost paragraph.
-- alternatives_considered: keep chapter opening unchanged (rejected: leaves the only identified gap unresolved); add a longer multi-paragraph introduction (rejected: unnecessary expansion for a minor gap).
-- rationale: A concise signpost paragraph improves reader orientation and examiner-facing structure while preserving existing analytical depth and chapter flow.
-- evidence_basis: `08_writing/chapter2.md` now opens with a two-sentence overview of chapter scope and sequence before the first substantive section.
-- impacted_files: `08_writing/chapter2.md`, `00_admin/decision_log.md`, `00_admin/change_log.md`, `00_admin/timeline.md`.
-- next_steps: Keep Chapter 2 citations and analytical density unchanged; no further structural adjustment required unless supervisor feedback requests it.
+- decision: Restructure Chapter 4 as hybrid DSR/empirical format combining brief design-to-implementation bridge (DSR framing) with stage-by-stage investigation sections (empirical evidence reporting). Each investigation section includes Design Intent (from Ch3), Implementation Realization, and Evidence Artifacts; explicit traceability to Ch1 O1–O6 objectives embedded throughout. Preserve original Chapter 4 for reference but adopt chapter4_v2.md as the working version.
+- context: User comparison against university sample-report structure identified that Chapter 4's abstract DSR focus diverged from empirical-study expectations. Sample report follows: Implementation → Investigation-per-experiment → Results & Discussion → Conclusion → Critical Evaluation. Chapter 4 original followed pure DSR structure without stage-by-stage investigation.
+- alternatives_considered:
+  - Full Pivot to pure empirical structure (rejected: loses DSR design continuity and breaks methodological framing)
+  - Keep original Ch4 abstract focus (rejected: misaligns with examiner expectations per sample report)
+  - Hybrid with brief frame + investigation sections (accepted: balances DSR continuity with empirical evidence reporting)
+- rationale: Hybrid approach satisfies both thesis structure requirements (DSR methodology, Ch1–3 continuity) and university expectations (empirical evidence-per-stage investigation pattern). Stage-by-stage structure makes evidence surfaces concrete and traceable. Objective mapping preserves design intent anchoring throughout.
+- evidence_basis:
+  - `08_writing/chapter4_v2.md` created with 12 sections including 8 investigation sections (BL-003 through BL-011)
+  - Each section includes explicit Design Intent reference to Ch3 sections 3.6–3.12
+  - Each section maps to one or more of Ch1 objectives O1–O6
+  - Cross-stage handshakes documented showing evidence flow between stages
+  - Deterministic execution contract and configuration authority framing included
+  - Bridges to Ch5 evaluation embedded throughout
+  - Word count: 3,749 words (compared to original ~2,000 words)
+- impacted_files: `08_writing/chapter4_v2.md` (new), `08_writing/chapter4.md` (preserved), `00_admin/decision_log.md`, `00_admin/change_log.md`
+- next_steps:
+  1. Review chapter4_v2.md draft against Ch1 objectives and Ch3 design sections for refinement gaps
+  2. Measure compiled word count across Ch1–6 to assess word-count reduction strategy
+  3. Decide integration: replace original Ch4, keep both in parallel, or use hybrid comparison
+  4. Adjust Chapter 5 evaluation structure to align with new Ch4 stage sequence
+  5. Update Ch5 cross-references to point to new Ch4 sections if replacement is selected
+
+## D-315
+- date: 2026-04-27
+- entity_id: cleanup strategy for legacy `.claude/` and `_scratch/` material
+- proposed_by: user + Copilot
+- status: accepted
+- decision: Archive historical tuning evidence to `reports/legacy_tuning_evidence_2026_ui013/`, archive legacy submission-bundle templates to `reports/legacy_submission_bundle_structure_2026/`, create modernized tuning-sweep orchestration script in active `07_implementation/scripts/`, delete nested `.claude/worktrees/` directory (Pyright noise source), and empty `_scratch/` directory for future session-specific work without legacy clutter.
+- context: Pyright typecheck was failing due to nested legacy `.claude/worktrees/` artifacts. Repository also accumulated historical tuning evidence and old submission-bundle templates that should be preserved for reference but not cluttering active surfaces.
+- alternatives_considered:
+  - Ignore Pyright errors and proceed (rejected: typecheck serves quality-assurance function)
+  - Delete all legacy material (rejected: loses historical tuning context and template patterns)
+  - Keep legacy material in place and fix Pyright with ignore rules (rejected: leaves clutter and adds maintenance burden)
+- rationale: Archive-and-modernize approach preserves historical evidence in intentional archive locations, eliminates static-analysis noise, and makes reusable patterns available in active scripts while leaving `_scratch/` clean for session-specific exploration.
+- evidence_basis:
+  - Pyright now reports `0 errors, 0 warnings, 0 informations` (verified after cleanup)
+  - `reports/legacy_tuning_evidence_2026_ui013/` contains: ui013_tuning_sweep_results.json, ui013_v1b_bl008_focus_result.json, ab_profile_comparison_v1f_vs_v2b.json with metadata context
+  - `reports/legacy_submission_bundle_structure_2026/` contains final_artefact_bundle directory structure and legacy templates
+  - `07_implementation/scripts/tuning_sweep_orchestration.ps1` created with updated paths, current BL-013/BL-014 validation, and documented fallback error handling
+  - `_scratch/` directory now empty, ready for future session work
+- impacted_files:
+  - Archived: `reports/legacy_tuning_evidence_2026_ui013/`, `reports/legacy_submission_bundle_structure_2026/`
+  - Created: `07_implementation/scripts/tuning_sweep_orchestration.ps1`
+  - Deleted: `07_implementation/src/.claude/worktrees/beautiful-gould-2caf46/`, `_scratch/run_ui013_sweep.ps1`, `_scratch/chapter2finalv1_verbatim_audit_2026-04-11.md`, `_scratch/final_artefact_bundle/`, all JSON tuning evidence files from `_scratch/`
+- next_steps: Use `07_implementation/scripts/tuning_sweep_orchestration.ps1` for any future tuning campaigns; consult `reports/legacy_tuning_evidence_2026_ui013/` for historical tuning context; use empty `_scratch/` for session-specific exploratory work without legacy interference.
 
 ## D-184
 - date: 2026-04-18
