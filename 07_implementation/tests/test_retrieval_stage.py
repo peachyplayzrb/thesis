@@ -9,10 +9,10 @@ from retrieval.models import RetrievalArtifacts, RetrievalControls, RetrievalEva
 from retrieval.stage import RetrievalStage
 
 
-def _controls(*, recency_offset: int | None = 5) -> RetrievalControls:
+def _controls(*, recency_offset: int | None = 5, run_config_path: str | None = None) -> RetrievalControls:
     return RetrievalControls(
         config_source="test",
-        run_config_path=None,
+        run_config_path=run_config_path,
         run_config_schema_version=None,
         signal_mode={"name": "custom"},
         profile_top_lead_genre_limit=3,
@@ -154,6 +154,7 @@ def test_build_diagnostics_payload_includes_expected_counts(tmp_path: Path) -> N
 
     assert payload_obj["task"] == "BL-005"
     assert counts["seed_tracks_excluded"] == 1
+    assert counts["influence_admitted"] == 0
     assert counts["rejected_by_language_filter"] == 1
     assert cast(dict[str, Any], config["signal_mode"])["name"] == "custom"
     assert language_filter["enabled"] is True
@@ -178,6 +179,64 @@ def test_build_diagnostics_payload_includes_expected_counts(tmp_path: Path) -> N
     assert "retained_share_after_gates" in control_effect_observability
     assert "ranked_rejection_drivers" in rejection_driver_contribution
     assert "directional_impact_summary" in threshold_effects
+
+
+def test_build_diagnostics_payload_counts_influence_admitted_from_run_config(tmp_path: Path) -> None:
+    run_config = tmp_path / "run_config.json"
+    run_config.write_text('{"influence_tracks": {"track_ids": ["cand_1", "cand_99"]}}', encoding="utf-8")
+
+    profile_path = tmp_path / "bl004_preference_profile.json"
+    seed_trace_path = tmp_path / "bl004_seed_trace.csv"
+    candidate_path = tmp_path / "ds001_working_candidate_dataset.csv"
+    output_dir = tmp_path / "retrieval_outputs"
+    output_dir.mkdir()
+
+    profile_path.write_text("{}", encoding="utf-8")
+    seed_trace_path.write_text("track_id\nseed_1\n", encoding="utf-8")
+    candidate_path.write_text("track_id\ncand_1\ncand_2\n", encoding="utf-8")
+
+    paths = RetrievalPaths(
+        profile_path=profile_path,
+        seed_trace_path=seed_trace_path,
+        candidate_path=candidate_path,
+        output_dir=output_dir,
+    )
+
+    inputs = RetrievalInputs(
+        profile={"semantic_profile": {}, "numeric_feature_profile": {}},
+        candidate_rows=[{"track_id": "cand_1"}, {"track_id": "cand_2"}],
+        seed_trace_rows=[{"track_id": "seed_1"}],
+    )
+    controls = _controls(recency_offset=None, run_config_path=str(run_config))
+    context = RetrievalStage.build_runtime_context(inputs=inputs, controls=controls)
+
+    filtered_path = output_dir / "bl005_filtered_candidates.csv"
+    decisions_path = output_dir / "bl005_candidate_decisions.csv"
+    filtered_path.write_text("track_id\ncand_1\ncand_2\n", encoding="utf-8")
+    decisions_path.write_text("track_id,decision\ncand_1,keep\ncand_2,keep\n", encoding="utf-8")
+
+    payload = RetrievalStage.build_diagnostics_payload(
+        run_id="BL005-FILTER-TEST",
+        elapsed_seconds=0.1,
+        paths=paths,
+        runtime_context=context,
+        controls=controls,
+        summary={
+            "decision_counts": {},
+            "decision_path_counts": {},
+            "semantic_rule_hits": {},
+            "numeric_rule_hits": {},
+            "semantic_score_distribution": {},
+            "numeric_pass_distribution": {},
+        },
+        decisions=[],
+        candidate_rows=inputs.candidate_rows,
+        kept_rows=inputs.candidate_rows,
+        output_paths={"filtered_path": filtered_path, "decisions_path": decisions_path},
+    )
+
+    counts = cast(dict[str, Any], cast(dict[str, Any], payload)["counts"])
+    assert counts["influence_admitted"] == 1
 
 
 def test_run_returns_typed_artifacts(monkeypatch, tmp_path: Path) -> None:
