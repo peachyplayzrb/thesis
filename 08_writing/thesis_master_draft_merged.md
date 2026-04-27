@@ -546,7 +546,7 @@ Results in this chapter should be interpreted as design-evidence for a scoped de
 ## 4.12 Chapter Summary
 Chapter 4 operationalizes the Chapter 3 design into a transparent evaluation workflow centered on reproducibility, inspectability, controllability, and playlist-rule compliance. This preserves continuity with Chapter 2 literature consequences and prepares evidence-grounded interpretation for Chapter 5.
 
-# Chapter 5: Discussion, Critical Evaluation and Conclusion
+# Chapter 5: Overall Results and Discussion
 
 ## 5.1 Interpretation of Results and Comparator Framing
 
@@ -576,7 +576,31 @@ Fifth, comparator awareness must be maintained without allowing scope drift. Hyb
 
 Current evaluation evidence supports these considerations directly. BL-020 completed real-data execution from BL-003 through BL-009 with explicit stage-level diagnostics, deterministic artifact hashes, and full observability linkage. BL-014 automated sanity checks then validated schema integrity, cross-stage hash linkage, and count/run-id continuity across the full evidence chain (22/22 checks passed). The research question can therefore be answered within a qualified, scope-bounded frame: transparent and controllable playlist generation is achievable with deterministic mechanisms when governance and artifact traceability are engineered as first-class requirements.
 
-## 5.4 Critical Evaluation
+## 5.4 Chapter Summary
+
+This chapter interpreted evaluation outcomes against the research question using a bounded, objective-linked discussion frame. The key finding is that deterministic, inspectable mechanisms can deliver transparent and controllable playlist generation under cross-source constraints when run-level governance is engineered as part of the artefact design.
+
+# Chapter 6: Conclusion
+
+## 6.1 Future Work
+
+Future work should extend this artefact in ways that preserve traceability while strengthening evidence.
+
+1. Complete a full BL-020 rerun refresh (BL-003 through BL-013) on a later snapshot and compare outputs against the current evidence baseline.
+2. Add a focused music-domain alignment reliability study on corpus-overlap failure regimes and semantic-fallback quality.
+3. Execute broader controllability experiments and integrate their outcomes into run-level observability logs.
+4. Add at least one comparator pipeline, such as a lightweight hybrid baseline, using protocol-matched evaluation so trade-off analysis improves without inflating scope.
+5. Evaluate one audio-grounded extension path for user-side features (local extraction from a bounded track subset) to mitigate Spotify audio-feature endpoint deprecation.
+
+Collectively, these steps would strengthen external validity and comparative depth while keeping the thesis contribution centred on transparent, controllable, and observable engineering design.
+
+## 6.2 Final Conclusion
+
+This thesis has argued that the engineering of a transparent, controllable, and observable automated playlist-generation pipeline is shaped less by the pursuit of maximum model complexity and more by the disciplined design of explicit mechanisms. Under the locked scope of a single-user, deterministic, content-based artefact, the key design considerations are staged cross-source alignment, interpretable preference construction, explicit feature-based scoring, rule-aware playlist assembly, mechanism-linked explanation outputs, and run-level observability and reproducibility controls. The contribution is therefore not a new recommender model, but a structured demonstration of how these qualities can be engineered into a playlist pipeline and evaluated in a way that remains open to inspection and critical challenge.
+
+# Chapter 7: Critical Evaluation and Processes
+
+## 7.1 Critical Evaluation
 
 The strongest aspect of the artefact design is its discipline. The system architecture is deliberately layered, deterministic, and auditable, which means each major stage can be inspected and challenged in isolation. That is a better fit for the project aims than a more powerful but less transparent pipeline would have been. The design also shows clear methodological consistency: literature findings are translated into requirements, requirements into mechanisms, and mechanisms into planned evidence checks.
 
@@ -588,7 +612,7 @@ Another weakness is the dependence on the underlying corpus and alignment path. 
 
 Overall, the artefact is strongest as an engineering demonstration of how recommendation pipelines can be made inspectable and reproducible under a bounded scope. It is weaker as a basis for any broader claim about recommendation quality beyond that scope. That distinction should remain explicit in the final submission.
 
-## 5.5 Limitations
+## 7.2 Limitations
 
 This thesis has several explicit limitations that constrain interpretation of results.
 
@@ -602,21 +626,9 @@ This thesis has several explicit limitations that constrain interpretation of re
 
 These limitations do not invalidate the contribution, but they bound it to system-design guidance under transparent deterministic constraints.
 
-## 5.6 Future Work
+## 7.3 Chapter Summary
 
-Future work should extend this artefact in ways that preserve traceability while strengthening evidence.
-
-1. Complete a full BL-020 rerun refresh (BL-003 through BL-013) on a later snapshot and compare outputs against the current evidence baseline.
-2. Add a focused music-domain alignment reliability study on corpus-overlap failure regimes and semantic-fallback quality.
-3. Execute broader controllability experiments and integrate their outcomes into run-level observability logs.
-4. Add at least one comparator pipeline, such as a lightweight hybrid baseline, using protocol-matched evaluation so trade-off analysis improves without inflating scope.
-5. Evaluate one audio-grounded extension path for user-side features (local extraction from a bounded track subset) to mitigate Spotify audio-feature endpoint deprecation.
-
-Collectively, these steps would strengthen external validity and comparative depth while keeping the thesis contribution centred on transparent, controllable, and observable engineering design.
-
-## 5.7 Final Conclusion
-
-This thesis has argued that the engineering of a transparent, controllable, and observable automated playlist-generation pipeline is shaped less by the pursuit of maximum model complexity and more by the disciplined design of explicit mechanisms. Under the locked scope of a single-user, deterministic, content-based artefact, the key design considerations are staged cross-source alignment, interpretable preference construction, explicit feature-based scoring, rule-aware playlist assembly, mechanism-linked explanation outputs, and run-level observability and reproducibility controls. The contribution is therefore not a new recommender model, but a structured demonstration of how these qualities can be engineered into a playlist pipeline and evaluated in a way that remains open to inspection and critical challenge.
+This chapter critically evaluated the artefact design and execution process, then bounded interpretation through explicit limitations. Together with Chapter 6, it closes the thesis with both contribution claims and reflective process accountability.
 
 # References
 

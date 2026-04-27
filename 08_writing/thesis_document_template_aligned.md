@@ -74,19 +74,29 @@ Please use an electronic signature (scan and insert).
 
 ## Chapter 1: Introduction
 
-### 1.1 Background and Context
+### 1.1 Project Motivation
 
 [Introduce the music discovery problem, information overload, recommender systems, and why playlist generation is an appropriate project context.]
 
-### 1.2 Problem Statement
+### 1.2 Recommender Systems and Music Recommendation
 
 [State the engineering problem clearly: many recommender systems optimize prediction utility, but transparency, controllability, observability, and reproducibility are often under-served in practical pipeline design.]
 
-### 1.3 Research Question
+### 1.3 Cross-Source Data, Transparency, and Controllability
+
+[Use current Chapter 1 content.]
+
+### 1.4 Research Question, Aim, and Objectives
+
+#### Research Question
 
 What design considerations shape the engineering of a transparent, controllable, and observable automated playlist generation pipeline using cross-source music preference data?
 
-### 1.4 Research Objectives
+#### Aim
+
+[Use current Chapter 1 aim statement.]
+
+#### Objectives
 
 1. Design an automated pipeline that generates playlists from user listening histories.
 2. Align cross-platform music data with the Music4All dataset using ISRC-based track matching.
@@ -97,15 +107,15 @@ What design considerations shape the engineering of a transparent, controllable,
 7. Provide transparent explanations and observability mechanisms for recommendation decisions.
 8. Evaluate the system with respect to transparency, controllability, inspectability, and reproducibility.
 
-### 1.5 Scope and Delimitations
+### 1.5 Scope and Boundaries
 
 [Define the locked MVP scope: single-user, deterministic, content-based, one practical ingestion path, no collaborative/deep baseline in core scope, and no large-scale user study.]
 
-### 1.6 Research Contributions
+### 1.6 Contribution of the Project
 
 [State the contribution as engineering/design evidence, not model novelty. Summarize the artefact, traceability design, and evaluation contribution.]
 
-### 1.7 Thesis Structure
+### 1.7 Report Framework
 
 [Give a short paragraph summarizing each chapter.]
 
@@ -117,7 +127,7 @@ What design considerations shape the engineering of a transparent, controllable,
 
 [Open with a short chapter-introduction paragraph explaining that the chapter builds the design rationale and evidence boundary for the artefact.]
 
-### 2.1 Foundations, Scope, and Thesis Positioning
+### 2.1 Foundations and Scope of Recommender Systems
 
 [Use current Chapter 2 content.]
 
@@ -125,11 +135,11 @@ What design considerations shape the engineering of a transparent, controllable,
 
 [Use current Chapter 2 content.]
 
-### 2.3 Transparency, Explainability, Controllability, Observability, and Evaluation
+### 2.3 Transparency, Explainability, and User Control in Recommender Literature
 
 [Use current Chapter 2 content.]
 
-### 2.4 Preference Evidence, Profile Construction, and Candidate Shaping
+### 2.4 Preference Evidence, Profile Construction, and Candidate Generation
 
 [Use current Chapter 2 content.]
 
@@ -137,161 +147,245 @@ What design considerations shape the engineering of a transparent, controllable,
 
 [Use current Chapter 2 content.]
 
-### 2.6 Deterministic Design Rationale and Comparator Context
+### 2.6 Feature-Based and Latent Approaches: Comparative Strengths and Limits
 
 [Use current Chapter 2 content.]
 
-### 2.7 Cross-Source Alignment, Reproducibility Governance, and Synthesis
+### 2.7 Cross-Source Alignment and Reproducibility
 
 [Use current Chapter 2 content. End with the explicit handoff into Chapter 3.]
 
-### 2.8 Chapter Summary
+### 2.8 Research Gap and Thesis Positioning
 
 [Summarize the literature-derived design implications and transition to design/methodology.]
+
+### 2.9 Chapter Summary
+
+[Use current Chapter 2 chapter summary.]
 
 ## Chapter 3: Design and Methodology
 
 [Open with a short chapter-introduction paragraph stating that Chapter 3 converts literature consequences into explicit engineering commitments for later testing.]
 
-### 3.1 Design Methodology
+### 3.1 Introduction
 
 [Use current Chapter 3 content.]
 
-### 3.2 Literature-Driven Design Requirements
+### 3.2 Design Methodology
 
 [Use current Chapter 3 content.]
 
-### 3.3 Overall System Architecture
+### 3.3 Literature-Driven Design Requirements
 
 [Use current Chapter 3 content.]
 
-### 3.4 Data Ingestion and Alignment
+#### 3.3.1 Design Option Space and Selected-Design Rationale
 
 [Use current Chapter 3 content.]
 
-### 3.5 Preference Modelling and Candidate Preparation
+### 3.4 Design Scope and Overall Architecture
 
 [Use current Chapter 3 content.]
 
-### 3.6 Deterministic Scoring and Playlist Assembly
+#### 3.4.1 Assumptions and Boundaries
 
 [Use current Chapter 3 content.]
 
-### 3.7 Explanation, Observability, and Reproducibility
+### 3.5 Technology Choices and Realisation Context
 
 [Use current Chapter 3 content.]
 
-### 3.8 Configuration and Execution Control
+### 3.6 Cross-Source Preference Evidence and Alignment
 
 [Use current Chapter 3 content.]
 
-### 3.9 Decision Traceability
+### 3.7 Preference Profiling
 
 [Use current Chapter 3 content.]
 
-### 3.10 Literature-to-Design Traceability
+### 3.8 Candidate Shaping
 
 [Use current Chapter 3 content.]
 
-### 3.11 Requirement, Mechanism, and Evidence Mapping
+### 3.9 Deterministic Scoring
 
 [Use current Chapter 3 content.]
 
-### 3.12 Core Decision Logic Diagrams
+### 3.10 Playlist Assembly
 
-[Use current Chapter 3 content and final diagrams.]
+[Use current Chapter 3 content.]
+
+### 3.11 Explanation and Run-Level Observability
+
+[Use current Chapter 3 content.]
+
+### 3.12 Configuration and Experimental Control
+
+[Use current Chapter 3 content.]
 
 ### 3.13 Chapter Summary
 
 [Summarize the design commitments and state that Chapter 4 evaluates whether the implementation and evidence support them.]
 
-## Chapter 4: Implementation, Testing and Evaluation
+## Chapter 4: Implementation Architecture and Evidence Surfaces
 
-[Open with a short chapter-introduction paragraph stating that this chapter reports implemented behaviour and evidence, not universal superiority claims.]
+[Open with a short chapter-introduction paragraph stating that this chapter reports implementation architecture, evidence contracts, and stage-level behaviour under bounded scope.]
 
 ### 4.1 Chapter Aim and Scope
 
 [Use current Chapter 4 content.]
 
-### 4.2 Evaluation Criteria and Success Conditions
-
-[Define the evaluation criteria used in this thesis and link each one to an operational success condition. Keep the criteria aligned to the locked evaluation plan: reproducibility, traceability, controllability, constraint compliance, and testing quality.]
-
-### 4.3 Design-to-Evaluation Traceability
+### 4.2 Design-to-Implementation Bridge
 
 [Use current Chapter 4 content.]
 
-### 4.4 Implementation Overview
+### 4.3 BL-003: Cross-Source Alignment and Evidence Intake
 
-[Describe the implemented pipeline stage by stage: ingestion and normalization, cross-source alignment, preference profile construction, candidate preparation, deterministic scoring, playlist assembly, explanation rendering, and run logging.]
+[Use current Chapter 4 content.]
 
-### 4.5 Testing and Evaluation Procedure
+### 4.4 BL-004: Preference Profiling from Aligned Evidence
 
-[Set out the staged protocol used in Chapter 4, covering deterministic replay checks, alignment diagnostics, explanation-fidelity checks, one-factor-at-a-time controllability tests, and playlist-rule compliance checks.]
+[Use current Chapter 4 content.]
 
-### 4.6 Evidence Package and Artefact Demonstration Basis
+### 4.5 BL-005: Candidate Shaping and Search-Space Definition
 
-[Use current Chapter 4 content. Summarize how evidence is packaged for inspection and how the implemented artefact behaviour was demonstrated and verified.]
+[Use current Chapter 4 content.]
 
-### 4.7 Evaluation Results Matrix
+### 4.6 BL-006: Deterministic Scoring with Decomposable Components
 
-[Replace pending entries with actual results from test logs and experiment notes, using the evaluation-plan test IDs as the reporting contract.]
+[Use current Chapter 4 content.]
 
-### 4.8 Reproducibility, Observability, and Alignment Results
+### 4.7 BL-007: Playlist Assembly with Explicit Trade-offs
 
-[Insert replay results, run-schema checks, and observability completeness results.]
+[Use current Chapter 4 content.]
 
-### 4.9 Controllability and Rule-Compliance Results
+### 4.8 BL-008: Mechanism-Linked Explanations
 
-[Insert one-factor-at-a-time sensitivity results and playlist rule checks.]
+[Use current Chapter 4 content.]
 
-### 4.10 Explanation Fidelity Results
+### 4.9 BL-009: Run-Level Observability and Full Execution Footprint
 
-[Insert reconstruction/error findings for explanation payloads.]
+[Use current Chapter 4 content.]
 
-### 4.11 Evaluation Limits and Interpretation
+### 4.10 BL-010 and BL-011: Reproducibility and Controllability Instrumentation
 
-[Use current Chapter 4 content and ensure any weak results are stated directly.]
+[Use current Chapter 4 content.]
 
-### 4.12 Project Management and Process Evidence
+### 4.11 Evidence Packaging and Artefact Surface
 
-[Summarize milestone control, supervisor engagement, replanning decisions, logbook continuity, and any material execution risks managed during the project. Keep this concise and evidence-linked.]
+[Use current Chapter 4 content.]
 
-### 4.13 Chapter Summary
+### 4.12 Chapter Summary
 
-[Summarize what the evaluation supports, what remains limited, and how Chapter 5 will interpret the findings.]
+[Use current Chapter 4 content.]
 
-## Chapter 5: Discussion, Critical Evaluation and Conclusion
+## Chapter 5: Evaluation and Results
 
-[Open with a short chapter-introduction paragraph explaining that the chapter interprets results against the research question and scope constraints.]
+[Open with a short chapter-introduction paragraph stating that this chapter evaluates objective-linked evidence against pre-specified success criteria.]
 
-### 5.1 Interpretation of Results and Comparator Framing
-
-[Use current Chapter 5 content.]
-
-### 5.2 Scope-Bounded Claims
+### 5.1 Chapter Aim and Scope
 
 [Use current Chapter 5 content.]
 
-### 5.3 Findings in Relation to the Research Question
+### 5.2 Evaluation Method and Locked Criteria
 
-[Use current Chapter 5 content and revise once Chapter 4 is fully populated.]
+[Use current Chapter 5 content.]
 
-### 5.4 Critical Evaluation
+### 5.3 O5 Evidence First: Reproducibility and Controllability
 
-[Evaluate the artefact, method, evidence quality, design trade-offs, and what you would change in hindsight. Make strengths and weaknesses explicit rather than implied.]
+[Use current Chapter 5 content.]
 
-### 5.5 Limitations
+#### 5.3.1 Control-Surface Ablation and Sensitivity Write-Through
 
-[State the limitations directly and concretely. At minimum consider artefact scope, alignment coverage, dependence on available feature descriptors, absence of collaborative or deep-model baselines, and the BSc-feasible evaluation boundary.]
+[Use current Chapter 5 content.]
 
-### 5.6 Future Work
+### 5.4 O1 Evidence: Uncertainty-Aware Profiling
 
-[Use current Chapter 5 content. Keep future work tightly connected to limitations and to the locked contribution focus rather than opening a new thesis.] 
+[Use current Chapter 5 content.]
 
-### 5.7 Final Conclusion
+### 5.5 O2 Evidence: Confidence-Aware Alignment and Candidate Shaping
 
-[Add a short concluding section that directly answers the research question in one clear paragraph and closes the thesis.]
+[Use current Chapter 5 content.]
+
+### 5.6 O3 Evidence: Controllable Trade-Offs
+
+[Use current Chapter 5 content.]
+
+### 5.7 O4 Evidence: Mechanism-Linked Explanation Fidelity
+
+[Use current Chapter 5 content.]
+
+### 5.8 O6 Evidence: Bounded-Guidance Surfaces
+
+[Use current Chapter 5 content.]
+
+### 5.9 Control-Causality and Boundary Hardening Context
+
+[Use current Chapter 5 content.]
+
+### 5.10 Objective Synthesis and Acceptance Status
+
+[Use current Chapter 5 content.]
+
+### 5.11 Evaluation Boundaries, Non-Claims, and Chapter 6 Handoff
+
+[Use current Chapter 5 content.]
+
+### 5.12 Chapter Summary
+
+[Use current Chapter 5 content.]
+
+## Chapter 6: Conclusion
+
+[Open with a short chapter-introduction paragraph that closes the thesis by directly answering the research question under the stated scope boundaries.]
+
+### 6.1 Findings in Relation to the Research Question
+
+[Use current Chapter 6 findings synthesis and make the answer to the research question explicit.]
+
+### 6.2 Overall Contribution
+
+[Use current Chapter 6 contribution interpretation, focused on what was achieved and evidenced.]
+
+### 6.3 Scope-Bounded Claims and Limits
+
+[Use current Chapter 6 limits material and non-claims in concise conclusion form.]
+
+### 6.4 Future Work
+
+[Use current Chapter 6 future work content and keep it directly tied to identified limits.]
+
+### 6.5 Final Closing Statement
+
+[Add one short final paragraph that states the thesis-level conclusion clearly and definitively.]
+
+## Chapter 7: Critical Evaluation and Processes
+
+[Open with a short chapter-introduction paragraph evaluating process quality, methodological rigor, and execution decisions across the project lifecycle.]
+
+### 7.1 Critical Evaluation of Design Choices
+
+[Evaluate strengths/weaknesses of the deterministic, transparency-first architecture and key trade-offs made.]
+
+### 7.2 Critical Evaluation of Implementation and Evidence Quality
+
+[Evaluate implementation robustness, evidence sufficiency, reproducibility posture, and any remaining evidence risks.]
+
+### 7.3 Testing, Validation, and Error-Handling Reflection
+
+[Summarize what testing strategy worked, what failed, and what would be improved in hindsight.]
+
+### 7.4 Project Management and Process Reflection
+
+[Summarize planning, replanning, supervision engagement, risk handling, and execution discipline.]
+
+### 7.5 Lessons Learned and Improvement Priorities
+
+[List the highest-value lessons and practical process improvements for future iterations.]
+
+### 7.6 Chapter Summary
+
+[Close the chapter by summarizing critical reflection outcomes and readiness of the final report package.]
 
 ## References
 
@@ -325,4 +419,4 @@ What design considerations shape the engineering of a transparent, controllable,
 
 ### Appendix F: Project Management Evidence Extracts
 
-[Insert selected logbook pages, milestone snapshots, supervision record extracts, replanning evidence, or timeline artefacts if these are not already submitted separately and if including them strengthens the report evidence.] 
+[Insert selected logbook pages, milestone snapshots, supervision record extracts, replanning evidence, or timeline artefacts if these are not already submitted separately and if including them strengthens the report evidence.]
