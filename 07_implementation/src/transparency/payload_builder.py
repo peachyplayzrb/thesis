@@ -38,10 +38,12 @@ RULE_LABELS = {
 
 
 def canonical_component_name(name: str) -> str:
+    """Normalize score-field names to a shared canonical component key."""
     return name.removesuffix("_score")
 
 
 def build_ordered_components(active_weights: Mapping[str, object]) -> list[str]:
+    """Order weighted components using canonical priority, then stable fallback order."""
     ordered_components: list[str] = []
     active_keys = list(active_weights.keys())
     for canonical in COMPONENT_ORDER:
@@ -63,6 +65,7 @@ def build_score_breakdown(
     ordered_components: list[str],
     active_weights: Mapping[str, object],
 ) -> list[dict[str, object]]:
+    """Build per-component similarity/contribution entries with share diagnostics."""
     score_breakdown: list[dict[str, object]] = []
     contribution_values: dict[str, float] = {}
     for component in ordered_components:
@@ -88,6 +91,8 @@ def build_score_breakdown(
             }
         )
 
+    # Contribution shares are derived from positive mass only so negative
+    # contributions do not inflate denominator size.
     positive_total = sum(max(value, 0.0) for value in contribution_values.values())
     ranked_components = sorted(
         contribution_values.items(),
@@ -124,6 +129,8 @@ def build_track_payload(
     lead_genre: str,
     playlist_position: int,
     score_rank: int,
+    score_percentile: float | None,
+    score_band: str,
     final_score: float,
     raw_final_score: float,
     score_breakdown: list[dict[str, object]],
@@ -137,6 +144,7 @@ def build_track_payload(
     control_provenance: Mapping[str, object] | None = None,
     assembly_report: Mapping[str, object] | None = None,
 ) -> dict[str, object]:
+    """Build the full BL-008 explanation payload for an included playlist track."""
     exclusion_reason = str(trace_row.get("exclusion_reason", ""))
     report_root = to_mapping(assembly_report)
     report_config = to_mapping(report_root.get("config"))
@@ -182,6 +190,10 @@ def build_track_payload(
         "final_score": round(final_score, 6),
         "raw_final_score": round(raw_final_score, 6),
         "score_rank": score_rank,
+        "score_percentile": round(safe_float(score_percentile, 0.0), 3)
+        if score_percentile is not None
+        else None,
+        "score_band": score_band,
         "why_selected": why_selected,
         "primary_explanation_driver": primary_driver,
         "causal_driver": dict(causal_driver or primary_driver),
@@ -205,6 +217,7 @@ def build_control_causality_block(
     transparency_controls: Mapping[str, object],
     control_provenance_ref: str,
 ) -> dict[str, object]:
+    """Assemble the mechanism-linked control causality record for one track."""
     top_contribution_value = 0.0
     if top_contributors:
         top_contribution_value = safe_float(
@@ -285,6 +298,8 @@ def build_rejected_track_payload(
     track_id: str,
     lead_genre: str,
     score_rank: int,
+    score_percentile: float | None,
+    score_band: str,
     final_score: float,
     raw_final_score: float,
     score_breakdown: list[dict[str, object]],
@@ -297,6 +312,7 @@ def build_rejected_track_payload(
     control_provenance: Mapping[str, object] | None = None,
     assembly_report: Mapping[str, object] | None = None,
 ) -> dict[str, object]:
+    """Build a reduced BL-008 payload for excluded track diagnostics."""
     exclusion_reason = str(trace_row.get("exclusion_reason", ""))
     report_root = to_mapping(assembly_report)
     report_config = to_mapping(report_root.get("config"))
@@ -341,6 +357,10 @@ def build_rejected_track_payload(
         "final_score": round(final_score, 6),
         "raw_final_score": round(raw_final_score, 6),
         "score_rank": score_rank,
+        "score_percentile": round(safe_float(score_percentile, 0.0), 3)
+        if score_percentile is not None
+        else None,
+        "score_band": score_band,
         "primary_explanation_driver": primary_driver,
         "causal_driver": dict(causal_driver or primary_driver),
         "narrative_driver": dict(narrative_driver or primary_driver),
@@ -354,6 +374,7 @@ def build_rejected_track_payload(
 
 
 def top_contributor_counts(payloads: list[dict[str, object]]) -> dict[str, int]:
+    """Summarize primary driver label frequency across emitted payloads."""
     counts: Counter[str] = Counter()
     for payload in payloads:
         primary = payload.get("primary_explanation_driver") or {}

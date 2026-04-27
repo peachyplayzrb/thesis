@@ -21,6 +21,7 @@ Outputs
 """
 
 import csv
+import logging
 import time
 from collections.abc import Mapping
 from datetime import UTC, datetime
@@ -35,6 +36,7 @@ from shared_utils.stage_utils import ensure_named_paths_exist, load_required_jso
 from transparency.data_layer import read_csv_index
 from transparency.explanation_driver import (
     build_why_selected,
+    classify_score_band,
     select_causal_driver,
     select_primary_explanation_driver,
 )
@@ -60,20 +62,34 @@ DEFAULT_OUTPUT_DIR = Path("transparency/outputs")
 
 
 def _mapping_from_json(value: object) -> Mapping[str, object]:
+    """Return a mapping view for JSON-like objects, else an empty mapping."""
     if isinstance(value, dict):
         return cast(Mapping[str, object], value)
     return {}
 
 
 def _playlist_tracks(value: object) -> list[Mapping[str, object]]:
+    """Extract playlist track rows as mapping records from untyped JSON input."""
     if not isinstance(value, list):
         return []
     return [cast(Mapping[str, object], item) for item in value if isinstance(item, dict)]
 
 
+def _score_percentile(score_rank: int, total_candidates: int) -> float | None:
+    """Convert 1-based score rank into a bounded percentile for explanation labels."""
+    if score_rank <= 0 or total_candidates <= 0:
+        return None
+    bounded_rank = max(1, min(score_rank, total_candidates))
+    percentile = (1.0 - ((bounded_rank - 1) / float(total_candidates))) * 100.0
+    return round(max(0.0, min(100.0, percentile)), 3)
+
+
 # ---------------------------------------------------------------------------
 # Main
 # ---------------------------------------------------------------------------
+logger = logging.getLogger(__name__)
+
+
 def main() -> None:
     t0 = time.time()
     scored_csv = env_path("BL008_SCORED_CSV_PATH", impl_root() / DEFAULT_SCORED_CSV)
@@ -88,6 +104,8 @@ def main() -> None:
     output_dir.mkdir(parents=True, exist_ok=True)
 
     runtime_controls = resolve_bl008_runtime_controls()
+    # Runtime controls are parsed once, then propagated into both per-track payloads
+    # and run-level provenance for BL-008 explainability audits.
     top_contributor_limit = safe_int(runtime_controls["top_contributor_limit"], 3)
     blend_primary_contributor_on_near_tie = bool(runtime_controls["blend_primary_contributor_on_near_tie"])
     primary_contributor_tie_delta = safe_float(runtime_controls["primary_contributor_tie_delta"], 0.0)
@@ -96,6 +114,10 @@ def main() -> None:
     )
     emit_run_level_control_provenance_summary = bool(
         runtime_controls.get("emit_run_level_control_provenance_summary", True)
+    )
+    max_rejected_track_control_causality = max(
+        0,
+        safe_int(runtime_controls.get("max_rejected_track_control_causality", 500), 500),
     )
     bl007_bl008_handshake_validation_policy = str(
         runtime_controls.get("bl007_bl008_handshake_validation_policy", "warn")
@@ -113,6 +135,10 @@ def main() -> None:
     score_summary = load_required_json_object(score_summary_json, label="BL-006 score summary", stage_label="BL-008")
     active_weights = _mapping_from_json(
         _mapping_from_json(score_summary.get("config", {})).get("active_component_weights", {})
+    )
+    total_scored_candidates = max(
+        safe_int(_mapping_from_json(score_summary.get("counts", {})).get("candidates_scored"), 0),
+        len(scored_index),
     )
     scoring_config = _mapping_from_json(score_summary.get("config", {}))
     control_provenance = {
@@ -183,6 +209,8 @@ def main() -> None:
         scored_row = scored_index.get(track_id, {})
         trace_row = trace_index.get(track_id, {})
         raw_final_score = safe_float(scored_row.get("raw_final_score", final_score))
+        score_percentile = _score_percentile(score_rank, total_scored_candidates)
+        score_band = classify_score_band(final_score, score_percentile)
 
         score_breakdown = build_score_breakdown(scored_row, ordered_components, active_weights)
 
@@ -204,6 +232,7 @@ def main() -> None:
         why_selected = build_why_selected(
             lead_genre, final_score, top_contributors, playlist_pos,
             top_contributor_limit,
+            score_band,
         )
 
         payloads.append(
@@ -212,6 +241,8 @@ def main() -> None:
                 lead_genre=lead_genre,
                 playlist_position=playlist_pos,
                 score_rank=score_rank,
+                score_percentile=score_percentile,
+                score_band=score_band,
                 final_score=final_score,
                 raw_final_score=raw_final_score,
                 score_breakdown=score_breakdown,
@@ -229,6 +260,8 @@ def main() -> None:
 
     playlist_track_ids = {str(track.get("track_id", "")) for track in playlist_tracks}
     emitted_rejected_track_ids: set[str] = set()
+    total_rejected_track_control_causality = 0
+    cap_triggered = False
     for trace_row in trace_rows:
         decision = str(trace_row.get("decision", "")).strip().lower()
         if decision == "included":
@@ -238,12 +271,27 @@ def main() -> None:
             continue
         if track_id in playlist_track_ids or track_id in emitted_rejected_track_ids:
             continue
+        total_rejected_track_control_causality += 1
+
+        # Keep rejected-track control-causality output bounded so very large
+        # candidate pools do not produce oversized explanation artifacts.
+        if len(rejected_payloads) >= max_rejected_track_control_causality:
+            if not cap_triggered and max_rejected_track_control_causality > 0:
+                logger.info(
+                    f"BL-008: Rejected track control causality cap triggered. "
+                    f"Max emitted: {max_rejected_track_control_causality}"
+                )
+                cap_triggered = True
+            emitted_rejected_track_ids.add(track_id)
+            continue
 
         scored_row = scored_index.get(track_id, {})
         lead_genre = str(scored_row.get("lead_genre", ""))
         final_score = safe_float(scored_row.get("final_score", 0.0))
         raw_final_score = safe_float(scored_row.get("raw_final_score", final_score))
         score_rank = safe_int(trace_row.get("score_rank", scored_row.get("rank", 0)))
+        score_percentile = _score_percentile(score_rank, total_scored_candidates)
+        score_band = classify_score_band(final_score, score_percentile)
         score_breakdown = build_score_breakdown(scored_row, ordered_components, active_weights)
         top_contributors = sorted(
             score_breakdown,
@@ -264,6 +312,8 @@ def main() -> None:
                 track_id=track_id,
                 lead_genre=lead_genre,
                 score_rank=score_rank,
+                score_percentile=score_percentile,
+                score_band=score_band,
                 final_score=final_score,
                 raw_final_score=raw_final_score,
                 score_breakdown=score_breakdown,
@@ -283,6 +333,14 @@ def main() -> None:
     now = datetime.now(UTC).strftime("%Y%m%d-%H%M%S-%f")
     run_id = f"BL008-EXPLAIN-{now}"
 
+    if total_rejected_track_control_causality > len(rejected_payloads):
+        logger.info(
+            f"BL-008: Rejected track control causality truncated. "
+            f"Total candidates: {total_rejected_track_control_causality}, "
+            f"Emitted: {len(rejected_payloads)}, "
+            f"Cap: {max_rejected_track_control_causality}"
+        )
+
     # ---- explanation payloads JSON ----------------------------------------
     payloads_path = output_dir / "bl008_explanation_payloads.json"
     payloads_obj = {
@@ -291,6 +349,11 @@ def main() -> None:
         "elapsed_seconds":  elapsed,
         "playlist_track_count": len(payloads),
         "rejected_track_control_causality_count": len(rejected_payloads),
+        "rejected_track_control_causality_total_count": total_rejected_track_control_causality,
+        "rejected_track_control_causality_max_emitted": max_rejected_track_control_causality,
+        "rejected_track_control_causality_truncated": (
+            total_rejected_track_control_causality > len(rejected_payloads)
+        ),
         "control_provenance_summary": (
             control_provenance if emit_run_level_control_provenance_summary else {}
         ),

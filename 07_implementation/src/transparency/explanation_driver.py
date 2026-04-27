@@ -10,6 +10,29 @@ from shared_utils.parsing import safe_float
 _STRONG_MATCH_THRESHOLD: float = 0.75
 _MODERATE_MATCH_THRESHOLD: float = 0.5
 
+_STRONG_PERCENTILE_THRESHOLD: float = 90.0
+_MODERATE_PERCENTILE_THRESHOLD: float = 60.0
+
+
+def classify_score_band(final_score: float, score_percentile: float | None = None) -> str:
+    """Classify score into a stable score band label.
+
+    Percentile takes precedence when provided, so labels remain meaningful even
+    when absolute score ranges are tightly bounded.
+    """
+    if score_percentile is not None:
+        if score_percentile >= _STRONG_PERCENTILE_THRESHOLD:
+            return "strong"
+        if score_percentile >= _MODERATE_PERCENTILE_THRESHOLD:
+            return "moderate"
+        return "weak"
+
+    if final_score >= _STRONG_MATCH_THRESHOLD:
+        return "strong"
+    if final_score >= _MODERATE_MATCH_THRESHOLD:
+        return "moderate"
+    return "weak"
+
 
 def build_why_selected(
     lead_genre: str,
@@ -17,6 +40,7 @@ def build_why_selected(
     top_contributors: Sequence[Mapping[str, object]],
     playlist_position: int,
     top_contributor_limit: int,
+    score_band: str | None = None,
 ) -> str:
     """Build the human-readable explanation sentence."""
     top_labels = [
@@ -24,9 +48,10 @@ def build_why_selected(
         for c in top_contributors[:top_contributor_limit]
     ]
     contributors_str = ", ".join(top_labels)
-    if final_score >= _STRONG_MATCH_THRESHOLD:
+    score_band = score_band or classify_score_band(final_score)
+    if score_band == "strong":
         strength_phrase = "shows a strong profile match"
-    elif final_score >= _MODERATE_MATCH_THRESHOLD:
+    elif score_band == "moderate":
         strength_phrase = "shows a moderate profile match"
     else:
         strength_phrase = "shows a weaker but acceptable profile match"

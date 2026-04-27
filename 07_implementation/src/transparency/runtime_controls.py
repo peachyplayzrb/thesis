@@ -30,6 +30,10 @@ def _sanitize_bl008_controls(controls: dict[str, object]) -> dict[str, object]:
     controls["emit_run_level_control_provenance_summary"] = bool(
         controls.get("emit_run_level_control_provenance_summary", True)
     )
+    controls["max_rejected_track_control_causality"] = max(
+        0,
+        coerce_int(controls.get("max_rejected_track_control_causality"), 500),
+    )
     controls["bl007_bl008_handshake_validation_policy"] = normalize_validation_policy(
         controls.get("bl007_bl008_handshake_validation_policy", DEFAULT_BL008_HANDSHAKE_VALIDATION_POLICY)
     )
@@ -56,6 +60,9 @@ def _load_bl008_controls_from_env() -> dict[str, object]:
         ),
         "emit_run_level_control_provenance_summary": env_bool(
             "BL008_EMIT_RUN_LEVEL_CONTROL_PROVENANCE_SUMMARY", True
+        ),
+        "max_rejected_track_control_causality": env_int(
+            "BL008_MAX_REJECTED_TRACK_CONTROL_CAUSALITY", 500
         ),
         "bl007_bl008_handshake_validation_policy": env_str(
             "BL008_BL007_HANDSHAKE_VALIDATION_POLICY", DEFAULT_BL008_HANDSHAKE_VALIDATION_POLICY
