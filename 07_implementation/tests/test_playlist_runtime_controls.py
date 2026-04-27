@@ -20,6 +20,7 @@ def test_runtime_controls_environment_defaults(monkeypatch) -> None:
     assert controls["min_score_threshold"] == 0.35
     assert controls["max_per_genre"] == 4
     assert controls["max_consecutive"] == 2
+    assert controls["novelty_allowance"] == 0
     assert controls["utility_decay_factor"] == 0.0
     assert controls["opportunity_cost_top_k_examples"] == 10
 
@@ -29,6 +30,7 @@ def test_runtime_controls_environment_sanitizes_bounds(monkeypatch) -> None:
     monkeypatch.setenv("BL007_MIN_SCORE_THRESHOLD", "9")
     monkeypatch.setenv("BL007_MAX_PER_GENRE", "-2")
     monkeypatch.setenv("BL007_MAX_CONSECUTIVE", "-4")
+    monkeypatch.setenv("BL007_NOVELTY_ALLOWANCE", "-3")
     monkeypatch.setenv("BL007_UTILITY_DECAY_FACTOR", "4.7")
     monkeypatch.setenv("BL007_OPPORTUNITY_COST_TOP_K_EXAMPLES", "-9")
 
@@ -39,6 +41,7 @@ def test_runtime_controls_environment_sanitizes_bounds(monkeypatch) -> None:
     assert controls["min_score_threshold"] == 1.0
     assert controls["max_per_genre"] == 1
     assert controls["max_consecutive"] == 1
+    assert controls["novelty_allowance"] == 0
     assert controls["utility_decay_factor"] == 1.0
     assert controls["opportunity_cost_top_k_examples"] == 1
 

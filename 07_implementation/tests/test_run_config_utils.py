@@ -217,6 +217,7 @@ def test_resolve_bl007_controls_includes_influence_policy_contract(tmp_path: Pat
             "assembly_controls": {
                 "target_size": 4,
                 "utility_decay_factor": 0.4,
+                "novelty_allowance": 2,
                 "influence_policy_mode": "reserved_slots",
                 "influence_reserved_slots": 10,
                 "influence_allow_genre_cap_override": True,
@@ -232,6 +233,7 @@ def test_resolve_bl007_controls_includes_influence_policy_contract(tmp_path: Pat
     assert controls["influence_enabled"] is True
     assert controls["influence_track_ids"] == ["x1", "x2"]
     assert controls["utility_decay_factor"] == 0.4
+    assert controls["novelty_allowance"] == 2
     assert controls["influence_policy_mode"] == "reserved_slots"
     assert controls["influence_reserved_slots"] == 4
     assert controls["influence_allow_genre_cap_override"] is True

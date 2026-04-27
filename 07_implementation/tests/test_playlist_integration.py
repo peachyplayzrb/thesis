@@ -47,6 +47,8 @@ def test_playlist_main_generates_consistent_outputs(tmp_path: Path, monkeypatch)
     assert playlist["playlist_length"] == 3
     assert report["counts"]["tracks_included"] == 3
     assert report["counts"]["tracks_excluded"] == 1
+    assert report["counts"]["novelty_allowance_used"] == 0
+    assert report["relaxation_records"] == []
 
     # Verify that at least one excluded track was logged in the trace
     trace_rows = list(csv.DictReader(trace_path.open(encoding="utf-8")))
@@ -107,3 +109,5 @@ def test_playlist_main_with_payload_fixture(tmp_path: Path, monkeypatch) -> None
     assert playlist["playlist_length"] == 3
     assert report["counts"]["tracks_included"] == 3
     assert report["counts"]["tracks_excluded"] == 1
+    assert report["counts"]["novelty_allowance_used"] == 0
+    assert report["relaxation_records"] == []

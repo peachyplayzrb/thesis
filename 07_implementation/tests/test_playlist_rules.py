@@ -149,6 +149,75 @@ def test_assemble_bucketed_respects_consecutive_limit() -> None:
         assert playlist[i]["lead_genre"] != playlist[i + 1]["lead_genre"]
 
 
+def test_assemble_bucketed_novelty_allowance_admits_new_genre() -> None:
+    candidates = [
+        _cand(1, "pop", 0.95),
+        _cand(2, "pop", 0.94),
+        _cand(3, "rock", 0.60),
+    ]
+    rule_hits: Counter[str] = Counter()
+
+    playlist_without, _ = assemble_bucketed(
+        candidates=candidates,
+        target_size=2,
+        min_score_threshold=0.35,
+        max_per_genre=2,
+        max_consecutive=2,
+        rule_hits=rule_hits,
+        utility_strategy="utility_greedy",
+        utility_weights={"score_weight": 1.0, "novelty_weight": 0.0, "repetition_penalty_weight": 0.0},
+        novelty_allowance=0,
+    )
+
+    playlist_with, _ = assemble_bucketed(
+        candidates=candidates,
+        target_size=2,
+        min_score_threshold=0.35,
+        max_per_genre=2,
+        max_consecutive=2,
+        rule_hits=Counter(),
+        utility_strategy="utility_greedy",
+        utility_weights={"score_weight": 1.0, "novelty_weight": 0.0, "repetition_penalty_weight": 0.0},
+        novelty_allowance=1,
+    )
+
+    assert [row["track_id"] for row in playlist_without] == ["track_1", "track_2"]
+    assert [row["track_id"] for row in playlist_with] == ["track_1", "track_3"]
+
+
+def test_assemble_bucketed_emits_relaxation_metadata_records() -> None:
+    candidates = [
+        _cand(1, "pop", 0.90),
+        _cand(2, "pop", 0.89),
+        _cand(3, "pop", 0.88),
+    ]
+    metadata: dict[str, object] = {}
+
+    playlist, _ = assemble_bucketed(
+        candidates=candidates,
+        target_size=3,
+        min_score_threshold=0.35,
+        max_per_genre=3,
+        max_consecutive=1,
+        rule_hits=Counter(),
+        controlled_relaxation={
+            "enabled": True,
+            "relax_consecutive_first": True,
+            "max_per_genre_increment": 1,
+            "max_relaxation_rounds": 1,
+        },
+        metadata_out=metadata,
+    )
+
+    assert len(playlist) == 2
+    relaxation_records = metadata.get("relaxation_records")
+    assert isinstance(relaxation_records, list)
+    assert relaxation_records
+    first_record = relaxation_records[0]
+    assert first_record["constraint"] == "max_consecutive"
+    assert first_record["tracks_admitted"] >= 1
+
+
 def test_assemble_bucketed_reserves_influence_slots() -> None:
     candidates = [
         _cand(1, "rock", 0.9),
